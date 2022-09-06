@@ -48,17 +48,16 @@ export default class Main extends Component<MainProps, object> {
       {
         name: Navigation.SecurityAnalytics,
         id: 0,
-        href: `#${ROUTES.SECURITY_ANALYTICS}`,
         items: [
           {
-            name: Navigation.Dashboards,
+            name: Navigation.Findings,
             id: 1,
-            href: `#${ROUTES.DASHBOARDS}`,
+            href: `#${ROUTES.FINDINGS}`,
           },
           {
-            name: Navigation.Findings,
+            name: Navigation.Dashboards,
             id: 2,
-            href: `#${ROUTES.FINDINGS}`,
+            href: `#${ROUTES.DASHBOARDS}`,
           },
           {
             name: Navigation.Detectors,
@@ -69,11 +68,14 @@ export default class Main extends Component<MainProps, object> {
             name: Navigation.Categories,
             id: 4,
             href: `#${ROUTES.CATEGORIES}`,
-          },
-          {
-            name: Navigation.Rules,
-            id: 5,
-            href: `#${ROUTES.RULES}`,
+            items: [
+              {
+                name: Navigation.Rules,
+                id: 5,
+                href: `#${ROUTES.RULES}`,
+                forceOpen: true,
+              },
+            ],
           },
         ],
       },
@@ -114,12 +116,6 @@ export default class Main extends Component<MainProps, object> {
                         <Route
                           path={ROUTES.RULES}
                           render={(props: RouteComponentProps) => <Rules {...props} />}
-                        />
-                        <Route
-                          path={ROUTES.SECURITY_ANALYTICS}
-                          render={(props: RouteComponentProps) => (
-                            <ContentPanel title={'Temporary landing page'} />
-                          )}
                         />
                         <Redirect from={'/'} to={landingPage} />
                       </Switch>

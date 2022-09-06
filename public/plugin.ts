@@ -32,7 +32,7 @@ export class SecurityAnalyticsPlugin
       mount: async (params: AppMountParameters) => {
         const { renderApp } = await import('./security_analytics_app');
         const [coreStart, depsStart] = await core.getStartServices();
-        return renderApp(coreStart, params, ROUTES.SECURITY_ANALYTICS);
+        return renderApp(coreStart, params, ROUTES.LANDING_PAGE);
       },
     });
     return {};
