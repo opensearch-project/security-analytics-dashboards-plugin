@@ -1,0 +1,35 @@
+{
+  "title": "Windows Update Error",
+  "id": "13cfeb75-9e33-4d04-b0f7-ab8faaa95a59",
+  "status": "experimental",
+  "description": "Windows Update get some error Check if need a 0-days KB",
+  "author": "frack113",
+  "date": "2021/12/04",
+  "logsource": {
+    "product": "windows",
+    "service": "system",
+    "definition": "Other error are in Microsoft-Windows-WindowsUpdateClient/Operational"
+  },
+  "detection": {
+    "selection": {
+      "Provider_Name": "Microsoft-Windows-WindowsUpdateClient",
+      "EventID": [
+        16,
+        20,
+        24,
+        213,
+        217
+      ]
+    },
+    "condition": "selection"
+  },
+  "falsepositives": [
+    "Unknown"
+  ],
+  "level": "low",
+  "tags": [
+    "attack.impact",
+    "attack.resource_development",
+    "attack.t1584"
+  ]
+}

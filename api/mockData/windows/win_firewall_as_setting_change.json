@@ -1,0 +1,27 @@
+{
+  "title": "Setting Change in Windows Firewall with Advanced Security",
+  "id": "00bb5bd5-1379-4fcf-a965-a5b6f7478064",
+  "status": "experimental",
+  "description": "Setting have been change in Windows Firewall",
+  "author": "frack113",
+  "date": "2022/02/19",
+  "modified": "2022/03/28",
+  "references": [
+    "https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-r2-and-2008/dd364427(v=ws.10)"
+  ],
+  "logsource": {
+    "product": "windows",
+    "service": "firewall-as"
+  },
+  "detection": {
+    "selection": {
+      "EventID": [
+        2002,
+        2003,
+        2008
+      ]
+    },
+    "condition": "selection"
+  },
+  "level": "low"
+}

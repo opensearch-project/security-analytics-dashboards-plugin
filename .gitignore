@@ -9,3 +9,5 @@ yarn-error.log
 /cypress/screenshots/
 /cypress/videos/
 target
+/api/sigma
+/api/mockData

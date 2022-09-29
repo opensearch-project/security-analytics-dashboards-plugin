@@ -1,0 +1,92 @@
+{
+  "title": "Suspicious SYSTEM User Process Creation",
+  "id": "2617e7ed-adb7-40ba-b0f3-8f9945fe6c09",
+  "status": "test",
+  "description": "Detects a suspicious process creation as SYSTEM user (suspicious program or command line parameter)",
+  "references": ["Internal Research", "https://tools.thehacker.recipes/mimikatz/modules"],
+  "author": "Florian Roth (rule), David ANDRE (additional keywords)",
+  "date": "2021/12/20",
+  "modified": "2022/09/27",
+  "logsource": {
+    "category": "process_creation",
+    "product": "windows"
+  },
+  "detection": {
+    "selection": {
+      "IntegrityLevel": "System",
+      "User|contains": ["AUTHORI", "AUTORI"]
+    },
+    "selection_special": [
+      {
+        "Image|endswith": [
+          "\\calc.exe",
+          "\\wscript.exe",
+          "\\cscript.exe",
+          "\\hh.exe",
+          "\\mshta.exe",
+          "\\forfiles.exe",
+          "\\ping.exe"
+        ]
+      },
+      {
+        "CommandLine|contains": [
+          " -NoP ",
+          " -W Hidden ",
+          " -decode ",
+          " /decode ",
+          " /urlcache ",
+          " -urlcache ",
+          " -e* JAB",
+          " -e* SUVYI",
+          " -e* SQBFAFgA",
+          " -e* aWV4I",
+          " -e* IAB",
+          " -e* PAA",
+          " -e* aQBlAHgA",
+          "vssadmin delete shadows",
+          "reg SAVE HKLM",
+          " -ma ",
+          "Microsoft\\Windows\\CurrentVersion\\Run",
+          ".downloadstring(",
+          ".downloadfile(",
+          " /ticket:",
+          "dpapi::",
+          "event::clear",
+          "event::drop",
+          "id::modify",
+          "kerberos::",
+          "lsadump::",
+          "misc::",
+          "privilege::",
+          "rpc::",
+          "sekurlsa::",
+          "sid::",
+          "token::",
+          "vault::cred",
+          "vault::list",
+          " p::d ",
+          ";iex(",
+          "MiniDump",
+          "net user "
+        ]
+      }
+    ],
+    "filter": {
+      "CommandLine": "ping 127.0.0.1 -n 5"
+    },
+    "filter_vs": {
+      "Image|endswith": "\\PING.EXE",
+      "ParentCommandLine|contains": "\\DismFoDInstall.cmd"
+    },
+    "filter_config_mgr": {
+      "ParentImage|startswith": "C:\\Packages\\Plugins\\Microsoft.GuestConfiguration.ConfigurationforWindows\\"
+    },
+    "condition": "all of selection* and not 1 of filter*"
+  },
+  "falsepositives": [
+    "Administrative activity",
+    "Scripts and administrative tools used in the monitored environment",
+    "Monitoring activity"
+  ],
+  "level": "high"
+}
