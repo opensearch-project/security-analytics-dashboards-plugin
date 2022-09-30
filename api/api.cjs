@@ -21,7 +21,7 @@ let networkRules = [];
 let proxyRules = [];
 let webRules = [];
 let windowsRules = [];
-
+let customRules = []
 
 fs.readdirSync('./mockData/application').forEach((file) => {
   let json = require(`./mockData/application/${file}`);
@@ -83,7 +83,13 @@ fs.readdirSync('./mockData/windows').forEach((file) => {
   windowsRules.push(json)
 });
 
-const data = [rules, applicationRules, aptRules, cloudRules, complianceRules, linuxRules, macosRules, networkRules, proxyRules, webRules, windowsRules]
+fs.readdirSync('./mockData/custom').forEach((file) => {
+  let json = require(`./mockData/custom/${file}`);
+  rules.push(json);
+  customRules.push(json)
+});
+
+const data = [rules, applicationRules, aptRules, cloudRules, complianceRules, linuxRules, macosRules, networkRules, proxyRules, webRules, windowsRules, customRules]
 
 
 
