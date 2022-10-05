@@ -1,10 +1,14 @@
-import React, { useState, useReducer, Fragment } from 'react';
+import React, { useState, useReducer } from 'react';
 import { initialState, reducer } from '../../../../../state-management';
 import Modal from '../../../../../lib/UIComponents/Modal';
 import { EuiInMemoryTable } from '@elastic/eui';
 import _ from 'lodash';
 
-export const AptTable = () => {
+interface tableProps {
+  rules: any;
+}
+
+export const SigmaTable = ({ rules }: tableProps) => {
   const [state] = useReducer(reducer, initialState);
   const [pagination, setPagination] = useState({ pageIndex: 0 });
   const [query, setQuery] = useState<string>('');
@@ -14,7 +18,7 @@ export const AptTable = () => {
   const closeModal = () => setIsModalVisible(false);
   const showModal = () => setIsModalVisible(true);
 
-  const rules = state.aptRules;
+  const tableRules = rules;
 
   let modal;
 
@@ -28,6 +32,7 @@ export const AptTable = () => {
       name: 'Rule name',
       sortable: true,
       width: '20%',
+      truncateText: true,
       'data-test-subj': 'firstNameCell',
       mobileOptions: {
         header: false,
@@ -41,6 +46,7 @@ export const AptTable = () => {
       name: 'Rule type',
       sortable: true,
       width: '20%',
+      truncateText: true,
       'data-test-subj': 'firstNameCell',
       mobileOptions: {
         header: false,
@@ -107,10 +113,10 @@ export const AptTable = () => {
   return (
     <div>
       <EuiInMemoryTable
-        items={rules}
+        items={tableRules}
         columns={columns}
         search={search}
-        pagination={rules.length < 7 ? false : { ...pagination, pageSizeOptions: [5, 15, 25] }}
+        pagination={tableRules.length < 7 ? false : { ...pagination, pageSizeOptions: [7, 15, 25] }}
         onTableChange={({ page: { index } }: { page: any }) => setPagination({ pageIndex: index })}
         sorting={true}
         rowProps={getRowProps}

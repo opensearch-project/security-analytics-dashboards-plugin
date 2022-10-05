@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Add } from '../../containers/Rules/components/Add';
+import { Add } from '../../containers/Rules/components/Visual';
 import { View } from '../../containers/Rules/components/View';
 import {
   EuiModal,

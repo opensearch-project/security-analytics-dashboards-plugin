@@ -24,6 +24,19 @@ $euiTextColor: $euiColorDarkestShade !default;
   }
 }
 
+.euiIcon#tagIcon {
+  margin-top: 10px;
+  padding: 0;
+  background-color: white;
+  width: 32px;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.euiIcon#tagIcon:hover {
+  color: red;
+}
+
 @function tint($color, $percent) {
   @return mix($euiColorGhost, $color, $percent);
 }

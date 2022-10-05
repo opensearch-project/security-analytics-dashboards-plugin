@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { EuiTabbedContent, EuiText, EuiSpacer } from '@elastic/eui';
-import { Tables } from './Tables';
+import { Table } from './Table';
 
 export const Home = () => {
   const tabs = [
@@ -9,13 +9,13 @@ export const Home = () => {
       name: 'View Rules',
       content: (
         <Fragment>
-          <Tables />
+          <Table />
         </Fragment>
       ),
     },
     {
-      id: 'manage--id',
-      name: 'Manage Rules',
+      id: 'detection--id',
+      name: 'Detection Rules',
       content: (
         <Fragment>
           <EuiSpacer />
@@ -37,9 +37,7 @@ export const Home = () => {
         tabs={tabs}
         initialSelectedTab={tabs[0]}
         autoFocus="selected"
-        onTabClick={(tab) => {
-          console.log('clicked tab', tab);
-        }}
+        onTabClick={(tab) => {}}
       />
     </div>
   );

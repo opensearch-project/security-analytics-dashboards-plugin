@@ -1,17 +1,8 @@
-import React, { useState, Fragment, useReducer } from 'react';
-import { initialState, reducer } from '../../../../../state-management';
-import { ApplicationTable } from './applicationTable';
-import { AptTable } from './aptTable';
-import { CloudTable } from './cloudTable';
-import { ComplianceTable } from './complianceTable';
-import { LinuxTable } from './linuxTable';
-import { MacOSTable } from './macosTable';
-import { NetworkTable } from './NetworkTable';
-import { ProxyTable } from './ProxyTable';
-import { WebTable } from './webTable';
-import { AllTable } from './viewAllTable';
-import { WindowsTable } from './windowsTable';
-import { CustomTable } from './customTable';
+import React, { useState, Fragment } from 'react';
+import { initialState } from '../../../../../state-management';
+import { CustomTable } from '../../Tables/Custom';
+import { SigmaTable } from '../../Tables/SIGMA';
+
 import _ from 'lodash';
 import {
   EuiText,
@@ -23,8 +14,7 @@ import {
   EuiPanel,
 } from '@elastic/eui';
 
-export const Tables = () => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+export const Table = () => {
   const [currentTable, setCurrentTable] = useState<string>('AllTable');
 
   const facets = [
@@ -110,29 +100,29 @@ export const Tables = () => {
   const tableSwitch = () => {
     switch (currentTable) {
       case 'AllTable':
-        return <AllTable rules={initialState.rules} />;
+        return <SigmaTable rules={initialState.rules} />;
       case 'ApplicationTable':
-        return <ApplicationTable />;
+        return <SigmaTable rules={initialState.applicationRules} />;
       case 'AptTable':
-        return <AptTable />;
+        return <SigmaTable rules={initialState.aptRules} />;
       case 'CloudTable':
-        return <CloudTable />;
+        return <SigmaTable rules={initialState.cloudRules} />;
       case 'ComplianceTable':
-        return <ComplianceTable />;
+        return <SigmaTable rules={initialState.complianceRules} />;
       case 'LinuxTable':
-        return <LinuxTable />;
+        return <SigmaTable rules={initialState.linuxRules} />;
       case 'macOSTable':
-        return <MacOSTable />;
+        return <SigmaTable rules={initialState.macosRules} />;
       case 'NetworkTable':
-        return <NetworkTable />;
+        return <SigmaTable rules={initialState.networkRules} />;
       case 'ProxyTable':
-        return <ProxyTable />;
+        return <SigmaTable rules={initialState.proxyRules} />;
       case 'WebTable':
-        return <WebTable />;
+        return <SigmaTable rules={initialState.webRules} />;
       case 'WindowsTable':
-        return <WindowsTable />;
+        return <SigmaTable rules={initialState.windowsRules} />;
       case 'CustomTable':
-        return <CustomTable />;
+        return <CustomTable rules={initialState.customRules} />;
     }
   };
 
@@ -164,7 +154,9 @@ export const Tables = () => {
               <h1>{`${currentTable.replace('Table', '')} Rules`}</h1>
             </EuiText>
             <EuiSpacer />
-            {tableSwitch()}
+            {initialState.rules.length === 0 && <div>Loading Rules</div>}
+            {initialState.rules.length > 0 && <div>{tableSwitch()}</div>}
+
             <EuiSpacer />
             <div style={{ display: 'flex', justifyContent: 'center' }}></div>
           </EuiFlexItem>
