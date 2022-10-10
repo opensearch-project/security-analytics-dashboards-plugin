@@ -11,12 +11,14 @@ export const DOCUMENTATION_URL = 'https://opensearch.org/docs/latest/';
 export const DEFAULT_EMPTY_DATA = '-';
 
 export const ROUTES = Object.freeze({
-  SECURITY_ANALYTICS: '/', // TODO: Temporary landing page for the plugin
   DASHBOARDS: '/dashboards',
   FINDINGS: '/findings',
   DETECTORS: '/detectors',
   CATEGORIES: '/categories',
-  RULES: '/rules', // TODO: This may need to be "/categories/rules"
+  RULES: '/rules',
+  get LANDING_PAGE() {
+    return this.FINDINGS;
+  },
 });
 
 export const BREADCRUMBS = Object.freeze({
