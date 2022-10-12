@@ -11,13 +11,15 @@ export const DOCUMENTATION_URL = 'https://opensearch.org/docs/latest/';
 export const DEFAULT_EMPTY_DATA = '-';
 
 export const ROUTES = Object.freeze({
+  ALERTS: '/alerts',
   DASHBOARDS: '/dashboards',
-  FINDINGS: '/findings',
   DETECTORS: '/detectors',
-  CATEGORIES: '/categories',
+  FINDINGS: '/findings',
+  OVERVIEW: '/overview',
   RULES: '/rules',
+
   get LANDING_PAGE() {
-    return this.FINDINGS;
+    return this.OVERVIEW;
   },
 });
 
