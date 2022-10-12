@@ -21,12 +21,15 @@ import React, { Component } from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { View, parse } from 'vega';
 import { compile } from 'vega-lite';
-import { ROUTES } from '../../../../utils/constants';
+import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { FindingItem, OverviewProps, OverviewState } from '../../types/interfaces';
 import { dummyWidgetItems, getVisualizationSpec } from '../../utils/dummyData';
 import { groupByOptions, widgetHeaderData } from '../../utils/constants';
+import { CoreServicesContext } from '../../../../../public/components/core_services';
 
 export default class Overview extends Component<OverviewProps, OverviewState> {
+  static contextType = CoreServicesContext;
+
   constructor(props: OverviewProps) {
     super(props);
     this.state = {
@@ -106,6 +109,7 @@ export default class Overview extends Component<OverviewProps, OverviewState> {
   }
 
   componentDidMount(): void {
+    this.context.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.OVERVIEW]);
     this.renderVis();
   }
 
@@ -172,9 +176,9 @@ export default class Overview extends Component<OverviewProps, OverviewState> {
           </EuiFlexItem>
           <EuiFlexItem>
             <EuiFlexGrid columns={2} gutterSize="m">
-              {widgetHeaderData.map((data) => {
+              {widgetHeaderData.map((data, idx) => {
                 return (
-                  <EuiFlexItem className="grid-item">
+                  <EuiFlexItem className="grid-item" key={idx}>
                     <EuiFlexGroup direction="column" className="grid-item-content">
                       {this.createWidgetHeader(
                         data.widgetTitle,
@@ -185,7 +189,11 @@ export default class Overview extends Component<OverviewProps, OverviewState> {
                           : null
                       )}
                       <EuiHorizontalRule margin="xs" className="widget-hr" />
-                      <EuiBasicTable columns={columns} items={dummyWidgetItems} />
+                      <EuiBasicTable
+                        columns={columns}
+                        items={dummyWidgetItems}
+                        itemId={(item: FindingItem) => `${item.id}`}
+                      />
                     </EuiFlexGroup>
                   </EuiFlexItem>
                 );

@@ -16,6 +16,7 @@ import Findings from '../Findings';
 import Detectors from '../Detectors';
 import Rules from '../Rules';
 import Overview from '../Overview';
+import CreateDetector from '../CreateDetector/containers/CreateDetector';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -109,6 +110,12 @@ export default class Main extends Component<MainProps, object> {
                         <Route
                           path={ROUTES.DETECTORS}
                           render={(props: RouteComponentProps) => <Detectors {...props} />}
+                        />
+                        <Route
+                          path={ROUTES.DETECTORS_CREATE}
+                          render={(props: RouteComponentProps) => (
+                            <CreateDetector {...props} isEdit={true} />
+                          )}
                         />
                         <Route
                           path={ROUTES.RULES}
