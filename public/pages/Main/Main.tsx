@@ -5,7 +5,6 @@
 
 import React, { Component } from 'react';
 import { Switch, Route, Redirect, RouteComponentProps } from 'react-router-dom';
-// @ts-ignore
 import { EuiSideNav, EuiPage, EuiPageBody, EuiPageSideBar } from '@elastic/eui';
 import { CoreStart } from 'opensearch-dashboards/public';
 import { ServicesConsumer } from '../../services';
@@ -15,9 +14,7 @@ import { CoreServicesConsumer } from '../../components/core_services';
 import Dashboards from '../Dashboards';
 import Findings from '../Findings';
 import Detectors from '../Detectors';
-import Categories from '../Categories';
 import Rules from '../Rules';
-import { ContentPanel } from '../../components/ContentPanel';
 import Overview from '../Overview';
 
 enum Navigation {
@@ -25,8 +22,9 @@ enum Navigation {
   Dashboards = 'Dashboards',
   Findings = 'Findings',
   Detectors = 'Detectors',
-  Categories = 'Categories',
-  Rules = 'Rules',
+  Rules = 'Rule templates',
+  Overview = 'Overview',
+  Alerts = 'Alerts',
 }
 
 enum Pathname {}
@@ -49,12 +47,11 @@ export default class Main extends Component<MainProps, object> {
       {
         name: Navigation.SecurityAnalytics,
         id: 0,
-        href: `#${ROUTES.SECURITY_ANALYTICS}`,
         items: [
           {
-            name: Navigation.Dashboards,
+            name: Navigation.Overview,
             id: 1,
-            href: `#${ROUTES.DASHBOARDS}`,
+            href: `#${ROUTES.OVERVIEW}`,
           },
           {
             name: Navigation.Findings,
@@ -62,18 +59,23 @@ export default class Main extends Component<MainProps, object> {
             href: `#${ROUTES.FINDINGS}`,
           },
           {
-            name: Navigation.Detectors,
+            name: Navigation.Alerts,
             id: 3,
+            href: `#${ROUTES.ALERTS}`,
+          },
+          {
+            name: Navigation.Dashboards,
+            id: 4,
+            href: `#${ROUTES.DASHBOARDS}`,
+          },
+          {
+            name: Navigation.Detectors,
+            id: 5,
             href: `#${ROUTES.DETECTORS}`,
           },
           {
-            name: Navigation.Categories,
-            id: 4,
-            href: `#${ROUTES.CATEGORIES}`,
-          },
-          {
             name: Navigation.Rules,
-            id: 5,
+            id: 6,
             href: `#${ROUTES.RULES}`,
           },
         ],
@@ -109,15 +111,11 @@ export default class Main extends Component<MainProps, object> {
                           render={(props: RouteComponentProps) => <Detectors {...props} />}
                         />
                         <Route
-                          path={ROUTES.CATEGORIES}
-                          render={(props: RouteComponentProps) => <Categories {...props} />}
-                        />
-                        <Route
                           path={ROUTES.RULES}
                           render={(props: RouteComponentProps) => <Rules {...props} />}
                         />
                         <Route
-                          path={ROUTES.SECURITY_ANALYTICS}
+                          path={ROUTES.OVERVIEW}
                           render={(props: RouteComponentProps) => <Overview {...props} />}
                         />
                         <Redirect from={'/'} to={landingPage} />

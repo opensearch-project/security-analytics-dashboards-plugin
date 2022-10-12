@@ -1,3 +1,8 @@
+/*
+* Copyright OpenSearch Contributors
+* SPDX-License-Identifier: Apache-2.0
+*/
+
 .grid-item {
     padding: 20px;
 }
@@ -12,4 +17,9 @@
     background-color: black;
     border: none;
     margin: 0px;
+}
+
+.page-link {
+    font-size: 20px;
+    text-decoration: underline;
 }

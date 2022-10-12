@@ -12,50 +12,19 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiHorizontalRule,
+  EuiLink,
   EuiSelect,
   EuiSelectOption,
   EuiText,
 } from '@elastic/eui';
 import React, { Component } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { View, parse } from 'vega';
-
-interface OverviewProps extends RouteComponentProps {}
-
-interface OverviewState {
-  groupBy: string;
-}
-
-interface FindingItem {
-  id: number;
-  time: string;
-  findingName: string;
-  detector: string;
-}
-
-const items: FindingItem[] = Array(5)
-  .fill(undefined)
-  .map((_, idx) => {
-    return {
-      id: idx,
-      time: new Date().toDateString(),
-      findingName: `Finding ${idx}`,
-      detector: `policy_${idx % 3}`,
-    };
-  });
-
-const groupByOptions = [
-  { text: 'All findings', value: 'all_findings' },
-  { text: 'Log type', value: 'log_type' },
-];
-
-const widgetHeaderData = [
-  { widgetTitle: 'Recent alerts', btnName: 'View alerts' },
-  { widgetTitle: 'Recent findings', btnName: 'View findings' },
-  { widgetTitle: 'Top rules count from findings' },
-  { widgetTitle: 'Security dashboards', btnName: 'View security dashboards' },
-];
+import { compile } from 'vega-lite';
+import { ROUTES } from '../../../../utils/constants';
+import { FindingItem, OverviewProps, OverviewState } from '../../types/interfaces';
+import { dummyWidgetItems, getVisualizationSpec } from '../../utils/dummyData';
+import { groupByOptions, widgetHeaderData } from '../../utils/constants';
 
 export default class Overview extends Component<OverviewProps, OverviewState> {
   constructor(props: OverviewProps) {
@@ -110,14 +79,18 @@ export default class Overview extends Component<OverviewProps, OverviewState> {
     );
   }
 
+  generateVisualizationSpec() {
+    return getVisualizationSpec();
+  }
+
   renderVis() {
     let view;
+    const spec = this.generateVisualizationSpec();
 
     try {
-      fetch('https://vega.github.io/vega/examples/bar-chart.vg.json')
-        .then((res) => res.json())
-        .then((spec) => renderVegaSpec(spec))
-        .catch((err) => console.error(err));
+      renderVegaSpec(compile({ ...spec, width: 'container', height: 400 }).spec).catch((err) =>
+        console.error(err)
+      );
     } catch (error) {
       console.log(error);
     }
@@ -170,11 +143,30 @@ export default class Overview extends Component<OverviewProps, OverviewState> {
                   this.setState({ groupBy: event.target.value });
                 })
               )}
+              <EuiHorizontalRule margin="xs" className="widget-hr" />
               <EuiFlexItem>
-                <EuiHorizontalRule margin="xs" className="widget-hr" />
+                <EuiFlexGroup gutterSize="xl">
+                  <EuiFlexItem grow={false}>
+                    <EuiText size="s">
+                      <p>Total active alerts</p>
+                    </EuiText>
+                    <EuiLink href={`#${ROUTES.RULES}`} className="page-link">
+                      43
+                    </EuiLink>
+                  </EuiFlexItem>
+                  <EuiFlexItem grow={false}>
+                    <EuiText size="s">
+                      <p>Total findings</p>
+                    </EuiText>
+                    <EuiLink href={`#${ROUTES.FINDINGS}`} className="page-link">
+                      323
+                    </EuiLink>
+                  </EuiFlexItem>
+                </EuiFlexGroup>
               </EuiFlexItem>
               <EuiFlexItem>
-                <div id="view"></div>
+                {/* The visualization container */}
+                <div id="view" style={{ width: '100%' }}></div>
               </EuiFlexItem>
             </EuiFlexGroup>
           </EuiFlexItem>
@@ -193,7 +185,7 @@ export default class Overview extends Component<OverviewProps, OverviewState> {
                           : null
                       )}
                       <EuiHorizontalRule margin="xs" className="widget-hr" />
-                      <EuiBasicTable columns={columns} items={items} />
+                      <EuiBasicTable columns={columns} items={dummyWidgetItems} />
                     </EuiFlexGroup>
                   </EuiFlexItem>
                 );
