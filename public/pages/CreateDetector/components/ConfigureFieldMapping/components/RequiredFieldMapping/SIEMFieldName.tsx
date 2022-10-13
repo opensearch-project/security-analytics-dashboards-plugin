@@ -17,7 +17,10 @@ interface SIEMFieldNameState {
   selectedOption?: string;
 }
 
-export default class SIEMFieldName extends Component<SIEMFieldNameProps, SIEMFieldNameState> {
+export default class SIEMFieldNameSelector extends Component<
+  SIEMFieldNameProps,
+  SIEMFieldNameState
+> {
   constructor(props: SIEMFieldNameProps) {
     super(props);
     this.state = {

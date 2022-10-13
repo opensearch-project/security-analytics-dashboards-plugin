@@ -49,6 +49,16 @@ export default class ConfigureFieldMapping extends Component<
   render() {
     const { isEdit } = this.props;
     const { loading, mappingsData } = this.state;
+    const viewonlyMappings: { indexFields: string[]; aliasNames: string[] } = {
+      indexFields: [],
+      aliasNames: [],
+    };
+
+    Object.keys(mappingsData.properties).forEach((aliasName) => {
+      viewonlyMappings.aliasNames.push(aliasName);
+      viewonlyMappings.indexFields.push(mappingsData.properties[aliasName].path);
+    });
+
     return (
       <div>
         <EuiTitle size={'l'}>
@@ -63,8 +73,9 @@ export default class ConfigureFieldMapping extends Component<
         >
           <FieldMappingsTable
             loading={loading}
-            unmappedAliasNames={mappingsData.unmappedFieldAliases}
-            unmappedIndexFields={mappingsData.unmappedIndexFields}
+            aliasNames={mappingsData.unmappedFieldAliases}
+            indexFields={mappingsData.unmappedIndexFields}
+            isMappingRequired={true}
             {...this.props}
           />
         </ContentPanel>
@@ -88,7 +99,13 @@ export default class ConfigureFieldMapping extends Component<
             <EuiHorizontalRule margin={'xs'} />
             <div style={{ paddingLeft: '10px', paddingRight: '10px' }}>
               <EuiSpacer size={'m'} />
-              {/* <FieldMappingsTable loading={loading} unmappedAliasNames={allMappings} {...this.props} /> */}
+              <FieldMappingsTable
+                loading={loading}
+                aliasNames={viewonlyMappings.aliasNames}
+                indexFields={viewonlyMappings.indexFields}
+                isMappingRequired={false}
+                {...this.props}
+              />
             </div>
           </EuiAccordion>
         </EuiPanel>

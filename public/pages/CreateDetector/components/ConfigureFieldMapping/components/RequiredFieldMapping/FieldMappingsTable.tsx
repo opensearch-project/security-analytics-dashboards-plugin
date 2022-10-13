@@ -12,15 +12,16 @@ import {
   EuiInMemoryTable,
   EuiText,
 } from '@elastic/eui';
-import { DEFAULT_EMPTY_DATA } from '../../../../../../../utils/constants';
-import { STATUS_ICON_PROPS } from '../../../utils/constants';
-import SIEMFieldName from '../components';
-import { FieldMappingsTableItem } from '../../../../../types/interfaces';
+import { DEFAULT_EMPTY_DATA } from '../../../../../../utils/constants';
+import { STATUS_ICON_PROPS } from '../../utils/constants';
+import SIEMFieldNameSelector from './SIEMFieldName';
+import { FieldMappingsTableItem } from '../../../../types/interfaces';
 
 interface FieldMappingsTableProps extends RouteComponentProps {
   loading: boolean;
-  unmappedIndexFields: string[];
-  unmappedAliasNames: string[];
+  isMappingRequired: boolean;
+  indexFields: string[];
+  aliasNames: string[];
 }
 
 interface FieldMappingsTableState {
@@ -34,13 +35,13 @@ export default class FieldMappingsTable extends Component<
   constructor(props: FieldMappingsTableProps) {
     super(props);
     this.state = {
-      remainingUnmappedAlias: new Set(props.unmappedAliasNames),
+      remainingUnmappedAlias: new Set(props.aliasNames),
     };
   }
 
   static getDerivedStateFromProps(props: FieldMappingsTableProps): FieldMappingsTableState {
     return {
-      remainingUnmappedAlias: new Set(props.unmappedAliasNames),
+      remainingUnmappedAlias: new Set(props.aliasNames),
     };
   }
 
@@ -53,12 +54,24 @@ export default class FieldMappingsTable extends Component<
   };
 
   render() {
-    const { loading, unmappedIndexFields } = this.props;
-    const items: FieldMappingsTableItem[] = unmappedIndexFields.map((indexField) => ({
-      logFieldName: indexField,
-      siemFieldName: undefined,
-      status: 'unmapped',
-    }));
+    const { loading, indexFields: unmappedIndexFields, isMappingRequired, aliasNames } = this.props;
+    let items: FieldMappingsTableItem[];
+
+    if (isMappingRequired) {
+      items = unmappedIndexFields.map((indexField) => ({
+        logFieldName: indexField,
+        siemFieldName: undefined,
+        status: 'unmapped',
+      }));
+    } else {
+      items = unmappedIndexFields.map((indexField, idx) => {
+        return {
+          logFieldName: indexField,
+          siemFieldName: aliasNames[idx],
+          status: 'mapped',
+        };
+      });
+    }
 
     const columns: EuiBasicTableColumn<FieldMappingsTableItem>[] = [
       {
@@ -77,19 +90,32 @@ export default class FieldMappingsTable extends Component<
         render: () => <EuiIcon type={'sortRight'} />,
       },
       {
-        field: 'siemfieldName',
+        field: 'siemFieldName',
         name: 'SIEM field name',
         sortable: true,
         dataType: 'string',
         width: '45%',
-        render: (siem_field: string, entry: FieldMappingsTableItem) => (
-          <SIEMFieldName
-            siemFieldNameOptions={Array.from(this.state.remainingUnmappedAlias)}
-            onChange={this.onMappingSelected}
-          />
-        ),
+        render: (siemFieldName: string, entry: FieldMappingsTableItem) => {
+          if (this.props.isMappingRequired) {
+            return (
+              <SIEMFieldNameSelector
+                siemFieldNameOptions={Array.from(this.state.remainingUnmappedAlias)}
+                onChange={this.onMappingSelected}
+              />
+            );
+          }
+
+          return (
+            <EuiText>
+              <span>{siemFieldName}</span>
+            </EuiText>
+          );
+        },
       },
-      {
+    ];
+
+    if (this.props.isMappingRequired) {
+      columns.push({
         field: 'status',
         name: 'Status',
         sortable: true,
@@ -103,8 +129,8 @@ export default class FieldMappingsTable extends Component<
               : STATUS_ICON_PROPS[status];
           return <EuiIcon {...iconProps} /> || DEFAULT_EMPTY_DATA;
         },
-      },
-    ];
+      });
+    }
 
     const sorting: { sort: { field: string; direction: 'asc' | 'desc' } } = {
       sort: {

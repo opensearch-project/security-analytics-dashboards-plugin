@@ -86,17 +86,21 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     const steps: EuiContainedStepProps[] = [
       {
         title: CREATE_DETECTOR_STEPS.DEFINE_DETECTOR.title,
-        status: 'disabled',
+        status: currentStep <= CREATE_DETECTOR_STEPS.DEFINE_DETECTOR.step ? 'disabled' : 'complete',
         children: <></>,
       },
       {
         title: CREATE_DETECTOR_STEPS.CONFIGURE_FIELD_MAPPING.title,
-        status: 'disabled',
+        status:
+          currentStep <= CREATE_DETECTOR_STEPS.CONFIGURE_FIELD_MAPPING.step
+            ? 'disabled'
+            : 'complete',
         children: <></>,
       },
       {
         title: CREATE_DETECTOR_STEPS.CONFIGURE_ALERTS.title,
-        status: 'disabled',
+        status:
+          currentStep <= CREATE_DETECTOR_STEPS.CONFIGURE_ALERTS.step ? 'disabled' : 'complete',
         children: <></>,
       },
       {

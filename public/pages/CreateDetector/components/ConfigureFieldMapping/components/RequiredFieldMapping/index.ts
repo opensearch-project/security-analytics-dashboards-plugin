@@ -3,6 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import FieldMappingsTable from './containers/FieldMappingsTable';
+import FieldMappingsTable from './FieldMappingsTable';
 
 export default FieldMappingsTable;
