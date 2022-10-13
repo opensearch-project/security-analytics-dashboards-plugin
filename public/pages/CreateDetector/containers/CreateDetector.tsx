@@ -9,12 +9,13 @@ import { ContentPanel } from '../../../components/ContentPanel';
 import { EuiButton, EuiButtonEmpty, EuiFlexGroup, EuiFlexItem, EuiSteps } from '@elastic/eui';
 import DefineDetector from '../components/DefineDetector/containers/DefineDetector';
 import { CREATE_DETECTOR_STEPS } from '../utils/constants';
-import { PLUGIN_NAME, ROUTES } from '../../../utils/constants';
+import { BREADCRUMBS, PLUGIN_NAME, ROUTES } from '../../../utils/constants';
 import ConfigureFieldMapping from '../components/ConfigureFieldMapping';
 import ConfigureAlerts from '../components/ConfigureAlerts';
 import { Detector } from '../../../../models/interfaces';
 import { EMPTY_DEFAULT_DETECTOR } from '../../../utils/constants';
 import { EuiContainedStepProps } from '@elastic/eui/src/components/steps/steps';
+import { CoreServicesContext } from '../../../components/core_services';
 
 interface CreateDetectorProps extends RouteComponentProps {
   isEdit: boolean;
@@ -26,12 +27,18 @@ interface CreateDetectorState {
 }
 
 export default class CreateDetector extends Component<CreateDetectorProps, CreateDetectorState> {
+  static contextType = CoreServicesContext;
+
   constructor(props: CreateDetectorProps) {
     super(props);
     this.state = {
       currentStep: CREATE_DETECTOR_STEPS.DEFINE_DETECTOR.step,
       detector: EMPTY_DEFAULT_DETECTOR,
     };
+  }
+
+  componentDidMount(): void {
+    this.context.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.DETECTORS]);
   }
 
   changeDetector = (detector: Detector) => {

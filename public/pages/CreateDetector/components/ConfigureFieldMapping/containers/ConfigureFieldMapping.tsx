@@ -47,7 +47,6 @@ export default class ConfigureFieldMapping extends Component<
   };
 
   render() {
-    const { isEdit } = this.props;
     const { loading, mappingsData } = this.state;
     const viewonlyMappings: { indexFields: string[]; aliasNames: string[] } = {
       indexFields: [],
@@ -93,7 +92,7 @@ export default class ConfigureFieldMapping extends Component<
             }
             buttonProps={{ style: { paddingLeft: '10px', paddingRight: '10px' } }}
             id={'allFieldMappingsAccordion'}
-            initialIsOpen={!isEdit}
+            initialIsOpen={true}
             isLoading={loading}
           >
             <EuiHorizontalRule margin={'xs'} />
