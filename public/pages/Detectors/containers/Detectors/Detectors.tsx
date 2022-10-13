@@ -7,6 +7,7 @@ import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import {
+  EuiBasicTableColumn,
   EuiButton,
   EuiContextMenuItem,
   EuiContextMenuPanel,
@@ -15,7 +16,6 @@ import {
   EuiPopover,
   EuiSpacer,
   EuiText,
-  FieldValueSelectionFilterConfigType,
 } from '@elastic/eui';
 import { BREADCRUMBS, DEFAULT_EMPTY_DATA, PLUGIN_NAME, ROUTES } from '../../../../utils/constants';
 import DeleteModal from '../../../../components/DeleteModal';
@@ -23,6 +23,7 @@ import { getDetectorNames } from '../../utils/helpers';
 import { renderTime } from '../../../../utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { Detector } from '../../../../../models/interfaces';
+import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
 
 interface DetectorsProps extends RouteComponentProps {}
 
@@ -217,7 +218,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
       </EuiButton>,
     ];
 
-    const columns = [
+    const columns: EuiBasicTableColumn<Detector>[] = [
       {
         field: 'name',
         name: 'Detector name',
@@ -298,7 +299,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
           selection={{ onSelectionChange: this.onSelectionChange }}
           search={search}
           loading={loadingDetectors}
-          noItemsMessage={
+          message={
             <EuiEmptyPrompt
               style={{ maxWidth: '45em' }}
               body={
