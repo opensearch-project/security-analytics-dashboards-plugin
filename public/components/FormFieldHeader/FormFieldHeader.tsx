@@ -4,9 +4,17 @@
  */
 
 import React from 'react';
-import { EuiIcon, EuiText, EuiToolTip } from '@elastic/eui';
+import { EuiIcon, EuiText, EuiToolTip, IconType, ToolTipPositions } from '@elastic/eui';
 
-export const FormFieldHeader = ({
+export interface FormFieldHeaderProps {
+  headerTitle: string;
+  optionalField?: boolean;
+  toolTipIconType?: IconType;
+  toolTipPosition?: ToolTipPositions;
+  toolTipText?: string;
+}
+
+export const FormFieldHeader: React.FC<FormFieldHeaderProps> = ({
   headerTitle = '',
   optionalField = false,
   toolTipIconType = 'questionInCircle',

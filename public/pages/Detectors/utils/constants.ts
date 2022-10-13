@@ -46,5 +46,4 @@ export const DETECTOR_TYPES = {
   SYSTEM: { id: 'system', label: 'System logs' },
   CLOUD_TRAIL: { id: 'cloud_trail', label: 'Cloud Trail logs' },
   S3_ACCESS: { id: 's3_access', label: 'S3 access logs' },
-  CUSTOM: { id: 'custom', label: 'Custom' },
 };

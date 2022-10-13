@@ -46,9 +46,6 @@
     "moment": "^2.29.2",
     "async": "^3.2.3"
   },
-  "dependencies": {
-    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.16.5"
-  },
   "devDependencies": {
     "@elastic/elastic-eslint-config-kibana": "link:../../packages/opensearch-eslint-config-opensearch-dashboards",
     "@elastic/eslint-import-resolver-kibana": "link:../../packages/osd-eslint-import-resolver-opensearch-dashboards",

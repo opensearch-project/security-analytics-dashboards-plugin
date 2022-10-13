@@ -5,17 +5,27 @@
 
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { EuiEmptyPrompt, EuiIcon, EuiInMemoryTable, EuiText } from '@elastic/eui';
+import {
+  EuiBasicTableColumn,
+  EuiEmptyPrompt,
+  EuiIcon,
+  EuiInMemoryTable,
+  EuiText,
+} from '@elastic/eui';
 import { DEFAULT_EMPTY_DATA } from '../../../../../../../utils/constants';
 import { STATUS_ICON_PROPS } from '../../../utils/constants';
 import SIEMFieldName from '../components';
+import { FieldMappingsTableItem } from '../../../../../types/interfaces';
 
 interface FieldMappingsTableProps extends RouteComponentProps {
   loading: boolean;
-  mappings: object[];
+  unmappedIndexFields: string[];
+  unmappedAliasNames: string[];
 }
 
-interface FieldMappingsTableState {}
+interface FieldMappingsTableState {
+  remainingUnmappedAlias: Set<string>;
+}
 
 export default class FieldMappingsTable extends Component<
   FieldMappingsTableProps,
@@ -23,22 +33,41 @@ export default class FieldMappingsTable extends Component<
 > {
   constructor(props: FieldMappingsTableProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      remainingUnmappedAlias: new Set(props.unmappedAliasNames),
+    };
+  }
+
+  static getDerivedStateFromProps(props: FieldMappingsTableProps): FieldMappingsTableState {
+    return {
+      remainingUnmappedAlias: new Set(props.unmappedAliasNames),
+    };
   }
 
   componentDidMount = async () => {};
 
-  render() {
-    const { loading, mappings } = this.props;
+  onMappingSelected = (selectedAlias: string) => {
+    const newRemainingAlias = new Set(this.state.remainingUnmappedAlias);
+    newRemainingAlias.delete(selectedAlias);
+    this.setState({ remainingUnmappedAlias: newRemainingAlias });
+  };
 
-    const columns = [
+  render() {
+    const { loading, unmappedIndexFields } = this.props;
+    const items: FieldMappingsTableItem[] = unmappedIndexFields.map((indexField) => ({
+      logFieldName: indexField,
+      siemFieldName: undefined,
+      status: 'unmapped',
+    }));
+
+    const columns: EuiBasicTableColumn<FieldMappingsTableItem>[] = [
       {
-        field: 'log_field_name',
+        field: 'logFieldName',
         name: 'Log field name',
         sortable: true,
         dataType: 'string',
         width: '25%',
-        render: (log_field_name) => log_field_name || DEFAULT_EMPTY_DATA,
+        render: (log_field_name: string) => log_field_name || DEFAULT_EMPTY_DATA,
       },
       {
         field: '',
@@ -48,12 +77,17 @@ export default class FieldMappingsTable extends Component<
         render: () => <EuiIcon type={'sortRight'} />,
       },
       {
-        field: 'siem_field',
+        field: 'siemfieldName',
         name: 'SIEM field name',
         sortable: true,
         dataType: 'string',
         width: '45%',
-        render: (siem_field) => <SIEMFieldName siemFieldName={siem_field} />,
+        render: (siem_field: string, entry: FieldMappingsTableItem) => (
+          <SIEMFieldName
+            siemFieldNameOptions={Array.from(this.state.remainingUnmappedAlias)}
+            onChange={this.onMappingSelected}
+          />
+        ),
       },
       {
         field: 'status',
@@ -62,17 +96,19 @@ export default class FieldMappingsTable extends Component<
         dataType: 'string',
         align: 'center',
         width: '15%',
-        render: (status, entry) => {
+        render: (status: 'mapped' | 'unmapped', entry: FieldMappingsTableItem) => {
           const iconProps =
-            !status || !entry.siem_field ? STATUS_ICON_PROPS.alert : STATUS_ICON_PROPS[status];
+            status === 'unmapped' || !entry.siemFieldName
+              ? STATUS_ICON_PROPS['unmapped']
+              : STATUS_ICON_PROPS[status];
           return <EuiIcon {...iconProps} /> || DEFAULT_EMPTY_DATA;
         },
       },
     ];
 
-    const sorting = {
+    const sorting: { sort: { field: string; direction: 'asc' | 'desc' } } = {
       sort: {
-        field: 'log_field_name',
+        field: 'logFieldName',
         direction: 'asc',
       },
     };
@@ -80,12 +116,12 @@ export default class FieldMappingsTable extends Component<
     return (
       <EuiInMemoryTable
         loading={loading}
-        items={mappings}
+        items={items}
         columns={columns}
         pagination={true}
         sorting={sorting}
         isSelectable={false}
-        noItemsMessage={
+        message={
           <EuiEmptyPrompt
             style={{ maxWidth: '45em' }}
             body={

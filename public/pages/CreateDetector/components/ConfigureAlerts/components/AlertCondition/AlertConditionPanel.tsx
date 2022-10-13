@@ -9,12 +9,12 @@ import {
   EuiAccordion,
   EuiButton,
   EuiComboBox,
+  EuiComboBoxOptionOption,
   EuiFieldText,
   EuiFormRow,
   EuiHorizontalRule,
   EuiPanel,
   EuiSpacer,
-  EuiSwitch,
   EuiTitle,
 } from '@elastic/eui';
 import { Detector } from '../../../../../../../models/interfaces';
@@ -35,9 +35,7 @@ interface AlertConditionPanelProps extends RouteComponentProps {
   loadingNotifications: boolean;
 }
 
-interface AlertConditionPanelState {
-  previewToggle: boolean;
-}
+interface AlertConditionPanelState {}
 
 export default class AlertConditionPanel extends Component<
   AlertConditionPanelProps,
@@ -50,7 +48,7 @@ export default class AlertConditionPanel extends Component<
     };
   }
 
-  onNameChange = (e: ChangeEvent<HTMLSelectElement>) => {
+  onNameChange = (e: ChangeEvent<HTMLInputElement>) => {
     const name = e.target.value;
     const {
       alertCondition,
@@ -63,26 +61,14 @@ export default class AlertConditionPanel extends Component<
     changeDetector({ ...detector, alert_conditions: alert_conditions });
   };
 
-  onRuleTypesChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const ruleTypes = (e as object[]).map((ruleType) => ruleType.label);
+  onSeverityChange = (selectedOptions: EuiComboBoxOptionOption<string>[]) => {
+    const severitySelections = selectedOptions.map((option) => option.label);
     const {
       alertCondition,
       changeDetector,
       detector,
       detector: { alert_conditions },
       indexNum,
-    } = this.props;
-    alert_conditions.splice(indexNum, 1, { ...alertCondition, rule_types: ruleTypes });
-    changeDetector({ ...detector, alert_conditions: alert_conditions });
-  };
-
-  onSeverityChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const severitySelections = (e as object[]).map((severity) => severity.value);
-    const {
-      alertCondition,
-      changeDetector,
-      detector,
-      detector: { alert_conditions },
     } = this.props;
     alert_conditions.splice(indexNum, 1, { ...alertCondition, severity: severitySelections });
     changeDetector({ ...detector, alert_conditions: alert_conditions });
@@ -94,11 +80,11 @@ export default class AlertConditionPanel extends Component<
     } = this.props;
     const tagOptions = tags.map((tag) => ({ label: tag }));
     tagOptions.push({ label: value });
-    this.onTagsChange(tagOptions as ChangeEvent<HTMLSelectElement>);
+    this.onTagsChange(tagOptions);
   };
 
-  onTagsChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const tags = (e as object[]).map((tag) => tag.label);
+  onTagsChange = (selectedOptions: EuiComboBoxOptionOption<string>[]) => {
+    const tags = selectedOptions.map((tag) => tag.label);
     const {
       alertCondition,
       changeDetector,
@@ -110,8 +96,8 @@ export default class AlertConditionPanel extends Component<
     changeDetector({ ...detector, alert_conditions: alert_conditions });
   };
 
-  onNotificationChannelsChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const channelIds = (e as object[]).map((channel) => channel.label);
+  onNotificationChannelsChange = (selectedOptions: EuiComboBoxOptionOption<string>[]) => {
+    const channelIds = selectedOptions.map((channel) => channel.label);
     const {
       alertCondition,
       changeDetector,
@@ -137,26 +123,15 @@ export default class AlertConditionPanel extends Component<
     changeDetector({ ...detector, alert_conditions: alert_conditions });
   };
 
-  togglePreview = () => {
-    const { previewToggle } = this.state;
-    this.setState({ previewToggle: !previewToggle });
-  };
-
-  // parseStringsToOptions = (strings: string[]) => {
-  //   return strings.map((str) => );
-  // } // TODO hurneyt
-
   render() {
     const {
       alertCondition,
       allNotificationChannels,
-      allRuleTypes,
       indexNum,
       isEdit,
       loadingNotifications,
     } = this.props;
-    const { previewToggle } = this.state;
-    const { name, rule_types, severity, tags, notification_channel_ids } = alertCondition;
+    const { name, severity, notification_channel_ids } = alertCondition;
     return (
       <EuiPanel>
         <EuiAccordion
@@ -175,11 +150,7 @@ export default class AlertConditionPanel extends Component<
           <EuiHorizontalRule margin={'xs'} />
           <EuiSpacer size={'m'} />
 
-          <EuiFormRow
-            label={<FormFieldHeader headerTitle={'Name'} />}
-            // isInvalid={isInvalid}
-            // error={isInvalid && this.getErrorMessage()}
-          >
+          <EuiFormRow label={<FormFieldHeader headerTitle={'Name'} />}>
             <EuiFieldText
               placeholder={'Enter a name for the alert condition.'}
               readOnly={false}
@@ -195,61 +166,26 @@ export default class AlertConditionPanel extends Component<
           </EuiTitle>
           <EuiSpacer size={'m'} />
 
-          <EuiFormRow
-            label={<FormFieldHeader headerTitle={'Rule types'} />}
-            // isInvalid={isInvalid}
-            // error={isInvalid && this.getErrorMessage()}
-          >
-            <EuiComboBox
-              placeholder={'Select applicable rule types.'}
-              async={true}
-              // isLoading={loading}
-              options={parseStringsToOptions(allRuleTypes)}
-              selectedOptions={parseStringsToOptions(rule_types)}
-              onChange={this.onRuleTypesChange}
-              // isInvalid={isInvalid}
-              // data-test-subj={"define-detector-detector-name"}
-            />
-          </EuiFormRow>
-
-          <EuiSpacer size={'m'} />
-
-          <EuiFormRow
-            label={<FormFieldHeader headerTitle={'Severity levels'} />}
-            // isInvalid={isInvalid}
-            // error={isInvalid && this.getErrorMessage()}
-          >
+          <EuiFormRow label={<FormFieldHeader headerTitle={'Severity levels'} />}>
             <EuiComboBox
               placeholder={'Select applicable severity levels.'}
               async={true}
-              // isLoading={loading}
               options={Object.values(SEVERITY_OPTIONS)}
               selectedOptions={parseSeverityListToOptions(severity)}
               onChange={this.onSeverityChange}
-              // isInvalid={isInvalid}
-              // data-test-subj={"define-detector-detector-name"}
             />
           </EuiFormRow>
 
           <EuiSpacer size={'m'} />
 
           {/*// TODO: Are tags configured by the user, or returned by an API?*/}
-          <EuiFormRow
-            label={<FormFieldHeader headerTitle={'Tags'} />}
-            // isInvalid={isInvalid}
-            // error={isInvalid && this.getErrorMessage()}
-          >
+          <EuiFormRow label={<FormFieldHeader headerTitle={'Tags'} />}>
             <EuiComboBox
               placeholder={'Enter tags for the alert condition.'}
-              // async={true}
-              // isLoading={loading}
-              // options={Object.values(SEVERITY_OPTIONS)}
-              selectedOptions={parseStringsToOptions(tags)}
+              options={Object.values(SEVERITY_OPTIONS)}
               onChange={this.onTagsChange}
               onCreateOption={this.onCreateTag}
               noSuggestions={true}
-              // isInvalid={isInvalid}
-              // data-test-subj={"define-detector-detector-name"}
             />
           </EuiFormRow>
 
@@ -262,11 +198,7 @@ export default class AlertConditionPanel extends Component<
           </EuiTitle>
           <EuiSpacer size={'m'} />
 
-          <EuiFormRow
-            label={<FormFieldHeader headerTitle={'Select channels to notify'} />}
-            // isInvalid={isInvalid}
-            // error={isInvalid && this.getErrorMessage()}
-          >
+          <EuiFormRow label={<FormFieldHeader headerTitle={'Select channels to notify'} />}>
             <EuiComboBox
               placeholder={'Select notification channels.'}
               async={true}
@@ -274,20 +206,8 @@ export default class AlertConditionPanel extends Component<
               options={parseStringsToOptions(allNotificationChannels)}
               selectedOptions={parseStringsToOptions(notification_channel_ids)}
               onChange={this.onNotificationChannelsChange}
-              // isInvalid={isInvalid}
-              // data-test-subj={"define-detector-detector-name"}
             />
           </EuiFormRow>
-
-          <EuiSpacer size={'m'} />
-          <EuiSwitch
-            label={'Preview message'}
-            checked={previewToggle}
-            onChange={this.togglePreview}
-          />
-          <EuiSpacer size={'m'} />
-
-          {/*// TODO: Implement message preview*/}
         </EuiAccordion>
       </EuiPanel>
     );

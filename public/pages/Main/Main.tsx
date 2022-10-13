@@ -33,7 +33,7 @@ enum Pathname {}
 /**
  * Add here the ROUTES for pages on which the EuiPageSideBar should NOT be displayed.
  */
-const HIDDEN_NAV_ROUTES: string[] = [];
+const HIDDEN_NAV_ROUTES: string[] = [ROUTES.DETECTORS_CREATE];
 
 interface MainProps extends RouteComponentProps {
   landingPage: string;

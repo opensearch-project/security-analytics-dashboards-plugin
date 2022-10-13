@@ -3,72 +3,45 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { ChangeEvent, Component } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
-import { EuiComboBox, EuiFormRow } from '@elastic/eui';
+import React, { Component } from 'react';
+import { EuiFormRow, EuiSelect } from '@elastic/eui';
+import { ChangeEvent } from 'react';
 
-interface SIEMFieldNameProps extends RouteComponentProps {
-  siemFieldName: string;
+interface SIEMFieldNameProps {
+  siemFieldNameOptions: string[];
+  onChange: (option: string) => void;
 }
 
-interface SIEMFieldNameState {}
+interface SIEMFieldNameState {
+  options: { value: string; text: string }[];
+  selectedOption?: string;
+}
 
 export default class SIEMFieldName extends Component<SIEMFieldNameProps, SIEMFieldNameState> {
   constructor(props: SIEMFieldNameProps) {
     super(props);
     this.state = {
-      fieldTouched: false,
-      loading: false,
-      options: [],
+      options: props.siemFieldNameOptions.map((option) => ({ value: option, text: option })),
+      selectedOption: undefined,
     };
   }
 
-  componentDidMount = async () => {};
-
-  getFieldNames = async () => {
-    this.setState({ loading: true });
-    this.setState({ loading: false });
-  };
-
-  onChange = () => {
-    this.setState({ fieldTouched: true });
-  };
-
-  parseSIEMFieldNameOptions = (fieldNames: string[]) => {
-    return fieldNames.map((fieldName) => ({ label: fieldName }));
-  };
-
-  isInvalid = () => {
-    const { fieldTouched, selectedField } = this.props;
-    return fieldTouched && selectedField.length < 1;
-  };
-
-  getErrorMessage = () => {
-    return 'Select an SIEM field name.';
+  onChange: React.ChangeEventHandler<HTMLSelectElement> = (
+    event: ChangeEvent<HTMLSelectElement>
+  ) => {
+    this.props.onChange(event.target.value);
+    this.setState({ selectedOption: event.target.value });
   };
 
   render() {
-    const { siemFieldName } = this.props;
-    const { fieldTouched, loading, options } = this.state;
-
     return (
-      <EuiFormRow
-        style={{ width: '100%' }}
-        // isInvalid={isInvalid}
-        // error={isInvalid && this.getErrorMessage()}
-      >
-        <EuiComboBox
-          placeholder={'Select an SIEM field name.'}
-          async={true}
-          fullWidth={true}
-          isLoading={loading}
-          options={options}
-          selectedOptions={this.parseSIEMFieldNameOptions([siemFieldName])}
+      <EuiFormRow style={{ width: '100%' }}>
+        <EuiSelect
+          required={true}
+          hasNoInitialSelection
+          options={this.state.options}
+          value={this.state.selectedOption}
           onChange={this.onChange}
-          singleSelection={{ asPlainText: true }}
-          isClearable={false}
-          // isInvalid={hasSubmitted && detectorIndices.length < MIN_NUM_DATA_SOURCES}
-          // data-test-subj={"siem-field-name-selection"} // TODO: Need to think of a way to make this predictably unique
         />
       </EuiFormRow>
     );

@@ -19,13 +19,14 @@ import {
 } from '@elastic/eui';
 import React, { Component } from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
-import { View, parse } from 'vega';
+import { View, parse } from 'vega/build-es5/vega.js';
 import { compile } from 'vega-lite';
 import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { FindingItem, OverviewProps, OverviewState } from '../../types/interfaces';
 import { dummyWidgetItems, getVisualizationSpec } from '../../utils/dummyData';
 import { groupByOptions, widgetHeaderData } from '../../utils/constants';
 import { CoreServicesContext } from '../../../../../public/components/core_services';
+import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter/build/vega-interpreter.module';
 
 export default class Overview extends Component<OverviewProps, OverviewState> {
   static contextType = CoreServicesContext;
@@ -91,15 +92,15 @@ export default class Overview extends Component<OverviewProps, OverviewState> {
     const spec = this.generateVisualizationSpec();
 
     try {
-      renderVegaSpec(compile({ ...spec, width: 'container', height: 400 }).spec).catch((err) =>
-        console.error(err)
-      );
+      renderVegaSpec(
+        compile({ ...spec, width: 'container', height: 400 }).spec
+      ).catch((err: Error) => console.error(err));
     } catch (error) {
       console.log(error);
     }
 
     function renderVegaSpec(spec: {}) {
-      view = new View(parse(spec), {
+      view = new View(parse(spec, null, { expr: vegaExpressionInterpreter }), {
         renderer: 'canvas', // renderer (canvas or svg)
         container: '#view', // parent DOM container
         hover: true, // enable hover processing

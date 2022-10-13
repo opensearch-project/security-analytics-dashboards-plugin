@@ -4,6 +4,6 @@
  */
 
 export const STATUS_ICON_PROPS = {
-  alert: { type: 'alert', color: 'danger' },
-  ok: { type: 'checkInCircleFilled', color: 'success' },
+  unmapped: { type: 'alert', color: 'danger' },
+  mapped: { type: 'checkInCircleFilled', color: 'success' },
 };
