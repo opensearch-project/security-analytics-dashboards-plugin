@@ -14,6 +14,7 @@ import ConfigureFieldMapping from '../components/ConfigureFieldMapping';
 import ConfigureAlerts from '../components/ConfigureAlerts';
 import { Detector } from '../../../../models/interfaces';
 import { EMPTY_DEFAULT_DETECTOR } from '../../../utils/constants';
+import { EuiContainedStepProps } from '@elastic/eui/src/components/steps/steps';
 
 interface CreateDetectorProps extends RouteComponentProps {
   isEdit: boolean;
@@ -64,7 +65,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
           <ConfigureFieldMapping
             {...this.props}
             detector={this.state.detector}
-            changeDetector={this.changeDetector}
+            onDetectorChange={this.changeDetector}
           />
         );
       case CREATE_DETECTOR_STEPS.CONFIGURE_ALERTS.step:
@@ -82,29 +83,25 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
 
   render() {
     const { currentStep } = this.state;
-    const steps = [
+    const steps: EuiContainedStepProps[] = [
       {
         title: CREATE_DETECTOR_STEPS.DEFINE_DETECTOR.title,
-        step: CREATE_DETECTOR_STEPS.DEFINE_DETECTOR.step,
-        status: currentStep < CREATE_DETECTOR_STEPS.DEFINE_DETECTOR.step && 'disabled',
+        status: 'disabled',
         children: <></>,
       },
       {
         title: CREATE_DETECTOR_STEPS.CONFIGURE_FIELD_MAPPING.title,
-        step: CREATE_DETECTOR_STEPS.CONFIGURE_FIELD_MAPPING.step,
-        status: currentStep < CREATE_DETECTOR_STEPS.CONFIGURE_FIELD_MAPPING.step && 'disabled',
+        status: 'disabled',
         children: <></>,
       },
       {
         title: CREATE_DETECTOR_STEPS.CONFIGURE_ALERTS.title,
-        step: CREATE_DETECTOR_STEPS.CONFIGURE_ALERTS.step,
-        status: currentStep < CREATE_DETECTOR_STEPS.CONFIGURE_ALERTS.step && 'disabled',
+        status: 'disabled',
         children: <></>,
       },
       {
         title: CREATE_DETECTOR_STEPS.REVIEW_CREATE.title,
-        step: CREATE_DETECTOR_STEPS.REVIEW_CREATE.step,
-        status: currentStep < CREATE_DETECTOR_STEPS.REVIEW_CREATE.step && 'disabled',
+        status: 'disabled',
         children: <></>,
       },
     ];

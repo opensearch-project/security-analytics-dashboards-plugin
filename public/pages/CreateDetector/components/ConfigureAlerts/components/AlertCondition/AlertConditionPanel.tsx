@@ -208,6 +208,7 @@ export default class AlertConditionPanel extends Component<
               onChange={this.onNotificationChannelsChange}
             />
           </EuiFormRow>
+          <EuiSpacer size={'m'} />
         </EuiAccordion>
       </EuiPanel>
     );

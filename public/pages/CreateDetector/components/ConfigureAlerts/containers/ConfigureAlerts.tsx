@@ -3,24 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { ChangeEvent, Component } from 'react';
+import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { ContentPanel } from '../../../../../components/ContentPanel';
-import {
-  EuiAccordion,
-  EuiButton,
-  EuiHorizontalRule,
-  EuiSpacer,
-  EuiText,
-  EuiTitle,
-} from '@elastic/eui';
+import { EuiButton, EuiSpacer, EuiTitle } from '@elastic/eui';
 import { CREATE_DETECTOR_STEPS } from '../../../utils/constants';
 import {
   EMPTY_DEFAULT_ALERT_CONDITION,
   MAX_ALERT_CONDITIONS,
   MIN_ALERT_CONDITIONS,
 } from '../utils/constants';
-import { AlertCondition } from '../models/interfaces';
 import AlertConditionPanel from '../components/AlertCondition';
 import { Detector } from '../../../../../../models/interfaces';
 
@@ -103,7 +94,10 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
 
         <EuiSpacer size={'m'} />
 
-        <EuiButton disabled={alert_conditions >= MAX_ALERT_CONDITIONS} onClick={this.addCondition}>
+        <EuiButton
+          disabled={alert_conditions.length >= MAX_ALERT_CONDITIONS}
+          onClick={this.addCondition}
+        >
           Add another alert condition
         </EuiButton>
       </div>

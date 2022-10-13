@@ -16,6 +16,7 @@ import { FieldMappingViewResponse } from '../../../types/interfaces';
 interface ConfigureFieldMappingProps extends RouteComponentProps {
   isEdit: boolean;
   detector: Detector;
+  onDetectorChange: (detector: Detector) => void;
 }
 
 interface ConfigureFieldMappingState {
