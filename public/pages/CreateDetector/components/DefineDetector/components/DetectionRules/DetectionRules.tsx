@@ -97,6 +97,29 @@ export default class DetectionRules extends Component<DetectionRulesProps, Detec
     });
   };
 
+  onRuleActivationToggle = (changedItem: RuleItem, changeToActive: boolean) => {
+    const { rulesByRuleType } = this.state;
+    const ruleItems = rulesByRuleType[changedItem.ruleType].ruleItems;
+    const changedIdx = ruleItems.findIndex((item) => item.ruleName === changedItem.ruleName);
+
+    if (changedIdx > -1) {
+      const newRuleItems = [
+        ...ruleItems.slice(0, changedIdx),
+        { ...ruleItems[changedIdx], active: changeToActive },
+        ...ruleItems.slice(changedIdx + 1),
+      ];
+      const newRulesByRuleType: RulesInfoByType = {
+        ...rulesByRuleType,
+        [changedItem.ruleType]: {
+          ruleItems: newRuleItems,
+          activeCount:
+            rulesByRuleType[changedItem.ruleType].activeCount + (changeToActive ? 1 : -1),
+        },
+      };
+      this.setState({ rulesByRuleType: newRulesByRuleType });
+    }
+  };
+
   render() {
     const { rulesByRuleType, selectedRuleType } = this.state;
     const detectorRules =
@@ -148,30 +171,7 @@ export default class DetectionRules extends Component<DetectionRulesProps, Detec
                   } rules (${activeRulesCountForSelectedType}/${totalRulesCountForSelectedType} enabled)`}
                 >
                   <EuiBasicTable
-                    columns={getRulesColumns((changedItem: RuleItem, changeToActive: boolean) => {
-                      const ruleItems = rulesByRuleType[changedItem.ruleType].ruleItems;
-                      const changedIdx = ruleItems.findIndex(
-                        (item) => item.ruleName === changedItem.ruleName
-                      );
-
-                      if (changedIdx > -1) {
-                        const newRuleItems = [
-                          ...ruleItems.slice(0, changedIdx),
-                          { ...ruleItems[changedIdx], active: changeToActive },
-                          ...ruleItems.slice(changedIdx + 1),
-                        ];
-                        const newRulesByRuleType: RulesInfoByType = {
-                          ...rulesByRuleType,
-                          [changedItem.ruleType]: {
-                            ruleItems: newRuleItems,
-                            activeCount:
-                              rulesByRuleType[changedItem.ruleType].activeCount +
-                              (changeToActive ? 1 : -1),
-                          },
-                        };
-                        this.setState({ rulesByRuleType: newRulesByRuleType });
-                      }
-                    })}
+                    columns={getRulesColumns(this.onRuleActivationToggle)}
                     items={this.getRuleItems(selectedRuleType)}
                     itemId={(item: RuleItem) => `${item.ruleName}`}
                   />

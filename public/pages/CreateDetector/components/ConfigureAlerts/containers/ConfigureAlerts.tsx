@@ -49,6 +49,7 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
 
   getNotificationChannels = async () => {
     this.setState({ loading: true });
+    // TODO: fetch notification channels from server.
     this.setState({ loading: false });
   };
 

@@ -45,8 +45,6 @@ export default class FieldMappingsTable extends Component<
     };
   }
 
-  componentDidMount = async () => {};
-
   onMappingSelected = (selectedAlias: string) => {
     const newRemainingAlias = new Set(this.state.remainingUnmappedAlias);
     newRemainingAlias.delete(selectedAlias);
