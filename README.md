@@ -15,7 +15,7 @@
 - [License](#license)
 - [Copyright](#copyright)
 
-## OpenSearch Security Analytics Dashboards Plugin
+## OpenSearch Security Analytics Dashboards Plugin!!
 
 The Security Analytics Dashboards plugin lets you manage your [Security Analytics Dashboards plugin](https://github.com/opensearch-project/security-analytics-dashboards-plugin) to generate critical security insights from their existing security event logs (such as firewall logs, windows logs, authentication audit logs, etc.) directly from OpenSearch-Dashboards.
 
