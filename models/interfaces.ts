@@ -7,15 +7,11 @@ export interface Detector {
   type: string;
   detector_type: string;
   name: string;
-  alert_conditions: AlertCondition[];
   enabled: boolean;
+  createdBy: string;
   schedule: PeriodSchedule;
   inputs: DetectorInput[];
-  enabled_time?: number;
-  createdBy?: string;
-  last_update_time?: number;
-  monitor_id?: string;
-  rule_topic_index?: string;
+  triggers: AlertCondition[];
 }
 
 export interface PeriodSchedule {
