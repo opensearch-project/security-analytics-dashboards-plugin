@@ -1,5 +1,11 @@
 import { SecurityAnalyticsApi } from '../models/interfaces';
 
+export enum CLUSTER {
+  ADMIN = 'admin',
+  SA = 'opensearch_security_analytics',
+  DATA = 'data',
+}
+
 export const BASE_API_PATH = '/_plugins/_security_analytics';
 
 export const API: SecurityAnalyticsApi = Object.freeze({

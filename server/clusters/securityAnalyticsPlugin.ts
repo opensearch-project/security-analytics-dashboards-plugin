@@ -9,7 +9,7 @@ export function securityAnalyticsPlugin(Client: any, config: any, components: an
   const createAction = components.clientAction.factory;
 
   Client.prototype[PLUGIN_PROPERTY_NAME] = components.clientAction.namespaceFactory();
-  const securityAnalytics = Client.prototype.sap.prototype;
+  const securityAnalytics = Client.prototype[PLUGIN_PROPERTY_NAME].prototype;
 
   securityAnalytics[METHOD_NAMES.CREATE_DETECTOR] = createAction({
     url: {
