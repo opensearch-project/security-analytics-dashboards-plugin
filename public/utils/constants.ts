@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Detector, DetectorInput, PeriodSchedule } from '../../models/interfaces';
+
 export const PLUGIN_NAME = 'opensearch_security_analytics_dashboards';
 
 // TODO: Replace with actual documentation link once it's available
@@ -17,6 +19,7 @@ export const ROUTES = Object.freeze({
   FINDINGS: '/findings',
   OVERVIEW: '/overview',
   RULES: '/rules',
+  DETECTORS_CREATE: '/create-detector',
 
   get LANDING_PAGE() {
     return this.OVERVIEW;
@@ -25,6 +28,11 @@ export const ROUTES = Object.freeze({
 
 export const BREADCRUMBS = Object.freeze({
   SECURITY_ANALYTICS: { text: 'Security Analytics', href: '#/' },
+  OVERVIEW: { text: 'Overview', href: `#/${ROUTES.OVERVIEW}` },
+  FINDINGS: { text: 'Findings', href: `#/${ROUTES.FINDINGS}` },
+  DASHBOARDS: { text: 'Dashboards', href: `#/${ROUTES.DASHBOARDS}` },
+  DETECTORS: { text: 'Detectors', href: `#/${ROUTES.DETECTORS}` },
+  RULES: { text: 'Rule templates', href: `#/${ROUTES.RULES}` },
 });
 
 export enum SortDirection {
@@ -54,3 +62,29 @@ export enum IntervalType {
   FIXED = 'fixed',
   CALENDAR = 'calendar',
 }
+
+export const EMPTY_DEFAULT_PERIOD_SCHEDULE: PeriodSchedule = {
+  period: {
+    interval: 1,
+    unit: 'm',
+  },
+};
+
+export const EMPTY_DEFAULT_DETECTOR_INPUT: DetectorInput = {
+  input: {
+    description: '',
+    indices: [],
+    rules: [],
+  },
+};
+
+export const EMPTY_DEFAULT_DETECTOR: Detector = {
+  type: '',
+  detector_type: '',
+  name: '',
+  enabled: true,
+  createdBy: '',
+  schedule: EMPTY_DEFAULT_PERIOD_SCHEDULE,
+  inputs: [EMPTY_DEFAULT_DETECTOR_INPUT],
+  alert_conditions: [],
+};
