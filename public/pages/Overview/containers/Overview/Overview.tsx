@@ -26,7 +26,7 @@ import { FindingItem, OverviewProps, OverviewState } from '../../types/interface
 import { dummyWidgetItems, getVisualizationSpec } from '../../utils/dummyData';
 import { groupByOptions, widgetHeaderData } from '../../utils/constants';
 import { CoreServicesContext } from '../../../../../public/components/core_services';
-// import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter/build/vega-interpreter.module';
+import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter/build/vega-interpreter.module';
 
 export default class Overview extends Component<OverviewProps, OverviewState> {
   static contextType = CoreServicesContext;
@@ -100,8 +100,7 @@ export default class Overview extends Component<OverviewProps, OverviewState> {
     }
 
     function renderVegaSpec(spec: {}) {
-      view = new View(parse(spec), {
-        // view = new View(parse(spec, null, { expr: vegaExpressionInterpreter }), {
+      view = new View(parse(spec, null, { expr: vegaExpressionInterpreter }), {
         renderer: 'canvas', // renderer (canvas or svg)
         container: '#view', // parent DOM container
         hover: true, // enable hover processing
