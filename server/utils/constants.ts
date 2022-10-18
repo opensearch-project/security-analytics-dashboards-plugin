@@ -1,3 +1,8 @@
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import { SecurityAnalyticsApi } from '../models/interfaces';
 
 export enum CLUSTER {
@@ -10,6 +15,7 @@ export const BASE_API_PATH = '/_plugins/_security_analytics';
 
 export const API: SecurityAnalyticsApi = Object.freeze({
   DETECTORS_BASE: `${BASE_API_PATH}/detectors`,
+  INDICES_BASE: `${BASE_API_PATH}/indices`,
 });
 
 /**
@@ -19,6 +25,7 @@ export const API: SecurityAnalyticsApi = Object.freeze({
 export const PLUGIN_PROPERTY_NAME: string = 'securityAnalytics';
 
 export const METHOD_NAMES = {
+  // Detector methods
   CREATE_DETECTOR: 'createDetector',
   DELETE_DETECTOR: 'deleteDetector',
   GET_DETECTOR: 'getDetector',

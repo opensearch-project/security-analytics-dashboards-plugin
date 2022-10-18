@@ -8,7 +8,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { ContentPanel } from '../../../components/ContentPanel';
 import { EuiButton, EuiButtonEmpty, EuiFlexGroup, EuiFlexItem, EuiSteps } from '@elastic/eui';
 import DefineDetector from '../components/DefineDetector/containers/DefineDetector';
-import { CREATE_DETECTOR_STEPS } from '../utils/constants';
+import { createDetectorSteps } from '../utils/constants';
 import { BREADCRUMBS, PLUGIN_NAME, ROUTES } from '../../../utils/constants';
 import ConfigureFieldMapping from '../components/ConfigureFieldMapping';
 import ConfigureAlerts from '../components/ConfigureAlerts';
@@ -16,13 +16,15 @@ import { Detector } from '../../../../models/interfaces';
 import { EMPTY_DEFAULT_DETECTOR } from '../../../utils/constants';
 import { EuiContainedStepProps } from '@elastic/eui/src/components/steps/steps';
 import { CoreServicesContext } from '../../../components/core_services';
+import { DetectorCreationStep } from '../models/types';
+import { MIN_NUM_DATA_SOURCES } from '../../Detectors/utils/constants';
 
 interface CreateDetectorProps extends RouteComponentProps {
   isEdit: boolean;
 }
 
 interface CreateDetectorState {
-  currentStep: number;
+  currentStep: DetectorCreationStep;
   detector: Detector;
 }
 
@@ -32,7 +34,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
   constructor(props: CreateDetectorProps) {
     super(props);
     this.state = {
-      currentStep: CREATE_DETECTOR_STEPS.DEFINE_DETECTOR.step,
+      currentStep: DetectorCreationStep.DEFINE_DETECTOR,
       detector: EMPTY_DEFAULT_DETECTOR,
     };
   }
@@ -59,7 +61,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
 
   getStepContent = () => {
     switch (this.state.currentStep) {
-      case CREATE_DETECTOR_STEPS.DEFINE_DETECTOR.step:
+      case DetectorCreationStep.DEFINE_DETECTOR:
         return (
           <DefineDetector
             {...this.props}
@@ -67,15 +69,15 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             changeDetector={this.changeDetector}
           />
         );
-      case CREATE_DETECTOR_STEPS.CONFIGURE_FIELD_MAPPING.step:
+      case DetectorCreationStep.CONFIGURE_FIELD_MAPPING:
         return (
           <ConfigureFieldMapping
             {...this.props}
             detector={this.state.detector}
-            onDetectorChange={this.changeDetector}
+            changeDetector={this.changeDetector}
           />
         );
-      case CREATE_DETECTOR_STEPS.CONFIGURE_ALERTS.step:
+      case DetectorCreationStep.CONFIGURE_ALERTS:
         return (
           <ConfigureAlerts
             {...this.props}
@@ -83,39 +85,44 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             changeDetector={this.changeDetector}
           />
         );
-      case CREATE_DETECTOR_STEPS.REVIEW_CREATE.step:
-        return <ContentPanel title={CREATE_DETECTOR_STEPS.REVIEW_CREATE.title}></ContentPanel>;
+      case DetectorCreationStep.REVIEW_CREATE:
+        return (
+          <ContentPanel
+            title={createDetectorSteps[DetectorCreationStep.REVIEW_CREATE].title}
+          ></ContentPanel>
+        );
     }
+  };
+
+  createStepsMetadata(currentStep: number): EuiContainedStepProps[] {
+    return Object.values(createDetectorSteps).map((stepData) => ({
+      title: stepData.title,
+      status: currentStep < stepData.step + 1 ? 'disabled' : 'complete',
+      children: <></>,
+    }));
+  }
+
+  getValidator = (step: DetectorCreationStep): ((detector: Detector) => boolean) => {
+    const validatorByStep: Record<DetectorCreationStep, (detector: Detector) => boolean> = {
+      [DetectorCreationStep.DEFINE_DETECTOR]: DefineDetector.validateData,
+      [DetectorCreationStep.CONFIGURE_FIELD_MAPPING]: ConfigureFieldMapping.validateData,
+      [DetectorCreationStep.CONFIGURE_ALERTS]: ConfigureAlerts.validateData,
+      [DetectorCreationStep.REVIEW_CREATE]: (detector: Detector): boolean => {
+        return (
+          !!detector.name &&
+          !!detector.detector_type &&
+          detector.inputs[0].input.indices.length >= MIN_NUM_DATA_SOURCES
+        );
+      },
+    };
+
+    return validatorByStep[step];
   };
 
   render() {
     const { currentStep } = this.state;
-    const steps: EuiContainedStepProps[] = [
-      {
-        title: CREATE_DETECTOR_STEPS.DEFINE_DETECTOR.title,
-        status: currentStep <= CREATE_DETECTOR_STEPS.DEFINE_DETECTOR.step ? 'disabled' : 'complete',
-        children: <></>,
-      },
-      {
-        title: CREATE_DETECTOR_STEPS.CONFIGURE_FIELD_MAPPING.title,
-        status:
-          currentStep <= CREATE_DETECTOR_STEPS.CONFIGURE_FIELD_MAPPING.step
-            ? 'disabled'
-            : 'complete',
-        children: <></>,
-      },
-      {
-        title: CREATE_DETECTOR_STEPS.CONFIGURE_ALERTS.title,
-        status:
-          currentStep <= CREATE_DETECTOR_STEPS.CONFIGURE_ALERTS.step ? 'disabled' : 'complete',
-        children: <></>,
-      },
-      {
-        title: CREATE_DETECTOR_STEPS.REVIEW_CREATE.title,
-        status: 'disabled',
-        children: <></>,
-      },
-    ];
+    const steps: EuiContainedStepProps[] = this.createStepsMetadata(currentStep);
+
     return (
       <form onSubmit={this.onCreateClick}>
         <EuiFlexGroup>
@@ -130,21 +137,25 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             <EuiButtonEmpty href={`${PLUGIN_NAME}#${ROUTES.DETECTORS}`}>Cancel</EuiButtonEmpty>
           </EuiFlexItem>
 
-          {currentStep > CREATE_DETECTOR_STEPS.DEFINE_DETECTOR.step && (
+          {currentStep > DetectorCreationStep.DEFINE_DETECTOR && (
             <EuiFlexItem grow={false}>
               <EuiButton onClick={this.onPreviousClick}>Previous</EuiButton>
             </EuiFlexItem>
           )}
 
-          {currentStep < CREATE_DETECTOR_STEPS.REVIEW_CREATE.step && (
+          {currentStep < DetectorCreationStep.REVIEW_CREATE && (
             <EuiFlexItem grow={false}>
-              <EuiButton fill={true} onClick={this.onNextClick}>
+              <EuiButton
+                fill={true}
+                onClick={this.onNextClick}
+                disabled={!this.getValidator(currentStep)(this.state.detector)}
+              >
                 Next
               </EuiButton>
             </EuiFlexItem>
           )}
 
-          {currentStep === CREATE_DETECTOR_STEPS.REVIEW_CREATE.step && (
+          {currentStep === DetectorCreationStep.REVIEW_CREATE && (
             <EuiFlexItem grow={false}>
               <EuiButton fill={true} onClick={this.onNextClick}>
                 Create

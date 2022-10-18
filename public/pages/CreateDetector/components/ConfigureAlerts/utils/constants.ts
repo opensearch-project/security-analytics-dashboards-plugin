@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { AlertCondition } from '../../../../../../models/interfaces';
+
 export const MAX_ALERT_CONDITIONS = 10;
 export const MIN_ALERT_CONDITIONS = 1;
 
@@ -17,12 +19,12 @@ export const SEVERITY_OPTIONS = {
   LOWEST: { id: '5', value: '5', label: '5 (Lowest)', text: '5 (Lowest)' },
 };
 
-export const EMPTY_DEFAULT_ALERT_CONDITION = {
+export const EMPTY_DEFAULT_ALERT_CONDITION: AlertCondition = {
   name: '',
-  rule_types: [],
-  severity: [],
+  sev_levels: [],
   tags: [],
-  notification_channel_ids: [],
+  actions: [],
+  types: [],
 };
 
 export const MIN_NUM_NOTIFICATION_CHANNELS = 1;

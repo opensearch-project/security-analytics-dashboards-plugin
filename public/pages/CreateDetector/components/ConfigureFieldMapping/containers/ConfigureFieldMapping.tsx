@@ -7,16 +7,17 @@ import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { EuiAccordion, EuiHorizontalRule, EuiPanel, EuiSpacer, EuiTitle } from '@elastic/eui';
 import FieldMappingsTable from '../components/RequiredFieldMapping';
-import { CREATE_DETECTOR_STEPS } from '../../../utils/constants';
+import { createDetectorSteps } from '../../../utils/constants';
 import { ContentPanel } from '../../../../../components/ContentPanel';
 import { Detector } from '../../../../../../models/interfaces';
 import { EMPTY_FIELD_MAPPINGS, EXAMPLE_FIELD_MAPPINGS_RESPONSE } from '../utils/dummyData';
-import { FieldMappingViewResponse } from '../../../types/interfaces';
+import { FieldMappingViewResponse } from '../../../models/interfaces';
+import { DetectorCreationStep } from '../../../models/types';
 
 interface ConfigureFieldMappingProps extends RouteComponentProps {
   isEdit: boolean;
   detector: Detector;
-  onDetectorChange: (detector: Detector) => void;
+  changeDetector: (detector: Detector) => void;
 }
 
 interface ConfigureFieldMappingState {
@@ -61,7 +62,7 @@ export default class ConfigureFieldMapping extends Component<
     return (
       <div>
         <EuiTitle size={'l'}>
-          <h3>{CREATE_DETECTOR_STEPS.CONFIGURE_FIELD_MAPPING.title}</h3>
+          <h3>{createDetectorSteps[DetectorCreationStep.CONFIGURE_FIELD_MAPPING].title}</h3>
         </EuiTitle>
 
         <EuiSpacer size={'m'} />
@@ -110,5 +111,9 @@ export default class ConfigureFieldMapping extends Component<
         </EuiPanel>
       </div>
     );
+  }
+
+  static validateData(detector: Detector): boolean {
+    return true;
   }
 }

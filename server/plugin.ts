@@ -8,7 +8,9 @@ import { Plugin, CoreSetup, CoreStart, ILegacyCustomClusterClient } from '../../
 import { createSecurityAnalyticsCluster } from './clusters/createSecurityAnalyticsCluster';
 import { NodeServices } from './models/interfaces';
 import { setupDetectorRoutes } from './routes';
+import { setupIndexRoutes } from './routes/IndexRoutes';
 import DetectorsService from './services/DetectorService';
+import IndexService from './services/IndexService';
 
 export class SecurityAnalyticsPlugin
   implements Plugin<SecurityAnalyticsPluginSetup, SecurityAnalyticsPluginStart> {
@@ -19,6 +21,7 @@ export class SecurityAnalyticsPlugin
     // Initialize services
     const services: NodeServices = {
       detectorsService: new DetectorsService(osDriver),
+      indexService: new IndexService(osDriver),
     };
 
     // Create router
@@ -26,6 +29,7 @@ export class SecurityAnalyticsPlugin
 
     // setup routes
     setupDetectorRoutes(services, router);
+    setupIndexRoutes(services, router);
 
     return {};
   }

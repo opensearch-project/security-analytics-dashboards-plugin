@@ -3,20 +3,23 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export const CREATE_DETECTOR_STEPS = {
-  DEFINE_DETECTOR: {
+import { DetectorCreationStepInfo } from '../models/interfaces';
+import { DetectorCreationStep } from '../models/types';
+
+export const createDetectorSteps: Record<DetectorCreationStep, DetectorCreationStepInfo> = {
+  [DetectorCreationStep.DEFINE_DETECTOR]: {
     title: 'Define detector',
     step: 1,
   },
-  CONFIGURE_FIELD_MAPPING: {
+  [DetectorCreationStep.CONFIGURE_FIELD_MAPPING]: {
     title: 'Configure field mapping',
     step: 2,
   },
-  CONFIGURE_ALERTS: {
+  [DetectorCreationStep.CONFIGURE_ALERTS]: {
     title: 'Set up alerts',
     step: 3,
   },
-  REVIEW_CREATE: {
+  [DetectorCreationStep.REVIEW_CREATE]: {
     title: 'Review and create',
     step: 4,
   },

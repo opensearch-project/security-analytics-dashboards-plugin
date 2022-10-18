@@ -6,7 +6,7 @@
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { EuiButton, EuiSpacer, EuiTitle } from '@elastic/eui';
-import { CREATE_DETECTOR_STEPS } from '../../../utils/constants';
+import { createDetectorSteps } from '../../../utils/constants';
 import {
   EMPTY_DEFAULT_ALERT_CONDITION,
   MAX_ALERT_CONDITIONS,
@@ -14,6 +14,7 @@ import {
 } from '../utils/constants';
 import AlertConditionPanel from '../components/AlertCondition';
 import { Detector } from '../../../../../../models/interfaces';
+import { DetectorCreationStep } from '../../../models/types';
 
 interface ConfigureAlertsProps extends RouteComponentProps {
   changeDetector: (detector: Detector) => void;
@@ -39,10 +40,10 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
 
   componentDidMount = async () => {
     const {
-      detector: { alert_conditions },
+      detector: { triggers },
     } = this.props;
     this.getNotificationChannels();
-    if (alert_conditions.length < MIN_ALERT_CONDITIONS) {
+    if (triggers.length < MIN_ALERT_CONDITIONS) {
       this.addCondition();
     }
   };
@@ -57,29 +58,29 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
     const {
       changeDetector,
       detector,
-      detector: { alert_conditions },
+      detector: { triggers },
     } = this.props;
-    alert_conditions.push(EMPTY_DEFAULT_ALERT_CONDITION);
-    changeDetector({ ...detector, alert_conditions: alert_conditions });
+    triggers.push(EMPTY_DEFAULT_ALERT_CONDITION);
+    changeDetector({ ...detector, triggers });
   };
 
   render() {
     const {
-      detector: { alert_conditions },
+      detector: { triggers },
     } = this.props;
     const { loading, notificationChannels, ruleTypes } = this.state;
     return (
       <div>
         <EuiTitle size={'l'}>
           <h3>
-            {CREATE_DETECTOR_STEPS.CONFIGURE_ALERTS.title +
-              ` (${alert_conditions.length}/${MAX_ALERT_CONDITIONS})`}
+            {createDetectorSteps[DetectorCreationStep.CONFIGURE_ALERTS].title +
+              ` (${triggers.length}/${MAX_ALERT_CONDITIONS})`}
           </h3>
         </EuiTitle>
 
         <EuiSpacer size={'m'} />
 
-        {alert_conditions.map((alertCondition, index) => (
+        {triggers.map((alertCondition, index) => (
           <div key={index}>
             {index > 0 && <EuiSpacer size={'l'} />}
             <AlertConditionPanel
@@ -95,13 +96,14 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
 
         <EuiSpacer size={'m'} />
 
-        <EuiButton
-          disabled={alert_conditions.length >= MAX_ALERT_CONDITIONS}
-          onClick={this.addCondition}
-        >
+        <EuiButton disabled={triggers.length >= MAX_ALERT_CONDITIONS} onClick={this.addCondition}>
           Add another alert condition
         </EuiButton>
       </div>
     );
+  }
+
+  static validateData(detector: Detector): boolean {
+    return true;
   }
 }
