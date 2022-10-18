@@ -13,10 +13,12 @@ export enum CLUSTER {
 
 export const BASE_API_PATH = '/_plugins/_security_analytics';
 
-export const API: SecurityAnalyticsApi = Object.freeze({
+export const API: SecurityAnalyticsApi = {
   DETECTORS_BASE: `${BASE_API_PATH}/detectors`,
   INDICES_BASE: `${BASE_API_PATH}/indices`,
-});
+  MAPPINGS_BASE: `${BASE_API_PATH}/mappings`,
+  MAPPINGS_VIEW: `${BASE_API_PATH}/mappings/view`,
+};
 
 /**
  * Property with below name is added to the prototype of Opensearch client during setup.
@@ -31,6 +33,9 @@ export const METHOD_NAMES = {
   GET_DETECTOR: 'getDetector',
   GET_DETECTORS: 'getDetectors',
   UPDATE_DETECTOR: 'updateDetector',
+
+  // Field mapping methods
+  GET_MAPPINGS_VIEW: 'getFieldMappingsView',
 };
 
 /**
@@ -44,4 +49,8 @@ export const CLIENT_DETECTOR_METHODS = {
   GET_DETECTOR: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_DETECTOR}`,
   GET_DETECTORS: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_DETECTORS}`,
   UPDATE_DETECTOR: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.UPDATE_DETECTOR}`,
+};
+
+export const CLIENT_FIELD_MAPPINGS_METHODS = {
+  GET_MAPPINGS_VIEW: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_MAPPINGS_VIEW}`,
 };

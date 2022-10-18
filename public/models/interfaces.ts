@@ -4,9 +4,11 @@
  */
 
 import DetectorsService from '../services/DetectorService';
+import FieldMappingService from '../services/FieldMappingService';
 import IndexService from '../services/IndexService';
 
 export interface BrowserServices {
   detectorsService: DetectorsService;
   indexService: IndexService;
+  fieldMappingService: FieldMappingService;
 }

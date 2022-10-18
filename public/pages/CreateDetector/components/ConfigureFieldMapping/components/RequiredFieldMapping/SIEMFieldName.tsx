@@ -9,12 +9,14 @@ import { ChangeEvent } from 'react';
 
 interface SIEMFieldNameProps {
   siemFieldNameOptions: string[];
+  logFieldName: string;
   onChange: (option: string) => void;
+  createdMappings: { [fieldName: string]: string };
 }
 
 interface SIEMFieldNameState {
-  options: { value: string; text: string }[];
   selectedOption?: string;
+  errorMessage?: string;
 }
 
 export default class SIEMFieldNameSelector extends Component<
@@ -24,25 +26,50 @@ export default class SIEMFieldNameSelector extends Component<
   constructor(props: SIEMFieldNameProps) {
     super(props);
     this.state = {
-      options: props.siemFieldNameOptions.map((option) => ({ value: option, text: option })),
       selectedOption: undefined,
     };
+  }
+
+  /**
+   * Returns false if the alias has already been selected for another field.
+   */
+  validateSelectedAlias(selectedAlias: string) {
+    const existingMappings = {
+      ...this.props.createdMappings,
+    };
+    delete existingMappings[this.props.logFieldName];
+
+    return Object.values(existingMappings).indexOf(selectedAlias) === -1;
   }
 
   onChange: React.ChangeEventHandler<HTMLSelectElement> = (
     event: ChangeEvent<HTMLSelectElement>
   ) => {
-    this.props.onChange(event.target.value);
-    this.setState({ selectedOption: event.target.value });
+    if (!this.validateSelectedAlias(event.target.value)) {
+      this.setState({
+        selectedOption: event.target.value,
+        errorMessage: 'This alias is already in use, pleade select a different alias',
+      });
+    } else {
+      this.props.onChange(event.target.value);
+      this.setState({ selectedOption: event.target.value, errorMessage: undefined });
+    }
   };
 
   render() {
     return (
-      <EuiFormRow style={{ width: '100%' }}>
+      <EuiFormRow
+        style={{ width: '100%' }}
+        isInvalid={!!this.state.errorMessage}
+        error={this.state.errorMessage}
+      >
         <EuiSelect
           required={true}
           hasNoInitialSelection
-          options={this.state.options}
+          options={this.props.siemFieldNameOptions.map((option) => ({
+            value: option,
+            text: option,
+          }))}
           value={this.state.selectedOption}
           onChange={this.onChange}
         />

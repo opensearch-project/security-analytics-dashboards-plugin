@@ -5,16 +5,20 @@
 
 import { Detector } from '../../models/interfaces';
 import DetectorsService from '../services/DetectorService';
+import FieldMappingService from '../services/FieldMappingService';
 import IndexService from '../services/IndexService';
 
 export interface SecurityAnalyticsApi {
   readonly DETECTORS_BASE: string;
   readonly INDICES_BASE: string;
+  readonly MAPPINGS_BASE: string;
+  readonly MAPPINGS_VIEW: string;
 }
 
 export interface NodeServices {
   detectorsService: DetectorsService;
   indexService: IndexService;
+  fieldMappingService: FieldMappingService;
 }
 
 export interface CreateDetectorParams {
@@ -50,4 +54,20 @@ export interface CatIndex {
   'store.size': string;
   uuid: string;
   data_stream: string | null;
+}
+
+export interface GetFieldMapingsViewParams {
+  indexName: string;
+  ruleTopic?: string;
+}
+
+export interface GetFieldMappingViewResponse {
+  properties: { [aliasName: string]: IndexFieldInfo };
+  unmappedIndexFields: string[];
+  unmappedFieldAliases: string[];
+}
+
+export interface IndexFieldInfo {
+  type: 'alias';
+  path: string;
 }

@@ -9,20 +9,24 @@ import { EuiAccordion, EuiHorizontalRule, EuiPanel, EuiSpacer, EuiTitle } from '
 import FieldMappingsTable from '../components/RequiredFieldMapping';
 import { createDetectorSteps } from '../../../utils/constants';
 import { ContentPanel } from '../../../../../components/ContentPanel';
-import { Detector } from '../../../../../../models/interfaces';
-import { EMPTY_FIELD_MAPPINGS, EXAMPLE_FIELD_MAPPINGS_RESPONSE } from '../utils/dummyData';
-import { FieldMappingViewResponse } from '../../../models/interfaces';
+import { Detector, FieldMapping } from '../../../../../../models/interfaces';
+import { EMPTY_FIELD_MAPPINGS } from '../utils/dummyData';
 import { DetectorCreationStep } from '../../../models/types';
+import { GetFieldMappingViewResponse } from '../../../../../../server/models/interfaces';
+import FieldMappingService from '../../../../../services/FieldMappingService';
+import { MappingViewType } from '../components/RequiredFieldMapping/FieldMappingsTable';
 
 interface ConfigureFieldMappingProps extends RouteComponentProps {
   isEdit: boolean;
   detector: Detector;
-  changeDetector: (detector: Detector) => void;
+  replaceFieldMappings: (mappings: FieldMapping[]) => void;
+  filedMappingService: FieldMappingService;
 }
 
 interface ConfigureFieldMappingState {
   loading: boolean;
-  mappingsData: FieldMappingViewResponse;
+  mappingsData: GetFieldMappingViewResponse;
+  createdMappings: { [fieldName: string]: string };
 }
 
 export default class ConfigureFieldMapping extends Component<
@@ -34,6 +38,7 @@ export default class ConfigureFieldMapping extends Component<
     this.state = {
       loading: false,
       mappingsData: EMPTY_FIELD_MAPPINGS,
+      createdMappings: {},
     };
   }
 
@@ -43,12 +48,36 @@ export default class ConfigureFieldMapping extends Component<
 
   getAllMappings = async () => {
     this.setState({ loading: true });
-    await this.setState({ mappingsData: EXAMPLE_FIELD_MAPPINGS_RESPONSE });
+    const mappingsView = await this.props.filedMappingService.getMappingsView(
+      this.props.detector.inputs[0].input.indices[0],
+      this.props.detector.detector_type
+    );
+    if (mappingsView.ok) {
+      this.setState({ mappingsData: mappingsView.response });
+    }
     this.setState({ loading: false });
   };
 
+  onMappingCreation = (fieldName: string, aliasName: string): void => {
+    const newMappings = {
+      ...this.state.createdMappings,
+      [fieldName]: aliasName,
+    };
+    this.setState({
+      createdMappings: newMappings,
+    });
+    this.props.replaceFieldMappings(
+      Object.entries(newMappings).map((entry) => {
+        return {
+          fieldName: entry[0],
+          aliasName: entry[1],
+        };
+      })
+    );
+  };
+
   render() {
-    const { loading, mappingsData } = this.state;
+    const { loading, mappingsData, createdMappings } = this.state;
     const viewonlyMappings: { indexFields: string[]; aliasNames: string[] } = {
       indexFields: [],
       aliasNames: [],
@@ -67,20 +96,27 @@ export default class ConfigureFieldMapping extends Component<
 
         <EuiSpacer size={'m'} />
 
-        <ContentPanel
-          title={`Required field mappings (${mappingsData.unmappedIndexFields.length})`}
-          titleSize={'m'}
-        >
-          <FieldMappingsTable
-            loading={loading}
-            aliasNames={mappingsData.unmappedFieldAliases}
-            indexFields={mappingsData.unmappedIndexFields}
-            isMappingRequired={true}
-            {...this.props}
-          />
-        </ContentPanel>
-
-        <EuiSpacer size={'m'} />
+        {mappingsData.unmappedIndexFields.length > 0 && (
+          <>
+            <ContentPanel
+              title={`Required field mappings (${mappingsData.unmappedIndexFields.length})`}
+              titleSize={'m'}
+            >
+              <FieldMappingsTable<MappingViewType.Edit>
+                loading={loading}
+                aliasNames={mappingsData.unmappedFieldAliases}
+                indexFields={mappingsData.unmappedIndexFields}
+                mappingProps={{
+                  type: MappingViewType.Edit,
+                  createdMappings: createdMappings,
+                  onMappingCreation: this.onMappingCreation,
+                }}
+                {...this.props}
+              />
+            </ContentPanel>
+            <EuiSpacer size={'m'} />
+          </>
+        )}
 
         <EuiPanel style={{ paddingLeft: '0px', paddingRight: '0px' }}>
           <EuiAccordion
@@ -99,11 +135,13 @@ export default class ConfigureFieldMapping extends Component<
             <EuiHorizontalRule margin={'xs'} />
             <div style={{ paddingLeft: '10px', paddingRight: '10px' }}>
               <EuiSpacer size={'m'} />
-              <FieldMappingsTable
+              <FieldMappingsTable<MappingViewType.Readonly>
                 loading={loading}
+                mappingProps={{
+                  type: MappingViewType.Readonly,
+                }}
                 aliasNames={viewonlyMappings.aliasNames}
                 indexFields={viewonlyMappings.indexFields}
-                isMappingRequired={false}
                 {...this.props}
               />
             </div>

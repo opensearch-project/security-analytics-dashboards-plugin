@@ -17,52 +17,47 @@ import { STATUS_ICON_PROPS } from '../../utils/constants';
 import SIEMFieldNameSelector from './SIEMFieldName';
 import { FieldMappingsTableItem } from '../../../../models/interfaces';
 
-interface FieldMappingsTableProps extends RouteComponentProps {
+export enum MappingViewType {
+  Readonly,
+  Edit,
+}
+
+export interface MappingProps {
+  [MappingViewType.Readonly]: {
+    type: MappingViewType.Readonly;
+  };
+  [MappingViewType.Edit]: {
+    type: MappingViewType.Edit;
+    createdMappings: { [fieldName: string]: string };
+    onMappingCreation: (fieldName: string, aliasName: string) => void;
+  };
+}
+
+interface FieldMappingsTableProps<T extends MappingViewType> extends RouteComponentProps {
   loading: boolean;
-  isMappingRequired: boolean;
   indexFields: string[];
   aliasNames: string[];
+  mappingProps: MappingProps[T];
 }
 
-interface FieldMappingsTableState {
-  remainingUnmappedAlias: Set<string>;
-}
+interface FieldMappingsTableState {}
 
-export default class FieldMappingsTable extends Component<
-  FieldMappingsTableProps,
+export default class FieldMappingsTable<T extends MappingViewType> extends Component<
+  FieldMappingsTableProps<T>,
   FieldMappingsTableState
 > {
-  constructor(props: FieldMappingsTableProps) {
-    super(props);
-    this.state = {
-      remainingUnmappedAlias: new Set(props.aliasNames),
-    };
-  }
-
-  static getDerivedStateFromProps(props: FieldMappingsTableProps): FieldMappingsTableState {
-    return {
-      remainingUnmappedAlias: new Set(props.aliasNames),
-    };
-  }
-
-  onMappingSelected = (selectedAlias: string) => {
-    const newRemainingAlias = new Set(this.state.remainingUnmappedAlias);
-    newRemainingAlias.delete(selectedAlias);
-    this.setState({ remainingUnmappedAlias: newRemainingAlias });
-  };
-
   render() {
-    const { loading, indexFields: unmappedIndexFields, isMappingRequired, aliasNames } = this.props;
+    const { loading, indexFields, aliasNames } = this.props;
     let items: FieldMappingsTableItem[];
 
-    if (isMappingRequired) {
-      items = unmappedIndexFields.map((indexField) => ({
+    if (this.props.mappingProps.type === MappingViewType.Edit) {
+      items = indexFields.map((indexField) => ({
         logFieldName: indexField,
         siemFieldName: undefined,
         status: 'unmapped',
       }));
     } else {
-      items = unmappedIndexFields.map((indexField, idx) => {
+      items = indexFields.map((indexField, idx) => {
         return {
           logFieldName: indexField,
           siemFieldName: aliasNames[idx],
@@ -94,11 +89,18 @@ export default class FieldMappingsTable extends Component<
         dataType: 'string',
         width: '45%',
         render: (siemFieldName: string, entry: FieldMappingsTableItem) => {
-          if (this.props.isMappingRequired) {
+          if (this.props.mappingProps.type === MappingViewType.Edit) {
+            const { onMappingCreation, createdMappings } = this.props
+              .mappingProps as MappingProps[MappingViewType.Edit];
+            const onMappingSelected = (selectedAlias: string) => {
+              onMappingCreation(entry.logFieldName, selectedAlias);
+            };
             return (
               <SIEMFieldNameSelector
-                siemFieldNameOptions={Array.from(this.state.remainingUnmappedAlias)}
-                onChange={this.onMappingSelected}
+                logFieldName={entry.logFieldName}
+                siemFieldNameOptions={aliasNames}
+                onChange={onMappingSelected}
+                createdMappings={createdMappings}
               />
             );
           }
@@ -112,7 +114,7 @@ export default class FieldMappingsTable extends Component<
       },
     ];
 
-    if (this.props.isMappingRequired) {
+    if (this.props.mappingProps.type === MappingViewType.Edit) {
       columns.push({
         field: 'status',
         name: 'Status',
