@@ -12,8 +12,8 @@ import DetectorDataSource from '../components/DetectorDataSource';
 import DetectorType from '../components/DetectorType';
 import DetectionRules from '../components/DetectionRules';
 import { EuiComboBoxOptionOption } from '@opensearch-project/oui';
-import { MIN_NUM_DATA_SOURCES } from '../../../../Detectors/utils/constants';
 import IndexService from '../../../../../services/IndexService';
+import { MIN_NUM_DATA_SOURCES } from '../../../../Detectors/utils/constants';
 
 interface DefineDetectorProps extends RouteComponentProps {
   detector: Detector;
