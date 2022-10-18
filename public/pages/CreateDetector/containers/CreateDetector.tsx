@@ -17,17 +17,13 @@ import { EMPTY_DEFAULT_DETECTOR } from '../../../utils/constants';
 import { EuiContainedStepProps } from '@elastic/eui/src/components/steps/steps';
 import { CoreServicesContext } from '../../../components/core_services';
 import { DetectorCreationStep } from '../models/types';
+import { MIN_NUM_DATA_SOURCES } from '../../Detectors/utils/constants';
 
 interface CreateDetectorProps extends RouteComponentProps {
   isEdit: boolean;
 }
 
-interface StepState {
-  isComplete: boolean;
-}
-
 interface CreateDetectorState {
-  stepsState: Record<DetectorCreationStep, StepState>;
   currentStep: DetectorCreationStep;
   detector: Detector;
 }
@@ -38,12 +34,6 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
   constructor(props: CreateDetectorProps) {
     super(props);
     this.state = {
-      stepsState: {
-        [DetectorCreationStep.DEFINE_DETECTOR]: { isComplete: false },
-        [DetectorCreationStep.CONFIGURE_FIELD_MAPPING]: { isComplete: false },
-        [DetectorCreationStep.CONFIGURE_ALERTS]: { isComplete: false },
-        [DetectorCreationStep.REVIEW_CREATE]: { isComplete: false },
-      },
       currentStep: DetectorCreationStep.DEFINE_DETECTOR,
       detector: EMPTY_DEFAULT_DETECTOR,
     };
@@ -69,24 +59,6 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     this.setState({ currentStep: currentStep - 1 });
   };
 
-  onStepCompletionChange = (
-    step: DetectorCreationStep,
-    isComplete: boolean,
-    mergeDetectorData?: (detector: Detector) => Detector
-  ): void => {
-    this.setState({
-      stepsState: {
-        ...this.state.stepsState,
-        [step]: {
-          isComplete,
-        },
-      },
-      detector: mergeDetectorData
-        ? { ...mergeDetectorData(this.state.detector) }
-        : this.state.detector,
-    });
-  };
-
   getStepContent = () => {
     switch (this.state.currentStep) {
       case DetectorCreationStep.DEFINE_DETECTOR:
@@ -94,7 +66,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
           <DefineDetector
             {...this.props}
             detector={this.state.detector}
-            onCompletion={this.onStepCompletionChange}
+            changeDetector={this.changeDetector}
           />
         );
       case DetectorCreationStep.CONFIGURE_FIELD_MAPPING:
@@ -102,7 +74,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
           <ConfigureFieldMapping
             {...this.props}
             detector={this.state.detector}
-            onDetectorChange={this.changeDetector}
+            changeDetector={this.changeDetector}
           />
         );
       case DetectorCreationStep.CONFIGURE_ALERTS:
@@ -122,15 +94,6 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     }
   };
 
-  updateStepCompletion = (step: DetectorCreationStep, isComplete: boolean): void => {
-    this.setState({
-      stepsState: {
-        ...this.state.stepsState,
-        [step]: { isComplete },
-      },
-    });
-  };
-
   createStepsMetadata(currentStep: number): EuiContainedStepProps[] {
     return Object.values(createDetectorSteps).map((stepData) => ({
       title: stepData.title,
@@ -139,8 +102,25 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     }));
   }
 
+  getValidator = (step: DetectorCreationStep): ((detector: Detector) => boolean) => {
+    const validatorByStep: Record<DetectorCreationStep, (detector: Detector) => boolean> = {
+      [DetectorCreationStep.DEFINE_DETECTOR]: DefineDetector.validateData,
+      [DetectorCreationStep.CONFIGURE_FIELD_MAPPING]: ConfigureFieldMapping.validateData,
+      [DetectorCreationStep.CONFIGURE_ALERTS]: ConfigureAlerts.validateData,
+      [DetectorCreationStep.REVIEW_CREATE]: (detector: Detector): boolean => {
+        return (
+          !!detector.name &&
+          !!detector.detector_type &&
+          detector.inputs[0].input.indices.length >= MIN_NUM_DATA_SOURCES
+        );
+      },
+    };
+
+    return validatorByStep[step];
+  };
+
   render() {
-    const { currentStep, stepsState } = this.state;
+    const { currentStep } = this.state;
     const steps: EuiContainedStepProps[] = this.createStepsMetadata(currentStep);
 
     return (
@@ -168,7 +148,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
               <EuiButton
                 fill={true}
                 onClick={this.onNextClick}
-                disabled={!stepsState[currentStep].isComplete}
+                disabled={!this.getValidator(currentStep)(this.state.detector)}
               >
                 Next
               </EuiButton>

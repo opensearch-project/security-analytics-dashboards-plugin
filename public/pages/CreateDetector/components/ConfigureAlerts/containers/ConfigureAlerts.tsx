@@ -102,4 +102,8 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
       </div>
     );
   }
+
+  static validateData(detector: Detector): boolean {
+    return true;
+  }
 }

@@ -13,7 +13,6 @@ import { MIN_NUM_DATA_SOURCES } from '../../../../../Detectors/utils/constants';
 import IndexService from '../../../../../../services/IndexService';
 
 interface DetectorDataSourceProps extends RouteComponentProps {
-  hasSubmitted: boolean;
   detectorIndices: string[];
   indexService: IndexService;
   onDetectorInputIndicesChange: (selectedOptions: EuiComboBoxOptionOption<string>[]) => void;

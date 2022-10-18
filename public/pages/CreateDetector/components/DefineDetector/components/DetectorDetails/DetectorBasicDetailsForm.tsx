@@ -11,7 +11,6 @@ import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/Fo
 // TODO: Implement regex pattern to validate name and description strings
 
 interface DetectorDetailsProps {
-  hasSubmitted: boolean;
   detectorName: string;
   detectorDescription: string;
   onDetectorNameChange: (name: string) => void;

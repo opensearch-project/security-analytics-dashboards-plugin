@@ -17,7 +17,7 @@ import { DetectorCreationStep } from '../../../models/types';
 interface ConfigureFieldMappingProps extends RouteComponentProps {
   isEdit: boolean;
   detector: Detector;
-  onDetectorChange: (detector: Detector) => void;
+  changeDetector: (detector: Detector) => void;
 }
 
 interface ConfigureFieldMappingState {
@@ -111,5 +111,9 @@ export default class ConfigureFieldMapping extends Component<
         </EuiPanel>
       </div>
     );
+  }
+
+  static validateData(detector: Detector): boolean {
+    return true;
   }
 }
