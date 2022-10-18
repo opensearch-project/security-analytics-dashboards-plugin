@@ -3,25 +3,22 @@ import {
   EuiModalBody,
   EuiCodeBlock,
   EuiSpacer,
-  EuiModalHeader,
-  EuiModalHeaderTitle,
+  EuiFlyoutHeader,
   EuiMarkdownEditor,
   EuiButton,
   EuiConfirmModal,
   EuiText,
-  EuiIcon,
-  EuiSwitch,
-  EuiFlexGroup,
-  EuiFlexItem,
+  EuiDescriptionList,
+  EuiDescriptionListTitle,
+  EuiDescriptionListDescription,
 } from '@elastic/eui';
-import { HR } from '../../lib/UIComponents/hr';
+import { EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 
 export const View = (props: any) => {
   const [showEditor, setEditor] = useState<boolean>(false);
-  const [isReadOnly, setIsReadOnly] = useState<boolean>(false);
   const [currentMode, setCurrentMode] = useState<string>('Edit');
   const [showSave, setSave] = useState(false);
-  const { modalContent } = props;
+  const { content } = props;
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isDestroyModalVisible, setIsDestroyModalVisible] = useState(false);
   const closeModal = () => setIsModalVisible(false);
@@ -34,21 +31,13 @@ export const View = (props: any) => {
 
   const initialContent = `
 
-  title: ${modalContent.title}
+  title: ${content.title}
 
-  logsource: {
+  status: ${content.status}
 
-    product: ${modalContent.product}
+  level: ${content.level}
 
-    category: ${modalContent.logsource.category}
-    
-  }
-
-  status: ${modalContent.status}
-
-  level: ${modalContent.level}
-
-  last modified: ${modalContent.modified} 
+  last modified: ${content.last_update_time} 
   `;
 
   const [value, setValue] = useState(initialContent);
@@ -78,6 +67,79 @@ export const View = (props: any) => {
     }
   };
 
+  const ruleInfoLeft = [
+    {
+      title: 'Author:',
+      description: content.author,
+    },
+    {
+      title: 'Title:',
+      description: content.title,
+    },
+    {
+      title: 'Description:',
+      description: content.description,
+    },
+    {
+      title: 'Category:',
+      description: content.category,
+    },
+  ];
+
+  const ruleInfoRight = [
+    {
+      title: 'Status:',
+      description: content.status,
+    },
+    {
+      title: 'Level:',
+      description: content.level,
+    },
+    {
+      title: 'Last Modified:',
+      description: content.last_update_time,
+    },
+    {
+      title: 'Tags:',
+      description: content.tags
+        ? content.tags.map((tag: string | any) => {
+            return <div key={tag.value}>{tag.value}</div>;
+          })
+        : 'None',
+    },
+  ];
+
+  const ruleInfoBottom = [
+    {
+      title: 'Falsepositives:',
+      description: content.falsepositives
+        ? content.falsepositives.map((falsepositive: string | any) => {
+            return <div key={falsepositive.value}>{falsepositive.value}</div>;
+          })
+        : 'None',
+    },
+    {
+      title: 'References:',
+      description: content.references
+        ? content.references.map((reference: string | any) => {
+            return (
+              <a href={reference.value} target="_blank" key={reference.value}>
+                {reference.value}
+              </a>
+            );
+          })
+        : 'None',
+    },
+    {
+      title: 'Queries:',
+      description: content.queries
+        ? content.queries.map((query: string | any) => {
+            return <div key={query.value}>{query.value}</div>;
+          })
+        : 'None',
+    },
+  ];
+
   if (isModalVisible) {
     modal = (
       <EuiConfirmModal
@@ -89,7 +151,7 @@ export const View = (props: any) => {
         defaultFocusedButton="confirm"
       >
         <EuiText>
-          You will lose changes to: <b>{modalContent.title}</b>
+          You will lose changes to: <b>{content.title}</b>
         </EuiText>
         <p>Are you sure you want to do this?</p>
       </EuiConfirmModal>
@@ -110,7 +172,7 @@ export const View = (props: any) => {
         defaultFocusedButton="confirm"
       >
         <EuiText>
-          Delete rule: <b>{modalContent.title}</b>
+          Delete rule: <b>{content.title}</b>
         </EuiText>
         <EuiSpacer />
         <EuiText>Are you sure you want to do this?</EuiText>
@@ -124,51 +186,61 @@ export const View = (props: any) => {
         {modal}
         {destroyModal}
       </div>
-      <EuiModalHeader>
-        <EuiModalHeaderTitle>
-          <h1>{modalContent.title}</h1>
-        </EuiModalHeaderTitle>
+      <EuiFlyoutHeader>
         {ruleType === 'custom' && (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'flex-end',
-            }}
-          >
-            <div style={{ marginRight: '15px' }}>
-              {showSave && (
-                <EuiButton color="success" onClick={showDestroyModal}>
-                  Save
-                </EuiButton>
-              )}
-            </div>
-            <div style={{ marginRight: '15px' }}>
+          <EuiFlexGroup direction="row" justifyContent="flexEnd">
+            <EuiFlexItem>
+              <EuiButton>View Findings</EuiButton>
+            </EuiFlexItem>
+            <EuiFlexItem>
               <EuiButton onClick={() => buttonDisplay()}>{currentMode}</EuiButton>
-            </div>
-            {showEditor && (
-              <div style={{ marginRight: '15px' }}>
-                <EuiButton color="danger" onClick={showDestroyModal}>
-                  Delete
-                </EuiButton>
-              </div>
-            )}
-          </div>
+            </EuiFlexItem>
+            <EuiFlexItem>
+              <EuiButton onClick={() => setEditor(true)}>Duplicate</EuiButton>
+            </EuiFlexItem>
+            <EuiFlexItem>
+              <EuiButton onClick={() => showDestroyModal()}>Delete</EuiButton>
+            </EuiFlexItem>
+          </EuiFlexGroup>
         )}
-      </EuiModalHeader>
+      </EuiFlyoutHeader>
       <EuiModalBody>
-        {modalContent.description}
-        <EuiSpacer />
         {!showEditor && (
-          <EuiCodeBlock language="js" isCopyable>
-            Title: {modalContent.title} <br></br>
-            Category: {modalContent.logsource.category} <br></br>
-            Status: {modalContent.status} <br></br>
-            Level: {modalContent.level} <br></br>
-            Last Modified: {modalContent.modified} <br></br>
-            Logsource:{' '}
-            {`product: ${modalContent.product}, category: ${modalContent.logsource.category}`}
-          </EuiCodeBlock>
+          <div>
+            <EuiFlexGroup>
+              <EuiFlexItem>
+                <EuiDescriptionList listItems={ruleInfoLeft} />
+              </EuiFlexItem>
+              <EuiFlexItem>
+                <EuiDescriptionList listItems={ruleInfoRight} />
+              </EuiFlexItem>
+            </EuiFlexGroup>
+            <EuiDescriptionList listItems={ruleInfoBottom} />
+          </div>
+
+          // <EuiCodeBlock whiteSpace="pre-wrap">
+          //   <div><b>Author:</b> {content.author}</div>
+          //   <EuiSpacer/>
+          //   <div><b>Title:</b> {content.title}</div>
+          //   <EuiSpacer/>
+          //   <div><b>Description:</b> {content.description}</div>
+          //   <EuiSpacer/>
+          //   <div><b>Category:</b> {content.category}</div>
+          //   <EuiSpacer/>
+          //   <div><b>Status:</b> {content.status}</div>
+          //   <EuiSpacer/>
+          //   <div><b>Level:</b> {content.level}</div>
+          //   <EuiSpacer/>
+          //   <div><b>Last Modified:</b> {content.last_update_time}</div>
+          //   <EuiSpacer/>
+          //   <div><b>Falsepositives:</b>{ content.falsepositives ? content.falsepositives.map((falsepositive:string|any) => { return <div key={falsepositive.value}>{falsepositive.value}</div>}) : ''}</div>
+          //   <EuiSpacer/>
+          //   <div><b>References:</b> { content.references ? content.references.map((reference:string|any) => { return <div key={reference.value}>{reference.value}</div>}) : ''}</div>
+          //   <EuiSpacer/>
+          //   <div><b>Queries:</b> { content.queries ? content.queries.map((query:string|any) => { return <div key={query.value}>{query.value}</div>}) : ''}</div>
+          //   <EuiSpacer/>
+          //   <div><b>Tags:</b> { content.tags ? content.tags.map((tag:string|any) => { return <div key={tag.value}>{tag.value}</div>}) : ''}</div>
+          // </EuiCodeBlock>
         )}
         {showEditor && (
           <EuiMarkdownEditor

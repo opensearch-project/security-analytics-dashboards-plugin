@@ -1,35 +1,54 @@
-import React, { useState, useReducer } from 'react';
-import { initialState, reducer } from '../../../../../state-management';
+import React, { useState, useEffect } from 'react';
+import { allRequest } from '../../../../../state-management';
 import Modal from '../../../../../lib/UIComponents/Modal';
 import { EuiInMemoryTable } from '@elastic/eui';
-import _ from 'lodash';
+import _, { indexOf } from 'lodash';
+import axios from 'axios';
 
-interface tableProps {
-  rules: any;
-}
-
-export const SigmaTable = ({ rules }: tableProps) => {
-  const [state] = useReducer(reducer, initialState);
+export const SigmaTable = () => {
   const [pagination, setPagination] = useState({ pageIndex: 0 });
   const [query, setQuery] = useState<string>('');
   const [modalType, setModalType] = useState<undefined | string>('');
-  const [modalContent, setModalContent] = useState<any | string>('');
+  const [content, setContent] = useState<any | string>('');
+  const [sigmaRules, setRules] = useState<any | object>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const closeModal = () => setIsModalVisible(false);
   const showModal = () => setIsModalVisible(true);
 
-  const tableRules = rules;
+  useEffect(() => {
+    axios(allRequest).then((res) => {
+      let allRules: any = [];
+      res.data.hits.hits.forEach((rule: any) => {
+        allRules.push(rule._source);
+      });
+      setRules(allRules);
+    });
+  }, []);
 
   let modal;
 
   if (isModalVisible) {
-    modal = <Modal close={closeModal} modalContent={modalContent} type={modalType} />;
+    modal = <Modal close={closeModal} content={content} type={modalType} />;
   }
 
   const columns = [
     {
       field: 'title',
       name: 'Rule name',
+      sortable: true,
+      width: '30%',
+      truncateText: true,
+      'data-test-subj': 'firstNameCell',
+      mobileOptions: {
+        header: false,
+        truncateText: false,
+        enlarge: true,
+        width: '100%',
+      },
+    },
+    {
+      field: 'category',
+      name: 'Rule type',
       sortable: true,
       width: '20%',
       truncateText: true,
@@ -42,8 +61,8 @@ export const SigmaTable = ({ rules }: tableProps) => {
       },
     },
     {
-      field: 'title',
-      name: 'Rule type',
+      field: 'category',
+      name: 'Rule Library',
       sortable: true,
       width: '20%',
       truncateText: true,
@@ -90,11 +109,8 @@ export const SigmaTable = ({ rules }: tableProps) => {
       'data-test-subj': `row-${id}`,
       className: 'customRowClass',
       onClick: () => {
-        let rule = _.filter(rules, function (o) {
-          return o.id === id;
-        });
         setModalType('view');
-        setModalContent(rule[0]);
+        setContent(item);
         showModal();
       },
     };
@@ -112,16 +128,22 @@ export const SigmaTable = ({ rules }: tableProps) => {
 
   return (
     <div>
-      <EuiInMemoryTable
-        items={tableRules}
-        columns={columns}
-        search={search}
-        pagination={tableRules.length < 7 ? false : { ...pagination, pageSizeOptions: [7, 15, 25] }}
-        onTableChange={({ page: { index } }: { page: any }) => setPagination({ pageIndex: index })}
-        sorting={true}
-        rowProps={getRowProps}
-        cellProps={getCellProps}
-      />
+      {sigmaRules.length > 0 && (
+        <EuiInMemoryTable
+          items={sigmaRules}
+          columns={columns}
+          search={search}
+          pagination={
+            sigmaRules.length < 7 ? false : { ...pagination, pageSizeOptions: [7, 15, 25] }
+          }
+          onTableChange={({ page: { index } }: { page: any }) =>
+            setPagination({ pageIndex: index })
+          }
+          sorting={true}
+          rowProps={getRowProps}
+          cellProps={getCellProps}
+        />
+      )}
       <div>{modal}</div>
     </div>
   );

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Add } from '../../containers/Rules/components/Visual';
 import { View } from '../../containers/Rules/components/View';
 import {
   EuiModal,
@@ -10,19 +9,35 @@ import {
   EuiConfirmModal,
   EuiFlexGroup,
   EuiFlexItem,
+  EuiTitle,
+  EuiFlyout,
+  EuiFlyoutBody,
+  EuiFlyoutHeader,
+  EuiFlyoutFooter,
 } from '@elastic/eui';
 
 export default function Modal(props: any) {
-  const { close, modalContent, type, ruleType } = props;
+  const { close, content, type, ruleType } = props;
 
   return (
-    <EuiModal onClose={close} style={{ width: 800 }}>
-      {type === 'view' && <View modalContent={modalContent} ruleType={ruleType} />}
-      <EuiModalFooter>
-        <EuiButton onClick={close} fill style={{ marginRight: '25px' }}>
-          Close
-        </EuiButton>
-      </EuiModalFooter>
-    </EuiModal>
+    <EuiFlyout onClose={close} style={{ width: 800 }}>
+      <EuiFlyoutHeader hasBorder>
+        <EuiTitle size="m">
+          <h3>{content.title}</h3>
+        </EuiTitle>
+      </EuiFlyoutHeader>
+      <EuiFlyoutBody>
+        {type === 'view' && <View content={content} ruleType={ruleType} />}
+      </EuiFlyoutBody>
+      <EuiFlyoutFooter>
+        <EuiFlexGroup direction="row" justifyContent="flexEnd">
+          <EuiFlexItem grow={false}>
+            <EuiButton onClick={close} fill style={{ marginRight: '25px' }}>
+              Close
+            </EuiButton>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      </EuiFlyoutFooter>
+    </EuiFlyout>
   );
 }

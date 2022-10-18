@@ -1,5 +1,9 @@
 import React from 'react';
 
-export const index = () => {
-  return <div></div>;
+export const YAML = () => {
+  return (
+    <div>
+      <h1>YAML</h1>
+    </div>
+  );
 };

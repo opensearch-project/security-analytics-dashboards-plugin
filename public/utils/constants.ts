@@ -17,10 +17,13 @@ export const ROUTES = Object.freeze({
   DETECTORS: '/detectors',
   CATEGORIES: '/categories',
   RULES: '/rules', // TODO: This may need to be "/categories/rules"
+  RULES_CREATE: '/create-rule',
+  RULES_EDIT: '/edit-rule',
 });
 
 export const BREADCRUMBS = Object.freeze({
   SECURITY_ANALYTICS: { text: 'Security Analytics', href: '#/' },
+  RULES: { text: 'Rule templates', href: `#/${ROUTES.RULES}` },
 });
 
 export enum SortDirection {

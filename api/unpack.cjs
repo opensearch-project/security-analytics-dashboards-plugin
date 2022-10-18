@@ -15,9 +15,7 @@ fs.readdir(dir, { withFileTypes: true }, (error, folders) => {
          } else {
              outputfile = `./mockData/${folder.name}/${file}.json`.replace('.yml', '');
            (yaml = require('js-yaml')),
-           (obj = yaml.load(
-             fs.readFileSync(`${dir}/${file}`, { encoding: 'utf-8' })
-           ));
+           (obj = yaml.load(fs.readFileSync(`${dir}/${file}`, { encoding: 'utf-8' })));
            fs.writeFileSync(outputfile, JSON.stringify(obj, null, 2));
          }  
       });

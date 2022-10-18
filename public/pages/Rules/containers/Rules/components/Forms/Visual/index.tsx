@@ -1,4 +1,5 @@
-import React, { useReducer, useState } from 'react';
+import React, { useReducer, useEffect } from 'react';
+import { ruleTypes } from '../../../../../lib/helpers';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import {
@@ -10,19 +11,18 @@ import {
   EuiSelect,
   EuiButton,
   EuiSpacer,
+  EuiCodeBlock,
   EuiTextArea,
+  EuiCodeEditor,
   EuiIcon,
 } from '@elastic/eui';
-import { initialState, reducer } from '../../../../../state-management';
 
-export const Visual = () => {
-  const [state, dispatch] = useReducer(reducer, initialState);
-
+export const Visual = (props: any) => {
   return (
     <Formik
       validateOnMount
       initialValues={{
-        ruleName: '',
+        ruleName: props.name,
         ruleType: '',
         ruleDescription: '',
         ruleDetection: '',
@@ -70,7 +70,7 @@ export const Visual = () => {
                   <EuiSelect
                     name="ruleType"
                     hasNoInitialSelection={true}
-                    options={state.ruleTypes.map((type) => ({ value: type, text: type }))}
+                    options={ruleTypes.map((type: object) => ({ value: type, text: type }))}
                     onChange={Formikprops.handleChange}
                     value={Formikprops.values.ruleType}
                   />
@@ -94,19 +94,28 @@ export const Visual = () => {
 
             <EuiSpacer />
 
-            <EuiFormRow
-              label="Detection"
-              fullWidth
-              helpText={Formikprops.touched.ruleDetection && Formikprops.errors.ruleDetection}
-            >
-              <EuiTextArea
+            {/* <EuiTextArea
                 fullWidth
                 name="ruleDetection"
                 value={Formikprops.values.ruleDetection}
                 onChange={Formikprops.handleChange}
                 onBlur={Formikprops.handleBlur}
-              />
-            </EuiFormRow>
+              /> */}
+            <EuiCodeEditor
+              mode="yaml"
+              theme="github"
+              width="100%"
+              height="300px"
+              setOptions={{
+                fontSize: '14px',
+                enableBasicAutocompletion: true,
+                enableSnippets: true,
+                enableLiveAutocompletion: true,
+              }}
+              onLoad={(editor) => {
+                console.log(editor);
+              }}
+            />
 
             <EuiSpacer />
 

@@ -69,7 +69,6 @@
   },
   "dependencies": {
     "formik": "^2.2.9",
-    "monaco-yaml": "^4.0.2",
     "yup": "^0.32.11"
   }
 }

@@ -1,29 +1,35 @@
-import React, { useState, useReducer } from 'react';
-import { initialState, reducer } from '../../../../../state-management';
+import React, { useState, useEffect } from 'react';
+import { customRequest } from '../../../../../state-management';
 import Modal from '../../../../../lib/UIComponents/Modal';
 import { EuiInMemoryTable } from '@elastic/eui';
 import _ from 'lodash';
+import { EuiTitle, EuiFlyout, EuiFlyoutBody, EuiFlyoutHeader } from '@elastic/eui';
+import axios from 'axios';
 
-interface tableProps {
-  rules: any;
-}
-
-export const CustomTable = ({ rules }: tableProps) => {
-  const [state] = useReducer(reducer, initialState);
+export const CustomTable = () => {
   const [pagination, setPagination] = useState({ pageIndex: 0 });
   const [query, setQuery] = useState<string>('');
   const [modalType, setModalType] = useState<undefined | string>('');
-  const [modalContent, setModalContent] = useState<any | string>('');
+  const [content, setContent] = useState<any | string>('');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const closeModal = () => setIsModalVisible(false);
   const showModal = () => setIsModalVisible(true);
+  const [customRules, setCustomRules] = useState<any | object>([]);
 
-  const tableRules = rules;
+  useEffect(() => {
+    axios(customRequest).then((res) => {
+      let customRules: any = [];
+      res.data.hits.hits.forEach((rule: any) => {
+        customRules.push(rule._source);
+      });
+      setCustomRules(customRules);
+    });
+  }, []);
 
   let modal;
 
   if (isModalVisible) {
-    modal = <Modal close={closeModal} modalContent={modalContent} type={modalType} />;
+    modal = <Modal close={closeModal} content={content} type={modalType} ruleType={'custom'} />;
   }
 
   const columns = [
@@ -90,11 +96,11 @@ export const CustomTable = ({ rules }: tableProps) => {
       'data-test-subj': `row-${id}`,
       className: 'customRowClass',
       onClick: () => {
-        let rule = _.filter(rules, function (o) {
+        let rule = _.filter(customRules, function (o) {
           return o.id === id;
         });
         setModalType('view');
-        setModalContent(rule[0]);
+        setContent(rule[0]);
         showModal();
       },
     };
@@ -113,10 +119,12 @@ export const CustomTable = ({ rules }: tableProps) => {
   return (
     <div>
       <EuiInMemoryTable
-        items={tableRules}
+        items={customRules}
         columns={columns}
         search={search}
-        pagination={tableRules.length < 7 ? false : { ...pagination, pageSizeOptions: [7, 15, 25] }}
+        pagination={
+          customRules.length < 7 ? false : { ...pagination, pageSizeOptions: [7, 15, 25] }
+        }
         onTableChange={({ page: { index } }: { page: any }) => setPagination({ pageIndex: index })}
         sorting={true}
         rowProps={getRowProps}

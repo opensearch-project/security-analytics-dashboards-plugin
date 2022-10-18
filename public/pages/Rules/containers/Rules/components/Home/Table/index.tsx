@@ -1,8 +1,8 @@
-import React, { useState, Fragment } from 'react';
-import { initialState } from '../../../../../state-management';
+import React, { useState, Fragment, useEffect } from 'react';
+import { ruleTypes } from '../../../../../lib/helpers';
 import { CustomTable } from '../../Tables/Custom';
 import { SigmaTable } from '../../Tables/SIGMA';
-
+import axios from 'axios';
 import _ from 'lodash';
 import {
   EuiText,
@@ -12,85 +12,132 @@ import {
   EuiFacetButton,
   EuiSpacer,
   EuiPanel,
+  EuiCheckbox,
 } from '@elastic/eui';
 
 export const Table = () => {
   const [currentTable, setCurrentTable] = useState<string>('AllTable');
+  const [checked, setChecked] = useState(false);
+  const [applicationRules, setApplicationRules] = useState<any | object>([]);
+
+  useEffect(() => {
+    let rulesArray: any = [];
+    const loadRules = () => {
+      ruleTypes.map((ruleType: any) => {
+        const request = {
+          url:
+            'http://18.237.38.16:80/_plugins/_security_analytics/rules/_search?pre_packaged=true',
+          method: 'POST',
+          data: {
+            from: 0,
+            size: 2500,
+            query: {
+              nested: {
+                path: 'rule',
+                query: {
+                  bool: {
+                    must: [{ match: { 'rule.category': ruleType } }],
+                  },
+                },
+              },
+            },
+          },
+        };
+        axios(request).then((res) => {
+          let data: any = [];
+          res.data.hits.hits.forEach((rule: any) => {
+            data.push(rule._source);
+          });
+          rulesArray.push(data);
+        });
+      });
+    };
+    const setRules = () => {
+      setApplicationRules(rulesArray);
+    };
+    loadRules();
+    setRules();
+  }, []);
+
+  const onChange = (e: any) => {
+    setChecked(e.target.checked);
+    // setCurrentTable(`${facet.label}Table`)
+  };
 
   const facets = [
     {
       id: 'application',
-      label: `Application (${initialState.applicationRules.length})`,
+      label: `Application (${applicationRules.length > 0 ? applicationRules[0].length : ''})`,
       onClick: () => {
         setCurrentTable('ApplicationTable');
       },
     },
     {
       id: 'apt',
-      label: `Apt (${initialState.aptRules.length})`,
+      label: `Apt (${applicationRules.length > 0 ? applicationRules[1].length : ''})`,
       onClick: () => {
         setCurrentTable('AptTable');
       },
     },
     {
       id: 'cloud',
-      label: `Cloud (${initialState.cloudRules.length})`,
+      label: `Cloud (${applicationRules.length > 0 ? applicationRules[2].length : ''})`,
       onClick: () => {
         setCurrentTable('CloudTable');
       },
     },
     {
       id: 'compliance',
-      label: `Compliance (${initialState.complianceRules.length})`,
+      label: `Compliance (${applicationRules.length > 0 ? applicationRules[3].length : ''})`,
       onClick: () => {
         setCurrentTable('ComplianceTable');
       },
     },
     {
       id: 'linux',
-      label: `Linux (${initialState.linuxRules.length})`,
+      label: `Linux (${applicationRules.length > 0 ? applicationRules[4].length : ''})`,
       onClick: () => {
         setCurrentTable('LinuxTable');
       },
     },
     {
       id: 'macos',
-      label: `macOS (${initialState.macosRules.length})`,
+      label: `macOS (${applicationRules.length > 0 ? applicationRules[5].length : ''})`,
       onClick: () => {
         setCurrentTable('macOSTable');
       },
     },
     {
       id: 'network',
-      label: `Network (${initialState.networkRules.length})`,
+      label: `Network (${applicationRules.length > 0 ? applicationRules[6].length : ''})`,
       onClick: () => {
         setCurrentTable('NetworkTable');
       },
     },
     {
       id: 'proxy',
-      label: `Proxy (${initialState.proxyRules.length})`,
+      label: `Proxy (${applicationRules.length > 0 ? applicationRules[7].length : ''})`,
       onClick: () => {
         setCurrentTable('ProxyTable');
       },
     },
     {
       id: 'web',
-      label: `Web (${initialState.webRules.length})`,
+      label: `Web (${applicationRules.length > 0 ? applicationRules[8].length : ''})`,
       onClick: () => {
         setCurrentTable('WebTable');
       },
     },
-    {
-      id: 'windows',
-      label: `Windows (${initialState.windowsRules.length})`,
-      onClick: () => {
-        setCurrentTable('WindowsTable');
-      },
-    },
+    // {
+    //   id: 'windows',
+    //   label: `Windows (${applicationRules.length > 0 ? applicationRules[9].length : ''})`,
+    //   onClick: () => {
+    //     setCurrentTable('WindowsTable');
+    //   },
+    // },
     {
       id: 'custom',
-      label: `Custom (${initialState.customRules.length})`,
+      label: `Custom`,
       onClick: () => {
         setCurrentTable('CustomTable');
       },
@@ -100,29 +147,9 @@ export const Table = () => {
   const tableSwitch = () => {
     switch (currentTable) {
       case 'AllTable':
-        return <SigmaTable rules={initialState.rules} />;
-      case 'ApplicationTable':
-        return <SigmaTable rules={initialState.applicationRules} />;
-      case 'AptTable':
-        return <SigmaTable rules={initialState.aptRules} />;
-      case 'CloudTable':
-        return <SigmaTable rules={initialState.cloudRules} />;
-      case 'ComplianceTable':
-        return <SigmaTable rules={initialState.complianceRules} />;
-      case 'LinuxTable':
-        return <SigmaTable rules={initialState.linuxRules} />;
-      case 'macOSTable':
-        return <SigmaTable rules={initialState.macosRules} />;
-      case 'NetworkTable':
-        return <SigmaTable rules={initialState.networkRules} />;
-      case 'ProxyTable':
-        return <SigmaTable rules={initialState.proxyRules} />;
-      case 'WebTable':
-        return <SigmaTable rules={initialState.webRules} />;
-      case 'WindowsTable':
-        return <SigmaTable rules={initialState.windowsRules} />;
+        return <SigmaTable />;
       case 'CustomTable':
-        return <CustomTable rules={initialState.customRules} />;
+        return <CustomTable />;
     }
   };
 
@@ -136,27 +163,32 @@ export const Table = () => {
               onClick={() => setCurrentTable('AllTable')}
               style={{ cursor: 'pointer' }}
             >
-              <h4>View all rules ({initialState.rules.length})</h4>
+              <h3>Filter</h3>
             </EuiText>
             <EuiSpacer />
             <EuiFacetGroup>
+              <h2>Rule type</h2>
               {facets.map((facet) => {
                 return (
                   <EuiFacetButton key={facet.id} id={facet.id} onClick={facet.onClick}>
-                    {facet.label}
+                    <EuiCheckbox
+                      id={facet.id}
+                      label={facet.label}
+                      checked={checked}
+                      onChange={(e) => onChange(e)}
+                    />
                   </EuiFacetButton>
                 );
               })}
             </EuiFacetGroup>
           </EuiFlexItem>
           <EuiFlexItem grow={5}>
-            <EuiText>
+            {/* <EuiText>
               <h1>{`${currentTable.replace('Table', '')} Rules`}</h1>
             </EuiText>
-            <EuiSpacer />
-            {initialState.rules.length === 0 && <div>Loading Rules</div>}
-            {initialState.rules.length > 0 && <div>{tableSwitch()}</div>}
-
+            <EuiSpacer /> */}
+            {/* {applicationRules.length < 10 && <div>Loading Rules</div>} */}
+            {applicationRules.length > 0 && <div>{tableSwitch()}</div>}
             <EuiSpacer />
             <div style={{ display: 'flex', justifyContent: 'center' }}></div>
           </EuiFlexItem>

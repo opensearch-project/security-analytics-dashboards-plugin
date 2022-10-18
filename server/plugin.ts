@@ -3,27 +3,34 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { SecurityAnalyticsPluginSetup, SecurityAnalyticsPluginStart } from ".";
-import { Plugin, CoreSetup, CoreStart, ILegacyCustomClusterClient } from "../../../src/core/server";
-import securityAnalyticsPlugin from "./clusters/securityAnalytics/securityAnalyticsPlugin";
+import { SecurityAnalyticsPluginSetup, SecurityAnalyticsPluginStart } from '.';
+import { Plugin, CoreSetup, CoreStart, ILegacyCustomClusterClient } from '../../../src/core/server';
+import { createSecurityAnalyticsCluster } from './clusters/createSecurityAnalyticsCluster';
+import { NodeServices } from './models/interfaces';
+import { setupRuleRoutes } from './routes';
+import RulesService from './services/ruleService';
 
-export class SecurityAnalyticsPlugin implements Plugin<SecurityAnalyticsPluginSetup, SecurityAnalyticsPluginStart> {
+export class SecurityAnalyticsPlugin
+  implements Plugin<SecurityAnalyticsPluginSetup, SecurityAnalyticsPluginStart> {
   public async setup(core: CoreSetup) {
     // Create OpenSearch client that aware of SA API endpoints
-    const osDriver: ILegacyCustomClusterClient = core.opensearch.legacy.createClient("security_analytics", {
-      plugins: [securityAnalyticsPlugin],
-    });
+    const osDriver: ILegacyCustomClusterClient = createSecurityAnalyticsCluster(core);
 
     // Initialize services
-    const services = {};
+    const services: NodeServices = {
+      rulesService: new RulesService(osDriver),
+    };
 
     // Create router
     const router = core.http.createRouter();
 
+    // setup routes
+    setupRuleRoutes(services, router);
+
     return {};
   }
 
-  public async start(core: CoreStart) {
+  public async start(_core: CoreStart) {
     return {};
   }
 }

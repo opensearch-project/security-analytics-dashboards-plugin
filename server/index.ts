@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { schema, TypeOf } from "@osd/config-schema";
-import { PluginConfigDescriptor, PluginInitializerContext } from "../../../src/core/server";
-import { SecurityAnalyticsPlugin } from "./plugin";
+import { schema, TypeOf } from '@osd/config-schema';
+import { PluginConfigDescriptor, PluginInitializerContext } from '../../../src/core/server';
+import { SecurityAnalyticsPlugin } from './plugin';
 
 export const configSchema = schema.object({
   enabled: schema.boolean({ defaultValue: true }),

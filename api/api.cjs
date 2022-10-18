@@ -22,6 +22,35 @@ let proxyRules = [];
 let webRules = [];
 let windowsRules = [];
 let customRules = []
+const detectors = [
+  {
+    "type": "detector",
+    "detector_type": "windows",
+    "name": "Windows Detector",
+    "enabled": true,
+    "createdBy": "chip",
+    "schedule": {
+      "period": {
+        "interval": 1,
+        "unit": "MINUTES"
+      }
+    },
+    "inputs": [    {
+        "input": {
+          "description": "Windows detector for security analytics.",
+          "indices": [
+            "windows"
+          ],
+          "rules": [
+
+          ]
+        }
+      }
+  
+    ]
+  },
+  
+]
 
 fs.readdirSync('./mockData/application').forEach((file) => {
   let json = require(`./mockData/application/${file}`);
@@ -89,7 +118,7 @@ fs.readdirSync('./mockData/custom').forEach((file) => {
   customRules.push(json)
 });
 
-const data = [rules, applicationRules, aptRules, cloudRules, complianceRules, linuxRules, macosRules, networkRules, proxyRules, webRules, windowsRules, customRules]
+const data = [rules, applicationRules, aptRules, cloudRules, complianceRules, linuxRules, macosRules, networkRules, proxyRules, webRules, windowsRules, customRules, detectors]
 
 
 

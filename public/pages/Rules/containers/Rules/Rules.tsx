@@ -7,7 +7,7 @@ import React, { useEffect, useState, useReducer } from 'react';
 import { initialState, reducer } from '../../state-management';
 import { Home } from '../../containers/Rules/components/Home';
 import { Form } from './components/Forms';
-import { Import } from './components/Forms/Import';
+// import { Import } from './components/Forms/Import';
 import { getRules } from '../../requests';
 import {
   EuiPanel,
@@ -38,12 +38,12 @@ export const Rules = () => {
     showFlyout(false);
   };
 
-  const showImportFlyoutFunc = () => {
-    showImportFlyout(true);
-  };
-  const closeImportFlyoutFunc = () => {
-    showImportFlyout(false);
-  };
+  // const showImportFlyoutFunc = () => {
+  //   showImportFlyout(true);
+  // };
+  // const closeImportFlyoutFunc = () => {
+  //   showImportFlyout(false);
+  // };
 
   if (Flyout) {
     flyout = (
@@ -60,20 +60,20 @@ export const Rules = () => {
     );
   }
 
-  if (importFlyout) {
-    flyout = (
-      <EuiFlyout ownFocus onClose={closeImportFlyoutFunc}>
-        <EuiFlyoutHeader hasBorder>
-          <EuiTitle size="m">
-            <h3>Import new rules</h3>
-          </EuiTitle>
-        </EuiFlyoutHeader>
-        <EuiFlyoutBody>
-          <Import />
-        </EuiFlyoutBody>
-      </EuiFlyout>
-    );
-  }
+  // if (importFlyout) {
+  //   flyout = (
+  //     <EuiFlyout ownFocus onClose={closeImportFlyoutFunc}>
+  //       <EuiFlyoutHeader hasBorder>
+  //         <EuiTitle size="m">
+  //           <h3>Import new rules</h3>
+  //         </EuiTitle>
+  //       </EuiFlyoutHeader>
+  //       <EuiFlyoutBody>
+  //           <Import />
+  //       </EuiFlyoutBody>
+  //     </EuiFlyout>
+  //   );
+  // }
 
   useEffect(() => {
     getRules().then((res: any) => {
@@ -92,9 +92,10 @@ export const Rules = () => {
             <h3>Rules</h3>
           </EuiTitle>
         </EuiFlexItem>
-        <EuiFlexItem grow={false}>
+        {/* IMPORT RULES - For future release */}
+        {/* <EuiFlexItem grow={false}>
           <EuiButton onClick={showImportFlyoutFunc}>Import rules</EuiButton>
-        </EuiFlexItem>
+        </EuiFlexItem> */}
         <EuiFlexItem grow={false}>
           <EuiButton fill onClick={showFlyoutFunc}>
             Create new rule
