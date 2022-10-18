@@ -10,7 +10,7 @@ import FieldMappingsTable from '../components/RequiredFieldMapping';
 import { createDetectorSteps } from '../../../utils/constants';
 import { ContentPanel } from '../../../../../components/ContentPanel';
 import { Detector, FieldMapping } from '../../../../../../models/interfaces';
-import { EMPTY_FIELD_MAPPINGS } from '../utils/dummyData';
+import { EMPTY_FIELD_MAPPINGS, EXAMPLE_FIELD_MAPPINGS_RESPONSE } from '../utils/dummyData';
 import { DetectorCreationStep } from '../../../models/types';
 import { GetFieldMappingViewResponse } from '../../../../../../server/models/interfaces';
 import FieldMappingService from '../../../../../services/FieldMappingService';
@@ -19,8 +19,9 @@ import { MappingViewType } from '../components/RequiredFieldMapping/FieldMapping
 interface ConfigureFieldMappingProps extends RouteComponentProps {
   isEdit: boolean;
   detector: Detector;
-  replaceFieldMappings: (mappings: FieldMapping[]) => void;
   filedMappingService: FieldMappingService;
+  replaceFieldMappings: (mappings: FieldMapping[]) => void;
+  updateDataValidState: (step: DetectorCreationStep, isValid: boolean) => void;
 }
 
 interface ConfigureFieldMappingState {
@@ -48,13 +49,14 @@ export default class ConfigureFieldMapping extends Component<
 
   getAllMappings = async () => {
     this.setState({ loading: true });
-    const mappingsView = await this.props.filedMappingService.getMappingsView(
-      this.props.detector.inputs[0].input.indices[0],
-      this.props.detector.detector_type
-    );
-    if (mappingsView.ok) {
-      this.setState({ mappingsData: mappingsView.response });
-    }
+    // const mappingsView = await this.props.filedMappingService.getMappingsView(
+    //   this.props.detector.inputs[0].input.indices[0],
+    //   this.props.detector.detector_type
+    // );
+    // if (mappingsView.ok) {
+    //   this.setState({ mappingsData: mappingsView.response });
+    // }
+    this.setState({ mappingsData: EXAMPLE_FIELD_MAPPINGS_RESPONSE });
     this.setState({ loading: false });
   };
 
@@ -74,6 +76,10 @@ export default class ConfigureFieldMapping extends Component<
         };
       })
     );
+    const isDataValid = this.state.mappingsData.unmappedIndexFields.every(
+      (fieldName) => !!newMappings[fieldName]
+    );
+    this.props.updateDataValidState(DetectorCreationStep.CONFIGURE_FIELD_MAPPING, isDataValid);
   };
 
   render() {
@@ -149,9 +155,5 @@ export default class ConfigureFieldMapping extends Component<
         </EuiPanel>
       </div>
     );
-  }
-
-  static validateData(detector: Detector): boolean {
-    return true;
   }
 }

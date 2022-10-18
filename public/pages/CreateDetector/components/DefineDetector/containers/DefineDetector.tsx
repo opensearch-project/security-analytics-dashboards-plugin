@@ -14,12 +14,14 @@ import DetectionRules from '../components/DetectionRules';
 import { EuiComboBoxOptionOption } from '@opensearch-project/oui';
 import IndexService from '../../../../../services/IndexService';
 import { MIN_NUM_DATA_SOURCES } from '../../../../Detectors/utils/constants';
+import { DetectorCreationStep } from '../../../models/types';
 
 interface DefineDetectorProps extends RouteComponentProps {
   detector: Detector;
   isEdit: boolean;
   indexService: IndexService;
   changeDetector: (detector: Detector) => void;
+  updateDataValidState: (step: DetectorCreationStep, isValid: boolean) => void;
 }
 
 interface DefineDetectorState {}
@@ -31,13 +33,22 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
     }
   };
 
+  updateDetectorCreationState(detector: Detector) {
+    const isDataValid =
+      !!detector.name &&
+      !!detector.detector_type &&
+      detector.inputs[0].input.indices.length >= MIN_NUM_DATA_SOURCES;
+    this.props.changeDetector(detector);
+    this.props.updateDataValidState(DetectorCreationStep.DEFINE_DETECTOR, isDataValid);
+  }
+
   onDetectorNameChange = (detectorName: string) => {
     const newDetector: Detector = {
       ...this.props.detector,
       name: detectorName,
     };
 
-    this.props.changeDetector(newDetector);
+    this.updateDetectorCreationState(newDetector);
   };
 
   onDetectorInputDescriptionChange = (event: ChangeEvent<HTMLTextAreaElement>, index = 0) => {
@@ -55,7 +66,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
       ],
     };
 
-    this.props.changeDetector(newDetector);
+    this.updateDetectorCreationState(newDetector);
   };
 
   onDetectorInputIndicesChange = (selectedOptions: EuiComboBoxOptionOption<string>[]) => {
@@ -75,7 +86,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
       ],
     };
 
-    this.props.changeDetector(newDetector);
+    this.updateDetectorCreationState(newDetector);
   };
 
   onDetectorTypeChange = (detectorType: string) => {
@@ -84,7 +95,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
       detector_type: detectorType,
     };
 
-    this.props.changeDetector(newDetector);
+    this.updateDetectorCreationState(newDetector);
   };
 
   onRulesChanged = (rules: Rule[]) => {};
@@ -133,14 +144,6 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
           onRulesChanged={this.onRulesChanged}
         />
       </div>
-    );
-  }
-
-  static validateData(detector: Detector): boolean {
-    return (
-      !!detector.name &&
-      !!detector.detector_type &&
-      detector.inputs[0].input.indices.length >= MIN_NUM_DATA_SOURCES
     );
   }
 }

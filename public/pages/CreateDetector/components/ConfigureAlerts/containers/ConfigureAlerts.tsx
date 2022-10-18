@@ -17,9 +17,10 @@ import { Detector } from '../../../../../../models/interfaces';
 import { DetectorCreationStep } from '../../../models/types';
 
 interface ConfigureAlertsProps extends RouteComponentProps {
-  changeDetector: (detector: Detector) => void;
   detector: Detector;
   isEdit: boolean;
+  changeDetector: (detector: Detector) => void;
+  updateDataValidState: (step: DetectorCreationStep, isValid: boolean) => void;
 }
 
 interface ConfigureAlertsState {
@@ -101,9 +102,5 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
         </EuiButton>
       </div>
     );
-  }
-
-  static validateData(detector: Detector): boolean {
-    return true;
   }
 }
