@@ -3,4 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export interface BrowserServices {}
+import DetectorsService from '../services/DetectorService';
+import IndexService from '../services/IndexService';
+
+export interface BrowserServices {
+  detectorsService: DetectorsService;
+  indexService: IndexService;
+}

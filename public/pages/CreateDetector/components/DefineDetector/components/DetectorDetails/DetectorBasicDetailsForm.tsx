@@ -4,22 +4,24 @@
  */
 
 import React, { ChangeEvent, Component } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
 import { ContentPanel } from '../../../../../../components/ContentPanel';
 import { EuiFormRow, EuiFieldText, EuiSpacer, EuiTextArea } from '@elastic/eui';
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
 
 // TODO: Implement regex pattern to validate name and description strings
 
-interface DetectorDetailsProps extends RouteComponentProps {
+interface DetectorDetailsProps {
   hasSubmitted: boolean;
   detectorName: string;
   detectorDescription: string;
-  onDetectorNameChange: (value: ChangeEvent<HTMLInputElement>) => void;
+  onDetectorNameChange: (name: string) => void;
   onDetectorInputDescriptionChange: (value: ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
-interface DetectorDetailsState {}
+interface DetectorDetailsState {
+  nameChangedOnce: boolean;
+  nameIsInvalid: boolean;
+}
 
 export default class DetectorBasicDetailsForm extends Component<
   DetectorDetailsProps,
@@ -27,25 +29,38 @@ export default class DetectorBasicDetailsForm extends Component<
 > {
   constructor(props: DetectorDetailsProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      nameChangedOnce: false,
+      nameIsInvalid: false,
+    };
   }
 
+  getErrorMessage = () => {
+    return 'Enter a name for the detector.';
+  };
+
+  onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ nameChangedOnce: true, nameIsInvalid: !event.target.value });
+    this.props.onDetectorNameChange(event.target.value);
+  };
+
   render() {
-    const {
-      detectorName,
-      detectorDescription,
-      onDetectorNameChange,
-      onDetectorInputDescriptionChange,
-    } = this.props;
+    const { detectorName, detectorDescription, onDetectorInputDescriptionChange } = this.props;
+    const { nameIsInvalid } = this.state;
+
     return (
       <ContentPanel title={'Threat detector details'} titleSize={'m'}>
         <EuiSpacer size={'m'} />
-        <EuiFormRow label={<FormFieldHeader headerTitle={'Name'} />}>
+        <EuiFormRow
+          label={<FormFieldHeader headerTitle={'Name'} />}
+          isInvalid={nameIsInvalid}
+          error={this.getErrorMessage()}
+        >
           <EuiFieldText
             placeholder={'Enter a name for the detector.'}
             readOnly={false}
             value={detectorName}
-            onChange={onDetectorNameChange}
+            onChange={this.onNameChange}
             data-test-subj={'define-detector-detector-name'}
             required={true}
           />

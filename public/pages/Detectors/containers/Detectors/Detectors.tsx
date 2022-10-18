@@ -37,34 +37,36 @@ interface DetectorsState {
 
 export const EXAMPLE_DETECTORS: Detector[] = [
   {
-    type: 'dns',
-    detector_type: 'dns',
-    name: 'Policy 3_38fj',
-    alert_conditions: [],
+    type: 'detector',
+    detector_type: 'windows',
+    name: 'windows_detector',
     enabled: true,
+    createdBy: 'chip',
     schedule: {
       period: {
         interval: 1,
-        unit: 'minute',
+        unit: 'MINUTES',
       },
     },
-    inputs: [],
-    last_update_time: 1663872009766,
-  },
-  {
-    type: 'netflow',
-    detector_type: 'netflow',
-    name: 'Policy 2343_38fj',
-    alert_conditions: [],
-    enabled: true,
-    schedule: {
-      period: {
-        interval: 1,
-        unit: 'minute',
+    inputs: [
+      {
+        input: {
+          description: 'windows detector for security analytics',
+          indices: ['windows'],
+          enabledCustomRuleIds: [],
+        },
       },
-    },
-    inputs: [],
-    last_update_time: 1663871009766,
+    ],
+    triggers: [
+      {
+        sev_levels: [],
+        tags: [],
+        actions: [],
+        types: ['windows'],
+        name: 'test-trigger',
+        id: 'fyAy1IMBK2A1DZyOuW_b',
+      },
+    ],
   },
 ];
 

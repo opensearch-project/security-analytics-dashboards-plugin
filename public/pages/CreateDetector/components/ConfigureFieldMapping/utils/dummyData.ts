@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FieldMappingViewResponse } from '../../../types/interfaces';
+import { FieldMappingViewResponse } from '../../../models/interfaces';
 
 export const EMPTY_FIELD_MAPPINGS: FieldMappingViewResponse = {
   properties: {},

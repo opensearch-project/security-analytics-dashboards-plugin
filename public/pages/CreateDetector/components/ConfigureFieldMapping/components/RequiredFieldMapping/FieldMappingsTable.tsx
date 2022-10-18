@@ -15,7 +15,7 @@ import {
 import { DEFAULT_EMPTY_DATA } from '../../../../../../utils/constants';
 import { STATUS_ICON_PROPS } from '../../utils/constants';
 import SIEMFieldNameSelector from './SIEMFieldName';
-import { FieldMappingsTableItem } from '../../../../types/interfaces';
+import { FieldMappingsTableItem } from '../../../../models/interfaces';
 
 interface FieldMappingsTableProps extends RouteComponentProps {
   loading: boolean;

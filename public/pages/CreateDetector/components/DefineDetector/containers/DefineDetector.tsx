@@ -6,21 +6,34 @@
 import React, { ChangeEvent, Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { EuiSpacer, EuiTitle } from '@elastic/eui';
-import { Detector } from '../../../../../../models/interfaces';
+import { Detector, Rule } from '../../../../../../models/interfaces';
 import DetectorBasicDetailsForm from '../components/DetectorDetails';
 import DetectorDataSource from '../components/DetectorDataSource';
 import DetectorType from '../components/DetectorType';
 import DetectionRules from '../components/DetectionRules';
 import { EuiComboBoxOptionOption } from '@opensearch-project/oui';
+import { DetectorCreationStep } from '../../../models/types';
+
+import { ServicesConsumer } from '../../../../../services';
+import { BrowserServices } from '../../../../../models/interfaces';
 
 interface DefineDetectorProps extends RouteComponentProps {
-  changeDetector: (detector: Detector) => void;
   detector: Detector;
   isEdit: boolean;
+  onCompletion: (
+    step: DetectorCreationStep,
+    isComplete: boolean,
+    mergeDetectorData?: (detector: Detector) => Detector
+  ) => void;
 }
 
 interface DefineDetectorState {
   hasSubmitted: boolean;
+  detectorName: string;
+  detectorDescription: string;
+  indices: string[];
+  detectorType: string;
+  enabledCustomRuleIds: string[];
 }
 
 export default class DefineDetector extends Component<DefineDetectorProps, DefineDetectorState> {
@@ -28,6 +41,11 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
     super(props);
     this.state = {
       hasSubmitted: false,
+      detectorName: props.detector.name,
+      detectorDescription: props.detector.inputs[0].input.description,
+      indices: props.detector.inputs[0].input.indices,
+      detectorType: props.detector.detector_type,
+      enabledCustomRuleIds: props.detector.inputs[0].input.enabledCustomRuleIds,
     };
   }
 
@@ -37,89 +55,138 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
     }
   };
 
-  onDetectorNameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const detectorName = e.target.value;
-    const { changeDetector, detector } = this.props;
-    changeDetector({ ...detector, name: detectorName });
-  };
+  isPageComplete(): boolean {
+    const { detectorName, indices, detectorType } = this.state;
+    return !!detectorName && indices.length > 0 && !!detectorType;
+  }
 
-  onDetectorTypeChange = (detectorType: string) => {
-    const { changeDetector, detector } = this.props;
-    changeDetector({ ...detector, detector_type: detectorType });
+  onDefinitionChange(isPageComplete: boolean): void {
+    if (isPageComplete) {
+      const {
+        detectorName,
+        detectorDescription,
+        detectorType,
+        enabledCustomRuleIds,
+        indices,
+      } = this.state;
+      this.props.onCompletion(DetectorCreationStep.DEFINE_DETECTOR, true, (detector: Detector) => {
+        return {
+          ...detector,
+          name: detectorName,
+          detector_type: detectorType,
+          inputs: [
+            {
+              input: {
+                description: detectorDescription,
+                indices,
+                enabledCustomRuleIds,
+              },
+            },
+          ],
+        };
+      });
+    } else {
+      this.props.onCompletion(DetectorCreationStep.DEFINE_DETECTOR, false);
+    }
+  }
+
+  componentDidUpdate(
+    _prevProps: Readonly<DefineDetectorProps>,
+    prevState: Readonly<DefineDetectorState>
+  ): void {
+    const { detectorName: prevName, indices: pevIndices, detectorType: prevType } = prevState;
+    const wasPageComplete = !!prevName && pevIndices.length > 0 && !!prevType;
+    const { detectorName, indices, detectorType } = this.state;
+    const isPageComplete = !!detectorName && indices.length > 0 && !!detectorType;
+
+    if (wasPageComplete !== isPageComplete) {
+      this.onDefinitionChange(isPageComplete);
+    }
+  }
+
+  onDetectorNameChange = (detectorName: string) => {
+    this.setState({ detectorName });
   };
 
   onDetectorInputDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>, index = 0) => {
     const detectorDescription = e.target.value;
-    const { changeDetector, detector } = this.props;
-    const detectorInputs = detector.inputs;
-    detectorInputs[index].input.description = detectorDescription;
-    changeDetector({ ...detector, inputs: detectorInputs });
+    this.setState({ detectorDescription });
   };
 
-  onDetectorInputIndicesChange = (
-    selectedOptions: EuiComboBoxOptionOption<string>[],
-    index = 0
-  ) => {
+  onDetectorInputIndicesChange = (selectedOptions: EuiComboBoxOptionOption<string>[]) => {
     const detectorIndices = selectedOptions.map((selectedOption) => selectedOption.label);
-    const { changeDetector, detector } = this.props;
-    const detectorInputs = detector.inputs;
-    detectorInputs[index].input.indices = detectorIndices;
-    changeDetector({ ...detector, inputs: detectorInputs });
+    this.setState({ indices: detectorIndices });
   };
+
+  onDetectorTypeChange = (detectorType: string) => {
+    this.setState({ detectorType });
+  };
+
+  onRulesChanged = (rules: Rule[]) => {};
 
   onSubmit = () => {
     this.setState({ hasSubmitted: true });
   };
 
   render() {
+    const { isEdit } = this.props;
     const {
-      isEdit,
-      detector: { name, detector_type, inputs },
-    } = this.props;
-    const { hasSubmitted } = this.state;
+      hasSubmitted,
+      detectorName,
+      detectorDescription,
+      detectorType,
+      indices,
+      enabledCustomRuleIds,
+    } = this.state;
     return (
-      <div>
-        <EuiTitle size={'l'}>
-          <h3>{`${isEdit ? 'Edit' : 'Define'} detector`}</h3>
-        </EuiTitle>
+      <ServicesConsumer>
+        {(services: BrowserServices | null) =>
+          services && (
+            <div>
+              <EuiTitle size={'l'}>
+                <h3>{`${isEdit ? 'Edit' : 'Define'} detector`}</h3>
+              </EuiTitle>
 
-        <EuiSpacer size={'m'} />
+              <EuiSpacer size={'m'} />
 
-        <DetectorBasicDetailsForm
-          hasSubmitted={hasSubmitted}
-          detectorName={name}
-          detectorDescription={inputs[0].input.description}
-          onDetectorNameChange={this.onDetectorNameChange}
-          onDetectorInputDescriptionChange={this.onDetectorInputDescriptionChange}
-          {...this.props}
-        />
+              <DetectorBasicDetailsForm
+                hasSubmitted={hasSubmitted}
+                detectorName={detectorName}
+                detectorDescription={detectorDescription}
+                onDetectorNameChange={this.onDetectorNameChange}
+                onDetectorInputDescriptionChange={this.onDetectorInputDescriptionChange}
+              />
 
-        <EuiSpacer size={'m'} />
+              <EuiSpacer size={'m'} />
 
-        <DetectorDataSource
-          hasSubmitted={hasSubmitted}
-          detectorIndices={inputs[0].input.indices}
-          onDetectorInputIndicesChange={this.onDetectorInputIndicesChange}
-          {...this.props}
-        />
+              <DetectorDataSource
+                hasSubmitted={hasSubmitted}
+                detectorIndices={indices}
+                indexService={services.indexService}
+                onDetectorInputIndicesChange={this.onDetectorInputIndicesChange}
+                {...this.props}
+              />
 
-        <EuiSpacer size={'m'} />
+              <EuiSpacer size={'m'} />
 
-        <DetectorType
-          hasSubmitted={hasSubmitted}
-          detectorType={detector_type}
-          onDetectorTypeChange={this.onDetectorTypeChange}
-        />
+              <DetectorType
+                hasSubmitted={hasSubmitted}
+                detectorType={detectorType}
+                onDetectorTypeChange={this.onDetectorTypeChange}
+              />
 
-        <EuiSpacer size={'m'} />
+              <EuiSpacer size={'m'} />
 
-        <DetectionRules
-          {...this.props}
-          isEdit={isEdit}
-          hasSubmitted={hasSubmitted}
-          detectorRules={inputs[0].input.rules}
-        />
-      </div>
+              <DetectionRules
+                {...this.props}
+                enabledCustomRuleIds={enabledCustomRuleIds}
+                detectorType={detectorType}
+                onRulesChanged={this.onRulesChanged}
+              />
+            </div>
+          )
+        }
+      </ServicesConsumer>
     );
   }
 }
