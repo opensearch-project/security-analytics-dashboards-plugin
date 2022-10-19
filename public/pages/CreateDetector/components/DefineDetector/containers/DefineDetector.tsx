@@ -12,15 +12,16 @@ import DetectorDataSource from '../components/DetectorDataSource';
 import DetectorType from '../components/DetectorType';
 import DetectionRules from '../components/DetectionRules';
 import { EuiComboBoxOptionOption } from '@opensearch-project/oui';
-
-import { ServicesConsumer } from '../../../../../services';
-import { BrowserServices } from '../../../../../models/interfaces';
+import IndexService from '../../../../../services/IndexService';
 import { MIN_NUM_DATA_SOURCES } from '../../../../Detectors/utils/constants';
+import { DetectorCreationStep } from '../../../models/types';
 
 interface DefineDetectorProps extends RouteComponentProps {
   detector: Detector;
   isEdit: boolean;
+  indexService: IndexService;
   changeDetector: (detector: Detector) => void;
+  updateDataValidState: (step: DetectorCreationStep, isValid: boolean) => void;
 }
 
 interface DefineDetectorState {}
@@ -32,13 +33,22 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
     }
   };
 
+  updateDetectorCreationState(detector: Detector) {
+    const isDataValid =
+      !!detector.name &&
+      !!detector.detector_type &&
+      detector.inputs[0].input.indices.length >= MIN_NUM_DATA_SOURCES;
+    this.props.changeDetector(detector);
+    this.props.updateDataValidState(DetectorCreationStep.DEFINE_DETECTOR, isDataValid);
+  }
+
   onDetectorNameChange = (detectorName: string) => {
     const newDetector: Detector = {
       ...this.props.detector,
       name: detectorName,
     };
 
-    this.props.changeDetector(newDetector);
+    this.updateDetectorCreationState(newDetector);
   };
 
   onDetectorInputDescriptionChange = (event: ChangeEvent<HTMLTextAreaElement>, index = 0) => {
@@ -56,7 +66,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
       ],
     };
 
-    this.props.changeDetector(newDetector);
+    this.updateDetectorCreationState(newDetector);
   };
 
   onDetectorInputIndicesChange = (selectedOptions: EuiComboBoxOptionOption<string>[]) => {
@@ -76,7 +86,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
       ],
     };
 
-    this.props.changeDetector(newDetector);
+    this.updateDetectorCreationState(newDetector);
   };
 
   onDetectorTypeChange = (detectorType: string) => {
@@ -85,7 +95,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
       detector_type: detectorType,
     };
 
-    this.props.changeDetector(newDetector);
+    this.updateDetectorCreationState(newDetector);
   };
 
   onRulesChanged = (rules: Rule[]) => {};
@@ -96,59 +106,44 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
     const { description, indices, enabledCustomRuleIds } = inputs[0].input;
 
     return (
-      <ServicesConsumer>
-        {(services: BrowserServices | null) =>
-          services && (
-            <div>
-              <EuiTitle size={'l'}>
-                <h3>{`${isEdit ? 'Edit' : 'Define'} detector`}</h3>
-              </EuiTitle>
+      <div>
+        <EuiTitle size={'l'}>
+          <h3>{`${isEdit ? 'Edit' : 'Define'} detector`}</h3>
+        </EuiTitle>
 
-              <EuiSpacer size={'m'} />
+        <EuiSpacer size={'m'} />
 
-              <DetectorBasicDetailsForm
-                detectorName={name}
-                detectorDescription={description}
-                onDetectorNameChange={this.onDetectorNameChange}
-                onDetectorInputDescriptionChange={this.onDetectorInputDescriptionChange}
-              />
+        <DetectorBasicDetailsForm
+          detectorName={name}
+          detectorDescription={description}
+          onDetectorNameChange={this.onDetectorNameChange}
+          onDetectorInputDescriptionChange={this.onDetectorInputDescriptionChange}
+        />
 
-              <EuiSpacer size={'m'} />
+        <EuiSpacer size={'m'} />
 
-              <DetectorDataSource
-                detectorIndices={indices}
-                indexService={services.indexService}
-                onDetectorInputIndicesChange={this.onDetectorInputIndicesChange}
-                {...this.props}
-              />
+        <DetectorDataSource
+          {...this.props}
+          detectorIndices={indices}
+          onDetectorInputIndicesChange={this.onDetectorInputIndicesChange}
+        />
 
-              <EuiSpacer size={'m'} />
+        <EuiSpacer size={'m'} />
 
-              <DetectorType
-                detectorType={detector_type}
-                onDetectorTypeChange={this.onDetectorTypeChange}
-              />
+        <DetectorType
+          detectorType={detector_type}
+          onDetectorTypeChange={this.onDetectorTypeChange}
+        />
 
-              <EuiSpacer size={'m'} />
+        <EuiSpacer size={'m'} />
 
-              <DetectionRules
-                {...this.props}
-                enabledCustomRuleIds={enabledCustomRuleIds}
-                detectorType={detector_type}
-                onRulesChanged={this.onRulesChanged}
-              />
-            </div>
-          )
-        }
-      </ServicesConsumer>
-    );
-  }
-
-  static validateData(detector: Detector): boolean {
-    return (
-      !!detector.name &&
-      !!detector.detector_type &&
-      detector.inputs[0].input.indices.length >= MIN_NUM_DATA_SOURCES
+        <DetectionRules
+          {...this.props}
+          enabledCustomRuleIds={enabledCustomRuleIds}
+          detectorType={detector_type}
+          onRulesChanged={this.onRulesChanged}
+        />
+      </div>
     );
   }
 }

@@ -18,4 +18,22 @@ export function securityAnalyticsPlugin(Client: any, config: any, components: an
     needBody: true,
     method: 'POST',
   });
+
+  securityAnalytics[METHOD_NAMES.GET_MAPPINGS_VIEW] = createAction({
+    url: {
+      fmt: `${API.MAPPINGS_VIEW}?index_name=<%=indexName%>&rule_topic=<%=ruleTopic%>`,
+      req: {
+        indexName: {
+          type: 'string',
+          required: true,
+        },
+        ruleTopic: {
+          type: 'string',
+          required: false,
+        },
+      },
+    },
+    needBody: false,
+    method: 'GET',
+  });
 }

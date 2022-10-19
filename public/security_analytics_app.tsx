@@ -15,15 +15,18 @@ import './app.scss';
 import DetectorsService from './services/DetectorService';
 import IndexService from './services/IndexService';
 import { BrowserServices } from './models/interfaces';
+import FieldMappingService from './services/FieldMappingService';
 
 export function renderApp(coreStart: CoreStart, params: AppMountParameters, landingPage: string) {
   const http = coreStart.http;
 
   const detectorsService = new DetectorsService(http);
   const indexService = new IndexService(http);
+  const fieldMappingService = new FieldMappingService(http);
   const services: BrowserServices = {
     detectorsService,
     indexService,
+    fieldMappingService,
   };
 
   const isDarkMode = coreStart.uiSettings.get('theme:darkMode') || false;

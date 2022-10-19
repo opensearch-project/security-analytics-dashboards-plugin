@@ -9,12 +9,13 @@ import { ChangeEvent } from 'react';
 
 interface SIEMFieldNameProps {
   siemFieldNameOptions: string[];
+  isInvalid: boolean;
   onChange: (option: string) => void;
 }
 
 interface SIEMFieldNameState {
-  options: { value: string; text: string }[];
   selectedOption?: string;
+  errorMessage?: string;
 }
 
 export default class SIEMFieldNameSelector extends Component<
@@ -24,7 +25,6 @@ export default class SIEMFieldNameSelector extends Component<
   constructor(props: SIEMFieldNameProps) {
     super(props);
     this.state = {
-      options: props.siemFieldNameOptions.map((option) => ({ value: option, text: option })),
       selectedOption: undefined,
     };
   }
@@ -32,17 +32,25 @@ export default class SIEMFieldNameSelector extends Component<
   onChange: React.ChangeEventHandler<HTMLSelectElement> = (
     event: ChangeEvent<HTMLSelectElement>
   ) => {
-    this.props.onChange(event.target.value);
     this.setState({ selectedOption: event.target.value });
+    this.props.onChange(event.target.value);
   };
 
   render() {
+    const { isInvalid } = this.props;
     return (
-      <EuiFormRow style={{ width: '100%' }}>
+      <EuiFormRow
+        style={{ width: '100%' }}
+        isInvalid={isInvalid}
+        error={isInvalid ? 'Alias already used' : undefined}
+      >
         <EuiSelect
           required={true}
           hasNoInitialSelection
-          options={this.state.options}
+          options={this.props.siemFieldNameOptions.map((option) => ({
+            value: option,
+            text: option,
+          }))}
           value={this.state.selectedOption}
           onChange={this.onChange}
         />
