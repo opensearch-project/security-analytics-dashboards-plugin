@@ -60,14 +60,13 @@ export default class ConfigureFieldMapping extends Component<
 
   getAllMappings = async () => {
     this.setState({ loading: true });
-    // const mappingsView = await this.props.filedMappingService.getMappingsView(
-    //   this.props.detector.inputs[0].input.indices[0],
-    //   this.props.detector.detector_type
-    // );
-    // if (mappingsView.ok) {
-    //   this.setState({ mappingsData: mappingsView.response });
-    // }
-    this.setState({ mappingsData: EXAMPLE_FIELD_MAPPINGS_RESPONSE });
+    const mappingsView = await this.props.filedMappingService.getMappingsView(
+      this.props.detector.inputs[0].input.indices[0],
+      this.props.detector.detector_type
+    );
+    if (mappingsView.ok) {
+      this.setState({ mappingsData: mappingsView.response });
+    }
     this.setState({ loading: false });
   };
 
