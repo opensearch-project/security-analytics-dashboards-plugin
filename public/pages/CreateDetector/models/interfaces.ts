@@ -6,7 +6,6 @@
 export interface FieldMappingsTableItem {
   logFieldName: string;
   siemFieldName?: string;
-  status: 'unmapped' | 'mapped';
 }
 
 export interface DetectorCreationStepInfo {

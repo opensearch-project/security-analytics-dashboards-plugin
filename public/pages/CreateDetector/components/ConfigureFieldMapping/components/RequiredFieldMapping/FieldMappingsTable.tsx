@@ -56,14 +56,12 @@ export default class FieldMappingsTable<T extends MappingViewType> extends Compo
       items = indexFields.map((indexField) => ({
         logFieldName: indexField,
         siemFieldName: undefined,
-        status: 'unmapped',
       }));
     } else {
       items = indexFields.map((indexField, idx) => {
         return {
           logFieldName: indexField,
           siemFieldName: aliasNames[idx],
-          status: 'mapped',
         };
       });
     }
@@ -123,11 +121,17 @@ export default class FieldMappingsTable<T extends MappingViewType> extends Compo
         dataType: 'string',
         align: 'center',
         width: '15%',
-        render: (status: 'mapped' | 'unmapped', entry: FieldMappingsTableItem) => {
-          const iconProps =
-            status === 'unmapped' || !entry.siemFieldName
-              ? STATUS_ICON_PROPS['unmapped']
-              : STATUS_ICON_PROPS[status];
+        render: (_status: 'mapped' | 'unmapped', entry: FieldMappingsTableItem) => {
+          const { createdMappings, invalidMappingFieldNames } = this.props
+            .mappingProps as MappingProps[MappingViewType.Edit];
+          let iconProps = STATUS_ICON_PROPS['unmapped'];
+          if (
+            createdMappings[entry.logFieldName] &&
+            !invalidMappingFieldNames.includes(entry.logFieldName)
+          ) {
+            iconProps = STATUS_ICON_PROPS['mapped'];
+          }
+
           return <EuiIcon {...iconProps} /> || DEFAULT_EMPTY_DATA;
         },
       });
