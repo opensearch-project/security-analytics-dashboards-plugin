@@ -16,6 +16,9 @@ export const BASE_API_PATH = '/_plugins/_security_analytics';
 export const API: SecurityAnalyticsApi = Object.freeze({
   DETECTORS_BASE: `${BASE_API_PATH}/detectors`,
   INDICES_BASE: `${BASE_API_PATH}/indices`,
+  GET_FINDINGS: `${BASE_API_PATH}/findings/_search`,
+  DOCUMENT_IDS_QUERY: `${BASE_API_PATH}/document_ids_query`,
+  TIME_RANGE_QUERY: `${BASE_API_PATH}/time_range_query`,
 });
 
 /**
@@ -31,6 +34,7 @@ export const METHOD_NAMES = {
   GET_DETECTOR: 'getDetector',
   GET_DETECTORS: 'getDetectors',
   UPDATE_DETECTOR: 'updateDetector',
+  GET_FINDINGS: 'getFindings',
 };
 
 /**
@@ -44,4 +48,5 @@ export const CLIENT_DETECTOR_METHODS = {
   GET_DETECTOR: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_DETECTOR}`,
   GET_DETECTORS: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_DETECTORS}`,
   UPDATE_DETECTOR: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.UPDATE_DETECTOR}`,
+  GET_FINDINGS: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_FINDINGS}`,
 };

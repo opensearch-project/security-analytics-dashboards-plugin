@@ -14,6 +14,9 @@ import { CoreServicesContext } from './components/core_services';
 import './app.scss';
 import DetectorsService from './services/DetectorService';
 import IndexService from './services/IndexService';
+import DetectorService from './services/DetectorService';
+import FindingsService from './services/FindingsService';
+import OpenSearchService from './services/OpenSearchService';
 import { BrowserServices } from './models/interfaces';
 
 export function renderApp(coreStart: CoreStart, params: AppMountParameters, landingPage: string) {
@@ -21,9 +24,13 @@ export function renderApp(coreStart: CoreStart, params: AppMountParameters, land
 
   const detectorsService = new DetectorsService(http);
   const indexService = new IndexService(http);
+  const findingsService = new FindingsService(http);
+  const opensearchService = new OpenSearchService(http);
   const services: BrowserServices = {
     detectorsService,
     indexService,
+    findingsService,
+    opensearchService,
   };
 
   const isDarkMode = coreStart.uiSettings.get('theme:darkMode') || false;

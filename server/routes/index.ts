@@ -3,4 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export { setupDetectorRoutes } from './DetectorRoutes';
+import { setupDetectorRoutes } from './DetectorRoutes';
+import FindingsRoutes from './FindingsRoutes';
+import OpenSearchRoutes from './OpenSearchRoutes';
+
+export { setupDetectorRoutes, FindingsRoutes, OpenSearchRoutes };

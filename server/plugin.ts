@@ -7,10 +7,13 @@ import { SecurityAnalyticsPluginSetup, SecurityAnalyticsPluginStart } from '.';
 import { Plugin, CoreSetup, CoreStart, ILegacyCustomClusterClient } from '../../../src/core/server';
 import { createSecurityAnalyticsCluster } from './clusters/createSecurityAnalyticsCluster';
 import { NodeServices } from './models/interfaces';
+import { FindingsRoutes, OpenSearchRoutes } from './routes';
 import { setupDetectorRoutes } from './routes';
 import { setupIndexRoutes } from './routes/IndexRoutes';
 import DetectorsService from './services/DetectorService';
 import IndexService from './services/IndexService';
+import FindingsService from './services/FindingsService';
+import OpenSearchService from './services/OpenSearchService';
 
 export class SecurityAnalyticsPlugin
   implements Plugin<SecurityAnalyticsPluginSetup, SecurityAnalyticsPluginStart> {
@@ -22,6 +25,8 @@ export class SecurityAnalyticsPlugin
     const services: NodeServices = {
       detectorsService: new DetectorsService(osDriver),
       indexService: new IndexService(osDriver),
+      findingsService: new FindingsService(osDriver),
+      opensearchService: new OpenSearchService(osDriver),
     };
 
     // Create router
@@ -30,6 +35,8 @@ export class SecurityAnalyticsPlugin
     // setup routes
     setupDetectorRoutes(services, router);
     setupIndexRoutes(services, router);
+    FindingsRoutes(services, router);
+    OpenSearchRoutes(services, router);
 
     return {};
   }

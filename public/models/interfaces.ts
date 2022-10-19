@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import DetectorsService from '../services/DetectorService';
+import { DetectorsService, FindingsService, OpenSearchService } from '../services';
 import IndexService from '../services/IndexService';
 
 export interface BrowserServices {
-  detectorsService: DetectorsService;
+  detectorService: DetectorsService;
+  findingsService: FindingsService;
   indexService: IndexService;
+  opensearchService: OpenSearchService;
 }

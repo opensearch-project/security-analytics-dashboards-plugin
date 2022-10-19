@@ -5,16 +5,21 @@
 
 import { Detector } from '../../models/interfaces';
 import DetectorsService from '../services/DetectorService';
-import IndexService from '../services/IndexService';
+import { FindingsService, IndexService, OpenSearchService } from '../services';
 
 export interface SecurityAnalyticsApi {
   readonly DETECTORS_BASE: string;
   readonly INDICES_BASE: string;
+  readonly GET_FINDINGS: string;
+  readonly DOCUMENT_IDS_QUERY: string;
+  readonly TIME_RANGE_QUERY: string;
 }
 
 export interface NodeServices {
   detectorsService: DetectorsService;
   indexService: IndexService;
+  findingsService: FindingsService;
+  opensearchService: OpenSearchService;
 }
 
 export interface CreateDetectorParams {
@@ -50,4 +55,31 @@ export interface CatIndex {
   'store.size': string;
   uuid: string;
   data_stream: string | null;
+}
+
+export interface GetFindingsParams {
+  detectorType: string;
+}
+
+export interface GetFindingsResponse {
+  detector_id: string;
+  total_findings: number;
+  findings: Finding[];
+}
+
+export interface SearchResponse<T> {
+  hits: {
+    total: { value: number };
+    hits: { _source: T; _id: string; _seq_no?: number; _primary_term?: number }[];
+  };
+}
+
+export interface DocumentIdsQueryParams {
+  index: string;
+  body: string;
+}
+
+export interface TimeRangeQueryParams {
+  index: string;
+  body: string;
 }

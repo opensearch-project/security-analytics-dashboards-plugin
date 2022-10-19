@@ -18,4 +18,12 @@ export function securityAnalyticsPlugin(Client: any, config: any, components: an
     needBody: true,
     method: 'POST',
   });
+
+  securityAnalytics[METHOD_NAMES.GET_FINDINGS] = createAction({
+    url: {
+      fmt: API.GET_FINDINGS,
+    },
+    needBody: false,
+    method: 'GET',
+  });
 }
