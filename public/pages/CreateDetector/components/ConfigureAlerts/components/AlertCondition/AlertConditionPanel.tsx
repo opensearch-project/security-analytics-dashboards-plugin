@@ -122,15 +122,13 @@ export default class AlertConditionPanel extends Component<
     changeDetector({ ...detector, triggers: triggers });
   };
 
+  getSelectedTags(tags: string[]): EuiComboBoxOptionOption<string>[] {
+    return tags.map((tag) => ({ label: tag }));
+  }
+
   render() {
-    const {
-      alertCondition,
-      allNotificationChannels,
-      indexNum,
-      isEdit,
-      loadingNotifications,
-    } = this.props;
-    const { name, sev_levels: severity } = alertCondition;
+    const { alertCondition, allNotificationChannels, indexNum, loadingNotifications } = this.props;
+    const { name, sev_levels: severity, tags } = alertCondition;
     return (
       <EuiPanel>
         <EuiAccordion
@@ -141,7 +139,7 @@ export default class AlertConditionPanel extends Component<
             </EuiTitle>
           }
           paddingSize={'none'}
-          initialIsOpen={!isEdit}
+          initialIsOpen={true}
           extraAction={
             indexNum > 0 && <EuiButton onClick={this.onDelete}>Remove alert condition</EuiButton>
           }
@@ -177,7 +175,6 @@ export default class AlertConditionPanel extends Component<
 
           <EuiSpacer size={'m'} />
 
-          {/*// TODO: Are tags configured by the user, or returned by an API?*/}
           <EuiFormRow label={<FormFieldHeader headerTitle={'Tags'} />}>
             <EuiComboBox
               placeholder={'Enter tags for the alert condition.'}
@@ -185,6 +182,7 @@ export default class AlertConditionPanel extends Component<
               onChange={this.onTagsChange}
               onCreateOption={this.onCreateTag}
               noSuggestions={true}
+              selectedOptions={this.getSelectedTags(tags)}
             />
           </EuiFormRow>
 

@@ -25,6 +25,7 @@ interface ConfigureFieldMappingProps extends RouteComponentProps {
   detector: Detector;
   filedMappingService: FieldMappingService;
   replaceFieldMappings: (mappings: FieldMapping[]) => void;
+  fieldMappings: FieldMapping[];
   updateDataValidState: (step: DetectorCreationStep, isValid: boolean) => void;
 }
 
@@ -41,10 +42,14 @@ export default class ConfigureFieldMapping extends Component<
 > {
   constructor(props: ConfigureFieldMappingProps) {
     super(props);
+    const createdMappings: IndexFieldToAliasMap = {};
+    props.fieldMappings.forEach((mapping) => {
+      createdMappings[mapping.fieldName] = mapping.aliasName;
+    });
     this.state = {
       loading: false,
       mappingsData: EMPTY_FIELD_MAPPINGS,
-      createdMappings: {},
+      createdMappings,
       invalidMappingFieldNames: [],
     };
   }
