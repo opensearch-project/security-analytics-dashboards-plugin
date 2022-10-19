@@ -9,9 +9,8 @@ import { ChangeEvent } from 'react';
 
 interface SIEMFieldNameProps {
   siemFieldNameOptions: string[];
-  logFieldName: string;
+  isInvalid: boolean;
   onChange: (option: string) => void;
-  createdMappings: { [fieldName: string]: string };
 }
 
 interface SIEMFieldNameState {
@@ -30,38 +29,20 @@ export default class SIEMFieldNameSelector extends Component<
     };
   }
 
-  /**
-   * Returns false if the alias has already been selected for another field.
-   */
-  validateSelectedAlias(selectedAlias: string) {
-    const existingMappings = {
-      ...this.props.createdMappings,
-    };
-    delete existingMappings[this.props.logFieldName];
-
-    return Object.values(existingMappings).indexOf(selectedAlias) === -1;
-  }
-
   onChange: React.ChangeEventHandler<HTMLSelectElement> = (
     event: ChangeEvent<HTMLSelectElement>
   ) => {
-    if (!this.validateSelectedAlias(event.target.value)) {
-      this.setState({
-        selectedOption: event.target.value,
-        errorMessage: 'This alias is already in use, pleade select a different alias',
-      });
-    } else {
-      this.props.onChange(event.target.value);
-      this.setState({ selectedOption: event.target.value, errorMessage: undefined });
-    }
+    this.setState({ selectedOption: event.target.value });
+    this.props.onChange(event.target.value);
   };
 
   render() {
+    const { isInvalid } = this.props;
     return (
       <EuiFormRow
         style={{ width: '100%' }}
-        isInvalid={!!this.state.errorMessage}
-        error={this.state.errorMessage}
+        isInvalid={isInvalid}
+        error={isInvalid ? 'Alias already used' : undefined}
       >
         <EuiSelect
           required={true}

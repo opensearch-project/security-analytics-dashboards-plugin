@@ -16,6 +16,10 @@ import { GetFieldMappingViewResponse } from '../../../../../../server/models/int
 import FieldMappingService from '../../../../../services/FieldMappingService';
 import { MappingViewType } from '../components/RequiredFieldMapping/FieldMappingsTable';
 
+export interface IndexFieldToAliasMap {
+  [fieldName: string]: string;
+}
+
 interface ConfigureFieldMappingProps extends RouteComponentProps {
   isEdit: boolean;
   detector: Detector;
@@ -27,7 +31,8 @@ interface ConfigureFieldMappingProps extends RouteComponentProps {
 interface ConfigureFieldMappingState {
   loading: boolean;
   mappingsData: GetFieldMappingViewResponse;
-  createdMappings: { [fieldName: string]: string };
+  createdMappings: IndexFieldToAliasMap;
+  invalidMappingFieldNames: string[];
 }
 
 export default class ConfigureFieldMapping extends Component<
@@ -40,6 +45,7 @@ export default class ConfigureFieldMapping extends Component<
       loading: false,
       mappingsData: EMPTY_FIELD_MAPPINGS,
       createdMappings: {},
+      invalidMappingFieldNames: [],
     };
   }
 
@@ -60,14 +66,45 @@ export default class ConfigureFieldMapping extends Component<
     this.setState({ loading: false });
   };
 
+  validateMappings(mappings: IndexFieldToAliasMap): boolean {
+    const allFieldsMapped = this.state.mappingsData.unmappedIndexFields.every(
+      (fieldName) => !!mappings[fieldName]
+    );
+    const mappedAliases = Object.values(mappings);
+    const allAliasesUnique = mappedAliases.length === new Set(mappedAliases).size;
+
+    return allFieldsMapped && allAliasesUnique;
+  }
+
+  /**
+   * Returns the fieldName(s) that have duplicate alias assigned to them
+   */
+  getInvalidMappingFieldNames(mappings: IndexFieldToAliasMap): string[] {
+    const seenAliases = new Set();
+    const invalidFields: string[] = [];
+
+    Object.entries(mappings).forEach((entry) => {
+      if (seenAliases.has(entry[1])) {
+        invalidFields.push(entry[0]);
+      }
+
+      seenAliases.add(entry[1]);
+    });
+
+    return invalidFields;
+  }
+
   onMappingCreation = (fieldName: string, aliasName: string): void => {
-    const newMappings = {
+    const newMappings: IndexFieldToAliasMap = {
       ...this.state.createdMappings,
       [fieldName]: aliasName,
     };
+    const invalidMappingFieldNames = this.getInvalidMappingFieldNames(newMappings);
     this.setState({
       createdMappings: newMappings,
+      invalidMappingFieldNames: invalidMappingFieldNames,
     });
+
     this.props.replaceFieldMappings(
       Object.entries(newMappings).map((entry) => {
         return {
@@ -76,14 +113,12 @@ export default class ConfigureFieldMapping extends Component<
         };
       })
     );
-    const isDataValid = this.state.mappingsData.unmappedIndexFields.every(
-      (fieldName) => !!newMappings[fieldName]
-    );
-    this.props.updateDataValidState(DetectorCreationStep.CONFIGURE_FIELD_MAPPING, isDataValid);
+    const mappingsValid = this.validateMappings(newMappings);
+    this.props.updateDataValidState(DetectorCreationStep.CONFIGURE_FIELD_MAPPING, mappingsValid);
   };
 
   render() {
-    const { loading, mappingsData, createdMappings } = this.state;
+    const { loading, mappingsData, createdMappings, invalidMappingFieldNames } = this.state;
     const viewonlyMappings: { indexFields: string[]; aliasNames: string[] } = {
       indexFields: [],
       aliasNames: [],
@@ -114,7 +149,8 @@ export default class ConfigureFieldMapping extends Component<
                 indexFields={mappingsData.unmappedIndexFields}
                 mappingProps={{
                   type: MappingViewType.Edit,
-                  createdMappings: createdMappings,
+                  createdMappings,
+                  invalidMappingFieldNames,
                   onMappingCreation: this.onMappingCreation,
                 }}
                 {...this.props}

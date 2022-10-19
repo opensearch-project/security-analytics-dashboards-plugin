@@ -16,6 +16,7 @@ import { DEFAULT_EMPTY_DATA } from '../../../../../../utils/constants';
 import { STATUS_ICON_PROPS } from '../../utils/constants';
 import SIEMFieldNameSelector from './SIEMFieldName';
 import { FieldMappingsTableItem } from '../../../../models/interfaces';
+import { IndexFieldToAliasMap } from '../../containers/ConfigureFieldMapping';
 
 export enum MappingViewType {
   Readonly,
@@ -28,7 +29,8 @@ export interface MappingProps {
   };
   [MappingViewType.Edit]: {
     type: MappingViewType.Edit;
-    createdMappings: { [fieldName: string]: string };
+    createdMappings: IndexFieldToAliasMap;
+    invalidMappingFieldNames: string[];
     onMappingCreation: (fieldName: string, aliasName: string) => void;
   };
 }
@@ -90,17 +92,16 @@ export default class FieldMappingsTable<T extends MappingViewType> extends Compo
         width: '45%',
         render: (siemFieldName: string, entry: FieldMappingsTableItem) => {
           if (this.props.mappingProps.type === MappingViewType.Edit) {
-            const { onMappingCreation, createdMappings } = this.props
+            const { onMappingCreation, invalidMappingFieldNames } = this.props
               .mappingProps as MappingProps[MappingViewType.Edit];
             const onMappingSelected = (selectedAlias: string) => {
               onMappingCreation(entry.logFieldName, selectedAlias);
             };
             return (
               <SIEMFieldNameSelector
-                logFieldName={entry.logFieldName}
                 siemFieldNameOptions={aliasNames}
+                isInvalid={invalidMappingFieldNames.includes(entry.logFieldName)}
                 onChange={onMappingSelected}
-                createdMappings={createdMappings}
               />
             );
           }
