@@ -26,6 +26,7 @@ export default class RulesService {
   /**
    * Calls backend POST Rules API.
    */
+
   createRule = async (
     _context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,

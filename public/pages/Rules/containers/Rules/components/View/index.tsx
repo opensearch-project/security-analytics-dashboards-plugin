@@ -217,30 +217,6 @@ export const View = (props: any) => {
             </EuiFlexGroup>
             <EuiDescriptionList listItems={ruleInfoBottom} />
           </div>
-
-          // <EuiCodeBlock whiteSpace="pre-wrap">
-          //   <div><b>Author:</b> {content.author}</div>
-          //   <EuiSpacer/>
-          //   <div><b>Title:</b> {content.title}</div>
-          //   <EuiSpacer/>
-          //   <div><b>Description:</b> {content.description}</div>
-          //   <EuiSpacer/>
-          //   <div><b>Category:</b> {content.category}</div>
-          //   <EuiSpacer/>
-          //   <div><b>Status:</b> {content.status}</div>
-          //   <EuiSpacer/>
-          //   <div><b>Level:</b> {content.level}</div>
-          //   <EuiSpacer/>
-          //   <div><b>Last Modified:</b> {content.last_update_time}</div>
-          //   <EuiSpacer/>
-          //   <div><b>Falsepositives:</b>{ content.falsepositives ? content.falsepositives.map((falsepositive:string|any) => { return <div key={falsepositive.value}>{falsepositive.value}</div>}) : ''}</div>
-          //   <EuiSpacer/>
-          //   <div><b>References:</b> { content.references ? content.references.map((reference:string|any) => { return <div key={reference.value}>{reference.value}</div>}) : ''}</div>
-          //   <EuiSpacer/>
-          //   <div><b>Queries:</b> { content.queries ? content.queries.map((query:string|any) => { return <div key={query.value}>{query.value}</div>}) : ''}</div>
-          //   <EuiSpacer/>
-          //   <div><b>Tags:</b> { content.tags ? content.tags.map((tag:string|any) => { return <div key={tag.value}>{tag.value}</div>}) : ''}</div>
-          // </EuiCodeBlock>
         )}
         {showEditor && (
           <EuiMarkdownEditor

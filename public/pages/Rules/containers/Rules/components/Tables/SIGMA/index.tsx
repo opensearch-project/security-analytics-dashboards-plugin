@@ -16,6 +16,7 @@ export const SigmaTable = () => {
   const showModal = () => setIsModalVisible(true);
 
   useEffect(() => {
+    console.log('All request');
     axios(allRequest).then((res) => {
       let allRules: any = [];
       res.data.hits.hits.forEach((rule: any) => {

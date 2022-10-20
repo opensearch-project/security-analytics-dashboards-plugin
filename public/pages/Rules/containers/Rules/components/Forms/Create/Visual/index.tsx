@@ -1,5 +1,5 @@
-import React, { useReducer, useEffect } from 'react';
-import { ruleTypes } from '../../../../../lib/helpers';
+import React, { useState } from 'react';
+import { ruleTypes } from '../../../../../../lib/helpers';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import {
@@ -11,18 +11,51 @@ import {
   EuiSelect,
   EuiButton,
   EuiSpacer,
-  EuiCodeBlock,
   EuiTextArea,
-  EuiCodeEditor,
-  EuiIcon,
+  EuiComboBox,
 } from '@elastic/eui';
 
-export const Visual = (props: any) => {
+export const Visual = () => {
+  const [selectedOptions, setSelected] = useState([]);
+  const [options, setOptions] = useState<any>([]);
+
+  const onChange = (selectedOptions: any) => {
+    setSelected(selectedOptions);
+  };
+
+  const onCreateOption = (searchValue: string, flattenedOptions = []) => {
+    if (!searchValue) {
+      return;
+    }
+
+    const normalizedSearchValue = searchValue.trim().toLowerCase();
+
+    if (!normalizedSearchValue) {
+      return;
+    }
+
+    const newOption = {
+      label: searchValue,
+    };
+
+    // Create the option if it doesn't exist.
+    if (
+      flattenedOptions.findIndex(
+        (option) => option.label.trim().toLowerCase() === normalizedSearchValue
+      ) === -1
+    ) {
+      setOptions([...options, newOption]);
+    }
+
+    // Select the option.
+    setSelected((prevSelected) => [...prevSelected, newOption]);
+  };
+
   return (
     <Formik
       validateOnMount
       initialValues={{
-        ruleName: props.name,
+        ruleName: '',
         ruleType: '',
         ruleDescription: '',
         ruleDetection: '',
@@ -83,7 +116,7 @@ export const Visual = (props: any) => {
               fullWidth
               helpText={Formikprops.touched.ruleDescription && Formikprops.errors.ruleDescription}
             >
-              <EuiFieldText
+              <EuiTextArea
                 name="ruleDescription"
                 fullWidth
                 value={Formikprops.values.ruleDescription}
@@ -92,8 +125,6 @@ export const Visual = (props: any) => {
               />
             </EuiFormRow>
 
-            <EuiSpacer />
-
             {/* <EuiTextArea
                 fullWidth
                 name="ruleDetection"
@@ -101,7 +132,7 @@ export const Visual = (props: any) => {
                 onChange={Formikprops.handleChange}
                 onBlur={Formikprops.handleBlur}
               /> */}
-            <EuiCodeEditor
+            {/* <EuiCodeEditor
               mode="yaml"
               theme="github"
               width="100%"
@@ -112,13 +143,11 @@ export const Visual = (props: any) => {
                 enableSnippets: true,
                 enableLiveAutocompletion: true,
               }}
-              onLoad={(editor) => {
-                console.log(editor);
-              }}
-            />
-
+              // onLoad={(editor) => {
+              //   // console.log(editor);
+              // }}
+            /> */}
             <EuiSpacer />
-
             <EuiFormRow
               label="Security level"
               helpText={Formikprops.touched.securityLevel && Formikprops.errors.securityLevel}
@@ -136,116 +165,14 @@ export const Visual = (props: any) => {
                 value={Formikprops.values.securityLevel}
               />
             </EuiFormRow>
-
             <EuiSpacer />
 
-            <EuiFlexGroup style={{ maxWidth: 600 }}>
-              <EuiFlexItem>
-                <EuiFormRow label="Tags">
-                  <EuiFieldText
-                    name="tag1"
-                    value={Formikprops.values.tag1}
-                    onChange={Formikprops.handleChange}
-                    onBlur={Formikprops.handleBlur}
-                    append={
-                      <div
-                        style={
-                          Formikprops.values.tag1.length > 0
-                            ? { display: 'block' }
-                            : { display: 'none' }
-                        }
-                      >
-                        <EuiIcon
-                          id="tagIcon"
-                          type="crossInACircleFilled"
-                          onClick={() => Formikprops.setFieldValue('tag1', '')}
-                        />
-                      </div>
-                    }
-                  />
-                </EuiFormRow>
-              </EuiFlexItem>
-              <EuiFlexItem>
-                <EuiFormRow label="Tags">
-                  <EuiFieldText
-                    name="tag2"
-                    value={Formikprops.values.tag2}
-                    onChange={Formikprops.handleChange}
-                    onBlur={Formikprops.handleBlur}
-                    append={
-                      <div
-                        style={
-                          Formikprops.values.tag2.length > 0
-                            ? { display: 'block' }
-                            : { display: 'none' }
-                        }
-                      >
-                        <EuiIcon
-                          id="tagIcon"
-                          type="crossInACircleFilled"
-                          onClick={() => Formikprops.setFieldValue('tag2', '')}
-                        />
-                      </div>
-                    }
-                  />
-                </EuiFormRow>
-              </EuiFlexItem>
-            </EuiFlexGroup>
-
-            <EuiSpacer />
-
-            <EuiFlexGroup style={{ maxWidth: 600 }}>
-              <EuiFlexItem>
-                <EuiFormRow label="Tags">
-                  <EuiFieldText
-                    name="tag3"
-                    value={Formikprops.values.tag3}
-                    onChange={Formikprops.handleChange}
-                    onBlur={Formikprops.handleBlur}
-                    append={
-                      <div
-                        style={
-                          Formikprops.values.tag3.length > 0
-                            ? { display: 'block' }
-                            : { display: 'none' }
-                        }
-                      >
-                        <EuiIcon
-                          id="tagIcon"
-                          type="crossInACircleFilled"
-                          onClick={() => Formikprops.setFieldValue('tag3', '')}
-                        />
-                      </div>
-                    }
-                  />
-                </EuiFormRow>
-              </EuiFlexItem>
-              <EuiFlexItem>
-                <EuiFormRow label="Tags">
-                  <EuiFieldText
-                    name="tag4"
-                    value={Formikprops.values.tag4}
-                    onChange={Formikprops.handleChange}
-                    onBlur={Formikprops.handleBlur}
-                    append={
-                      <div
-                        style={
-                          Formikprops.values.tag4.length > 0
-                            ? { display: 'block' }
-                            : { display: 'none' }
-                        }
-                      >
-                        <EuiIcon
-                          id="tagIcon"
-                          type="crossInACircleFilled"
-                          onClick={() => Formikprops.setFieldValue('tag4', '')}
-                        />
-                      </div>
-                    }
-                  />
-                </EuiFormRow>
-              </EuiFlexItem>
-            </EuiFlexGroup>
+            <EuiComboBox
+              placeholder="Select or create options"
+              selectedOptions={selectedOptions}
+              onChange={onChange}
+              onCreateOption={onCreateOption}
+            />
 
             <EuiSpacer />
 

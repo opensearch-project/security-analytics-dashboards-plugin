@@ -1,8 +1,6 @@
-import React, { useState, Fragment } from 'react';
-import ReactDOM from 'react-dom';
+import React, { useState, Fragment, useEffect } from 'react';
 import { EuiFilePicker, EuiFlexGroup, EuiFlexItem, EuiText, EuiSpacer } from '@elastic/eui';
-import { EuiAccordion, EuiPanel } from '@elastic/eui';
-import { Visual } from '../Visual';
+import { ImportEdit } from './importEdit';
 
 export const Import = () => {
   const [files, setFiles] = useState([]);
@@ -10,9 +8,16 @@ export const Import = () => {
   const [userFiles, setUserFiles] = useState([]);
   const [fileErrors, setErrors] = useState('');
   const filePickerId = 'filepicker';
+  const [importedTitle, setImportedTitle] = useState<string>('');
+  const [importedDescription, setImportedDescription] = useState<string>('');
+  const [importedLevel, setImportedLevel] = useState<string>('');
 
-  let fileContent: any = [];
+  let fileContent: any[] = [];
+
   const parse = (file: any) => {
+    let title;
+    let description;
+    let level;
     let parseContent = [
       'title',
       'id',
@@ -38,10 +43,24 @@ export const Import = () => {
         let content: any = newFile[1].split('\\n');
         let parsedContent = content[0].trim();
         fileContent.push([parsedContent]);
+        switch (parseContent[i]) {
+          case 'title':
+            title = parsedContent;
+          case 'description':
+            description = parsedContent;
+          case 'level':
+            level = parsedContent;
+        }
+        // if(parseContent[i] === 'title'){
+        //   title = parsedContent
+        // }
       } else {
         setErrors(index);
       }
     }
+    setImportedTitle(title);
+    setImportedDescription(description);
+    setImportedLevel(level);
   };
 
   const onChange = (files: any) => {
@@ -64,14 +83,13 @@ export const Import = () => {
       reader.onload = function () {
         let content: any = reader.result;
         parse(JSON.stringify(content));
-        let accordianContent = (
-          <div>{file.type === 'application/x-yaml' && <div>{content}</div>}</div>
-        );
-        ReactDOM.render(accordianContent, document.getElementById(file.name));
       };
     });
   };
 
+  console.log('80 - import', fileContent);
+
+  let importProps = { importedTitle, importedDescription, importedLevel };
   return (
     <Fragment>
       <EuiFlexGroup>
@@ -81,7 +99,6 @@ export const Import = () => {
               <EuiFilePicker
                 id={filePickerId}
                 isInvalid={Boolean(fileErrors.length > 0 && userFiles.length > 0)}
-                multiple
                 fullWidth
                 initialPromptText="Select or drag yml file"
                 onChange={onChange}
@@ -100,15 +117,7 @@ export const Import = () => {
             {renderFiles()}
           </EuiText>
           {files.map((file: any, i: any) => (
-            <div key={i}>
-              {/* <EuiAccordion id="accordion" buttonContent={file.name}>
-                <EuiPanel color="subdued">
-                  <div id={file.name}> </div>
-                </EuiPanel>
-              </EuiAccordion> */}
-              <EuiSpacer />
-              <Visual name={file.name} />
-            </div>
+            <div key={i}>{importedLevel.length > 0 && <ImportEdit props={importProps} />}</div>
           ))}
         </EuiFlexItem>
       )}
