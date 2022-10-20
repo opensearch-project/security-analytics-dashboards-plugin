@@ -4,19 +4,18 @@
  */
 
 import {
+  ILegacyCustomClusterClient,
   OpenSearchDashboardsRequest,
   OpenSearchDashboardsResponseFactory,
   IOpenSearchDashboardsResponse,
   ResponseError,
   RequestHandlerContext,
-  ILegacyCustomClusterClient,
 } from 'opensearch-dashboards/server';
-import { CreateDetectorParams, CreateDetectorResponse } from '../models/interfaces';
-import { CLIENT_DETECTOR_METHODS } from '../utils/constants';
-import { Detector } from '../../models/interfaces';
+import { GetFindingsParams, GetFindingsResponse } from '../models/interfaces';
 import { ServerResponse } from '../models/types';
+import { CLIENT_DETECTOR_METHODS } from '../utils/constants';
 
-export default class DetectorService {
+export default class FindingsService {
   osDriver: ILegacyCustomClusterClient;
 
   constructor(osDriver: ILegacyCustomClusterClient) {
@@ -24,38 +23,37 @@ export default class DetectorService {
   }
 
   /**
-   * Calls backend POST Detectors API.
+   * Calls backend GET Findings API.
    */
-  createDetector = async (
-    _context: RequestHandlerContext,
+  getFindings = async (
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<
-    IOpenSearchDashboardsResponse<ServerResponse<CreateDetectorResponse> | ResponseError>
+    IOpenSearchDashboardsResponse<ServerResponse<GetFindingsResponse> | ResponseError>
   > => {
     try {
-      const detector = request.body as Detector;
-      const params: CreateDetectorParams = { body: detector };
+      const { detectorType } = request.query as { detectorType: string };
+      const params: GetFindingsParams = { detectorType };
       const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const createDetectorResponse: CreateDetectorResponse = await callWithRequest(
-        CLIENT_DETECTOR_METHODS.CREATE_DETECTOR,
+      const getFindingsResponse: GetFindingsResponse = await callWithRequest(
+        CLIENT_DETECTOR_METHODS.GET_FINDINGS,
         params
       );
-
       return response.custom({
         statusCode: 200,
         body: {
           ok: true,
-          response: createDetectorResponse,
+          response: getFindingsResponse,
         },
       });
-    } catch (error: any) {
-      console.error('Security Analytics - DetectorsService - createDetector:', error);
+    } catch (e) {
+      console.error('Security Analytics - FindingsService - getFindings:', e);
       return response.custom({
         statusCode: 200,
         body: {
           ok: false,
-          error: error.message,
+          error: e.message,
         },
       });
     }
