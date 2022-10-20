@@ -88,3 +88,11 @@ export const EMPTY_DEFAULT_DETECTOR: Detector = {
   inputs: [EMPTY_DEFAULT_DETECTOR_INPUT],
   triggers: [],
 };
+
+export const ALERT_STATE = Object.freeze({
+  ACTIVE: 'ACTIVE',
+  ACKNOWLEDGED: 'ACKNOWLEDGED',
+  COMPLETED: 'COMPLETED',
+  ERROR: 'ERROR',
+  DELETED: 'DELETED',
+});
