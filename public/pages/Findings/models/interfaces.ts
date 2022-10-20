@@ -12,7 +12,7 @@ interface Finding {
   id: string;
   detector_id: string;
   detector_name: string;
-  document_list: Document[];
+  document_list: FindingDocument[];
   index: string;
   queries: Query[];
   related_doc_ids: string[];
@@ -29,7 +29,7 @@ interface Query {
   description: string;
 }
 
-interface Document {
+interface FindingDocument {
   id: string;
   index: string;
   found: boolean;

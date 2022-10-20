@@ -8,30 +8,22 @@ import { RouteComponentProps } from 'react-router-dom';
 import {
   EuiBadge,
   EuiBadgeGroup,
-  EuiButton,
   EuiCodeBlock,
-  EuiContextMenuItem,
-  EuiContextMenuPanel,
-  EuiEmptyPrompt,
   EuiFlexGroup,
   EuiFlexItem,
   EuiFlyout,
   EuiFlyoutBody,
   EuiFlyoutHeader,
   EuiFormRow,
-  EuiInMemoryTable,
   EuiLink,
-  EuiOverlayMask,
-  EuiPopover,
   EuiSpacer,
-  EuiTableFieldDataColumnType,
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
 import { OpenSearchService } from '../../../services';
 import { renderTime } from '../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
-import { parseSeverityToOption } from '../../CreateDetector/components/ConfigureAlerts/utils/helpers';
+import { parseAlertSeverityToOption } from '../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 
 interface FindingDetailsFlyoutProps extends RouteComponentProps {
   finding: Finding;
@@ -39,7 +31,10 @@ interface FindingDetailsFlyoutProps extends RouteComponentProps {
   closeFlyout: () => void;
 }
 
-interface FindingDetailsFlyoutState {}
+interface FindingDetailsFlyoutState {
+  documents: FindingDocument[];
+  loading: boolean;
+}
 
 export default class FindingDetailsFlyout extends Component<
   FindingDetailsFlyoutProps,
@@ -69,7 +64,9 @@ export default class FindingDetailsFlyout extends Component<
     try {
       const response = await opensearchService.documentIdsQuery(index, related_doc_ids);
       if (response.ok) {
-        this.setState({ documents: response.response.hits.hits || [] });
+        this.setState({
+          documents: ((response.response.hits.hits as unknown) as FindingDocument[]) || [],
+        });
       } else {
         console.error('Failed to retrieve documents: ', response);
       }
@@ -114,7 +111,7 @@ export default class FindingDetailsFlyout extends Component<
             <EuiFlexItem>
               <EuiFormRow label={'Rule severity'}>
                 <EuiText>
-                  {parseSeverityToOption(rule.severity)?.label || DEFAULT_EMPTY_DATA}
+                  {parseAlertSeverityToOption(rule.severity)?.label || DEFAULT_EMPTY_DATA}
                 </EuiText>
               </EuiFormRow>
             </EuiFlexItem>
