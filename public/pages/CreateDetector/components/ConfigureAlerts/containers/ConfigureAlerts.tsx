@@ -65,6 +65,14 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
     changeDetector({ ...detector, triggers });
   };
 
+  onAlertTriggerChanged = (newDetector: Detector): void => {
+    const isTriggerDataValid = newDetector.triggers.every((trigger) => {
+      return !!trigger.name && trigger.sev_levels.length > 0;
+    });
+    this.props.changeDetector(newDetector);
+    this.props.updateDataValidState(DetectorCreationStep.CONFIGURE_ALERTS, isTriggerDataValid);
+  };
+
   render() {
     const {
       detector: { triggers },
@@ -91,6 +99,7 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
               allRuleTypes={ruleTypes}
               indexNum={index}
               loadingNotifications={loading}
+              onAlertTriggerChanged={this.onAlertTriggerChanged}
             />
           </div>
         ))}
