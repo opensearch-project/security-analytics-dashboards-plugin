@@ -8,7 +8,7 @@ import { SEVERITY_OPTIONS } from './constants';
 
 export const parseSeverityToOption = (severity: string): EuiComboBoxOptionOption<string> => {
   return Object.values(SEVERITY_OPTIONS).find(
-    (option) => option.value === severity
+    (option) => option.label === severity
   ) as EuiComboBoxOptionOption<string>;
 };
 

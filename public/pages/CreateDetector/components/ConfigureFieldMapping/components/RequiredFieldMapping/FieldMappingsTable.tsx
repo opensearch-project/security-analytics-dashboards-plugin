@@ -90,7 +90,7 @@ export default class FieldMappingsTable<T extends MappingViewType> extends Compo
         width: '45%',
         render: (siemFieldName: string, entry: FieldMappingsTableItem) => {
           if (this.props.mappingProps.type === MappingViewType.Edit) {
-            const { onMappingCreation, invalidMappingFieldNames } = this.props
+            const { onMappingCreation, invalidMappingFieldNames, createdMappings } = this.props
               .mappingProps as MappingProps[MappingViewType.Edit];
             const onMappingSelected = (selectedAlias: string) => {
               onMappingCreation(entry.logFieldName, selectedAlias);
@@ -98,6 +98,7 @@ export default class FieldMappingsTable<T extends MappingViewType> extends Compo
             return (
               <SIEMFieldNameSelector
                 siemFieldNameOptions={aliasNames}
+                selectedAlias={createdMappings[entry.logFieldName]}
                 isInvalid={invalidMappingFieldNames.includes(entry.logFieldName)}
                 onChange={onMappingSelected}
               />

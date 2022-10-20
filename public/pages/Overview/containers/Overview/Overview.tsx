@@ -5,13 +5,9 @@
 
 import './Overview.scss';
 import {
-  EuiBasicTable,
-  EuiBasicTableColumn,
-  EuiButton,
   EuiFlexGrid,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiHorizontalRule,
   EuiLink,
   EuiSelect,
   EuiSelectOption,
@@ -22,10 +18,19 @@ import { ContentPanel } from '../../../../components/ContentPanel';
 import { View, parse } from 'vega/build-es5/vega.js';
 import { compile } from 'vega-lite';
 import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
-import { FindingItem, OverviewProps, OverviewState } from '../../types/interfaces';
-import { dummyWidgetItems, getVisualizationSpec } from '../../utils/dummyData';
-import { groupByOptions, widgetHeaderData } from '../../utils/constants';
+import { OverviewProps, OverviewState } from '../../models/interfaces';
+import {
+  dummyAlertItems,
+  dummyDetectorItems,
+  dummyFindingItems,
+  getVisualizationSpec,
+} from '../../utils/dummyData';
+import { groupByOptions } from '../../utils/constants';
 import { CoreServicesContext } from '../../../../../public/components/core_services';
+import { RecentAlertsWidget } from '../../components/Widgets/RecentAlertsWidget';
+import { RecentFindingsWidget } from '../../components/Widgets/RecentFindingsWidget';
+import { WidgetContainer } from '../../components/Widgets/WidgetContainer';
+import { DetectorsWidget } from '../../components/Widgets/DetectorsWidget';
 import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter/build/vega-interpreter.module';
 
 export default class Overview extends Component<OverviewProps, OverviewState> {
@@ -36,29 +41,6 @@ export default class Overview extends Component<OverviewProps, OverviewState> {
     this.state = {
       groupBy: 'all_findings',
     };
-  }
-
-  createWidgetHeader(title: string, widgetActions: JSX.Element | null) {
-    return (
-      <EuiFlexItem>
-        <EuiFlexGroup justifyContent="spaceBetween" alignItems="center">
-          <EuiFlexItem>
-            <EuiText size="m">
-              <h4>{title}</h4>
-            </EuiText>
-          </EuiFlexItem>
-          <EuiFlexItem grow={false}>{widgetActions}</EuiFlexItem>
-        </EuiFlexGroup>
-      </EuiFlexItem>
-    );
-  }
-
-  createActionBtn(name: string, onClick: () => void) {
-    return (
-      <EuiButton size="s" onClick={onClick}>
-        {name}
-      </EuiButton>
-    );
   }
 
   createSelectComponent(
@@ -114,91 +96,59 @@ export default class Overview extends Component<OverviewProps, OverviewState> {
     this.renderVis();
   }
 
-  render() {
-    const columns: EuiBasicTableColumn<FindingItem>[] = [
-      {
-        field: 'time',
-        name: 'Time',
-        sortable: true,
-        align: 'left',
-      },
-      {
-        field: 'findingName',
-        name: 'Finding Name',
-        sortable: false,
-        align: 'left',
-      },
-      {
-        field: 'detector',
-        name: 'Detector',
-        sortable: true,
-        align: 'left',
-      },
+  createVisualizationActions(): React.ReactNode[] {
+    return [
+      this.createSelectComponent(groupByOptions, this.state.groupBy, (event) => {
+        this.setState({ groupBy: event.target.value });
+      }),
     ];
+  }
 
+  render() {
     return (
       <ContentPanel title={'Overview'}>
         <EuiFlexGroup direction="column">
           <EuiFlexItem className="grid-item">
-            <EuiFlexGroup direction="column" className="grid-item-content">
-              {this.createWidgetHeader(
-                'Findings and alert count',
-                this.createSelectComponent(groupByOptions, this.state.groupBy, (event) => {
-                  console.log(event.target.value);
-                  this.setState({ groupBy: event.target.value });
-                })
-              )}
-              <EuiHorizontalRule margin="xs" className="widget-hr" />
-              <EuiFlexItem>
-                <EuiFlexGroup gutterSize="xl">
-                  <EuiFlexItem grow={false}>
-                    <EuiText size="s">
-                      <p>Total active alerts</p>
-                    </EuiText>
-                    <EuiLink href={`#${ROUTES.RULES}`} className="page-link">
-                      43
-                    </EuiLink>
-                  </EuiFlexItem>
-                  <EuiFlexItem grow={false}>
-                    <EuiText size="s">
-                      <p>Total findings</p>
-                    </EuiText>
-                    <EuiLink href={`#${ROUTES.FINDINGS}`} className="page-link">
-                      323
-                    </EuiLink>
-                  </EuiFlexItem>
-                </EuiFlexGroup>
-              </EuiFlexItem>
-              <EuiFlexItem>
-                {/* The visualization container */}
-                <div id="view" style={{ width: '100%' }}></div>
-              </EuiFlexItem>
-            </EuiFlexGroup>
+            <WidgetContainer
+              title="Findings and alert count"
+              actions={this.createVisualizationActions()}
+            >
+              <EuiFlexGroup gutterSize="s" direction="column">
+                <EuiFlexItem>
+                  <EuiFlexGroup gutterSize="xl">
+                    <EuiFlexItem grow={false}>
+                      <EuiText size="s">
+                        <p>Total active alerts</p>
+                      </EuiText>
+                      <EuiLink href={`#${ROUTES.RULES}`} className="page-link">
+                        43
+                      </EuiLink>
+                    </EuiFlexItem>
+                    <EuiFlexItem grow={false}>
+                      <EuiText size="s">
+                        <p>Total findings</p>
+                      </EuiText>
+                      <EuiLink href={`#${ROUTES.FINDINGS}`} className="page-link">
+                        323
+                      </EuiLink>
+                    </EuiFlexItem>
+                  </EuiFlexGroup>
+                </EuiFlexItem>
+                <EuiFlexItem>
+                  <div id="view" style={{ width: '100%' }}></div>
+                </EuiFlexItem>
+              </EuiFlexGroup>
+            </WidgetContainer>
           </EuiFlexItem>
+
           <EuiFlexItem>
             <EuiFlexGrid columns={2} gutterSize="m">
-              {widgetHeaderData.map((data, idx) => {
-                return (
-                  <EuiFlexItem className="grid-item" key={idx}>
-                    <EuiFlexGroup direction="column" className="grid-item-content">
-                      {this.createWidgetHeader(
-                        data.widgetTitle,
-                        data.btnName
-                          ? this.createActionBtn(data.btnName, () =>
-                              alert(`Showing ${data.btnName}`)
-                            )
-                          : null
-                      )}
-                      <EuiHorizontalRule margin="xs" className="widget-hr" />
-                      <EuiBasicTable
-                        columns={columns}
-                        items={dummyWidgetItems}
-                        itemId={(item: FindingItem) => `${item.id}`}
-                      />
-                    </EuiFlexGroup>
-                  </EuiFlexItem>
-                );
-              })}
+              <RecentAlertsWidget items={dummyAlertItems} />
+              <RecentFindingsWidget items={dummyFindingItems} />
+              <WidgetContainer title="Top rules count from findings">
+                <div id="#top_rules_vis" />
+              </WidgetContainer>
+              <DetectorsWidget items={dummyDetectorItems} />
             </EuiFlexGrid>
           </EuiFlexItem>
         </EuiFlexGroup>
