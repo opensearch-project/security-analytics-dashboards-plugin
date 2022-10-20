@@ -12,5 +12,3 @@ export type TableWidgetProps<T extends TableWidgetItem> = {
   columns: EuiBasicTableColumn<T>[];
   items: T[];
 };
-
-export type OverviewTableWidgetProps = TableWidgetProps<FindingItem> | TableWidgetProps<AlertItem>;
