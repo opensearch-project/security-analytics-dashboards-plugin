@@ -10,6 +10,7 @@ import { ChangeEvent } from 'react';
 interface SIEMFieldNameProps {
   siemFieldNameOptions: string[];
   isInvalid: boolean;
+  selectedAlias: string;
   onChange: (option: string) => void;
 }
 
@@ -25,7 +26,7 @@ export default class SIEMFieldNameSelector extends Component<
   constructor(props: SIEMFieldNameProps) {
     super(props);
     this.state = {
-      selectedOption: undefined,
+      selectedOption: props.selectedAlias,
     };
   }
 

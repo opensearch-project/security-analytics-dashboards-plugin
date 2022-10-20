@@ -5,6 +5,8 @@
 
 import { Detector, DetectorInput, PeriodSchedule } from '../../models/interfaces';
 
+export const DATE_MATH_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
+
 export const PLUGIN_NAME = 'opensearch_security_analytics_dashboards';
 
 // TODO: Replace with actual documentation link once it's available
@@ -88,3 +90,11 @@ export const EMPTY_DEFAULT_DETECTOR: Detector = {
   inputs: [EMPTY_DEFAULT_DETECTOR_INPUT],
   triggers: [],
 };
+
+export const ALERT_STATE = Object.freeze({
+  ACTIVE: 'ACTIVE',
+  ACKNOWLEDGED: 'ACKNOWLEDGED',
+  COMPLETED: 'COMPLETED',
+  ERROR: 'ERROR',
+  DELETED: 'DELETED',
+});

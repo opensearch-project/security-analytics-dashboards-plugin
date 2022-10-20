@@ -19,6 +19,14 @@ export function securityAnalyticsPlugin(Client: any, config: any, components: an
     method: 'POST',
   });
 
+  securityAnalytics[METHOD_NAMES.GET_FINDINGS] = createAction({
+    url: {
+      fmt: API.GET_FINDINGS,
+    },
+    needBody: false,
+    method: 'GET',
+  });
+
   securityAnalytics[METHOD_NAMES.GET_MAPPINGS_VIEW] = createAction({
     url: {
       fmt: `${API.MAPPINGS_VIEW}?index_name=<%=indexName%>&rule_topic=<%=ruleTopic%>`,
@@ -33,7 +41,5 @@ export function securityAnalyticsPlugin(Client: any, config: any, components: an
         },
       },
     },
-    needBody: false,
-    method: 'GET',
   });
 }

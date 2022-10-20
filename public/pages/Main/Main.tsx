@@ -105,7 +105,13 @@ export default class Main extends Component<MainProps, object> {
                         />
                         <Route
                           path={ROUTES.FINDINGS}
-                          render={(props: RouteComponentProps) => <Findings {...props} />}
+                          render={(props: RouteComponentProps) => (
+                            <Findings
+                              {...props}
+                              findingsService={services!.findingsService}
+                              opensearchService={services!.opensearchService}
+                            />
+                          )}
                         />
                         <Route
                           path={ROUTES.DETECTORS}

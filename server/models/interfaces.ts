@@ -4,20 +4,24 @@
  */
 
 import { Detector } from '../../models/interfaces';
-import DetectorsService from '../services/DetectorService';
-import FieldMappingService from '../services/FieldMappingService';
-import IndexService from '../services/IndexService';
+import DetectorService from '../services/DetectorService';
+import { FindingsService, IndexService, OpenSearchService, FieldMappingService } from '../services';
 
 export interface SecurityAnalyticsApi {
   readonly DETECTORS_BASE: string;
   readonly INDICES_BASE: string;
+  readonly GET_FINDINGS: string;
+  readonly DOCUMENT_IDS_QUERY: string;
+  readonly TIME_RANGE_QUERY: string;
   readonly MAPPINGS_BASE: string;
   readonly MAPPINGS_VIEW: string;
 }
 
 export interface NodeServices {
-  detectorsService: DetectorsService;
+  detectorsService: DetectorService;
   indexService: IndexService;
+  findingsService: FindingsService;
+  opensearchService: OpenSearchService;
   fieldMappingService: FieldMappingService;
 }
 
@@ -54,6 +58,33 @@ export interface CatIndex {
   'store.size': string;
   uuid: string;
   data_stream: string | null;
+}
+
+export interface GetFindingsParams {
+  detectorType: string;
+}
+
+export interface GetFindingsResponse {
+  detector_id: string;
+  total_findings: number;
+  findings: Finding[];
+}
+
+export interface SearchResponse<T> {
+  hits: {
+    total: { value: number };
+    hits: { _source: T; _id: string; _seq_no?: number; _primary_term?: number }[];
+  };
+}
+
+export interface DocumentIdsQueryParams {
+  index: string;
+  body: string;
+}
+
+export interface TimeRangeQueryParams {
+  index: string;
+  body: string;
 }
 
 export interface GetFieldMapingsViewParams {

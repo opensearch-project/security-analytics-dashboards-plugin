@@ -100,6 +100,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             {...this.props}
             detector={this.state.detector}
             filedMappingService={services.fieldMappingService}
+            fieldMappings={this.state.fieldMappings}
             replaceFieldMappings={this.replaceFieldMappings}
             updateDataValidState={this.updateDataValidState}
           />
