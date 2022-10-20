@@ -8,7 +8,7 @@ import { schema } from '@osd/config-schema';
 import { NodeServices } from '../models/interfaces';
 import { API } from '../utils/constants';
 
-export default function (services: NodeServices, router: IRouter) {
+export function setupOpensearchRoutes(services: NodeServices, router: IRouter) {
   const { opensearchService } = services;
 
   router.get(

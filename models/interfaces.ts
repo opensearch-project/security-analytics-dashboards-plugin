@@ -46,3 +46,8 @@ export interface AlertCondition {
   name: string;
   id?: string;
 }
+
+export interface FieldMapping {
+  fieldName: string;
+  aliasName: string;
+}

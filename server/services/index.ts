@@ -6,5 +6,7 @@
 import DetectorService from './DetectorService';
 import FindingsService from './FindingsService';
 import OpenSearchService from './OpenSearchService';
+import IndexService from './IndexService';
+import FieldMappingService from './FieldMappingService';
 
-export { DetectorService, FindingsService, OpenSearchService };
+export { DetectorService, FieldMappingService, FindingsService, IndexService, OpenSearchService };

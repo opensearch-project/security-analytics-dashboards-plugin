@@ -4,7 +4,15 @@
  */
 
 import { setupDetectorRoutes } from './DetectorRoutes';
-import FindingsRoutes from './FindingsRoutes';
-import OpenSearchRoutes from './OpenSearchRoutes';
+import { setupFindingsRoutes } from './FindingsRoutes';
+import { setupOpensearchRoutes } from './OpenSearchRoutes';
+import { setupFieldMappingRoutes } from './FieldMappingRoutes';
+import { setupIndexRoutes } from './IndexRoutes';
 
-export { setupDetectorRoutes, FindingsRoutes, OpenSearchRoutes };
+export {
+  setupDetectorRoutes,
+  setupFindingsRoutes,
+  setupOpensearchRoutes,
+  setupFieldMappingRoutes,
+  setupIndexRoutes,
+};

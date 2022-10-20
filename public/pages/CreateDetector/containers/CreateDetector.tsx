@@ -12,12 +12,13 @@ import { createDetectorSteps } from '../utils/constants';
 import { BREADCRUMBS, PLUGIN_NAME, ROUTES } from '../../../utils/constants';
 import ConfigureFieldMapping from '../components/ConfigureFieldMapping';
 import ConfigureAlerts from '../components/ConfigureAlerts';
-import { Detector } from '../../../../models/interfaces';
+import { Detector, FieldMapping } from '../../../../models/interfaces';
 import { EMPTY_DEFAULT_DETECTOR } from '../../../utils/constants';
 import { EuiContainedStepProps } from '@elastic/eui/src/components/steps/steps';
 import { CoreServicesContext } from '../../../components/core_services';
 import { DetectorCreationStep } from '../models/types';
-import { MIN_NUM_DATA_SOURCES } from '../../Detectors/utils/constants';
+import { ServicesConsumer } from '../../../services';
+import { BrowserServices } from '../../../models/interfaces';
 
 interface CreateDetectorProps extends RouteComponentProps {
   isEdit: boolean;
@@ -26,6 +27,8 @@ interface CreateDetectorProps extends RouteComponentProps {
 interface CreateDetectorState {
   currentStep: DetectorCreationStep;
   detector: Detector;
+  fieldMappings: FieldMapping[];
+  stepDataValid: { [step in DetectorCreationStep]: boolean };
 }
 
 export default class CreateDetector extends Component<CreateDetectorProps, CreateDetectorState> {
@@ -36,6 +39,13 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     this.state = {
       currentStep: DetectorCreationStep.DEFINE_DETECTOR,
       detector: EMPTY_DEFAULT_DETECTOR,
+      fieldMappings: [],
+      stepDataValid: {
+        [DetectorCreationStep.DEFINE_DETECTOR]: false,
+        [DetectorCreationStep.CONFIGURE_FIELD_MAPPING]: false,
+        [DetectorCreationStep.CONFIGURE_ALERTS]: false,
+        [DetectorCreationStep.REVIEW_CREATE]: false,
+      },
     };
   }
 
@@ -45,6 +55,10 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
 
   changeDetector = (detector: Detector) => {
     this.setState({ detector: detector });
+  };
+
+  replaceFieldMappings = (fieldMappings: FieldMapping[]): void => {
+    this.setState({ fieldMappings });
   };
 
   onCreateClick = () => {};
@@ -59,14 +73,25 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     this.setState({ currentStep: currentStep - 1 });
   };
 
-  getStepContent = () => {
+  updateDataValidState = (step: DetectorCreationStep, isValid: boolean): void => {
+    this.setState({
+      stepDataValid: {
+        ...this.state.stepDataValid,
+        [step]: isValid,
+      },
+    });
+  };
+
+  getStepContent = (services: BrowserServices) => {
     switch (this.state.currentStep) {
       case DetectorCreationStep.DEFINE_DETECTOR:
         return (
           <DefineDetector
             {...this.props}
             detector={this.state.detector}
+            indexService={services.indexService}
             changeDetector={this.changeDetector}
+            updateDataValidState={this.updateDataValidState}
           />
         );
       case DetectorCreationStep.CONFIGURE_FIELD_MAPPING:
@@ -74,7 +99,9 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
           <ConfigureFieldMapping
             {...this.props}
             detector={this.state.detector}
-            changeDetector={this.changeDetector}
+            filedMappingService={services.fieldMappingService}
+            replaceFieldMappings={this.replaceFieldMappings}
+            updateDataValidState={this.updateDataValidState}
           />
         );
       case DetectorCreationStep.CONFIGURE_ALERTS:
@@ -83,6 +110,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             {...this.props}
             detector={this.state.detector}
             changeDetector={this.changeDetector}
+            updateDataValidState={this.updateDataValidState}
           />
         );
       case DetectorCreationStep.REVIEW_CREATE:
@@ -102,68 +130,59 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     }));
   }
 
-  getValidator = (step: DetectorCreationStep): ((detector: Detector) => boolean) => {
-    const validatorByStep: Record<DetectorCreationStep, (detector: Detector) => boolean> = {
-      [DetectorCreationStep.DEFINE_DETECTOR]: DefineDetector.validateData,
-      [DetectorCreationStep.CONFIGURE_FIELD_MAPPING]: ConfigureFieldMapping.validateData,
-      [DetectorCreationStep.CONFIGURE_ALERTS]: ConfigureAlerts.validateData,
-      [DetectorCreationStep.REVIEW_CREATE]: (detector: Detector): boolean => {
-        return (
-          !!detector.name &&
-          !!detector.detector_type &&
-          detector.inputs[0].input.indices.length >= MIN_NUM_DATA_SOURCES
-        );
-      },
-    };
-
-    return validatorByStep[step];
-  };
-
   render() {
-    const { currentStep } = this.state;
+    const { currentStep, stepDataValid } = this.state;
     const steps: EuiContainedStepProps[] = this.createStepsMetadata(currentStep);
 
     return (
-      <form onSubmit={this.onCreateClick}>
-        <EuiFlexGroup>
-          <EuiFlexItem grow={false}>
-            <EuiSteps steps={steps} titleSize={'xs'} />
-          </EuiFlexItem>
-          <EuiFlexItem>{this.getStepContent()}</EuiFlexItem>
-        </EuiFlexGroup>
+      <ServicesConsumer>
+        {(services: BrowserServices | null) =>
+          services && (
+            <form onSubmit={this.onCreateClick}>
+              <EuiFlexGroup>
+                <EuiFlexItem grow={false}>
+                  <EuiSteps steps={steps} titleSize={'xs'} />
+                </EuiFlexItem>
+                <EuiFlexItem>{this.getStepContent(services)}</EuiFlexItem>
+              </EuiFlexGroup>
 
-        <EuiFlexGroup alignItems={'center'} justifyContent={'flexEnd'}>
-          <EuiFlexItem grow={false}>
-            <EuiButtonEmpty href={`${PLUGIN_NAME}#${ROUTES.DETECTORS}`}>Cancel</EuiButtonEmpty>
-          </EuiFlexItem>
+              <EuiFlexGroup alignItems={'center'} justifyContent={'flexEnd'}>
+                <EuiFlexItem grow={false}>
+                  <EuiButtonEmpty href={`${PLUGIN_NAME}#${ROUTES.DETECTORS}`}>
+                    Cancel
+                  </EuiButtonEmpty>
+                </EuiFlexItem>
 
-          {currentStep > DetectorCreationStep.DEFINE_DETECTOR && (
-            <EuiFlexItem grow={false}>
-              <EuiButton onClick={this.onPreviousClick}>Previous</EuiButton>
-            </EuiFlexItem>
-          )}
+                {currentStep > DetectorCreationStep.DEFINE_DETECTOR && (
+                  <EuiFlexItem grow={false}>
+                    <EuiButton onClick={this.onPreviousClick}>Previous</EuiButton>
+                  </EuiFlexItem>
+                )}
 
-          {currentStep < DetectorCreationStep.REVIEW_CREATE && (
-            <EuiFlexItem grow={false}>
-              <EuiButton
-                fill={true}
-                onClick={this.onNextClick}
-                disabled={!this.getValidator(currentStep)(this.state.detector)}
-              >
-                Next
-              </EuiButton>
-            </EuiFlexItem>
-          )}
+                {currentStep < DetectorCreationStep.REVIEW_CREATE && (
+                  <EuiFlexItem grow={false}>
+                    <EuiButton
+                      fill={true}
+                      onClick={this.onNextClick}
+                      disabled={!stepDataValid[currentStep]}
+                    >
+                      Next
+                    </EuiButton>
+                  </EuiFlexItem>
+                )}
 
-          {currentStep === DetectorCreationStep.REVIEW_CREATE && (
-            <EuiFlexItem grow={false}>
-              <EuiButton fill={true} onClick={this.onNextClick}>
-                Create
-              </EuiButton>
-            </EuiFlexItem>
-          )}
-        </EuiFlexGroup>
-      </form>
+                {currentStep === DetectorCreationStep.REVIEW_CREATE && (
+                  <EuiFlexItem grow={false}>
+                    <EuiButton fill={true} onClick={this.onNextClick}>
+                      Create
+                    </EuiButton>
+                  </EuiFlexItem>
+                )}
+              </EuiFlexGroup>
+            </form>
+          )
+        }
+      </ServicesConsumer>
     );
   }
 }

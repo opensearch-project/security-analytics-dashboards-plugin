@@ -4,8 +4,8 @@
  */
 
 import { Detector } from '../../models/interfaces';
-import DetectorsService from '../services/DetectorService';
-import { FindingsService, IndexService, OpenSearchService } from '../services';
+import DetectorService from '../services/DetectorService';
+import { FindingsService, IndexService, OpenSearchService, FieldMappingService } from '../services';
 
 export interface SecurityAnalyticsApi {
   readonly DETECTORS_BASE: string;
@@ -13,13 +13,16 @@ export interface SecurityAnalyticsApi {
   readonly GET_FINDINGS: string;
   readonly DOCUMENT_IDS_QUERY: string;
   readonly TIME_RANGE_QUERY: string;
+  readonly MAPPINGS_BASE: string;
+  readonly MAPPINGS_VIEW: string;
 }
 
 export interface NodeServices {
-  detectorsService: DetectorsService;
+  detectorsService: DetectorService;
   indexService: IndexService;
   findingsService: FindingsService;
   opensearchService: OpenSearchService;
+  fieldMappingService: FieldMappingService;
 }
 
 export interface CreateDetectorParams {
@@ -82,4 +85,20 @@ export interface DocumentIdsQueryParams {
 export interface TimeRangeQueryParams {
   index: string;
   body: string;
+}
+
+export interface GetFieldMapingsViewParams {
+  indexName: string;
+  ruleTopic?: string;
+}
+
+export interface GetFieldMappingViewResponse {
+  properties: { [aliasName: string]: IndexFieldInfo };
+  unmappedIndexFields: string[];
+  unmappedFieldAliases: string[];
+}
+
+export interface IndexFieldInfo {
+  type: 'alias';
+  path: string;
 }

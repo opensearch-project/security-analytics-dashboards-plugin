@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FieldMappingViewResponse } from '../../../models/interfaces';
+import { GetFieldMappingViewResponse } from '../../../../../../server/models/interfaces';
 
-export const EMPTY_FIELD_MAPPINGS: FieldMappingViewResponse = {
+export const EMPTY_FIELD_MAPPINGS: GetFieldMappingViewResponse = {
   properties: {},
   unmappedFieldAliases: [],
   unmappedIndexFields: [],
 };
 
-export const EXAMPLE_FIELD_MAPPINGS_RESPONSE: FieldMappingViewResponse = {
+export const EXAMPLE_FIELD_MAPPINGS_RESPONSE: GetFieldMappingViewResponse = {
   properties: {
     'source.ip': {
       type: 'alias',

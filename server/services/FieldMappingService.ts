@@ -11,12 +11,11 @@ import {
   RequestHandlerContext,
   ILegacyCustomClusterClient,
 } from 'opensearch-dashboards/server';
-import { CreateDetectorParams, CreateDetectorResponse } from '../models/interfaces';
-import { CLIENT_DETECTOR_METHODS } from '../utils/constants';
-import { Detector } from '../../models/interfaces';
+import { GetFieldMapingsViewParams, GetFieldMappingViewResponse } from '../models/interfaces';
 import { ServerResponse } from '../models/types';
+import { CLIENT_FIELD_MAPPINGS_METHODS } from '../utils/constants';
 
-export default class DetectorService {
+export default class FieldMappingService {
   osDriver: ILegacyCustomClusterClient;
 
   constructor(osDriver: ILegacyCustomClusterClient) {
@@ -24,21 +23,24 @@ export default class DetectorService {
   }
 
   /**
-   * Calls backend POST Detectors API.
+   * Calls backend GET mappings/view API.
    */
-  createDetector = async (
+  getMappingsView = async (
     _context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<
-    IOpenSearchDashboardsResponse<ServerResponse<CreateDetectorResponse> | ResponseError>
+    IOpenSearchDashboardsResponse<ServerResponse<GetFieldMappingViewResponse> | ResponseError>
   > => {
     try {
-      const detector = request.body as Detector;
-      const params: CreateDetectorParams = { body: detector };
       const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const createDetectorResponse: CreateDetectorResponse = await callWithRequest(
-        CLIENT_DETECTOR_METHODS.CREATE_DETECTOR,
+      const { indexName, ruleTopic } = request.query as { indexName: string; ruleTopic?: string };
+      const params: GetFieldMapingsViewParams = {
+        indexName,
+        ruleTopic,
+      };
+      const getFieldMappingViewResponse = await callWithRequest(
+        CLIENT_FIELD_MAPPINGS_METHODS.GET_MAPPINGS_VIEW,
         params
       );
 
@@ -46,11 +48,11 @@ export default class DetectorService {
         statusCode: 200,
         body: {
           ok: true,
-          response: createDetectorResponse,
+          response: getFieldMappingViewResponse,
         },
       });
     } catch (error: any) {
-      console.error('Security Analytics - DetectorsService - createDetector:', error);
+      console.error('Security Analytics - FieldMappingService - getMappingsView:', error);
       return response.custom({
         statusCode: 200,
         body: {
