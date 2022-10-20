@@ -7,21 +7,32 @@ import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { EuiAccordion, EuiHorizontalRule, EuiPanel, EuiSpacer, EuiTitle } from '@elastic/eui';
 import FieldMappingsTable from '../components/RequiredFieldMapping';
-import { CREATE_DETECTOR_STEPS } from '../../../utils/constants';
+import { createDetectorSteps } from '../../../utils/constants';
 import { ContentPanel } from '../../../../../components/ContentPanel';
-import { Detector } from '../../../../../../models/interfaces';
+import { Detector, FieldMapping } from '../../../../../../models/interfaces';
 import { EMPTY_FIELD_MAPPINGS, EXAMPLE_FIELD_MAPPINGS_RESPONSE } from '../utils/dummyData';
-import { FieldMappingViewResponse } from '../../../types/interfaces';
+import { DetectorCreationStep } from '../../../models/types';
+import { GetFieldMappingViewResponse } from '../../../../../../server/models/interfaces';
+import FieldMappingService from '../../../../../services/FieldMappingService';
+import { MappingViewType } from '../components/RequiredFieldMapping/FieldMappingsTable';
+
+export interface IndexFieldToAliasMap {
+  [fieldName: string]: string;
+}
 
 interface ConfigureFieldMappingProps extends RouteComponentProps {
   isEdit: boolean;
   detector: Detector;
-  onDetectorChange: (detector: Detector) => void;
+  filedMappingService: FieldMappingService;
+  replaceFieldMappings: (mappings: FieldMapping[]) => void;
+  updateDataValidState: (step: DetectorCreationStep, isValid: boolean) => void;
 }
 
 interface ConfigureFieldMappingState {
   loading: boolean;
-  mappingsData: FieldMappingViewResponse;
+  mappingsData: GetFieldMappingViewResponse;
+  createdMappings: IndexFieldToAliasMap;
+  invalidMappingFieldNames: string[];
 }
 
 export default class ConfigureFieldMapping extends Component<
@@ -33,6 +44,8 @@ export default class ConfigureFieldMapping extends Component<
     this.state = {
       loading: false,
       mappingsData: EMPTY_FIELD_MAPPINGS,
+      createdMappings: {},
+      invalidMappingFieldNames: [],
     };
   }
 
@@ -42,12 +55,69 @@ export default class ConfigureFieldMapping extends Component<
 
   getAllMappings = async () => {
     this.setState({ loading: true });
-    await this.setState({ mappingsData: EXAMPLE_FIELD_MAPPINGS_RESPONSE });
+    const mappingsView = await this.props.filedMappingService.getMappingsView(
+      this.props.detector.inputs[0].input.indices[0],
+      this.props.detector.detector_type
+    );
+    if (mappingsView.ok) {
+      this.setState({ mappingsData: mappingsView.response });
+    }
     this.setState({ loading: false });
   };
 
+  validateMappings(mappings: IndexFieldToAliasMap): boolean {
+    const allFieldsMapped = this.state.mappingsData.unmappedIndexFields.every(
+      (fieldName) => !!mappings[fieldName]
+    );
+    const mappedAliases = Object.values(mappings);
+    const allAliasesUnique = mappedAliases.length === new Set(mappedAliases).size;
+
+    return allFieldsMapped && allAliasesUnique;
+  }
+
+  /**
+   * Returns the fieldName(s) that have duplicate alias assigned to them
+   */
+  getInvalidMappingFieldNames(mappings: IndexFieldToAliasMap): string[] {
+    const seenAliases = new Set();
+    const invalidFields: string[] = [];
+
+    Object.entries(mappings).forEach((entry) => {
+      if (seenAliases.has(entry[1])) {
+        invalidFields.push(entry[0]);
+      }
+
+      seenAliases.add(entry[1]);
+    });
+
+    return invalidFields;
+  }
+
+  onMappingCreation = (fieldName: string, aliasName: string): void => {
+    const newMappings: IndexFieldToAliasMap = {
+      ...this.state.createdMappings,
+      [fieldName]: aliasName,
+    };
+    const invalidMappingFieldNames = this.getInvalidMappingFieldNames(newMappings);
+    this.setState({
+      createdMappings: newMappings,
+      invalidMappingFieldNames: invalidMappingFieldNames,
+    });
+
+    this.props.replaceFieldMappings(
+      Object.entries(newMappings).map((entry) => {
+        return {
+          fieldName: entry[0],
+          aliasName: entry[1],
+        };
+      })
+    );
+    const mappingsValid = this.validateMappings(newMappings);
+    this.props.updateDataValidState(DetectorCreationStep.CONFIGURE_FIELD_MAPPING, mappingsValid);
+  };
+
   render() {
-    const { loading, mappingsData } = this.state;
+    const { loading, mappingsData, createdMappings, invalidMappingFieldNames } = this.state;
     const viewonlyMappings: { indexFields: string[]; aliasNames: string[] } = {
       indexFields: [],
       aliasNames: [],
@@ -61,25 +131,33 @@ export default class ConfigureFieldMapping extends Component<
     return (
       <div>
         <EuiTitle size={'l'}>
-          <h3>{CREATE_DETECTOR_STEPS.CONFIGURE_FIELD_MAPPING.title}</h3>
+          <h3>{createDetectorSteps[DetectorCreationStep.CONFIGURE_FIELD_MAPPING].title}</h3>
         </EuiTitle>
 
         <EuiSpacer size={'m'} />
 
-        <ContentPanel
-          title={`Required field mappings (${mappingsData.unmappedIndexFields.length})`}
-          titleSize={'m'}
-        >
-          <FieldMappingsTable
-            loading={loading}
-            aliasNames={mappingsData.unmappedFieldAliases}
-            indexFields={mappingsData.unmappedIndexFields}
-            isMappingRequired={true}
-            {...this.props}
-          />
-        </ContentPanel>
-
-        <EuiSpacer size={'m'} />
+        {mappingsData.unmappedIndexFields.length > 0 && (
+          <>
+            <ContentPanel
+              title={`Required field mappings (${mappingsData.unmappedIndexFields.length})`}
+              titleSize={'m'}
+            >
+              <FieldMappingsTable<MappingViewType.Edit>
+                loading={loading}
+                aliasNames={mappingsData.unmappedFieldAliases}
+                indexFields={mappingsData.unmappedIndexFields}
+                mappingProps={{
+                  type: MappingViewType.Edit,
+                  createdMappings,
+                  invalidMappingFieldNames,
+                  onMappingCreation: this.onMappingCreation,
+                }}
+                {...this.props}
+              />
+            </ContentPanel>
+            <EuiSpacer size={'m'} />
+          </>
+        )}
 
         <EuiPanel style={{ paddingLeft: '0px', paddingRight: '0px' }}>
           <EuiAccordion
@@ -98,11 +176,13 @@ export default class ConfigureFieldMapping extends Component<
             <EuiHorizontalRule margin={'xs'} />
             <div style={{ paddingLeft: '10px', paddingRight: '10px' }}>
               <EuiSpacer size={'m'} />
-              <FieldMappingsTable
+              <FieldMappingsTable<MappingViewType.Readonly>
                 loading={loading}
+                mappingProps={{
+                  type: MappingViewType.Readonly,
+                }}
                 aliasNames={viewonlyMappings.aliasNames}
                 indexFields={viewonlyMappings.indexFields}
-                isMappingRequired={false}
                 {...this.props}
               />
             </div>

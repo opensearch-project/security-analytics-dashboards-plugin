@@ -10,16 +10,18 @@ import { EuiComboBox, EuiComboBoxOptionOption, EuiFormRow, EuiSpacer } from '@el
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
 import { IndexOption } from '../../../../../Detectors/models/interfaces';
 import { MIN_NUM_DATA_SOURCES } from '../../../../../Detectors/utils/constants';
+import IndexService from '../../../../../../services/IndexService';
 
 interface DetectorDataSourceProps extends RouteComponentProps {
-  hasSubmitted: boolean;
   detectorIndices: string[];
+  indexService: IndexService;
   onDetectorInputIndicesChange: (selectedOptions: EuiComboBoxOptionOption<string>[]) => void;
 }
 
 interface DetectorDataSourceState {
   loading: boolean;
   indexOptions: IndexOption[];
+  errorMessage?: string;
 }
 
 export default class DetectorDataSource extends Component<
@@ -40,43 +42,42 @@ export default class DetectorDataSource extends Component<
 
   getIndices = async () => {
     this.setState({ loading: true });
-    // TODO: Delete after testing
-    const exampleIndices = [
-      'index-1',
-      'index-2',
-      'index-3',
-      'index-4',
-      'index-5',
-      'index-6',
-      'index-7',
-      'index-8',
-      'index-9',
-      'index-10',
-    ];
+    const indicesResponse = await this.props.indexService.getIndices();
 
-    this.setState({
-      loading: false,
-      indexOptions: this.parseOptions(exampleIndices),
-    });
+    if (indicesResponse.ok) {
+      const indices = indicesResponse.response.indices;
+      const indicesNames = indices.map((index) => index.index);
+
+      this.setState({
+        loading: false,
+        indexOptions: this.parseOptions(indicesNames),
+      });
+    } else {
+      this.setState({
+        loading: false,
+        errorMessage: indicesResponse.error,
+      });
+    }
   };
 
   parseOptions = (indices: string[]) => {
     return indices.map((index) => ({ label: index }));
   };
 
-  isInvalid = () => {
-    const { hasSubmitted, detectorIndices } = this.props;
-    return hasSubmitted && detectorIndices.length < MIN_NUM_DATA_SOURCES;
-  };
+  onSelectionChange = (options: EuiComboBoxOptionOption<string>[]) => {
+    if (options.length < MIN_NUM_DATA_SOURCES) {
+      this.setState({ errorMessage: 'Select an input source.' });
+    } else {
+      this.setState({ errorMessage: undefined });
+    }
 
-  getErrorMessage = () => {
-    return 'Enter a name for the detector.';
+    this.props.onDetectorInputIndicesChange(options);
   };
 
   render() {
-    const { detectorIndices, onDetectorInputIndicesChange } = this.props;
-    const { loading, indexOptions } = this.state;
-    const isInvalid = this.isInvalid();
+    const { detectorIndices } = this.props;
+    const { loading, indexOptions, errorMessage } = this.state;
+
     return (
       <ContentPanel title={'Threat detector details'} titleSize={'m'}>
         <EuiSpacer size={'m'} />
@@ -84,8 +85,8 @@ export default class DetectorDataSource extends Component<
           label={
             <FormFieldHeader headerTitle={'Select or input source indexes or index patterns'} />
           }
-          isInvalid={isInvalid}
-          error={isInvalid && this.getErrorMessage()}
+          isInvalid={!!errorMessage}
+          error={errorMessage}
         >
           <EuiComboBox
             placeholder={'Select an input source for the detector.'}
@@ -93,8 +94,8 @@ export default class DetectorDataSource extends Component<
             isLoading={loading}
             options={indexOptions}
             selectedOptions={this.parseOptions(detectorIndices)}
-            onChange={onDetectorInputIndicesChange}
-            isInvalid={isInvalid}
+            onChange={this.onSelectionChange}
+            isInvalid={!!errorMessage}
             data-test-subj={'define-detector-detector-name'}
           />
         </EuiFormRow>

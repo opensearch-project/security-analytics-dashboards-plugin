@@ -9,10 +9,8 @@ import { EuiFormRow, EuiFlexGrid, EuiFlexItem, EuiRadio, EuiSpacer } from '@elas
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
 import { DETECTOR_TYPES } from '../../../../../Detectors/utils/constants';
 import { DetectorTypeOption } from '../../../../../Detectors/models/interfaces';
-import { validateField } from '../../../../../../utils/validation';
 
 interface DetectorTypeProps {
-  hasSubmitted: boolean;
   detectorType: string;
   onDetectorTypeChange: (detectorType: string) => void;
 }
@@ -42,9 +40,8 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
   };
 
   isInvalid = () => {
-    const { hasSubmitted } = this.props;
     const { fieldTouched } = this.state;
-    return validateField(hasSubmitted, fieldTouched) && !(this.getErrorMessage().length < 1);
+    return fieldTouched && !(this.getErrorMessage().length < 1);
   };
 
   getErrorMessage = () => {

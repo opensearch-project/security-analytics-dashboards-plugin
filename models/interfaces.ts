@@ -7,15 +7,11 @@ export interface Detector {
   type: string;
   detector_type: string;
   name: string;
-  alert_conditions: AlertCondition[];
   enabled: boolean;
+  createdBy: string;
   schedule: PeriodSchedule;
   inputs: DetectorInput[];
-  enabled_time?: number;
-  createdBy?: string;
-  last_update_time?: number;
-  monitor_id?: string;
-  rule_topic_index?: string;
+  triggers: AlertCondition[];
 }
 
 export interface PeriodSchedule {
@@ -29,7 +25,7 @@ export interface DetectorInput {
   input: {
     description: string;
     indices: string[];
-    rules: Rule[];
+    enabledCustomRuleIds: string[];
   };
 }
 
@@ -43,9 +39,15 @@ export interface Rule {
 }
 
 export interface AlertCondition {
-  name: string;
-  rule_types: string[];
-  severity: string[];
+  sev_levels: string[];
   tags: string[];
-  notification_channel_ids: string[];
+  actions: string[];
+  types: string[];
+  name: string;
+  id?: string;
+}
+
+export interface FieldMapping {
+  fieldName: string;
+  aliasName: string;
 }

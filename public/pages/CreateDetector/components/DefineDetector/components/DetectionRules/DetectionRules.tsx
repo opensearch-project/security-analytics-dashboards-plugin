@@ -24,9 +24,9 @@ import { RuleItem, RulesInfoByType } from './types/interfaces';
 import { dummyDetectorRules } from './utils/dummyData';
 
 interface DetectionRulesProps extends RouteComponentProps {
-  hasSubmitted: boolean;
-  isEdit: boolean;
-  detectorRules: Rule[];
+  enabledCustomRuleIds: string[];
+  detectorType: string;
+  onRulesChanged: (rules: Rule[]) => void;
 }
 
 interface DetectionRulesState {
@@ -41,9 +41,14 @@ export default class DetectionRules extends Component<DetectionRulesProps, Detec
     this.state = this.deriveInitialState();
   }
 
+  componentDidMount(): void {
+    // get pre-packaged rules based on detector type
+    // get custom rules based on detector type
+    // merge the rule types and add the toggle state
+  }
+
   deriveInitialState(): DetectionRulesState {
-    const detectorRules =
-      this.props.detectorRules.length > 0 ? this.props.detectorRules : dummyDetectorRules;
+    const detectorRules = dummyDetectorRules;
     const rulesByRuleType: {
       [ruleType: string]: { ruleItems: RuleItem[]; activeCount: number };
     } = {};
@@ -123,13 +128,15 @@ export default class DetectionRules extends Component<DetectionRulesProps, Detec
   render() {
     const { rulesByRuleType, selectedRuleType } = this.state;
     const detectorRules =
-      this.props.detectorRules.length > 0 ? this.props.detectorRules : dummyDetectorRules;
+      this.props.enabledCustomRuleIds.length > 0
+        ? this.props.enabledCustomRuleIds
+        : dummyDetectorRules;
 
     const totalRulesCountForSelectedType = selectedRuleType
       ? rulesByRuleType[selectedRuleType]?.ruleItems.length || 0
       : detectorRules.length;
     const activeRulesCountForSelectedType = this.getActiveRulesCount(selectedRuleType);
-    const allRulesCount = this.props.detectorRules.length || dummyDetectorRules.length;
+    const allRulesCount = this.props.enabledCustomRuleIds.length || dummyDetectorRules.length;
     const ruleTypes = Object.keys(rulesByRuleType);
 
     return (
