@@ -103,7 +103,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
   render() {
     const { isEdit } = this.props;
     const { name, inputs, detector_type } = this.props.detector;
-    const { description, indices, enabledCustomRuleIds } = inputs[0].input;
+    const { description, indices, rules: enabledCustomRuleIds } = inputs[0].input;
 
     return (
       <div>

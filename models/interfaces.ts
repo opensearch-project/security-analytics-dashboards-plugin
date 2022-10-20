@@ -4,7 +4,7 @@
  */
 
 export interface Detector {
-  type: string;
+  type: 'detector';
   detector_type: string;
   name: string;
   enabled: boolean;
@@ -17,7 +17,7 @@ export interface Detector {
 export interface PeriodSchedule {
   period: {
     interval: number;
-    unit: string;
+    unit: 'MINUTES';
   };
 }
 
@@ -25,7 +25,7 @@ export interface DetectorInput {
   input: {
     description: string;
     indices: string[];
-    enabledCustomRuleIds: string[];
+    rules: string[];
   };
 }
 

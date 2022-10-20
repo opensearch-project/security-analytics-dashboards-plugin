@@ -68,7 +68,7 @@ export enum IntervalType {
 export const EMPTY_DEFAULT_PERIOD_SCHEDULE: PeriodSchedule = {
   period: {
     interval: 1,
-    unit: 'm',
+    unit: 'MINUTES',
   },
 };
 
@@ -76,12 +76,12 @@ export const EMPTY_DEFAULT_DETECTOR_INPUT: DetectorInput = {
   input: {
     description: '',
     indices: [],
-    enabledCustomRuleIds: [],
+    rules: [],
   },
 };
 
 export const EMPTY_DEFAULT_DETECTOR: Detector = {
-  type: '',
+  type: 'detector',
   detector_type: '',
   name: '',
   enabled: true,

@@ -5,7 +5,6 @@
 
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { ContentPanel } from '../../../components/ContentPanel';
 import { EuiButton, EuiButtonEmpty, EuiFlexGroup, EuiFlexItem, EuiSteps } from '@elastic/eui';
 import DefineDetector from '../components/DefineDetector/containers/DefineDetector';
 import { createDetectorSteps } from '../utils/constants';
@@ -17,11 +16,12 @@ import { EMPTY_DEFAULT_DETECTOR } from '../../../utils/constants';
 import { EuiContainedStepProps } from '@elastic/eui/src/components/steps/steps';
 import { CoreServicesContext } from '../../../components/core_services';
 import { DetectorCreationStep } from '../models/types';
-import { ServicesConsumer } from '../../../services';
 import { BrowserServices } from '../../../models/interfaces';
+import { ReviewAndCreate } from '../components/ReviewAndCreate/containers/ReviewAndCreate';
 
 interface CreateDetectorProps extends RouteComponentProps {
   isEdit: boolean;
+  services: BrowserServices;
 }
 
 interface CreateDetectorState {
@@ -29,6 +29,7 @@ interface CreateDetectorState {
   detector: Detector;
   fieldMappings: FieldMapping[];
   stepDataValid: { [step in DetectorCreationStep]: boolean };
+  creatingDetector: boolean;
 }
 
 export default class CreateDetector extends Component<CreateDetectorProps, CreateDetectorState> {
@@ -36,9 +37,10 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
 
   constructor(props: CreateDetectorProps) {
     super(props);
+    const initialDetector = EMPTY_DEFAULT_DETECTOR;
     this.state = {
       currentStep: DetectorCreationStep.DEFINE_DETECTOR,
-      detector: EMPTY_DEFAULT_DETECTOR,
+      detector: initialDetector,
       fieldMappings: [],
       stepDataValid: {
         [DetectorCreationStep.DEFINE_DETECTOR]: false,
@@ -46,6 +48,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
         [DetectorCreationStep.CONFIGURE_ALERTS]: false,
         [DetectorCreationStep.REVIEW_CREATE]: false,
       },
+      creatingDetector: false,
     };
   }
 
@@ -61,7 +64,22 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     this.setState({ fieldMappings });
   };
 
-  onCreateClick = () => {};
+  onCreateClick = async () => {
+    if (this.state.creatingDetector) {
+      return;
+    }
+
+    this.setState({ creatingDetector: true });
+    const createDetectorRes = await this.props.services.detectorsService.createDetector(
+      this.state.detector
+    );
+
+    if (createDetectorRes.ok) {
+      this.props.history.push(ROUTES.DETECTORS);
+    } else {
+      // TODO: show toast notification with error
+    }
+  };
 
   onNextClick = () => {
     const { currentStep } = this.state;
@@ -82,7 +100,8 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     });
   };
 
-  getStepContent = (services: BrowserServices) => {
+  getStepContent = () => {
+    const { services } = this.props;
     switch (this.state.currentStep) {
       case DetectorCreationStep.DEFINE_DETECTOR:
         return (
@@ -115,11 +134,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
           />
         );
       case DetectorCreationStep.REVIEW_CREATE:
-        return (
-          <ContentPanel
-            title={createDetectorSteps[DetectorCreationStep.REVIEW_CREATE].title}
-          ></ContentPanel>
-        );
+        return <ReviewAndCreate />;
     }
   };
 
@@ -136,54 +151,50 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     const steps: EuiContainedStepProps[] = this.createStepsMetadata(currentStep);
 
     return (
-      <ServicesConsumer>
-        {(services: BrowserServices | null) =>
-          services && (
-            <form onSubmit={this.onCreateClick}>
-              <EuiFlexGroup>
-                <EuiFlexItem grow={false}>
-                  <EuiSteps steps={steps} titleSize={'xs'} />
-                </EuiFlexItem>
-                <EuiFlexItem>{this.getStepContent(services)}</EuiFlexItem>
-              </EuiFlexGroup>
+      <form onSubmit={this.onCreateClick}>
+        <EuiFlexGroup>
+          <EuiFlexItem grow={false}>
+            <EuiSteps steps={steps} titleSize={'xs'} />
+          </EuiFlexItem>
+          <EuiFlexItem>{this.getStepContent()}</EuiFlexItem>
+        </EuiFlexGroup>
 
-              <EuiFlexGroup alignItems={'center'} justifyContent={'flexEnd'}>
-                <EuiFlexItem grow={false}>
-                  <EuiButtonEmpty href={`${PLUGIN_NAME}#${ROUTES.DETECTORS}`}>
-                    Cancel
-                  </EuiButtonEmpty>
-                </EuiFlexItem>
+        <EuiFlexGroup alignItems={'center'} justifyContent={'flexEnd'}>
+          <EuiFlexItem grow={false}>
+            <EuiButtonEmpty href={`${PLUGIN_NAME}#${ROUTES.DETECTORS}`}>Cancel</EuiButtonEmpty>
+          </EuiFlexItem>
 
-                {currentStep > DetectorCreationStep.DEFINE_DETECTOR && (
-                  <EuiFlexItem grow={false}>
-                    <EuiButton onClick={this.onPreviousClick}>Previous</EuiButton>
-                  </EuiFlexItem>
-                )}
+          {currentStep > DetectorCreationStep.DEFINE_DETECTOR && (
+            <EuiFlexItem grow={false}>
+              <EuiButton onClick={this.onPreviousClick}>Previous</EuiButton>
+            </EuiFlexItem>
+          )}
 
-                {currentStep < DetectorCreationStep.REVIEW_CREATE && (
-                  <EuiFlexItem grow={false}>
-                    <EuiButton
-                      fill={true}
-                      onClick={this.onNextClick}
-                      disabled={!stepDataValid[currentStep]}
-                    >
-                      Next
-                    </EuiButton>
-                  </EuiFlexItem>
-                )}
+          {currentStep < DetectorCreationStep.REVIEW_CREATE && (
+            <EuiFlexItem grow={false}>
+              <EuiButton
+                fill={true}
+                onClick={this.onNextClick}
+                disabled={!stepDataValid[currentStep]}
+              >
+                Next
+              </EuiButton>
+            </EuiFlexItem>
+          )}
 
-                {currentStep === DetectorCreationStep.REVIEW_CREATE && (
-                  <EuiFlexItem grow={false}>
-                    <EuiButton fill={true} onClick={this.onNextClick}>
-                      Create
-                    </EuiButton>
-                  </EuiFlexItem>
-                )}
-              </EuiFlexGroup>
-            </form>
-          )
-        }
-      </ServicesConsumer>
+          {currentStep === DetectorCreationStep.REVIEW_CREATE && (
+            <EuiFlexItem grow={false}>
+              <EuiButton
+                isLoading={this.state.creatingDetector}
+                fill={true}
+                onClick={this.onCreateClick}
+              >
+                Create
+              </EuiButton>
+            </EuiFlexItem>
+          )}
+        </EuiFlexGroup>
+      </form>
     );
   }
 }

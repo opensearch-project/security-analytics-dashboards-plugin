@@ -53,7 +53,7 @@ export const EXAMPLE_DETECTORS: Detector[] = [
         input: {
           description: 'windows detector for security analytics',
           indices: ['windows'],
-          enabledCustomRuleIds: [],
+          rules: [],
         },
       },
     ],
