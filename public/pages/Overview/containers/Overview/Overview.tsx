@@ -96,6 +96,14 @@ export default class Overview extends Component<OverviewProps, OverviewState> {
     this.renderVis();
   }
 
+  createVisualizationActions(): React.ReactNode[] {
+    return [
+      this.createSelectComponent(groupByOptions, this.state.groupBy, (event) => {
+        this.setState({ groupBy: event.target.value });
+      }),
+    ];
+  }
+
   render() {
     return (
       <ContentPanel title={'Overview'}>
@@ -103,11 +111,7 @@ export default class Overview extends Component<OverviewProps, OverviewState> {
           <EuiFlexItem className="grid-item">
             <WidgetContainer
               title="Findings and alert count"
-              actions={[
-                this.createSelectComponent(groupByOptions, this.state.groupBy, (event) => {
-                  this.setState({ groupBy: event.target.value });
-                }),
-              ]}
+              actions={this.createVisualizationActions()}
             >
               <EuiFlexGroup gutterSize="s" direction="column">
                 <EuiFlexItem>

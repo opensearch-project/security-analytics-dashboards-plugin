@@ -3,11 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/*
- * Copyright OpenSearch Contributors
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import { EuiBasicTableColumn, EuiButton } from '@elastic/eui';
 import React from 'react';
 import { DetectorItem } from '../../models/interfaces';
