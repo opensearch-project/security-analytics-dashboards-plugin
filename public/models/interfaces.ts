@@ -8,6 +8,7 @@ import {
   FindingsService,
   OpenSearchService,
   FieldMappingService,
+  AlertsService,
 } from '../services';
 import IndexService from '../services/IndexService';
 
@@ -17,4 +18,5 @@ export interface BrowserServices {
   indexService: IndexService;
   opensearchService: OpenSearchService;
   fieldMappingService: FieldMappingService;
+  alertService: AlertsService;
 }
