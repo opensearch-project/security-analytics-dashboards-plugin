@@ -19,7 +19,6 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import { OpenSearchService } from '../../../services';
 import { renderTime } from '../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 import { parseAlertSeverityToOption } from '../../CreateDetector/components/ConfigureAlerts/utils/helpers';
@@ -27,7 +26,6 @@ import { parseAlertSeverityToOption } from '../../CreateDetector/components/Conf
 interface FindingDetailsFlyoutProps {
   finding: Finding;
   closeFlyout: () => void;
-  opensearchService?: OpenSearchService;
   backButton?: React.ReactNode;
 }
 

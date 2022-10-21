@@ -218,7 +218,7 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
   };
 
   onRefresh = async () => {
-    // this.getAlerts();
+    this.getAlerts();
   };
 
   onSelectionChange = (selectedItems: AlertItem[]) => {
@@ -244,7 +244,7 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
             <EuiFlexItem grow={9}>
               <EuiFieldSearch
                 fullWidth={true}
-                // onChange={this.onSearchChange}
+                // onChange={this.onSearchChange} // TODO: Implement search
                 placeholder={'Search findings'}
               />
             </EuiFlexItem>
