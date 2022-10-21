@@ -4,16 +4,20 @@
  */
 
 import { EuiComboBoxOptionOption } from '@elastic/eui';
-import { SEVERITY_OPTIONS } from './constants';
+import { ALERT_SEVERITY_OPTIONS } from './constants';
 
-export const parseSeverityToOption = (severity: string): EuiComboBoxOptionOption<string> => {
-  return Object.values(SEVERITY_OPTIONS).find(
+export const parseAlertSeverityToOption = (severity: string): EuiComboBoxOptionOption<string> => {
+  return Object.values(ALERT_SEVERITY_OPTIONS).find(
     (option) => option.label === severity
   ) as EuiComboBoxOptionOption<string>;
 };
 
-export const parseSeverityListToOptions = (
+export const parseAlertSeverityListToOptions = (
   severityList: string[]
 ): EuiComboBoxOptionOption<string>[] => {
-  return severityList.map((severity) => parseSeverityToOption(severity));
+  return severityList.map((severity) => parseAlertSeverityToOption(severity));
 };
+
+export function createSelectedOptions(optionNames: string[]): EuiComboBoxOptionOption<string>[] {
+  return optionNames.map((optionName) => ({ label: optionName }));
+}

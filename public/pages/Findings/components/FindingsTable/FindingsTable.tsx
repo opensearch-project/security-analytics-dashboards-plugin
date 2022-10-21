@@ -6,19 +6,11 @@
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import moment from 'moment';
-import {
-  EuiButton,
-  EuiEmptyPrompt,
-  EuiFlexGroup,
-  EuiFlexItem,
-  EuiInMemoryTable,
-  EuiLink,
-  EuiText,
-} from '@elastic/eui';
+import { EuiButton, EuiEmptyPrompt, EuiInMemoryTable, EuiLink, EuiText } from '@elastic/eui';
 import dateMath from '@elastic/datemath';
 import { renderTime } from '../../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA, ROUTES } from '../../../../utils/constants';
-import { parseSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
+import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { OpenSearchService } from '../../../../services';
 import FindingDetailsFlyout from '../FindingDetailsFlyout';
 
@@ -154,7 +146,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         sortable: true,
         dataType: 'string',
         render: (queries) =>
-          parseSeverityToOption(queries[0].severity)?.label || DEFAULT_EMPTY_DATA,
+          parseAlertSeverityToOption(queries[0].severity)?.label || DEFAULT_EMPTY_DATA,
       },
       {
         name: 'Actions',
