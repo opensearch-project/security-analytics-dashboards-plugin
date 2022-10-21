@@ -11,7 +11,6 @@ import {
   EuiSelect,
   EuiButton,
   EuiSpacer,
-  EuiCodeBlock,
   EuiTextArea,
   EuiCodeBlock,
   EuiIcon,

@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ruleTypes } from '../../../../../../lib/helpers';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -15,10 +15,46 @@ import {
   EuiTextArea,
   EuiCodeEditor,
   EuiIcon,
+  EuiComboBox,
 } from '@elastic/eui';
 
 export const ImportEdit = (props: any) => {
+  const [selectedOptions, setSelected] = useState([]);
+  const [options, setOptions] = useState<any>([]);
   const { importedTitle, importedDescription, importedLevel } = props.props;
+
+  const onChange = (selectedOptions: any) => {
+    setSelected(selectedOptions);
+  };
+
+  const onCreateOption = (searchValue: string, flattenedOptions = []) => {
+    if (!searchValue) {
+      return;
+    }
+
+    const normalizedSearchValue = searchValue.trim().toLowerCase();
+
+    if (!normalizedSearchValue) {
+      return;
+    }
+
+    const newOption = {
+      label: searchValue,
+    };
+
+    // Create the option if it doesn't exist.
+    if (
+      flattenedOptions.findIndex(
+        (option) => option.label.trim().toLowerCase() === normalizedSearchValue
+      ) === -1
+    ) {
+      setOptions([...options, newOption]);
+    }
+
+    // Select the option.
+    setSelected((prevSelected) => [...prevSelected, newOption]);
+  };
+
   return (
     <Formik
       validateOnMount
@@ -121,6 +157,16 @@ export const ImportEdit = (props: any) => {
                 ]}
                 onChange={Formikprops.handleChange}
                 value={Formikprops.values.securityLevel}
+              />
+            </EuiFormRow>
+
+            <EuiSpacer />
+            <EuiFormRow label="Tags">
+              <EuiComboBox
+                placeholder="Select or create options"
+                selectedOptions={selectedOptions}
+                onChange={onChange}
+                onCreateOption={onCreateOption}
               />
             </EuiFormRow>
 

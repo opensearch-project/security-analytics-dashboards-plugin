@@ -50,5 +50,11 @@ export const deleteRule: any = {
   },
 };
 
+export const createRule: any = {
+  url: 'http://localhost:9200/_plugins/_security_analytics/rules?category=windows',
+  method: 'POST',
+  data: {},
+};
+
 export const sigmaRulesArray = rulesArray;
 export const custom = customRulesArray;

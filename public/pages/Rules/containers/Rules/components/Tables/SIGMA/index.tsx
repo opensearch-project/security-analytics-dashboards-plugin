@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { allRequest } from '../../../../../state-management';
+import { allRequest, ruleTypes } from '../../../../../state-management';
 import Modal from '../../../../../lib/UIComponents/Modal';
-import { EuiInMemoryTable } from '@elastic/eui';
-import _, { indexOf } from 'lodash';
+import { EuiInMemoryTable, EuiFlexGroup } from '@elastic/eui';
 import axios from 'axios';
 
 export const SigmaTable = () => {
   const [pagination, setPagination] = useState({ pageIndex: 0 });
+  const [filters, setFilters] = useState(true);
   const [query, setQuery] = useState<string>('');
   const [modalType, setModalType] = useState<undefined | string>('');
   const [content, setContent] = useState<any | string>('');
@@ -16,7 +16,6 @@ export const SigmaTable = () => {
   const showModal = () => setIsModalVisible(true);
 
   useEffect(() => {
-    console.log('All request');
     axios(allRequest).then((res) => {
       let allRules: any = [];
       res.data.hits.hits.forEach((rule: any) => {
@@ -62,20 +61,6 @@ export const SigmaTable = () => {
       },
     },
     {
-      field: 'category',
-      name: 'Rule Library',
-      sortable: true,
-      width: '20%',
-      truncateText: true,
-      'data-test-subj': 'firstNameCell',
-      mobileOptions: {
-        header: false,
-        truncateText: false,
-        enlarge: true,
-        width: '100%',
-      },
-    },
-    {
       field: 'description',
       name: 'Description',
       sortable: true,
@@ -90,20 +75,25 @@ export const SigmaTable = () => {
     },
   ];
 
-  const handleOnChange = ({ queryText, error }: { queryText: string; error: string }) => {
-    if (!error) {
-      setQuery(queryText);
-    }
-  };
-
-  const search: any = {
-    query,
-    onChange: handleOnChange,
+  //Filter table by rule type
+  const search = {
     box: {
       schema: true,
     },
+    filters: [
+      {
+        type: 'field_value_selection',
+        field: 'category',
+        name: 'Rule Type',
+        multiSelect: false,
+        options: ruleTypes.map((type: string) => ({
+          value: type,
+        })),
+      },
+    ],
   };
 
+  //Sets content for flyout
   const getRowProps = (item: any) => {
     const { id } = item;
     return {
@@ -127,8 +117,10 @@ export const SigmaTable = () => {
     };
   };
 
+  console.log('RULES', sigmaRules);
+
   return (
-    <div>
+    <EuiFlexGroup>
       {sigmaRules.length > 0 && (
         <EuiInMemoryTable
           items={sigmaRules}
@@ -146,6 +138,6 @@ export const SigmaTable = () => {
         />
       )}
       <div>{modal}</div>
-    </div>
+    </EuiFlexGroup>
   );
 };
