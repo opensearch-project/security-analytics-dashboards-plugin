@@ -8,12 +8,12 @@ import { schema } from '@osd/config-schema';
 import { NodeServices } from '../models/interfaces';
 import { API } from '../utils/constants';
 
-export function setupFindingsRoutes(services: NodeServices, router: IRouter) {
-  const { findingsService } = services;
+export function setupAlertsRoutes(services: NodeServices, router: IRouter) {
+  const { alertService } = services;
 
   router.get(
     {
-      path: `${API.GET_FINDINGS}`,
+      path: `${API.GET_ALERTS}`,
       validate: {
         query: schema.object({
           detectorType: schema.maybe(schema.string()),
@@ -21,6 +21,6 @@ export function setupFindingsRoutes(services: NodeServices, router: IRouter) {
         }),
       },
     },
-    findingsService.getFindings
+    alertService.getAlerts
   );
 }

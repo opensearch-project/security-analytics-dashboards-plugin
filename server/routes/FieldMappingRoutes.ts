@@ -23,4 +23,22 @@ export function setupFieldMappingRoutes(services: NodeServices, router: IRouter)
     },
     fieldMappingService.getMappingsView
   );
+
+  router.get(
+    {
+      path: API.MAPPINGS_BASE,
+      validate: {},
+    },
+    fieldMappingService.getMappings
+  );
+
+  router.post(
+    {
+      path: API.MAPPINGS_BASE,
+      validate: {
+        body: schema.any(),
+      },
+    },
+    fieldMappingService.createMappings
+  );
 }

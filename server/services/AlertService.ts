@@ -11,11 +11,11 @@ import {
   ResponseError,
   RequestHandlerContext,
 } from 'opensearch-dashboards/server';
-import { GetFindingsParams, GetFindingsResponse } from '../models/interfaces';
+import { GetAlertsParams, GetAlertsResponse } from '../models/interfaces';
 import { ServerResponse } from '../models/types';
-import { CLIENT_DETECTOR_METHODS } from '../utils/constants';
+import { CLIENT_ALERTS_METHODS } from '../utils/constants';
 
-export default class FindingsService {
+export default class AlertService {
   osDriver: ILegacyCustomClusterClient;
 
   constructor(osDriver: ILegacyCustomClusterClient) {
@@ -23,18 +23,16 @@ export default class FindingsService {
   }
 
   /**
-   * Calls backend GET Findings API.
+   * Calls backend GET Alerts API.
    */
-  getFindings = async (
-    context: RequestHandlerContext,
-    request: OpenSearchDashboardsRequest<{}, GetFindingsParams>,
+  getAlerts = async (
+    _context: RequestHandlerContext,
+    request: OpenSearchDashboardsRequest<{}, GetAlertsParams>,
     response: OpenSearchDashboardsResponseFactory
-  ): Promise<
-    IOpenSearchDashboardsResponse<ServerResponse<GetFindingsResponse> | ResponseError>
-  > => {
+  ): Promise<IOpenSearchDashboardsResponse<ServerResponse<GetAlertsResponse> | ResponseError>> => {
     try {
       const { detectorType, detectorId } = request.query;
-      let params: GetFindingsParams;
+      let params: GetAlertsParams;
 
       if (detectorId) {
         params = {
@@ -49,19 +47,19 @@ export default class FindingsService {
       }
 
       const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const getFindingsResponse: GetFindingsResponse = await callWithRequest(
-        CLIENT_DETECTOR_METHODS.GET_FINDINGS,
+      const getAlertsResponse: GetAlertsResponse = await callWithRequest(
+        CLIENT_ALERTS_METHODS.GET_ALERTS,
         params
       );
       return response.custom({
         statusCode: 200,
         body: {
           ok: true,
-          response: getFindingsResponse,
+          response: getAlertsResponse,
         },
       });
     } catch (error: any) {
-      console.error('Security Analytics - FindingsService - getFindings:', error);
+      console.error('Security Analytics - FindingsService - getAlerts:', error);
       return response.custom({
         statusCode: 200,
         body: {

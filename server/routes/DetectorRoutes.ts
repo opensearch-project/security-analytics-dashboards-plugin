@@ -20,4 +20,50 @@ export function setupDetectorRoutes(services: NodeServices, router: IRouter) {
     },
     detectorsService.createDetector
   );
+
+  router.get(
+    {
+      path: `${API.DETECTORS_BASE}/{detectorId}`,
+      validate: {
+        params: schema.object({
+          detectorId: schema.string(),
+        }),
+      },
+    },
+    detectorsService.getDetector
+  );
+
+  router.post(
+    {
+      path: `${API.SEARCH_DETECTORS}`,
+      validate: {
+        body: schema.any(),
+      },
+    },
+    detectorsService.searchDetectors
+  );
+
+  router.put(
+    {
+      path: `${API.DETECTORS_BASE}/{detectorId}`,
+      validate: {
+        params: schema.object({
+          detectorId: schema.string(),
+        }),
+      },
+    },
+    detectorsService.updateDetector
+  );
+
+  router.delete(
+    {
+      path: `${API.DETECTORS_BASE}/{detectorId}`,
+      validate: {
+        params: schema.object({
+          detectorId: schema.string(),
+        }),
+      },
+    },
+    detectorsService.deleteDetector
+  );
 }
