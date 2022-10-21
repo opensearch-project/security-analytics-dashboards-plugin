@@ -20,4 +20,15 @@ export function setupRuleRoutes(services: NodeServices, router: IRouter) {
     },
     rulesService.createRule
   );
+
+  router.post(
+    {
+      path: `${API.RULES_BASE}/_search`,
+      validate: {
+        body: schema.any(),
+        query: schema.object({ pre_packaged: schema.string() }),
+      },
+    },
+    rulesService.getRules
+  );
 }

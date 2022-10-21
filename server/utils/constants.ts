@@ -22,7 +22,7 @@ export const METHOD_NAMES = {
   CREATE_RULE: 'createRule',
   DELETE_RULE: 'deleteRule',
   GET_RULE: 'getRule',
-  GET_RULES: 'getRuless',
+  GET_RULES: 'getRules',
   UPDATE_RULE: 'updateRules',
 };
 
