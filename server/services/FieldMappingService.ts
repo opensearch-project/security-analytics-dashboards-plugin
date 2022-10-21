@@ -11,7 +11,14 @@ import {
   RequestHandlerContext,
   ILegacyCustomClusterClient,
 } from 'opensearch-dashboards/server';
-import { GetFieldMapingsViewParams, GetFieldMappingViewResponse } from '../models/interfaces';
+import {
+  CreateMappingBody,
+  CreateMappingsParams,
+  CreateMappingsResponse,
+  GetFieldMapingsViewParams,
+  GetFieldMappingViewResponse,
+  GetMappingsResponse,
+} from '../models/interfaces';
 import { ServerResponse } from '../models/types';
 import { CLIENT_FIELD_MAPPINGS_METHODS } from '../utils/constants';
 
@@ -53,6 +60,78 @@ export default class FieldMappingService {
       });
     } catch (error: any) {
       console.error('Security Analytics - FieldMappingService - getMappingsView:', error);
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: false,
+          error: error.message,
+        },
+      });
+    }
+  };
+
+  /**
+   * Calls backend GET Detector API.
+   */
+  createMappings = async (
+    _context: RequestHandlerContext,
+    request: OpenSearchDashboardsRequest,
+    response: OpenSearchDashboardsResponseFactory
+  ): Promise<
+    IOpenSearchDashboardsResponse<ServerResponse<CreateMappingsResponse> | ResponseError>
+  > => {
+    try {
+      const params: CreateMappingsParams = { body: request.body as CreateMappingBody };
+      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
+      const getDetectorResponse: CreateMappingsResponse = await callWithRequest(
+        CLIENT_FIELD_MAPPINGS_METHODS.CREATE_MAPPINGS,
+        params
+      );
+
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: true,
+          response: getDetectorResponse,
+        },
+      });
+    } catch (error: any) {
+      console.error('Security Analytics - DetectorsService - getDetector:', error);
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: false,
+          error: error.message,
+        },
+      });
+    }
+  };
+
+  /**
+   * Calls backend GET mappings/view API.
+   */
+  getMappings = async (
+    _context: RequestHandlerContext,
+    request: OpenSearchDashboardsRequest,
+    response: OpenSearchDashboardsResponseFactory
+  ): Promise<
+    IOpenSearchDashboardsResponse<ServerResponse<GetMappingsResponse> | ResponseError>
+  > => {
+    try {
+      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
+      const getFieldMappingsResponse = await callWithRequest(
+        CLIENT_FIELD_MAPPINGS_METHODS.GET_MAPPINGS
+      );
+
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: true,
+          response: getFieldMappingsResponse,
+        },
+      });
+    } catch (error: any) {
+      console.error('Security Analytics - FieldMappingService - getMappings:', error);
       return response.custom({
         statusCode: 200,
         body: {

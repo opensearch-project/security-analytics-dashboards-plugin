@@ -8,5 +8,13 @@ import FindingsService from './FindingsService';
 import OpenSearchService from './OpenSearchService';
 import IndexService from './IndexService';
 import FieldMappingService from './FieldMappingService';
+import AlertService from './AlertService';
 
-export { DetectorService, FieldMappingService, FindingsService, IndexService, OpenSearchService };
+export {
+  DetectorService,
+  FieldMappingService,
+  FindingsService,
+  IndexService,
+  OpenSearchService,
+  AlertService,
+};

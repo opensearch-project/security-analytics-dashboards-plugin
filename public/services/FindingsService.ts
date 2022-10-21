@@ -5,7 +5,7 @@
 
 import { HttpSetup } from 'opensearch-dashboards/public';
 import { ServerResponse } from '../../server/models/types';
-import { GetFindingsResponse } from '../../server/models/interfaces';
+import { GetFindingsParams, GetFindingsResponse } from '../../server/models/interfaces';
 import { API } from '../../server/utils/constants';
 
 export default class FindingsService {
@@ -15,6 +15,22 @@ export default class FindingsService {
     this.httpClient = httpClient;
   }
 
-  getFindings = async (detectorType: string): Promise<ServerResponse<GetFindingsResponse>> =>
-    await this.httpClient.get(`..${API.GET_FINDINGS}`, { query: { detectorType } });
+  getFindings = async (
+    detectorParams: GetFindingsParams
+  ): Promise<ServerResponse<GetFindingsResponse>> => {
+    const { detectorType, detectorId } = detectorParams;
+    let query: GetFindingsParams | {} = {};
+
+    if (detectorId) {
+      query = {
+        detectorId,
+      };
+    } else if (detectorType) {
+      query = {
+        detectorType,
+      };
+    }
+
+    return await this.httpClient.get(`..${API.GET_FINDINGS}`, { query });
+  };
 }

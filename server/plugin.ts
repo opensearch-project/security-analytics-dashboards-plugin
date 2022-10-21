@@ -13,6 +13,7 @@ import {
   setupOpensearchRoutes,
   setupFieldMappingRoutes,
   setupIndexRoutes,
+  setupAlertsRoutes,
 } from './routes';
 import {
   IndexService,
@@ -20,6 +21,7 @@ import {
   OpenSearchService,
   FieldMappingService,
   DetectorService,
+  AlertService,
 } from './services';
 
 export class SecurityAnalyticsPlugin
@@ -35,6 +37,7 @@ export class SecurityAnalyticsPlugin
       findingsService: new FindingsService(osDriver),
       opensearchService: new OpenSearchService(osDriver),
       fieldMappingService: new FieldMappingService(osDriver),
+      alertService: new AlertService(osDriver),
     };
 
     // Create router
@@ -46,6 +49,7 @@ export class SecurityAnalyticsPlugin
     setupFindingsRoutes(services, router);
     setupOpensearchRoutes(services, router);
     setupFieldMappingRoutes(services, router);
+    setupAlertsRoutes(services, router);
 
     return {};
   }

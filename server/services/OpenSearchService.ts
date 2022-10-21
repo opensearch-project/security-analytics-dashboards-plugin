@@ -28,7 +28,9 @@ export default class OpenSearchService {
     context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
-  ): Promise<IOpenSearchDashboardsResponse<ServerResponse<SearchResponse> | ResponseError>> => {
+  ): Promise<
+    IOpenSearchDashboardsResponse<ServerResponse<SearchResponse<any>> | ResponseError>
+  > => {
     try {
       const { index, documentIds } = request.query as { index: string; documentIds: string[] };
       const body = {
@@ -48,13 +50,13 @@ export default class OpenSearchService {
           response: searchResponse,
         },
       });
-    } catch (e) {
-      console.error('Security Analytics - OpenSearchService - documentIdsQuery:', e);
+    } catch (error: any) {
+      console.error('Security Analytics - OpenSearchService - documentIdsQuery:', error);
       return response.custom({
         statusCode: 200,
         body: {
           ok: false,
-          error: e.message,
+          error: error.message,
         },
       });
     }
@@ -64,7 +66,9 @@ export default class OpenSearchService {
     context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
-  ): Promise<IOpenSearchDashboardsResponse<ServerResponse<SearchResponse> | ResponseError>> => {
+  ): Promise<
+    IOpenSearchDashboardsResponse<ServerResponse<SearchResponse<any>> | ResponseError>
+  > => {
     try {
       const {
         index,
@@ -99,13 +103,13 @@ export default class OpenSearchService {
           response: searchResponse,
         },
       });
-    } catch (e) {
-      console.error('Security Analytics - OpenSearchService - timeRangeQuery:', e);
+    } catch (error: any) {
+      console.error('Security Analytics - OpenSearchService - timeRangeQuery:', error);
       return response.custom({
         statusCode: 200,
         body: {
           ok: false,
-          error: e.message,
+          error: error.message,
         },
       });
     }

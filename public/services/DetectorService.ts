@@ -5,7 +5,7 @@
 
 import { HttpSetup } from 'opensearch-dashboards/public';
 import { ServerResponse } from '../../server/models/types';
-import { CreateDetectorResponse } from '../../server/models/interfaces';
+import { CreateDetectorResponse, SearchDetectorsResponse } from '../../server/models/interfaces';
 import { API } from '../../server/utils/constants';
 import { Detector } from '../../models/interfaces';
 
@@ -23,5 +23,18 @@ export default class DetectorsService {
     })) as ServerResponse<CreateDetectorResponse>;
 
     return response;
+  };
+
+  getDetectors = async (): Promise<ServerResponse<SearchDetectorsResponse>> => {
+    const url = `..${API.SEARCH_DETECTORS}`;
+    const res = (await this.httpClient.post(url, {
+      body: JSON.stringify({
+        query: {
+          match_all: {},
+        },
+      }),
+    })) as ServerResponse<SearchDetectorsResponse>;
+
+    return res;
   };
 }
