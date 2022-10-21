@@ -6,18 +6,17 @@
 import {
   EuiBasicTableColumn,
   EuiButton,
+  EuiButtonEmpty,
   EuiFieldSearch,
   EuiFlexGroup,
   EuiFlexItem,
   EuiInMemoryTable,
-  EuiLink,
   EuiPanel,
   EuiSelect,
   EuiSelectOption,
   EuiSpacer,
   EuiSuperDatePicker,
 } from '@elastic/eui';
-import { FlyoutData } from '../../../../components/Flyout/Flyout';
 import React, { Component } from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
 // import { AlertSeverity } from '../../utils/constants';
@@ -29,11 +28,14 @@ import { BREADCRUMBS, DATE_MATH_FORMAT } from '../../../../utils/constants';
 import { CoreServicesContext } from '../../../../components/core_services';
 import AlertsService from '../../../../services/AlertsService';
 import DetectorService from '../../../../services/DetectorService';
+import { AlertItem } from '../../../../../server/models/interfaces';
+import { AlertFlyout } from '../../components/AlertFlyout/AlertFlyout';
+import { FindingsService } from '../../../../services';
 
 export interface AlertsProps {
-  setFlyout: (flyoutData: FlyoutData) => void;
   alertService: AlertsService;
   detectorService: DetectorService;
+  findingService: FindingsService;
 }
 
 export interface AlertsState {
@@ -42,70 +44,12 @@ export interface AlertsState {
   endTime: string;
   selectedItems: AlertItem[];
   alerts: AlertItem[];
-}
-
-export interface AlertItem {
-  id: string;
-  allAlertsCount: number;
-  activeCount: number;
-  acknowledgedCount: number;
-  errorCount: number;
-  detectorName: string;
-  severity: string;
+  flyoutData?: { alertItem: AlertItem };
 }
 
 const groupByOptions = [
   { text: 'Alert status', value: 'alert_status' },
   { text: 'Alert severity', value: 'alert_severity' },
-];
-
-const getColumns = (
-  setFlyout: (flyoutData: FlyoutData) => void
-): EuiBasicTableColumn<AlertItem>[] => [
-  {
-    field: 'allAlertsCount',
-    name: 'Alerts',
-    sortable: false,
-    render: (alertsCount, alertByDetector) => {
-      return (
-        <EuiLink
-          onClick={() => {
-            setFlyout({
-              title: 'Alerts details',
-              type: 'dummy',
-            });
-          }}
-        >
-          {`${alertsCount} alerts for ${alertByDetector.detectorName}`}
-        </EuiLink>
-      );
-    },
-  },
-  {
-    field: 'activeCount',
-    name: 'Active',
-    sortable: false,
-  },
-  {
-    field: 'acknowledgedCount',
-    name: 'Acknowledged',
-    sortable: false,
-  },
-  {
-    field: 'errorCount',
-    name: 'Errors',
-    sortable: false,
-  },
-  {
-    field: 'detectorName',
-    name: 'Detector Name',
-    sortable: false,
-  },
-  {
-    field: 'severity',
-    name: 'Severity',
-    sortable: false,
-  },
 ];
 
 export default class Alerts extends Component<AlertsProps, AlertsState> {
@@ -122,6 +66,66 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
       selectedItems: [],
       alerts: [],
     };
+  }
+
+  getColumns(): EuiBasicTableColumn<AlertItem>[] {
+    return [
+      {
+        field: 'start_time',
+        name: 'Start time',
+        sortable: true,
+      },
+      {
+        field: 'trigger_name',
+        name: 'Alert trigger name',
+        sortable: false,
+        render: (triggerName: string, alertItem: AlertItem) => (
+          <EuiButtonEmpty onClick={() => this.setFlyout(alertItem)}>{triggerName}</EuiButtonEmpty>
+        ),
+      },
+      {
+        field: 'detector_id',
+        name: 'Detector',
+        sortable: true,
+      },
+      {
+        field: 'state',
+        name: 'Status',
+        sortable: true,
+      },
+      {
+        field: 'severity',
+        name: 'Alert severity',
+        sortable: true,
+      },
+      {
+        field: 'start_time',
+        name: 'Start time',
+        sortable: true,
+      },
+      {
+        name: 'Actions',
+        sortable: false,
+        actions: [
+          {
+            render: (alertItem: AlertItem) => (
+              <EuiButton disabled={!!alertItem.acknowledged_time} onClick={() => {}}>
+                Ack
+              </EuiButton>
+            ),
+          },
+          {
+            render: (alertItem: AlertItem) => (
+              <EuiButton onClick={() => this.setFlyout(alertItem)}>View details</EuiButton>
+            ),
+          },
+        ],
+      },
+    ];
+  }
+
+  setFlyout(alertItem?: AlertItem): void {
+    this.setState({ flyoutData: alertItem ? { alertItem } : undefined });
   }
 
   generateVisualizationSpec() {
@@ -197,17 +201,7 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
         const alertsRes = await alertService.getAlerts({ detectorId: id });
 
         if (alertsRes.ok) {
-          alerts = alerts.concat(
-            alertsRes.response.alerts.map((alert) => ({
-              id: alert.id,
-              allAlertsCount: alertsRes.response.alerts.length,
-              activeCount: alertsRes.response.alerts.length,
-              acknowledgedCount: 0,
-              errorCount: 0,
-              detectorName: alert.detector_id,
-              severity: alert.severity,
-            }))
-          );
+          alerts = alerts.concat(alertsRes.response.alerts);
         }
       }
 
@@ -231,43 +225,56 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
     this.setState({ selectedItems });
   };
 
+  onFlyoutClose = () => {
+    this.setState({ flyoutData: undefined });
+  };
+
   render() {
     return (
-      <ContentPanel title={'Security alerts'}>
-        <EuiFlexGroup gutterSize={'s'}>
-          <EuiFlexItem grow={9}>
-            <EuiFieldSearch
-              fullWidth={true}
-              // onChange={this.onSearchChange}
-              placeholder={'Search findings'}
-            />
-          </EuiFlexItem>
-          <EuiFlexItem grow={1}>
-            <EuiSuperDatePicker onTimeChange={this.onTimeChange} onRefresh={this.onRefresh} />
-          </EuiFlexItem>
-        </EuiFlexGroup>
-        <EuiSpacer size={'m'} />
-        <EuiSpacer size="xxl" />
-        <EuiPanel>
-          <EuiFlexGroup>
-            <EuiFlexItem grow={9}>
-              <div id="view"></div>
-            </EuiFlexItem>
-            <EuiFlexItem grow={1}>{this.createGroupByControl()}</EuiFlexItem>
-          </EuiFlexGroup>
-        </EuiPanel>
-        <EuiSpacer size="xxl" />
-        <ContentPanel title={'Alerts'} actions={[this.createAcknowledgeControl()]}>
-          <EuiInMemoryTable
-            columns={getColumns(this.props.setFlyout)}
-            items={this.state.alerts}
-            itemId={(item) => `${item.id}`}
-            isSelectable={true}
-            pagination
-            selection={{ onSelectionChange: this.onSelectionChange }}
+      <>
+        {this.state.flyoutData && (
+          <AlertFlyout
+            alertItem={this.state.flyoutData.alertItem}
+            onClose={this.onFlyoutClose}
+            findingsService={this.props.findingService}
           />
+        )}
+        <ContentPanel title={'Security alerts'}>
+          <EuiFlexGroup gutterSize={'s'}>
+            <EuiFlexItem grow={9}>
+              <EuiFieldSearch
+                fullWidth={true}
+                // onChange={this.onSearchChange}
+                placeholder={'Search findings'}
+              />
+            </EuiFlexItem>
+            <EuiFlexItem grow={1}>
+              <EuiSuperDatePicker onTimeChange={this.onTimeChange} onRefresh={this.onRefresh} />
+            </EuiFlexItem>
+          </EuiFlexGroup>
+          <EuiSpacer size={'m'} />
+          <EuiSpacer size="xxl" />
+          <EuiPanel>
+            <EuiFlexGroup>
+              <EuiFlexItem grow={9}>
+                <div id="view"></div>
+              </EuiFlexItem>
+              <EuiFlexItem grow={1}>{this.createGroupByControl()}</EuiFlexItem>
+            </EuiFlexGroup>
+          </EuiPanel>
+          <EuiSpacer size="xxl" />
+          <ContentPanel title={'Alerts'} actions={[this.createAcknowledgeControl()]}>
+            <EuiInMemoryTable
+              columns={this.getColumns()}
+              items={this.state.alerts}
+              itemId={(item) => `${item.id}`}
+              isSelectable={true}
+              pagination
+              selection={{ onSelectionChange: this.onSelectionChange }}
+            />
+          </ContentPanel>
         </ContentPanel>
-      </ContentPanel>
+      </>
     );
   }
 }

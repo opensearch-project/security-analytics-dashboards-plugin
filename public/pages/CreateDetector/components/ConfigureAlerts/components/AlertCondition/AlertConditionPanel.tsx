@@ -58,6 +58,7 @@ export default class AlertConditionPanel extends Component<
       detector: { triggers },
       indexNum,
     } = this.props;
+    trigger.types = [detector.detector_type];
     const newTriggers = [...triggers];
     newTriggers.splice(indexNum, 1, { ...alertCondition, ...trigger });
     onAlertTriggerChanged({ ...detector, triggers: newTriggers });

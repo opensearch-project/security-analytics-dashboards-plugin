@@ -17,22 +17,29 @@ export interface GetAlertsResponse {
   alerts: AlertResponse[];
 }
 
-export interface AlertResponse {
-  detector_id: string;
+export interface AlertItem {
   id: string;
+  start_time: string;
+  trigger_name: string;
+  detector_id: string;
+  state: string;
+  severity: string;
+  finding_ids: string[];
+  last_notification_time: string;
+  acknowledged_time: string | null;
+}
+
+export interface AlertResponse extends AlertItem {
   version: number;
   schema_version: number;
   trigger_id: string;
-  trigger_name: string;
-  finding_ids: string[];
   related_doc_ids: string[];
-  state: string;
   error_message: string | null;
   alert_history: string[];
-  severity: string;
-  action_execution_results: string[];
-  start_time: string;
-  last_notification_time: string;
+  action_execution_results: {
+    action_id: string;
+    last_execution_time: number;
+    throttled_count: number;
+  }[];
   end_time: string | null;
-  acknowledged_time: string | null;
 }

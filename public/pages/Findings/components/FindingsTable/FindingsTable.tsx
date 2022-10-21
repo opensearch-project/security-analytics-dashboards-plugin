@@ -6,7 +6,14 @@
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import moment from 'moment';
-import { EuiButton, EuiEmptyPrompt, EuiInMemoryTable, EuiLink, EuiText } from '@elastic/eui';
+import {
+  EuiBasicTableColumn,
+  EuiButton,
+  EuiEmptyPrompt,
+  EuiInMemoryTable,
+  EuiLink,
+  EuiText,
+} from '@elastic/eui';
 import dateMath from '@elastic/datemath';
 import { renderTime } from '../../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA, ROUTES } from '../../../../utils/constants';
@@ -103,7 +110,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
     const { findings, loading } = this.props;
     const { findingsFiltered, filteredFindings, flyoutOpen, selectedFinding } = this.state;
 
-    const columns = [
+    const columns: EuiBasicTableColumn<Finding>[] = [
       {
         field: 'timestamp',
         name: 'Time',
