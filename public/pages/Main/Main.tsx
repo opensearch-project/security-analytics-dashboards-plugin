@@ -120,7 +120,7 @@ export default class Main extends Component<MainProps, object> {
                         <Route
                           path={ROUTES.DETECTORS_CREATE}
                           render={(props: RouteComponentProps) => (
-                            <CreateDetector {...props} isEdit={true} />
+                            <CreateDetector {...props} isEdit={true} services={services} />
                           )}
                         />
                         <Route
