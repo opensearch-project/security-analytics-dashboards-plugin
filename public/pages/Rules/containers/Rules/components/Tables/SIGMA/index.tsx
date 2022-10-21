@@ -1,3 +1,8 @@
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import React, { useState, useEffect } from 'react';
 import { allRequest, ruleTypes } from '../../../../../state-management';
 import Modal from '../../../../../lib/UIComponents/Modal';

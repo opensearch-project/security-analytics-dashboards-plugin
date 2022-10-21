@@ -75,7 +75,9 @@ const ContentPanel: React.SFC<ContentPanelProps> = ({
         </EuiFlexItem>
       ) : null}
     </EuiFlexGroup>
+
     <EuiHorizontalRule margin="xs" className={horizontalRuleClassName} />
+
     <div style={{ padding: '0px 10px', ...bodyStyles }}>{children}</div>
   </EuiPanel>
 );

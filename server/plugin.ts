@@ -9,6 +9,20 @@ import { createSecurityAnalyticsCluster } from './clusters/createSecurityAnalyti
 import { NodeServices } from './models/interfaces';
 import { setupRuleRoutes } from './routes';
 import RulesService from './services/ruleService';
+import {
+  setupDetectorRoutes,
+  setupFindingsRoutes,
+  setupOpensearchRoutes,
+  setupFieldMappingRoutes,
+  setupIndexRoutes,
+} from './routes';
+import {
+  IndexService,
+  FindingsService,
+  OpenSearchService,
+  FieldMappingService,
+  DetectorService,
+} from './services';
 
 export class SecurityAnalyticsPlugin
   implements Plugin<SecurityAnalyticsPluginSetup, SecurityAnalyticsPluginStart> {
@@ -19,6 +33,11 @@ export class SecurityAnalyticsPlugin
     // Initialize services
     const services: NodeServices = {
       rulesService: new RulesService(osDriver),
+      detectorsService: new DetectorService(osDriver),
+      indexService: new IndexService(osDriver),
+      findingsService: new FindingsService(osDriver),
+      opensearchService: new OpenSearchService(osDriver),
+      fieldMappingService: new FieldMappingService(osDriver),
     };
 
     // Create router
@@ -26,6 +45,11 @@ export class SecurityAnalyticsPlugin
 
     // setup routes
     setupRuleRoutes(services, router);
+    setupDetectorRoutes(services, router);
+    setupIndexRoutes(services, router);
+    setupFindingsRoutes(services, router);
+    setupOpensearchRoutes(services, router);
+    setupFieldMappingRoutes(services, router);
 
     return {};
   }

@@ -3,8 +3,5 @@ build
 coverage
 node_modules
 npm-debug.log
-yarn.lock
 *.md
 *.lock
-/api/mockData
-/api/sigma

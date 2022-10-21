@@ -1,3 +1,8 @@
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import React, { useState, Fragment } from 'react';
 import { Visual } from './Visual';
 import { YAML } from './YAML';

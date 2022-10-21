@@ -1,3 +1,8 @@
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import React, { Fragment } from 'react';
 import { SigmaTable } from '../../Tables/SIGMA';
 import _ from 'lodash';

@@ -11,25 +11,57 @@ export function securityAnalyticsPlugin(Client: any, config: any, components: an
   Client.prototype[PLUGIN_PROPERTY_NAME] = components.clientAction.namespaceFactory();
   const securityAnalytics = Client.prototype[PLUGIN_PROPERTY_NAME].prototype;
 
-  securityAnalytics[METHOD_NAMES.CREATE_RULE] = createAction({
+  securityAnalytics[METHOD_NAMES.CREATE_DETECTOR] = createAction({
     url: {
-      fmt: `${API.RULES_BASE}`,
+      fmt: `${API.DETECTORS_BASE}`,
     },
     needBody: true,
     method: 'POST',
   });
 
-  securityAnalytics[METHOD_NAMES.GET_RULES] = createAction({
+  securityAnalytics[METHOD_NAMES.GET_FINDINGS] = createAction({
     url: {
-      fmt: `${API.RULES_BASE}/_search?pre_packaged=<%=pre_packaged%>`,
+      fmt: API.GET_FINDINGS,
+    },
+    needBody: false,
+    method: 'GET',
+  });
+
+  securityAnalytics[METHOD_NAMES.GET_MAPPINGS_VIEW] = createAction({
+    url: {
+      fmt: `${API.MAPPINGS_VIEW}?index_name=<%=indexName%>&rule_topic=<%=ruleTopic%>`,
       req: {
-        pre_packaged: {
+        indexName: {
           type: 'string',
           required: true,
         },
+        ruleTopic: {
+          type: 'string',
+          required: false,
+        },
       },
     },
-    needBody: true,
-    method: 'POST',
   });
 }
+
+securityAnalytics[METHOD_NAMES.CREATE_RULE] = createAction({
+  url: {
+    fmt: `${API.RULES_BASE}`,
+  },
+  needBody: true,
+  method: 'POST',
+});
+
+securityAnalytics[METHOD_NAMES.GET_RULES] = createAction({
+  url: {
+    fmt: `${API.RULES_BASE}/_search?pre_packaged=<%=pre_packaged%>`,
+    req: {
+      pre_packaged: {
+        type: 'string',
+        required: true,
+      },
+    },
+  },
+  needBody: true,
+  method: 'POST',
+});
