@@ -109,6 +109,7 @@ export default class Main extends Component<MainProps> {
                               {...props}
                               findingsService={services.findingsService}
                               opensearchService={services.opensearchService}
+                              detectorService={services.detectorsService}
                             />
                           )}
                         />

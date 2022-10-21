@@ -99,6 +99,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
   renderFlyout = (finding: Finding) => {
     return (
       <FindingDetailsFlyout
+        {...this.props}
         finding={finding}
         opensearchService={this.props.opensearchService}
         closeFlyout={this.closeFlyout}

@@ -24,8 +24,11 @@ import { renderTime } from '../../../../utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { Detector } from '../../../../../models/interfaces';
 import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
+import { DetectorsService } from '../../../../services';
 
-interface DetectorsProps extends RouteComponentProps {}
+interface DetectorsProps extends RouteComponentProps {
+  detectorService: DetectorsService;
+}
 
 interface DetectorsState {
   detectors: Detector[];
@@ -34,41 +37,6 @@ interface DetectorsState {
   isDeleteModalVisible: boolean;
   isPopoverOpen: boolean;
 }
-
-export const EXAMPLE_DETECTORS: Detector[] = [
-  {
-    type: 'detector',
-    detector_type: 'windows',
-    name: 'windows_detector',
-    enabled: true,
-    createdBy: 'chip',
-    schedule: {
-      period: {
-        interval: 1,
-        unit: 'MINUTES',
-      },
-    },
-    inputs: [
-      {
-        input: {
-          description: 'windows detector for security analytics',
-          indices: ['windows'],
-          rules: [],
-        },
-      },
-    ],
-    triggers: [
-      {
-        sev_levels: [],
-        tags: [],
-        actions: [],
-        types: ['windows'],
-        name: 'test-trigger',
-        id: 'fyAy1IMBK2A1DZyOuW_b',
-      },
-    ],
-  },
-];
 
 export default class Detectors extends Component<DetectorsProps, DetectorsState> {
   static contextType = CoreServicesContext;
@@ -92,8 +60,12 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
 
   getDetectors = async () => {
     this.setState({ loadingDetectors: true });
-    // TODO: Implement once API is available
-    this.setState({ detectors: EXAMPLE_DETECTORS }); // TODO remove after testing
+    const res = await this.props.detectorService.getDetectors();
+
+    if (res.ok) {
+      this.setState({ detectors: res.response.hits.hits.map((hit) => hit._source) });
+    }
+
     this.setState({ loadingDetectors: false });
   };
 
@@ -179,7 +151,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
             <EuiContextMenuItem
               key={'Edit'}
               icon={'empty'}
-              disabled={selectedItems.length != 1}
+              disabled={selectedItems.length !== 1}
               onClick={() => {
                 this.closeActionsPopover();
                 this.onClickEdit();
@@ -191,7 +163,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
             <EuiContextMenuItem
               key={'Delete'}
               icon={'empty'}
-              disabled={selectedItems.length != 1}
+              disabled={selectedItems.length === 0}
               onClick={() => {
                 this.closeActionsPopover();
                 this.openDeleteModal();
@@ -200,16 +172,33 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
             >
               Delete
             </EuiContextMenuItem>,
+            <EuiContextMenuItem
+              key={'StartDetector'}
+              icon={'empty'}
+              disabled={selectedItems.length !== 1}
+              onClick={() => {
+                this.closeActionsPopover();
+                this.openDeleteModal();
+              }}
+              data-test-subj={'startDetectorButton'}
+            >
+              Start detector
+            </EuiContextMenuItem>,
+            <EuiContextMenuItem
+              key={'StopDetector'}
+              icon={'empty'}
+              disabled={selectedItems.length !== 1}
+              onClick={() => {
+                this.closeActionsPopover();
+                this.openDeleteModal();
+              }}
+              data-test-subj={'stopDetectorButton'}
+            >
+              Stop detector
+            </EuiContextMenuItem>,
           ]}
         />
       </EuiPopover>,
-      <EuiButton
-        disabled={!selectedItems.length}
-        onClick={this.openDeleteModal}
-        data-test-subj={'detectorsDeleteButton'}
-      >
-        Delete
-      </EuiButton>,
       <EuiButton
         href={`${PLUGIN_NAME}#${ROUTES.DETECTORS_CREATE}`}
         fill={true}
@@ -229,11 +218,11 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
         render: (name: string) => name || DEFAULT_EMPTY_DATA,
       },
       {
-        field: 'status',
+        field: 'enabled',
         name: 'Status',
         sortable: true,
         dataType: 'string',
-        render: (status: string) => status || DEFAULT_EMPTY_DATA,
+        render: (enabled: boolean) => (enabled ? 'ACTIVE' : 'INACTIVE'),
       },
       {
         field: 'type',
@@ -250,7 +239,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
         render: (rules: string) => rules || DEFAULT_EMPTY_DATA,
       },
       {
-        field: 'last_updated_time',
+        field: 'last_update_time',
         name: 'Last updated time',
         sortable: true,
         dataType: 'date',

@@ -5,12 +5,15 @@
 
 import './Overview.scss';
 import {
+  EuiFieldSearch,
   EuiFlexGrid,
   EuiFlexGroup,
   EuiFlexItem,
   EuiLink,
   EuiSelect,
   EuiSelectOption,
+  EuiSpacer,
+  EuiSuperDatePicker,
   EuiText,
 } from '@elastic/eui';
 import React, { Component } from 'react';
@@ -104,11 +107,30 @@ export default class Overview extends Component<OverviewProps, OverviewState> {
     ];
   }
 
+  onTimeChange = ({ start, end }: { start: string; end: string }) => {};
+
+  onRefresh = async () => {};
+
   render() {
     return (
       <ContentPanel title={'Overview'}>
         <EuiFlexGroup direction="column">
-          <EuiFlexItem className="grid-item">
+          <EuiFlexItem>
+            <EuiFlexGroup gutterSize={'s'}>
+              <EuiFlexItem grow={9}>
+                <EuiFieldSearch
+                  fullWidth={true}
+                  // onChange={this.onSearchChange}
+                  placeholder={'Search findings'}
+                />
+              </EuiFlexItem>
+              <EuiFlexItem grow={1}>
+                <EuiSuperDatePicker onTimeChange={this.onTimeChange} onRefresh={this.onRefresh} />
+              </EuiFlexItem>
+            </EuiFlexGroup>
+            <EuiSpacer size={'m'} />
+          </EuiFlexItem>
+          <EuiFlexItem style={{ padding: 20 }}>
             <WidgetContainer
               title="Findings and alert count"
               actions={this.createVisualizationActions()}
