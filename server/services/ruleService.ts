@@ -63,35 +63,35 @@ export default class RulesService {
   };
 }
 
-getRules = async (
-  _context: RequestHandlerContext,
-  request: OpenSearchDashboardsRequest,
-  response: OpenSearchDashboardsResponseFactory
-): Promise<IOpenSearchDashboardsResponse<ServerResponse<GetRulesResponse> | ResponseError>> => {
-  try {
-    const rule = request.body as { query: Query };
-    const params: GetRuleParams = { body: rule, pre_packaged: request.query.pre_packaged };
-    const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-    const getRuleResponse: GetRulesResponse = await callWithRequest(
-      CLIENT_RULE_METHODS.GET_RULES,
-      params
-    );
+// getRules = async (
+//   _context: RequestHandlerContext,
+//   request: OpenSearchDashboardsRequest,
+//   response: OpenSearchDashboardsResponseFactory
+// ): Promise<IOpenSearchDashboardsResponse<ServerResponse<GetRulesResponse> | ResponseError>> => {
+//   try {
+//     const rule = request.body as { query: Query };
+//     const params: GetRuleParams = { body: rule, pre_packaged: request.query.pre_packaged };
+//     const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
+//     const getRuleResponse: GetRulesResponse = await callWithRequest(
+//       CLIENT_RULE_METHODS.GET_RULES,
+//       params
+//     );
 
-    return response.custom({
-      statusCode: 200,
-      body: {
-        ok: true,
-        response: getRuleResponse,
-      },
-    });
-  } catch (error) {
-    console.error('Security Analytics - RulesService - getRules:', error);
-    return response.custom({
-      statusCode: 200,
-      body: {
-        ok: false,
-        error: error.message,
-      },
-    });
-  }
-};
+//     return response.custom({
+//       statusCode: 200,
+//       body: {
+//         ok: true,
+//         response: getRuleResponse,
+//       },
+//     });
+//   } catch (error) {
+//     console.error('Security Analytics - RulesService - getRules:', error);
+//     return response.custom({
+//       statusCode: 200,
+//       body: {
+//         ok: false,
+//         error: error.message,
+//       },
+//     });
+//   }
+// };
