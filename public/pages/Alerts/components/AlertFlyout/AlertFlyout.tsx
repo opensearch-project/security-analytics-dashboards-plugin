@@ -6,6 +6,7 @@
 import {
   EuiBasicTable,
   EuiBasicTableColumn,
+  EuiButton,
   EuiButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
@@ -146,22 +147,37 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
             aria-lable="back"
             onClick={() => this.setFindingFlyoutData()}
             display="base"
-            size="m"
+            size="s"
           />
         }
       />
     ) : (
       <EuiFlyout
         onClose={onClose}
+        hideCloseButton
         closeButtonProps={{
           size: 'm',
           display: 'base',
         }}
       >
         <EuiFlyoutHeader hasBorder={true}>
-          <EuiTitle size={'m'}>
-            <h3>Alert details</h3>
-          </EuiTitle>
+          <EuiFlexGroup justifyContent="spaceBetween">
+            <EuiFlexItem grow={2}>
+              <EuiTitle size={'m'}>
+                <h3>Alert details</h3>
+              </EuiTitle>
+            </EuiFlexItem>
+            <EuiFlexItem grow={8}>
+              <EuiFlexGroup justifyContent="flexEnd" alignItems="center">
+                <EuiFlexItem grow={false}>
+                  <EuiButton>Acknowledge</EuiButton>
+                </EuiFlexItem>
+                <EuiFlexItem grow={false}>
+                  <EuiButtonIcon iconType="cross" iconSize="m" display="empty" onClick={onClose} />
+                </EuiFlexItem>
+              </EuiFlexGroup>
+            </EuiFlexItem>
+          </EuiFlexGroup>
         </EuiFlyoutHeader>
         <EuiFlyoutBody>
           {this.createTextDetailsGroup([

@@ -7,6 +7,7 @@ import React, { Component } from 'react';
 import {
   EuiBadge,
   EuiBadgeGroup,
+  EuiButtonIcon,
   EuiCodeBlock,
   EuiFlexGroup,
   EuiFlexItem,
@@ -150,22 +151,21 @@ export default class FindingDetailsFlyout extends Component<
       backButton,
     } = this.props;
     return (
-      <EuiFlyout
-        onClose={closeFlyout}
-        ownFocus={true}
-        size={'m'}
-        closeButtonProps={{
-          size: 'm',
-          display: 'base',
-        }}
-      >
+      <EuiFlyout onClose={closeFlyout} ownFocus={true} size={'m'} hideCloseButton>
         <EuiFlyoutHeader hasBorder={true}>
-          <EuiFlexGroup>
-            <EuiFlexItem grow={false}>{!!backButton ? backButton : null}</EuiFlexItem>
+          <EuiFlexGroup justifyContent="flexStart" alignItems="center">
             <EuiFlexItem>
-              <EuiTitle size={'m'}>
-                <h3>Finding details</h3>
-              </EuiTitle>
+              <EuiFlexGroup alignItems="center">
+                {!!backButton ? <EuiFlexItem grow={false}>{backButton}</EuiFlexItem> : null}
+                <EuiFlexItem>
+                  <EuiTitle size={'m'}>
+                    <h3>Finding details</h3>
+                  </EuiTitle>
+                </EuiFlexItem>
+              </EuiFlexGroup>
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <EuiButtonIcon iconType="cross" display="empty" iconSize="m" onClick={closeFlyout} />
             </EuiFlexItem>
           </EuiFlexGroup>
         </EuiFlyoutHeader>
