@@ -10,6 +10,7 @@ import {
   FieldMappingService,
 } from '../services';
 import IndexService from '../services/IndexService';
+import RuleService from '../services/RuleService';
 
 export interface BrowserServices {
   detectorsService: DetectorsService;
@@ -17,4 +18,5 @@ export interface BrowserServices {
   indexService: IndexService;
   opensearchService: OpenSearchService;
   fieldMappingService: FieldMappingService;
+  ruleService: RuleService;
 }

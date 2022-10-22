@@ -24,11 +24,6 @@ export const ROUTES = Object.freeze({
   RULES_CREATE: '/create-rule',
   RULES_EDIT: '/edit-rule',
   ALERTS: '/alerts',
-  DASHBOARDS: '/dashboards',
-  DETECTORS: '/detectors',
-  FINDINGS: '/findings',
-  OVERVIEW: '/overview',
-  RULES: '/rules',
   DETECTORS_CREATE: '/create-detector',
 
   get LANDING_PAGE(): string {

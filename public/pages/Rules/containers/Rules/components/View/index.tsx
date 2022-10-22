@@ -54,10 +54,6 @@ export const View = (props: any) => {
     }
   });
 
-  // const onChange = (e:any) => {
-  //   setIsReadOnly(e.target.checked);
-  // };
-
   const buttonDisplay = () => {
     if (currentMode === 'Edit') {
       setCurrentMode('Cancel');

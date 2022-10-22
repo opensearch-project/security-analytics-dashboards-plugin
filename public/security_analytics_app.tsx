@@ -16,6 +16,7 @@ import DetectorsService from './services/DetectorService';
 import IndexService from './services/IndexService';
 import FindingsService from './services/FindingsService';
 import OpenSearchService from './services/OpenSearchService';
+import RulesService from './services/RuleService';
 import { BrowserServices } from './models/interfaces';
 import FieldMappingService from './services/FieldMappingService';
 
@@ -27,12 +28,14 @@ export function renderApp(coreStart: CoreStart, params: AppMountParameters, land
   const findingsService = new FindingsService(http);
   const opensearchService = new OpenSearchService(http);
   const fieldMappingService = new FieldMappingService(http);
+  const rulesService = new RulesService(http);
   const services: BrowserServices = {
     detectorsService,
     indexService,
     fieldMappingService,
     findingsService,
     opensearchService,
+    rulesService,
   };
 
   const isDarkMode = coreStart.uiSettings.get('theme:darkMode') || false;

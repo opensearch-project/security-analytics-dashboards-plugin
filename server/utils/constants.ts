@@ -21,7 +21,7 @@ export const API: SecurityAnalyticsApi = {
   TIME_RANGE_QUERY: `${BASE_API_PATH}/time_range_query`,
   MAPPINGS_BASE: `${BASE_API_PATH}/mappings`,
   MAPPINGS_VIEW: `${BASE_API_PATH}/mappings/view`,
-  RULES_BASE: `${BASE_API_PATH}/rules`,
+  RULES_BASE: `${BASE_API_PATH}/rules/_search`,
 };
 
 /**
@@ -37,6 +37,7 @@ export const METHOD_NAMES = {
   GET_RULE: 'getRule',
   GET_RULES: 'getRules',
   UPDATE_RULE: 'updateRules',
+
   // Detector methods
   CREATE_DETECTOR: 'createDetector',
   DELETE_DETECTOR: 'deleteDetector',

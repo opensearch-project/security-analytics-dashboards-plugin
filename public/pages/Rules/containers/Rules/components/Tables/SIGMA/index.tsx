@@ -8,6 +8,7 @@ import { allRequest, ruleTypes } from '../../../../../state-management';
 import Modal from '../../../../../lib/UIComponents/Modal';
 import { EuiInMemoryTable, EuiFlexGroup } from '@elastic/eui';
 import axios from 'axios';
+import RulesService from '../../../../../../../services/RuleService';
 
 export const SigmaTable = () => {
   const [pagination, setPagination] = useState({ pageIndex: 0 });
@@ -21,7 +22,8 @@ export const SigmaTable = () => {
   const showModal = () => setIsModalVisible(true);
 
   useEffect(() => {
-    axios(allRequest).then((res) => {
+    const rulesService = new RulesService();
+    rulesService.getRules('pre-packaged').then((res) => {
       let allRules: any = [];
       res.data.hits.hits.forEach((rule: any) => {
         allRules.push(rule._source);
@@ -121,8 +123,6 @@ export const SigmaTable = () => {
       textOnly: true,
     };
   };
-
-  console.log('RULES', sigmaRules);
 
   return (
     <EuiFlexGroup>

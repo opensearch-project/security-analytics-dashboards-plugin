@@ -8,6 +8,7 @@ import DetectorsService from './DetectorService';
 import FindingsService from './FindingsService';
 import OpenSearchService from './OpenSearchService';
 import FieldMappingService from './FieldMappingService';
+import RulesService from './RuleService';
 
 export {
   ServicesConsumer,
@@ -16,4 +17,5 @@ export {
   FindingsService,
   OpenSearchService,
   FieldMappingService,
+  RulesService,
 };
