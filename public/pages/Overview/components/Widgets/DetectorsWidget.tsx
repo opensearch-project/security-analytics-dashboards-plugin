@@ -4,6 +4,7 @@
  */
 
 import { EuiBasicTableColumn, EuiButton } from '@elastic/eui';
+import { ROUTES } from '../../../../utils/constants';
 import React from 'react';
 import { DetectorItem } from '../../models/interfaces';
 import { TableWidget } from './TableWidget';
@@ -38,8 +39,8 @@ export interface DetectorsWidgetProps {
 export const DetectorsWidget: React.FC<DetectorsWidgetProps> = ({ items }) => {
   const actions = React.useMemo(
     () => [
-      <EuiButton href="">View all detectors</EuiButton>,
-      <EuiButton href="">Create detector</EuiButton>,
+      <EuiButton href={`#${ROUTES.DETECTORS}`}>View all detectors</EuiButton>,
+      <EuiButton href={`#${ROUTES.DETECTORS_CREATE}`}>Create detector</EuiButton>,
     ],
     []
   );

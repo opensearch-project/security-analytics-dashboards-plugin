@@ -4,10 +4,10 @@
  */
 
 import React, { Component } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
 import {
   EuiBadge,
   EuiBadgeGroup,
+  EuiButtonIcon,
   EuiCodeBlock,
   EuiFlexGroup,
   EuiFlexItem,
@@ -20,19 +20,17 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import { OpenSearchService } from '../../../services';
 import { renderTime } from '../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 import { parseAlertSeverityToOption } from '../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 
-interface FindingDetailsFlyoutProps extends RouteComponentProps {
+interface FindingDetailsFlyoutProps {
   finding: Finding;
-  opensearchService: OpenSearchService;
   closeFlyout: () => void;
+  backButton?: React.ReactNode;
 }
 
 interface FindingDetailsFlyoutState {
-  documents: FindingDocument[];
   loading: boolean;
 }
 
@@ -43,7 +41,6 @@ export default class FindingDetailsFlyout extends Component<
   constructor(props: FindingDetailsFlyoutProps) {
     super(props);
     this.state = {
-      documents: [],
       loading: false,
     };
   }
@@ -52,27 +49,6 @@ export default class FindingDetailsFlyout extends Component<
     this.setState({ loading: true });
     // TODO: Call the get detector API. Find the rule associated with the
     //  finding to retrieve the rule details for display.
-    this.setState({ loading: false });
-  };
-
-  getDocument = async () => {
-    this.setState({ loading: true });
-    const {
-      finding: { index, related_doc_ids = [] },
-      opensearchService,
-    } = this.props;
-    try {
-      const response = await opensearchService.documentIdsQuery(index, related_doc_ids);
-      if (response.ok) {
-        this.setState({
-          documents: ((response.response.hits.hits as unknown) as FindingDocument[]) || [],
-        });
-      } else {
-        console.error('Failed to retrieve documents: ', response);
-      }
-    } catch (e) {
-      console.error('Failed to retrieve documents: ', e);
-    }
     this.setState({ loading: false });
   };
 
@@ -92,9 +68,9 @@ export default class FindingDetailsFlyout extends Component<
 
   renderRuleDetails = (rules: Query[] = []) => {
     const {
-      finding: { index, related_doc_ids },
+      finding: { index, related_doc_ids, document_list },
     } = this.props;
-    const { documents } = this.state;
+    const documents = document_list;
     const docId = related_doc_ids[0];
     const document = documents.filter((doc) => doc.id === docId);
     return rules.map((rule, key) => {
@@ -172,13 +148,26 @@ export default class FindingDetailsFlyout extends Component<
     const {
       finding: { id, detector_name, queries, timestamp },
       closeFlyout,
+      backButton,
     } = this.props;
     return (
-      <EuiFlyout onClose={closeFlyout} ownFocus={true} size={'m'} type={'push'}>
+      <EuiFlyout onClose={closeFlyout} ownFocus={true} size={'m'} hideCloseButton>
         <EuiFlyoutHeader hasBorder={true}>
-          <EuiTitle size={'m'}>
-            <h3>Finding details</h3>
-          </EuiTitle>
+          <EuiFlexGroup justifyContent="flexStart" alignItems="center">
+            <EuiFlexItem>
+              <EuiFlexGroup alignItems="center">
+                {!!backButton ? <EuiFlexItem grow={false}>{backButton}</EuiFlexItem> : null}
+                <EuiFlexItem>
+                  <EuiTitle size={'m'}>
+                    <h3>Finding details</h3>
+                  </EuiTitle>
+                </EuiFlexItem>
+              </EuiFlexGroup>
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <EuiButtonIcon iconType="cross" display="empty" iconSize="m" onClick={closeFlyout} />
+            </EuiFlexItem>
+          </EuiFlexGroup>
         </EuiFlyoutHeader>
         <EuiFlyoutBody>
           <EuiFlexGroup>

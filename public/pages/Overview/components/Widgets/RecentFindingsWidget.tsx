@@ -4,6 +4,7 @@
  */
 
 import { EuiBasicTableColumn, EuiButton } from '@elastic/eui';
+import { ROUTES } from '../../../../utils/constants';
 import React from 'react';
 import { FindingItem } from '../../models/interfaces';
 import { TableWidget } from './TableWidget';
@@ -35,7 +36,10 @@ export interface RecentFindingsWidgetProps {
 }
 
 export const RecentFindingsWidget: React.FC<RecentFindingsWidgetProps> = ({ items }) => {
-  const actions = React.useMemo(() => [<EuiButton href="">View all findings</EuiButton>], []);
+  const actions = React.useMemo(
+    () => [<EuiButton href={`#${ROUTES.FINDINGS}`}>View all findings</EuiButton>],
+    []
+  );
 
   return (
     <WidgetContainer title="Top 20 recent findings" actions={actions}>

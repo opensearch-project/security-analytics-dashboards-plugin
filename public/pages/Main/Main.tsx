@@ -17,6 +17,7 @@ import Detectors from '../Detectors';
 import Rules from '../Rules';
 import Overview from '../Overview';
 import CreateDetector from '../CreateDetector/containers/CreateDetector';
+import Alerts from '../Alerts';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -28,8 +29,6 @@ enum Navigation {
   Alerts = 'Alerts',
 }
 
-enum Pathname {}
-
 /**
  * Add here the ROUTES for pages on which the EuiPageSideBar should NOT be displayed.
  */
@@ -39,7 +38,7 @@ interface MainProps extends RouteComponentProps {
   landingPage: string;
 }
 
-export default class Main extends Component<MainProps, object> {
+export default class Main extends Component<MainProps> {
   render() {
     const {
       location: { pathname },
@@ -108,14 +107,17 @@ export default class Main extends Component<MainProps, object> {
                           render={(props: RouteComponentProps) => (
                             <Findings
                               {...props}
-                              findingsService={services!.findingsService}
-                              opensearchService={services!.opensearchService}
+                              findingsService={services.findingsService}
+                              opensearchService={services.opensearchService}
+                              detectorService={services.detectorsService}
                             />
                           )}
                         />
                         <Route
                           path={ROUTES.DETECTORS}
-                          render={(props: RouteComponentProps) => <Detectors {...props} />}
+                          render={(props: RouteComponentProps) => (
+                            <Detectors {...props} detectorService={services.detectorsService} />
+                          )}
                         />
                         <Route
                           path={ROUTES.DETECTORS_CREATE}
@@ -130,6 +132,17 @@ export default class Main extends Component<MainProps, object> {
                         <Route
                           path={ROUTES.OVERVIEW}
                           render={(props: RouteComponentProps) => <Overview {...props} />}
+                        />
+                        <Route
+                          path={ROUTES.ALERTS}
+                          render={(props: RouteComponentProps) => (
+                            <Alerts
+                              {...props}
+                              alertService={services.alertService}
+                              detectorService={services.detectorsService}
+                              findingService={services.findingsService}
+                            />
+                          )}
                         />
                         <Redirect from={'/'} to={landingPage} />
                       </Switch>

@@ -30,11 +30,12 @@ export const ROUTES = Object.freeze({
 
 export const BREADCRUMBS = Object.freeze({
   SECURITY_ANALYTICS: { text: 'Security Analytics', href: '#/' },
-  OVERVIEW: { text: 'Overview', href: `#/${ROUTES.OVERVIEW}` },
-  FINDINGS: { text: 'Findings', href: `#/${ROUTES.FINDINGS}` },
-  DASHBOARDS: { text: 'Dashboards', href: `#/${ROUTES.DASHBOARDS}` },
-  DETECTORS: { text: 'Detectors', href: `#/${ROUTES.DETECTORS}` },
-  RULES: { text: 'Rule templates', href: `#/${ROUTES.RULES}` },
+  OVERVIEW: { text: 'Overview', href: `#${ROUTES.OVERVIEW}` },
+  FINDINGS: { text: 'Findings', href: `#${ROUTES.FINDINGS}` },
+  DASHBOARDS: { text: 'Dashboards', href: `#${ROUTES.DASHBOARDS}` },
+  DETECTORS: { text: 'Detectors', href: `#${ROUTES.DETECTORS}` },
+  RULES: { text: 'Rule templates', href: `#${ROUTES.RULES}` },
+  ALERTS: { text: 'Alerts', href: `#${ROUTES.ALERTS}` },
 });
 
 export enum SortDirection {

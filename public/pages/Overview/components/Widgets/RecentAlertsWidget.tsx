@@ -9,6 +9,7 @@
  */
 
 import { EuiBasicTableColumn, EuiButton } from '@elastic/eui';
+import { ROUTES } from '../../../../utils/constants';
 import React from 'react';
 import { AlertItem } from '../../models/interfaces';
 import { TableWidget } from './TableWidget';
@@ -40,7 +41,10 @@ export interface RecentAlertsWidgetProps {
 }
 
 export const RecentAlertsWidget: React.FC<RecentAlertsWidgetProps> = ({ items }) => {
-  const actions = React.useMemo(() => [<EuiButton href="">View Alerts</EuiButton>], []);
+  const actions = React.useMemo(
+    () => [<EuiButton href={`#${ROUTES.ALERTS}`}>View Alerts</EuiButton>],
+    []
+  );
 
   return (
     <WidgetContainer title="Top 20 recent alerts" actions={actions}>
