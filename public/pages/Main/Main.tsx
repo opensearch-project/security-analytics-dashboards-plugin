@@ -130,6 +130,10 @@ export default class Main extends Component<MainProps> {
                           render={(props: RouteComponentProps) => <Rules {...props} />}
                         />
                         <Route
+                          path={ROUTES.RULES_CREATE}
+                          render={(props: RouteComponentProps) => <Rules {...props} />}
+                        />
+                        <Route
                           path={ROUTES.OVERVIEW}
                           render={(props: RouteComponentProps) => <Overview {...props} />}
                         />

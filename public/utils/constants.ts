@@ -21,6 +21,9 @@ export const ROUTES = Object.freeze({
   FINDINGS: '/findings',
   OVERVIEW: '/overview',
   RULES: '/rules',
+  RULES_CREATE: '/create-rule',
+  RULES_EDIT: '/edit-rule',
+  RULES_IMPORT: '/import-rule',
   DETECTORS_CREATE: '/create-detector',
 
   get LANDING_PAGE(): string {
@@ -34,8 +37,11 @@ export const BREADCRUMBS = Object.freeze({
   FINDINGS: { text: 'Findings', href: `#${ROUTES.FINDINGS}` },
   DASHBOARDS: { text: 'Dashboards', href: `#${ROUTES.DASHBOARDS}` },
   DETECTORS: { text: 'Detectors', href: `#${ROUTES.DETECTORS}` },
-  RULES: { text: 'Rule templates', href: `#${ROUTES.RULES}` },
+  RULES: { text: 'Rules', href: `#${ROUTES.RULES}` },
   ALERTS: { text: 'Alerts', href: `#${ROUTES.ALERTS}` },
+  RULES_CREATE: { text: 'Create a rule', href: `#${ROUTES.RULES_CREATE}` },
+  RULES_EDIT: { text: 'Edit a rule', href: `#${ROUTES.RULES_EDIT}` },
+  RULES_IMPORT: { text: 'Import a rule', href: `#${ROUTES.RULES_IMPORT}` },
 });
 
 export enum SortDirection {
