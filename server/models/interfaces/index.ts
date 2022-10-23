@@ -11,6 +11,8 @@ import {
   DetectorService,
 } from '../../services';
 import AlertService from '../../services/AlertService';
+import { Rules } from '../../../models/interfaces';
+import RulesService from '../../services/RuleService';
 
 export interface SecurityAnalyticsApi {
   readonly DETECTORS_BASE: string;
@@ -22,6 +24,7 @@ export interface SecurityAnalyticsApi {
   readonly MAPPINGS_BASE: string;
   readonly MAPPINGS_VIEW: string;
   readonly GET_ALERTS: string;
+  readonly RULES_BASE: string;
 }
 
 export interface NodeServices {
@@ -31,6 +34,7 @@ export interface NodeServices {
   opensearchService: OpenSearchService;
   fieldMappingService: FieldMappingService;
   alertService: AlertService;
+  rulesService: RulesService;
 }
 
 export interface GetIndicesResponse {
@@ -67,6 +71,22 @@ export interface DocumentIdsQueryParams {
 export interface TimeRangeQueryParams {
   index: string;
   body: string;
+}
+
+export interface CreateRuleParams {
+  body: Rules;
+}
+
+export interface CreateRulesResponse {
+  _id: string;
+  _version: number;
+  rules: {
+    rules: Rules & {
+      last_update_time: number;
+      monitor_id: string;
+      rule_topic_index: string;
+    };
+  };
 }
 
 export * from './Detectors';

@@ -11,6 +11,7 @@ import {
   AlertsService,
 } from '../services';
 import IndexService from '../services/IndexService';
+import RuleService from '../services/RuleService';
 
 export interface BrowserServices {
   detectorsService: DetectorsService;
@@ -19,4 +20,5 @@ export interface BrowserServices {
   opensearchService: OpenSearchService;
   fieldMappingService: FieldMappingService;
   alertService: AlertsService;
+  ruleService: RuleService;
 }

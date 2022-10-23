@@ -23,6 +23,7 @@ export const API: SecurityAnalyticsApi = {
   MAPPINGS_BASE: `${BASE_API_PATH}/mappings`,
   MAPPINGS_VIEW: `${BASE_API_PATH}/mappings/view`,
   GET_ALERTS: `${BASE_API_PATH}/alerts`,
+  RULES_BASE: `${BASE_API_PATH}/rules/_search`,
 };
 
 /**
@@ -32,6 +33,13 @@ export const API: SecurityAnalyticsApi = {
 export const PLUGIN_PROPERTY_NAME: string = 'securityAnalytics';
 
 export const METHOD_NAMES = {
+  //Rule methods
+  CREATE_RULE: 'createRule',
+  DELETE_RULE: 'deleteRule',
+  GET_RULE: 'getRule',
+  GET_RULES: 'getRules',
+  UPDATE_RULE: 'updateRules',
+
   // Detector methods
   CREATE_DETECTOR: 'createDetector',
   DELETE_DETECTOR: 'deleteDetector',
@@ -56,6 +64,14 @@ export const METHOD_NAMES = {
  * prototype under the @see PLUGIN_PROPERTY_NAME field.
  * @see ../clusters/securityAnalytics/securityAnalyticsPlugin
  */
+export const CLIENT_RULE_METHODS = {
+  CREATE_RULE: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.CREATE_RULE}`,
+  DELETE_RULE: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.DELETE_RULE}`,
+  GET_RULE: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_RULE}`,
+  GET_RULES: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_RULES}`,
+  UPDATE_RULE: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.UPDATE_RULE}`,
+};
+
 export const CLIENT_DETECTOR_METHODS = {
   CREATE_DETECTOR: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.CREATE_DETECTOR}`,
   DELETE_DETECTOR: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.DELETE_DETECTOR}`,
