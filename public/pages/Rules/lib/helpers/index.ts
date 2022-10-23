@@ -15,3 +15,7 @@ export const ruleTypes: string[] = [
   'web',
   'windows',
 ];
+
+export const ruleSeverity: string[] = ['low', 'medium', 'informational', 'high', 'critical'];
+
+export const ruleSource: string[] = ['default', 'custom'];

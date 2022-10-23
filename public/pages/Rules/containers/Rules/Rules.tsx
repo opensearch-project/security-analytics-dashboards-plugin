@@ -96,7 +96,9 @@ export default class Rules extends Component<RulesProps, RulesState> {
                 <EuiFlyoutBody></EuiFlyoutBody>
               </EuiFlyout>
             )}
-            <Main />
+            <div>
+              <Main />
+            </div>
           </ContentPanel>
         )}
         {this.state.Mode === 'create' && (
