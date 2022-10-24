@@ -5,7 +5,12 @@
 
 import React from 'react';
 import { ContentPanel } from '../../../../../../components/ContentPanel';
+import Edit from '../Edit';
 
 export const Create = () => {
-  return <ContentPanel title={'Create a rule'}>Create</ContentPanel>;
+  return (
+    <ContentPanel title={'Create a rule'}>
+      <Edit type={'new'} />
+    </ContentPanel>
+  );
 };

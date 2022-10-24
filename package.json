@@ -44,9 +44,7 @@
     "ansi-regex": "^5.0.1",
     "minimist": "^1.2.6",
     "moment": "^2.29.2",
-    "async": "^3.2.3",
-    "formik": "^2.2.9",
-    "yup": "^0.32.11"
+    "async": "^3.2.3"
   },
   "devDependencies": {
     "@elastic/elastic-eslint-config-kibana": "link:../../packages/opensearch-eslint-config-opensearch-dashboards",
@@ -64,5 +62,9 @@
   },
   "engines": {
     "yarn": "^1.21.1"
+  },
+  "dependencies": {
+    "formik": "^2.2.9",
+    "yup": "^0.32.11"
   }
 }

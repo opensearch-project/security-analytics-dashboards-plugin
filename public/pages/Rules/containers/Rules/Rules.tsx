@@ -10,6 +10,7 @@ import { CoreServicesContext } from '../../../../components/core_services';
 import { BREADCRUMBS, PLUGIN_NAME, ROUTES } from '../../../../utils/constants';
 import Main from './components/Main';
 import Create from './components/Create';
+import Import from './components/Import';
 import { EuiTitle, EuiButton, EuiFlyout, EuiFlyoutBody, EuiFlyoutHeader } from '@elastic/eui';
 
 interface RulesProps extends RouteComponentProps {}
@@ -93,7 +94,9 @@ export default class Rules extends Component<RulesProps, RulesState> {
                     <h3>{this.state.FlyoutType} a rule</h3>
                   </EuiTitle>
                 </EuiFlyoutHeader>
-                <EuiFlyoutBody></EuiFlyoutBody>
+                <EuiFlyoutBody>
+                  <Import />
+                </EuiFlyoutBody>
               </EuiFlyout>
             )}
             <div>
