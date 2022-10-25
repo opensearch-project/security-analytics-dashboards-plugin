@@ -65,6 +65,7 @@
   },
   "dependencies": {
     "formik": "^2.2.9",
+    "react-ace": "^10.1.0",
     "yup": "^0.32.11"
   }
 }

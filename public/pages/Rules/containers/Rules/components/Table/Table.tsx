@@ -55,6 +55,8 @@ export const Table = () => {
     });
   }, []);
 
+  console.log('SIGMA RULES', sigmaRules);
+
   let flyout;
 
   if (isFlyoutVisible) {

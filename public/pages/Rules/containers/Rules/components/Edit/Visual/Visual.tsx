@@ -6,6 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { ruleTypes, ruleStatus } from '../../../../../lib/helpers';
 import { Formik } from 'formik';
+import AceEditor from 'react-ace';
 import * as Yup from 'yup';
 import {
   EuiForm,
@@ -36,6 +37,10 @@ export const Visual = (props: any) => {
     setSelected(selectedOptions);
   };
 
+  const onEditorChange = (Value: string) => {
+    console.log('VALUE', Value);
+  };
+
   const falsePositiveIncrease = () => {
     setFalsePositiveRows(falsePositiveRows + 1);
   };
@@ -51,6 +56,10 @@ export const Visual = (props: any) => {
   const referencesDecrease = () => {
     setReferencesRows(ReferencesRows - 1);
   };
+
+  let importedDetectionValue = `Title: ${props.props.title ? props.props.title : ''}
+    - This is a title
+    `;
 
   const onCreateOption = (searchValue: string, flattenedOptions = []) => {
     if (!searchValue) {
@@ -111,7 +120,7 @@ export const Visual = (props: any) => {
         return (
           <EuiForm component="form" onSubmit={Formikprops.handleSubmit}>
             <EuiSpacer />
-            <EuiFlexGroup>
+            <EuiFlexGroup alignItems="center">
               <EuiFlexItem>
                 <EuiFormRow
                   label="Rule name"
@@ -119,6 +128,7 @@ export const Visual = (props: any) => {
                 >
                   <EuiFieldText
                     name="ruleName"
+                    max-width="300px"
                     value={Formikprops.values.ruleName}
                     onChange={Formikprops.handleChange}
                     onBlur={Formikprops.handleBlur}
@@ -159,16 +169,27 @@ export const Visual = (props: any) => {
               fullWidth
               helpText={Formikprops.touched.ruleDetection && Formikprops.errors.ruleDetection}
             >
-              <EuiTextArea
-                fullWidth
-                name="ruleDetection"
-                value={Formikprops.values.ruleDetection}
-                onChange={Formikprops.handleChange}
-                onBlur={Formikprops.handleBlur}
-              />
+              <div>
+                {props.props.type === 'new' && (
+                  <AceEditor
+                    name="ruleDetection"
+                    mode="yaml"
+                    theme="github"
+                    onChange={onEditorChange}
+                  />
+                )}
+                {props.props.type === 'import' && (
+                  <AceEditor
+                    name="ruleDetection"
+                    mode="yaml"
+                    theme="github"
+                    readOnly
+                    onChange={onEditorChange}
+                    value={importedDetectionValue}
+                  />
+                )}
+              </div>
             </EuiFormRow>
-
-            <EuiSpacer />
 
             <EuiSpacer />
 
