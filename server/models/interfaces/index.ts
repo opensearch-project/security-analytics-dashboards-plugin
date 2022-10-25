@@ -11,7 +11,6 @@ import {
   DetectorService,
 } from '../../services';
 import AlertService from '../../services/AlertService';
-import { Rules } from '../../../models/interfaces';
 import RulesService from '../../services/RuleService';
 
 export interface SecurityAnalyticsApi {
@@ -73,23 +72,8 @@ export interface TimeRangeQueryParams {
   body: string;
 }
 
-export interface CreateRuleParams {
-  body: Rules;
-}
-
-export interface CreateRulesResponse {
-  _id: string;
-  _version: number;
-  rules: {
-    rules: Rules & {
-      last_update_time: number;
-      monitor_id: string;
-      rule_topic_index: string;
-    };
-  };
-}
-
 export * from './Detectors';
 export * from './FieldMappings';
 export * from './Findings';
 export * from './Alerts';
+export * from './Rules';

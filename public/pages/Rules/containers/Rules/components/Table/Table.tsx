@@ -3,59 +3,48 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import RulesService from '../../../../../../services/RuleService';
 import { Flyout } from '../../../../lib/UIComponents/Flyout';
 import { ruleTypes, ruleSeverity } from '../../../../lib/helpers';
 import { EuiInMemoryTable, EuiFlexGroup, EuiLink } from '@elastic/eui';
 import axios from 'axios';
 import './index.scss';
+import { ServicesContext } from '../../../../../../services';
+import { BrowserServices } from '../../../../../../models/interfaces';
+import { GetRulesResponse, RuleSource } from '../../../../../../../server/models/interfaces';
+import { ServerResponse } from '../../../../../../../server/models/types';
 
 export const Table = () => {
+  const services: BrowserServices | null = useContext(ServicesContext);
   const [pagination, setPagination] = useState({ pageIndex: 0 });
   const [filters, setFilters] = useState(true);
   const [query, setQuery] = useState<string>('');
   const [flyoutType, setflyoutType] = useState<undefined | string>('');
   const [content, setContent] = useState<any | string>('');
-  const [sigmaRules, setRules] = useState<any | object>([]);
+  const [sigmaRules, setRules] = useState<RuleSource[]>([]);
   const [isFlyoutVisible, setIsFlyoutVisible] = useState(false);
   const closeFlyout = () => setIsFlyoutVisible(false);
   const showFlyout = () => setIsFlyoutVisible(true);
 
-  //to do: Http coming back undefined
-  // useEffect(() => {
-  //   const rulesService = new RulesService();
-  //   rulesService.getRules('pre-packaged').then((res) => {
-  //     let allRules: any = [];
-  //     res.data.hits.hits.forEach((rule: any) => {
-  //       allRules.push(rule._source);
-  //     });
-  //     setRules(allRules);
-  //   });
-  // }, []);
-
   useEffect(() => {
-    const allRequest: any = {
-      url: 'http://35.92.187.49:9200/_plugins/_security_analytics/rules/_search?pre_packaged=true',
-      method: 'POST',
-      data: {
+    services?.ruleService
+      .getRules(true /* prePackaged */, {
         from: 0,
         size: 5000,
         query: {
           match_all: {},
         },
-      },
-    };
-    axios(allRequest).then((res) => {
-      let allRules: any = [];
-      res.data.hits.hits.forEach((rule: any) => {
-        allRules.push(rule._source);
+      })
+      .then((res: ServerResponse<GetRulesResponse>) => {
+        console.log('RES', res);
+        if (res.ok) {
+          setRules(res.response.hits.hits.map((hit) => hit._source));
+        } else {
+          // TODO: Show error toast
+        }
       });
-      setRules(allRules);
-    });
-  }, []);
-
-  console.log('SIGMA RULES', sigmaRules);
+  }, [services]);
 
   let flyout;
 

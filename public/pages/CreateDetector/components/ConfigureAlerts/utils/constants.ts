@@ -33,6 +33,8 @@ export const EMPTY_DEFAULT_ALERT_CONDITION: AlertCondition = {
   tags: [],
   actions: [],
   types: [],
+  severity: '',
+  ids: [],
 };
 
 export const MIN_NUM_NOTIFICATION_CHANNELS = 1;

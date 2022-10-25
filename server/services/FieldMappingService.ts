@@ -17,6 +17,7 @@ import {
   CreateMappingsResponse,
   GetFieldMapingsViewParams,
   GetFieldMappingViewResponse,
+  GetMappingsParams,
   GetMappingsResponse,
 } from '../models/interfaces';
 import { ServerResponse } from '../models/types';
@@ -119,8 +120,13 @@ export default class FieldMappingService {
   > => {
     try {
       const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
+      const { indexName } = request.query as { indexName: string };
+      const params: GetMappingsParams = {
+        indexName,
+      };
       const getFieldMappingsResponse = await callWithRequest(
-        CLIENT_FIELD_MAPPINGS_METHODS.GET_MAPPINGS
+        CLIENT_FIELD_MAPPINGS_METHODS.GET_MAPPINGS,
+        params
       );
 
       return response.custom({

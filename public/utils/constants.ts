@@ -25,6 +25,10 @@ export const ROUTES = Object.freeze({
   RULES_EDIT: '/edit-rule',
   RULES_IMPORT: '/import-rule',
   DETECTORS_CREATE: '/create-detector',
+  DETECTOR_DETAILS: '/detector-details',
+  EDIT_DETECTOR_DETAILS: '/edit-detector-details',
+  EDIT_DETECTOR_RULES: '/edit-detector-rules',
+  EDIT_FIELD_MAPPINGS: '/edit-field-mappings',
 
   get LANDING_PAGE(): string {
     return this.OVERVIEW;
@@ -37,6 +41,7 @@ export const BREADCRUMBS = Object.freeze({
   FINDINGS: { text: 'Findings', href: `#${ROUTES.FINDINGS}` },
   DASHBOARDS: { text: 'Dashboards', href: `#${ROUTES.DASHBOARDS}` },
   DETECTORS: { text: 'Detectors', href: `#${ROUTES.DETECTORS}` },
+  DETECTORS_DETAILS: (name: string) => ({ text: `${name}`, href: `#${ROUTES.DETECTOR_DETAILS}` }),
   RULES: { text: 'Rules', href: `#${ROUTES.RULES}` },
   ALERTS: { text: 'Alerts', href: `#${ROUTES.ALERTS}` },
   RULES_CREATE: { text: 'Create a rule', href: `#${ROUTES.RULES_CREATE}` },
@@ -80,10 +85,11 @@ export const EMPTY_DEFAULT_PERIOD_SCHEDULE: PeriodSchedule = {
 };
 
 export const EMPTY_DEFAULT_DETECTOR_INPUT: DetectorInput = {
-  input: {
+  detector_input: {
     description: '',
     indices: [],
-    rules: [],
+    pre_packaged_rules: [],
+    custom_rules: [],
   },
 };
 

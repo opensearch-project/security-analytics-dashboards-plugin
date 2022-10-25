@@ -22,14 +22,16 @@ import {
 } from '@elastic/eui';
 import { Detector } from '../../../../../../../models/interfaces';
 import { AlertCondition } from '../../../../../../../models/interfaces';
-import { createSelectedOptions, parseAlertSeverityListToOptions } from '../../utils/helpers';
+import { createSelectedOptions, parseAlertSeverityToOption } from '../../utils/helpers';
 import { ALERT_SEVERITY_OPTIONS, RULE_SEVERITY_OPTIONS } from '../../utils/constants';
 import { parseStringsToOptions } from '../../../../../../utils/helpers';
+import { RulesSharedState } from '../../../../../../models/interfaces';
 
 interface AlertConditionPanelProps extends RouteComponentProps {
   alertCondition: AlertCondition;
   allNotificationChannels: string[]; // TODO: Notification channels will likely be more complex objects
   allRuleTypes: string[];
+  rulesOptions: Pick<RulesSharedState, 'rulesOptions'>['rulesOptions'];
   detector: Detector;
   indexNum: number;
   isEdit: boolean;
@@ -77,8 +79,10 @@ export default class AlertConditionPanel extends Component<
   };
 
   onAlertSeverityChange = (selectedOptions: EuiComboBoxOptionOption<string>[]) => {
-    const severitySelections = selectedOptions.map((option) => option.label);
-    this.updateTrigger({ actions: severitySelections });
+    const severitySelections = selectedOptions.map((option) => option.value);
+    if (severitySelections.length > 0) {
+      this.updateTrigger({ severity: severitySelections[0] });
+    }
   };
 
   onCreateTag = (value: string) => {
@@ -122,10 +126,38 @@ export default class AlertConditionPanel extends Component<
     onAlertTriggerChanged({ ...detector, triggers: newTriggers });
   };
 
+  onRuleNamesChange = (selectedOptions: EuiComboBoxOptionOption<string>[]) => {
+    const ids = selectedOptions.map((nameOption) => nameOption.value as string);
+    this.updateTrigger({ ids });
+  };
+
   render() {
-    const { alertCondition, allNotificationChannels, indexNum, loadingNotifications } = this.props;
-    const { name, sev_levels: ruleSeverityLevels, tags } = alertCondition;
-    const alertSeverityLevels: string[] = [];
+    const {
+      alertCondition,
+      allNotificationChannels,
+      indexNum,
+      loadingNotifications,
+      rulesOptions,
+    } = this.props;
+    const { name, sev_levels: ruleSeverityLevels, tags, severity, ids } = alertCondition;
+    const tagsOptions = rulesOptions
+      .map((option) => option.tags)
+      .reduce((prev, current) => prev.concat(current))
+      .map((tag) => ({
+        label: tag,
+      }));
+    const namesOptions: EuiComboBoxOptionOption<string>[] = rulesOptions.map((option) => ({
+      label: option.name,
+      value: option.id,
+    }));
+    const selectedNames: EuiComboBoxOptionOption<string>[] = [];
+    ids.forEach((ruleId) => {
+      const option = rulesOptions.find((option) => option.id === ruleId);
+      if (option) {
+        selectedNames.push({ label: option.name, value: option.id });
+      }
+    });
+
     return (
       <EuiPanel>
         <EuiAccordion
@@ -169,6 +201,23 @@ export default class AlertConditionPanel extends Component<
           <EuiFormRow
             label={
               <EuiText size="s">
+                <p>Rule names</p>
+              </EuiText>
+            }
+          >
+            <EuiComboBox
+              placeholder={'Select rule names.'}
+              options={namesOptions}
+              onChange={this.onRuleNamesChange}
+              selectedOptions={selectedNames}
+            />
+          </EuiFormRow>
+
+          <EuiSpacer size={'m'} />
+
+          <EuiFormRow
+            label={
+              <EuiText size="s">
                 <p>Rule Severities</p>
               </EuiText>
             }
@@ -192,10 +241,9 @@ export default class AlertConditionPanel extends Component<
           >
             <EuiComboBox
               placeholder={'Enter tags for the alert condition.'}
-              options={Object.values(RULE_SEVERITY_OPTIONS)}
+              options={tagsOptions}
               onChange={this.onTagsChange}
               onCreateOption={this.onCreateTag}
-              noSuggestions={true}
               selectedOptions={createSelectedOptions(tags)}
             />
           </EuiFormRow>
@@ -218,7 +266,8 @@ export default class AlertConditionPanel extends Component<
               placeholder={'Select applicable severity levels.'}
               async={true}
               options={Object.values(ALERT_SEVERITY_OPTIONS)}
-              selectedOptions={parseAlertSeverityListToOptions(alertSeverityLevels)}
+              selectedOptions={severity ? [parseAlertSeverityToOption(severity)] : undefined}
+              singleSelection={true}
               onChange={this.onAlertSeverityChange}
             />
           </EuiFormRow>

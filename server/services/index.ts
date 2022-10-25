@@ -9,6 +9,7 @@ import OpenSearchService from './OpenSearchService';
 import IndexService from './IndexService';
 import FieldMappingService from './FieldMappingService';
 import AlertService from './AlertService';
+import RulesService from './RuleService';
 
 export {
   DetectorService,
@@ -17,4 +18,5 @@ export {
   IndexService,
   OpenSearchService,
   AlertService,
+  RulesService,
 };

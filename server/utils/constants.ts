@@ -23,7 +23,7 @@ export const API: SecurityAnalyticsApi = {
   MAPPINGS_BASE: `${BASE_API_PATH}/mappings`,
   MAPPINGS_VIEW: `${BASE_API_PATH}/mappings/view`,
   GET_ALERTS: `${BASE_API_PATH}/alerts`,
-  RULES_BASE: `${BASE_API_PATH}/rules/_search`,
+  RULES_BASE: `${BASE_API_PATH}/rules`,
 };
 
 /**

@@ -96,6 +96,7 @@ export default class DetectorDataSource extends Component<
             selectedOptions={this.parseOptions(detectorIndices)}
             onChange={this.onSelectionChange}
             isInvalid={!!errorMessage}
+            singleSelection={true}
             data-test-subj={'define-detector-detector-name'}
           />
         </EuiFormRow>

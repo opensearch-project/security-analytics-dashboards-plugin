@@ -3,44 +3,22 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-interface RuleSource {
-  source: {
-    author: string;
-    category: string;
-    description: string;
-    falsepositives: [];
-    last_update_time: string;
-    level: string;
-    log_source: string;
-    queries: [];
-    references: string[];
-    rule: string;
-    status: string;
-    tags: string[];
-    title: string;
-  };
-}
-
-export interface Rules {
-  _id: string;
-  _index: string;
-  _primary_term: number;
-  _score: number;
-  _seq_no: number;
-  source: RuleSource[];
-  version: number;
-}
-
 export interface Rule {
-  id: string;
-  name: string;
-  rule: string; // TODO: Rules will be in "sigma yaml format"
-  type: string;
-  active: boolean;
-  description?: string;
+  category: string;
+  log_source: string;
+  title: string;
+  description: string;
+  tags: { value: string }[];
+  false_positives: { value: string }[];
+  level: string;
+  status: string;
+  references: { value: string }[];
+  author: string;
+  detection: string;
 }
 
 export interface Detector {
+  id?: string;
   type: 'detector';
   detector_type: string;
   name: string;
@@ -54,34 +32,59 @@ export interface Detector {
 export interface PeriodSchedule {
   period: {
     interval: number;
-    unit: 'MINUTES';
+    unit: string;
   };
 }
 
 export interface DetectorInput {
-  input: {
+  detector_input: {
     description: string;
     indices: string[];
-    rules: string[];
+    pre_packaged_rules: DetectorRuleInfo[];
+    custom_rules: DetectorRuleInfo[];
   };
 }
 
-export interface Rule {
+export interface DetectorRuleInfo {
   id: string;
-  name: string;
-  rule: string; // TODO: Rules will be in "sigma yaml format"
-  type: string;
-  active: boolean;
-  description?: string;
 }
 
 export interface AlertCondition {
-  sev_levels: string[];
-  tags: string[];
-  actions: string[];
-  types: string[];
+  // Trigger fields
   name: string;
   id?: string;
+
+  // Detector types
+  types: string[];
+
+  // Trigger fields based on Rules
+  sev_levels: string[];
+  tags: string[];
+  ids: string[];
+
+  // Alert related fields
+  actions: TriggerAction[];
+  severity: string;
+}
+
+export interface TriggerAction {
+  id: string;
+  // Id of notification channel
+  destination_id: string;
+  subject_template: {
+    source: string;
+    lang: string;
+  };
+  name: string;
+  throttle_enabled: boolean;
+  message_template: {
+    source: string;
+    lang: string;
+  };
+  throttle: {
+    unit: string;
+    value: number;
+  };
 }
 
 export interface FieldMapping {

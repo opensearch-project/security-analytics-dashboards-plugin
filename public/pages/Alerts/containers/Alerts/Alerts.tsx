@@ -19,7 +19,6 @@ import {
 } from '@elastic/eui';
 import React, { Component } from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
-// import { AlertSeverity } from '../../utils/constants';
 import { getVisualizationSpec } from '../../../Overview/utils/dummyData';
 import { View, parse } from 'vega/build-es5/vega.js';
 import { compile } from 'vega-lite';

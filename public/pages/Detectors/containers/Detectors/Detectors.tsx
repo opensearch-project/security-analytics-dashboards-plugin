@@ -13,6 +13,7 @@ import {
   EuiContextMenuPanel,
   EuiEmptyPrompt,
   EuiInMemoryTable,
+  EuiLink,
   EuiPopover,
   EuiSpacer,
   EuiText,
@@ -22,18 +23,18 @@ import DeleteModal from '../../../../components/DeleteModal';
 import { getDetectorNames } from '../../utils/helpers';
 import { renderTime } from '../../../../utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
-import { Detector } from '../../../../../models/interfaces';
 import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
 import { DetectorsService } from '../../../../services';
+import { DetectorHit } from '../../../../../server/models/interfaces';
 
 interface DetectorsProps extends RouteComponentProps {
   detectorService: DetectorsService;
 }
 
 interface DetectorsState {
-  detectors: Detector[];
+  detectorHits: DetectorHit[];
   loadingDetectors: boolean;
-  selectedItems: Detector[];
+  selectedItems: DetectorHit[];
   isDeleteModalVisible: boolean;
   isPopoverOpen: boolean;
 }
@@ -45,7 +46,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
     super(props);
 
     this.state = {
-      detectors: [],
+      detectorHits: [],
       loadingDetectors: false,
       selectedItems: [],
       isDeleteModalVisible: false,
@@ -63,7 +64,9 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
     const res = await this.props.detectorService.getDetectors();
 
     if (res.ok) {
-      this.setState({ detectors: res.response.hits.hits.map((hit) => hit._source) });
+      this.setState({
+        detectorHits: res.response.hits.hits,
+      });
     }
 
     this.setState({ loadingDetectors: false });
@@ -88,7 +91,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
   onClickDelete = async () => {
     const { selectedItems } = this.state;
     for (let item of selectedItems) {
-      await this.deleteDetector(item.name);
+      await this.deleteDetector(item._source.name);
     }
     await this.getDetectors();
   };
@@ -97,7 +100,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
     // TODO: Implement once API is available
   };
 
-  onSelectionChange = (selectedItems: Detector[]) => {
+  onSelectionChange = (selectedItems: DetectorHit[]) => {
     this.setState({ selectedItems: selectedItems });
   };
 
@@ -110,9 +113,16 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
     this.setState({ isPopoverOpen: false });
   };
 
+  showDetectorDetails = (detectorHit: DetectorHit) => {
+    this.props.history.push({
+      pathname: ROUTES.DETECTOR_DETAILS,
+      state: { detectorHit },
+    });
+  };
+
   render() {
     const {
-      detectors,
+      detectorHits,
       isDeleteModalVisible,
       isPopoverOpen,
       loadingDetectors,
@@ -209,48 +219,42 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
       </EuiButton>,
     ];
 
-    const columns: EuiBasicTableColumn<Detector>[] = [
+    const columns: EuiBasicTableColumn<DetectorHit>[] = [
       {
-        field: 'name',
         name: 'Detector name',
-        sortable: true,
-        dataType: 'string',
-        render: (name: string) => name || DEFAULT_EMPTY_DATA,
+        render: (item: DetectorHit) => (
+          <EuiLink onClick={() => this.showDetectorDetails(item)}>{item._source.name}</EuiLink>
+        ),
       },
       {
-        field: 'enabled',
         name: 'Status',
-        sortable: true,
-        dataType: 'string',
-        render: (enabled: boolean) => (enabled ? 'ACTIVE' : 'INACTIVE'),
+        render: (item: DetectorHit) => (item._source.enabled ? 'ACTIVE' : 'INACTIVE'),
       },
       {
-        field: 'type',
         name: 'Log type',
-        sortable: true,
-        dataType: 'string',
-        render: (type: string) => type || DEFAULT_EMPTY_DATA,
+        render: (item: DetectorHit) => item._source.detector_type || DEFAULT_EMPTY_DATA,
       },
       {
-        field: 'rules',
         name: 'Rules',
-        sortable: true,
-        dataType: 'string',
-        render: (rules: string) => rules || DEFAULT_EMPTY_DATA,
+        render: (item: DetectorHit) => {
+          const { custom_rules, pre_packaged_rules } = item._source.inputs[0].detector_input;
+          return custom_rules.length + pre_packaged_rules.length || DEFAULT_EMPTY_DATA;
+        },
       },
       {
-        field: 'last_update_time',
         name: 'Last updated time',
-        sortable: true,
-        dataType: 'date',
-        render: (time: number) => renderTime(time) || DEFAULT_EMPTY_DATA,
+        render: (item: DetectorHit) => {
+          return renderTime(item._source.last_update_time) || DEFAULT_EMPTY_DATA;
+        },
       },
     ];
 
     const statuses = [
-      ...new Set(detectors.map((detector) => (detector.enabled ? 'Active' : 'InActive'))),
+      ...new Set(
+        detectorHits.map((detector) => (detector._source.enabled ? 'Active' : 'InActive'))
+      ),
     ];
-    const logType = [...new Set(detectors.map((detector) => detector.detector_type))];
+    const logType = [...new Set(detectorHits.map((detector) => detector._source.detector_type))];
     const search = {
       box: { placeholder: 'Search threat detectors' },
       filters: [
@@ -281,8 +285,8 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
       <ContentPanel title={'Threat detectors'} actions={actions}>
         <EuiSpacer size={'m'} />
         <EuiInMemoryTable
-          items={detectors}
-          itemId={(item: Detector) => `${item.type}:${item.name}`}
+          items={detectorHits}
+          itemId={(item: DetectorHit) => `${item._id}`}
           columns={columns}
           pagination={true}
           sorting={sorting}

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { ruleTypes, ruleStatus } from '../../../../../lib/helpers';
 import { Formik } from 'formik';
 import AceEditor from 'react-ace';
@@ -23,8 +23,11 @@ import {
   EuiIcon,
   EuiComboBox,
 } from '@elastic/eui';
+import { BrowserServices } from '../../../../../../../models/interfaces';
+import { ServicesContext } from '../../../../../../../services';
 
 export const Visual = (props: any) => {
+  const services: BrowserServices | null = useContext(ServicesContext);
   const [selectedOptions, setSelected] = useState([]);
   const [references, setReferences] = useState<string[]>([]);
   const [options, setOptions] = useState<any>([]);
@@ -114,6 +117,41 @@ export const Visual = (props: any) => {
       })}
       onSubmit={(values) => {
         console.log('SUBMIT', values);
+        services?.ruleService
+          .createRule({
+            title: 'Moriya Rootkit',
+            description:
+              "Detects the use of Moriya rootkit as described in the securelist's Operation TunnelSnake report",
+            status: 'experimental',
+            author: 'Bhabesh Raj',
+            references: [
+              { value: 'https://securelist.com/operation-tunnelsnake-and-moriya-rootkit/101831' },
+            ],
+            tags: [
+              { value: 'attack.persistence' },
+              { value: 'attack.privilege_escalation' },
+              { value: 'attack.t1543.003' },
+            ],
+            log_source: 'system',
+            detection: JSON.stringify({
+              selection: {
+                Provider_Name: 'Service Control Manager',
+                EventID: 7045,
+                ServiceName: 'ZzNetSvc',
+              },
+              condition: 'selection',
+            }),
+            level: 'critical',
+            false_positives: [{ value: 'Unknown' }],
+            category: 'windows',
+          })
+          .then((res) => {
+            if (res.ok) {
+              alert(res.response._id);
+            } else {
+              alert('error creating rule');
+            }
+          });
       }}
     >
       {(Formikprops) => {

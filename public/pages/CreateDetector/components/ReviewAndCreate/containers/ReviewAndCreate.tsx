@@ -3,21 +3,31 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ContentPanel } from '../../../../../components/ContentPanel';
 import React from 'react';
-import { createDetectorSteps } from '../../../utils/constants';
-import { DetectorCreationStep } from '../../../models/types';
+import { EuiSpacer, EuiTitle } from '@elastic/eui';
+import { DetectorDetailsView } from '../../../../Detectors/containers/DetectorDetailsView/DetectorDetailsView';
+import { FieldMappingsView } from '../../../../Detectors/components/FieldMappingsView/FieldMappingsView';
+import { AlertTriggersView } from '../../../../Detectors/containers/AlertTriggersView/AlertTriggersView';
+import { RouteComponentProps } from 'react-router-dom';
+import { Detector } from '../../../../../../models/interfaces';
 
-export interface ReviewAndCreateProps {}
+export interface ReviewAndCreateProps extends RouteComponentProps {
+  detector: Detector;
+}
 
 export class ReviewAndCreate extends React.Component<ReviewAndCreateProps> {
   render() {
     return (
-      <ContentPanel title={createDetectorSteps[DetectorCreationStep.REVIEW_CREATE].title}>
-        {/* <DetectorDetailsReview />
-            <FieldMappingReview />
-            <AlertTriggersReview /> */}
-      </ContentPanel>
+      <div>
+        <EuiTitle size={'l'}>
+          <h3>Review and create</h3>
+        </EuiTitle>
+        <DetectorDetailsView {...this.props} detector={this.props.detector} />
+        <EuiSpacer size="l" />
+        <FieldMappingsView {...this.props} detector={this.props.detector} />
+        <EuiSpacer size="l" />
+        <AlertTriggersView {...this.props} detector={this.props.detector} />
+      </div>
     );
   }
 }

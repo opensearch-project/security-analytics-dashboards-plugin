@@ -56,11 +56,12 @@ export interface DeleteDetectorParams {
 export interface DeleteDetectorResponse {}
 
 export interface DetectorHit {
-  index: string;
+  _index: string;
   _source: DetectorResponse;
   _id: string;
 }
 
 export type DetectorResponse = Detector & {
   last_update_time: number;
+  enabled_time: number;
 };

@@ -16,7 +16,7 @@ import { EMPTY_DEFAULT_DETECTOR } from '../../../utils/constants';
 import { EuiContainedStepProps } from '@elastic/eui/src/components/steps/steps';
 import { CoreServicesContext } from '../../../components/core_services';
 import { DetectorCreationStep } from '../models/types';
-import { BrowserServices } from '../../../models/interfaces';
+import { BrowserServices, RulesSharedState } from '../../../models/interfaces';
 import { ReviewAndCreate } from '../components/ReviewAndCreate/containers/ReviewAndCreate';
 
 interface CreateDetectorProps extends RouteComponentProps {
@@ -30,6 +30,7 @@ interface CreateDetectorState {
   fieldMappings: FieldMapping[];
   stepDataValid: { [step in DetectorCreationStep]: boolean };
   creatingDetector: boolean;
+  rulesState: RulesSharedState;
 }
 
 export default class CreateDetector extends Component<CreateDetectorProps, CreateDetectorState> {
@@ -44,11 +45,12 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
       fieldMappings: [],
       stepDataValid: {
         [DetectorCreationStep.DEFINE_DETECTOR]: false,
-        [DetectorCreationStep.CONFIGURE_FIELD_MAPPING]: false,
+        [DetectorCreationStep.CONFIGURE_FIELD_MAPPING]: true,
         [DetectorCreationStep.CONFIGURE_ALERTS]: false,
         [DetectorCreationStep.REVIEW_CREATE]: false,
       },
       creatingDetector: false,
+      rulesState: { page: { index: 0 }, rulesOptions: [] },
     };
   }
 
@@ -65,14 +67,23 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
   };
 
   onCreateClick = async () => {
-    if (this.state.creatingDetector) {
+    const { creatingDetector, detector, fieldMappings } = this.state;
+    if (creatingDetector) {
       return;
     }
 
     this.setState({ creatingDetector: true });
-    const createDetectorRes = await this.props.services.detectorsService.createDetector(
-      this.state.detector
+    const createMappingsRes = await this.props.services.fieldMappingService.createMappings(
+      detector.inputs[0].detector_input.indices[0],
+      detector.detector_type,
+      fieldMappings
     );
+
+    if (createMappingsRes.ok) {
+      console.log('Field mapping creation successful');
+    }
+
+    const createDetectorRes = await this.props.services.detectorsService.createDetector(detector);
 
     if (createDetectorRes.ok) {
       this.props.history.push(ROUTES.DETECTORS);
@@ -100,6 +111,15 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     });
   };
 
+  onRulesStateChange = (rulesState: Partial<RulesSharedState>) => {
+    this.setState({
+      rulesState: {
+        ...this.state.rulesState,
+        ...rulesState,
+      },
+    });
+  };
+
   getStepContent = () => {
     const { services } = this.props;
     switch (this.state.currentStep) {
@@ -109,8 +129,11 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             {...this.props}
             detector={this.state.detector}
             indexService={services.indexService}
+            rulesService={services.ruleService}
+            rulesPageIndex={this.state.rulesState.page.index}
             changeDetector={this.changeDetector}
             updateDataValidState={this.updateDataValidState}
+            onRulesStateChange={this.onRulesStateChange}
           />
         );
       case DetectorCreationStep.CONFIGURE_FIELD_MAPPING:
@@ -129,12 +152,13 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
           <ConfigureAlerts
             {...this.props}
             detector={this.state.detector}
+            rulesOptions={this.state.rulesState.rulesOptions}
             changeDetector={this.changeDetector}
             updateDataValidState={this.updateDataValidState}
           />
         );
       case DetectorCreationStep.REVIEW_CREATE:
-        return <ReviewAndCreate />;
+        return <ReviewAndCreate detector={this.state.detector} {...this.props} />;
     }
   };
 

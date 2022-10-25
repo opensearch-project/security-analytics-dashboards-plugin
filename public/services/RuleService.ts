@@ -1,7 +1,8 @@
 import { HttpSetup } from 'opensearch-dashboards/public';
 import { ServerResponse } from '../../server/models/types';
-import { CreateRulesResponse } from '../../server/models/interfaces';
+import { CreateRulesResponse, GetRulesResponse } from '../../server/models/interfaces';
 import { API } from '../../server/utils/constants';
+import { Rule } from '../../models/interfaces';
 
 export default class RulesService {
   httpClient: HttpSetup;
@@ -10,23 +11,22 @@ export default class RulesService {
     this.httpClient = httpClient;
   }
 
-  getRules = async (searchIndex: string): Promise<ServerResponse<CreateRulesResponse>> => {
-    const url = `..${API.RULES_BASE}`;
+  getRules = async (prePackaged: boolean, body: any): Promise<ServerResponse<GetRulesResponse>> => {
+    const url = `..${API.RULES_BASE}/_search`;
     const response = (await this.httpClient.post(url, {
       query: {
-        searchIndex,
+        prePackaged,
       },
-    })) as ServerResponse<CreateRulesResponse>;
+      body: JSON.stringify(body),
+    })) as ServerResponse<GetRulesResponse>;
 
     return response;
   };
 
-  createRule = async (searchIndex: string): Promise<ServerResponse<CreateRulesResponse>> => {
+  createRule = async (rule: Rule): Promise<ServerResponse<CreateRulesResponse>> => {
     const url = `..${API.RULES_BASE}`;
     const response = (await this.httpClient.post(url, {
-      query: {
-        searchIndex,
-      },
+      body: JSON.stringify(rule),
     })) as ServerResponse<CreateRulesResponse>;
 
     return response;

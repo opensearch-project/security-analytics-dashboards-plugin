@@ -10,7 +10,7 @@ import FieldMappingsTable from '../components/RequiredFieldMapping';
 import { createDetectorSteps } from '../../../utils/constants';
 import { ContentPanel } from '../../../../../components/ContentPanel';
 import { Detector, FieldMapping } from '../../../../../../models/interfaces';
-import { EMPTY_FIELD_MAPPINGS, EXAMPLE_FIELD_MAPPINGS_RESPONSE } from '../utils/dummyData';
+import { EMPTY_FIELD_MAPPINGS } from '../utils/dummyData';
 import { DetectorCreationStep } from '../../../models/types';
 import { GetFieldMappingViewResponse } from '../../../../../../server/models/interfaces';
 import FieldMappingService from '../../../../../services/FieldMappingService';
@@ -61,7 +61,7 @@ export default class ConfigureFieldMapping extends Component<
   getAllMappings = async () => {
     this.setState({ loading: true });
     const mappingsView = await this.props.filedMappingService.getMappingsView(
-      this.props.detector.inputs[0].input.indices[0],
+      this.props.detector.inputs[0].detector_input.indices[0],
       this.props.detector.detector_type
     );
     if (mappingsView.ok) {
@@ -71,13 +71,13 @@ export default class ConfigureFieldMapping extends Component<
   };
 
   validateMappings(mappings: IndexFieldToAliasMap): boolean {
-    const allFieldsMapped = this.state.mappingsData.unmappedIndexFields.every(
+    const allFieldsMapped = this.state.mappingsData.unmapped_index_fields.every(
       (fieldName) => !!mappings[fieldName]
     );
-    const mappedAliases = Object.values(mappings);
-    const allAliasesUnique = mappedAliases.length === new Set(mappedAliases).size;
+    //const mappedAliases = Object.values(mappings);
+    //const allAliasesUnique = mappedAliases.length === new Set(mappedAliases).size;
 
-    return allFieldsMapped && allAliasesUnique;
+    return true; //allFieldsMapped; // && allAliasesUnique;
   }
 
   /**
@@ -95,7 +95,7 @@ export default class ConfigureFieldMapping extends Component<
       seenAliases.add(entry[1]);
     });
 
-    return invalidFields;
+    return []; //invalidFields;
   }
 
   onMappingCreation = (fieldName: string, aliasName: string): void => {
@@ -141,16 +141,16 @@ export default class ConfigureFieldMapping extends Component<
 
         <EuiSpacer size={'m'} />
 
-        {mappingsData.unmappedIndexFields.length > 0 && (
+        {mappingsData.unmapped_index_fields.length > 0 && (
           <>
             <ContentPanel
-              title={`Required field mappings (${mappingsData.unmappedIndexFields.length})`}
+              title={`Required field mappings (${mappingsData.unmapped_index_fields.length})`}
               titleSize={'m'}
             >
               <FieldMappingsTable<MappingViewType.Edit>
                 loading={loading}
-                aliasNames={mappingsData.unmappedFieldAliases}
-                indexFields={mappingsData.unmappedIndexFields}
+                aliasNames={mappingsData.unmapped_field_aliases || []}
+                indexFields={mappingsData.unmapped_index_fields || []}
                 mappingProps={{
                   type: MappingViewType.Edit,
                   createdMappings,

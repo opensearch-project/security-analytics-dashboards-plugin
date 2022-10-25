@@ -13,7 +13,6 @@ import {
   GetMappingsResponse,
 } from '../../server/models/interfaces';
 import { API } from '../../server/utils/constants';
-import { EXAMPLE_FIELD_MAPPINGS_RESPONSE } from '../pages/CreateDetector/components/ConfigureFieldMapping/utils/dummyData';
 import { FieldMapping } from '.././../models/interfaces';
 
 export default class FieldMappingService {
@@ -30,10 +29,6 @@ export default class FieldMappingService {
         ruleTopic,
       },
     })) as ServerResponse<GetFieldMappingViewResponse>;
-
-    if (response.ok) {
-      response.response = EXAMPLE_FIELD_MAPPINGS_RESPONSE;
-    }
 
     return response;
   };
@@ -66,8 +61,12 @@ export default class FieldMappingService {
     return (await this.httpClient.post(url, params)) as ServerResponse<CreateMappingsResponse>;
   };
 
-  getMappings = async (): Promise<ServerResponse<GetMappingsResponse>> => {
+  getMappings = async (indexName: string): Promise<ServerResponse<GetMappingsResponse>> => {
     const url = `..${API.MAPPINGS_BASE}`;
-    return (await this.httpClient.get(url)) as ServerResponse<GetMappingsResponse>;
+    return (await this.httpClient.get(url, {
+      query: {
+        indexName,
+      },
+    })) as ServerResponse<GetMappingsResponse>;
   };
 }

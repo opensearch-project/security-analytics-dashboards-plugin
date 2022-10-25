@@ -15,10 +15,12 @@ import {
 import AlertConditionPanel from '../components/AlertCondition';
 import { Detector } from '../../../../../../models/interfaces';
 import { DetectorCreationStep } from '../../../models/types';
+import { RulesSharedState } from '../../../../../models/interfaces';
 
 interface ConfigureAlertsProps extends RouteComponentProps {
   detector: Detector;
   isEdit: boolean;
+  rulesOptions: Pick<RulesSharedState, 'rulesOptions'>['rulesOptions'];
   changeDetector: (detector: Detector) => void;
   updateDataValidState: (step: DetectorCreationStep, isValid: boolean) => void;
 }

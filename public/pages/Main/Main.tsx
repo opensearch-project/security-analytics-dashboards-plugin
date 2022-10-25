@@ -18,6 +18,7 @@ import Rules from '../Rules';
 import Overview from '../Overview';
 import CreateDetector from '../CreateDetector/containers/CreateDetector';
 import Alerts from '../Alerts';
+import { DetectorDetails } from '../Detectors/containers/Detector/Detector';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -146,6 +147,12 @@ export default class Main extends Component<MainProps> {
                               detectorService={services.detectorsService}
                               findingService={services.findingsService}
                             />
+                          )}
+                        />
+                        <Route
+                          path={ROUTES.DETECTOR_DETAILS}
+                          render={(props: RouteComponentProps<{}, any, any>) => (
+                            <DetectorDetails {...props} />
                           )}
                         />
                         <Redirect from={'/'} to={landingPage} />

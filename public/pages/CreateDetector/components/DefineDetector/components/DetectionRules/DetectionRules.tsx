@@ -5,28 +5,29 @@
 
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { ContentPanel } from '../../../../../../components/ContentPanel';
 import {
+  CriteriaWithPagination,
   EuiAccordion,
-  EuiBasicTable,
-  EuiButtonEmpty,
-  EuiFlexGroup,
-  EuiFlexItem,
   EuiHorizontalRule,
+  EuiInMemoryTable,
   EuiPanel,
-  EuiSpacer,
-  EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import { Rule } from '../../../../../../../models/interfaces';
 import { getRulesColumns } from './utils/constants';
-import { RuleItem, RulesInfoByType } from './types/interfaces';
-import { dummyDetectorRules } from './utils/dummyData';
+import { RuleItemInfo, RuleItem, RulesInfoByType } from './types/interfaces';
+import { RulesService } from '../../../../../../services';
+import { RulesSharedState } from '../../../../../../models/interfaces';
+import { ruleItemInfosToItems } from '../../../../../../utils/helpers';
 
 interface DetectionRulesProps extends RouteComponentProps {
-  enabledCustomRuleIds: string[];
+  enabledCustomRuleIds: Set<string>;
+  enabledPrePackagedRuleIds: Set<string>;
   detectorType: string;
-  onRulesChanged: (rules: Rule[]) => void;
+  rulesService: RulesService;
+  pageIndex: number;
+  onPrepackagedRulesChanged: (enabledRuleIds: string[]) => void;
+  onCustomRulesChanged: (enabledRuleIds: string[]) => void;
+  onRulesStateChange: (state: Partial<RulesSharedState>) => void;
 }
 
 interface DetectionRulesState {
@@ -38,62 +39,94 @@ interface DetectionRulesState {
 export default class DetectionRules extends Component<DetectionRulesProps, DetectionRulesState> {
   constructor(props: DetectionRulesProps) {
     super(props);
-    this.state = this.deriveInitialState();
-  }
-
-  componentDidMount(): void {
-    // get pre-packaged rules based on detector type
-    // get custom rules based on detector type
-    // merge the rule types and add the toggle state
-  }
-
-  deriveInitialState(): DetectionRulesState {
-    const detectorRules = dummyDetectorRules;
-    const rulesByRuleType: {
-      [ruleType: string]: { ruleItems: RuleItem[]; activeCount: number };
-    } = {};
-    detectorRules.forEach((rule) => {
-      rulesByRuleType[rule.type] = rulesByRuleType[rule.type] || { ruleItems: [], activeCount: 0 };
-      rulesByRuleType[rule.type].ruleItems.push({
-        ruleName: rule.name,
-        ruleType: rule.type,
-        description: rule.description || '',
-        active: rule.active,
-      });
-
-      if (rule.active) {
-        rulesByRuleType[rule.type].activeCount++;
-      }
-    });
-
-    return {
+    this.state = {
       fieldTouched: false,
-      selectedRuleType: undefined,
-      rulesByRuleType,
+      rulesByRuleType: {},
     };
   }
 
-  getActiveRulesCount(selectedRuleType?: string): number {
-    if (selectedRuleType) {
-      return this.state.rulesByRuleType[selectedRuleType]?.activeCount || 0;
-    }
+  async componentDidMount() {
+    const {
+      detectorType,
+      enabledCustomRuleIds: enabledCustomRulesInfo,
+      enabledPrePackagedRuleIds: enabledPrePackagedRulesInfo,
+    } = this.props;
+    const prePackagedRules = await this.getRules(
+      true /* prePackaged */,
+      enabledPrePackagedRulesInfo
+    );
+    const customRules = await this.getRules(false /* prePackaged */, enabledCustomRulesInfo);
 
-    return Object.values(this.state.rulesByRuleType).reduce((aggregate, rulesInfo) => {
-      return aggregate + rulesInfo.activeCount;
-    }, 0);
+    const allRules = prePackagedRules.concat(customRules);
+    this.setState({
+      rulesByRuleType: {
+        [detectorType]: allRules,
+      },
+    });
+
+    this.updateRulesSharedState(allRules);
   }
 
-  getRuleItems(selectedRuleType?: string): RuleItem[] {
-    if (selectedRuleType) {
-      return this.state.rulesByRuleType[selectedRuleType].ruleItems;
-    }
+  async componentDidUpdate(prevProps: Readonly<DetectionRulesProps>) {
+    const {
+      detectorType,
+      enabledCustomRuleIds: enabledCustomRulesInfo,
+      enabledPrePackagedRuleIds: enabledPrePackagedRulesInfo,
+    } = this.props;
+    if (prevProps.detectorType !== detectorType) {
+      const prePackagedRules = await this.getRules(
+        true /* prePackaged */,
+        enabledPrePackagedRulesInfo
+      );
+      const customRules = await this.getRules(false /* prePackaged */, enabledCustomRulesInfo);
 
-    return Object.values(this.state.rulesByRuleType).reduce(
-      (aggregate: RuleItem[], currentRulesInfo) => {
-        return aggregate.concat(currentRulesInfo.ruleItems);
-      },
-      []
-    );
+      this.setState({
+        rulesByRuleType: {
+          [detectorType]: prePackagedRules.concat(customRules),
+        },
+      });
+
+      this.props.onRulesStateChange({
+        page: { index: 0 },
+      });
+    }
+  }
+
+  async getRules(prePackaged: boolean, enabledRuleIds: Set<string>): Promise<RuleItemInfo[]> {
+    try {
+      const { detectorType } = this.props;
+
+      const rulesRes = await this.props.rulesService.getRules(prePackaged, {
+        from: 0,
+        size: 5000,
+        query: {
+          nested: {
+            path: 'rule',
+            query: {
+              bool: {
+                must: [{ match: { 'rule.category': `${detectorType}` } }],
+              },
+            },
+          },
+        },
+      });
+
+      if (rulesRes.ok) {
+        const prePackagedRules: RuleItemInfo[] = rulesRes.response.hits.hits.map((ruleInfo) => {
+          return {
+            ...ruleInfo,
+            enabled: enabledRuleIds.has(ruleInfo._id),
+            prePackaged,
+          };
+        });
+
+        return prePackagedRules;
+      } else {
+        return [];
+      }
+    } catch (error: any) {
+      return [];
+    }
   }
 
   onRuleTypeClick = (selectedRuleType?: string) => {
@@ -102,49 +135,95 @@ export default class DetectionRules extends Component<DetectionRulesProps, Detec
     });
   };
 
-  onRuleActivationToggle = (changedItem: RuleItem, changeToActive: boolean) => {
-    const { rulesByRuleType } = this.state;
-    const ruleItems = rulesByRuleType[changedItem.ruleType].ruleItems;
-    const changedIdx = ruleItems.findIndex((item) => item.ruleName === changedItem.ruleName);
+  updateRulesSharedState(ruleItemsInfo: RuleItemInfo[]) {
+    const rulesOptions: Pick<RulesSharedState, 'rulesOptions'>['rulesOptions'] = [];
+    ruleItemsInfo.forEach((rule) => {
+      if (rule.enabled) {
+        rulesOptions.push({
+          id: rule._id,
+          name: rule._source.title,
+          tags: rule._source.tags.map((tag) => tag.value),
+        });
+      }
+    });
+    this.props.onRulesStateChange({
+      rulesOptions,
+    });
+  }
 
-    if (changedIdx > -1) {
-      const newRuleItems = [
-        ...ruleItems.slice(0, changedIdx),
-        { ...ruleItems[changedIdx], active: changeToActive },
-        ...ruleItems.slice(changedIdx + 1),
-      ];
-      const newRulesByRuleType: RulesInfoByType = {
-        ...rulesByRuleType,
-        [changedItem.ruleType]: {
-          ruleItems: newRuleItems,
-          activeCount:
-            rulesByRuleType[changedItem.ruleType].activeCount + (changeToActive ? 1 : -1),
-        },
+  onRuleActivationToggle = (changedItem: RuleItem, isActive: boolean) => {
+    const ruleItemsInfo = this.state.rulesByRuleType[changedItem.logType];
+    const newRuleItemsInfo = ruleItemsInfo.map((item) => {
+      return {
+        ...item,
+        enabled: item._id === changedItem.id ? isActive : item.enabled,
       };
-      this.setState({ rulesByRuleType: newRulesByRuleType });
+    });
+    this.setState({
+      rulesByRuleType: {
+        [changedItem.logType]: newRuleItemsInfo,
+      },
+    });
+    this.updateRulesSharedState(newRuleItemsInfo);
+    const existingEnabledIds =
+      changedItem.library === 'Default'
+        ? this.props.enabledPrePackagedRuleIds
+        : this.props.enabledCustomRuleIds;
+    const newEnabledIds = this.getUpdatedEnabledRuleIds(
+      existingEnabledIds,
+      changedItem.id,
+      isActive
+    );
+    if (newEnabledIds) {
+      if (changedItem.library === 'Default') {
+        this.props.onPrepackagedRulesChanged(newEnabledIds);
+      } else if (changedItem.library === 'Custom') {
+        this.props.onCustomRulesChanged(newEnabledIds);
+      }
     }
   };
 
-  render() {
-    const { rulesByRuleType, selectedRuleType } = this.state;
-    const detectorRules =
-      this.props.enabledCustomRuleIds.length > 0
-        ? this.props.enabledCustomRuleIds
-        : dummyDetectorRules;
+  getUpdatedEnabledRuleIds(existingEnabledIds: Set<string>, ruleId: string, isActive: boolean) {
+    let newEnabledIds;
+    // 1. not enabled previously
+    const wasActive = existingEnabledIds.has(ruleId);
+    if (wasActive && !isActive) {
+      const clonedIds = new Set(existingEnabledIds);
+      clonedIds.delete(ruleId);
+      newEnabledIds = [...clonedIds];
+    }
+    // 2. enabled previously and now disabled
+    else if (!wasActive && isActive) {
+      const clonedIds = new Set(existingEnabledIds);
+      clonedIds.add(ruleId);
+      newEnabledIds = [...clonedIds];
+    }
 
-    const totalRulesCountForSelectedType = selectedRuleType
-      ? rulesByRuleType[selectedRuleType]?.ruleItems.length || 0
-      : detectorRules.length;
-    const activeRulesCountForSelectedType = this.getActiveRulesCount(selectedRuleType);
-    const allRulesCount = this.props.enabledCustomRuleIds.length || dummyDetectorRules.length;
-    const ruleTypes = Object.keys(rulesByRuleType);
+    return newEnabledIds;
+  }
+
+  onTableChange = (nextValues: CriteriaWithPagination<RuleItem>) => {
+    this.props.onRulesStateChange({
+      page: nextValues.page,
+    });
+  };
+
+  render() {
+    const { detectorType } = this.props;
+    const ruleItems = ruleItemInfosToItems(detectorType, this.state.rulesByRuleType[detectorType]);
+    let enabledRulesCount = 0;
+    ruleItems.forEach((item) => {
+      if (item.active) {
+        enabledRulesCount++;
+      }
+    });
 
     return (
       <EuiPanel style={{ paddingLeft: '0px', paddingRight: '0px' }}>
         <EuiAccordion
           buttonContent={
             <EuiTitle>
-              <h4>{`Threat detection rules (${allRulesCount})`}</h4>
+              <h4>{`Detection rules (${enabledRulesCount} selected)`}</h4>
             </EuiTitle>
           }
           buttonProps={{ style: { paddingLeft: '10px', paddingRight: '10px' } }}
@@ -152,40 +231,15 @@ export default class DetectionRules extends Component<DetectionRulesProps, Detec
           initialIsOpen={false}
         >
           <EuiHorizontalRule margin={'xs'} />
-          <div style={{ paddingLeft: '10px', paddingRight: '10px' }}>
-            <EuiSpacer size={'m'} />
-            <EuiFlexGroup>
-              <EuiFlexItem grow={false}>
-                <EuiText>
-                  <EuiButtonEmpty onClick={() => this.onRuleTypeClick()}>
-                    View all rules {`(${allRulesCount})`}
-                  </EuiButtonEmpty>
-                  <EuiSpacer />
-                  {ruleTypes.map((ruleType) => (
-                    <React.Fragment key={ruleType}>
-                      <EuiButtonEmpty
-                        onClick={() => this.onRuleTypeClick(ruleType)}
-                      >{`${ruleType} (${rulesByRuleType[ruleType].ruleItems.length})`}</EuiButtonEmpty>
-                      <EuiSpacer size="xs" />
-                    </React.Fragment>
-                  ))}
-                </EuiText>
-              </EuiFlexItem>
-              <EuiFlexItem>
-                <ContentPanel
-                  title={`${
-                    selectedRuleType || 'All'
-                  } rules (${activeRulesCountForSelectedType}/${totalRulesCountForSelectedType} enabled)`}
-                >
-                  <EuiBasicTable
-                    columns={getRulesColumns(this.onRuleActivationToggle)}
-                    items={this.getRuleItems(selectedRuleType)}
-                    itemId={(item: RuleItem) => `${item.ruleName}`}
-                  />
-                </ContentPanel>
-              </EuiFlexItem>
-            </EuiFlexGroup>
-          </div>
+          <EuiInMemoryTable
+            columns={getRulesColumns(this.onRuleActivationToggle)}
+            items={ruleItems}
+            itemId={(item: RuleItem) => `${item.name}`}
+            pagination={{
+              pageIndex: this.props.pageIndex,
+            }}
+            onTableChange={this.onTableChange}
+          />
         </EuiAccordion>
       </EuiPanel>
     );

@@ -13,17 +13,15 @@ import {
   EuiFlyout,
   EuiFlyoutBody,
   EuiFlyoutHeader,
-  EuiFormRow,
   EuiLink,
   EuiSpacer,
-  EuiText,
   EuiTitle,
 } from '@elastic/eui';
 import { AlertItem } from '../../../../../server/models/interfaces';
 import React from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
-import { renderTime } from '../../../../utils/helpers';
+import { createTextDetailsGroup, renderTime } from '../../../../utils/helpers';
 import { FindingsService } from '../../../../services';
 import FindingDetailsFlyout from '../../../Findings/components/FindingDetailsFlyout';
 
@@ -54,29 +52,6 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
     if (findingRes.ok) {
       this.setState({ findingItems: findingRes.response.findings });
     }
-  }
-
-  createTextDetailsGroup(data: { label: string; content: string; url?: string }[]) {
-    return (
-      <>
-        <EuiFlexGroup style={{ padding: 20 }}>
-          {data.map(({ label, content, url }) => {
-            return (
-              <EuiFlexItem key={label} grow={false} style={{ minWidth: '30%' }}>
-                <EuiFormRow label={label}>
-                  {url ? (
-                    <EuiLink>{content || DEFAULT_EMPTY_DATA}</EuiLink>
-                  ) : (
-                    <EuiText>{content || DEFAULT_EMPTY_DATA}</EuiText>
-                  )}
-                </EuiFormRow>
-              </EuiFlexItem>
-            );
-          })}
-        </EuiFlexGroup>
-        <EuiSpacer size={'xl'} />
-      </>
-    );
   }
 
   setFindingFlyoutData(finding?: Finding) {
@@ -180,16 +155,16 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
           </EuiFlexGroup>
         </EuiFlyoutHeader>
         <EuiFlyoutBody>
-          {this.createTextDetailsGroup([
+          {createTextDetailsGroup([
             { label: 'Alert trigger name', content: trigger_name },
             { label: 'Alert status', content: state },
             { label: 'Alert severity', content: severity },
           ])}
-          {this.createTextDetailsGroup([
+          {createTextDetailsGroup([
             { label: 'Start time', content: start_time },
             { label: 'Last updated time', content: last_notification_time },
           ])}
-          {this.createTextDetailsGroup([{ label: 'Detector', content: detector_id }])}
+          {createTextDetailsGroup([{ label: 'Detector', content: detector_id }])}
 
           <EuiSpacer size={'xxl'} />
 
