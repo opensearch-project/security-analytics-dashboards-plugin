@@ -140,9 +140,9 @@ export const Visual = (props: any) => {
       >
         {(Formikprops) => {
           return (
-            <Form>
+            <Form id="editForm">
               <EuiSpacer />
-              <EuiFlexGroup alignItems="center">
+              <EuiFlexGroup component="span">
                 <EuiFlexItem>
                   <EuiFormRow
                     label="Rule name"
@@ -174,12 +174,10 @@ export const Visual = (props: any) => {
 
               <EuiFormRow
                 label="Description"
-                fullWidth
                 helpText={Formikprops.touched.ruleDescription && Formikprops.errors.ruleDescription}
               >
                 <EuiTextArea
                   name="ruleDescription"
-                  fullWidth
                   value={Formikprops.values.ruleDescription}
                   onChange={Formikprops.handleChange}
                   onBlur={Formikprops.handleBlur}
@@ -326,20 +324,6 @@ export const Visual = (props: any) => {
                   value={Formikprops.values.ruleStatus}
                 />
               </EuiFormRow>
-              <EuiButton
-                type="submit"
-                fill
-                // disabled={!Boolean(Object.keys(Formikprops.errors).length === 0)}
-              >
-                Cancel
-              </EuiButton>
-              <EuiButton
-                type="submit"
-                fill
-                // disabled={!Boolean(Object.keys(Formikprops.errors).length === 0)}
-              >
-                Create
-              </EuiButton>
             </Form>
           );
         }}

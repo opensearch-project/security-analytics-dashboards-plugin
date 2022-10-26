@@ -8,10 +8,18 @@ import { RouteComponentProps } from 'react-router-dom';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { BREADCRUMBS, PLUGIN_NAME, ROUTES } from '../../../../utils/constants';
+import { withRouter } from 'react-router-dom';
 import Main from './components/Main';
 import Create from './components/Create';
 import Import from './components/Import';
-import { EuiTitle, EuiButton, EuiFlyout, EuiFlyoutBody, EuiFlyoutHeader } from '@elastic/eui';
+import {
+  EuiTitle,
+  EuiButton,
+  EuiFlyout,
+  EuiFlyoutBody,
+  EuiFlyoutHeader,
+  EuiFlexGroup,
+} from '@elastic/eui';
 
 interface RulesProps extends RouteComponentProps {}
 
@@ -107,9 +115,6 @@ export default class Rules extends Component<RulesProps, RulesState> {
         {this.state.Mode === 'create' && (
           <div>
             <Create />
-            <EuiButton onClick={() => this.closeCreate()} href={`#${ROUTES.RULES}`}>
-              Cancel
-            </EuiButton>
           </div>
         )}
       </>
