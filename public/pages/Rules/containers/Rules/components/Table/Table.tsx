@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect, useContext, Fragment } from 'react';
 import { Flyout } from '../../../../lib/UIComponents/Flyout';
-import { ruleTypes, ruleSeverity } from '../../../../lib/helpers';
+import { ruleTypes, ruleSeverity, ruleSource } from '../../../../lib/helpers';
 import { EuiInMemoryTable, EuiFlexGroup, EuiLink, EuiToast } from '@elastic/eui';
 import './index.scss';
 import { ServicesContext } from '../../../../../../services';
@@ -20,7 +20,9 @@ export const Table = () => {
   const [query, setQuery] = useState<string>('');
   const [flyoutType, setflyoutType] = useState<undefined | string>('');
   const [content, setContent] = useState<any | string>('');
-  const [sigmaRules, setRules] = useState<RuleSource[]>([]);
+  const [sigmaRules, setSigmaRules] = useState<RuleSource[]>([]);
+  const [customRules, setCustomRules] = useState<RuleSource[]>([]);
+  const [allRules, setAllRules] = useState<RuleSource[]>([]);
   const [isFlyoutVisible, setIsFlyoutVisible] = useState(false);
   const closeFlyout = () => setIsFlyoutVisible(false);
   const showFlyout = () => setIsFlyoutVisible(true);
@@ -37,9 +39,62 @@ export const Table = () => {
         },
       })
       .then((res: ServerResponse<GetRulesResponse>) => {
-        console.log('RES', res);
+        // console.log('SIGMA RES', res.response.hits.hits);
         if (res.ok) {
-          setRules(res.response.hits.hits.map((hit) => hit._source));
+          let sigma: any = [];
+          res.response.hits.hits.map((hit) => {
+            sigma.push({
+              id: hit._id,
+              source: 'default',
+              author: hit._source.author,
+              category: hit._source.category,
+              description: hit._source.description,
+              falsepositives: hit._source.false_positives,
+              level: hit._source.level,
+              title: hit._source.title,
+              status: hit._source.status,
+              log_source: hit._source.log_source,
+              queries: hit._source.queries,
+              references: hit._source.references,
+              tags: hit._source.tags,
+            });
+          });
+          setSigmaRules(sigma);
+        } else {
+          setToastError(res.error);
+        }
+      });
+    services?.ruleService
+      .getRules(false /* custom */, {
+        from: 0,
+        size: 5000,
+        query: {
+          match_all: {},
+        },
+      })
+      .then((res: ServerResponse<GetRulesResponse>) => {
+        // console.log('Custom RES', res.response.hits);
+
+        if (res.ok) {
+          let custom: any = [];
+          res.response.hits.hits.map((hit) => {
+            custom.push({
+              id: hit._id,
+              source: 'custom',
+              author: hit._source.author,
+              category: hit._source.category,
+              description: hit._source.description,
+              falsepositives: hit._source.false_positives,
+              level: hit._source.level,
+              title: hit._source.title,
+              status: hit._source.status,
+              log_source: hit._source.log_source,
+              queries: hit._source.queries,
+              references: hit._source.references,
+              tags: hit._source.tags,
+            });
+          });
+          setCustomRules(custom);
         } else {
           setToastError(res.error);
         }
@@ -94,6 +149,19 @@ export const Table = () => {
       },
     },
     {
+      field: 'source',
+      name: 'Source',
+      sortable: true,
+      width: '20%',
+      truncateText: true,
+      mobileOptions: {
+        header: false,
+        truncateText: false,
+        enlarge: true,
+        width: '100%',
+      },
+    },
+    {
       field: 'description',
       name: 'Description',
       sortable: true,
@@ -133,11 +201,11 @@ export const Table = () => {
       },
       {
         type: 'field_value_selection',
-        field: 'level',
+        field: 'source',
         name: 'Source',
         multiSelect: false,
-        options: ruleSeverity.map((level: string) => ({
-          value: level,
+        options: ruleSource.map((source: string) => ({
+          value: source,
         })),
       },
     ],
@@ -178,12 +246,16 @@ export const Table = () => {
     },
   ];
 
+  let combined = sigmaRules.concat(customRules);
+
+  console.log('COMBINED', combined);
+
   return (
     <div style={{ width: '95%', margin: '0 auto', paddingTop: '25px' }}>
       <EuiFlexGroup>
         {sigmaRules.length > 0 && (
           <EuiInMemoryTable
-            items={sigmaRules}
+            items={combined}
             columns={columns}
             search={search}
             pagination={
