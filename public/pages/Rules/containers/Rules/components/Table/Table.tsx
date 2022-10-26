@@ -39,8 +39,8 @@ export const Table = () => {
         },
       })
       .then((res: ServerResponse<GetRulesResponse>) => {
-        // console.log('SIGMA RES', res.response.hits.hits);
         if (res.ok) {
+          console.log(res.response.hits.hits);
           let sigma: any = [];
           res.response.hits.hits.map((hit) => {
             sigma.push({
@@ -57,6 +57,7 @@ export const Table = () => {
               queries: hit._source.queries,
               references: hit._source.references,
               tags: hit._source.tags,
+              last_updated: hit._source.last_update_time,
             });
           });
           setSigmaRules(sigma);
@@ -73,8 +74,6 @@ export const Table = () => {
         },
       })
       .then((res: ServerResponse<GetRulesResponse>) => {
-        // console.log('Custom RES', res.response.hits);
-
         if (res.ok) {
           let custom: any = [];
           res.response.hits.hits.map((hit) => {
@@ -247,8 +246,6 @@ export const Table = () => {
   ];
 
   let combined = sigmaRules.concat(customRules);
-
-  console.log('COMBINED', combined);
 
   return (
     <div style={{ width: '95%', margin: '0 auto', paddingTop: '25px' }}>

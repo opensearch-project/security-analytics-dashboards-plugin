@@ -18,10 +18,18 @@ import {
   EuiDescriptionListDescription,
   EuiFlexGroup,
   EuiFlexItem,
+  EuiFormRow,
+  EuiFormLabel,
+  EuiBadge,
+  EuiLink,
 } from '@elastic/eui';
+import Edit from '../Edit';
+import AceEditor from 'react-ace';
 
 export const View = (props: any) => {
-  const [showEditor, setEditor] = useState<boolean>(false);
+  console.log('PROPS', props.content.source);
+
+  const [allowEditor, setEditor] = useState<boolean>(false);
   const [currentMode, setCurrentMode] = useState<string>('Edit');
   const [showSave, setSave] = useState(false);
   const { content } = props;
@@ -31,7 +39,7 @@ export const View = (props: any) => {
   const showModal = () => setIsModalVisible(true);
   const closeDestroyModal = () => setIsDestroyModalVisible(false);
   const showDestroyModal = () => setIsDestroyModalVisible(true);
-  const { ruleType } = props;
+  const { ruleType } = props.content.source;
 
   let modal;
 
@@ -65,78 +73,18 @@ export const View = (props: any) => {
     }
   };
 
-  const ruleInfoLeft = [
-    {
-      title: 'Author:',
-      description: content.author,
-    },
-    {
-      title: 'Title:',
-      description: content.title,
-    },
-    {
-      title: 'Description:',
-      description: content.description,
-    },
-    {
-      title: 'Category:',
-      description: content.category,
-    },
-  ];
+  const onEditorChange = (Value: string) => {
+    console.log('VALUE', Value);
+  };
 
-  const ruleInfoRight = [
-    {
-      title: 'Status:',
-      description: content.status,
-    },
-    {
-      title: 'Level:',
-      description: content.level,
-    },
-    {
-      title: 'Last Modified:',
-      description: content.last_update_time,
-    },
-    {
-      title: 'Tags:',
-      description: content.tags
-        ? content.tags.map((tag: string | any) => {
-            return <div key={tag.value}>{tag.value}</div>;
-          })
-        : 'None',
-    },
-  ];
-
-  const ruleInfoBottom = [
-    {
-      title: 'Falsepositives:',
-      description: content.falsepositives
-        ? content.falsepositives.map((falsepositive: string | any) => {
-            return <div key={falsepositive.value}>{falsepositive.value}</div>;
-          })
-        : 'None',
-    },
-    {
-      title: 'References:',
-      description: content.references
-        ? content.references.map((reference: string | any) => {
-            return (
-              <a href={reference.value} target="_blank" key={reference.value}>
-                {reference.value}
-              </a>
-            );
-          })
-        : 'None',
-    },
-    {
-      title: 'Queries:',
-      description: content.queries
-        ? content.queries.map((query: string | any) => {
-            return <div key={query.value}>{query.value}</div>;
-          })
-        : 'None',
-    },
-  ];
+  let importedDetectionValue = `
+  ${
+    content.queries.length > 0 &&
+    `selection:
+    query|startswith:
+      ${content.queries.map((query: any) => `- ${query.value}`)}
+    `
+  }`;
 
   if (isModalVisible) {
     modal = (
@@ -184,52 +132,149 @@ export const View = (props: any) => {
         {modal}
         {destroyModal}
       </div>
-      <EuiFlyoutHeader>
-        {ruleType === 'custom' && (
-          <EuiFlexGroup direction="row" justifyContent="flexEnd">
-            <EuiFlexItem>
-              <EuiButton>View Findings</EuiButton>
-            </EuiFlexItem>
-            <EuiFlexItem>
-              <EuiButton onClick={() => buttonDisplay()}>{currentMode}</EuiButton>
-            </EuiFlexItem>
-            <EuiFlexItem>
-              <EuiButton onClick={() => setEditor(true)}>Duplicate</EuiButton>
-            </EuiFlexItem>
-            <EuiFlexItem>
-              <EuiButton onClick={() => showDestroyModal()}>Delete</EuiButton>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-        )}
-      </EuiFlyoutHeader>
-      <EuiModalBody>
-        {!showEditor && (
+      {/* <EuiFlyoutHeader>
+        {props.content.source === 'custom' && (
           <div>
-            <EuiFlexGroup>
+            <EuiFlexGroup direction="row" justifyContent="flexEnd">
               <EuiFlexItem>
-                <EuiDescriptionList listItems={ruleInfoLeft} />
+                <EuiButton>View Findings</EuiButton>
               </EuiFlexItem>
               <EuiFlexItem>
-                <EuiDescriptionList listItems={ruleInfoRight} />
+                <EuiButton onClick={() => buttonDisplay()}>{currentMode}</EuiButton>
+              </EuiFlexItem>
+              <EuiFlexItem>
+                <EuiButton onClick={() => setEditor(true)}>Duplicate</EuiButton>
+              </EuiFlexItem>
+              <EuiFlexItem>
+                <EuiButton onClick={() => showDestroyModal()}>Delete</EuiButton>
               </EuiFlexItem>
             </EuiFlexGroup>
-            <EuiDescriptionList listItems={ruleInfoBottom} />
+            <Edit />
           </div>
         )}
-        {showEditor && (
-          <EuiMarkdownEditor
-            aria-label="EUI markdown editor demo"
-            placeholder="Your markdown here..."
-            value={value}
-            onChange={setValue}
-            height={400}
-            // onParse={onParse}
-            // errors={messages}
-            // dropHandlers={dropHandlers}
-            // readOnly={isReadOnly}
-            initialViewMode="viewing"
-          />
-        )}
+      </EuiFlyoutHeader> */}
+      <EuiModalBody>
+        <EuiFlexGroup direction="row" justifyContent="flexEnd">
+          <EuiFlexItem>
+            <EuiFormLabel>Rule Name</EuiFormLabel>
+            {content.title}
+          </EuiFlexItem>
+          <EuiFlexItem>
+            <EuiFormLabel>Log Type</EuiFormLabel>
+            {content.category}
+          </EuiFlexItem>
+        </EuiFlexGroup>
+
+        <EuiSpacer />
+
+        <EuiFormLabel>Description</EuiFormLabel>
+        <div>{content.description}</div>
+
+        <EuiSpacer />
+
+        <EuiFlexGroup direction="row" justifyContent="flexEnd">
+          <EuiFlexItem>
+            <EuiFormLabel>Last Updated</EuiFormLabel>
+            {content.last_updated}
+          </EuiFlexItem>
+          <EuiFlexItem>
+            <EuiFormLabel>Author</EuiFormLabel>
+            {content.author}
+          </EuiFlexItem>
+        </EuiFlexGroup>
+
+        <EuiSpacer />
+
+        <EuiFlexGroup direction="row" justifyContent="flexEnd">
+          <EuiFlexItem>
+            <EuiFormLabel>Source</EuiFormLabel>
+            {content.source}
+          </EuiFlexItem>
+          <EuiFlexItem>
+            <EuiFormLabel>Duplicated from</EuiFormLabel>
+            {/* {content.author} */}
+          </EuiFlexItem>
+        </EuiFlexGroup>
+
+        <EuiSpacer />
+
+        <EuiFlexGroup direction="row" justifyContent="flexEnd">
+          <EuiFlexItem>
+            <EuiFormLabel>Rule level</EuiFormLabel>
+            {content.level}
+          </EuiFlexItem>
+        </EuiFlexGroup>
+
+        <EuiSpacer />
+
+        <EuiFormLabel>Tags</EuiFormLabel>
+
+        <EuiFlexGroup direction="row">
+          {content.tags.map((tag: any) => (
+            <EuiFlexItem grow={false} key={tag}>
+              <EuiBadge color={'#DDD'}>{tag.value}</EuiBadge>
+            </EuiFlexItem>
+          ))}
+        </EuiFlexGroup>
+
+        <EuiSpacer />
+
+        <EuiFormLabel>References</EuiFormLabel>
+        {content.references.map((reference: any) => (
+          <div>
+            <EuiLink href={reference.value} target="_blank" key={reference}>
+              {reference.value}
+            </EuiLink>
+            <EuiSpacer />
+          </div>
+        ))}
+
+        <EuiSpacer />
+
+        <EuiFormLabel>False positive cases</EuiFormLabel>
+        <div>
+          {content.falsepositives.map((falsepositive: any) => (
+            <div>
+              {falsepositive.value}
+              <EuiSpacer />
+            </div>
+          ))}
+        </div>
+
+        <EuiFormLabel>Rule Status</EuiFormLabel>
+        <div>{content.status}</div>
+
+        <EuiSpacer />
+        <EuiFormRow
+          label="Detection"
+          fullWidth
+          // helpText={Formikprops.touched.ruleDetection && Formikprops.errors.ruleDetection}
+        >
+          <div>
+            {allowEditor && (
+              <AceEditor
+                name="ruleDetection"
+                mode="yaml"
+                readonly
+                onChange={onEditorChange}
+                height="400px"
+                width="95%"
+              />
+            )}
+            {!allowEditor && (
+              <EuiCodeBlock language="html">{importedDetectionValue}</EuiCodeBlock>
+              // <AceEditor
+              //   name="ruleDetection"
+              //   mode="yaml"
+              //   readOnly
+              //   onChange={onEditorChange}
+              //   value={importedDetectionValue}
+              //   height="400px"
+              //   width="95%"
+              // />
+            )}
+          </div>
+        </EuiFormRow>
       </EuiModalBody>
     </>
   );

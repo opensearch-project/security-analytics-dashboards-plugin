@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import View from '../../containers/Rules/components/View';
 import {
   EuiButton,
@@ -9,20 +9,53 @@ import {
   EuiFlyoutBody,
   EuiFlyoutHeader,
   EuiFlyoutFooter,
+  EuiSelect,
 } from '@elastic/eui';
+import './index.scss';
 
 export const Flyout = (props: any) => {
   const { close, content, type, ruleType } = props;
 
+  console.log('17 - PROPS', props);
+
+  const options = [
+    { value: 'Actions', text: 'Actions' },
+    { value: 'Edit', text: 'Edit' },
+    { value: 'Duplicate', text: 'Duplicate' },
+    { value: 'Delete', text: 'Delete' },
+  ];
+
+  const [value, setValue] = useState(options[0].value);
+
+  const onChange = (e: any) => {
+    setValue(e.target.value);
+  };
+
   return (
     <EuiFlyout onClose={close} style={{ width: 800 }}>
       <EuiFlyoutHeader hasBorder>
-        <EuiTitle size="m">
-          <h3>{content.title}</h3>
-        </EuiTitle>
+        <EuiFlexGroup>
+          <EuiFlexItem>
+            <EuiTitle size="m">
+              <h3>{content.title}</h3>
+            </EuiTitle>
+          </EuiFlexItem>
+          <EuiFlexItem>
+            <div>
+              {props.content.source === 'custom' && (
+                <EuiSelect
+                  name="editMode"
+                  options={options}
+                  value={value}
+                  onChange={(e) => onChange(e)}
+                />
+              )}
+            </div>
+          </EuiFlexItem>
+        </EuiFlexGroup>
       </EuiFlyoutHeader>
       <EuiFlyoutBody>
-        {type === 'view' && <View content={content} ruleType={ruleType} />}
+        <View content={content} ruleType={ruleType} />
       </EuiFlyoutBody>
       <EuiFlyoutFooter>
         <EuiFlexGroup direction="row" justifyContent="flexEnd">
