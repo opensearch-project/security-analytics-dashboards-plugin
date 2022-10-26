@@ -4,6 +4,7 @@
  */
 
 export interface Rule {
+  id: string;
   category: string;
   log_source: string;
   title: string;

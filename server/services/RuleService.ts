@@ -43,6 +43,7 @@ export default class RulesService {
   > => {
     try {
       const {
+        id,
         title,
         description,
         detection,
@@ -56,7 +57,7 @@ export default class RulesService {
       } = request.body as Rule;
       const today = moment(moment.now()).format('YYYY/MM/DD');
       const ruleYamlPayload = safeDump({
-        id: '',
+        id,
         title,
         description,
         status,

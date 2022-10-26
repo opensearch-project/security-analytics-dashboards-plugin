@@ -3,12 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, useContext } from 'react';
-import RulesService from '../../../../../../services/RuleService';
+import React, { useState, useEffect, useContext, Fragment } from 'react';
 import { Flyout } from '../../../../lib/UIComponents/Flyout';
 import { ruleTypes, ruleSeverity } from '../../../../lib/helpers';
-import { EuiInMemoryTable, EuiFlexGroup, EuiLink } from '@elastic/eui';
-import axios from 'axios';
+import { EuiInMemoryTable, EuiFlexGroup, EuiLink, EuiToast } from '@elastic/eui';
 import './index.scss';
 import { ServicesContext } from '../../../../../../services';
 import { BrowserServices } from '../../../../../../models/interfaces';
@@ -26,6 +24,8 @@ export const Table = () => {
   const [isFlyoutVisible, setIsFlyoutVisible] = useState(false);
   const closeFlyout = () => setIsFlyoutVisible(false);
   const showFlyout = () => setIsFlyoutVisible(true);
+  const [toastError, setToastError] = useState<string>('');
+  const [toastSuccess, setToastSuccess] = useState<string>('');
 
   useEffect(() => {
     services?.ruleService
@@ -41,7 +41,7 @@ export const Table = () => {
         if (res.ok) {
           setRules(res.response.hits.hits.map((hit) => hit._source));
         } else {
-          // TODO: Show error toast
+          setToastError(res.error);
         }
       });
   }, [services]);
@@ -166,6 +166,17 @@ export const Table = () => {
       textOnly: true,
     };
   };
+
+  const toast = [
+    {
+      title: 'Error',
+      text: (
+        <Fragment>
+          <p>{toastError}</p>
+        </Fragment>
+      ),
+    },
+  ];
 
   return (
     <div style={{ width: '95%', margin: '0 auto', paddingTop: '25px' }}>

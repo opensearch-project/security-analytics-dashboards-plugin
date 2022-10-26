@@ -77,6 +77,7 @@ export const Import = () => {
   const onChange = (files: any) => {
     setUserFiles(files.length > 0 ? Array.from(files) : []);
     let acceptedFileTyes: any = [];
+
     Array.from(files).forEach((file: any) => {
       if (file.type === 'application/x-yaml') {
         acceptedFileTyes.push(file);
@@ -126,7 +127,7 @@ export const Import = () => {
           </EuiText>
           {files.map((file: any, i: any) => (
             <div key={i}>
-              {importedLevel.length > 0 && (
+              {importedAuthor.length > 0 && (
                 <Edit
                   type={'import'}
                   title={importedTitle}

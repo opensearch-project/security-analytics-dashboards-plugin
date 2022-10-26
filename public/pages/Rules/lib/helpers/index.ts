@@ -4,16 +4,14 @@
  */
 
 export const ruleTypes: string[] = [
-  'application',
-  'apt',
-  'cloud',
-  'compliance',
-  'linux',
-  'macos',
   'network',
-  'proxy',
-  'web',
+  'dns',
+  'apache_access',
   'windows',
+  'ad_ldap',
+  'linux',
+  'cloudtrail',
+  's3',
 ];
 
 export const ruleSeverity: string[] = ['low', 'medium', 'informational', 'high', 'critical'];
