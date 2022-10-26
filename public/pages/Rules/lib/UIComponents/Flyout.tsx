@@ -29,6 +29,7 @@ export const Flyout = (props: any) => {
 
   const deleteRule = () => {
     close(true);
+    alert(`Rule ${content.title} has been deleted.`);
   };
 
   const showModal = () => setIsModalVisible(true);
