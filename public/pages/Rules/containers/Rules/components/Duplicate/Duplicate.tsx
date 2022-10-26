@@ -9,11 +9,11 @@ import { useHistory } from 'react-router-dom';
 import Edit from '../Edit';
 import { EuiIcon } from '@elastic/eui';
 
-export const Create = () => {
+export const Duplicate = () => {
   const history = useHistory();
   return (
     <ContentPanel
-      title={'Create a rule'}
+      title={'Duplicate a rule'}
       actions={[
         <EuiIcon
           onClick={() => {
@@ -23,7 +23,7 @@ export const Create = () => {
         />,
       ]}
     >
-      <Edit type={'new'} />
+      <Edit type={'duplicate'} />
     </ContentPanel>
   );
 };

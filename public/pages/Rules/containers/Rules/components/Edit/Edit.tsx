@@ -41,7 +41,7 @@ export const Edit = (props: any) => {
       </Fragment>
 
       {toggleIdSelected === 'visual' && <Visual props={visualProps} />}
-      {toggleIdSelected === 'yaml' && <YAML />}
+      {toggleIdSelected === 'yaml' && <YAML props={visualProps} />}
     </div>
   );
 };

@@ -40,7 +40,6 @@ export const Table = () => {
       })
       .then((res: ServerResponse<GetRulesResponse>) => {
         if (res.ok) {
-          console.log(res.response.hits.hits);
           let sigma: any = [];
           res.response.hits.hits.map((hit) => {
             sigma.push({

@@ -27,21 +27,13 @@ import Edit from '../Edit';
 import AceEditor from 'react-ace';
 
 export const View = (props: any) => {
-  console.log('PROPS', props.content.source);
-
   const [allowEditor, setEditor] = useState<boolean>(false);
   const [currentMode, setCurrentMode] = useState<string>('Edit');
   const [showSave, setSave] = useState(false);
   const { content } = props;
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isDestroyModalVisible, setIsDestroyModalVisible] = useState(false);
-  const closeModal = () => setIsModalVisible(false);
-  const showModal = () => setIsModalVisible(true);
-  const closeDestroyModal = () => setIsDestroyModalVisible(false);
-  const showDestroyModal = () => setIsDestroyModalVisible(true);
-  const { ruleType } = props.content.source;
 
-  let modal;
+  const { ruleType } = props.content.source;
+  const [close, setClose] = useState(false);
 
   const initialContent = `
   title: ${content.title}
@@ -59,20 +51,6 @@ export const View = (props: any) => {
     }
   });
 
-  const buttonDisplay = () => {
-    if (currentMode === 'Edit') {
-      setCurrentMode('Cancel');
-      setEditor(true);
-    } else {
-      if (value !== initialContent) {
-        showModal();
-      } else {
-        setCurrentMode('Edit');
-        setEditor(false);
-      }
-    }
-  };
-
   const onEditorChange = (Value: string) => {
     console.log('VALUE', Value);
   };
@@ -86,52 +64,8 @@ export const View = (props: any) => {
     `
   }`;
 
-  if (isModalVisible) {
-    modal = (
-      <EuiConfirmModal
-        title="Cancel edit"
-        onCancel={closeModal}
-        onConfirm={closeModal}
-        cancelButtonText="Go back"
-        confirmButtonText="Cancel"
-        defaultFocusedButton="confirm"
-      >
-        <EuiText>
-          You will lose changes to: <b>{content.title}</b>
-        </EuiText>
-        <p>Are you sure you want to do this?</p>
-      </EuiConfirmModal>
-    );
-  }
-
-  let destroyModal;
-
-  if (isDestroyModalVisible) {
-    destroyModal = (
-      <EuiConfirmModal
-        title="Delete Rule"
-        onCancel={closeDestroyModal}
-        onConfirm={closeDestroyModal}
-        cancelButtonText="Cancel"
-        confirmButtonText="Delete"
-        buttonColor="danger"
-        defaultFocusedButton="confirm"
-      >
-        <EuiText>
-          Delete rule: <b>{content.title}</b>
-        </EuiText>
-        <EuiSpacer />
-        <EuiText>Are you sure you want to do this?</EuiText>
-      </EuiConfirmModal>
-    );
-  }
-
   return (
     <>
-      <div>
-        {modal}
-        {destroyModal}
-      </div>
       {/* <EuiFlyoutHeader>
         {props.content.source === 'custom' && (
           <div>

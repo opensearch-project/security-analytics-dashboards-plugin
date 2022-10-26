@@ -27,6 +27,7 @@ import {
 } from '@elastic/eui';
 import { BrowserServices } from '../../../../../../../models/interfaces';
 import { ServicesContext } from '../../../../../../../services';
+import './index.scss';
 
 export const Visual = (props: any) => {
   const services: BrowserServices | null = useContext(ServicesContext);
@@ -45,8 +46,7 @@ export const Visual = (props: any) => {
     console.log('VALUE', Value);
   };
 
-  let importedDetectionValue = `Title: ${props.props.title ? props.props.title : ''}
-    - This is a title
+  let importedDetectionValue = `
     `;
 
   const onCreateOption = (searchValue: string) => {
@@ -68,8 +68,6 @@ export const Visual = (props: any) => {
   ];
 
   const test = Array.from(selectedOptions.map(({ label }) => ({ value: label })));
-
-  console.log(test);
 
   return (
     <div>
@@ -107,7 +105,6 @@ export const Visual = (props: any) => {
           ruleFalsepositives: Yup.array(),
         })}
         onSubmit={(values) => {
-          // console.log('SUBMIT', values);
           services?.ruleService
             .createRule({
               id: '25b9c01c-350d-4b95-bed1-836d04a4f324',
@@ -142,7 +139,6 @@ export const Visual = (props: any) => {
         }}
       >
         {(Formikprops) => {
-          console.log('VALUES', Formikprops.values);
           return (
             <Form>
               <EuiSpacer />
@@ -335,7 +331,14 @@ export const Visual = (props: any) => {
                 fill
                 // disabled={!Boolean(Object.keys(Formikprops.errors).length === 0)}
               >
-                Save
+                Cancel
+              </EuiButton>
+              <EuiButton
+                type="submit"
+                fill
+                // disabled={!Boolean(Object.keys(Formikprops.errors).length === 0)}
+              >
+                Create
               </EuiButton>
             </Form>
           );
