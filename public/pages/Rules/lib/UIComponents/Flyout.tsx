@@ -17,13 +17,36 @@ import {
   EuiButtonEmpty,
 } from '@elastic/eui';
 import './index.scss';
+import { ROUTES } from '../../../../utils/constants';
+import { useHistory } from 'react-router-dom';
 
 export const Flyout = (props: any) => {
   const { close, content, type, ruleType } = props;
-
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isDestroyModalVisible, setIsDestroyModalVisible] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
+  const history = useHistory();
+
+  const Duplicate = () => {
+    history.push({
+      pathname: ROUTES.RULES_CREATE,
+      state: {
+        mode: 'Duplicate',
+        rule: content,
+      },
+    });
+  };
+
+  const Edit = () => {
+    history.push({
+      pathname: ROUTES.RULES_CREATE,
+      state: {
+        mode: 'Edit',
+        rule: content,
+      },
+    });
+  };
 
   const onButtonClick = () => setIsPopoverOpen((isPopoverOpen) => !isPopoverOpen);
   const closePopover = () => setIsPopoverOpen(false);
@@ -34,6 +57,8 @@ export const Flyout = (props: any) => {
   };
 
   const deleteRule = () => {
+    setValue('Delete');
+    setIsModalVisible(false);
     close(true);
   };
 
@@ -107,31 +132,7 @@ export const Flyout = (props: any) => {
                   <h3>{content.title}</h3>
                 </EuiTitle>
               </EuiFlexItem>
-              <EuiFlexItem>
-                <div>
-                  {props.content.source === 'custom' && (
-                    //   <EuiSelect
-                    //     name="editMode"
-                    //     options={options}
-                    //     value={value}
-                    //     onChange={(e) => onChange(e)}
-                    //   />
-                    // <EuiPopover
-                    //   button={
-                    //     <EuiButton iconType="arrowDown" iconSide="right" onClick={onButtonClick}>
-                    //       Action
-                    //     </EuiButton>
-                    //   }
-                    //   isOpen={isPopoverOpen}
-                    //   closePopover={closePopover}
-                    //   anchorPosition="downLeft"
-                    // >
-                    //   Popover content
-                    // </EuiPopover>
-                    <div></div>
-                  )}
-                </div>
-              </EuiFlexItem>
+              <EuiFlexItem></EuiFlexItem>
             </EuiFlexGroup>
           </EuiFlyoutHeader>
           <EuiFlyoutBody>
@@ -167,11 +168,26 @@ export const Flyout = (props: any) => {
                       closePopover={closePopover}
                       anchorPosition="downLeft"
                     >
-                      <div>
-                        <EuiButtonEmpty>Edit</EuiButtonEmpty>
-                        <EuiButtonEmpty>Duplicate</EuiButtonEmpty>
-                        <EuiButtonEmpty>Delete</EuiButtonEmpty>
-                      </div>
+                      <EuiFlexGroup direction="column">
+                        <EuiFlexItem>
+                          <EuiButtonEmpty onClick={Edit}>Edit</EuiButtonEmpty>
+                        </EuiFlexItem>
+
+                        <EuiFlexItem>
+                          <EuiButtonEmpty onClick={Duplicate}>Duplicate</EuiButtonEmpty>
+                        </EuiFlexItem>
+
+                        <EuiFlexItem>
+                          <EuiButtonEmpty
+                            onClick={() => {
+                              setValue('Delete');
+                              setIsModalVisible(true);
+                            }}
+                          >
+                            Delete
+                          </EuiButtonEmpty>
+                        </EuiFlexItem>
+                      </EuiFlexGroup>
                     </EuiPopover>
                   )}
                 </div>

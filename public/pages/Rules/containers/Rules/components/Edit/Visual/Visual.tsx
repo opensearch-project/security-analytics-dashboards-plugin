@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useContext, Fragment } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { ruleTypes, ruleStatus } from '../../../../../lib/helpers';
 import { Formik, Field, Form, ErrorMessage, FieldArray } from 'formik';
 import AceEditor from 'react-ace';
@@ -32,11 +32,10 @@ import './index.scss';
 export const Visual = (props: any) => {
   const services: BrowserServices | null = useContext(ServicesContext);
   const [selectedOptions, setSelected] = useState([]);
-  const [references, setReferences] = useState<string[]>([]);
-  const [options, setOptions] = useState<any>([]);
-  const [falsePositiveRows, setFalsePositiveRows] = useState(0);
-  const [ReferencesRows, setReferencesRows] = useState(0);
-  const [toastError, setToastError] = useState<string>('');
+  // const [references, setReferences] = useState<string[]>([]);
+  // const [options, setOptions] = useState<any>([]);
+  // const [falsePositiveRows, setFalsePositiveRows] = useState(0);
+  // const [ReferencesRows, setReferencesRows] = useState(0);
 
   const onChange = (selectedOptions: any) => {
     setSelected(selectedOptions);
@@ -46,57 +45,104 @@ export const Visual = (props: any) => {
     console.log('VALUE', Value);
   };
 
-  let importedDetectionValue = `
-    `;
+  useEffect(() => {
+    if (props.props.editProps) {
+      const tags = props.props.editProps.rule.tags;
+      let importedTags = Array.from(tags.map(({ value }) => ({ label: value })));
+      setSelected(importedTags);
+    }
+  }, []);
 
   const onCreateOption = (searchValue: string) => {
     if (!searchValue) {
       return;
     }
-
     const newOption = {
       label: searchValue,
     };
-
     setSelected((prevSelected) => [...prevSelected, newOption]);
   };
 
-  let sample = [
-    { value: 'attack.persistence' },
-    { value: 'attack.privilege_escalation' },
-    { value: 'attack.t1543.003' },
-  ];
+  const ruleTags = Array.from(selectedOptions.map(({ label }) => ({ value: label })));
 
-  const test = Array.from(selectedOptions.map(({ label }) => ({ value: label })));
+  let initialValues;
+
+  console.log('PROPS', props.props);
+
+  if (!props.props.editProps) {
+    initialValues = {
+      ruleName: '',
+      ruleType: '',
+      ruleDescription: '',
+      ruleAuthor: '',
+      ruleStatus: '',
+      ruleDetection: '',
+      securityLevel: '',
+      references: [
+        {
+          value: '',
+        },
+      ],
+      tags: ruleTags,
+      falsepositives: [
+        {
+          value: '',
+        },
+      ],
+    };
+  }
+
+  if (props.props.props) {
+    initialValues = {
+      ruleName: props.props.props.title,
+      ruleType: props.props.props.product,
+      ruleDescription: props.props.props.description,
+      ruleAuthor: props.props.props.author,
+      ruleStatus: props.props.props.status,
+      ruleDetection: '',
+      securityLevel: props.props.props.level,
+      references: [
+        {
+          value: '',
+        },
+      ],
+      tags: ruleTags,
+      falsepositives: [
+        {
+          value: '',
+        },
+      ],
+    };
+  }
+
+  let detectionValue: string;
+
+  if (props.props.editProps) {
+    detectionValue = `${props.props.editProps.rule.queries.map((query, i) => `${query.value}`)}`;
+    initialValues = {
+      ruleName: props.props.editProps.rule.title,
+      ruleType: props.props.editProps.rule.category,
+      ruleDescription: props.props.editProps.rule.description,
+      ruleAuthor: props.props.editProps.rule.author,
+      ruleStatus: props.props.editProps.rule.status,
+      ruleDetection: props.props.editProps.rule.queries,
+      securityLevel: props.props.editProps.rule.level,
+      references: props.props.editProps.rule.references,
+      tags: ruleTags,
+      falsepositives: props.props.editProps.rule.falsepositives,
+      status: props.props.editProps.rule.status,
+    };
+  }
 
   return (
     <div>
       <Formik
         validateOnMount
-        initialValues={{
-          ruleName: props.props.title ? props.props.title : '',
-          ruleType: props.props.product ? props.props.product : '',
-          ruleDescription: props.props.description ? props.props.description : '',
-          ruleAuthor: props.props.author ? props.props.author : '',
-          ruleStatus: props.props.status ? props.props.status : '',
-          ruleDetection: '',
-          securityLevel: props.props.level ? props.props.level : '',
-          references: [
-            {
-              value: '',
-            },
-          ],
-          tags: test,
-          falsepositives: [
-            {
-              value: '',
-            },
-          ],
-        }}
+        initialValues={initialValues}
         validationSchema={Yup.object({
           ruleName: Yup.string(),
           ruleType: Yup.string(),
-          ruleDescription: Yup.string(),
+          ruleDescription: Yup.array(),
           ruleDetection: Yup.string(),
           ruleAuthor: Yup.string(),
           ruleStatus: Yup.string(),
@@ -105,37 +151,36 @@ export const Visual = (props: any) => {
           ruleFalsepositives: Yup.array(),
         })}
         onSubmit={(values) => {
-          services?.ruleService
-            .createRule({
-              id: '25b9c01c-350d-4b95-bed1-836d04a4f324',
-              title: values.ruleName,
-              description: values.ruleDescription,
-              status: values.ruleStatus,
-              author: values.ruleAuthor,
-              references: values.references,
-              tags: test,
-              log_source: values.ruleType,
-              detection: JSON.stringify({
-                selection: {
-                  Provider_Name: 'Service Control Manager',
-                  EventID: 7045,
-                  ServiceName: 'ZzNetSvc',
-                },
-                condition: 'selection',
-              }),
-              level: values.securityLevel,
-              false_positives: values.falsepositives,
-              category: 'windows',
-            })
-            .then((res) => {
-              if (res.ok) {
-                console.log(res.response);
-                alert(res.response._id);
-              } else {
-                // alert('error creating rule');
-                setToastError(res.error);
-              }
-            });
+          console.log('Submit', values);
+          // services?.ruleService
+          //   .createRule({
+          //     id: '25b9c01c-350d-4b95-bed1-836d04a4f324',
+          //     title: values.ruleName,
+          //     description: values.ruleDescription,
+          //     status: values.ruleStatus,
+          //     author: values.ruleAuthor,
+          //     references: values.references,
+          //     tags: ruleTags,
+          //     log_source: values.ruleType,
+          //     detection: JSON.stringify({
+          //       selection: {
+          //         Provider_Name: 'Service Control Manager',
+          //         EventID: 7045,
+          //         ServiceName: 'ZzNetSvc',
+          //       },
+          //       condition: 'selection',
+          //     }),
+          //     level: values.securityLevel,
+          //     false_positives: values.falsepositives,
+          //     category: 'windows',
+          //   })
+          //   .then((res) => {
+          //     if (res.ok) {
+          //       console.log(res.response);
+          //     } else {
+          //       alert('error creating rule');
+          //     }
+          //   })
         }}
       >
         {(Formikprops) => {
@@ -182,35 +227,6 @@ export const Visual = (props: any) => {
                   onChange={Formikprops.handleChange}
                   onBlur={Formikprops.handleBlur}
                 />
-              </EuiFormRow>
-
-              <EuiSpacer />
-
-              <EuiFormRow
-                label="Detection"
-                fullWidth
-                helpText={Formikprops.touched.ruleDetection && Formikprops.errors.ruleDetection}
-              >
-                <div>
-                  {props.props.type === 'new' && (
-                    <AceEditor
-                      name="ruleDetection"
-                      mode="yaml"
-                      theme="github"
-                      onChange={onEditorChange}
-                    />
-                  )}
-                  {props.props.type === 'import' && (
-                    <AceEditor
-                      name="ruleDetection"
-                      mode="yaml"
-                      theme="github"
-                      readOnly
-                      onChange={onEditorChange}
-                      value={importedDetectionValue}
-                    />
-                  )}
-                </div>
               </EuiFormRow>
 
               <EuiSpacer />
@@ -279,7 +295,7 @@ export const Visual = (props: any) => {
                   <div>
                     {Formikprops.values.falsepositives.length > 0 &&
                       Formikprops.values.falsepositives.map((falsepositive, index) => (
-                        <div>
+                        <div key={index}>
                           <Field name={`falsepositives.${index}.value`} type="text" />
                           {Formikprops.values.falsepositives.length > 1 && (
                             <EuiButton onClick={() => remove(index)}>Remove</EuiButton>
@@ -323,6 +339,16 @@ export const Visual = (props: any) => {
                   onChange={Formikprops.handleChange}
                   value={Formikprops.values.ruleStatus}
                 />
+              </EuiFormRow>
+
+              <EuiSpacer />
+
+              <EuiFormRow
+                label="Detection"
+                fullWidth
+                // helpText={Formikprops.touched.ruleDetection && Formikprops.errors.ruleDetection}
+              >
+                <EuiCodeEditor mode="yaml" width="100%" value={detectionValue}></EuiCodeEditor>
               </EuiFormRow>
             </Form>
           );

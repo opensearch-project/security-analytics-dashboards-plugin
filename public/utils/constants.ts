@@ -44,9 +44,9 @@ export const BREADCRUMBS = Object.freeze({
   DETECTORS_DETAILS: (name: string) => ({ text: `${name}`, href: `#${ROUTES.DETECTOR_DETAILS}` }),
   RULES: { text: 'Rules', href: `#${ROUTES.RULES}` },
   ALERTS: { text: 'Alerts', href: `#${ROUTES.ALERTS}` },
-  RULES_CREATE: { text: 'Create a rule', href: `#${ROUTES.RULES_CREATE}` },
-  RULES_EDIT: { text: 'Edit a rule', href: `#${ROUTES.RULES_EDIT}` },
-  RULES_IMPORT: { text: 'Import a rule', href: `#${ROUTES.RULES_IMPORT}` },
+  RULES_CREATE: { text: 'Create-rule', href: `#${ROUTES.RULES_CREATE}` },
+  RULES_EDIT: { text: 'Edit-rule', href: `#${ROUTES.RULES_EDIT}` },
+  RULES_IMPORT: { text: 'Import-rule', href: `#${ROUTES.RULES_IMPORT}` },
 });
 
 export enum SortDirection {

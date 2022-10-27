@@ -6,12 +6,20 @@
 import React, { useState, Fragment } from 'react';
 import Visual from './Visual';
 import YAML from './YAML';
-import { EuiButtonGroup, EuiSpacer } from '@elastic/eui';
+import { ROUTES } from '../../../../../../utils/constants';
+import { EuiButtonGroup, EuiSpacer, EuiFlexGroup, EuiButton } from '@elastic/eui';
+import { useHistory } from 'react-router-dom';
 
 export const Edit = (props: any) => {
   const [toggleIdSelected, setToggleIdSelected] = useState('visual');
+  const history = useHistory();
 
   const visualProps = props;
+
+  let ruleProps = {
+    props,
+    editProps: history.location.state,
+  };
 
   const toggleButtons = [
     {
@@ -39,9 +47,32 @@ export const Edit = (props: any) => {
         />
         <EuiSpacer size="m" />
       </Fragment>
-
-      {toggleIdSelected === 'visual' && <Visual props={visualProps} />}
+      {toggleIdSelected === 'visual' && <Visual props={ruleProps} />}
       {toggleIdSelected === 'yaml' && <YAML props={visualProps} />}
+      <div style={{ marginTop: '50px' }}>
+        <EuiFlexGroup direction="row" justifyContent="flexEnd">
+          <div style={{ marginRight: '10px' }}>
+            <EuiButton
+              onClick={() => {
+                history.push(ROUTES.RULES);
+              }}
+            >
+              Cancel
+            </EuiButton>
+          </div>
+          <div style={{ marginRight: '10px' }}>
+            <EuiButton
+              type="submit"
+              fill
+              form="editForm"
+              // onClick={() => {history.push(ROUTES.RULES) }}
+              // disabled={!Boolean(Object.keys(Formikprops.errors).length === 0)}
+            >
+              Create
+            </EuiButton>
+          </div>
+        </EuiFlexGroup>
+      </div>
     </div>
   );
 };

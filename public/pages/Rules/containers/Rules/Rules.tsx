@@ -8,10 +8,9 @@ import { RouteComponentProps } from 'react-router-dom';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { BREADCRUMBS, PLUGIN_NAME, ROUTES } from '../../../../utils/constants';
-import { withRouter } from 'react-router-dom';
 import Main from './components/Main';
-import Create from './components/Create';
 import Import from './components/Import';
+
 import {
   EuiTitle,
   EuiButton,
@@ -91,6 +90,7 @@ export default class Rules extends Component<RulesProps, RulesState> {
         Create new rule
       </EuiButton>,
     ];
+    const { setToast, setToastMessage } = this;
     return (
       <>
         {this.state.Mode === 'main' && (
@@ -112,11 +112,6 @@ export default class Rules extends Component<RulesProps, RulesState> {
             </div>
           </ContentPanel>
         )}
-        {/* {this.state.Mode === 'create' && (
-          <div>
-            <Create />
-          </div>
-        )} */}
       </>
     );
   }

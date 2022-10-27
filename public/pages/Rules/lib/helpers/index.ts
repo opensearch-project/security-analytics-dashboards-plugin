@@ -18,7 +18,7 @@ export const ruleSeverity: string[] = ['low', 'medium', 'informational', 'high',
 
 export const ruleSource: string[] = ['default', 'custom'];
 
-export const ruleStatus: string[] = ['Select a rule status', 'Experimental', 'Test', 'Stable'];
+export const ruleStatus: string[] = ['Select a rule status', 'experimental', 'test', 'stable'];
 
 export const parseType = (logType: string) => {
   let type;

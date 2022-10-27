@@ -5,16 +5,17 @@
 
 import React from 'react';
 import { ContentPanel } from '../../../../../../components/ContentPanel';
-import { useHistory } from 'react-router-dom';
 import Edit from '../Edit';
 import { ROUTES } from '../../../../../../utils/constants';
 import { EuiIcon, EuiFlexGroup, EuiButton } from '@elastic/eui';
 import { RouteComponentProps } from 'react-router-dom';
 
 export const Create = ({ history }: RouteComponentProps) => {
+  const historyData: any = history.location.state;
+
   return (
     <ContentPanel
-      title={'Create a rule'}
+      title={`${historyData ? historyData.mode : 'Create'} a rule`}
       actions={[
         <EuiIcon
           onClick={() => {
@@ -25,33 +26,10 @@ export const Create = ({ history }: RouteComponentProps) => {
       ]}
     >
       <Edit
-        type={'new'}
         onCreate={() => {
           history.push(ROUTES.RULES);
         }}
       />
-      <EuiFlexGroup direction="row" justifyContent="flexEnd">
-        <div style={{ marginRight: '10px' }}>
-          <EuiButton
-            onClick={() => {
-              history.push(ROUTES.RULES);
-            }}
-          >
-            Cancel
-          </EuiButton>
-        </div>
-        <div style={{ marginRight: '10px' }}>
-          <EuiButton
-            type="submit"
-            fill
-            form="editForm"
-            //onClick={() => { history.push(ROUTES.RULES) }}
-            // disabled={!Boolean(Object.keys(Formikprops.errors).length === 0)}
-          >
-            Create
-          </EuiButton>
-        </div>
-      </EuiFlexGroup>
     </ContentPanel>
   );
 };
