@@ -251,7 +251,7 @@ export const Visual = (props: any) => {
                   <div>
                     {Formikprops.values.references.length > 0 &&
                       Formikprops.values.references.map((reference, index) => (
-                        <div>
+                        <div key={index}>
                           <div>
                             <Field name={`references.${index}.value`} type="text" />
                             {Formikprops.values.references.length > 1 && (

@@ -15,6 +15,7 @@ import Dashboards from '../Dashboards';
 import Findings from '../Findings';
 import Detectors from '../Detectors';
 import Rules from '../Rules';
+import Create from '../Rules/containers/Rules/components/Create';
 import Overview from '../Overview';
 import CreateDetector from '../CreateDetector/containers/CreateDetector';
 import Alerts from '../Alerts';
@@ -132,7 +133,7 @@ export default class Main extends Component<MainProps> {
                         />
                         <Route
                           path={ROUTES.RULES_CREATE}
-                          render={(props: RouteComponentProps) => <Rules {...props} />}
+                          render={(props: RouteComponentProps) => <Create {...props} />}
                         />
                         <Route
                           path={ROUTES.OVERVIEW}

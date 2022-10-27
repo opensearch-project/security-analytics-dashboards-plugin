@@ -112,11 +112,11 @@ export default class Rules extends Component<RulesProps, RulesState> {
             </div>
           </ContentPanel>
         )}
-        {this.state.Mode === 'create' && (
+        {/* {this.state.Mode === 'create' && (
           <div>
             <Create />
           </div>
-        )}
+        )} */}
       </>
     );
   }

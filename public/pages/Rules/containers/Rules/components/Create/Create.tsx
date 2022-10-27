@@ -9,31 +9,43 @@ import { useHistory } from 'react-router-dom';
 import Edit from '../Edit';
 import { ROUTES } from '../../../../../../utils/constants';
 import { EuiIcon, EuiFlexGroup, EuiButton } from '@elastic/eui';
+import { RouteComponentProps } from 'react-router-dom';
 
-export const Create = () => {
-  const history = useHistory();
+export const Create = ({ history }: RouteComponentProps) => {
   return (
     <ContentPanel
       title={'Create a rule'}
       actions={[
         <EuiIcon
           onClick={() => {
-            history.push('/rules');
+            history.push(ROUTES.RULES);
           }}
           type="cross"
         />,
       ]}
     >
-      <Edit type={'new'} />
+      <Edit
+        type={'new'}
+        onCreate={() => {
+          history.push(ROUTES.RULES);
+        }}
+      />
       <EuiFlexGroup direction="row" justifyContent="flexEnd">
         <div style={{ marginRight: '10px' }}>
-          <EuiButton href={`#${ROUTES.RULES}`}>Cancel</EuiButton>
+          <EuiButton
+            onClick={() => {
+              history.push(ROUTES.RULES);
+            }}
+          >
+            Cancel
+          </EuiButton>
         </div>
         <div style={{ marginRight: '10px' }}>
           <EuiButton
             type="submit"
             fill
             form="editForm"
+            //onClick={() => { history.push(ROUTES.RULES) }}
             // disabled={!Boolean(Object.keys(Formikprops.errors).length === 0)}
           >
             Create
