@@ -55,8 +55,7 @@ export const View = (props: any) => {
     console.log('VALUE', Value);
   };
 
-  let importedDetectionValue = `
-  ${
+  let importedDetectionValue = `${
     content.queries.length > 0 &&
     `selection:
     query|startswith:
@@ -131,6 +130,7 @@ export const View = (props: any) => {
         </EuiFlexGroup>
 
         <EuiSpacer />
+        <EuiSpacer />
 
         <EuiFormLabel>References</EuiFormLabel>
         {content.references.map((reference: any, i: number) => (
@@ -154,10 +154,13 @@ export const View = (props: any) => {
           ))}
         </div>
 
+        <EuiSpacer />
+
         <EuiFormLabel>Rule Status</EuiFormLabel>
         <div>{content.status}</div>
 
         <EuiSpacer />
+
         <EuiFormRow
           label="Detection"
           fullWidth
@@ -174,18 +177,7 @@ export const View = (props: any) => {
                 width="95%"
               />
             )}
-            {!allowEditor && (
-              <EuiCodeBlock language="html">{importedDetectionValue}</EuiCodeBlock>
-              // <AceEditor
-              //   name="ruleDetection"
-              //   mode="yaml"
-              //   readOnly
-              //   onChange={onEditorChange}
-              //   value={importedDetectionValue}
-              //   height="400px"
-              //   width="95%"
-              // />
-            )}
+            {!allowEditor && <EuiCodeBlock language="html">{importedDetectionValue}</EuiCodeBlock>}
           </div>
         </EuiFormRow>
       </EuiModalBody>

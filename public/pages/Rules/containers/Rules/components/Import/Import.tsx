@@ -7,6 +7,7 @@ import React, { useState, Fragment } from 'react';
 import { parseType } from '../../../../lib/helpers';
 import { EuiFilePicker, EuiFlexGroup, EuiFlexItem, EuiText, EuiSpacer } from '@elastic/eui';
 import Edit from '../Edit';
+import * as matter from 'gray-matter';
 
 export const Import = () => {
   const [files, setFiles] = useState([]);
@@ -20,6 +21,9 @@ export const Import = () => {
   const [importedProduct, setImportedProduct] = useState<string | undefined>('');
   const [importedStatus, setImportedStatus] = useState<string>('');
   const [importedAuthor, setImportedAuthor] = useState<string>('');
+
+  const yaml = require('js-yaml');
+  const fs = require('fs');
 
   const parse = (file: any) => {
     let title;

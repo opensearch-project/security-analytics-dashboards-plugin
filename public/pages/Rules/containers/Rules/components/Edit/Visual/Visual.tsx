@@ -152,35 +152,35 @@ export const Visual = (props: any) => {
         })}
         onSubmit={(values) => {
           console.log('Submit', values);
-          // services?.ruleService
-          //   .createRule({
-          //     id: '25b9c01c-350d-4b95-bed1-836d04a4f324',
-          //     title: values.ruleName,
-          //     description: values.ruleDescription,
-          //     status: values.ruleStatus,
-          //     author: values.ruleAuthor,
-          //     references: values.references,
-          //     tags: ruleTags,
-          //     log_source: values.ruleType,
-          //     detection: JSON.stringify({
-          //       selection: {
-          //         Provider_Name: 'Service Control Manager',
-          //         EventID: 7045,
-          //         ServiceName: 'ZzNetSvc',
-          //       },
-          //       condition: 'selection',
-          //     }),
-          //     level: values.securityLevel,
-          //     false_positives: values.falsepositives,
-          //     category: 'windows',
-          //   })
-          //   .then((res) => {
-          //     if (res.ok) {
-          //       console.log(res.response);
-          //     } else {
-          //       alert('error creating rule');
-          //     }
-          //   })
+          services?.ruleService
+            .createRule({
+              id: '25b9c01c-350d-4b95-bed1-836d04a4f324',
+              title: values.ruleName,
+              description: values.ruleDescription,
+              status: values.ruleStatus,
+              author: values.ruleAuthor,
+              references: values.references,
+              tags: ruleTags,
+              log_source: values.ruleType,
+              detection: JSON.stringify({
+                selection: {
+                  Provider_Name: 'Service Control Manager',
+                  EventID: 7045,
+                  ServiceName: 'ZzNetSvc',
+                },
+                condition: 'selection',
+              }),
+              level: values.securityLevel,
+              false_positives: values.falsepositives,
+              category: values.category,
+            })
+            .then((res) => {
+              if (res.ok) {
+                console.log(res.response);
+              } else {
+                alert('error creating rule');
+              }
+            });
         }}
       >
         {(Formikprops) => {
