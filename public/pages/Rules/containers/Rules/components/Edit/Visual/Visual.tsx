@@ -6,7 +6,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { ruleTypes, ruleStatus } from '../../../../../lib/helpers';
 import { Formik, Field, Form, ErrorMessage, FieldArray } from 'formik';
-import AceEditor from 'react-ace';
 import * as Yup from 'yup';
 import {
   EuiGlobalToastList,
@@ -51,6 +50,11 @@ export const Visual = (props: any) => {
       let importedTags = Array.from(tags.map(({ value }) => ({ label: value })));
       setSelected(importedTags);
     }
+    if (props.props.props.tags) {
+      const tags = props.props.props.tags;
+      let importedTags = Array.from(tags.map(({ value }) => ({ label: value })));
+      setSelected(importedTags);
+    }
   }, []);
 
   const onCreateOption = (searchValue: string) => {
@@ -66,8 +70,6 @@ export const Visual = (props: any) => {
   const ruleTags = Array.from(selectedOptions.map(({ label }) => ({ value: label })));
 
   let initialValues;
-
-  console.log('PROPS', props.props);
 
   if (!props.props.editProps) {
     initialValues = {
@@ -142,7 +144,7 @@ export const Visual = (props: any) => {
         validationSchema={Yup.object({
           ruleName: Yup.string(),
           ruleType: Yup.string(),
-          ruleDescription: Yup.array(),
+          ruleDescription: Yup.string(),
           ruleDetection: Yup.string(),
           ruleAuthor: Yup.string(),
           ruleStatus: Yup.string(),
@@ -154,7 +156,7 @@ export const Visual = (props: any) => {
           console.log('Submit', values);
           services?.ruleService
             .createRule({
-              id: '25b9c01c-350d-4b95-bed1-836d04a4f324',
+              id: '',
               title: values.ruleName,
               description: values.ruleDescription,
               status: values.ruleStatus,

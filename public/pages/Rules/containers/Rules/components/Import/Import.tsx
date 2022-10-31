@@ -4,10 +4,16 @@
  */
 
 import React, { useState, Fragment } from 'react';
-import { parseType } from '../../../../lib/helpers';
-import { EuiFilePicker, EuiFlexGroup, EuiFlexItem, EuiText, EuiSpacer } from '@elastic/eui';
+import {
+  EuiFilePicker,
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiText,
+  EuiSpacer,
+  EuiCodeBlock,
+} from '@elastic/eui';
 import Edit from '../Edit';
-import * as matter from 'gray-matter';
+import { forEach } from 'lodash';
 
 export const Import = () => {
   const [files, setFiles] = useState([]);
@@ -21,86 +27,157 @@ export const Import = () => {
   const [importedProduct, setImportedProduct] = useState<string | undefined>('');
   const [importedStatus, setImportedStatus] = useState<string>('');
   const [importedAuthor, setImportedAuthor] = useState<string>('');
+  const [importedTags, setImportedTags] = useState<string[]>([]);
+  const [yamlContent, setYamlContent] = useState<string>('');
 
-  const yaml = require('js-yaml');
-  const fs = require('fs');
+  const parseContent = ['title', 'description', 'status', 'level', 'author', 'tags'];
+
+  // const parse = (file: any) => {
+  // 'date',
+  // 'references',
+  // 'category',
+  // 'selection',
+  // 'tags',
+  // '- Signature|startswith',
+  // '- Signature|contains',
+  // 'condition',
+  // 'fields',
+  // 'falsepositives',
+
+  // for (let i = 0; i < parseContent.length; i++) {
+  // let index = parseContent[i];
+  // let parsedContent
+  // if (file.includes(index)) {
+  //   let newFile: any = file.split(`${index}:`);
+  //   let content: any = newFile[1].split('\\n');
+  //   parsedContent = content[0].trim();
+  // } else {
+  //   setErrors(index);
+  // }
+  //   if(index === 'title'){
+  //     console.log(parsedContent)
+  //   }
+
+  // switch (index) {
+  //   case 'title':
+  //     setImportedTitle(parsedContent);
+  //   case 'description':
+  //     setImportedDescription(parsedContent);
+  //   case 'product':
+  //     console.log('Product', parsedContent);
+  //   case 'status':
+  //     setImportedStatus(parsedContent)
+  //   case 'level':
+  //     setImportedStatus(parsedContent);
+  //   case 'author':
+  //     setImportedAuthor(parsedContent)
+  // }
+  // if(index === 'tags'){
+  //     let tagsArray = Array.from(content)
+  //     let ruleTags = []
+  //     for(let i = 0; i < tagsArray.length; i++){
+  //       if(tagsArray[i].length > 0 && tagsArray[i].includes('-')){
+  //         ruleTags.push(tagsArray[i].replace('-', '').trim())
+  //       }
+  //     }
+  //     setImportedTags(ruleTags)
+  // }
+  // if(index === 'references'){
+  //   let referencesArray = Array.from(content)
+  //   console.log('REFERENCES', referencesArray)
+  // }
+
+  // }
+  //   }
+  // };
 
   const parse = (file: any) => {
-    let title;
-    let description;
-    let product;
-    let status;
-    let level;
-    let author;
-
-    // 'date',
-    // 'references',
-    // 'category',
-    // 'selection',
-    // 'tags',
-    // '- Signature|startswith',
-    // '- Signature|contains',
-    // 'condition',
-    // 'fields',
-    // 'falsepositives',
-
-    let parseContent = ['title', 'description', 'product', 'status', 'level', 'author'];
-
+    let values = [];
     for (let i = 0; i < parseContent.length; i++) {
-      let index = parseContent[i];
-      if (file.includes(index)) {
-        let newFile: any = file.split(`${index}:`);
+      if (file.includes(parseContent[i])) {
+        let newFile: any = file.split(`${parseContent[i]}:`);
         let content: any = newFile[1].split('\\n');
         let parsedContent = content[0].trim();
-        switch (index) {
-          case 'title':
-            title = parsedContent;
-          case 'description':
-            description = parsedContent;
-          case 'product':
-            product = parseType(parsedContent);
-          case 'status':
-            status = parsedContent;
-          case 'level':
-            level = parsedContent;
-          case 'author':
-            author = parsedContent;
-        }
+        values.push(parsedContent);
+        // switch (parseContent[i]) {
+        //   case 'title':
+        //     setImportedTitle(parsedContent);
+        //   case 'description':
+        //     setImportedDescription(parsedContent);
+        //   case 'status':
+        //     setImportedStatus(parsedContent);
+        //   case 'level':
+        //     setImportedStatus(parsedContent);
+        //   case 'author':
+        //     setImportedAuthor(parsedContent);
+        // }
+        // case 'tags':
+        //   let tagsArray = Array.from(content);
+        //   let ruleTags = [];
+        //   for (let i = 0; i < tagsArray.length; i++) {
+        //     if (tagsArray[i].length > 0 && tagsArray[i].includes('-')) {
+        //       ruleTags.push(tagsArray[i].replace('-', '').trim());
+        //     }
+        //   }
+        //   setImportedTags(ruleTags);
+        // case 'references':
+        //   let referencesArray = Array.from(content);
+        //   console.log('REFERENCES', referencesArray);
+        // }
+        // if (parseContent[i] === 'tags') {
+        //   let tagsArray = Array.from(content);
+        //   let ruleTags = [];
+        //   for (let i = 0; i < tagsArray.length; i++) {
+        //     if (tagsArray[i].length > 0 && tagsArray[i].includes('-')) {
+        //       ruleTags.push(tagsArray[i].replace('-', '').trim());
+        //     }
+        //   }
+        //   setImportedTags(ruleTags);
+        // }
+        // if (parseContent[i] === 'references') {
+        //   let referencesArray = Array.from(content);
+        //   console.log('REFERENCES', referencesArray);
+        // }
+        setImportedTitle(values[0]);
+        setImportedDescription(parsedContent[1]);
+        setImportedStatus(parsedContent[2]);
+        setImportedLevel(parsedContent[3]);
       } else {
-        setErrors(index);
+        setErrors(parseContent[i]);
       }
+      // let index = parseContent[i];
+      // let parsedContent;
+      // if (file.includes(index)) {
+      //   let newFile: any = file.split(`${index}:`);
+      //   let content: any = newFile[1].split('\\n');
+      //   parsedContent = content[0].trim();
+      //   console.log(parsedContent);
+      // } else {
+      //   setErrors(index);
+      // }
     }
-    setImportedTitle(title);
-    setImportedDescription(description);
-    setImportedProduct(product);
-    setImportedStatus(status.charAt(0).toUpperCase() + status.slice(1));
-    setImportedLevel(level);
-    setImportedAuthor(author);
   };
 
   const onChange = (files: any) => {
     setUserFiles(files.length > 0 ? Array.from(files) : []);
     let acceptedFileTyes: any = [];
-
-    Array.from(files).forEach((file: any) => {
-      if (file.type === 'application/x-yaml') {
-        acceptedFileTyes.push(file);
-      } else {
-        setErrors('Only yaml files are accepted');
-      }
-    });
+    if (files[0].type === 'application/x-yaml') {
+      acceptedFileTyes.push(files[0]);
+    } else {
+      setErrors('Only yaml files are accepted');
+    }
     setFiles(files.length > 0 ? acceptedFileTyes : []);
   };
 
   const renderFiles = () => {
-    files.forEach((file: any) => {
-      let reader = new FileReader();
-      reader.readAsText(file);
-      reader.onload = function () {
-        let content: any = reader.result;
-        parse(JSON.stringify(content));
-      };
-    });
+    let file = files[0];
+    let reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = function () {
+      let content: any = reader.result;
+      parse(JSON.stringify(content).toLowerCase());
+      setYamlContent(content);
+    };
   };
 
   return (
@@ -140,12 +217,16 @@ export const Import = () => {
                   status={importedStatus}
                   product={importedProduct}
                   author={importedAuthor}
+                  tags={importedTags}
                 />
               )}
             </div>
           ))}
         </EuiFlexItem>
       )}
+      <EuiCodeBlock language="yml" fontSize="m" paddingSize="m" overflowHeight={300} isCopyable>
+        {yamlContent}
+      </EuiCodeBlock>
     </Fragment>
   );
 };
