@@ -31,31 +31,29 @@ import './index.scss';
 export const Visual = (props: any) => {
   const services: BrowserServices | null = useContext(ServicesContext);
   const [selectedOptions, setSelected] = useState([]);
-  // const [references, setReferences] = useState<string[]>([]);
-  // const [options, setOptions] = useState<any>([]);
-  // const [falsePositiveRows, setFalsePositiveRows] = useState(0);
-  // const [ReferencesRows, setReferencesRows] = useState(0);
+  const [references, setReferences] = useState<string[]>([]);
+  const [options, setOptions] = useState<any>([]);
+  const [falsePositiveRows, setFalsePositiveRows] = useState(0);
+  const [ReferencesRows, setReferencesRows] = useState(0);
 
+  console.log('PROPS', props);
   const onChange = (selectedOptions: any) => {
     setSelected(selectedOptions);
   };
 
-  const onEditorChange = (Value: string) => {
-    console.log('VALUE', Value);
-  };
+  let ruleTags = Array.from(selectedOptions.map(({ label }) => ({ value: label })));
 
-  useEffect(() => {
-    if (props.props.editProps) {
-      const tags = props.props.editProps.rule.tags;
-      let importedTags = Array.from(tags.map(({ value }) => ({ label: value })));
-      setSelected(importedTags);
-    }
-    if (props.props.props.tags) {
-      const tags = props.props.props.tags;
-      let importedTags = Array.from(tags.map(({ value }) => ({ label: value })));
-      setSelected(importedTags);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (props.props.editProps) {
+  //     const tags = props.props.editProps.rule.tags;
+  //     let importedTags = Array.from(tags.map(({ value }) => ({ label: value })));
+  //     setSelected(importedTags);
+  //   }
+  //   if (props.props.props.tags) {
+  //     // setSelected(props.props.props.tags)
+  //     ruleTags = props.props.props.tags
+  //   }
+  // }, []);
 
   const onCreateOption = (searchValue: string) => {
     if (!searchValue) {
@@ -66,8 +64,6 @@ export const Visual = (props: any) => {
     };
     setSelected((prevSelected) => [...prevSelected, newOption]);
   };
-
-  const ruleTags = Array.from(selectedOptions.map(({ label }) => ({ value: label })));
 
   let initialValues;
 
@@ -94,28 +90,20 @@ export const Visual = (props: any) => {
     };
   }
 
-  if (props.props.props) {
-    initialValues = {
-      ruleName: props.props.props.title,
-      ruleType: props.props.props.product,
-      ruleDescription: props.props.props.description,
-      ruleAuthor: props.props.props.author,
-      ruleStatus: props.props.props.status,
-      ruleDetection: '',
-      securityLevel: props.props.props.level,
-      references: [
-        {
-          value: '',
-        },
-      ],
-      tags: ruleTags,
-      falsepositives: [
-        {
-          value: '',
-        },
-      ],
-    };
-  }
+  // if (props.props.props) {
+  //   initialValues = {
+  //     ruleName: props.props.props.title,
+  //     ruleType: props.props.props.product,
+  //     ruleDescription: props.props.props.description,
+  //     ruleAuthor: props.props.props.author,
+  //     ruleStatus: props.props.props.status,
+  //     ruleDetection: '',
+  //     securityLevel: props.props.props.level,
+  //     references: props.prop.props.references,
+  //     tags: props.props.props.tags,
+  //     falsepositives: props.props.props.falsepositives
+  //   };
+  // }
 
   let detectionValue: string;
 
@@ -140,7 +128,19 @@ export const Visual = (props: any) => {
     <div>
       <Formik
         validateOnMount
-        initialValues={initialValues}
+        initialValues={{
+          ruleName: '',
+          ruleType: '',
+          ruleDescription: '',
+          ruleAuthor: '',
+          ruleStatus: '',
+          ruleDetection: '',
+          securityLevel: '',
+          references: '',
+          tags: '',
+          falsepositives: '',
+          status: '',
+        }}
         validationSchema={Yup.object({
           ruleName: Yup.string(),
           ruleType: Yup.string(),
@@ -241,10 +241,10 @@ export const Visual = (props: any) => {
                   name="securityLevel"
                   hasNoInitialSelection={true}
                   options={[
-                    { value: 'Critical', text: 'Critical' },
-                    { value: 'High', text: 'High' },
-                    { value: 'Medium', text: 'Medium' },
-                    { value: 'Low', text: 'Low' },
+                    { value: 'critical', text: 'Critical' },
+                    { value: 'high', text: 'High' },
+                    { value: 'medium', text: 'Medium' },
+                    { value: 'low', text: 'Low' },
                   ]}
                   onChange={Formikprops.handleChange}
                   value={Formikprops.values.securityLevel}

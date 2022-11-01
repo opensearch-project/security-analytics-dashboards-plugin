@@ -132,7 +132,9 @@ export const Flyout = (props: any) => {
                   <h3>{content.title}</h3>
                 </EuiTitle>
               </EuiFlexItem>
-              <EuiFlexItem></EuiFlexItem>
+              <EuiFlexItem grow={false} style={{ marginRight: '50px' }}>
+                <EuiButton onClick={Duplicate}>Duplicate</EuiButton>
+              </EuiFlexItem>
             </EuiFlexGroup>
           </EuiFlyoutHeader>
           <EuiFlyoutBody>

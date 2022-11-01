@@ -90,7 +90,7 @@ export default class Rules extends Component<RulesProps, RulesState> {
         Create new rule
       </EuiButton>,
     ];
-    const { setToast, setToastMessage } = this;
+
     return (
       <>
         {this.state.Mode === 'main' && (

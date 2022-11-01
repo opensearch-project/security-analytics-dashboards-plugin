@@ -30,13 +30,8 @@ export const Duplicate = () => {
           <EuiButton href={`#${ROUTES.RULES}/`}>Cancel</EuiButton>
         </div>
         <div style={{ marginRight: '10px' }}>
-          <EuiButton
-            type="submit"
-            fill
-            form="editForm"
-            // disabled={!Boolean(Object.keys(Formikprops.errors).length === 0)}
-          >
-            Create
+          <EuiButton type="submit" fill form="editForm">
+            Duplicate
           </EuiButton>
         </div>
       </EuiFlexGroup>
