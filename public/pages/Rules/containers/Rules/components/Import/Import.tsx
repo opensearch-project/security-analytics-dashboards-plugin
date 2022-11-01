@@ -24,8 +24,10 @@ import * as Yup from 'yup';
 import { ruleTypes, ruleStatus } from '../../../../lib/helpers';
 import { BrowserServices } from '../../../../../../models/interfaces';
 import { ServicesContext } from '../../../../../../services';
+import { ROUTES } from '../../../../../../utils/constants';
+import { RouteComponentProps } from 'react-router-dom';
 
-export const Import = () => {
+export const Import = ({ history }: RouteComponentProps) => {
   const services: BrowserServices | null = useContext(ServicesContext);
   const [files, setFiles] = useState([]);
   const [large, setLarge] = useState(true);
@@ -44,14 +46,12 @@ export const Import = () => {
   const [selectedOptions, setSelected] = useState([]);
 
   const onChange = (files: any) => {
-    setUserFiles(files.length > 0 ? Array.from(files) : []);
     let acceptedFileTyes: any = [];
     if (files[0].type === 'application/x-yaml') {
       acceptedFileTyes.push(files[0]);
     } else {
       setErrors('Only yaml files are accepted');
     }
-    setFiles(files.length > 0 ? acceptedFileTyes : []);
     let file = files[0];
     let reader = new FileReader();
     reader.readAsText(file);
@@ -61,10 +61,11 @@ export const Import = () => {
       yamlFile = load(content);
       setYamlContent(yamlFile);
     };
+    setUserFiles(files.length > 0 ? Array.from(files) : []);
+    setFiles(files.length > 0 ? acceptedFileTyes : []);
   };
 
   const setYamlContent = (yaml) => {
-    console.log(Object.entries(yaml.detection));
     setImportedTitle(yaml.title);
     setImportedDescription(yaml.description);
     setImportedLevel(yaml.level);
@@ -74,7 +75,10 @@ export const Import = () => {
     setFalsepositives(yaml.falsepositives);
     setTags(yaml.tags);
     setImportedDetection(Object.entries(yaml.detection));
-    console.log('ID', importedDetection);
+  };
+
+  const TagChange = (selectedOptions: any) => {
+    setSelected(selectedOptions);
   };
 
   const setTags = (yaml) => {
@@ -85,25 +89,10 @@ export const Import = () => {
     setSelected(tags);
   };
 
-  const addReference = () => {
-    let references = Array.from(importedReferences);
-    references.push('');
-    setImportedReferences(references);
-  };
-
   const setReferences = (yaml) => {
     let references = Array.from(importedReferences);
     for (let i = 0; i < yaml.length; i++) {
       references.push(yaml[i]);
-    }
-    setImportedReferences(references);
-  };
-
-  const removeReference = (reference) => {
-    let references = Array.from(importedReferences);
-    let index = references.indexOf(reference);
-    if (index !== -1) {
-      references.splice(index, 1);
     }
     setImportedReferences(references);
   };
@@ -116,20 +105,7 @@ export const Import = () => {
     setImportedFalsepositives(falsepositives);
   };
 
-  const addFalsepositive = () => {
-    let falsepositives = Array.from(importedFalsepositives);
-    falsepositives.push('');
-    setImportedFalsepositives(falsepositives);
-  };
-
-  const removeFalsepositives = (falsepositive) => {
-    let falsepositives = Array.from(importedFalsepositives);
-    let index = falsepositives.indexOf(falsepositive);
-    if (index !== -1) {
-      falsepositives.splice(index, 1);
-    }
-    setImportedFalsepositives(falsepositives);
-  };
+  let ruleTags = Array.from(selectedOptions.map(({ label }) => ({ value: label })));
 
   const onCreateOption = (searchValue: string) => {
     if (!searchValue) {
@@ -146,185 +122,283 @@ export const Import = () => {
   };
 
   return (
-    <Fragment>
-      <EuiFlexGroup>
-        <EuiFlexItem grow={2}>
-          {files.length === 0 && (
-            <div>
-              <EuiFilePicker
-                id={filePickerId}
-                isInvalid={Boolean(fileErrors.length > 0 && userFiles.length > 0)}
-                fullWidth
-                initialPromptText="Select or drag yml file"
-                onChange={onChange}
-                display={large ? 'large' : 'default'}
-                aria-label="file picker"
-              />
-              {fileErrors.length > 0 && userFiles.length > 0 && <div>Errors: {fileErrors}</div>}
-            </div>
-          )}
-        </EuiFlexItem>
-      </EuiFlexGroup>
-      {files.length > 0 && (
-        <EuiForm component="form">
-          <EuiFlexGroup component="span">
-            <EuiFlexItem>
-              <EuiFormRow label="Rule name">
-                <EuiFieldText
-                  name="ruleName"
-                  max-width="300px"
-                  value={importedTitle}
-                  onChange={(e) => setImportedTitle(e.target.value)}
-                />
-              </EuiFormRow>
-            </EuiFlexItem>
-            <EuiFlexItem>
-              <EuiFormRow label="Log type">
-                <EuiSelect
-                  name="ruleType"
-                  hasNoInitialSelection={true}
-                  options={ruleTypes.map((type: string) => ({ value: type, text: type }))}
-                />
-              </EuiFormRow>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-
-          <EuiSpacer />
-
-          <EuiFormRow label="Description">
-            <EuiTextArea
-              name="ruleDescription"
-              value={importedDescription}
-              onChange={(e) => setImportedDescription(e.target.value)}
-            />
-          </EuiFormRow>
-
-          <EuiSpacer />
-
-          <EuiFormRow label="Rule level">
-            <EuiSelect
-              name="securityLevel"
-              hasNoInitialSelection={true}
-              options={[
-                { value: 'Critical', text: 'Critical' },
-                { value: 'High', text: 'High' },
-                { value: 'Medium', text: 'Medium' },
-                { value: 'Low', text: 'Low' },
-              ]}
-              value={importedLevel}
-              onChange={(e) => setImportedLevel(e.target.value)}
-            />
-          </EuiFormRow>
-
-          <EuiSpacer />
-
-          <EuiFormRow label="Tags">
-            <EuiComboBox
-              placeholder="Select or create options"
-              selectedOptions={selectedOptions}
-              onChange={onTagChange}
-              onCreateOption={onCreateOption}
-            />
-          </EuiFormRow>
-
-          <EuiSpacer />
-          <EuiFormLabel>References</EuiFormLabel>
-          <div>
-            {importedReferences.length > 0 &&
-              importedReferences.map((reference, index) => (
-                <div key={index}>
-                  <EuiFlexGroup>
-                    <EuiFlexItem>
+    <Formik
+      validateOnMount
+      enableReinitialize
+      initialValues={{
+        ruleName: importedTitle,
+        ruleType: '',
+        ruleDescription: importedDescription,
+        ruleAuthor: importedAuthor,
+        ruleStatus: importedStatus,
+        ruleDetection: '',
+        securityLevel: importedLevel,
+        references: importedReferences,
+        tags: selectedOptions,
+        falsepositives: importedFalsepositives,
+        status: importedStatus,
+      }}
+      validationSchema={Yup.object({
+        ruleName: Yup.string(),
+        ruleType: Yup.string(),
+        ruleDescription: Yup.string(),
+        ruleDetection: Yup.string(),
+        ruleAuthor: Yup.string(),
+        ruleStatus: Yup.string(),
+        securityLevel: Yup.string(),
+        ruleReferences: Yup.array(),
+        ruleFalsepositives: Yup.array(),
+      })}
+      onSubmit={(values) => {
+        console.log('Submit', values);
+        services?.ruleService
+          .createRule({
+            id: '',
+            title: values.ruleName,
+            description: values.ruleDescription,
+            status: values.ruleStatus,
+            author: values.ruleAuthor,
+            references: values.references,
+            tags: ruleTags,
+            log_source: values.ruleType,
+            detection: JSON.stringify({
+              selection: {
+                Provider_Name: 'Service Control Manager',
+                EventID: 7045,
+                ServiceName: 'ZzNetSvc',
+              },
+              condition: 'selection',
+            }),
+            level: values.securityLevel,
+            false_positives: values.falsepositives,
+            category: values.category,
+          })
+          .then((res) => {
+            if (res.ok) {
+              console.log(res.response);
+              () => {
+                history.push(ROUTES.RULES);
+              };
+            } else {
+              alert('error creating rule');
+            }
+          });
+      }}
+    >
+      {(Formikprops) => {
+        console.log('Props', Formikprops);
+        return (
+          <Fragment>
+            <EuiFlexGroup>
+              <EuiFlexItem grow={2}>
+                {files.length === 0 && (
+                  <div>
+                    <EuiFilePicker
+                      id={filePickerId}
+                      isInvalid={Boolean(fileErrors.length > 0 && userFiles.length > 0)}
+                      fullWidth
+                      initialPromptText="Select or drag yml file"
+                      onChange={onChange}
+                      display={large ? 'large' : 'default'}
+                      aria-label="file picker"
+                    />
+                    {fileErrors.length > 0 && userFiles.length > 0 && (
+                      <div>Errors: {fileErrors}</div>
+                    )}
+                  </div>
+                )}
+              </EuiFlexItem>
+            </EuiFlexGroup>
+            {files.length > 0 && (
+              <Form id="importForm">
+                <EuiSpacer />
+                <EuiFlexGroup component="span">
+                  <EuiFlexItem>
+                    <EuiFormRow
+                      label="Rule name"
+                      helpText={Formikprops.touched.ruleName && Formikprops.errors.ruleName}
+                    >
                       <EuiFieldText
-                        name="reference"
+                        name="ruleName"
                         max-width="300px"
-                        value={reference}
-                        onChange={(e) => console.log(e.target.value)}
+                        value={Formikprops.values.ruleName}
+                        onChange={Formikprops.handleChange}
+                        onBlur={Formikprops.handleBlur}
                       />
-                    </EuiFlexItem>
-                    <EuiFlexItem grow={false}>
-                      <EuiButton onClick={() => removeReference(reference)}>Remove</EuiButton>
-                    </EuiFlexItem>
-                  </EuiFlexGroup>
-                </div>
-              ))}
-            <EuiSpacer />
-            <EuiButton
-              type="button"
-              className="secondary"
-              onClick={() => addReference()}
-              disabled={importedReferences.includes('')}
-            >
-              Add another URL
-            </EuiButton>
-          </div>
-          <EuiSpacer />
+                    </EuiFormRow>
+                  </EuiFlexItem>
+                  <EuiFlexItem>
+                    <EuiFormRow label="Log type">
+                      <EuiSelect
+                        name="ruleType"
+                        hasNoInitialSelection={true}
+                        options={ruleTypes.map((type: string) => ({ value: type, text: type }))}
+                        onChange={Formikprops.handleChange}
+                        value={Formikprops.values.ruleType}
+                      />
+                    </EuiFormRow>
+                  </EuiFlexItem>
+                </EuiFlexGroup>
 
-          <EuiFormLabel>Falsepositives</EuiFormLabel>
-          <div>
-            {importedFalsepositives.length > 0 &&
-              importedFalsepositives.map((falsepositive, index) => (
-                <div key={index}>
-                  <EuiFlexGroup>
-                    <EuiFlexItem>
-                      <EuiFieldText
-                        name="falsepositive"
-                        max-width="300px"
-                        value={falsepositive}
-                        onChange={(e) => setFalsepositives(falsepositive)}
-                      />
-                    </EuiFlexItem>
-                    <EuiFlexItem grow={false}>
-                      <EuiButton onClick={() => removeFalsepositives(falsepositive)}>
-                        Remove
+                <EuiSpacer />
+
+                <EuiFormRow
+                  label="Description"
+                  helpText={
+                    Formikprops.touched.ruleDescription && Formikprops.errors.ruleDescription
+                  }
+                >
+                  <EuiTextArea
+                    name="ruleDescription"
+                    value={Formikprops.values.ruleDescription}
+                    onChange={Formikprops.handleChange}
+                    onBlur={Formikprops.handleBlur}
+                  />
+                </EuiFormRow>
+
+                <EuiSpacer />
+
+                <EuiFormRow
+                  label="Rule level"
+                  helpText={Formikprops.touched.securityLevel && Formikprops.errors.securityLevel}
+                >
+                  <EuiSelect
+                    name="securityLevel"
+                    hasNoInitialSelection={true}
+                    options={[
+                      { value: 'critical', text: 'Critical' },
+                      { value: 'high', text: 'High' },
+                      { value: 'medium', text: 'Medium' },
+                      { value: 'low', text: 'Low' },
+                    ]}
+                    onChange={Formikprops.handleChange}
+                    value={Formikprops.values.securityLevel}
+                  />
+                </EuiFormRow>
+
+                <EuiSpacer />
+
+                <EuiFormRow label="Tags">
+                  <EuiComboBox
+                    placeholder="Select or create options"
+                    selectedOptions={selectedOptions}
+                    onChange={TagChange}
+                    onCreateOption={onCreateOption}
+                  />
+                </EuiFormRow>
+
+                <EuiSpacer />
+                <EuiFormLabel>References</EuiFormLabel>
+                <FieldArray name="references">
+                  {({ insert, remove, push }) => (
+                    <div>
+                      {Formikprops.values.references.length > 0 &&
+                        Formikprops.values.references.map((reference, index) => (
+                          <div key={index}>
+                            <div>
+                              <Field
+                                name={`references.${index}.value`}
+                                type="text"
+                                value={reference}
+                              />
+                              {Formikprops.values.references.length > 1 && (
+                                <EuiButton onClick={() => remove(index)}>Remove</EuiButton>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      <EuiButton
+                        type="button"
+                        className="secondary"
+                        onClick={() => push({ value: '' })}
+                      >
+                        Add another URL
                       </EuiButton>
-                    </EuiFlexItem>
-                  </EuiFlexGroup>
-                </div>
-              ))}
-            <EuiSpacer />
-            <EuiButton type="button" className="secondary" onClick={() => addFalsepositive()}>
-              Add another Case
-            </EuiButton>
-          </div>
+                    </div>
+                  )}
+                </FieldArray>
 
-          <EuiSpacer />
+                <EuiSpacer />
 
-          <EuiFormRow label="Author">
-            <EuiFieldText
-              name="ruleAuthor"
-              value={importedAuthor}
-              onChange={(e) => setImportedAuthor(e.target.value)}
-            />
-          </EuiFormRow>
+                <EuiFormLabel>Falsepositives</EuiFormLabel>
+                <FieldArray name="falsepositives">
+                  {({ insert, remove, push }) => (
+                    <div>
+                      {Formikprops.values.falsepositives.length > 0 &&
+                        Formikprops.values.falsepositives.map((falsepositive, index) => (
+                          <div key={index}>
+                            <Field
+                              name={`falsepositives.${index}.value`}
+                              type="text"
+                              value={falsepositive}
+                            />
+                            {Formikprops.values.falsepositives.length > 1 && (
+                              <EuiButton onClick={() => remove(index)}>Remove</EuiButton>
+                            )}
+                          </div>
+                        ))}
+                      <EuiSpacer />
+                      <EuiButton
+                        type="button"
+                        className="secondary"
+                        onClick={() => push({ value: '' })}
+                      >
+                        Add another case
+                      </EuiButton>
+                    </div>
+                  )}
+                </FieldArray>
 
-          <EuiSpacer />
+                <EuiSpacer />
 
-          <EuiFormRow label="Rule Status">
-            <EuiSelect
-              name="ruleStatus"
-              hasNoInitialSelection={true}
-              options={[
-                { value: 'select', text: 'Select a security level' },
-                { value: 'experimental', text: 'Experimental' },
-                { value: 'test', text: 'test' },
-                { value: 'stable', text: 'stable' },
-              ]}
-              value={importedStatus}
-              onChange={(e) => setImportedStatus(e.target.value)}
-            />
-          </EuiFormRow>
-          <EuiSpacer />
+                <EuiFormRow
+                  label="Author"
+                  helpText={Formikprops.touched.ruleAuthor && Formikprops.errors.ruleAuthor}
+                >
+                  <EuiFieldText
+                    name="ruleAuthor"
+                    value={Formikprops.values.ruleAuthor}
+                    onChange={Formikprops.handleChange}
+                    onBlur={Formikprops.handleBlur}
+                  />
+                </EuiFormRow>
 
-          <EuiFormRow label="Detection" fullWidth>
-            <EuiCodeEditor mode="yaml" width="100%" value={''}></EuiCodeEditor>
-          </EuiFormRow>
+                <EuiSpacer />
 
-          <EuiButton type="submit" fill>
-            Save form
-          </EuiButton>
-        </EuiForm>
-      )}
-    </Fragment>
+                <EuiFormRow
+                  label="Rule Status"
+                  helpText={Formikprops.touched.ruleStatus && Formikprops.errors.ruleStatus}
+                >
+                  <EuiSelect
+                    name="ruleStatus"
+                    options={ruleStatus.map((status: string) => ({ value: status, text: status }))}
+                    onChange={Formikprops.handleChange}
+                    value={Formikprops.values.ruleStatus}
+                  />
+                </EuiFormRow>
+
+                <EuiSpacer />
+
+                <EuiFormRow
+                  label="Detection"
+                  fullWidth
+                  // helpText={Formikprops.touched.ruleDetection && Formikprops.errors.ruleDetection}
+                >
+                  <div></div>
+                  {/* <EuiCodeEditor mode="yaml" width="100%" value={detectionValue}></EuiCodeEditor> */}
+                </EuiFormRow>
+                <EuiFlexGroup direction="row" justifyContent="flexEnd">
+                  <div style={{ marginRight: '10px' }}>
+                    <EuiButton type="submit" fill form="importForm" onClick={() => onsubmit}>
+                      Import
+                    </EuiButton>
+                  </div>
+                </EuiFlexGroup>
+              </Form>
+            )}
+          </Fragment>
+        );
+      }}
+    </Formik>
   );
 };
