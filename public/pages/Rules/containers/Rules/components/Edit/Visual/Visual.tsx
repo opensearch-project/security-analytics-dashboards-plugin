@@ -90,21 +90,6 @@ export const Visual = (props: any) => {
     };
   }
 
-  // if (props.props.props) {
-  //   initialValues = {
-  //     ruleName: props.props.props.title,
-  //     ruleType: props.props.props.product,
-  //     ruleDescription: props.props.props.description,
-  //     ruleAuthor: props.props.props.author,
-  //     ruleStatus: props.props.props.status,
-  //     ruleDetection: '',
-  //     securityLevel: props.props.props.level,
-  //     references: props.prop.props.references,
-  //     tags: props.props.props.tags,
-  //     falsepositives: props.props.props.falsepositives
-  //   };
-  // }
-
   let detectionValue: string;
 
   if (props.props.editProps) {

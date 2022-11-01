@@ -82,7 +82,7 @@ export const Create = ({ history }: RouteComponentProps) => {
           ruleDescription: historyData ? historyData.rule.description : '',
           ruleAuthor: historyData ? historyData.rule.author : '',
           ruleStatus: historyData ? historyData.rule.status : '',
-          ruleDetection: '',
+          ruleDetection: historyData ? JSON.stringify(historyData.rule.queries) : '',
           securityLevel: historyData ? historyData.rule.level : '',
           references: historyData ? historyData.rule.references : '',
           tags: selectedOptions,
@@ -296,14 +296,14 @@ export const Create = ({ history }: RouteComponentProps) => {
 
               <EuiSpacer />
 
-              <EuiFormRow
-                label="Detection"
-                fullWidth
-                // helpText={Formikprops.touched.ruleDetection && Formikprops.errors.ruleDetection}
-              >
-                <div></div>
-                {/* <EuiCodeEditor mode="yaml" width="100%" value={detectionValue}></EuiCodeEditor> */}
+              <EuiFormRow label="Detection" fullWidth>
+                <EuiCodeEditor
+                  mode="yaml"
+                  width="100%"
+                  value={Formikprops.values.ruleDetection}
+                ></EuiCodeEditor>
               </EuiFormRow>
+              <EuiSpacer />
             </Form>
           );
         }}

@@ -74,7 +74,7 @@ export const Import = ({ history }: RouteComponentProps) => {
     setReferences(yaml.references);
     setFalsepositives(yaml.falsepositives);
     setTags(yaml.tags);
-    setImportedDetection(Object.entries(yaml.detection));
+    setImportedDetection(yaml.detection);
   };
 
   const TagChange = (selectedOptions: any) => {
@@ -131,7 +131,7 @@ export const Import = ({ history }: RouteComponentProps) => {
         ruleDescription: importedDescription,
         ruleAuthor: importedAuthor,
         ruleStatus: importedStatus,
-        ruleDetection: '',
+        ruleDetection: JSON.stringify(importedDetection),
         securityLevel: importedLevel,
         references: importedReferences,
         tags: selectedOptions,
@@ -161,14 +161,7 @@ export const Import = ({ history }: RouteComponentProps) => {
             references: values.references,
             tags: ruleTags,
             log_source: values.ruleType,
-            detection: JSON.stringify({
-              selection: {
-                Provider_Name: 'Service Control Manager',
-                EventID: 7045,
-                ServiceName: 'ZzNetSvc',
-              },
-              condition: 'selection',
-            }),
+            detection: values.ruleDetection,
             level: values.securityLevel,
             false_positives: values.falsepositives,
             category: values.category,
@@ -186,7 +179,6 @@ export const Import = ({ history }: RouteComponentProps) => {
       }}
     >
       {(Formikprops) => {
-        console.log('Props', Formikprops);
         return (
           <Fragment>
             <EuiFlexGroup>
@@ -384,9 +376,13 @@ export const Import = ({ history }: RouteComponentProps) => {
                   fullWidth
                   // helpText={Formikprops.touched.ruleDetection && Formikprops.errors.ruleDetection}
                 >
-                  <div></div>
-                  {/* <EuiCodeEditor mode="yaml" width="100%" value={detectionValue}></EuiCodeEditor> */}
+                  <EuiCodeEditor
+                    mode="yaml"
+                    width="100%"
+                    value={Formikprops.values.ruleDetection}
+                  ></EuiCodeEditor>
                 </EuiFormRow>
+                <EuiSpacer />
                 <EuiFlexGroup direction="row" justifyContent="flexEnd">
                   <div style={{ marginRight: '10px' }}>
                     <EuiButton type="submit" fill form="importForm" onClick={() => onsubmit}>
