@@ -22,7 +22,7 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import { renderTime } from '../../../utils/helpers';
+import { capitalizeFirstLetter, renderTime } from '../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 import { Query } from '../models/interfaces';
 
@@ -79,11 +79,19 @@ export default class FindingDetailsFlyout extends Component<
     const document = documents.filter((doc) => doc.id === docId);
     return rules.map((rule, key) => {
       const fullRule = allRules[rule.id];
+      const severity = capitalizeFirstLetter(fullRule.level);
       return (
         <div key={key}>
           <EuiAccordion
             id={`${key}`}
-            buttonContent={fullRule.title}
+            buttonContent={
+              <div>
+                <EuiText size={'s'}>{fullRule.title}</EuiText>
+                <EuiText size={'s'} color={'subdued'}>
+                  Severity: {severity}
+                </EuiText>
+              </div>
+            }
             initialIsOpen={rules.length === 1}
           >
             <EuiSpacer size={'m'} />
@@ -97,13 +105,15 @@ export default class FindingDetailsFlyout extends Component<
 
               <EuiFlexItem>
                 <EuiFormRow label={'Rule severity'}>
-                  <EuiText>{fullRule.level || DEFAULT_EMPTY_DATA}</EuiText>
+                  <EuiText>{severity || DEFAULT_EMPTY_DATA}</EuiText>
                 </EuiFormRow>
               </EuiFlexItem>
 
               <EuiFlexItem>
                 <EuiFormRow label={'Log type'}>
-                  <EuiText>{fullRule.category || DEFAULT_EMPTY_DATA}</EuiText>
+                  <EuiText>
+                    {capitalizeFirstLetter(fullRule.category) || DEFAULT_EMPTY_DATA}
+                  </EuiText>
                 </EuiFormRow>
               </EuiFlexItem>
             </EuiFlexGroup>
