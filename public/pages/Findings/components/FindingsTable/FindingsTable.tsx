@@ -8,31 +8,43 @@ import { RouteComponentProps } from 'react-router-dom';
 import moment from 'moment';
 import {
   EuiBasicTableColumn,
-  EuiButton,
+  EuiButtonIcon,
   EuiEmptyPrompt,
   EuiInMemoryTable,
   EuiLink,
   EuiText,
+  EuiToolTip,
 } from '@elastic/eui';
+import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
 import dateMath from '@elastic/datemath';
-import { renderTime } from '../../../../utils/helpers';
-import { DEFAULT_EMPTY_DATA, ROUTES } from '../../../../utils/constants';
-import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
-import { OpenSearchService } from '../../../../services';
+import { capitalizeFirstLetter, renderTime } from '../../../../utils/helpers';
+import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
+import { DetectorsService, OpenSearchService } from '../../../../services';
 import FindingDetailsFlyout from '../FindingDetailsFlyout';
+import { Finding } from '../../models/interfaces';
+import CreateAlertFlyout from '../CreateAlertFlyout';
+import { NotificationChannelTypeOptions } from '../../../CreateDetector/components/ConfigureAlerts/models/interfaces';
+import { FindingItemType } from '../../containers/Findings/Findings';
+import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 
 interface FindingsTableProps extends RouteComponentProps {
+  detectorService: DetectorsService;
   opensearchService: OpenSearchService;
-  findings: Finding[];
+  findings: FindingItemType[];
+  notificationChannels: NotificationChannelTypeOptions[];
+  refreshNotificationChannels: () => void;
   loading: boolean;
-  searchQuery: string;
+  rules: object;
   startTime: string;
   endTime: string;
+  onRefresh: () => void;
+  onFindingsFiltered: (findings: FindingItemType[]) => void;
 }
 
 interface FindingsTableState {
   findingsFiltered: boolean;
   filteredFindings: Finding[];
+  flyout: object;
   flyoutOpen: boolean;
   selectedFinding?: Finding;
 }
@@ -43,6 +55,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
     this.state = {
       findingsFiltered: false,
       filteredFindings: [],
+      flyout: undefined,
       flyoutOpen: false,
       selectedFinding: undefined,
     };
@@ -54,7 +67,6 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
 
   componentDidUpdate(prevProps: Readonly<FindingsTableProps>) {
     if (
-      prevProps.searchQuery !== this.props.searchQuery ||
       prevProps.startTime !== this.props.startTime ||
       prevProps.endTime !== this.props.endTime ||
       prevProps.findings.length !== this.props.findings.length
@@ -63,48 +75,71 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
   }
 
   filterFindings = () => {
-    const { findings, searchQuery, startTime, endTime } = this.props;
+    const { findings, startTime, endTime } = this.props;
     const startMoment = dateMath.parse(startTime);
     const endMoment = dateMath.parse(endTime);
-    const filteredFindings = findings.filter((finding) => {
-      const withinTimeRange = moment(finding.timestamp).isBetween(
-        moment(startMoment),
-        moment(endMoment)
-      );
-      if (withinTimeRange) {
-        const rule = finding.queries[0];
-        const timestamp = renderTime(finding.timestamp);
-        const hasMatchingFieldValue =
-          timestamp.includes(searchQuery) ||
-          finding.id.includes(searchQuery) ||
-          rule.name.includes(searchQuery) ||
-          finding.detector_name.includes(searchQuery) ||
-          rule.category.includes(searchQuery) ||
-          rule.severity.includes(searchQuery);
-        return hasMatchingFieldValue;
-      } else return false;
-    });
-    this.setState({ findingsFiltered: true, filteredFindings: filteredFindings });
-  };
-
-  closeFlyout = () => {
-    this.setState({ flyoutOpen: false, selectedFinding: undefined });
-  };
-
-  openFlyout = (finding: Finding) => {
-    if (this.state.flyoutOpen) this.closeFlyout();
-    else this.setState({ flyoutOpen: true, selectedFinding: finding });
-  };
-
-  renderFlyout = (finding: Finding) => {
-    return (
-      <FindingDetailsFlyout {...this.props} finding={finding} closeFlyout={this.closeFlyout} />
+    const filteredFindings = findings.filter((finding) =>
+      moment(finding.timestamp).isBetween(moment(startMoment), moment(endMoment))
     );
+    this.setState({ findingsFiltered: true, filteredFindings: filteredFindings });
+    this.props.onFindingsFiltered(filteredFindings);
+  };
+
+  closeFlyout = (refreshPage: boolean = false) => {
+    this.setState({ flyout: undefined, flyoutOpen: false, selectedFinding: undefined });
+    if (refreshPage) this.props.onRefresh();
+  };
+
+  renderFindingDetailsFlyout = (finding: Finding) => {
+    if (this.state.flyoutOpen) this.closeFlyout();
+    else
+      this.setState({
+        flyout: (
+          <FindingDetailsFlyout
+            {...this.props}
+            finding={finding}
+            closeFlyout={this.closeFlyout}
+            allRules={this.props.rules}
+          />
+        ),
+        flyoutOpen: true,
+        selectedFinding: finding,
+      });
+  };
+
+  renderCreateAlertFlyout = (finding: Finding) => {
+    if (this.state.flyoutOpen) this.closeFlyout();
+    else {
+      const ruleOptions = finding.queries.map((query) => {
+        const rule = this.props.rules[query.id];
+        return {
+          name: rule.title,
+          id: query.id,
+          severity: rule.level,
+          tags: rule.tags.map((tag) => tag.value),
+        };
+      });
+      this.setState({
+        flyout: (
+          <CreateAlertFlyout
+            {...this.props}
+            finding={finding}
+            closeFlyout={this.closeFlyout}
+            notificationChannels={this.props.notificationChannels}
+            allRules={this.props.rules}
+            refreshNotificationChannels={this.props.refreshNotificationChannels}
+            rulesOptions={ruleOptions}
+          />
+        ),
+        flyoutOpen: true,
+        selectedFinding: finding,
+      });
+    }
   };
 
   render() {
-    const { findings, loading } = this.props;
-    const { findingsFiltered, filteredFindings, flyoutOpen, selectedFinding } = this.state;
+    const { findings, loading, rules } = this.props;
+    const { findingsFiltered, filteredFindings, flyout, flyoutOpen } = this.state;
 
     const columns: EuiBasicTableColumn<Finding>[] = [
       {
@@ -120,68 +155,114 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         sortable: true,
         dataType: 'string',
         render: (id, finding) =>
-          <EuiLink onClick={() => this.openFlyout(finding)}>{id}</EuiLink> || DEFAULT_EMPTY_DATA,
+          (
+            <EuiLink onClick={() => this.renderFindingDetailsFlyout(finding)}>
+              {`${(id as string).slice(0, 7)}...`}
+            </EuiLink>
+          ) || DEFAULT_EMPTY_DATA,
       },
       {
-        field: 'queries',
+        field: 'ruleName',
         name: 'Rule name',
         sortable: true,
         dataType: 'string',
-        render: (queries) => queries[0].name || DEFAULT_EMPTY_DATA,
+        render: (ruleName) => ruleName || DEFAULT_EMPTY_DATA,
       },
       {
-        field: 'detector_name',
+        field: 'detectorName',
         name: 'Threat detector',
         sortable: true,
         dataType: 'string',
         render: (name) => name || DEFAULT_EMPTY_DATA,
       },
       {
-        field: 'queries',
+        // field: 'queries',
+        field: 'logType',
         name: 'Log type',
         sortable: true,
         dataType: 'string',
-        render: (queries) => queries[0].category || DEFAULT_EMPTY_DATA,
+        render: (logType) => capitalizeFirstLetter(logType) || DEFAULT_EMPTY_DATA,
       },
       {
-        field: 'queries',
+        field: 'ruleSeverity',
         name: 'Rule severity',
         sortable: true,
         dataType: 'string',
-        render: (queries) =>
-          parseAlertSeverityToOption(queries[0].severity)?.label || DEFAULT_EMPTY_DATA,
+        render: (ruleSeverity) => capitalizeFirstLetter(ruleSeverity) || DEFAULT_EMPTY_DATA,
       },
       {
         name: 'Actions',
         sortable: false,
-        align: 'center',
         actions: [
           {
             render: (finding) => (
-              <EuiButton onClick={() => this.openFlyout(finding)}>View details</EuiButton>
+              <EuiToolTip content={'View details'}>
+                <EuiButtonIcon
+                  aria-label={'View details'}
+                  iconType={'expand'}
+                  onClick={() => this.renderFindingDetailsFlyout(finding)}
+                />
+              </EuiToolTip>
             ),
           },
           {
-            render: () => (
-              <EuiButton
-                onClick={() => {
-                  if (this.state.flyoutOpen) this.closeFlyout();
-
-                  //TODO: Integrate with edit detector flow when available
-                  this.props.history.push(ROUTES.DETECTORS_CREATE);
-                }}
-              >
-                Create alert
-              </EuiButton>
+            render: (finding) => (
+              <EuiToolTip content={'Create alert'}>
+                <EuiButtonIcon
+                  aria-label={'Create alert'}
+                  iconType={'bell'}
+                  onClick={() => this.renderCreateAlertFlyout(finding)}
+                />
+              </EuiToolTip>
             ),
           },
         ],
       },
     ];
 
-    const sorting = {
+    const logTypes = new Set();
+    const severities = new Set();
+    filteredFindings.forEach((finding) => {
+      if (finding) {
+        const queryId = finding.queries[0].id;
+        logTypes.add(rules[queryId].category);
+        severities.add(rules[queryId].level);
+      }
+    });
+
+    const search = {
+      box: {
+        placeholder: 'Search findings',
+        schema: true,
+      },
+      filters: [
+        {
+          type: 'field_value_selection',
+          field: 'ruleSeverity',
+          name: 'Rule severity',
+          options: Array.from(severities).map((severity) => {
+            const name =
+              parseAlertSeverityToOption(severity)?.label || capitalizeFirstLetter(severity);
+            return { value: severity, name: name || severity };
+          }),
+          multiSelect: 'or',
+        } as FieldValueSelectionFilterConfigType,
+        {
+          type: 'field_value_selection',
+          field: 'logType',
+          name: 'Log type',
+          options: Array.from(logTypes).map((type) => ({
+            value: type,
+            name: capitalizeFirstLetter(type) || type,
+          })),
+          multiSelect: 'or',
+        } as FieldValueSelectionFilterConfigType,
+      ],
+    };
+
+    const sorting: any = {
       sort: {
-        field: 'name',
+        field: 'timestamp',
         direction: 'asc',
       },
     };
@@ -193,21 +274,12 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
           columns={columns}
           itemId={(item) => item.id}
           pagination={true}
+          search={search}
           sorting={sorting}
           isSelectable={false}
           loading={loading}
-          noItemsMessage={
-            <EuiEmptyPrompt
-              style={{ maxWidth: '45em' }}
-              body={
-                <EuiText>
-                  <p>There are no existing findings.</p>
-                </EuiText>
-              }
-            />
-          }
         />
-        {flyoutOpen && this.renderFlyout(selectedFinding as Finding)}
+        {flyoutOpen && flyout}
       </div>
     );
   }
