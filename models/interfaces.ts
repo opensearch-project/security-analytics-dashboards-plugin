@@ -3,7 +3,23 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+export interface Rule {
+  id: string;
+  category: string;
+  log_source: string;
+  title: string;
+  description: string;
+  tags: { value: string }[];
+  false_positives: { value: string }[];
+  level: string;
+  status: string;
+  references: { value: string }[];
+  author: string;
+  detection: string;
+}
+
 export interface Detector {
+  id?: string;
   type: 'detector';
   detector_type: string;
   name: string;
@@ -17,37 +33,62 @@ export interface Detector {
 export interface PeriodSchedule {
   period: {
     interval: number;
-    unit: 'MINUTES';
+    unit: string;
   };
 }
 
 export interface DetectorInput {
-  input: {
+  detector_input: {
     description: string;
     indices: string[];
-    rules: string[];
+    pre_packaged_rules: DetectorRuleInfo[];
+    custom_rules: DetectorRuleInfo[];
   };
 }
 
-export interface Rule {
+export interface DetectorRuleInfo {
   id: string;
-  name: string;
-  rule: string; // TODO: Rules will be in "sigma yaml format"
-  type: string;
-  active: boolean;
-  description?: string;
 }
 
 export interface AlertCondition {
-  sev_levels: string[];
-  tags: string[];
-  actions: string[];
-  types: string[];
+  // Trigger fields
   name: string;
   id?: string;
+
+  // Detector types
+  types: string[];
+
+  // Trigger fields based on Rules
+  sev_levels: string[];
+  tags: string[];
+  ids: string[];
+
+  // Alert related fields
+  actions: TriggerAction[];
+  severity: string;
+}
+
+export interface TriggerAction {
+  id: string;
+  // Id of notification channel
+  destination_id: string;
+  subject_template: {
+    source: string;
+    lang: string;
+  };
+  name: string;
+  throttle_enabled: boolean;
+  message_template: {
+    source: string;
+    lang: string;
+  };
+  throttle: {
+    unit: string;
+    value: number;
+  };
 }
 
 export interface FieldMapping {
-  fieldName: string;
-  aliasName: string;
+  indexFieldName: string;
+  ruleFieldName: string;
 }
