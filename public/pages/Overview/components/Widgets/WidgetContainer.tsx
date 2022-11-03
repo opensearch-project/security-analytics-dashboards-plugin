@@ -13,7 +13,7 @@ export const WidgetContainer: React.FC<{ title: string; actions?: React.ReactNod
   children,
 }) => {
   return (
-    <EuiFlexItem className="grid-item">
+    <EuiFlexItem className="grid-item" grow={1}>
       <ContentPanel titleSize="s" title={title} actions={actions}>
         {children}
       </ContentPanel>
