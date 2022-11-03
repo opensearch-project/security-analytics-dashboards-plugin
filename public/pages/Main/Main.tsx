@@ -11,20 +11,24 @@ import { ServicesConsumer } from '../../services';
 import { BrowserServices } from '../../models/interfaces';
 import { ROUTES } from '../../utils/constants';
 import { CoreServicesConsumer } from '../../components/core_services';
-import Dashboards from '../Dashboards';
 import Findings from '../Findings';
 import Detectors from '../Detectors';
 import Rules from '../Rules';
 import Overview from '../Overview';
 import CreateDetector from '../CreateDetector/containers/CreateDetector';
 import Alerts from '../Alerts';
+import { DetectorDetails } from '../Detectors/containers/Detector/Detector';
+import { UpdateDetectorBasicDetails } from '../Detectors/components/UpdateBasicDetails/UpdateBasicDetails';
+import { UpdateDetectorRules } from '../Detectors/components/UpdateRules/UpdateRules';
+import Create from '../Rules/containers/Rules/components/Create';
+import UpdateFieldMappings from '../Detectors/components/UpdateFieldMappings/UpdateFieldMappings';
+import UpdateAlertConditions from '../Detectors/components/UpdateAlertConditions/UpdateAlertConditions';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
-  Dashboards = 'Dashboards',
   Findings = 'Findings',
   Detectors = 'Detectors',
-  Rules = 'Rule templates',
+  Rules = 'Rules',
   Overview = 'Overview',
   Alerts = 'Alerts',
 }
@@ -38,9 +42,25 @@ interface MainProps extends RouteComponentProps {
   landingPage: string;
 }
 
-export default class Main extends Component<MainProps> {
+interface MainState {
+  getStartedDismissedOnce: boolean;
+}
+
+export default class Main extends Component<MainProps, MainState> {
+  constructor(props: MainProps) {
+    super(props);
+    this.state = {
+      getStartedDismissedOnce: false,
+    };
+  }
+
+  setGetStartedDismissedOnce = () => {
+    this.setState({ getStartedDismissedOnce: true });
+  };
+
   render() {
     const {
+      landingPage,
       location: { pathname },
     } = this.props;
     const sideNav = [
@@ -64,24 +84,18 @@ export default class Main extends Component<MainProps> {
             href: `#${ROUTES.ALERTS}`,
           },
           {
-            name: Navigation.Dashboards,
-            id: 4,
-            href: `#${ROUTES.DASHBOARDS}`,
-          },
-          {
             name: Navigation.Detectors,
-            id: 5,
+            id: 4,
             href: `#${ROUTES.DETECTORS}`,
           },
           {
             name: Navigation.Rules,
-            id: 6,
+            id: 5,
             href: `#${ROUTES.RULES}`,
           },
         ],
       },
     ];
-    const { landingPage } = this.props;
     return (
       <CoreServicesConsumer>
         {(core: CoreStart | null) =>
@@ -99,10 +113,6 @@ export default class Main extends Component<MainProps> {
                     <EuiPageBody>
                       <Switch>
                         <Route
-                          path={ROUTES.DASHBOARDS}
-                          render={(props: RouteComponentProps) => <Dashboards {...props} />}
-                        />
-                        <Route
                           path={ROUTES.FINDINGS}
                           render={(props: RouteComponentProps) => (
                             <Findings
@@ -110,6 +120,8 @@ export default class Main extends Component<MainProps> {
                               findingsService={services.findingsService}
                               opensearchService={services.opensearchService}
                               detectorService={services.detectorsService}
+                              ruleService={services.ruleService}
+                              notificationsService={services.notificationsService}
                             />
                           )}
                         />
@@ -130,8 +142,18 @@ export default class Main extends Component<MainProps> {
                           render={(props: RouteComponentProps) => <Rules {...props} />}
                         />
                         <Route
+                          path={ROUTES.RULES_CREATE}
+                          render={(props: RouteComponentProps) => <Create {...props} />}
+                        />
+                        <Route
                           path={ROUTES.OVERVIEW}
-                          render={(props: RouteComponentProps) => <Overview {...props} />}
+                          render={(props: RouteComponentProps) => (
+                            <Overview
+                              {...props}
+                              getStartedDismissedOnce={this.state.getStartedDismissedOnce}
+                              onGetStartedDismissed={this.setGetStartedDismissedOnce}
+                            />
+                          )}
                         />
                         <Route
                           path={ROUTES.ALERTS}
@@ -141,6 +163,49 @@ export default class Main extends Component<MainProps> {
                               alertService={services.alertService}
                               detectorService={services.detectorsService}
                               findingService={services.findingsService}
+                              ruleService={services.ruleService}
+                            />
+                          )}
+                        />
+                        <Route
+                          path={ROUTES.DETECTOR_DETAILS}
+                          render={(props: RouteComponentProps<{}, any, any>) => (
+                            <DetectorDetails
+                              detectorService={services.detectorsService}
+                              {...props}
+                            />
+                          )}
+                        />
+                        <Route
+                          path={ROUTES.EDIT_DETECTOR_DETAILS}
+                          render={(props: RouteComponentProps<any, any, any>) => (
+                            <UpdateDetectorBasicDetails {...props} />
+                          )}
+                        />
+                        <Route
+                          path={ROUTES.EDIT_DETECTOR_RULES}
+                          render={(props: RouteComponentProps<any, any, any>) => (
+                            <UpdateDetectorRules {...props} />
+                          )}
+                        />
+                        <Route
+                          path={ROUTES.EDIT_FIELD_MAPPINGS}
+                          render={(props: RouteComponentProps<any, any, any>) => (
+                            <UpdateFieldMappings
+                              {...props}
+                              filedMappingService={services.fieldMappingService}
+                              detectorService={services.detectorsService}
+                            />
+                          )}
+                        />
+                        <Route
+                          path={ROUTES.EDIT_DETECTOR_ALERT_TRIGGERS}
+                          render={(props: RouteComponentProps<any, any, any>) => (
+                            <UpdateAlertConditions
+                              {...props}
+                              detectorService={services.detectorsService}
+                              ruleService={services.ruleService}
+                              notificationsService={services.notificationsService}
                             />
                           )}
                         />
