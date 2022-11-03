@@ -27,7 +27,11 @@ export function setupFieldMappingRoutes(services: NodeServices, router: IRouter)
   router.get(
     {
       path: API.MAPPINGS_BASE,
-      validate: {},
+      validate: {
+        query: schema.object({
+          indexName: schema.string(),
+        }),
+      },
     },
     fieldMappingService.getMappings
   );
