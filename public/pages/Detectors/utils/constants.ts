@@ -27,14 +27,12 @@ export const EMPTY_DEFAULT_DETECTOR_INPUT = {
 };
 
 export const DETECTOR_TYPES = {
-  APPLICATION: { id: 'application', label: 'Application logs' },
-  APT: { id: 'apt', label: 'APT logs' },
-  CLOUD: { id: 'cloud', label: 'Cloud logs' },
-  COMPLIANCE: { id: 'compliance', label: 'Compliance logs' },
-  LINUX: { id: 'linux', label: 'Linux logs' },
-  MACOS: { id: 'macos', label: 'MacOS logs' },
-  NETWORK: { id: 'network', label: 'Network logs' },
-  PROXY: { id: 'proxy', label: 'Proxy logs' },
-  WEB: { id: 'web', label: 'Web logs' },
+  NETFLOW: { id: 'network', label: 'Netflow' },
+  DNS: { id: 'dns', label: 'DNS logs' },
+  APACHE_ACCESS: { id: 'apache_access', label: 'Apache access logs' },
   WINDOWS: { id: 'windows', label: 'Windows logs' },
+  AD_LDAP: { id: 'ad_ldap', label: 'AD/LDAP' },
+  SYSTEM: { id: 'linux', label: 'System logs' },
+  CLOUD_TRAIL: { id: 'cloudtrail', label: 'Cloud Trail logs' },
+  S3: { id: 's3', label: 'S3 access logs' },
 };
