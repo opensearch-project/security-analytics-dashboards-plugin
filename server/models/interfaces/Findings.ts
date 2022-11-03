@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Finding } from '../../../public/pages/Findings/models/interfaces';
+
 export type GetFindingsParams =
   | {
       detectorId: string;
@@ -14,7 +16,6 @@ export type GetFindingsParams =
     };
 
 export interface GetFindingsResponse {
-  detector_id: string;
   total_findings: number;
   findings: Finding[];
 }
