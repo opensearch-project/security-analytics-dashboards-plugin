@@ -14,13 +14,7 @@ import { Daily } from './Daily';
 import { Monthly } from './Monthly';
 import { Weekly } from './Weekly';
 
-const frequencies: EuiSelectOption[] = [
-  { value: 'interval', text: 'By interval' },
-  // { value: 'daily', text: 'Daily' },
-  // { value: 'weekly', text: 'Weekly' },
-  // { value: 'monthly', text: 'Monthly' },
-  // { value: 'cronExpression', text: 'Custom cron expression' },
-];
+const frequencies: EuiSelectOption[] = [{ value: 'interval', text: 'By interval' }];
 
 export interface DetectorScheduleProps {
   detector: Detector;
