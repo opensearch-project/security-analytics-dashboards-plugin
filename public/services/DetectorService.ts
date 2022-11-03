@@ -5,16 +5,17 @@
 
 import { HttpSetup } from 'opensearch-dashboards/public';
 import { ServerResponse } from '../../server/models/types';
-import { CreateDetectorResponse, SearchDetectorsResponse } from '../../server/models/interfaces';
+import {
+  CreateDetectorResponse,
+  DeleteDetectorResponse,
+  SearchDetectorsResponse,
+  UpdateDetectorResponse,
+} from '../../server/models/interfaces';
 import { API } from '../../server/utils/constants';
 import { Detector } from '../../models/interfaces';
 
 export default class DetectorsService {
-  httpClient: HttpSetup;
-
-  constructor(httpClient: HttpSetup) {
-    this.httpClient = httpClient;
-  }
+  constructor(private httpClient: HttpSetup) {}
 
   createDetector = async (detector: Detector): Promise<ServerResponse<CreateDetectorResponse>> => {
     const url = `..${API.DETECTORS_BASE}`;
@@ -36,5 +37,24 @@ export default class DetectorsService {
     })) as ServerResponse<SearchDetectorsResponse>;
 
     return res;
+  };
+
+  updateDetector = async (
+    detectorId: string,
+    detector: Detector
+  ): Promise<ServerResponse<UpdateDetectorResponse>> => {
+    const url = `..${API.DETECTORS_BASE}/${detectorId}`;
+    const response = (await this.httpClient.put(url, {
+      body: JSON.stringify(detector),
+    })) as ServerResponse<UpdateDetectorResponse>;
+
+    return response;
+  };
+
+  deleteDetector = async (detectorId: string): Promise<ServerResponse<DeleteDetectorResponse>> => {
+    const url = `..${API.DETECTORS_BASE}/${detectorId}`;
+    const response = (await this.httpClient.delete(url)) as ServerResponse<DeleteDetectorResponse>;
+
+    return response;
   };
 }
