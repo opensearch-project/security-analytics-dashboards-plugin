@@ -199,7 +199,8 @@ export default class DetectorService {
   > => {
     try {
       const detector = request.body as Detector;
-      const params: UpdateDetectorParams = { body: detector };
+      const { detectorId } = request.params as { detectorId: string };
+      const params: UpdateDetectorParams = { body: detector, detectorId };
       const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
       const updateDetectorResponse: UpdateDetectorResponse = await callWithRequest(
         CLIENT_DETECTOR_METHODS.UPDATE_DETECTOR,

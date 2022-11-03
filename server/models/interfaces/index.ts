@@ -9,8 +9,10 @@ import {
   OpenSearchService,
   FieldMappingService,
   DetectorService,
+  NotificationsService,
 } from '../../services';
 import AlertService from '../../services/AlertService';
+import RulesService from '../../services/RuleService';
 
 export interface SecurityAnalyticsApi {
   readonly DETECTORS_BASE: string;
@@ -22,6 +24,9 @@ export interface SecurityAnalyticsApi {
   readonly MAPPINGS_BASE: string;
   readonly MAPPINGS_VIEW: string;
   readonly GET_ALERTS: string;
+  readonly RULES_BASE: string;
+  readonly CHANNELS: string;
+  readonly ACKNOWLEDGE_ALERTS: string;
 }
 
 export interface NodeServices {
@@ -31,6 +36,8 @@ export interface NodeServices {
   opensearchService: OpenSearchService;
   fieldMappingService: FieldMappingService;
   alertService: AlertService;
+  rulesService: RulesService;
+  notificationsService: NotificationsService;
 }
 
 export interface GetIndicesResponse {
@@ -73,3 +80,5 @@ export * from './Detectors';
 export * from './FieldMappings';
 export * from './Findings';
 export * from './Alerts';
+export * from './Rules';
+export * from './Notifications';
