@@ -3,47 +3,73 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { ChangeEvent, Component } from 'react';
+import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import moment from 'moment';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import {
-  EuiFieldSearch,
   EuiFlexGroup,
   EuiFlexItem,
   EuiPanel,
-  EuiSelect,
-  EuiSelectOption,
   EuiSpacer,
   EuiSuperDatePicker,
+  EuiTitle,
 } from '@elastic/eui';
 import FindingsTable from '../../components/FindingsTable';
 import FindingsService from '../../../../services/FindingsService';
-import { DetectorsService, OpenSearchService } from '../../../../services';
+import {
+  DetectorsService,
+  NotificationsService,
+  OpenSearchService,
+  RuleService,
+} from '../../../../services';
 import { BREADCRUMBS, DATE_MATH_FORMAT } from '../../../../utils/constants';
-import { getVisualizationSpec } from '../../../Overview/utils/dummyData';
-import { View, parse } from 'vega/build-es5/vega.js';
-import { compile } from 'vega-lite';
+import { getFindingsVisualizationSpec } from '../../../Overview/utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
+import { Finding } from '../../models/interfaces';
+import { Detector } from '../../../../../models/interfaces';
+import { FeatureChannelList } from '../../../../../server/models/interfaces/Notifications';
+import {
+  getNotificationChannels,
+  parseNotificationChannelsToOptions,
+} from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
+import { createSelectComponent, renderVisualization } from '../../../../utils/helpers';
+import { DetectorHit, RuleSource } from '../../../../../server/models/interfaces';
 
 interface FindingsProps extends RouteComponentProps {
-  findingsService: FindingsService;
-  opensearchService: OpenSearchService;
   detectorService: DetectorsService;
+  findingsService: FindingsService;
+  notificationsService: NotificationsService;
+  opensearchService: OpenSearchService;
+  ruleService: RuleService;
 }
 
 interface FindingsState {
   loading: boolean;
-  findings: Finding[];
-  searchQuery: string;
+  detectors: Detector[];
+  findings: FindingItemType[];
+  notificationChannels: FeatureChannelList[];
+  rules: { [id: string]: RuleSource };
   startTime: string;
   endTime: string;
-  groupBy: string;
+  groupBy: FindingsGroupByType;
+  filteredFindings: FindingItemType[];
 }
 
+interface FindingVisualizationData {
+  time: number;
+  finding: number;
+  logType: string;
+  ruleSeverity: string;
+}
+
+export type FindingItemType = Finding & { detector: DetectorHit };
+
+type FindingsGroupByType = 'logType' | 'ruleSeverity';
+
 export const groupByOptions = [
-  { text: 'Log type', value: 'log_type' },
-  { text: 'Rule severity', value: 'rule_severity' },
+  { text: 'Log type', value: 'logType' },
+  { text: 'Rule severity', value: 'ruleSeverity' },
 ];
 
 export default class Findings extends Component<FindingsProps, FindingsState> {
@@ -52,21 +78,38 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
   constructor(props: FindingsProps) {
     super(props);
     const now = moment.now();
-    const startTime = moment(now).subtract(15, 'hours').format(DATE_MATH_FORMAT);
+    const startTime = moment(now).subtract(15, 'minutes').format(DATE_MATH_FORMAT);
     this.state = {
       loading: false,
+      detectors: [],
       findings: [],
-      searchQuery: '',
+      notificationChannels: [],
+      rules: {},
       startTime: startTime,
       endTime: moment(now).format(DATE_MATH_FORMAT),
-      groupBy: 'log_type',
+      groupBy: 'logType',
+      filteredFindings: [],
     };
+  }
+
+  componentDidUpdate(prevProps: Readonly<FindingsProps>, prevState: Readonly<FindingsState>): void {
+    if (
+      this.state.filteredFindings !== prevState.filteredFindings ||
+      this.state.groupBy !== prevState.groupBy
+    ) {
+      renderVisualization(this.generateVisualizationSpec(), 'findings-view');
+    }
   }
 
   componentDidMount = async () => {
     this.context.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.FINDINGS]);
-    this.getFindings();
-    this.renderVis();
+    this.onRefresh();
+  };
+
+  onRefresh = async () => {
+    await this.getFindings();
+    await this.getNotificationChannels();
+    renderVisualization(this.generateVisualizationSpec(), 'findings-view');
   };
 
   getFindings = async () => {
@@ -77,135 +120,192 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
 
       const detectorsRes = await detectorService.getDetectors();
       if (detectorsRes.ok) {
-        const detectorIds = detectorsRes.response.hits.hits.map((hit) => hit._id);
-        let findings: Finding[] = [];
+        const detectors = detectorsRes.response.hits.hits;
+        const ruleIds = new Set<string>();
+        let findings: FindingItemType[] = [];
 
-        for (let id of detectorIds) {
-          const findingRes = await findingsService.getFindings({ detectorId: id });
+        for (let detector of detectors) {
+          const findingRes = await findingsService.getFindings({ detectorId: detector._id });
 
           if (findingRes.ok) {
-            findings = findings.concat(findingRes.response.findings);
+            const detectorFindings: FindingItemType[] = findingRes.response.findings.map(
+              (finding) => {
+                finding.queries.forEach((rule) => ruleIds.add(rule.id));
+                return {
+                  ...finding,
+                  detectorName: detector._source.name,
+                  logType: detector._source.detector_type,
+                  detector: detector,
+                };
+              }
+            );
+            findings = findings.concat(detectorFindings);
           }
         }
 
-        this.setState({ findings });
-      }
+        await this.getRules(Array.from(ruleIds));
 
-      // this.setState({ findings: findings });
+        this.setState({ findings, detectors: detectors.map((detector) => detector._source) });
+      } else {
+        console.error('Failed to retrieve findings:', detectorsRes.error);
+        // TODO: Display toast with error details
+      }
     } catch (e) {
       console.error('Failed to retrieve findings:', e);
-      // TODO error logging
+      // TODO: Display toast with error details
     }
     this.setState({ loading: false });
   };
 
-  onSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    this.setState({ searchQuery: e.target.value });
+  getRules = async (ruleIds: string[]) => {
+    try {
+      const { ruleService } = this.props;
+      const body = {
+        from: 0,
+        size: 5000,
+        query: {
+          nested: {
+            path: 'rule',
+            query: {
+              terms: {
+                _id: ruleIds,
+              },
+            },
+          },
+        },
+      };
+
+      const prePackagedResponse = await ruleService.getRules(true, body);
+      const customResponse = await ruleService.getRules(false, body);
+
+      const allRules: { [id: string]: any } = {};
+      if (prePackagedResponse.ok) {
+        prePackagedResponse.response.hits.hits.forEach((hit) => (allRules[hit._id] = hit._source));
+      } else {
+        console.error('Failed to retrieve pre-packaged rules:', prePackagedResponse.error);
+      }
+      if (customResponse.ok) {
+        customResponse.response.hits.hits.forEach((hit) => (allRules[hit._id] = hit._source));
+      } else {
+        console.error('Failed to retrieve custom rules:', customResponse.error);
+        // TODO: Display toast with error details
+      }
+      this.setState({ rules: allRules });
+    } catch (e) {
+      console.error('Failed to retrieve rules:', e);
+      // TODO: Display toast with error details
+    }
   };
 
-  onTimeChange = ({ start, end }) => {
+  getNotificationChannels = async () => {
+    const channels = await getNotificationChannels(this.props.notificationsService);
+    this.setState({ notificationChannels: channels });
+  };
+
+  onTimeChange = ({ start, end }: { start: string; end: string }) => {
     this.setState({ startTime: start, endTime: end });
   };
 
-  onRefresh = async () => {
-    this.getFindings();
-  };
-
   generateVisualizationSpec() {
-    return getVisualizationSpec();
-  }
+    const visData: FindingVisualizationData[] = [];
 
-  renderVis() {
-    let view;
-    const spec = this.generateVisualizationSpec();
-
-    try {
-      renderVegaSpec(
-        compile({ ...spec, width: 'container', height: 400 }).spec
-      ).catch((err: Error) => console.error(err));
-    } catch (error) {
-      console.log(error);
-    }
-
-    function renderVegaSpec(spec: {}) {
-      view = new View(parse(spec), {
-        // view = new View(parse(spec, null, { expr: vegaExpressionInterpreter }), {
-        renderer: 'canvas', // renderer (canvas or svg)
-        container: '#view', // parent DOM container
-        hover: true, // enable hover processing
+    this.state.filteredFindings.forEach((finding: FindingItemType) => {
+      const findingTime = new Date(finding.timestamp);
+      findingTime.setMilliseconds(0);
+      findingTime.setSeconds(0);
+      visData.push({
+        finding: 1,
+        time: findingTime.getTime(),
+        logType: finding.detector._source.detector_type,
+        ruleSeverity: this.state.rules[finding.queries[0].id].level,
       });
-      return view.runAsync();
-    }
-  }
+    });
 
-  createSelectComponent(
-    options: EuiSelectOption[],
-    value: string,
-    onChange: React.ChangeEventHandler<HTMLSelectElement>
-  ) {
-    return (
-      <EuiFlexGroup justifyContent="flexStart" alignItems="flexStart" direction="column">
-        <EuiFlexItem grow={false}>
-          <h5>Group by</h5>
-        </EuiFlexItem>
-        <EuiFlexItem grow={false}>
-          <EuiSelect
-            id="overview-vis-options"
-            options={options}
-            value={value}
-            onChange={onChange}
-          />
-        </EuiFlexItem>
-      </EuiFlexGroup>
-    );
+    return getFindingsVisualizationSpec(visData, this.state.groupBy);
   }
 
   createGroupByControl(): React.ReactNode {
-    return this.createSelectComponent(groupByOptions, this.state.groupBy, (event) => {
-      this.setState({ groupBy: event.target.value });
-    });
+    return createSelectComponent(
+      groupByOptions,
+      this.state.groupBy,
+      'findings-vis-groupBy',
+      (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const groupBy = event.target.value as FindingsGroupByType;
+        this.setState({ groupBy });
+      }
+    );
   }
 
+  onFindingsFiltered = (findings: FindingItemType[]) => {
+    this.setState({ filteredFindings: findings });
+  };
+
   render() {
-    const { findings, loading, searchQuery, startTime, endTime } = this.state;
+    const { loading, notificationChannels, rules, startTime, endTime } = this.state;
+    let { findings } = this.state;
+
+    if (Object.keys(rules).length > 0) {
+      findings = findings.map((finding) => {
+        const rule = rules[finding.queries[0].id];
+        if (rule) {
+          finding['ruleName'] = rule.title;
+          finding['ruleSeverity'] = rule.level;
+        }
+        return finding;
+      });
+    }
+
     return (
-      <ContentPanel title={'Findings'}>
-        <EuiFlexGroup gutterSize={'s'}>
-          <EuiFlexItem grow={9}>
-            <EuiFieldSearch
-              fullWidth={true}
-              onChange={this.onSearchChange}
-              placeholder={'Search findings'}
-            />
-          </EuiFlexItem>
-          <EuiFlexItem grow={1}>
-            <EuiSuperDatePicker onTimeChange={this.onTimeChange} onRefresh={this.onRefresh} />
-          </EuiFlexItem>
-        </EuiFlexGroup>
-        <EuiSpacer size={'m'} />
-
-        <EuiPanel>
-          <EuiFlexGroup>
-            <EuiFlexItem grow={9}>
-              <div id="view"></div>
+      <EuiFlexGroup direction="column">
+        <EuiFlexItem>
+          <EuiFlexGroup gutterSize={'s'} justifyContent={'spaceBetween'}>
+            <EuiFlexItem>
+              <EuiTitle size="l">
+                <h1>Findings</h1>
+              </EuiTitle>
             </EuiFlexItem>
-            <EuiFlexItem grow={1}>{this.createGroupByControl()}</EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <EuiSuperDatePicker
+                onTimeChange={this.onTimeChange}
+                onRefresh={this.onRefresh}
+                updateButtonProps={{ fill: false }}
+              />
+            </EuiFlexItem>
           </EuiFlexGroup>
-        </EuiPanel>
+          <EuiSpacer size={'m'} />
+        </EuiFlexItem>
+        <EuiFlexItem>
+          <EuiPanel>
+            <EuiFlexGroup direction="column">
+              <EuiFlexItem style={{ alignSelf: 'flex-end' }}>
+                {this.createGroupByControl()}
+              </EuiFlexItem>
+              <EuiFlexItem>
+                <div id="findings-view" style={{ width: '100%' }}></div>
+              </EuiFlexItem>
+            </EuiFlexGroup>
+          </EuiPanel>
 
-        <EuiSpacer size={'xxl'} />
+          <EuiSpacer size={'xxl'} />
+        </EuiFlexItem>
 
-        <ContentPanel title={'Findings'}>
-          <FindingsTable
-            {...this.props}
-            findings={findings}
-            loading={loading}
-            searchQuery={searchQuery}
-            startTime={startTime}
-            endTime={endTime}
-          />
-        </ContentPanel>
-      </ContentPanel>
+        <EuiFlexItem>
+          <ContentPanel title={'Findings'}>
+            <FindingsTable
+              {...this.props}
+              findings={findings}
+              loading={loading}
+              rules={rules}
+              startTime={startTime}
+              endTime={endTime}
+              onRefresh={this.onRefresh}
+              notificationChannels={parseNotificationChannelsToOptions(notificationChannels)}
+              refreshNotificationChannels={this.getNotificationChannels}
+              onFindingsFiltered={this.onFindingsFiltered}
+            />
+          </ContentPanel>
+        </EuiFlexItem>
+      </EuiFlexGroup>
     );
   }
 }
