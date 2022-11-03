@@ -18,6 +18,13 @@ import { CoreServicesContext } from '../../../components/core_services';
 import { DetectorCreationStep } from '../models/types';
 import { BrowserServices } from '../../../models/interfaces';
 import { ReviewAndCreate } from '../components/ReviewAndCreate/containers/ReviewAndCreate';
+import { CreateDetectorRulesOptions } from '../../../models/types';
+import { CreateDetectorRulesState } from '../components/DefineDetector/components/DetectionRules/DetectionRules';
+import {
+  RuleItem,
+  RuleItemInfo,
+} from '../components/DefineDetector/components/DetectionRules/types/interfaces';
+import { RuleInfo } from '../../../../server/models/interfaces/Rules';
 
 interface CreateDetectorProps extends RouteComponentProps {
   isEdit: boolean;
@@ -30,6 +37,7 @@ interface CreateDetectorState {
   fieldMappings: FieldMapping[];
   stepDataValid: { [step in DetectorCreationStep]: boolean };
   creatingDetector: boolean;
+  rulesState: CreateDetectorRulesState;
 }
 
 export default class CreateDetector extends Component<CreateDetectorProps, CreateDetectorState> {
@@ -44,16 +52,28 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
       fieldMappings: [],
       stepDataValid: {
         [DetectorCreationStep.DEFINE_DETECTOR]: false,
-        [DetectorCreationStep.CONFIGURE_FIELD_MAPPING]: false,
+        [DetectorCreationStep.CONFIGURE_FIELD_MAPPING]: true,
         [DetectorCreationStep.CONFIGURE_ALERTS]: false,
         [DetectorCreationStep.REVIEW_CREATE]: false,
       },
       creatingDetector: false,
+      rulesState: { page: { index: 0 }, allRules: [] },
     };
   }
 
   componentDidMount(): void {
     this.context.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.DETECTORS]);
+    this.setupRulesState();
+  }
+
+  componentDidUpdate(
+    prevProps: Readonly<CreateDetectorProps>,
+    prevState: Readonly<CreateDetectorState>,
+    snapshot?: any
+  ): void {
+    if (prevState.detector.detector_type !== this.state.detector.detector_type) {
+      this.setupRulesState();
+    }
   }
 
   changeDetector = (detector: Detector) => {
@@ -65,14 +85,23 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
   };
 
   onCreateClick = async () => {
-    if (this.state.creatingDetector) {
+    const { creatingDetector, detector, fieldMappings } = this.state;
+    if (creatingDetector) {
       return;
     }
 
     this.setState({ creatingDetector: true });
-    const createDetectorRes = await this.props.services.detectorsService.createDetector(
-      this.state.detector
+    const createMappingsRes = await this.props.services.fieldMappingService.createMappings(
+      detector.inputs[0].detector_input.indices[0],
+      detector.detector_type,
+      fieldMappings
     );
+
+    if (createMappingsRes.ok) {
+      console.log('Field mapping creation successful');
+    }
+
+    const createDetectorRes = await this.props.services.detectorsService.createDetector(detector);
 
     if (createDetectorRes.ok) {
       this.props.history.push(ROUTES.DETECTORS);
@@ -91,11 +120,139 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     this.setState({ currentStep: currentStep - 1 });
   };
 
+  setCurrentStep = (currentStep: DetectorCreationStep) => {
+    this.setState({ currentStep });
+  };
+
   updateDataValidState = (step: DetectorCreationStep, isValid: boolean): void => {
     this.setState({
       stepDataValid: {
         ...this.state.stepDataValid,
         [step]: isValid,
+      },
+    });
+  };
+
+  getRulesOptions(): CreateDetectorRulesOptions {
+    const allRules = this.state.rulesState.allRules;
+    const options: CreateDetectorRulesOptions = allRules.map((rule) => ({
+      id: rule._id,
+      name: rule._source.title,
+      severity: rule._source.level,
+      tags: rule._source.tags.map((tag: { value: string }) => tag.value),
+    }));
+
+    return options;
+  }
+
+  async setupRulesState() {
+    const prePackagedRules = await this.getRules(true);
+    const customRules = await this.getRules(false);
+
+    this.setState({
+      rulesState: {
+        ...this.state.rulesState,
+        allRules: customRules.concat(prePackagedRules),
+        page: {
+          index: 0,
+        },
+      },
+      detector: {
+        ...this.state.detector,
+        inputs: [
+          {
+            detector_input: {
+              ...this.state.detector.inputs[0].detector_input,
+              pre_packaged_rules: prePackagedRules.map((rule) => ({ id: rule._id })),
+              custom_rules: customRules.map((rule) => ({ id: rule._id })),
+            },
+          },
+        ],
+      },
+    });
+  }
+
+  async getRules(prePackaged: boolean): Promise<RuleItemInfo[]> {
+    try {
+      const { detector_type } = this.state.detector;
+
+      if (!detector_type) {
+        return [];
+      }
+
+      const rulesRes = await this.props.services.ruleService.getRules(prePackaged, {
+        from: 0,
+        size: 5000,
+        query: {
+          nested: {
+            path: 'rule',
+            query: {
+              bool: {
+                must: [{ match: { 'rule.category': `${detector_type}` } }],
+              },
+            },
+          },
+        },
+      });
+
+      if (rulesRes.ok) {
+        const rules: RuleItemInfo[] = rulesRes.response.hits.hits.map((ruleInfo: RuleInfo) => {
+          return {
+            ...ruleInfo,
+            enabled: true,
+            prePackaged,
+          };
+        });
+
+        return rules;
+      } else {
+        return [];
+      }
+    } catch (error: any) {
+      return [];
+    }
+  }
+
+  onPageChange = (page: { index: number; size: number }) => {
+    this.setState({
+      rulesState: {
+        ...this.state.rulesState,
+        page: { index: page.index },
+      },
+    });
+  };
+
+  onRuleToggle = (changedItem: RuleItem, isActive: boolean) => {
+    const ruleIndex = this.state.rulesState.allRules.findIndex((ruleItemInfo) => {
+      return ruleItemInfo._id === changedItem.id;
+    });
+
+    if (ruleIndex > -1) {
+      const newRules: RuleItemInfo[] = [
+        ...this.state.rulesState.allRules.slice(0, ruleIndex),
+        { ...this.state.rulesState.allRules[ruleIndex], enabled: isActive },
+        ...this.state.rulesState.allRules.slice(ruleIndex + 1),
+      ];
+
+      this.setState({
+        rulesState: {
+          ...this.state.rulesState,
+          allRules: newRules,
+        },
+      });
+    }
+  };
+
+  onAllRulesToggle = (enabled: boolean) => {
+    const newRules: RuleItemInfo[] = this.state.rulesState.allRules.map((rule) => ({
+      ...rule,
+      enabled,
+    }));
+
+    this.setState({
+      rulesState: {
+        ...this.state.rulesState,
+        allRules: newRules,
       },
     });
   };
@@ -109,6 +266,10 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             {...this.props}
             detector={this.state.detector}
             indexService={services.indexService}
+            rulesState={this.state.rulesState}
+            onRuleToggle={this.onRuleToggle}
+            onAllRulesToggle={this.onAllRulesToggle}
+            onPageChange={this.onPageChange}
             changeDetector={this.changeDetector}
             updateDataValidState={this.updateDataValidState}
           />
@@ -129,12 +290,21 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
           <ConfigureAlerts
             {...this.props}
             detector={this.state.detector}
+            rulesOptions={this.getRulesOptions()}
             changeDetector={this.changeDetector}
             updateDataValidState={this.updateDataValidState}
+            notificationsService={services.notificationsService}
           />
         );
       case DetectorCreationStep.REVIEW_CREATE:
-        return <ReviewAndCreate />;
+        return (
+          <ReviewAndCreate
+            detector={this.state.detector}
+            existingMappings={this.state.fieldMappings}
+            setDetectorCreationStep={this.setCurrentStep}
+            {...this.props}
+          />
+        );
     }
   };
 
