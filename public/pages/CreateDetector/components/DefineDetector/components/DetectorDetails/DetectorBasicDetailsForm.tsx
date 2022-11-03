@@ -48,7 +48,7 @@ export default class DetectorBasicDetailsForm extends Component<
     const { nameIsInvalid } = this.state;
 
     return (
-      <ContentPanel title={'Threat detector details'} titleSize={'m'}>
+      <ContentPanel title={'Detector details'} titleSize={'m'}>
         <EuiSpacer size={'m'} />
         <EuiFormRow
           label={<FormFieldHeader headerTitle={'Name'} />}
