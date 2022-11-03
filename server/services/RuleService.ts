@@ -37,7 +37,6 @@ export default class RulesService {
   /**
    * Calls backend POST Rules API.
    */
-
   createRule = async (
     _context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
@@ -76,7 +75,6 @@ export default class RulesService {
         falsepositives: false_positives.map((falsePos) => falsePos.value),
         detection: JSON.parse(detection),
       };
-      console.log(jsonPayload);
       const ruleYamlPayload = safeDump(jsonPayload);
 
       const params: CreateRuleParams = { body: ruleYamlPayload, category: log_source };
@@ -116,7 +114,6 @@ export default class RulesService {
         prePackaged,
         body: request.body,
       };
-      console.log(`Making get rules req: ${params}`);
       const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
       const getRuleResponse: GetRulesResponse = await callWithRequest(
         CLIENT_RULE_METHODS.GET_RULES,
@@ -175,7 +172,6 @@ export default class RulesService {
   /**
    * Calls backend PUT Rules API.
    */
-
   updateRule = async (
     _context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
@@ -216,7 +212,6 @@ export default class RulesService {
         detection: JSON.parse(detection),
       };
 
-      console.log(jsonPayload);
       const ruleYamlPayload = safeDump(jsonPayload);
 
       const params: UpdateRuleParams = { body: ruleYamlPayload, category: log_source, ruleId };
