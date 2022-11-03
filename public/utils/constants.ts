@@ -16,26 +16,40 @@ export const DEFAULT_EMPTY_DATA = '-';
 
 export const ROUTES = Object.freeze({
   ALERTS: '/alerts',
-  DASHBOARDS: '/dashboards',
   DETECTORS: '/detectors',
   FINDINGS: '/findings',
   OVERVIEW: '/overview',
   RULES: '/rules',
+  RULES_CREATE: '/create-rule',
+  RULES_EDIT: '/edit-rule',
+  RULES_IMPORT: '/import-rule',
   DETECTORS_CREATE: '/create-detector',
+  DETECTOR_DETAILS: '/detector-details',
+  EDIT_DETECTOR_DETAILS: '/edit-detector-details',
+  EDIT_DETECTOR_RULES: '/edit-detector-rules',
+  EDIT_FIELD_MAPPINGS: '/edit-field-mappings',
+  EDIT_DETECTOR_ALERT_TRIGGERS: '/edit-alert-triggers',
 
   get LANDING_PAGE(): string {
     return this.OVERVIEW;
   },
 });
 
+export const NOTIFICATIONS_HREF = 'notifications-dashboards#/channels';
+export const getNotificationDetailsHref = (channelId: string) =>
+  `notifications-dashboards#/channels-details/${channelId}`;
+
 export const BREADCRUMBS = Object.freeze({
   SECURITY_ANALYTICS: { text: 'Security Analytics', href: '#/' },
   OVERVIEW: { text: 'Overview', href: `#${ROUTES.OVERVIEW}` },
   FINDINGS: { text: 'Findings', href: `#${ROUTES.FINDINGS}` },
-  DASHBOARDS: { text: 'Dashboards', href: `#${ROUTES.DASHBOARDS}` },
   DETECTORS: { text: 'Detectors', href: `#${ROUTES.DETECTORS}` },
-  RULES: { text: 'Rule templates', href: `#${ROUTES.RULES}` },
+  DETECTORS_DETAILS: (name: string) => ({ text: `${name}`, href: `#${ROUTES.DETECTOR_DETAILS}` }),
+  RULES: { text: 'Rules', href: `#${ROUTES.RULES}` },
   ALERTS: { text: 'Alerts', href: `#${ROUTES.ALERTS}` },
+  RULES_CREATE: { text: 'Create-rule', href: `#${ROUTES.RULES_CREATE}` },
+  RULES_EDIT: { text: 'Edit-rule', href: `#${ROUTES.RULES_EDIT}` },
+  RULES_IMPORT: { text: 'Import-rule', href: `#${ROUTES.RULES_IMPORT}` },
 });
 
 export enum SortDirection {
@@ -74,10 +88,11 @@ export const EMPTY_DEFAULT_PERIOD_SCHEDULE: PeriodSchedule = {
 };
 
 export const EMPTY_DEFAULT_DETECTOR_INPUT: DetectorInput = {
-  input: {
+  detector_input: {
     description: '',
     indices: [],
-    rules: [],
+    pre_packaged_rules: [],
+    custom_rules: [],
   },
 };
 
