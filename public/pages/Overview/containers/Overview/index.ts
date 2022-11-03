@@ -3,6 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import Overview from './Overview';
+import { Overview } from './Overview';
 
 export default Overview;
