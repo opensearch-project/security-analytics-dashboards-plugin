@@ -6,22 +6,31 @@
 import React, { ChangeEvent, Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { EuiSpacer, EuiTitle } from '@elastic/eui';
-import { Detector, Rule } from '../../../../../../models/interfaces';
+import { Detector, PeriodSchedule } from '../../../../../../models/interfaces';
 import DetectorBasicDetailsForm from '../components/DetectorDetails';
 import DetectorDataSource from '../components/DetectorDataSource';
 import DetectorType from '../components/DetectorType';
-import DetectionRules from '../components/DetectionRules';
 import { EuiComboBoxOptionOption } from '@opensearch-project/oui';
-import IndexService from '../../../../../services/IndexService';
+import { IndexService } from '../../../../../services';
 import { MIN_NUM_DATA_SOURCES } from '../../../../Detectors/utils/constants';
 import { DetectorCreationStep } from '../../../models/types';
+import { DetectorSchedule } from '../components/DetectorSchedule/DetectorSchedule';
+import { RuleItem } from '../components/DetectionRules/types/interfaces';
+import {
+  CreateDetectorRulesState,
+  DetectionRules,
+} from '../components/DetectionRules/DetectionRules';
 
 interface DefineDetectorProps extends RouteComponentProps {
   detector: Detector;
   isEdit: boolean;
   indexService: IndexService;
+  rulesState: CreateDetectorRulesState;
   changeDetector: (detector: Detector) => void;
   updateDataValidState: (step: DetectorCreationStep, isValid: boolean) => void;
+  onPageChange: (page: { index: number; size: number }) => void;
+  onRuleToggle: (changedItem: RuleItem, isActive: boolean) => void;
+  onAllRulesToggle: (enabled: boolean) => void;
 }
 
 interface DefineDetectorState {}
@@ -37,7 +46,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
     const isDataValid =
       !!detector.name &&
       !!detector.detector_type &&
-      detector.inputs[0].input.indices.length >= MIN_NUM_DATA_SOURCES;
+      detector.inputs[0].detector_input.indices.length >= MIN_NUM_DATA_SOURCES;
     this.props.changeDetector(detector);
     this.props.updateDataValidState(DetectorCreationStep.DEFINE_DETECTOR, isDataValid);
   }
@@ -57,8 +66,8 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
       ...this.props.detector,
       inputs: [
         {
-          input: {
-            ...inputs[0].input,
+          detector_input: {
+            ...inputs[0].detector_input,
             description: event.target.value,
           },
         },
@@ -77,8 +86,8 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
       ...this.props.detector,
       inputs: [
         {
-          input: {
-            ...inputs[0].input,
+          detector_input: {
+            ...inputs[0].detector_input,
             indices: detectorIndices,
           },
         },
@@ -98,12 +107,66 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
     this.updateDetectorCreationState(newDetector);
   };
 
-  onRulesChanged = (rules: Rule[]) => {};
+  onPrepackagedRulesChanged = (enabledRuleIds: string[]) => {
+    const { inputs } = this.props.detector;
+    const newDetector: Detector = {
+      ...this.props.detector,
+      inputs: [
+        {
+          detector_input: {
+            ...inputs[0].detector_input,
+            pre_packaged_rules: enabledRuleIds.map((id) => {
+              return { id };
+            }),
+          },
+        },
+        ...inputs.slice(1),
+      ],
+    };
+
+    this.updateDetectorCreationState(newDetector);
+  };
+
+  onCustomRulesChanged = (enabledRuleIds: string[]) => {
+    const { inputs } = this.props.detector;
+    const newDetector: Detector = {
+      ...this.props.detector,
+      inputs: [
+        {
+          detector_input: {
+            ...inputs[0].detector_input,
+            custom_rules: enabledRuleIds.map((id) => {
+              return { id };
+            }),
+          },
+        },
+        ...inputs.slice(1),
+      ],
+    };
+
+    this.updateDetectorCreationState(newDetector);
+  };
+
+  onDetectorScheduleChange = (schedule: PeriodSchedule) => {
+    const newDetector: Detector = {
+      ...this.props.detector,
+      schedule,
+    };
+
+    this.updateDetectorCreationState(newDetector);
+  };
 
   render() {
-    const { isEdit } = this.props;
+    const {
+      isEdit,
+      detector,
+      rulesState,
+      onRuleToggle,
+      onPageChange,
+      onAllRulesToggle,
+    } = this.props;
     const { name, inputs, detector_type } = this.props.detector;
-    const { description, indices, rules: enabledCustomRuleIds } = inputs[0].input;
+    const { description, indices } = inputs[0].detector_input;
 
     return (
       <div>
@@ -138,10 +201,17 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
         <EuiSpacer size={'m'} />
 
         <DetectionRules
-          {...this.props}
-          enabledCustomRuleIds={enabledCustomRuleIds}
-          detectorType={detector_type}
-          onRulesChanged={this.onRulesChanged}
+          rulesState={rulesState}
+          onPageChange={onPageChange}
+          onRuleToggle={onRuleToggle}
+          onAllRulesToggle={onAllRulesToggle}
+        />
+
+        <EuiSpacer size={'m'} />
+
+        <DetectorSchedule
+          detector={detector}
+          onDetectorScheduleChange={this.onDetectorScheduleChange}
         />
       </div>
     );
