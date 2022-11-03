@@ -50,6 +50,7 @@ export function setupDetectorRoutes(services: NodeServices, router: IRouter) {
         params: schema.object({
           detectorId: schema.string(),
         }),
+        body: schema.any(),
       },
     },
     detectorsService.updateDetector
@@ -62,6 +63,7 @@ export function setupDetectorRoutes(services: NodeServices, router: IRouter) {
         params: schema.object({
           detectorId: schema.string(),
         }),
+        body: schema.any(),
       },
     },
     detectorsService.deleteDetector

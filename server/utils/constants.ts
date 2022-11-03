@@ -23,6 +23,9 @@ export const API: SecurityAnalyticsApi = {
   MAPPINGS_BASE: `${BASE_API_PATH}/mappings`,
   MAPPINGS_VIEW: `${BASE_API_PATH}/mappings/view`,
   GET_ALERTS: `${BASE_API_PATH}/alerts`,
+  RULES_BASE: `${BASE_API_PATH}/rules`,
+  CHANNELS: `${BASE_API_PATH}/_notifications/channels`,
+  ACKNOWLEDGE_ALERTS: `${BASE_API_PATH}/detectors/{detector_id}/_acknowledge/alerts`,
 };
 
 /**
@@ -32,6 +35,13 @@ export const API: SecurityAnalyticsApi = {
 export const PLUGIN_PROPERTY_NAME: string = 'securityAnalytics';
 
 export const METHOD_NAMES = {
+  //Rule methods
+  CREATE_RULE: 'createRule',
+  DELETE_RULE: 'deleteRule',
+  GET_RULE: 'getRule',
+  GET_RULES: 'getRules',
+  UPDATE_RULE: 'updateRules',
+
   // Detector methods
   CREATE_DETECTOR: 'createDetector',
   DELETE_DETECTOR: 'deleteDetector',
@@ -49,6 +59,11 @@ export const METHOD_NAMES = {
 
   // Alerts methods
   GET_ALERTS: 'getAlerts',
+  ACKNOWLEDGE_ALERTS: 'acknowledgeAlerts',
+
+  // Notifications methods
+  GET_CHANNEl: 'getChannel',
+  GET_CHANNElS: 'getChannels',
 };
 
 /**
@@ -56,6 +71,14 @@ export const METHOD_NAMES = {
  * prototype under the @see PLUGIN_PROPERTY_NAME field.
  * @see ../clusters/securityAnalytics/securityAnalyticsPlugin
  */
+export const CLIENT_RULE_METHODS = {
+  CREATE_RULE: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.CREATE_RULE}`,
+  DELETE_RULE: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.DELETE_RULE}`,
+  GET_RULE: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_RULE}`,
+  GET_RULES: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_RULES}`,
+  UPDATE_RULE: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.UPDATE_RULE}`,
+};
+
 export const CLIENT_DETECTOR_METHODS = {
   CREATE_DETECTOR: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.CREATE_DETECTOR}`,
   DELETE_DETECTOR: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.DELETE_DETECTOR}`,
@@ -72,5 +95,11 @@ export const CLIENT_FIELD_MAPPINGS_METHODS = {
 };
 
 export const CLIENT_ALERTS_METHODS = {
+  ACKNOWLEDGE_ALERTS: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.ACKNOWLEDGE_ALERTS}`,
   GET_ALERTS: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_ALERTS}`,
+};
+
+export const CLIENT_NOTIFICATIONS_METHODS = {
+  GET_CHANNEL: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_CHANNEl}`,
+  GET_CHANNELS: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_CHANNElS}`,
 };
