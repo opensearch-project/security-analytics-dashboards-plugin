@@ -3,191 +3,83 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { Component } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
-import { ContentPanel } from '../../../../../../components/ContentPanel';
 import {
-  EuiAccordion,
-  EuiBasicTable,
-  EuiButtonEmpty,
-  EuiFlexGroup,
-  EuiFlexItem,
-  EuiHorizontalRule,
   EuiPanel,
-  EuiSpacer,
-  EuiText,
+  EuiAccordion,
   EuiTitle,
+  EuiHorizontalRule,
+  CriteriaWithPagination,
 } from '@elastic/eui';
-import { Rule } from '../../../../../../../models/interfaces';
-import { getRulesColumns } from './utils/constants';
-import { RuleItem, RulesInfoByType } from './types/interfaces';
-import { dummyDetectorRules } from './utils/dummyData';
+import React, { useMemo } from 'react';
+import { DetectionRulesTable } from './DetectionRulesTable';
+import { RuleItem, RuleItemInfo } from './types/interfaces';
 
-interface DetectionRulesProps extends RouteComponentProps {
-  enabledCustomRuleIds: string[];
-  detectorType: string;
-  onRulesChanged: (rules: Rule[]) => void;
+export interface CreateDetectorRulesState {
+  allRules: RuleItemInfo[];
+  page: {
+    index: number;
+  };
 }
 
-interface DetectionRulesState {
-  fieldTouched: boolean;
-  selectedRuleType?: string;
-  rulesByRuleType: RulesInfoByType;
+export interface DetectionRulesProps {
+  rulesState: CreateDetectorRulesState;
+  onRuleToggle: (changedItem: RuleItem, isActive: boolean) => void;
+  onAllRulesToggle: (enabled: boolean) => void;
+  onPageChange: (page: { index: number; size: number }) => void;
 }
 
-export default class DetectionRules extends Component<DetectionRulesProps, DetectionRulesState> {
-  constructor(props: DetectionRulesProps) {
-    super(props);
-    this.state = this.deriveInitialState();
-  }
-
-  componentDidMount(): void {
-    // get pre-packaged rules based on detector type
-    // get custom rules based on detector type
-    // merge the rule types and add the toggle state
-  }
-
-  deriveInitialState(): DetectionRulesState {
-    const detectorRules = dummyDetectorRules;
-    const rulesByRuleType: {
-      [ruleType: string]: { ruleItems: RuleItem[]; activeCount: number };
-    } = {};
-    detectorRules.forEach((rule) => {
-      rulesByRuleType[rule.type] = rulesByRuleType[rule.type] || { ruleItems: [], activeCount: 0 };
-      rulesByRuleType[rule.type].ruleItems.push({
-        ruleName: rule.name,
-        ruleType: rule.type,
-        description: rule.description || '',
-        active: rule.active,
-      });
-
-      if (rule.active) {
-        rulesByRuleType[rule.type].activeCount++;
-      }
-    });
-
-    return {
-      fieldTouched: false,
-      selectedRuleType: undefined,
-      rulesByRuleType,
-    };
-  }
-
-  getActiveRulesCount(selectedRuleType?: string): number {
-    if (selectedRuleType) {
-      return this.state.rulesByRuleType[selectedRuleType]?.activeCount || 0;
+export const DetectionRules: React.FC<DetectionRulesProps> = ({
+  rulesState,
+  onPageChange,
+  onRuleToggle,
+  onAllRulesToggle,
+}) => {
+  let enabledRulesCount = 0;
+  rulesState.allRules.forEach((ruleItem) => {
+    if (ruleItem.enabled) {
+      enabledRulesCount++;
     }
+  });
 
-    return Object.values(this.state.rulesByRuleType).reduce((aggregate, rulesInfo) => {
-      return aggregate + rulesInfo.activeCount;
-    }, 0);
-  }
+  const ruleItems: RuleItem[] = useMemo(
+    () =>
+      rulesState.allRules.map((rule) => ({
+        id: rule._id,
+        active: rule.enabled,
+        description: rule._source.description,
+        library: rule.prePackaged ? 'Sigma' : 'Custom',
+        logType: rule._source.category,
+        name: rule._source.title,
+        severity: rule._source.level,
+      })),
+    [rulesState.allRules]
+  );
 
-  getRuleItems(selectedRuleType?: string): RuleItem[] {
-    if (selectedRuleType) {
-      return this.state.rulesByRuleType[selectedRuleType].ruleItems;
-    }
-
-    return Object.values(this.state.rulesByRuleType).reduce(
-      (aggregate: RuleItem[], currentRulesInfo) => {
-        return aggregate.concat(currentRulesInfo.ruleItems);
-      },
-      []
-    );
-  }
-
-  onRuleTypeClick = (selectedRuleType?: string) => {
-    this.setState({
-      selectedRuleType,
-    });
+  const onTableChange = (nextValues: CriteriaWithPagination<RuleItem>) => {
+    onPageChange(nextValues.page);
   };
 
-  onRuleActivationToggle = (changedItem: RuleItem, changeToActive: boolean) => {
-    const { rulesByRuleType } = this.state;
-    const ruleItems = rulesByRuleType[changedItem.ruleType].ruleItems;
-    const changedIdx = ruleItems.findIndex((item) => item.ruleName === changedItem.ruleName);
-
-    if (changedIdx > -1) {
-      const newRuleItems = [
-        ...ruleItems.slice(0, changedIdx),
-        { ...ruleItems[changedIdx], active: changeToActive },
-        ...ruleItems.slice(changedIdx + 1),
-      ];
-      const newRulesByRuleType: RulesInfoByType = {
-        ...rulesByRuleType,
-        [changedItem.ruleType]: {
-          ruleItems: newRuleItems,
-          activeCount:
-            rulesByRuleType[changedItem.ruleType].activeCount + (changeToActive ? 1 : -1),
-        },
-      };
-      this.setState({ rulesByRuleType: newRulesByRuleType });
-    }
-  };
-
-  render() {
-    const { rulesByRuleType, selectedRuleType } = this.state;
-    const detectorRules =
-      this.props.enabledCustomRuleIds.length > 0
-        ? this.props.enabledCustomRuleIds
-        : dummyDetectorRules;
-
-    const totalRulesCountForSelectedType = selectedRuleType
-      ? rulesByRuleType[selectedRuleType]?.ruleItems.length || 0
-      : detectorRules.length;
-    const activeRulesCountForSelectedType = this.getActiveRulesCount(selectedRuleType);
-    const allRulesCount = this.props.enabledCustomRuleIds.length || dummyDetectorRules.length;
-    const ruleTypes = Object.keys(rulesByRuleType);
-
-    return (
-      <EuiPanel style={{ paddingLeft: '0px', paddingRight: '0px' }}>
-        <EuiAccordion
-          buttonContent={
-            <EuiTitle>
-              <h4>{`Threat detection rules (${allRulesCount})`}</h4>
-            </EuiTitle>
-          }
-          buttonProps={{ style: { paddingLeft: '10px', paddingRight: '10px' } }}
-          id={'detectorRulesAccordion'}
-          initialIsOpen={false}
-        >
-          <EuiHorizontalRule margin={'xs'} />
-          <div style={{ paddingLeft: '10px', paddingRight: '10px' }}>
-            <EuiSpacer size={'m'} />
-            <EuiFlexGroup>
-              <EuiFlexItem grow={false}>
-                <EuiText>
-                  <EuiButtonEmpty onClick={() => this.onRuleTypeClick()}>
-                    View all rules {`(${allRulesCount})`}
-                  </EuiButtonEmpty>
-                  <EuiSpacer />
-                  {ruleTypes.map((ruleType) => (
-                    <React.Fragment key={ruleType}>
-                      <EuiButtonEmpty
-                        onClick={() => this.onRuleTypeClick(ruleType)}
-                      >{`${ruleType} (${rulesByRuleType[ruleType].ruleItems.length})`}</EuiButtonEmpty>
-                      <EuiSpacer size="xs" />
-                    </React.Fragment>
-                  ))}
-                </EuiText>
-              </EuiFlexItem>
-              <EuiFlexItem>
-                <ContentPanel
-                  title={`${
-                    selectedRuleType || 'All'
-                  } rules (${activeRulesCountForSelectedType}/${totalRulesCountForSelectedType} enabled)`}
-                >
-                  <EuiBasicTable
-                    columns={getRulesColumns(this.onRuleActivationToggle)}
-                    items={this.getRuleItems(selectedRuleType)}
-                    itemId={(item: RuleItem) => `${item.ruleName}`}
-                  />
-                </ContentPanel>
-              </EuiFlexItem>
-            </EuiFlexGroup>
-          </div>
-        </EuiAccordion>
-      </EuiPanel>
-    );
-  }
-}
+  return (
+    <EuiPanel style={{ paddingLeft: '0px', paddingRight: '0px' }}>
+      <EuiAccordion
+        buttonContent={
+          <EuiTitle>
+            <h4>{`Detection rules (${enabledRulesCount} selected)`}</h4>
+          </EuiTitle>
+        }
+        buttonProps={{ style: { paddingLeft: '10px', paddingRight: '10px' } }}
+        id={'detectorRulesAccordion'}
+        initialIsOpen={false}
+      >
+        <EuiHorizontalRule margin={'xs'} />
+        <DetectionRulesTable
+          pageIndex={rulesState.page.index}
+          ruleItems={ruleItems}
+          onAllRulesToggled={onAllRulesToggle}
+          onRuleActivationToggle={onRuleToggle}
+          onTableChange={onTableChange}
+        />
+      </EuiAccordion>
+    </EuiPanel>
+  );
+};
