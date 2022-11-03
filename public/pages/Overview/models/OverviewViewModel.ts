@@ -94,8 +94,8 @@ export class OverviewViewModelActor {
         const logType = detectorInfo.get(id)?.logType;
         const detectorName = detectorInfo.get(id)?.name || '';
         const detectorFindings: FindingItem[] = findingRes.response.findings.map((finding) => {
-          ruleIds.add(finding.queries[0].id);
-          // finding.queries.forEach((rule) => ruleIds.add(rule.id));
+          const ids = finding.queries.map((query) => query.id);
+          ids.forEach((id) => ruleIds.add(id));
 
           return {
             detector: detectorName,

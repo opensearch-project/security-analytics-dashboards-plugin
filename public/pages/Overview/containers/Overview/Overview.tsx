@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import './Overview.scss';
 import {
   EuiButtonEmpty,
   EuiFlexGrid,
@@ -25,7 +24,6 @@ import { ServicesContext } from '../../../../services';
 import { Summary } from '../../components/Widgets/Summary';
 import { TopRulesWidget } from '../../components/Widgets/TopRulesWidget';
 import { GettingStartedPopup } from '../../components/GettingStarted/GettingStartedPopup';
-// import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter/build/vega-interpreter.module';
 
 export const Overview: React.FC<OverviewProps> = (props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -72,7 +70,9 @@ export const Overview: React.FC<OverviewProps> = (props) => {
     }
   }, [initialLoadingFinished, state.overviewViewModel, props.getStartedDismissedOnce]);
 
-  const onTimeChange = ({ start, end }: { start: string; end: string }) => {};
+  const onTimeChange = ({ start, end }: { start: string; end: string }) => {
+    // TODO: NYI
+  };
 
   const onRefresh = async () => {
     overviewViewModelActor.onRefresh();

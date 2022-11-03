@@ -94,7 +94,10 @@ export const Summary: React.FC<SummaryProps> = ({ alerts, findings }) => {
               <EuiText size="s">
                 <p>Total active alerts</p>
               </EuiText>
-              <EuiLink href={`#${ROUTES.ALERTS}`} className="page-link">
+              <EuiLink
+                href={`#${ROUTES.ALERTS}`}
+                style={{ fontSize: 20, textDecoration: 'underline' }}
+              >
                 {activeAlerts}
               </EuiLink>
             </EuiFlexItem>
@@ -102,7 +105,10 @@ export const Summary: React.FC<SummaryProps> = ({ alerts, findings }) => {
               <EuiText size="s">
                 <p>Total findings</p>
               </EuiText>
-              <EuiLink href={`#${ROUTES.FINDINGS}`} className="page-link">
+              <EuiLink
+                href={`#${ROUTES.FINDINGS}`}
+                style={{ fontSize: 20, textDecoration: 'underline' }}
+              >
                 {totalFindings}
               </EuiLink>
             </EuiFlexItem>

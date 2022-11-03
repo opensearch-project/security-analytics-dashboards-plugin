@@ -6,26 +6,18 @@
 import { TopLevelSpec } from 'vega-lite';
 import { SummaryData } from '../components/Widgets/Summary';
 
-function getVisualizationSpec(description: string, data: any, layers: any[]) {
-  let spec: Partial<TopLevelSpec> = {
+function getVisualizationSpec(description: string, data: any, layers: any[]): TopLevelSpec {
+  let spec: TopLevelSpec = {
     config: { view: { stroke: null } },
     $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
     description: description,
     data: {
       values: data,
     },
+    layer: layers,
   };
 
-  if (layers.length > 1) {
-    spec['layer'] = layers;
-  } else if (layers.length === 1) {
-    spec = {
-      ...spec,
-      ...layers[0],
-    };
-  }
-
-  return spec as TopLevelSpec;
+  return spec;
 }
 
 export function getOverviewVisualizationSpec(
