@@ -9,6 +9,9 @@ import FindingsService from './FindingsService';
 import OpenSearchService from './OpenSearchService';
 import FieldMappingService from './FieldMappingService';
 import AlertsService from './AlertsService';
+import RuleService from './RuleService';
+import IndexService from './IndexService';
+import NotificationsService from './NotificationsService';
 
 export {
   ServicesConsumer,
@@ -18,4 +21,7 @@ export {
   OpenSearchService,
   FieldMappingService,
   AlertsService,
+  RuleService,
+  IndexService,
+  NotificationsService,
 };
