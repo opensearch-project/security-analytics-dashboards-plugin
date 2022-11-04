@@ -125,7 +125,7 @@ export default class UpdateAlertConditions extends Component<
 
   onCancel = () => {
     this.props.history.replace({
-      pathname: ROUTES.DETECTOR_DETAILS,
+      pathname: `${ROUTES.DETECTOR_DETAILS}/${this.props.location.state?.detectorHit._id}`,
       state: this.props.location.state,
     });
   };
@@ -160,7 +160,7 @@ export default class UpdateAlertConditions extends Component<
 
     this.setState({ submitting: false });
     history.replace({
-      pathname: ROUTES.DETECTOR_DETAILS,
+      pathname: `${ROUTES.DETECTOR_DETAILS}/${this.props.location.state?.detectorHit._id}`,
       state: {
         detectorHit: { ...detectorHit, _source: { ...detectorHit._source, ...detector } },
       },

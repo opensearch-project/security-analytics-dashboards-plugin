@@ -6,9 +6,8 @@
 import { EuiButton, EuiFlexGroup, EuiFlexItem, EuiSpacer, EuiTitle } from '@elastic/eui';
 import {
   DetectorHit,
-  GetDetectorResponse,
   GetRulesResponse,
-  RuleInfo,
+  SearchDetectorsResponse,
   UpdateDetectorResponse,
 } from '../../../../../server/models/interfaces';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
@@ -44,22 +43,22 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
     const getDetector = async () => {
       setLoading(true);
       const response = (await services?.detectorsService.getDetectors()) as ServerResponse<
-        GetDetectorResponse
+        SearchDetectorsResponse
       >;
       if (response.ok) {
         const detectorHit = response.response.hits.hits.find(
           (detectorHit) => detectorHit._id === detectorId
-        );
+        ) as DetectorHit;
         const newDetector = { ...detectorHit._source, id: detectorId };
         setDetector(newDetector);
         await getRules(newDetector);
       } else {
-        errorNotificationToast(this.props.notifications, 'retrieve', 'detector', response.error);
+        errorNotificationToast(props.notifications, 'retrieve', 'detector', response.error);
       }
       setLoading(false);
     };
 
-    const getRules = async (detector: Detector): Promise<RuleInfo[]> => {
+    const getRules = async (detector: Detector) => {
       const prePackagedResponse = (await services?.ruleService.getRules(true, {
         from: 0,
         size: 5000,
@@ -91,7 +90,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
         setPrePackagedRuleItems(ruleItems);
       } else {
         errorNotificationToast(
-          this.props.notifications,
+          props.notifications,
           'retrieve',
           'pre-packaged rules',
           prePackagedResponse.error
@@ -129,7 +128,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
         setCustomRuleItems(ruleItems);
       } else {
         errorNotificationToast(
-          this.props.notifications,
+          props.notifications,
           'retrieve',
           'custom rules',
           customResponse.error
@@ -142,7 +141,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
     };
 
     execute().catch((e) => {
-      errorNotificationToast(this.props.notifications, 'retrieve', 'detector and rules', e);
+      errorNotificationToast(props.notifications, 'retrieve', 'detector and rules', e);
     });
   }, [services, detectorId]);
 
@@ -191,19 +190,14 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
       )) as ServerResponse<UpdateDetectorResponse>;
 
       if (!updateDetectorRes.ok) {
-        errorNotificationToast(
-          this.props.notifications,
-          'update',
-          'detector',
-          updateDetectorRes.error
-        );
+        errorNotificationToast(props.notifications, 'update', 'detector', updateDetectorRes.error);
       }
 
       props.history.replace({
         pathname: `${ROUTES.DETECTOR_DETAILS}/${detectorId}`,
       });
-    } catch (e) {
-      errorNotificationToast(this.props.notifications, 'update', 'detector', e);
+    } catch (e: any) {
+      errorNotificationToast(props.notifications, 'update', 'detector', e);
     }
     setSubmitting(false);
   };
@@ -217,7 +211,6 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
       <EuiSpacer size="xl" />
 
       <DetectionRulesTable
-        {...this.props}
         loading={loading}
         ruleItems={ruleItems}
         onRuleActivationToggle={onToggle}

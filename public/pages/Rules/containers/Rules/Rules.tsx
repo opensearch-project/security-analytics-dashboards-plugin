@@ -13,8 +13,9 @@ import { RulesTable } from '../../components/RulesTable/RulesTable';
 import { RuleTableItem } from '../../utils/helpers';
 import { RuleItemInfoBase } from '../../models/types';
 import { RuleViewerFlyout } from '../../components/RuleViewerFlyout/RuleViewerFlyout';
-import { ROUTES } from '../../../../utils/constants';
+import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { CoreServicesContext } from '../../../../components/core_services';
 
 export interface RulesProps extends RouteComponentProps {
   notifications?: NotificationsStart;
@@ -22,6 +23,7 @@ export interface RulesProps extends RouteComponentProps {
 
 export const Rules: React.FC<RulesProps> = (props) => {
   const services = useContext(ServicesContext) as BrowserServices;
+  const context = useContext(CoreServicesContext);
   const rulesViewModelActor = useMemo(() => new RulesViewModelActor(services), [services]);
   const [allRules, setAllRules] = useState<RuleItemInfoBase[]>([]);
   const [flyoutData, setFlyoutData] = useState<RuleTableItem | undefined>(undefined);
@@ -45,6 +47,7 @@ export const Rules: React.FC<RulesProps> = (props) => {
   }, [rulesViewModelActor]);
 
   useEffect(() => {
+    context?.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.RULES]);
     getRules();
   }, [getRules]);
 
