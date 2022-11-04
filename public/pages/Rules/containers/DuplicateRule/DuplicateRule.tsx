@@ -36,9 +36,9 @@ export const DuplicateRule: React.FC<DuplicateRuleProps> = ({
 
       if (!updateRuleRes.ok) {
         errorNotificationToast(notifications!, 'create', 'rule', updateRuleRes.error);
+      } else {
+        history.replace(ROUTES.RULES);
       }
-
-      history.replace(ROUTES.RULES);
     };
 
     return (

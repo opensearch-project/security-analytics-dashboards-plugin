@@ -41,9 +41,9 @@ export const EditRule: React.FC<EditRuleProps> = ({
 
       if (!editRuleRes.ok) {
         errorNotificationToast(notifications!, 'save', 'rule', editRuleRes.error);
+      } else {
+        history.replace(ROUTES.RULES);
       }
-
-      history.replace(ROUTES.RULES);
     };
 
     return (
