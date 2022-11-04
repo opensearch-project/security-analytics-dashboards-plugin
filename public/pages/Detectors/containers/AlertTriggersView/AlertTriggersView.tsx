@@ -108,7 +108,6 @@ export const AlertTriggersView: React.FC<AlertTriggersViewProps> = ({
     <ContentPanel title={`Alert triggers (${detector.triggers.length})`} actions={actions}>
       {detector.triggers.map((alertTrigger, index) => (
         <AlertTriggerView
-          {...this.props}
           key={alertTrigger.id}
           alertTrigger={alertTrigger}
           orderPosition={index}
