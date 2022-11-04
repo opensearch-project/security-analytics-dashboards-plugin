@@ -1,6 +1,6 @@
 {
   "name": "opensearch_security_analytics_dashboards",
-  "version": "2.3.0.0",
+  "version": "2.4.0.0",
   "description": "OpenSearch Dashboards plugin for Security Analytics",
   "main": "index.js",
   "license": "Apache-2.0",
@@ -62,11 +62,5 @@
   },
   "engines": {
     "yarn": "^1.21.1"
-  },
-  "dependencies": {
-    "formik": "^2.2.6",
-    "gray-matter": "^4.0.3",
-    "react-ace": "^10.1.0",
-    "yup": "^0.32.11"
   }
 }
