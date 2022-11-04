@@ -13,16 +13,19 @@ import { ROUTES } from '../../utils/constants';
 import { CoreServicesConsumer } from '../../components/core_services';
 import Findings from '../Findings';
 import Detectors from '../Detectors';
-import Rules from '../Rules';
 import Overview from '../Overview';
 import CreateDetector from '../CreateDetector/containers/CreateDetector';
 import Alerts from '../Alerts';
 import { DetectorDetails } from '../Detectors/containers/Detector/DetectorDetails';
 import { UpdateDetectorBasicDetails } from '../Detectors/components/UpdateBasicDetails/UpdateBasicDetails';
 import { UpdateDetectorRules } from '../Detectors/components/UpdateRules/UpdateRules';
-import Create from '../Rules/containers/Rules/components/Create';
 import UpdateFieldMappings from '../Detectors/components/UpdateFieldMappings/UpdateFieldMappings';
 import UpdateAlertConditions from '../Detectors/components/UpdateAlertConditions/UpdateAlertConditions';
+import { Rules } from '../Rules/containers/Rules/Rules';
+import { CreateRule } from '../Rules/containers/CreateRule/CreateRule';
+import { EditRule } from '../Rules/containers/EditRule/EditRule';
+import { ImportRule } from '../Rules/containers/ImportRule/ImportRule';
+import { DuplicateRule } from '../Rules/containers/DuplicateRule/DuplicateRule';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -36,7 +39,13 @@ enum Navigation {
 /**
  * Add here the ROUTES for pages on which the EuiPageSideBar should NOT be displayed.
  */
-const HIDDEN_NAV_ROUTES: string[] = [ROUTES.DETECTORS_CREATE];
+const HIDDEN_NAV_ROUTES: string[] = [
+  ROUTES.DETECTORS_CREATE,
+  ROUTES.RULES_CREATE,
+  ROUTES.RULES_EDIT,
+  ROUTES.RULES_DUPLICATE,
+  ROUTES.RULES_IMPORT,
+];
 
 interface MainProps extends RouteComponentProps {
   landingPage: string;
@@ -156,7 +165,25 @@ export default class Main extends Component<MainProps, MainState> {
                         <Route
                           path={ROUTES.RULES_CREATE}
                           render={(props: RouteComponentProps) => (
-                            <Create {...props} notifications={core?.notifications} />
+                            <CreateRule services={services} history={props.history} />
+                          )}
+                        />
+                        <Route
+                          path={ROUTES.RULES_EDIT}
+                          render={(props: RouteComponentProps<any, any, any>) => (
+                            <EditRule services={services} {...props} />
+                          )}
+                        />
+                        <Route
+                          path={ROUTES.RULES_DUPLICATE}
+                          render={(props: RouteComponentProps<any, any, any>) => (
+                            <DuplicateRule services={services} {...props} />
+                          )}
+                        />
+                        <Route
+                          path={ROUTES.RULES_IMPORT}
+                          render={(props: RouteComponentProps) => (
+                            <ImportRule services={services} history={props.history} />
                           )}
                         />
                         <Route

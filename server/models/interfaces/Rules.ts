@@ -65,6 +65,7 @@ export interface RuleInfo {
 }
 
 export type RuleSource = Rule & {
+  rule: string;
   last_update_time: string;
   queries: { value: string }[];
 };
