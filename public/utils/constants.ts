@@ -23,6 +23,7 @@ export const ROUTES = Object.freeze({
   RULES_CREATE: '/create-rule',
   RULES_EDIT: '/edit-rule',
   RULES_IMPORT: '/import-rule',
+  RULES_DUPLICATE: '/duplicate-rule',
   DETECTORS_CREATE: '/create-detector',
   DETECTOR_DETAILS: '/detector-details',
   EDIT_DETECTOR_DETAILS: '/edit-detector-details',
