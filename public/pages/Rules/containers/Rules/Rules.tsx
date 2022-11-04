@@ -14,8 +14,11 @@ import { RuleTableItem } from '../../utils/helpers';
 import { RuleItemInfoBase } from '../../models/types';
 import { RuleViewerFlyout } from '../../components/RuleViewerFlyout/RuleViewerFlyout';
 import { ROUTES } from '../../../../utils/constants';
+import { NotificationsStart } from 'opensearch-dashboards/public';
 
-export interface RulesProps extends RouteComponentProps {}
+export interface RulesProps extends RouteComponentProps {
+  notifications?: NotificationsStart;
+}
 
 export const Rules: React.FC<RulesProps> = (props) => {
   const services = useContext(ServicesContext) as BrowserServices;
