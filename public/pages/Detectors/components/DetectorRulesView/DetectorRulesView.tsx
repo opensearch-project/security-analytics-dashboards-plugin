@@ -11,12 +11,14 @@ import { getRulesColumns } from '../../../CreateDetector/components/DefineDetect
 import { ServicesContext } from '../../../../services';
 import { Detector } from '../../../../../models/interfaces';
 import { RuleInfo } from '../../../../../server/models/interfaces';
-import { translateToRuleItems } from '../../../../utils/helpers';
+import { errorNotificationToast, translateToRuleItems } from '../../../../utils/helpers';
+import { NotificationsStart } from 'opensearch-dashboards/public';
 
 export interface DetectorRulesViewProps {
   detector: Detector;
   rulesCanFold?: boolean;
   onEditClicked: (enabledRules: RuleItem[], allRuleItems: RuleItem[]) => void;
+  notifications: NotificationsStart;
 }
 
 export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
@@ -57,9 +59,10 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
 
       if (getRulesRes?.ok) {
         return getRulesRes.response.hits.hits;
+      } else {
+        errorNotificationToast(this.props.notifications, 'retrieve', 'rules', getRulesRes.error);
+        return [];
       }
-
-      return [];
     };
 
     const updateRulesState = async () => {
@@ -101,8 +104,7 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
     };
 
     updateRulesState().catch((e) => {
-      console.error('Failed to retrieve rules:', e);
-      // TODO: Show error toast
+      errorNotificationToast(this.props.notifications, 'retrieve', 'rules', e);
     });
   }, [services, props.detector]);
 

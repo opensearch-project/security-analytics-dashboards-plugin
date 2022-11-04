@@ -122,28 +122,42 @@ export default class Main extends Component<MainProps, MainState> {
                               detectorService={services.detectorsService}
                               ruleService={services.ruleService}
                               notificationsService={services.notificationsService}
+                              notifications={core?.notifications}
                             />
                           )}
                         />
                         <Route
                           path={ROUTES.DETECTORS}
                           render={(props: RouteComponentProps) => (
-                            <Detectors {...props} detectorService={services.detectorsService} />
+                            <Detectors
+                              {...props}
+                              detectorService={services.detectorsService}
+                              notifications={core?.notifications}
+                            />
                           )}
                         />
                         <Route
                           path={ROUTES.DETECTORS_CREATE}
                           render={(props: RouteComponentProps) => (
-                            <CreateDetector {...props} isEdit={true} services={services} />
+                            <CreateDetector
+                              {...props}
+                              isEdit={false}
+                              services={services}
+                              notifications={core?.notifications}
+                            />
                           )}
                         />
                         <Route
                           path={ROUTES.RULES}
-                          render={(props: RouteComponentProps) => <Rules {...props} />}
+                          render={(props: RouteComponentProps) => (
+                            <Rules {...props} notifications={core?.notifications} />
+                          )}
                         />
                         <Route
                           path={ROUTES.RULES_CREATE}
-                          render={(props: RouteComponentProps) => <Create {...props} />}
+                          render={(props: RouteComponentProps) => (
+                            <Create {...props} notifications={core?.notifications} />
+                          )}
                         />
                         <Route
                           path={ROUTES.OVERVIEW}
@@ -152,6 +166,7 @@ export default class Main extends Component<MainProps, MainState> {
                               {...props}
                               getStartedDismissedOnce={this.state.getStartedDismissedOnce}
                               onGetStartedDismissed={this.setGetStartedDismissedOnce}
+                              notifications={core?.notifications}
                             />
                           )}
                         />
@@ -164,6 +179,7 @@ export default class Main extends Component<MainProps, MainState> {
                               detectorService={services.detectorsService}
                               findingService={services.findingsService}
                               ruleService={services.ruleService}
+                              notifications={core?.notifications}
                             />
                           )}
                         />
@@ -173,19 +189,23 @@ export default class Main extends Component<MainProps, MainState> {
                             <DetectorDetails
                               detectorService={services.detectorsService}
                               {...props}
+                              notifications={core?.notifications}
                             />
                           )}
                         />
                         <Route
                           path={`${ROUTES.EDIT_DETECTOR_DETAILS}/:id`}
                           render={(props: RouteComponentProps<any, any, any>) => (
-                            <UpdateDetectorBasicDetails {...props} />
+                            <UpdateDetectorBasicDetails
+                              {...props}
+                              notifications={core?.notifications}
+                            />
                           )}
                         />
                         <Route
                           path={`${ROUTES.EDIT_DETECTOR_RULES}/:id`}
                           render={(props: RouteComponentProps<any, any, any>) => (
-                            <UpdateDetectorRules {...props} />
+                            <UpdateDetectorRules {...props} notifications={core?.notifications} />
                           )}
                         />
                         <Route
@@ -195,6 +215,7 @@ export default class Main extends Component<MainProps, MainState> {
                               {...props}
                               filedMappingService={services.fieldMappingService}
                               detectorService={services.detectorsService}
+                              notifications={core?.notifications}
                             />
                           )}
                         />
@@ -206,6 +227,7 @@ export default class Main extends Component<MainProps, MainState> {
                               detectorService={services.detectorsService}
                               ruleService={services.ruleService}
                               notificationsService={services.notificationsService}
+                              notifications={core?.notifications}
                             />
                           )}
                         />

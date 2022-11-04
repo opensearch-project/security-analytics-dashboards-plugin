@@ -8,11 +8,10 @@ import { RouteComponentProps } from 'react-router-dom';
 import { EuiButton, EuiButtonEmpty, EuiFlexGroup, EuiFlexItem, EuiSteps } from '@elastic/eui';
 import DefineDetector from '../components/DefineDetector/containers/DefineDetector';
 import { createDetectorSteps } from '../utils/constants';
-import { BREADCRUMBS, PLUGIN_NAME, ROUTES } from '../../../utils/constants';
+import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR, PLUGIN_NAME, ROUTES } from '../../../utils/constants';
 import ConfigureFieldMapping from '../components/ConfigureFieldMapping';
 import ConfigureAlerts from '../components/ConfigureAlerts';
 import { Detector, FieldMapping } from '../../../../models/interfaces';
-import { EMPTY_DEFAULT_DETECTOR } from '../../../utils/constants';
 import { EuiContainedStepProps } from '@elastic/eui/src/components/steps/steps';
 import { CoreServicesContext } from '../../../components/core_services';
 import { DetectorCreationStep } from '../models/types';
@@ -24,11 +23,14 @@ import {
   RuleItem,
   RuleItemInfo,
 } from '../components/DefineDetector/components/DetectionRules/types/interfaces';
-import { RuleInfo } from '../../../../server/models/interfaces/Rules';
+import { RuleInfo } from '../../../../server/models/interfaces';
+import { NotificationsStart } from 'opensearch-dashboards/public';
+import { errorNotificationToast, successNotificationToast } from '../../../utils/helpers';
 
 interface CreateDetectorProps extends RouteComponentProps {
   isEdit: boolean;
   services: BrowserServices;
+  notifications: NotificationsStart;
 }
 
 interface CreateDetectorState {
@@ -45,10 +47,9 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
 
   constructor(props: CreateDetectorProps) {
     super(props);
-    const initialDetector = EMPTY_DEFAULT_DETECTOR;
     this.state = {
       currentStep: DetectorCreationStep.DEFINE_DETECTOR,
-      detector: initialDetector,
+      detector: EMPTY_DEFAULT_DETECTOR,
       fieldMappings: [],
       stepDataValid: {
         [DetectorCreationStep.DEFINE_DETECTOR]: false,
@@ -89,25 +90,42 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     if (creatingDetector) {
       return;
     }
-
     this.setState({ creatingDetector: true });
-    const createMappingsRes = await this.props.services.fieldMappingService.createMappings(
-      detector.inputs[0].detector_input.indices[0],
-      detector.detector_type,
-      fieldMappings
-    );
+    try {
+      const createMappingsRes = await this.props.services.fieldMappingService.createMappings(
+        detector.inputs[0].detector_input.indices[0],
+        detector.detector_type,
+        fieldMappings
+      );
+      if (!createMappingsRes.ok) {
+        errorNotificationToast(
+          this.props.notifications,
+          'create',
+          'field mappings',
+          createMappingsRes.error
+        );
+      }
 
-    if (createMappingsRes.ok) {
-      console.log('Field mapping creation successful');
+      const createDetectorRes = await this.props.services.detectorsService.createDetector(detector);
+      if (createDetectorRes.ok) {
+        successNotificationToast(
+          this.props.notifications,
+          'created',
+          `detector, "${detector.name}"`
+        );
+        this.props.history.push(`${ROUTES.DETECTOR_DETAILS}/${detector.id}`);
+      } else {
+        errorNotificationToast(
+          this.props.notifications,
+          'create',
+          'detector',
+          createDetectorRes.error
+        );
+      }
+    } catch (e) {
+      errorNotificationToast(this.props.notifications, 'create', 'detector', e);
     }
-
-    const createDetectorRes = await this.props.services.detectorsService.createDetector(detector);
-
-    if (createDetectorRes.ok) {
-      this.props.history.push(ROUTES.DETECTORS);
-    } else {
-      // TODO: show toast notification with error
-    }
+    this.setState({ creatingDetector: false });
   };
 
   onNextClick = () => {
@@ -206,9 +224,21 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
 
         return rules;
       } else {
+        errorNotificationToast(
+          this.props.notifications,
+          'retrieve',
+          `${prePackaged ? 'pre-packaged' : 'custom'}`,
+          rulesRes.error
+        );
         return [];
       }
     } catch (error: any) {
+      errorNotificationToast(
+        this.props.notifications,
+        'retrieve',
+        `${prePackaged ? 'pre-packaged' : 'custom'}`,
+        error
+      );
       return [];
     }
   }
@@ -299,10 +329,10 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
       case DetectorCreationStep.REVIEW_CREATE:
         return (
           <ReviewAndCreate
+            {...this.props}
             detector={this.state.detector}
             existingMappings={this.state.fieldMappings}
             setDetectorCreationStep={this.setCurrentStep}
-            {...this.props}
           />
         );
     }

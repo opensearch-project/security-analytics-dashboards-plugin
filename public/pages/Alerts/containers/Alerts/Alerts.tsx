@@ -41,14 +41,18 @@ import { DISABLE_ACKNOWLEDGED_ALERT_HELP_TEXT } from '../../utils/constants';
 import {
   capitalizeFirstLetter,
   createSelectComponent,
+  errorNotificationToast,
   renderVisualization,
+  successNotificationToast,
 } from '../../../../utils/helpers';
+import { NotificationsStart } from 'opensearch-dashboards/public';
 
 export interface AlertsProps {
   alertService: AlertsService;
   detectorService: DetectorService;
   findingService: FindingsService;
   ruleService: RuleService;
+  notifications: NotificationsStart;
 }
 
 export interface AlertsState {
@@ -61,6 +65,7 @@ export interface AlertsState {
   alertsFiltered: boolean;
   filteredAlerts: AlertItem[];
   detectors: { [key: string]: Detector };
+  loading: boolean;
 }
 
 const groupByOptions = [
@@ -84,6 +89,7 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
       alertsFiltered: false,
       filteredAlerts: [],
       detectors: {},
+      loading: false,
     };
   }
 
@@ -228,32 +234,41 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
   }
 
   async getAlerts() {
-    const { alertService, detectorService } = this.props;
+    this.setState({ loading: true });
+    const { alertService, detectorService, notifications } = this.props;
     const { detectors } = this.state;
+    try {
+      const detectorsRes = await detectorService.getDetectors();
+      if (detectorsRes.ok) {
+        const detectorIds = detectorsRes.response.hits.hits.map((hit) => {
+          detectors[hit._id] = hit._source;
+          return hit._id;
+        });
 
-    const detectorsRes = await detectorService.getDetectors();
-    if (detectorsRes.ok) {
-      const detectorIds = detectorsRes.response.hits.hits.map((hit) => {
-        detectors[hit._id] = hit._source;
-        return hit._id;
-      });
-      let alerts: AlertItem[] = [];
+        let alerts: AlertItem[] = [];
+        for (let id of detectorIds) {
+          const alertsRes = await alertService.getAlerts({ detector_id: id });
 
-      for (let id of detectorIds) {
-        const alertsRes = await alertService.getAlerts({ detector_id: id });
-
-        if (alertsRes.ok) {
-          const detectorAlerts = alertsRes.response.alerts.map((alert) => {
-            const detector = detectors[id];
-            return { ...alert, detectorName: detector.name };
-          });
-          alerts = alerts.concat(detectorAlerts);
+          if (alertsRes.ok) {
+            const detectorAlerts = alertsRes.response.alerts.map((alert) => {
+              const detector = detectors[id];
+              return { ...alert, detectorName: detector.name };
+            });
+            alerts = alerts.concat(detectorAlerts);
+          } else {
+            errorNotificationToast(notifications, 'retrieve', 'alerts', alertsRes.error);
+          }
         }
-      }
 
-      this.setState({ alerts: alerts, detectors: detectors });
-      this.filterAlerts();
+        this.setState({ alerts: alerts, detectors: detectors });
+      } else {
+        errorNotificationToast(notifications, 'retrieve', 'detectors', detectorsRes.error);
+      }
+    } catch (e) {
+      errorNotificationToast(notifications, 'retrieve', 'alerts', e);
     }
+    this.filterAlerts();
+    this.setState({ loading: false });
   }
 
   createAcknowledgeControl() {
@@ -283,8 +298,8 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
   };
 
   onAcknowledge = async (selectedItems: AlertItem[] = []) => {
-    const { alertService } = this.props;
-
+    const { alertService, notifications } = this.props;
+    let successCount = 0;
     try {
       // Separating the selected items by detector ID, and adding all selected alert IDs to an array for that detector ID.
       const detectors: { [key: string]: string[] } = {};
@@ -298,18 +313,17 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
         if (alertIds.length > 0) {
           const response = await alertService.acknowledgeAlerts(alertIds, detectorId);
           if (response.ok) {
-            // TODO display toast when all responses return OK
+            successCount += alertIds.length;
           } else {
-            // TODO display toast
-            console.error('Failed to acknowledge alerts:', response.error);
+            errorNotificationToast(notifications, 'acknowledge', 'alerts', response.error);
           }
         }
       }
     } catch (e) {
-      // TODO display toast
-      console.error('Failed to acknowledge alerts:', response.error);
+      errorNotificationToast(notifications, 'acknowledge', 'alerts', e);
     }
-
+    if (successCount)
+      successNotificationToast(notifications, 'acknowledged', `${successCount} alerts`);
     this.setState({ selectedItems: [] });
     this.onRefresh();
   };
@@ -374,6 +388,7 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
       <>
         {flyoutData && (
           <AlertFlyout
+            {...this.props}
             alertItem={flyoutData.alertItem}
             detector={detectors[flyoutData.alertItem.detector_id]}
             onClose={this.onFlyoutClose}

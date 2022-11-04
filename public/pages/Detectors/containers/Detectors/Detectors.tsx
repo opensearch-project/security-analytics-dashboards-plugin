@@ -24,14 +24,20 @@ import {
 import { BREADCRUMBS, DEFAULT_EMPTY_DATA, PLUGIN_NAME, ROUTES } from '../../../../utils/constants';
 import DeleteModal from '../../../../components/DeleteModal';
 import { getDetectorNames } from '../../utils/helpers';
-import { capitalizeFirstLetter, renderTime } from '../../../../utils/helpers';
+import {
+  capitalizeFirstLetter,
+  errorNotificationToast,
+  renderTime,
+} from '../../../../utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
 import { DetectorsService } from '../../../../services';
 import { DetectorHit } from '../../../../../server/models/interfaces';
+import { NotificationsStart } from 'opensearch-dashboards/public';
 
 interface DetectorsProps extends RouteComponentProps {
   detectorService: DetectorsService;
+  notifications: NotificationsStart;
 }
 
 interface DetectorsState {
@@ -64,24 +70,29 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
 
   getDetectors = async () => {
     this.setState({ loadingDetectors: true });
-    const res = await this.props.detectorService.getDetectors();
-
-    if (res.ok) {
-      const detectors = res.response.hits.hits.map((detector) => {
-        const { custom_rules, pre_packaged_rules } = detector._source.inputs[0].detector_input;
-        const rulesCount = custom_rules.length + pre_packaged_rules.length;
-        return {
-          ...detector,
-          detectorName: detector._source.name,
-          lastUpdatedTime: detector._source.last_update_time,
-          logType: detector._source.detector_type,
-          rulesCount: rulesCount,
-          status: detector._source.enabled ? 'Active' : 'Inactive',
-        };
-      });
-      this.setState({ detectorHits: detectors });
+    const { detectorService, notifications } = this.props;
+    try {
+      const res = await detectorService.getDetectors();
+      if (res.ok) {
+        const detectors = res.response.hits.hits.map((detector) => {
+          const { custom_rules, pre_packaged_rules } = detector._source.inputs[0].detector_input;
+          const rulesCount = custom_rules.length + pre_packaged_rules.length;
+          return {
+            ...detector,
+            detectorName: detector._source.name,
+            lastUpdatedTime: detector._source.last_update_time,
+            logType: detector._source.detector_type,
+            rulesCount: rulesCount,
+            status: detector._source.enabled ? 'Active' : 'Inactive',
+          };
+        });
+        this.setState({ detectorHits: detectors });
+      } else {
+        errorNotificationToast(notifications, 'retrieve', 'detectors', res.error);
+      }
+    } catch (e) {
+      errorNotificationToast(notifications, 'retrieve', 'detectors', e);
     }
-
     this.setState({ loadingDetectors: false });
   };
 
@@ -94,16 +105,20 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
   };
 
   toggleDetector = async (detector: DetectorHit, shouldStart: boolean) => {
-    const updateRes = await this.props.detectorService.updateDetector(detector._id, {
-      ...detector._source,
-      enabled: shouldStart,
-    });
+    const { detectorService, notifications } = this.props;
+    try {
+      const updateRes = await detectorService.updateDetector(detector._id, {
+        ...detector._source,
+        enabled: shouldStart,
+      });
 
-    if (!updateRes.ok) {
-      // TODO: show error
-    } else {
-      this.getDetectors();
+      if (!updateRes.ok) {
+        errorNotificationToast(notifications, 'update', 'detector', updateRes.error);
+      }
+    } catch (e) {
+      errorNotificationToast(notifications, 'update', 'detector', e);
     }
+    this.getDetectors();
   };
 
   onClickDelete = async () => {
@@ -117,10 +132,14 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
   };
 
   deleteDetector = async (id: string) => {
-    const deleteRes = await this.props.detectorService.deleteDetector(id);
-
-    if (!deleteRes.ok) {
-      // TODO: Show error
+    const { detectorService, notifications } = this.props;
+    try {
+      const deleteRes = await detectorService.deleteDetector(id);
+      if (!deleteRes.ok) {
+        errorNotificationToast(notifications, 'delete', 'detector', deleteRes.error);
+      }
+    } catch (e) {
+      errorNotificationToast(notifications, 'delete', 'detector', e);
     }
   };
 

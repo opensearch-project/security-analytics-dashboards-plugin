@@ -13,11 +13,14 @@ import { DetectorHit, GetDetectorResponse } from '../../../../../server/models/i
 import { EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
 import { DetectorsService } from '../../../../services';
 import { ServerResponse } from '../../../../../server/models/types';
+import { NotificationsStart } from 'opensearch-dashboards/public';
+import { errorNotificationToast } from '../../../../utils/helpers';
 
 export interface UpdateFieldMappingsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
   detectorService: DetectorsService;
   filedMappingService: FieldMappingService;
+  notifications: NotificationsStart;
 }
 
 export interface UpdateFieldMappingsState {
@@ -72,12 +75,10 @@ export default class UpdateFieldMappings extends Component<
 
         this.setState({ detector: detector });
       } else {
-        console.error('Failed to retrieve detector:', response.error);
-        // TODO: Display toast with error details
+        errorNotificationToast(this.props.notifications, 'retrieve', 'detector', response.error);
       }
     } catch (e) {
-      console.error('Failed to retrieve detector:', e);
-      // TODO: Display toast with error details
+      errorNotificationToast(this.props.notifications, 'retrieve', 'detector', e);
     }
     this.setState({ loading: false });
   };
@@ -108,8 +109,12 @@ export default class UpdateFieldMappings extends Component<
         fieldMappings
       );
       if (!createMappingsResponse.ok) {
-        // TODO: show toast notification with error
-        console.error('Failed to update field mappings: ', createMappingsResponse.error);
+        errorNotificationToast(
+          this.props.notifications,
+          'update',
+          'field mappings',
+          createMappingsResponse.error
+        );
       }
 
       const updateDetectorResponse = await detectorService.updateDetector(
@@ -117,12 +122,15 @@ export default class UpdateFieldMappings extends Component<
         detector
       );
       if (!updateDetectorResponse.ok) {
-        // TODO: show toast notification with error
-        console.error('Failed to update detector: ', updateDetectorResponse.error);
+        errorNotificationToast(
+          this.props.notifications,
+          'update',
+          'detector',
+          updateDetectorResponse.error
+        );
       }
     } catch (e) {
-      // TODO: show toast notification with error
-      console.error('Failed to update detector: ', e);
+      errorNotificationToast(this.props.notifications, 'update', 'detector', e);
     }
 
     this.setState({ submitting: false });

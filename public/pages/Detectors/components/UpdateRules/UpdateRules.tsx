@@ -19,13 +19,17 @@ import { DetectionRulesTable } from '../../../CreateDetector/components/DefineDe
 import { EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
 import { ServicesContext } from '../../../../services';
 import { ServerResponse } from '../../../../../server/models/types';
+import { NotificationsStart } from 'opensearch-dashboards/public';
+import { errorNotificationToast } from '../../../../utils/helpers';
 
 export interface UpdateDetectorRulesProps
   extends RouteComponentProps<
     any,
     any,
     { detectorHit: DetectorHit; enabledRules?: RuleItem[]; allRules?: RuleItem[] }
-  > {}
+  > {
+  notifications: NotificationsStart;
+}
 
 export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) => {
   const services = useContext(ServicesContext);
@@ -39,100 +43,97 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
   useEffect(() => {
     const getDetector = async () => {
       setLoading(true);
-      try {
-        const response = (await services?.detectorsService.getDetectors()) as ServerResponse<
-          GetDetectorResponse
-        >;
-        if (response.ok) {
-          const detectorHit = response.response.hits.hits.find(
-            (detectorHit) => detectorHit._id === detectorId
-          );
-          const newDetector = { ...detectorHit._source, id: detectorId };
-          setDetector(newDetector);
-          await getRules(newDetector);
-        } else {
-          console.error('Failed to retrieve detector:', response.error);
-          // TODO: Display toast with error details
-        }
-      } catch (e) {
-        console.error('Failed to retrieve detector:', e);
-        // TODO: Display toast with error details
+      const response = (await services?.detectorsService.getDetectors()) as ServerResponse<
+        GetDetectorResponse
+      >;
+      if (response.ok) {
+        const detectorHit = response.response.hits.hits.find(
+          (detectorHit) => detectorHit._id === detectorId
+        );
+        const newDetector = { ...detectorHit._source, id: detectorId };
+        setDetector(newDetector);
+        await getRules(newDetector);
+      } else {
+        errorNotificationToast(this.props.notifications, 'retrieve', 'detector', response.error);
       }
       setLoading(false);
     };
 
     const getRules = async (detector: Detector): Promise<RuleInfo[]> => {
-      try {
-        const prePackagedResponse = (await services?.ruleService.getRules(true, {
-          from: 0,
-          size: 5000,
-          query: {
-            nested: {
-              path: 'rule',
-              query: {
-                bool: {
-                  must: [{ match: { 'rule.category': `${detector.detector_type.toLowerCase()}` } }],
-                },
+      const prePackagedResponse = (await services?.ruleService.getRules(true, {
+        from: 0,
+        size: 5000,
+        query: {
+          nested: {
+            path: 'rule',
+            query: {
+              bool: {
+                must: [{ match: { 'rule.category': `${detector.detector_type.toLowerCase()}` } }],
               },
             },
           },
-        })) as ServerResponse<GetRulesResponse>;
-        if (prePackagedResponse.ok) {
-          const ruleInfos = prePackagedResponse.response.hits.hits;
-          const enabledRuleIds = detector.inputs[0].detector_input.pre_packaged_rules.map(
-            (rule) => rule.id
-          );
-          const ruleItems = ruleInfos.map((rule) => ({
-            name: rule._source.title,
-            id: rule._id,
-            severity: rule._source.level,
-            logType: rule._source.category,
-            library: 'Sigma',
-            description: rule._source.description,
-            active: enabledRuleIds.includes(rule._id),
-          }));
-          setPrePackagedRuleItems(ruleItems);
-        } else {
-          console.error('Failed to retrieve pre-packaged rules:', prePackagedResponse.error);
-          // TODO implement toast
-        }
+        },
+      })) as ServerResponse<GetRulesResponse>;
+      if (prePackagedResponse.ok) {
+        const ruleInfos = prePackagedResponse.response.hits.hits;
+        const enabledRuleIds = detector.inputs[0].detector_input.pre_packaged_rules.map(
+          (rule) => rule.id
+        );
+        const ruleItems = ruleInfos.map((rule) => ({
+          name: rule._source.title,
+          id: rule._id,
+          severity: rule._source.level,
+          logType: rule._source.category,
+          library: 'Sigma',
+          description: rule._source.description,
+          active: enabledRuleIds.includes(rule._id),
+        }));
+        setPrePackagedRuleItems(ruleItems);
+      } else {
+        errorNotificationToast(
+          this.props.notifications,
+          'retrieve',
+          'pre-packaged rules',
+          prePackagedResponse.error
+        );
+      }
 
-        const customResponse = (await services?.ruleService.getRules(false, {
-          from: 0,
-          size: 5000,
-          query: {
-            nested: {
-              path: 'rule',
-              query: {
-                bool: {
-                  must: [{ match: { 'rule.category': `${detector.detector_type.toLowerCase()}` } }],
-                },
+      const customResponse = (await services?.ruleService.getRules(false, {
+        from: 0,
+        size: 5000,
+        query: {
+          nested: {
+            path: 'rule',
+            query: {
+              bool: {
+                must: [{ match: { 'rule.category': `${detector.detector_type.toLowerCase()}` } }],
               },
             },
           },
-        })) as ServerResponse<GetRulesResponse>;
-        if (customResponse.ok) {
-          const ruleInfos = customResponse.response.hits.hits;
-          const enabledRuleIds = detector.inputs[0].detector_input.custom_rules.map(
-            (rule) => rule.id
-          );
-          const ruleItems = ruleInfos.map((rule) => ({
-            name: rule._source.title,
-            id: rule._id,
-            severity: rule._source.level,
-            logType: rule._source.category,
-            library: 'Custom',
-            description: rule._source.description,
-            active: enabledRuleIds.includes(rule._id),
-          }));
-          setCustomRuleItems(ruleItems);
-        } else {
-          console.error('Failed to retrieve custom rules:', customResponse.error);
-          // TODO implement toast
-        }
-      } catch (e) {
-        console.error('Failed to retrieve rules:', e);
-        // TODO implement toast
+        },
+      })) as ServerResponse<GetRulesResponse>;
+      if (customResponse.ok) {
+        const ruleInfos = customResponse.response.hits.hits;
+        const enabledRuleIds = detector.inputs[0].detector_input.custom_rules.map(
+          (rule) => rule.id
+        );
+        const ruleItems = ruleInfos.map((rule) => ({
+          name: rule._source.title,
+          id: rule._id,
+          severity: rule._source.level,
+          logType: rule._source.category,
+          library: 'Custom',
+          description: rule._source.description,
+          active: enabledRuleIds.includes(rule._id),
+        }));
+        setCustomRuleItems(ruleItems);
+      } else {
+        errorNotificationToast(
+          this.props.notifications,
+          'retrieve',
+          'custom rules',
+          customResponse.error
+        );
       }
     };
 
@@ -141,8 +142,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
     };
 
     execute().catch((e) => {
-      console.error('Failed to retrieve detector and rules:', e);
-      // TODO implement toast
+      errorNotificationToast(this.props.notifications, 'retrieve', 'detector and rules', e);
     });
   }, [services, detectorId]);
 
@@ -191,16 +191,19 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
       )) as ServerResponse<UpdateDetectorResponse>;
 
       if (!updateDetectorRes.ok) {
-        console.error('Failed to update detector:', updateDetectorRes.error);
-        // TODO: Show error toast
+        errorNotificationToast(
+          this.props.notifications,
+          'update',
+          'detector',
+          updateDetectorRes.error
+        );
       }
 
       props.history.replace({
         pathname: `${ROUTES.DETECTOR_DETAILS}/${detectorId}`,
       });
     } catch (e) {
-      console.error('Failed to update detector:', e);
-      // TODO: Show error toast
+      errorNotificationToast(this.props.notifications, 'update', 'detector', e);
     }
     setSubmitting(false);
   };
@@ -214,6 +217,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
       <EuiSpacer size="xl" />
 
       <DetectionRulesTable
+        {...this.props}
         loading={loading}
         ruleItems={ruleItems}
         onRuleActivationToggle={onToggle}

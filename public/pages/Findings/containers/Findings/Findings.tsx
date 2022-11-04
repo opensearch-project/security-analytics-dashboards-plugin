@@ -33,8 +33,13 @@ import {
   getNotificationChannels,
   parseNotificationChannelsToOptions,
 } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
-import { createSelectComponent, renderVisualization } from '../../../../utils/helpers';
+import {
+  createSelectComponent,
+  errorNotificationToast,
+  renderVisualization,
+} from '../../../../utils/helpers';
 import { DetectorHit, RuleSource } from '../../../../../server/models/interfaces';
+import { NotificationsStart } from 'opensearch-dashboards/public';
 
 interface FindingsProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -42,6 +47,7 @@ interface FindingsProps extends RouteComponentProps {
   notificationsService: NotificationsService;
   opensearchService: OpenSearchService;
   ruleService: RuleService;
+  notifications: NotificationsStart;
 }
 
 interface FindingsState {
@@ -114,10 +120,8 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
 
   getFindings = async () => {
     this.setState({ loading: true });
-
+    const { findingsService, detectorService, notifications } = this.props;
     try {
-      const { findingsService, detectorService } = this.props;
-
       const detectorsRes = await detectorService.getDetectors();
       if (detectorsRes.ok) {
         const detectors = detectorsRes.response.hits.hits;
@@ -140,6 +144,8 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
               }
             );
             findings = findings.concat(detectorFindings);
+          } else {
+            errorNotificationToast(notifications, 'retrieve', 'findings', findingRes.error);
           }
         }
 
@@ -147,19 +153,17 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
 
         this.setState({ findings, detectors: detectors.map((detector) => detector._source) });
       } else {
-        console.error('Failed to retrieve findings:', detectorsRes.error);
-        // TODO: Display toast with error details
+        errorNotificationToast(notifications, 'retrieve', 'findings', detectorsRes.error);
       }
     } catch (e) {
-      console.error('Failed to retrieve findings:', e);
-      // TODO: Display toast with error details
+      errorNotificationToast(notifications, 'retrieve', 'findings', e);
     }
     this.setState({ loading: false });
   };
 
   getRules = async (ruleIds: string[]) => {
+    const { notifications, ruleService } = this.props;
     try {
-      const { ruleService } = this.props;
       const body = {
         from: 0,
         size: 5000,
@@ -182,18 +186,21 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
       if (prePackagedResponse.ok) {
         prePackagedResponse.response.hits.hits.forEach((hit) => (allRules[hit._id] = hit._source));
       } else {
-        console.error('Failed to retrieve pre-packaged rules:', prePackagedResponse.error);
+        errorNotificationToast(
+          notifications,
+          'retrieve',
+          'pre-packaged rules',
+          prePackagedResponse.error
+        );
       }
       if (customResponse.ok) {
         customResponse.response.hits.hits.forEach((hit) => (allRules[hit._id] = hit._source));
       } else {
-        console.error('Failed to retrieve custom rules:', customResponse.error);
-        // TODO: Display toast with error details
+        errorNotificationToast(notifications, 'retrieve', 'custom rules', customResponse.error);
       }
       this.setState({ rules: allRules });
     } catch (e) {
-      console.error('Failed to retrieve rules:', e);
-      // TODO: Display toast with error details
+      errorNotificationToast(notifications, 'retrieve', 'rules', e);
     }
   };
 

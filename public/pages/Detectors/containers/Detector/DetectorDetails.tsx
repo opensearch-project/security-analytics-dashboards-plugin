@@ -27,6 +27,8 @@ import { FieldMappingsView } from '../../components/FieldMappingsView/FieldMappi
 import { AlertTriggersView } from '../AlertTriggersView/AlertTriggersView';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { DetectorsService } from '../../../../services';
+import { errorNotificationToast } from '../../../../utils/helpers';
+import { NotificationsStart } from 'opensearch-dashboards/public';
 
 export interface DetectorDetailsProps
   extends RouteComponentProps<
@@ -35,6 +37,7 @@ export interface DetectorDetailsProps
     { detectorHit: DetectorHit; enabledRules?: RuleItem[]; allRules?: RuleItem[] }
   > {
   detectorService: DetectorsService;
+  notifications: NotificationsStart;
 }
 
 export interface DetectorDetailsState {
@@ -98,6 +101,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
         name: 'Detector configuration',
         content: (
           <DetectorDetailsView
+            {...this.props}
             detector={this.detectorHit._source}
             enabled_time={this.detectorHit._source.enabled_time}
             last_update_time={this.detectorHit._source.last_update_time}
@@ -111,6 +115,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
         name: 'Field mappings',
         content: (
           <FieldMappingsView
+            {...this.props}
             detector={this.detectorHit._source}
             editFieldMappings={this.editFieldMappings}
           />
@@ -121,6 +126,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
         name: 'Alert triggers',
         content: (
           <AlertTriggersView
+            {...this.props}
             detector={this.detectorHit._source}
             editAlertTriggers={this.editAlertTriggers}
           />
@@ -148,7 +154,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   }
 
   getDetector = async () => {
-    const { detectorService } = this.props;
+    const { detectorService, notifications } = this.props;
     try {
       const response = await detectorService.getDetectors();
       if (response.ok) {
@@ -169,12 +175,10 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
           BREADCRUMBS.DETECTORS_DETAILS(detector._source.name),
         ]);
       } else {
-        console.error('Failed to retrieve detectors:', response.error);
-        // TODO: Display toast with error details
+        errorNotificationToast(notifications, 'retrieve', 'detector', response.error);
       }
     } catch (e) {
-      console.error('Failed to retrieve detectors:', e);
-      // TODO: Display toast with error details
+      errorNotificationToast(notifications, 'retrieve', 'detector', e);
     }
     this.getTabs();
   };
@@ -189,34 +193,43 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   };
 
   onDelete = async () => {
+    const { detectorService, notifications } = this.props;
     const detectorId = this.detectorHit._id;
-    const deleteRes = await this.props.detectorService.deleteDetector(detectorId);
-
-    if (!deleteRes.ok) {
-      // TODO: Show error
-    } else {
-      this.props.history.push(ROUTES.DETECTORS);
+    try {
+      const deleteRes = detectorService.deleteDetector(detectorId);
+      if (!deleteRes.ok) {
+        errorNotificationToast(notifications, 'delete', 'detector', deleteRes.error);
+      } else {
+        this.props.history.push(ROUTES.DETECTORS);
+      }
+    } catch (e) {
+      errorNotificationToast(notifications, 'delete', 'detector', e);
     }
   };
 
   toggleDetector = async () => {
-    const detectorId = this.detectorHit._id;
-    const detector = this.detectorHit._source;
-    const updateRes = await this.props.detectorService.updateDetector(detectorId, {
-      ...detector,
-      enabled: !this.detectorHit._source.enabled,
-    });
+    const { detectorService, notifications } = this.props;
+    try {
+      const detectorId = this.detectorHit._id;
+      const detector = this.detectorHit._source;
+      const updateRes = detectorService.updateDetector(detectorId, {
+        ...detector,
+        enabled: !this.detectorHit._source.enabled,
+      });
 
-    if (!updateRes.ok) {
-      // TODO: show error
-    } else {
-      this.detectorHit = {
-        ...this.detectorHit,
-        _source: {
-          ...this.detectorHit._source,
-          enabled: !this.detectorHit._source.enabled,
-        },
-      };
+      if (updateRes.ok) {
+        this.detectorHit = {
+          ...this.detectorHit,
+          _source: {
+            ...this.detectorHit._source,
+            enabled: !this.detectorHit._source.enabled,
+          },
+        };
+      } else {
+        errorNotificationToast(notifications, 'update', 'detector', updateRes.error);
+      }
+    } catch (e) {
+      errorNotificationToast(notifications, 'update', 'detector', e);
     }
   };
 

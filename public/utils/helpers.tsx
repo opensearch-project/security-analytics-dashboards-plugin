@@ -22,9 +22,10 @@ import {
   RuleItemInfo,
 } from '../pages/CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { compile, TopLevelSpec } from 'vega-lite';
-import { View, parse } from 'vega/build-es5/vega.js';
+import { parse, View } from 'vega/build-es5/vega.js';
 import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter/build/vega-interpreter.module';
 import { RuleInfo } from '../../server/models/interfaces';
+import { NotificationsStart } from 'opensearch-dashboards/public';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
@@ -187,4 +188,34 @@ export const capitalizeFirstLetter = (str: string) => {
   }
 
   return `${str.charAt(0).toUpperCase()}${str.slice(1).toLowerCase()}`;
+};
+
+// A helper function that shows toast messages for backend errors.
+export const errorNotificationToast = (
+  notifications: NotificationsStart | null,
+  actionName: string,
+  objectName: string,
+  errorMessage: string = ''
+) => {
+  const message = `Failed to ${actionName} ${objectName}:`;
+  console.error(message, errorMessage);
+  notifications?.toasts.addDanger({
+    title: message,
+    text: errorMessage,
+    toastLifeTimeMs: 20000, // the default lifetime for toasts is 10 sec
+  });
+};
+
+// A helper function that shows toast messages for successful actions.
+export const successNotificationToast = (
+  notifications: NotificationsStart | null,
+  actionName: string,
+  objectName: string,
+  successMessage: string = ''
+) => {
+  notifications?.toasts.addSuccess({
+    title: `Successfully ${actionName} ${objectName}`,
+    text: successMessage,
+    toastLifeTimeMs: 20000, // the default lifetime for toasts is 10 sec
+  });
 };

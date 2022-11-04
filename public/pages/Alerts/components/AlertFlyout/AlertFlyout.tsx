@@ -21,12 +21,17 @@ import { AlertItem, RuleSource } from '../../../../../server/models/interfaces';
 import React from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { ALERT_STATE, DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
-import { createTextDetailsGroup, renderTime } from '../../../../utils/helpers';
+import {
+  createTextDetailsGroup,
+  errorNotificationToast,
+  renderTime,
+} from '../../../../utils/helpers';
 import { FindingsService, RuleService } from '../../../../services';
 import FindingDetailsFlyout from '../../../Findings/components/FindingDetailsFlyout';
 import { Detector, Rule } from '../../../../../models/interfaces';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { Finding } from '../../../Findings/models/interfaces';
+import { NotificationsStart } from 'opensearch-dashboards/public';
 
 export interface AlertFlyoutProps {
   alertItem: AlertItem;
@@ -35,6 +40,7 @@ export interface AlertFlyoutProps {
   ruleService: RuleService;
   onClose: () => void;
   onAcknowledge: (selectedItems: AlertItem[]) => void;
+  notifications: NotificationsStart;
 }
 
 export interface AlertFlyoutState {
@@ -67,20 +73,28 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
 
   getFindings = async () => {
     this.setState({ loading: true });
-    const findingRes = await this.props.findingsService.getFindings({
-      detectorId: this.props.alertItem.detector_id,
-    });
-
-    if (findingRes.ok) {
-      this.setState({ findingItems: findingRes.response.findings });
+    const {
+      alertItem: { detector_id },
+      findingsService,
+      notifications,
+    } = this.props;
+    try {
+      const findingRes = await findingsService.getFindings({ detectorId: detector_id });
+      if (findingRes.ok) {
+        this.setState({ findingItems: findingRes.response.findings });
+      } else {
+        errorNotificationToast(notifications, 'retrieve', 'findings', findingRes.error);
+      }
+    } catch (e) {
+      errorNotificationToast(notifications, 'retrieve', 'findings', e);
     }
     await this.getRules();
     this.setState({ loading: false });
   };
 
   getRules = async () => {
+    const { notifications, ruleService } = this.props;
     try {
-      const { ruleService } = this.props;
       const { findingItems } = this.state;
       const ruleIds: string[] = [];
       findingItems.forEach((finding) => {
@@ -111,20 +125,22 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
             (hit) => (allRules[hit._id] = hit._source)
           );
         } else {
-          console.error('Failed to retrieve pre-packaged rules:', prePackagedResponse.error);
+          errorNotificationToast(
+            notifications,
+            'retrieve',
+            'pre-packaged rules',
+            prePackagedResponse.error
+          );
         }
         if (customResponse.ok) {
           customResponse.response.hits.hits.forEach((hit) => (allRules[hit._id] = hit._source));
         } else {
-          console.error('Failed to retrieve custom rules:', customResponse.error);
-          // TODO: Display toast with error details
+          errorNotificationToast(notifications, 'retrieve', 'custom rules', customResponse.error);
         }
-
         this.setState({ rules: allRules });
       }
     } catch (e) {
-      console.error('Failed to retrieve rules:', e);
-      // TODO: Display toast with error details
+      errorNotificationToast(notifications, 'retrieve', 'rules', e);
     }
   };
 

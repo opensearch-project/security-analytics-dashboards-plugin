@@ -36,6 +36,7 @@ export class DetectorDetailsView extends React.Component<
     } = this.props;
     const detectorRules = (
       <DetectorRulesView
+        {...this.props}
         detector={detector}
         rulesCanFold={rulesCanFold}
         onEditClicked={editDetectorRules}
@@ -45,6 +46,7 @@ export class DetectorDetailsView extends React.Component<
     return (
       <>
         <DetectorBasicDetailsView
+          {...this.props}
           detector={detector}
           enabled_time={enabled_time}
           last_update_time={last_update_time}
