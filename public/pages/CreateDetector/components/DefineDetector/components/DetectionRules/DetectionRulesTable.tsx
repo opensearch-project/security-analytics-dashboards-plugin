@@ -4,11 +4,11 @@
  */
 
 import { CriteriaWithPagination, EuiInMemoryTable } from '@elastic/eui';
-import { ruleSeverity, ruleSource, ruleTypes } from '../../../../../Rules/lib/helpers';
 import React from 'react';
 import { RuleItem } from './types/interfaces';
 import { getRulesColumns } from './utils/constants';
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
+import { ruleTypes, ruleSeverity, ruleSource } from '../../../../../Rules/utils/constants';
 
 export interface DetectionRulesTableProps {
   ruleItems: RuleItem[];
@@ -16,7 +16,7 @@ export interface DetectionRulesTableProps {
   onAllRulesToggled?: (enabled: boolean) => void;
   onRuleActivationToggle: (changedItem: RuleItem, isActive: boolean) => void;
   onTableChange?: (nextValues: CriteriaWithPagination<RuleItem>) => void;
-  loading: boolean;
+  loading?: boolean;
 }
 
 const rulePriorityBySeverity: { [severity: string]: number } = {

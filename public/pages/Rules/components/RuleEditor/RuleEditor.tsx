@@ -18,9 +18,9 @@ import {
   EuiCodeEditor,
   EuiComboBoxOptionOption,
 } from '@elastic/eui';
-import { ruleTypes, ruleStatus } from '../../lib/helpers';
 import { Rule } from '../../../../../models/interfaces';
 import { FieldTextArray } from './FieldTextArray';
+import { ruleStatus, ruleTypes } from '../../utils/constants';
 
 export interface RuleEditorProps {
   services: BrowserServices;
