@@ -193,7 +193,11 @@ export default class Main extends Component<MainProps, MainState> {
                         <Route
                           path={ROUTES.RULES_IMPORT}
                           render={(props: RouteComponentProps) => (
-                            <ImportRule services={services} history={props.history} />
+                            <ImportRule
+                              services={services}
+                              history={props.history}
+                              notifications={core?.notifications}
+                            />
                           )}
                         />
                         <Route

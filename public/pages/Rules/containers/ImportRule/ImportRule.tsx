@@ -12,13 +12,16 @@ import { Rule } from '../../../../../models/interfaces';
 import { RouteComponentProps } from 'react-router-dom';
 import { load, safeDump } from 'js-yaml';
 import { ContentPanel } from '../../../../components/ContentPanel';
+import { NotificationsStart } from 'opensearch-dashboards/public';
+import { errorNotificationToast } from '../../../../utils/helpers';
 
 export interface ImportRuleProps {
   services: BrowserServices;
   history: RouteComponentProps['history'];
+  notifications?: NotificationsStart;
 }
 
-export const ImportRule: React.FC<ImportRuleProps> = ({ history, services }) => {
+export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notifications }) => {
   const [fileError, setFileError] = useState('');
   const onChange = useCallback((files: any) => {
     setFileError('');
@@ -101,11 +104,10 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services }) => 
       const updateRuleRes = await services.ruleService.createRule(rule);
 
       if (!updateRuleRes.ok) {
-        // TODO: show toast notification
-        alert('Failed rule creation');
+        errorNotificationToast(notifications!, 'create', 'rule', updateRuleRes.error);
+      } else {
+        history.replace(ROUTES.RULES);
       }
-
-      history.replace(ROUTES.RULES);
     };
 
     return (
