@@ -15,6 +15,7 @@ import { ContentPanel } from '../../../../components/ContentPanel';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../../../../utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
+import { validateRule } from '../../utils/helpers';
 
 export interface ImportRuleProps {
   services: BrowserServices;
@@ -104,6 +105,10 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
 
   const footerActions: React.FC<{ rule: Rule }> = ({ rule }) => {
     const onCreate = async () => {
+      if (!validateRule(rule, notifications!, 'create')) {
+        return;
+      }
+
       const updateRuleRes = await services.ruleService.createRule(rule);
 
       if (!updateRuleRes.ok) {

@@ -130,7 +130,12 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
         <EuiFlexGroup component="span">
           <EuiFlexItem grow={false} style={{ minWidth: 400 }}>
             <EuiFormRow label="Rule name">
-              <EuiFieldText placeholder="Enter rule name" value={name} onChange={onNameChange} />
+              <EuiFieldText
+                placeholder="Enter rule name"
+                value={name}
+                onChange={onNameChange}
+                required
+              />
             </EuiFormRow>
           </EuiFlexItem>
           <EuiFlexItem>
@@ -176,6 +181,7 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
             ]}
             onChange={onLevelChange}
             value={level}
+            required
           />
         </EuiFormRow>
 
@@ -210,7 +216,12 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
         />
 
         <EuiFormRow label="Author">
-          <EuiFieldText placeholder="Enter author name" value={author} onChange={onAuthorChange} />
+          <EuiFieldText
+            placeholder="Enter author name"
+            value={author}
+            onChange={onAuthorChange}
+            required
+          />
         </EuiFormRow>
 
         <EuiSpacer />
@@ -221,6 +232,7 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
             options={ruleStatus.map((status: string) => ({ value: status, text: status }))}
             onChange={onStatusChange}
             value={status}
+            required
           />
         </EuiFormRow>
 
