@@ -3,6 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import Rules from './containers/Rules/Rules';
+import { Rules } from './containers/Rules/Rules';
 
 export default Rules;

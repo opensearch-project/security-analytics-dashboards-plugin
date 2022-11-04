@@ -5,6 +5,8 @@
 
 import { ALERT_STATE } from '../../../utils/constants';
 
+export const DISABLE_ACKNOWLEDGED_ALERT_HELP_TEXT = 'Only active alerts can be acknowledged.';
+
 export enum AlertSeverity {
   ONE = '1',
   TWO = '2',

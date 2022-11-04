@@ -9,3 +9,4 @@ export * from './OpenSearchRoutes';
 export * from './FieldMappingRoutes';
 export * from './IndexRoutes';
 export * from './AlertRoutes';
+export * from './NotificationsRoutes';

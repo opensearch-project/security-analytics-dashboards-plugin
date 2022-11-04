@@ -3,21 +3,63 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ContentPanel } from '../../../../../components/ContentPanel';
 import React from 'react';
-import { createDetectorSteps } from '../../../utils/constants';
+import { EuiSpacer, EuiTitle } from '@elastic/eui';
+import { DetectorDetailsView } from '../../../../Detectors/containers/DetectorDetailsView/DetectorDetailsView';
+import { FieldMappingsView } from '../../../../Detectors/components/FieldMappingsView/FieldMappingsView';
+import { AlertTriggersView } from '../../../../Detectors/containers/AlertTriggersView/AlertTriggersView';
+import { RouteComponentProps } from 'react-router-dom';
+import { Detector, FieldMapping } from '../../../../../../models/interfaces';
 import { DetectorCreationStep } from '../../../models/types';
 
-export interface ReviewAndCreateProps {}
+export interface ReviewAndCreateProps extends RouteComponentProps {
+  detector: Detector;
+  existingMappings: FieldMapping[];
+  setDetectorCreationStep: (step: DetectorCreationStep) => void;
+}
 
-export class ReviewAndCreate extends React.Component<ReviewAndCreateProps> {
+export interface ReviewAndCreateState {}
+
+export class ReviewAndCreate extends React.Component<ReviewAndCreateProps, ReviewAndCreateState> {
+  setDefineDetectorStep = () => {
+    this.props.setDetectorCreationStep(DetectorCreationStep.DEFINE_DETECTOR);
+  };
+
+  setConfigureFieldMappingStep = () => {
+    this.props.setDetectorCreationStep(DetectorCreationStep.CONFIGURE_FIELD_MAPPING);
+  };
+
+  setConfigureAlertsStep = () => {
+    this.props.setDetectorCreationStep(DetectorCreationStep.CONFIGURE_ALERTS);
+  };
+
   render() {
     return (
-      <ContentPanel title={createDetectorSteps[DetectorCreationStep.REVIEW_CREATE].title}>
-        {/* <DetectorDetailsReview />
-            <FieldMappingReview />
-            <AlertTriggersReview /> */}
-      </ContentPanel>
+      <div>
+        <EuiTitle size={'l'}>
+          <h3>Review and create</h3>
+        </EuiTitle>
+        <DetectorDetailsView
+          {...this.props}
+          detector={this.props.detector}
+          rulesCanFold={true}
+          editBasicDetails={this.setDefineDetectorStep}
+          editDetectorRules={this.setDefineDetectorStep}
+        />
+        <EuiSpacer size="l" />
+        <FieldMappingsView
+          {...this.props}
+          detector={this.props.detector}
+          existingMappings={this.props.existingMappings}
+          editFieldMappings={this.setConfigureFieldMappingStep}
+        />
+        <EuiSpacer size="l" />
+        <AlertTriggersView
+          {...this.props}
+          detector={this.props.detector}
+          editAlertTriggers={this.setConfigureAlertsStep}
+        />
+      </div>
     );
   }
 }

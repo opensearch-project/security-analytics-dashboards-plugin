@@ -9,8 +9,10 @@ import {
   OpenSearchService,
   FieldMappingService,
   AlertsService,
+  IndexService,
+  RuleService,
+  NotificationsService,
 } from '../services';
-import IndexService from '../services/IndexService';
 
 export interface BrowserServices {
   detectorsService: DetectorsService;
@@ -19,4 +21,20 @@ export interface BrowserServices {
   opensearchService: OpenSearchService;
   fieldMappingService: FieldMappingService;
   alertService: AlertsService;
+  ruleService: RuleService;
+  notificationsService: NotificationsService;
+}
+
+export interface RulesSharedState {
+  page: RulesPage;
+  rulesOptions: {
+    name: string;
+    id: string;
+    severity: string;
+    tags: string[];
+  }[];
+}
+
+export interface RulesPage {
+  index: number;
 }

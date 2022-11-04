@@ -14,9 +14,9 @@ import {
 } from '@elastic/eui';
 import { DEFAULT_EMPTY_DATA } from '../../../../../../utils/constants';
 import { STATUS_ICON_PROPS } from '../../utils/constants';
-import SIEMFieldNameSelector from './SIEMFieldName';
+import FieldNameSelector from './FieldNameSelector';
 import { FieldMappingsTableItem } from '../../../../models/interfaces';
-import { IndexFieldToAliasMap } from '../../containers/ConfigureFieldMapping';
+import { ruleFieldToIndexFieldMap } from '../../containers/ConfigureFieldMapping';
 
 export enum MappingViewType {
   Readonly,
@@ -29,7 +29,7 @@ export interface MappingProps {
   };
   [MappingViewType.Edit]: {
     type: MappingViewType.Edit;
-    createdMappings: IndexFieldToAliasMap;
+    existingMappings: ruleFieldToIndexFieldMap;
     invalidMappingFieldNames: string[];
     onMappingCreation: (fieldName: string, aliasName: string) => void;
   };
@@ -38,7 +38,7 @@ export interface MappingProps {
 interface FieldMappingsTableProps<T extends MappingViewType> extends RouteComponentProps {
   loading: boolean;
   indexFields: string[];
-  aliasNames: string[];
+  ruleFields: string[];
   mappingProps: MappingProps[T];
 }
 
@@ -49,31 +49,31 @@ export default class FieldMappingsTable<T extends MappingViewType> extends Compo
   FieldMappingsTableState
 > {
   render() {
-    const { loading, indexFields, aliasNames } = this.props;
+    const { loading, indexFields, ruleFields } = this.props;
     let items: FieldMappingsTableItem[];
 
     if (this.props.mappingProps.type === MappingViewType.Edit) {
-      items = indexFields.map((indexField) => ({
-        logFieldName: indexField,
-        siemFieldName: undefined,
+      items = ruleFields.map((ruleField) => ({
+        ruleFieldName: ruleField,
+        logFieldName: undefined,
       }));
     } else {
-      items = indexFields.map((indexField, idx) => {
+      items = ruleFields.map((ruleField, idx) => {
         return {
-          logFieldName: indexField,
-          siemFieldName: aliasNames[idx],
+          logFieldName: indexFields[idx],
+          ruleFieldName: ruleField,
         };
       });
     }
 
     const columns: EuiBasicTableColumn<FieldMappingsTableItem>[] = [
       {
-        field: 'logFieldName',
-        name: 'Log field name',
+        field: 'ruleFieldName',
+        name: 'Rule field name',
         sortable: true,
         dataType: 'string',
         width: '25%',
-        render: (log_field_name: string) => log_field_name || DEFAULT_EMPTY_DATA,
+        render: (ruleFieldName: string) => ruleFieldName || DEFAULT_EMPTY_DATA,
       },
       {
         field: '',
@@ -83,23 +83,23 @@ export default class FieldMappingsTable<T extends MappingViewType> extends Compo
         render: () => <EuiIcon type={'sortRight'} />,
       },
       {
-        field: 'siemFieldName',
-        name: 'SIEM field name',
+        field: 'logFieldName',
+        name: 'Log field name',
         sortable: true,
         dataType: 'string',
         width: '45%',
-        render: (siemFieldName: string, entry: FieldMappingsTableItem) => {
+        render: (logFieldName: string, entry: FieldMappingsTableItem) => {
           if (this.props.mappingProps.type === MappingViewType.Edit) {
-            const { onMappingCreation, invalidMappingFieldNames, createdMappings } = this.props
+            const { onMappingCreation, invalidMappingFieldNames, existingMappings } = this.props
               .mappingProps as MappingProps[MappingViewType.Edit];
-            const onMappingSelected = (selectedAlias: string) => {
-              onMappingCreation(entry.logFieldName, selectedAlias);
+            const onMappingSelected = (selectedField: string) => {
+              onMappingCreation(entry.ruleFieldName, selectedField);
             };
             return (
-              <SIEMFieldNameSelector
-                siemFieldNameOptions={aliasNames}
-                selectedAlias={createdMappings[entry.logFieldName]}
-                isInvalid={invalidMappingFieldNames.includes(entry.logFieldName)}
+              <FieldNameSelector
+                fieldNameOptions={indexFields}
+                selectedField={existingMappings[entry.ruleFieldName]}
+                isInvalid={invalidMappingFieldNames.includes(entry.ruleFieldName)}
                 onChange={onMappingSelected}
               />
             );
@@ -107,7 +107,7 @@ export default class FieldMappingsTable<T extends MappingViewType> extends Compo
 
           return (
             <EuiText>
-              <span>{siemFieldName}</span>
+              <span>{logFieldName}</span>
             </EuiText>
           );
         },
@@ -123,12 +123,12 @@ export default class FieldMappingsTable<T extends MappingViewType> extends Compo
         align: 'center',
         width: '15%',
         render: (_status: 'mapped' | 'unmapped', entry: FieldMappingsTableItem) => {
-          const { createdMappings, invalidMappingFieldNames } = this.props
+          const { existingMappings: createdMappings, invalidMappingFieldNames } = this.props
             .mappingProps as MappingProps[MappingViewType.Edit];
           let iconProps = STATUS_ICON_PROPS['unmapped'];
           if (
-            createdMappings[entry.logFieldName] &&
-            !invalidMappingFieldNames.includes(entry.logFieldName)
+            createdMappings[entry.ruleFieldName] &&
+            !invalidMappingFieldNames.includes(entry.ruleFieldName)
           ) {
             iconProps = STATUS_ICON_PROPS['mapped'];
           }
@@ -140,7 +140,7 @@ export default class FieldMappingsTable<T extends MappingViewType> extends Compo
 
     const sorting: { sort: { field: string; direction: 'asc' | 'desc' } } = {
       sort: {
-        field: 'logFieldName',
+        field: 'ruleFieldName',
         direction: 'asc',
       },
     };

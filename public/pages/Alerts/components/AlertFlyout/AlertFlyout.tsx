@@ -13,77 +13,140 @@ import {
   EuiFlyout,
   EuiFlyoutBody,
   EuiFlyoutHeader,
-  EuiFormRow,
   EuiLink,
   EuiSpacer,
-  EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import { AlertItem } from '../../../../../server/models/interfaces';
+import { AlertItem, RuleSource } from '../../../../../server/models/interfaces';
 import React from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
-import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
-import { renderTime } from '../../../../utils/helpers';
-import { FindingsService } from '../../../../services';
+import { ALERT_STATE, DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
+import {
+  createTextDetailsGroup,
+  errorNotificationToast,
+  renderTime,
+} from '../../../../utils/helpers';
+import { FindingsService, RuleService } from '../../../../services';
 import FindingDetailsFlyout from '../../../Findings/components/FindingDetailsFlyout';
+import { Detector, Rule } from '../../../../../models/interfaces';
+import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
+import { Finding } from '../../../Findings/models/interfaces';
+import { NotificationsStart } from 'opensearch-dashboards/public';
 
 export interface AlertFlyoutProps {
   alertItem: AlertItem;
+  detector: Detector;
   findingsService: FindingsService;
+  ruleService: RuleService;
   onClose: () => void;
+  onAcknowledge: (selectedItems: AlertItem[]) => void;
+  notifications: NotificationsStart;
 }
 
 export interface AlertFlyoutState {
+  acknowledged: boolean;
   findingFlyoutData?: Finding;
   findingItems: Finding[];
+  loading: boolean;
+  rules: { [key: string]: Rule };
 }
 
 export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutState> {
   constructor(props: AlertFlyoutProps) {
     super(props);
+
     this.state = {
+      acknowledged: props.alertItem.state === ALERT_STATE.ACKNOWLEDGED,
       findingItems: [],
+      loading: false,
+      rules: {},
     };
   }
 
   async componentDidMount() {
-    const findingRes = await this.props.findingsService.getFindings({
-      detectorId: this.props.alertItem.detector_id,
-    });
-
-    if (findingRes.ok) {
-      this.setState({ findingItems: findingRes.response.findings });
-    }
-  }
-
-  createTextDetailsGroup(data: { label: string; content: string; url?: string }[]) {
-    return (
-      <>
-        <EuiFlexGroup style={{ padding: 20 }}>
-          {data.map(({ label, content, url }) => {
-            return (
-              <EuiFlexItem key={label} grow={false} style={{ minWidth: '30%' }}>
-                <EuiFormRow label={label}>
-                  {url ? (
-                    <EuiLink>{content || DEFAULT_EMPTY_DATA}</EuiLink>
-                  ) : (
-                    <EuiText>{content || DEFAULT_EMPTY_DATA}</EuiText>
-                  )}
-                </EuiFormRow>
-              </EuiFlexItem>
-            );
-          })}
-        </EuiFlexGroup>
-        <EuiSpacer size={'xl'} />
-      </>
-    );
+    this.getFindings();
   }
 
   setFindingFlyoutData(finding?: Finding) {
     this.setState({ findingFlyoutData: finding });
   }
 
+  getFindings = async () => {
+    this.setState({ loading: true });
+    const {
+      alertItem: { detector_id },
+      findingsService,
+      notifications,
+    } = this.props;
+    try {
+      const findingRes = await findingsService.getFindings({ detectorId: detector_id });
+      if (findingRes.ok) {
+        this.setState({ findingItems: findingRes.response.findings });
+      } else {
+        errorNotificationToast(notifications, 'retrieve', 'findings', findingRes.error);
+      }
+    } catch (e) {
+      errorNotificationToast(notifications, 'retrieve', 'findings', e);
+    }
+    await this.getRules();
+    this.setState({ loading: false });
+  };
+
+  getRules = async () => {
+    const { notifications, ruleService } = this.props;
+    try {
+      const { findingItems } = this.state;
+      const ruleIds: string[] = [];
+      findingItems.forEach((finding) => {
+        finding.queries.forEach((query) => ruleIds.push(query.id));
+      });
+      const body = {
+        from: 0,
+        size: 5000,
+        query: {
+          nested: {
+            path: 'rule',
+            query: {
+              terms: {
+                _id: ruleIds,
+              },
+            },
+          },
+        },
+      };
+
+      if (ruleIds.length > 0) {
+        const prePackagedResponse = await ruleService.getRules(true, body);
+        const customResponse = await ruleService.getRules(false, body);
+
+        const allRules: { [id: string]: RuleSource } = {};
+        if (prePackagedResponse.ok) {
+          prePackagedResponse.response.hits.hits.forEach(
+            (hit) => (allRules[hit._id] = hit._source)
+          );
+        } else {
+          errorNotificationToast(
+            notifications,
+            'retrieve',
+            'pre-packaged rules',
+            prePackagedResponse.error
+          );
+        }
+        if (customResponse.ok) {
+          customResponse.response.hits.hits.forEach((hit) => (allRules[hit._id] = hit._source));
+        } else {
+          errorNotificationToast(notifications, 'retrieve', 'custom rules', customResponse.error);
+        }
+        this.setState({ rules: allRules });
+      }
+    } catch (e) {
+      errorNotificationToast(notifications, 'retrieve', 'rules', e);
+    }
+  };
+
   createFindingTableColumns(): EuiBasicTableColumn<Finding>[] {
+    const { detector } = this.props;
+    const { rules } = this.state;
     return [
       {
         field: 'timestamp',
@@ -98,35 +161,37 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
         sortable: true,
         dataType: 'string',
         render: (id, finding) =>
-          <EuiLink onClick={() => this.setFindingFlyoutData(finding)}>{id}</EuiLink> ||
-          DEFAULT_EMPTY_DATA,
+          (
+            <EuiLink onClick={() => this.setFindingFlyoutData(finding)}>
+              {`${(id as string).slice(0, 7)}...`}
+            </EuiLink>
+          ) || DEFAULT_EMPTY_DATA,
       },
       {
         field: 'queries',
         name: 'Rule name',
         sortable: true,
-        dataType: 'string',
-        render: (queries: any) => queries[0].name || DEFAULT_EMPTY_DATA,
+        render: (queries: any[]) => rules[queries[0]?.id]?.title || DEFAULT_EMPTY_DATA,
       },
       {
-        field: 'detector_name',
+        field: 'detector_id',
         name: 'Threat detector',
         sortable: true,
         dataType: 'string',
-        render: (name: string) => name || DEFAULT_EMPTY_DATA,
+        render: () => detector.name || DEFAULT_EMPTY_DATA,
       },
       {
         field: 'queries',
         name: 'Log type',
         sortable: true,
         dataType: 'string',
-        render: (queries: any) => queries[0].category || DEFAULT_EMPTY_DATA,
+        render: () => detector.detector_type || DEFAULT_EMPTY_DATA,
       },
     ];
   }
 
   render() {
-    const { onClose, alertItem } = this.props;
+    const { onClose, alertItem, detector, onAcknowledge } = this.props;
     const {
       trigger_name,
       state,
@@ -134,12 +199,16 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
       start_time,
       last_notification_time,
       finding_ids,
-      detector_id,
     } = alertItem;
+    const { acknowledged, findingFlyoutData, loading, rules } = this.state;
 
     return !!this.state.findingFlyoutData ? (
       <FindingDetailsFlyout
-        finding={this.state.findingFlyoutData}
+        {...this.props}
+        finding={{
+          ...findingFlyoutData,
+          detector: { _id: detector.id, _index: '', _source: detector },
+        }}
         closeFlyout={onClose}
         backButton={
           <EuiButtonIcon
@@ -150,6 +219,7 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
             size="s"
           />
         }
+        allRules={rules}
       />
     ) : (
       <EuiFlyout
@@ -170,7 +240,15 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
             <EuiFlexItem grow={8}>
               <EuiFlexGroup justifyContent="flexEnd" alignItems="center">
                 <EuiFlexItem grow={false}>
-                  <EuiButton>Acknowledge</EuiButton>
+                  <EuiButton
+                    disabled={acknowledged || alertItem.state !== ALERT_STATE.ACTIVE}
+                    onClick={() => {
+                      this.setState({ acknowledged: true });
+                      onAcknowledge([alertItem]);
+                    }}
+                  >
+                    Acknowledge
+                  </EuiButton>
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>
                   <EuiButtonIcon iconType="cross" iconSize="m" display="empty" onClick={onClose} />
@@ -180,16 +258,24 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
           </EuiFlexGroup>
         </EuiFlyoutHeader>
         <EuiFlyoutBody>
-          {this.createTextDetailsGroup([
+          {createTextDetailsGroup([
             { label: 'Alert trigger name', content: trigger_name },
             { label: 'Alert status', content: state },
-            { label: 'Alert severity', content: severity },
+            {
+              label: 'Alert severity',
+              content: parseAlertSeverityToOption(severity)?.label || DEFAULT_EMPTY_DATA,
+            },
           ])}
-          {this.createTextDetailsGroup([
+          {createTextDetailsGroup([
             { label: 'Start time', content: start_time },
             { label: 'Last updated time', content: last_notification_time },
+            { label: '', content: '' },
           ])}
-          {this.createTextDetailsGroup([{ label: 'Detector', content: detector_id }])}
+          {createTextDetailsGroup([
+            { label: 'Detector', content: detector.name },
+            { label: '', content: '' },
+            { label: '', content: '' },
+          ])}
 
           <EuiSpacer size={'xxl'} />
 
@@ -197,6 +283,7 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
             <EuiBasicTable<Finding>
               columns={this.createFindingTableColumns()}
               items={this.state.findingItems}
+              loading={loading}
             />
           </ContentPanel>
         </EuiFlyoutBody>
