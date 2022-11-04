@@ -7,7 +7,7 @@ import { CoreStart, AppMountParameters } from 'opensearch-dashboards/public';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter as Router, Route } from 'react-router-dom';
-import { AlertsService, ServicesContext } from './services';
+import { AlertsService, NotificationsService, ServicesContext } from './services';
 import { DarkModeContext } from './components/DarkMode';
 import Main from './pages/Main';
 import { CoreServicesContext } from './components/core_services';
@@ -18,6 +18,7 @@ import FindingsService from './services/FindingsService';
 import OpenSearchService from './services/OpenSearchService';
 import { BrowserServices } from './models/interfaces';
 import FieldMappingService from './services/FieldMappingService';
+import RuleService from './services/RuleService';
 
 export function renderApp(coreStart: CoreStart, params: AppMountParameters, landingPage: string) {
   const http = coreStart.http;
@@ -28,13 +29,18 @@ export function renderApp(coreStart: CoreStart, params: AppMountParameters, land
   const opensearchService = new OpenSearchService(http);
   const fieldMappingService = new FieldMappingService(http);
   const alertsService = new AlertsService(http);
+  const ruleService = new RuleService(http);
+  const notificationsService = new NotificationsService(http);
+
   const services: BrowserServices = {
     detectorsService,
     indexService,
     fieldMappingService,
     findingsService,
     opensearchService,
+    ruleService,
     alertService: alertsService,
+    notificationsService,
   };
 
   const isDarkMode = coreStart.uiSettings.get('theme:darkMode') || false;

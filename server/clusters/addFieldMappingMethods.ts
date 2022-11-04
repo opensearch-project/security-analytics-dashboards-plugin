@@ -33,7 +33,13 @@ export function addFieldMappingMethods(securityAnalytics: any, createAction: any
 
   securityAnalytics[METHOD_NAMES.GET_MAPPINGS] = createAction({
     url: {
-      fmt: `${API.MAPPINGS_BASE}`,
+      fmt: `${API.MAPPINGS_BASE}?index_name=<%=indexName%>`,
+      req: {
+        indexName: {
+          type: 'string',
+          required: true,
+        },
+      },
     },
     needBody: false,
     method: 'GET',

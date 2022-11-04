@@ -5,12 +5,12 @@
 
 export type GetAlertsParams =
   | {
-      detectorId: string;
+      detector_id: string;
       detectorType?: string;
     }
   | {
       detectorType: string;
-      detectorId?: string;
+      detector_id?: string;
     };
 
 export interface GetAlertsResponse {
@@ -43,3 +43,10 @@ export interface AlertResponse extends AlertItem {
   }[];
   end_time: string | null;
 }
+
+export interface AcknowledgeAlertsParams {
+  body: { alerts: string[] };
+  detector_id: string;
+}
+
+export interface AcknowledgeAlertsResponse {}
