@@ -170,15 +170,25 @@ export default class Main extends Component<MainProps, MainState> {
                         />
                         <Route
                           path={ROUTES.RULES_EDIT}
-                          render={(props: RouteComponentProps<any, any, any>) => (
-                            <EditRule services={services} {...props} />
-                          )}
+                          render={(props: RouteComponentProps<any, any, any>) => {
+                            if (!props.location.state?.ruleItem) {
+                              props.history.replace(ROUTES.RULES);
+                              return <Rules {...props} notifications={core?.notifications} />;
+                            }
+
+                            return <EditRule services={services} {...props} />;
+                          }}
                         />
                         <Route
                           path={ROUTES.RULES_DUPLICATE}
-                          render={(props: RouteComponentProps<any, any, any>) => (
-                            <DuplicateRule services={services} {...props} />
-                          )}
+                          render={(props: RouteComponentProps<any, any, any>) => {
+                            if (!props.location.state?.ruleItem) {
+                              props.history.replace(ROUTES.RULES);
+                              return <Rules {...props} notifications={core?.notifications} />;
+                            }
+
+                            return <DuplicateRule services={services} {...props} />;
+                          }}
                         />
                         <Route
                           path={ROUTES.RULES_IMPORT}

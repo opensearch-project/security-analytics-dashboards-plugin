@@ -5,7 +5,7 @@
 
 import { BrowserServices } from '../../../../models/interfaces';
 import { RuleEditor } from '../../components/RuleEditor/RuleEditor';
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { EuiButton, EuiFilePicker, EuiFlexGroup, EuiFlexItem, EuiSpacer } from '@elastic/eui';
 import { ROUTES } from '../../../../utils/constants';
 import { Rule } from '../../../../../models/interfaces';
@@ -20,9 +20,10 @@ export interface ImportRuleProps {
 
 export const ImportRule: React.FC<ImportRuleProps> = ({ history, services }) => {
   const [fileError, setFileError] = useState('');
-  const onChange = (files: any) => {
+  const onChange = useCallback((files: any) => {
     setFileError('');
-    if (files[0].type === 'application/x-yaml') {
+
+    if (files[0]?.type === 'application/x-yaml') {
       let reader = new FileReader();
       reader.readAsText(files[0]);
       reader.onload = function () {
@@ -63,32 +64,37 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services }) => 
         );
       };
     } else {
-      setFileError('Only yaml files are accepted');
+      setFileError(files.length > 0 ? 'Only yaml files are accepted' : '');
     }
-  };
+  }, []);
 
-  const [content, setContent] = useState(
-    <>
-      <ContentPanel title="Import rule">
-        <EuiFilePicker
-          id={'filePickerId'}
-          fullWidth
-          initialPromptText="Select or drag yml file containing Sigma rules"
-          onChange={onChange}
-          display={'large'}
-          multiple={false}
-          aria-label="file picker"
-        />
-        {fileError && <div>Error: {fileError}</div>}
-      </ContentPanel>
-      <EuiSpacer size="xl" />
-      <EuiFlexGroup justifyContent="flexEnd">
-        <EuiFlexItem grow={false}>
-          <EuiButton onClick={() => history.replace(ROUTES.RULES)}>Cancel</EuiButton>
-        </EuiFlexItem>
-      </EuiFlexGroup>
-    </>
-  );
+  const [content, setContent] = useState<React.ReactElement | null>(null);
+
+  useEffect(() => {
+    setContent(
+      <>
+        <ContentPanel title="Import rule">
+          <EuiFilePicker
+            id={'filePickerId'}
+            fullWidth
+            initialPromptText="Select or drag yml file containing Sigma rules"
+            onChange={onChange}
+            display={'large'}
+            multiple={false}
+            aria-label="file picker"
+            isInvalid={!!fileError}
+          />
+          {fileError && <div style={{ color: 'red', margin: '0 auto' }}>Error: {fileError}</div>}
+        </ContentPanel>
+        <EuiSpacer size="xl" />
+        <EuiFlexGroup justifyContent="flexEnd">
+          <EuiFlexItem grow={false}>
+            <EuiButton onClick={() => history.replace(ROUTES.RULES)}>Cancel</EuiButton>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      </>
+    );
+  }, [fileError, onChange]);
 
   const footerActions: React.FC<{ rule: Rule }> = ({ rule }) => {
     const onCreate = async () => {
