@@ -165,7 +165,11 @@ export default class Main extends Component<MainProps, MainState> {
                         <Route
                           path={ROUTES.RULES_CREATE}
                           render={(props: RouteComponentProps) => (
-                            <CreateRule services={services} history={props.history} />
+                            <CreateRule
+                              services={services}
+                              history={props.history}
+                              notifications={core?.notifications}
+                            />
                           )}
                         />
                         <Route
@@ -176,7 +180,13 @@ export default class Main extends Component<MainProps, MainState> {
                               return <Rules {...props} notifications={core?.notifications} />;
                             }
 
-                            return <EditRule services={services} {...props} />;
+                            return (
+                              <EditRule
+                                services={services}
+                                {...props}
+                                notifications={core?.notifications}
+                              />
+                            );
                           }}
                         />
                         <Route
@@ -187,7 +197,13 @@ export default class Main extends Component<MainProps, MainState> {
                               return <Rules {...props} notifications={core?.notifications} />;
                             }
 
-                            return <DuplicateRule services={services} {...props} />;
+                            return (
+                              <DuplicateRule
+                                services={services}
+                                {...props}
+                                notifications={core?.notifications}
+                              />
+                            );
                           }}
                         />
                         <Route

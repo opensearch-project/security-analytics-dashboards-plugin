@@ -10,23 +10,29 @@ import { EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 import { RouteComponentProps } from 'react-router-dom';
 import { ROUTES } from '../../../../utils/constants';
 import { Rule } from '../../../../../models/interfaces';
+import { NotificationsStart } from 'opensearch-dashboards/public';
+import { errorNotificationToast } from '../../../../utils/helpers';
+import { validateRule } from '../../utils/helpers';
 
 export interface CreateRuleProps {
   services: BrowserServices;
   history: RouteComponentProps['history'];
+  notifications?: NotificationsStart;
 }
 
-export const CreateRule: React.FC<CreateRuleProps> = ({ history, services }) => {
+export const CreateRule: React.FC<CreateRuleProps> = ({ history, services, notifications }) => {
   const footerActions: React.FC<{ rule: Rule }> = ({ rule }) => {
     const onCreate = async () => {
+      if (!validateRule(rule, notifications!, 'create')) {
+        return;
+      }
       const createRuleRes = await services.ruleService.createRule(rule);
 
       if (!createRuleRes.ok) {
-        // TODO: show toast notification
-        alert('Failed rule creation');
+        errorNotificationToast(notifications!, 'create', 'rule', createRuleRes.error);
+      } else {
+        history.replace(ROUTES.RULES);
       }
-
-      history.replace(ROUTES.RULES);
     };
 
     return (
