@@ -36,12 +36,6 @@ interface DefineDetectorProps extends RouteComponentProps {
 interface DefineDetectorState {}
 
 export default class DefineDetector extends Component<DefineDetectorProps, DefineDetectorState> {
-  componentDidMount = async () => {
-    if (this.props.isEdit) {
-      // TODO: Retrieve detector using ID, and set state.detector to the result
-    }
-  };
-
   updateDetectorCreationState(detector: Detector) {
     const isDataValid =
       !!detector.name &&
@@ -177,6 +171,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
         <EuiSpacer size={'m'} />
 
         <DetectorBasicDetailsForm
+          {...this.props}
           detectorName={name}
           detectorDescription={description}
           onDetectorNameChange={this.onDetectorNameChange}

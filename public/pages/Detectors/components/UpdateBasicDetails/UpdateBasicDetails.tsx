@@ -203,6 +203,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
       <EuiSpacer size="xxl" />
 
       <DetectorBasicDetailsForm
+        isEdit={true}
         detectorName={name}
         detectorDescription={description}
         onDetectorNameChange={onDetectorNameChange}
