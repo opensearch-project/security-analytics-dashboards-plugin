@@ -6,15 +6,12 @@
 import { ContentPanel } from '../../../../components/ContentPanel';
 import React, { useContext, useEffect, useState } from 'react';
 import { EuiAccordion, EuiButton, EuiInMemoryTable, EuiSpacer, EuiText } from '@elastic/eui';
-import {
-  RuleItem,
-  RuleItemInfo,
-} from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
+import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { getRulesColumns } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/utils/constants';
 import { ServicesContext } from '../../../../services';
-import { ruleItemInfosToItems } from '../../../../utils/helpers';
 import { Detector } from '../../../../../models/interfaces';
-import { RuleInfo } from '../../../../../server/models/interfaces/Rules';
+import { RuleInfo } from '../../../../../server/models/interfaces';
+import { translateToRuleItems } from '../../../../utils/helpers';
 
 export interface DetectorRulesViewProps {
   detector: Detector;
@@ -33,6 +30,7 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
 
   const [enabledRuleItems, setEnabledRuleItems] = useState<RuleItem[]>([]);
   const [allRuleItems, setAllRuleItems] = useState<RuleItem[]>([]);
+  const [loading, setLoading] = useState(false);
   const actions = [
     <EuiButton onClick={() => props.onEditClicked(enabledRuleItems, allRuleItems)}>Edit</EuiButton>,
   ];
@@ -64,29 +62,8 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
       return [];
     };
 
-    const translateToRuleItems = (
-      prePackagedRules: RuleInfo[],
-      customRules: RuleInfo[],
-      isEnabled: (rule: RuleInfo) => boolean
-    ) => {
-      let ruleItemInfos: RuleItemInfo[] = prePackagedRules.map((rule) => ({
-        ...rule,
-        enabled: isEnabled(rule),
-        prePackaged: true,
-      }));
-
-      ruleItemInfos = ruleItemInfos.concat(
-        customRules.map((rule) => ({
-          ...rule,
-          enabled: isEnabled(rule),
-          prePackaged: false,
-        }))
-      );
-
-      return ruleItemInfosToItems(props.detector.detector_type, ruleItemInfos);
-    };
-
     const updateRulesState = async () => {
+      setLoading(true);
       const enabledPrePackagedRuleIds = new Set(
         props.detector.inputs[0].detector_input.pre_packaged_rules.map((ruleInfo) => ruleInfo.id)
       );
@@ -108,19 +85,23 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
       const enabledRuleItems = translateToRuleItems(
         enabledPrePackagedRules,
         enabledCustomRules,
+        props.detector.detector_type,
         () => true
       );
       const allRuleItems = translateToRuleItems(
         prePackagedRules,
         customRules,
+        props.detector.detector_type,
         (ruleInfo) =>
           enabledPrePackagedRuleIds.has(ruleInfo._id) || enabledCustomRuleIds.has(ruleInfo._id)
       );
       setEnabledRuleItems(enabledRuleItems);
       setAllRuleItems(allRuleItems);
+      setLoading(false);
     };
 
-    updateRulesState().catch((error) => {
+    updateRulesState().catch((e) => {
+      console.error('Failed to retrieve rules:', e);
       // TODO: Show error toast
     });
   }, [services, props.detector]);
@@ -131,6 +112,7 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
       items={enabledRuleItems}
       itemId={(item: RuleItem) => `${item.name}`}
       pagination
+      loading={loading}
     />
   );
 

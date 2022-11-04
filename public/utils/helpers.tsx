@@ -24,6 +24,7 @@ import {
 import { compile, TopLevelSpec } from 'vega-lite';
 import { View, parse } from 'vega/build-es5/vega.js';
 import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter/build/vega-interpreter.module';
+import { RuleInfo } from '../../server/models/interfaces';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
@@ -74,6 +75,29 @@ export function createTextDetailsGroup(
 
 export function parseSchedule({ period: { interval, unit } }: PeriodSchedule) {
   return `Every ${interval} ${unit.toLowerCase()}`;
+}
+
+export function translateToRuleItems(
+  prePackagedRules: RuleInfo[],
+  customRules: RuleInfo[],
+  detectorType: string,
+  isEnabled: (rule: RuleInfo) => boolean
+) {
+  let ruleItemInfos: RuleItemInfo[] = prePackagedRules.map((rule) => ({
+    ...rule,
+    enabled: isEnabled(rule),
+    prePackaged: true,
+  }));
+
+  ruleItemInfos = ruleItemInfos.concat(
+    customRules.map((rule) => ({
+      ...rule,
+      enabled: isEnabled(rule),
+      prePackaged: false,
+    }))
+  );
+
+  return ruleItemInfosToItems(detectorType, ruleItemInfos);
 }
 
 export function ruleItemInfosToItems(

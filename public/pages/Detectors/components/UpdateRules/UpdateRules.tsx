@@ -4,16 +4,21 @@
  */
 
 import { EuiButton, EuiFlexGroup, EuiFlexItem, EuiSpacer, EuiTitle } from '@elastic/eui';
-import { DetectorHit } from '../../../../../server/models/interfaces';
-import React, { useCallback, useContext, useState } from 'react';
+import {
+  DetectorHit,
+  GetDetectorResponse,
+  GetRulesResponse,
+  RuleInfo,
+  UpdateDetectorResponse,
+} from '../../../../../server/models/interfaces';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { Detector } from '../../../../../models/interfaces';
-import { MIN_NUM_DATA_SOURCES } from '../../utils/constants';
 import { DetectionRulesTable } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/DetectionRulesTable';
-import { ROUTES } from '../../../../utils/constants';
+import { EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
 import { ServicesContext } from '../../../../services';
-import { getUpdatedEnabledRuleIds } from '../../../../utils/helpers';
+import { ServerResponse } from '../../../../../server/models/types';
 
 export interface UpdateDetectorRulesProps
   extends RouteComponentProps<
@@ -24,137 +29,208 @@ export interface UpdateDetectorRulesProps
 
 export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) => {
   const services = useContext(ServicesContext);
-  const enabledRules = props.location.state.enabledRules;
+  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [detector, setDetector] = useState<Detector>(EMPTY_DEFAULT_DETECTOR);
+  const [customRuleItems, setCustomRuleItems] = useState<RuleItem[]>([]);
+  const [prePackagedRuleItems, setPrePackagedRuleItems] = useState<RuleItem[]>([]);
+  const detectorId = props.location.pathname.replace(`${ROUTES.EDIT_DETECTOR_RULES}/`, '');
 
-  const [enabledCustomRuleIds, setEnabledCustomRuleIds] = useState<Set<string>>(
-    new Set(
-      enabledRules
-        ?.map((rule) => (rule.library === 'Custom' ? rule.id : undefined))
-        .filter((id) => !!id) as string[]
-    )
-  );
-  const [enabledPrePackagedRuleIds, setEnabledPrePackagedRuleIds] = useState<Set<string>>(
-    new Set(
-      enabledRules
-        ?.map((rule) => (rule.library === 'Sigma' ? rule.id : undefined))
-        .filter((id) => !!id) as string[]
-    )
-  );
-  const [detector, setDetector] = useState<Detector>(props.location.state.detectorHit._source);
-  const [ruleItems, setRuleItems] = useState<RuleItem[]>(props.location.state.allRules || []);
-
-  const updateDetectorState = useCallback(
-    (detector: Detector) => {
-      const isDataValid =
-        !!detector.name &&
-        !!detector.detector_type &&
-        detector.inputs[0].detector_input.indices.length >= MIN_NUM_DATA_SOURCES;
-
-      if (isDataValid) {
-        setDetector(detector);
+  useEffect(() => {
+    const getDetector = async () => {
+      setLoading(true);
+      try {
+        const response = (await services?.detectorsService.getDetectors()) as ServerResponse<
+          GetDetectorResponse
+        >;
+        if (response.ok) {
+          const detectorHit = response.response.hits.hits.find(
+            (detectorHit) => detectorHit._id === detectorId
+          );
+          const newDetector = { ...detectorHit._source, id: detectorId };
+          setDetector(newDetector);
+          await getRules(newDetector);
+        } else {
+          console.error('Failed to retrieve detector:', response.error);
+          // TODO: Display toast with error details
+        }
+      } catch (e) {
+        console.error('Failed to retrieve detector:', e);
+        // TODO: Display toast with error details
       }
-    },
-    [setDetector]
-  );
-
-  const onRulesChanged = (ruleFieldname: string, enabledRuleIds: string[]) => {
-    const { inputs } = detector;
-    const newDetector: Detector = {
-      ...detector,
-      inputs: [
-        {
-          detector_input: {
-            ...inputs[0].detector_input,
-            [ruleFieldname]: enabledRuleIds.map((id) => {
-              return { id };
-            }),
-          },
-        },
-        ...inputs.slice(1),
-      ],
+      setLoading(false);
     };
 
-    updateDetectorState(newDetector);
-  };
+    const getRules = async (detector: Detector): Promise<RuleInfo[]> => {
+      try {
+        const prePackagedResponse = (await services?.ruleService.getRules(true, {
+          from: 0,
+          size: 5000,
+          query: {
+            nested: {
+              path: 'rule',
+              query: {
+                bool: {
+                  must: [{ match: { 'rule.category': `${detector.detector_type.toLowerCase()}` } }],
+                },
+              },
+            },
+          },
+        })) as ServerResponse<GetRulesResponse>;
+        if (prePackagedResponse.ok) {
+          const ruleInfos = prePackagedResponse.response.hits.hits;
+          const enabledRuleIds = detector.inputs[0].detector_input.pre_packaged_rules.map(
+            (rule) => rule.id
+          );
+          const ruleItems = ruleInfos.map((rule) => ({
+            name: rule._source.title,
+            id: rule._id,
+            severity: rule._source.level,
+            logType: rule._source.category,
+            library: 'Sigma',
+            description: rule._source.description,
+            active: enabledRuleIds.includes(rule._id),
+          }));
+          setPrePackagedRuleItems(ruleItems);
+        } else {
+          console.error('Failed to retrieve pre-packaged rules:', prePackagedResponse.error);
+          // TODO implement toast
+        }
 
-  const onRuleActivationToggle = (changedItem: RuleItem, isActive: boolean) => {
-    const newRuleItems = ruleItems.map((item) => {
-      return {
-        ...item,
-        active: item.id === changedItem.id ? isActive : item.active,
-      };
-    });
-    setRuleItems(newRuleItems);
-
-    const existingEnabledIds =
-      changedItem.library === 'Sigma' ? enabledPrePackagedRuleIds : enabledCustomRuleIds;
-    const newEnabledIds = getUpdatedEnabledRuleIds(existingEnabledIds, changedItem.id, isActive);
-    if (newEnabledIds) {
-      if (changedItem.library === 'Sigma') {
-        onRulesChanged('pre_packaged_rules', newEnabledIds);
-        setEnabledPrePackagedRuleIds(new Set(newEnabledIds));
-      } else if (changedItem.library === 'Custom') {
-        onRulesChanged('custom_rules', newEnabledIds);
-        setEnabledCustomRuleIds(new Set(newEnabledIds));
+        const customResponse = (await services?.ruleService.getRules(false, {
+          from: 0,
+          size: 5000,
+          query: {
+            nested: {
+              path: 'rule',
+              query: {
+                bool: {
+                  must: [{ match: { 'rule.category': `${detector.detector_type.toLowerCase()}` } }],
+                },
+              },
+            },
+          },
+        })) as ServerResponse<GetRulesResponse>;
+        if (customResponse.ok) {
+          const ruleInfos = customResponse.response.hits.hits;
+          const enabledRuleIds = detector.inputs[0].detector_input.custom_rules.map(
+            (rule) => rule.id
+          );
+          const ruleItems = ruleInfos.map((rule) => ({
+            name: rule._source.title,
+            id: rule._id,
+            severity: rule._source.level,
+            logType: rule._source.category,
+            library: 'Custom',
+            description: rule._source.description,
+            active: enabledRuleIds.includes(rule._id),
+          }));
+          setCustomRuleItems(ruleItems);
+        } else {
+          console.error('Failed to retrieve custom rules:', customResponse.error);
+          // TODO implement toast
+        }
+      } catch (e) {
+        console.error('Failed to retrieve rules:', e);
+        // TODO implement toast
       }
+    };
+
+    const execute = async () => {
+      if (detectorId.length > 0) await getDetector();
+    };
+
+    execute().catch((e) => {
+      console.error('Failed to retrieve detector and rules:', e);
+      // TODO implement toast
+    });
+  }, [services, detectorId]);
+
+  const onToggle = (changedItem: RuleItem, isActive: boolean) => {
+    switch (changedItem.library) {
+      case 'Custom':
+        setCustomRuleItems(
+          customRuleItems.map((rule) =>
+            rule.id === changedItem.id ? { ...rule, active: isActive } : rule
+          )
+        );
+        break;
+      case 'Sigma':
+        setPrePackagedRuleItems(
+          prePackagedRuleItems.map((rule) =>
+            rule.id === changedItem.id ? { ...rule, active: isActive } : rule
+          )
+        );
+        break;
+      default:
+        console.warn('Unsupported rule library detected.');
     }
   };
 
   const onCancel = useCallback(() => {
     props.history.replace({
-      pathname: ROUTES.DETECTOR_DETAILS,
+      pathname: `${ROUTES.DETECTOR_DETAILS}/${detectorId}`,
       state: props.location.state,
     });
   }, []);
 
-  const onSave = useCallback(() => {
-    const detectorHit = props.location.state.detectorHit;
+  const onSave = async () => {
+    setSubmitting(true);
+    try {
+      const newDetector = { ...detector };
+      newDetector.inputs[0].detector_input.custom_rules = customRuleItems
+        .filter((rule) => rule.active)
+        .map((rule) => ({ id: rule.id }));
+      newDetector.inputs[0].detector_input.pre_packaged_rules = prePackagedRuleItems
+        .filter((rule) => rule.active)
+        .map((rule) => ({ id: rule.id }));
 
-    const updateDetector = async () => {
-      const updateDetectorRes = await services?.detectorsService?.updateDetector(
-        detectorHit._id,
-        detector
-      );
+      const updateDetectorRes = (await services?.detectorsService?.updateDetector(
+        detectorId,
+        newDetector
+      )) as ServerResponse<UpdateDetectorResponse>;
 
-      if (updateDetectorRes?.ok) {
-        props.history.replace({
-          pathname: ROUTES.DETECTOR_DETAILS,
-          state: {
-            detectorHit: { ...detectorHit, _source: { ...detectorHit._source, ...detector } },
-          },
-        });
-      } else {
+      if (!updateDetectorRes.ok) {
+        console.error('Failed to update detector:', updateDetectorRes.error);
         // TODO: Show error toast
       }
 
       props.history.replace({
-        pathname: ROUTES.DETECTOR_DETAILS,
-        state: {
-          detectorHit: { ...detectorHit, _source: { ...detectorHit._source, ...detector } },
-        },
+        pathname: `${ROUTES.DETECTOR_DETAILS}/${detectorId}`,
       });
-    };
+    } catch (e) {
+      console.error('Failed to update detector:', e);
+      // TODO: Show error toast
+    }
+    setSubmitting(false);
+  };
 
-    updateDetector();
-  }, [detector]);
-
+  const ruleItems = prePackagedRuleItems.concat(customRuleItems);
   return (
     <div>
       <EuiTitle size={'l'}>
         <h3>Edit detector rules</h3>
       </EuiTitle>
-      <EuiSpacer size="xxl" />
+      <EuiSpacer size="xl" />
 
-      <DetectionRulesTable ruleItems={ruleItems} onRuleActivationToggle={onRuleActivationToggle} />
+      <DetectionRulesTable
+        loading={loading}
+        ruleItems={ruleItems}
+        onRuleActivationToggle={onToggle}
+      />
 
       <EuiSpacer size="xl" />
 
       <EuiFlexGroup justifyContent="flexEnd">
         <EuiFlexItem grow={false}>
-          <EuiButton onClick={onCancel}>Cancel</EuiButton>
+          <EuiButton disabled={submitting} onClick={onCancel}>
+            Cancel
+          </EuiButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton onClick={onSave}>Save changes</EuiButton>
+          <EuiButton disabled={loading} isLoading={submitting} onClick={onSave}>
+            Save changes
+          </EuiButton>
         </EuiFlexItem>
       </EuiFlexGroup>
     </div>

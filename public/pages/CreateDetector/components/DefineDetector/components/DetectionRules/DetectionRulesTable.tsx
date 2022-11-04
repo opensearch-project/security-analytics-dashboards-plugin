@@ -4,7 +4,7 @@
  */
 
 import { CriteriaWithPagination, EuiInMemoryTable } from '@elastic/eui';
-import { ruleSeverity, ruleSource, ruleTypes } from '../../../../../../pages/Rules/lib/helpers';
+import { ruleSeverity, ruleSource, ruleTypes } from '../../../../../Rules/lib/helpers';
 import React from 'react';
 import { RuleItem } from './types/interfaces';
 import { getRulesColumns } from './utils/constants';
@@ -16,6 +16,7 @@ export interface DetectionRulesTableProps {
   onAllRulesToggled?: (enabled: boolean) => void;
   onRuleActivationToggle: (changedItem: RuleItem, isActive: boolean) => void;
   onTableChange?: (nextValues: CriteriaWithPagination<RuleItem>) => void;
+  loading: boolean;
 }
 
 const rulePriorityBySeverity: { [severity: string]: number } = {
@@ -32,6 +33,7 @@ export const DetectionRulesTable: React.FC<DetectionRulesTableProps> = ({
   onAllRulesToggled,
   onRuleActivationToggle,
   onTableChange,
+  loading = false,
 }) => {
   //Filter table by rule type
   const search: Search = {
@@ -87,6 +89,7 @@ export const DetectionRulesTable: React.FC<DetectionRulesTableProps> = ({
             : true
         }
         onTableChange={onTableChange}
+        loading={loading}
       />
     </div>
   );
