@@ -23,8 +23,8 @@ import {
   EuiTitle,
 } from '@elastic/eui';
 import { capitalizeFirstLetter, renderTime } from '../../../utils/helpers';
-import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
-import { Query } from '../models/interfaces';
+import { DEFAULT_EMPTY_DATA, ROUTES } from '../../../utils/constants';
+import { Finding, Query } from '../models/interfaces';
 
 interface FindingDetailsFlyoutProps {
   finding: Finding;
@@ -47,13 +47,6 @@ export default class FindingDetailsFlyout extends Component<
       loading: false,
     };
   }
-
-  getDetector = async () => {
-    this.setState({ loading: true });
-    // TODO: Call the get detector API. Find the rule associated with the
-    //  finding to retrieve the rule details for display.
-    this.setState({ loading: false });
-  };
 
   renderTags = () => {
     const { finding } = this.props;
@@ -97,9 +90,11 @@ export default class FindingDetailsFlyout extends Component<
             <EuiSpacer size={'m'} />
             <EuiFlexGroup>
               <EuiFlexItem>
-                {/*//TODO: Refactor EuiText to EuiLink once rule view page is available, and hyperlink to that page.*/}
+                {/*//TODO: Refactor EuiLink to filter rules table to the specific rule.*/}
                 <EuiFormRow label={'Rule name'}>
-                  <EuiText>{fullRule.title || DEFAULT_EMPTY_DATA}</EuiText>
+                  <EuiLink href={`#${ROUTES.RULES}`} target={'_blank'}>
+                    {fullRule.title || DEFAULT_EMPTY_DATA}
+                  </EuiLink>
                 </EuiFormRow>
               </EuiFlexItem>
 
@@ -170,6 +165,7 @@ export default class FindingDetailsFlyout extends Component<
       finding: {
         id,
         detector: {
+          _id,
           _source: { name },
         },
         queries,
@@ -213,8 +209,9 @@ export default class FindingDetailsFlyout extends Component<
 
             <EuiFlexItem>
               <EuiFormRow label={'Detector'}>
-                {/*//TODO: Refactor EuiText to EuiLink once detector edit page is available, and hyperlink to that page.*/}
-                <EuiText>{name || DEFAULT_EMPTY_DATA}</EuiText>
+                <EuiLink href={`#${ROUTES.DETECTOR_DETAILS}/${_id}`} target={'_blank'}>
+                  {name || DEFAULT_EMPTY_DATA}
+                </EuiLink>
               </EuiFormRow>
             </EuiFlexItem>
           </EuiFlexGroup>
