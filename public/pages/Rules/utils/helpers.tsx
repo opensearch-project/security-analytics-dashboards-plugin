@@ -5,10 +5,12 @@
 
 import { EuiBasicTableColumn, EuiLink } from '@elastic/eui';
 import React from 'react';
-import { capitalizeFirstLetter } from '../../../utils/helpers';
+import { capitalizeFirstLetter, errorNotificationToast } from '../../../utils/helpers';
 import { ruleSeverity, ruleSource, ruleTypes } from './constants';
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
 import { RuleItemInfoBase } from '../models/types';
+import { Rule } from '../../../../models/interfaces';
+import { NotificationsStart } from 'opensearch-dashboards/public';
 
 export interface RuleTableItem {
   title: string;
@@ -99,3 +101,31 @@ export const getRulesTableSearchConfig = (): Search => {
     ],
   };
 };
+
+export function validateRule(
+  rule: Rule,
+  notifications: NotificationsStart,
+  ruleAction: 'create' | 'save'
+): boolean {
+  const invalidFields = [];
+
+  if (!rule.title) invalidFields.push('Rule name');
+  if (!rule.category) invalidFields.push('Log type');
+  if (!rule.detection) invalidFields.push('Detection');
+  if (!rule.level) invalidFields.push('Rule level');
+  if (!rule.author) invalidFields.push('Author');
+  if (!rule.status) invalidFields.push('Rule status');
+
+  if (invalidFields.length > 0) {
+    errorNotificationToast(
+      notifications!,
+      ruleAction,
+      'rule',
+      `Enter valid input for ${invalidFields.join(',')}`
+    );
+
+    return false;
+  }
+
+  return true;
+}
