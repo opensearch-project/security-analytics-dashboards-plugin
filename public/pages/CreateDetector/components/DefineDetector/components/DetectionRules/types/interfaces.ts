@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RuleInfo } from '../../../../../../../../server/models/interfaces';
+import { RuleItemInfoBase } from '../../../../../../Rules/models/types';
 
 export interface RuleItem {
   name: string;
@@ -15,7 +15,7 @@ export interface RuleItem {
   active: boolean;
 }
 
-export type RuleItemInfo = RuleInfo & { enabled: boolean; prePackaged: boolean };
+export type RuleItemInfo = RuleItemInfoBase & { enabled: boolean };
 
 export type RulesInfoByType = {
   [ruleType: string]: RuleItemInfo[];
