@@ -4,6 +4,7 @@
  */
 
 import { Detector, DetectorInput, PeriodSchedule } from '../../models/interfaces';
+import { DetectorHit } from '../../server/models/interfaces';
 
 export const DATE_MATH_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
 
@@ -105,6 +106,16 @@ export const EMPTY_DEFAULT_DETECTOR: Detector = {
   schedule: EMPTY_DEFAULT_PERIOD_SCHEDULE,
   inputs: [EMPTY_DEFAULT_DETECTOR_INPUT],
   triggers: [],
+};
+
+export const EMPTY_DEFAULT_DETECTOR_HIT: DetectorHit = {
+  _id: '',
+  _index: '',
+  _source: {
+    ...EMPTY_DEFAULT_DETECTOR,
+    last_update_time: 0,
+    enabled_time: 0,
+  },
 };
 
 export const ALERT_STATE = Object.freeze({

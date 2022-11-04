@@ -12,7 +12,7 @@ import {
   EuiTitle,
 } from '@elastic/eui';
 import { Detector, PeriodSchedule } from '../../../../../models/interfaces';
-import React, { ChangeEvent, useContext, useState } from 'react';
+import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import DetectorBasicDetailsForm from '../../../CreateDetector/components/DefineDetector/components/DetectorDetails';
 import { MIN_NUM_DATA_SOURCES } from '../../utils/constants';
@@ -20,17 +20,60 @@ import DetectorDataSource from '../../../CreateDetector/components/DefineDetecto
 import { IndexService, ServicesContext } from '../../../../services';
 import { DetectorSchedule } from '../../../CreateDetector/components/DefineDetector/components/DetectorSchedule/DetectorSchedule';
 import { useCallback } from 'react';
-import { DetectorHit } from '../../../../../server/models/interfaces';
-import { ROUTES } from '../../../../utils/constants';
+import { DetectorHit, GetDetectorResponse } from '../../../../../server/models/interfaces';
+import { EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
+import { ServerResponse } from '../../../../../server/models/types';
 
 export interface UpdateDetectorBasicDetailsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {}
 
 export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProps> = (props) => {
   const services = useContext(ServicesContext);
-  const [detector, setDetector] = useState<Detector>(props.location.state.detectorHit._source);
+  const [detector, setDetector] = useState<Detector>(
+    props.location.state?.detectorHit?._source || EMPTY_DEFAULT_DETECTOR
+  );
   const { name, inputs } = detector;
   const description = inputs[0].detector_input.description;
+  const detectorId = props.location.pathname.replace(`${ROUTES.EDIT_DETECTOR_DETAILS}/`, '');
+
+  useEffect(() => {
+    const getDetector = async () => {
+      try {
+        const response = (await services?.detectorsService.getDetectors()) as ServerResponse<
+          GetDetectorResponse
+        >;
+        if (response.ok) {
+          const detectorHit = response.response.hits.hits.find(
+            (detectorHit) => detectorHit._id === detectorId
+          );
+          setDetector(detectorHit._source);
+          props.history.replace({
+            pathname: `${ROUTES.EDIT_DETECTOR_DETAILS}/${detectorId}`,
+            state: {
+              detectorHit: { ...detectorHit, _source: { ...detectorHit._source, ...detectorHit } },
+            },
+          });
+        } else {
+          console.error('Failed to retrieve detectors:', response.error);
+          // TODO: Display toast with error details
+        }
+      } catch (e) {
+        console.error('Failed to retrieve detectors:', e);
+        // TODO: Display toast with error details
+      }
+    };
+
+    const execute = async () => {
+      await getDetector();
+    };
+
+    if (!detector.id?.length) {
+      execute().catch((e) => {
+        console.error('Failed to retrieve detector:', e);
+        // TODO implement toast
+      });
+    }
+  }, [services]);
 
   const updateDetectorState = useCallback(
     (detector: Detector) => {
@@ -116,7 +159,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
 
   const onCancel = useCallback(() => {
     props.history.replace({
-      pathname: ROUTES.DETECTOR_DETAILS,
+      pathname: `${ROUTES.DETECTOR_DETAILS}/${detectorId}`,
       state: props.location.state,
     });
   }, []);
@@ -132,7 +175,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
 
       if (updateDetectorRes?.ok) {
         props.history.replace({
-          pathname: ROUTES.DETECTOR_DETAILS,
+          pathname: `${ROUTES.DETECTOR_DETAILS}/${detectorId}`,
           state: {
             detectorHit: { ...detectorHit, _source: { ...detectorHit._source, ...detector } },
           },
@@ -142,7 +185,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
       }
 
       props.history.replace({
-        pathname: ROUTES.DETECTOR_DETAILS,
+        pathname: `${ROUTES.DETECTOR_DETAILS}/${detectorId}`,
         state: {
           detectorHit: { ...detectorHit, _source: { ...detectorHit._source, ...detector } },
         },

@@ -17,7 +17,7 @@ import Rules from '../Rules';
 import Overview from '../Overview';
 import CreateDetector from '../CreateDetector/containers/CreateDetector';
 import Alerts from '../Alerts';
-import { DetectorDetails } from '../Detectors/containers/Detector/Detector';
+import { DetectorDetails } from '../Detectors/containers/Detector/DetectorDetails';
 import { UpdateDetectorBasicDetails } from '../Detectors/components/UpdateBasicDetails/UpdateBasicDetails';
 import { UpdateDetectorRules } from '../Detectors/components/UpdateRules/UpdateRules';
 import Create from '../Rules/containers/Rules/components/Create';
@@ -168,7 +168,7 @@ export default class Main extends Component<MainProps, MainState> {
                           )}
                         />
                         <Route
-                          path={ROUTES.DETECTOR_DETAILS}
+                          path={`${ROUTES.DETECTOR_DETAILS}/:id`}
                           render={(props: RouteComponentProps<{}, any, any>) => (
                             <DetectorDetails
                               detectorService={services.detectorsService}
@@ -177,19 +177,19 @@ export default class Main extends Component<MainProps, MainState> {
                           )}
                         />
                         <Route
-                          path={ROUTES.EDIT_DETECTOR_DETAILS}
+                          path={`${ROUTES.EDIT_DETECTOR_DETAILS}/:id`}
                           render={(props: RouteComponentProps<any, any, any>) => (
                             <UpdateDetectorBasicDetails {...props} />
                           )}
                         />
                         <Route
-                          path={ROUTES.EDIT_DETECTOR_RULES}
+                          path={`${ROUTES.EDIT_DETECTOR_RULES}/:id`}
                           render={(props: RouteComponentProps<any, any, any>) => (
                             <UpdateDetectorRules {...props} />
                           )}
                         />
                         <Route
-                          path={ROUTES.EDIT_FIELD_MAPPINGS}
+                          path={`${ROUTES.EDIT_FIELD_MAPPINGS}/:id`}
                           render={(props: RouteComponentProps<any, any, any>) => (
                             <UpdateFieldMappings
                               {...props}
@@ -199,7 +199,7 @@ export default class Main extends Component<MainProps, MainState> {
                           )}
                         />
                         <Route
-                          path={ROUTES.EDIT_DETECTOR_ALERT_TRIGGERS}
+                          path={`${ROUTES.EDIT_DETECTOR_ALERT_TRIGGERS}/:id`}
                           render={(props: RouteComponentProps<any, any, any>) => (
                             <UpdateAlertConditions
                               {...props}

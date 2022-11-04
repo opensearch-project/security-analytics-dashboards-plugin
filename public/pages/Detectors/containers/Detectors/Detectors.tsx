@@ -139,7 +139,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
 
   showDetectorDetails = (detectorHit: DetectorHit) => {
     this.props.history.push({
-      pathname: ROUTES.DETECTOR_DETAILS,
+      pathname: `${ROUTES.DETECTOR_DETAILS}/${detectorHit._id}`,
       state: { detectorHit },
     });
   };

@@ -20,7 +20,7 @@ import {
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { CoreServicesContext } from '../../../../components/core_services';
-import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
+import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR_HIT, ROUTES } from '../../../../utils/constants';
 import { DetectorHit } from '../../../../../server/models/interfaces';
 import { DetectorDetailsView } from '../DetectorDetailsView/DetectorDetailsView';
 import { FieldMappingsView } from '../../components/FieldMappingsView/FieldMappingsView';
@@ -42,6 +42,8 @@ export interface DetectorDetailsState {
   selectedTabId: TabId;
   selectedTabContent: React.ReactNode;
   detectorHit: DetectorHit;
+  detectorId: string;
+  tabs: any[];
 }
 
 enum TabId {
@@ -52,7 +54,6 @@ enum TabId {
 
 export class DetectorDetails extends React.Component<DetectorDetailsProps, DetectorDetailsState> {
   static contextType = CoreServicesContext;
-  private tabs: any[];
 
   private get detectorHit(): DetectorHit {
     return this.state.detectorHit;
@@ -64,34 +65,34 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
 
   editDetectorBasicDetails = () => {
     this.props.history.push({
-      pathname: ROUTES.EDIT_DETECTOR_DETAILS,
+      pathname: `${ROUTES.EDIT_DETECTOR_DETAILS}/${this.state.detectorId}`,
       state: { detectorHit: this.detectorHit },
     });
   };
 
   editDetectorRules = (enabledRules: RuleItem[], allRules: RuleItem[]) => {
     this.props.history.push({
-      pathname: ROUTES.EDIT_DETECTOR_RULES,
+      pathname: `${ROUTES.EDIT_DETECTOR_RULES}/${this.state.detectorId}`,
       state: { detectorHit: this.detectorHit, enabledRules, allRules },
     });
   };
 
   editFieldMappings = () => {
     this.props.history.push({
-      pathname: ROUTES.EDIT_FIELD_MAPPINGS,
+      pathname: `${ROUTES.EDIT_FIELD_MAPPINGS}/${this.state.detectorId}`,
       state: { detectorHit: this.detectorHit },
     });
   };
 
   editAlertTriggers = () => {
     this.props.history.push({
-      pathname: ROUTES.EDIT_DETECTOR_ALERT_TRIGGERS,
+      pathname: `${ROUTES.EDIT_DETECTOR_ALERT_TRIGGERS}/${this.state.detectorId}`,
       state: { detectorHit: this.detectorHit },
     });
   };
 
   private getTabs() {
-    return [
+    const tabs = [
       {
         id: TabId.DetectorDetails,
         name: 'Detector configuration',
@@ -126,28 +127,57 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
         ),
       },
     ];
+    this.setState({ tabs: tabs, selectedTabContent: tabs[0].content });
   }
 
   constructor(props: DetectorDetailsProps) {
     super(props);
+    const detectorId = props.location.pathname.replace(`${ROUTES.DETECTOR_DETAILS}/`, '');
     this.state = {
       isActionsMenuOpen: false,
       selectedTabId: TabId.DetectorDetails,
       selectedTabContent: null,
-      detectorHit: this.props.location.state.detectorHit,
+      detectorHit: EMPTY_DEFAULT_DETECTOR_HIT,
+      detectorId: detectorId,
+      tabs: [],
     };
-    this.tabs = this.getTabs();
   }
 
-  componentDidMount(): void {
-    const { name } = this.detectorHit._source;
-    this.context.chrome.setBreadcrumbs([
-      BREADCRUMBS.SECURITY_ANALYTICS,
-      BREADCRUMBS.DETECTORS,
-      BREADCRUMBS.DETECTORS_DETAILS(name),
-    ]);
-    this.setState({ selectedTabContent: this.tabs[0].content });
+  async componentDidMount() {
+    this.getDetector();
   }
+
+  getDetector = async () => {
+    const { detectorService } = this.props;
+    try {
+      const response = await detectorService.getDetectors();
+      if (response.ok) {
+        const { detectorId } = this.state;
+        const detector = response.response.hits.hits.find(
+          (detectorHit) => detectorHit._id === detectorId
+        );
+        this.detectorHit = {
+          ...detector,
+          _source: {
+            ...detector._source,
+            enabled: detector._source.enabled,
+          },
+        };
+        this.context.chrome.setBreadcrumbs([
+          BREADCRUMBS.SECURITY_ANALYTICS,
+          BREADCRUMBS.DETECTORS,
+          BREADCRUMBS.DETECTORS_DETAILS(detector._source.name),
+        ]);
+      } else {
+        console.error('Failed to retrieve detectors:', response.error);
+        // TODO: Display toast with error details
+      }
+    } catch (e) {
+      console.error('Failed to retrieve detectors:', e);
+      // TODO: Display toast with error details
+    }
+    this.getTabs();
+  };
 
   toggleActionsMenu = () => {
     const { isActionsMenuOpen } = this.state;
@@ -257,7 +287,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   };
 
   renderTabs() {
-    return this.tabs.map((tab, index) => (
+    return this.state.tabs.map((tab, index) => (
       <EuiTab
         key={index}
         onClick={() => this.setState({ selectedTabId: tab.id, selectedTabContent: tab.content })}
@@ -270,6 +300,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
 
   render() {
     const { _source: detector } = this.detectorHit;
+    const { selectedTabContent } = this.state;
 
     return (
       <EuiPanel>
@@ -305,7 +336,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
         <EuiSpacer size="xl" />
         <EuiTabs>{this.renderTabs()}</EuiTabs>
         <EuiSpacer size="xl" />
-        {this.state.selectedTabContent}
+        {selectedTabContent}
       </EuiPanel>
     );
   }
