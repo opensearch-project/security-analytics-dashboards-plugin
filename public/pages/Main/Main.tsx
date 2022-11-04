@@ -5,7 +5,20 @@
 
 import React, { Component } from 'react';
 import { Switch, Route, Redirect, RouteComponentProps } from 'react-router-dom';
-import { EuiSideNav, EuiPage, EuiPageBody, EuiPageSideBar } from '@elastic/eui';
+import {
+  EuiSideNav,
+  EuiPage,
+  EuiPageBody,
+  EuiPageSideBar,
+  EuiSideNavItemType,
+  EuiBetaBadge,
+  EuiTitle,
+  EuiFlexItem,
+  EuiFlexGroup,
+  EuiSpacer,
+  EuiCallOut,
+  EuiLink,
+} from '@elastic/eui';
 import { CoreStart } from 'opensearch-dashboards/public';
 import { ServicesConsumer } from '../../services';
 import { BrowserServices } from '../../models/interfaces';
@@ -53,6 +66,7 @@ interface MainProps extends RouteComponentProps {
 
 interface MainState {
   getStartedDismissedOnce: boolean;
+  selectedNavItemIndex: number;
 }
 
 export default class Main extends Component<MainProps, MainState> {
@@ -60,6 +74,7 @@ export default class Main extends Component<MainProps, MainState> {
     super(props);
     this.state = {
       getStartedDismissedOnce: false,
+      selectedNavItemIndex: 1,
     };
   }
 
@@ -71,36 +86,79 @@ export default class Main extends Component<MainProps, MainState> {
     const {
       landingPage,
       location: { pathname },
+      history,
     } = this.props;
-    const sideNav = [
+    const sideNav: EuiSideNavItemType<{ style: any }>[] = [
       {
         name: Navigation.SecurityAnalytics,
         id: 0,
+        renderItem: () => {
+          return (
+            <>
+              <EuiFlexGroup alignItems="center" gutterSize="s">
+                <EuiFlexItem grow={false}>
+                  <EuiTitle size="xs">
+                    <h3>{Navigation.SecurityAnalytics}</h3>
+                  </EuiTitle>
+                </EuiFlexItem>
+                <EuiFlexItem grow={false}>
+                  <EuiBetaBadge
+                    label="Experimental"
+                    iconType="beaker"
+                    tooltipContent="Experimental feature"
+                    tooltipPosition="bottom"
+                  />
+                </EuiFlexItem>
+              </EuiFlexGroup>
+              <EuiSpacer />
+            </>
+          );
+        },
         items: [
           {
             name: Navigation.Overview,
             id: 1,
-            href: `#${ROUTES.OVERVIEW}`,
+            onClick: () => {
+              this.setState({ selectedNavItemIndex: 1 });
+              history.push(ROUTES.OVERVIEW);
+            },
+            isSelected: this.state.selectedNavItemIndex === 1,
           },
           {
             name: Navigation.Findings,
             id: 2,
-            href: `#${ROUTES.FINDINGS}`,
+            onClick: () => {
+              this.setState({ selectedNavItemIndex: 2 });
+              history.push(ROUTES.FINDINGS);
+            },
+            isSelected: this.state.selectedNavItemIndex === 2,
           },
           {
             name: Navigation.Alerts,
             id: 3,
-            href: `#${ROUTES.ALERTS}`,
+            onClick: () => {
+              this.setState({ selectedNavItemIndex: 3 });
+              history.push(ROUTES.ALERTS);
+            },
+            isSelected: this.state.selectedNavItemIndex === 3,
           },
           {
             name: Navigation.Detectors,
             id: 4,
-            href: `#${ROUTES.DETECTORS}`,
+            onClick: () => {
+              this.setState({ selectedNavItemIndex: 4 });
+              history.push(ROUTES.DETECTORS);
+            },
+            isSelected: this.state.selectedNavItemIndex === 4,
           },
           {
             name: Navigation.Rules,
             id: 5,
-            href: `#${ROUTES.RULES}`,
+            onClick: () => {
+              this.setState({ selectedNavItemIndex: 5 });
+              history.push(ROUTES.RULES);
+            },
+            isSelected: this.state.selectedNavItemIndex === 5,
           },
         ],
       },
@@ -120,6 +178,30 @@ export default class Main extends Component<MainProps, MainState> {
                       </EuiPageSideBar>
                     )}
                     <EuiPageBody>
+                      <EuiCallOut title="Experimental feature" iconType="beaker">
+                        <p>
+                          The feature is experimental and should not be used in a production
+                          environment. While we are working on the finishing touches, share your
+                          ideas and feedback on{' '}
+                          <EuiLink
+                            target={'_blank'}
+                            href={
+                              'https://forum.opensearch.org/t/feedback-experimental-feature-security-analytics/11418'
+                            }
+                          >
+                            forum.opensearch.org
+                          </EuiLink>
+                          . For more information see{' '}
+                          <EuiLink
+                            target={'_blank'}
+                            href={'https://opensearch.org/docs/latest/security-analytics/index/'}
+                          >
+                            Security Analytics Documentation
+                          </EuiLink>
+                          .
+                        </p>
+                      </EuiCallOut>
+                      <EuiSpacer />
                       <Switch>
                         <Route
                           path={ROUTES.FINDINGS}
