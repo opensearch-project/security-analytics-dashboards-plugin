@@ -6,7 +6,7 @@
 import { BrowserServices } from '../../../models/interfaces';
 import { DetectorHit, RuleSource } from '../../../../server/models/interfaces';
 import { AlertItem, FindingItem } from './interfaces';
-import { RulesService } from '../../../services';
+import { RuleService } from '../../../services';
 import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 
 export interface OverviewViewModel {
@@ -37,7 +37,7 @@ export class OverviewViewModelActor {
 
   private async getRules(ruleIds: string[]): Promise<{ [id: string]: RuleSource }> {
     try {
-      const rulesService = this.services?.ruleService as RulesService;
+      const rulesService = this.services?.ruleService as RuleService;
       const body = {
         from: 0,
         size: 5000,

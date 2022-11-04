@@ -23,7 +23,7 @@ import {
 } from '../pages/CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { compile, TopLevelSpec } from 'vega-lite';
 import { View, parse } from 'vega/build-es5/vega.js';
-import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter/build/vega-interpreter.module';
+// import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter/build/vega-interpreter.module';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
@@ -130,7 +130,8 @@ export function renderVisualization(spec: TopLevelSpec, containerId: string) {
   }
 
   function renderVegaSpec(spec: {}) {
-    view = new View(parse(spec, null, { expr: vegaExpressionInterpreter }), {
+    view = new View(parse(spec), {
+      // view = new View(parse(spec, null, { expr: vegaExpressionInterpreter }), {
       renderer: 'canvas', // renderer (canvas or svg)
       container: `#${containerId}`, // parent DOM container
       hover: true, // enable hover processing

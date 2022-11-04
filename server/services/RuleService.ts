@@ -24,7 +24,7 @@ import {
 import { CLIENT_RULE_METHODS } from '../utils/constants';
 import { Rule } from '../../models/interfaces';
 import { ServerResponse } from '../models/types';
-import { safeDump } from 'js-yaml';
+import { load, safeDump } from 'js-yaml';
 import moment from 'moment';
 
 export default class RulesService {
@@ -46,38 +46,45 @@ export default class RulesService {
       const {
         id,
         title,
+        category,
         description,
         detection,
         status,
         author,
         references,
         tags,
-        log_source,
         level,
         false_positives,
       } = request.body as Rule;
       const today = moment(moment.now()).format('YYYY/MM/DD');
-      const jsonPayload = {
+      const jsonPayload: { [field: string]: any } = {
         id,
         title,
-        description,
+        description: description || title,
         status,
         author,
         date: today,
         modified: today,
-        references: references.map((ref) => ref.value),
-        tags: tags.map((tag) => tag.value),
         logsource: {
-          product: log_source,
-          service: log_source,
+          category,
         },
         level,
-        falsepositives: false_positives.map((falsePos) => falsePos.value),
-        detection: JSON.parse(detection),
+        detection: load(detection),
       };
+      if (tags.length > 0) {
+        jsonPayload['tags'] = tags.map((tag) => tag.value);
+      }
+      if (references.length > 0) {
+        jsonPayload['references'] = references.map((ref) => ref.value);
+      }
+      if (false_positives.length > 0) {
+        jsonPayload['falsepositives'] = false_positives.map((falsePos) => falsePos.value);
+      }
+      console.log(jsonPayload);
       const ruleYamlPayload = safeDump(jsonPayload);
+      console.log(ruleYamlPayload);
 
-      const params: CreateRuleParams = { body: ruleYamlPayload, category: log_source };
+      const params: CreateRuleParams = { body: ruleYamlPayload, category };
       const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
       const createRuleResponse: CreateRuleResponse = await callWithRequest(
         CLIENT_RULE_METHODS.CREATE_RULE,
@@ -181,40 +188,48 @@ export default class RulesService {
       const {
         id,
         title,
+        category,
         description,
         detection,
         status,
         author,
         references,
         tags,
-        log_source,
         level,
         false_positives,
       } = request.body as Rule;
       const today = moment(moment.now()).format('YYYY/MM/DD');
       const { ruleId } = request.params as { ruleId: string };
-      const jsonPayload = {
+      const jsonPayload: { [field: string]: any } = {
         id,
         title,
-        description,
+        description: description || title,
         status,
         author,
         date: today,
         modified: today,
-        references: references.map((ref) => ref.value),
-        tags: tags.map((tag) => tag.value),
         logsource: {
-          product: log_source,
-          service: log_source,
+          category,
         },
         level,
-        falsepositives: false_positives.map((falsePos) => falsePos.value),
-        detection: JSON.parse(detection),
+        detection: load(detection),
       };
+      if (tags.length > 0) {
+        jsonPayload['tags'] = tags.map((tag) => tag.value);
+      }
+      if (references.length > 0) {
+        jsonPayload['references'] = references.map((ref) => ref.value);
+      }
+      if (false_positives.length > 0) {
+        jsonPayload['falsepositives'] = false_positives.map((falsePos) => falsePos.value);
+      }
+      console.log(jsonPayload);
 
       const ruleYamlPayload = safeDump(jsonPayload);
 
-      const params: UpdateRuleParams = { body: ruleYamlPayload, category: log_source, ruleId };
+      console.log(ruleYamlPayload);
+
+      const params: UpdateRuleParams = { body: ruleYamlPayload, category, ruleId };
       const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
       const createRuleResponse: UpdateRuleResponse = await callWithRequest(
         CLIENT_RULE_METHODS.UPDATE_RULE,
