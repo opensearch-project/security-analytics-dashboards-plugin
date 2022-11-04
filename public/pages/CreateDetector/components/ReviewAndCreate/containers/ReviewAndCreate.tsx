@@ -40,6 +40,7 @@ export class ReviewAndCreate extends React.Component<ReviewAndCreateProps, Revie
           <h3>Review and create</h3>
         </EuiTitle>
         <DetectorDetailsView
+          {...this.props}
           detector={this.props.detector}
           rulesCanFold={true}
           editBasicDetails={this.setDefineDetectorStep}
@@ -47,12 +48,14 @@ export class ReviewAndCreate extends React.Component<ReviewAndCreateProps, Revie
         />
         <EuiSpacer size="l" />
         <FieldMappingsView
+          {...this.props}
           detector={this.props.detector}
           existingMappings={this.props.existingMappings}
           editFieldMappings={this.setConfigureFieldMappingStep}
         />
         <EuiSpacer size="l" />
         <AlertTriggersView
+          {...this.props}
           detector={this.props.detector}
           editAlertTriggers={this.setConfigureAlertsStep}
         />

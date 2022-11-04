@@ -48,9 +48,7 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
     const { detectorType } = this.props;
     if (detectorType.length < 1) return 'Select a detector type.';
     if (!this.state.detectorTypeIds.includes(detectorType)) {
-      console.log(
-        `DetectorType::getErrorMessage - Unsupported detector type found: ${detectorType}`
-      );
+      console.warn(`Unsupported detector type found: ${detectorType}`);
       return 'Unsupported detector type.';
     }
     return '';

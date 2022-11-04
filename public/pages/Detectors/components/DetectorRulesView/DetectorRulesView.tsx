@@ -6,20 +6,19 @@
 import { ContentPanel } from '../../../../components/ContentPanel';
 import React, { useContext, useEffect, useState } from 'react';
 import { EuiAccordion, EuiButton, EuiInMemoryTable, EuiSpacer, EuiText } from '@elastic/eui';
-import {
-  RuleItem,
-  RuleItemInfo,
-} from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
+import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { getRulesColumns } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/utils/constants';
 import { ServicesContext } from '../../../../services';
-import { ruleItemInfosToItems } from '../../../../utils/helpers';
 import { Detector } from '../../../../../models/interfaces';
-import { RuleInfo } from '../../../../../server/models/interfaces/Rules';
+import { RuleInfo } from '../../../../../server/models/interfaces';
+import { errorNotificationToast, translateToRuleItems } from '../../../../utils/helpers';
+import { NotificationsStart } from 'opensearch-dashboards/public';
 
 export interface DetectorRulesViewProps {
   detector: Detector;
   rulesCanFold?: boolean;
   onEditClicked: (enabledRules: RuleItem[], allRuleItems: RuleItem[]) => void;
+  notifications: NotificationsStart;
 }
 
 export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
@@ -33,6 +32,7 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
 
   const [enabledRuleItems, setEnabledRuleItems] = useState<RuleItem[]>([]);
   const [allRuleItems, setAllRuleItems] = useState<RuleItem[]>([]);
+  const [loading, setLoading] = useState(false);
   const actions = [
     <EuiButton onClick={() => props.onEditClicked(enabledRuleItems, allRuleItems)}>Edit</EuiButton>,
   ];
@@ -59,34 +59,14 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
 
       if (getRulesRes?.ok) {
         return getRulesRes.response.hits.hits;
+      } else {
+        errorNotificationToast(this.props.notifications, 'retrieve', 'rules', getRulesRes.error);
+        return [];
       }
-
-      return [];
-    };
-
-    const translateToRuleItems = (
-      prePackagedRules: RuleInfo[],
-      customRules: RuleInfo[],
-      isEnabled: (rule: RuleInfo) => boolean
-    ) => {
-      let ruleItemInfos: RuleItemInfo[] = prePackagedRules.map((rule) => ({
-        ...rule,
-        enabled: isEnabled(rule),
-        prePackaged: true,
-      }));
-
-      ruleItemInfos = ruleItemInfos.concat(
-        customRules.map((rule) => ({
-          ...rule,
-          enabled: isEnabled(rule),
-          prePackaged: false,
-        }))
-      );
-
-      return ruleItemInfosToItems(props.detector.detector_type, ruleItemInfos);
     };
 
     const updateRulesState = async () => {
+      setLoading(true);
       const enabledPrePackagedRuleIds = new Set(
         props.detector.inputs[0].detector_input.pre_packaged_rules.map((ruleInfo) => ruleInfo.id)
       );
@@ -108,20 +88,23 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
       const enabledRuleItems = translateToRuleItems(
         enabledPrePackagedRules,
         enabledCustomRules,
+        props.detector.detector_type,
         () => true
       );
       const allRuleItems = translateToRuleItems(
         prePackagedRules,
         customRules,
+        props.detector.detector_type,
         (ruleInfo) =>
           enabledPrePackagedRuleIds.has(ruleInfo._id) || enabledCustomRuleIds.has(ruleInfo._id)
       );
       setEnabledRuleItems(enabledRuleItems);
       setAllRuleItems(allRuleItems);
+      setLoading(false);
     };
 
-    updateRulesState().catch((error) => {
-      // TODO: Show error toast
+    updateRulesState().catch((e) => {
+      errorNotificationToast(this.props.notifications, 'retrieve', 'rules', e);
     });
   }, [services, props.detector]);
 
@@ -131,6 +114,7 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
       items={enabledRuleItems}
       itemId={(item: RuleItem) => `${item.name}`}
       pagination
+      loading={loading}
     />
   );
 

@@ -12,12 +12,15 @@ import ConfigureAlerts from '../../../CreateDetector/components/ConfigureAlerts'
 import { DetectorsService, NotificationsService, RuleService } from '../../../../services';
 import { RulesSharedState } from '../../../../models/interfaces';
 import { ROUTES } from '../../../../utils/constants';
+import { NotificationsStart } from 'opensearch-dashboards/public';
+import { errorNotificationToast } from '../../../../utils/helpers';
 
 export interface UpdateAlertConditionsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
   detectorService: DetectorsService;
   ruleService: RuleService;
   notificationsService: NotificationsService;
+  notifications: NotificationsStart;
 }
 
 export interface UpdateAlertConditionsState {
@@ -86,8 +89,12 @@ export default class UpdateAlertConditions extends Component<
           });
         });
       } else {
-        console.error('Failed to retrieve pre-packaged rules:', prePackagedResponse.error);
-        // TODO: Display toast with error details
+        errorNotificationToast(
+          this.props.notifications,
+          'retrieve',
+          'pre-packaged rules',
+          prePackagedResponse.error
+        );
       }
 
       if (customResponse.ok) {
@@ -102,14 +109,17 @@ export default class UpdateAlertConditions extends Component<
           });
         });
       } else {
-        console.error('Failed to retrieve custom rules:', customResponse.error);
-        // TODO: Display toast with error details
+        errorNotificationToast(
+          this.props.notifications,
+          'retrieve',
+          'custom rules',
+          customResponse.error
+        );
       }
 
       this.setState({ rules: allRules, rulesOptions: Array.from(rulesOptions) });
     } catch (e) {
-      console.error('Failed to retrieve rule:', e);
-      // TODO: Display toast with error details
+      errorNotificationToast(this.props.notifications, 'retrieve', 'rules', e);
     }
   };
 
@@ -137,12 +147,15 @@ export default class UpdateAlertConditions extends Component<
         detector
       );
       if (!updateDetectorResponse.ok) {
-        // TODO: show toast notification with error
-        console.error('Failed to update detector: ', updateDetectorResponse.error);
+        errorNotificationToast(
+          this.props.notifications,
+          'update',
+          'detector',
+          updateDetectorResponse.error
+        );
       }
     } catch (e) {
-      // TODO: show toast notification with error
-      console.error('Failed to update detector: ', e);
+      errorNotificationToast(this.props.notifications, 'update', 'detector', e);
     }
 
     this.setState({ submitting: false });

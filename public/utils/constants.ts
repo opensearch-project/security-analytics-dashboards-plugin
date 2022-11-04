@@ -4,6 +4,8 @@
  */
 
 import { Detector, DetectorInput, PeriodSchedule } from '../../models/interfaces';
+import { DetectorHit } from '../../server/models/interfaces';
+import { DETECTOR_TYPES } from '../pages/Detectors/utils/constants';
 
 export const DATE_MATH_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
 
@@ -99,13 +101,23 @@ export const EMPTY_DEFAULT_DETECTOR_INPUT: DetectorInput = {
 
 export const EMPTY_DEFAULT_DETECTOR: Detector = {
   type: 'detector',
-  detector_type: '',
+  detector_type: DETECTOR_TYPES.NETFLOW.id,
   name: '',
   enabled: true,
   createdBy: '',
   schedule: EMPTY_DEFAULT_PERIOD_SCHEDULE,
   inputs: [EMPTY_DEFAULT_DETECTOR_INPUT],
   triggers: [],
+};
+
+export const EMPTY_DEFAULT_DETECTOR_HIT: DetectorHit = {
+  _id: '',
+  _index: '',
+  _source: {
+    ...EMPTY_DEFAULT_DETECTOR,
+    last_update_time: 0,
+    enabled_time: 0,
+  },
 };
 
 export const ALERT_STATE = Object.freeze({
