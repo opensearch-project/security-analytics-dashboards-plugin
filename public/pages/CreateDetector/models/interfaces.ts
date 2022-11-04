@@ -4,8 +4,8 @@
  */
 
 export interface FieldMappingsTableItem {
-  logFieldName: string;
-  siemFieldName?: string;
+  ruleFieldName: string;
+  logFieldName?: string;
 }
 
 export interface DetectorCreationStepInfo {
