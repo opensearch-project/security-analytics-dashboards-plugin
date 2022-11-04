@@ -183,7 +183,12 @@ export default class Main extends Component<MainProps, MainState> {
                           The feature is experimental and should not be used in a production
                           environment. While we are working on the finishing touches, share your
                           ideas and feedback on{' '}
-                          <EuiLink target={'_blank'} href={'https://forum.opensearch.org/'}>
+                          <EuiLink
+                            target={'_blank'}
+                            href={
+                              'https://forum.opensearch.org/t/feedback-experimental-feature-security-analytics/11418'
+                            }
+                          >
                             forum.opensearch.org
                           </EuiLink>
                           . For more information see{' '}
