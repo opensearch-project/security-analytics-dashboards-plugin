@@ -187,7 +187,10 @@ export default class Main extends Component<MainProps, MainState> {
                             forum.opensearch.org
                           </EuiLink>
                           . For more information see{' '}
-                          <EuiLink target={'_blank'} href={''}>
+                          <EuiLink
+                            target={'_blank'}
+                            href={'https://opensearch.org/docs/latest/security-analytics/index/'}
+                          >
                             Security Analytics Documentation
                           </EuiLink>
                           .

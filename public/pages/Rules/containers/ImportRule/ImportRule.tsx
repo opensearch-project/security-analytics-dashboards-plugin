@@ -5,15 +5,16 @@
 
 import { BrowserServices } from '../../../../models/interfaces';
 import { RuleEditor } from '../../components/RuleEditor/RuleEditor';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { EuiButton, EuiFilePicker, EuiFlexGroup, EuiFlexItem, EuiSpacer } from '@elastic/eui';
-import { ROUTES } from '../../../../utils/constants';
+import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { Rule } from '../../../../../models/interfaces';
 import { RouteComponentProps } from 'react-router-dom';
 import { load, safeDump } from 'js-yaml';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../../../../utils/helpers';
+import { CoreServicesContext } from '../../../../components/core_services';
 
 export interface ImportRuleProps {
   services: BrowserServices;
@@ -22,6 +23,8 @@ export interface ImportRuleProps {
 }
 
 export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notifications }) => {
+  const context = useContext(CoreServicesContext);
+  context?.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.RULES_IMPORT]);
   const [fileError, setFileError] = useState('');
   const onChange = useCallback((files: any) => {
     setFileError('');

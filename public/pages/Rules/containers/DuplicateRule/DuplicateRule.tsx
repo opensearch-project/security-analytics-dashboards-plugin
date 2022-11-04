@@ -5,12 +5,13 @@
 
 import { BrowserServices } from '../../../../models/interfaces';
 import { RuleEditor } from '../../components/RuleEditor/RuleEditor';
-import React from 'react';
+import React, { useContext } from 'react';
 import { EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 import { RouteComponentProps } from 'react-router-dom';
-import { ROUTES } from '../../../../utils/constants';
+import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { Rule } from '../../../../../models/interfaces';
 import { RuleItemInfoBase } from '../../models/types';
+import { CoreServicesContext } from '../../../../components/core_services';
 
 export interface DuplicateRuleProps
   extends RouteComponentProps<any, any, { ruleItem: RuleItemInfoBase }> {
@@ -18,6 +19,9 @@ export interface DuplicateRuleProps
 }
 
 export const DuplicateRule: React.FC<DuplicateRuleProps> = ({ history, services, location }) => {
+  const context = useContext(CoreServicesContext);
+  context?.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.RULES_DUPLICATE]);
+
   const footerActions: React.FC<{ rule: Rule }> = ({ rule }) => {
     const onCreate = async () => {
       const updateRuleRes = await services.ruleService.createRule(rule);
