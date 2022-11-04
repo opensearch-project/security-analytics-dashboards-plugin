@@ -3,146 +3,113 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { Component } from 'react';
+import { EuiButton, EuiFlexGroup, EuiFlexItem, EuiSpacer, EuiTitle } from '@elastic/eui';
+import { ServicesContext } from '../../../../services';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { CoreServicesContext } from '../../../../components/core_services';
-import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
-import Import from './components/Import';
+import { BrowserServices } from '../../../../models/interfaces';
+import { RulesViewModelActor } from '../../models/RulesViewModelActor';
+import { RulesTable } from '../../components/RulesTable/RulesTable';
+import { RuleTableItem } from '../../utils/helpers';
+import { RuleItemInfoBase } from '../../models/types';
+import { RuleViewerFlyout } from '../../components/RuleViewerFlyout/RuleViewerFlyout';
+import { ROUTES } from '../../../../utils/constants';
 
-import {
-  EuiTitle,
-  EuiButton,
-  EuiFlyout,
-  EuiFlyoutBody,
-  EuiFlyoutHeader,
-  EuiFlexGroup,
-  EuiFlexItem,
-  EuiPanel,
-} from '@elastic/eui';
-import Table from './components/Table';
+export interface RulesProps extends RouteComponentProps {}
 
-interface RulesProps extends RouteComponentProps {}
+export const Rules: React.FC<RulesProps> = (props) => {
+  const services = useContext(ServicesContext) as BrowserServices;
+  const rulesViewModelActor = useMemo(() => new RulesViewModelActor(services), [services]);
+  const [allRules, setAllRules] = useState<RuleItemInfoBase[]>([]);
+  const [flyoutData, setFlyoutData] = useState<RuleTableItem | undefined>(undefined);
+  const ruleItems: RuleTableItem[] = useMemo(
+    () =>
+      allRules.map((rule) => ({
+        title: rule._source.title,
+        level: rule._source.level,
+        category: rule._source.category,
+        description: rule._source.description,
+        source: rule.prePackaged ? 'Sigma' : 'Custom',
+        ruleInfo: rule,
+        ruleId: rule._id,
+      })),
+    [allRules]
+  );
 
-interface RulesState {
-  rules: [];
-  loadingRules: boolean;
-  Flyout: boolean;
-  FlyoutType: string;
-  Create: boolean;
-  Mode: string;
-}
+  const getRules = useCallback(async () => {
+    const allRules = await rulesViewModelActor.fetchRules();
+    setAllRules(allRules);
+  }, [rulesViewModelActor]);
 
-export default class Rules extends Component<RulesProps, RulesState> {
-  static contextType = CoreServicesContext;
+  useEffect(() => {
+    getRules();
+  }, [getRules]);
 
-  private refreshRules: Function | undefined;
+  const openImportPage = useCallback(() => {
+    props.history.push(ROUTES.RULES_IMPORT);
+  }, []);
 
-  constructor(props: RulesProps) {
-    super(props);
+  const openCreatePage = useCallback(() => {
+    props.history.push(ROUTES.RULES_CREATE);
+  }, []);
 
-    this.state = {
-      rules: [],
-      loadingRules: false,
-      Flyout: false,
-      FlyoutType: '',
-      Create: false,
-      Mode: 'main',
-    };
-  }
-
-  componentDidMount() {
-    this.context.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.RULES]);
-  }
-
-  showFlyout = (type: string) => {
-    this.setState({ Flyout: true });
-    this.setState({ FlyoutType: type });
-    if (type === 'Import') {
-      this.context.chrome.setBreadcrumbs([
-        BREADCRUMBS.SECURITY_ANALYTICS,
-        BREADCRUMBS.RULES_IMPORT,
-      ]);
-    }
-  };
-
-  closeFlyout = () => {
-    this.setState({ Flyout: false });
-    this.setState({ FlyoutType: '' });
-    this.refreshRules?.();
-    this.context.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.RULES]);
-  };
-
-  showCreate = () => {
-    this.setState({ Mode: 'create' });
-    this.context.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.RULES_CREATE]);
-  };
-
-  closeCreate = () => {
-    this.setState({ Mode: 'main' });
-    this.context.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.RULES]);
-  };
-
-  registerRefreshCallback = (refreshCallback: Function) => {
-    this.refreshRules = refreshCallback;
-  };
-
-  render() {
-    const actions = [
-      <EuiButton onClick={() => this.showFlyout('Import')}>Import rule</EuiButton>,
-      <EuiButton
-        color="primary"
-        fill
-        onClick={() => this.showCreate()}
-        href={`#${ROUTES.RULES_CREATE}`}
-      >
+  const headerActions = useMemo(
+    () => [
+      <EuiButton onClick={openImportPage} data-test-subj={'detectorsRefreshButton'}>
+        Import rule
+      </EuiButton>,
+      <EuiButton onClick={openCreatePage} data-test-subj={'detectorsRefreshButton'} fill={true}>
         Create new rule
       </EuiButton>,
-    ];
+    ],
+    []
+  );
 
-    const headerActions = (
-      <EuiFlexGroup justifyContent="flexEnd">
-        {actions.map((action, idx) => (
-          <EuiFlexItem key={idx} grow={false}>
-            {action}
-          </EuiFlexItem>
-        ))}
-      </EuiFlexGroup>
-    );
+  const hideFlyout = useCallback(
+    (refreshRulesTable?: boolean) => {
+      setFlyoutData(undefined);
 
-    return (
-      <>
-        {this.state.Mode === 'main' && (
-          <EuiFlexGroup direction="column">
-            {this.state.Flyout && (
-              <EuiFlyout ownFocus onClose={this.closeFlyout}>
-                <EuiFlyoutHeader hasBorder>
-                  <EuiTitle size="m">
-                    <h3>{this.state.FlyoutType} a rule</h3>
-                  </EuiTitle>
-                </EuiFlyoutHeader>
-                <EuiFlyoutBody>
-                  <Import {...this.props} close={this.closeFlyout} />
-                </EuiFlyoutBody>
-              </EuiFlyout>
-            )}
+      if (refreshRulesTable) {
+        getRules();
+      }
+    },
+    [getRules]
+  );
+
+  return (
+    <>
+      {flyoutData ? (
+        <RuleViewerFlyout
+          hideFlyout={hideFlyout}
+          history={props.history}
+          ruleTableItem={flyoutData}
+          ruleService={services.ruleService}
+        />
+      ) : null}
+      <EuiFlexGroup direction="column">
+        <EuiFlexItem>
+          <EuiFlexGroup gutterSize={'s'} justifyContent={'spaceBetween'}>
             <EuiFlexItem>
-              <EuiFlexGroup>
-                <EuiFlexItem>
-                  <EuiTitle size="l">
-                    <h1>Rules</h1>
-                  </EuiTitle>
-                </EuiFlexItem>
-                <EuiFlexItem>{headerActions}</EuiFlexItem>
+              <EuiTitle size="l">
+                <h1>Rules</h1>
+              </EuiTitle>
+            </EuiFlexItem>
+            <EuiFlexItem>
+              <EuiFlexGroup justifyContent="flexEnd">
+                {headerActions.map((action, idx) => (
+                  <EuiFlexItem key={idx} grow={false}>
+                    {action}
+                  </EuiFlexItem>
+                ))}
               </EuiFlexGroup>
             </EuiFlexItem>
-            <EuiFlexItem>
-              <EuiPanel>
-                <Table registerRefreshCallback={this.registerRefreshCallback} />
-              </EuiPanel>
-            </EuiFlexItem>
           </EuiFlexGroup>
-        )}
-      </>
-    );
-  }
-}
+          <EuiSpacer size={'m'} />
+        </EuiFlexItem>
+        <EuiFlexItem>
+          <RulesTable ruleItems={ruleItems} showRuleDetails={setFlyoutData} />
+        </EuiFlexItem>
+      </EuiFlexGroup>
+    </>
+  );
+};
