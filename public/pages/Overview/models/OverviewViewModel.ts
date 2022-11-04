@@ -8,6 +8,8 @@ import { DetectorHit, RuleSource } from '../../../../server/models/interfaces';
 import { AlertItem, FindingItem } from './interfaces';
 import { RuleService } from '../../../services';
 import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
+import { NotificationsStart } from 'opensearch-dashboards/public';
+import { errorNotificationToast } from '../../../utils/helpers';
 
 export interface OverviewViewModel {
   detectors: DetectorHit[];
@@ -26,12 +28,17 @@ export class OverviewViewModelActor {
   private refreshHandlers: OverviewViewModelRefreshHandler[] = [];
   private refreshState: 'InProgress' | 'Complete' = 'Complete';
 
-  constructor(private services: BrowserServices | null) {}
+  constructor(
+    private services: BrowserServices | null,
+    private notifications: NotificationsStart | null
+  ) {}
 
   private async updateDetectors() {
     const res = await this.services?.detectorsService.getDetectors();
     if (res?.ok) {
       this.overviewViewModel.detectors = res.response.hits.hits;
+    } else {
+      errorNotificationToast(this.notifications, 'retrieve', 'detectors', res.error);
     }
   }
 
@@ -60,17 +67,26 @@ export class OverviewViewModelActor {
       if (prePackagedResponse.ok) {
         prePackagedResponse.response.hits.hits.forEach((hit) => (ruleById[hit._id] = hit._source));
       } else {
-        console.error('Failed to retrieve pre-packaged rules:', prePackagedResponse.error);
+        errorNotificationToast(
+          this.notifications,
+          'retrieve',
+          'pre-packaged rules',
+          prePackagedResponse.error
+        );
       }
       if (customResponse.ok) {
         customResponse.response.hits.hits.forEach((hit) => (ruleById[hit._id] = hit._source));
       } else {
-        console.error('Failed to retrieve custom rules:', customResponse.error);
-        // TODO: Display toast with error details
+        errorNotificationToast(
+          this.notifications,
+          'retrieve',
+          'custom rules',
+          customResponse.error
+        );
       }
-
       return ruleById;
     } catch (error: any) {
+      errorNotificationToast(this.notifications, 'retrieve', 'rules', error);
       return {};
     }
   }
@@ -87,29 +103,35 @@ export class OverviewViewModelActor {
     let findingItems: FindingItem[] = [];
     const ruleIds = new Set<string>();
 
-    for (let id of detectorIds) {
-      const findingRes = await this.services?.findingsService.getFindings({ detectorId: id });
+    try {
+      for (let id of detectorIds) {
+        const findingRes = await this.services?.findingsService.getFindings({ detectorId: id });
 
-      if (findingRes?.ok) {
-        const logType = detectorInfo.get(id)?.logType;
-        const detectorName = detectorInfo.get(id)?.name || '';
-        const detectorFindings: FindingItem[] = findingRes.response.findings.map((finding) => {
-          const ids = finding.queries.map((query) => query.id);
-          ids.forEach((id) => ruleIds.add(id));
+        if (findingRes?.ok) {
+          const logType = detectorInfo.get(id)?.logType;
+          const detectorName = detectorInfo.get(id)?.name || '';
+          const detectorFindings: FindingItem[] = findingRes.response.findings.map((finding) => {
+            const ids = finding.queries.map((query) => query.id);
+            ids.forEach((id) => ruleIds.add(id));
 
-          return {
-            detector: detectorName,
-            findingName: finding.id,
-            id: finding.id,
-            time: finding.timestamp,
-            logType: logType || '',
-            ruleId: finding.queries[0].id,
-            ruleName: '',
-            ruleSeverity: '',
-          };
-        });
-        findingItems = findingItems.concat(detectorFindings);
+            return {
+              detector: detectorName,
+              findingName: finding.id,
+              id: finding.id,
+              time: finding.timestamp,
+              logType: logType || '',
+              ruleId: finding.queries[0].id,
+              ruleName: '',
+              ruleSeverity: '',
+            };
+          });
+          findingItems = findingItems.concat(detectorFindings);
+        } else {
+          errorNotificationToast(this.notifications, 'retrieve', 'findings', findingRes.error);
+        }
       }
+    } catch (e) {
+      errorNotificationToast(this.notifications, 'retrieve', 'findings', e);
     }
 
     const rulesRes = await this.getRules([...ruleIds]);
@@ -130,21 +152,27 @@ export class OverviewViewModelActor {
     const detectorIds = detectorInfo.keys();
     let alertItems: AlertItem[] = [];
 
-    for (let id of detectorIds) {
-      const alertsRes = await this.services?.alertService.getAlerts({ detector_id: id });
+    try {
+      for (let id of detectorIds) {
+        const alertsRes = await this.services?.alertService.getAlerts({ detector_id: id });
 
-      if (alertsRes?.ok) {
-        const logType = detectorInfo.get(id) as string;
-        const detectorAlertItems: AlertItem[] = alertsRes.response.alerts.map((alert) => ({
-          id: alert.id,
-          severity: alert.severity,
-          time: alert.last_notification_time,
-          triggerName: alert.trigger_name,
-          logType,
-          acknowledged: !!alert.acknowledged_time,
-        }));
-        alertItems = alertItems.concat(detectorAlertItems);
+        if (alertsRes?.ok) {
+          const logType = detectorInfo.get(id) as string;
+          const detectorAlertItems: AlertItem[] = alertsRes.response.alerts.map((alert) => ({
+            id: alert.id,
+            severity: alert.severity,
+            time: alert.last_notification_time,
+            triggerName: alert.trigger_name,
+            logType,
+            acknowledged: !!alert.acknowledged_time,
+          }));
+          alertItems = alertItems.concat(detectorAlertItems);
+        } else {
+          errorNotificationToast(this.notifications, 'retrieve', 'alerts', alertsRes.error);
+        }
       }
+    } catch (e) {
+      errorNotificationToast(this.notifications, 'retrieve', 'alerts', e);
     }
 
     this.overviewViewModel.alerts = alertItems;

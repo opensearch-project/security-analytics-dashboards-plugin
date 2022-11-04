@@ -12,7 +12,7 @@ import {
   EuiTitle,
 } from '@elastic/eui';
 import { Detector, PeriodSchedule } from '../../../../../models/interfaces';
-import React, { ChangeEvent, useContext, useState } from 'react';
+import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import DetectorBasicDetailsForm from '../../../CreateDetector/components/DefineDetector/components/DetectorDetails';
 import { MIN_NUM_DATA_SOURCES } from '../../utils/constants';
@@ -20,17 +20,57 @@ import DetectorDataSource from '../../../CreateDetector/components/DefineDetecto
 import { IndexService, ServicesContext } from '../../../../services';
 import { DetectorSchedule } from '../../../CreateDetector/components/DefineDetector/components/DetectorSchedule/DetectorSchedule';
 import { useCallback } from 'react';
-import { DetectorHit } from '../../../../../server/models/interfaces';
-import { ROUTES } from '../../../../utils/constants';
+import { DetectorHit, GetDetectorResponse } from '../../../../../server/models/interfaces';
+import { EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
+import { ServerResponse } from '../../../../../server/models/types';
+import { NotificationsStart } from 'opensearch-dashboards/public';
+import { errorNotificationToast } from '../../../../utils/helpers';
 
 export interface UpdateDetectorBasicDetailsProps
-  extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {}
+  extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
+  notifications: NotificationsStart;
+}
 
 export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProps> = (props) => {
   const services = useContext(ServicesContext);
-  const [detector, setDetector] = useState<Detector>(props.location.state.detectorHit._source);
+  const [detector, setDetector] = useState<Detector>(
+    props.location.state?.detectorHit?._source || EMPTY_DEFAULT_DETECTOR
+  );
   const { name, inputs } = detector;
   const description = inputs[0].detector_input.description;
+  const detectorId = props.location.pathname.replace(`${ROUTES.EDIT_DETECTOR_DETAILS}/`, '');
+
+  useEffect(() => {
+    const getDetector = async () => {
+      const response = (await services?.detectorsService.getDetectors()) as ServerResponse<
+        GetDetectorResponse
+      >;
+      if (response.ok) {
+        const detectorHit = response.response.hits.hits.find(
+          (detectorHit) => detectorHit._id === detectorId
+        );
+        setDetector(detectorHit._source);
+        props.history.replace({
+          pathname: `${ROUTES.EDIT_DETECTOR_DETAILS}/${detectorId}`,
+          state: {
+            detectorHit: { ...detectorHit, _source: { ...detectorHit._source, ...detectorHit } },
+          },
+        });
+      } else {
+        errorNotificationToast(this.props.notifications, 'retrieve', 'detector', response.error);
+      }
+    };
+
+    const execute = async () => {
+      await getDetector();
+    };
+
+    if (!detector.id?.length) {
+      execute().catch((e) => {
+        errorNotificationToast(this.props.notifications, 'retrieve', 'detector', e);
+      });
+    }
+  }, [services]);
 
   const updateDetectorState = useCallback(
     (detector: Detector) => {
@@ -116,7 +156,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
 
   const onCancel = useCallback(() => {
     props.history.replace({
-      pathname: ROUTES.DETECTOR_DETAILS,
+      pathname: `${ROUTES.DETECTOR_DETAILS}/${detectorId}`,
       state: props.location.state,
     });
   }, []);
@@ -132,24 +172,31 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
 
       if (updateDetectorRes?.ok) {
         props.history.replace({
-          pathname: ROUTES.DETECTOR_DETAILS,
+          pathname: `${ROUTES.DETECTOR_DETAILS}/${detectorId}`,
           state: {
             detectorHit: { ...detectorHit, _source: { ...detectorHit._source, ...detector } },
           },
         });
       } else {
-        // TODO: Show error toast
+        errorNotificationToast(
+          this.props.notifications,
+          'update',
+          'detector',
+          updateDetectorRes.error
+        );
       }
 
       props.history.replace({
-        pathname: ROUTES.DETECTOR_DETAILS,
+        pathname: `${ROUTES.DETECTOR_DETAILS}/${detectorId}`,
         state: {
           detectorHit: { ...detectorHit, _source: { ...detectorHit._source, ...detector } },
         },
       });
     };
 
-    updateDetector();
+    updateDetector().catch((e) => {
+      errorNotificationToast(this.props.notifications, 'update', 'detector', e);
+    });
   }, [detector]);
 
   return (
@@ -160,6 +207,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
       <EuiSpacer size="xxl" />
 
       <DetectorBasicDetailsForm
+        isEdit={true}
         detectorName={name}
         detectorDescription={description}
         onDetectorNameChange={onDetectorNameChange}
@@ -168,6 +216,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
       <EuiSpacer size="xl" />
 
       <DetectorDataSource
+        {...this.props}
         indexService={services?.indexService as IndexService}
         detectorIndices={inputs[0].detector_input.indices}
         onDetectorInputIndicesChange={onDetectorInputIndicesChange}

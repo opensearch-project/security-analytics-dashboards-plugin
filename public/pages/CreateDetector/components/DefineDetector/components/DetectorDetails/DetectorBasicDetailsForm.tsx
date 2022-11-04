@@ -7,10 +7,10 @@ import React, { ChangeEvent, Component } from 'react';
 import { ContentPanel } from '../../../../../../components/ContentPanel';
 import { EuiFormRow, EuiFieldText, EuiSpacer, EuiTextArea } from '@elastic/eui';
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
-
-// TODO: Implement regex pattern to validate name and description strings
+import { getNameErrorMessage, validateName } from '../../../../../../utils/validation';
 
 interface DetectorDetailsProps {
+  isEdit: boolean;
   detectorName: string;
   detectorDescription: string;
   onDetectorNameChange: (name: string) => void;
@@ -18,8 +18,8 @@ interface DetectorDetailsProps {
 }
 
 interface DetectorDetailsState {
-  nameChangedOnce: boolean;
   nameIsInvalid: boolean;
+  nameFieldTouched: boolean;
 }
 
 export default class DetectorBasicDetailsForm extends Component<
@@ -29,42 +29,46 @@ export default class DetectorBasicDetailsForm extends Component<
   constructor(props: DetectorDetailsProps) {
     super(props);
     this.state = {
-      nameChangedOnce: false,
       nameIsInvalid: false,
+      nameFieldTouched: props.isEdit,
     };
   }
 
-  getErrorMessage = () => {
-    return 'Enter a name for the detector.';
+  onBlur = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({
+      nameFieldTouched: true,
+      nameIsInvalid: !validateName(event.target.value),
+    });
   };
 
   onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ nameChangedOnce: true, nameIsInvalid: !event.target.value });
-    this.props.onDetectorNameChange(event.target.value);
+    this.props.onDetectorNameChange(event.target.value.trimStart());
   };
 
   render() {
     const { detectorName, detectorDescription, onDetectorInputDescriptionChange } = this.props;
-    const { nameIsInvalid } = this.state;
-
+    const { nameIsInvalid, nameFieldTouched } = this.state;
     return (
       <ContentPanel title={'Detector details'} titleSize={'m'}>
         <EuiSpacer size={'m'} />
         <EuiFormRow
           label={<FormFieldHeader headerTitle={'Name'} />}
-          isInvalid={nameIsInvalid}
-          error={this.getErrorMessage()}
+          isInvalid={nameIsInvalid && nameFieldTouched}
+          error={getNameErrorMessage(detectorName, nameIsInvalid, nameFieldTouched)}
         >
           <EuiFieldText
             placeholder={'Enter a name for the detector.'}
             readOnly={false}
             value={detectorName}
+            onBlur={this.onBlur}
             onChange={this.onNameChange}
+            required={nameFieldTouched}
             data-test-subj={'define-detector-detector-name'}
-            required={true}
           />
         </EuiFormRow>
         <EuiSpacer size={'m'} />
+
+        {/*// TODO: Implement regex pattern validation for description field.*/}
         <EuiFormRow label={<FormFieldHeader headerTitle={'Description'} optionalField={true} />}>
           <EuiTextArea
             placeholder={'Enter a description for the detector.'}

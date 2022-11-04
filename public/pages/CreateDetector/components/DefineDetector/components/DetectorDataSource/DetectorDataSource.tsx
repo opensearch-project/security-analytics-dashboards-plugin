@@ -10,15 +10,20 @@ import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/Fo
 import { IndexOption } from '../../../../../Detectors/models/interfaces';
 import { MIN_NUM_DATA_SOURCES } from '../../../../../Detectors/utils/constants';
 import IndexService from '../../../../../../services/IndexService';
+import { NotificationsStart } from 'opensearch-dashboards/public';
+import { errorNotificationToast } from '../../../../../../utils/helpers';
 
 interface DetectorDataSourceProps {
   detectorIndices: string[];
   indexService: IndexService;
+  isEdit: boolean;
   onDetectorInputIndicesChange: (selectedOptions: EuiComboBoxOptionOption<string>[]) => void;
+  notifications: NotificationsStart;
 }
 
 interface DetectorDataSourceState {
   loading: boolean;
+  fieldTouched: boolean;
   indexOptions: IndexOption[];
   errorMessage?: string;
 }
@@ -31,6 +36,7 @@ export default class DetectorDataSource extends Component<
     super(props);
     this.state = {
       loading: true,
+      fieldTouched: props.isEdit,
       indexOptions: [],
     };
   }
@@ -41,22 +47,29 @@ export default class DetectorDataSource extends Component<
 
   getIndices = async () => {
     this.setState({ loading: true });
-    const indicesResponse = await this.props.indexService.getIndices();
+    try {
+      const indicesResponse = await this.props.indexService.getIndices();
+      if (indicesResponse.ok) {
+        const indices = indicesResponse.response.indices;
+        const indicesNames = indices.map((index) => index.index);
 
-    if (indicesResponse.ok) {
-      const indices = indicesResponse.response.indices;
-      const indicesNames = indices.map((index) => index.index);
-
-      this.setState({
-        loading: false,
-        indexOptions: this.parseOptions(indicesNames),
-      });
-    } else {
-      this.setState({
-        loading: false,
-        errorMessage: indicesResponse.error,
-      });
+        this.setState({
+          loading: false,
+          indexOptions: this.parseOptions(indicesNames),
+        });
+      } else {
+        errorNotificationToast(
+          this.props.notifications,
+          'retrieve',
+          'indices',
+          indicesResponse.error
+        );
+        this.setState({ errorMessage: indicesResponse.error });
+      }
+    } catch (e) {
+      errorNotificationToast(this.props.notifications, 'retrieve', 'indices', e);
     }
+    this.setState({ loading: false });
   };
 
   parseOptions = (indices: string[]) => {
@@ -70,19 +83,13 @@ export default class DetectorDataSource extends Component<
   };
 
   onSelectionChange = (options: EuiComboBoxOptionOption<string>[]) => {
-    if (options.length < MIN_NUM_DATA_SOURCES) {
-      this.setState({ errorMessage: 'Select an input source.' });
-    } else {
-      this.setState({ errorMessage: undefined });
-    }
-
     this.props.onDetectorInputIndicesChange(options);
   };
 
   render() {
     const { detectorIndices } = this.props;
-    const { loading, indexOptions, errorMessage } = this.state;
-
+    const { loading, fieldTouched, indexOptions, errorMessage } = this.state;
+    const isInvalid = fieldTouched && detectorIndices.length < MIN_NUM_DATA_SOURCES;
     return (
       <ContentPanel title={'Data source'} titleSize={'m'}>
         <EuiSpacer size={'m'} />
@@ -90,8 +97,8 @@ export default class DetectorDataSource extends Component<
           label={
             <FormFieldHeader headerTitle={'Select or input source indexes or index patterns'} />
           }
-          isInvalid={!!errorMessage}
-          error={errorMessage}
+          isInvalid={isInvalid}
+          error={isInvalid && (errorMessage || 'Select an input source.')}
         >
           <EuiComboBox
             placeholder={'Select an input source for the detector.'}
@@ -99,6 +106,7 @@ export default class DetectorDataSource extends Component<
             isLoading={loading}
             options={indexOptions}
             selectedOptions={this.parseOptions(detectorIndices)}
+            onBlur={() => this.setState({ fieldTouched: true })}
             onChange={this.onSelectionChange}
             onCreateOption={this.onCreateOption}
             isInvalid={!!errorMessage}
