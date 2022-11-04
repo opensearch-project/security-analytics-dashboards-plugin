@@ -46,7 +46,10 @@ export const Overview: React.FC<OverviewProps> = (props) => {
     });
   };
 
-  const overviewViewModelActor = useMemo(() => new OverviewViewModelActor(services), [services]);
+  const overviewViewModelActor = useMemo(
+    () => new OverviewViewModelActor(services, context.notifications),
+    [services, context]
+  );
 
   useEffect(() => {
     context?.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.OVERVIEW]);

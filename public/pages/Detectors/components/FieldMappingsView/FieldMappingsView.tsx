@@ -9,11 +9,13 @@ import { EuiBasicTableColumn, EuiButton, EuiInMemoryTable } from '@elastic/eui';
 import { FieldMappingsTableItem } from '../../../CreateDetector/models/interfaces';
 import { ServicesContext } from '../../../../services';
 import { Detector, FieldMapping } from '../../../../../models/interfaces';
+import { errorNotificationToast } from '../../../../utils/helpers';
 
 export interface FieldMappingsViewProps {
   detector: Detector;
   existingMappings?: FieldMapping[];
   editFieldMappings: () => void;
+  notifications: NotificationsStart;
 }
 
 const columns: EuiBasicTableColumn<FieldMappingsTableItem>[] = [
@@ -54,7 +56,12 @@ export const FieldMappingsView: React.FC<FieldMappingsViewProps> = ({
           setFieldMappingItems(items);
         }
       } else {
-        // TODO: show error notification
+        errorNotificationToast(
+          this.props.notifications,
+          'retrieve',
+          'field mappings',
+          getMappingRes.error
+        );
       }
     },
     [services, detector]
@@ -72,7 +79,9 @@ export const FieldMappingsView: React.FC<FieldMappingsViewProps> = ({
 
       setFieldMappingItems(items);
     } else {
-      fetchFieldMappings(detector.inputs[0].detector_input.indices[0]);
+      fetchFieldMappings(detector.inputs[0].detector_input.indices[0]).catch((e) => {
+        errorNotificationToast(this.props.notifications, 'retrieve', 'field mappings', e);
+      });
     }
   }, [detector]);
 

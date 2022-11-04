@@ -25,6 +25,7 @@ import { ALERT_SEVERITY_OPTIONS, EMPTY_DEFAULT_ALERT_CONDITION } from '../../uti
 import { CreateDetectorRulesOptions } from '../../../../../../models/types';
 import { NotificationChannelOption, NotificationChannelTypeOptions } from '../../models/interfaces';
 import { NOTIFICATIONS_HREF } from '../../../../../../utils/constants';
+import { getNameErrorMessage, validateName } from '../../../../../../utils/validation';
 
 interface AlertConditionPanelProps extends RouteComponentProps {
   alertCondition: AlertCondition;
@@ -38,7 +39,12 @@ interface AlertConditionPanelProps extends RouteComponentProps {
   refreshNotificationChannels: () => void;
 }
 
-interface AlertConditionPanelState {}
+interface AlertConditionPanelState {
+  nameFieldTouched: boolean;
+  nameIsInvalid: boolean;
+  previewToggle: boolean;
+  selectedNames: EuiComboBoxOptionOption<string>[];
+}
 
 export default class AlertConditionPanel extends Component<
   AlertConditionPanelProps,
@@ -47,7 +53,10 @@ export default class AlertConditionPanel extends Component<
   constructor(props: AlertConditionPanelProps) {
     super(props);
     this.state = {
+      nameFieldTouched: props.isEdit,
+      nameIsInvalid: false,
       previewToggle: false,
+      selectedNames: [],
     };
   }
 
@@ -55,14 +64,63 @@ export default class AlertConditionPanel extends Component<
     this.prepareMessage();
   }
 
-  prepareMessage = async () => {
-    const { alertCondition, detector, indexNum } = this.props;
-    if (!alertCondition.actions[0]?.subject_template.source)
-      await this.onMessageSubjectChange(`${detector.name} alert condition number ${indexNum + 1}.`);
-    if (!alertCondition.actions[0]?.message_template.source)
-      await this.onMessageBodyChange(
-        `Alert condition number ${indexNum + 1} for detector "${detector.name}" has been triggered.`
-      );
+  prepareMessage = (updateMessage: boolean = false) => {
+    const { alertCondition, detector } = this.props;
+    const detectorInput = detector.inputs[0].detector_input;
+    const lineBreak = '\n';
+    const lineBreakAndTab = '\n\t';
+
+    const alertConditionName = `Triggered alert condition: ${alertCondition.name}`;
+    const alertConditionSeverity = `Severity: ${
+      parseAlertSeverityToOption(alertCondition.severity)?.label || alertCondition.severity
+    }`;
+    const detectorName = `Threat detector: ${detector.name}`;
+    const defaultSubject = [alertConditionName, alertConditionSeverity, detectorName].join(' - ');
+
+    if (updateMessage || !alertCondition.actions[0]?.subject_template.source)
+      this.onMessageSubjectChange(defaultSubject);
+
+    if (updateMessage || !alertCondition.actions[0]?.message_template.source) {
+      const selectedNames = this.setSelectedNames(alertCondition.ids);
+      const detectorDescription = `Description: ${detectorInput.description}`;
+      const detectorIndices = `Detector data sources:${lineBreakAndTab}${detectorInput.indices.join(
+        `,${lineBreakAndTab}`
+      )}`;
+      const ruleNames = `Rule Names:${lineBreakAndTab}${selectedNames.join(`,${lineBreakAndTab}`)}`;
+      const ruleSeverities = `Rule Severities:${lineBreakAndTab}${alertCondition.sev_levels.join(
+        `,${lineBreakAndTab}`
+      )}`;
+      const ruleTags = `Rule Tags:${lineBreakAndTab}${alertCondition.tags.join(
+        `,${lineBreakAndTab}`
+      )}`;
+
+      const alertConditionSelections = [];
+      if (selectedNames.length) {
+        alertConditionSelections.push(ruleNames);
+        alertConditionSelections.push(lineBreak);
+      }
+      if (alertCondition.sev_levels.length) {
+        alertConditionSelections.push(ruleSeverities);
+        alertConditionSelections.push(lineBreak);
+      }
+      if (alertCondition.tags.length) {
+        alertConditionSelections.push(ruleTags);
+        alertConditionSelections.push(lineBreak);
+      }
+
+      const alertConditionDetails = [
+        alertConditionName,
+        alertConditionSeverity,
+        detectorName,
+        detectorDescription,
+        detectorIndices,
+      ];
+      let defaultMessageBody = alertConditionDetails.join(lineBreak);
+      if (alertConditionSelections.length)
+        defaultMessageBody =
+          defaultMessageBody + lineBreak + lineBreak + alertConditionSelections.join(lineBreak);
+      this.onMessageBodyChange(defaultMessageBody);
+    }
   };
 
   updateTrigger(trigger: Partial<AlertCondition>) {
@@ -79,11 +137,15 @@ export default class AlertConditionPanel extends Component<
     onAlertTriggerChanged({ ...detector, triggers: newTriggers });
   }
 
-  onNameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const name = e.target.value;
-    this.updateTrigger({
-      name,
+  onNameBlur = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({
+      nameFieldTouched: true,
+      nameIsInvalid: !validateName(event.target.value),
     });
+  };
+
+  onNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    this.updateTrigger({ name: event.target.value.trimStart() });
   };
 
   onRuleSeverityChange = (selectedOptions: EuiComboBoxOptionOption<string>[]) => {
@@ -163,6 +225,22 @@ export default class AlertConditionPanel extends Component<
   onRuleNamesChange = (selectedOptions: EuiComboBoxOptionOption<string>[]) => {
     const ids = selectedOptions.map((nameOption) => nameOption.value as string);
     this.updateTrigger({ ids });
+    this.setSelectedNames(ids);
+  };
+
+  setSelectedNames = (ids: string[]): string[] => {
+    const { rulesOptions } = this.props;
+    const selectedNames: string[] = [];
+    const selectedNamesOptions: EuiComboBoxOptionOption<string>[] = [];
+    ids.forEach((ruleId) => {
+      const option = rulesOptions.find((option) => option.id === ruleId);
+      if (option) {
+        selectedNames.push(option.name);
+        selectedNamesOptions.push({ label: option.name, value: option.id });
+      }
+    });
+    this.setState({ selectedNames: selectedNamesOptions });
+    return selectedNames;
   };
 
   render() {
@@ -174,7 +252,8 @@ export default class AlertConditionPanel extends Component<
       refreshNotificationChannels,
       rulesOptions,
     } = this.props;
-    const { name, sev_levels: ruleSeverityLevels, tags, severity, ids } = alertCondition;
+    const { nameFieldTouched, nameIsInvalid, selectedNames } = this.state;
+    const { name, sev_levels: ruleSeverityLevels, tags, severity } = alertCondition;
     const uniqueTagsOptions = new Set(
       rulesOptions.map((option) => option.tags).reduce((prev, current) => prev.concat(current), [])
     );
@@ -196,13 +275,6 @@ export default class AlertConditionPanel extends Component<
       label: option.name,
       value: option.id,
     }));
-    const selectedNames: EuiComboBoxOptionOption<string>[] = [];
-    ids.forEach((ruleId) => {
-      const option = rulesOptions.find((option) => option.id === ruleId);
-      if (option) {
-        selectedNames.push({ label: option.name, value: option.id });
-      }
-    });
 
     const channelId = alertCondition.actions[0].destination_id;
     const selectedNotificationChannelOption: NotificationChannelOption[] = [];
@@ -221,12 +293,16 @@ export default class AlertConditionPanel extends Component<
               <p>Trigger name</p>
             </EuiText>
           }
+          isInvalid={nameFieldTouched && nameIsInvalid}
+          error={getNameErrorMessage(name, nameIsInvalid, nameFieldTouched)}
         >
           <EuiFieldText
             placeholder={'Enter a name for the alert condition.'}
             readOnly={false}
             value={name}
+            onBlur={this.onNameBlur}
             onChange={this.onNameChange}
+            required={nameFieldTouched}
             data-test-subj={`alert-condition-name-${indexNum}`}
           />
         </EuiFormRow>
@@ -358,35 +434,53 @@ export default class AlertConditionPanel extends Component<
           initialIsOpen={false}
         >
           <EuiSpacer size={'m'} />
-          <EuiFormRow
-            label={
-              <EuiText size={'s'}>
-                <p>Message subject</p>
-              </EuiText>
-            }
-          >
-            <EuiFieldText
-              placeholder={'Enter a subject for the notification message.'}
-              value={alertCondition.actions[0]?.subject_template.source}
-              onChange={(e) => this.onMessageSubjectChange(e.target.value)}
-              required={true}
-            />
-          </EuiFormRow>
-          <EuiSpacer size={'m'} />
-          <EuiFormRow
-            label={
-              <EuiText size="s">
-                <p>Message body</p>
-              </EuiText>
-            }
-          >
-            <EuiTextArea
-              placeholder={'Enter the content of the notification message.'}
-              value={alertCondition.actions[0]?.message_template.source}
-              onChange={(e) => this.onMessageBodyChange(e.target.value)}
-              required={true}
-            />
-          </EuiFormRow>
+          <EuiFlexGroup direction={'column'} style={{ width: '75%' }}>
+            <EuiFlexItem>
+              <EuiFormRow
+                label={
+                  <EuiText size={'s'}>
+                    <p>Message subject</p>
+                  </EuiText>
+                }
+                fullWidth={true}
+              >
+                <EuiFieldText
+                  placeholder={'Enter a subject for the notification message.'}
+                  value={alertCondition.actions[0]?.subject_template.source}
+                  onChange={(e) => this.onMessageSubjectChange(e.target.value)}
+                  required={true}
+                  fullWidth={true}
+                />
+              </EuiFormRow>
+            </EuiFlexItem>
+
+            <EuiFlexItem>
+              <EuiFormRow
+                label={
+                  <EuiText size="s">
+                    <p>Message body</p>
+                  </EuiText>
+                }
+                fullWidth={true}
+              >
+                <EuiTextArea
+                  placeholder={'Enter the content of the notification message.'}
+                  value={alertCondition.actions[0]?.message_template.source}
+                  onChange={(e) => this.onMessageBodyChange(e.target.value)}
+                  required={true}
+                  fullWidth={true}
+                />
+              </EuiFormRow>
+            </EuiFlexItem>
+
+            <EuiFlexItem>
+              <EuiFormRow>
+                <EuiButton fullWidth={false} onClick={() => this.prepareMessage(true)}>
+                  Generate message
+                </EuiButton>
+              </EuiFormRow>
+            </EuiFlexItem>
+          </EuiFlexGroup>
         </EuiAccordion>
 
         <EuiSpacer size="xl" />
