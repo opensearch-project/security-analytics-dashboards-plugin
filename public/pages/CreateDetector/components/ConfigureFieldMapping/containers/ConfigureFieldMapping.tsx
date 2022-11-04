@@ -27,6 +27,7 @@ interface ConfigureFieldMappingProps extends RouteComponentProps {
   replaceFieldMappings: (mappings: FieldMapping[]) => void;
   fieldMappings: FieldMapping[];
   updateDataValidState: (step: DetectorCreationStep, isValid: boolean) => void;
+  loading: boolean;
 }
 
 interface ConfigureFieldMappingState {
@@ -47,7 +48,7 @@ export default class ConfigureFieldMapping extends Component<
       createdMappings[mapping.ruleFieldName] = mapping.indexFieldName;
     });
     this.state = {
-      loading: false,
+      loading: props.loading || false,
       mappingsData: EMPTY_FIELD_MAPPINGS,
       createdMappings,
       invalidMappingFieldNames: [],

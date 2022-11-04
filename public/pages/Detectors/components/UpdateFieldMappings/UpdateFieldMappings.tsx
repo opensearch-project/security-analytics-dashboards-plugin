@@ -9,9 +9,10 @@ import { EuiButton, EuiFlexGroup, EuiFlexItem, EuiSpacer, EuiTitle } from '@elas
 import ConfigureFieldMapping from '../../../CreateDetector/components/ConfigureFieldMapping';
 import { Detector, FieldMapping } from '../../../../../models/interfaces';
 import FieldMappingService from '../../../../services/FieldMappingService';
-import { DetectorHit } from '../../../../../server/models/interfaces';
-import { ROUTES } from '../../../../utils/constants';
+import { DetectorHit, GetDetectorResponse } from '../../../../../server/models/interfaces';
+import { EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
 import { DetectorsService } from '../../../../services';
+import { ServerResponse } from '../../../../../server/models/types';
 
 export interface UpdateFieldMappingsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
@@ -21,7 +22,9 @@ export interface UpdateFieldMappingsProps
 
 export interface UpdateFieldMappingsState {
   detector: Detector;
+  detectorId: string;
   fieldMappings: FieldMapping[];
+  loading: boolean;
   submitting: boolean;
 }
 
@@ -31,16 +34,57 @@ export default class UpdateFieldMappings extends Component<
 > {
   constructor(props: UpdateFieldMappingsProps) {
     super(props);
+    const { location } = props;
     this.state = {
-      detector: props.location.state.detectorHit._source,
+      detector: location.state?.detectorHit?._source || EMPTY_DEFAULT_DETECTOR,
+      detectorId: location.pathname.replace(`${ROUTES.EDIT_FIELD_MAPPINGS}/`, ''),
       fieldMappings: [],
+      loading: false,
       submitting: false,
     };
   }
 
+  componentDidMount() {
+    this.getDetector();
+  }
+
+  getDetector = async () => {
+    this.setState({ loading: true });
+    try {
+      const { detectorService, history } = this.props;
+      const { detectorId } = this.state;
+      const response = (await detectorService.getDetectors()) as ServerResponse<
+        GetDetectorResponse
+      >;
+      if (response.ok) {
+        const detectorHit = response.response.hits.hits.find(
+          (detectorHit) => detectorHit._id === detectorId
+        );
+        const detector = detectorHit._source;
+        detector.detector_type = detector.detector_type.toLowerCase();
+
+        history.replace({
+          pathname: `${ROUTES.EDIT_FIELD_MAPPINGS}/${detectorId}`,
+          state: {
+            detectorHit: { ...detectorHit, _source: { ...detectorHit._source, ...detector } },
+          },
+        });
+
+        this.setState({ detector: detector });
+      } else {
+        console.error('Failed to retrieve detector:', response.error);
+        // TODO: Display toast with error details
+      }
+    } catch (e) {
+      console.error('Failed to retrieve detector:', e);
+      // TODO: Display toast with error details
+    }
+    this.setState({ loading: false });
+  };
+
   onCancel = () => {
     this.props.history.replace({
-      pathname: ROUTES.DETECTOR_DETAILS,
+      pathname: `${ROUTES.DETECTOR_DETAILS}/${this.state.detectorId}`,
       state: this.props.location.state,
     });
   };
@@ -83,7 +127,7 @@ export default class UpdateFieldMappings extends Component<
 
     this.setState({ submitting: false });
     history.replace({
-      pathname: ROUTES.DETECTOR_DETAILS,
+      pathname: `${ROUTES.DETECTOR_DETAILS}/${this.state.detectorId}`,
       state: {
         detectorHit: { ...detectorHit, _source: { ...detectorHit._source, ...detector } },
       },
@@ -96,8 +140,7 @@ export default class UpdateFieldMappings extends Component<
 
   render() {
     const { filedMappingService } = this.props;
-    const { submitting, detector, fieldMappings } = this.state;
-    detector.detector_type = detector.detector_type.toLowerCase();
+    const { submitting, detector, fieldMappings, loading } = this.state;
     return (
       <div>
         <EuiTitle size={'l'}>
@@ -105,15 +148,18 @@ export default class UpdateFieldMappings extends Component<
         </EuiTitle>
         <EuiSpacer size={'xxl'} />
 
-        <ConfigureFieldMapping
-          {...this.props}
-          isEdit={true}
-          detector={detector}
-          fieldMappings={fieldMappings}
-          filedMappingService={filedMappingService}
-          replaceFieldMappings={this.replaceFieldMappings}
-          updateDataValidState={() => {}}
-        />
+        {!loading && (
+          <ConfigureFieldMapping
+            {...this.props}
+            isEdit={true}
+            detector={detector}
+            fieldMappings={fieldMappings}
+            filedMappingService={filedMappingService}
+            replaceFieldMappings={this.replaceFieldMappings}
+            updateDataValidState={() => {}}
+            loading={loading}
+          />
+        )}
 
         <EuiFlexGroup justifyContent={'flexEnd'}>
           <EuiFlexItem grow={false}>
