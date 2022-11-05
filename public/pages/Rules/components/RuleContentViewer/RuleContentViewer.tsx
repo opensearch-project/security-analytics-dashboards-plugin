@@ -31,18 +31,20 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
       <EuiFlexGroup justifyContent="flexEnd">
         <EuiFlexItem>
           <EuiFormLabel>Rule Name</EuiFormLabel>
-          <EuiText>{ruleData.title}</EuiText>
+          <EuiText data-test-subj={'rule_flyout_rule_name'}>{ruleData.title}</EuiText>
         </EuiFlexItem>
         <EuiFlexItem>
           <EuiFormLabel>Log Type</EuiFormLabel>
-          <EuiText>{ruleData.category}</EuiText>
+          <EuiText data-test-subj={'rule_flyout_rule_log_type'}>{ruleData.category}</EuiText>
         </EuiFlexItem>
       </EuiFlexGroup>
 
       <EuiSpacer />
 
       <EuiFormLabel>Description</EuiFormLabel>
-      <EuiText>{ruleData.description || DEFAULT_EMPTY_DATA}</EuiText>
+      <EuiText data-test-subj={'rule_flyout_rule_description'}>
+        {ruleData.description || DEFAULT_EMPTY_DATA}
+      </EuiText>
       <EuiSpacer />
 
       <EuiFlexGroup justifyContent="flexEnd">
@@ -50,7 +52,7 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
           <EuiFormLabel>Last Updated</EuiFormLabel>
           {ruleData.last_update_time}
         </EuiFlexItem>
-        <EuiFlexItem>
+        <EuiFlexItem data-test-subj={'rule_flyout_rule_author'}>
           <EuiFormLabel>Author</EuiFormLabel>
           {ruleData.author}
         </EuiFlexItem>
@@ -59,7 +61,7 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
       <EuiSpacer />
 
       <EuiFlexGroup justifyContent="flexEnd">
-        <EuiFlexItem>
+        <EuiFlexItem data-test-subj={'rule_flyout_rule_source'}>
           <EuiFormLabel>Source</EuiFormLabel>
           {prePackaged ? 'Sigma' : 'Custom'}
         </EuiFlexItem>
@@ -79,7 +81,7 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
       <EuiSpacer />
 
       <EuiFlexGroup justifyContent="flexEnd">
-        <EuiFlexItem>
+        <EuiFlexItem data-test-subj={'rule_flyout_rule_severity'}>
           <EuiFormLabel>Rule level</EuiFormLabel>
           {ruleData.level}
         </EuiFlexItem>
@@ -89,7 +91,7 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
 
       <EuiFormLabel>Tags</EuiFormLabel>
       {ruleData.tags.length > 0 ? (
-        <EuiFlexGroup direction="row">
+        <EuiFlexGroup direction="row" data-test-subj={'rule_flyout_rule_tags'}>
           {ruleData.tags.map((tag: any, i: number) => (
             <EuiFlexItem grow={false} key={i}>
               <EuiBadge color={'#DDD'}>{tag.value}</EuiBadge>
@@ -107,7 +109,12 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
       {ruleData.references.length > 0 ? (
         ruleData.references.map((reference: any, i: number) => (
           <div key={i}>
-            <EuiLink href={reference.value} target="_blank" key={reference}>
+            <EuiLink
+              href={reference.value}
+              target="_blank"
+              key={reference}
+              data-test-subj={'rule_flyout_rule_references'}
+            >
               {reference.value}
             </EuiLink>
             <EuiSpacer />
@@ -120,7 +127,7 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
       <EuiSpacer />
 
       <EuiFormLabel>False positive cases</EuiFormLabel>
-      <div>
+      <div data-test-subj={'rule_flyout_rule_false_positives'}>
         {ruleData.false_positives.length > 0 ? (
           ruleData.false_positives.map((falsepositive: any, i: number) => (
             <div key={i}>
@@ -136,12 +143,14 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
       <EuiSpacer />
 
       <EuiFormLabel>Rule Status</EuiFormLabel>
-      <div>{ruleData.status}</div>
+      <div data-test-subj={'rule_flyout_rule_status'}>{ruleData.status}</div>
 
       <EuiSpacer />
 
       <EuiFormRow label="Detection" fullWidth>
-        <EuiCodeBlock language="yaml">{ruleData.detection}</EuiCodeBlock>
+        <EuiCodeBlock language="yaml" data-test-subj={'rule_flyout_rule_detection'}>
+          {ruleData.detection}
+        </EuiCodeBlock>
       </EuiFormRow>
     </EuiModalBody>
   );
