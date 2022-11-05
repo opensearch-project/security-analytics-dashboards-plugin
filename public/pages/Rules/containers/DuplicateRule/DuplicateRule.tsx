@@ -5,29 +5,43 @@
 
 import { BrowserServices } from '../../../../models/interfaces';
 import { RuleEditor } from '../../components/RuleEditor/RuleEditor';
-import React from 'react';
+import React, { useContext } from 'react';
 import { EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 import { RouteComponentProps } from 'react-router-dom';
-import { ROUTES } from '../../../../utils/constants';
+import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { Rule } from '../../../../../models/interfaces';
 import { RuleItemInfoBase } from '../../models/types';
+import { CoreServicesContext } from '../../../../components/core_services';
+import { validateRule } from '../../utils/helpers';
+import { NotificationsStart } from 'opensearch-dashboards/public';
+import { errorNotificationToast } from '../../../../utils/helpers';
 
 export interface DuplicateRuleProps
   extends RouteComponentProps<any, any, { ruleItem: RuleItemInfoBase }> {
   services: BrowserServices;
+  notifications?: NotificationsStart;
 }
 
-export const DuplicateRule: React.FC<DuplicateRuleProps> = ({ history, services, location }) => {
+export const DuplicateRule: React.FC<DuplicateRuleProps> = ({
+  history,
+  services,
+  location,
+  notifications,
+}) => {
+  const context = useContext(CoreServicesContext);
+  context?.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.RULES_DUPLICATE]);
   const footerActions: React.FC<{ rule: Rule }> = ({ rule }) => {
     const onCreate = async () => {
+      if (!validateRule(rule, notifications!, 'create')) {
+        return;
+      }
       const updateRuleRes = await services.ruleService.createRule(rule);
 
       if (!updateRuleRes.ok) {
-        // TODO: show toast notification
-        alert('Failed rule creation');
+        errorNotificationToast(notifications!, 'create', 'rule', updateRuleRes.error);
+      } else {
+        history.replace(ROUTES.RULES);
       }
-
-      history.replace(ROUTES.RULES);
     };
 
     return (

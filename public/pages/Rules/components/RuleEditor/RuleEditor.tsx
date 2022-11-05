@@ -130,7 +130,12 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
         <EuiFlexGroup component="span">
           <EuiFlexItem grow={false} style={{ minWidth: 400 }}>
             <EuiFormRow label="Rule name">
-              <EuiFieldText placeholder="Enter rule name" value={name} onChange={onNameChange} />
+              <EuiFieldText
+                placeholder="Enter rule name"
+                value={name}
+                onChange={onNameChange}
+                data-test-subj={'rule_name_field'}
+              />
             </EuiFormRow>
           </EuiFlexItem>
           <EuiFlexItem>
@@ -141,6 +146,7 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
                 onChange={onLogTypeChange}
                 value={logType}
                 required
+                data-test-subj={'rule_type_dropdown'}
               />
             </EuiFormRow>
           </EuiFlexItem>
@@ -149,7 +155,11 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
         <EuiSpacer />
 
         <EuiFormRow label="Description" fullWidth>
-          <EuiTextArea value={description} onChange={onDescriptionChange} />
+          <EuiTextArea
+            value={description}
+            onChange={onDescriptionChange}
+            data-test-subj={'rule_description_field'}
+          />
         </EuiFormRow>
 
         <EuiSpacer />
@@ -160,7 +170,8 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
             width="100%"
             value={detection}
             onChange={onDetectionChange}
-          ></EuiCodeEditor>
+            data-test-subj={'rule_detection_field'}
+          />
         </EuiFormRow>
         <EuiSpacer />
 
@@ -176,6 +187,8 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
             ]}
             onChange={onLevelChange}
             value={level}
+            required
+            data-test-subj={'rule_severity_dropdown'}
           />
         </EuiFormRow>
 
@@ -187,6 +200,7 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
             selectedOptions={tags}
             onChange={onTagsChange}
             onCreateOption={onCreateTag}
+            data-test-subj={'rule_tags_dropdown'}
           />
         </EuiFormRow>
 
@@ -198,6 +212,7 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
           onFieldAdd={onReferenceAdd}
           onFieldEdit={onReferenceEdit}
           onFieldRemove={onReferenceRemove}
+          data-test-subj={'rule_references_field'}
         />
 
         <FieldTextArray
@@ -210,7 +225,13 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
         />
 
         <EuiFormRow label="Author">
-          <EuiFieldText placeholder="Enter author name" value={author} onChange={onAuthorChange} />
+          <EuiFieldText
+            placeholder="Enter author name"
+            value={author}
+            onChange={onAuthorChange}
+            required
+            data-test-subj={'rule_author_field'}
+          />
         </EuiFormRow>
 
         <EuiSpacer />
@@ -221,6 +242,8 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
             options={ruleStatus.map((status: string) => ({ value: status, text: status }))}
             onChange={onStatusChange}
             value={status}
+            required
+            data-test-subj={'rule_status_dropdown'}
           />
         </EuiFormRow>
 

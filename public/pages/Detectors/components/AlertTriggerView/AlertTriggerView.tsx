@@ -7,14 +7,12 @@ import {
   EuiAccordion,
   EuiHorizontalRule,
   EuiLink,
-  EuiResizableContainer,
-  EuiResizablePanel,
   EuiSpacer,
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
 import { AlertCondition, Detector } from '../../../../../models/interfaces';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { createTextDetailsGroup } from '../../../../utils/helpers';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { DEFAULT_EMPTY_DATA, getNotificationDetailsHref } from '../../../../utils/constants';
