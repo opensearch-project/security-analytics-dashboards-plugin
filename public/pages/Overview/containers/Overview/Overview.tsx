@@ -9,7 +9,6 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiPopover,
-  EuiSuperDatePicker,
   EuiTitle,
 } from '@elastic/eui';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
@@ -112,12 +111,8 @@ export const Overview: React.FC<OverviewProps> = (props) => {
               <h1>Overview</h1>
             </EuiTitle>
           </EuiFlexItem>
-          <EuiFlexItem>
-            <EuiSuperDatePicker
-              onTimeChange={onTimeChange}
-              onRefresh={onRefresh}
-              updateButtonProps={{ fill: false }}
-            />
+          <EuiFlexItem grow={false}>
+            <EuiButton onClick={onRefresh}>Refresh</EuiButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiFlexItem>
