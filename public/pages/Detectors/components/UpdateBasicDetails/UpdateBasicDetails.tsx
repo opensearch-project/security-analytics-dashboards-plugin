@@ -20,7 +20,7 @@ import DetectorDataSource from '../../../CreateDetector/components/DefineDetecto
 import { IndexService, ServicesContext } from '../../../../services';
 import { DetectorSchedule } from '../../../CreateDetector/components/DefineDetector/components/DetectorSchedule/DetectorSchedule';
 import { useCallback } from 'react';
-import { DetectorHit, GetDetectorResponse } from '../../../../../server/models/interfaces';
+import { DetectorHit, SearchDetectorsResponse } from '../../../../../server/models/interfaces';
 import { EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
 import { ServerResponse } from '../../../../../server/models/types';
 import { NotificationsStart } from 'opensearch-dashboards/public';
@@ -43,12 +43,12 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
   useEffect(() => {
     const getDetector = async () => {
       const response = (await services?.detectorsService.getDetectors()) as ServerResponse<
-        GetDetectorResponse
+        SearchDetectorsResponse
       >;
       if (response.ok) {
         const detectorHit = response.response.hits.hits.find(
           (detectorHit) => detectorHit._id === detectorId
-        );
+        ) as DetectorHit;
         setDetector(detectorHit._source);
         props.history.replace({
           pathname: `${ROUTES.EDIT_DETECTOR_DETAILS}/${detectorId}`,
@@ -57,7 +57,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
           },
         });
       } else {
-        errorNotificationToast(this.props.notifications, 'retrieve', 'detector', response.error);
+        errorNotificationToast(props.notifications, 'retrieve', 'detector', response.error);
       }
     };
 
@@ -67,7 +67,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
 
     if (!detector.id?.length) {
       execute().catch((e) => {
-        errorNotificationToast(this.props.notifications, 'retrieve', 'detector', e);
+        errorNotificationToast(props.notifications, 'retrieve', 'detector', e);
       });
     }
   }, [services]);
@@ -178,12 +178,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
           },
         });
       } else {
-        errorNotificationToast(
-          this.props.notifications,
-          'update',
-          'detector',
-          updateDetectorRes.error
-        );
+        errorNotificationToast(props.notifications, 'update', 'detector', updateDetectorRes?.error);
       }
 
       props.history.replace({
@@ -195,7 +190,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
     };
 
     updateDetector().catch((e) => {
-      errorNotificationToast(this.props.notifications, 'update', 'detector', e);
+      errorNotificationToast(props.notifications, 'update', 'detector', e);
     });
   }, [detector]);
 
@@ -216,7 +211,8 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
       <EuiSpacer size="xl" />
 
       <DetectorDataSource
-        {...this.props}
+        isEdit={true}
+        notifications={props.notifications}
         indexService={services?.indexService as IndexService}
         detectorIndices={inputs[0].detector_input.indices}
         onDetectorInputIndicesChange={onDetectorInputIndicesChange}

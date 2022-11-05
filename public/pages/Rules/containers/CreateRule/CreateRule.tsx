@@ -5,28 +5,37 @@
 
 import { BrowserServices } from '../../../../models/interfaces';
 import { RuleEditor } from '../../components/RuleEditor/RuleEditor';
-import React from 'react';
+import React, { useContext } from 'react';
 import { EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 import { RouteComponentProps } from 'react-router-dom';
-import { ROUTES } from '../../../../utils/constants';
+import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { Rule } from '../../../../../models/interfaces';
+import { CoreServicesContext } from '../../../../components/core_services';
+import { NotificationsStart } from 'opensearch-dashboards/public';
+import { errorNotificationToast } from '../../../../utils/helpers';
+import { validateRule } from '../../utils/helpers';
 
 export interface CreateRuleProps {
   services: BrowserServices;
   history: RouteComponentProps['history'];
+  notifications?: NotificationsStart;
 }
 
-export const CreateRule: React.FC<CreateRuleProps> = ({ history, services }) => {
+export const CreateRule: React.FC<CreateRuleProps> = ({ history, services, notifications }) => {
+  const context = useContext(CoreServicesContext);
+  context?.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.RULES_CREATE]);
   const footerActions: React.FC<{ rule: Rule }> = ({ rule }) => {
     const onCreate = async () => {
+      if (!validateRule(rule, notifications!, 'create')) {
+        return;
+      }
       const createRuleRes = await services.ruleService.createRule(rule);
 
       if (!createRuleRes.ok) {
-        // TODO: show toast notification
-        alert('Failed rule creation');
+        errorNotificationToast(notifications!, 'create', 'rule', createRuleRes.error);
+      } else {
+        history.replace(ROUTES.RULES);
       }
-
-      history.replace(ROUTES.RULES);
     };
 
     return (

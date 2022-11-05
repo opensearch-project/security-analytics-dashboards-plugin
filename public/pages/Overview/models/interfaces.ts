@@ -3,12 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { NotificationsStart } from 'opensearch-dashboards/public';
 import { RouteComponentProps } from 'react-router-dom';
 import { OverviewViewModel } from './OverviewViewModel';
 
 export interface OverviewProps extends RouteComponentProps {
   getStartedDismissedOnce: boolean;
   onGetStartedDismissed: () => void;
+  notifications?: NotificationsStart;
 }
 
 export interface OverviewState {

@@ -5,33 +5,48 @@
 
 import { BrowserServices } from '../../../../models/interfaces';
 import { RuleEditor } from '../../components/RuleEditor/RuleEditor';
-import React from 'react';
+import React, { useContext } from 'react';
 import { EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 import { RouteComponentProps } from 'react-router-dom';
-import { ROUTES } from '../../../../utils/constants';
+import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { Rule } from '../../../../../models/interfaces';
 import { RuleItemInfoBase } from '../../models/types';
+import { CoreServicesContext } from '../../../../components/core_services';
+import { NotificationsStart } from 'opensearch-dashboards/public';
+import { errorNotificationToast } from '../../../../utils/helpers';
+import { validateRule } from '../../utils/helpers';
 
 export interface EditRuleProps
   extends RouteComponentProps<any, any, { ruleItem: RuleItemInfoBase }> {
   services: BrowserServices;
+  notifications?: NotificationsStart;
 }
 
-export const EditRule: React.FC<EditRuleProps> = ({ history, services, location }) => {
+export const EditRule: React.FC<EditRuleProps> = ({
+  history,
+  services,
+  location,
+  notifications,
+}) => {
+  const context = useContext(CoreServicesContext);
+  context?.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.RULES_EDIT]);
   const footerActions: React.FC<{ rule: Rule }> = ({ rule }) => {
     const onSave = async () => {
-      const updateRuleRes = await services.ruleService.updateRule(
+      if (!validateRule(rule, notifications!, 'save')) {
+        return;
+      }
+
+      const editRuleRes = await services.ruleService.updateRule(
         location.state.ruleItem._id,
         rule.category,
         rule
       );
 
-      if (!updateRuleRes.ok) {
-        // TODO: show toast notification
-        alert('Failed rule creation');
+      if (!editRuleRes.ok) {
+        errorNotificationToast(notifications!, 'save', 'rule', editRuleRes.error);
+      } else {
+        history.replace(ROUTES.RULES);
       }
-
-      history.replace(ROUTES.RULES);
     };
 
     return (

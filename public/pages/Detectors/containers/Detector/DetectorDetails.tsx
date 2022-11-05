@@ -161,7 +161,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
         const { detectorId } = this.state;
         const detector = response.response.hits.hits.find(
           (detectorHit) => detectorHit._id === detectorId
-        );
+        ) as DetectorHit;
         this.detectorHit = {
           ...detector,
           _source: {
@@ -177,7 +177,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
       } else {
         errorNotificationToast(notifications, 'retrieve', 'detector', response.error);
       }
-    } catch (e) {
+    } catch (e: any) {
       errorNotificationToast(notifications, 'retrieve', 'detector', e);
     }
     this.getTabs();
@@ -196,13 +196,13 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     const { detectorService, notifications } = this.props;
     const detectorId = this.detectorHit._id;
     try {
-      const deleteRes = detectorService.deleteDetector(detectorId);
+      const deleteRes = await detectorService.deleteDetector(detectorId);
       if (!deleteRes.ok) {
         errorNotificationToast(notifications, 'delete', 'detector', deleteRes.error);
       } else {
         this.props.history.push(ROUTES.DETECTORS);
       }
-    } catch (e) {
+    } catch (e: any) {
       errorNotificationToast(notifications, 'delete', 'detector', e);
     }
   };
@@ -212,7 +212,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     try {
       const detectorId = this.detectorHit._id;
       const detector = this.detectorHit._source;
-      const updateRes = detectorService.updateDetector(detectorId, {
+      const updateRes = await detectorService.updateDetector(detectorId, {
         ...detector,
         enabled: !this.detectorHit._source.enabled,
       });
@@ -228,7 +228,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
       } else {
         errorNotificationToast(notifications, 'update', 'detector', updateRes.error);
       }
-    } catch (e) {
+    } catch (e: any) {
       errorNotificationToast(notifications, 'update', 'detector', e);
     }
   };
