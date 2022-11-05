@@ -61,10 +61,10 @@ export const Rules: React.FC<RulesProps> = (props) => {
 
   const headerActions = useMemo(
     () => [
-      <EuiButton onClick={openImportPage} data-test-subj={'detectorsRefreshButton'}>
+      <EuiButton onClick={openImportPage} data-test-subj={'import_rule_button'}>
         Import rule
       </EuiButton>,
-      <EuiButton onClick={openCreatePage} data-test-subj={'detectorsRefreshButton'} fill={true}>
+      <EuiButton onClick={openCreatePage} data-test-subj={'create_rule_button'} fill={true}>
         Create new rule
       </EuiButton>,
     ],

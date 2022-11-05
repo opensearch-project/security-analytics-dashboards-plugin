@@ -44,7 +44,7 @@ export const CreateRule: React.FC<CreateRuleProps> = ({ history, services, notif
           <EuiButton onClick={() => history.replace(ROUTES.RULES)}>Cancel</EuiButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton fill onClick={onCreate}>
+          <EuiButton fill onClick={onCreate} data-test-subj={'create_rule_button'}>
             Create
           </EuiButton>
         </EuiFlexItem>
