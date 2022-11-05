@@ -33,7 +33,9 @@ export const getRulesTableColumns = (
       width: '30%',
       truncateText: true,
       render: (title: string, rule: RuleTableItem) => (
-        <EuiLink onClick={() => showRuleDetails(rule)}>{title}</EuiLink>
+        <EuiLink onClick={() => showRuleDetails(rule)} data-test-subj={`rule_link_${title}`}>
+          {title}
+        </EuiLink>
       ),
     },
     {
@@ -70,6 +72,7 @@ export const getRulesTableColumns = (
 export const getRulesTableSearchConfig = (): Search => {
   return {
     box: {
+      placeholder: 'Search rules',
       schema: true,
     },
     filters: [
