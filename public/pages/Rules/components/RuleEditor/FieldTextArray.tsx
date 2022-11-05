@@ -43,6 +43,9 @@ export const FieldTextArray: React.FC<FieldTextArrayProps> = ({
                     onChange={(e: ChangeEvent<HTMLInputElement>) => {
                       onFieldEdit(e.target.value, index);
                     }}
+                    data-test-subj={`rule_${label
+                      .toLowerCase()
+                      .replaceAll(' ', '_')}_field_${index}`}
                   />
                 </EuiFlexItem>
                 {index > 0 ? (

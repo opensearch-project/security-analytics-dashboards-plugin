@@ -97,7 +97,7 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
   );
 
   return (
-    <EuiFlyout onClose={hideFlyout}>
+    <EuiFlyout onClose={hideFlyout} data-test-subj={`rule_flyout_${ruleTableItem.title}`}>
       {isDeleteModalVisible && deleteModal ? deleteModal : null}
       <EuiFlyoutHeader hasBorder>
         <EuiFlexGroup>

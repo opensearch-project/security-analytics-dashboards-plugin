@@ -5,7 +5,7 @@
 
 import { API } from '../../server/utils/constants';
 
-export const TWENTY_SECONDS = 20000;
+export const TWENTY_SECONDS_TIMEOUT = { timeout: 20000 };
 
 export const INDICES = {
   DETECTORS_INDEX: '.opensearch-detectors-config',
@@ -13,7 +13,7 @@ export const INDICES = {
   CUSTOM_RULES_INDEX: '.opensearch-custom-rules-config',
 };
 
-export const PLUGIN_NAME = 'opensearch_index_management_dashboards';
+export const PLUGIN_NAME = 'opensearch_security_analytics_dashboards';
 
 export const NODE_API = {
   ...API,
