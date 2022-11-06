@@ -15,7 +15,7 @@ import { ContentPanel } from '../../../../components/ContentPanel';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../../../../utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
-import { validateRule } from '../../utils/helpers';
+import { validateRule, validateYamlContent } from '../../utils/helpers';
 
 export interface ImportRuleProps {
   services: BrowserServices;
@@ -109,6 +109,11 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
         return;
       }
 
+      const ruleDetectionError = await validateYamlContent(rule.detection);
+      if (ruleDetectionError) {
+        errorNotificationToast(notifications!, 'validate', 'detection field', ruleDetectionError);
+        return;
+      }
       const updateRuleRes = await services.ruleService.createRule(rule);
 
       if (!updateRuleRes.ok) {

@@ -62,5 +62,9 @@
   },
   "engines": {
     "yarn": "^1.21.1"
+  },
+  "dependencies": {
+    "formik": "^2.2.6",
+    "yaml-lint": "^1.7.0"
   }
 }

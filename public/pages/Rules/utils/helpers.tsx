@@ -11,6 +11,7 @@ import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
 import { RuleItemInfoBase } from '../models/types';
 import { Rule } from '../../../../models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { lint } from 'yaml-lint';
 
 export interface RuleTableItem {
   title: string;
@@ -103,6 +104,12 @@ export const getRulesTableSearchConfig = (): Search => {
       },
     ],
   };
+};
+
+export const validateYamlContent = (content: string): Promise<string | undefined> => {
+  return lint(content)
+    .then(() => undefined)
+    .catch((error) => error.message);
 };
 
 export function validateRule(

@@ -13,7 +13,7 @@ import { Rule } from '../../../../../models/interfaces';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../../../../utils/helpers';
-import { validateRule } from '../../utils/helpers';
+import { validateRule, validateYamlContent } from '../../utils/helpers';
 
 export interface CreateRuleProps {
   services: BrowserServices;
@@ -29,6 +29,13 @@ export const CreateRule: React.FC<CreateRuleProps> = ({ history, services, notif
       if (!validateRule(rule, notifications!, 'create')) {
         return;
       }
+
+      const ruleDetectionError = await validateYamlContent(rule.detection);
+      if (ruleDetectionError) {
+        errorNotificationToast(notifications!, 'validate', 'detection field', ruleDetectionError);
+        return;
+      }
+
       const createRuleRes = await services.ruleService.createRule(rule);
 
       if (!createRuleRes.ok) {
