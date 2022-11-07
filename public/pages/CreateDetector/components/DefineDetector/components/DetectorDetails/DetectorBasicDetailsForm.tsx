@@ -7,7 +7,12 @@ import React, { ChangeEvent, Component } from 'react';
 import { ContentPanel } from '../../../../../../components/ContentPanel';
 import { EuiFormRow, EuiFieldText, EuiSpacer, EuiTextArea } from '@elastic/eui';
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
-import { getNameErrorMessage, validateName } from '../../../../../../utils/validation';
+import {
+  getDescriptionErrorMessage,
+  getNameErrorMessage,
+  validateDescription,
+  validateName,
+} from '../../../../../../utils/validation';
 
 interface DetectorDetailsProps {
   isEdit: boolean;
@@ -20,6 +25,8 @@ interface DetectorDetailsProps {
 interface DetectorDetailsState {
   nameIsInvalid: boolean;
   nameFieldTouched: boolean;
+  descriptionIsInvalid: boolean;
+  descriptionFieldTouched: boolean;
 }
 
 export default class DetectorBasicDetailsForm extends Component<
@@ -31,10 +38,12 @@ export default class DetectorBasicDetailsForm extends Component<
     this.state = {
       nameIsInvalid: false,
       nameFieldTouched: props.isEdit,
+      descriptionIsInvalid: false,
+      descriptionFieldTouched: props.isEdit,
     };
   }
 
-  onBlur = (event: React.ChangeEvent<HTMLInputElement>) => {
+  onNameBlur = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
       nameFieldTouched: true,
       nameIsInvalid: !validateName(event.target.value),
@@ -45,22 +54,38 @@ export default class DetectorBasicDetailsForm extends Component<
     this.props.onDetectorNameChange(event.target.value.trimStart());
   };
 
+  onDescriptionBlur = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({
+      descriptionFieldTouched: true,
+      descriptionIsInvalid: !validateDescription(event.target.value),
+    });
+  };
+
+  onDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.props.onDetectorInputDescriptionChange(event.target.value.trimStart());
+  };
+
   render() {
     const { detectorName, detectorDescription, onDetectorInputDescriptionChange } = this.props;
-    const { nameIsInvalid, nameFieldTouched } = this.state;
+    const {
+      descriptionIsInvalid,
+      descriptionFieldTouched,
+      nameIsInvalid,
+      nameFieldTouched,
+    } = this.state;
     return (
       <ContentPanel title={'Detector details'} titleSize={'m'}>
         <EuiSpacer size={'m'} />
         <EuiFormRow
           label={<FormFieldHeader headerTitle={'Name'} />}
-          isInvalid={nameIsInvalid && nameFieldTouched}
+          isInvalid={nameFieldTouched && nameIsInvalid}
           error={getNameErrorMessage(detectorName, nameIsInvalid, nameFieldTouched)}
         >
           <EuiFieldText
             placeholder={'Enter a name for the detector.'}
             readOnly={false}
             value={detectorName}
-            onBlur={this.onBlur}
+            onBlur={this.onNameBlur}
             onChange={this.onNameChange}
             required={nameFieldTouched}
             data-test-subj={'define-detector-detector-name'}
@@ -69,12 +94,17 @@ export default class DetectorBasicDetailsForm extends Component<
         <EuiSpacer size={'m'} />
 
         {/*// TODO: Implement regex pattern validation for description field.*/}
-        <EuiFormRow label={<FormFieldHeader headerTitle={'Description'} optionalField={true} />}>
+        <EuiFormRow
+          label={<FormFieldHeader headerTitle={'Description'} optionalField={true} />}
+          isInvalid={descriptionFieldTouched && descriptionIsInvalid}
+          error={getNameErrorMessage(detectorName, nameIsInvalid, nameFieldTouched)}
+        >
           <EuiTextArea
             placeholder={'Enter a description for the detector.'}
             compressed={true}
             value={detectorDescription}
-            onChange={onDetectorInputDescriptionChange}
+            onBlure={this.onDescriptionBlur}
+            onChange={this.onDescriptionChange}
             data-test-subj={'define-detector-detector-description'}
           />
         </EuiFormRow>
