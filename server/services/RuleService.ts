@@ -24,7 +24,7 @@ import {
 import { CLIENT_RULE_METHODS } from '../utils/constants';
 import { Rule } from '../../models/interfaces';
 import { ServerResponse } from '../models/types';
-import { load, safeDump } from 'js-yaml';
+import { load, dump } from 'js-yaml';
 import moment from 'moment';
 
 export default class RulesService {
@@ -81,7 +81,7 @@ export default class RulesService {
         jsonPayload['falsepositives'] = false_positives.map((falsePos) => falsePos.value);
       }
       console.log(jsonPayload);
-      const ruleYamlPayload = safeDump(jsonPayload);
+      const ruleYamlPayload = dump(jsonPayload);
       console.log(ruleYamlPayload);
 
       const params: CreateRuleParams = { body: ruleYamlPayload, category };
@@ -225,7 +225,7 @@ export default class RulesService {
       }
       console.log(jsonPayload);
 
-      const ruleYamlPayload = safeDump(jsonPayload);
+      const ruleYamlPayload = dump(jsonPayload);
 
       console.log(ruleYamlPayload);
 

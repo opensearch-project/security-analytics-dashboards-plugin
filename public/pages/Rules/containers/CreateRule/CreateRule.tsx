@@ -30,7 +30,7 @@ export const CreateRule: React.FC<CreateRuleProps> = ({ history, services, notif
         return;
       }
 
-      const ruleDetectionError = await validateYamlContent(rule.detection);
+      const ruleDetectionError = await validateYamlContent(JSON.stringify(rule));
       if (ruleDetectionError) {
         errorNotificationToast(notifications!, 'validate', 'detection field', ruleDetectionError);
         return;

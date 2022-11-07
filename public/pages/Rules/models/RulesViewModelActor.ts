@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { load, safeDump } from 'js-yaml';
+import { load, dump } from 'js-yaml';
 import { RuleInfo } from '../../../../server/models/interfaces';
 import { BrowserServices } from '../../../models/interfaces';
 import { RuleItemInfoBase } from './types';
@@ -67,7 +67,7 @@ export class RulesViewModelActor {
 
       try {
         const detectionJson = load(ruleInfo._source.rule).detection;
-        detectionYaml = safeDump(detectionJson);
+        detectionYaml = dump(detectionJson);
       } catch (_error: any) {}
 
       return {

@@ -10,7 +10,7 @@ import { EuiButton, EuiFilePicker, EuiFlexGroup, EuiFlexItem, EuiSpacer } from '
 import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { Rule } from '../../../../../models/interfaces';
 import { RouteComponentProps } from 'react-router-dom';
-import { load, safeDump } from 'js-yaml';
+import { load, dump } from 'js-yaml';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../../../../utils/helpers';
@@ -39,7 +39,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
         let detectionYaml = '';
         if (jsonContent.detection) {
           try {
-            detectionYaml = safeDump(jsonContent.detection);
+            detectionYaml = dump(jsonContent.detection);
           } catch (error: any) {}
         }
 
@@ -109,7 +109,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
         return;
       }
 
-      const ruleDetectionError = await validateYamlContent(rule.detection);
+      const ruleDetectionError = await validateYamlContent(JSON.stringify(rule));
       if (ruleDetectionError) {
         errorNotificationToast(notifications!, 'validate', 'detection field', ruleDetectionError);
         return;
