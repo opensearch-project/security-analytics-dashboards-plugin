@@ -97,7 +97,11 @@ export default class DetectorBasicDetailsForm extends Component<
         <EuiFormRow
           label={<FormFieldHeader headerTitle={'Description'} optionalField={true} />}
           isInvalid={descriptionFieldTouched && descriptionIsInvalid}
-          error={getNameErrorMessage(detectorName, nameIsInvalid, nameFieldTouched)}
+          error={getDescriptionErrorMessage(
+            detectorDescription,
+            descriptionIsInvalid,
+            descriptionFieldTouched
+          )}
         >
           <EuiTextArea
             placeholder={'Enter a description for the detector.'}
