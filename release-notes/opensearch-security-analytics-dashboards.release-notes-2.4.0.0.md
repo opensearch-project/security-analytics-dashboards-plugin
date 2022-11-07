@@ -2,12 +2,6 @@
 
 Compatible with OpenSearch 2.4.0
 
-OpenSearch 2.4.0 is the first release with OpenSearch Security Analytics Dashboards.
-
-Security Analytics consist of two plugins, `security-analytics` backend plugin for OpenSearch, and a `securityAnalyticsDashboards` frontend plugin for OpenSearch Dashboards.
-
-The Security Analytics Dashboards plugin lets you manage critical security findings from your existing security event logs such as sys logs, firewall logs, indows logs, s3 access, Cloud Trail, Netflow, DNS among others directly from OpenSearch Dashboards. It also supports to create alerts on these findings.
-
 ### Features
 * Added create detectors UI pages. ([#15](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/15)
 * Added get mappings API service wrappers. ([#22](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/22))
