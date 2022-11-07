@@ -79,7 +79,10 @@ Cypress.Commands.overwrite('request', (originalFn, ...args) => {
 });
 
 Cypress.Commands.add('deleteAllIndices', () => {
-  cy.request('DELETE', `${Cypress.env('opensearch')}/index*,sample*,opensearch_dashboards*,test*`);
+  cy.request(
+    'DELETE',
+    `${Cypress.env('opensearch')}/index*,sample*,opensearch_dashboards*,test*, cypress*`
+  );
 });
 
 Cypress.Commands.add('createDetector', (detectorJSON) => {
@@ -100,6 +103,14 @@ Cypress.Commands.add('createRule', (ruleJSON) => {
 
 Cypress.Commands.add('updateRule', (ruleId, ruleJSON) => {
   cy.request('PUT', `${Cypress.env('opensearch')}/${NODE_API.RULES_BASE}/${ruleId}`, ruleJSON);
+});
+
+Cypress.Commands.add('createIndex', (index, settings = {}) => {
+  cy.request('PUT', `${Cypress.env('opensearch')}/${index}`, settings);
+});
+
+Cypress.Commands.add('ingestDocument', (indexId, documentJSON) => {
+  cy.request('POST', `${Cypress.env('opensearch')}/${indexId}/_doc`, documentJSON);
 });
 
 Cypress.Commands.add('deleteRule', (ruleName) => {
