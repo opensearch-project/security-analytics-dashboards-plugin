@@ -4,6 +4,7 @@
  */
 
 import {
+  EuiButton,
   EuiButtonEmpty,
   EuiFlexGrid,
   EuiFlexGroup,
