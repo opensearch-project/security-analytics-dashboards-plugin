@@ -103,7 +103,7 @@ export default class DetectorBasicDetailsForm extends Component<
             placeholder={'Enter a description for the detector.'}
             compressed={true}
             value={detectorDescription}
-            onBlure={this.onDescriptionBlur}
+            onBlur={this.onDescriptionBlur}
             onChange={this.onDescriptionChange}
             data-test-subj={'define-detector-detector-description'}
           />
