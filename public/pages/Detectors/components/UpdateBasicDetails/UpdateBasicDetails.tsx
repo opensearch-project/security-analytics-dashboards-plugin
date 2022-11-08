@@ -12,10 +12,9 @@ import {
   EuiTitle,
 } from '@elastic/eui';
 import { Detector, PeriodSchedule } from '../../../../../models/interfaces';
-import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import DetectorBasicDetailsForm from '../../../CreateDetector/components/DefineDetector/components/DetectorDetails';
-import { MIN_NUM_DATA_SOURCES } from '../../utils/constants';
 import DetectorDataSource from '../../../CreateDetector/components/DefineDetector/components/DetectorDataSource';
 import { IndexService, ServicesContext } from '../../../../services';
 import { DetectorSchedule } from '../../../CreateDetector/components/DefineDetector/components/DetectorSchedule/DetectorSchedule';
@@ -78,14 +77,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
 
   const updateDetectorState = useCallback(
     (detector: Detector) => {
-      const isDataValid =
-        !!detector.name &&
-        !!detector.detector_type &&
-        detector.inputs[0].detector_input.indices.length >= MIN_NUM_DATA_SOURCES;
-
-      if (isDataValid) {
-        setDetector(detector);
-      }
+      setDetector(detector);
     },
     [setDetector]
   );
