@@ -11,6 +11,8 @@ import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
 import { RuleItemInfoBase } from '../models/types';
 import { Rule } from '../../../../models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { validateName } from '../../../utils/validation';
+import { dump, load } from 'js-yaml';
 
 export interface RuleTableItem {
   title: string;
@@ -112,12 +114,23 @@ export function validateRule(
 ): boolean {
   const invalidFields = [];
 
-  if (!rule.title) invalidFields.push('Rule name');
+  if (!rule.title || !validateName(rule.title))
+    invalidFields.push('Rule name (Only use letters, numbers and -, _)');
   if (!rule.category) invalidFields.push('Log type');
   if (!rule.detection) invalidFields.push('Detection');
   if (!rule.level) invalidFields.push('Rule level');
-  if (!rule.author) invalidFields.push('Author');
+  if (!rule.author || !validateName(rule.author))
+    invalidFields.push('Author (Only use letters, numbers and -, _)');
   if (!rule.status) invalidFields.push('Rule status');
+
+  if (rule.detection) {
+    try {
+      const json = load(rule.detection);
+      dump(json);
+    } catch (error: any) {
+      invalidFields.push('Detection');
+    }
+  }
 
   if (invalidFields.length > 0) {
     errorNotificationToast(
