@@ -10,7 +10,7 @@ import { EuiButton, EuiFilePicker, EuiFlexGroup, EuiFlexItem, EuiSpacer } from '
 import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { Rule } from '../../../../../models/interfaces';
 import { RouteComponentProps } from 'react-router-dom';
-import { load, safeDump } from 'js-yaml';
+import { dump, load } from 'js-yaml';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../../../../utils/helpers';
@@ -34,41 +34,55 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
       let reader = new FileReader();
       reader.readAsText(files[0]);
       reader.onload = function () {
-        const yamlContent: any = reader.result;
-        const jsonContent = load(yamlContent);
-        let detectionYaml = '';
-        if (jsonContent.detection) {
-          try {
-            detectionYaml = safeDump(jsonContent.detection);
-          } catch (error: any) {}
-        }
+        try {
+          const yamlContent: any = reader.result;
 
-        const rule: Rule = {
-          id: '25b9c01c-350d-4b95-bed1-836d04a4f324',
-          category: '',
-          title: jsonContent.title || '',
-          description: jsonContent.description || '',
-          status: jsonContent.status || '',
-          author: jsonContent.author || '',
-          references:
-            jsonContent.references?.map((reference: string) => ({ value: reference })) || [],
-          tags: jsonContent.tags?.map((tag: string) => ({ value: tag })) || [],
-          log_source: jsonContent.logsource || '',
-          detection: detectionYaml,
-          level: jsonContent.level || '',
-          false_positives:
-            jsonContent.falsepositives?.map((falsePositive: string) => ({
-              value: falsePositive,
-            })) || [],
-        };
-        setContent(
-          <RuleEditor
-            title="Import a rule"
-            services={services}
-            FooterActions={footerActions}
-            rule={rule}
-          />
-        );
+          if (!yamlContent) {
+            setFileError('Invalid content in file');
+            return;
+          }
+
+          const jsonContent = load(yamlContent);
+
+          if (!jsonContent) {
+            setFileError('Invalid yaml content');
+            return;
+          }
+
+          let detectionYaml = '';
+          if (jsonContent.detection) {
+            detectionYaml = dump(jsonContent.detection);
+          }
+
+          const rule: Rule = {
+            id: '25b9c01c-350d-4b95-bed1-836d04a4f324',
+            category: '',
+            title: jsonContent.title || '',
+            description: jsonContent.description || '',
+            status: jsonContent.status || '',
+            author: jsonContent.author || '',
+            references:
+              jsonContent.references?.map((reference: string) => ({ value: reference })) || [],
+            tags: jsonContent.tags?.map((tag: string) => ({ value: tag })) || [],
+            log_source: jsonContent.logsource || '',
+            detection: detectionYaml,
+            level: jsonContent.level || '',
+            false_positives:
+              jsonContent.falsepositives?.map((falsePositive: string) => ({
+                value: falsePositive,
+              })) || [],
+          };
+          setContent(
+            <RuleEditor
+              title="Import a rule"
+              services={services}
+              FooterActions={footerActions}
+              rule={rule}
+            />
+          );
+        } catch (error: any) {
+          setFileError('Invalid file content');
+        }
       };
     } else {
       setFileError(files.length > 0 ? 'Only yaml files are accepted' : '');
