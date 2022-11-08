@@ -241,7 +241,7 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
       const detectorsRes = await detectorService.getDetectors();
       if (detectorsRes.ok) {
         const detectorIds = detectorsRes.response.hits.hits.map((hit) => {
-          detectors[hit._id] = hit._source;
+          detectors[hit._id] = { ...hit._source, id: hit._id };
           return hit._id;
         });
 
