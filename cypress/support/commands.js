@@ -81,7 +81,7 @@ Cypress.Commands.overwrite('request', (originalFn, ...args) => {
 Cypress.Commands.add('deleteAllIndices', () => {
   cy.request(
     'DELETE',
-    `${Cypress.env('opensearch')}/index*,sample*,opensearch_dashboards*,test*, cypress*`
+    `${Cypress.env('opensearch')}/index*,sample*,opensearch_dashboards*,test*,cypress*`
   );
 });
 

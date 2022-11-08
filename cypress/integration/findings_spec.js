@@ -3,7 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PLUGIN_NAME, TWENTY_SECONDS_TIMEOUT, TEST_INDEX } from '../support/constants';
+import {
+  PLUGIN_NAME,
+  TWENTY_SECONDS_TIMEOUT,
+  TEST_INDEX,
+  TEST_DETECTOR,
+  TEST_DOCUMENT,
+} from '../support/constants';
 
 describe('Findings', () => {
   before(() => {
