@@ -32,6 +32,7 @@ interface CreateAlertFlyoutProps extends RouteComponentProps {
   detectorService: DetectorsService;
   finding: Finding;
   notificationChannels: NotificationChannelTypeOptions[];
+  refreshNotificationChannels: () => void;
   allRules: object;
   rulesOptions: Pick<RulesSharedState, 'rulesOptions'>['rulesOptions'];
 }
@@ -53,7 +54,6 @@ export default class CreateAlertFlyout extends Component<
       alertCondition: EMPTY_DEFAULT_ALERT_CONDITION,
       loading: false,
       detector: this.props.finding.detector._source,
-      rules: [],
       submitting: false,
     };
   }
@@ -64,11 +64,12 @@ export default class CreateAlertFlyout extends Component<
 
   prepareAlertCondition = async () => {
     const { rulesOptions } = this.props;
-    const { alertCondition, detector } = this.state;
+    const { alertCondition } = this.state;
+    const newAlertCondition = { ...alertCondition };
 
-    const selectedRuleNames = new Set();
-    const selectedRuleSeverities = new Set();
-    const selectedTags = new Set();
+    const selectedRuleNames = new Set<string>();
+    const selectedRuleSeverities = new Set<string>();
+    const selectedTags = new Set<string>();
 
     rulesOptions.forEach((rule) => {
       selectedRuleNames.add(rule.id);
@@ -76,11 +77,11 @@ export default class CreateAlertFlyout extends Component<
       rule.tags.forEach((tag) => selectedTags.add(tag));
     });
 
-    alertCondition.ids = Array.from(selectedRuleNames);
-    alertCondition.sev_levels = Array.from(selectedRuleSeverities);
-    alertCondition.tags = Array.from(selectedTags);
+    newAlertCondition.ids = Array.from(selectedRuleNames);
+    newAlertCondition.sev_levels = Array.from(selectedRuleSeverities);
+    newAlertCondition.tags = Array.from(selectedTags);
 
-    this.setState({ alertCondition: { ...alertCondition } });
+    this.setState({ alertCondition: newAlertCondition });
   };
 
   onAlertConditionChange = (newDetector: Detector): void => {

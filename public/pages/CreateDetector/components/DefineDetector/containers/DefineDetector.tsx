@@ -20,12 +20,14 @@ import {
   CreateDetectorRulesState,
   DetectionRules,
 } from '../components/DetectionRules/DetectionRules';
+import { NotificationsStart } from 'opensearch-dashboards/public';
 
 interface DefineDetectorProps extends RouteComponentProps {
   detector: Detector;
   isEdit: boolean;
   indexService: IndexService;
   rulesState: CreateDetectorRulesState;
+  notifications: NotificationsStart;
   changeDetector: (detector: Detector) => void;
   updateDataValidState: (step: DetectorCreationStep, isValid: boolean) => void;
   onPageChange: (page: { index: number; size: number }) => void;
