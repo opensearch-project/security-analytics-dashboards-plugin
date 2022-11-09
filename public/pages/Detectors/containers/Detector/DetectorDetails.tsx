@@ -172,7 +172,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
         this.context.chrome.setBreadcrumbs([
           BREADCRUMBS.SECURITY_ANALYTICS,
           BREADCRUMBS.DETECTORS,
-          BREADCRUMBS.DETECTORS_DETAILS(detector._source.name),
+          BREADCRUMBS.DETECTORS_DETAILS(detector._source.name, detector._id),
         ]);
       } else {
         errorNotificationToast(notifications, 'retrieve', 'detector', response.error);

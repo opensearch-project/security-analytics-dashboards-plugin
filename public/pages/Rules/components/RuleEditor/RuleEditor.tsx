@@ -21,6 +21,14 @@ import {
 import { Rule } from '../../../../../models/interfaces';
 import { FieldTextArray } from './FieldTextArray';
 import { ruleStatus, ruleTypes } from '../../utils/constants';
+import {
+  authorErrorString,
+  AUTHOR_REGEX,
+  descriptionErrorString,
+  nameErrorString,
+  validateDescription,
+  validateName,
+} from '../../../../utils/validation';
 
 export interface RuleEditorProps {
   services: BrowserServices;
@@ -34,6 +42,14 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
   const onNameChange = (e: ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
+  const [nameError, setNameError] = useState('');
+  const onNameBlur = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!validateName(e.target.value)) {
+      setNameError(nameErrorString);
+    } else {
+      setNameError('');
+    }
+  };
 
   const [logType, setLogType] = useState(rule?.category || '');
   const onLogTypeChange = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -43,6 +59,14 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
   const [description, setDescription] = useState(rule?.description || '');
   const onDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(e.target.value);
+  };
+  const [descriptionError, setDescriptionError] = useState('');
+  const onDescriptionBlur = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    if (!validateDescription(e.target.value)) {
+      setDescriptionError(descriptionErrorString);
+    } else {
+      setDescriptionError('');
+    }
   };
 
   const [level, setLevel] = useState(rule?.level || '');
@@ -61,6 +85,14 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
   const [author, setAuthor] = useState(rule?.author || '');
   const onAuthorChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAuthor(e.target.value);
+  };
+  const [authorError, setAuthorError] = useState('');
+  const onAuthorBlur = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!validateName(e.target.value, AUTHOR_REGEX)) {
+      setAuthorError(authorErrorString);
+    } else {
+      setAuthorError('');
+    }
   };
 
   const [status, setRuleStatus] = useState(rule?.status || '');
@@ -129,11 +161,13 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
       <ContentPanel title={title}>
         <EuiFlexGroup component="span">
           <EuiFlexItem grow={false} style={{ minWidth: 400 }}>
-            <EuiFormRow label="Rule name">
+            <EuiFormRow label="Rule name" isInvalid={!!nameError} error={nameError}>
               <EuiFieldText
                 placeholder="Enter rule name"
                 value={name}
                 onChange={onNameChange}
+                onBlur={onNameBlur}
+                required
                 data-test-subj={'rule_name_field'}
               />
             </EuiFormRow>
@@ -154,10 +188,16 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
 
         <EuiSpacer />
 
-        <EuiFormRow label="Description" fullWidth>
+        <EuiFormRow
+          label="Description"
+          fullWidth
+          isInvalid={!!descriptionError}
+          error={descriptionError}
+        >
           <EuiTextArea
             value={description}
             onChange={onDescriptionChange}
+            onBlur={onDescriptionBlur}
             data-test-subj={'rule_description_field'}
           />
         </EuiFormRow>
@@ -224,11 +264,12 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
           onFieldRemove={onFalsePositiveRemove}
         />
 
-        <EuiFormRow label="Author">
+        <EuiFormRow label="Author" isInvalid={!!authorError} error={authorError}>
           <EuiFieldText
             placeholder="Enter author name"
             value={author}
             onChange={onAuthorChange}
+            onBlur={onAuthorBlur}
             required
             data-test-subj={'rule_author_field'}
           />

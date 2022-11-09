@@ -54,19 +54,19 @@ export default class DetectorBasicDetailsForm extends Component<
     this.props.onDetectorNameChange(event.target.value.trimStart());
   };
 
-  onDescriptionBlur = (event: React.ChangeEvent<HTMLInputElement>) => {
+  onDescriptionBlur = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     this.setState({
       descriptionFieldTouched: true,
       descriptionIsInvalid: !validateDescription(event.target.value),
     });
   };
 
-  onDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  onDescriptionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     this.props.onDetectorInputDescriptionChange(event.target.value.trimStart());
   };
 
   render() {
-    const { detectorName, detectorDescription, onDetectorInputDescriptionChange } = this.props;
+    const { detectorName, detectorDescription } = this.props;
     const {
       descriptionIsInvalid,
       descriptionFieldTouched,
@@ -93,7 +93,6 @@ export default class DetectorBasicDetailsForm extends Component<
         </EuiFormRow>
         <EuiSpacer size={'m'} />
 
-        {/*// TODO: Implement regex pattern validation for description field.*/}
         <EuiFormRow
           label={<FormFieldHeader headerTitle={'Description'} optionalField={true} />}
           isInvalid={descriptionFieldTouched && descriptionIsInvalid}
