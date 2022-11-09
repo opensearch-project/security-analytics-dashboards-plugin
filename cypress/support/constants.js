@@ -18,10 +18,9 @@ export const PLUGIN_NAME = 'opensearch_security_analytics_dashboards';
 export const NODE_API = {
   ...API,
   INDEX_TEMPLATE_BASE: '/_index_template',
-  DETECTORS_BASE: '/detectors',
 };
 
-export const TEST_DOC = {
+export const TEST_DOCUMENT = {
   EventTime: '2020-02-04T14:59:39.343541+00:00',
   HostName: 'EC2AMAZ-EPO7HKA',
   Keywords: '9223372036854775808',
@@ -108,7 +107,8 @@ export const TEST_DETECTOR = {
       detector_input: {
         description: 'windows detector for security analytics',
         indices: ['cypress-test-windows'],
-        rules: [],
+        pre_packaged_rules: [],
+        custom_rules: [],
       },
     },
   ],
@@ -116,7 +116,9 @@ export const TEST_DETECTOR = {
     {
       sev_levels: [],
       tags: [],
+      ids: [],
       actions: [],
+      severity: 'high',
       types: ['windows'],
       name: 'test-trigger',
       id: 'fyAy1IMBK2A1DZyOuW_b',
