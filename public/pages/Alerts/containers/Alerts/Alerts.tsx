@@ -4,6 +4,7 @@
  */
 
 import {
+  DurationRange,
   EuiBasicTableColumn,
   EuiButton,
   EuiButtonEmpty,
@@ -26,8 +27,9 @@ import moment from 'moment';
 import {
   ALERT_STATE,
   BREADCRUMBS,
-  DATE_MATH_FORMAT,
+  DEFAULT_DATE_RANGE,
   DEFAULT_EMPTY_DATA,
+  MAX_RECENTLY_USED_TIME_RANGES,
 } from '../../../../utils/constants';
 import { CoreServicesContext } from '../../../../components/core_services';
 import AlertsService from '../../../../services/AlertsService';
@@ -59,6 +61,7 @@ export interface AlertsState {
   groupBy: string;
   startTime: string;
   endTime: string;
+  recentlyUsedRanges: DurationRange[];
   selectedItems: AlertItem[];
   alerts: AlertItem[];
   flyoutData?: { alertItem: AlertItem };
@@ -78,12 +81,11 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
 
   constructor(props: AlertsProps) {
     super(props);
-    const now = moment.now();
-    const startTime = moment(now).subtract(15, 'minutes').format(DATE_MATH_FORMAT);
     this.state = {
       groupBy: 'status',
-      startTime,
-      endTime: moment(now).format(DATE_MATH_FORMAT),
+      startTime: DEFAULT_DATE_RANGE.start,
+      endTime: DEFAULT_DATE_RANGE.end,
+      recentlyUsedRanges: [DEFAULT_DATE_RANGE],
       selectedItems: [],
       alerts: [],
       alertsFiltered: false,
@@ -241,7 +243,7 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
       const detectorsRes = await detectorService.getDetectors();
       if (detectorsRes.ok) {
         const detectorIds = detectorsRes.response.hits.hits.map((hit) => {
-          detectors[hit._id] = hit._source;
+          detectors[hit._id] = { ...hit._source, id: hit._id };
           return hit._id;
         });
 
@@ -281,7 +283,19 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
   }
 
   onTimeChange = ({ start, end }: { start: string; end: string }) => {
-    this.setState({ startTime: start, endTime: end });
+    let { recentlyUsedRanges } = this.state;
+    recentlyUsedRanges = recentlyUsedRanges.filter(
+      (range) => !(range.start === start && range.end === end)
+    );
+    recentlyUsedRanges.unshift({ start: start, end: end });
+    if (recentlyUsedRanges.length > MAX_RECENTLY_USED_TIME_RANGES)
+      recentlyUsedRanges = recentlyUsedRanges.slice(0, MAX_RECENTLY_USED_TIME_RANGES);
+    const endTime = start === end ? DEFAULT_DATE_RANGE.end : end;
+    this.setState({
+      startTime: start,
+      endTime: endTime,
+      recentlyUsedRanges: recentlyUsedRanges,
+    });
   };
 
   onRefresh = async () => {
@@ -330,7 +344,17 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
 
   render() {
     const { ruleService } = this.props;
-    const { alerts, alertsFiltered, detectors, filteredAlerts, flyoutData } = this.state;
+    const {
+      alerts,
+      alertsFiltered,
+      detectors,
+      filteredAlerts,
+      flyoutData,
+      loading,
+      startTime,
+      endTime,
+      recentlyUsedRanges,
+    } = this.state;
 
     const severities = new Set();
     const statuses = new Set();
@@ -407,6 +431,10 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
                 <EuiSuperDatePicker
+                  start={startTime}
+                  end={endTime}
+                  recentlyUsedRanges={recentlyUsedRanges}
+                  isLoading={loading}
                   onTimeChange={this.onTimeChange}
                   onRefresh={this.onRefresh}
                   updateButtonProps={{ fill: false }}

@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Query } from '@elastic/eui';
 import { Detector } from '../../../models/interfaces';
 
 export interface CreateDetectorParams {
@@ -23,7 +22,10 @@ export interface GetDetectorParams {
 export interface GetDetectorResponse {}
 
 export interface SearchDetectorsParams {
-  body: { query: Query };
+  body: {
+    size: number;
+    query: object;
+  };
 }
 
 export interface SearchDetectorsResponse {

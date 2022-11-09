@@ -5,9 +5,9 @@
 
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import moment from 'moment';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import {
+  DurationRange,
   EuiFlexGroup,
   EuiFlexItem,
   EuiPanel,
@@ -23,7 +23,11 @@ import {
   OpenSearchService,
   RuleService,
 } from '../../../../services';
-import { BREADCRUMBS, DATE_MATH_FORMAT } from '../../../../utils/constants';
+import {
+  BREADCRUMBS,
+  DEFAULT_DATE_RANGE,
+  MAX_RECENTLY_USED_TIME_RANGES,
+} from '../../../../utils/constants';
 import { getFindingsVisualizationSpec } from '../../../Overview/utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { Finding } from '../../models/interfaces';
@@ -58,6 +62,7 @@ interface FindingsState {
   rules: { [id: string]: RuleSource };
   startTime: string;
   endTime: string;
+  recentlyUsedRanges: DurationRange[];
   groupBy: FindingsGroupByType;
   filteredFindings: FindingItemType[];
 }
@@ -83,16 +88,15 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
 
   constructor(props: FindingsProps) {
     super(props);
-    const now = moment.now();
-    const startTime = moment(now).subtract(15, 'minutes').format(DATE_MATH_FORMAT);
     this.state = {
       loading: false,
       detectors: [],
       findings: [],
       notificationChannels: [],
       rules: {},
-      startTime: startTime,
-      endTime: moment(now).format(DATE_MATH_FORMAT),
+      startTime: DEFAULT_DATE_RANGE.start,
+      endTime: DEFAULT_DATE_RANGE.end,
+      recentlyUsedRanges: [DEFAULT_DATE_RANGE],
       groupBy: 'logType',
       filteredFindings: [],
     };
@@ -210,7 +214,19 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
   };
 
   onTimeChange = ({ start, end }: { start: string; end: string }) => {
-    this.setState({ startTime: start, endTime: end });
+    let { recentlyUsedRanges } = this.state;
+    recentlyUsedRanges = recentlyUsedRanges.filter(
+      (range) => !(range.start === start && range.end === end)
+    );
+    recentlyUsedRanges.unshift({ start: start, end: end });
+    if (recentlyUsedRanges.length > MAX_RECENTLY_USED_TIME_RANGES)
+      recentlyUsedRanges = recentlyUsedRanges.slice(0, MAX_RECENTLY_USED_TIME_RANGES);
+    const endTime = start === end ? DEFAULT_DATE_RANGE.end : end;
+    this.setState({
+      startTime: start,
+      endTime: endTime,
+      recentlyUsedRanges: recentlyUsedRanges,
+    });
   };
 
   generateVisualizationSpec() {
@@ -248,7 +264,14 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
   };
 
   render() {
-    const { loading, notificationChannels, rules, startTime, endTime } = this.state;
+    const {
+      loading,
+      notificationChannels,
+      rules,
+      startTime,
+      endTime,
+      recentlyUsedRanges,
+    } = this.state;
     let { findings } = this.state;
 
     if (Object.keys(rules).length > 0) {
@@ -273,6 +296,10 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
               <EuiSuperDatePicker
+                start={startTime}
+                end={endTime}
+                recentlyUsedRanges={recentlyUsedRanges}
+                isLoading={loading}
                 onTimeChange={this.onTimeChange}
                 onRefresh={this.onRefresh}
                 updateButtonProps={{ fill: false }}

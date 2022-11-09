@@ -26,7 +26,6 @@ import {
 import { CLIENT_DETECTOR_METHODS } from '../utils/constants';
 import { Detector } from '../../models/interfaces';
 import { ServerResponse } from '../models/types';
-import { Query } from '@elastic/eui';
 
 export default class DetectorService {
   osDriver: ILegacyCustomClusterClient;
@@ -122,8 +121,8 @@ export default class DetectorService {
     IOpenSearchDashboardsResponse<ServerResponse<SearchDetectorsResponse> | ResponseError>
   > => {
     try {
-      const { query } = request.body as { query: Query };
-      const params: SearchDetectorsParams = { body: { query } };
+      const { query } = request.body as { query: object };
+      const params: SearchDetectorsParams = { body: { size: 10000, query } };
       const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
       const searchDetectorResponse: SearchDetectorsResponse = await callWithRequest(
         CLIENT_DETECTOR_METHODS.SEARCH_DETECTORS,
