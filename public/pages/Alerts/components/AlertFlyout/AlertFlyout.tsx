@@ -22,6 +22,7 @@ import React from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { ALERT_STATE, DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
 import {
+  capitalizeFirstLetter,
   createTextDetailsGroup,
   errorNotificationToast,
   renderTime,
@@ -185,22 +186,15 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
         name: 'Log type',
         sortable: true,
         dataType: 'string',
-        render: () => detector.detector_type || DEFAULT_EMPTY_DATA,
+        render: () => capitalizeFirstLetter(detector.detector_type) || DEFAULT_EMPTY_DATA,
       },
     ];
   }
 
   render() {
     const { onClose, alertItem, detector, onAcknowledge } = this.props;
-    const {
-      trigger_name,
-      state,
-      severity,
-      start_time,
-      last_notification_time,
-      finding_ids,
-    } = alertItem;
-    const { acknowledged, findingFlyoutData, loading, rules } = this.state;
+    const { trigger_name, state, severity, start_time, last_notification_time } = alertItem;
+    const { acknowledged, findingItems, findingFlyoutData, loading, rules } = this.state;
 
     return !!this.state.findingFlyoutData ? (
       <FindingDetailsFlyout
@@ -260,7 +254,7 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
         <EuiFlyoutBody>
           {createTextDetailsGroup([
             { label: 'Alert trigger name', content: trigger_name },
-            { label: 'Alert status', content: state },
+            { label: 'Alert status', content: capitalizeFirstLetter(state) },
             {
               label: 'Alert severity',
               content: parseAlertSeverityToOption(severity)?.label || DEFAULT_EMPTY_DATA,
@@ -279,10 +273,10 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
 
           <EuiSpacer size={'xxl'} />
 
-          <ContentPanel title={`Findings (${finding_ids.length})`}>
+          <ContentPanel title={`Findings (${findingItems.length})`}>
             <EuiBasicTable<Finding>
               columns={this.createFindingTableColumns()}
-              items={this.state.findingItems}
+              items={findingItems}
               loading={loading}
             />
           </ContentPanel>
