@@ -195,14 +195,15 @@ export const errorNotificationToast = (
   notifications: NotificationsStart | null,
   actionName: string,
   objectName: string,
-  errorMessage: string = ''
+  errorMessage: string = '',
+  displayTime: number = 5000 // 5 seconds; default is 10 seconds
 ) => {
   const message = `Failed to ${actionName} ${objectName}:`;
   console.error(message, errorMessage);
   notifications?.toasts.addDanger({
     title: message,
     text: errorMessage,
-    toastLifeTimeMs: 20000, // the default lifetime for toasts is 10 sec
+    toastLifeTimeMs: displayTime,
   });
 };
 
@@ -211,11 +212,12 @@ export const successNotificationToast = (
   notifications: NotificationsStart | null,
   actionName: string,
   objectName: string,
-  successMessage: string = ''
+  successMessage: string = '',
+  displayTime: number = 5000 // 5 seconds; default is 10 seconds
 ) => {
   notifications?.toasts.addSuccess({
     title: `Successfully ${actionName} ${objectName}`,
     text: successMessage,
-    toastLifeTimeMs: 20000, // the default lifetime for toasts is 10 sec
+    toastLifeTimeMs: displayTime,
   });
 };
