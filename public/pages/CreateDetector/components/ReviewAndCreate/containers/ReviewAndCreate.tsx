@@ -11,10 +11,12 @@ import { AlertTriggersView } from '../../../../Detectors/containers/AlertTrigger
 import { RouteComponentProps } from 'react-router-dom';
 import { Detector, FieldMapping } from '../../../../../../models/interfaces';
 import { DetectorCreationStep } from '../../../models/types';
+import { NotificationsStart } from 'opensearch-dashboards/public';
 
 export interface ReviewAndCreateProps extends RouteComponentProps {
   detector: Detector;
   existingMappings: FieldMapping[];
+  notifications: NotificationsStart;
   setDetectorCreationStep: (step: DetectorCreationStep) => void;
 }
 
@@ -56,6 +58,7 @@ export class ReviewAndCreate extends React.Component<ReviewAndCreateProps, Revie
         <EuiSpacer size="l" />
         <AlertTriggersView
           {...this.props}
+          notifications={this.props.notifications}
           detector={this.props.detector}
           editAlertTriggers={this.setConfigureAlertsStep}
         />

@@ -69,6 +69,14 @@ interface MainState {
   selectedNavItemIndex: number;
 }
 
+const navItemIndexByRoute: { [route: string]: number } = {
+  [ROUTES.OVERVIEW]: 1,
+  [ROUTES.FINDINGS]: 2,
+  [ROUTES.ALERTS]: 3,
+  [ROUTES.DETECTORS]: 4,
+  [ROUTES.RULES]: 5,
+};
+
 export default class Main extends Component<MainProps, MainState> {
   constructor(props: MainProps) {
     super(props);
@@ -76,6 +84,32 @@ export default class Main extends Component<MainProps, MainState> {
       getStartedDismissedOnce: false,
       selectedNavItemIndex: 1,
     };
+  }
+
+  componentDidMount(): void {
+    this.updateSelectedNavItem();
+  }
+
+  componentDidUpdate(
+    prevProps: Readonly<MainProps>,
+    prevState: Readonly<MainState>,
+    snapshot?: any
+  ): void {
+    if (this.props.location.pathname === prevProps.location.pathname) {
+      return;
+    }
+
+    this.updateSelectedNavItem();
+  }
+
+  updateSelectedNavItem() {
+    if (navItemIndexByRoute[this.props.location.pathname] !== undefined) {
+      this.setState({ selectedNavItemIndex: navItemIndexByRoute[this.props.location.pathname] });
+    }
+
+    if (this.props.location.pathname.includes('detector-details')) {
+      this.setState({ selectedNavItemIndex: navItemIndexByRoute[ROUTES.DETECTORS] });
+    }
   }
 
   setGetStartedDismissedOnce = () => {

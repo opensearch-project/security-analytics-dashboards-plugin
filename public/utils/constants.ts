@@ -49,7 +49,10 @@ export const BREADCRUMBS = Object.freeze({
   OVERVIEW: { text: 'Overview', href: `#${ROUTES.OVERVIEW}` },
   FINDINGS: { text: 'Findings', href: `#${ROUTES.FINDINGS}` },
   DETECTORS: { text: 'Detectors', href: `#${ROUTES.DETECTORS}` },
-  DETECTORS_DETAILS: (name: string) => ({ text: `${name}`, href: `#${ROUTES.DETECTOR_DETAILS}` }),
+  DETECTORS_DETAILS: (name: string, detectorId: string) => ({
+    text: `${name}`,
+    href: `#${ROUTES.DETECTOR_DETAILS}/${detectorId}`,
+  }),
   RULES: { text: 'Rules', href: `#${ROUTES.RULES}` },
   ALERTS: { text: 'Alerts', href: `#${ROUTES.ALERTS}` },
   RULES_CREATE: { text: 'Create rule', href: `#${ROUTES.RULES_CREATE}` },
