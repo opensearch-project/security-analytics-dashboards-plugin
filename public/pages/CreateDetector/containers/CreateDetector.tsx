@@ -348,7 +348,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
   }
 
   render() {
-    const { currentStep, stepDataValid } = this.state;
+    const { creatingDetector, currentStep, stepDataValid } = this.state;
     const steps: EuiContainedStepProps[] = this.createStepsMetadata(currentStep);
 
     return (
@@ -367,7 +367,9 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
 
           {currentStep > DetectorCreationStep.DEFINE_DETECTOR && (
             <EuiFlexItem grow={false}>
-              <EuiButton onClick={this.onPreviousClick}>Previous</EuiButton>
+              <EuiButton disabled={creatingDetector} onClick={this.onPreviousClick}>
+                Previous
+              </EuiButton>
             </EuiFlexItem>
           )}
 
@@ -386,7 +388,8 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
           {currentStep === DetectorCreationStep.REVIEW_CREATE && (
             <EuiFlexItem grow={false}>
               <EuiButton
-                isLoading={this.state.creatingDetector}
+                disabled={creatingDetector}
+                isLoading={creatingDetector}
                 fill={true}
                 onClick={this.onCreateClick}
               >
