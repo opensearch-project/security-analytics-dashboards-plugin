@@ -8,6 +8,8 @@ import { DetectorHit } from '../../server/models/interfaces';
 import { DETECTOR_TYPES } from '../pages/Detectors/utils/constants';
 
 export const DATE_MATH_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
+export const MAX_RECENTLY_USED_TIME_RANGES = 5;
+export const DEFAULT_DATE_RANGE = { start: 'now-15m', end: 'now' };
 
 export const PLUGIN_NAME = 'opensearch_security_analytics_dashboards';
 
