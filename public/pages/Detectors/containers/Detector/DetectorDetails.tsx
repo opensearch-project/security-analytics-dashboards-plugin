@@ -47,6 +47,7 @@ export interface DetectorDetailsState {
   detectorHit: DetectorHit;
   detectorId: string;
   tabs: any[];
+  loading: boolean;
 }
 
 enum TabId {
@@ -146,6 +147,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
       detectorHit: EMPTY_DEFAULT_DETECTOR_HIT,
       detectorId: detectorId,
       tabs: [],
+      loading: false,
     };
   }
 
@@ -154,6 +156,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   }
 
   getDetector = async () => {
+    this.setState({ loading: true });
     const { detectorService, notifications } = this.props;
     try {
       const response = await detectorService.getDetectors();
@@ -181,6 +184,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
       errorNotificationToast(notifications, 'retrieve', 'detector', e);
     }
     this.getTabs();
+    this.setState({ loading: false });
   };
 
   toggleActionsMenu = () => {
@@ -193,6 +197,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   };
 
   onDelete = async () => {
+    this.setState({ loading: true });
     const { detectorService, notifications } = this.props;
     const detectorId = this.detectorHit._id;
     try {
@@ -205,9 +210,11 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     } catch (e: any) {
       errorNotificationToast(notifications, 'delete', 'detector', e);
     }
+    this.setState({ loading: false });
   };
 
   toggleDetector = async () => {
+    this.setState({ loading: true });
     const { detectorService, notifications } = this.props;
     try {
       const detectorId = this.detectorHit._id;
@@ -231,9 +238,11 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     } catch (e: any) {
       errorNotificationToast(notifications, 'update', 'detector', e);
     }
+    this.setState({ loading: false });
   };
 
   createHeaderActions(): React.ReactNode[] {
+    const { loading } = this.state;
     const onClickActions = [
       { name: 'View Alerts', onClick: this.onViewAlertsClick },
       { name: 'View Findings', onClick: this.onViewFindingsClick },
@@ -247,6 +256,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
         id={'detectorsActionsPopover'}
         button={
           <EuiButton
+            isLoading={loading}
             iconType={'arrowDown'}
             iconSide={'right'}
             onClick={this.toggleActionsMenu}
@@ -264,6 +274,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
         <EuiContextMenuPanel
           items={[
             <EuiContextMenuItem
+              disabled={loading}
               key={'Delete'}
               icon={'empty'}
               onClick={() => {
@@ -275,6 +286,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
               Delete
             </EuiContextMenuItem>,
             <EuiContextMenuItem
+              disabled={loading}
               key={'Toggle detector'}
               icon={'empty'}
               onClick={() => {
