@@ -60,7 +60,7 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
       if (getRulesRes?.ok) {
         return getRulesRes.response.hits.hits;
       } else {
-        errorNotificationToast(this.props.notifications, 'retrieve', 'rules', getRulesRes.error);
+        errorNotificationToast(props.notifications, 'retrieve', 'rules', getRulesRes?.error);
         return [];
       }
     };
@@ -104,7 +104,7 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
     };
 
     updateRulesState().catch((e) => {
-      errorNotificationToast(this.props.notifications, 'retrieve', 'rules', e);
+      errorNotificationToast(props.notifications, 'retrieve', 'rules', e);
     });
   }, [services, props.detector]);
 

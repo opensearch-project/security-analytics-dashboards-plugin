@@ -34,7 +34,7 @@ interface FindingsTableProps extends RouteComponentProps {
   notificationChannels: NotificationChannelTypeOptions[];
   refreshNotificationChannels: () => void;
   loading: boolean;
-  rules: object;
+  rules: any;
   startTime: string;
   endTime: string;
   onRefresh: () => void;
@@ -44,7 +44,7 @@ interface FindingsTableProps extends RouteComponentProps {
 interface FindingsTableState {
   findingsFiltered: boolean;
   filteredFindings: Finding[];
-  flyout: object;
+  flyout: object | undefined;
   flyoutOpen: boolean;
   selectedFinding?: Finding;
 }
@@ -116,7 +116,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
           name: rule.title,
           id: query.id,
           severity: rule.level,
-          tags: rule.tags.map((tag) => tag.value),
+          tags: rule.tags.map((tag: any) => tag.value),
         };
       });
       this.setState({

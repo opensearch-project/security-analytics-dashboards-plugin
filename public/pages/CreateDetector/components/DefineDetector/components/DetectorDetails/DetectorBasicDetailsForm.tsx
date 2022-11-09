@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { ChangeEvent, Component } from 'react';
+import React, { Component } from 'react';
 import { ContentPanel } from '../../../../../../components/ContentPanel';
 import { EuiFormRow, EuiFieldText, EuiSpacer, EuiTextArea } from '@elastic/eui';
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
@@ -19,7 +19,7 @@ interface DetectorDetailsProps {
   detectorName: string;
   detectorDescription: string;
   onDetectorNameChange: (name: string) => void;
-  onDetectorInputDescriptionChange: (value: ChangeEvent<HTMLTextAreaElement>) => void;
+  onDetectorInputDescriptionChange: (value: string) => void;
 }
 
 interface DetectorDetailsState {

@@ -252,6 +252,27 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     });
   };
 
+  getDetectorWithUpdatedRules(newRules: RuleItemInfo[]) {
+    return {
+      ...this.state.detector,
+      inputs: [
+        {
+          ...this.state.detector.inputs[0],
+          detector_input: {
+            ...this.state.detector.inputs[0].detector_input,
+            pre_packaged_rules: newRules
+              .filter((rule) => rule.enabled && rule.prePackaged)
+              .map((rule) => ({ id: rule._id })),
+            custom_rules: newRules
+              .filter((rule) => rule.enabled && !rule.prePackaged)
+              .map((rule) => ({ id: rule._id })),
+          },
+        },
+        ...this.state.detector.inputs.slice(1),
+      ],
+    };
+  }
+
   onRuleToggle = (changedItem: RuleItem, isActive: boolean) => {
     const ruleIndex = this.state.rulesState.allRules.findIndex((ruleItemInfo) => {
       return ruleItemInfo._id === changedItem.id;
@@ -269,6 +290,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
           ...this.state.rulesState,
           allRules: newRules,
         },
+        detector: this.getDetectorWithUpdatedRules(newRules),
       });
     }
   };
@@ -284,6 +306,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
         ...this.state.rulesState,
         allRules: newRules,
       },
+      detector: this.getDetectorWithUpdatedRules(newRules),
     });
   };
 
