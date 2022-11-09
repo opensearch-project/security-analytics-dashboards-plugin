@@ -25,7 +25,6 @@ export interface ImportRuleProps {
 
 export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notifications }) => {
   const context = useContext(CoreServicesContext);
-  context?.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.RULES_IMPORT]);
   const [fileError, setFileError] = useState('');
   const onChange = useCallback((files: any) => {
     setFileError('');
@@ -115,6 +114,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
         </EuiFlexGroup>
       </>
     );
+    context?.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.RULES_IMPORT]);
   }, [fileError, onChange]);
 
   const footerActions: React.FC<{ rule: Rule }> = ({ rule }) => {
