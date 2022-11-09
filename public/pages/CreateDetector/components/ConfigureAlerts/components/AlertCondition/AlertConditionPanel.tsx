@@ -271,10 +271,17 @@ export default class AlertConditionPanel extends Component<
         label: severity,
       });
     });
-    const namesOptions: EuiComboBoxOptionOption<string>[] = rulesOptions.map((option) => ({
-      label: option.name,
-      value: option.id,
-    }));
+    const uniqueRuleNames = new Set<string>();
+    const namesOptions: EuiComboBoxOptionOption<string>[] = [];
+    rulesOptions.forEach((option) => {
+      if (!uniqueRuleNames.has(option.name)) {
+        uniqueRuleNames.add(option.name);
+        namesOptions.push({
+          label: option.name,
+          value: option.id,
+        });
+      }
+    });
 
     const channelId = alertCondition.actions[0].destination_id;
     const selectedNotificationChannelOption: NotificationChannelOption[] = [];

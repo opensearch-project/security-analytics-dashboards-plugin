@@ -122,8 +122,8 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
           createDetectorRes.error
         );
       }
-    } catch (e) {
-      errorNotificationToast(this.props.notifications, 'create', 'detector', e);
+    } catch (error: any) {
+      errorNotificationToast(this.props.notifications, 'create', 'detector', error);
     }
     this.setState({ creatingDetector: false });
   };
@@ -152,8 +152,8 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
   };
 
   getRulesOptions(): CreateDetectorRulesOptions {
-    const allRules = this.state.rulesState.allRules;
-    const options: CreateDetectorRulesOptions = allRules.map((rule) => ({
+    const enabledRules = this.state.rulesState.allRules.filter((rule) => rule.enabled);
+    const options: CreateDetectorRulesOptions = enabledRules.map((rule) => ({
       id: rule._id,
       name: rule._source.title,
       severity: rule._source.level,
@@ -309,6 +309,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
           <ConfigureFieldMapping
             {...this.props}
             detector={this.state.detector}
+            loading={false}
             filedMappingService={services.fieldMappingService}
             fieldMappings={this.state.fieldMappings}
             replaceFieldMappings={this.replaceFieldMappings}
