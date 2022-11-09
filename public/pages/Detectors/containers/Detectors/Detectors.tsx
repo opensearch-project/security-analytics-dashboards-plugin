@@ -105,6 +105,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
   };
 
   toggleDetector = async (detector: DetectorHit, shouldStart: boolean) => {
+    this.setState({ loadingDetectors: true });
     const { detectorService, notifications } = this.props;
     try {
       const updateRes = await detectorService.updateDetector(detector._id, {
@@ -119,9 +120,11 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
       errorNotificationToast(notifications, 'update', 'detector', e);
     }
     this.getDetectors();
+    this.setState({ loadingDetectors: false });
   };
 
   onClickDelete = async () => {
+    this.setState({ loadingDetectors: true });
     const { selectedItems } = this.state;
 
     for (let item of selectedItems) {
@@ -129,6 +132,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
     }
 
     this.getDetectors();
+    this.setState({ loadingDetectors: false });
   };
 
   deleteDetector = async (id: string) => {
@@ -163,12 +167,12 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
     });
   };
 
-  getActionItems = (selectedItems: DetectorHit[]) => {
+  getActionItems = (loading: boolean, selectedItems: DetectorHit[]) => {
     const actionItems = [
       <EuiContextMenuItem
         key={'Delete'}
         icon={'empty'}
-        disabled={selectedItems.length === 0}
+        disabled={selectedItems.length === 0 || loading}
         onClick={() => {
           this.closeActionsPopover();
           this.openDeleteModal();
@@ -184,7 +188,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
         <EuiContextMenuItem
           key={'ToggleDetector'}
           icon={'empty'}
-          disabled={selectedItems.length !== 1}
+          disabled={selectedItems.length !== 1 || loading}
           onClick={() => {
             this.closeActionsPopover();
             this.toggleDetector(selectedItems[0], !selectedItems[0]._source.enabled);
@@ -220,6 +224,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
         id={'detectorsActionsPopover'}
         button={
           <EuiButton
+            isLoading={loadingDetectors}
             iconType={'arrowDown'}
             iconSide={'right'}
             disabled={!selectedItems.length}
@@ -235,7 +240,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
         anchorPosition={'downLeft'}
         data-test-subj={'detectorsActionsPopover'}
       >
-        <EuiContextMenuPanel items={this.getActionItems(selectedItems)} />
+        <EuiContextMenuPanel items={this.getActionItems(loadingDetectors, selectedItems)} />
       </EuiPopover>,
       <EuiButton
         href={`${PLUGIN_NAME}#${ROUTES.DETECTORS_CREATE}`}
