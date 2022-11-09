@@ -12,10 +12,9 @@ import {
   EuiTitle,
 } from '@elastic/eui';
 import { Detector, PeriodSchedule } from '../../../../../models/interfaces';
-import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import DetectorBasicDetailsForm from '../../../CreateDetector/components/DefineDetector/components/DetectorDetails';
-import { MIN_NUM_DATA_SOURCES } from '../../utils/constants';
 import DetectorDataSource from '../../../CreateDetector/components/DefineDetector/components/DetectorDataSource';
 import { IndexService, ServicesContext } from '../../../../services';
 import { DetectorSchedule } from '../../../CreateDetector/components/DefineDetector/components/DetectorSchedule/DetectorSchedule';
@@ -37,6 +36,8 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
     props.location.state?.detectorHit?._source || EMPTY_DEFAULT_DETECTOR
   );
   const { name, inputs } = detector;
+  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const description = inputs[0].detector_input.description;
   const detectorId = props.location.pathname.replace(`${ROUTES.EDIT_DETECTOR_DETAILS}/`, '');
 
@@ -62,7 +63,9 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
     };
 
     const execute = async () => {
+      setLoading(true);
       await getDetector();
+      setLoading(false);
     };
 
     if (!detector.id?.length) {
@@ -74,14 +77,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
 
   const updateDetectorState = useCallback(
     (detector: Detector) => {
-      const isDataValid =
-        !!detector.name &&
-        !!detector.detector_type &&
-        detector.inputs[0].detector_input.indices.length >= MIN_NUM_DATA_SOURCES;
-
-      if (isDataValid) {
-        setDetector(detector);
-      }
+      setDetector(detector);
     },
     [setDetector]
   );
@@ -99,7 +95,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
   );
 
   const onDetectorInputDescriptionChange = useCallback(
-    (event: ChangeEvent<HTMLTextAreaElement>, index = 0) => {
+    (description: string) => {
       const { inputs } = detector;
       const newDetector: Detector = {
         ...detector,
@@ -107,7 +103,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
           {
             detector_input: {
               ...inputs[0].detector_input,
-              description: event.target.value,
+              description: description,
             },
           },
           ...inputs.slice(1),
@@ -165,6 +161,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
     const detectorHit = props.location.state.detectorHit;
 
     const updateDetector = async () => {
+      setSubmitting(true);
       const updateDetectorRes = await services?.detectorsService?.updateDetector(
         detectorHit._id,
         detector
@@ -187,6 +184,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
           detectorHit: { ...detectorHit, _source: { ...detectorHit._source, ...detector } },
         },
       });
+      setSubmitting(false);
     };
 
     updateDetector().catch((e) => {
@@ -224,10 +222,14 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
 
       <EuiFlexGroup justifyContent="flexEnd">
         <EuiFlexItem grow={false}>
-          <EuiButton onClick={onCancel}>Cancel</EuiButton>
+          <EuiButton onClick={onCancel} disabled={loading}>
+            Cancel
+          </EuiButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton onClick={onSave}>Save changes</EuiButton>
+          <EuiButton onClick={onSave} disabled={loading || submitting} isLoading={submitting}>
+            Save changes
+          </EuiButton>
         </EuiFlexItem>
       </EuiFlexGroup>
     </div>

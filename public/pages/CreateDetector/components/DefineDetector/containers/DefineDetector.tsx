@@ -56,7 +56,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
     this.updateDetectorCreationState(newDetector);
   };
 
-  onDetectorInputDescriptionChange = (event: ChangeEvent<HTMLTextAreaElement>, index = 0) => {
+  onDetectorInputDescriptionChange = (description: string) => {
     const { inputs } = this.props.detector;
     const newDetector: Detector = {
       ...this.props.detector,
@@ -64,13 +64,12 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
         {
           detector_input: {
             ...inputs[0].detector_input,
-            description: event.target.value,
+            description: description,
           },
         },
         ...inputs.slice(1),
       ],
     };
-
     this.updateDetectorCreationState(newDetector);
   };
 
