@@ -9,12 +9,14 @@ import { DetectorRulesView } from '../../components/DetectorRulesView/DetectorRu
 import { EuiSpacer } from '@elastic/eui';
 import { Detector } from '../../../../../models/interfaces';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
+import { NotificationsStart } from 'opensearch-dashboards/public';
 
 export interface DetectorDetailsViewProps {
   detector: Detector;
   enabled_time?: number;
   last_update_time?: number;
   rulesCanFold?: boolean;
+  notifications: NotificationsStart;
   editBasicDetails: () => void;
   editDetectorRules: (enabledRules: RuleItem[], allRuleItems: RuleItem[]) => void;
 }

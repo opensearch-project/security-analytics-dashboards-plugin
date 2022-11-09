@@ -10,6 +10,7 @@ import { FieldMappingsTableItem } from '../../../CreateDetector/models/interface
 import { ServicesContext } from '../../../../services';
 import { Detector, FieldMapping } from '../../../../../models/interfaces';
 import { errorNotificationToast } from '../../../../utils/helpers';
+import { NotificationsStart } from 'opensearch-dashboards/public';
 
 export interface FieldMappingsViewProps {
   detector: Detector;
@@ -34,6 +35,7 @@ export const FieldMappingsView: React.FC<FieldMappingsViewProps> = ({
   detector,
   existingMappings,
   editFieldMappings,
+  notifications,
 }) => {
   const actions = useMemo(() => [<EuiButton onClick={editFieldMappings}>Edit</EuiButton>], []);
   const [fieldMappingItems, setFieldMappingItems] = useState<FieldMappingsTableItem[]>([]);
@@ -56,12 +58,7 @@ export const FieldMappingsView: React.FC<FieldMappingsViewProps> = ({
           setFieldMappingItems(items);
         }
       } else {
-        errorNotificationToast(
-          this.props.notifications,
-          'retrieve',
-          'field mappings',
-          getMappingRes.error
-        );
+        errorNotificationToast(notifications, 'retrieve', 'field mappings', getMappingRes?.error);
       }
     },
     [services, detector]
@@ -80,7 +77,7 @@ export const FieldMappingsView: React.FC<FieldMappingsViewProps> = ({
       setFieldMappingItems(items);
     } else {
       fetchFieldMappings(detector.inputs[0].detector_input.indices[0]).catch((e) => {
-        errorNotificationToast(this.props.notifications, 'retrieve', 'field mappings', e);
+        errorNotificationToast(notifications, 'retrieve', 'field mappings', e);
       });
     }
   }, [detector]);

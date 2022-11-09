@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { ChangeEvent, Component } from 'react';
+import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { EuiSpacer, EuiTitle } from '@elastic/eui';
 import { Detector, PeriodSchedule } from '../../../../../../models/interfaces';
