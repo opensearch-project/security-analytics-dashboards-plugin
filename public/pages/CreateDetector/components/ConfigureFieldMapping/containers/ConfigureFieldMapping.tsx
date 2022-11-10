@@ -63,7 +63,7 @@ export default class ConfigureFieldMapping extends Component<
     this.setState({ loading: true });
     const mappingsView = await this.props.filedMappingService.getMappingsView(
       this.props.detector.inputs[0].detector_input.indices[0],
-      this.props.detector.detector_type
+      this.props.detector.detector_type.toLowerCase()
     );
     if (mappingsView.ok) {
       const existingMappings = { ...this.state.createdMappings };
