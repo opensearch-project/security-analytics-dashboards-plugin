@@ -110,7 +110,7 @@ export default class DetectorDataSource extends Component<
             onChange={this.onSelectionChange}
             onCreateOption={this.onCreateOption}
             isInvalid={!!errorMessage}
-            data-test-subj={'define-detector-detector-name'}
+            data-test-subj={'define-detector-select-data-source'}
           />
         </EuiFormRow>
       </ContentPanel>

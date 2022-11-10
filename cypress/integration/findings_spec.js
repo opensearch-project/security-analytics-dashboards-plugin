@@ -30,7 +30,7 @@ describe('Findings', () => {
     cy.ingestDocument('windows-test-cypress', TEST_DOCUMENT);
 
     // Visit Findings page
-    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/Findings`);
+    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/findings`);
 
     cy.wait(10000);
 
