@@ -9,7 +9,7 @@ import { EuiButton, EuiFlexGroup, EuiFlexItem, EuiSpacer, EuiTitle } from '@elas
 import ConfigureFieldMapping from '../../../CreateDetector/components/ConfigureFieldMapping';
 import { Detector, FieldMapping } from '../../../../../models/interfaces';
 import FieldMappingService from '../../../../services/FieldMappingService';
-import { DetectorHit, GetDetectorResponse } from '../../../../../server/models/interfaces';
+import { DetectorHit, SearchDetectorsResponse } from '../../../../../server/models/interfaces';
 import { EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
 import { DetectorsService } from '../../../../services';
 import { ServerResponse } from '../../../../../server/models/types';
@@ -57,12 +57,12 @@ export default class UpdateFieldMappings extends Component<
       const { detectorService, history } = this.props;
       const { detectorId } = this.state;
       const response = (await detectorService.getDetectors()) as ServerResponse<
-        GetDetectorResponse
+        SearchDetectorsResponse
       >;
       if (response.ok) {
         const detectorHit = response.response.hits.hits.find(
           (detectorHit) => detectorHit._id === detectorId
-        );
+        ) as DetectorHit;
         const detector = detectorHit._source;
         detector.detector_type = detector.detector_type.toLowerCase();
 
@@ -77,8 +77,8 @@ export default class UpdateFieldMappings extends Component<
       } else {
         errorNotificationToast(this.props.notifications, 'retrieve', 'detector', response.error);
       }
-    } catch (e) {
-      errorNotificationToast(this.props.notifications, 'retrieve', 'detector', e);
+    } catch (error: any) {
+      errorNotificationToast(this.props.notifications, 'retrieve', 'detector', error);
     }
     this.setState({ loading: false });
   };
@@ -129,8 +129,8 @@ export default class UpdateFieldMappings extends Component<
           updateDetectorResponse.error
         );
       }
-    } catch (e) {
-      errorNotificationToast(this.props.notifications, 'update', 'detector', e);
+    } catch (error: any) {
+      errorNotificationToast(this.props.notifications, 'update', 'detector', error);
     }
 
     this.setState({ submitting: false });

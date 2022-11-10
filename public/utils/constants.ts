@@ -8,6 +8,8 @@ import { DetectorHit } from '../../server/models/interfaces';
 import { DETECTOR_TYPES } from '../pages/Detectors/utils/constants';
 
 export const DATE_MATH_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
+export const MAX_RECENTLY_USED_TIME_RANGES = 5;
+export const DEFAULT_DATE_RANGE = { start: 'now-15m', end: 'now' };
 
 export const PLUGIN_NAME = 'opensearch_security_analytics_dashboards';
 
@@ -47,7 +49,10 @@ export const BREADCRUMBS = Object.freeze({
   OVERVIEW: { text: 'Overview', href: `#${ROUTES.OVERVIEW}` },
   FINDINGS: { text: 'Findings', href: `#${ROUTES.FINDINGS}` },
   DETECTORS: { text: 'Detectors', href: `#${ROUTES.DETECTORS}` },
-  DETECTORS_DETAILS: (name: string) => ({ text: `${name}`, href: `#${ROUTES.DETECTOR_DETAILS}` }),
+  DETECTORS_DETAILS: (name: string, detectorId: string) => ({
+    text: `${name}`,
+    href: `#${ROUTES.DETECTOR_DETAILS}/${detectorId}`,
+  }),
   RULES: { text: 'Rules', href: `#${ROUTES.RULES}` },
   ALERTS: { text: 'Alerts', href: `#${ROUTES.ALERTS}` },
   RULES_CREATE: { text: 'Create rule', href: `#${ROUTES.RULES_CREATE}` },

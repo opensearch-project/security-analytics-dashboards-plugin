@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { ChangeEvent, Component } from 'react';
+import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { EuiSpacer, EuiTitle } from '@elastic/eui';
 import { Detector, PeriodSchedule } from '../../../../../../models/interfaces';
@@ -20,12 +20,14 @@ import {
   CreateDetectorRulesState,
   DetectionRules,
 } from '../components/DetectionRules/DetectionRules';
+import { NotificationsStart } from 'opensearch-dashboards/public';
 
 interface DefineDetectorProps extends RouteComponentProps {
   detector: Detector;
   isEdit: boolean;
   indexService: IndexService;
   rulesState: CreateDetectorRulesState;
+  notifications: NotificationsStart;
   changeDetector: (detector: Detector) => void;
   updateDataValidState: (step: DetectorCreationStep, isValid: boolean) => void;
   onPageChange: (page: { index: number; size: number }) => void;
@@ -54,7 +56,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
     this.updateDetectorCreationState(newDetector);
   };
 
-  onDetectorInputDescriptionChange = (event: ChangeEvent<HTMLTextAreaElement>, index = 0) => {
+  onDetectorInputDescriptionChange = (description: string) => {
     const { inputs } = this.props.detector;
     const newDetector: Detector = {
       ...this.props.detector,
@@ -62,13 +64,12 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
         {
           detector_input: {
             ...inputs[0].detector_input,
-            description: event.target.value,
+            description: description,
           },
         },
         ...inputs.slice(1),
       ],
     };
-
     this.updateDetectorCreationState(newDetector);
   };
 

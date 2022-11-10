@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { ChangeEvent, Component } from 'react';
+import React, { Component } from 'react';
 import { ContentPanel } from '../../../../../../components/ContentPanel';
 import { EuiFormRow, EuiFieldText, EuiSpacer, EuiTextArea } from '@elastic/eui';
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
@@ -19,7 +19,7 @@ interface DetectorDetailsProps {
   detectorName: string;
   detectorDescription: string;
   onDetectorNameChange: (name: string) => void;
-  onDetectorInputDescriptionChange: (value: ChangeEvent<HTMLTextAreaElement>) => void;
+  onDetectorInputDescriptionChange: (value: string) => void;
 }
 
 interface DetectorDetailsState {
@@ -54,19 +54,19 @@ export default class DetectorBasicDetailsForm extends Component<
     this.props.onDetectorNameChange(event.target.value.trimStart());
   };
 
-  onDescriptionBlur = (event: React.ChangeEvent<HTMLInputElement>) => {
+  onDescriptionBlur = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     this.setState({
       descriptionFieldTouched: true,
       descriptionIsInvalid: !validateDescription(event.target.value),
     });
   };
 
-  onDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  onDescriptionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     this.props.onDetectorInputDescriptionChange(event.target.value.trimStart());
   };
 
   render() {
-    const { detectorName, detectorDescription, onDetectorInputDescriptionChange } = this.props;
+    const { detectorName, detectorDescription } = this.props;
     const {
       descriptionIsInvalid,
       descriptionFieldTouched,
@@ -93,7 +93,6 @@ export default class DetectorBasicDetailsForm extends Component<
         </EuiFormRow>
         <EuiSpacer size={'m'} />
 
-        {/*// TODO: Implement regex pattern validation for description field.*/}
         <EuiFormRow
           label={<FormFieldHeader headerTitle={'Description'} optionalField={true} />}
           isInvalid={descriptionFieldTouched && descriptionIsInvalid}

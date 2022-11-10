@@ -64,6 +64,7 @@ export const Summary: React.FC<SummaryProps> = ({ alerts, findings }) => {
         time: getTimeWithMinPrecision(alert.time),
         alert: 1,
         finding: 0,
+        logType: alert.logType,
       });
     });
 

@@ -122,8 +122,8 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
           createDetectorRes.error
         );
       }
-    } catch (e) {
-      errorNotificationToast(this.props.notifications, 'create', 'detector', e);
+    } catch (error: any) {
+      errorNotificationToast(this.props.notifications, 'create', 'detector', error);
     }
     this.setState({ creatingDetector: false });
   };
@@ -152,8 +152,8 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
   };
 
   getRulesOptions(): CreateDetectorRulesOptions {
-    const allRules = this.state.rulesState.allRules;
-    const options: CreateDetectorRulesOptions = allRules.map((rule) => ({
+    const enabledRules = this.state.rulesState.allRules.filter((rule) => rule.enabled);
+    const options: CreateDetectorRulesOptions = enabledRules.map((rule) => ({
       id: rule._id,
       name: rule._source.title,
       severity: rule._source.level,
@@ -252,6 +252,27 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     });
   };
 
+  getDetectorWithUpdatedRules(newRules: RuleItemInfo[]) {
+    return {
+      ...this.state.detector,
+      inputs: [
+        {
+          ...this.state.detector.inputs[0],
+          detector_input: {
+            ...this.state.detector.inputs[0].detector_input,
+            pre_packaged_rules: newRules
+              .filter((rule) => rule.enabled && rule.prePackaged)
+              .map((rule) => ({ id: rule._id })),
+            custom_rules: newRules
+              .filter((rule) => rule.enabled && !rule.prePackaged)
+              .map((rule) => ({ id: rule._id })),
+          },
+        },
+        ...this.state.detector.inputs.slice(1),
+      ],
+    };
+  }
+
   onRuleToggle = (changedItem: RuleItem, isActive: boolean) => {
     const ruleIndex = this.state.rulesState.allRules.findIndex((ruleItemInfo) => {
       return ruleItemInfo._id === changedItem.id;
@@ -269,6 +290,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
           ...this.state.rulesState,
           allRules: newRules,
         },
+        detector: this.getDetectorWithUpdatedRules(newRules),
       });
     }
   };
@@ -284,6 +306,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
         ...this.state.rulesState,
         allRules: newRules,
       },
+      detector: this.getDetectorWithUpdatedRules(newRules),
     });
   };
 
@@ -309,6 +332,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
           <ConfigureFieldMapping
             {...this.props}
             detector={this.state.detector}
+            loading={false}
             filedMappingService={services.fieldMappingService}
             fieldMappings={this.state.fieldMappings}
             replaceFieldMappings={this.replaceFieldMappings}
@@ -347,7 +371,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
   }
 
   render() {
-    const { currentStep, stepDataValid } = this.state;
+    const { creatingDetector, currentStep, stepDataValid } = this.state;
     const steps: EuiContainedStepProps[] = this.createStepsMetadata(currentStep);
 
     return (
@@ -366,7 +390,9 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
 
           {currentStep > DetectorCreationStep.DEFINE_DETECTOR && (
             <EuiFlexItem grow={false}>
-              <EuiButton onClick={this.onPreviousClick}>Previous</EuiButton>
+              <EuiButton disabled={creatingDetector} onClick={this.onPreviousClick}>
+                Previous
+              </EuiButton>
             </EuiFlexItem>
           )}
 
@@ -385,7 +411,8 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
           {currentStep === DetectorCreationStep.REVIEW_CREATE && (
             <EuiFlexItem grow={false}>
               <EuiButton
-                isLoading={this.state.creatingDetector}
+                disabled={creatingDetector}
+                isLoading={creatingDetector}
                 fill={true}
                 onClick={this.onCreateClick}
               >

@@ -66,8 +66,8 @@ export default class DetectorDataSource extends Component<
         );
         this.setState({ errorMessage: indicesResponse.error });
       }
-    } catch (e) {
-      errorNotificationToast(this.props.notifications, 'retrieve', 'indices', e);
+    } catch (error: any) {
+      errorNotificationToast(this.props.notifications, 'retrieve', 'indices', error);
     }
     this.setState({ loading: false });
   };

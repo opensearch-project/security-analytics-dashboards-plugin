@@ -131,7 +131,7 @@ export default class AlertConditionPanel extends Component<
       detector: { triggers },
       indexNum,
     } = this.props;
-    trigger.types = [detector.detector_type];
+    trigger.types = [detector.detector_type.toLowerCase()];
     const newTriggers = [...triggers];
     newTriggers.splice(indexNum, 1, { ...alertCondition, ...trigger });
     onAlertTriggerChanged({ ...detector, triggers: newTriggers });
@@ -271,10 +271,17 @@ export default class AlertConditionPanel extends Component<
         label: severity,
       });
     });
-    const namesOptions: EuiComboBoxOptionOption<string>[] = rulesOptions.map((option) => ({
-      label: option.name,
-      value: option.id,
-    }));
+    const uniqueRuleNames = new Set<string>();
+    const namesOptions: EuiComboBoxOptionOption<string>[] = [];
+    rulesOptions.forEach((option) => {
+      if (!uniqueRuleNames.has(option.name)) {
+        uniqueRuleNames.add(option.name);
+        namesOptions.push({
+          label: option.name,
+          value: option.id,
+        });
+      }
+    });
 
     const channelId = alertCondition.actions[0].destination_id;
     const selectedNotificationChannelOption: NotificationChannelOption[] = [];
