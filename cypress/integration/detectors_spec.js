@@ -193,7 +193,7 @@ describe('Detectors', () => {
 
     // Toggle single search result to unchecked
     cy.contains('tr', 'Abusing Findstr for').within(() => {
-      cy.get(`button[aria-checked="true"]`).click({ force: true });
+      cy.get(`button[aria-checked="true"]`).click();
     });
 
     // Save changes
@@ -218,8 +218,10 @@ describe('Detectors', () => {
     cy.contains('Abusing Findstr for Defense Evasion');
 
     // Toggle single search result to checked
-    cy.contains('tr', 'Abusing Findstr for').within(() => {
-      cy.get(`button[aria-checked="false"]`).click({ force: true });
+    cy.get(`[data-test-subj="edit-detector-rules-table"]`).within(() => {
+      cy.contains('tr', 'Abusing Findstr for').within(() => {
+        cy.get(`button[aria-checked="false"]`).click({ force: true });
+      });
     });
 
     // Save changes
