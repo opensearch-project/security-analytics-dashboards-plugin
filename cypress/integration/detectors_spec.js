@@ -3,7 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PLUGIN_NAME, TWENTY_SECONDS_TIMEOUT, TEST_INDEX } from '../support/constants';
+import {
+  PLUGIN_NAME,
+  TWENTY_SECONDS_TIMEOUT,
+  TEST_INDEX,
+  TEST_FIELD_MAPPINGS,
+} from '../support/constants';
 
 describe('Detectors', () => {
   before(() => {
@@ -52,11 +57,14 @@ describe('Detectors', () => {
     // Check that correct page now showing
     cy.contains('Required field mappings');
 
-    // cy.contains('tr', 'event_uid').within(() => {
-    //   cy.get(`[data-test-subj="detector-field-mappins-select"]`).select("EventID");
-    // });
+    // Select appropriate names to map fields to
+    for (let field_name in TEST_FIELD_MAPPINGS) {
+      const mappedTo = TEST_FIELD_MAPPINGS[field_name];
 
-    cy.contains('EventID').click({ force: true });
+      cy.contains('tr', field_name).within(() => {
+        cy.get(`[data-test-subj="detector-field-mappins-select"]`).select(mappedTo);
+      });
+    }
 
     // Continue to next page - skipping mappings
     cy.get('button').contains('Next').click({ force: true }, { timeout: 2000 });
@@ -199,7 +207,9 @@ describe('Detectors', () => {
     cy.contains('Abusing Findstr for Defense Evasion');
 
     // Toggle single search result to checked
-    cy.get(`button[aria-checked="false"]`).click({ force: true });
+    cy.contains('tr', 'Abusing Findstr for').within(() => {
+      cy.get(`button[aria-checked="false"]`).click({ force: true });
+    });
 
     // Save changes
     cy.get(`[data-test-subj="save-detector-rules-edits"]`).click(

@@ -125,3 +125,12 @@ export const TEST_DETECTOR = {
     },
   ],
 };
+
+export const TEST_FIELD_MAPPINGS = {
+  event_uid: 'EventID',
+  'windows-event_data-CommandLine': 'CommandLine',
+  'windows-hostname': 'HostName',
+  'windows-message': 'Message',
+  'windows-provider-name': 'Provider_Name',
+  'windows-servicename': 'ServiceName',
+};
