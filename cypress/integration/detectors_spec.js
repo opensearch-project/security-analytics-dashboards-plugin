@@ -19,7 +19,7 @@ describe('Detectors', () => {
     // Visit Detectors page
     cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/detectors`);
     //wait for page to load
-    cy.wait(5000);
+    cy.wait(10000);
 
     // Check that correct page is showing
     cy.contains('Threat detectors');
@@ -143,7 +143,7 @@ describe('Detectors', () => {
 
   it('...rules can be edited', () => {
     // Click on detector name
-    cy.contains('test detector').click({ force: true });
+    cy.contains('test detector').click({ force: true }, { timeout: 5000 });
 
     // Confirm number of rules before edit
     cy.contains('(1574)');
@@ -186,7 +186,10 @@ describe('Detectors', () => {
     cy.get(`button[aria-checked="false"]`).click({ force: true });
 
     // Save changes
-    cy.get(`[data-test-subj="save-detector-rules-edits"]`).click({ force: true });
+    cy.get(`[data-test-subj="save-detector-rules-edits"]`).click(
+      { force: true },
+      { timeout: 5000 }
+    );
 
     // Confirm 1 rule has been added to detector
     cy.contains('(1573)').should('not.exist');
