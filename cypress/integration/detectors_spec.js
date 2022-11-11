@@ -146,7 +146,7 @@ describe('Detectors', () => {
     cy.contains('test detector').click({ force: true }, { timeout: 5000 });
 
     // Confirm number of rules before edit
-    cy.contains('(1574)');
+    cy.contains('1574');
 
     // Click "Edit" button in Detector rules panel
     cy.get(`[data-test-subj="edit-detector-rules"]`).click({ force: true });
@@ -167,8 +167,8 @@ describe('Detectors', () => {
     cy.get(`[data-test-subj="save-detector-rules-edits"]`).click({ force: true });
 
     // Confirm 1 rule has been removed from detector
-    cy.contains('(1574)').should('not.exist');
-    cy.contains('(1573)');
+    cy.contains('1574').should('not.exist');
+    cy.contains('1573');
 
     // Click "Edit" button in Detector rules panel
     cy.get(`[data-test-subj="edit-detector-rules"]`).click({ force: true });
@@ -192,8 +192,8 @@ describe('Detectors', () => {
     );
 
     // Confirm 1 rule has been added to detector
-    cy.contains('(1573)').should('not.exist');
-    cy.contains('(1574)');
+    cy.contains('1573').should('not.exist');
+    cy.contains('1574');
   });
 
   it('...can be deleted', () => {
