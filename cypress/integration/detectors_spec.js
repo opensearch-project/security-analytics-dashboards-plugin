@@ -52,6 +52,8 @@ describe('Detectors', () => {
     // Check that correct page now showing
     cy.contains('Required field mappings');
 
+    //
+
     // Continue to next page - skipping mappings
     cy.get('button').contains('Next').click({ force: true }, { timeout: 2000 });
 
@@ -148,11 +150,11 @@ describe('Detectors', () => {
     // Ensure start on main detectors page
     cy.get('button').contains('Detectors');
 
-    // Click on detector name
-    cy.contains('test detector').click({ force: true }, { timeout: 5000 });
-
     // Confirm number of rules before edit
     cy.contains('1574');
+
+    // Click on detector name
+    cy.contains('test detector').click({ force: true }, { timeout: 5000 });
 
     // Click "Edit" button in Detector rules panel
     cy.get(`[data-test-subj="edit-detector-rules"]`).click({ force: true });
