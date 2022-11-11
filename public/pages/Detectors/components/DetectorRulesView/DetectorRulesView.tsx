@@ -34,7 +34,12 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
   const [allRuleItems, setAllRuleItems] = useState<RuleItem[]>([]);
   const [loading, setLoading] = useState(false);
   const actions = [
-    <EuiButton onClick={() => props.onEditClicked(enabledRuleItems, allRuleItems)}>Edit</EuiButton>,
+    <EuiButton
+      onClick={() => props.onEditClicked(enabledRuleItems, allRuleItems)}
+      data-test-subj={'edit-detector-rules'}
+    >
+      Edit
+    </EuiButton>,
   ];
   const services = useContext(ServicesContext);
 
