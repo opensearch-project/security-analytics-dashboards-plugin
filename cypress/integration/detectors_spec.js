@@ -43,6 +43,9 @@ describe('Detectors', () => {
     // Select threat detector type (Windows logs)
     cy.get(`input[id="windows"]`).click({ force: true });
 
+    // Wait for detector rules to load - timeout on click above ineffective
+    cy.wait(10000);
+
     // Click Next button to continue
     cy.get('button').contains('Next').click({ force: true }, { timeout: 2000 });
 
@@ -142,6 +145,9 @@ describe('Detectors', () => {
   });
 
   it('...rules can be edited', () => {
+    // Ensure start on main detectors page
+    cy.get('button').contains('Detectors');
+
     // Click on detector name
     cy.contains('test detector').click({ force: true }, { timeout: 5000 });
 
