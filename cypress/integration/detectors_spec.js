@@ -52,7 +52,9 @@ describe('Detectors', () => {
     // Check that correct page now showing
     cy.contains('Required field mappings');
 
-    // cy.contains('tr', 'event_uid').get(`[data-test-subj="detector-field-mappins-select"]`).click({ force: true })
+    // cy.contains('tr', 'event_uid').within(() => {
+    //   cy.get(`[data-test-subj="detector-field-mappins-select"]`).click({ force: true });
+    // })
     // cy.contains('EventID').click({ force: true });
 
     // Continue to next page - skipping mappings
@@ -184,6 +186,8 @@ describe('Detectors', () => {
 
     // Confirm arrival on "Edit detector rules" page
     cy.contains('Edit detector rules');
+
+    cy.wait(10000);
 
     // Search for specific rule
     cy.get(`[placeholder="Search..."]`).focus().type('abusing findstr for def').trigger('search');
