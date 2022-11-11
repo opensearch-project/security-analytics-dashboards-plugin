@@ -53,9 +53,10 @@ describe('Detectors', () => {
     cy.contains('Required field mappings');
 
     // cy.contains('tr', 'event_uid').within(() => {
-    //   cy.get(`[data-test-subj="detector-field-mappins-select"]`).click({ force: true });
-    // })
-    // cy.contains('EventID').click({ force: true });
+    //   cy.get(`[data-test-subj="detector-field-mappins-select"]`).select("EventID");
+    // });
+
+    cy.contains('EventID').click({ force: true });
 
     // Continue to next page - skipping mappings
     cy.get('button').contains('Next').click({ force: true }, { timeout: 2000 });
@@ -172,7 +173,9 @@ describe('Detectors', () => {
     cy.contains('Abusing Findstr for Defense Evasion');
 
     // Toggle single search result to unchecked
-    cy.get(`button[aria-checked="true"]`).click({ force: true });
+    cy.contains('tr', 'Abusing Findstr for').within(() => {
+      cy.get(`button[aria-checked="true"]`).click({ force: true });
+    });
 
     // Save changes
     cy.get(`[data-test-subj="save-detector-rules-edits"]`).click({ force: true });
