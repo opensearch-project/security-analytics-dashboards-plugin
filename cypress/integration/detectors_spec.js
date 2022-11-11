@@ -88,6 +88,15 @@ describe('Detectors', () => {
     // Confirm page is reached
     cy.contains('Review and create');
 
+    // Confirm field mappings registered
+    cy.contains('Field mapping');
+    for (let field in TEST_FIELD_MAPPINGS) {
+      const mappedTo = TEST_FIELD_MAPPINGS[field];
+
+      cy.contains(field);
+      cy.contains(mappedTo);
+    }
+
     // Confirm entries user has made
     cy.contains('Detector details');
     cy.contains('test detector');
@@ -96,7 +105,9 @@ describe('Detectors', () => {
     cy.contains('Alert on test_trigger');
 
     // Create the detector
-    cy.get('button').contains('Create').click({ force: true }, { timeout: 10000 });
+    cy.get('button').contains('Create').click({ force: true });
+
+    cy.wait(10000);
 
     // Confirm detector active
     cy.contains('There are no existing detectors.').should('not.exist');
@@ -225,7 +236,7 @@ describe('Detectors', () => {
     cy.contains('1574');
   });
 
-  xit('...can be deleted', () => {
+  it('...can be deleted', () => {
     // Click on detector to be removed
     cy.contains('test detector_edited').click({ force: true });
 
