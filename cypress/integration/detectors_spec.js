@@ -52,7 +52,8 @@ describe('Detectors', () => {
     // Check that correct page now showing
     cy.contains('Required field mappings');
 
-    //
+    // cy.contains('tr', 'event_uid').get(`[data-test-subj="detector-field-mappins-select"]`).click({ force: true })
+    // cy.contains('EventID').click({ force: true });
 
     // Continue to next page - skipping mappings
     cy.get('button').contains('Next').click({ force: true }, { timeout: 2000 });
@@ -198,6 +199,9 @@ describe('Detectors', () => {
       { force: true },
       { timeout: 5000 }
     );
+
+    // Navigate to main detectors page
+    cy.get('button').contains('Detectors').click({ force: true }, { timeout: 10000 });
 
     // Confirm 1 rule has been added to detector
     cy.contains('1573').should('not.exist');
