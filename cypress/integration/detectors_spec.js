@@ -2,7 +2,6 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import {
   PLUGIN_NAME,
   TWENTY_SECONDS_TIMEOUT,
@@ -218,10 +217,8 @@ describe('Detectors', () => {
     cy.contains('Abusing Findstr for Defense Evasion');
 
     // Toggle single search result to checked
-    cy.get(`[data-test-subj="edit-detector-rules-table"]`).within(() => {
-      cy.contains('tr', 'Abusing Findstr for').within(() => {
-        cy.get(`button[aria-checked="false"]`).click({ force: true });
-      });
+    cy.contains('tr', 'Abusing Findstr for').within(() => {
+      cy.get(`button[aria-checked="false"]`).click();
     });
 
     // Save changes
