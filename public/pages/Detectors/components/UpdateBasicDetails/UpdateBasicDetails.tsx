@@ -227,7 +227,12 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
           </EuiButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton onClick={onSave} disabled={loading || submitting} isLoading={submitting}>
+          <EuiButton
+            onClick={onSave}
+            disabled={loading || submitting}
+            isLoading={submitting}
+            data-test-subj={'save-basic-details-edits'}
+          >
             Save changes
           </EuiButton>
         </EuiFlexItem>

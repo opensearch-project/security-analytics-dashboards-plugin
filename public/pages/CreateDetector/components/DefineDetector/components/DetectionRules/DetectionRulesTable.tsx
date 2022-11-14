@@ -90,6 +90,7 @@ export const DetectionRulesTable: React.FC<DetectionRulesTableProps> = ({
         }
         onTableChange={onTableChange}
         loading={loading}
+        data-test-subj={'edit-detector-rules-table'}
       />
     </div>
   );

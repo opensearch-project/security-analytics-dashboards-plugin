@@ -43,6 +43,7 @@ export default class FieldNameSelector extends Component<SIEMFieldNameProps, SIE
         error={isInvalid ? 'Name already used' : undefined}
       >
         <EuiSelect
+          data-test-subj={'detector-field-mappins-select'}
           required={true}
           hasNoInitialSelection
           options={this.props.fieldNameOptions.map((option) => ({
