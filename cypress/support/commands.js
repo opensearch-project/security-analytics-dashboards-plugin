@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const { ADMIN_AUTH, INDICES, NODE_API, PLUGIN_NAME } = require('./constants');
+const { ADMIN_AUTH, INDICES, NODE_API, PLUGIN_NAME, TEST_DETECTOR } = require('./constants');
 
 // ***********************************************
 // This example commands.js shows you how to
@@ -85,8 +85,16 @@ Cypress.Commands.add('deleteAllIndices', () => {
   );
 });
 
+// Cypress.Commands.add('createDetector', (detectorJSON) => {
+//   cy.request('POST', `${Cypress.env('opensearch')}${NODE_API.DETECTORS_BASE}`, detectorJSON);
+// });
 Cypress.Commands.add('createDetector', (detectorJSON) => {
-  cy.request('POST', `${Cypress.env('opensearch')}${NODE_API.DETECTORS_BASE}`, detectorJSON);
+  cy.request({
+    method: 'POST',
+    url: `${Cypress.env('opensearch')}${NODE_API.DETECTORS_BASE}`,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(detectorJSON),
+  });
 });
 
 Cypress.Commands.add('updateDetector', (detectorId, detectorJSON) => {

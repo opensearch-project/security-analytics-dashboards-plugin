@@ -26,7 +26,7 @@ export const TEST_DOCUMENT = {
   Keywords: '9223372036854775808',
   SeverityValue: 2,
   Severity: 'INFO',
-  EventID: 22,
+  EventID: 2003,
   SourceName: 'Microsoft-Windows-Sysmon',
   ProviderGuid: '{5770385F-C22A-43E0-BF4C-06F5698FFBD9}',
   Version: 5,
@@ -56,7 +56,9 @@ export const TEST_DOCUMENT = {
   SourceModuleType: 'im_msvistalog',
   CommandLine: 'eachtest',
   Initiated: 'true',
-  Provider_Name: 'Service_ws_Control_ws_Manager',
+  Provider_Name: 'Microsoft-Windows-Kernel-General',
+  TargetObject: '\\SOFTWARE\\Microsoft\\Office\\Outlook\\Security',
+  EventType: 'SetValue',
 };
 
 export const TEST_INDEX = {
@@ -93,9 +95,9 @@ export const TEST_INDEX = {
 export const TEST_DETECTOR = {
   type: 'detector',
   detector_type: 'windows',
-  name: 'windows_detector',
+  name: 'test-detector',
   enabled: true,
-  createdBy: 'chip',
+  createdBy: '',
   schedule: {
     period: {
       interval: 1,
@@ -105,23 +107,48 @@ export const TEST_DETECTOR = {
   inputs: [
     {
       detector_input: {
-        description: 'windows detector for security analytics',
+        description: 'Description for test-detector.',
         indices: ['cypress-test-windows'],
-        pre_packaged_rules: [],
+        pre_packaged_rules: [
+          {
+            id: '1a4bd6e3-4c6e-405d-a9a3-53a116e341d4',
+          },
+        ],
         custom_rules: [],
       },
     },
   ],
   triggers: [
     {
+      name: 'test-detector trigger1',
       sev_levels: [],
       tags: [],
-      ids: [],
-      actions: [],
-      severity: 'high',
+      actions: [
+        {
+          id: '',
+          name:
+            'Triggered alert condition:  - Severity: 1 (Highest) - Threat detector: test-detector',
+          destination_id: '',
+          subject_template: {
+            source:
+              'Triggered alert condition:  - Severity: 1 (Highest) - Threat detector: detector1',
+            lang: 'mustache',
+          },
+          message_template: {
+            source:
+              'Triggered alert condition: \nSeverity: 1 (Highest)\nThreat detector: detector1\nDescription: Description for detector1.\nDetector data sources:\n\twindows',
+            lang: 'mustache',
+          },
+          throttle_enabled: false,
+          throttle: {
+            value: 10,
+            unit: 'MINUTES',
+          },
+        },
+      ],
       types: ['windows'],
-      name: 'test-trigger',
-      id: 'fyAy1IMBK2A1DZyOuW_b',
+      severity: '4',
+      ids: ['1a4bd6e3-4c6e-405d-a9a3-53a116e341d4'],
     },
   ],
 };

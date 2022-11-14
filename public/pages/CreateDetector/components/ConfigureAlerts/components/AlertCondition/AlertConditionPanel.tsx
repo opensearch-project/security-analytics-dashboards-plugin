@@ -332,6 +332,7 @@ export default class AlertConditionPanel extends Component<
             options={namesOptions}
             onChange={this.onRuleNamesChange}
             selectedOptions={selectedNames}
+            data-test-subj={`alert-rulename-combo-box`}
           />
         </EuiFormRow>
         <EuiSpacer size={'m'} />
@@ -349,6 +350,7 @@ export default class AlertConditionPanel extends Component<
             onChange={this.onRuleSeverityChange}
             noSuggestions={false}
             selectedOptions={createSelectedOptions(ruleSeverityLevels)}
+            data-test-subj={`alert-severity-combo-box`}
           />
         </EuiFormRow>
         <EuiSpacer size={'m'} />

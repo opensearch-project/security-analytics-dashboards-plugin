@@ -156,7 +156,10 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         dataType: 'string',
         render: (id, finding) =>
           (
-            <EuiLink onClick={() => this.renderFindingDetailsFlyout(finding)}>
+            <EuiLink
+              onClick={() => this.renderFindingDetailsFlyout(finding)}
+              data-test-subj={`findings-table-finding-id`}
+            >
               {`${(id as string).slice(0, 7)}...`}
             </EuiLink>
           ) || DEFAULT_EMPTY_DATA,

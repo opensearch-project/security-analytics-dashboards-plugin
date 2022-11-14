@@ -65,7 +65,7 @@ describe('Detectors', () => {
       });
     }
 
-    // Continue to next page - skipping mappings
+    // Continue to next page
     cy.get('button').contains('Next').click({ force: true }, { timeout: 2000 });
 
     // Check that correct page now showing
@@ -245,5 +245,7 @@ describe('Detectors', () => {
     // Click "Actions" button, the click "Delete"
     cy.contains('Actions').click({ force: true });
     cy.contains('Delete').click({ force: true });
+
+    cy.contains('Delete detector').click({ force: true });
   });
 });
