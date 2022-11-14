@@ -37,7 +37,11 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
   return (
     <ContentPanel
       title={'Detector details'}
-      actions={[<EuiButton onClick={onEditClicked}>Edit</EuiButton>]}
+      actions={[
+        <EuiButton onClick={onEditClicked} data-test-subj={'edit-detector-basic-details'}>
+          Edit
+        </EuiButton>,
+      ]}
     >
       <EuiSpacer size={'l'} />
       {createTextDetailsGroup(

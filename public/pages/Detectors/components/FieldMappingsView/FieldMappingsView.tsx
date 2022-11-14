@@ -37,7 +37,14 @@ export const FieldMappingsView: React.FC<FieldMappingsViewProps> = ({
   editFieldMappings,
   notifications,
 }) => {
-  const actions = useMemo(() => [<EuiButton onClick={editFieldMappings}>Edit</EuiButton>], []);
+  const actions = useMemo(
+    () => [
+      <EuiButton onClick={editFieldMappings} data-test-subj={'edit-detector-field-mappings'}>
+        Edit
+      </EuiButton>,
+    ],
+    []
+  );
   const [fieldMappingItems, setFieldMappingItems] = useState<FieldMappingsTableItem[]>([]);
   const services = useContext(ServicesContext);
 
