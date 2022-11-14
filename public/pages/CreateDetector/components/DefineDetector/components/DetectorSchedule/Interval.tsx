@@ -56,10 +56,16 @@ export class Interval extends React.Component<IntervalProps> {
               icon={'clock'}
               value={period.interval}
               onChange={this.onTimeIntervalChange}
+              data-test-subj={'detector-schedule-number-select'}
             />
           </EuiFlexItem>
           <EuiFlexItem>
-            <EuiSelect options={unitOptions} onChange={this.onUnitChange} value={period.unit} />
+            <EuiSelect
+              options={unitOptions}
+              onChange={this.onUnitChange}
+              value={period.unit}
+              data-test-subj={'detector-schedule-unit-select'}
+            />
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiFormRow>

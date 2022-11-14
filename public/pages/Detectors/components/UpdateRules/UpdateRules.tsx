@@ -225,7 +225,13 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
           </EuiButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton disabled={loading} fill={true} isLoading={submitting} onClick={onSave}>
+          <EuiButton
+            disabled={loading}
+            fill={true}
+            isLoading={submitting}
+            onClick={onSave}
+            data-test-subj={'save-detector-rules-edits'}
+          >
             Save changes
           </EuiButton>
         </EuiFlexItem>

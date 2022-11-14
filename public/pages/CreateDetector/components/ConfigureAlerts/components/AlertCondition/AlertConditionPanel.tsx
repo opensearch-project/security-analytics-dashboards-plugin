@@ -366,6 +366,7 @@ export default class AlertConditionPanel extends Component<
             onChange={this.onTagsChange}
             onCreateOption={this.onCreateTag}
             selectedOptions={createSelectedOptions(tags)}
+            data-test-subj={'alert-tags-combo-box'}
           />
         </EuiFormRow>
 
@@ -393,6 +394,7 @@ export default class AlertConditionPanel extends Component<
             onChange={this.onAlertSeverityChange}
             singleSelection={{ asPlainText: true }}
             isClearable={false}
+            data-test-subj={'security-levels-combo-box'}
           />
         </EuiFormRow>
 
