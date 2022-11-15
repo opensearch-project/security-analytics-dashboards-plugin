@@ -85,16 +85,8 @@ Cypress.Commands.add('deleteAllIndices', () => {
   );
 });
 
-// Cypress.Commands.add('createDetector', (detectorJSON) => {
-//   cy.request('POST', `${Cypress.env('opensearch')}${NODE_API.DETECTORS_BASE}`, detectorJSON);
-// });
 Cypress.Commands.add('createDetector', (detectorJSON) => {
-  cy.request({
-    method: 'POST',
-    url: `${Cypress.env('opensearch')}${NODE_API.DETECTORS_BASE}`,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(detectorJSON),
-  });
+  cy.request('POST', `${Cypress.env('opensearch')}${NODE_API.DETECTORS_BASE}`, detectorJSON);
 });
 
 Cypress.Commands.add('updateDetector', (detectorId, detectorJSON) => {

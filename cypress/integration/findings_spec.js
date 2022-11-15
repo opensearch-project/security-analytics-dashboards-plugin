@@ -3,14 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { PLUGIN_NAME } from '../support/constants';
 import {
-  PLUGIN_NAME,
-  TWENTY_SECONDS_TIMEOUT,
   TEST_INDEX,
   TEST_DETECTOR,
-  TEST_FIELD_MAPPINGS,
   TEST_DOCUMENT,
-} from '../support/constants';
+  TEST_FIELD_MAPPINGS,
+} from '../fixtures/constants';
 
 describe('Findings', () => {
   before(() => {
@@ -19,9 +18,6 @@ describe('Findings', () => {
 
     // Create test index
     cy.createIndex('cypress-test-windows', TEST_INDEX);
-
-    // Create test detector - TODO - get createDetector issues resolved.
-    // cy.createDetector('test_detector', TEST_DETECTOR);
 
     // Create detector manually
 
@@ -193,6 +189,7 @@ describe('Findings', () => {
     // Visit Detectors page
     cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/detectors`);
 
+    // wait for content to load
     cy.wait(5000);
 
     // Click on detector to be removed
