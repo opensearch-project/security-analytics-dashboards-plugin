@@ -20,9 +20,9 @@ You will need to install [node.js](https://nodejs.org/en/), [nvm](https://github
 
 ### Environment Setup
 
-1. Download OpenSearch for the version that matches the [OpenSearch Dashboards version specified in package.json](./package.json#L7).
-2. Download and install the appropriate [Security Analytics OpenSearch Plugin](https://github.com/opensearch-project/security-analytics).
-3. Download the OpenSearch Dashboards source code for the [version specified in package.json](./package.json#L7) you want to set up.
+1. [Download](https://opensearch.org/downloads.html) minimal distribution of OpenSearch for the version that matches the OpenSearch Dashboards version specified in [opensearch_dashboards.json](./opensearch_dashboards.json#L4).
+2. [Install](https://opensearch.org/docs/latest/opensearch/install/plugins/) the [opensearch-security-analytics](https://github.com/opensearch-project/security-analytics) plugin.
+3. Clone the [OpenSearch Dashboards](https://github.com/opensearch-project/OpenSearch-Dashboards) source code and checkout the branch corresponding to the [version specified in package.json](./package.json#L7).
 
    See the [OpenSearch Dashboards contributing guide](https://github.com/opensearch-project/OpenSearch-Dashboards/blob/main/CONTRIBUTING.md) and [developer guide](https://github.com/opensearch-project/OpenSearch-Dashboards/blob/main/DEVELOPER_GUIDE.md) for more instructions on setting up your development environment.
 
