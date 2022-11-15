@@ -130,43 +130,82 @@ describe('Findings', () => {
     cy.contains('No items found').should('not.exist');
 
     // Check for expected findings
-    cy.contains('USB Device Plugged');
     cy.contains('test detector');
     cy.contains('Windows');
     cy.contains('Low');
 
+    // Click findingId to trigger Finding details flyout
     cy.get(`[data-test-subj="findings-table-finding-id"]`).click();
+
+    // Confirm flyout contents
     cy.contains('Finding details');
+    cy.contains('Rule details');
     cy.contains('Search Findings').should('not.exist');
 
-    cy.contains('Detects plugged USB devices');
+    // Open rule details for each rule
+    // Open first rule details
+    cy.contains('USB Device Plugged').click({ force: true });
 
+    // Confirm content
     cy.contains('Documents');
-
+    cy.contains('Detects plugged USB devices');
+    cy.contains('Low');
+    cy.contains('Windows');
     cy.contains('cypress-test-windows');
 
-    cy.contains('Setting Change in Windows Firewall with Advanced Security');
-
-    cy.contains('Setting have been change in Windows Firewall');
-
-    cy.get(`[data-test-subj="finding-flyout-detector-link"]`)
+    // Click rule link
+    cy.get('a')
+      .contains('USB Device Plugged')
       .invoke('removeAttr', 'target')
       .click({ force: true });
+
+    // Confirm destination reached
+    cy.contains('Rules');
+    cy.contains('Import rule');
+    cy.contains('Create new rule');
+
+    // navigate back to Finding details flyout
+    cy.contains('Findings').click();
+    cy.get(`[data-test-subj="findings-table-finding-id"]`).click();
+
+    // Second rule details - open
+    cy.contains('Setting Change in Windows Firewall with Advanced Security').click({ force: true });
+    cy.contains('Setting have been change in Windows Firewall');
+
+    // Confirm content
+    cy.contains('Low');
+    cy.contains('Windows');
+    cy.contains('cypress-test-windows');
+
+    // Click rule link
+    cy.get('a')
+      .contains('Setting Change in Windows Firewall with Advanced Security')
+      .invoke('removeAttr', 'target')
+      .click({ force: true });
+
+    // Confirm destination reached
+    cy.contains('Rules');
+    cy.contains('Import rule');
+    cy.contains('Create new rule');
   });
 
-  // after(() => {
-  //   // Visit Detectors page
-  //   cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/detectors`);
+  after(() => {
+    // Visit Detectors page
+    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/detectors`);
 
-  //   cy.wait(10000);
+    cy.wait(5000);
 
-  //   // Click on detector to be removed
-  //   cy.contains('test detector').click({ force: true });
+    // Click on detector to be removed
+    cy.contains('test detector').click({ force: true });
 
-  //   // Click "Actions" button, the click "Delete"
-  //   cy.get('button').contains('Actions').click({ force: true });
-  //   cy.contains('Delete').click({ force: true })
+    // Wait for detector info to load
+    cy.wait(2000);
 
-  //   cy.contains('There are no existing detectors.');
-  // });
+    // Click "Actions" button, the click "Delete"
+    cy.get('button').contains('Actions').click({ force: true });
+    cy.contains('Delete').click({ force: true });
+
+    // Confirm detector deleted
+    cy.contains('There are no existing detectors.');
+  });
 });

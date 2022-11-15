@@ -92,7 +92,11 @@ export default class FindingDetailsFlyout extends Component<
               <EuiFlexItem>
                 {/*//TODO: Refactor EuiLink to filter rules table to the specific rule.*/}
                 <EuiFormRow label={'Rule name'}>
-                  <EuiLink href={`#${ROUTES.RULES}`} target={'_blank'}>
+                  <EuiLink
+                    href={`#${ROUTES.RULES}`}
+                    data-test-subj={`finding-details-${fullRule.title}-details`}
+                    target={'_blank'}
+                  >
                     {fullRule.title || DEFAULT_EMPTY_DATA}
                   </EuiLink>
                 </EuiFormRow>
