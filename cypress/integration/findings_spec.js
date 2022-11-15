@@ -74,12 +74,15 @@ describe('Findings', () => {
     // Type name of new trigger
     cy.get(`input[placeholder="Enter a name for the alert condition."]`).type('test_trigger');
 
-    // Type in (or select) tags for the alert condition
-    cy.get(`[data-test-subj="alert-tags-combo-box"]`).type('attack.defense_evasion{enter}');
+    // Type rule name to trigger alert
+    cy.get(`[data-test-subj="alert-rulename-combo-box"]`).type('USB Device Plugged{enter}');
 
     // Select applicable severity levels
     cy.get(`[data-test-subj="security-levels-combo-box"]`).click({ force: true });
     cy.contains('1 (Highest)').click({ force: true });
+
+    // Type rule severity to trigger alert
+    cy.get(`[data-test-subj="alert-severity-combo-box"]`).type('low{enter}');
 
     // Continue to next page
     cy.contains('Next').click({ force: true });
@@ -134,19 +137,36 @@ describe('Findings', () => {
 
     cy.get(`[data-test-subj="findings-table-finding-id"]`).click();
     cy.contains('Finding details');
+    cy.contains('Search Findings').should('not.exist');
+
+    cy.contains('Detects plugged USB devices');
+
+    cy.contains('Documents');
+
+    cy.contains('cypress-test-windows');
+
+    cy.contains('Setting Change in Windows Firewall with Advanced Security');
+
+    cy.contains('Setting have been change in Windows Firewall');
+
+    cy.get(`[data-test-subj="finding-flyout-detector-link"]`)
+      .invoke('removeAttr', 'target')
+      .click({ force: true });
   });
 
-  after(() => {
-    // Visit Detectors page
-    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/detectors`);
+  // after(() => {
+  //   // Visit Detectors page
+  //   cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/detectors`);
 
-    cy.wait(10000);
+  //   cy.wait(10000);
 
-    // Click on detector to be removed
-    cy.contains('test detector').click({ force: true });
+  //   // Click on detector to be removed
+  //   cy.contains('test detector').click({ force: true });
 
-    // Click "Actions" button, the click "Delete"
-    cy.contains('Actions').click({ force: true });
-    cy.contains('Delete').click({ force: true });
-  });
+  //   // Click "Actions" button, the click "Delete"
+  //   cy.get('button').contains('Actions').click({ force: true });
+  //   cy.contains('Delete').click({ force: true })
+
+  //   cy.contains('There are no existing detectors.');
+  // });
 });

@@ -209,7 +209,11 @@ export default class FindingDetailsFlyout extends Component<
 
             <EuiFlexItem>
               <EuiFormRow label={'Detector'}>
-                <EuiLink href={`#${ROUTES.DETECTOR_DETAILS}/${_id}`} target={'_blank'}>
+                <EuiLink
+                  href={`#${ROUTES.DETECTOR_DETAILS}/${_id}`}
+                  target={'_blank'}
+                  data-test-subj={`finding-flyout-detector-link`}
+                >
                   {name || DEFAULT_EMPTY_DATA}
                 </EuiLink>
               </EuiFormRow>
