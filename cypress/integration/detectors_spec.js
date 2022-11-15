@@ -2,12 +2,8 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
-import {
-  PLUGIN_NAME,
-  TWENTY_SECONDS_TIMEOUT,
-  TEST_INDEX,
-  TEST_FIELD_MAPPINGS,
-} from '../support/constants';
+import { PLUGIN_NAME } from '../support/constants';
+import { TEST_INDEX, TEST_FIELD_MAPPINGS } from '../fixtures/constants';
 
 describe('Detectors', () => {
   before(() => {
@@ -246,6 +242,7 @@ describe('Detectors', () => {
     cy.contains('Actions').click({ force: true });
     cy.contains('Delete').click({ force: true });
 
-    cy.contains('Delete detector').click({ force: true });
+    // Confirm detector is deleted
+    cy.contains('There are no existing detectors');
   });
 });
