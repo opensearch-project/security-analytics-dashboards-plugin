@@ -193,7 +193,13 @@ export default class FindingDetailsFlyout extends Component<
               </EuiFlexGroup>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
-              <EuiButtonIcon iconType="cross" display="empty" iconSize="m" onClick={closeFlyout} />
+              <EuiButtonIcon
+                iconType="cross"
+                display="empty"
+                iconSize="m"
+                onClick={closeFlyout}
+                data-test-subj={`close-finding-details-flyout`}
+              />
             </EuiFlexItem>
           </EuiFlexGroup>
         </EuiFlyoutHeader>

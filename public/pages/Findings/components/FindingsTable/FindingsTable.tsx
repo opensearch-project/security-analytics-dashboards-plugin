@@ -202,6 +202,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
               <EuiToolTip content={'View details'}>
                 <EuiButtonIcon
                   aria-label={'View details'}
+                  data-test-subj={`view-details-icon`}
                   iconType={'expand'}
                   onClick={() => this.renderFindingDetailsFlyout(finding)}
                 />

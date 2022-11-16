@@ -101,18 +101,15 @@ describe('Findings', () => {
     cy.wait(10000);
   });
 
-  beforeEach(() => {
+  it('displays findings based on recently ingested data', () => {
     // Visit Findings page
     cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/findings`);
-
-    //wait for page to load
     cy.wait(10000);
 
-    // Check that correct page is showing
-    cy.contains('Findings');
-  });
+    // Confirm arrival at Findings page
+    cy.contains('Last 15 minutes');
+    cy.contains('Show dates');
 
-  it('displays findings based on recently ingested data', () => {
     // Ingest a new document
     cy.ingestDocument('cypress-test-windows', TEST_DOCUMENT);
 
@@ -120,7 +117,7 @@ describe('Findings', () => {
     cy.wait(60000);
 
     // Click refresh
-    cy.get('button').contains('Refresh').click();
+    cy.get('button').contains('Refresh').click({ force: true });
 
     // Check for non-empty findings list
     cy.contains('No items found').should('not.exist');
@@ -129,9 +126,25 @@ describe('Findings', () => {
     cy.contains('test detector');
     cy.contains('Windows');
     cy.contains('Low');
+  });
 
+  it('displays finding details flyout when user clicks on Finding ID or View details icon', () => {
     // Click findingId to trigger Finding details flyout
     cy.get(`[data-test-subj="findings-table-finding-id"]`).click();
+
+    // Confirm flyout contents
+    cy.contains('Finding details');
+    cy.contains('Rule details');
+    cy.contains('Search Findings').should('not.exist');
+
+    // Close Flyout
+    cy.get(`button[data-test-subj="close-finding-details-flyout"]`).click();
+
+    // wait for toasts to clear
+    cy.wait(10000);
+
+    // Click View details icon
+    cy.get(`[data-test-subj="view-details-icon"]`).click();
 
     // Confirm flyout contents
     cy.contains('Finding details');
@@ -148,7 +161,9 @@ describe('Findings', () => {
     cy.contains('Low');
     cy.contains('Windows');
     cy.contains('cypress-test-windows');
+  });
 
+  it('allows user to view more rule details upon clicking rule name', () => {
     // Click rule link
     cy.get('a')
       .contains('USB Device Plugged')
