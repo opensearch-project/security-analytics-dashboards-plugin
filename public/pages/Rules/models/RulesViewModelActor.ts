@@ -27,7 +27,6 @@ export class RulesViewModelActor {
 
   public async fetchRules(): Promise<RuleItemInfoBase[]> {
     let prePackagedRules = await this.getRules(true);
-    console.log(prePackagedRules[0]);
     let customRules = await this.getRules(false);
 
     prePackagedRules = this.extractAndAddDetection(prePackagedRules);
