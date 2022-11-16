@@ -61,7 +61,7 @@ export const DetectorsWidget: React.FC<DetectorsWidgetProps> = ({ detectorHits, 
 
   const showDetectorDetails = useCallback((detectorHit: DetectorHit) => {
     history.push({
-      pathname: ROUTES.DETECTOR_DETAILS,
+      pathname: `${ROUTES.DETECTOR_DETAILS}/${detectorHit._id}`,
       state: { detectorHit },
     });
   }, []);
