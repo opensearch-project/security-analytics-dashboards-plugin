@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { PLUGIN_NAME } from '../support/constants';
-import { TEST_INDEX, TEST_FIELD_MAPPINGS } from '../fixtures/constants';
+import sample_field_mappings from '../fixtures/sample_field_mappings.json';
+import sample_index_settings from '../fixtures/sample_index_settings.json';
 
 describe('Detectors', () => {
   before(() => {
     cy.deleteAllIndices();
 
     // Create test index
-    cy.createIndex('cypress-test-windows', TEST_INDEX);
+    cy.createIndex('cypress-test-windows', sample_index_settings);
 
     cy.contains('test detector').should('not.exist');
   });
@@ -53,8 +54,8 @@ describe('Detectors', () => {
     cy.contains('Required field mappings');
 
     // Select appropriate names to map fields to
-    for (let field_name in TEST_FIELD_MAPPINGS) {
-      const mappedTo = TEST_FIELD_MAPPINGS[field_name];
+    for (let field_name in sample_field_mappings) {
+      const mappedTo = sample_field_mappings[field_name];
 
       cy.contains('tr', field_name).within(() => {
         cy.get(`[data-test-subj="detector-field-mappins-select"]`).select(mappedTo);
@@ -85,8 +86,8 @@ describe('Detectors', () => {
 
     // Confirm field mappings registered
     cy.contains('Field mapping');
-    for (let field in TEST_FIELD_MAPPINGS) {
-      const mappedTo = TEST_FIELD_MAPPINGS[field];
+    for (let field in sample_field_mappings) {
+      const mappedTo = sample_field_mappings[field];
 
       cy.contains(field);
       cy.contains(mappedTo);
@@ -204,7 +205,7 @@ describe('Detectors', () => {
     // Confirm arrival on "Edit detector rules" page
     cy.contains('Edit detector rules');
 
-    cy.wait(10000);
+    cy.wait(5000);
 
     // Search for specific rule
     cy.get(`[placeholder="Search..."]`).focus().type('abusing findstr for def').trigger('search');

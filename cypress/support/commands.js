@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const { ADMIN_AUTH, INDICES, NODE_API, PLUGIN_NAME, TEST_DETECTOR } = require('./constants');
+const { NODE_API } = require('./constants');
 
 // ***********************************************
 // This example commands.js shows you how to
@@ -109,8 +109,8 @@ Cypress.Commands.add('createIndex', (index, settings = {}) => {
   cy.request('PUT', `${Cypress.env('opensearch')}/${index}`, settings);
 });
 
-Cypress.Commands.add('ingestDocument', (indexId, documentJSON) => {
-  cy.request('POST', `${Cypress.env('opensearch')}/${indexId}/_doc`, documentJSON);
+Cypress.Commands.add('ingestDocument', (indexId, sample_document) => {
+  cy.request('POST', `${Cypress.env('opensearch')}/${indexId}/_doc`, sample_document);
 });
 
 Cypress.Commands.add('deleteRule', (ruleName) => {
