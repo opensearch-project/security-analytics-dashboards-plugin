@@ -2,12 +2,8 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
-import {
-  PLUGIN_NAME,
-  TWENTY_SECONDS_TIMEOUT,
-  TEST_INDEX,
-  TEST_FIELD_MAPPINGS,
-} from '../support/constants';
+
+import { PLUGIN_NAME, TEST_INDEX, TEST_FIELD_MAPPINGS } from '../support/constants';
 
 describe('Detectors', () => {
   before(() => {
