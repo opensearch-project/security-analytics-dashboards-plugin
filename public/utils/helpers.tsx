@@ -31,7 +31,7 @@ export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
 };
 
-export const renderTime = (time: number) => {
+export const renderTime = (time: number | string) => {
   const momentTime = moment(time);
   if (time && momentTime.isValid()) return momentTime.format('MM/DD/YY h:mm a');
   return DEFAULT_EMPTY_DATA;
@@ -41,15 +41,22 @@ export function createTextDetailsGroup(
   data: { label: string; content: any; url?: string }[],
   columnNum?: number
 ) {
-  const createFormRow = (label: string, content: string, url?: string) => (
-    <EuiFormRow label={<EuiText color={'subdued'}>{label}</EuiText>}>
-      {url ? (
-        <EuiLink>{content ?? DEFAULT_EMPTY_DATA}</EuiLink>
-      ) : (
-        <EuiText>{content ?? DEFAULT_EMPTY_DATA}</EuiText>
-      )}
-    </EuiFormRow>
-  );
+  const createFormRow = (label: string, content: string, url?: string) => {
+    const dataTestSubj = label.toLowerCase().replaceAll(' ', '-');
+    return (
+      <EuiFormRow label={<EuiText color={'subdued'}>{label}</EuiText>}>
+        {url ? (
+          <EuiLink data-test-subj={`text-details-group-content-${dataTestSubj}`}>
+            {content ?? DEFAULT_EMPTY_DATA}
+          </EuiLink>
+        ) : (
+          <EuiText data-test-subj={`text-details-group-content-${dataTestSubj}`}>
+            {content ?? DEFAULT_EMPTY_DATA}
+          </EuiText>
+        )}
+      </EuiFormRow>
+    );
+  };
   return data.length <= 1 ? (
     !data.length ? null : (
       createFormRow(data[0].label, data[0].content, data[0].url)
