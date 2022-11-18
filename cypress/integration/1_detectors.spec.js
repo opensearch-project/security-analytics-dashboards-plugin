@@ -20,10 +20,13 @@ describe('Detectors', () => {
     // Visit Detectors page
     cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/detectors`);
     //wait for page to load
-    cy.wait(10000);
+    cy.wait(7000);
 
     // Check that correct page is showing
-    cy.contains('Threat detectors');
+    cy.url().should(
+      'eq',
+      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/detectors'
+    );
   });
 
   it('...can be created', () => {
@@ -32,6 +35,10 @@ describe('Detectors', () => {
 
     // Check to ensure process started
     cy.contains('Define detector');
+    cy.url().should(
+      'eq',
+      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/create-detector'
+    );
 
     // Enter a name for the detector in the appropriate input
     cy.get(`input[placeholder="Enter a name for the detector."]`).type('test detector{enter}');
@@ -45,7 +52,7 @@ describe('Detectors', () => {
     cy.get(`input[id="windows"]`).click({ force: true });
 
     // Wait for detector rules to load - timeout on click above ineffective
-    cy.wait(10000);
+    cy.wait(5000);
 
     // Click Next button to continue
     cy.get('button').contains('Next').click({ force: true }, { timeout: 2000 });
@@ -130,7 +137,10 @@ describe('Detectors', () => {
     cy.get(`[data-test-subj="edit-detector-basic-details"]`).click({ force: true });
 
     // Confirm arrival at "Edit detector details" page
-    cy.contains('Edit detector details');
+    cy.url().should(
+      'include',
+      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/edit-detector-details'
+    );
 
     // Change detector name
     cy.get(`[data-test-subj="define-detector-detector-name"]`).type('_edited');
@@ -153,10 +163,11 @@ describe('Detectors', () => {
       { timeout: 10000 }
     );
 
-    // Verify changes applied
     // Confirm taken to detector details page
-    cy.contains('Detector details');
-    cy.contains('Edit detector details').should('not.exist');
+    cy.url().should(
+      'include',
+      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/detector-details'
+    );
 
     // Verify edits are applied
     cy.contains('test detector_edited');
@@ -167,7 +178,10 @@ describe('Detectors', () => {
 
   it('...rules can be edited', () => {
     // Ensure start on main detectors page
-    cy.get('button').contains('Detectors');
+    cy.url().should(
+      'eq',
+      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/detectors'
+    );
 
     // Confirm number of rules before edit
     cy.contains('1574');
@@ -179,7 +193,10 @@ describe('Detectors', () => {
     cy.get(`[data-test-subj="edit-detector-rules"]`).click({ force: true });
 
     // Confirm arrival on "Edit detector rules" page
-    cy.contains('Edit detector rules');
+    cy.url().should(
+      'include',
+      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/edit-detector-rules'
+    );
 
     // Search for specific rule
     cy.get(`[placeholder="Search..."]`).focus().type('abusing findstr for def').trigger('search');
@@ -203,7 +220,10 @@ describe('Detectors', () => {
     cy.get(`[data-test-subj="edit-detector-rules"]`).click({ force: true });
 
     // Confirm arrival on "Edit detector rules" page
-    cy.contains('Edit detector rules');
+    cy.url().should(
+      'include',
+      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/edit-detector-rules'
+    );
 
     cy.wait(5000);
 

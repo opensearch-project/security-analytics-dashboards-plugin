@@ -23,7 +23,10 @@ export const createDetector = () => {
   cy.contains('Create detector').click({ force: true });
 
   // Check to ensure process started
-  cy.contains('Define detector');
+  cy.url().should(
+    'eq',
+    'http://localhost:5601/app/opensearch_security_analytics_dashboards#/create-detector'
+  );
 
   // Enter a name for the detector in the appropriate input
   cy.get(`input[placeholder="Enter a name for the detector."]`).type('test detector{enter}');

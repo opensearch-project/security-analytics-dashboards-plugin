@@ -20,8 +20,10 @@ describe('Findings', () => {
     cy.wait(10000);
 
     // Confirm arrival at Findings page
-    cy.contains('Last 15 minutes');
-    cy.contains('Show dates');
+    cy.url().should(
+      'eq',
+      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/findings'
+    );
 
     // Ingest a new document
     cy.ingestDocument('cypress-test-windows', sample_document);
@@ -83,9 +85,10 @@ describe('Findings', () => {
       .click({ force: true });
 
     // Confirm destination reached
-    cy.contains('Rules');
-    cy.contains('Import rule');
-    cy.contains('Create new rule');
+    cy.url().should(
+      'eq',
+      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/rules'
+    );
 
     // navigate back to Finding details flyout
     cy.contains('Findings').click();
@@ -107,9 +110,10 @@ describe('Findings', () => {
       .click({ force: true });
 
     // Confirm destination reached
-    cy.contains('Rules');
-    cy.contains('Import rule');
-    cy.contains('Create new rule');
+    cy.url().should(
+      'eq',
+      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/rules'
+    );
   });
 
   after(() => {
