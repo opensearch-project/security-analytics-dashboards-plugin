@@ -475,11 +475,6 @@ describe('Alerts', () => {
     );
   });
 
-  // it('can create alert condition for finding', () => {
-  //   // TODO: Implement test case for creating a new alert condition from the finding details flyout.
-  //   //  Track test cases https://github.com/opensearch-project/security-analytics-dashboards-plugin/issues/104
-  // });
-
   after(() => {
     // Clean up test resources
     cy.deleteDetector(testDetectorName);
