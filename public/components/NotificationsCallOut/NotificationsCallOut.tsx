@@ -8,11 +8,11 @@ import { EuiCallOut, EuiLink, EuiSpacer } from '@elastic/eui';
 
 export const NotificationsCallOut = () => {
   return (
-    <div>
+    <>
       <EuiCallOut title="Notifications plugin is not installed" color="danger" iconType="alert">
         <p>
           Install the notifications plugin in order to create and select channels to send out
-          notifications.{' '}
+          notifications.&nbsp;
           <EuiLink href="#" external>
             Learn more
           </EuiLink>
@@ -20,7 +20,7 @@ export const NotificationsCallOut = () => {
         </p>
       </EuiCallOut>
       <EuiSpacer size="m" />
-    </div>
+    </>
   );
 };
 
