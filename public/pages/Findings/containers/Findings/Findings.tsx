@@ -27,6 +27,7 @@ import {
   BREADCRUMBS,
   DEFAULT_DATE_RANGE,
   MAX_RECENTLY_USED_TIME_RANGES,
+  OS_NOTIFICATION_PLUGIN,
 } from '../../../../utils/constants';
 import { getFindingsVisualizationSpec } from '../../../Overview/utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
@@ -65,6 +66,7 @@ interface FindingsState {
   recentlyUsedRanges: DurationRange[];
   groupBy: FindingsGroupByType;
   filteredFindings: FindingItemType[];
+  plugins: string[];
 }
 
 interface FindingVisualizationData {
@@ -99,6 +101,7 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
       recentlyUsedRanges: [DEFAULT_DATE_RANGE],
       groupBy: 'logType',
       filteredFindings: [],
+      plugins: [],
     };
   }
 
@@ -119,6 +122,7 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
   onRefresh = async () => {
     await this.getFindings();
     await this.getNotificationChannels();
+    await this.getPlugins();
     renderVisualization(this.generateVisualizationSpec(), 'findings-view');
   };
 
@@ -212,6 +216,20 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
     const channels = await getNotificationChannels(this.props.notificationsService);
     this.setState({ notificationChannels: channels });
   };
+
+  async getPlugins() {
+    const { opensearchService } = this.props;
+    try {
+      const pluginsResponse = await opensearchService.getPlugins();
+      if (pluginsResponse.ok) {
+        this.setState({ plugins: pluginsResponse.response.map((plugin) => plugin.component) });
+      } else {
+        console.error('There was a problem getting plugins list');
+      }
+    } catch (e) {
+      console.error('There was a problem getting plugins list', e);
+    }
+  }
 
   onTimeChange = ({ start, end }: { start: string; end: string }) => {
     let { recentlyUsedRanges } = this.state;
@@ -336,6 +354,7 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
               notificationChannels={parseNotificationChannelsToOptions(notificationChannels)}
               refreshNotificationChannels={this.getNotificationChannels}
               onFindingsFiltered={this.onFindingsFiltered}
+              hasNotificationsPlugin={this.state.plugins.includes(OS_NOTIFICATION_PLUGIN)}
             />
           </ContentPanel>
         </EuiFlexItem>

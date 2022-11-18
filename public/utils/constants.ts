@@ -12,6 +12,7 @@ export const MAX_RECENTLY_USED_TIME_RANGES = 5;
 export const DEFAULT_DATE_RANGE = { start: 'now-15m', end: 'now' };
 
 export const PLUGIN_NAME = 'opensearch_security_analytics_dashboards';
+export const OS_NOTIFICATION_PLUGIN = 'opensearch-notifications';
 
 // TODO: Replace with actual documentation link once it's available
 export const DOCUMENTATION_URL = 'https://opensearch.org/docs/latest/';

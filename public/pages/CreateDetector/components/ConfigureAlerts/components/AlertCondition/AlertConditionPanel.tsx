@@ -26,6 +26,7 @@ import { CreateDetectorRulesOptions } from '../../../../../../models/types';
 import { NotificationChannelOption, NotificationChannelTypeOptions } from '../../models/interfaces';
 import { NOTIFICATIONS_HREF } from '../../../../../../utils/constants';
 import { getNameErrorMessage, validateName } from '../../../../../../utils/validation';
+import { NotificationsCallOut } from '../../../../../../components/NotificationsCallOut';
 
 interface AlertConditionPanelProps extends RouteComponentProps {
   alertCondition: AlertCondition;
@@ -34,6 +35,7 @@ interface AlertConditionPanelProps extends RouteComponentProps {
   detector: Detector;
   indexNum: number;
   isEdit: boolean;
+  hasNotificationPlugin: boolean;
   loadingNotifications: boolean;
   onAlertTriggerChanged: (newDetector: Detector) => void;
   refreshNotificationChannels: () => void;
@@ -251,6 +253,7 @@ export default class AlertConditionPanel extends Component<
       loadingNotifications,
       refreshNotificationChannels,
       rulesOptions,
+      hasNotificationPlugin,
     } = this.props;
     const { nameFieldTouched, nameIsInvalid, selectedNames } = this.state;
     const { name, sev_levels: ruleSeverityLevels, tags, severity } = alertCondition;
@@ -420,15 +423,28 @@ export default class AlertConditionPanel extends Component<
                 onChange={this.onNotificationChannelsChange}
                 singleSelection={{ asPlainText: true }}
                 onBlur={refreshNotificationChannels}
+                isDisabled={!hasNotificationPlugin}
               />
             </EuiFormRow>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton href={NOTIFICATIONS_HREF} iconType={'popout'} target={'_blank'}>
+            <EuiButton
+              href={NOTIFICATIONS_HREF}
+              iconType={'popout'}
+              target={'_blank'}
+              isDisabled={!hasNotificationPlugin}
+            >
               Manage channels
             </EuiButton>
           </EuiFlexItem>
         </EuiFlexGroup>
+
+        {!hasNotificationPlugin && (
+          <>
+            <EuiSpacer size="m" />
+            <NotificationsCallOut />
+          </>
+        )}
 
         <EuiSpacer size={'xxl'} />
 

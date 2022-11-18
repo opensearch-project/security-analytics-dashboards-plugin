@@ -8,7 +8,13 @@ import { RouteComponentProps } from 'react-router-dom';
 import { EuiButton, EuiButtonEmpty, EuiFlexGroup, EuiFlexItem, EuiSteps } from '@elastic/eui';
 import DefineDetector from '../components/DefineDetector/containers/DefineDetector';
 import { createDetectorSteps } from '../utils/constants';
-import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR, PLUGIN_NAME, ROUTES } from '../../../utils/constants';
+import {
+  BREADCRUMBS,
+  EMPTY_DEFAULT_DETECTOR,
+  PLUGIN_NAME,
+  ROUTES,
+  OS_NOTIFICATION_PLUGIN,
+} from '../../../utils/constants';
 import ConfigureFieldMapping from '../components/ConfigureFieldMapping';
 import ConfigureAlerts from '../components/ConfigureAlerts';
 import { Detector, FieldMapping } from '../../../../models/interfaces';
@@ -40,6 +46,7 @@ interface CreateDetectorState {
   stepDataValid: { [step in DetectorCreationStep]: boolean };
   creatingDetector: boolean;
   rulesState: CreateDetectorRulesState;
+  plugins: string[];
 }
 
 export default class CreateDetector extends Component<CreateDetectorProps, CreateDetectorState> {
@@ -59,12 +66,14 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
       },
       creatingDetector: false,
       rulesState: { page: { index: 0 }, allRules: [] },
+      plugins: [],
     };
   }
 
   componentDidMount(): void {
     this.context.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.DETECTORS]);
     this.setupRulesState();
+    this.getPlugins();
   }
 
   componentDidUpdate(
@@ -188,6 +197,20 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
         ],
       },
     });
+  }
+
+  async getPlugins() {
+    const { services } = this.props;
+    try {
+      const pluginsResponse = await services.opensearchService.getPlugins();
+      if (pluginsResponse.ok) {
+        this.setState({ plugins: pluginsResponse.response.map((plugin) => plugin.component) });
+      } else {
+        console.error('There was a problem getting plugins list');
+      }
+    } catch (e) {
+      console.error('There was a problem getting plugins list', e);
+    }
   }
 
   async getRules(prePackaged: boolean): Promise<RuleItemInfo[]> {
@@ -348,6 +371,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             changeDetector={this.changeDetector}
             updateDataValidState={this.updateDataValidState}
             notificationsService={services.notificationsService}
+            hasNotificationPlugin={this.state.plugins.includes(OS_NOTIFICATION_PLUGIN)}
           />
         );
       case DetectorCreationStep.REVIEW_CREATE:

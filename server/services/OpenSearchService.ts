@@ -114,4 +114,32 @@ export default class OpenSearchService {
       });
     }
   };
+
+  getPlugins = async (
+    context: RequestHandlerContext,
+    request: OpenSearchDashboardsRequest,
+    response: OpenSearchDashboardsResponseFactory
+  ) => {
+    try {
+      const { callAsCurrentUser } = this.osDriver.asScoped(request);
+      const plugins = await callAsCurrentUser('cat.plugins', {
+        format: 'json',
+        h: 'component',
+      });
+      return response.ok({
+        body: {
+          ok: true,
+          response: plugins,
+        },
+      });
+    } catch (error: any) {
+      console.error('Security Analytics - OpensearchService - getPlugins:', error);
+      return response.ok({
+        body: {
+          ok: false,
+          response: error.message,
+        },
+      });
+    }
+  };
 }

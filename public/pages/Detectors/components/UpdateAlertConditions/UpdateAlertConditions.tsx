@@ -9,15 +9,21 @@ import { EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 import { DetectorHit } from '../../../../../server/models/interfaces';
 import { Detector } from '../../../../../models/interfaces';
 import ConfigureAlerts from '../../../CreateDetector/components/ConfigureAlerts';
-import { DetectorsService, NotificationsService, RuleService } from '../../../../services';
+import {
+  DetectorsService,
+  NotificationsService,
+  RuleService,
+  OpenSearchService,
+} from '../../../../services';
 import { RulesSharedState } from '../../../../models/interfaces';
-import { ROUTES } from '../../../../utils/constants';
+import { ROUTES, OS_NOTIFICATION_PLUGIN } from '../../../../utils/constants';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../../../../utils/helpers';
 
 export interface UpdateAlertConditionsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
   detectorService: DetectorsService;
+  opensearchService: OpenSearchService;
   ruleService: RuleService;
   notificationsService: NotificationsService;
   notifications: NotificationsStart;
@@ -28,6 +34,7 @@ export interface UpdateAlertConditionsState {
   rules: object;
   rulesOptions: Pick<RulesSharedState, 'rulesOptions'>['rulesOptions'];
   submitting: boolean;
+  plugins: string[];
 }
 
 export default class UpdateAlertConditions extends Component<
@@ -41,11 +48,13 @@ export default class UpdateAlertConditions extends Component<
       rules: {},
       rulesOptions: [],
       submitting: false,
+      plugins: [],
     };
   }
 
   componentDidMount() {
     this.getRules();
+    this.getPlugins();
   }
 
   changeDetector = (detector: Detector) => {
@@ -123,6 +132,20 @@ export default class UpdateAlertConditions extends Component<
     }
   };
 
+  async getPlugins() {
+    const { opensearchService } = this.props;
+    try {
+      const pluginsResponse = await opensearchService.getPlugins();
+      if (pluginsResponse.ok) {
+        this.setState({ plugins: pluginsResponse.response.map((plugin) => plugin.component) });
+      } else {
+        console.error('There was a problem getting plugins list');
+      }
+    } catch (e) {
+      console.error('There was a problem getting plugins list', e);
+    }
+  }
+
   onCancel = () => {
     this.props.history.replace({
       pathname: `${ROUTES.DETECTOR_DETAILS}/${this.props.location.state?.detectorHit._id}`,
@@ -178,6 +201,7 @@ export default class UpdateAlertConditions extends Component<
           rulesOptions={rulesOptions}
           changeDetector={this.changeDetector}
           updateDataValidState={() => {}}
+          hasNotificationPlugin={this.state.plugins.includes(OS_NOTIFICATION_PLUGIN)}
         />
 
         <EuiFlexGroup justifyContent={'flexEnd'}>

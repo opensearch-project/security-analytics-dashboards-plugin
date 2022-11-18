@@ -5,7 +5,7 @@
 
 import { HttpSetup } from 'opensearch-dashboards/public';
 import { ServerResponse } from '../../server/models/types';
-import { SearchResponse } from '../../server/models/interfaces';
+import { SearchResponse, Plugin } from '../../server/models/interfaces';
 import { API } from '../../server/utils/constants';
 
 export default class OpenSearchService {
@@ -35,5 +35,10 @@ export default class OpenSearchService {
     return (await this.httpClient.get(`..${API.TIME_RANGE_QUERY}`, {
       query: { index, timeField, startTime, endTime },
     })) as ServerResponse<SearchResponse<any>>;
+  };
+
+  getPlugins = async (): Promise<ServerResponse<Plugin[]>> => {
+    let url = `..${API.PLUGINS}/`;
+    return await this.httpClient.get(url);
   };
 }
