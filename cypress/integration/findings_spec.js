@@ -4,12 +4,7 @@
  */
 
 import { PLUGIN_NAME } from '../support/constants';
-import {
-  TEST_INDEX,
-  TEST_DETECTOR,
-  TEST_DOCUMENT,
-  TEST_FIELD_MAPPINGS,
-} from '../fixtures/constants';
+import { TEST_INDEX, TEST_DOCUMENT, TEST_FIELD_MAPPINGS } from '../fixtures/constants';
 
 describe('Findings', () => {
   before(() => {
@@ -19,9 +14,7 @@ describe('Findings', () => {
     // Create test index
     cy.createIndex('cypress-test-windows', TEST_INDEX);
 
-    // Create detector manually
-
-    // Visit Detectors page
+    // Visit Detectors page to create detector manually
     cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/detectors`);
 
     cy.wait(10000);
@@ -152,7 +145,6 @@ describe('Findings', () => {
     cy.contains('Search Findings').should('not.exist');
 
     // Open rule details for each rule
-    // Open first rule details
     cy.contains('USB Device Plugged').click({ force: true });
 
     // Confirm content

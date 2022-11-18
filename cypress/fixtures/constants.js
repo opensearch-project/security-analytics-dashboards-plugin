@@ -1,3 +1,8 @@
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 export const TEST_DOCUMENT = {
   EventTime: '2020-02-04T14:59:39.343541+00:00',
   HostName: 'EC2AMAZ-EPO7HKA',
