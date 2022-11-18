@@ -13,6 +13,7 @@ export const NotificationsCallOut = () => {
         <p>
           Install the notifications plugin in order to create and select channels to send out
           notifications.&nbsp;
+          {/* TODO: [#137] No URL provided on "Learn more" link */}
           <EuiLink href="#" external>
             Learn more
           </EuiLink>
