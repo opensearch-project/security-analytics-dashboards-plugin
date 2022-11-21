@@ -58,6 +58,7 @@ export default class FieldNameSelector extends Component<SIEMFieldNameProps, SIE
         error={isInvalid ? 'Name already used' : undefined}
       >
         <EuiComboBox
+          data-test-subj={'detector-field-mappings-select'}
           placeholder="Select a mapping field"
           singleSelection={{ asPlainText: true }}
           options={comboOptions}

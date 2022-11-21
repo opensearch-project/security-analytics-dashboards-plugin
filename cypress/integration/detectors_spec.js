@@ -2,12 +2,7 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
-import {
-  PLUGIN_NAME,
-  TWENTY_SECONDS_TIMEOUT,
-  TEST_INDEX,
-  TEST_FIELD_MAPPINGS,
-} from '../support/constants';
+import { PLUGIN_NAME, TEST_INDEX, TEST_FIELD_MAPPINGS } from '../support/constants';
 
 describe('Detectors', () => {
   before(() => {
@@ -61,7 +56,7 @@ describe('Detectors', () => {
       const mappedTo = TEST_FIELD_MAPPINGS[field_name];
 
       cy.contains('tr', field_name).within(() => {
-        cy.get(`[data-test-subj="detector-field-mappins-select"]`).select(mappedTo);
+        cy.get(`[data-test-subj="detector-field-mappings-select"]`).click().type(mappedTo);
       });
     }
 
@@ -119,7 +114,7 @@ describe('Detectors', () => {
     cy.contains('Detector details');
     cy.contains('Created at');
     cy.contains('Last updated time');
-    cy.contains('Successfully created detector, "test detector"');
+    cy.contains('Successfully created detector');
   });
 
   it('...basic details can be edited', () => {
