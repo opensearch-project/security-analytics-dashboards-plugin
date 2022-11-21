@@ -235,7 +235,7 @@ describe('Detectors', () => {
 
     // Toggle single search result to checked
     cy.contains('tr', 'Abusing Findstr for').within(() => {
-      cy.get(`button[aria-checked="false"]`).click();
+      cy.get(`[class="euiSwitch__button"]`).click();
     });
 
     // Save changes
