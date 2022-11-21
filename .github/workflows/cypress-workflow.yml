@@ -30,7 +30,7 @@ jobs:
         with:
           path: security-analytics
           repository: opensearch-project/security-analytics
-          ref: env.SECURITY_ANALYTICS_BRANCH
+          ref: ${{ env.SECURITY_ANALYTICS_BRANCH }}
       - name: Run opensearch with plugin
         run: |
           cd security-analytics
