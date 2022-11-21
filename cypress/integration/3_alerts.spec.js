@@ -81,7 +81,7 @@ describe('Alerts', () => {
   });
 
   beforeEach(() => {
-    // Visit Detectors page
+    // Visit Alerts table page
     cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/alerts`);
 
     // Filter table to only show alerts for the test detector
