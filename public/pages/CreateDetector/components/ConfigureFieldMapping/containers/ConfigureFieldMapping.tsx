@@ -151,8 +151,9 @@ export default class ConfigureFieldMapping extends Component<
             <EuiText>
               <p>
                 <EuiTextColor color="subdued">
-                  Configure your detector to identify relevant security findings and potential
-                  threats from your log data.
+                  To perform threat detection, known field names from your log data source are
+                  automatically mapped to rule field names. Additional fields that may require
+                  manual mapping will be shown below.
                 </EuiTextColor>
               </p>
             </EuiText>

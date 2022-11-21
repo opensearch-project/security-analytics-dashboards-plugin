@@ -42,15 +42,6 @@ export class ReviewAndCreate extends React.Component<ReviewAndCreateProps, Revie
           <h3>Review and create</h3>
         </EuiTitle>
 
-        <EuiText>
-          <p>
-            <EuiTextColor color="subdued">
-              Configure your detector to identify relevant security findings and potential threats
-              from your log data.
-            </EuiTextColor>
-          </p>
-        </EuiText>
-
         <EuiSpacer size={'m'} />
 
         <DetectorDetailsView

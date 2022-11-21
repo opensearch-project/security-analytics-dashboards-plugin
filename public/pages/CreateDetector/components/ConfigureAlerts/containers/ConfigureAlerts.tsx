@@ -109,8 +109,7 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
         <EuiText>
           <p>
             <EuiTextColor color="subdued">
-              Configure your detector to identify relevant security findings and potential threats
-              from your log data.
+              Get notified when specific rule conditions are found by the detector.
             </EuiTextColor>
           </p>
         </EuiText>

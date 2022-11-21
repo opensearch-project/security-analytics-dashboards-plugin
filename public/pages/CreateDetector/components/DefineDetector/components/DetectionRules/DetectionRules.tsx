@@ -9,6 +9,7 @@ import {
   EuiTitle,
   EuiHorizontalRule,
   CriteriaWithPagination,
+  EuiText,
 } from '@elastic/eui';
 import React, { useMemo } from 'react';
 import { DetectionRulesTable } from './DetectionRulesTable';
@@ -63,9 +64,17 @@ export const DetectionRules: React.FC<DetectionRulesProps> = ({
     <EuiPanel style={{ paddingLeft: '0px', paddingRight: '0px' }}>
       <EuiAccordion
         buttonContent={
-          <EuiTitle>
-            <h4>{`Detection rules (${enabledRulesCount} selected)`}</h4>
-          </EuiTitle>
+          <>
+            <EuiTitle>
+              <h4>{`Detection rules (${enabledRulesCount} selected)`}</h4>
+            </EuiTitle>
+            <EuiText size="s">
+              <span style={{ color: 'grey', fontWeight: 200, fontSize: '15px' }}>
+                Detection rules are automatically added based on your chosen log types.
+                Additionally, you may add or remove detection rules for this detector.
+              </span>
+            </EuiText>
+          </>
         }
         buttonProps={{ style: { paddingLeft: '10px', paddingRight: '10px' } }}
         id={'detectorRulesAccordion'}
