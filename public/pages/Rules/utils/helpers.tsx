@@ -82,7 +82,7 @@ export const getRulesTableSearchConfig = (): Search => {
         type: 'field_value_selection',
         field: 'category',
         name: 'Rule Type',
-        multiSelect: false,
+        multiSelect: 'or',
         options: ruleTypes.map((type: string) => ({
           value: type,
         })),
@@ -91,14 +91,14 @@ export const getRulesTableSearchConfig = (): Search => {
         type: 'field_value_selection',
         field: 'level',
         name: 'Rule Severity',
-        multiSelect: false,
+        multiSelect: 'or',
         options: ruleSeverity,
       },
       {
         type: 'field_value_selection',
         field: 'source',
         name: 'Source',
-        multiSelect: false,
+        multiSelect: 'or',
         options: ruleSource.map((source: string) => ({
           value: source,
         })),
