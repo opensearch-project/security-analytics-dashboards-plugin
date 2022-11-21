@@ -218,16 +218,16 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
   };
 
   async getPlugins() {
-    const { opensearchService } = this.props;
+    const { opensearchService, notifications } = this.props;
     try {
       const pluginsResponse = await opensearchService.getPlugins();
       if (pluginsResponse.ok) {
         this.setState({ plugins: pluginsResponse.response.map((plugin) => plugin.component) });
       } else {
-        console.error('There was a problem getting plugins list');
+        errorNotificationToast(notifications, 'retrieve', 'plugins', pluginsResponse.error);
       }
     } catch (e) {
-      console.error('There was a problem getting plugins list', e);
+      errorNotificationToast(notifications, 'retrieve', 'plugins', e);
     }
   }
 
