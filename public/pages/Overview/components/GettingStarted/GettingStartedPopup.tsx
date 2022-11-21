@@ -48,7 +48,7 @@ export const GettingStartedPopup: React.FC<GettingStartedPopupProps> = ({
         children: (
           <GetStartedStep
             title={
-              'After detectors are create, you can view insights and analyse security findings.'
+              'After detectors are created, you can view insights and analyse security findings.'
             }
             buttons={[
               {
