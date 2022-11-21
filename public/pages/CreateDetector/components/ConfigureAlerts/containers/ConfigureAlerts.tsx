@@ -12,6 +12,8 @@ import {
   EuiPanel,
   EuiSpacer,
   EuiTitle,
+  EuiText,
+  EuiTextColor,
 } from '@elastic/eui';
 import { createDetectorSteps } from '../../../utils/constants';
 import { EMPTY_DEFAULT_ALERT_CONDITION, MAX_ALERT_CONDITIONS } from '../utils/constants';
@@ -103,6 +105,15 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
               ` (${triggers.length})`}
           </h3>
         </EuiTitle>
+
+        <EuiText>
+          <p>
+            <EuiTextColor color="subdued">
+              Configure your detector to identify relevant security findings and potential threats
+              from your log data.
+            </EuiTextColor>
+          </p>
+        </EuiText>
 
         <EuiSpacer size={'m'} />
 

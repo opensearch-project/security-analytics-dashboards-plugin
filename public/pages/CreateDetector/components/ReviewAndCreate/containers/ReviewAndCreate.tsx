@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { EuiSpacer, EuiTitle } from '@elastic/eui';
+import { EuiSpacer, EuiTitle, EuiText, EuiTextColor } from '@elastic/eui';
 import { DetectorDetailsView } from '../../../../Detectors/containers/DetectorDetailsView/DetectorDetailsView';
 import { FieldMappingsView } from '../../../../Detectors/components/FieldMappingsView/FieldMappingsView';
 import { AlertTriggersView } from '../../../../Detectors/containers/AlertTriggersView/AlertTriggersView';
@@ -41,6 +41,18 @@ export class ReviewAndCreate extends React.Component<ReviewAndCreateProps, Revie
         <EuiTitle size={'l'}>
           <h3>Review and create</h3>
         </EuiTitle>
+
+        <EuiText>
+          <p>
+            <EuiTextColor color="subdued">
+              Configure your detector to identify relevant security findings and potential threats
+              from your log data.
+            </EuiTextColor>
+          </p>
+        </EuiText>
+
+        <EuiSpacer size={'m'} />
+
         <DetectorDetailsView
           {...this.props}
           detector={this.props.detector}

@@ -5,7 +5,15 @@
 
 import React, { Component } from 'react';
 import { ContentPanel } from '../../../../../../components/ContentPanel';
-import { EuiFormRow, EuiFlexGrid, EuiFlexItem, EuiRadio, EuiSpacer } from '@elastic/eui';
+import {
+  EuiFormRow,
+  EuiFlexGrid,
+  EuiFlexItem,
+  EuiRadio,
+  EuiSpacer,
+  EuiText,
+  EuiTextColor,
+} from '@elastic/eui';
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
 import { DETECTOR_TYPES } from '../../../../../Detectors/utils/constants';
 import { DetectorTypeOption } from '../../../../../Detectors/models/interfaces';
@@ -68,8 +76,11 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
       </EuiFlexItem>
     ));
     return (
-      <ContentPanel title={'Threat detector type'} titleSize={'m'}>
-        <EuiSpacer size={'m'} />
+      <ContentPanel
+        title={'Threat detector type'}
+        titleSize={'m'}
+        subTitleText="Choose the log types that correspond to your data source. Detection rules are automatically added based on your chosen log types."
+      >
         <EuiFormRow
           label={
             <div>
