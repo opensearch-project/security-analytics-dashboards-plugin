@@ -19,6 +19,7 @@ describe('Detectors', () => {
   beforeEach(() => {
     // Visit Detectors page
     cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/detectors`);
+
     //wait for page to load
     cy.wait(7000);
 
@@ -123,6 +124,7 @@ describe('Detectors', () => {
     cy.contains('cypress-test-windows');
     cy.contains('Alert on test_trigger');
 
+    // need to pause here so button is found
     cy.wait(5000);
 
     // Create the detector
@@ -172,7 +174,7 @@ describe('Detectors', () => {
     cy.get(`[data-test-subj="detector-schedule-number-select"]`).type('0');
     cy.get(`[data-test-subj="detector-schedule-unit-select"]`).select('Hours');
 
-    cy.wait(10000);
+    cy.wait(7000);
     // Save changes to detector details
     cy.get(`[data-test-subj="save-basic-details-edits"]`).click({ force: true }, { timeout: 5000 });
 
