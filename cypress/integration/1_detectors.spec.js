@@ -162,6 +162,7 @@ describe('Detectors', () => {
       'http://localhost:5601/app/opensearch_security_analytics_dashboards#/edit-detector-details'
     );
 
+    cy.wait(5000);
     // Change detector name
     cy.get(`[data-test-subj="define-detector-detector-name"]`).type('_edited');
 
