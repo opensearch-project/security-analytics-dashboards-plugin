@@ -4,11 +4,12 @@
  */
 
 import React, { useMemo } from 'react';
-import { EuiHorizontalRule, EuiSpacer, EuiSteps, EuiText, EuiTitle } from '@elastic/eui';
+import { EuiHorizontalRule, EuiLink, EuiSpacer, EuiSteps, EuiText, EuiTitle } from '@elastic/eui';
 import { EuiContainedStepProps } from '@elastic/eui/src/components/steps/steps';
 import { ROUTES } from '../../../../utils/constants';
 import { RouteComponentProps } from 'react-router-dom';
 import { GetStartedStep } from './GetStartedStep';
+import { moreLink } from '../../utils/constants';
 
 export interface GettingStartedPopupProps {
   dismissPopup: () => void;
@@ -26,7 +27,7 @@ export const GettingStartedPopup: React.FC<GettingStartedPopupProps> = ({
         children: (
           <GetStartedStep
             title={
-              'Identify security findings and threats from your log datas with curated detection rules.'
+              'Identify security findings and threats from your log datas with detection rules. Additionally, you can set up alerts based on rule conditions.'
             }
             buttons={[
               {
@@ -48,7 +49,7 @@ export const GettingStartedPopup: React.FC<GettingStartedPopupProps> = ({
         children: (
           <GetStartedStep
             title={
-              'After detectors are created, you can view insights and analyse security findings.'
+              'After detectors are created, you can view insights and analyze security findings.'
             }
             buttons={[
               {
@@ -73,7 +74,7 @@ export const GettingStartedPopup: React.FC<GettingStartedPopupProps> = ({
         title: 'View security alerts',
         children: (
           <GetStartedStep
-            title={'After detectors are created, you can view alerts triggered by findings.'}
+            title={'View alerts based on conditions you have specified from your detectors.'}
             buttons={[
               {
                 text: 'View alerts',
@@ -101,6 +102,16 @@ export const GettingStartedPopup: React.FC<GettingStartedPopupProps> = ({
                   dismissPopup();
                   history.push(ROUTES.RULES_CREATE);
                 },
+                opts: {
+                  fill: true,
+                },
+              },
+              {
+                text: 'Manage rules',
+                onClick: () => {
+                  dismissPopup();
+                  history.push(ROUTES.RULES);
+                },
               },
             ]}
           />
@@ -118,7 +129,11 @@ export const GettingStartedPopup: React.FC<GettingStartedPopupProps> = ({
       <EuiHorizontalRule />
       <EuiText>
         <p>
-          Security analytics generates critical security insights from existing security event logs
+          Security analytics generates critical security insights from existing security event
+          logs.&nbsp;
+          <EuiLink href={moreLink} target="_blank">
+            Learn more
+          </EuiLink>
         </p>
       </EuiText>
       <EuiSpacer />
