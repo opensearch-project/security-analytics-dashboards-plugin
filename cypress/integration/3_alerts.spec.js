@@ -15,11 +15,11 @@ import sample_alias_mappings from '../fixtures/sample_alias_mappings.json';
 import sample_detector from '../fixtures/sample_detector.json';
 import sample_document from '../fixtures/sample_document.json';
 
-const now = moment(moment.now());
 const testIndex = 'sample_alerts_spec_cypress_test_index';
 const testDetectorName = 'alerts_spec_cypress_test_detector';
 const testDetectorAlertCondition = `${testDetectorName} alert condition`;
 
+// Creating a unique detector JSON for this test spec
 const testDetector = {
   ...sample_detector,
   name: testDetectorName,
@@ -39,6 +39,10 @@ const testDetector = {
     },
   ],
 };
+
+// The exact minutes/seconds for the start and last updated time will be difficult to predict,
+// but all of the alert time fields should all contain the date in this format.
+const date = moment(moment.now()).format('MM/DD/YY');
 
 describe('Alerts', () => {
   before(() => {
@@ -115,9 +119,8 @@ describe('Alerts', () => {
 
   it('contain expected values in table', () => {
     // Confirm each row contains the expected values
-    const formattedDate = now.format('MM/DD/YY');
     cy.get('tbody > tr', TWENTY_SECONDS_TIMEOUT).each(($el, $index) => {
-      expect($el, `row number ${$index} start time`).to.contain(formattedDate);
+      expect($el, `row number ${$index} start time`).to.contain(date);
       expect($el, `row number ${$index} trigger name`).to.contain(testDetector.triggers[0].name);
       expect($el, `row number ${$index} detector name`).to.contain(testDetector.name);
       expect($el, `row number ${$index} status`).to.contain('Active');
@@ -146,14 +149,11 @@ describe('Alerts', () => {
       // Confirm alert severity
       cy.get('[data-test-subj="text-details-group-content-alert-severity"]').contains('4 (Low)');
 
-      const formattedDate = now.format('MM/DD/YY');
       // Confirm alert start time is present
-      cy.get('[data-test-subj="text-details-group-content-start-time"]').contains(formattedDate);
+      cy.get('[data-test-subj="text-details-group-content-start-time"]').contains(date);
 
       // Confirm alert last updated time is present
-      cy.get('[data-test-subj="text-details-group-content-last-updated-time"]').contains(
-        formattedDate
-      );
+      cy.get('[data-test-subj="text-details-group-content-last-updated-time"]').contains(date);
 
       // Confirm alert detector name
       cy.get('[data-test-subj="text-details-group-content-detector"]').contains(testDetector.name);
@@ -163,11 +163,10 @@ describe('Alerts', () => {
       cy.contains('USB Device Plugged', TWENTY_SECONDS_TIMEOUT);
 
       // Confirm alert findings contain expected values
-      const formattedTableDate = now.format('MM/DD/YY');
       cy.get('tbody > tr', TWENTY_SECONDS_TIMEOUT)
         .should(($tr) => expect($tr, '4 rows').to.have.length(4))
         .each(($el, $index) => {
-          expect($el, `row number ${$index} timestamp`).to.contain(formattedTableDate);
+          expect($el, `row number ${$index} timestamp`).to.contain(date);
           expect($el, `row number ${$index} rule name`).to.contain('USB Device Plugged');
           expect($el, `row number ${$index} detector name`).to.contain(testDetector.name);
           expect($el, `row number ${$index} log type`).to.contain('Windows');
@@ -212,8 +211,7 @@ describe('Alerts', () => {
         .then((text) => expect(text).to.have.length.greaterThan(1));
 
       // Confirm finding timestamp
-      const formattedDate = now.format('MM/DD/YY');
-      cy.get('[data-test-subj="finding-details-flyout-timestamp"]').contains(formattedDate);
+      cy.get('[data-test-subj="finding-details-flyout-timestamp"]').contains(date);
 
       // Confirm finding detector name
       cy.get('[data-test-subj="finding-details-flyout-detector-name"]').contains(testDetector.name);
