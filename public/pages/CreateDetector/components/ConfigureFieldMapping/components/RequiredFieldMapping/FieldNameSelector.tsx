@@ -55,7 +55,7 @@ export default class FieldNameSelector extends Component<SIEMFieldNameProps, SIE
       <EuiFormRow
         style={{ width: '100%' }}
         isInvalid={isInvalid}
-        error={isInvalid ? 'Name already used' : undefined}
+        error={isInvalid ? 'Name already used.' : undefined}
       >
         <EuiComboBox
           data-test-subj={'detector-field-mappings-select'}
