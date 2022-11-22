@@ -56,7 +56,7 @@ describe('Detectors', () => {
     cy.wait(5000);
 
     // Open Detection rules accordion
-    cy.contains('Detection rules').click();
+    cy.contains('Detection rules').click({ timeout: 5000 });
 
     // Disable all rules
     cy.get('th').within(() => {
