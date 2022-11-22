@@ -9,7 +9,6 @@ import {
   EuiTitle,
   EuiHorizontalRule,
   CriteriaWithPagination,
-  EuiText,
   EuiTextColor,
 } from '@elastic/eui';
 import React, { useMemo } from 'react';
@@ -69,14 +68,10 @@ export const DetectionRules: React.FC<DetectionRulesProps> = ({
             <EuiTitle>
               <h4>{`Detection rules (${enabledRulesCount} selected)`}</h4>
             </EuiTitle>
-            <EuiText>
-              <p>
-                <EuiTextColor color="subdued">
-                  Detection rules are automatically added based on your chosen log types.
-                  Additionally, you may add or remove detection rules for this detector.
-                </EuiTextColor>
-              </p>
-            </EuiText>
+            <EuiTextColor color="subdued">
+              Detection rules are automatically added based on your chosen log types. Additionally,
+              you may add or remove detection rules for this detector.
+            </EuiTextColor>
           </>
         }
         buttonProps={{ style: { paddingLeft: '10px', paddingRight: '10px' } }}
