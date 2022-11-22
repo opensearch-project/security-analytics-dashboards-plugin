@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { euiPaletteColorBlind } from '@elastic/eui';
 import { TopLevelSpec } from 'vega-lite';
 import { SummaryData } from '../components/Widgets/Summary';
 
 function getVisualizationSpec(description: string, data: any, layers: any[]): TopLevelSpec {
-  let spec: TopLevelSpec = {
+  return {
     config: { view: { stroke: null } },
     $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
     description: description,
@@ -16,8 +17,6 @@ function getVisualizationSpec(description: string, data: any, layers: any[]): To
     },
     layer: layers,
   };
-
-  return spec;
 }
 
 export function getOverviewVisualizationSpec(
@@ -113,6 +112,9 @@ export function getAlertsVisualizationSpec(visualizationData: any[], groupBy: st
           field: groupBy,
           type: 'nominal',
           title: groupBy === 'status' ? 'Alert status' : 'Alert severity',
+          scale: {
+            range: euiPaletteColorBlind(),
+          },
         },
       },
     },
