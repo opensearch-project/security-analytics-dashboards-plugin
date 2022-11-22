@@ -8,6 +8,8 @@ import sample_document from '../fixtures/sample_document.json';
 import { createDetector } from '../support/helpers.js';
 
 describe('Findings', () => {
+  const ruleTags = ['low', 'windows', 'attack.initial_access', 'attack.t1200'];
+
   before(() => {
     createDetector();
   });
@@ -65,7 +67,9 @@ describe('Findings', () => {
     cy.contains('Finding details');
     cy.contains('Rule details');
     cy.contains('Search Findings').should('not.exist');
+  });
 
+  it('allows user to view details about rules that were triggered', () => {
     // Open rule details for each rule
     cy.contains('USB Device Plugged').click({ force: true });
 
@@ -75,20 +79,10 @@ describe('Findings', () => {
     cy.contains('Low');
     cy.contains('Windows');
     cy.contains('cypress-test-windows');
-  });
 
-  it('allows user to view more rule details upon clicking rule name', () => {
-    // Click rule link
-    cy.get('a')
-      .contains('USB Device Plugged')
-      .invoke('removeAttr', 'target')
-      .click({ force: true });
-
-    // Confirm destination reached
-    cy.url().should(
-      'eq',
-      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/rules'
-    );
+    ruleTags.forEach((tag) => {
+      cy.contains(tag);
+    });
 
     // navigate back to Finding details flyout
     cy.contains('Findings').click();
@@ -102,6 +96,25 @@ describe('Findings', () => {
     cy.contains('Low');
     cy.contains('Windows');
     cy.contains('cypress-test-windows');
+
+    ruleTags.forEach((tag) => {
+      cy.contains(tag);
+    });
+  });
+
+  // TODO - upon reaching rules page, trigger appropriate rules detail flyout
+  it('takes user to rules page when rule name inside accordion drop down is clicked', () => {
+    // Click rule link
+    cy.get('a')
+      .contains('USB Device Plugged')
+      .invoke('removeAttr', 'target')
+      .click({ force: true });
+
+    // Confirm destination reached
+    cy.url().should(
+      'eq',
+      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/rules'
+    );
 
     // Click rule link
     cy.get('a')

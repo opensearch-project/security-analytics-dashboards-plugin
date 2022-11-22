@@ -37,10 +37,10 @@ export const createDetector = () => {
   );
 
   // Select threat detector type (Windows logs)
-  cy.get(`input[id="windows"]`).click({ force: true });
+  cy.get(`input[id="windows"]`).click({ force: true, timeout: 5000 });
 
-  // Wait for detector rules to load - timeout on click above ineffective
-  cy.wait(5000);
+  // // Wait for detector rules to load - timeout on click above ineffective
+  // cy.wait(5000);
 
   // Click Next button to continue
   cy.get('button').contains('Next').click({ force: true }, { timeout: 2000 });
