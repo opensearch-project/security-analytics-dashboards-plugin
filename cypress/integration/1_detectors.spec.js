@@ -128,7 +128,7 @@ describe('Detectors', () => {
     cy.wait(5000);
 
     // Create the detector
-    cy.get('button').contains('Create').click({ force: true });
+    cy.get('button').contains('Create').click({ force: true, timeout: 10000 });
 
     // Confirm detector active
     cy.contains('There are no existing detectors.').should('not.exist');
