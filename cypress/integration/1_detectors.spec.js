@@ -52,9 +52,6 @@ describe('Detectors', () => {
     // Select threat detector type (Windows logs)
     cy.get(`input[id="windows"]`).click({ force: true });
 
-    // // Wait for detector rules to load - timeout on click above ineffective
-    // cy.wait(7000);
-
     // Open Detection rules accordion
     cy.contains('Detection rules').click({ timeout: 5000 });
 
@@ -124,9 +121,6 @@ describe('Detectors', () => {
     cy.contains('windows');
     cy.contains('cypress-test-windows');
     cy.contains('Alert on test_trigger');
-
-    // need to pause here so button is found
-    // cy.wait(5000);
 
     // Create the detector
     cy.get('button').contains('Create').click({ force: true });
