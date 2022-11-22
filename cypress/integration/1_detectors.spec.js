@@ -52,19 +52,20 @@ describe('Detectors', () => {
     // Select threat detector type (Windows logs)
     cy.get(`input[id="windows"]`).click({ force: true });
 
-    // Wait for detector rules to load - timeout on click above ineffective
-    cy.wait(5000);
+    // // Wait for detector rules to load - timeout on click above ineffective
+    // cy.wait(7000);
 
     // Open Detection rules accordion
     cy.contains('Detection rules').click({ timeout: 5000 });
 
+    // find search, type USB
+    cy.get(`[placeholder="Search..."]`).type('USB Device Plugged').trigger('search');
+
     // Disable all rules
+    cy.contains('tr', 'USB Device Plugged', { timeout: 20000 });
     cy.get('th').within(() => {
       cy.get('button').first().click({ force: true });
     });
-
-    // find search, type USB
-    cy.get(`[placeholder="Search..."]`).type('USB Device Plugged').trigger('search');
 
     // enable single rule
     cy.contains('tr', 'USB Device Plugged').within(() => {
@@ -247,7 +248,7 @@ describe('Detectors', () => {
 
     // Toggle single search result to checked
     cy.contains('tr', 'USB Device Plugged').within(() => {
-      cy.wait(1000);
+      cy.wait(2000);
       cy.get('button').eq(0).click({ force: true });
     });
 
