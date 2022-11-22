@@ -339,7 +339,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
                 </EuiTitle>
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
-                <EuiHealth color={detector.enabled ? 'subdued' : 'primary'}>
+                <EuiHealth color={detector.enabled ? 'success' : 'subdued'}>
                   {detector.enabled ? 'Active' : 'Inactive'}
                 </EuiHealth>
               </EuiFlexItem>
