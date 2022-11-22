@@ -125,7 +125,7 @@ describe('Detectors', () => {
     cy.contains('Alert on test_trigger');
 
     // need to pause here so button is found
-    cy.wait(5000);
+    // cy.wait(5000);
 
     // Create the detector
     cy.get('button').contains('Create').click({ force: true });
@@ -187,7 +187,6 @@ describe('Detectors', () => {
       'include',
       'http://localhost:5601/app/opensearch_security_analytics_dashboards#/detector-details'
     );
-    cy.wait(2000);
 
     // Verify edits are applied
     cy.contains('test detector_edited');
@@ -219,13 +218,11 @@ describe('Detectors', () => {
     );
 
     // Search for specific rule
-    cy.get(`[placeholder="Search..."]`)
-      .focus()
-      .type('USB Device')
-      .trigger('search', { timeout: 5000 });
+    cy.get(`[placeholder="Search..."]`).type('USB Device').trigger('search', { timeout: 5000 });
 
     // Toggle single search result to unchecked
     cy.contains('tr', 'USB Device Plugged').within(() => {
+      // Of note, timeout can sometimes work instead of wait here, but is very unreliable from case to case.
       cy.wait(1000);
       cy.get('button').eq(0).click();
     });
@@ -246,12 +243,12 @@ describe('Detectors', () => {
     );
 
     // Search for specific rule
-    cy.get(`[placeholder="Search..."]`).focus().type('USB').trigger('search');
+    cy.get(`[placeholder="Search..."]`).focus().type('USB').trigger('search', { timeout: 5000 });
 
     // Toggle single search result to checked
     cy.contains('tr', 'USB Device Plugged').within(() => {
-      cy.get('button', { timeout: 1000 });
-      cy.get('button').eq(0).click();
+      cy.wait(1000);
+      cy.get('button').eq(0).click({ force: true });
     });
 
     // Save changes
