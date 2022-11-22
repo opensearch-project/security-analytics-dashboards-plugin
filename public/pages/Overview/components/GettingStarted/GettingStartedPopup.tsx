@@ -27,7 +27,7 @@ export const GettingStartedPopup: React.FC<GettingStartedPopupProps> = ({
         children: (
           <GetStartedStep
             title={
-              'Identify security findings and threats from your log datas with detection rules. Additionally, you can set up alerts based on rule conditions.'
+              'Identify security findings and threats from your log data with detection rules. Additionally, you can set up alerts based on rule conditions.'
             }
             buttons={[
               {
