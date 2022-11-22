@@ -86,6 +86,7 @@ export default class FindingDetailsFlyout extends Component<
               </div>
             }
             initialIsOpen={rules.length === 1}
+            data-test-subj={`rule-details-accordion-${fullRule.title}`}
           >
             <EuiSpacer size={'m'} />
             <EuiFlexGroup>

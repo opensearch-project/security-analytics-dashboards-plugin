@@ -6,6 +6,7 @@
 import { PLUGIN_NAME } from '../support/constants';
 import sample_document from '../fixtures/sample_document.json';
 import { createDetector } from '../support/helpers.js';
+import { eq } from 'lodash';
 
 describe('Findings', () => {
   const ruleTags = ['low', 'windows', 'attack.initial_access', 'attack.t1200'];
@@ -55,7 +56,9 @@ describe('Findings', () => {
     cy.contains('Search Findings').should('not.exist');
 
     // Close Flyout
-    cy.get(`button[data-test-subj="close-finding-details-flyout"]`).click();
+    cy.get(`[data-test-subj="close-finding-details-flyout"]`).then(($el) => {
+      cy.get($el).click({ force: true });
+    });
 
     // wait for toasts to clear - in this case, timeout will not work.  Icon cannot be found behind error toasts.
     cy.wait(10000);
@@ -67,15 +70,29 @@ describe('Findings', () => {
     cy.contains('Finding details');
     cy.contains('Rule details');
     cy.contains('Search Findings').should('not.exist');
+
+    // Close Flyout
+    cy.get(`[data-test-subj="close-finding-details-flyout"]`).then(($el) => {
+      cy.get($el).click({ force: true, timeout: 5000 });
+    });
   });
 
   it('allows user to view details about rules that were triggered', () => {
     // Open rule details for each rule
-    cy.contains('USB Device Plugged').click({ force: true });
+    // open Finding details flyout
+    cy.get('button', { timeout: 5000 });
+    cy.get('.euiLink--primary').last().click({ force: true });
+
+    cy.wait(5000);
+
+    // Second rule details - open
+    cy.get('button', { timeout: 5000 });
+    cy.get('.euiAccordion__button')
+      .contains('Setting Change in Windows Firewall with Advanced Security')
+      .click({ force: true });
 
     // Confirm content
-    cy.contains('Documents');
-    cy.contains('Detects plugged USB devices');
+    cy.contains('Setting have been change in Windows Firewall');
     cy.contains('Low');
     cy.contains('Windows');
     cy.contains('cypress-test-windows');
@@ -84,15 +101,17 @@ describe('Findings', () => {
       cy.contains(tag);
     });
 
-    // navigate back to Finding details flyout
-    cy.contains('Findings').click();
-    cy.get(`[data-test-subj="findings-table-finding-id"]`).click();
+    // Close Flyout
+    cy.get(`[data-test-subj="close-finding-details-flyout"]`).then(($el) => {
+      cy.get($el).click({ force: true, timeout: 5000 });
+    });
 
-    // Second rule details - open
-    cy.contains('Setting Change in Windows Firewall with Advanced Security').click({ force: true });
-    cy.contains('Setting have been change in Windows Firewall');
+    cy.get('button', { timeout: 1000 });
+    cy.get(`[class="euiAccordion__button"]`).contains('USB Device Plugged').click({ force: true });
 
     // Confirm content
+    cy.contains('Documents');
+    cy.contains('Detects plugged USB devices');
     cy.contains('Low');
     cy.contains('Windows');
     cy.contains('cypress-test-windows');
