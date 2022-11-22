@@ -11,7 +11,6 @@ import {
   EuiPanel,
   EuiTitle,
   EuiText,
-  EuiTextColor,
 } from '@elastic/eui';
 
 interface ContentPanelProps {
@@ -29,10 +28,8 @@ const renderSubTitleText = (subTitleText: string | JSX.Element): JSX.Element | n
   if (typeof subTitleText === 'string') {
     if (!subTitleText) return null;
     return (
-      <EuiText>
-        <p>
-          <EuiTextColor color="subdued">{subTitleText}</EuiTextColor>
-        </p>
+      <EuiText size="s" color="subdued">
+        {subTitleText}
       </EuiText>
     );
   }

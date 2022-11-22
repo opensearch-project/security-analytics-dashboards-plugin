@@ -5,7 +5,7 @@
 
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { EuiSpacer, EuiTitle, EuiTextColor } from '@elastic/eui';
+import { EuiSpacer, EuiTitle, EuiText } from '@elastic/eui';
 import { Detector, PeriodSchedule } from '../../../../../../models/interfaces';
 import DetectorBasicDetailsForm from '../components/DetectorDetails';
 import DetectorDataSource from '../components/DetectorDataSource';
@@ -169,10 +169,10 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
           <h3>{`${isEdit ? 'Edit' : 'Define'} detector`}</h3>
         </EuiTitle>
 
-        <EuiTextColor color="subdued">
+        <EuiText size="s" color="subdued">
           Configure your detector to identify relevant security findings and potential threats from
           your log data.
-        </EuiTextColor>
+        </EuiText>
 
         <EuiSpacer size={'m'} />
 

@@ -5,7 +5,7 @@
 
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { EuiSpacer, EuiTitle, EuiText, EuiTextColor } from '@elastic/eui';
+import { EuiSpacer, EuiTitle, EuiText } from '@elastic/eui';
 import FieldMappingsTable from '../components/RequiredFieldMapping';
 import { createDetectorSteps } from '../../../utils/constants';
 import { ContentPanel } from '../../../../../components/ContentPanel';
@@ -148,14 +148,10 @@ export default class ConfigureFieldMapping extends Component<
               <h3>{createDetectorSteps[DetectorCreationStep.CONFIGURE_FIELD_MAPPING].title}</h3>
             </EuiTitle>
 
-            <EuiText>
-              <p>
-                <EuiTextColor color="subdued">
-                  To perform threat detection, known field names from your log data source are
-                  automatically mapped to rule field names. Additional fields that may require
-                  manual mapping will be shown below.
-                </EuiTextColor>
-              </p>
+            <EuiText size="s" color="subdued">
+              To perform threat detection, known field names from your log data source are
+              automatically mapped to rule field names. Additional fields that may require manual
+              mapping will be shown below.
             </EuiText>
 
             <EuiSpacer size={'m'} />

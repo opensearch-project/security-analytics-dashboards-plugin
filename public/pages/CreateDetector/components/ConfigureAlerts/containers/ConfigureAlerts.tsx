@@ -13,7 +13,6 @@ import {
   EuiSpacer,
   EuiTitle,
   EuiText,
-  EuiTextColor,
 } from '@elastic/eui';
 import { createDetectorSteps } from '../../../utils/constants';
 import { EMPTY_DEFAULT_ALERT_CONDITION, MAX_ALERT_CONDITIONS } from '../utils/constants';
@@ -106,12 +105,8 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
           </h3>
         </EuiTitle>
 
-        <EuiText>
-          <p>
-            <EuiTextColor color="subdued">
-              Get notified when specific rule conditions are found by the detector.
-            </EuiTextColor>
-          </p>
+        <EuiText size="s" color="subdued">
+          Get notified when specific rule conditions are found by the detector.
         </EuiText>
 
         <EuiSpacer size={'m'} />

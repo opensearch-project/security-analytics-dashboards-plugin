@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { EuiSpacer, EuiTitle, EuiText, EuiTextColor } from '@elastic/eui';
+import { EuiSpacer, EuiTitle } from '@elastic/eui';
 import { DetectorDetailsView } from '../../../../Detectors/containers/DetectorDetailsView/DetectorDetailsView';
 import { FieldMappingsView } from '../../../../Detectors/components/FieldMappingsView/FieldMappingsView';
 import { AlertTriggersView } from '../../../../Detectors/containers/AlertTriggersView/AlertTriggersView';
