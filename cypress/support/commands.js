@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const { ADMIN_AUTH, INDICES, NODE_API, PLUGIN_NAME } = require('./constants');
+const { NODE_API } = require('./constants');
 
 // ***********************************************
 // This example commands.js shows you how to
