@@ -205,7 +205,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
   const ruleItems = prePackagedRuleItems.concat(customRuleItems);
   return (
     <div>
-      <EuiTitle size={'l'}>
+      <EuiTitle size={'m'}>
         <h3>Edit detector rules</h3>
       </EuiTitle>
       <EuiSpacer size="xl" />

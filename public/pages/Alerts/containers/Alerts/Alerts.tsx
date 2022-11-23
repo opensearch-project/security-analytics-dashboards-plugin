@@ -431,7 +431,7 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
           <EuiFlexItem>
             <EuiFlexGroup gutterSize={'s'} justifyContent={'spaceBetween'}>
               <EuiFlexItem>
-                <EuiTitle size="l">
+                <EuiTitle size="m">
                   <h1>Security alerts</h1>
                 </EuiTitle>
               </EuiFlexItem>
