@@ -78,10 +78,13 @@ describe('Findings', () => {
   });
 
   it('allows user to view details about rules that were triggered', () => {
-    // Open rule details for each rule
+    cy.wait(5000);
+    cy.get(`[placeholder="Search findings"]`).focus().type('USB').trigger('search');
+
+    cy.wait(5000);
+
     // open Finding details flyout
-    cy.get('button', { timeout: 5000 });
-    cy.get('.euiLink--primary').last().click({ force: true });
+    cy.get(`[data-test-subj="view-details-icon"]`).click({ force: true });
 
     cy.wait(5000);
 
@@ -107,7 +110,7 @@ describe('Findings', () => {
     });
 
     cy.get('button', { timeout: 1000 });
-    cy.get(`[class="euiAccordion__button"]`).contains('USB Device Plugged').click({ force: true });
+    cy.get('.euiAccordion__button').contains('USB Device Plugged').click({ force: true });
 
     // Confirm content
     cy.contains('Documents');
