@@ -96,7 +96,7 @@ export const Rules: React.FC<RulesProps> = (props) => {
         <EuiFlexItem>
           <EuiFlexGroup gutterSize={'s'} justifyContent={'spaceBetween'}>
             <EuiFlexItem>
-              <EuiTitle size="l">
+              <EuiTitle size="m">
                 <h1>Rules</h1>
               </EuiTitle>
             </EuiFlexItem>
