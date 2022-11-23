@@ -96,7 +96,7 @@ export default class ConfigureFieldMapping extends Component<
       seenAliases.add(entry[1]);
     });
 
-    return []; //invalidFields;
+    return invalidFields;
   }
 
   onMappingCreation = (ruleFieldName: string, indxFieldName: string): void => {
@@ -144,7 +144,7 @@ export default class ConfigureFieldMapping extends Component<
       <div>
         {!isEdit && (
           <>
-            <EuiTitle size={'l'}>
+            <EuiTitle size={'m'}>
               <h3>{createDetectorSteps[DetectorCreationStep.CONFIGURE_FIELD_MAPPING].title}</h3>
             </EuiTitle>
 
