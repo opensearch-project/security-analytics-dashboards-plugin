@@ -30,6 +30,7 @@ interface ConfigureAlertsProps extends RouteComponentProps {
   changeDetector: (detector: Detector) => void;
   updateDataValidState: (step: DetectorCreationStep, isValid: boolean) => void;
   notificationsService: NotificationsService;
+  hasNotificationPlugin: boolean;
 }
 
 interface ConfigureAlertsState {
@@ -120,7 +121,9 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
                 paddingSize={'none'}
                 initialIsOpen={true}
                 extraAction={
-                  <EuiButton onClick={() => this.onDelete(index)}>Remove alert trigger</EuiButton>
+                  <EuiButton color="danger" onClick={() => this.onDelete(index)}>
+                    Remove alert trigger
+                  </EuiButton>
                 }
               >
                 <EuiHorizontalRule margin={'xs'} />
@@ -133,6 +136,7 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
                   loadingNotifications={loading}
                   onAlertTriggerChanged={this.onAlertTriggerChanged}
                   refreshNotificationChannels={this.getNotificationChannels}
+                  hasNotificationPlugin={this.props.hasNotificationPlugin}
                 />
               </EuiAccordion>
             </EuiPanel>
