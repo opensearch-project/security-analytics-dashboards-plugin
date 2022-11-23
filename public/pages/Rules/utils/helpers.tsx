@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiBasicTableColumn, EuiLink } from '@elastic/eui';
+import { EuiBasicTableColumn, EuiBreadcrumb, EuiLink } from '@elastic/eui';
 import React from 'react';
 import { capitalizeFirstLetter, errorNotificationToast } from '../../../utils/helpers';
 import { ruleSeverity, ruleSource, ruleTypes } from './constants';
@@ -13,6 +13,7 @@ import { Rule } from '../../../../models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { AUTHOR_REGEX, validateDescription, validateName } from '../../../utils/validation';
 import { dump, load } from 'js-yaml';
+import { BREADCRUMBS } from '../../../utils/constants';
 
 export interface RuleTableItem {
   title: string;
@@ -82,7 +83,7 @@ export const getRulesTableSearchConfig = (): Search => {
         type: 'field_value_selection',
         field: 'category',
         name: 'Rule Type',
-        multiSelect: false,
+        multiSelect: 'or',
         options: ruleTypes.map((type: string) => ({
           value: type,
         })),
@@ -91,14 +92,14 @@ export const getRulesTableSearchConfig = (): Search => {
         type: 'field_value_selection',
         field: 'level',
         name: 'Rule Severity',
-        multiSelect: false,
+        multiSelect: 'or',
         options: ruleSeverity,
       },
       {
         type: 'field_value_selection',
         field: 'source',
         name: 'Source',
-        multiSelect: false,
+        multiSelect: 'or',
         options: ruleSource.map((source: string) => ({
           value: source,
         })),
@@ -145,4 +146,11 @@ export function validateRule(
   }
 
   return true;
+}
+
+export function setBreadCrumb(
+  breadCrumb: EuiBreadcrumb,
+  breadCrumbSetter?: (breadCrumbs: EuiBreadcrumb[]) => void
+) {
+  breadCrumbSetter?.([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.RULES, breadCrumb]);
 }

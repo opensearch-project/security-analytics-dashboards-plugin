@@ -39,6 +39,7 @@ interface FindingsTableProps extends RouteComponentProps {
   endTime: string;
   onRefresh: () => void;
   onFindingsFiltered: (findings: FindingItemType[]) => void;
+  hasNotificationsPlugin: boolean;
 }
 
 interface FindingsTableState {
@@ -129,6 +130,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
             allRules={this.props.rules}
             refreshNotificationChannels={this.props.refreshNotificationChannels}
             rulesOptions={ruleOptions}
+            hasNotificationPlugin={this.props.hasNotificationsPlugin}
           />
         ),
         flyoutOpen: true,
@@ -156,7 +158,10 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         dataType: 'string',
         render: (id, finding) =>
           (
-            <EuiLink onClick={() => this.renderFindingDetailsFlyout(finding)}>
+            <EuiLink
+              onClick={() => this.renderFindingDetailsFlyout(finding)}
+              data-test-subj={`findings-table-finding-id`}
+            >
               {`${(id as string).slice(0, 7)}...`}
             </EuiLink>
           ) || DEFAULT_EMPTY_DATA,
@@ -199,6 +204,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
               <EuiToolTip content={'View details'}>
                 <EuiButtonIcon
                   aria-label={'View details'}
+                  data-test-subj={`view-details-icon`}
                   iconType={'expand'}
                   onClick={() => this.renderFindingDetailsFlyout(finding)}
                 />
