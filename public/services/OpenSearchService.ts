@@ -38,7 +38,7 @@ export default class OpenSearchService {
   };
 
   getPlugins = async (): Promise<ServerResponse<Plugin[]>> => {
-    let url = `..${API.PLUGINS}/`;
+    let url = `..${API.PLUGINS}`;
     return await this.httpClient.get(url);
   };
 }

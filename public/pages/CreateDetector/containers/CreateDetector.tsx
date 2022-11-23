@@ -31,7 +31,11 @@ import {
 } from '../components/DefineDetector/components/DetectionRules/types/interfaces';
 import { RuleInfo } from '../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { errorNotificationToast, successNotificationToast } from '../../../utils/helpers';
+import {
+  errorNotificationToast,
+  successNotificationToast,
+  getPlugins,
+} from '../../../utils/helpers';
 
 interface CreateDetectorProps extends RouteComponentProps {
   isEdit: boolean;
@@ -201,16 +205,9 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
 
   async getPlugins() {
     const { services } = this.props;
-    try {
-      const pluginsResponse = await services.opensearchService.getPlugins();
-      if (pluginsResponse.ok) {
-        this.setState({ plugins: pluginsResponse.response.map((plugin) => plugin.component) });
-      } else {
-        console.warn(pluginsResponse.error);
-      }
-    } catch (e) {
-      console.warn(e);
-    }
+    const plugins = await getPlugins(services.opensearchService);
+
+    this.setState({ plugins });
   }
 
   async getRules(prePackaged: boolean): Promise<RuleItemInfo[]> {

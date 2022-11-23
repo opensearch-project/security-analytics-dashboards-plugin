@@ -42,6 +42,7 @@ import {
   createSelectComponent,
   errorNotificationToast,
   renderVisualization,
+  getPlugins,
 } from '../../../../utils/helpers';
 import { DetectorHit, RuleSource } from '../../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
@@ -219,16 +220,9 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
 
   async getPlugins() {
     const { opensearchService } = this.props;
-    try {
-      const pluginsResponse = await opensearchService.getPlugins();
-      if (pluginsResponse.ok) {
-        this.setState({ plugins: pluginsResponse.response.map((plugin) => plugin.component) });
-      } else {
-        console.warn(pluginsResponse.error);
-      }
-    } catch (e) {
-      console.warn(e);
-    }
+    const plugins = await getPlugins(opensearchService);
+
+    this.setState({ plugins });
   }
 
   onTimeChange = ({ start, end }: { start: string; end: string }) => {

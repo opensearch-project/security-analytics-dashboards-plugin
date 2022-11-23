@@ -18,7 +18,7 @@ import {
 import { RulesSharedState } from '../../../../models/interfaces';
 import { ROUTES, OS_NOTIFICATION_PLUGIN } from '../../../../utils/constants';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { errorNotificationToast } from '../../../../utils/helpers';
+import { errorNotificationToast, getPlugins } from '../../../../utils/helpers';
 
 export interface UpdateAlertConditionsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
@@ -134,16 +134,9 @@ export default class UpdateAlertConditions extends Component<
 
   async getPlugins() {
     const { opensearchService } = this.props;
-    try {
-      const pluginsResponse = await opensearchService.getPlugins();
-      if (pluginsResponse.ok) {
-        this.setState({ plugins: pluginsResponse.response.map((plugin) => plugin.component) });
-      } else {
-        console.warn(pluginsResponse.error);
-      }
-    } catch (e) {
-      console.warn(e);
-    }
+    const plugins = await getPlugins(opensearchService);
+
+    this.setState({ plugins });
   }
 
   onCancel = () => {
