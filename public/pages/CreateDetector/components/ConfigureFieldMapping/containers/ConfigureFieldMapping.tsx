@@ -96,7 +96,7 @@ export default class ConfigureFieldMapping extends Component<
       seenAliases.add(entry[1]);
     });
 
-    return []; //invalidFields;
+    return invalidFields;
   }
 
   onMappingCreation = (ruleFieldName: string, indxFieldName: string): void => {
