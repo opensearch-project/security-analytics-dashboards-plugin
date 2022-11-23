@@ -123,13 +123,15 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
     />
   );
 
+  const getDetectionRulesTitle = () => `View detection rules (${totalSelected})`;
+
   return props.rulesCanFold ? (
     <EuiAccordion
       id={props.detector.name}
-      title="View detection rules"
+      title={getDetectionRulesTitle()}
       buttonContent={
         <EuiText size="m">
-          <p>View detection rules</p>
+          <p>{getDetectionRulesTitle()}</p>
         </EuiText>
       }
     >
