@@ -37,7 +37,6 @@ export default class FieldNameSelector extends Component<SIEMFieldNameProps, SIE
   }
 
   onMappingChange = (selectedOptions: EuiComboBoxOptionOption<string>[]) => {
-    if (!selectedOptions.length) selectedOptions = [...this.state.selectedOptions];
     this.setState({ selectedOptions });
     this.props.onChange(selectedOptions[0]?.label);
   };
@@ -47,7 +46,6 @@ export default class FieldNameSelector extends Component<SIEMFieldNameProps, SIE
     const { isInvalid, fieldNameOptions } = this.props;
 
     const comboOptions = fieldNameOptions.map((option) => ({
-      value: option,
       label: option,
     }));
 
@@ -55,7 +53,7 @@ export default class FieldNameSelector extends Component<SIEMFieldNameProps, SIE
       <EuiFormRow
         style={{ width: '100%' }}
         isInvalid={isInvalid}
-        error={isInvalid ? 'Name already used.' : undefined}
+        error={isInvalid ? 'Field already used.' : undefined}
       >
         <EuiComboBox
           data-test-subj={'detector-field-mappings-select'}
@@ -63,7 +61,6 @@ export default class FieldNameSelector extends Component<SIEMFieldNameProps, SIE
           singleSelection={{ asPlainText: true }}
           options={comboOptions}
           selectedOptions={selectedOptions}
-          isClearable={false}
           onChange={this.onMappingChange}
         />
       </EuiFormRow>
