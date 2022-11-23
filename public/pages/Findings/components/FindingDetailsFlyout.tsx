@@ -92,7 +92,11 @@ export default class FindingDetailsFlyout extends Component<
               <EuiFlexItem>
                 {/*//TODO: Refactor EuiLink to filter rules table to the specific rule.*/}
                 <EuiFormRow label={'Rule name'}>
-                  <EuiLink href={`#${ROUTES.RULES}`} target={'_blank'}>
+                  <EuiLink
+                    href={`#${ROUTES.RULES}`}
+                    data-test-subj={`finding-details-${fullRule.title}-details`}
+                    target={'_blank'}
+                  >
                     {fullRule.title || DEFAULT_EMPTY_DATA}
                   </EuiLink>
                 </EuiFormRow>
@@ -189,7 +193,13 @@ export default class FindingDetailsFlyout extends Component<
               </EuiFlexGroup>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
-              <EuiButtonIcon iconType="cross" display="empty" iconSize="m" onClick={closeFlyout} />
+              <EuiButtonIcon
+                iconType="cross"
+                display="empty"
+                iconSize="m"
+                onClick={closeFlyout}
+                data-test-subj={`close-finding-details-flyout`}
+              />
             </EuiFlexItem>
           </EuiFlexGroup>
         </EuiFlyoutHeader>
@@ -209,7 +219,11 @@ export default class FindingDetailsFlyout extends Component<
 
             <EuiFlexItem>
               <EuiFormRow label={'Detector'}>
-                <EuiLink href={`#${ROUTES.DETECTOR_DETAILS}/${_id}`} target={'_blank'}>
+                <EuiLink
+                  href={`#${ROUTES.DETECTOR_DETAILS}/${_id}`}
+                  target={'_blank'}
+                  data-test-subj={`finding-flyout-detector-link`}
+                >
                   {name || DEFAULT_EMPTY_DATA}
                 </EuiLink>
               </EuiFormRow>
