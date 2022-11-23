@@ -13,15 +13,17 @@ import { CriteriaWithPagination, EuiInMemoryTable, EuiPanel } from '@elastic/eui
 
 export interface RulesTableProps {
   ruleItems: RuleTableItem[];
+  loading: boolean;
   showRuleDetails: (ruleItem: RuleTableItem) => void;
 }
 
-export const RulesTable: React.FC<RulesTableProps> = ({ ruleItems, showRuleDetails }) => {
+export const RulesTable: React.FC<RulesTableProps> = ({ ruleItems, loading, showRuleDetails }) => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 25 });
 
   return (
     <EuiPanel>
       <EuiInMemoryTable
+        loading={loading}
         items={ruleItems}
         columns={getRulesTableColumns(showRuleDetails)}
         search={getRulesTableSearchConfig()}
