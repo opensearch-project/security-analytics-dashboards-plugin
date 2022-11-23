@@ -12,7 +12,7 @@ import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { Rule } from '../../../../../models/interfaces';
 import { RuleItemInfoBase } from '../../models/types';
 import { CoreServicesContext } from '../../../../components/core_services';
-import { validateRule } from '../../utils/helpers';
+import { setBreadCrumb, validateRule } from '../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../../../../utils/helpers';
 
@@ -29,7 +29,7 @@ export const DuplicateRule: React.FC<DuplicateRuleProps> = ({
   notifications,
 }) => {
   const context = useContext(CoreServicesContext);
-  context?.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.RULES_DUPLICATE]);
+  setBreadCrumb(BREADCRUMBS.RULES_DUPLICATE, context?.chrome.setBreadcrumbs);
   const footerActions: React.FC<{ rule: Rule }> = ({ rule }) => {
     const onCreate = async () => {
       if (!validateRule(rule, notifications!, 'create')) {
