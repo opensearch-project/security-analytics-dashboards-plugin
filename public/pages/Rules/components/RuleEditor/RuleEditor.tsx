@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BrowserServices } from '../../../../models/interfaces';
 import React, { ChangeEvent, useState } from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import {
@@ -31,7 +30,6 @@ import {
 } from '../../../../utils/validation';
 
 export interface RuleEditorProps {
-  services: BrowserServices;
   title: string;
   FooterActions: React.FC<{ rule: Rule }>;
   rule?: Rule;
