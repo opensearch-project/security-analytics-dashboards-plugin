@@ -144,7 +144,7 @@ export default class ConfigureFieldMapping extends Component<
       <div>
         {!isEdit && (
           <div>
-            <EuiTitle size={'l'}>
+            <EuiTitle size={'m'}>
               <h3>{createDetectorSteps[DetectorCreationStep.CONFIGURE_FIELD_MAPPING].title}</h3>
             </EuiTitle>
             <EuiSpacer size={'m'} />

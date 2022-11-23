@@ -290,7 +290,7 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
         <EuiFlexItem>
           <EuiFlexGroup gutterSize={'s'} justifyContent={'spaceBetween'}>
             <EuiFlexItem>
-              <EuiTitle size="l">
+              <EuiTitle size="m">
                 <h1>Findings</h1>
               </EuiTitle>
             </EuiFlexItem>
