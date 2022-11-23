@@ -386,7 +386,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
   createStepsMetadata(currentStep: number): EuiContainedStepProps[] {
     return Object.values(createDetectorSteps).map((stepData) => ({
       title: stepData.title,
-      status: currentStep < stepData.step + 1 ? 'disabled' : 'complete',
+      status: currentStep < stepData.step ? 'disabled' : undefined,
       children: <></>,
     }));
   }
