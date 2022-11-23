@@ -29,7 +29,7 @@ export const createDetector = () => {
   );
 
   // Enter a name for the detector in the appropriate input
-  cy.get(`input[placeholder="Enter a name for the detector."]`).type('test detector{enter}');
+  cy.get(`input[placeholder="Enter a name for the detector."]`).type('test_detector{enter}');
 
   // Select our pre-seeded data source (cypress-test-windows)
   cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(

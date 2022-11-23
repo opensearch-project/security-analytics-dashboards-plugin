@@ -5,14 +5,20 @@
 
 import { PLUGIN_NAME } from '../support/constants';
 import sample_document from '../fixtures/sample_document.json';
+import sample_detector from '../fixtures/sample_detector.json';
+import sample_field_mappings from '../fixtures/sample_field_mappings.json';
+import sample_index_settings from '../fixtures/sample_index_settings.json';
 import { createDetector } from '../support/helpers.js';
-import { eq } from 'lodash';
 
 describe('Findings', () => {
   const ruleTags = ['low', 'windows', 'attack.initial_access', 'attack.t1200'];
 
   before(() => {
+    // cy.deleteAllIndices();
+    // cy.createIndex('cypress-test-windows', sample_index_settings);
     createDetector();
+    // cy.createDetector(sample_detector);
+    // cy.createMappings(sample_field_mappings, 'cypress-test-windows');
   });
 
   it('displays findings based on recently ingested data', () => {
@@ -38,10 +44,10 @@ describe('Findings', () => {
     cy.get('button').contains('Refresh').click({ force: true });
 
     // Check for non-empty findings list
-    cy.contains('No items found').should('not.exist');
+    cy.contains('No items found', { timeout: 60000 }).should('not.exist');
 
     // Check for expected findings
-    cy.contains('test detector');
+    cy.contains('test_detector');
     cy.contains('Windows');
     cy.contains('Low');
   });
@@ -78,15 +84,8 @@ describe('Findings', () => {
   });
 
   it('allows user to view details about rules that were triggered', () => {
-    cy.wait(5000);
-    cy.get(`[placeholder="Search findings"]`).focus().type('USB').trigger('search');
-
-    cy.wait(5000);
-
-    // open Finding details flyout
-    cy.get(`[data-test-subj="view-details-icon"]`).click({ force: true });
-
-    cy.wait(5000);
+    // open Finding details flyout via finding id link
+    cy.get(`[data-test-subj="view-details-icon"]`, { timeout: 15000 }).click({ force: true });
 
     // Second rule details - open
     cy.get('button', { timeout: 5000 });
@@ -106,8 +105,11 @@ describe('Findings', () => {
 
     // Close Flyout
     cy.get(`[data-test-subj="close-finding-details-flyout"]`).then(($el) => {
-      cy.get($el).click({ force: true, timeout: 5000 });
+      cy.get($el).click({ force: true });
     });
+
+    // open Finding details flyout via icon button
+    cy.get(`[data-test-subj="view-details-icon"]`, { timeout: 20000 }).click({ force: true });
 
     cy.get('button', { timeout: 1000 });
     cy.get('.euiAccordion__button').contains('USB Device Plugged').click({ force: true });
@@ -158,7 +160,7 @@ describe('Findings', () => {
     });
 
     // Click on detector to be removed
-    cy.contains('test detector').click({ force: true }, { timeout: 2000 });
+    cy.contains('test_detector').click({ force: true }, { timeout: 2000 });
 
     // Click "Actions" button, the click "Delete"
     cy.get('button').contains('Actions').click({ force: true });
