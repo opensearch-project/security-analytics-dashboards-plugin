@@ -15,7 +15,7 @@ import { ContentPanel } from '../../../../components/ContentPanel';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../../../../utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
-import { validateRule } from '../../utils/helpers';
+import { setBreadCrumb, validateRule } from '../../utils/helpers';
 
 export interface ImportRuleProps {
   services: BrowserServices;
@@ -114,7 +114,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
         </EuiFlexGroup>
       </>
     );
-    context?.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.RULES_IMPORT]);
+    setBreadCrumb(BREADCRUMBS.RULES_IMPORT, context?.chrome.setBreadcrumbs);
   }, [fileError, onChange]);
 
   const footerActions: React.FC<{ rule: Rule }> = ({ rule }) => {
