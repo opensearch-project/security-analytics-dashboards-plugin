@@ -22,14 +22,9 @@ export default class FieldNameSelector extends Component<SIEMFieldNameProps, SIE
   constructor(props: SIEMFieldNameProps) {
     super(props);
 
-    let selectedOptions = [] as EuiComboBoxOptionOption<string>[];
-    if (props.selectedField) {
-      selectedOptions = [
-        {
-          label: props.selectedField,
-        },
-      ];
-    }
+    const selectedOptions: EuiComboBoxOptionOption<string>[] = props.selectedField
+      ? [{ label: props.selectedField }]
+      : [];
 
     this.state = {
       selectedOptions: selectedOptions,
