@@ -27,6 +27,7 @@ export const Rules: React.FC<RulesProps> = (props) => {
   const rulesViewModelActor = useMemo(() => new RulesViewModelActor(services), [services]);
   const [allRules, setAllRules] = useState<RuleItemInfoBase[]>([]);
   const [flyoutData, setFlyoutData] = useState<RuleTableItem | undefined>(undefined);
+  const [loading, setLoading] = useState<boolean>(false);
   const ruleItems: RuleTableItem[] = useMemo(
     () =>
       allRules.map((rule) => ({
@@ -42,8 +43,10 @@ export const Rules: React.FC<RulesProps> = (props) => {
   );
 
   const getRules = useCallback(async () => {
+    setLoading(true);
     const allRules = await rulesViewModelActor.fetchRules();
     setAllRules(allRules);
+    setLoading(false);
   }, [rulesViewModelActor]);
 
   useEffect(() => {
@@ -113,7 +116,7 @@ export const Rules: React.FC<RulesProps> = (props) => {
           <EuiSpacer size={'m'} />
         </EuiFlexItem>
         <EuiFlexItem>
-          <RulesTable ruleItems={ruleItems} showRuleDetails={setFlyoutData} />
+          <RulesTable loading={loading} ruleItems={ruleItems} showRuleDetails={setFlyoutData} />
         </EuiFlexItem>
       </EuiFlexGroup>
     </>
