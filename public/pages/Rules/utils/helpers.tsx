@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiBasicTableColumn, EuiLink } from '@elastic/eui';
+import { EuiBasicTableColumn, EuiBreadcrumb, EuiLink } from '@elastic/eui';
 import React from 'react';
 import { capitalizeFirstLetter, errorNotificationToast } from '../../../utils/helpers';
 import { ruleSeverity, ruleSource, ruleTypes } from './constants';
@@ -13,6 +13,7 @@ import { Rule } from '../../../../models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { AUTHOR_REGEX, validateDescription, validateName } from '../../../utils/validation';
 import { dump, load } from 'js-yaml';
+import { BREADCRUMBS } from '../../../utils/constants';
 
 export interface RuleTableItem {
   title: string;
@@ -145,4 +146,11 @@ export function validateRule(
   }
 
   return true;
+}
+
+export function setBreadCrumb(
+  breadCrumb: EuiBreadcrumb,
+  breadCrumbSetter?: (breadCrumbs: EuiBreadcrumb[]) => void
+) {
+  breadCrumbSetter?.([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.RULES, breadCrumb]);
 }
