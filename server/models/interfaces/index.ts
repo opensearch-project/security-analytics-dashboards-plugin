@@ -26,6 +26,7 @@ export interface SecurityAnalyticsApi {
   readonly GET_ALERTS: string;
   readonly RULES_BASE: string;
   readonly CHANNELS: string;
+  readonly PLUGINS: string;
   readonly ACKNOWLEDGE_ALERTS: string;
 }
 
@@ -74,6 +75,10 @@ export interface DocumentIdsQueryParams {
 export interface TimeRangeQueryParams {
   index: string;
   body: string;
+}
+
+export interface Plugin {
+  component: string;
 }
 
 export * from './Detectors';

@@ -401,6 +401,7 @@ export default class Main extends Component<MainProps, MainState> {
                               ruleService={services.ruleService}
                               notificationsService={services.notificationsService}
                               notifications={core?.notifications}
+                              opensearchService={services.opensearchService}
                             />
                           )}
                         />

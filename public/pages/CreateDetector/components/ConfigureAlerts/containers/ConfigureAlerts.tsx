@@ -30,6 +30,7 @@ interface ConfigureAlertsProps extends RouteComponentProps {
   changeDetector: (detector: Detector) => void;
   updateDataValidState: (step: DetectorCreationStep, isValid: boolean) => void;
   notificationsService: NotificationsService;
+  hasNotificationPlugin: boolean;
 }
 
 interface ConfigureAlertsState {
@@ -133,6 +134,7 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
                   loadingNotifications={loading}
                   onAlertTriggerChanged={this.onAlertTriggerChanged}
                   refreshNotificationChannels={this.getNotificationChannels}
+                  hasNotificationPlugin={this.props.hasNotificationPlugin}
                 />
               </EuiAccordion>
             </EuiPanel>

@@ -35,6 +35,7 @@ interface CreateAlertFlyoutProps extends RouteComponentProps {
   refreshNotificationChannels: () => void;
   allRules: object;
   rulesOptions: Pick<RulesSharedState, 'rulesOptions'>['rulesOptions'];
+  hasNotificationPlugin: boolean;
 }
 
 interface CreateAlertFlyoutState {
@@ -146,6 +147,7 @@ export default class CreateAlertFlyout extends Component<
             isEdit={false}
             loadingNotifications={loading}
             onAlertTriggerChanged={this.onAlertConditionChange}
+            hasNotificationPlugin={this.props.hasNotificationPlugin}
           />
           <EuiSpacer size={'m'} />
 
