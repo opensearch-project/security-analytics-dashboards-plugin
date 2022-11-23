@@ -70,7 +70,7 @@ describe('Detectors', () => {
     });
 
     // Click Next button to continue
-    cy.get('button').contains('Next').click({ force: true, timeout: 2000 });
+    cy.get('button').contains('Next').click({ force: true });
 
     // Check that correct page now showing
     cy.contains('Required field mappings');
@@ -125,11 +125,11 @@ describe('Detectors', () => {
     // Create the detector
     cy.get('button').contains('Create').click({ force: true });
 
-    // wait for creation to finish, timeout above does not work
-    cy.wait(10000);
+    // // wait for creation to finish, timeout above does not work
+    // cy.wait(10000);
 
     // Confirm detector active
-    cy.contains('There are no existing detectors.').should('not.exist');
+    cy.contains('There are no existing detectors.', { timeout: 20000 }).should('not.exist');
     cy.contains('test detector');
     cy.contains('Active');
     cy.contains('View Findings');
@@ -175,10 +175,10 @@ describe('Detectors', () => {
 
     cy.wait(7000);
     // Save changes to detector details
-    cy.get(`[data-test-subj="save-basic-details-edits"]`).click({ force: true }, { timeout: 5000 });
+    cy.get(`[data-test-subj="save-basic-details-edits"]`).click({ force: true });
 
     // Confirm taken to detector details page
-    cy.url().should(
+    cy.url({ timeout: 20000 }).should(
       'include',
       'http://localhost:5601/app/opensearch_security_analytics_dashboards#/detector-details'
     );
@@ -198,7 +198,7 @@ describe('Detectors', () => {
     );
 
     // Click on detector name
-    cy.contains('test detector').click({ force: true, timeout: 5000 });
+    cy.contains('test detector').click({ force: true });
 
     // Confirm number of rules before edit
     cy.contains('Detection rules (1)');
@@ -223,7 +223,7 @@ describe('Detectors', () => {
     });
 
     // Save changes
-    cy.get(`[data-test-subj="save-detector-rules-edits"]`).click({ force: true, timeout: 5000 });
+    cy.get(`[data-test-subj="save-detector-rules-edits"]`).click({ force: true });
 
     // Confirm 1 rule has been removed from detector
     cy.contains('Detection rules (0)');
@@ -247,7 +247,7 @@ describe('Detectors', () => {
     });
 
     // Save changes
-    cy.get(`[data-test-subj="save-detector-rules-edits"]`).click({ force: true, timeout: 5000 });
+    cy.get(`[data-test-subj="save-detector-rules-edits"]`).click({ force: true });
 
     // Confirm 1 rule has been added to detector
     cy.contains('Detection rules (1)');
