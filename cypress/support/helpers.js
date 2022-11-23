@@ -29,7 +29,7 @@ export const createDetector = () => {
   );
 
   // Enter a name for the detector in the appropriate input
-  cy.get(`input[placeholder="Enter a name for the detector."]`).type('test_detector{enter}');
+  cy.get(`input[placeholder="Enter a name for the detector."]`).type('test detector{enter}');
 
   // Select our pre-seeded data source (cypress-test-windows)
   cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(
@@ -37,10 +37,10 @@ export const createDetector = () => {
   );
 
   // Select threat detector type (Windows logs)
-  cy.get(`input[id="windows"]`).click({ force: true, timeout: 5000 });
+  cy.get(`input[id="windows"]`).click({ force: true });
 
-  // // Wait for detector rules to load - timeout on click above ineffective
-  // cy.wait(5000);
+  // Wait for detector rules to load - timeout on click above ineffective
+  cy.wait(5000);
 
   // Click Next button to continue
   cy.get('button').contains('Next').click({ force: true }, { timeout: 2000 });

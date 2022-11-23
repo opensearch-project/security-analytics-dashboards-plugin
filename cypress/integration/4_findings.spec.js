@@ -11,7 +11,7 @@ import sample_index_settings from '../fixtures/sample_index_settings.json';
 import { createDetector } from '../support/helpers.js';
 
 describe('Findings', () => {
-  const ruleTags = ['low', 'windows', 'attack.initial_access', 'attack.t1200'];
+  const ruleTags = ['low', 'windows'];
 
   before(() => {
     // cy.deleteAllIndices();
@@ -25,7 +25,7 @@ describe('Findings', () => {
     // Visit Findings page
     cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/findings`);
 
-    // need to wait here specifically to ensure findings are generated.  Timeout above does not work as no findings are generated.
+    // need to wait here specifically to ensure findings are generated
     cy.wait(10000);
 
     // Confirm arrival at Findings page
@@ -47,7 +47,7 @@ describe('Findings', () => {
     cy.contains('No items found', { timeout: 60000 }).should('not.exist');
 
     // Check for expected findings
-    cy.contains('test_detector');
+    cy.contains('test detector');
     cy.contains('Windows');
     cy.contains('Low');
   });
@@ -85,7 +85,8 @@ describe('Findings', () => {
 
   it('allows user to view details about rules that were triggered', () => {
     // open Finding details flyout via finding id link
-    cy.get(`[data-test-subj="view-details-icon"]`, { timeout: 15000 }).click({ force: true });
+    cy.wait(5000);
+    cy.get(`[data-test-subj="view-details-icon"]`).click({ force: true });
 
     // Second rule details - open
     cy.get('button', { timeout: 5000 });
@@ -108,6 +109,7 @@ describe('Findings', () => {
       cy.get($el).click({ force: true });
     });
 
+    cy.wait(5000);
     // open Finding details flyout via icon button
     cy.get(`[data-test-subj="view-details-icon"]`, { timeout: 20000 }).click({ force: true });
 
@@ -139,18 +141,6 @@ describe('Findings', () => {
       'eq',
       'http://localhost:5601/app/opensearch_security_analytics_dashboards#/rules'
     );
-
-    // Click rule link
-    cy.get('a')
-      .contains('Setting Change in Windows Firewall with Advanced Security')
-      .invoke('removeAttr', 'target')
-      .click({ force: true });
-
-    // Confirm destination reached
-    cy.url().should(
-      'eq',
-      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/rules'
-    );
   });
 
   after(() => {
@@ -160,7 +150,7 @@ describe('Findings', () => {
     });
 
     // Click on detector to be removed
-    cy.contains('test_detector').click({ force: true }, { timeout: 2000 });
+    cy.contains('test detector').click({ force: true }, { timeout: 2000 });
 
     // Click "Actions" button, the click "Delete"
     cy.get('button').contains('Actions').click({ force: true });
