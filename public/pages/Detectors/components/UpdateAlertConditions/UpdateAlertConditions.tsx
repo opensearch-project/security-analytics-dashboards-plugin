@@ -133,16 +133,16 @@ export default class UpdateAlertConditions extends Component<
   };
 
   async getPlugins() {
-    const { opensearchService, notifications } = this.props;
+    const { opensearchService } = this.props;
     try {
       const pluginsResponse = await opensearchService.getPlugins();
       if (pluginsResponse.ok) {
         this.setState({ plugins: pluginsResponse.response.map((plugin) => plugin.component) });
       } else {
-        errorNotificationToast(notifications, 'retrieve', 'plugins', pluginsResponse.error);
+        console.warn(pluginsResponse.error);
       }
     } catch (e) {
-      errorNotificationToast(notifications, 'retrieve', 'plugins', e);
+      console.warn(e);
     }
   }
 

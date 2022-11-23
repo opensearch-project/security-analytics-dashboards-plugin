@@ -200,16 +200,16 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
   }
 
   async getPlugins() {
-    const { services, notifications } = this.props;
+    const { services } = this.props;
     try {
       const pluginsResponse = await services.opensearchService.getPlugins();
       if (pluginsResponse.ok) {
         this.setState({ plugins: pluginsResponse.response.map((plugin) => plugin.component) });
       } else {
-        errorNotificationToast(notifications, 'retrieve', 'plugins', pluginsResponse.error);
+        console.warn(pluginsResponse.error);
       }
     } catch (e) {
-      errorNotificationToast(notifications, 'retrieve', 'plugins', e);
+      console.warn(e);
     }
   }
 
