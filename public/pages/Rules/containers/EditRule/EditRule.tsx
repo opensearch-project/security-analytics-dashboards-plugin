@@ -66,7 +66,6 @@ export const EditRule: React.FC<EditRuleProps> = ({
   return (
     <RuleEditor
       title="Edit rule"
-      services={services}
       FooterActions={footerActions}
       rule={location.state.ruleItem._source}
     />
