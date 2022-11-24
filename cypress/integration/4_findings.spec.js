@@ -14,11 +14,7 @@ describe('Findings', () => {
   const ruleTags = ['low', 'windows'];
 
   before(() => {
-    // cy.deleteAllIndices();
-    // cy.createIndex('cypress-test-windows', sample_index_settings);
     createDetector();
-    // cy.createDetector(sample_detector);
-    // cy.createMappings(sample_field_mappings, 'cypress-test-windows');
   });
 
   it('displays findings based on recently ingested data', () => {
@@ -44,7 +40,7 @@ describe('Findings', () => {
     cy.get('button').contains('Refresh').click({ force: true });
 
     // Check for non-empty findings list
-    cy.contains('No items found', { timeout: 60000 }).should('not.exist');
+    cy.contains('No items found').should('not.exist');
 
     // Check for expected findings
     cy.contains('test detector');
@@ -79,7 +75,7 @@ describe('Findings', () => {
 
     // Close Flyout
     cy.get(`[data-test-subj="close-finding-details-flyout"]`).then(($el) => {
-      cy.get($el).click({ force: true, timeout: 5000 });
+      cy.get($el).click({ force: true });
     });
   });
 
@@ -89,7 +85,7 @@ describe('Findings', () => {
     cy.get(`[data-test-subj="view-details-icon"]`).click({ force: true });
 
     // Second rule details - open
-    cy.get('button', { timeout: 5000 });
+    // cy.get('button');
     cy.get('.euiAccordion__button')
       .contains('Setting Change in Windows Firewall with Advanced Security')
       .click({ force: true });
@@ -109,9 +105,11 @@ describe('Findings', () => {
       cy.get($el).click({ force: true });
     });
 
+    // need to wait for error toasts to dissipate, neither icon nor finding id are clickable without this
     cy.wait(5000);
+
     // open Finding details flyout via icon button
-    cy.get(`[data-test-subj="view-details-icon"]`, { timeout: 20000 }).click({ force: true });
+    cy.get(`[data-test-subj="view-details-icon"]`).click({ force: true });
 
     cy.get('button', { timeout: 1000 });
     cy.get('.euiAccordion__button').contains('USB Device Plugged').click({ force: true });
