@@ -4,8 +4,7 @@
  */
 
 import React, { Component } from 'react';
-import { EuiFormRow, EuiSelect } from '@elastic/eui';
-import { ChangeEvent } from 'react';
+import { EuiComboBox, EuiComboBoxOptionOption, EuiFormRow } from '@elastic/eui';
 
 interface SIEMFieldNameProps {
   fieldNameOptions: string[];
@@ -15,43 +14,49 @@ interface SIEMFieldNameProps {
 }
 
 interface SIEMFieldNameState {
-  selectedOption?: string;
+  selectedOptions: EuiComboBoxOptionOption<string>[];
   errorMessage?: string;
 }
 
 export default class FieldNameSelector extends Component<SIEMFieldNameProps, SIEMFieldNameState> {
   constructor(props: SIEMFieldNameProps) {
     super(props);
+
+    const selectedOptions: EuiComboBoxOptionOption<string>[] = props.selectedField
+      ? [{ label: props.selectedField }]
+      : [];
+
     this.state = {
-      selectedOption: props.selectedField,
+      selectedOptions: selectedOptions,
     };
   }
 
-  onChange: React.ChangeEventHandler<HTMLSelectElement> = (
-    event: ChangeEvent<HTMLSelectElement>
-  ) => {
-    this.setState({ selectedOption: event.target.value });
-    this.props.onChange(event.target.value);
+  onMappingChange = (selectedOptions: EuiComboBoxOptionOption<string>[]) => {
+    this.setState({ selectedOptions });
+    this.props.onChange(selectedOptions[0]?.label);
   };
 
   render() {
-    const { isInvalid } = this.props;
+    const { selectedOptions } = this.state;
+    const { isInvalid, fieldNameOptions } = this.props;
+
+    const comboOptions = fieldNameOptions.map((option) => ({
+      label: option,
+    }));
+
     return (
       <EuiFormRow
         style={{ width: '100%' }}
         isInvalid={isInvalid}
-        error={isInvalid ? 'Name already used' : undefined}
+        error={isInvalid ? 'Field already used.' : undefined}
       >
-        <EuiSelect
-          data-test-subj={'detector-field-mappins-select'}
-          required={true}
-          hasNoInitialSelection
-          options={this.props.fieldNameOptions.map((option) => ({
-            value: option,
-            text: option,
-          }))}
-          value={this.state.selectedOption}
-          onChange={this.onChange}
+        <EuiComboBox
+          data-test-subj={'detector-field-mappings-select'}
+          placeholder="Select a mapping field"
+          singleSelection={{ asPlainText: true }}
+          options={comboOptions}
+          selectedOptions={selectedOptions}
+          onChange={this.onMappingChange}
         />
       </EuiFormRow>
     );

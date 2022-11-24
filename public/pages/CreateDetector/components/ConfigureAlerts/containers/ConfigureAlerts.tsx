@@ -98,7 +98,7 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
     const { loading, notificationChannels } = this.state;
     return (
       <div>
-        <EuiTitle size={'l'}>
+        <EuiTitle size={'m'}>
           <h3>
             {createDetectorSteps[DetectorCreationStep.CONFIGURE_ALERTS].title +
               ` (${triggers.length})`}

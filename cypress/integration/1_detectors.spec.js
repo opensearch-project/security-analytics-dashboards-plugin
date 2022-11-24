@@ -80,7 +80,7 @@ describe('Detectors', () => {
       const mappedTo = sample_field_mappings[field_name];
 
       cy.contains('tr', field_name).within(() => {
-        cy.get(`[data-test-subj="detector-field-mappins-select"]`).select(mappedTo);
+        cy.get(`[data-test-subj="detector-field-mappings-select"]`).click().type(mappedTo);
       });
     }
 
