@@ -152,6 +152,11 @@ describe('Findings', () => {
       timeout: 5000,
     });
 
+    cy.url().should(
+      'include',
+      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/detectors'
+    );
+
     // Click on detector to be removed
     cy.contains('test detector').click({ force: true }, { timeout: 2000 });
 
