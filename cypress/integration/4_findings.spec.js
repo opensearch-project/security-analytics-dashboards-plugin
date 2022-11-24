@@ -5,15 +5,13 @@
 
 import { PLUGIN_NAME } from '../support/constants';
 import sample_document from '../fixtures/sample_document.json';
-import sample_detector from '../fixtures/sample_detector.json';
-import sample_field_mappings from '../fixtures/sample_field_mappings.json';
-import sample_index_settings from '../fixtures/sample_index_settings.json';
 import { createDetector } from '../support/helpers.js';
 
 describe('Findings', () => {
   const ruleTags = ['low', 'windows'];
 
   before(() => {
+    // TODO - get cy.createMappings to work successfully so cy.createDetector can be used here instead
     createDetector();
   });
 
@@ -85,7 +83,6 @@ describe('Findings', () => {
     cy.get(`[data-test-subj="view-details-icon"]`).click({ force: true });
 
     // Second rule details - open
-    // cy.get('button');
     cy.get('.euiAccordion__button')
       .contains('Setting Change in Windows Firewall with Advanced Security')
       .click({ force: true });
