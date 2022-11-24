@@ -14,7 +14,7 @@ import { RuleItemInfoBase } from '../../models/types';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../../../../utils/helpers';
-import { validateRule } from '../../utils/helpers';
+import { setBreadCrumb, validateRule } from '../../utils/helpers';
 
 export interface EditRuleProps
   extends RouteComponentProps<any, any, { ruleItem: RuleItemInfoBase }> {
@@ -29,7 +29,7 @@ export const EditRule: React.FC<EditRuleProps> = ({
   notifications,
 }) => {
   const context = useContext(CoreServicesContext);
-  context?.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.RULES_EDIT]);
+  setBreadCrumb(BREADCRUMBS.RULES_EDIT, context?.chrome.setBreadcrumbs);
   const footerActions: React.FC<{ rule: Rule }> = ({ rule }) => {
     const onSave = async () => {
       if (!validateRule(rule, notifications!, 'save')) {

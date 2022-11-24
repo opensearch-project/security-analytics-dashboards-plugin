@@ -194,7 +194,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
 
   return (
     <div>
-      <EuiTitle size={'l'}>
+      <EuiTitle size={'m'}>
         <h3>Edit detector details</h3>
       </EuiTitle>
       <EuiSpacer size="xxl" />

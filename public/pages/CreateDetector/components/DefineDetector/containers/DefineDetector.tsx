@@ -165,7 +165,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
 
     return (
       <div>
-        <EuiTitle size={'l'}>
+        <EuiTitle size={'m'}>
           <h3>{`${isEdit ? 'Edit' : 'Define'} detector`}</h3>
         </EuiTitle>
 
