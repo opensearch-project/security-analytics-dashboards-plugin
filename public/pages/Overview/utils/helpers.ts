@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { euiPaletteColorBlind } from '@elastic/eui';
+import { euiPaletteColorBlind, euiPaletteForStatus } from '@elastic/eui';
+import _ from 'lodash';
 import { TopLevelSpec } from 'vega-lite';
 import { SummaryData } from '../components/Widgets/Summary';
 
@@ -25,20 +26,6 @@ export function getOverviewVisualizationSpec(
 ): TopLevelSpec {
   const timeUnit = 'yearmonthdatehoursminutes';
   const aggregate = 'sum';
-  const findingsEncoding: { [x: string]: any } = {
-    x: { timeUnit, field: 'time', title: '', axis: { grid: false, ticks: false } },
-    y: {
-      aggregate,
-      field: 'finding',
-      type: 'quantitative',
-      title: 'Count',
-      axis: { grid: true, ticks: false },
-    },
-  };
-
-  if (groupBy === 'log_type') {
-    findingsEncoding['color'] = { field: 'logType', type: 'nominal', title: 'Log type' };
-  }
 
   return getVisualizationSpec(
     'Plot showing average data with raw values in the background.',
@@ -46,7 +33,24 @@ export function getOverviewVisualizationSpec(
     [
       {
         mark: 'bar',
-        encoding: findingsEncoding,
+        encoding: {
+          x: { timeUnit, field: 'time', title: '', axis: { grid: false, ticks: false } },
+          y: {
+            aggregate,
+            field: 'finding',
+            type: 'quantitative',
+            title: 'Count',
+            axis: { grid: true, ticks: false },
+          },
+          color: {
+            field: _.isEmpty(groupBy) || groupBy !== 'logType' ? 'finding' : 'logType',
+            type: 'nominal',
+            title: groupBy === 'logType' ? 'Log type' : 'All findings',
+            scale: {
+              range: euiPaletteColorBlind(),
+            },
+          },
+        },
       },
       {
         mark: {
@@ -84,6 +88,9 @@ export function getFindingsVisualizationSpec(visualizationData: any[], groupBy: 
           field: groupBy,
           type: 'nominal',
           title: groupBy === 'logType' ? 'Log type' : 'Rule severity',
+          scale: {
+            range: euiPaletteColorBlind(),
+          },
         },
       },
     },
@@ -113,7 +120,7 @@ export function getAlertsVisualizationSpec(visualizationData: any[], groupBy: st
           type: 'nominal',
           title: groupBy === 'status' ? 'Alert status' : 'Alert severity',
           scale: {
-            range: euiPaletteColorBlind(),
+            range: groupBy === 'status' ? euiPaletteForStatus(5) : euiPaletteColorBlind(),
           },
         },
       },
@@ -127,7 +134,14 @@ export function getTopRulesVisualizationSpec(visualizationData: any[]) {
       mark: { type: 'arc', innerRadius: 90 },
       encoding: {
         theta: { aggregate: 'sum', field: 'count', type: 'quantitative' },
-        color: { field: 'ruleName', type: 'nominal', header: { title: '' } },
+        color: {
+          field: 'ruleName',
+          type: 'nominal',
+          header: { title: '' },
+          scale: {
+            range: euiPaletteColorBlind(),
+          },
+        },
       },
     },
   ]);

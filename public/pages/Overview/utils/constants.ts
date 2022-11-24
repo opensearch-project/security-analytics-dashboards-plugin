@@ -4,6 +4,6 @@
  */
 
 export const summaryGroupByOptions = [
-  { text: 'All findings', value: 'all_findings' },
-  { text: 'Log type', value: 'log_type' },
+  { text: 'All findings', value: 'finding' },
+  { text: 'Log type', value: 'logType' },
 ];
