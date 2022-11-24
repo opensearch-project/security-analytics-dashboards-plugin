@@ -151,7 +151,7 @@ export default class UpdateFieldMappings extends Component<
     const { submitting, detector, fieldMappings, loading } = this.state;
     return (
       <div>
-        <EuiTitle size={'l'}>
+        <EuiTitle size={'m'}>
           <h3>Edit detector details</h3>
         </EuiTitle>
         <EuiSpacer size={'xxl'} />

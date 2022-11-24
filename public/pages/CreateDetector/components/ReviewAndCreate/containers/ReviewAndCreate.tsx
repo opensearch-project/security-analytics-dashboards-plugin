@@ -38,7 +38,7 @@ export class ReviewAndCreate extends React.Component<ReviewAndCreateProps, Revie
   render() {
     return (
       <div>
-        <EuiTitle size={'l'}>
+        <EuiTitle size={'m'}>
           <h3>Review and create</h3>
         </EuiTitle>
         <DetectorDetailsView
