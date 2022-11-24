@@ -338,7 +338,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
         <EuiFlexItem>
           <EuiFlexGroup>
             <EuiFlexItem>
-              <EuiTitle size="l">
+              <EuiTitle size="m">
                 <h1>Threat detectors</h1>
               </EuiTitle>
             </EuiFlexItem>

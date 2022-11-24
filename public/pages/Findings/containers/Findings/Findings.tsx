@@ -27,6 +27,7 @@ import {
   BREADCRUMBS,
   DEFAULT_DATE_RANGE,
   MAX_RECENTLY_USED_TIME_RANGES,
+  OS_NOTIFICATION_PLUGIN,
 } from '../../../../utils/constants';
 import { getFindingsVisualizationSpec } from '../../../Overview/utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
@@ -41,6 +42,7 @@ import {
   createSelectComponent,
   errorNotificationToast,
   renderVisualization,
+  getPlugins,
 } from '../../../../utils/helpers';
 import { DetectorHit, RuleSource } from '../../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
@@ -65,6 +67,7 @@ interface FindingsState {
   recentlyUsedRanges: DurationRange[];
   groupBy: FindingsGroupByType;
   filteredFindings: FindingItemType[];
+  plugins: string[];
 }
 
 interface FindingVisualizationData {
@@ -99,6 +102,7 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
       recentlyUsedRanges: [DEFAULT_DATE_RANGE],
       groupBy: 'logType',
       filteredFindings: [],
+      plugins: [],
     };
   }
 
@@ -119,6 +123,7 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
   onRefresh = async () => {
     await this.getFindings();
     await this.getNotificationChannels();
+    await this.getPlugins();
     renderVisualization(this.generateVisualizationSpec(), 'findings-view');
   };
 
@@ -213,6 +218,13 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
     this.setState({ notificationChannels: channels });
   };
 
+  async getPlugins() {
+    const { opensearchService } = this.props;
+    const plugins = await getPlugins(opensearchService);
+
+    this.setState({ plugins });
+  }
+
   onTimeChange = ({ start, end }: { start: string; end: string }) => {
     let { recentlyUsedRanges } = this.state;
     recentlyUsedRanges = recentlyUsedRanges.filter(
@@ -290,7 +302,7 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
         <EuiFlexItem>
           <EuiFlexGroup gutterSize={'s'} justifyContent={'spaceBetween'}>
             <EuiFlexItem>
-              <EuiTitle size="l">
+              <EuiTitle size="m">
                 <h1>Findings</h1>
               </EuiTitle>
             </EuiFlexItem>
@@ -336,6 +348,7 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
               notificationChannels={parseNotificationChannelsToOptions(notificationChannels)}
               refreshNotificationChannels={this.getNotificationChannels}
               onFindingsFiltered={this.onFindingsFiltered}
+              hasNotificationsPlugin={this.state.plugins.includes(OS_NOTIFICATION_PLUGIN)}
             />
           </ContentPanel>
         </EuiFlexItem>
