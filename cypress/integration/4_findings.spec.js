@@ -16,6 +16,14 @@ describe('Findings', () => {
   });
 
   it('displays findings based on recently ingested data', () => {
+    // Confirm detector created
+    cy.url().should(
+      'include',
+      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/detector-details'
+    );
+    cy.contains('test detector');
+    cy.contains('Active');
+
     // Visit Findings page
     cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/findings`);
 
