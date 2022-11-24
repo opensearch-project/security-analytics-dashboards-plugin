@@ -3,8 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { euiPaletteColorBlind } from '@elastic/eui';
+import _ from 'lodash';
 import { TopLevelSpec } from 'vega-lite';
 import { SummaryData } from '../components/Widgets/Summary';
+import { chartLegend } from './constants';
 
 function getVisualizationSpec(description: string, data: any, layers: any[]): TopLevelSpec {
   let spec: TopLevelSpec = {
@@ -56,7 +59,21 @@ export function getOverviewVisualizationSpec(
         },
         encoding: {
           x: { timeUnit, field: 'time', title: '', axis: { grid: false, ticks: false } },
-          y: { aggregate, field: 'alert', title: 'Count', axis: { grid: true, ticks: false } },
+          y: {
+            aggregate,
+            field: 'alert',
+            title: 'Count',
+            axis: { grid: true, ticks: false },
+          },
+          color: {
+            field: _.isEmpty(groupBy) || groupBy !== 'logType' ? 'finding' : 'logType',
+            type: 'nominal',
+            title: groupBy === 'logType' ? 'Log type' : 'All findings',
+            scale: {
+              range: euiPaletteColorBlind(),
+            },
+            legend: chartLegend,
+          },
         },
       },
     ]
@@ -85,6 +102,7 @@ export function getFindingsVisualizationSpec(visualizationData: any[], groupBy: 
           field: groupBy,
           type: 'nominal',
           title: groupBy === 'logType' ? 'Log type' : 'Rule severity',
+          legend: chartLegend,
         },
       },
     },
@@ -113,6 +131,7 @@ export function getAlertsVisualizationSpec(visualizationData: any[], groupBy: st
           field: groupBy,
           type: 'nominal',
           title: groupBy === 'status' ? 'Alert status' : 'Alert severity',
+          legend: chartLegend,
         },
       },
     },
@@ -125,7 +144,12 @@ export function getTopRulesVisualizationSpec(visualizationData: any[]) {
       mark: { type: 'arc', innerRadius: 90 },
       encoding: {
         theta: { aggregate: 'sum', field: 'count', type: 'quantitative' },
-        color: { field: 'ruleName', type: 'nominal', header: { title: '' } },
+        color: {
+          field: 'ruleName',
+          type: 'nominal',
+          title: 'Rule name',
+          legend: chartLegend,
+        },
       },
     },
   ]);
