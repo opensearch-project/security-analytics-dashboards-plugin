@@ -24,7 +24,7 @@ describe('Findings', () => {
 
     // Confirm arrival at Findings page
     cy.url().should(
-      'eq',
+      'include',
       'http://localhost:5601/app/opensearch_security_analytics_dashboards#/findings'
     );
 
