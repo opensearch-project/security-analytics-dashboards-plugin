@@ -40,7 +40,7 @@ const newRuyleDefaultState: RuleEditorFormState = {
 
 export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActions }) => {
   const [ruleEditorFormState, setRuleEditorFormState] = useState<RuleEditorFormState>(
-    rule ? mapRuleToForm(rule) : newRuyleDefaultState
+    rule ? { ...mapRuleToForm(rule), id: newRuyleDefaultState.id } : newRuyleDefaultState
   );
 
   const getRule = (): Rule => {
