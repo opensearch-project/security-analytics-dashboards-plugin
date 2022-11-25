@@ -28,27 +28,13 @@ import {
   validateDescription,
   validateName,
 } from '../../../../utils/validation';
+import { RuleEditorFormState } from './RuleEditorFormState.model';
+import { mapFormToRule, mapRuleToForm } from './mappers';
 
 export interface RuleEditorProps {
   title: string;
   FooterActions: React.FC<{ rule: Rule }>;
   rule?: Rule;
-}
-
-export interface VisualEditorFormState {
-  id: string;
-  log_source: string;
-
-  logType: string;
-  name: string;
-  description: string;
-  status: string;
-  author: string;
-  references: string[];
-  tags: EuiComboBoxOptionOption<string>[];
-  detection: string;
-  level: string;
-  falsePositives: string[];
 }
 
 export interface VisualEditorFormErrorsState {
@@ -57,43 +43,7 @@ export interface VisualEditorFormErrorsState {
   authorError: string | null;
 }
 
-const mapFormToRule = (formState: VisualEditorFormState): Rule => {
-  return {
-    id: formState.id,
-    category: formState.logType,
-    title: formState.name,
-    description: formState.description,
-    status: formState.status,
-    author: formState.author,
-    references: formState.references.map((ref) => ({ value: ref })),
-    tags: formState.tags.map((tag) => ({ value: tag.label })),
-    log_source: formState.log_source,
-    detection: formState.detection,
-    level: formState.level,
-    false_positives: formState.falsePositives.map((falsePositive) => ({
-      value: falsePositive,
-    })),
-  };
-};
-
-const mapRuleToForm = (rule: Rule): VisualEditorFormState => {
-  return {
-    id: rule.id,
-    log_source: rule.log_source,
-    logType: rule.category,
-    name: rule.title,
-    description: rule.description,
-    status: rule.status,
-    author: rule.author,
-    references: rule.references.map((ref) => ref.value),
-    tags: rule.tags.map((tag) => ({ label: tag.value })),
-    detection: rule.detection,
-    level: rule.level,
-    falsePositives: rule.false_positives.map((falsePositive) => falsePositive.value),
-  };
-};
-
-const newRuyleDefaultState: VisualEditorFormState = {
+const newRuyleDefaultState: RuleEditorFormState = {
   id: '25b9c01c-350d-4b95-bed1-836d04a4f324',
   log_source: '',
   logType: '',
@@ -109,7 +59,7 @@ const newRuyleDefaultState: VisualEditorFormState = {
 };
 
 export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActions }) => {
-  const [visualEditorFormState, setVisualEditorFormState] = useState<VisualEditorFormState>(
+  const [ruleEditorFormState, setRuleEditorFormState] = useState<RuleEditorFormState>(
     rule ? mapRuleToForm(rule) : newRuyleDefaultState
   );
 
@@ -120,12 +70,12 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
   });
 
   const getRule = (): Rule => {
-    return mapFormToRule(visualEditorFormState);
+    return mapFormToRule(ruleEditorFormState);
   };
 
   const onNameChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value: name } = e.target;
-    setVisualEditorFormState((prevState) => ({ ...prevState, name }));
+    setRuleEditorFormState((prevState) => ({ ...prevState, name }));
   };
   const onNameBlur = (e: ChangeEvent<HTMLInputElement>) => {
     if (!validateName(e.target.value)) {
@@ -137,12 +87,12 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
 
   const onLogTypeChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const { value: logType } = e.target;
-    setVisualEditorFormState((prevState) => ({ ...prevState, logType }));
+    setRuleEditorFormState((prevState) => ({ ...prevState, logType }));
   };
 
   const onDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { value: description } = e.target;
-    setVisualEditorFormState((prevState) => ({ ...prevState, description }));
+    setRuleEditorFormState((prevState) => ({ ...prevState, description }));
   };
   const onDescriptionBlur = (e: ChangeEvent<HTMLTextAreaElement>) => {
     if (!validateDescription(e.target.value)) {
@@ -157,15 +107,15 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
 
   const onLevelChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const { value: level } = e.target;
-    setVisualEditorFormState((prevState) => ({ ...prevState, level }));
+    setRuleEditorFormState((prevState) => ({ ...prevState, level }));
   };
 
   const onTagsChange = (selectedOptions: EuiComboBoxOptionOption<string>[]) => {
     const tags = selectedOptions.map((option) => ({ label: option.label }));
-    setVisualEditorFormState((prevState) => ({ ...prevState, tags }));
+    setRuleEditorFormState((prevState) => ({ ...prevState, tags }));
   };
   const onCreateTag = (value: string) => {
-    setVisualEditorFormState((prevState) => ({
+    setRuleEditorFormState((prevState) => ({
       ...prevState,
       tags: [...prevState.tags, { label: value }],
     }));
@@ -173,7 +123,7 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
 
   const onAuthorChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value: author } = e.target;
-    setVisualEditorFormState((prevState) => ({ ...prevState, author }));
+    setRuleEditorFormState((prevState) => ({ ...prevState, author }));
   };
 
   const onAuthorBlur = (e: ChangeEvent<HTMLInputElement>) => {
@@ -186,21 +136,21 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
 
   const onStatusChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const { value: status } = e.target;
-    setVisualEditorFormState((prevState) => ({ ...prevState, status }));
+    setRuleEditorFormState((prevState) => ({ ...prevState, status }));
   };
 
   const onDetectionChange = (value: string) => {
-    setVisualEditorFormState((prevState) => ({ ...prevState, detection: value }));
+    setRuleEditorFormState((prevState) => ({ ...prevState, detection: value }));
   };
 
   const onReferenceAdd = () => {
-    setVisualEditorFormState((prevState) => ({
+    setRuleEditorFormState((prevState) => ({
       ...prevState,
       references: [...prevState.references, ''],
     }));
   };
   const onReferenceEdit = (value: string, index: number) => {
-    setVisualEditorFormState((prevState) => ({
+    setRuleEditorFormState((prevState) => ({
       ...prevState,
       references: [
         ...prevState.references.slice(0, index),
@@ -210,7 +160,7 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
     }));
   };
   const onReferenceRemove = (index: number) => {
-    setVisualEditorFormState((prevState) => {
+    setRuleEditorFormState((prevState) => {
       const newRefs = [...prevState.references];
       newRefs.splice(index, 1);
       return {
@@ -221,13 +171,13 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
   };
 
   const onFalsePositiveAdd = () => {
-    setVisualEditorFormState((prevState) => ({
+    setRuleEditorFormState((prevState) => ({
       ...prevState,
       falsePositives: [...prevState.falsePositives, ''],
     }));
   };
   const onFalsePositiveEdit = (value: string, index: number) => {
-    setVisualEditorFormState((prevState) => ({
+    setRuleEditorFormState((prevState) => ({
       ...prevState,
       falsePositives: [
         ...prevState.falsePositives.slice(0, index),
@@ -237,7 +187,7 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
     }));
   };
   const onFalsePositiveRemove = (index: number) => {
-    setVisualEditorFormState((prevState) => {
+    setRuleEditorFormState((prevState) => {
       const newFalsePositives = [...prevState.falsePositives];
       newFalsePositives.splice(index, 1);
       return {
@@ -259,7 +209,7 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
             >
               <EuiFieldText
                 placeholder="Enter rule name"
-                value={visualEditorFormState.name}
+                value={ruleEditorFormState.name}
                 onChange={onNameChange}
                 onBlur={onNameBlur}
                 required
@@ -273,7 +223,7 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
                 hasNoInitialSelection={true}
                 options={ruleTypes.map((type: string) => ({ value: type, text: type }))}
                 onChange={onLogTypeChange}
-                value={visualEditorFormState.logType}
+                value={ruleEditorFormState.logType}
                 required
                 data-test-subj={'rule_type_dropdown'}
               />
@@ -290,7 +240,7 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
           error={visualEditorErrors.descriptionError}
         >
           <EuiTextArea
-            value={visualEditorFormState.description}
+            value={ruleEditorFormState.description}
             onChange={onDescriptionChange}
             onBlur={onDescriptionBlur}
             data-test-subj={'rule_description_field'}
@@ -303,7 +253,7 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
           <EuiCodeEditor
             mode="yaml"
             width="100%"
-            value={visualEditorFormState.detection}
+            value={ruleEditorFormState.detection}
             onChange={onDetectionChange}
             data-test-subj={'rule_detection_field'}
           />
@@ -321,7 +271,7 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
               { value: 'low', text: 'Low' },
             ]}
             onChange={onLevelChange}
-            value={visualEditorFormState.level}
+            value={ruleEditorFormState.level}
             required
             data-test-subj={'rule_severity_dropdown'}
           />
@@ -332,7 +282,7 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
         <EuiFormRow label="Tags">
           <EuiComboBox
             placeholder="Select or create options"
-            selectedOptions={visualEditorFormState.tags}
+            selectedOptions={ruleEditorFormState.tags}
             onChange={onTagsChange}
             onCreateOption={onCreateTag}
             data-test-subj={'rule_tags_dropdown'}
@@ -343,7 +293,7 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
         <FieldTextArray
           label="References"
           addButtonName="Add another URL"
-          fields={visualEditorFormState.references}
+          fields={ruleEditorFormState.references}
           onFieldAdd={onReferenceAdd}
           onFieldEdit={onReferenceEdit}
           onFieldRemove={onReferenceRemove}
@@ -353,7 +303,7 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
         <FieldTextArray
           label="False positive cases"
           addButtonName="Add another case"
-          fields={visualEditorFormState.falsePositives}
+          fields={ruleEditorFormState.falsePositives}
           onFieldAdd={onFalsePositiveAdd}
           onFieldEdit={onFalsePositiveEdit}
           onFieldRemove={onFalsePositiveRemove}
@@ -366,7 +316,7 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
         >
           <EuiFieldText
             placeholder="Enter author name"
-            value={visualEditorFormState.author}
+            value={ruleEditorFormState.author}
             onChange={onAuthorChange}
             onBlur={onAuthorBlur}
             required
@@ -381,7 +331,7 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
             hasNoInitialSelection={true}
             options={ruleStatus.map((status: string) => ({ value: status, text: status }))}
             onChange={onStatusChange}
-            value={visualEditorFormState.status}
+            value={ruleEditorFormState.status}
             required
             data-test-subj={'rule_status_dropdown'}
           />
