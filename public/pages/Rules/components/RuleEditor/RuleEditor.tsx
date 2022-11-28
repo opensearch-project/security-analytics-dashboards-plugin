@@ -5,11 +5,12 @@
 
 import React, { useState } from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
-import { EuiSpacer } from '@elastic/eui';
+import { EuiSpacer, EuiButtonGroup } from '@elastic/eui';
 import { Rule } from '../../../../../models/interfaces';
 import { RuleEditorFormState } from './RuleEditorFormState.model';
 import { mapFormToRule, mapRuleToForm } from './mappers';
 import { VisualRuleEditor } from './VisualRuleEditor';
+import { YamlRuleEditor } from './YamlRuleEditor';
 
 export interface RuleEditorProps {
   title: string;
@@ -38,10 +39,27 @@ const newRuyleDefaultState: RuleEditorFormState = {
   falsePositives: [''],
 };
 
+const editorTypes = [
+  {
+    id: 'visual',
+    label: 'Visual Editor',
+  },
+  {
+    id: 'yaml',
+    label: 'YAML Editor',
+  },
+];
+
 export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActions }) => {
   const [ruleEditorFormState, setRuleEditorFormState] = useState<RuleEditorFormState>(
     rule ? { ...mapRuleToForm(rule), id: newRuyleDefaultState.id } : newRuyleDefaultState
   );
+
+  const [selectedEditorType, setSelectedEditorType] = useState('visual');
+
+  const onEditorTypeChange = (optionId: string) => {
+    setSelectedEditorType(optionId);
+  };
 
   const getRule = (): Rule => {
     return mapFormToRule(ruleEditorFormState);
@@ -50,11 +68,25 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
   return (
     <>
       <ContentPanel title={title}>
-        <VisualRuleEditor
-          ruleEditorFormState={ruleEditorFormState}
-          setRuleEditorFormState={setRuleEditorFormState}
+        <EuiButtonGroup
+          legend="This is editor type selector"
+          options={editorTypes}
+          idSelected={selectedEditorType}
+          onChange={(id) => onEditorTypeChange(id)}
         />
-
+        <EuiSpacer size="xl" />
+        {selectedEditorType === 'visual' && (
+          <VisualRuleEditor
+            ruleEditorFormState={ruleEditorFormState}
+            setRuleEditorFormState={setRuleEditorFormState}
+          />
+        )}
+        {selectedEditorType === 'yaml' && (
+          <YamlRuleEditor
+            ruleEditorFormState={ruleEditorFormState}
+            setRuleEditorFormState={setRuleEditorFormState}
+          />
+        )}
         <EuiSpacer />
       </ContentPanel>
       <EuiSpacer size="xl" />
