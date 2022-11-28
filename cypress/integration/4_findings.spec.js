@@ -17,10 +17,7 @@ describe('Findings', () => {
 
   it('displays findings based on recently ingested data', () => {
     // Confirm detector created
-    cy.url().should(
-      'include',
-      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/detector-details'
-    );
+    cy.url().should('include', 'opensearch_security_analytics_dashboards#/detector-details');
     cy.contains('test detector');
     cy.contains('Active');
 
@@ -31,10 +28,7 @@ describe('Findings', () => {
     cy.wait(10000);
 
     // Confirm arrival at Findings page
-    cy.url().should(
-      'include',
-      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/findings'
-    );
+    cy.url().should('include', 'opensearch_security_analytics_dashboards#/findings');
 
     // Ingest a new document
     cy.ingestDocument('cypress-test-windows', sample_document);
@@ -152,10 +146,7 @@ describe('Findings', () => {
       timeout: 5000,
     });
 
-    cy.url().should(
-      'include',
-      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/detectors'
-    );
+    cy.url().should('include', 'opensearch_security_analytics_dashboards#/detectors');
 
     // Click on detector to be removed
     cy.contains('test detector').click({ force: true }, { timeout: 2000 });

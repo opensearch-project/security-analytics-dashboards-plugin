@@ -138,20 +138,6 @@ Cypress.Commands.add('createMappings', (mappingsJSON, index) => {
   }
 });
 
-// Cypress.Commands.add('updateMappings', (mappingsJSON, index) => {
-//   for (let mapping in mappingsJSON) {
-//     const newMapping = (
-//       {
-//         index_name: index,
-//         field: mappingsJSON[mapping],
-//         alias:
-//       }
-//     );
-
-//     cy.request('PUT', `${Cypress.env('opensearch')}/${NODE_API.MAPPINGS_BASE}`, JSON.stringify(newMapping))
-//   }
-// });
-
 Cypress.Commands.add('ingestDocument', (indexId, sample_document) => {
   cy.request('POST', `${Cypress.env('opensearch')}/${indexId}/_doc`, sample_document);
 });
