@@ -9,10 +9,3 @@ export const summaryGroupByOptions = [
 ];
 
 export const moreLink = 'https://opensearch.org/docs/latest/security-analytics/';
-
-export const chartLegend = {
-  labelFontSize: 14,
-  titleFontSize: 12,
-  labelFont:
-    '"Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
-};

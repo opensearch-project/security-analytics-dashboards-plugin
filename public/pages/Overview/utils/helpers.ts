@@ -3,15 +3,24 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { euiPaletteColorBlind } from '@elastic/eui';
-import _ from 'lodash';
 import { TopLevelSpec } from 'vega-lite';
 import { SummaryData } from '../components/Widgets/Summary';
-import { chartLegend } from './constants';
 
 function getVisualizationSpec(description: string, data: any, layers: any[]): TopLevelSpec {
-  let spec: TopLevelSpec = {
-    config: { view: { stroke: null } },
+  return {
+    config: {
+      view: { stroke: null },
+      legend: {
+        labelColor: '#343741',
+        titleColor: '#1a1c21',
+        labelFontSize: 14,
+        titleFontWeight: 600,
+        titleLineHeight: 21,
+        titleFontSize: 14,
+        labelFont:
+          '"Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+      },
+    },
     $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
     description: description,
     data: {
@@ -19,8 +28,6 @@ function getVisualizationSpec(description: string, data: any, layers: any[]): To
     },
     layer: layers,
   };
-
-  return spec;
 }
 
 export function getOverviewVisualizationSpec(
@@ -65,15 +72,6 @@ export function getOverviewVisualizationSpec(
             title: 'Count',
             axis: { grid: true, ticks: false },
           },
-          color: {
-            field: _.isEmpty(groupBy) || groupBy !== 'logType' ? 'finding' : 'logType',
-            type: 'nominal',
-            title: groupBy === 'logType' ? 'Log type' : 'All findings',
-            scale: {
-              range: euiPaletteColorBlind(),
-            },
-            legend: chartLegend,
-          },
         },
       },
     ]
@@ -102,7 +100,6 @@ export function getFindingsVisualizationSpec(visualizationData: any[], groupBy: 
           field: groupBy,
           type: 'nominal',
           title: groupBy === 'logType' ? 'Log type' : 'Rule severity',
-          legend: chartLegend,
         },
       },
     },
@@ -131,7 +128,6 @@ export function getAlertsVisualizationSpec(visualizationData: any[], groupBy: st
           field: groupBy,
           type: 'nominal',
           title: groupBy === 'status' ? 'Alert status' : 'Alert severity',
-          legend: chartLegend,
         },
       },
     },
@@ -148,7 +144,6 @@ export function getTopRulesVisualizationSpec(visualizationData: any[]) {
           field: 'ruleName',
           type: 'nominal',
           title: 'Rule name',
-          legend: chartLegend,
         },
       },
     },
