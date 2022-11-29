@@ -5,22 +5,23 @@
 
 import { PLUGIN_NAME } from '../support/constants';
 import sample_document from '../fixtures/sample_document.json';
-import { createDetector } from '../support/helpers.js';
+import sample_index_settings from '../fixtures/sample_index_settings.json';
+import sample_field_mappings from '../fixtures/sample_field_mappings.json';
+import sample_detector from '../fixtures/sample_detector.json';
 
 describe('Findings', () => {
   const ruleTags = ['low', 'windows'];
 
   before(() => {
-    // TODO - get cy.createMappings to work successfully so cy.createDetector can be used here instead
-    createDetector();
+    cy.deleteAllIndices();
+
+    // create test index, mappings, and detector
+    cy.createIndex('cypress-test-windows', sample_index_settings);
+    cy.createAliasMappings('cypress-test-windows', 'windows', sample_field_mappings, false);
+    cy.createDetector(sample_detector);
   });
 
   it('displays findings based on recently ingested data', () => {
-    // Confirm detector created
-    cy.url().should('include', 'opensearch_security_analytics_dashboards#/detector-details');
-    cy.contains('test detector');
-    cy.contains('Active');
-
     // Visit Findings page
     cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/findings`);
 
@@ -84,31 +85,11 @@ describe('Findings', () => {
     cy.wait(5000);
     cy.get(`[data-test-subj="view-details-icon"]`).click({ force: true });
 
-    // Second rule details - open
-    cy.get('.euiAccordion__button')
-      .contains('Setting Change in Windows Firewall with Advanced Security')
-      .click({ force: true });
+    // // need to wait for error toasts to dissipate, neither icon nor finding id are clickable without this
+    // cy.wait(5000);
 
-    // Confirm content
-    cy.contains('Setting have been change in Windows Firewall');
-    cy.contains('Low');
-    cy.contains('Windows');
-    cy.contains('cypress-test-windows');
-
-    ruleTags.forEach((tag) => {
-      cy.contains(tag);
-    });
-
-    // Close Flyout
-    cy.get(`[data-test-subj="close-finding-details-flyout"]`).then(($el) => {
-      cy.get($el).click({ force: true });
-    });
-
-    // need to wait for error toasts to dissipate, neither icon nor finding id are clickable without this
-    cy.wait(5000);
-
-    // open Finding details flyout via icon button
-    cy.get(`[data-test-subj="view-details-icon"]`).click({ force: true });
+    // // open Finding details flyout via icon button
+    // cy.get(`[data-test-subj="view-details-icon"]`).click({ force: true });
 
     cy.get('button', { timeout: 1000 });
     cy.get('.euiAccordion__button').contains('USB Device Plugged').click({ force: true });

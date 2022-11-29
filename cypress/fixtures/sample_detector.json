@@ -1,7 +1,7 @@
 {
   "type": "detector",
   "detector_type": "windows",
-  "name": "test_detector",
+  "name": "test detector",
   "enabled": true,
   "createdBy": "",
   "schedule": {

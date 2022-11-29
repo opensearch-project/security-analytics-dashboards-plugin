@@ -109,35 +109,6 @@ Cypress.Commands.add('createIndex', (index, settings = {}) => {
   cy.request('PUT', `${Cypress.env('opensearch')}/${index}`, settings);
 });
 
-Cypress.Commands.add('createMappings', (mappingsJSON, index) => {
-  for (let mapping in mappingsJSON) {
-    const newMapping = {
-      index_name: index,
-      rule_topic: 'windows',
-      partial: true,
-      alias_mappings: {
-        properties: {
-          [mapping]: {
-            type: 'alias',
-            path: mappingsJSON[mapping],
-          },
-        },
-      },
-    };
-
-    const options = {
-      url: `${Cypress.env('opensearch')}/${NODE_API.MAPPINGS_BASE}`,
-      method: 'POST',
-      body: JSON.stringify(newMapping),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-
-    cy.request(options);
-  }
-});
-
 Cypress.Commands.add('ingestDocument', (indexId, sample_document) => {
   cy.request('POST', `${Cypress.env('opensearch')}/${indexId}/_doc`, sample_document);
 });
@@ -175,9 +146,22 @@ Cypress.Commands.add('deleteRule', (ruleName) => {
   });
 });
 
-Cypress.Commands.add('createIndex', (index, settings = {}) => {
-  cy.request('PUT', `${Cypress.env('opensearch')}/${index}`, settings);
-});
+Cypress.Commands.add(
+  'createAliasMappings',
+  (indexName, ruleTopic, aliasMappingsBody, partial = true) => {
+    const body = {
+      index_name: indexName,
+      rule_topic: ruleTopic,
+      partial: partial,
+      alias_mappings: aliasMappingsBody,
+    };
+    cy.request({
+      method: 'POST',
+      url: `${Cypress.env('opensearch')}${NODE_API.MAPPINGS_BASE}`,
+      body: body,
+    });
+  }
+);
 
 Cypress.Commands.add('createIndexTemplate', (name, template) => {
   cy.request(
