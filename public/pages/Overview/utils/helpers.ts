@@ -4,7 +4,6 @@
  */
 
 import { euiPaletteColorBlind, euiPaletteForStatus } from '@elastic/eui';
-import _ from 'lodash';
 import { TopLevelSpec } from 'vega-lite';
 import { SummaryData } from '../components/Widgets/Summary';
 
@@ -26,6 +25,7 @@ export function getOverviewVisualizationSpec(
 ): TopLevelSpec {
   const timeUnit = 'yearmonthdatehoursminutes';
   const aggregate = 'sum';
+  const groupByLogType = groupBy === 'logType';
 
   return getVisualizationSpec(
     'Plot showing average data with raw values in the background.',
@@ -43,9 +43,9 @@ export function getOverviewVisualizationSpec(
             axis: { grid: true, ticks: false },
           },
           color: {
-            field: _.isEmpty(groupBy) || groupBy !== 'logType' ? 'finding' : 'logType',
+            field: groupByLogType ? 'logType' : 'finding',
             type: 'nominal',
-            title: groupBy === 'logType' ? 'Log type' : 'All findings',
+            title: groupByLogType ? 'Log type' : 'All findings',
             scale: {
               range: euiPaletteColorBlind(),
             },
