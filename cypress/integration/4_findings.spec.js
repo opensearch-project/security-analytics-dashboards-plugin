@@ -51,7 +51,7 @@ describe('Findings', () => {
 
   it('displays finding details flyout when user clicks on Finding ID or View details icon', () => {
     // Click findingId to trigger Finding details flyout
-    cy.get(`[data-test-subj="findings-table-finding-id"]`).click();
+    cy.get(`[data-test-subj="findings-table-finding-id"]`, { timeout: 10000 }).click();
 
     // Confirm flyout contents
     cy.contains('Finding details');
