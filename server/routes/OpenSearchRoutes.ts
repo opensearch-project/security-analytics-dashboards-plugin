@@ -30,4 +30,12 @@ export function setupOpensearchRoutes(services: NodeServices, router: IRouter) {
     },
     opensearchService.timeRangeQuery
   );
+
+  router.get(
+    {
+      path: `${API.PLUGINS}`,
+      validate: false,
+    },
+    opensearchService.getPlugins
+  );
 }

@@ -26,6 +26,7 @@ import { parse, View } from 'vega/build-es5/vega.js';
 import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter/build/vega-interpreter.module';
 import { RuleInfo } from '../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { OpenSearchService } from '../services';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
@@ -227,4 +228,17 @@ export const successNotificationToast = (
     text: successMessage,
     toastLifeTimeMs: displayTime,
   });
+};
+
+export const getPlugins = async (opensearchService: OpenSearchService) => {
+  try {
+    const pluginsResponse = await opensearchService.getPlugins();
+    if (pluginsResponse.ok) {
+      return pluginsResponse.response.map((plugin) => plugin.component);
+    } else {
+      return [];
+    }
+  } catch (e) {
+    return [];
+  }
 };

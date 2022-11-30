@@ -4,25 +4,17 @@
  */
 
 import React, { useMemo } from 'react';
-import {
-  EuiFlexGroup,
-  EuiFlexItem,
-  EuiHorizontalRule,
-  EuiSpacer,
-  EuiSteps,
-  EuiText,
-  EuiTitle,
-} from '@elastic/eui';
-import { EuiButton } from '@elastic/eui';
+import { EuiHorizontalRule, EuiLink, EuiSpacer, EuiSteps, EuiText, EuiTitle } from '@elastic/eui';
 import { EuiContainedStepProps } from '@elastic/eui/src/components/steps/steps';
 import { ROUTES } from '../../../../utils/constants';
 import { RouteComponentProps } from 'react-router-dom';
+import { GetStartedStep } from './GetStartedStep';
+import { moreLink } from '../../utils/constants';
 
 export interface GettingStartedPopupProps {
   dismissPopup: () => void;
   history: RouteComponentProps['history'];
 }
-export interface OverviewStartState {}
 
 export const GettingStartedPopup: React.FC<GettingStartedPopupProps> = ({
   dismissPopup,
@@ -33,88 +25,96 @@ export const GettingStartedPopup: React.FC<GettingStartedPopupProps> = ({
       {
         title: 'Create security detector',
         children: (
-          <div style={{ marginTop: '-20px' }}>
-            <EuiText>
-              <p>
-                Identify security findings and threats from your log datas with curated detection
-                rules.
-              </p>
-            </EuiText>
-            <EuiSpacer size="s" />
-            <EuiButton
-              fill
-              onClick={() => {
-                dismissPopup();
-                history.push(ROUTES.DETECTORS_CREATE);
-              }}
-            >
-              Create detector
-            </EuiButton>
-          </div>
+          <GetStartedStep
+            title={
+              'Identify security findings and threats from your log data with detection rules. Additionally, you can set up alerts based on rule conditions.'
+            }
+            buttons={[
+              {
+                text: 'Create detector',
+                onClick: () => {
+                  dismissPopup();
+                  history.push(ROUTES.DETECTORS_CREATE);
+                },
+                opts: {
+                  fill: true,
+                },
+              },
+            ]}
+          />
         ),
       },
       {
         title: 'Discover security findings',
         children: (
-          <div style={{ marginTop: '-20px' }}>
-            <EuiText>
-              <p>
-                After detectors are create, you can view insights and analyse security findings.
-              </p>
-            </EuiText>
-            <EuiSpacer size="s" />
-            <EuiFlexGroup gutterSize="s">
-              <EuiFlexItem grow={false}>
-                <EuiButton fill onClick={dismissPopup}>
-                  Overview
-                </EuiButton>
-              </EuiFlexItem>
-              <EuiFlexItem grow={false}>
-                <EuiButton
-                  onClick={() => {
-                    dismissPopup();
-                    history.push(ROUTES.FINDINGS);
-                  }}
-                >
-                  View findings
-                </EuiButton>
-              </EuiFlexItem>
-            </EuiFlexGroup>
-          </div>
+          <GetStartedStep
+            title={
+              'After detectors are created, you can view insights and analyze security findings.'
+            }
+            buttons={[
+              {
+                text: 'Overview',
+                onClick: () => dismissPopup(),
+                opts: {
+                  fill: true,
+                },
+              },
+              {
+                text: 'View findings',
+                onClick: () => {
+                  dismissPopup();
+                  history.push(ROUTES.FINDINGS);
+                },
+              },
+            ]}
+          />
+        ),
+      },
+      {
+        title: 'View security alerts',
+        children: (
+          <GetStartedStep
+            title={'View alerts based on conditions you have specified from your detectors.'}
+            buttons={[
+              {
+                text: 'View alerts',
+                onClick: () => {
+                  dismissPopup();
+                  history.push(ROUTES.ALERTS);
+                },
+                opts: {
+                  fill: true,
+                },
+              },
+            ]}
+          />
         ),
       },
       {
         title: 'Create custom rules for detectors',
         children: (
-          <div style={{ marginTop: '-20px' }}>
-            <EuiText>
-              <p>Create rule or fine tune existing rules that can be added to detectors.</p>
-            </EuiText>
-            <EuiSpacer size="s" />
-            <EuiFlexGroup gutterSize="s">
-              <EuiFlexItem grow={false}>
-                <EuiButton
-                  fill
-                  onClick={() => {
-                    dismissPopup();
-                    history.push(ROUTES.RULES_CREATE);
-                  }}
-                >
-                  Create rule
-                </EuiButton>
-              </EuiFlexItem>
-              <EuiFlexItem grow={false}>
-                <EuiButton
-                  onClick={() => {
-                    dismissPopup();
-                    history.push(ROUTES.RULES);
-                  }}
-                >
-                  Manage rules
-                </EuiButton>
-              </EuiFlexItem>
-            </EuiFlexGroup>
-          </div>
+          <GetStartedStep
+            title={'Create rule or fine tune existing rules that can be added to detectors.'}
+            buttons={[
+              {
+                text: 'Create rule',
+                onClick: () => {
+                  dismissPopup();
+                  history.push(ROUTES.RULES_CREATE);
+                },
+                opts: {
+                  fill: true,
+                },
+              },
+              {
+                text: 'Manage rules',
+                onClick: () => {
+                  dismissPopup();
+                  history.push(ROUTES.RULES);
+                },
+              },
+            ]}
+          />
         ),
       },
     ],
@@ -129,7 +129,11 @@ export const GettingStartedPopup: React.FC<GettingStartedPopupProps> = ({
       <EuiHorizontalRule />
       <EuiText>
         <p>
-          Security analytics generates critical security insights from existing security event logs
+          Security analytics generates critical security insights from existing security event
+          logs.&nbsp;
+          <EuiLink href={moreLink} target="_blank">
+            Learn more
+          </EuiLink>
         </p>
       </EuiText>
       <EuiSpacer />
