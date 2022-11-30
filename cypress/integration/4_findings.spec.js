@@ -8,6 +8,7 @@ import sample_document from '../fixtures/sample_document.json';
 import sample_index_settings from '../fixtures/sample_index_settings.json';
 import sample_field_mappings from '../fixtures/sample_field_mappings.json';
 import sample_detector from '../fixtures/sample_detector.json';
+import { eq } from 'lodash';
 
 describe('Findings', () => {
   const ruleTags = ['low', 'windows'];
@@ -50,11 +51,8 @@ describe('Findings', () => {
   });
 
   it('displays finding details flyout when user clicks on Finding ID or View details icon', () => {
-    // icon can't be found behind error toast.  Once error handling fixed we can remove this.
-    cy.wait(5000);
-
     // Click findingId to trigger Finding details flyout
-    cy.get(`[data-test-subj="findings-table-finding-id"]`).click();
+    cy.get(`[data-test-subj="findings-table-finding-id"]`).eq(0).click();
 
     // Confirm flyout contents
     cy.contains('Finding details');
