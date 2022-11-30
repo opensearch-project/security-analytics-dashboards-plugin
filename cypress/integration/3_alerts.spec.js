@@ -460,7 +460,7 @@ describe('Alerts', () => {
 
     cy.get('[data-test-subj="finding-details-flyout"]').within(() => {
       // Click the detector name hyperlink
-      cy.get('[data-test-subj="finding-details-flyout-detector-name"]')
+      cy.get('[data-test-subj="finding-details-flyout-detector-link"]')
         // Removing the "target" attribute so the link won't open a new tab. Cypress wouldn't test the new tab.
         .invoke('removeAttr', 'target')
         .click({ force: true });
