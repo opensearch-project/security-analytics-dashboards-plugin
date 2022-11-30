@@ -86,12 +86,7 @@ describe('Findings', () => {
     cy.wait(5000);
     cy.get(`[data-test-subj="view-details-icon"]`).click({ force: true });
 
-    // // need to wait for error toasts to dissipate, neither icon nor finding id are clickable without this
-    // cy.wait(5000);
-
-    // // open Finding details flyout via icon button
-    // cy.get(`[data-test-subj="view-details-icon"]`).click({ force: true });
-
+    // open rule details inside flyout
     cy.get('button', { timeout: 1000 });
     cy.get('.euiAccordion__button').contains('USB Device Plugged').click({ force: true });
 
@@ -116,10 +111,7 @@ describe('Findings', () => {
       .click({ force: true });
 
     // Confirm destination reached
-    cy.url().should(
-      'eq',
-      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/rules'
-    );
+    cy.url().should('include', 'opensearch_security_analytics_dashboards#/rules');
   });
 
   after(() => {
