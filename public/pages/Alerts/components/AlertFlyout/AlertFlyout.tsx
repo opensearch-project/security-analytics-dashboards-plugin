@@ -163,7 +163,10 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
         dataType: 'string',
         render: (id, finding) =>
           (
-            <EuiLink onClick={() => this.setFindingFlyoutData(finding)}>
+            <EuiLink
+              onClick={() => this.setFindingFlyoutData(finding)}
+              data-test-subj={'finding-details-flyout-button'}
+            >
               {`${(id as string).slice(0, 7)}...`}
             </EuiLink>
           ) || DEFAULT_EMPTY_DATA,
@@ -207,10 +210,11 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
         backButton={
           <EuiButtonIcon
             iconType="arrowLeft"
-            aria-lable="back"
+            aria-label="back"
             onClick={() => this.setFindingFlyoutData()}
             display="base"
             size="s"
+            data-test-subj={'finding-details-flyout-back-button'}
           />
         }
         allRules={rules}
@@ -223,6 +227,7 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
           size: 'm',
           display: 'base',
         }}
+        data-test-subj={'alert-details-flyout'}
       >
         <EuiFlyoutHeader hasBorder={true}>
           <EuiFlexGroup justifyContent="spaceBetween">
@@ -240,12 +245,20 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
                       this.setState({ acknowledged: true });
                       onAcknowledge([alertItem]);
                     }}
+                    data-test-subj={'alert-details-flyout-acknowledge-button'}
                   >
                     Acknowledge
                   </EuiButton>
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>
-                  <EuiButtonIcon iconType="cross" iconSize="m" display="empty" onClick={onClose} />
+                  <EuiButtonIcon
+                    aria-label="close"
+                    iconType="cross"
+                    iconSize="m"
+                    display="empty"
+                    onClick={onClose}
+                    data-test-subj={'alert-details-flyout-close-button'}
+                  />
                 </EuiFlexItem>
               </EuiFlexGroup>
             </EuiFlexItem>
@@ -261,8 +274,8 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
             },
           ])}
           {createTextDetailsGroup([
-            { label: 'Start time', content: start_time },
-            { label: 'Last updated time', content: last_notification_time },
+            { label: 'Start time', content: renderTime(start_time) },
+            { label: 'Last updated time', content: renderTime(last_notification_time) },
             { label: '', content: '' },
           ])}
           {createTextDetailsGroup([

@@ -103,9 +103,7 @@ describe('Rules', () => {
       cy.contains('No items found', TWENTY_SECONDS_TIMEOUT).should('not.exist');
 
       // Search for the rule
-      cy.get(`input[type="search"]`, TWENTY_SECONDS_TIMEOUT)
-        // .focus()
-        .type(`${SAMPLE_RULE.name}{enter}`);
+      cy.get(`input[type="search"]`, TWENTY_SECONDS_TIMEOUT).type(`${SAMPLE_RULE.name}{enter}`);
 
       // Click the rule link to open the details flyout
       cy.get(`[data-test-subj="rule_link_${SAMPLE_RULE.name}"]`, TWENTY_SECONDS_TIMEOUT).click();
