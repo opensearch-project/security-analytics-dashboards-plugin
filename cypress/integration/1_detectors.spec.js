@@ -76,8 +76,8 @@ describe('Detectors', () => {
     cy.contains('Required field mappings');
 
     // Select appropriate names to map fields to
-    for (let field_name in sample_field_mappings) {
-      const mappedTo = sample_field_mappings[field_name];
+    for (let field_name in sample_field_mappings.properties) {
+      const mappedTo = sample_field_mappings.properties[field_name].path;
 
       cy.contains('tr', field_name).within(() => {
         cy.get(`[data-test-subj="detector-field-mappings-select"]`).click().type(mappedTo);
@@ -108,8 +108,9 @@ describe('Detectors', () => {
 
     // Confirm field mappings registered
     cy.contains('Field mapping');
-    for (let field in sample_field_mappings) {
-      const mappedTo = sample_field_mappings[field];
+
+    for (let field in sample_field_mappings.properties) {
+      const mappedTo = sample_field_mappings.properties[field].path;
 
       cy.contains(field);
       cy.contains(mappedTo);

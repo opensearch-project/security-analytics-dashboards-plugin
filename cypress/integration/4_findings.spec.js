@@ -50,8 +50,11 @@ describe('Findings', () => {
   });
 
   it('displays finding details flyout when user clicks on Finding ID or View details icon', () => {
+    // icon can't be found behind error toast.  Once error handling fixed we can remove this.
+    cy.wait(5000);
+
     // Click findingId to trigger Finding details flyout
-    cy.get(`[data-test-subj="findings-table-finding-id"]`, { timeout: 10000 }).click();
+    cy.get(`[data-test-subj="findings-table-finding-id"]`).click();
 
     // Confirm flyout contents
     cy.contains('Finding details');
