@@ -214,7 +214,7 @@ describe('Alerts', () => {
       cy.get('[data-test-subj="finding-details-flyout-timestamp"]').contains(date);
 
       // Confirm finding detector name
-      cy.get('[data-test-subj="finding-details-flyout-detector-name"]').contains(testDetector.name);
+      cy.get('[data-test-subj="finding-details-flyout-detector-link"]').contains(testDetector.name);
 
       // Confirm there's only 1 rule details accordion
       cy.get('[data-test-subj="finding-details-flyout-rule-accordion-1"]').should('not.exist');
@@ -230,7 +230,7 @@ describe('Alerts', () => {
         );
 
         // Confirm the rule name
-        cy.get('[data-test-subj="finding-details-flyout-rule-name"]').contains(
+        cy.get('[data-test-subj="finding-details-flyout-USB Device Plugged-details"]').contains(
           'USB Device Plugged'
         );
 

@@ -96,7 +96,7 @@ export default class FindingDetailsFlyout extends Component<
                   <EuiLink
                     href={`#${ROUTES.RULES}`}
                     target={'_blank'}
-                    data-test-subj={`finding-details-${fullRule.title}-details`}
+                    data-test-subj={`finding-details-flyout-${fullRule.title}-details`}
                   >
                     {fullRule.title || DEFAULT_EMPTY_DATA}
                   </EuiLink>
