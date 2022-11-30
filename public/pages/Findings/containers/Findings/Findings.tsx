@@ -29,11 +29,11 @@ import {
   MAX_RECENTLY_USED_TIME_RANGES,
   OS_NOTIFICATION_PLUGIN,
 } from '../../../../utils/constants';
-import { getFindingsVisualizationSpec } from '../../../Overview/utils/helpers';
+import { getChartTimeUnit, getFindingsVisualizationSpec } from '../../../Overview/utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { Finding } from '../../models/interfaces';
 import { Detector } from '../../../../../models/interfaces';
-import { FeatureChannelList } from '../../../../../server/models/interfaces/Notifications';
+import { FeatureChannelList } from '../../../../../server/models/interfaces';
 import {
   getNotificationChannels,
   parseNotificationChannelsToOptions,
@@ -46,6 +46,7 @@ import {
 } from '../../../../utils/helpers';
 import { DetectorHit, RuleSource } from '../../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { ruleSeverity } from '../../../Rules/utils/constants';
 
 interface FindingsProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -68,6 +69,7 @@ interface FindingsState {
   groupBy: FindingsGroupByType;
   filteredFindings: FindingItemType[];
   plugins: string[];
+  timeUnit: string;
 }
 
 interface FindingVisualizationData {
@@ -103,6 +105,7 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
       groupBy: 'logType',
       filteredFindings: [],
       plugins: [],
+      timeUnit: 'yearmonthdatehoursminutes',
     };
   }
 
@@ -234,10 +237,13 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
     if (recentlyUsedRanges.length > MAX_RECENTLY_USED_TIME_RANGES)
       recentlyUsedRanges = recentlyUsedRanges.slice(0, MAX_RECENTLY_USED_TIME_RANGES);
     const endTime = start === end ? DEFAULT_DATE_RANGE.end : end;
+
+    let timeUnit = getChartTimeUnit(start, endTime);
     this.setState({
       startTime: start,
       endTime: endTime,
       recentlyUsedRanges: recentlyUsedRanges,
+      timeUnit,
     });
   };
 
@@ -256,7 +262,7 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
       });
     });
 
-    return getFindingsVisualizationSpec(visData, this.state.groupBy);
+    return getFindingsVisualizationSpec(visData, this.state.groupBy, this.state.timeUnit);
   }
 
   createGroupByControl(): React.ReactNode {

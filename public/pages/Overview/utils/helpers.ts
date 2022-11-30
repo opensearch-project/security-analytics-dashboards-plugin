@@ -3,11 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import moment from 'moment';
 import { TopLevelSpec } from 'vega-lite';
 import { SummaryData } from '../components/Widgets/Summary';
+import dateMath from '@elastic/datemath';
+import { TimeUnitsMap } from './constants';
 
 function getVisualizationSpec(description: string, data: any, layers: any[]): TopLevelSpec {
-  let spec: TopLevelSpec = {
+  return {
     config: { view: { stroke: null } },
     $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
     description: description,
@@ -16,15 +19,14 @@ function getVisualizationSpec(description: string, data: any, layers: any[]): To
     },
     layer: layers,
   };
-
-  return spec;
 }
 
 export function getOverviewVisualizationSpec(
   visualizationData: SummaryData[],
-  groupBy: string
+  groupBy: string,
+  dynamicTimeUnit: string = 'yearmonthdatehoursminutes'
 ): TopLevelSpec {
-  const timeUnit = 'yearmonthdatehoursminutes';
+  const timeUnit = dynamicTimeUnit;
   const aggregate = 'sum';
   const findingsEncoding: { [x: string]: any } = {
     x: { timeUnit, field: 'time', title: '', axis: { grid: false, ticks: false } },
@@ -63,13 +65,17 @@ export function getOverviewVisualizationSpec(
   );
 }
 
-export function getFindingsVisualizationSpec(visualizationData: any[], groupBy: string) {
+export function getFindingsVisualizationSpec(
+  visualizationData: any[],
+  groupBy: string,
+  dynamicTimeUnit: string = 'yearmonthdatehoursminutes'
+) {
   return getVisualizationSpec('Findings data overview', visualizationData, [
     {
       mark: 'bar',
       encoding: {
         x: {
-          timeUnit: 'yearmonthdatehoursminutes',
+          timeUnit: dynamicTimeUnit,
           field: 'time',
           title: '',
           axis: { grid: false, ticks: false },
@@ -91,13 +97,17 @@ export function getFindingsVisualizationSpec(visualizationData: any[], groupBy: 
   ]);
 }
 
-export function getAlertsVisualizationSpec(visualizationData: any[], groupBy: string) {
+export function getAlertsVisualizationSpec(
+  visualizationData: any[],
+  groupBy: string,
+  dynamicTimeUnit: string = 'yearmonthdatehoursminutes'
+) {
   return getVisualizationSpec('Alerts data overview', visualizationData, [
     {
       mark: 'bar',
       encoding: {
         x: {
-          timeUnit: 'yearmonthdatehoursminutes',
+          timeUnit: dynamicTimeUnit,
           field: 'time',
           title: '',
           axis: { grid: false, ticks: false },
@@ -137,4 +147,41 @@ export function getTimeWithMinPrecision(time: number | string) {
   date.setMilliseconds(0);
 
   return date.getTime();
+}
+
+/**
+ * Returns timeUnit based on how big time diff is between start and end dates
+ * @param {string} start Chart start time
+ * @param {string} end Chart end time
+ * @param {string} [defaultUnit = 'yearmonthdatehoursminutes'] Default timeUnit
+ */
+export function getChartTimeUnit(
+  start: string,
+  end: string,
+  defaultUnit: string = 'yearmonthdatehoursminutes'
+): string {
+  const startMoment = dateMath.parse(start);
+  const endMoment = dateMath.parse(end);
+  let minUnit: string = 'minutes';
+  let timeUnit: string = TimeUnitsMap[minUnit];
+
+  if (!startMoment || !endMoment) return defaultUnit;
+
+  try {
+    const timeDiff = endMoment.diff(startMoment);
+    const momentTimeDiff = moment.duration(timeDiff);
+
+    const timeUnits: string[] = ['years', 'months', 'days', 'hours', 'minutes'];
+    for (const unit of timeUnits) {
+      // @ts-ignore
+      if (momentTimeDiff._data[unit]) {
+        timeUnit = TimeUnitsMap[unit];
+        break;
+      }
+    }
+  } catch (e) {
+    console.error(`Time diff can't be calculated for dates: ${start} and ${end}`);
+  }
+
+  return timeUnit;
 }
