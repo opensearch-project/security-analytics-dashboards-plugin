@@ -44,14 +44,14 @@ describe('Findings', () => {
     cy.contains('No items found').should('not.exist');
 
     // Check for expected findings
-    cy.contains('test detector');
+    cy.contains('sample_detector');
     cy.contains('Windows');
     cy.contains('Low');
   });
 
   it('displays finding details flyout when user clicks on Finding ID or View details icon', () => {
     // Click findingId to trigger Finding details flyout
-    cy.get(`[data-test-subj="findings-table-finding-id"]`).eq(0).click();
+    cy.get(`[data-test-subj="finding-details-flyout-button"]`, { timeout: 2000 }).eq(0).click();
 
     // Confirm flyout contents
     cy.contains('Finding details');
@@ -87,7 +87,8 @@ describe('Findings', () => {
 
     // open rule details inside flyout
     cy.get('button', { timeout: 1000 });
-    cy.get('.euiAccordion__button').contains('USB Device Plugged').click({ force: true });
+    // cy.get('.euiAccordion__button').contains('USB Device Plugged').click({ force: true });
+    cy.get(`[data-test-subj="finding-details-flyout-rule-accordion-0"]`).click({ force: true });
 
     // Confirm content
     cy.contains('Documents');
@@ -104,8 +105,7 @@ describe('Findings', () => {
   // TODO - upon reaching rules page, trigger appropriate rules detail flyout
   it('takes user to rules page when rule name inside accordion drop down is clicked', () => {
     // Click rule link
-    cy.get('a')
-      .contains('USB Device Plugged')
+    cy.get(`[data-test-subj="finding-details-flyout-USB Device Plugged-details"]`)
       .invoke('removeAttr', 'target')
       .click({ force: true });
 
@@ -122,7 +122,7 @@ describe('Findings', () => {
     cy.url().should('include', 'opensearch_security_analytics_dashboards#/detectors');
 
     // Click on detector to be removed
-    cy.contains('test detector').click({ force: true }, { timeout: 2000 });
+    cy.contains('sample_detector').click({ force: true }, { timeout: 2000 });
 
     // Click "Actions" button, the click "Delete"
     cy.get('button').contains('Actions').click({ force: true });
