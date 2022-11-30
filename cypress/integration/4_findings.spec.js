@@ -20,8 +20,8 @@ describe('Findings', () => {
 
     // create test index, mappings, and detector
     cy.createIndex('cypress-test-windows', sample_index_settings);
-    cy.createDetector(sample_detector);
     cy.createAliasMappings('cypress-test-windows', 'windows', sample_field_mappings, true);
+    cy.createDetector(sample_detector);
   });
 
   it('displays findings based on recently ingested data', () => {
