@@ -44,6 +44,7 @@ import {
   capitalizeFirstLetter,
   createSelectComponent,
   errorNotificationToast,
+  renderTime,
   renderVisualization,
   successNotificationToast,
 } from '../../../../utils/helpers';
@@ -127,6 +128,7 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
         name: 'Start time',
         sortable: true,
         dataType: 'date',
+        render: renderTime,
       },
       {
         field: 'trigger_name',
@@ -276,7 +278,11 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
   createAcknowledgeControl() {
     const { selectedItems } = this.state;
     return (
-      <EuiButton disabled={!selectedItems.length} onClick={() => this.onAcknowledge(selectedItems)}>
+      <EuiButton
+        disabled={!selectedItems.length}
+        onClick={() => this.onAcknowledge(selectedItems)}
+        data-test-subj={'acknowledge-button'}
+      >
         Acknowledge
       </EuiButton>
     );

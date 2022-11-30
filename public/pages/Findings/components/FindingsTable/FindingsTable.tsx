@@ -160,7 +160,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
           (
             <EuiLink
               onClick={() => this.renderFindingDetailsFlyout(finding)}
-              data-test-subj={`findings-table-finding-id`}
+              data-test-subj={'finding-details-flyout-button'}
             >
               {`${(id as string).slice(0, 7)}...`}
             </EuiLink>
