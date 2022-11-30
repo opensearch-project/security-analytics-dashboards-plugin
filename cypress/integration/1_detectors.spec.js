@@ -2,6 +2,7 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
+
 import { PLUGIN_NAME } from '../support/constants';
 import sample_field_mappings from '../fixtures/sample_field_mappings.json';
 import sample_index_settings from '../fixtures/sample_index_settings.json';
@@ -125,6 +126,8 @@ describe('Detectors', () => {
 
     // Create the detector
     cy.get('button').contains('Create').click({ force: true });
+
+    cy.wait(10000);
 
     // Confirm detector active
     cy.contains('There are no existing detectors.', { timeout: 20000 }).should('not.exist');

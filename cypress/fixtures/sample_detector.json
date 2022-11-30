@@ -1,7 +1,7 @@
 {
   "type": "detector",
   "detector_type": "windows",
-  "name": "test detector",
+  "name": "sample_detector",
   "enabled": true,
   "createdBy": "",
   "schedule": {
@@ -13,8 +13,8 @@
   "inputs": [
     {
       "detector_input": {
-        "description": "Description for test_detector.",
-        "indices": ["cypress-test-windows"],
+        "description": "Description for detector1.",
+        "indices": ["windows"],
         "pre_packaged_rules": [
           {
             "id": "1a4bd6e3-4c6e-405d-a9a3-53a116e341d4"
@@ -26,20 +26,20 @@
   ],
   "triggers": [
     {
-      "name": "test_trigger",
+      "name": "sample_alert_condition",
       "sev_levels": [],
       "tags": [],
       "actions": [
         {
           "id": "",
-          "name": "Triggered alert condition:  - Severity: 1 (Highest) - Threat detector: test_detector",
+          "name": "Triggered alert condition:  - Severity: 1 (Highest) - Threat detector: detector1",
           "destination_id": "",
           "subject_template": {
-            "source": "Triggered alert condition:  - Severity: 1 (Highest) - Threat detector: test_detector",
+            "source": "Triggered alert condition:  - Severity: 1 (Highest) - Threat detector: detector1",
             "lang": "mustache"
           },
           "message_template": {
-            "source": "Triggered alert condition: \nSeverity: 1 (Highest)\nThreat detector: test_detector\nDescription: Description for test_detector.\nDetector data sources:\n\tcypress-test-windows",
+            "source": "Triggered alert condition: \nSeverity: 1 (Highest)\nThreat detector: detector1\nDescription: Description for detector1.\nDetector data sources:\n\twindows",
             "lang": "mustache"
           },
           "throttle_enabled": false,

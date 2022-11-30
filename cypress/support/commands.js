@@ -97,6 +97,61 @@ Cypress.Commands.add('updateDetector', (detectorId, detectorJSON) => {
   );
 });
 
+Cypress.Commands.add('deleteDetector', (detectorName) => {
+  const body = {
+    from: 0,
+    size: 5000,
+    query: {
+      nested: {
+        path: 'detector',
+        query: {
+          bool: {
+            must: [{ match: { 'detector.name': detectorName } }],
+          },
+        },
+      },
+    },
+  };
+  cy.request({
+    method: 'POST',
+    url: `${Cypress.env('opensearch')}${NODE_API.DETECTORS_BASE}/_search`,
+    failOnStatusCode: false,
+    body,
+  }).then((response) => {
+    if (response.status === 200) {
+      for (let hit of response.body.hits.hits) {
+        cy.request('DELETE', `${Cypress.env('opensearch')}${NODE_API.DETECTORS_BASE}/${hit._id}`);
+      }
+    }
+  });
+});
+
+Cypress.Commands.add('deleteIndex', (indexName, options = {}) => {
+  cy.request({
+    method: 'DELETE',
+    url: `${Cypress.env('opensearch')}/${indexName}`,
+    failOnStatusCode: false,
+    ...options,
+  });
+});
+
+Cypress.Commands.add(
+  'createAliasMappings',
+  (indexName, ruleTopic, aliasMappingsBody, partial = true) => {
+    const body = {
+      index_name: indexName,
+      rule_topic: ruleTopic,
+      partial: partial,
+      alias_mappings: aliasMappingsBody,
+    };
+    cy.request({
+      method: 'POST',
+      url: `${Cypress.env('opensearch')}${NODE_API.MAPPINGS_BASE}`,
+      body: body,
+    });
+  }
+);
+
 Cypress.Commands.add('createRule', (ruleJSON) => {
   cy.request('POST', `${Cypress.env('opensearch')}${NODE_API.RULES_BASE}`, ruleJSON);
 });
@@ -146,22 +201,27 @@ Cypress.Commands.add('deleteRule', (ruleName) => {
   });
 });
 
-Cypress.Commands.add(
-  'createAliasMappings',
-  (indexName, ruleTopic, aliasMappingsBody, partial = true) => {
-    const body = {
-      index_name: indexName,
-      rule_topic: ruleTopic,
-      partial: partial,
-      alias_mappings: aliasMappingsBody,
-    };
-    cy.request({
-      method: 'POST',
-      url: `${Cypress.env('opensearch')}${NODE_API.MAPPINGS_BASE}`,
-      body: body,
-    });
-  }
-);
+Cypress.Commands.add('deleteAllCustomRules', () => {
+  cy.request({
+    method: 'POST',
+    url: `${Cypress.env('opensearch')}${NODE_API.RULES_BASE}/_search?pre_packaged=false`,
+    failOnStatusCode: false,
+    body: { query: { match_all: {} } },
+  }).then((response) => {
+    if (response.status === 200) {
+      for (let hit of response.body.hits.hits) {
+        cy.request(
+          'DELETE',
+          `${Cypress.env('opensearch')}${NODE_API.RULES_BASE}/${hit._id}?forced=true`
+        );
+      }
+    }
+  });
+});
+
+Cypress.Commands.add('createIndex', (index, settings = {}) => {
+  cy.request('PUT', `${Cypress.env('opensearch')}/${index}`, settings);
+});
 
 Cypress.Commands.add('createIndexTemplate', (name, template) => {
   cy.request(
@@ -169,4 +229,12 @@ Cypress.Commands.add('createIndexTemplate', (name, template) => {
     `${Cypress.env('opensearch')}${NODE_API.INDEX_TEMPLATE_BASE}/${name}`,
     template
   );
+});
+
+Cypress.Commands.add('insertDocumentToIndex', (indexName, documentId, documentBody) => {
+  cy.request({
+    method: 'POST',
+    url: `${Cypress.env('opensearch')}/${indexName}/_doc/${documentId}`,
+    body: documentBody,
+  });
 });

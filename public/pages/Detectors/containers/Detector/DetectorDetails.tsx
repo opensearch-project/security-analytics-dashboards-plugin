@@ -334,7 +334,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
           <EuiFlexItem>
             <EuiFlexGroup alignItems="center">
               <EuiFlexItem grow={false}>
-                <EuiTitle>
+                <EuiTitle data-test-subj={'detector-details-detector-name'}>
                   <h1>{detector.name}</h1>
                 </EuiTitle>
               </EuiFlexItem>
