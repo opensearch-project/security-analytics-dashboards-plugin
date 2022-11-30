@@ -8,9 +8,9 @@ import {
   PLUGIN_NAME,
   NINETY_SECONDS,
   TWENTY_SECONDS_TIMEOUT,
-  TEST_INDEX,
   FEATURE_SYSTEM_INDICES,
 } from '../support/constants';
+import sample_index_settings from '../fixtures/sample_index_settings.json';
 import sample_alias_mappings from '../fixtures/sample_alias_mappings.json';
 import sample_detector from '../fixtures/sample_detector.json';
 import sample_document from '../fixtures/sample_document.json';
@@ -59,7 +59,7 @@ describe('Alerts', () => {
       })
 
       // Create test index
-      .then(() => cy.createIndex(testIndex, TEST_INDEX))
+      .then(() => cy.createIndex(testIndex, sample_index_settings))
 
       // Create field mappings
       .then(() =>
