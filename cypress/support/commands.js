@@ -109,8 +109,8 @@ Cypress.Commands.add('createIndex', (index, settings = {}) => {
   cy.request('PUT', `${Cypress.env('opensearch')}/${index}`, settings);
 });
 
-Cypress.Commands.add('ingestDocument', (indexId, sample_document) => {
-  cy.request('POST', `${Cypress.env('opensearch')}/${indexId}/_doc`, sample_document);
+Cypress.Commands.add('ingestDocument', (indexId, documentJSON) => {
+  cy.request('POST', `${Cypress.env('opensearch')}/${indexId}/_doc`, documentJSON);
 });
 
 Cypress.Commands.add('deleteRule', (ruleName) => {
