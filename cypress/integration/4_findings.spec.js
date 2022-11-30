@@ -8,7 +8,6 @@ import sample_document from '../fixtures/sample_document.json';
 import sample_index_settings from '../fixtures/sample_index_settings.json';
 import sample_field_mappings from '../fixtures/sample_field_mappings.json';
 import sample_detector from '../fixtures/sample_detector.json';
-import { eq } from 'lodash';
 
 describe('Findings', () => {
   const ruleTags = ['low', 'windows'];
@@ -16,21 +15,21 @@ describe('Findings', () => {
   before(() => {
     cy.deleteAllIndices();
 
-    // create test index, mappings, and detector
-    cy.createIndex('cypress-test-windows', sample_index_settings);
-    cy.createAliasMappings('cypress-test-windows', 'windows', sample_field_mappings, false);
-    cy.createDetector(sample_detector);
-  });
-
-  it('displays findings based on recently ingested data', () => {
     // Visit Findings page
     cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/findings`);
 
-    // need to wait here specifically to ensure findings are generated
-    cy.wait(10000);
+    // create test index, mappings, and detector
+    cy.createIndex('cypress-test-windows', sample_index_settings);
+    cy.createDetector(sample_detector);
+    cy.createAliasMappings('cypress-test-windows', 'windows', sample_field_mappings, true);
+  });
 
+  it('displays findings based on recently ingested data', () => {
     // Confirm arrival at Findings page
-    cy.url().should('include', 'opensearch_security_analytics_dashboards#/findings');
+    cy.url({ timeout: 2000 }).should(
+      'include',
+      'opensearch_security_analytics_dashboards#/findings'
+    );
 
     // Ingest a new document
     cy.ingestDocument('cypress-test-windows', sample_document);
@@ -64,8 +63,8 @@ describe('Findings', () => {
       cy.get($el).click({ force: true });
     });
 
-    // wait for toasts to clear - in this case, timeout will not work.  Icon cannot be found behind error toasts.
-    cy.wait(10000);
+    // wait for icon to become clickable - in this case, timeout insufficient.
+    cy.wait(1000);
 
     // Click View details icon
     cy.get(`[data-test-subj="view-details-icon"]`).eq(0).click({ force: true });
@@ -82,8 +81,8 @@ describe('Findings', () => {
   });
 
   it('allows user to view details about rules that were triggered', () => {
-    // open Finding details flyout via finding id link
-    cy.wait(5000);
+    // open Finding details flyout via finding id link. cy.wait essential, timeout insufficient.
+    cy.wait(1000);
     cy.get(`[data-test-subj="view-details-icon"]`).eq(0).click({ force: true });
 
     // open rule details inside flyout
