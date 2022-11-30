@@ -68,7 +68,7 @@ describe('Findings', () => {
     cy.wait(10000);
 
     // Click View details icon
-    cy.get(`[data-test-subj="view-details-icon"]`).click({ force: true });
+    cy.get(`[data-test-subj="view-details-icon"]`).eq(0).click({ force: true });
 
     // Confirm flyout contents
     cy.contains('Finding details');
@@ -84,7 +84,7 @@ describe('Findings', () => {
   it('allows user to view details about rules that were triggered', () => {
     // open Finding details flyout via finding id link
     cy.wait(5000);
-    cy.get(`[data-test-subj="view-details-icon"]`).click({ force: true });
+    cy.get(`[data-test-subj="view-details-icon"]`).eq(0).click({ force: true });
 
     // open rule details inside flyout
     cy.get('button', { timeout: 1000 });
