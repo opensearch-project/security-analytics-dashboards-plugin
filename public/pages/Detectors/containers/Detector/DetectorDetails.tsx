@@ -16,6 +16,7 @@ import {
   EuiTabs,
   EuiText,
   EuiTitle,
+  EuiHealth,
 } from '@elastic/eui';
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
@@ -338,11 +339,9 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
                 </EuiTitle>
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
-                <EuiText>
-                  <span style={{ color: `${detector.enabled ? 'green' : 'red'}` }}>
-                    {detector.enabled ? 'Active' : 'Inactive'}
-                  </span>
-                </EuiText>
+                <EuiHealth color={detector.enabled ? 'success' : 'subdued'}>
+                  {detector.enabled ? 'Active' : 'Inactive'}
+                </EuiHealth>
               </EuiFlexItem>
             </EuiFlexGroup>
           </EuiFlexItem>
