@@ -11,6 +11,7 @@ import sample_detector from '../fixtures/sample_detector.json';
 
 describe('Findings', () => {
   const ruleTags = ['low', 'windows'];
+  const indexName = 'cypress-test-windows';
 
   before(() => {
     cy.deleteAllIndices();
@@ -19,8 +20,8 @@ describe('Findings', () => {
     cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/findings`);
 
     // create test index, mappings, and detector
-    cy.createIndex('cypress-test-windows', sample_index_settings);
-    cy.createAliasMappings('cypress-test-windows', 'windows', sample_field_mappings, true);
+    cy.createIndex(indexName, sample_index_settings);
+    cy.createAliasMappings(indexName, 'windows', sample_field_mappings, true);
     cy.createDetector(sample_detector);
   });
 
@@ -32,7 +33,7 @@ describe('Findings', () => {
     );
 
     // Ingest a new document
-    cy.ingestDocument('cypress-test-windows', sample_document);
+    cy.ingestDocument(indexName, sample_document);
 
     // wait for detector interval to pass
     cy.wait(60000);
@@ -50,13 +51,15 @@ describe('Findings', () => {
   });
 
   it('displays finding details flyout when user clicks on Finding ID or View details icon', () => {
+    // filter table to show only sample_detector findings
+    cy.get(`[placeholder="Search findings"]`).type('sample_detector').trigger('Search');
+
     // Click findingId to trigger Finding details flyout
     cy.get(`[data-test-subj="finding-details-flyout-button"]`, { timeout: 2000 }).eq(0).click();
 
     // Confirm flyout contents
     cy.contains('Finding details');
     cy.contains('Rule details');
-    cy.contains('Search Findings').should('not.exist');
 
     // Close Flyout
     cy.get(`[data-test-subj="close-finding-details-flyout"]`).then(($el) => {
@@ -72,7 +75,6 @@ describe('Findings', () => {
     // Confirm flyout contents
     cy.contains('Finding details');
     cy.contains('Rule details');
-    cy.contains('Search Findings').should('not.exist');
 
     // Close Flyout
     cy.get(`[data-test-subj="close-finding-details-flyout"]`).then(($el) => {
@@ -87,7 +89,6 @@ describe('Findings', () => {
 
     // open rule details inside flyout
     cy.get('button', { timeout: 1000 });
-    // cy.get('.euiAccordion__button').contains('USB Device Plugged').click({ force: true });
     cy.get(`[data-test-subj="finding-details-flyout-rule-accordion-0"]`).click({ force: true });
 
     // Confirm content
@@ -95,7 +96,7 @@ describe('Findings', () => {
     cy.contains('Detects plugged USB devices');
     cy.contains('Low');
     cy.contains('Windows');
-    cy.contains('cypress-test-windows');
+    cy.contains(indexName);
 
     ruleTags.forEach((tag) => {
       cy.contains(tag);
@@ -103,6 +104,8 @@ describe('Findings', () => {
   });
 
   // TODO - upon reaching rules page, trigger appropriate rules detail flyout
+  // see github issue #124 at https://github.com/opensearch-project/security-analytics-dashboards-plugin/issues/124
+
   it('takes user to rules page when rule name inside accordion drop down is clicked', () => {
     // Click rule link
     cy.get(`[data-test-subj="finding-details-flyout-USB Device Plugged-details"]`)
@@ -119,6 +122,7 @@ describe('Findings', () => {
       timeout: 5000,
     });
 
+    // Confirm arrival at detectors page
     cy.url().should('include', 'opensearch_security_analytics_dashboards#/detectors');
 
     // Click on detector to be removed
@@ -128,7 +132,10 @@ describe('Findings', () => {
     cy.get('button').contains('Actions').click({ force: true });
     cy.contains('Delete').click({ force: true });
 
-    // Confirm detector deleted
+    // Search for sample_detector, presumably deleted
+    cy.get(`[placeholder="Search threat detectors"]`).type('sample_detector').trigger('search');
+
+    // Confirm sample_detector no longer exists
     cy.contains('There are no existing detectors.');
   });
 });

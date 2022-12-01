@@ -8,11 +8,13 @@ import sample_field_mappings from '../fixtures/sample_field_mappings.json';
 import sample_index_settings from '../fixtures/sample_index_settings.json';
 
 describe('Detectors', () => {
+  const indexName = 'cypress-test-windows';
+
   before(() => {
     cy.deleteAllIndices();
 
     // Create test index
-    cy.createIndex('cypress-test-windows', sample_index_settings);
+    cy.createIndex(indexName, sample_index_settings);
 
     cy.contains('test detector').should('not.exist');
   });
@@ -121,7 +123,7 @@ describe('Detectors', () => {
     cy.contains('Detector details');
     cy.contains('test detector');
     cy.contains('windows');
-    cy.contains('cypress-test-windows');
+    cy.contains(indexName);
     cy.contains('Alert on test_trigger');
 
     // Create the detector
