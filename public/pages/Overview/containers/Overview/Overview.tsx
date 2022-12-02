@@ -29,7 +29,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [initialLoadingFinished, setInitialLoadingFinished] = useState(false);
   const [state, setState] = useState<OverviewState>({
-    groupBy: 'all_findings',
+    groupBy: 'finding',
     overviewViewModel: {
       detectors: [],
       findings: [],
@@ -108,7 +108,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
       <EuiFlexItem>
         <EuiFlexGroup justifyContent="spaceBetween">
           <EuiFlexItem>
-            <EuiTitle size="l">
+            <EuiTitle size="m">
               <h1>Overview</h1>
             </EuiTitle>
           </EuiFlexItem>
