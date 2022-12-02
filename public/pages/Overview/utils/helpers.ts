@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { euiPaletteColorBlind, euiPaletteForStatus } from '@elastic/eui';
 import { TopLevelSpec } from 'vega-lite';
 import { SummaryData } from '../components/Widgets/Summary';
 
@@ -36,20 +37,7 @@ export function getOverviewVisualizationSpec(
 ): TopLevelSpec {
   const timeUnit = 'yearmonthdatehoursminutes';
   const aggregate = 'sum';
-  const findingsEncoding: { [x: string]: any } = {
-    x: { timeUnit, field: 'time', title: '', axis: { grid: false, ticks: false } },
-    y: {
-      aggregate,
-      field: 'finding',
-      type: 'quantitative',
-      title: 'Count',
-      axis: { grid: true, ticks: false },
-    },
-  };
-
-  if (groupBy === 'log_type') {
-    findingsEncoding['color'] = { field: 'logType', type: 'nominal', title: 'Log type' };
-  }
+  const groupByLogType = groupBy === 'logType';
 
   return getVisualizationSpec(
     'Plot showing average data with raw values in the background.',
@@ -57,7 +45,24 @@ export function getOverviewVisualizationSpec(
     [
       {
         mark: 'bar',
-        encoding: findingsEncoding,
+        encoding: {
+          x: { timeUnit, field: 'time', title: '', axis: { grid: false, ticks: false } },
+          y: {
+            aggregate,
+            field: 'finding',
+            type: 'quantitative',
+            title: 'Count',
+            axis: { grid: true, ticks: false },
+          },
+          color: {
+            field: groupByLogType ? 'logType' : 'finding',
+            type: 'nominal',
+            title: groupByLogType ? 'Log type' : 'All findings',
+            scale: {
+              range: euiPaletteColorBlind(),
+            },
+          },
+        },
       },
       {
         mark: {
@@ -66,12 +71,7 @@ export function getOverviewVisualizationSpec(
         },
         encoding: {
           x: { timeUnit, field: 'time', title: '', axis: { grid: false, ticks: false } },
-          y: {
-            aggregate,
-            field: 'alert',
-            title: 'Count',
-            axis: { grid: true, ticks: false },
-          },
+          y: { aggregate, field: 'alert', title: 'Count', axis: { grid: true, ticks: false } },
         },
       },
     ]
@@ -100,6 +100,9 @@ export function getFindingsVisualizationSpec(visualizationData: any[], groupBy: 
           field: groupBy,
           type: 'nominal',
           title: groupBy === 'logType' ? 'Log type' : 'Rule severity',
+          scale: {
+            range: euiPaletteColorBlind(),
+          },
         },
       },
     },
@@ -128,6 +131,9 @@ export function getAlertsVisualizationSpec(visualizationData: any[], groupBy: st
           field: groupBy,
           type: 'nominal',
           title: groupBy === 'status' ? 'Alert status' : 'Alert severity',
+          scale: {
+            range: groupBy === 'status' ? euiPaletteForStatus(5) : euiPaletteColorBlind(),
+          },
         },
       },
     },
@@ -144,6 +150,9 @@ export function getTopRulesVisualizationSpec(visualizationData: any[]) {
           field: 'ruleName',
           type: 'nominal',
           title: 'Rule name',
+          scale: {
+            range: euiPaletteColorBlind(),
+          },
         },
       },
     },
