@@ -2,16 +2,19 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
+
 import { PLUGIN_NAME } from '../support/constants';
 import sample_field_mappings from '../fixtures/sample_field_mappings.json';
 import sample_index_settings from '../fixtures/sample_index_settings.json';
 
 describe('Detectors', () => {
+  const indexName = 'cypress-test-windows';
+
   before(() => {
     cy.deleteAllIndices();
 
     // Create test index
-    cy.createIndex('cypress-test-windows', sample_index_settings);
+    cy.createIndex(indexName, sample_index_settings);
 
     cy.contains('test detector').should('not.exist');
   });
@@ -76,8 +79,8 @@ describe('Detectors', () => {
     cy.contains('Required field mappings');
 
     // Select appropriate names to map fields to
-    for (let field_name in sample_field_mappings) {
-      const mappedTo = sample_field_mappings[field_name];
+    for (let field_name in sample_field_mappings.properties) {
+      const mappedTo = sample_field_mappings.properties[field_name].path;
 
       cy.contains('tr', field_name).within(() => {
         cy.get(`[data-test-subj="detector-field-mappings-select"]`).click().type(mappedTo);
@@ -108,8 +111,9 @@ describe('Detectors', () => {
 
     // Confirm field mappings registered
     cy.contains('Field mapping');
-    for (let field in sample_field_mappings) {
-      const mappedTo = sample_field_mappings[field];
+
+    for (let field in sample_field_mappings.properties) {
+      const mappedTo = sample_field_mappings.properties[field].path;
 
       cy.contains(field);
       cy.contains(mappedTo);
@@ -119,14 +123,13 @@ describe('Detectors', () => {
     cy.contains('Detector details');
     cy.contains('test detector');
     cy.contains('windows');
-    cy.contains('cypress-test-windows');
+    cy.contains(indexName);
     cy.contains('Alert on test_trigger');
 
     // Create the detector
     cy.get('button').contains('Create').click({ force: true });
 
-    // // wait for creation to finish, timeout above does not work
-    // cy.wait(10000);
+    cy.wait(10000);
 
     // Confirm detector active
     cy.contains('There are no existing detectors.', { timeout: 20000 }).should('not.exist');
