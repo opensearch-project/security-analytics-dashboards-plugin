@@ -108,7 +108,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
       <EuiFlexItem>
         <EuiFlexGroup justifyContent="spaceBetween">
           <EuiFlexItem>
-            <EuiTitle size="l">
+            <EuiTitle size="m">
               <h1>Overview</h1>
             </EuiTitle>
           </EuiFlexItem>

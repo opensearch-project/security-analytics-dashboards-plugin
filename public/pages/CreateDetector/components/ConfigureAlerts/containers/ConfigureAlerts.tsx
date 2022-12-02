@@ -98,7 +98,7 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
     const { loading, notificationChannels } = this.state;
     return (
       <div>
-        <EuiTitle size={'l'}>
+        <EuiTitle size={'m'}>
           <h3>
             {createDetectorSteps[DetectorCreationStep.CONFIGURE_ALERTS].title +
               ` (${triggers.length})`}
@@ -121,7 +121,9 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
                 paddingSize={'none'}
                 initialIsOpen={true}
                 extraAction={
-                  <EuiButton onClick={() => this.onDelete(index)}>Remove alert trigger</EuiButton>
+                  <EuiButton color="danger" onClick={() => this.onDelete(index)}>
+                    Remove alert trigger
+                  </EuiButton>
                 }
               >
                 <EuiHorizontalRule margin={'xs'} />
