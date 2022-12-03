@@ -64,7 +64,7 @@ export const DetectionRules: React.FC<DetectionRulesProps> = ({
     <EuiPanel style={{ paddingLeft: '0px', paddingRight: '0px' }}>
       <EuiAccordion
         buttonContent={
-          <>
+          <div data-test-subj="detection-rules-btn">
             <EuiTitle>
               <h4>{`Detection rules (${enabledRulesCount} selected)`}</h4>
             </EuiTitle>
@@ -72,7 +72,7 @@ export const DetectionRules: React.FC<DetectionRulesProps> = ({
               Detection rules are automatically added based on your chosen log types. Additionally,
               you may add or remove detection rules for this detector.
             </EuiText>
-          </>
+          </div>
         }
         buttonProps={{ style: { paddingLeft: '10px', paddingRight: '10px' } }}
         id={'detectorRulesAccordion'}

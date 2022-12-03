@@ -53,7 +53,7 @@ describe('Detectors', () => {
     cy.get(`input[id="windows"]`).click({ force: true });
 
     // Open Detection rules accordion
-    cy.contains('Detection rules').click({ timeout: 5000 });
+    cy.get('[data-test-subj="detection-rules-btn"]').click({ timeout: 5000 });
 
     // find search, type USB
     cy.get(`[placeholder="Search..."]`).type('USB Device Plugged').trigger('search');
