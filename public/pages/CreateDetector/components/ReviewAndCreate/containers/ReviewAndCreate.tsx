@@ -41,6 +41,9 @@ export class ReviewAndCreate extends React.Component<ReviewAndCreateProps, Revie
         <EuiTitle size={'m'}>
           <h3>Review and create</h3>
         </EuiTitle>
+
+        <EuiSpacer size={'m'} />
+
         <DetectorDetailsView
           {...this.props}
           detector={this.props.detector}
