@@ -28,8 +28,8 @@ const renderSubTitleText = (subTitleText: string | JSX.Element): JSX.Element | n
   if (typeof subTitleText === 'string') {
     if (!subTitleText) return null;
     return (
-      <EuiText size="s">
-        <span style={{ color: 'grey', fontWeight: 200, fontSize: '15px' }}>{subTitleText}</span>
+      <EuiText size="s" color="subdued">
+        {subTitleText}
       </EuiText>
     );
   }

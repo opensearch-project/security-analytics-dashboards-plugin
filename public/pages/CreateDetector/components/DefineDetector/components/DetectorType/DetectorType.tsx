@@ -68,8 +68,11 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
       </EuiFlexItem>
     ));
     return (
-      <ContentPanel title={'Threat detector type'} titleSize={'m'}>
-        <EuiSpacer size={'m'} />
+      <ContentPanel
+        title={'Log types and rules'}
+        titleSize={'m'}
+        subTitleText="Choose the log types that correspond to your data source. Detection rules are automatically added based on your chosen log types."
+      >
         <EuiFormRow
           label={
             <div>
