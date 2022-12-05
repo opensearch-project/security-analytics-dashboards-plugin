@@ -18,6 +18,8 @@ function getVisualizationSpec(description: string, data: any, layers: any[]): To
         titleFontWeight: 600,
         titleLineHeight: 21,
         titleFontSize: 14,
+        titlePadding: 10,
+        rowPadding: 6,
         labelFont:
           '"Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
       },
