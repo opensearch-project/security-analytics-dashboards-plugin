@@ -22,7 +22,11 @@ import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components
 import dateMath from '@elastic/datemath';
 import React, { Component } from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
-import { getAlertsVisualizationSpec, getChartTimeUnit } from '../../../Overview/utils/helpers';
+import {
+  getAlertsVisualizationSpec,
+  getChartTimeUnit,
+  getDateFormatByTimeUnit,
+} from '../../../Overview/utils/helpers';
 import moment from 'moment';
 import {
   ALERT_STATE,
@@ -218,7 +222,10 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
       };
     });
 
-    return getAlertsVisualizationSpec(visData, this.state.groupBy, this.state.timeUnit);
+    return getAlertsVisualizationSpec(visData, this.state.groupBy, {
+      timeUnit: this.state.timeUnit,
+      dateFormat: getDateFormatByTimeUnit(this.state.startTime, this.state.endTime),
+    });
   }
 
   createGroupByControl(): React.ReactNode {

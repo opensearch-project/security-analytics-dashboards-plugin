@@ -20,6 +20,7 @@
     "lint": "node ../../scripts/eslint .",
     "plugin-helpers": "node ../../scripts/plugin_helpers",
     "test:jest": "../../node_modules/.bin/jest --config ./test/jest.config.js",
+    "test:jest:watch": "../../node_modules/.bin/jest --watch --config ./test/jest.config.js",
     "build": "yarn plugin-helpers build",
     "postbuild": "echo Renaming build artifact to [$npm_package_config_zip_name-$npm_package_version.zip] && mv build/$npm_package_config_id*.zip build/$npm_package_config_zip_name-$npm_package_version.zip"
   },

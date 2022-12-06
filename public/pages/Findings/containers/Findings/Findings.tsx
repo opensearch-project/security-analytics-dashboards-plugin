@@ -29,7 +29,11 @@ import {
   MAX_RECENTLY_USED_TIME_RANGES,
   OS_NOTIFICATION_PLUGIN,
 } from '../../../../utils/constants';
-import { getChartTimeUnit, getFindingsVisualizationSpec } from '../../../Overview/utils/helpers';
+import {
+  getChartTimeUnit,
+  getDateFormatByTimeUnit,
+  getFindingsVisualizationSpec,
+} from '../../../Overview/utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { Finding } from '../../models/interfaces';
 import { Detector } from '../../../../../models/interfaces';
@@ -252,8 +256,6 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
 
     this.state.filteredFindings.forEach((finding: FindingItemType) => {
       const findingTime = new Date(finding.timestamp);
-      findingTime.setMilliseconds(0);
-      findingTime.setSeconds(0);
       visData.push({
         finding: 1,
         time: findingTime.getTime(),
@@ -262,7 +264,10 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
       });
     });
 
-    return getFindingsVisualizationSpec(visData, this.state.groupBy, this.state.timeUnit);
+    return getFindingsVisualizationSpec(visData, this.state.groupBy, {
+      timeUnit: this.state.timeUnit,
+      dateFormat: getDateFormatByTimeUnit(this.state.startTime, this.state.endTime),
+    });
   }
 
   createGroupByControl(): React.ReactNode {

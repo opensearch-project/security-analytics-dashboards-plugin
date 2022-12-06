@@ -8,6 +8,12 @@ import { TopLevelSpec } from 'vega-lite';
 import { SummaryData } from '../components/Widgets/Summary';
 import dateMath from '@elastic/datemath';
 import { TimeUnitsMap } from './constants';
+import _ from 'lodash';
+
+export type DateOpts = {
+  timeUnit: string;
+  dateFormat: string;
+};
 
 function getVisualizationSpec(description: string, data: any, layers: any[]): TopLevelSpec {
   return {
@@ -65,20 +71,63 @@ export function getOverviewVisualizationSpec(
   );
 }
 
+/**
+ * Returns chart x-axis date format based on time span
+ * @param start
+ * @param end
+ */
+export function getDateFormatByTimeUnit(start: string, end: string) {
+  const startMoment = dateMath.parse(start);
+  const endMoment = dateMath.parse(end);
+  let dateFormat = '%Y-%m-%d %H:%M';
+
+  if (startMoment && endMoment) {
+    const startData = startMoment.toObject();
+    const endData = endMoment.toObject();
+    const dateDiff = endMoment.diff(startMoment);
+    const momentDiff = moment.duration(dateDiff);
+    const daysDiff = _.get(momentDiff, '_data.days', 0);
+
+    if (startData.years === endData.years) {
+      if (startData.months !== endData.months) {
+        dateFormat = '%Y-%m-%d';
+
+        if (daysDiff < 30 && daysDiff > 1) {
+          dateFormat = '%Y-%m-%d %H:%M';
+        }
+      } else {
+        dateFormat = '%Y-%m-%d %H:%M';
+
+        if (startData.date === endData.date) {
+          dateFormat = '%H:%M:%S';
+        }
+      }
+    }
+  }
+
+  return dateFormat;
+}
+
 export function getFindingsVisualizationSpec(
   visualizationData: any[],
   groupBy: string,
-  dynamicTimeUnit: string = 'yearmonthdatehoursminutes'
+  dateOpts: DateOpts = {
+    timeUnit: 'yearmonthdatehoursminutes',
+    dateFormat: '%Y-%m-%d %H:%M',
+  }
 ) {
   return getVisualizationSpec('Findings data overview', visualizationData, [
     {
       mark: 'bar',
       encoding: {
         x: {
-          timeUnit: dynamicTimeUnit,
+          timeUnit: dateOpts.timeUnit,
           field: 'time',
           title: '',
-          axis: { grid: false, ticks: false },
+          axis: {
+            grid: false,
+            format: dateOpts.dateFormat,
+          },
         },
         y: {
           aggregate: 'sum',
@@ -100,17 +149,24 @@ export function getFindingsVisualizationSpec(
 export function getAlertsVisualizationSpec(
   visualizationData: any[],
   groupBy: string,
-  dynamicTimeUnit: string = 'yearmonthdatehoursminutes'
+  dateOpts: DateOpts = {
+    timeUnit: 'yearmonthdatehoursminutes',
+    dateFormat: '%Y-%m-%d %H:%M',
+  }
 ) {
   return getVisualizationSpec('Alerts data overview', visualizationData, [
     {
       mark: 'bar',
       encoding: {
         x: {
-          timeUnit: dynamicTimeUnit,
+          timeUnit: dateOpts.timeUnit,
           field: 'time',
           title: '',
-          axis: { grid: false, ticks: false },
+          axis: {
+            grid: false,
+            ticks: false,
+            format: dateOpts.dateFormat,
+          },
         },
         y: {
           aggregate: 'sum',
@@ -151,9 +207,9 @@ export function getTimeWithMinPrecision(time: number | string) {
 
 /**
  * Returns timeUnit based on how big time diff is between start and end dates
- * @param {string} start Chart start time
- * @param {string} end Chart end time
- * @param {string} [defaultUnit = 'yearmonthdatehoursminutes'] Default timeUnit
+ * @param start Chart start time
+ * @param end Chart end time
+ * @param [defaultUnit = 'yearmonthdatehoursminutes'] Default timeUnit
  */
 export function getChartTimeUnit(
   start: string,
