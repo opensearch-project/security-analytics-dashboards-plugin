@@ -20,8 +20,6 @@ export interface YamlEditorState {
 }
 
 const mapYamlObjectToYamlString = (rule: Rule): string => {
-  console.log('mapYamlObjectToYamlString', rule);
-
   try {
     if (!rule.detection) {
       const { detection, ...ruleWithoutDetection } = rule;
@@ -36,8 +34,6 @@ const mapYamlObjectToYamlString = (rule: Rule): string => {
 };
 
 const mapRuleToYamlObject = (rule: Rule): any => {
-  console.log('mapRuleToYamlObject', rule);
-
   let detection = undefined;
   if (rule.detection) {
     try {
