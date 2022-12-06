@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { EuiSpacer, EuiButtonGroup } from '@elastic/eui';
 import { Rule } from '../../../../../models/interfaces';
-import { RuleEditorFormState } from './RuleEditorFormState.model';
+import { RuleEditorFormState, ruleEditorStateDefaultValue } from './RuleEditorFormState.model';
 import { mapFormToRule, mapRuleToForm } from './mappers';
 import { VisualRuleEditor } from './VisualRuleEditor';
 import { YamlRuleEditor } from './YamlRuleEditor';
@@ -24,21 +24,6 @@ export interface VisualEditorFormErrorsState {
   authorError: string | null;
 }
 
-const newRuyleDefaultState: RuleEditorFormState = {
-  id: '25b9c01c-350d-4b95-bed1-836d04a4f324',
-  log_source: '',
-  logType: '',
-  name: '',
-  description: '',
-  status: '',
-  author: '',
-  references: [''],
-  tags: [],
-  detection: '',
-  level: '',
-  falsePositives: [''],
-};
-
 const editorTypes = [
   {
     id: 'visual',
@@ -52,7 +37,9 @@ const editorTypes = [
 
 export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActions }) => {
   const [ruleEditorFormState, setRuleEditorFormState] = useState<RuleEditorFormState>(
-    rule ? { ...mapRuleToForm(rule), id: newRuyleDefaultState.id } : newRuyleDefaultState
+    rule
+      ? { ...mapRuleToForm(rule), id: ruleEditorStateDefaultValue.id }
+      : ruleEditorStateDefaultValue
   );
 
   const [selectedEditorType, setSelectedEditorType] = useState('visual');

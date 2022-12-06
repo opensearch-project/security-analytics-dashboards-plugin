@@ -20,10 +20,15 @@ export interface YamlEditorState {
 }
 
 const mapYamlObjectToYamlString = (rule: Rule): string => {
-  try {
-    const yamlString = dump(rule);
+  console.log('mapYamlObjectToYamlString', rule);
 
-    return yamlString;
+  try {
+    if (!rule.detection) {
+      const { detection, ...ruleWithoutDetection } = rule;
+      return dump(ruleWithoutDetection);
+    } else {
+      return dump(rule);
+    }
   } catch (error: any) {
     console.warn('Security Analytics - Rule Eritor - Yaml dump', error);
     return '';
@@ -31,6 +36,15 @@ const mapYamlObjectToYamlString = (rule: Rule): string => {
 };
 
 const mapRuleToYamlObject = (rule: Rule): any => {
+  console.log('mapRuleToYamlObject', rule);
+
+  let detection = undefined;
+  if (rule.detection) {
+    try {
+      detection = load(rule.detection);
+    } catch {}
+  }
+
   const yamlObject: any = {
     id: rule.id,
     logsource: { product: rule.category },
@@ -42,26 +56,36 @@ const mapRuleToYamlObject = (rule: Rule): any => {
     status: rule.status,
     references: rule.references.map((reference) => reference.value),
     author: rule.author,
-    detection: load(rule.detection),
+    detection,
   };
 
   return yamlObject;
 };
 
 const mapYamlObjectToRule = (obj: any): Rule => {
+  let detection = '';
+  if (obj.detection) {
+    try {
+      detection = dump(obj.detection);
+    } catch {}
+  }
   const rule: Rule = {
     id: obj.id,
-    category: obj.logsource.product,
+    category: obj.logsource ? obj.logsource.product : undefined,
     log_source: '',
     title: obj.title,
     description: obj.description,
-    tags: obj.tags.map((tag: string) => ({ value: tag })),
-    false_positives: obj.falsepositives.map((falsePositive: string) => ({ value: falsePositive })),
+    tags: obj.tags ? obj.tags.map((tag: string) => ({ value: tag })) : undefined,
+    false_positives: obj.falsepositives
+      ? obj.falsepositives.map((falsePositive: string) => ({ value: falsePositive }))
+      : undefined,
     level: obj.level,
     status: obj.status,
-    references: obj.references.map((reference: string) => ({ value: reference })),
+    references: obj.references
+      ? obj.references.map((reference: string) => ({ value: reference }))
+      : undefined,
     author: obj.author,
-    detection: dump(obj.detection),
+    detection,
   };
 
   return rule;
@@ -89,7 +113,6 @@ export const YamlRuleEditor: React.FC<YamlRuleEditorProps> = ({ rule, change }) 
 
       const rule = mapYamlObjectToRule(yamlObject);
 
-      console.log('onBlur rule load', yamlObject, rule);
       change(rule);
       setState((prevState) => ({ ...prevState, error: null }));
     } catch (error) {

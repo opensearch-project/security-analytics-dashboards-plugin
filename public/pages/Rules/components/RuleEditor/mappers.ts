@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { Rule } from '../../../../../models/interfaces';
-import { RuleEditorFormState } from './RuleEditorFormState.model';
+import { RuleEditorFormState, ruleEditorStateDefaultValue } from './RuleEditorFormState.model';
 
 export const mapFormToRule = (formState: RuleEditorFormState): Rule => {
   return {
@@ -33,10 +33,16 @@ export const mapRuleToForm = (rule: Rule): RuleEditorFormState => {
     description: rule.description,
     status: rule.status,
     author: rule.author,
-    references: rule.references.map((ref) => ref.value),
-    tags: rule.tags.map((tag) => ({ label: tag.value })),
+    references: rule.references
+      ? rule.references.map((ref) => ref.value)
+      : ruleEditorStateDefaultValue.references,
+    tags: rule.tags
+      ? rule.tags.map((tag) => ({ label: tag.value }))
+      : ruleEditorStateDefaultValue.tags,
     detection: rule.detection,
     level: rule.level,
-    falsePositives: rule.false_positives.map((falsePositive) => falsePositive.value),
+    falsePositives: rule.false_positives
+      ? rule.false_positives.map((falsePositive) => falsePositive.value)
+      : ruleEditorStateDefaultValue.falsePositives,
   };
 };
