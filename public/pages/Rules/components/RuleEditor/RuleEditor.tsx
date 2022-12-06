@@ -65,6 +65,11 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
     return mapFormToRule(ruleEditorFormState);
   };
 
+  const onYamlRuleEditorChange = (value: Rule) => {
+    const formState = mapRuleToForm(value);
+    setRuleEditorFormState(formState);
+  };
+
   return (
     <>
       <ContentPanel title={title}>
@@ -83,8 +88,8 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
         )}
         {selectedEditorType === 'yaml' && (
           <YamlRuleEditor
-            ruleEditorFormState={ruleEditorFormState}
-            setRuleEditorFormState={setRuleEditorFormState}
+            rule={mapFormToRule(ruleEditorFormState)}
+            change={onYamlRuleEditorChange}
           />
         )}
         <EuiSpacer />
