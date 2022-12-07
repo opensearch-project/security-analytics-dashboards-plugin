@@ -11,7 +11,7 @@ describe('helper utilities spec', () => {
       [key: string]: string;
     } = {
       'now-15m': dayFormat,
-      'now-15h': dayFormat,
+      'now-15h': fullFormat,
       'now-15d': fullFormat,
       'now-2M': yearFormat,
       'now-2y': fullFormat,
