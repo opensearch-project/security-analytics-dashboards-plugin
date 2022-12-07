@@ -241,7 +241,6 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
     if (recentlyUsedRanges.length > MAX_RECENTLY_USED_TIME_RANGES)
       recentlyUsedRanges = recentlyUsedRanges.slice(0, MAX_RECENTLY_USED_TIME_RANGES);
     const endTime = start === end ? DEFAULT_DATE_RANGE.end : end;
-
     const timeUnit = getChartTimeUnit(start, endTime);
     this.setState({
       startTime: start,
