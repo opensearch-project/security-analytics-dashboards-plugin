@@ -4,6 +4,7 @@
  */
 
 import moment from 'moment';
+import { euiPaletteColorBlind, euiPaletteForStatus } from '@elastic/eui';
 import { TopLevelSpec } from 'vega-lite';
 import { SummaryData } from '../components/Widgets/Summary';
 import dateMath from '@elastic/datemath';
@@ -140,6 +141,9 @@ export function getFindingsVisualizationSpec(
           field: groupBy,
           type: 'nominal',
           title: groupBy === 'logType' ? 'Log type' : 'Rule severity',
+          scale: {
+            range: euiPaletteColorBlind(),
+          },
         },
       },
     },
@@ -179,6 +183,9 @@ export function getAlertsVisualizationSpec(
           field: groupBy,
           type: 'nominal',
           title: groupBy === 'status' ? 'Alert status' : 'Alert severity',
+          scale: {
+            range: groupBy === 'status' ? euiPaletteForStatus(5) : euiPaletteColorBlind(),
+          },
         },
       },
     },
@@ -191,7 +198,14 @@ export function getTopRulesVisualizationSpec(visualizationData: any[]) {
       mark: { type: 'arc', innerRadius: 90 },
       encoding: {
         theta: { aggregate: 'sum', field: 'count', type: 'quantitative' },
-        color: { field: 'ruleName', type: 'nominal', header: { title: '' } },
+        color: {
+          field: 'ruleName',
+          type: 'nominal',
+          header: { title: '' },
+          scale: {
+            range: euiPaletteColorBlind(),
+          },
+        },
       },
     },
   ]);
