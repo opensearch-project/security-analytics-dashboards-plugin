@@ -307,7 +307,7 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
       recentlyUsedRanges = recentlyUsedRanges.slice(0, MAX_RECENTLY_USED_TIME_RANGES);
     const endTime = start === end ? DEFAULT_DATE_RANGE.end : end;
 
-    let timeUnit = getChartTimeUnit(start, endTime);
+    const timeUnit = getChartTimeUnit(start, endTime);
     this.setState({
       startTime: start,
       endTime: endTime,
