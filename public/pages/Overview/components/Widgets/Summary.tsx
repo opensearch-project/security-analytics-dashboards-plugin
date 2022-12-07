@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiFlexGroup, EuiFlexItem, EuiText, EuiLink } from '@elastic/eui';
-import { ROUTES } from '../../../../utils/constants';
+import { EuiFlexGroup, EuiFlexItem, EuiLink, EuiStat } from '@elastic/eui';
 import React, { useCallback, useEffect, useState } from 'react';
 import { WidgetContainer } from './WidgetContainer';
 import { summaryGroupByOptions } from '../../utils/constants';
 import { getOverviewVisualizationSpec, getTimeWithMinPrecision } from '../../utils/helpers';
 import { AlertItem, FindingItem } from '../../models/interfaces';
 import { createSelectComponent, renderVisualization } from '../../../../utils/helpers';
+import { ROUTES } from '../../../../utils/constants';
 
 export interface SummaryProps {
   findings: FindingItem[];
@@ -92,26 +92,22 @@ export const Summary: React.FC<SummaryProps> = ({ alerts, findings }) => {
         <EuiFlexItem>
           <EuiFlexGroup gutterSize="xl">
             <EuiFlexItem grow={false}>
-              <EuiText size="s">
-                <p>Total active alerts</p>
-              </EuiText>
-              <EuiLink
-                href={`#${ROUTES.ALERTS}`}
-                style={{ fontSize: 20, textDecoration: 'underline' }}
-              >
-                {activeAlerts}
-              </EuiLink>
+              <EuiStat
+                title={<EuiLink href={`#${ROUTES.ALERTS}`}>{activeAlerts}</EuiLink>}
+                description="Total active alerts"
+                textAlign="left"
+                titleColor="primary"
+                isLoading={!activeAlerts}
+              />
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
-              <EuiText size="s">
-                <p>Total findings</p>
-              </EuiText>
-              <EuiLink
-                href={`#${ROUTES.FINDINGS}`}
-                style={{ fontSize: 20, textDecoration: 'underline' }}
-              >
-                {totalFindings}
-              </EuiLink>
+              <EuiStat
+                title={<EuiLink href={`#${ROUTES.FINDINGS}`}>{totalFindings}</EuiLink>}
+                description="Total findings"
+                textAlign="left"
+                titleColor="primary"
+                isLoading={!totalFindings}
+              />
             </EuiFlexItem>
           </EuiFlexGroup>
         </EuiFlexItem>
