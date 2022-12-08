@@ -22,7 +22,11 @@ import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components
 import dateMath from '@elastic/datemath';
 import React, { Component } from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
-import { getAlertsVisualizationSpec } from '../../../Overview/utils/helpers';
+import {
+  getAlertsVisualizationSpec,
+  getChartTimeUnit,
+  getDateFormatByTimeUnit,
+} from '../../../Overview/utils/helpers';
 import moment from 'moment';
 import {
   ALERT_STATE,
@@ -70,6 +74,7 @@ export interface AlertsState {
   filteredAlerts: AlertItem[];
   detectors: { [key: string]: Detector };
   loading: boolean;
+  timeUnit: string;
 }
 
 const groupByOptions = [
@@ -93,6 +98,7 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
       filteredAlerts: [],
       detectors: {},
       loading: false,
+      timeUnit: 'yearmonthdatehoursminutes',
     };
   }
 
@@ -218,7 +224,10 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
       };
     });
 
-    return getAlertsVisualizationSpec(visData, this.state.groupBy);
+    return getAlertsVisualizationSpec(visData, this.state.groupBy, {
+      timeUnit: this.state.timeUnit,
+      dateFormat: getDateFormatByTimeUnit(this.state.startTime, this.state.endTime),
+    });
   }
 
   createGroupByControl(): React.ReactNode {
@@ -297,10 +306,13 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
     if (recentlyUsedRanges.length > MAX_RECENTLY_USED_TIME_RANGES)
       recentlyUsedRanges = recentlyUsedRanges.slice(0, MAX_RECENTLY_USED_TIME_RANGES);
     const endTime = start === end ? DEFAULT_DATE_RANGE.end : end;
+
+    const timeUnit = getChartTimeUnit(start, endTime);
     this.setState({
       startTime: start,
       endTime: endTime,
       recentlyUsedRanges: recentlyUsedRanges,
+      timeUnit,
     });
   };
 
