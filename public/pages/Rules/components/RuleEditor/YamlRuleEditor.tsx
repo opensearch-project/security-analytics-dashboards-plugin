@@ -141,7 +141,7 @@ export const YamlRuleEditor: React.FC<YamlRuleEditorProps> = ({ rule, change }) 
             value={state.value}
             onChange={onChange}
             onBlur={onBlur}
-            data-test-subj={'rule_detection_field'}
+            data-test-subj={'rule_yaml_editor'}
           />
         </>
       </EuiFormRow>

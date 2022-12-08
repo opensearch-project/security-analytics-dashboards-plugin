@@ -61,6 +61,7 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
     <>
       <ContentPanel title={title}>
         <EuiButtonGroup
+          data-test-subj="change-editor-type"
           legend="This is editor type selector"
           options={editorTypes}
           idSelected={selectedEditorType}
