@@ -242,3 +242,12 @@ export const getPlugins = async (opensearchService: OpenSearchService) => {
     return [];
   }
 };
+
+/**
+ * Returns last route param based on route path
+ * @param {string} pathname
+ * @param {string} route
+ * @return {string}
+ */
+export const getRouteParam = (pathname, route): string =>
+  pathname.replace(new RegExp(`(${route}+)\/?`), '');

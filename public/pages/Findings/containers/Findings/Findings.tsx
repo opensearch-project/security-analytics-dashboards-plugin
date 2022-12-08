@@ -28,6 +28,7 @@ import {
   DEFAULT_DATE_RANGE,
   MAX_RECENTLY_USED_TIME_RANGES,
   OS_NOTIFICATION_PLUGIN,
+  ROUTES,
 } from '../../../../utils/constants';
 import { getFindingsVisualizationSpec } from '../../../Overview/utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
@@ -43,6 +44,7 @@ import {
   errorNotificationToast,
   renderVisualization,
   getPlugins,
+  getRouteParam,
 } from '../../../../utils/helpers';
 import { DetectorHit, RuleSource } from '../../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
@@ -137,24 +139,27 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
         const ruleIds = new Set<string>();
         let findings: FindingItemType[] = [];
 
+        const detectorId = getRouteParam(this.props.location.pathname, ROUTES.FINDINGS);
         for (let detector of detectors) {
-          const findingRes = await findingsService.getFindings({ detectorId: detector._id });
+          if (!detectorId || detector._id === detectorId) {
+            const findingRes = await findingsService.getFindings({ detectorId: detector._id });
 
-          if (findingRes.ok) {
-            const detectorFindings: FindingItemType[] = findingRes.response.findings.map(
-              (finding) => {
-                finding.queries.forEach((rule) => ruleIds.add(rule.id));
-                return {
-                  ...finding,
-                  detectorName: detector._source.name,
-                  logType: detector._source.detector_type,
-                  detector: detector,
-                };
-              }
-            );
-            findings = findings.concat(detectorFindings);
-          } else {
-            errorNotificationToast(notifications, 'retrieve', 'findings', findingRes.error);
+            if (findingRes.ok) {
+              const detectorFindings: FindingItemType[] = findingRes.response.findings.map(
+                (finding) => {
+                  finding.queries.forEach((rule) => ruleIds.add(rule.id));
+                  return {
+                    ...finding,
+                    detectorName: detector._source.name,
+                    logType: detector._source.detector_type,
+                    detector: detector,
+                  };
+                }
+              );
+              findings = findings.concat(detectorFindings);
+            } else {
+              errorNotificationToast(notifications, 'retrieve', 'findings', findingRes.error);
+            }
           }
         }
 

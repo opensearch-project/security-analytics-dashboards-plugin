@@ -30,6 +30,7 @@ import {
   DEFAULT_DATE_RANGE,
   DEFAULT_EMPTY_DATA,
   MAX_RECENTLY_USED_TIME_RANGES,
+  ROUTES,
 } from '../../../../utils/constants';
 import { CoreServicesContext } from '../../../../components/core_services';
 import AlertsService from '../../../../services/AlertsService';
@@ -44,6 +45,7 @@ import {
   capitalizeFirstLetter,
   createSelectComponent,
   errorNotificationToast,
+  getRouteParam,
   renderTime,
   renderVisualization,
   successNotificationToast,
@@ -250,17 +252,20 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
         });
 
         let alerts: AlertItem[] = [];
+        const detectorId = getRouteParam(this.props.location.pathname, ROUTES.ALERTS);
         for (let id of detectorIds) {
-          const alertsRes = await alertService.getAlerts({ detector_id: id });
+          if (!detectorId || detectorId === id) {
+            const alertsRes = await alertService.getAlerts({ detector_id: id });
 
-          if (alertsRes.ok) {
-            const detectorAlerts = alertsRes.response.alerts.map((alert) => {
-              const detector = detectors[id];
-              return { ...alert, detectorName: detector.name };
-            });
-            alerts = alerts.concat(detectorAlerts);
-          } else {
-            errorNotificationToast(notifications, 'retrieve', 'alerts', alertsRes.error);
+            if (alertsRes.ok) {
+              const detectorAlerts = alertsRes.response.alerts.map((alert) => {
+                const detector = detectors[id];
+                return { ...alert, detectorName: detector.name };
+              });
+              alerts = alerts.concat(detectorAlerts);
+            } else {
+              errorNotificationToast(notifications, 'retrieve', 'alerts', alertsRes.error);
+            }
           }
         }
 
