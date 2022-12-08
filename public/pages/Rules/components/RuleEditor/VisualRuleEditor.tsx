@@ -26,7 +26,7 @@ import {
   validateDescription,
   validateName,
 } from '../../../../utils/validation';
-import { RuleEditorFormState } from './RuleEditorFormState.model';
+import { RuleEditorFormState } from './RuleEditorFormState';
 
 export interface VisualRuleEditorProps {
   ruleEditorFormState: RuleEditorFormState;

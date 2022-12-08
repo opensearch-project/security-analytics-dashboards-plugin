@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { EuiSpacer, EuiButtonGroup } from '@elastic/eui';
 import { Rule } from '../../../../../models/interfaces';
-import { RuleEditorFormState, ruleEditorStateDefaultValue } from './RuleEditorFormState.model';
+import { RuleEditorFormState, ruleEditorStateDefaultValue } from './RuleEditorFormState';
 import { mapFormToRule, mapRuleToForm } from './mappers';
 import { VisualRuleEditor } from './VisualRuleEditor';
 import { YamlRuleEditor } from './YamlRuleEditor';
