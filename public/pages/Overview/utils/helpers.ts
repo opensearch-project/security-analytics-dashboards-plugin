@@ -9,7 +9,21 @@ import { SummaryData } from '../components/Widgets/Summary';
 
 function getVisualizationSpec(description: string, data: any, layers: any[]): TopLevelSpec {
   return {
-    config: { view: { stroke: null } },
+    config: {
+      view: { stroke: null },
+      legend: {
+        labelColor: '#343741',
+        titleColor: '#1a1c21',
+        labelFontSize: 14,
+        titleFontWeight: 600,
+        titleLineHeight: 21,
+        titleFontSize: 14,
+        titlePadding: 10,
+        rowPadding: 6,
+        labelFont:
+          '"Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+      },
+    },
     $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
     description: description,
     data: {
@@ -137,7 +151,7 @@ export function getTopRulesVisualizationSpec(visualizationData: any[]) {
         color: {
           field: 'ruleName',
           type: 'nominal',
-          header: { title: '' },
+          title: 'Rule name',
           scale: {
             range: euiPaletteColorBlind(),
           },
