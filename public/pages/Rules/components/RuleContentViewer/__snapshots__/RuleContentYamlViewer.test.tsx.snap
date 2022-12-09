@@ -1,0 +1,290 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<RuleContentYamlViewer /> spec renders the component 1`] = `
+<div
+  class="euiCodeBlock euiCodeBlock--fontSmall euiCodeBlock--paddingLarge prismjs language-yaml"
+>
+  <pre
+    class="euiCodeBlock__pre euiCodeBlock__pre--whiteSpacePreWrap"
+    tabindex="-1"
+  >
+    <code
+      class="euiCodeBlock__code yaml"
+      data-test-subj="rule_flyout_yaml_rule"
+    >
+      <span
+        class="euiCodeBlock__line"
+      >
+        <span
+          class="token key atrule"
+        >
+          id
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         25b9c01c
+        <span
+          class="token punctuation"
+        >
+          -
+        </span>
+        350d
+        <span
+          class="token punctuation"
+        >
+          -
+        </span>
+        4b95
+        <span
+          class="token punctuation"
+        >
+          -
+        </span>
+        bed1
+        <span
+          class="token punctuation"
+        >
+          -
+        </span>
+        836d04a4f324
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          title
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         My Rule
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          description
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         My Rule
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          status
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         stable
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          author
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         aleksandar
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          date
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         2022/11/23
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          modified
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         2022/11/23
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          logsource
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+        
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+          
+        <span
+          class="token key atrule"
+        >
+          category
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         dns
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          level
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         high
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          detection
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+        
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+          
+        <span
+          class="token key atrule"
+        >
+          selection
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+        
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+            
+        <span
+          class="token key atrule"
+        >
+          EventID
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         
+        <span
+          class="token number"
+        >
+          4800
+        </span>
+        
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+          
+        <span
+          class="token key atrule"
+        >
+          condition
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         selection
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+      </span>
+    </code>
+  </pre>
+</div>
+`;
