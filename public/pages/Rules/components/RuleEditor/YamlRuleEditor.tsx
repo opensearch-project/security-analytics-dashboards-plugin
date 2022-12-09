@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import { dump, load } from 'js-yaml';
-import { EuiFormRow, EuiCodeEditor, EuiLink, EuiSpacer, EuiText } from '@elastic/eui';
+import { EuiFormRow, EuiCodeEditor, EuiLink, EuiSpacer, EuiText, EuiForm } from '@elastic/eui';
 import FormFieldHeader from '../../../../components/FormFieldHeader';
 import { Rule } from '../../../../../models/interfaces';
 import {
@@ -171,31 +171,35 @@ export const YamlRuleEditor: React.FC<YamlRuleEditorProps> = ({ rule, change }) 
 
   return (
     <>
-      <EuiFormRow label={<FormFieldHeader headerTitle={'Define rule in YAML'} />} fullWidth={true}>
-        <>
-          <EuiText size="s" color="subdued">
-            Use the YAML editor to define a sigma rule. See{' '}
-            <EuiLink href="https://github.com/SigmaHQ/sigma-specification">
-              Sigma specification
-            </EuiLink>{' '}
-            for rule structure and schema.
-          </EuiText>
-          <EuiSpacer size="s" />
-          {state.errors?.map((e) => (
-            <EuiText size="s" color="danger" key={e}>
-              {e}
+      <EuiForm
+        isInvalid={state.errors !== null && state.errors.length > 0}
+        error={state.errors}
+        component="form"
+      >
+        <EuiFormRow
+          label={<FormFieldHeader headerTitle={'Define rule in YAML'} />}
+          fullWidth={true}
+        >
+          <>
+            <EuiText size="s" color="subdued">
+              Use the YAML editor to define a sigma rule. See{' '}
+              <EuiLink href="https://github.com/SigmaHQ/sigma-specification">
+                Sigma specification
+              </EuiLink>{' '}
+              for rule structure and schema.
             </EuiText>
-          ))}
-          <EuiCodeEditor
-            mode="yaml"
-            width="100%"
-            value={state.value}
-            onChange={onChange}
-            onBlur={onBlur}
-            data-test-subj={'rule_yaml_editor'}
-          />
-        </>
-      </EuiFormRow>
+            <EuiSpacer size="s" />
+            <EuiCodeEditor
+              mode="yaml"
+              width="100%"
+              value={state.value}
+              onChange={onChange}
+              onBlur={onBlur}
+              data-test-subj={'rule_yaml_editor'}
+            />
+          </>
+        </EuiFormRow>
+      </EuiForm>
     </>
   );
 };
