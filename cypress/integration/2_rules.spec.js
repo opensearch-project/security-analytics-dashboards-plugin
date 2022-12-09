@@ -5,8 +5,9 @@
 
 import { PLUGIN_NAME, TWENTY_SECONDS_TIMEOUT } from '../support/constants';
 
+const uniqueId = Cypress._.random(0, 1e6);
 const SAMPLE_RULE = {
-  name: 'Cypress test rule',
+  name: `Cypress test rule ${uniqueId}`,
   logType: 'windows',
   description: 'This is a rule used to test the rule creation workflow. Not for production use.',
   detection:
@@ -25,6 +26,26 @@ const SAMPLE_RULE = {
   author: 'Cypress Test Runner',
   status: 'experimental',
 };
+
+const YAML_RULE_LINES = [
+  `title: ${SAMPLE_RULE.name}`,
+  `description:`,
+  `${SAMPLE_RULE.description}`,
+  `level: ${SAMPLE_RULE.severity}`,
+  `tags:`,
+  `- ${SAMPLE_RULE.tags[0]}`,
+  `- ${SAMPLE_RULE.tags[1]}`,
+  `- ${SAMPLE_RULE.tags[2]}`,
+  `references:`,
+  `- '${SAMPLE_RULE.references}'`,
+  `falsepositives:`,
+  `- ${SAMPLE_RULE.falsePositive}`,
+  `author: ${SAMPLE_RULE.author}`,
+  `status: ${SAMPLE_RULE.status}`,
+  `logsource:`,
+  `product: ${SAMPLE_RULE.logType}`,
+  ...SAMPLE_RULE.detection.replaceAll('  ', '').replaceAll('{backspace}', '').split('\n'),
+];
 
 describe('Rules', () => {
   before(() => {
@@ -91,6 +112,20 @@ describe('Rules', () => {
       // Enter the log type
       cy.get('[data-test-subj="rule_status_dropdown"]', TWENTY_SECONDS_TIMEOUT).select(
         SAMPLE_RULE.status
+      );
+
+      // Switch to YAML editor
+      cy.get(
+        '[data-test-subj="change-editor-type"] label:nth-child(2)',
+        TWENTY_SECONDS_TIMEOUT
+      ).click({
+        force: true,
+      });
+
+      YAML_RULE_LINES.forEach((line) =>
+        cy
+          .get('[data-test-subj="rule_yaml_editor"]', TWENTY_SECONDS_TIMEOUT)
+          .contains(line, TWENTY_SECONDS_TIMEOUT)
       );
 
       // Click "create" button
