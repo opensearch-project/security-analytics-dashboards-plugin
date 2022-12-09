@@ -185,7 +185,7 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
       )}
       {selectedEditorType === 'yaml' && (
         <EuiFormRow label="Rule" fullWidth>
-          <RuleContentYamlViewer ruleYaml={ruleData.rule} />
+          <RuleContentYamlViewer rule={ruleData} />
         </EuiFormRow>
       )}
     </EuiModalBody>
