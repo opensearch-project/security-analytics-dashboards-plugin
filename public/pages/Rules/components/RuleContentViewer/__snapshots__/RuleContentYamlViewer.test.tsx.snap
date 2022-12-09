@@ -59,108 +59,6 @@ exports[`<RuleContentYamlViewer /> spec renders the component 1`] = `
         <span
           class="token key atrule"
         >
-          title
-        </span>
-        <span
-          class="token punctuation"
-        >
-          :
-        </span>
-         My Rule
-
-      </span>
-      <span
-        class="euiCodeBlock__line"
-      >
-        
-        <span
-          class="token key atrule"
-        >
-          description
-        </span>
-        <span
-          class="token punctuation"
-        >
-          :
-        </span>
-         My Rule
-
-      </span>
-      <span
-        class="euiCodeBlock__line"
-      >
-        
-        <span
-          class="token key atrule"
-        >
-          status
-        </span>
-        <span
-          class="token punctuation"
-        >
-          :
-        </span>
-         stable
-
-      </span>
-      <span
-        class="euiCodeBlock__line"
-      >
-        
-        <span
-          class="token key atrule"
-        >
-          author
-        </span>
-        <span
-          class="token punctuation"
-        >
-          :
-        </span>
-         aleksandar
-
-      </span>
-      <span
-        class="euiCodeBlock__line"
-      >
-        
-        <span
-          class="token key atrule"
-        >
-          date
-        </span>
-        <span
-          class="token punctuation"
-        >
-          :
-        </span>
-         2022/11/23
-
-      </span>
-      <span
-        class="euiCodeBlock__line"
-      >
-        
-        <span
-          class="token key atrule"
-        >
-          modified
-        </span>
-        <span
-          class="token punctuation"
-        >
-          :
-        </span>
-         2022/11/23
-
-      </span>
-      <span
-        class="euiCodeBlock__line"
-      >
-        
-        <span
-          class="token key atrule"
-        >
           logsource
         </span>
         <span
@@ -178,14 +76,130 @@ exports[`<RuleContentYamlViewer /> spec renders the component 1`] = `
         <span
           class="token key atrule"
         >
-          category
+          product
         </span>
         <span
           class="token punctuation"
         >
           :
         </span>
-         dns
+         windows
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          title
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         Testing rule
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          description
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         Testing Description
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          tags
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+        
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+          
+        <span
+          class="token punctuation"
+        >
+          -
+        </span>
+         attack.persistence
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+          
+        <span
+          class="token punctuation"
+        >
+          -
+        </span>
+         attack.privilege_escalation
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+          
+        <span
+          class="token punctuation"
+        >
+          -
+        </span>
+         attack.t1543.003
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          falsepositives
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+        
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+          
+        <span
+          class="token punctuation"
+        >
+          -
+        </span>
+         Unknown
 
       </span>
       <span
@@ -203,6 +217,75 @@ exports[`<RuleContentYamlViewer /> spec renders the component 1`] = `
           :
         </span>
          high
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          status
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         experimental
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          references
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+        
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+          
+        <span
+          class="token punctuation"
+        >
+          -
+        </span>
+         
+        <span
+          class="token string"
+        >
+          'https://securelist.com/operation-tunnelsnake-and-moriya-rootkit/101831'
+        </span>
+        
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          author
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         Bhabesh Raj
 
       </span>
       <span
@@ -246,6 +329,23 @@ exports[`<RuleContentYamlViewer /> spec renders the component 1`] = `
         <span
           class="token key atrule"
         >
+          Provider_Name
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         Service Control Manager
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+            
+        <span
+          class="token key atrule"
+        >
           EventID
         </span>
         <span
@@ -257,9 +357,26 @@ exports[`<RuleContentYamlViewer /> spec renders the component 1`] = `
         <span
           class="token number"
         >
-          4800
+          7045
         </span>
         
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+            
+        <span
+          class="token key atrule"
+        >
+          ServiceName
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         ZzNetSvc
 
       </span>
       <span

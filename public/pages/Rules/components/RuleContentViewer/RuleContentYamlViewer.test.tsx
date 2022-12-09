@@ -11,9 +11,39 @@ describe('<RuleContentYamlViewer /> spec', () => {
   it('renders the component', () => {
     const { container } = render(
       <RuleContentYamlViewer
-        ruleYaml={
-          'id: 25b9c01c-350d-4b95-bed1-836d04a4f324\ntitle: My Rule\ndescription: My Rule\nstatus: stable\nauthor: aleksandar\ndate: 2022/11/23\nmodified: 2022/11/23\nlogsource:\n  category: dns\nlevel: high\ndetection:\n  selection:\n    EventID: 4800\n  condition: selection\n'
-        }
+        rule={{
+          id: '25b9c01c-350d-4b95-bed1-836d04a4f324',
+          category: 'windows',
+          title: 'Testing rule',
+          description: 'Testing Description',
+          status: 'experimental',
+          author: 'Bhabesh Raj',
+          references: [
+            {
+              value: 'https://securelist.com/operation-tunnelsnake-and-moriya-rootkit/101831',
+            },
+          ],
+          tags: [
+            {
+              value: 'attack.persistence',
+            },
+            {
+              value: 'attack.privilege_escalation',
+            },
+            {
+              value: 'attack.t1543.003',
+            },
+          ],
+          log_source: '',
+          detection:
+            'selection:\n  Provider_Name: Service Control Manager\n  EventID: 7045\n  ServiceName: ZzNetSvc\ncondition: selection\n',
+          level: 'high',
+          false_positives: [
+            {
+              value: 'Unknown',
+            },
+          ],
+        }}
       />
     );
     expect(container.firstChild).toMatchSnapshot();
