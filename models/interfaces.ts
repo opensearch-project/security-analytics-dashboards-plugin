@@ -9,11 +9,11 @@ export interface Rule {
   log_source: string;
   title: string;
   description: string;
-  tags: { value: string }[];
-  false_positives: { value: string }[];
+  tags: Array<{ value: string }>;
+  false_positives: Array<{ value: string }>;
   level: string;
   status: string;
-  references: { value: string }[];
+  references: Array<{ value: string }>;
   author: string;
   detection: string;
 }
