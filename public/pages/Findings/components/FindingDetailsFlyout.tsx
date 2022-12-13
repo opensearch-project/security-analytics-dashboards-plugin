@@ -8,6 +8,7 @@ import {
   EuiAccordion,
   EuiBadge,
   EuiBadgeGroup,
+  EuiButton,
   EuiButtonIcon,
   EuiCodeBlock,
   EuiFlexGroup,
@@ -63,13 +64,7 @@ export default class FindingDetailsFlyout extends Component<
   };
 
   renderRuleDetails = (rules: Query[] = []) => {
-    const {
-      allRules,
-      finding: { index, related_doc_ids, document_list },
-    } = this.props;
-    const documents = document_list;
-    const docId = related_doc_ids[0];
-    const document = documents.filter((doc) => doc.id === docId);
+    const { allRules } = this.props;
     return rules.map((rule, key) => {
       const fullRule = allRules[rule.id];
       const severity = capitalizeFirstLetter(fullRule.level);
@@ -140,51 +135,75 @@ export default class FindingDetailsFlyout extends Component<
             </EuiFormRow>
 
             <EuiSpacer size={'l'} />
-
-            <EuiTitle size={'s'}>
-              <h3>Documents</h3>
-            </EuiTitle>
-            <EuiSpacer size={'s'} />
-
-            <EuiFlexGroup>
-              <EuiFlexItem>
-                <EuiFormRow
-                  label={'Document ID'}
-                  data-test-subj={'finding-details-flyout-rule-document-id'}
-                >
-                  <EuiText>{docId || DEFAULT_EMPTY_DATA}</EuiText>
-                </EuiFormRow>
-              </EuiFlexItem>
-
-              <EuiFlexItem>
-                <EuiFormRow
-                  label={'Index'}
-                  data-test-subj={'finding-details-flyout-rule-document-index'}
-                >
-                  <EuiText>{index || DEFAULT_EMPTY_DATA}</EuiText>
-                </EuiFormRow>
-              </EuiFlexItem>
-            </EuiFlexGroup>
-
-            <EuiSpacer size={'m'} />
-
-            <EuiFormRow fullWidth={true}>
-              <EuiCodeBlock
-                language={'json'}
-                inline={false}
-                isCopyable={true}
-                readOnly={true}
-                data-test-subj={'finding-details-flyout-rule-document'}
-              >
-                {JSON.stringify(document, null, 4)}
-              </EuiCodeBlock>
-            </EuiFormRow>
           </EuiAccordion>
           {rules.length > 1 && <EuiHorizontalRule />}
         </div>
       );
     });
   };
+
+  onViewSurroundingDocumentsClicked = () => {};
+
+  renderFindingDocuments() {
+    const {
+      finding: { index, document_list, related_doc_ids },
+    } = this.props;
+    const documents = document_list;
+    const docId = related_doc_ids[0];
+    const matchedDocuments = documents.filter((doc) => doc.id === docId);
+    const document = matchedDocuments.length > 0 ? matchedDocuments[0].document : '';
+
+    return (
+      <>
+        <EuiFlexGroup justifyContent="spaceBetween">
+          <EuiFlexItem>
+            <EuiTitle size={'s'}>
+              <h3>Documents</h3>
+            </EuiTitle>
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>
+            <EuiButton onClick={this.onViewSurroundingDocumentsClicked}>
+              View surrounding documents
+            </EuiButton>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+
+        <EuiSpacer size={'s'} />
+
+        <EuiFlexGroup>
+          <EuiFlexItem>
+            <EuiFormRow
+              label={'Document ID'}
+              data-test-subj={'finding-details-flyout-rule-document-id'}
+            >
+              <EuiText>{docId || DEFAULT_EMPTY_DATA}</EuiText>
+            </EuiFormRow>
+          </EuiFlexItem>
+
+          <EuiFlexItem>
+            <EuiFormRow
+              label={'Index'}
+              data-test-subj={'finding-details-flyout-rule-document-index'}
+            >
+              <EuiText>{index || DEFAULT_EMPTY_DATA}</EuiText>
+            </EuiFormRow>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+
+        <EuiSpacer size={'m'} />
+
+        <EuiFormRow fullWidth={true}>
+          <EuiCodeBlock
+            language="json"
+            isCopyable
+            data-test-subj={'finding-details-flyout-rule-document'}
+          >
+            {JSON.stringify(JSON.parse(document), null, 2)}
+          </EuiCodeBlock>
+        </EuiFormRow>
+      </>
+    );
+  }
 
   render() {
     const {
@@ -270,6 +289,8 @@ export default class FindingDetailsFlyout extends Component<
           </EuiTitle>
           <EuiSpacer size={'m'} />
           {this.renderRuleDetails(queries)}
+          <EuiSpacer size="l" />
+          {this.renderFindingDocuments()}
         </EuiFlyoutBody>
       </EuiFlyout>
     );
