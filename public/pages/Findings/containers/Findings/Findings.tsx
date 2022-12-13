@@ -4,7 +4,7 @@
  */
 
 import React, { Component } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, withRouter, match } from 'react-router-dom';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import {
   DurationRange,
@@ -48,7 +48,6 @@ import {
   errorNotificationToast,
   renderVisualization,
   getPlugins,
-  getRouteParam,
 } from '../../../../utils/helpers';
 import { DetectorHit, RuleSource } from '../../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
@@ -61,6 +60,7 @@ interface FindingsProps extends RouteComponentProps {
   opensearchService: OpenSearchService;
   ruleService: RuleService;
   notifications: NotificationsStart;
+  match: match;
 }
 
 interface FindingsState {
@@ -94,7 +94,7 @@ export const groupByOptions = [
   { text: 'Rule severity', value: 'ruleSeverity' },
 ];
 
-export default class Findings extends Component<FindingsProps, FindingsState> {
+class Findings extends Component<FindingsProps, FindingsState> {
   static contextType = CoreServicesContext;
 
   constructor(props: FindingsProps) {
@@ -146,7 +146,7 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
         const ruleIds = new Set<string>();
         let findings: FindingItemType[] = [];
 
-        const detectorId = getRouteParam(this.props.location.pathname, ROUTES.FINDINGS);
+        const detectorId = this.props.match.params['detectorId'];
         for (let detector of detectors) {
           if (!detectorId || detector._id === detectorId) {
             const findingRes = await findingsService.getFindings({ detectorId: detector._id });
@@ -373,3 +373,5 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
     );
   }
 }
+
+export default withRouter(Findings);

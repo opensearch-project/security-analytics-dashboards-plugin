@@ -49,12 +49,12 @@ import {
   capitalizeFirstLetter,
   createSelectComponent,
   errorNotificationToast,
-  getRouteParam,
   renderTime,
   renderVisualization,
   successNotificationToast,
 } from '../../../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { match, withRouter } from 'react-router-dom';
 
 export interface AlertsProps {
   alertService: AlertsService;
@@ -62,6 +62,7 @@ export interface AlertsProps {
   findingService: FindingsService;
   ruleService: RuleService;
   notifications: NotificationsStart;
+  match: match;
 }
 
 export interface AlertsState {
@@ -84,7 +85,7 @@ const groupByOptions = [
   { text: 'Alert severity', value: 'severity' },
 ];
 
-export default class Alerts extends Component<AlertsProps, AlertsState> {
+class Alerts extends Component<AlertsProps, AlertsState> {
   static contextType = CoreServicesContext;
 
   constructor(props: AlertsProps) {
@@ -261,7 +262,7 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
         });
 
         let alerts: AlertItem[] = [];
-        const detectorId = getRouteParam(this.props.location.pathname, ROUTES.ALERTS);
+        const detectorId = this.props.match.params['detectorId'];
         for (let id of detectorIds) {
           if (!detectorId || detectorId === id) {
             const alertsRes = await alertService.getAlerts({ detector_id: id });
@@ -498,3 +499,5 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
     );
   }
 }
+
+export default withRouter(Alerts);
