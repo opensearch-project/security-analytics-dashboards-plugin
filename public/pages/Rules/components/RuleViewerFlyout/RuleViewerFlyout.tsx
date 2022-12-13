@@ -10,6 +10,7 @@ import {
   EuiFlyoutBody,
   EuiFlyoutHeader,
   EuiTitle,
+  EuiButtonIcon,
 } from '@elastic/eui';
 import { ROUTES } from '../../../../utils/constants';
 import React, { useMemo, useState } from 'react';
@@ -21,9 +22,9 @@ import { RuleViewerFlyoutHeaderActions } from './RuleViewFlyoutHeaderActions';
 import { RuleService } from '../../../../services';
 
 export interface RuleViewerFlyoutProps {
-  history: RouteComponentProps['history'];
+  history?: RouteComponentProps['history'];
   ruleTableItem: RuleTableItem;
-  ruleService: RuleService;
+  ruleService?: RuleService;
   hideFlyout: (refreshRules?: boolean) => void;
 }
 
@@ -42,6 +43,9 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
     setActionsPopoverOpen(false);
   };
   const duplicateRule = () => {
+    if (!history) {
+      return;
+    }
     history.push({
       pathname: ROUTES.RULES_DUPLICATE,
       state: { ruleItem: ruleTableItem.ruleInfo },
@@ -49,6 +53,9 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
   };
 
   const editRule = () => {
+    if (!history) {
+      return;
+    }
     history.push({
       pathname: ROUTES.RULES_EDIT,
       state: { ruleItem: ruleTableItem.ruleInfo },
@@ -74,6 +81,9 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
   };
 
   const onDeleteRuleConfirmed = async () => {
+    if (!ruleService) {
+      return;
+    }
     const deleteRuleRes = await ruleService.deleteRule(ruleTableItem.ruleId);
 
     if (!deleteRuleRes.ok) {
@@ -97,17 +107,35 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
   );
 
   return (
-    <EuiFlyout onClose={hideFlyout} data-test-subj={`rule_flyout_${ruleTableItem.title}`}>
+    <EuiFlyout
+      onClose={hideFlyout}
+      hideCloseButton
+      ownFocus={true}
+      size={'m'}
+      data-test-subj={`rule_flyout_${ruleTableItem.title}`}
+    >
       {isDeleteModalVisible && deleteModal ? deleteModal : null}
-      <EuiFlyoutHeader hasBorder>
-        <EuiFlexGroup>
+      <EuiFlyoutHeader hasBorder={true}>
+        <EuiFlexGroup alignItems="center">
           <EuiFlexItem>
             <EuiTitle size="m">
               <h3>{ruleTableItem.title}</h3>
             </EuiTitle>
           </EuiFlexItem>
-          <EuiFlexItem grow={false} style={{ marginRight: '50px' }}>
-            {headerActions}
+          {ruleService && history && (
+            <EuiFlexItem grow={false} style={{ marginRight: '50px' }}>
+              {headerActions}
+            </EuiFlexItem>
+          )}
+          <EuiFlexItem grow={false}>
+            <EuiButtonIcon
+              aria-label="close"
+              iconType="cross"
+              display="empty"
+              iconSize="m"
+              onClick={() => hideFlyout()}
+              data-test-subj={`close-finding-details-flyout`}
+            />
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiFlyoutHeader>

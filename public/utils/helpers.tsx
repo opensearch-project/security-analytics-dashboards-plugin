@@ -65,10 +65,10 @@ export function createTextDetailsGroup(
   ) : (
     <>
       <EuiFlexGroup>
-        {data.map(({ label, content, url }) => {
+        {data.map(({ label, content, url }, index) => {
           return (
             <EuiFlexItem
-              key={label}
+              key={index}
               grow={false}
               style={{ minWidth: `${100 / (columnNum || data.length)}%` }}
             >
