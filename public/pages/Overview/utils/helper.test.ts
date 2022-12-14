@@ -1,17 +1,19 @@
 import { getChartTimeUnit, getDateFormatByTimeUnit } from './helpers';
 import { TimeUnitsMap } from './constants';
+import moment from 'moment';
 
 describe('helper utilities spec', () => {
   describe('tests getDateFormatByTimeUnit function', () => {
     const yearFormat = '%Y-%m-%d';
     const dayFormat = '%H:%M:%S';
     const fullFormat = '%Y-%m-%d %H:%M';
+    const hoursAgo = moment().subtract(15, 'hours');
 
     const timeFormats: {
       [key: string]: string;
     } = {
       'now-15m': dayFormat,
-      'now-15h': fullFormat,
+      'now-15h': hoursAgo.date() === moment().date() ? dayFormat : fullFormat,
       'now-15d': fullFormat,
       'now-2M': yearFormat,
       'now-2y': fullFormat,
