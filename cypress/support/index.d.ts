@@ -15,11 +15,44 @@ declare namespace Cypress {
     deleteAllIndices(): Chainable<any>;
 
     /**
+     * Deletes all custom rules in cluster
+     * @example
+     * cy.deleteAllCustomRules()
+     */
+    deleteAllCustomRules(): Chainable<any>;
+
+    /**
+     * Deletes all detectors in cluster
+     * @example
+     * cy.deleteAllDetectors()
+     */
+    deleteAllDetectors(): Chainable<any>;
+
+    /**
      * Creates a detector
      * @example
      * cy.createPolicy({ "detector_type": ... })
      */
     createDetector(detectorJSON: object): Chainable<any>;
+
+    /**
+     * Creates a fields mapping aliases for detector
+     * @example
+     * cy.createAliasMappings('indexName', 'windows', {...}, true)
+     */
+    createAliasMappings(
+      indexName: string,
+      ruleTopic: string,
+      aliasMappingsBody: object,
+      partial: boolean
+    ): Chainable<any>;
+
+    /**
+     * Creates a custom rule
+     * @example
+     * cy.createRule({})
+     */
+    createRule(ruleJSON: object): Chainable<any>;
 
     /**
      * Updates settings for index
@@ -41,5 +74,12 @@ declare namespace Cypress {
      * cy.createIndexTemplate("some_index_template", { "index_patterns": "abc", "properties": { ... } })
      */
     createIndexTemplate(name: string, template: object): Chainable<any>;
+
+    /**
+     * Deletes detector by its name
+     * @example
+     * cy.deleteDetector("Cypress detector name")
+     */
+    deleteDetector(name: string): Chainable<any>;
   }
 }
