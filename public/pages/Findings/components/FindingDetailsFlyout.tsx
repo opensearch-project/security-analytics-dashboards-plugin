@@ -26,16 +26,20 @@ import {
 import { capitalizeFirstLetter, renderTime } from '../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA, ROUTES } from '../../../utils/constants';
 import { Finding, Query } from '../models/interfaces';
+import { OpenSearchService } from '../../../services';
+import { RuleSource } from '../../../../server/models/interfaces';
 
 interface FindingDetailsFlyoutProps {
   finding: Finding;
-  closeFlyout: () => void;
   backButton?: React.ReactNode;
-  allRules: object;
+  allRules: { [id: string]: RuleSource };
+  opensearchService: OpenSearchService;
+  closeFlyout: () => void;
 }
 
 interface FindingDetailsFlyoutState {
   loading: boolean;
+  indexPatternId?: string;
 }
 
 export default class FindingDetailsFlyout extends Component<
@@ -47,6 +51,14 @@ export default class FindingDetailsFlyout extends Component<
     this.state = {
       loading: false,
     };
+  }
+
+  componentDidMount(): void {
+    this.getIndexPatternId().then((patternId) => {
+      if (patternId) {
+        this.setState({ indexPatternId: patternId });
+      }
+    });
   }
 
   renderTags = () => {
@@ -142,7 +154,22 @@ export default class FindingDetailsFlyout extends Component<
     });
   };
 
-  onViewSurroundingDocumentsClicked = () => {};
+  getIndexPatternId = async () => {
+    const indexPatterns = await this.props.opensearchService.getIndexPatterns();
+    const {
+      finding: { index },
+    } = this.props;
+    let patternId;
+    indexPatterns.map((pattern) => {
+      const patternName = pattern.attributes.title.replaceAll('*', '.*');
+      const patternRegex = new RegExp(patternName);
+      if (index.match(patternRegex)) {
+        patternId = pattern.id;
+      }
+    });
+
+    return patternId;
+  };
 
   renderFindingDocuments() {
     const {
@@ -152,6 +179,7 @@ export default class FindingDetailsFlyout extends Component<
     const docId = related_doc_ids[0];
     const matchedDocuments = documents.filter((doc) => doc.id === docId);
     const document = matchedDocuments.length > 0 ? matchedDocuments[0].document : '';
+    const { indexPatternId } = this.state;
 
     return (
       <>
@@ -162,7 +190,14 @@ export default class FindingDetailsFlyout extends Component<
             </EuiTitle>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton onClick={this.onViewSurroundingDocumentsClicked}>
+            <EuiButton
+              href={
+                indexPatternId
+                  ? `discover#/context/${indexPatternId}/${related_doc_ids[0]}`
+                  : `#${ROUTES.FINDINGS}`
+              }
+              target={indexPatternId ? '_blank' : undefined}
+            >
               View surrounding documents
             </EuiButton>
           </EuiFlexItem>

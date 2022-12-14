@@ -353,6 +353,7 @@ export default class Main extends Component<MainProps, MainState> {
                               findingService={services.findingsService}
                               ruleService={services.ruleService}
                               notifications={core?.notifications}
+                              opensearchService={services.opensearchService}
                             />
                           )}
                         />
