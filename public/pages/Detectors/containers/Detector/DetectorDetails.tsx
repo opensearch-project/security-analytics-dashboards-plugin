@@ -305,11 +305,11 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   }
 
   onViewAlertsClick = () => {
-    this.props.history.push(ROUTES.ALERTS);
+    this.props.history.push(`${ROUTES.ALERTS}/${this.state.detectorId}`);
   };
 
   onViewFindingsClick = () => {
-    this.props.history.push(ROUTES.FINDINGS);
+    this.props.history.push(`${ROUTES.FINDINGS}/${this.state.detectorId}`);
   };
 
   renderTabs() {
