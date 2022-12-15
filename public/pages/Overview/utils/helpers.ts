@@ -16,32 +16,6 @@ export type DateOpts = {
   dateFormat: string;
 };
 
-/**
- * Legend selection config for the chart layer
- */
-const legendSelectionCfg = {
-  selection: {
-    series: {
-      type: 'multi',
-      encodings: ['color'],
-      on: 'click',
-      bind: 'legend',
-    },
-  },
-  encoding: {
-    opacity: {
-      condition: { selection: 'series', value: 1 },
-      value: 0.2,
-    },
-  },
-};
-
-/**
- * Adds interactive legends to the chart layer
- * @param layer
- */
-const addInteractiveLegends = (layer: any) => _.defaultsDeep(layer, legendSelectionCfg);
-
 function getVisualizationSpec(description: string, data: any, layers: any[]): TopLevelSpec {
   return {
     config: {
@@ -103,10 +77,10 @@ export function getOverviewVisualizationSpec(
     'Plot showing average data with raw values in the background.',
     visualizationData,
     [
-      addInteractiveLegends({
+      {
         mark: 'bar',
         encoding: findingsEncoding,
-      }),
+      },
       {
         mark: {
           type: 'line',
@@ -172,7 +146,7 @@ export function getFindingsVisualizationSpec(
   }
 ) {
   return getVisualizationSpec('Findings data overview', visualizationData, [
-    addInteractiveLegends({
+    {
       mark: 'bar',
       encoding: {
         tooltip: [{ field: 'finding', aggregate: 'sum', type: 'quantitative', title: 'Findings' }],
@@ -201,7 +175,7 @@ export function getFindingsVisualizationSpec(
           },
         },
       },
-    }),
+    },
   ]);
 }
 
@@ -214,7 +188,7 @@ export function getAlertsVisualizationSpec(
   }
 ) {
   return getVisualizationSpec('Alerts data overview', visualizationData, [
-    addInteractiveLegends({
+    {
       mark: 'bar',
       encoding: {
         tooltip: [{ field: 'alert', aggregate: 'sum', title: 'Alerts' }],
@@ -244,7 +218,7 @@ export function getAlertsVisualizationSpec(
           },
         },
       },
-    }),
+    },
   ]);
 }
 
