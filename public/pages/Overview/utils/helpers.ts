@@ -16,6 +16,32 @@ export type DateOpts = {
   dateFormat: string;
 };
 
+/**
+ * Legend selection config for the chart layer
+ */
+const legendSelectionCfg = {
+  selection: {
+    series: {
+      type: 'multi',
+      encodings: ['color'],
+      on: 'click',
+      bind: 'legend',
+    },
+  },
+  encoding: {
+    opacity: {
+      condition: { selection: 'series', value: 1 },
+      value: 0.2,
+    },
+  },
+};
+
+/**
+ * Adds interactive legends to the chart layer
+ * @param layer
+ */
+const addInteractiveLegends = (layer: any) => _.defaultsDeep(layer, legendSelectionCfg);
+
 function getVisualizationSpec(description: string, data: any, layers: any[]): TopLevelSpec {
   return {
     config: {
@@ -58,28 +84,42 @@ export function getOverviewVisualizationSpec(
       title: 'Count',
       axis: { grid: true, ticks: false },
     },
+    tooltip: [{ field: 'finding', aggregate: 'sum', type: 'quantitative', title: 'Findings' }],
   };
 
-  if (groupBy === 'log_type') {
-    findingsEncoding['color'] = { field: 'logType', type: 'nominal', title: 'Log type' };
+  if (groupBy === 'logType') {
+    findingsEncoding['color'] = {
+      field: 'logType',
+      type: 'nominal',
+      title: 'Log type',
+      scale: {
+        range: euiPaletteColorBlind(),
+      },
+    };
   }
 
+  const lineColor = '#ff0000';
   return getVisualizationSpec(
     'Plot showing average data with raw values in the background.',
     visualizationData,
     [
-      {
+      addInteractiveLegends({
         mark: 'bar',
         encoding: findingsEncoding,
-      },
+      }),
       {
         mark: {
           type: 'line',
-          color: '#ff0000',
+          color: lineColor,
+          point: {
+            filled: true,
+            fill: lineColor,
+          },
         },
         encoding: {
           x: { timeUnit, field: 'time', title: '', axis: { grid: false, ticks: false } },
           y: { aggregate, field: 'alert', title: 'Count', axis: { grid: true, ticks: false } },
+          tooltip: [{ field: 'alert', aggregate: 'sum', title: 'Alerts' }],
         },
       },
     ]
@@ -132,9 +172,10 @@ export function getFindingsVisualizationSpec(
   }
 ) {
   return getVisualizationSpec('Findings data overview', visualizationData, [
-    {
+    addInteractiveLegends({
       mark: 'bar',
       encoding: {
+        tooltip: [{ field: 'finding', aggregate: 'sum', type: 'quantitative', title: 'Findings' }],
         x: {
           timeUnit: dateOpts.timeUnit,
           field: 'time',
@@ -160,7 +201,7 @@ export function getFindingsVisualizationSpec(
           },
         },
       },
-    },
+    }),
   ]);
 }
 
@@ -173,9 +214,10 @@ export function getAlertsVisualizationSpec(
   }
 ) {
   return getVisualizationSpec('Alerts data overview', visualizationData, [
-    {
+    addInteractiveLegends({
       mark: 'bar',
       encoding: {
+        tooltip: [{ field: 'alert', aggregate: 'sum', title: 'Alerts' }],
         x: {
           timeUnit: dateOpts.timeUnit,
           field: 'time',
@@ -202,7 +244,7 @@ export function getAlertsVisualizationSpec(
           },
         },
       },
-    },
+    }),
   ]);
 }
 
@@ -210,7 +252,30 @@ export function getTopRulesVisualizationSpec(visualizationData: any[]) {
   return getVisualizationSpec('Most frequent detection rules', visualizationData, [
     {
       mark: { type: 'arc', innerRadius: 90 },
+      transform: [
+        {
+          joinaggregate: [
+            {
+              op: 'sum',
+              field: 'count',
+              as: 'total',
+            },
+          ],
+        },
+        {
+          calculate: 'datum.count/datum.total',
+          as: 'percentage',
+        },
+      ],
       encoding: {
+        tooltip: [
+          {
+            field: 'percentage',
+            title: 'Percentage',
+            type: 'quantitative',
+            format: '2.0%',
+          },
+        ],
         theta: { aggregate: 'sum', field: 'count', type: 'quantitative' },
         color: {
           field: 'ruleName',
