@@ -43,20 +43,14 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
     setActionsPopoverOpen(false);
   };
   const duplicateRule = () => {
-    if (!history) {
-      return;
-    }
-    history.push({
+    history?.push({
       pathname: ROUTES.RULES_DUPLICATE,
       state: { ruleItem: ruleTableItem.ruleInfo },
     });
   };
 
   const editRule = () => {
-    if (!history) {
-      return;
-    }
-    history.push({
+    history?.push({
       pathname: ROUTES.RULES_EDIT,
       state: { ruleItem: ruleTableItem.ruleInfo },
     });
