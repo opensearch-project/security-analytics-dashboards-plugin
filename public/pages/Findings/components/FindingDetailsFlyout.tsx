@@ -38,7 +38,6 @@ interface FindingDetailsFlyoutProps {
 
 interface FindingDetailsFlyoutState {
   loading: boolean;
-  ruleViewerFlyoutShown: boolean;
   ruleViewerFlyoutData: RuleTableItem | null;
 }
 
@@ -50,7 +49,6 @@ export default class FindingDetailsFlyout extends Component<
     super(props);
     this.state = {
       loading: false,
-      ruleViewerFlyoutShown: false,
       ruleViewerFlyoutData: null,
     };
   }
@@ -72,7 +70,6 @@ export default class FindingDetailsFlyout extends Component<
   showRuleDetails = (fullRule, ruleId: string) => {
     this.setState({
       ...this.state,
-      ruleViewerFlyoutShown: true,
       ruleViewerFlyoutData: {
         ruleId: ruleId,
         title: fullRule.title,
@@ -88,7 +85,7 @@ export default class FindingDetailsFlyout extends Component<
   };
 
   hideRuleDetails = () => {
-    this.setState({ ...this.state, ruleViewerFlyoutShown: false, ruleViewerFlyoutData: null });
+    this.setState({ ...this.state, ruleViewerFlyoutData: null });
   };
 
   renderRuleDetails = (rules: Query[] = []) => {
@@ -236,7 +233,7 @@ export default class FindingDetailsFlyout extends Component<
         hideCloseButton
         data-test-subj={'finding-details-flyout'}
       >
-        {this.state.ruleViewerFlyoutShown && this.state.ruleViewerFlyoutData && (
+        {this.state.ruleViewerFlyoutData && (
           <RuleViewerFlyout
             hideFlyout={this.hideRuleDetails}
             ruleTableItem={this.state.ruleViewerFlyoutData}
