@@ -14,7 +14,6 @@ export interface RuleContentYamlViewerProps {
 
 export const RuleContentYamlViewer: React.FC<RuleContentYamlViewerProps> = ({ rule }) => {
   const yamlObject = mapRuleToYamlObject(rule);
-  yamlObject.id = '25b9c01c-350d-4b95-bed1-836d04a4f324';
   const ruleYaml = mapYamlObjectToYamlString(yamlObject);
 
   return (

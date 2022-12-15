@@ -37,8 +37,11 @@ const editorTypes = [
 ];
 
 export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
-  rule: { prePackaged, _source: ruleData },
+  rule: { prePackaged, _source: ruleData, _id: ruleId },
 }) => {
+  if (!ruleData.id) {
+    ruleData.id = ruleId;
+  }
   const [selectedEditorType, setSelectedEditorType] = useState('visual');
 
   const onEditorTypeChange = (optionId: string) => {
