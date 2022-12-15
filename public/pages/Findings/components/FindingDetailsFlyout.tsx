@@ -28,6 +28,7 @@ import { Finding, Query } from '../models/interfaces';
 import { RuleViewerFlyout } from '../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
 import { RuleTableItem } from '../../Rules/utils/helpers';
 import { RuleSource } from '../../../../server/models/interfaces';
+import { RuleItemInfoBase } from '../../Rules/models/types';
 
 interface FindingDetailsFlyoutProps {
   finding: Finding;
@@ -79,7 +80,7 @@ export default class FindingDetailsFlyout extends Component<
         source: fullRule.source,
         ruleInfo: {
           _source: fullRule,
-        } as any,
+        } as RuleItemInfoBase,
       },
     });
   };
