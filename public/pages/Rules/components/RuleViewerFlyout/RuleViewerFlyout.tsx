@@ -12,6 +12,7 @@ import {
   EuiTitle,
   EuiButtonIcon,
 } from '@elastic/eui';
+import { errorNotificationToast } from '../../../../utils/helpers';
 import { ROUTES } from '../../../../utils/constants';
 import React, { useMemo, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
@@ -19,12 +20,13 @@ import { RuleTableItem } from '../../utils/helpers';
 import { DeleteRuleModal } from '../DeleteModal/DeleteModal';
 import { RuleContentViewer } from '../RuleContentViewer/RuleContentViewer';
 import { RuleViewerFlyoutHeaderActions } from './RuleViewFlyoutHeaderActions';
-import { RuleService } from '../../../../services';
+import { RuleService, NotificationsStart } from '../../../../services';
 
 export interface RuleViewerFlyoutProps {
   history?: RouteComponentProps['history'];
   ruleTableItem: RuleTableItem;
   ruleService?: RuleService;
+  notifications?: NotificationsStart;
   hideFlyout: (refreshRules?: boolean) => void;
 }
 
@@ -33,6 +35,7 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
   hideFlyout,
   ruleTableItem,
   ruleService,
+  notifications,
 }) => {
   const [actionsPopoverOpen, setActionsPopoverOpen] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
@@ -80,12 +83,12 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
     }
     const deleteRuleRes = await ruleService.deleteRule(ruleTableItem.ruleId);
 
-    if (!deleteRuleRes.ok) {
-      // TODO: show error
+    if (deleteRuleRes.ok) {
+      closeDeleteModal();
+      hideFlyout(true);
+    } else {
+      errorNotificationToast(notifications, 'delete', 'rule', deleteRuleRes.error);
     }
-
-    closeDeleteModal();
-    hideFlyout(true);
   };
 
   const deleteModal = useMemo(
