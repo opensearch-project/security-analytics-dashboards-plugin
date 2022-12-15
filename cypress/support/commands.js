@@ -75,14 +75,29 @@ Cypress.Commands.overwrite('request', (originalFn, ...args) => {
     [options.method, options.url, options.body] = args;
   }
 
+  Object.assign(options, {
+    headers: {
+      'osd-xsrf': '',
+    },
+  });
+
   return originalFn(Object.assign({}, defaults, options));
 });
 
 Cypress.Commands.add('deleteAllIndices', () => {
-  cy.request(
-    'DELETE',
-    `${Cypress.env('opensearch')}/index*,sample*,opensearch_dashboards*,test*,cypress*`
-  );
+  cy.request({
+    method: 'DELETE',
+    url: `${Cypress.env('opensearch')}/index*,sample*,opensearch_dashboards*,test*,cypress*`,
+    failOnStatusCode: false,
+  });
+});
+
+Cypress.Commands.add('deleteAllDetectors', () => {
+  cy.request({
+    method: 'DELETE',
+    url: `${Cypress.env('opensearch')}/.opensearch-sap-detectors-config`,
+    failOnStatusCode: false,
+  });
 });
 
 Cypress.Commands.add('createDetector', (detectorJSON) => {
@@ -153,7 +168,13 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add('createRule', (ruleJSON) => {
-  cy.request('POST', `${Cypress.env('opensearch')}${NODE_API.RULES_BASE}`, ruleJSON);
+  return cy.request({
+    method: 'POST',
+    url: `${Cypress.env('opensearch_dashboards')}${NODE_API.RULES_BASE}?category=${
+      ruleJSON.category
+    }`,
+    body: JSON.stringify(ruleJSON),
+  });
 });
 
 Cypress.Commands.add('updateRule', (ruleId, ruleJSON) => {
@@ -203,19 +224,10 @@ Cypress.Commands.add('deleteRule', (ruleName) => {
 
 Cypress.Commands.add('deleteAllCustomRules', () => {
   cy.request({
-    method: 'POST',
-    url: `${Cypress.env('opensearch')}${NODE_API.RULES_BASE}/_search?pre_packaged=false`,
+    method: 'DELETE',
+    url: `${Cypress.env('opensearch')}/.opensearch-sap-custom-rules-config`,
     failOnStatusCode: false,
     body: { query: { match_all: {} } },
-  }).then((response) => {
-    if (response.status === 200) {
-      for (let hit of response.body.hits.hits) {
-        cy.request(
-          'DELETE',
-          `${Cypress.env('opensearch')}${NODE_API.RULES_BASE}/${hit._id}?forced=true`
-        );
-      }
-    }
   });
 });
 
