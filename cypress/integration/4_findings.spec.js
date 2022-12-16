@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PLUGIN_NAME } from '../support/constants';
+import { PLUGIN_NAME, TWENTY_SECONDS_TIMEOUT } from '../support/constants';
 import sample_document from '../fixtures/sample_document.json';
 import sample_index_settings from '../fixtures/sample_index_settings.json';
 import sample_field_mappings from '../fixtures/sample_field_mappings.json';
@@ -106,14 +106,21 @@ describe('Findings', () => {
   // TODO - upon reaching rules page, trigger appropriate rules detail flyout
   // see github issue #124 at https://github.com/opensearch-project/security-analytics-dashboards-plugin/issues/124
 
-  it('takes user to rules page when rule name inside accordion drop down is clicked', () => {
+  it('opens rule details flyout when rule name inside accordion drop down is clicked', () => {
     // Click rule link
-    cy.get(`[data-test-subj="finding-details-flyout-USB Device Plugged-details"]`)
-      .invoke('removeAttr', 'target')
-      .click({ force: true });
+    cy.get(`[data-test-subj="finding-details-flyout-USB Device Plugged-details"]`).click({
+      force: true,
+    });
 
-    // Confirm destination reached
-    cy.url().should('include', 'opensearch_security_analytics_dashboards#/rules');
+    // Validate flyout appearance
+    cy.get('[data-test-subj="rule_flyout_USB Device Plugged"]', TWENTY_SECONDS_TIMEOUT).within(
+      () => {
+        cy.get('[data-test-subj="rule_flyout_rule_name"]', TWENTY_SECONDS_TIMEOUT).contains(
+          'USB Device Plugged',
+          TWENTY_SECONDS_TIMEOUT
+        );
+      }
+    );
   });
 
   after(() => {

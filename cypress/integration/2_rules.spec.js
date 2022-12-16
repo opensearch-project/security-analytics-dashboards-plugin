@@ -229,7 +229,7 @@ describe('Rules', () => {
           );
 
           // Close the flyout
-          cy.get('[data-test-subj="euiFlyoutCloseButton"]', TWENTY_SECONDS_TIMEOUT).click({
+          cy.get('[data-test-subj="close-rule-details-flyout"]', TWENTY_SECONDS_TIMEOUT).click({
             force: true,
           });
         });

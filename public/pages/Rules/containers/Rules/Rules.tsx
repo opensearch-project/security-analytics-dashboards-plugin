@@ -93,6 +93,7 @@ export const Rules: React.FC<RulesProps> = (props) => {
           history={props.history}
           ruleTableItem={flyoutData}
           ruleService={services.ruleService}
+          notifications={props.notifications}
         />
       ) : null}
       <EuiFlexGroup direction="column">
