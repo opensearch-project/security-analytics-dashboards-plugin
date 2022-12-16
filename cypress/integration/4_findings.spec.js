@@ -129,7 +129,7 @@ describe('Findings', () => {
     cy.contains('sample_detector').click({ force: true }, { timeout: 2000 });
 
     // Click "Actions" button, the click "Delete"
-    cy.get('button').contains('Actions').click({ force: true });
+    cy.get('button').contains('Actions').click({ force: true }, { timeout: 2000 });
     cy.contains('Delete').click({ force: true });
 
     // Search for sample_detector, presumably deleted
