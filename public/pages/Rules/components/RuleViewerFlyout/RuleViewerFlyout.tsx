@@ -131,7 +131,7 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
               display="empty"
               iconSize="m"
               onClick={() => hideFlyout()}
-              data-test-subj={`close-finding-details-flyout`}
+              data-test-subj={`close-rule-details-flyout`}
             />
           </EuiFlexItem>
         </EuiFlexGroup>
