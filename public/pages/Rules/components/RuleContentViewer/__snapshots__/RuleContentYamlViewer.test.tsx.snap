@@ -1,0 +1,407 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<RuleContentYamlViewer /> spec renders the component 1`] = `
+<div
+  class="euiCodeBlock euiCodeBlock--fontSmall euiCodeBlock--paddingLarge prismjs language-yaml"
+>
+  <pre
+    class="euiCodeBlock__pre euiCodeBlock__pre--whiteSpacePreWrap"
+    tabindex="-1"
+  >
+    <code
+      class="euiCodeBlock__code yaml"
+      data-test-subj="rule_flyout_yaml_rule"
+    >
+      <span
+        class="euiCodeBlock__line"
+      >
+        <span
+          class="token key atrule"
+        >
+          id
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         25b9c01c
+        <span
+          class="token punctuation"
+        >
+          -
+        </span>
+        350d
+        <span
+          class="token punctuation"
+        >
+          -
+        </span>
+        4b95
+        <span
+          class="token punctuation"
+        >
+          -
+        </span>
+        bed1
+        <span
+          class="token punctuation"
+        >
+          -
+        </span>
+        836d04a4f324
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          logsource
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+        
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+          
+        <span
+          class="token key atrule"
+        >
+          product
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         windows
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          title
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         Testing rule
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          description
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         Testing Description
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          tags
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+        
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+          
+        <span
+          class="token punctuation"
+        >
+          -
+        </span>
+         attack.persistence
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+          
+        <span
+          class="token punctuation"
+        >
+          -
+        </span>
+         attack.privilege_escalation
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+          
+        <span
+          class="token punctuation"
+        >
+          -
+        </span>
+         attack.t1543.003
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          falsepositives
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+        
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+          
+        <span
+          class="token punctuation"
+        >
+          -
+        </span>
+         Unknown
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          level
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         high
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          status
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         experimental
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          references
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+        
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+          
+        <span
+          class="token punctuation"
+        >
+          -
+        </span>
+         
+        <span
+          class="token string"
+        >
+          'https://securelist.com/operation-tunnelsnake-and-moriya-rootkit/101831'
+        </span>
+        
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          author
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         Bhabesh Raj
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+        <span
+          class="token key atrule"
+        >
+          detection
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+        
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+          
+        <span
+          class="token key atrule"
+        >
+          selection
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+        
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+            
+        <span
+          class="token key atrule"
+        >
+          Provider_Name
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         Service Control Manager
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+            
+        <span
+          class="token key atrule"
+        >
+          EventID
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         
+        <span
+          class="token number"
+        >
+          7045
+        </span>
+        
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+            
+        <span
+          class="token key atrule"
+        >
+          ServiceName
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         ZzNetSvc
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+          
+        <span
+          class="token key atrule"
+        >
+          condition
+        </span>
+        <span
+          class="token punctuation"
+        >
+          :
+        </span>
+         selection
+
+      </span>
+      <span
+        class="euiCodeBlock__line"
+      >
+        
+      </span>
+    </code>
+  </pre>
+</div>
+`;
