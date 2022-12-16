@@ -58,12 +58,21 @@ export function getOverviewVisualizationSpec(
       title: 'Count',
       axis: { grid: true, ticks: false },
     },
+    tooltip: [{ field: 'finding', aggregate: 'sum', type: 'quantitative', title: 'Findings' }],
   };
 
-  if (groupBy === 'log_type') {
-    findingsEncoding['color'] = { field: 'logType', type: 'nominal', title: 'Log type' };
+  if (groupBy === 'logType') {
+    findingsEncoding['color'] = {
+      field: 'logType',
+      type: 'nominal',
+      title: 'Log type',
+      scale: {
+        range: euiPaletteColorBlind(),
+      },
+    };
   }
 
+  const lineColor = '#ff0000';
   return getVisualizationSpec(
     'Plot showing average data with raw values in the background.',
     visualizationData,
@@ -75,11 +84,16 @@ export function getOverviewVisualizationSpec(
       {
         mark: {
           type: 'line',
-          color: '#ff0000',
+          color: lineColor,
+          point: {
+            filled: true,
+            fill: lineColor,
+          },
         },
         encoding: {
           x: { timeUnit, field: 'time', title: '', axis: { grid: false, ticks: false } },
           y: { aggregate, field: 'alert', title: 'Count', axis: { grid: true, ticks: false } },
+          tooltip: [{ field: 'alert', aggregate: 'sum', title: 'Alerts' }],
         },
       },
     ]
@@ -135,6 +149,7 @@ export function getFindingsVisualizationSpec(
     {
       mark: 'bar',
       encoding: {
+        tooltip: [{ field: 'finding', aggregate: 'sum', type: 'quantitative', title: 'Findings' }],
         x: {
           timeUnit: dateOpts.timeUnit,
           field: 'time',
@@ -176,6 +191,7 @@ export function getAlertsVisualizationSpec(
     {
       mark: 'bar',
       encoding: {
+        tooltip: [{ field: 'alert', aggregate: 'sum', title: 'Alerts' }],
         x: {
           timeUnit: dateOpts.timeUnit,
           field: 'time',
@@ -210,7 +226,30 @@ export function getTopRulesVisualizationSpec(visualizationData: any[]) {
   return getVisualizationSpec('Most frequent detection rules', visualizationData, [
     {
       mark: { type: 'arc', innerRadius: 90 },
+      transform: [
+        {
+          joinaggregate: [
+            {
+              op: 'sum',
+              field: 'count',
+              as: 'total',
+            },
+          ],
+        },
+        {
+          calculate: 'datum.count/datum.total',
+          as: 'percentage',
+        },
+      ],
       encoding: {
+        tooltip: [
+          {
+            field: 'percentage',
+            title: 'Percentage',
+            type: 'quantitative',
+            format: '2.0%',
+          },
+        ],
         theta: { aggregate: 'sum', field: 'count', type: 'quantitative' },
         color: {
           field: 'ruleName',
