@@ -102,9 +102,27 @@ export default class Main extends Component<MainProps, MainState> {
     this.updateSelectedNavItem();
   }
 
+  /**
+   * Returns current component route index
+   * @return {number}
+   */
+  getCurrentRouteIndex = (): number => {
+    let index: number;
+    const pathname = this.props.location.pathname;
+    for (const [route, routeIndex] of Object.entries(navItemIndexByRoute)) {
+      if (pathname.match(new RegExp(`^${route}`))) {
+        index = routeIndex;
+        break;
+      }
+    }
+
+    return index;
+  };
+
   updateSelectedNavItem() {
-    if (navItemIndexByRoute[this.props.location.pathname] !== undefined) {
-      this.setState({ selectedNavItemIndex: navItemIndexByRoute[this.props.location.pathname] });
+    const routeIndex = this.getCurrentRouteIndex();
+    if (routeIndex) {
+      this.setState({ selectedNavItemIndex: routeIndex });
     }
 
     if (this.props.location.pathname.includes('detector-details')) {
@@ -238,7 +256,7 @@ export default class Main extends Component<MainProps, MainState> {
                       <EuiSpacer />
                       <Switch>
                         <Route
-                          path={ROUTES.FINDINGS}
+                          path={`${ROUTES.FINDINGS}/:detectorId?`}
                           render={(props: RouteComponentProps) => (
                             <Findings
                               {...props}
@@ -344,7 +362,7 @@ export default class Main extends Component<MainProps, MainState> {
                           )}
                         />
                         <Route
-                          path={ROUTES.ALERTS}
+                          path={`${ROUTES.ALERTS}/:detectorId?`}
                           render={(props: RouteComponentProps) => (
                             <Alerts
                               {...props}

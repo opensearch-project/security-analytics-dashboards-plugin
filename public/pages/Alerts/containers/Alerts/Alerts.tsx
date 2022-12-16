@@ -34,6 +34,7 @@ import {
   DEFAULT_DATE_RANGE,
   DEFAULT_EMPTY_DATA,
   MAX_RECENTLY_USED_TIME_RANGES,
+  ROUTES,
 } from '../../../../utils/constants';
 import { CoreServicesContext } from '../../../../components/core_services';
 import AlertsService from '../../../../services/AlertsService';
@@ -53,6 +54,7 @@ import {
   successNotificationToast,
 } from '../../../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { match, withRouter } from 'react-router-dom';
 
 export interface AlertsProps {
   alertService: AlertsService;
@@ -61,6 +63,7 @@ export interface AlertsProps {
   ruleService: RuleService;
   opensearchService: OpenSearchService;
   notifications: NotificationsStart;
+  match: match;
 }
 
 export interface AlertsState {
@@ -83,7 +86,7 @@ const groupByOptions = [
   { text: 'Alert severity', value: 'severity' },
 ];
 
-export default class Alerts extends Component<AlertsProps, AlertsState> {
+class Alerts extends Component<AlertsProps, AlertsState> {
   static contextType = CoreServicesContext;
 
   constructor(props: AlertsProps) {
@@ -260,17 +263,20 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
         });
 
         let alerts: AlertItem[] = [];
+        const detectorId = this.props.match.params['detectorId'];
         for (let id of detectorIds) {
-          const alertsRes = await alertService.getAlerts({ detector_id: id });
+          if (!detectorId || detectorId === id) {
+            const alertsRes = await alertService.getAlerts({ detector_id: id });
 
-          if (alertsRes.ok) {
-            const detectorAlerts = alertsRes.response.alerts.map((alert) => {
-              const detector = detectors[id];
-              return { ...alert, detectorName: detector.name };
-            });
-            alerts = alerts.concat(detectorAlerts);
-          } else {
-            errorNotificationToast(notifications, 'retrieve', 'alerts', alertsRes.error);
+            if (alertsRes.ok) {
+              const detectorAlerts = alertsRes.response.alerts.map((alert) => {
+                const detector = detectors[id];
+                return { ...alert, detectorName: detector.name };
+              });
+              alerts = alerts.concat(detectorAlerts);
+            } else {
+              errorNotificationToast(notifications, 'retrieve', 'alerts', alertsRes.error);
+            }
           }
         }
 
@@ -494,3 +500,5 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
     );
   }
 }
+
+export default withRouter(Alerts);
