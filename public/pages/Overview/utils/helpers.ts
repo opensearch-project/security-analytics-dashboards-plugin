@@ -45,22 +45,29 @@ function getVisualizationSpec(description: string, data: any, layers: any[]): To
 export function getOverviewVisualizationSpec(
   visualizationData: SummaryData[],
   groupBy: string,
-  dynamicTimeUnit: string = 'yearmonthdatehoursminutes'
+  dateOpts: DateOpts = {
+    timeUnit: 'yearmonthdatehoursminutes',
+    dateFormat: '%Y-%m-%d %H:%M',
+  }
 ): TopLevelSpec {
-  const timeUnit = dynamicTimeUnit;
   const aggregate = 'sum';
   const findingsEncoding: { [x: string]: any } = {
-    x: { timeUnit, field: 'time', title: '', axis: { grid: false, ticks: false } },
+    x: {
+      timeUnit: dateOpts.timeUnit,
+      field: 'time',
+      title: '',
+      axis: { grid: false, ticks: false, format: dateOpts.dateFormat },
+    },
     y: {
       aggregate,
       field: 'finding',
       type: 'quantitative',
       title: 'Count',
-      axis: { grid: true, ticks: false },
+      axis: { grid: true, ticks: false, dx: -50 },
     },
   };
 
-  if (groupBy === 'log_type') {
+  if (groupBy === 'logType') {
     findingsEncoding['color'] = { field: 'logType', type: 'nominal', title: 'Log type' };
   }
 
@@ -78,8 +85,18 @@ export function getOverviewVisualizationSpec(
           color: '#ff0000',
         },
         encoding: {
-          x: { timeUnit, field: 'time', title: '', axis: { grid: false, ticks: false } },
-          y: { aggregate, field: 'alert', title: 'Count', axis: { grid: true, ticks: false } },
+          x: {
+            timeUnit: dateOpts.timeUnit,
+            field: 'time',
+            title: '',
+            axis: { grid: false, ticks: false, format: dateOpts.dateFormat },
+          },
+          y: {
+            aggregate: 'sum',
+            field: 'alert',
+            title: 'Count',
+            axis: { grid: true, ticks: false },
+          },
         },
       },
     ]
