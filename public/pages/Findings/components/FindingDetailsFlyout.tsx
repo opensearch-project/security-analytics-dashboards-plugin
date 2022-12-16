@@ -25,16 +25,21 @@ import {
 import { capitalizeFirstLetter, renderTime } from '../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA, ROUTES } from '../../../utils/constants';
 import { Finding, Query } from '../models/interfaces';
+import { RuleViewerFlyout } from '../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
+import { RuleTableItem } from '../../Rules/utils/helpers';
+import { RuleSource } from '../../../../server/models/interfaces';
+import { RuleItemInfoBase } from '../../Rules/models/types';
 
 interface FindingDetailsFlyoutProps {
   finding: Finding;
   closeFlyout: () => void;
   backButton?: React.ReactNode;
-  allRules: object;
+  allRules: { [id: string]: RuleSource };
 }
 
 interface FindingDetailsFlyoutState {
   loading: boolean;
+  ruleViewerFlyoutData: RuleTableItem | null;
 }
 
 export default class FindingDetailsFlyout extends Component<
@@ -45,6 +50,7 @@ export default class FindingDetailsFlyout extends Component<
     super(props);
     this.state = {
       loading: false,
+      ruleViewerFlyoutData: null,
     };
   }
 
@@ -60,6 +66,27 @@ export default class FindingDetailsFlyout extends Component<
         </EuiBadgeGroup>
       )
     );
+  };
+
+  showRuleDetails = (fullRule, ruleId: string) => {
+    this.setState({
+      ...this.state,
+      ruleViewerFlyoutData: {
+        ruleId: ruleId,
+        title: fullRule.title,
+        level: fullRule.level,
+        category: fullRule.category,
+        description: fullRule.description,
+        source: fullRule.source,
+        ruleInfo: {
+          _source: fullRule,
+        } as RuleItemInfoBase,
+      },
+    });
+  };
+
+  hideRuleDetails = () => {
+    this.setState({ ...this.state, ruleViewerFlyoutData: null });
   };
 
   renderRuleDetails = (rules: Query[] = []) => {
@@ -94,8 +121,7 @@ export default class FindingDetailsFlyout extends Component<
                 {/*//TODO: Refactor EuiLink to filter rules table to the specific rule.*/}
                 <EuiFormRow label={'Rule name'}>
                   <EuiLink
-                    href={`#${ROUTES.RULES}`}
-                    target={'_blank'}
+                    onClick={() => this.showRuleDetails(fullRule, rule.id)}
                     data-test-subj={`finding-details-flyout-${fullRule.title}-details`}
                   >
                     {fullRule.title || DEFAULT_EMPTY_DATA}
@@ -208,6 +234,13 @@ export default class FindingDetailsFlyout extends Component<
         hideCloseButton
         data-test-subj={'finding-details-flyout'}
       >
+        {this.state.ruleViewerFlyoutData && (
+          <RuleViewerFlyout
+            hideFlyout={this.hideRuleDetails}
+            ruleTableItem={this.state.ruleViewerFlyoutData}
+          />
+        )}
+
         <EuiFlyoutHeader hasBorder={true}>
           <EuiFlexGroup justifyContent="flexStart" alignItems="center">
             <EuiFlexItem>
@@ -222,6 +255,7 @@ export default class FindingDetailsFlyout extends Component<
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
               <EuiButtonIcon
+                aria-label="close"
                 iconType="cross"
                 display="empty"
                 iconSize="m"
