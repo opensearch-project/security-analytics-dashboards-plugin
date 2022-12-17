@@ -23,7 +23,7 @@ import { DetectorHit, SearchDetectorsResponse } from '../../../../../server/mode
 import { EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
 import { ServerResponse } from '../../../../../server/models/types';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { errorNotificationToast } from '../../../../utils/helpers';
+import { errorNotificationToast, successNotificationToast } from '../../../../utils/helpers';
 
 export interface UpdateDetectorBasicDetailsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
@@ -168,23 +168,18 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
       );
 
       if (updateDetectorRes?.ok) {
-        props.history.replace({
-          pathname: `${ROUTES.DETECTOR_DETAILS}/${detectorId}`,
-          state: {
-            detectorHit: { ...detectorHit, _source: { ...detectorHit._source, ...detector } },
-          },
-        });
+        successNotificationToast(props.notifications, 'updated', 'detector');
       } else {
         errorNotificationToast(props.notifications, 'update', 'detector', updateDetectorRes?.error);
       }
 
+      setSubmitting(false);
       props.history.replace({
         pathname: `${ROUTES.DETECTOR_DETAILS}/${detectorId}`,
         state: {
           detectorHit: { ...detectorHit, _source: { ...detectorHit._source, ...detector } },
         },
       });
-      setSubmitting(false);
     };
 
     updateDetector().catch((e) => {

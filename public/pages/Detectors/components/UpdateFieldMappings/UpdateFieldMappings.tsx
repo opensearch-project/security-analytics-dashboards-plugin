@@ -14,7 +14,7 @@ import { EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
 import { DetectorsService } from '../../../../services';
 import { ServerResponse } from '../../../../../server/models/types';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { errorNotificationToast } from '../../../../utils/helpers';
+import { errorNotificationToast, successNotificationToast } from '../../../../utils/helpers';
 
 export interface UpdateFieldMappingsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
@@ -128,6 +128,8 @@ export default class UpdateFieldMappings extends Component<
           'detector',
           updateDetectorResponse.error
         );
+      } else {
+        successNotificationToast(this.props.notifications, 'updated', 'detector');
       }
     } catch (error: any) {
       errorNotificationToast(this.props.notifications, 'update', 'detector', error);
