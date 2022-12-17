@@ -1,0 +1,341 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<RuleContentViewer /> spec renders the component 1`] = `
+<div
+  class="euiModalBody"
+>
+  <div
+    class="euiModalBody__overflow"
+  >
+    <fieldset
+      class="euiButtonGroup euiButtonGroup--small euiButtonGroup--text"
+      data-test-subj="change-editor-type"
+    >
+      <legend
+        class="euiScreenReaderOnly"
+      >
+        This is editor type selector
+      </legend>
+      <div
+        class="euiButtonGroup__buttons"
+      >
+        <label
+          class="euiButtonGroupButton euiButtonGroupButton--text euiButtonGroupButton--small euiButtonGroupButton--fill euiButtonGroupButton-isSelected"
+          for="some_html_id"
+        >
+          <span
+            class="euiButtonContent euiButton__content"
+          >
+            <span
+              class="euiButton__text euiButtonGroupButton__textShift"
+              data-text="Visual"
+              title="Visual"
+            >
+              <input
+                checked=""
+                class="euiScreenReaderOnly"
+                data-test-subj="visual"
+                id="some_html_id"
+                name="some_html_id"
+                type="radio"
+                value=""
+              />
+              Visual
+            </span>
+          </span>
+        </label>
+        <label
+          class="euiButtonGroupButton euiButtonGroupButton--text euiButtonGroupButton--small"
+          for="some_html_id"
+        >
+          <span
+            class="euiButtonContent euiButton__content"
+          >
+            <span
+              class="euiButton__text euiButtonGroupButton__textShift"
+              data-text="YAML"
+              title="YAML"
+            >
+              <input
+                class="euiScreenReaderOnly"
+                data-test-subj="yaml"
+                id="some_html_id"
+                name="some_html_id"
+                type="radio"
+                value=""
+              />
+              YAML
+            </span>
+          </span>
+        </label>
+      </div>
+    </fieldset>
+    <div
+      class="euiSpacer euiSpacer--xl"
+    />
+    <div
+      class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
+    >
+      <div
+        class="euiFlexItem"
+      >
+        <label
+          class="euiFormLabel"
+        >
+          Rule Name
+        </label>
+        <div
+          class="euiText euiText--medium"
+          data-test-subj="rule_flyout_rule_name"
+        >
+          My Rule
+        </div>
+      </div>
+      <div
+        class="euiFlexItem"
+      >
+        <label
+          class="euiFormLabel"
+        >
+          Log Type
+        </label>
+        <div
+          class="euiText euiText--medium"
+          data-test-subj="rule_flyout_rule_log_type"
+        >
+          dns
+        </div>
+      </div>
+    </div>
+    <div
+      class="euiSpacer euiSpacer--l"
+    />
+    <label
+      class="euiFormLabel"
+    >
+      Description
+    </label>
+    <div
+      class="euiText euiText--medium"
+      data-test-subj="rule_flyout_rule_description"
+    >
+      My Rule
+    </div>
+    <div
+      class="euiSpacer euiSpacer--l"
+    />
+    <div
+      class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
+    >
+      <div
+        class="euiFlexItem"
+      >
+        <label
+          class="euiFormLabel"
+        >
+          Last Updated
+        </label>
+        2022-11-22T23:00:00.000Z
+      </div>
+      <div
+        class="euiFlexItem"
+        data-test-subj="rule_flyout_rule_author"
+      >
+        <label
+          class="euiFormLabel"
+        >
+          Author
+        </label>
+        aleksandar
+      </div>
+    </div>
+    <div
+      class="euiSpacer euiSpacer--l"
+    />
+    <div
+      class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
+    >
+      <div
+        class="euiFlexItem"
+        data-test-subj="rule_flyout_rule_source"
+      >
+        <label
+          class="euiFormLabel"
+        >
+          Source
+        </label>
+        Custom
+      </div>
+    </div>
+    <div
+      class="euiSpacer euiSpacer--l"
+    />
+    <div
+      class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
+    >
+      <div
+        class="euiFlexItem"
+        data-test-subj="rule_flyout_rule_severity"
+      >
+        <label
+          class="euiFormLabel"
+        >
+          Rule level
+        </label>
+        high
+      </div>
+    </div>
+    <div
+      class="euiSpacer euiSpacer--l"
+    />
+    <label
+      class="euiFormLabel"
+    >
+      Tags
+    </label>
+    <div>
+      -
+    </div>
+    <div
+      class="euiSpacer euiSpacer--l"
+    />
+    <div
+      class="euiSpacer euiSpacer--l"
+    />
+    <label
+      class="euiFormLabel"
+    >
+      References
+    </label>
+    <div>
+      -
+    </div>
+    <div
+      class="euiSpacer euiSpacer--l"
+    />
+    <label
+      class="euiFormLabel"
+    >
+      False positive cases
+    </label>
+    <div
+      data-test-subj="rule_flyout_rule_false_positives"
+    >
+      <div>
+        -
+      </div>
+    </div>
+    <div
+      class="euiSpacer euiSpacer--l"
+    />
+    <label
+      class="euiFormLabel"
+    >
+      Rule Status
+    </label>
+    <div
+      data-test-subj="rule_flyout_rule_status"
+    >
+      stable
+    </div>
+    <div
+      class="euiSpacer euiSpacer--l"
+    />
+    <div
+      class="euiFormRow euiFormRow--fullWidth"
+      id="some_html_id-row"
+    >
+      <div
+        class="euiFormRow__labelWrapper"
+      >
+        <label
+          class="euiFormLabel euiFormRow__label"
+          for="some_html_id"
+        >
+          Detection
+        </label>
+      </div>
+      <div
+        class="euiFormRow__fieldWrapper"
+      >
+        <div
+          class="euiCodeBlock euiCodeBlock--fontSmall euiCodeBlock--paddingLarge prismjs language-yaml"
+        >
+          <pre
+            class="euiCodeBlock__pre euiCodeBlock__pre--whiteSpacePreWrap"
+            tabindex="-1"
+          >
+            <code
+              class="euiCodeBlock__code yaml"
+              data-test-subj="rule_flyout_rule_detection"
+              id="some_html_id"
+            >
+              <span
+                class="euiCodeBlock__line"
+              >
+                <span
+                  class="token key atrule"
+                >
+                  selection
+                </span>
+                <span
+                  class="token punctuation"
+                >
+                  :
+                </span>
+                
+
+              </span>
+              <span
+                class="euiCodeBlock__line"
+              >
+                  
+                <span
+                  class="token key atrule"
+                >
+                  EventID
+                </span>
+                <span
+                  class="token punctuation"
+                >
+                  :
+                </span>
+                 
+                <span
+                  class="token number"
+                >
+                  4800
+                </span>
+                
+
+              </span>
+              <span
+                class="euiCodeBlock__line"
+              >
+                
+                <span
+                  class="token key atrule"
+                >
+                  condition
+                </span>
+                <span
+                  class="token punctuation"
+                >
+                  :
+                </span>
+                 selection
+
+              </span>
+              <span
+                class="euiCodeBlock__line"
+              >
+                
+              </span>
+            </code>
+          </pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

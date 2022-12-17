@@ -215,8 +215,21 @@ describe('Rules', () => {
               .contains(line, TWENTY_SECONDS_TIMEOUT)
           );
 
+          cy.get(
+            '[data-test-subj="change-editor-type"] label:nth-child(2)',
+            TWENTY_SECONDS_TIMEOUT
+          ).click({
+            force: true,
+          });
+
+          YAML_RULE_LINES.forEach((line) =>
+            cy
+              .get('[data-test-subj="rule_flyout_yaml_rule"]', TWENTY_SECONDS_TIMEOUT)
+              .contains(line, TWENTY_SECONDS_TIMEOUT)
+          );
+
           // Close the flyout
-          cy.get('[data-test-subj="euiFlyoutCloseButton"]', TWENTY_SECONDS_TIMEOUT).click({
+          cy.get('[data-test-subj="close-rule-details-flyout"]', TWENTY_SECONDS_TIMEOUT).click({
             force: true,
           });
         });

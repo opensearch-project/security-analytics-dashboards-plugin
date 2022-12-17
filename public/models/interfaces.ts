@@ -25,14 +25,16 @@ export interface BrowserServices {
   notificationsService: NotificationsService;
 }
 
+export interface RuleOptions {
+  name: string;
+  id: string;
+  severity: string;
+  tags: string[];
+}
+
 export interface RulesSharedState {
   page: RulesPage;
-  rulesOptions: {
-    name: string;
-    id: string;
-    severity: string;
-    tags: string[];
-  }[];
+  rulesOptions: RuleOptions[];
 }
 
 export interface RulesPage {
