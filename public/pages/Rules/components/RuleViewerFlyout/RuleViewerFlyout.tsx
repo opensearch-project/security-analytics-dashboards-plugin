@@ -79,7 +79,7 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
   };
 
   const onDeleteRuleConfirmed = async () => {
-    if (!ruleService || !notifications) {
+    if (!ruleService) {
       return;
     }
     const deleteRuleRes = await ruleService.deleteRule(ruleTableItem.ruleId);
@@ -88,7 +88,9 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
       closeDeleteModal();
       hideFlyout(true);
     } else {
-      errorNotificationToast(notifications, 'delete', 'rule', deleteRuleRes.error);
+      if (notifications) {
+        errorNotificationToast(notifications, 'delete', 'rule', deleteRuleRes.error);
+      }
     }
   };
 
