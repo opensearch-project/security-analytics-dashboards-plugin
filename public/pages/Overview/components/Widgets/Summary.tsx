@@ -11,10 +11,12 @@ import { getOverviewVisualizationSpec, getTimeWithMinPrecision } from '../../uti
 import { AlertItem, FindingItem } from '../../models/interfaces';
 import { createSelectComponent, renderVisualization } from '../../../../utils/helpers';
 import { ROUTES } from '../../../../utils/constants';
+import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 
 export interface SummaryProps {
   findings: FindingItem[];
   alerts: AlertItem[];
+  loading?: boolean;
 }
 
 export interface SummaryData {
@@ -24,7 +26,7 @@ export interface SummaryData {
   logType?: string;
 }
 
-export const Summary: React.FC<SummaryProps> = ({ alerts, findings }) => {
+export const Summary: React.FC<SummaryProps> = ({ alerts, findings, loading = false }) => {
   const [groupBy, setGroupBy] = useState('');
   const [summaryData, setSummaryData] = useState<SummaryData[]>([]);
   const [activeAlerts, setActiveAlerts] = useState(0);
@@ -112,7 +114,7 @@ export const Summary: React.FC<SummaryProps> = ({ alerts, findings }) => {
           </EuiFlexGroup>
         </EuiFlexItem>
         <EuiFlexItem>
-          <div id="summary-view" style={{ width: '100%' }}></div>
+          <ChartContainer chartViewId={'summary-view'} loading={loading} />
         </EuiFlexItem>
       </EuiFlexGroup>
     </WidgetContainer>
