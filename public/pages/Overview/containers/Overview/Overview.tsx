@@ -36,6 +36,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
       alerts: [],
     },
   });
+  const [loading, setLoading] = useState(true);
   const context = useContext(CoreServicesContext);
   const services = useContext(ServicesContext);
 
@@ -44,6 +45,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
       ...state,
       overviewViewModel: { ...overviewViewModel },
     });
+    setLoading(false);
   };
 
   const overviewViewModelActor = useMemo(
@@ -78,6 +80,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
   };
 
   const onRefresh = async () => {
+    setLoading(true);
     overviewViewModelActor.onRefresh();
   };
 
@@ -121,15 +124,20 @@ export const Overview: React.FC<OverviewProps> = (props) => {
         <Summary
           alerts={state.overviewViewModel.alerts}
           findings={state.overviewViewModel.findings}
+          loading={loading}
         />
       </EuiFlexItem>
 
       <EuiFlexItem>
         <EuiFlexGrid columns={2} gutterSize="m">
-          <RecentAlertsWidget items={state.overviewViewModel.alerts} />
-          <RecentFindingsWidget items={state.overviewViewModel.findings} />
-          <TopRulesWidget findings={state.overviewViewModel.findings} />
-          <DetectorsWidget detectorHits={state.overviewViewModel.detectors} {...props} />
+          <RecentAlertsWidget items={state.overviewViewModel.alerts} loading={loading} />
+          <RecentFindingsWidget items={state.overviewViewModel.findings} loading={loading} />
+          <TopRulesWidget findings={state.overviewViewModel.findings} loading={loading} />
+          <DetectorsWidget
+            detectorHits={state.overviewViewModel.detectors}
+            {...props}
+            loading={loading}
+          />
         </EuiFlexGrid>
       </EuiFlexItem>
     </EuiFlexGroup>
