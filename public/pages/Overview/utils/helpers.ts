@@ -71,12 +71,19 @@ function getVisualizationSpec(description: string, data: any, layers: any[]): To
 export function getOverviewVisualizationSpec(
   visualizationData: SummaryData[],
   groupBy: string,
-  dynamicTimeUnit: string = 'yearmonthdatehoursminutes'
+  dateOpts: DateOpts = {
+    timeUnit: 'yearmonthdatehoursminutes',
+    dateFormat: '%Y-%m-%d %H:%M',
+  }
 ): TopLevelSpec {
-  const timeUnit = dynamicTimeUnit;
   const aggregate = 'sum';
   const findingsEncoding: { [x: string]: any } = {
-    x: { timeUnit, field: 'time', title: '', axis: { grid: false, ticks: false } },
+    x: {
+      timeUnit: dateOpts.timeUnit,
+      field: 'time',
+      title: '',
+      axis: { grid: false, ticks: false, format: dateOpts.dateFormat },
+    },
     y: {
       aggregate,
       field: 'finding',
@@ -117,8 +124,18 @@ export function getOverviewVisualizationSpec(
           },
         },
         encoding: {
-          x: { timeUnit, field: 'time', title: '', axis: { grid: false, ticks: false } },
-          y: { aggregate, field: 'alert', title: 'Count', axis: { grid: true, ticks: false } },
+          x: {
+            timeUnit: dateOpts.timeUnit,
+            field: 'time',
+            title: '',
+            axis: { grid: false, ticks: false, format: dateOpts.dateFormat },
+          },
+          y: {
+            aggregate: 'sum',
+            field: 'alert',
+            title: 'Count',
+            axis: { grid: true, ticks: false },
+          },
           tooltip: [{ field: 'alert', aggregate: 'sum', title: 'Alerts' }],
         },
       },
