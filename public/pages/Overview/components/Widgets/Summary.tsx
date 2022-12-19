@@ -7,7 +7,11 @@ import { EuiFlexGroup, EuiFlexItem, EuiLink, EuiStat } from '@elastic/eui';
 import React, { useCallback, useEffect, useState } from 'react';
 import { WidgetContainer } from './WidgetContainer';
 import { summaryGroupByOptions } from '../../utils/constants';
-import { getOverviewVisualizationSpec, getTimeWithMinPrecision } from '../../utils/helpers';
+import {
+  getDateFormatByTimeUnit,
+  getOverviewVisualizationSpec,
+  getTimeWithMinPrecision,
+} from '../../utils/helpers';
 import { AlertItem, FindingItem } from '../../models/interfaces';
 import { createSelectComponent, renderVisualization } from '../../../../utils/helpers';
 import { ROUTES } from '../../../../utils/constants';
@@ -26,7 +30,14 @@ export interface SummaryData {
   logType?: string;
 }
 
-export const Summary: React.FC<SummaryProps> = ({ alerts, findings, loading = false }) => {
+export const Summary: React.FC<SummaryProps> = ({
+  alerts,
+  findings,
+  startTime,
+  endTime,
+  timeUnit,
+  loading = false,
+}) => {
   const [groupBy, setGroupBy] = useState('');
   const [summaryData, setSummaryData] = useState<SummaryData[]>([]);
   const [activeAlerts, setActiveAlerts] = useState(0);
@@ -51,7 +62,10 @@ export const Summary: React.FC<SummaryProps> = ({ alerts, findings, loading = fa
   );
 
   const generateVisualizationSpec = useCallback((summaryData, groupBy) => {
-    return getOverviewVisualizationSpec(summaryData, groupBy);
+    return getOverviewVisualizationSpec(summaryData, groupBy, {
+      timeUnit: timeUnit,
+      dateFormat: getDateFormatByTimeUnit(startTime, endTime),
+    });
   }, []);
 
   useEffect(() => {
