@@ -44,9 +44,14 @@ const getColumns = (
 
 export interface DetectorsWidgetProps extends RouteComponentProps {
   detectorHits: DetectorHit[];
+  loading?: boolean;
 }
 
-export const DetectorsWidget: React.FC<DetectorsWidgetProps> = ({ detectorHits, history }) => {
+export const DetectorsWidget: React.FC<DetectorsWidgetProps> = ({
+  detectorHits,
+  history,
+  loading = false,
+}) => {
   const detectors = detectorHits.map((detectorHit) => ({
     detectorName: detectorHit._source.name,
     id: detectorHit._id,
@@ -76,7 +81,11 @@ export const DetectorsWidget: React.FC<DetectorsWidgetProps> = ({ detectorHits, 
 
   return (
     <WidgetContainer title={`Detectors (${detectors.length})`} actions={actions}>
-      <TableWidget columns={getColumns(detectorIdToHit, showDetectorDetails)} items={detectors} />
+      <TableWidget
+        columns={getColumns(detectorIdToHit, showDetectorDetails)}
+        items={detectors}
+        loading={loading}
+      />
     </WidgetContainer>
   );
 };

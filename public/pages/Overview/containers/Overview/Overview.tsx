@@ -44,7 +44,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
   const [startTime, setStartTime] = useState(DEFAULT_DATE_RANGE.start);
   const [endTime, setEndTime] = useState(DEFAULT_DATE_RANGE.end);
   const [recentlyUsedRanges, setRecentlyUsedRanges] = useState([DEFAULT_DATE_RANGE]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [timeUnit, setTimeUnit] = useState('yearmonthdatehoursminutes');
 
   const context = useContext(CoreServicesContext);
@@ -55,6 +55,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
       ...state,
       overviewViewModel: { ...overviewViewModel },
     });
+    setLoading(false);
   };
 
   const overviewViewModelActor = useMemo(
@@ -105,6 +106,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
   }, [startTime, endTime]);
 
   const onRefresh = async () => {
+    setLoading(true);
     await overviewViewModelActor.onRefresh(startTime, endTime);
   };
 
@@ -160,15 +162,20 @@ export const Overview: React.FC<OverviewProps> = (props) => {
           startTime={startTime}
           endTime={endTime}
           timeUnit={timeUnit}
+          loading={loading}
         />
       </EuiFlexItem>
 
       <EuiFlexItem>
         <EuiFlexGrid columns={2} gutterSize="m">
-          <RecentAlertsWidget items={state.overviewViewModel.alerts} />
-          <RecentFindingsWidget items={state.overviewViewModel.findings} />
-          <TopRulesWidget findings={state.overviewViewModel.findings} />
-          <DetectorsWidget detectorHits={state.overviewViewModel.detectors} {...props} />
+          <RecentAlertsWidget items={state.overviewViewModel.alerts} loading={loading} />
+          <RecentFindingsWidget items={state.overviewViewModel.findings} loading={loading} />
+          <TopRulesWidget findings={state.overviewViewModel.findings} loading={loading} />
+          <DetectorsWidget
+            detectorHits={state.overviewViewModel.detectors}
+            {...props}
+            loading={loading}
+          />
         </EuiFlexGrid>
       </EuiFlexItem>
     </EuiFlexGroup>

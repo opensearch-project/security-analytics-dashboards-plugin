@@ -8,14 +8,16 @@ import React, { useEffect } from 'react';
 import { FindingItem } from '../../models/interfaces';
 import { WidgetContainer } from './WidgetContainer';
 import { getTopRulesVisualizationSpec } from '../../utils/helpers';
+import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 
 export interface TopRulesWidgetProps {
   findings: FindingItem[];
+  loading?: boolean;
 }
 
 type RulesCount = { [ruleName: string]: number };
 
-export const TopRulesWidget: React.FC<TopRulesWidgetProps> = ({ findings }) => {
+export const TopRulesWidget: React.FC<TopRulesWidgetProps> = ({ findings, loading = false }) => {
   useEffect(() => {
     const rulesCount: RulesCount = {};
     findings.forEach((finding) => {
@@ -33,7 +35,7 @@ export const TopRulesWidget: React.FC<TopRulesWidgetProps> = ({ findings }) => {
 
   return (
     <WidgetContainer title="Most frequent detection rules">
-      <div id="top-rules-view"></div>
+      <ChartContainer chartViewId={'top-rules-view'} loading={loading} />
     </WidgetContainer>
   );
 };

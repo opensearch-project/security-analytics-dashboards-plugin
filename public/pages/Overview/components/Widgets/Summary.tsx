@@ -15,10 +15,12 @@ import {
 import { AlertItem, FindingItem } from '../../models/interfaces';
 import { createSelectComponent, renderVisualization } from '../../../../utils/helpers';
 import { ROUTES } from '../../../../utils/constants';
+import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 
 export interface SummaryProps {
   findings: FindingItem[];
   alerts: AlertItem[];
+  loading?: boolean;
 }
 
 export interface SummaryData {
@@ -34,6 +36,7 @@ export const Summary: React.FC<SummaryProps> = ({
   startTime,
   endTime,
   timeUnit,
+  loading = false,
 }) => {
   const [groupBy, setGroupBy] = useState('');
   const [summaryData, setSummaryData] = useState<SummaryData[]>([]);
@@ -125,7 +128,7 @@ export const Summary: React.FC<SummaryProps> = ({
           </EuiFlexGroup>
         </EuiFlexItem>
         <EuiFlexItem>
-          <div id="summary-view" style={{ width: '100%' }}></div>
+          <ChartContainer chartViewId={'summary-view'} loading={loading} />
         </EuiFlexItem>
       </EuiFlexGroup>
     </WidgetContainer>
