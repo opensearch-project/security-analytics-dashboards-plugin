@@ -16,6 +16,32 @@ export type DateOpts = {
   dateFormat: string;
 };
 
+/**
+ * Legend selection config for the chart layer
+ */
+const legendSelectionCfg = {
+  selection: {
+    series: {
+      type: 'multi',
+      encodings: ['color'],
+      on: 'click',
+      bind: 'legend',
+    },
+  },
+  encoding: {
+    opacity: {
+      condition: { selection: 'series', value: 1 },
+      value: 0.2,
+    },
+  },
+};
+
+/**
+ * Adds interactive legends to the chart layer
+ * @param layer
+ */
+const addInteractiveLegends = (layer: any) => _.defaultsDeep(layer, legendSelectionCfg);
+
 function getVisualizationSpec(description: string, data: any, layers: any[]): TopLevelSpec {
   return {
     config: {
@@ -45,12 +71,19 @@ function getVisualizationSpec(description: string, data: any, layers: any[]): To
 export function getOverviewVisualizationSpec(
   visualizationData: SummaryData[],
   groupBy: string,
-  dynamicTimeUnit: string = 'yearmonthdatehoursminutes'
+  dateOpts: DateOpts = {
+    timeUnit: 'yearmonthdatehoursminutes',
+    dateFormat: '%Y-%m-%d %H:%M',
+  }
 ): TopLevelSpec {
-  const timeUnit = dynamicTimeUnit;
   const aggregate = 'sum';
   const findingsEncoding: { [x: string]: any } = {
-    x: { timeUnit, field: 'time', title: '', axis: { grid: false, ticks: false } },
+    x: {
+      timeUnit: dateOpts.timeUnit,
+      field: 'time',
+      title: '',
+      axis: { grid: false, ticks: false, format: dateOpts.dateFormat },
+    },
     y: {
       aggregate,
       field: 'finding',
@@ -77,10 +110,10 @@ export function getOverviewVisualizationSpec(
     'Plot showing average data with raw values in the background.',
     visualizationData,
     [
-      {
+      addInteractiveLegends({
         mark: 'bar',
         encoding: findingsEncoding,
-      },
+      }),
       {
         mark: {
           type: 'line',
@@ -91,8 +124,18 @@ export function getOverviewVisualizationSpec(
           },
         },
         encoding: {
-          x: { timeUnit, field: 'time', title: '', axis: { grid: false, ticks: false } },
-          y: { aggregate, field: 'alert', title: 'Count', axis: { grid: true, ticks: false } },
+          x: {
+            timeUnit: dateOpts.timeUnit,
+            field: 'time',
+            title: '',
+            axis: { grid: false, ticks: false, format: dateOpts.dateFormat },
+          },
+          y: {
+            aggregate: 'sum',
+            field: 'alert',
+            title: 'Count',
+            axis: { grid: true, ticks: false },
+          },
           tooltip: [{ field: 'alert', aggregate: 'sum', title: 'Alerts' }],
         },
       },
@@ -146,7 +189,7 @@ export function getFindingsVisualizationSpec(
   }
 ) {
   return getVisualizationSpec('Findings data overview', visualizationData, [
-    {
+    addInteractiveLegends({
       mark: 'bar',
       encoding: {
         tooltip: [{ field: 'finding', aggregate: 'sum', type: 'quantitative', title: 'Findings' }],
@@ -175,7 +218,7 @@ export function getFindingsVisualizationSpec(
           },
         },
       },
-    },
+    }),
   ]);
 }
 
@@ -188,7 +231,7 @@ export function getAlertsVisualizationSpec(
   }
 ) {
   return getVisualizationSpec('Alerts data overview', visualizationData, [
-    {
+    addInteractiveLegends({
       mark: 'bar',
       encoding: {
         tooltip: [{ field: 'alert', aggregate: 'sum', title: 'Alerts' }],
@@ -218,7 +261,7 @@ export function getAlertsVisualizationSpec(
           },
         },
       },
-    },
+    }),
   ]);
 }
 

@@ -4,16 +4,20 @@
  */
 
 import {
-  EuiButton,
   EuiButtonEmpty,
   EuiFlexGrid,
   EuiFlexGroup,
   EuiFlexItem,
   EuiPopover,
+  EuiSuperDatePicker,
   EuiTitle,
 } from '@elastic/eui';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { BREADCRUMBS } from '../../../../utils/constants';
+import {
+  BREADCRUMBS,
+  DEFAULT_DATE_RANGE,
+  MAX_RECENTLY_USED_TIME_RANGES,
+} from '../../../../utils/constants';
 import { OverviewProps, OverviewState } from '../../models/interfaces';
 import { CoreServicesContext } from '../../../../../public/components/core_services';
 import { RecentAlertsWidget } from '../../components/Widgets/RecentAlertsWidget';
@@ -24,6 +28,7 @@ import { ServicesContext } from '../../../../services';
 import { Summary } from '../../components/Widgets/Summary';
 import { TopRulesWidget } from '../../components/Widgets/TopRulesWidget';
 import { GettingStartedPopup } from '../../components/GettingStarted/GettingStartedPopup';
+import { getChartTimeUnit } from '../../utils/helpers';
 
 export const Overview: React.FC<OverviewProps> = (props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -36,7 +41,12 @@ export const Overview: React.FC<OverviewProps> = (props) => {
       alerts: [],
     },
   });
+  const [startTime, setStartTime] = useState(DEFAULT_DATE_RANGE.start);
+  const [endTime, setEndTime] = useState(DEFAULT_DATE_RANGE.end);
+  const [recentlyUsedRanges, setRecentlyUsedRanges] = useState([DEFAULT_DATE_RANGE]);
   const [loading, setLoading] = useState(true);
+  const [timeUnit, setTimeUnit] = useState('yearmonthdatehoursminutes');
+
   const context = useContext(CoreServicesContext);
   const services = useContext(ServicesContext);
 
@@ -58,7 +68,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
     overviewViewModelActor.registerRefreshHandler(updateState);
 
     const updateModel = async () => {
-      await overviewViewModelActor.onRefresh();
+      await overviewViewModelActor.onRefresh(startTime, endTime);
       setInitialLoadingFinished(true);
     };
 
@@ -75,16 +85,33 @@ export const Overview: React.FC<OverviewProps> = (props) => {
     }
   }, [initialLoadingFinished, state.overviewViewModel, props.getStartedDismissedOnce]);
 
-  const onTimeChange = ({ start, end }: { start: string; end: string }) => {
-    // TODO: NYI
+  const onTimeChange = async ({ start, end }: { start: string; end: string }) => {
+    let usedRanges = recentlyUsedRanges.filter(
+      (range) => !(range.start === start && range.end === end)
+    );
+    usedRanges.unshift({ start: start, end: end });
+    if (usedRanges.length > MAX_RECENTLY_USED_TIME_RANGES)
+      usedRanges = usedRanges.slice(0, MAX_RECENTLY_USED_TIME_RANGES);
+
+    const endTime = start === end ? DEFAULT_DATE_RANGE.end : end;
+    const timeUnit = getChartTimeUnit(start, endTime);
+    setStartTime(start);
+    setEndTime(endTime);
+    setTimeUnit(timeUnit);
+    setRecentlyUsedRanges(usedRanges);
   };
+
+  useEffect(() => {
+    overviewViewModelActor.onRefresh(startTime, endTime);
+  }, [startTime, endTime]);
 
   const onRefresh = async () => {
     setLoading(true);
-    overviewViewModelActor.onRefresh();
+    await overviewViewModelActor.onRefresh(startTime, endTime);
   };
 
   const onButtonClick = () => setIsPopoverOpen((isPopoverOpen) => !isPopoverOpen);
+
   const closePopover = () => {
     setIsPopoverOpen(false);
     props.onGetStartedDismissed();
@@ -116,7 +143,15 @@ export const Overview: React.FC<OverviewProps> = (props) => {
             </EuiTitle>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton onClick={onRefresh}>Refresh</EuiButton>
+            <EuiSuperDatePicker
+              start={startTime}
+              end={endTime}
+              recentlyUsedRanges={recentlyUsedRanges}
+              isLoading={loading}
+              onTimeChange={onTimeChange}
+              onRefresh={onRefresh}
+              updateButtonProps={{ fill: false }}
+            />
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiFlexItem>
@@ -124,6 +159,9 @@ export const Overview: React.FC<OverviewProps> = (props) => {
         <Summary
           alerts={state.overviewViewModel.alerts}
           findings={state.overviewViewModel.findings}
+          startTime={startTime}
+          endTime={endTime}
+          timeUnit={timeUnit}
           loading={loading}
         />
       </EuiFlexItem>
