@@ -19,7 +19,7 @@ import { EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
 import { ServicesContext } from '../../../../services';
 import { ServerResponse } from '../../../../../server/models/types';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { errorNotificationToast } from '../../../../utils/helpers';
+import { errorNotificationToast, successNotificationToast } from '../../../../utils/helpers';
 
 export interface UpdateDetectorRulesProps
   extends RouteComponentProps<
@@ -191,6 +191,8 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
 
       if (!updateDetectorRes.ok) {
         errorNotificationToast(props.notifications, 'update', 'detector', updateDetectorRes.error);
+      } else {
+        successNotificationToast(props.notifications, 'updated', 'detector');
       }
 
       props.history.replace({
