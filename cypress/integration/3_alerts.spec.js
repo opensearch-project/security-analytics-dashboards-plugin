@@ -355,7 +355,7 @@ describe('Alerts', () => {
       });
 
     // Filter the table to show only "Active" alerts
-    cy.get('[data-text="Status"]').click({ force: true });
+    cy.get('[data-text="Status"]');
     cy.get('[class="euiFilterSelect__items"]').within(() => {
       cy.contains('Acknowledged').click({ force: true });
       cy.contains('Active').click({ force: true });
@@ -391,7 +391,7 @@ describe('Alerts', () => {
     );
 
     // Filter the table to show only "Acknowledged" alerts
-    cy.get('[data-text="Status"]').click({ force: true });
+    cy.get('[data-text="Status"]');
     cy.get('[class="euiFilterSelect__items"]').within(() => {
       cy.contains('Active').click({ force: true });
       cy.contains('Acknowledged').click({ force: true });
