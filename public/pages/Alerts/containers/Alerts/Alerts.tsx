@@ -428,7 +428,7 @@ class Alerts extends Component<AlertsProps, AlertsState> {
     const sorting: any = {
       sort: {
         field: 'start_time',
-        direction: 'asc',
+        direction: 'dsc',
       },
     };
 
