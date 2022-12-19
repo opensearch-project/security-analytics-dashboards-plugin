@@ -14,7 +14,6 @@ import {
   EuiSpacer,
   EuiTab,
   EuiTabs,
-  EuiText,
   EuiTitle,
   EuiHealth,
 } from '@elastic/eui';
