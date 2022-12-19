@@ -19,11 +19,14 @@ describe('Integration tests', () => {
   const indexName = 'cypress-index-windows';
   const dnsName = 'cypress-index-dns';
 
-  before(() => {
-    // Create custom rules
+  const cleanUpTests = () => {
     cy.deleteAllCustomRules();
     cy.deleteAllDetectors();
     cy.deleteAllIndices();
+  };
+
+  before(() => {
+    cleanUpTests();
 
     // Create custom rules
     cy.createRule(windows_usb_rule_data).then((response) => {
@@ -79,6 +82,8 @@ describe('Integration tests', () => {
       'http://localhost:5601/app/opensearch_security_analytics_dashboards#/detectors'
     );
   });
+
+  after(() => cleanUpTests());
 
   it('...can navigate to findings page', () => {
     cy.intercept({
