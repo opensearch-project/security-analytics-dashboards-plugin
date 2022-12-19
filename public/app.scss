@@ -44,3 +44,5 @@ $euiTextColor: $euiColorDarkestShade !default;
 .state-accordion:hover {
   text-decoration: none;
 }
+
+@import "./components/Charts/ChartContainer.scss";
