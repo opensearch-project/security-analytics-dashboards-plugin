@@ -159,12 +159,12 @@ describe('Alerts', () => {
       cy.get('[data-test-subj="text-details-group-content-detector"]').contains(testDetector.name);
 
       // Wait for the findings table to finish loading
-      cy.contains('Findings (4)', TWENTY_SECONDS_TIMEOUT);
+      cy.contains('Findings (1)', TWENTY_SECONDS_TIMEOUT);
       cy.contains('USB Device Plugged', TWENTY_SECONDS_TIMEOUT);
 
       // Confirm alert findings contain expected values
       cy.get('tbody > tr', TWENTY_SECONDS_TIMEOUT)
-        .should(($tr) => expect($tr, '4 rows').to.have.length(4))
+        .should(($tr) => expect($tr, '1 row').to.have.length(1))
         .each(($el, $index) => {
           expect($el, `row number ${$index} timestamp`).to.contain(date);
           expect($el, `row number ${$index} rule name`).to.contain('USB Device Plugged');
