@@ -8,6 +8,7 @@ import {
   EuiAccordion,
   EuiBadge,
   EuiBadgeGroup,
+  EuiButton,
   EuiButtonIcon,
   EuiCodeBlock,
   EuiFlexGroup,
@@ -26,20 +27,23 @@ import { capitalizeFirstLetter, renderTime } from '../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA, ROUTES } from '../../../utils/constants';
 import { Finding, Query } from '../models/interfaces';
 import { RuleViewerFlyout } from '../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
-import { RuleTableItem } from '../../Rules/utils/helpers';
 import { RuleSource } from '../../../../server/models/interfaces';
 import { RuleItemInfoBase } from '../../Rules/models/types';
+import { OpenSearchService } from '../../../services';
+import { RuleTableItem } from '../../Rules/utils/helpers';
 
 interface FindingDetailsFlyoutProps {
   finding: Finding;
-  closeFlyout: () => void;
   backButton?: React.ReactNode;
   allRules: { [id: string]: RuleSource };
+  opensearchService: OpenSearchService;
+  closeFlyout: () => void;
 }
 
 interface FindingDetailsFlyoutState {
   loading: boolean;
   ruleViewerFlyoutData: RuleTableItem | null;
+  indexPatternId?: string;
 }
 
 export default class FindingDetailsFlyout extends Component<
@@ -52,6 +56,14 @@ export default class FindingDetailsFlyout extends Component<
       loading: false,
       ruleViewerFlyoutData: null,
     };
+  }
+
+  componentDidMount(): void {
+    this.getIndexPatternId().then((patternId) => {
+      if (patternId) {
+        this.setState({ indexPatternId: patternId });
+      }
+    });
   }
 
   renderTags = () => {
@@ -68,7 +80,7 @@ export default class FindingDetailsFlyout extends Component<
     );
   };
 
-  showRuleDetails = (fullRule, ruleId: string) => {
+  showRuleDetails = (fullRule: any, ruleId: string) => {
     this.setState({
       ...this.state,
       ruleViewerFlyoutData: {
@@ -90,13 +102,7 @@ export default class FindingDetailsFlyout extends Component<
   };
 
   renderRuleDetails = (rules: Query[] = []) => {
-    const {
-      allRules,
-      finding: { index, related_doc_ids, document_list },
-    } = this.props;
-    const documents = document_list;
-    const docId = related_doc_ids[0];
-    const document = documents.filter((doc) => doc.id === docId);
+    const { allRules } = this.props;
     return rules.map((rule, key) => {
       const fullRule = allRules[rule.id];
       const severity = capitalizeFirstLetter(fullRule.level);
@@ -166,51 +172,98 @@ export default class FindingDetailsFlyout extends Component<
             </EuiFormRow>
 
             <EuiSpacer size={'l'} />
-
-            <EuiTitle size={'s'}>
-              <h3>Documents</h3>
-            </EuiTitle>
-            <EuiSpacer size={'s'} />
-
-            <EuiFlexGroup>
-              <EuiFlexItem>
-                <EuiFormRow
-                  label={'Document ID'}
-                  data-test-subj={'finding-details-flyout-rule-document-id'}
-                >
-                  <EuiText>{docId || DEFAULT_EMPTY_DATA}</EuiText>
-                </EuiFormRow>
-              </EuiFlexItem>
-
-              <EuiFlexItem>
-                <EuiFormRow
-                  label={'Index'}
-                  data-test-subj={'finding-details-flyout-rule-document-index'}
-                >
-                  <EuiText>{index || DEFAULT_EMPTY_DATA}</EuiText>
-                </EuiFormRow>
-              </EuiFlexItem>
-            </EuiFlexGroup>
-
-            <EuiSpacer size={'m'} />
-
-            <EuiFormRow fullWidth={true}>
-              <EuiCodeBlock
-                language={'json'}
-                inline={false}
-                isCopyable={true}
-                readOnly={true}
-                data-test-subj={'finding-details-flyout-rule-document'}
-              >
-                {JSON.stringify(document, null, 4)}
-              </EuiCodeBlock>
-            </EuiFormRow>
           </EuiAccordion>
           {rules.length > 1 && <EuiHorizontalRule />}
         </div>
       );
     });
   };
+
+  getIndexPatternId = async () => {
+    const indexPatterns = await this.props.opensearchService.getIndexPatterns();
+    const {
+      finding: { index },
+    } = this.props;
+    let patternId;
+    indexPatterns.map((pattern) => {
+      const patternName = pattern.attributes.title.replaceAll('*', '.*');
+      const patternRegex = new RegExp(patternName);
+      if (index.match(patternRegex)) {
+        patternId = pattern.id;
+      }
+    });
+
+    return patternId;
+  };
+
+  renderFindingDocuments() {
+    const {
+      finding: { index, document_list, related_doc_ids },
+    } = this.props;
+    const documents = document_list;
+    const docId = related_doc_ids[0];
+    const matchedDocuments = documents.filter((doc) => doc.id === docId);
+    const document = matchedDocuments.length > 0 ? matchedDocuments[0].document : '';
+    const { indexPatternId } = this.state;
+
+    return (
+      <>
+        <EuiFlexGroup justifyContent="spaceBetween">
+          <EuiFlexItem>
+            <EuiTitle size={'s'}>
+              <h3>Documents</h3>
+            </EuiTitle>
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>
+            <EuiButton
+              href={
+                indexPatternId
+                  ? `discover#/context/${indexPatternId}/${related_doc_ids[0]}`
+                  : `#${ROUTES.FINDINGS}`
+              }
+              target={indexPatternId ? '_blank' : undefined}
+            >
+              View surrounding documents
+            </EuiButton>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+
+        <EuiSpacer size={'s'} />
+
+        <EuiFlexGroup>
+          <EuiFlexItem>
+            <EuiFormRow
+              label={'Document ID'}
+              data-test-subj={'finding-details-flyout-rule-document-id'}
+            >
+              <EuiText>{docId || DEFAULT_EMPTY_DATA}</EuiText>
+            </EuiFormRow>
+          </EuiFlexItem>
+
+          <EuiFlexItem>
+            <EuiFormRow
+              label={'Index'}
+              data-test-subj={'finding-details-flyout-rule-document-index'}
+            >
+              <EuiText>{index || DEFAULT_EMPTY_DATA}</EuiText>
+            </EuiFormRow>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+
+        <EuiSpacer size={'m'} />
+
+        <EuiFormRow fullWidth={true}>
+          <EuiCodeBlock
+            language="json"
+            isCopyable
+            data-test-subj={'finding-details-flyout-rule-document'}
+          >
+            {JSON.stringify(JSON.parse(document), null, 2)}
+          </EuiCodeBlock>
+        </EuiFormRow>
+      </>
+    );
+  }
 
   render() {
     const {
@@ -304,6 +357,8 @@ export default class FindingDetailsFlyout extends Component<
           </EuiTitle>
           <EuiSpacer size={'m'} />
           {this.renderRuleDetails(queries)}
+          <EuiSpacer size="l" />
+          {this.renderFindingDocuments()}
         </EuiFlyoutBody>
       </EuiFlyout>
     );

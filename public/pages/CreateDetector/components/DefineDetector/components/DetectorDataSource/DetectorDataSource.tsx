@@ -102,7 +102,6 @@ export default class DetectorDataSource extends Component<
         >
           <EuiComboBox
             placeholder={'Select an input source for the detector.'}
-            async={true}
             isLoading={loading}
             options={indexOptions}
             selectedOptions={this.parseOptions(detectorIndices)}
