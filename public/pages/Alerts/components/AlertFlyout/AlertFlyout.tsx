@@ -82,7 +82,10 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
     try {
       const findingRes = await findingsService.getFindings({ detectorId: detector_id });
       if (findingRes.ok) {
-        this.setState({ findingItems: findingRes.response.findings });
+        const relatedFindings = findingRes.response.findings.filter((finding) =>
+          this.props.alertItem.finding_ids.includes(finding.id)
+        );
+        this.setState({ findingItems: relatedFindings });
       } else {
         errorNotificationToast(notifications, 'retrieve', 'findings', findingRes.error);
       }
