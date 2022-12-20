@@ -17,6 +17,7 @@ export interface DetectionRulesTableProps {
   onRuleActivationToggle: (changedItem: RuleItem, isActive: boolean) => void;
   onTableChange?: (nextValues: CriteriaWithPagination<RuleItem>) => void;
   loading?: boolean;
+  onRuleDetails?: (ruleItem: RuleItem) => void;
 }
 
 const rulePriorityBySeverity: { [severity: string]: number } = {
@@ -34,6 +35,7 @@ export const DetectionRulesTable: React.FC<DetectionRulesTableProps> = ({
   onRuleActivationToggle,
   onTableChange,
   loading = false,
+  onRuleDetails,
 }) => {
   //Filter table by rule type
   const search: Search = {
@@ -77,7 +79,12 @@ export const DetectionRulesTable: React.FC<DetectionRulesTableProps> = ({
   return (
     <div style={{ padding: 10 }}>
       <EuiInMemoryTable
-        columns={getRulesColumns(allRulesEnabled, onAllRulesToggled, onRuleActivationToggle)}
+        columns={getRulesColumns(
+          allRulesEnabled,
+          onAllRulesToggled,
+          onRuleActivationToggle,
+          onRuleDetails
+        )}
         items={ruleItems}
         itemId={(item: RuleItem) => `${item.name}`}
         search={search}
