@@ -16,15 +16,25 @@ export type ActiveToggleOnChangeEvent = React.BaseSyntheticEvent<
 export const getRulesColumns = (
   allEnabled: boolean,
   onAllRulesToggled?: (enabled: boolean) => void,
-  onActivationToggle?: (item: RuleItem, active: boolean) => void
+  onActivationToggle?: (item: RuleItem, active: boolean) => void,
+  onRuleDetails?: (item: RuleItem) => void
 ): EuiBasicTableColumn<RuleItem>[] => {
   const columns: EuiBasicTableColumn<RuleItem>[] = [
     {
       field: 'name',
       name: 'Rule name',
-      render: (ruleName: string, item: RuleItem): ReactNode => (
-        <EuiLink style={{ marginLeft: 10 }}>{ruleName}</EuiLink>
-      ),
+      render: (ruleName: string, item: RuleItem): ReactNode => {
+        const onRuleNameClicker = () => {
+          if (onRuleDetails) {
+            onRuleDetails(item);
+          }
+        };
+        return (
+          <EuiLink style={{ marginLeft: 10 }} onClick={onRuleNameClicker}>
+            {ruleName}
+          </EuiLink>
+        );
+      },
     },
     {
       field: 'severity',
