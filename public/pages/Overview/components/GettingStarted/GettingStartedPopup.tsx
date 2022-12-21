@@ -129,8 +129,7 @@ export const GettingStartedPopup: React.FC<GettingStartedPopupProps> = ({
       <EuiHorizontalRule />
       <EuiText>
         <p>
-          Security analytics generates critical security insights from existing security event
-          logs.&nbsp;
+          Generates critical security insights from your event logs.&nbsp;
           <EuiLink href={moreLink} target="_blank">
             Learn more
           </EuiLink>

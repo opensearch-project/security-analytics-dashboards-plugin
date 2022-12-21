@@ -277,7 +277,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
       },
       {
         field: 'rulesCount',
-        name: 'Rules',
+        name: 'Active rules',
         sortable: true,
         dataType: 'number',
         align: 'left',

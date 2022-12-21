@@ -7,11 +7,11 @@ import {
   DurationRange,
   EuiBasicTableColumn,
   EuiButton,
-  EuiButtonEmpty,
   EuiButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
   EuiInMemoryTable,
+  EuiLink,
   EuiPanel,
   EuiSpacer,
   EuiSuperDatePicker,
@@ -34,7 +34,6 @@ import {
   DEFAULT_DATE_RANGE,
   DEFAULT_EMPTY_DATA,
   MAX_RECENTLY_USED_TIME_RANGES,
-  ROUTES,
 } from '../../../../utils/constants';
 import { CoreServicesContext } from '../../../../components/core_services';
 import AlertsService from '../../../../services/AlertsService';
@@ -146,7 +145,7 @@ class Alerts extends Component<AlertsProps, AlertsState> {
         sortable: false,
         dataType: 'string',
         render: (triggerName: string, alertItem: AlertItem) => (
-          <EuiButtonEmpty onClick={() => this.setFlyout(alertItem)}>{triggerName}</EuiButtonEmpty>
+          <EuiLink onClick={() => this.setFlyout(alertItem)}>{triggerName}</EuiLink>
         ),
       },
       {
@@ -224,7 +223,7 @@ class Alerts extends Component<AlertsProps, AlertsState> {
         alert: 1,
         time,
         status: alert.state,
-        severity: alert.severity,
+        severity: parseAlertSeverityToOption(alert.severity)?.label || alert.severity,
       };
     });
 
