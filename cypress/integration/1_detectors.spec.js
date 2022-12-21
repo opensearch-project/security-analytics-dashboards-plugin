@@ -204,7 +204,7 @@ describe('Detectors', () => {
     cy.contains('test detector').click({ force: true });
 
     // Confirm number of rules before edit
-    cy.contains('Detection rules (1)');
+    cy.contains('Active rules (1)');
 
     // Click "Edit" button in Detector rules panel
     cy.get(`[data-test-subj="edit-detector-rules"]`).click({ force: true });
@@ -229,7 +229,7 @@ describe('Detectors', () => {
     cy.get(`[data-test-subj="save-detector-rules-edits"]`).click({ force: true });
 
     // Confirm 1 rule has been removed from detector
-    cy.contains('Detection rules (0)');
+    cy.contains('Active rules (0)');
 
     // Click "Edit" button in Detector rules panel
     cy.get(`[data-test-subj="edit-detector-rules"]`).click({ force: true });
@@ -253,7 +253,7 @@ describe('Detectors', () => {
     cy.get(`[data-test-subj="save-detector-rules-edits"]`).click({ force: true });
 
     // Confirm 1 rule has been added to detector
-    cy.contains('Detection rules (1)');
+    cy.contains('Active rules (1)');
   });
 
   it('...can be deleted', () => {

@@ -181,10 +181,7 @@ export function createSelectComponent(
   return (
     <EuiFlexGroup justifyContent="flexEnd" alignItems="center">
       <EuiFlexItem grow={false}>
-        <h5>Group by</h5>
-      </EuiFlexItem>
-      <EuiFlexItem grow={false}>
-        <EuiSelect id={id} options={options} value={value} onChange={onChange} />
+        <EuiSelect id={id} options={options} value={value} onChange={onChange} prepend="Group by" />
       </EuiFlexItem>
     </EuiFlexGroup>
   );
