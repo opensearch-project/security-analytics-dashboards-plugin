@@ -166,6 +166,11 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
     }
   };
 
+  const onAllRulesToggle = (isActive: boolean) => {
+    setCustomRuleItems(customRuleItems.map((rule) => ({ ...rule, active: isActive })));
+    setPrePackagedRuleItems(prePackagedRuleItems.map((rule) => ({ ...rule, active: isActive })));
+  };
+
   const onCancel = useCallback(() => {
     props.history.replace({
       pathname: `${ROUTES.DETECTOR_DETAILS}/${detectorId}`,
@@ -216,6 +221,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
         loading={loading}
         ruleItems={ruleItems}
         onRuleActivationToggle={onToggle}
+        onAllRulesToggled={onAllRulesToggle}
       />
 
       <EuiSpacer size="xl" />
