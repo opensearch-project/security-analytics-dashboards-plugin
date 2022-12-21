@@ -135,14 +135,21 @@ describe('Findings', () => {
     // Click on detector to be removed
     cy.contains('sample_detector').click({ force: true }, { timeout: 2000 });
 
+    cy.url().should('include', 'opensearch_security_analytics_dashboards#/detector-details');
+
     // Click "Actions" button, the click "Delete"
-    cy.get('button').contains('Actions').click({ force: true }, { timeout: 2000 });
-    cy.contains('Delete').click({ force: true });
+    cy.get('button')
+      .contains('Actions')
+      .click({ force: true }, { timeout: 2000 })
+      .then(() => {
+        // Confirm arrival at detectors page
+        cy.contains('Delete').click({ force: true });
 
-    // Search for sample_detector, presumably deleted
-    cy.get(`[placeholder="Search threat detectors"]`).type('sample_detector').trigger('search');
+        // Search for sample_detector, presumably deleted
+        cy.get(`[placeholder="Search threat detectors"]`).type('sample_detector').trigger('search');
 
-    // Confirm sample_detector no longer exists
-    cy.contains('There are no existing detectors.');
+        // Confirm sample_detector no longer exists
+        cy.contains('There are no existing detectors.');
+      });
   });
 });
