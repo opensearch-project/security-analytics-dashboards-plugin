@@ -9,10 +9,8 @@ import moment from 'moment';
 import {
   EuiBasicTableColumn,
   EuiButtonIcon,
-  EuiEmptyPrompt,
   EuiInMemoryTable,
   EuiLink,
-  EuiText,
   EuiToolTip,
 } from '@elastic/eui';
 import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
@@ -26,6 +24,7 @@ import CreateAlertFlyout from '../CreateAlertFlyout';
 import { NotificationChannelTypeOptions } from '../../../CreateDetector/components/ConfigureAlerts/models/interfaces';
 import { FindingItemType } from '../../containers/Findings/Findings';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
+import { RuleSource } from '../../../../../server/models/interfaces';
 
 interface FindingsTableProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -34,7 +33,7 @@ interface FindingsTableProps extends RouteComponentProps {
   notificationChannels: NotificationChannelTypeOptions[];
   refreshNotificationChannels: () => void;
   loading: boolean;
-  rules: any;
+  rules: { [id: string]: RuleSource };
   startTime: string;
   endTime: string;
   onRefresh: () => void;
