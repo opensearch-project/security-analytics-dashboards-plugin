@@ -222,7 +222,7 @@ describe('Detectors', () => {
     cy.contains('tr', 'USB Device Plugged').within(() => {
       // Of note, timeout can sometimes work instead of wait here, but is very unreliable from case to case.
       cy.wait(1000);
-      cy.get('button').eq(0).click();
+      cy.get('button').eq(1).click();
     });
 
     // Save changes
@@ -246,7 +246,7 @@ describe('Detectors', () => {
     // Toggle single search result to checked
     cy.contains('tr', 'USB Device Plugged').within(() => {
       cy.wait(2000);
-      cy.get('button').eq(0).click({ force: true });
+      cy.get('button').eq(1).click({ force: true });
     });
 
     // Save changes
