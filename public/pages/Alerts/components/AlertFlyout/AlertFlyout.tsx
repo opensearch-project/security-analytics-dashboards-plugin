@@ -27,9 +27,9 @@ import {
   errorNotificationToast,
   renderTime,
 } from '../../../../utils/helpers';
-import { FindingsService, RuleService } from '../../../../services';
+import { FindingsService, RuleService, OpenSearchService } from '../../../../services';
 import FindingDetailsFlyout from '../../../Findings/components/FindingDetailsFlyout';
-import { Detector, Rule } from '../../../../../models/interfaces';
+import { Detector } from '../../../../../models/interfaces';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { Finding } from '../../../Findings/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
@@ -39,9 +39,10 @@ export interface AlertFlyoutProps {
   detector: Detector;
   findingsService: FindingsService;
   ruleService: RuleService;
+  notifications: NotificationsStart;
+  opensearchService: OpenSearchService;
   onClose: () => void;
   onAcknowledge: (selectedItems: AlertItem[]) => void;
-  notifications: NotificationsStart;
 }
 
 export interface AlertFlyoutState {
@@ -49,7 +50,7 @@ export interface AlertFlyoutState {
   findingFlyoutData?: Finding;
   findingItems: Finding[];
   loading: boolean;
-  rules: { [key: string]: Rule };
+  rules: { [key: string]: RuleSource };
 }
 
 export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutState> {
@@ -82,11 +83,14 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
     try {
       const findingRes = await findingsService.getFindings({ detectorId: detector_id });
       if (findingRes.ok) {
-        this.setState({ findingItems: findingRes.response.findings });
+        const relatedFindings = findingRes.response.findings.filter((finding) =>
+          this.props.alertItem.finding_ids.includes(finding.id)
+        );
+        this.setState({ findingItems: relatedFindings });
       } else {
         errorNotificationToast(notifications, 'retrieve', 'findings', findingRes.error);
       }
-    } catch (e) {
+    } catch (e: any) {
       errorNotificationToast(notifications, 'retrieve', 'findings', e);
     }
     await this.getRules();
@@ -140,7 +144,7 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
         }
         this.setState({ rules: allRules });
       }
-    } catch (e) {
+    } catch (e: any) {
       errorNotificationToast(notifications, 'retrieve', 'rules', e);
     }
   };
