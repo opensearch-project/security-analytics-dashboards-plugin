@@ -17,7 +17,7 @@ export const RuleContentYamlViewer: React.FC<RuleContentYamlViewerProps> = ({ ru
   const ruleYaml = mapYamlObjectToYamlString(yamlObject);
 
   return (
-    <EuiCodeBlock language="yaml" data-test-subj={'rule_flyout_yaml_rule'}>
+    <EuiCodeBlock language="yaml" data-test-subj={'rule_flyout_yaml_rule'} isCopyable={true}>
       {ruleYaml}
     </EuiCodeBlock>
   );
