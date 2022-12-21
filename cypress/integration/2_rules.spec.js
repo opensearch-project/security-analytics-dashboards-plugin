@@ -236,7 +236,7 @@ describe('Rules', () => {
               // so this test just checks that the line starts with the ID key.
               if (expectedLine.startsWith('id:')) {
                 expectedLine = 'id:';
-                expect(line, `Sigma rule line  ${lineIndex}`).to.contain(expectedLine);
+                expect(line, `Sigma rule line ${lineIndex}`).to.contain(expectedLine);
               } else {
                 expect(line, `Sigma rule line ${lineIndex}`).to.equal(expectedLine);
               }
