@@ -7,11 +7,11 @@ import {
   DurationRange,
   EuiBasicTableColumn,
   EuiButton,
-  EuiButtonEmpty,
   EuiButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
   EuiInMemoryTable,
+  EuiLink,
   EuiPanel,
   EuiSpacer,
   EuiSuperDatePicker,
@@ -146,7 +146,7 @@ class Alerts extends Component<AlertsProps, AlertsState> {
         sortable: false,
         dataType: 'string',
         render: (triggerName: string, alertItem: AlertItem) => (
-          <EuiButtonEmpty onClick={() => this.setFlyout(alertItem)}>{triggerName}</EuiButtonEmpty>
+          <EuiLink onClick={() => this.setFlyout(alertItem)}>{triggerName}</EuiLink>
         ),
       },
       {
