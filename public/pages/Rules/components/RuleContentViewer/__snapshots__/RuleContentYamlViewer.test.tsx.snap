@@ -2,7 +2,7 @@
 
 exports[`<RuleContentYamlViewer /> spec renders the component 1`] = `
 <div
-  class="euiCodeBlock euiCodeBlock--fontSmall euiCodeBlock--paddingLarge prismjs language-yaml"
+  class="euiCodeBlock euiCodeBlock--fontSmall euiCodeBlock--paddingLarge euiCodeBlock--hasControls prismjs language-yaml"
 >
   <pre
     class="euiCodeBlock__pre euiCodeBlock__pre--whiteSpacePreWrap"
@@ -403,5 +403,24 @@ exports[`<RuleContentYamlViewer /> spec renders the component 1`] = `
       </span>
     </code>
   </pre>
+  <div
+    class="euiCodeBlock__controls"
+  >
+    <div
+      class="euiCodeBlock__copyButton"
+    >
+      <span
+        class="euiToolTipAnchor"
+      >
+        <button
+          aria-label="Copy"
+          class="euiButtonIcon euiButtonIcon--text euiButtonIcon--empty euiButtonIcon--xSmall"
+          type="button"
+        >
+          EuiIconMock
+        </button>
+      </span>
+    </div>
+  </div>
 </div>
 `;
