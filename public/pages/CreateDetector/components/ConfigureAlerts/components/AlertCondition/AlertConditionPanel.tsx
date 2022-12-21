@@ -20,8 +20,12 @@ import {
 } from '@elastic/eui';
 import { Detector } from '../../../../../../../models/interfaces';
 import { AlertCondition } from '../../../../../../../models/interfaces';
-import { createSelectedOptions, parseAlertSeverityToOption } from '../../utils/helpers';
-import { ALERT_SEVERITY_OPTIONS, EMPTY_DEFAULT_ALERT_CONDITION } from '../../utils/constants';
+import {
+  createSelectedOptions,
+  getEmptyAlertCondition,
+  parseAlertSeverityToOption,
+} from '../../utils/helpers';
+import { ALERT_SEVERITY_OPTIONS } from '../../utils/constants';
 import { CreateDetectorRulesOptions } from '../../../../../../models/types';
 import { NotificationChannelOption, NotificationChannelTypeOptions } from '../../models/interfaces';
 import { NOTIFICATIONS_HREF } from '../../../../../../utils/constants';
@@ -247,7 +251,7 @@ export default class AlertConditionPanel extends Component<
 
   render() {
     const {
-      alertCondition = EMPTY_DEFAULT_ALERT_CONDITION,
+      alertCondition = getEmptyAlertCondition(),
       allNotificationChannels,
       indexNum,
       loadingNotifications,

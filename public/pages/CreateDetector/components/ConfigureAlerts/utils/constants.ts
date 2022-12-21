@@ -2,9 +2,6 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
-
-import { AlertCondition, TriggerAction } from '../../../../../../models/interfaces';
-
 export const MAX_ALERT_CONDITIONS = 10;
 export const MIN_ALERT_CONDITIONS = 0;
 
@@ -25,35 +22,6 @@ export const RULE_SEVERITY_OPTIONS = {
   MEDIUM: { id: '3', value: 'medium', label: 'Medium', text: 'Medium' },
   LOW: { id: '4', value: 'low', label: 'Low', text: 'Low' },
   INFORMATIONAL: { id: '5', value: 'informational', label: 'Info', text: 'Info' },
-};
-
-export const EMPTY_DEFAULT_TRIGGER_ACTION: TriggerAction = {
-  id: '',
-  name: '',
-  destination_id: '',
-  subject_template: {
-    source: '',
-    lang: 'mustache',
-  },
-  message_template: {
-    source: '',
-    lang: 'mustache',
-  },
-  throttle_enabled: false,
-  throttle: {
-    value: 10,
-    unit: 'MINUTES',
-  },
-};
-
-export const EMPTY_DEFAULT_ALERT_CONDITION: AlertCondition = {
-  name: '',
-  sev_levels: [],
-  tags: [],
-  actions: [EMPTY_DEFAULT_TRIGGER_ACTION],
-  types: [],
-  severity: '1',
-  ids: [],
 };
 
 export const MIN_NUM_NOTIFICATION_CHANNELS = 1;
