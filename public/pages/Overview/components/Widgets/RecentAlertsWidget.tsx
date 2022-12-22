@@ -61,10 +61,7 @@ export const RecentAlertsWidget: React.FC<RecentAlertsWidgetProps> = ({
   );
 
   return (
-    <WidgetContainer
-      title={`Top ${alertItems.length < 20 ? '' : 20} recent alerts`}
-      actions={actions}
-    >
+    <WidgetContainer title={'Recent alerts'} actions={actions}>
       <TableWidget columns={columns} items={alertItems} loading={loading} />
     </WidgetContainer>
   );

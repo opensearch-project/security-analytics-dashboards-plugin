@@ -197,7 +197,7 @@ describe('Detectors', () => {
     });
 
     // Confirm number of rules before edit
-    cy.contains('Detection rules (1)');
+    cy.contains('Active rules (1)');
 
     // Click "Edit" button in Detector rules panel
     cy.get(`[data-test-subj="edit-detector-rules"]`).click({ force: true });
@@ -215,14 +215,14 @@ describe('Detectors', () => {
     cy.contains('tr', 'USB Device Plugged').within(() => {
       // Of note, timeout can sometimes work instead of wait here, but is very unreliable from case to case.
       cy.wait(1000);
-      cy.get('button').eq(0).click();
+      cy.get('button').eq(1).click();
     });
 
     // Save changes
     cy.get(`[data-test-subj="save-detector-rules-edits"]`).click({ force: true });
 
     // Confirm 1 rule has been removed from detector
-    cy.contains('Detection rules (0)');
+    cy.contains('Active rules (0)');
 
     // Click "Edit" button in Detector rules panel
     cy.get(`[data-test-subj="edit-detector-rules"]`).click({ force: true });
@@ -238,7 +238,7 @@ describe('Detectors', () => {
     // Toggle single search result to checked
     cy.contains('tr', 'USB Device Plugged').within(() => {
       cy.wait(2000);
-      cy.get('button').eq(0).click({ force: true });
+      cy.get('button').eq(1).click({ force: true });
     });
 
     // Save changes
@@ -248,7 +248,7 @@ describe('Detectors', () => {
     });
 
     // Confirm 1 rule has been added to detector
-    cy.contains('Detection rules (1)');
+    cy.contains('Active rules (1)');
   });
 
   it('...can be deleted', () => {

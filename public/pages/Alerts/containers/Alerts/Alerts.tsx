@@ -7,11 +7,11 @@ import {
   DurationRange,
   EuiBasicTableColumn,
   EuiButton,
-  EuiButtonEmpty,
   EuiButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
   EuiInMemoryTable,
+  EuiLink,
   EuiPanel,
   EuiSpacer,
   EuiSuperDatePicker,
@@ -34,14 +34,13 @@ import {
   DEFAULT_DATE_RANGE,
   DEFAULT_EMPTY_DATA,
   MAX_RECENTLY_USED_TIME_RANGES,
-  ROUTES,
 } from '../../../../utils/constants';
 import { CoreServicesContext } from '../../../../components/core_services';
 import AlertsService from '../../../../services/AlertsService';
 import DetectorService from '../../../../services/DetectorService';
 import { AlertItem } from '../../../../../server/models/interfaces';
 import { AlertFlyout } from '../../components/AlertFlyout/AlertFlyout';
-import { FindingsService, RuleService } from '../../../../services';
+import { FindingsService, RuleService, OpenSearchService } from '../../../../services';
 import { Detector } from '../../../../../models/interfaces';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { DISABLE_ACKNOWLEDGED_ALERT_HELP_TEXT } from '../../utils/constants';
@@ -61,6 +60,7 @@ export interface AlertsProps {
   detectorService: DetectorService;
   findingService: FindingsService;
   ruleService: RuleService;
+  opensearchService: OpenSearchService;
   notifications: NotificationsStart;
   match: match;
 }
@@ -145,7 +145,7 @@ class Alerts extends Component<AlertsProps, AlertsState> {
         sortable: false,
         dataType: 'string',
         render: (triggerName: string, alertItem: AlertItem) => (
-          <EuiButtonEmpty onClick={() => this.setFlyout(alertItem)}>{triggerName}</EuiButtonEmpty>
+          <EuiLink onClick={() => this.setFlyout(alertItem)}>{triggerName}</EuiLink>
         ),
       },
       {
@@ -223,7 +223,7 @@ class Alerts extends Component<AlertsProps, AlertsState> {
         alert: 1,
         time,
         status: alert.state,
-        severity: alert.severity,
+        severity: parseAlertSeverityToOption(alert.severity)?.label || alert.severity,
       };
     });
 

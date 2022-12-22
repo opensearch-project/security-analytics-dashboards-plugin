@@ -241,50 +241,44 @@ describe('Alerts', () => {
         ['low', 'windows', 'attack.initial_access', 'attack.t1200'].forEach((tag) => {
           cy.get('[data-test-subj="finding-details-flyout-rule-tags"]').contains(tag);
         });
-
-        // Confirm the rule document ID is present
-        cy.get('[data-test-subj="finding-details-flyout-rule-document-id"]')
-          .invoke('text')
-          .then((text) => expect(text).to.not.equal('-'));
-
-        // Confirm the rule index
-        cy.get('[data-test-subj="finding-details-flyout-rule-document-index"]').contains(testIndex);
-
-        // Confirm the rule document matches
-        // The EuiCodeEditor used for this component stores each line of the JSON in an array of elements;
-        // so this test formats the expected document into an array of strings,
-        // and matches each entry with the corresponding element line.
-        const document = JSON.stringify(
-          [
-            {
-              index: 'sample_alerts_spec_cypress_test_index',
-              id: '',
-              found: true,
-              document:
-                '{"EventTime":"2020-02-04T14:59:39.343541+00:00","HostName":"EC2AMAZ-EPO7HKA","Keywords":"9223372036854775808","SeverityValue":2,"Severity":"INFO","EventID":2003,"SourceName":"Microsoft-Windows-Sysmon","ProviderGuid":"{5770385F-C22A-43E0-BF4C-06F5698FFBD9}","Version":5,"TaskValue":22,"OpcodeValue":0,"RecordNumber":9532,"ExecutionProcessID":1996,"ExecutionThreadID":2616,"Channel":"Microsoft-Windows-Sysmon/Operational","Domain":"NT AUTHORITY","AccountName":"SYSTEM","UserID":"S-1-5-18","AccountType":"User","Message":"Dns query:\\r\\nRuleName: \\r\\nUtcTime: 2020-02-04 14:59:38.349\\r\\nProcessGuid: {b3c285a4-3cda-5dc0-0000-001077270b00}\\r\\nProcessId: 1904\\r\\nQueryName: EC2AMAZ-EPO7HKA\\r\\nQueryStatus: 0\\r\\nQueryResults: 172.31.46.38;\\r\\nImage: C:\\\\Program Files\\\\nxlog\\\\nxlog.exe","Category":"Dns query (rule: DnsQuery)","Opcode":"Info","UtcTime":"2020-02-04 14:59:38.349","ProcessGuid":"{b3c285a4-3cda-5dc0-0000-001077270b00}","ProcessId":"1904","QueryName":"EC2AMAZ-EPO7HKA","QueryStatus":"0","QueryResults":"172.31.46.38;","Image":"C:\\\\Program Files\\\\nxlog\\\\regsvr32.exe","EventReceivedTime":"2020-02-04T14:59:40.780905+00:00","SourceModuleName":"in","SourceModuleType":"im_msvistalog","CommandLine":"eachtest","Initiated":"true","Provider_Name":"Microsoft-Windows-Kernel-General","TargetObject":"\\\\SOFTWARE\\\\Microsoft\\\\Office\\\\Outlook\\\\Security","EventType":"SetValue"}',
-            },
-          ],
-          null,
-          4
-        );
-        const documentLines = document.split('\n');
-        cy.get('[data-test-subj="finding-details-flyout-rule-document"]')
-          .get('[class="euiCodeBlock__line"]')
-          .each((lineElement, lineIndex) => {
-            let line = lineElement.text();
-            let expectedLine = documentLines[lineIndex];
-
-            // The document ID field is generated when the document is added to the index,
-            // so this test just checks that the line starts with the ID key.
-            if (expectedLine.trimStart().startsWith('"id": "')) {
-              expectedLine = '"id": "';
-              expect(line, `document JSON line ${lineIndex}`).to.contain(expectedLine);
-            } else {
-              line = line.replaceAll('\n', '');
-              expect(line, `document JSON line ${lineIndex}`).to.equal(expectedLine);
-            }
-          });
       });
+
+      // Confirm the rule document ID is present
+      cy.get('[data-test-subj="finding-details-flyout-rule-document-id"]')
+        .invoke('text')
+        .then((text) => expect(text).to.not.equal('-'));
+
+      // Confirm the rule index
+      cy.get('[data-test-subj="finding-details-flyout-rule-document-index"]').contains(testIndex);
+
+      // Confirm the rule document matches
+      // The EuiCodeEditor used for this component stores each line of the JSON in an array of elements;
+      // so this test formats the expected document into an array of strings,
+      // and matches each entry with the corresponding element line.
+      const document = JSON.stringify(
+        JSON.parse(
+          '{"EventTime":"2020-02-04T14:59:39.343541+00:00","HostName":"EC2AMAZ-EPO7HKA","Keywords":"9223372036854775808","SeverityValue":2,"Severity":"INFO","EventID":2003,"SourceName":"Microsoft-Windows-Sysmon","ProviderGuid":"{5770385F-C22A-43E0-BF4C-06F5698FFBD9}","Version":5,"TaskValue":22,"OpcodeValue":0,"RecordNumber":9532,"ExecutionProcessID":1996,"ExecutionThreadID":2616,"Channel":"Microsoft-Windows-Sysmon/Operational","Domain":"NT AUTHORITY","AccountName":"SYSTEM","UserID":"S-1-5-18","AccountType":"User","Message":"Dns query:\\r\\nRuleName: \\r\\nUtcTime: 2020-02-04 14:59:38.349\\r\\nProcessGuid: {b3c285a4-3cda-5dc0-0000-001077270b00}\\r\\nProcessId: 1904\\r\\nQueryName: EC2AMAZ-EPO7HKA\\r\\nQueryStatus: 0\\r\\nQueryResults: 172.31.46.38;\\r\\nImage: C:\\\\Program Files\\\\nxlog\\\\nxlog.exe","Category":"Dns query (rule: DnsQuery)","Opcode":"Info","UtcTime":"2020-02-04 14:59:38.349","ProcessGuid":"{b3c285a4-3cda-5dc0-0000-001077270b00}","ProcessId":"1904","QueryName":"EC2AMAZ-EPO7HKA","QueryStatus":"0","QueryResults":"172.31.46.38;","Image":"C:\\\\Program Files\\\\nxlog\\\\regsvr32.exe","EventReceivedTime":"2020-02-04T14:59:40.780905+00:00","SourceModuleName":"in","SourceModuleType":"im_msvistalog","CommandLine":"eachtest","Initiated":"true","Provider_Name":"Microsoft-Windows-Kernel-General","TargetObject":"\\\\SOFTWARE\\\\Microsoft\\\\Office\\\\Outlook\\\\Security","EventType":"SetValue"}'
+        ),
+        null,
+        2
+      );
+      const documentLines = document.split('\n');
+      cy.get('[data-test-subj="finding-details-flyout-rule-document"]')
+        .get('[class="euiCodeBlock__line"]')
+        .each((lineElement, lineIndex) => {
+          let line = lineElement.text();
+          let expectedLine = documentLines[lineIndex];
+
+          // The document ID field is generated when the document is added to the index,
+          // so this test just checks that the line starts with the ID key.
+          if (expectedLine.trimStart().startsWith('"id": "')) {
+            expectedLine = '"id": "';
+            expect(line, `document JSON line ${lineIndex}`).to.contain(expectedLine);
+          } else {
+            line = line.replaceAll('\n', '');
+            expect(line, `document JSON line ${lineIndex}`).to.equal(expectedLine);
+          }
+        });
 
       // Press the "back" button
       cy.get('[data-test-subj="finding-details-flyout-back-button"]').click({ force: true });

@@ -9,7 +9,7 @@ const uniqueId = Cypress._.random(0, 1e6);
 const SAMPLE_RULE = {
   name: `Cypress test rule ${uniqueId}`,
   logType: 'windows',
-  description: 'This is a rule used to test the rule creation workflow. Not for production use.',
+  description: 'This is a rule used to test the rule creation workflow.',
   detection:
     'selection:\n  Provider_Name: Service Control Manager\nEventID: 7045\nServiceName: ZzNetSvc\n{backspace}{backspace}condition: selection',
   detectionLine: [
@@ -28,22 +28,23 @@ const SAMPLE_RULE = {
 };
 
 const YAML_RULE_LINES = [
+  `id:`,
+  `logsource:`,
+  `product: ${SAMPLE_RULE.logType}`,
   `title: ${SAMPLE_RULE.name}`,
-  `description:`,
-  `${SAMPLE_RULE.description}`,
-  `level: ${SAMPLE_RULE.severity}`,
+  `description: ${SAMPLE_RULE.description}`,
   `tags:`,
   `- ${SAMPLE_RULE.tags[0]}`,
   `- ${SAMPLE_RULE.tags[1]}`,
   `- ${SAMPLE_RULE.tags[2]}`,
-  `references:`,
-  `- '${SAMPLE_RULE.references}'`,
   `falsepositives:`,
   `- ${SAMPLE_RULE.falsePositive}`,
-  `author: ${SAMPLE_RULE.author}`,
+  `level: ${SAMPLE_RULE.severity}`,
   `status: ${SAMPLE_RULE.status}`,
-  `logsource:`,
-  `product: ${SAMPLE_RULE.logType}`,
+  `references:`,
+  `- '${SAMPLE_RULE.references}'`,
+  `author: ${SAMPLE_RULE.author}`,
+  `detection:`,
   ...SAMPLE_RULE.detection.replaceAll('  ', '').replaceAll('{backspace}', '').split('\n'),
 ];
 
@@ -172,9 +173,24 @@ describe('Rules', () => {
           force: true,
         });
 
-        YAML_RULE_LINES.forEach((line) =>
-          cy.get('[data-test-subj="rule_flyout_yaml_rule"]').contains(line)
-        );
+          cy.get('[data-test-subj="rule_flyout_yaml_rule"]')
+            .get('[class="euiCodeBlock__line"]')
+            .each((lineElement, lineIndex) => {
+              if (lineIndex >= YAML_RULE_LINES.length) {
+                return;
+              }
+              let line = lineElement.text().replaceAll('\n', '').trim();
+              let expectedLine = YAML_RULE_LINES[lineIndex];
+
+              // The document ID field is generated when the document is added to the index,
+              // so this test just checks that the line starts with the ID key.
+              if (expectedLine.startsWith('id:')) {
+                expectedLine = 'id:';
+                expect(line, `Sigma rule line ${lineIndex}`).to.contain(expectedLine);
+              } else {
+                expect(line, `Sigma rule line ${lineIndex}`).to.equal(expectedLine);
+              }
+            });
 
         // Close the flyout
         cy.get('[data-test-subj="close-rule-details-flyout"]').click({

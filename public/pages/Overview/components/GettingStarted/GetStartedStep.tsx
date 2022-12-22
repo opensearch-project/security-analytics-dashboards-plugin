@@ -26,8 +26,8 @@ export const GetStartedStep: React.FC<GetStartedStepProps> = ({ buttons, title }
       </EuiText>
       <EuiSpacer size="s" />
       <EuiFlexGroup gutterSize="s">
-        {buttons.map((btn: GetStartedStepButton) => (
-          <EuiFlexItem grow={false}>
+        {buttons.map((btn: GetStartedStepButton, index: number) => (
+          <EuiFlexItem grow={false} key={index}>
             <EuiButton {...btn.opts} onClick={btn.onClick}>
               {btn.text}
             </EuiButton>

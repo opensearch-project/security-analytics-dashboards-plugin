@@ -20,7 +20,8 @@ import { RuleTableItem } from '../../utils/helpers';
 import { DeleteRuleModal } from '../DeleteModal/DeleteModal';
 import { RuleContentViewer } from '../RuleContentViewer/RuleContentViewer';
 import { RuleViewerFlyoutHeaderActions } from './RuleViewFlyoutHeaderActions';
-import { RuleService, NotificationsStart } from '../../../../services';
+import { RuleService } from '../../../../services';
+import { NotificationsStart } from 'opensearch-dashboards/public';
 
 export interface RuleViewerFlyoutProps {
   history?: RouteComponentProps['history'];
@@ -87,7 +88,9 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
       closeDeleteModal();
       hideFlyout(true);
     } else {
-      errorNotificationToast(notifications, 'delete', 'rule', deleteRuleRes.error);
+      if (notifications) {
+        errorNotificationToast(notifications, 'delete', 'rule', deleteRuleRes.error);
+      }
     }
   };
 

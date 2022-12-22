@@ -139,7 +139,7 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
       {rules}
     </EuiAccordion>
   ) : (
-    <ContentPanel title={`Detection rules (${totalSelected})`} actions={actions}>
+    <ContentPanel title={`Active rules (${totalSelected})`} actions={actions}>
       {rules}
     </ContentPanel>
   );

@@ -21,12 +21,12 @@ import FieldMappingService from './services/FieldMappingService';
 import RuleService from './services/RuleService';
 
 export function renderApp(coreStart: CoreStart, params: AppMountParameters, landingPage: string) {
-  const http = coreStart.http;
+  const { http, savedObjects } = coreStart;
 
   const detectorsService = new DetectorsService(http);
   const indexService = new IndexService(http);
   const findingsService = new FindingsService(http);
-  const opensearchService = new OpenSearchService(http);
+  const opensearchService = new OpenSearchService(http, savedObjects.client);
   const fieldMappingService = new FieldMappingService(http);
   const alertsService = new AlertsService(http);
   const ruleService = new RuleService(http);

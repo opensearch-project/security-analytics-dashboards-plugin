@@ -125,22 +125,22 @@ export const Overview: React.FC<OverviewProps> = (props) => {
 
   return (
     <EuiFlexGroup direction="column">
-      <EuiFlexItem style={{ alignSelf: 'flex-end' }}>
-        <EuiPopover
-          button={button}
-          isOpen={isPopoverOpen}
-          anchorPosition="downRight"
-          closePopover={closePopover}
-        >
-          <GettingStartedPopup dismissPopup={closePopover} history={props.history} />
-        </EuiPopover>
-      </EuiFlexItem>
       <EuiFlexItem>
         <EuiFlexGroup justifyContent="spaceBetween">
-          <EuiFlexItem>
+          <EuiFlexItem grow={false}>
             <EuiTitle size="m">
               <h1>Overview</h1>
             </EuiTitle>
+          </EuiFlexItem>
+          <EuiFlexItem>
+            <EuiPopover
+              button={button}
+              isOpen={isPopoverOpen}
+              anchorPosition="downRight"
+              closePopover={closePopover}
+            >
+              <GettingStartedPopup dismissPopup={closePopover} history={props.history} />
+            </EuiPopover>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
             <EuiSuperDatePicker
