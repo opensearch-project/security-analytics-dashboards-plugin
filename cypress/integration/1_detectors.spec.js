@@ -9,28 +9,25 @@ import sample_index_settings from '../fixtures/sample_index_settings.json';
 
 describe('Detectors', () => {
   const indexName = 'cypress-test-windows';
+  const detectorName = 'test detector';
 
   before(() => {
-    cy.deleteAllIndices();
+    cy.cleanUpTests();
 
     // Create test index
     cy.createIndex(indexName, sample_index_settings);
 
-    cy.contains('test detector').should('not.exist');
+    cy.contains(detectorName).should('not.exist');
   });
 
   beforeEach(() => {
     // Visit Detectors page
     cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/detectors`);
 
-    //wait for page to load
-    cy.wait(7000);
-
     // Check that correct page is showing
-    cy.url().should(
-      'eq',
-      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/detectors'
-    );
+    cy.waitForPageLoad('detectors', {
+      contains: 'Threat detectors',
+    });
   });
 
   it('...can be created', () => {
@@ -38,19 +35,15 @@ describe('Detectors', () => {
     cy.contains('Create detector').click({ force: true });
 
     // Check to ensure process started
-    cy.contains('Define detector');
-    cy.url().should(
-      'eq',
-      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/create-detector'
-    );
+    cy.waitForPageLoad('create-detector', {
+      contains: 'Define detector',
+    });
 
     // Enter a name for the detector in the appropriate input
     cy.get(`input[placeholder="Enter a name for the detector."]`).type('test detector{enter}');
 
-    // Select our pre-seeded data source (cypress-test-windows)
-    cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(
-      'cypress-test-windows{enter}'
-    );
+    // Select our pre-seeded data source (check indexName)
+    cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(`${indexName}{enter}`);
 
     // Select threat detector type (Windows logs)
     cy.get(`input[id="windows"]`).click({ force: true });
@@ -59,7 +52,7 @@ describe('Detectors', () => {
     cy.get('[data-test-subj="detection-rules-btn"]').click({ timeout: 5000 });
 
     // find search, type USB
-    cy.get(`[placeholder="Search..."]`).type('USB Device Plugged').trigger('search');
+    cy.triggerSearchField('Search...', 'USB Device Plugged');
 
     // Disable all rules
     cy.contains('tr', 'USB Device Plugged', { timeout: 20000 });
@@ -121,21 +114,23 @@ describe('Detectors', () => {
 
     // Confirm entries user has made
     cy.contains('Detector details');
-    cy.contains('test detector');
+    cy.contains(detectorName);
     cy.contains('windows');
     cy.contains(indexName);
     cy.contains('Alert on test_trigger');
 
     // Create the detector
     cy.get('button').contains('Create').click({ force: true });
-
-    cy.wait(10000);
+    cy.waitForPageLoad('detector-details', {
+      contains: detectorName,
+    });
 
     // Confirm detector active
-    cy.contains('There are no existing detectors.', { timeout: 20000 }).should('not.exist');
-    cy.contains('test detector');
+    cy.contains(detectorName);
     cy.contains('Active');
+    cy.contains('View Alerts');
     cy.contains('View Findings');
+    cy.contains('Actions');
     cy.contains('Detector configuration');
     cy.contains('Field mappings');
     cy.contains('Alert triggers');
@@ -146,21 +141,19 @@ describe('Detectors', () => {
 
   it('...basic details can be edited', () => {
     // Click on detector name
-    cy.contains('test detector').click({ force: true });
-
-    // Confirm on detector details page
-    cy.contains('test detector');
+    cy.contains(detectorName).click({ force: true });
+    cy.waitForPageLoad('detector-details', {
+      contains: detectorName,
+    });
 
     // Click "Edit" button in detector details
     cy.get(`[data-test-subj="edit-detector-basic-details"]`).click({ force: true });
 
     // Confirm arrival at "Edit detector details" page
-    cy.url().should(
-      'include',
-      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/edit-detector-details'
-    );
+    cy.waitForPageLoad('edit-detector-details', {
+      contains: 'Edit detector details',
+    });
 
-    cy.wait(5000);
     // Change detector name
     cy.get(`[data-test-subj="define-detector-detector-name"]`).type('_edited');
 
@@ -173,18 +166,16 @@ describe('Detectors', () => {
     );
 
     // Change detector scheduling
-    cy.get(`[data-test-subj="detector-schedule-number-select"]`).type('0');
+    cy.get(`[data-test-subj="detector-schedule-number-select"]`).type('{selectall}10');
     cy.get(`[data-test-subj="detector-schedule-unit-select"]`).select('Hours');
 
-    cy.wait(7000);
     // Save changes to detector details
     cy.get(`[data-test-subj="save-basic-details-edits"]`).click({ force: true });
 
     // Confirm taken to detector details page
-    cy.url({ timeout: 20000 }).should(
-      'include',
-      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/detector-details'
-    );
+    cy.waitForPageLoad('detector-details', {
+      contains: detectorName,
+    });
 
     // Verify edits are applied
     cy.contains('test detector_edited');
@@ -195,13 +186,15 @@ describe('Detectors', () => {
 
   it('...rules can be edited', () => {
     // Ensure start on main detectors page
-    cy.url().should(
-      'eq',
-      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/detectors'
-    );
+    cy.waitForPageLoad('detectors', {
+      contains: 'Threat detectors',
+    });
 
     // Click on detector name
-    cy.contains('test detector').click({ force: true });
+    cy.contains(detectorName).click({ force: true });
+    cy.waitForPageLoad('detector-details', {
+      contains: detectorName,
+    });
 
     // Confirm number of rules before edit
     cy.contains('Detection rules (1)');
@@ -216,7 +209,7 @@ describe('Detectors', () => {
     );
 
     // Search for specific rule
-    cy.get(`[placeholder="Search..."]`).type('USB Device').trigger('search', { timeout: 5000 });
+    cy.triggerSearchField('Search...', 'USB Device');
 
     // Toggle single search result to unchecked
     cy.contains('tr', 'USB Device Plugged').within(() => {
@@ -235,13 +228,12 @@ describe('Detectors', () => {
     cy.get(`[data-test-subj="edit-detector-rules"]`).click({ force: true });
 
     // Confirm arrival on "Edit detector rules" page
-    cy.url().should(
-      'include',
-      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/edit-detector-rules'
-    );
+    cy.waitForPageLoad('edit-detector-rules', {
+      contains: 'Edit detector rules',
+    });
 
     // Search for specific rule
-    cy.get(`[placeholder="Search..."]`).focus().type('USB').trigger('search', { timeout: 5000 });
+    cy.triggerSearchField('Search...', 'USB');
 
     // Toggle single search result to checked
     cy.contains('tr', 'USB Device Plugged').within(() => {
@@ -251,6 +243,9 @@ describe('Detectors', () => {
 
     // Save changes
     cy.get(`[data-test-subj="save-detector-rules-edits"]`).click({ force: true });
+    cy.waitForPageLoad('detector-details', {
+      contains: detectorName,
+    });
 
     // Confirm 1 rule has been added to detector
     cy.contains('Detection rules (1)');
@@ -261,7 +256,9 @@ describe('Detectors', () => {
     cy.contains('test detector_edited').click({ force: true });
 
     // Confirm page
-    cy.contains('Detector details');
+    cy.waitForPageLoad('detector-details', {
+      contains: 'Detector details',
+    });
 
     // Click "Actions" button, the click "Delete"
     cy.contains('Actions').click({ force: true });
@@ -270,4 +267,6 @@ describe('Detectors', () => {
     // Confirm detector is deleted
     cy.contains('There are no existing detectors');
   });
+
+  after(() => cy.cleanUpTests());
 });

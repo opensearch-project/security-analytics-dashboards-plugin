@@ -5,8 +5,9 @@
 
 import { API } from '../../server/utils/constants';
 
-export const NINETY_SECONDS = 90000;
 export const TWENTY_SECONDS_TIMEOUT = { timeout: 20000 };
+
+export const DETECTOR_TRIGGER_TIMEOUT = 65000;
 
 export const FEATURE_SYSTEM_INDICES = {
   DETECTORS_INDEX: '.opensearch-detectors-config',
