@@ -7,6 +7,7 @@ import { load, safeDump } from 'js-yaml';
 import { RuleInfo } from '../../../../server/models/interfaces';
 import { BrowserServices } from '../../../models/interfaces';
 import { RuleItemInfoBase } from './types';
+import { ruleTypes } from "../utils/constants";
 
 export interface RulesViewModel {
   allRules: RuleItemInfoBase[];
@@ -45,7 +46,9 @@ export class RulesViewModelActor {
         nested: {
           path: 'rule',
           query: {
-            match_all: {},
+            terms: {
+              "rule.category": ruleTypes,
+            }
           },
         },
       },
