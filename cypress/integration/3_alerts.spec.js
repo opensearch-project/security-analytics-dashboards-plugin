@@ -4,7 +4,7 @@
  */
 
 import moment from 'moment';
-import { PLUGIN_NAME, DETECTOR_TRIGGER_TIMEOUT } from '../support/constants';
+import { DETECTOR_TRIGGER_TIMEOUT, OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
 import sample_index_settings from '../fixtures/sample_index_settings.json';
 import sample_alias_mappings from '../fixtures/sample_alias_mappings.json';
 import sample_detector from '../fixtures/sample_detector.json';
@@ -57,7 +57,7 @@ describe('Alerts', () => {
 
       .then(() => {
         // Go to the detectors table page
-        cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/detectors`);
+        cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
 
         // Check that correct page is showing
         cy.waitForPageLoad('detectors', {
@@ -84,7 +84,7 @@ describe('Alerts', () => {
 
   beforeEach(() => {
     // Visit Alerts table page
-    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/alerts`);
+    cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/alerts`);
 
     // Wait for page to load
     cy.waitForPageLoad('alerts', {

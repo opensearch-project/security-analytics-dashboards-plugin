@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PLUGIN_NAME } from '../support/constants';
+import { OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
 import sample_field_mappings from '../fixtures/sample_field_mappings.json';
 import sample_index_settings from '../fixtures/sample_index_settings.json';
 
@@ -22,7 +22,7 @@ describe('Detectors', () => {
 
   beforeEach(() => {
     // Visit Detectors page
-    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/detectors`);
+    cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
 
     // Check that correct page is showing
     cy.waitForPageLoad('detectors', {

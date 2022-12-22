@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PLUGIN_NAME } from '../support/constants';
+import { OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
 
 const uniqueId = Cypress._.random(0, 1e6);
 const SAMPLE_RULE = {
@@ -52,7 +52,7 @@ describe('Rules', () => {
   before(() => cy.cleanUpTests());
   beforeEach(() => {
     // Visit Rules page
-    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/rules`);
+    cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
 
     // Check that correct page is showing
     cy.waitForPageLoad('rules', {

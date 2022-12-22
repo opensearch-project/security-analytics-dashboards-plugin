@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DETECTOR_TRIGGER_TIMEOUT, PLUGIN_NAME } from '../support/constants';
+import { DETECTOR_TRIGGER_TIMEOUT, OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
 import sample_document from '../fixtures/sample_document.json';
 import sample_index_settings from '../fixtures/sample_index_settings.json';
 import sample_field_mappings from '../fixtures/sample_field_mappings.json';
@@ -17,7 +17,7 @@ describe('Findings', () => {
     cy.cleanUpTests();
 
     // Visit Findings page
-    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/findings`);
+    cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/findings`);
 
     // create test index, mappings, and detector
     cy.createIndex(indexName, sample_index_settings);
@@ -33,7 +33,7 @@ describe('Findings', () => {
 
   beforeEach(() => {
     // Visit Alerts table page
-    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/findings`);
+    cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/findings`);
 
     // Wait for page to load
     cy.waitForPageLoad('findings', {
@@ -136,7 +136,7 @@ describe('Findings', () => {
 
   it('...can delete detector', () => {
     // Visit Detectors page
-    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/detectors`);
+    cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
     cy.waitForPageLoad('detectors', {
       contains: 'Threat detectors',
     });

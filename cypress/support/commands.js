@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const { NODE_API, PLUGIN_NAME } = require('./constants');
+const { NODE_API, OPENSEARCH_DASHBOARDS, OPENSEARCH_DASHBOARDS_URL } = require('./constants');
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -99,7 +99,7 @@ Cypress.Commands.add('triggerSearchField', (placeholder, text) => {
 });
 
 Cypress.Commands.add('waitForPageLoad', (url, { timeout = 10000, contains = null }) => {
-  const fullUrl = `${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/${url}`;
+  const fullUrl = `${OPENSEARCH_DASHBOARDS_URL}/${url}`;
   Cypress.log({
     message: `Wait for url: ${fullUrl} to be loaded.`,
   });
@@ -196,9 +196,7 @@ Cypress.Commands.add(
 Cypress.Commands.add('createRule', (ruleJSON) => {
   return cy.request({
     method: 'POST',
-    url: `${Cypress.env('opensearch_dashboards')}${NODE_API.RULES_BASE}?category=${
-      ruleJSON.category
-    }`,
+    url: `${OPENSEARCH_DASHBOARDS}${NODE_API.RULES_BASE}?category=${ruleJSON.category}`,
     body: JSON.stringify(ruleJSON),
   });
 });

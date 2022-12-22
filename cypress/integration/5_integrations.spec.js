@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DETECTOR_TRIGGER_TIMEOUT, PLUGIN_NAME } from '../support/constants';
+import { DETECTOR_TRIGGER_TIMEOUT, OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
 import sample_index_settings from '../fixtures/sample_index_settings.json';
 import sample_dns_settings from '../fixtures/integration_tests/index/create_dns_settings.json';
 import windows_usb_rule_data from '../fixtures/integration_tests/rule/create_windows_usb_rule.json';
@@ -65,7 +65,7 @@ describe('Integration tests', () => {
 
   beforeEach(() => {
     // Visit Detectors page
-    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/detectors`);
+    cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
 
     // Wait for page to load
     cy.waitForPageLoad('detectors', 'Threat detectors');
