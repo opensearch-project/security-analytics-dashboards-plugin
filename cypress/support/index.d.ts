@@ -3,16 +3,53 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/// <reference types="cypress" />
+///<reference types="cypress" />
 
 declare namespace Cypress {
   interface Chainable<Subject> {
+    /**
+     * Wait for page to be loaded
+     * @param {string} url
+     * @param {number} timeout
+     * @example
+     * cy.waitForPageLoad('detectors')
+     * cy.waitForPageLoad('detectors', 20000)
+     */
+    waitForPageLoad(url: string, timeout?: number): Chainable<any>;
+
     /**
      * Deletes all indices in cluster
      * @example
      * cy.deleteAllIndices()
      */
     deleteAllIndices(): Chainable<any>;
+
+    /**
+     * Removes custom rules, detectors and indices
+     * @example
+     * cy.cleanUpTests()
+     */
+    cleanUpTests(): Chainable<any>;
+
+    /**
+     * Returns table first row
+     * Can find elements deeper in a row with selector
+     * @param {string} selector
+     * @example
+     * cy.getTableFirstRow()
+     * cy.getTableFirstRow('td')
+     */
+    getTableFirstRow(selector: string): Chainable<any>;
+
+    /**
+     * Returns table first row
+     * Can find elements deeper in a row with selector
+     * @param {string} placeholder
+     * @param {string} text
+     * @example
+     * cy.triggerSearchField('Search rules', 'USB Detection Rule')
+     */
+    triggerSearchField(placeholder: string, text: string): Chainable<any>;
 
     /**
      * Deletes all custom rules in cluster
