@@ -153,7 +153,7 @@ describe('Alerts', () => {
       cy.get('[data-test-subj="text-details-group-content-detector"]').contains(testDetector.name);
 
       // Wait for the findings table to finish loading
-      cy.contains('Findings (4)');
+      cy.contains('Findings (1)');
       cy.contains('USB Device Plugged');
 
       // Confirm alert findings contain expected values
