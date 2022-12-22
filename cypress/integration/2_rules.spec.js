@@ -173,24 +173,24 @@ describe('Rules', () => {
           force: true,
         });
 
-          cy.get('[data-test-subj="rule_flyout_yaml_rule"]')
-            .get('[class="euiCodeBlock__line"]')
-            .each((lineElement, lineIndex) => {
-              if (lineIndex >= YAML_RULE_LINES.length) {
-                return;
-              }
-              let line = lineElement.text().replaceAll('\n', '').trim();
-              let expectedLine = YAML_RULE_LINES[lineIndex];
+        cy.get('[data-test-subj="rule_flyout_yaml_rule"]')
+          .get('[class="euiCodeBlock__line"]')
+          .each((lineElement, lineIndex) => {
+            if (lineIndex >= YAML_RULE_LINES.length) {
+              return;
+            }
+            let line = lineElement.text().replaceAll('\n', '').trim();
+            let expectedLine = YAML_RULE_LINES[lineIndex];
 
-              // The document ID field is generated when the document is added to the index,
-              // so this test just checks that the line starts with the ID key.
-              if (expectedLine.startsWith('id:')) {
-                expectedLine = 'id:';
-                expect(line, `Sigma rule line ${lineIndex}`).to.contain(expectedLine);
-              } else {
-                expect(line, `Sigma rule line ${lineIndex}`).to.equal(expectedLine);
-              }
-            });
+            // The document ID field is generated when the document is added to the index,
+            // so this test just checks that the line starts with the ID key.
+            if (expectedLine.startsWith('id:')) {
+              expectedLine = 'id:';
+              expect(line, `Sigma rule line ${lineIndex}`).to.contain(expectedLine);
+            } else {
+              expect(line, `Sigma rule line ${lineIndex}`).to.equal(expectedLine);
+            }
+          });
 
         // Close the flyout
         cy.get('[data-test-subj="close-rule-details-flyout"]').click({
