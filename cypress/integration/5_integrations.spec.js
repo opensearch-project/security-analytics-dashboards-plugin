@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PLUGIN_NAME } from '../support/constants';
+import { DETECTOR_TRIGGER_TIMEOUT, OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
 import sample_index_settings from '../fixtures/sample_index_settings.json';
 import sample_dns_settings from '../fixtures/integration_tests/index/create_dns_settings.json';
 import windows_usb_rule_data from '../fixtures/integration_tests/rule/create_windows_usb_rule.json';
@@ -19,14 +19,8 @@ describe('Integration tests', () => {
   const indexName = 'cypress-index-windows';
   const dnsName = 'cypress-index-dns';
 
-  const cleanUpTests = () => {
-    cy.deleteAllCustomRules();
-    cy.deleteAllDetectors();
-    cy.deleteAllIndices();
-  };
-
   before(() => {
-    cleanUpTests();
+    cy.cleanUpTests();
 
     // Create custom rules
     cy.createRule(windows_usb_rule_data).then((response) => {
@@ -66,24 +60,16 @@ describe('Integration tests', () => {
     cy.request('POST', `${Cypress.env('opensearch')}/${dnsName}/_doc/101`, add_dns_index_data);
 
     // Wait for detector interval to pass
-    cy.wait(60000);
+    cy.wait(DETECTOR_TRIGGER_TIMEOUT);
   });
 
   beforeEach(() => {
     // Visit Detectors page
-    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/detectors`);
+    cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
 
     // Wait for page to load
-    cy.wait(7000);
-
-    // Check that correct page is showing
-    cy.url().should(
-      'eq',
-      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/detectors'
-    );
+    cy.waitForPageLoad('detectors', 'Threat detectors');
   });
-
-  after(() => cleanUpTests());
 
   it('...can navigate to findings page', () => {
     cy.intercept({
@@ -151,4 +137,6 @@ describe('Integration tests', () => {
           });
       });
   });
+
+  after(() => cy.cleanUpTests());
 });
