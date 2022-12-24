@@ -33,6 +33,7 @@ import {
 import {
   getChartTimeUnit,
   getDateFormatByTimeUnit,
+  getDomainRange,
   getFindingsVisualizationSpec,
 } from '../../../Overview/utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
@@ -51,7 +52,6 @@ import {
 } from '../../../../utils/helpers';
 import { DetectorHit, RuleSource } from '../../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { ruleSeverity } from '../../../Rules/utils/constants';
 
 interface FindingsProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -111,7 +111,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
       groupBy: 'logType',
       filteredFindings: [],
       plugins: [],
-      timeUnit: 'yearmonthdatehoursminutes',
+      timeUnit: getChartTimeUnit(DEFAULT_DATE_RANGE.start, DEFAULT_DATE_RANGE.end),
     };
   }
 
@@ -273,6 +273,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
     return getFindingsVisualizationSpec(visData, this.state.groupBy, {
       timeUnit: this.state.timeUnit,
       dateFormat: getDateFormatByTimeUnit(this.state.startTime, this.state.endTime),
+      domain: getDomainRange([this.state.startTime, this.state.endTime]),
     });
   }
 

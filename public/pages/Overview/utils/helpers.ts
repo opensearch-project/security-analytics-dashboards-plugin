@@ -10,10 +10,12 @@ import { SummaryData } from '../components/Widgets/Summary';
 import dateMath from '@elastic/datemath';
 import { TimeUnitsMap } from './constants';
 import _ from 'lodash';
+import { DEFAULT_DATE_RANGE } from '../../../utils/constants';
 
 export type DateOpts = {
   timeUnit: string;
   dateFormat: string;
+  domain?: number[];
 };
 
 /**
@@ -45,7 +47,7 @@ const addInteractiveLegends = (layer: any) => _.defaultsDeep(layer, legendSelect
 function getVisualizationSpec(description: string, data: any, layers: any[]): TopLevelSpec {
   return {
     config: {
-      view: { stroke: null },
+      view: { stroke: 'transparent' },
       legend: {
         labelColor: '#343741',
         titleColor: '#1a1c21',
@@ -143,6 +145,15 @@ export function getOverviewVisualizationSpec(
   );
 }
 
+export const getDomainRange = (
+  range: string[] = [DEFAULT_DATE_RANGE.start, DEFAULT_DATE_RANGE.end]
+): number[] => {
+  return [
+    dateMath.parse(range[0])?.toDate().getTime(),
+    dateMath.parse(range[1])?.toDate().getTime(),
+  ];
+};
+
 /**
  * Returns chart x-axis date format based on time span
  * @param start
@@ -186,20 +197,47 @@ export function getFindingsVisualizationSpec(
   dateOpts: DateOpts = {
     timeUnit: 'yearmonthdatehoursminutes',
     dateFormat: '%Y-%m-%d %H:%M',
+    domain: [DEFAULT_DATE_RANGE.start, DEFAULT_DATE_RANGE.end],
   }
 ) {
+  console.log('TIME UNIT', dateOpts.timeUnit);
+  // dateOpts.timeUnit = 'yearmonthdatehours';
   return getVisualizationSpec('Findings data overview', visualizationData, [
     addInteractiveLegends({
-      mark: 'bar',
+      mark: {
+        type: 'bar',
+        strokeWidth: 1,
+        stroke: 'white',
+        clip: true,
+      },
       encoding: {
-        tooltip: [{ field: 'finding', aggregate: 'sum', type: 'quantitative', title: 'Findings' }],
+        tooltip: [
+          {
+            field: 'finding',
+            aggregate: 'sum',
+            type: 'quantitative',
+            title: 'Findings',
+          },
+          {
+            field: 'time',
+            type: 'temporal',
+            title: 'Time',
+            format: '%Y-%m-%d %H:%M',
+          },
+        ],
         x: {
           timeUnit: dateOpts.timeUnit,
           field: 'time',
           title: '',
+          type: 'temporal',
           axis: {
             grid: false,
             format: dateOpts.dateFormat,
+          },
+          scale: {
+            type: 'time',
+            field: 'time',
+            domain: dateOpts.domain,
           },
         },
         y: {
@@ -328,8 +366,7 @@ export function getChartTimeUnit(
 ): string {
   const startMoment = dateMath.parse(start);
   const endMoment = dateMath.parse(end);
-  let minUnit: string = 'minutes';
-  let timeUnit: string = TimeUnitsMap[minUnit];
+  let timeUnit: string = 'yearmonthdatehoursminutes';
 
   if (!startMoment || !endMoment) return defaultUnit;
 
@@ -337,13 +374,45 @@ export function getChartTimeUnit(
     const timeDiff = endMoment.diff(startMoment);
     const momentTimeDiff = moment.duration(timeDiff);
 
-    const timeUnits: string[] = ['years', 'months', 'days', 'hours', 'minutes'];
-    for (const unit of timeUnits) {
-      // @ts-ignore
-      if (momentTimeDiff._data[unit]) {
-        timeUnit = TimeUnitsMap[unit];
-        break;
+    console.log('TIME UNIT', momentTimeDiff);
+    const { years, months, days, hours, minutes, seconds } = momentTimeDiff._data;
+
+    if (!years) {
+      if (!months) {
+        if (!days) {
+          if (!hours) {
+            if (minutes < 60) {
+              timeUnit = 'yearmonthdatehoursminutes';
+            }
+          } else {
+            if (hours < 60) {
+              timeUnit = 'yearmonthdatehours';
+            }
+          }
+        } else {
+          if (days === 1) {
+            timeUnit = 'yearmonthdatehours';
+          } else if (days <= 14) {
+            timeUnit = 'yearmonthdate';
+          } else {
+            timeUnit = 'yearmonthdate';
+          }
+        }
+      } else {
+        if (months <= 6) {
+          timeUnit = 'yearmonthdate';
+        } else {
+          timeUnit = 'yearmonth';
+        }
       }
+    } else if (years <= 6) {
+      timeUnit = 'yearmonth';
+
+      if (years > 2) {
+        timeUnit = 'yearquarter';
+      }
+    } else {
+      timeUnit = 'year';
     }
   } catch (e) {
     console.error(`Time diff can't be calculated for dates: ${start} and ${end}`);
