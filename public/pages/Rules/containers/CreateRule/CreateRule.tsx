@@ -52,5 +52,12 @@ export const CreateRule: React.FC<CreateRuleProps> = ({ history, services, notif
     );
   };
 
-  return <RuleEditor title="Create a rule" services={services} FooterActions={footerActions} />;
+  return (
+    <RuleEditor
+      title="Create a rule"
+      history={history}
+      notifications={notifications}
+      FooterActions={footerActions}
+    />
+  );
 };

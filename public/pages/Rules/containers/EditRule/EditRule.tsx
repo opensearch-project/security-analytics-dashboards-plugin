@@ -68,6 +68,8 @@ export const EditRule: React.FC<EditRuleProps> = ({
       title="Edit rule"
       FooterActions={footerActions}
       rule={location.state.ruleItem._source}
+      history={history}
+      notifications={notifications}
     />
   );
 };

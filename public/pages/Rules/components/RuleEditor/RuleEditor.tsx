@@ -4,18 +4,22 @@
  */
 
 import React, { useState } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
+import { NotificationsStart } from 'opensearch-dashboards/public';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { EuiSpacer, EuiButtonGroup } from '@elastic/eui';
 import { Rule } from '../../../../../models/interfaces';
 import { RuleEditorFormState, ruleEditorStateDefaultValue } from './RuleEditorFormState';
 import { mapFormToRule, mapRuleToForm } from './mappers';
-import { VisualRuleEditor } from './VisualRuleEditor';
+import { VisualRuleEditor as VisualRuleEditorFormik } from './VisualRuleEditorFormik';
 import { YamlRuleEditor } from './YamlRuleEditor';
 
 export interface RuleEditorProps {
   title: string;
   FooterActions: React.FC<{ rule: Rule }>;
   rule?: Rule;
+  history: RouteComponentProps['history'];
+  notifications?: NotificationsStart;
 }
 
 export interface VisualEditorFormErrorsState {
@@ -35,7 +39,13 @@ const editorTypes = [
   },
 ];
 
-export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActions }) => {
+export const RuleEditor: React.FC<RuleEditorProps> = ({
+  history,
+  notifications,
+  title,
+  rule,
+  FooterActions,
+}) => {
   const [ruleEditorFormState, setRuleEditorFormState] = useState<RuleEditorFormState>(
     rule
       ? { ...mapRuleToForm(rule), id: ruleEditorStateDefaultValue.id }
@@ -54,6 +64,7 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
 
   const onYamlRuleEditorChange = (value: Rule) => {
     const formState = mapRuleToForm(value);
+    console.log('formState', formState);
     setRuleEditorFormState(formState);
   };
 
@@ -69,7 +80,9 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({ title, rule, FooterActio
         />
         <EuiSpacer size="xl" />
         {selectedEditorType === 'visual' && (
-          <VisualRuleEditor
+          <VisualRuleEditorFormik
+            history={history}
+            notifications={notifications}
             ruleEditorFormState={ruleEditorFormState}
             setRuleEditorFormState={setRuleEditorFormState}
           />

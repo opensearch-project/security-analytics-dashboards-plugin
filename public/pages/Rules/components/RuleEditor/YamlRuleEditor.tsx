@@ -90,6 +90,8 @@ export const YamlRuleEditor: React.FC<YamlRuleEditorProps> = ({ rule, change }) 
 
       const rule = mapYamlObjectToRule(yamlObject);
 
+      change(rule);
+
       const errors = validateRule(rule);
 
       if (errors && errors.length > 0) {
@@ -97,7 +99,6 @@ export const YamlRuleEditor: React.FC<YamlRuleEditorProps> = ({ rule, change }) 
         return;
       }
 
-      change(rule);
       setState((prevState) => ({ ...prevState, errors: null }));
     } catch (error) {
       setState((prevState) => ({ ...prevState, errors: ['Invalid YAML'] }));
