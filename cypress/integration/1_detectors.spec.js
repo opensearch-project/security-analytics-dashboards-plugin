@@ -62,7 +62,7 @@ describe('Detectors', () => {
     cy.get(`[placeholder="Search..."]`).type('USB Device Plugged').trigger('search');
 
     // Disable all rules
-    cy.contains('tr', 'USB Device Plugged', { timeout: 20000 });
+    cy.contains('tr', 'USB Device Plugged', { timeout: 60000 });
     cy.get('th').within(() => {
       cy.get('button').first().click({ force: true });
     });
