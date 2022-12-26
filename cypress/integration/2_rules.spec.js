@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PLUGIN_NAME, TWENTY_SECONDS_TIMEOUT } from '../support/constants';
+import { OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
 
 const uniqueId = Cypress._.random(0, 1e6);
 const SAMPLE_RULE = {
@@ -49,212 +49,189 @@ const YAML_RULE_LINES = [
 ];
 
 describe('Rules', () => {
-  before(() => {
-    // Deleting pre-existing test rules
-    cy.deleteRule(SAMPLE_RULE.name);
-  });
+  before(() => cy.cleanUpTests());
   beforeEach(() => {
     // Visit Rules page
-    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/rules`);
-  });
+    cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
 
-  describe('Can be created', () => {
-    it('manually using UI', () => {
-      // Click "create new rule" button
-      cy.get('[data-test-subj="create_rule_button"]', TWENTY_SECONDS_TIMEOUT).click({
-        force: true,
-      });
-
-      // Enter the name
-      cy.get('[data-test-subj="rule_name_field"]', TWENTY_SECONDS_TIMEOUT).type(SAMPLE_RULE.name);
-
-      // Enter the log type
-      cy.get('[data-test-subj="rule_type_dropdown"]', TWENTY_SECONDS_TIMEOUT).select(
-        SAMPLE_RULE.logType
-      );
-
-      // Enter the description
-      cy.get('[data-test-subj="rule_description_field"]', TWENTY_SECONDS_TIMEOUT).type(
-        SAMPLE_RULE.description
-      );
-
-      // Enter the detection
-      cy.get('[data-test-subj="rule_detection_field"]', TWENTY_SECONDS_TIMEOUT).type(
-        SAMPLE_RULE.detection
-      );
-
-      // Enter the severity
-      cy.get('[data-test-subj="rule_severity_dropdown"]', TWENTY_SECONDS_TIMEOUT).select(
-        SAMPLE_RULE.severity
-      );
-
-      // Enter the tags
-      SAMPLE_RULE.tags.forEach((tag) =>
-        cy
-          .get('[data-test-subj="rule_tags_dropdown"]', TWENTY_SECONDS_TIMEOUT)
-          .type(`${tag}{enter}{esc}`)
-      );
-
-      // Enter the reference
-      cy.get('[data-test-subj="rule_references_field_0"]', TWENTY_SECONDS_TIMEOUT).type(
-        SAMPLE_RULE.references
-      );
-
-      // Enter the false positive cases
-      cy.get('[data-test-subj="rule_false_positive_cases_field_0"]', TWENTY_SECONDS_TIMEOUT).type(
-        SAMPLE_RULE.falsePositive
-      );
-
-      // Enter the author
-      cy.get('[data-test-subj="rule_author_field"]', TWENTY_SECONDS_TIMEOUT).type(
-        SAMPLE_RULE.author
-      );
-
-      // Enter the log type
-      cy.get('[data-test-subj="rule_status_dropdown"]', TWENTY_SECONDS_TIMEOUT).select(
-        SAMPLE_RULE.status
-      );
-
-      // Switch to YAML editor
-      cy.get(
-        '[data-test-subj="change-editor-type"] label:nth-child(2)',
-        TWENTY_SECONDS_TIMEOUT
-      ).click({
-        force: true,
-      });
-
-      YAML_RULE_LINES.forEach((line) =>
-        cy
-          .get('[data-test-subj="rule_yaml_editor"]', TWENTY_SECONDS_TIMEOUT)
-          .contains(line, TWENTY_SECONDS_TIMEOUT)
-      );
-
-      // Click "create" button
-      cy.get('[data-test-subj="create_rule_button"]', TWENTY_SECONDS_TIMEOUT).click({
-        force: true,
-      });
-
-      // Wait for the page to finish loading
-      cy.wait(5000);
-      cy.contains('No items found', TWENTY_SECONDS_TIMEOUT).should('not.exist');
-
-      // Search for the rule
-      cy.get(`input[type="search"]`, TWENTY_SECONDS_TIMEOUT).type(`${SAMPLE_RULE.name}{enter}`);
-
-      // Click the rule link to open the details flyout
-      cy.get(`[data-test-subj="rule_link_${SAMPLE_RULE.name}"]`, TWENTY_SECONDS_TIMEOUT).click();
-
-      // Confirm the flyout contains the expected values
-      cy.get(`[data-test-subj="rule_flyout_${SAMPLE_RULE.name}"]`, TWENTY_SECONDS_TIMEOUT)
-        .click({ force: true })
-        .within(() => {
-          // Validate name
-          cy.get('[data-test-subj="rule_flyout_rule_name"]', TWENTY_SECONDS_TIMEOUT).contains(
-            SAMPLE_RULE.name,
-            TWENTY_SECONDS_TIMEOUT
-          );
-
-          // Validate log type
-          cy.get('[data-test-subj="rule_flyout_rule_log_type"]', TWENTY_SECONDS_TIMEOUT).contains(
-            SAMPLE_RULE.logType,
-            TWENTY_SECONDS_TIMEOUT
-          );
-
-          // Validate description
-          cy.get(
-            '[data-test-subj="rule_flyout_rule_description"]',
-            TWENTY_SECONDS_TIMEOUT
-          ).contains(SAMPLE_RULE.description, TWENTY_SECONDS_TIMEOUT);
-
-          // Validate author
-          cy.get('[data-test-subj="rule_flyout_rule_author"]', TWENTY_SECONDS_TIMEOUT).contains(
-            SAMPLE_RULE.author,
-            TWENTY_SECONDS_TIMEOUT
-          );
-
-          // Validate source is "custom"
-          cy.get('[data-test-subj="rule_flyout_rule_source"]', TWENTY_SECONDS_TIMEOUT).contains(
-            'Custom',
-            TWENTY_SECONDS_TIMEOUT
-          );
-
-          // Validate severity
-          cy.get('[data-test-subj="rule_flyout_rule_severity"]', TWENTY_SECONDS_TIMEOUT).contains(
-            SAMPLE_RULE.severity,
-            TWENTY_SECONDS_TIMEOUT
-          );
-
-          // Validate tags
-          SAMPLE_RULE.tags.forEach((tag) =>
-            cy
-              .get('[data-test-subj="rule_flyout_rule_tags"]', TWENTY_SECONDS_TIMEOUT)
-              .contains(tag, TWENTY_SECONDS_TIMEOUT)
-          );
-
-          // Validate references
-          cy.get('[data-test-subj="rule_flyout_rule_references"]', TWENTY_SECONDS_TIMEOUT).contains(
-            SAMPLE_RULE.references,
-            TWENTY_SECONDS_TIMEOUT
-          );
-
-          // Validate false positives
-          cy.get(
-            '[data-test-subj="rule_flyout_rule_false_positives"]',
-            TWENTY_SECONDS_TIMEOUT
-          ).contains(SAMPLE_RULE.falsePositive, TWENTY_SECONDS_TIMEOUT);
-
-          // Validate status
-          cy.get('[data-test-subj="rule_flyout_rule_status"]', TWENTY_SECONDS_TIMEOUT).contains(
-            SAMPLE_RULE.status,
-            TWENTY_SECONDS_TIMEOUT
-          );
-
-          // Validate detection
-          SAMPLE_RULE.detectionLine.forEach((line) =>
-            cy
-              .get('[data-test-subj="rule_flyout_rule_detection"]', TWENTY_SECONDS_TIMEOUT)
-              .contains(line, TWENTY_SECONDS_TIMEOUT)
-          );
-
-          cy.get(
-            '[data-test-subj="change-editor-type"] label:nth-child(2)',
-            TWENTY_SECONDS_TIMEOUT
-          ).click({
-            force: true,
-          });
-
-          cy.get('[data-test-subj="rule_flyout_yaml_rule"]')
-            .get('[class="euiCodeBlock__line"]')
-            .each((lineElement, lineIndex) => {
-              if (lineIndex >= YAML_RULE_LINES.length) {
-                return;
-              }
-              let line = lineElement.text().replaceAll('\n', '').trim();
-              let expectedLine = YAML_RULE_LINES[lineIndex];
-
-              // The document ID field is generated when the document is added to the index,
-              // so this test just checks that the line starts with the ID key.
-              if (expectedLine.startsWith('id:')) {
-                expectedLine = 'id:';
-                expect(line, `Sigma rule line ${lineIndex}`).to.contain(expectedLine);
-              } else {
-                expect(line, `Sigma rule line ${lineIndex}`).to.equal(expectedLine);
-              }
-            });
-
-          // Close the flyout
-          cy.get('[data-test-subj="close-rule-details-flyout"]', TWENTY_SECONDS_TIMEOUT).click({
-            force: true,
-          });
-        });
-
-      // Confirm flyout closed
-      cy.contains(`[data-test-subj="rule_flyout_${SAMPLE_RULE.name}"]`).should('not.exist');
+    // Check that correct page is showing
+    cy.waitForPageLoad('rules', {
+      contains: 'Rules',
     });
   });
 
-  after(() => {
-    // Deleting test rules
-    cy.deleteRule(SAMPLE_RULE.name);
+  it('...can be created', () => {
+    // Click "create new rule" button
+    cy.get('[data-test-subj="create_rule_button"]').click({
+      force: true,
+    });
+
+    // Enter the name
+    cy.get('[data-test-subj="rule_name_field"]').type(SAMPLE_RULE.name);
+
+    // Enter the log type
+    cy.get('[data-test-subj="rule_type_dropdown"]').select(SAMPLE_RULE.logType);
+
+    // Enter the description
+    cy.get('[data-test-subj="rule_description_field"]').type(SAMPLE_RULE.description);
+
+    // Enter the detection
+    cy.get('[data-test-subj="rule_detection_field"]').type(SAMPLE_RULE.detection);
+
+    // Enter the severity
+    cy.get('[data-test-subj="rule_severity_dropdown"]').select(SAMPLE_RULE.severity);
+
+    // Enter the tags
+    SAMPLE_RULE.tags.forEach((tag) =>
+      cy.get('[data-test-subj="rule_tags_dropdown"]').type(`${tag}{enter}{esc}`)
+    );
+
+    // Enter the reference
+    cy.get('[data-test-subj="rule_references_field_0"]').type(SAMPLE_RULE.references);
+
+    // Enter the false positive cases
+    cy.get('[data-test-subj="rule_false_positive_cases_field_0"]').type(SAMPLE_RULE.falsePositive);
+
+    // Enter the author
+    cy.get('[data-test-subj="rule_author_field"]').type(SAMPLE_RULE.author);
+
+    // Enter the log type
+    cy.get('[data-test-subj="rule_status_dropdown"]').select(SAMPLE_RULE.status);
+
+    // Switch to YAML editor
+    cy.get('[data-test-subj="change-editor-type"] label:nth-child(2)').click({
+      force: true,
+    });
+
+    YAML_RULE_LINES.forEach((line) => cy.get('[data-test-subj="rule_yaml_editor"]').contains(line));
+
+    cy.intercept({
+      url: '/rules',
+    }).as('getRules');
+
+    // Click "create" button
+    cy.get('[data-test-subj="create_rule_button"]').click({
+      force: true,
+    });
+
+    cy.waitForPageLoad('rules', {
+      contains: 'Rules',
+    });
+
+    cy.wait('@getRules');
+
+    // Search for the rule
+    cy.triggerSearchField('Search rules', SAMPLE_RULE.name);
+
+    // Click the rule link to open the details flyout
+    cy.get(`[data-test-subj="rule_link_${SAMPLE_RULE.name}"]`).click({ force: true });
+
+    // Confirm the flyout contains the expected values
+    cy.get(`[data-test-subj="rule_flyout_${SAMPLE_RULE.name}"]`)
+      .click({ force: true })
+      .within(() => {
+        // Validate name
+        cy.get('[data-test-subj="rule_flyout_rule_name"]').contains(SAMPLE_RULE.name);
+
+        // Validate log type
+        cy.get('[data-test-subj="rule_flyout_rule_log_type"]').contains(SAMPLE_RULE.logType);
+
+        // Validate description
+        cy.get('[data-test-subj="rule_flyout_rule_description"]').contains(SAMPLE_RULE.description);
+
+        // Validate author
+        cy.get('[data-test-subj="rule_flyout_rule_author"]').contains(SAMPLE_RULE.author);
+
+        // Validate source is "custom"
+        cy.get('[data-test-subj="rule_flyout_rule_source"]').contains('Custom');
+
+        // Validate severity
+        cy.get('[data-test-subj="rule_flyout_rule_severity"]').contains(SAMPLE_RULE.severity);
+
+        // Validate tags
+        SAMPLE_RULE.tags.forEach((tag) =>
+          cy.get('[data-test-subj="rule_flyout_rule_tags"]').contains(tag)
+        );
+
+        // Validate references
+        cy.get('[data-test-subj="rule_flyout_rule_references"]').contains(SAMPLE_RULE.references);
+
+        // Validate false positives
+        cy.get('[data-test-subj="rule_flyout_rule_false_positives"]').contains(
+          SAMPLE_RULE.falsePositive
+        );
+
+        // Validate status
+        cy.get('[data-test-subj="rule_flyout_rule_status"]').contains(SAMPLE_RULE.status);
+
+        // Validate detection
+        SAMPLE_RULE.detectionLine.forEach((line) =>
+          cy.get('[data-test-subj="rule_flyout_rule_detection"]').contains(line)
+        );
+
+        cy.get('[data-test-subj="change-editor-type"] label:nth-child(2)').click({
+          force: true,
+        });
+
+        cy.get('[data-test-subj="rule_flyout_yaml_rule"]')
+          .get('[class="euiCodeBlock__line"]')
+          .each((lineElement, lineIndex) => {
+            if (lineIndex >= YAML_RULE_LINES.length) {
+              return;
+            }
+            let line = lineElement.text().replaceAll('\n', '').trim();
+            let expectedLine = YAML_RULE_LINES[lineIndex];
+
+            // The document ID field is generated when the document is added to the index,
+            // so this test just checks that the line starts with the ID key.
+            if (expectedLine.startsWith('id:')) {
+              expectedLine = 'id:';
+              expect(line, `Sigma rule line ${lineIndex}`).to.contain(expectedLine);
+            } else {
+              expect(line, `Sigma rule line ${lineIndex}`).to.equal(expectedLine);
+            }
+          });
+
+        // Close the flyout
+        cy.get('[data-test-subj="close-rule-details-flyout"]').click({
+          force: true,
+        });
+      });
   });
+
+  it('...can be deleted', () => {
+    cy.intercept({
+      url: '/rules',
+    }).as('deleteRule');
+
+    cy.triggerSearchField('Search rules', SAMPLE_RULE.name);
+
+    // Click the rule link to open the details flyout
+    cy.get(`[data-test-subj="rule_link_${SAMPLE_RULE.name}"]`).click({ force: true });
+
+    cy.get('.euiButton')
+      .contains('Action')
+      .click({ force: true })
+      .then(() => {
+        // Confirm arrival at detectors page
+        cy.get(
+          '.euiFlexGroup > :nth-child(3) > .euiButtonEmpty > .euiButtonContent > .euiButtonEmpty__text'
+        )
+          .click({
+            force: true,
+          })
+          .then(() => {
+            cy.get('.euiButton').contains('Delete').click();
+          });
+
+        cy.wait('@deleteRule');
+
+        // Search for sample_detector, presumably deleted
+        cy.triggerSearchField('Search rules', SAMPLE_RULE.name);
+        // Click the rule link to open the details flyout
+        cy.get('tbody').contains(SAMPLE_RULE.name).should('not.exist');
+      });
+  });
+
+  after(() => cy.cleanUpTests());
 });
