@@ -64,7 +64,6 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({
 
   const onYamlRuleEditorChange = (value: Rule) => {
     const formState = mapRuleToForm(value);
-    console.log('formState', formState);
     setRuleEditorFormState(formState);
   };
 
