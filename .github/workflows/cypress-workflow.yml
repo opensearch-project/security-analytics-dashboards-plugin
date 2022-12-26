@@ -92,6 +92,7 @@ jobs:
           cd OpenSearch-Dashboards
           yarn start --no-base-path --no-watch &
         # timeout 300 bash -c 'while [[ "$(curl -s localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
+        shell: bash
 
       # Window is slow so wait longer
       - name: Sleep until OSD server starts - windows
