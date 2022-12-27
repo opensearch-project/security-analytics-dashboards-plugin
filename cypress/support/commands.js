@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const { NODE_API } = require('./constants');
-
+const { NODE_API, OPENSEARCH_DASHBOARDS, OPENSEARCH_DASHBOARDS_URL } = require('./constants');
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -82,6 +81,33 @@ Cypress.Commands.overwrite('request', (originalFn, ...args) => {
   });
 
   return originalFn(Object.assign({}, defaults, options));
+});
+
+Cypress.Commands.add('cleanUpTests', () => {
+  cy.deleteAllCustomRules();
+  cy.deleteAllDetectors();
+  cy.deleteAllIndices();
+});
+
+Cypress.Commands.add('getTableFirstRow', (selector) => {
+  if (!selector) return cy.get('tbody > tr').first();
+  return cy.get('tbody > tr:first').find(selector);
+});
+
+Cypress.Commands.add('triggerSearchField', (placeholder, text) => {
+  cy.get(`[placeholder="${placeholder}"]`).type(`{selectall}${text}`).trigger('search');
+});
+
+Cypress.Commands.add('waitForPageLoad', (url, { timeout = 10000, contains = null }) => {
+  const fullUrl = `${OPENSEARCH_DASHBOARDS_URL}/${url}`;
+  Cypress.log({
+    message: `Wait for url: ${fullUrl} to be loaded.`,
+  });
+  cy.url({ timeout: timeout })
+    .should('include', fullUrl)
+    .then(() => {
+      contains && cy.contains(contains);
+    });
 });
 
 Cypress.Commands.add('deleteAllIndices', () => {
@@ -170,9 +196,7 @@ Cypress.Commands.add(
 Cypress.Commands.add('createRule', (ruleJSON) => {
   return cy.request({
     method: 'POST',
-    url: `${Cypress.env('opensearch_dashboards')}${NODE_API.RULES_BASE}?category=${
-      ruleJSON.category
-    }`,
+    url: `${OPENSEARCH_DASHBOARDS}${NODE_API.RULES_BASE}?category=${ruleJSON.category}`,
     body: JSON.stringify(ruleJSON),
   });
 });
