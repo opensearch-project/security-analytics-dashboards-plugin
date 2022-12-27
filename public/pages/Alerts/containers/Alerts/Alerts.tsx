@@ -55,6 +55,7 @@ import {
 } from '../../../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { match, withRouter } from 'react-router-dom';
+import { DateTimeFilter } from '../../../Overview/models/interfaces';
 
 export interface AlertsProps {
   alertService: AlertsService;
@@ -64,12 +65,12 @@ export interface AlertsProps {
   opensearchService: OpenSearchService;
   notifications: NotificationsStart;
   match: match;
+  dateTimeFilter?: DateTimeFilter;
+  setDateTimeFilter?: Function;
 }
 
 export interface AlertsState {
   groupBy: string;
-  startTime: string;
-  endTime: string;
   recentlyUsedRanges: DurationRange[];
   selectedItems: AlertItem[];
   alerts: AlertItem[];
@@ -93,12 +94,16 @@ class Alerts extends Component<AlertsProps, AlertsState> {
   constructor(props: AlertsProps) {
     super(props);
 
-    const timeUnits = getChartTimeUnit(DEFAULT_DATE_RANGE.start, DEFAULT_DATE_RANGE.end);
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+    } = props;
+    const timeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
     this.state = {
       loading: false,
       groupBy: 'status',
-      startTime: DEFAULT_DATE_RANGE.start,
-      endTime: DEFAULT_DATE_RANGE.end,
       recentlyUsedRanges: [DEFAULT_DATE_RANGE],
       selectedItems: [],
       alerts: [],
@@ -111,9 +116,15 @@ class Alerts extends Component<AlertsProps, AlertsState> {
   }
 
   componentDidUpdate(prevProps: Readonly<AlertsProps>, prevState: Readonly<AlertsState>) {
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+    } = this.props;
     const alertsChanged =
-      prevState.startTime !== this.state.startTime ||
-      prevState.endTime !== this.state.endTime ||
+      prevProps.dateTimeFilter?.startTime !== dateTimeFilter.startTime ||
+      prevProps.dateTimeFilter?.endTime !== dateTimeFilter.endTime ||
       prevState.alerts !== this.state.alerts ||
       prevState.alerts.length !== this.state.alerts.length;
 
@@ -125,9 +136,15 @@ class Alerts extends Component<AlertsProps, AlertsState> {
   }
 
   filterAlerts = () => {
-    const { alerts, startTime, endTime } = this.state;
-    const startMoment = dateMath.parse(startTime);
-    const endMoment = dateMath.parse(endTime);
+    const { alerts } = this.state;
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+    } = this.props;
+    const startMoment = dateMath.parse(dateTimeFilter.startTime);
+    const endMoment = dateMath.parse(dateTimeFilter.endTime);
     const filteredAlerts = alerts.filter((alert) =>
       moment(alert.last_notification_time).isBetween(moment(startMoment), moment(endMoment))
     );
@@ -231,13 +248,18 @@ class Alerts extends Component<AlertsProps, AlertsState> {
         severity: parseAlertSeverityToOption(alert.severity)?.label || alert.severity,
       };
     });
-
-    const chartTimeUnits = getChartTimeUnit(this.state.startTime, this.state.endTime);
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+    } = this.props;
+    const chartTimeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
     return getAlertsVisualizationSpec(visData, this.state.groupBy, {
       timeUnit: this.state.timeUnit,
       dateFormat: chartTimeUnits.dateFormat,
       domain: getDomainRange(
-        [this.state.startTime, this.state.endTime],
+        [dateTimeFilter.startTime, dateTimeFilter.endTime],
         chartTimeUnits.timeUnit.unit
       ),
     });
@@ -325,11 +347,19 @@ class Alerts extends Component<AlertsProps, AlertsState> {
 
     const timeUnits = getChartTimeUnit(start, endTime);
     this.setState({
-      startTime: start,
-      endTime: endTime,
       recentlyUsedRanges: recentlyUsedRanges,
       ...timeUnits,
     });
+
+    console.log('Alert Time change: ', {
+      startTime: start,
+      endTime: endTime,
+    });
+    this.props.setDateTimeFilter &&
+      this.props.setDateTimeFilter({
+        startTime: start,
+        endTime: endTime,
+      });
   };
 
   onRefresh = async () => {
@@ -385,11 +415,15 @@ class Alerts extends Component<AlertsProps, AlertsState> {
       filteredAlerts,
       flyoutData,
       loading,
-      startTime,
-      endTime,
       recentlyUsedRanges,
     } = this.state;
 
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+    } = this.props;
     const severities = new Set();
     const statuses = new Set();
     filteredAlerts.forEach((alert) => {
@@ -465,8 +499,8 @@ class Alerts extends Component<AlertsProps, AlertsState> {
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
                 <EuiSuperDatePicker
-                  start={startTime}
-                  end={endTime}
+                  start={dateTimeFilter.startTime}
+                  end={dateTimeFilter.endTime}
                   recentlyUsedRanges={recentlyUsedRanges}
                   isLoading={loading}
                   onTimeChange={this.onTimeChange}

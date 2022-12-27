@@ -51,6 +51,7 @@ import {
 } from '../../../../utils/helpers';
 import { DetectorHit, RuleSource } from '../../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { DateTimeFilter } from '../../../Overview/models/interfaces';
 
 interface FindingsProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -60,6 +61,8 @@ interface FindingsProps extends RouteComponentProps {
   ruleService: RuleService;
   notifications: NotificationsStart;
   match: match;
+  dateTimeFilter?: DateTimeFilter;
+  setDateTimeFilter?: Function;
 }
 
 interface FindingsState {
@@ -68,8 +71,6 @@ interface FindingsState {
   findings: FindingItemType[];
   notificationChannels: FeatureChannelList[];
   rules: { [id: string]: RuleSource };
-  startTime: string;
-  endTime: string;
   recentlyUsedRanges: DurationRange[];
   groupBy: FindingsGroupByType;
   filteredFindings: FindingItemType[];
@@ -100,15 +101,19 @@ class Findings extends Component<FindingsProps, FindingsState> {
   constructor(props: FindingsProps) {
     super(props);
 
-    const timeUnits = getChartTimeUnit(DEFAULT_DATE_RANGE.start, DEFAULT_DATE_RANGE.end);
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+    } = props;
+    const timeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
     this.state = {
       loading: false,
       detectors: [],
       findings: [],
       notificationChannels: [],
       rules: {},
-      startTime: DEFAULT_DATE_RANGE.start,
-      endTime: DEFAULT_DATE_RANGE.end,
       recentlyUsedRanges: [DEFAULT_DATE_RANGE],
       groupBy: 'logType',
       filteredFindings: [],
@@ -251,11 +256,15 @@ class Findings extends Component<FindingsProps, FindingsState> {
     const endTime = start === end ? DEFAULT_DATE_RANGE.end : end;
     const timeUnits = getChartTimeUnit(start, endTime);
     this.setState({
-      startTime: start,
-      endTime: endTime,
       recentlyUsedRanges: recentlyUsedRanges,
       ...timeUnits,
     });
+
+    this.props.setDateTimeFilter &&
+      this.props.setDateTimeFilter({
+        startTime: start,
+        endTime: endTime,
+      });
   };
 
   generateVisualizationSpec() {
@@ -272,13 +281,18 @@ class Findings extends Component<FindingsProps, FindingsState> {
         ruleSeverity: this.state.rules[finding.queries[0].id].level,
       });
     });
-
-    const chartTimeUnits = getChartTimeUnit(this.state.startTime, this.state.endTime);
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+    } = this.props;
+    const chartTimeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
     return getFindingsVisualizationSpec(visData, this.state.groupBy, {
       timeUnit: this.state.timeUnit,
       dateFormat: chartTimeUnits.dateFormat,
       domain: getDomainRange(
-        [this.state.startTime, this.state.endTime],
+        [dateTimeFilter.startTime, dateTimeFilter.endTime],
         chartTimeUnits.timeUnit.unit
       ),
     });
@@ -301,16 +315,15 @@ class Findings extends Component<FindingsProps, FindingsState> {
   };
 
   render() {
-    const {
-      loading,
-      notificationChannels,
-      rules,
-      startTime,
-      endTime,
-      recentlyUsedRanges,
-    } = this.state;
+    const { loading, notificationChannels, rules, recentlyUsedRanges } = this.state;
     let { findings } = this.state;
 
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+    } = this.props;
     if (Object.keys(rules).length > 0) {
       findings = findings.map((finding) => {
         const rule = rules[finding.queries[0].id];
@@ -333,8 +346,8 @@ class Findings extends Component<FindingsProps, FindingsState> {
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
               <EuiSuperDatePicker
-                start={startTime}
-                end={endTime}
+                start={dateTimeFilter.startTime}
+                end={dateTimeFilter.endTime}
                 recentlyUsedRanges={recentlyUsedRanges}
                 isLoading={loading}
                 onTimeChange={this.onTimeChange}
@@ -367,8 +380,8 @@ class Findings extends Component<FindingsProps, FindingsState> {
               findings={findings}
               loading={loading}
               rules={rules}
-              startTime={startTime}
-              endTime={endTime}
+              startTime={dateTimeFilter.startTime}
+              endTime={dateTimeFilter.endTime}
               onRefresh={this.onRefresh}
               notificationChannels={parseNotificationChannelsToOptions(notificationChannels)}
               refreshNotificationChannels={this.getNotificationChannels}

@@ -170,6 +170,7 @@ export function getOverviewVisualizationSpec(
       {
         mark: {
           type: 'line',
+          clip: true,
           interpolate: 'monotone',
           color: lineColor,
           point: {
@@ -257,7 +258,6 @@ export function getAlertsVisualizationSpec(
         y: getYAxis('alert', 'Count'),
         color: {
           field: groupBy,
-          type: 'nominal',
           title: groupBy === 'status' ? 'Alert status' : 'Alert severity',
           scale: {
             range: groupBy === 'status' ? euiPaletteForStatus(5) : euiPaletteColorBlind(),

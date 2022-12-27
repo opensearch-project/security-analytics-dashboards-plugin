@@ -66,15 +66,18 @@ export const Summary: React.FC<SummaryProps> = ({
     [onGroupByChange]
   );
 
-  const generateVisualizationSpec = useCallback((summaryData, groupBy) => {
-    const chartTimeUnits = getChartTimeUnit(startTime, endTime);
+  const generateVisualizationSpec = useCallback(
+    (summaryData, groupBy) => {
+      const chartTimeUnits = getChartTimeUnit(startTime, endTime);
 
-    return getOverviewVisualizationSpec(summaryData, groupBy, {
-      timeUnit: timeUnit,
-      dateFormat: chartTimeUnits.dateFormat,
-      domain: getDomainRange([startTime, endTime], chartTimeUnits.timeUnit.unit),
-    });
-  }, []);
+      return getOverviewVisualizationSpec(summaryData, groupBy, {
+        timeUnit: timeUnit,
+        dateFormat: chartTimeUnits.dateFormat,
+        domain: getDomainRange([startTime, endTime], chartTimeUnits.timeUnit.unit),
+      });
+    },
+    [startTime, endTime]
+  );
 
   useEffect(() => {
     const summaryData: SummaryData[] = [];
