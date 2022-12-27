@@ -25,7 +25,8 @@ import { ContentPanel } from '../../../../components/ContentPanel';
 import {
   getAlertsVisualizationSpec,
   getChartTimeUnit,
-  getDateFormatByTimeUnit,
+  getDomainRange,
+  TimeUnit,
 } from '../../../Overview/utils/helpers';
 import moment from 'moment';
 import {
@@ -77,7 +78,8 @@ export interface AlertsState {
   filteredAlerts: AlertItem[];
   detectors: { [key: string]: Detector };
   loading: boolean;
-  timeUnit: string;
+  timeUnit: TimeUnit;
+  dateFormat: string;
 }
 
 const groupByOptions = [
@@ -90,7 +92,10 @@ class Alerts extends Component<AlertsProps, AlertsState> {
 
   constructor(props: AlertsProps) {
     super(props);
+
+    const timeUnits = getChartTimeUnit(DEFAULT_DATE_RANGE.start, DEFAULT_DATE_RANGE.end);
     this.state = {
+      loading: false,
       groupBy: 'status',
       startTime: DEFAULT_DATE_RANGE.start,
       endTime: DEFAULT_DATE_RANGE.end,
@@ -100,8 +105,8 @@ class Alerts extends Component<AlertsProps, AlertsState> {
       alertsFiltered: false,
       filteredAlerts: [],
       detectors: {},
-      loading: false,
-      timeUnit: 'yearmonthdatehoursminutes',
+      timeUnit: timeUnits.timeUnit,
+      dateFormat: timeUnits.dateFormat,
     };
   }
 
@@ -227,9 +232,14 @@ class Alerts extends Component<AlertsProps, AlertsState> {
       };
     });
 
+    const chartTimeUnits = getChartTimeUnit(this.state.startTime, this.state.endTime);
     return getAlertsVisualizationSpec(visData, this.state.groupBy, {
       timeUnit: this.state.timeUnit,
-      dateFormat: getDateFormatByTimeUnit(this.state.startTime, this.state.endTime),
+      dateFormat: chartTimeUnits.dateFormat,
+      domain: getDomainRange(
+        [this.state.startTime, this.state.endTime],
+        chartTimeUnits.timeUnit.unit
+      ),
     });
   }
 
@@ -313,12 +323,12 @@ class Alerts extends Component<AlertsProps, AlertsState> {
       recentlyUsedRanges = recentlyUsedRanges.slice(0, MAX_RECENTLY_USED_TIME_RANGES);
     const endTime = start === end ? DEFAULT_DATE_RANGE.end : end;
 
-    const timeUnit = getChartTimeUnit(start, endTime);
+    const timeUnits = getChartTimeUnit(start, endTime);
     this.setState({
       startTime: start,
       endTime: endTime,
       recentlyUsedRanges: recentlyUsedRanges,
-      timeUnit,
+      ...timeUnits,
     });
   };
 

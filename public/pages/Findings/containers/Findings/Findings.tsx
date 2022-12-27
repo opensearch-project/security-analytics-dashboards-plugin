@@ -28,13 +28,12 @@ import {
   DEFAULT_DATE_RANGE,
   MAX_RECENTLY_USED_TIME_RANGES,
   OS_NOTIFICATION_PLUGIN,
-  ROUTES,
 } from '../../../../utils/constants';
 import {
   getChartTimeUnit,
-  getDateFormatByTimeUnit,
   getDomainRange,
   getFindingsVisualizationSpec,
+  TimeUnit,
 } from '../../../Overview/utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { Finding } from '../../models/interfaces';
@@ -75,7 +74,8 @@ interface FindingsState {
   groupBy: FindingsGroupByType;
   filteredFindings: FindingItemType[];
   plugins: string[];
-  timeUnit: string;
+  timeUnit: TimeUnit;
+  dateFormat: string;
 }
 
 interface FindingVisualizationData {
@@ -99,6 +99,8 @@ class Findings extends Component<FindingsProps, FindingsState> {
 
   constructor(props: FindingsProps) {
     super(props);
+
+    const timeUnits = getChartTimeUnit(DEFAULT_DATE_RANGE.start, DEFAULT_DATE_RANGE.end);
     this.state = {
       loading: false,
       detectors: [],
@@ -111,7 +113,8 @@ class Findings extends Component<FindingsProps, FindingsState> {
       groupBy: 'logType',
       filteredFindings: [],
       plugins: [],
-      timeUnit: getChartTimeUnit(DEFAULT_DATE_RANGE.start, DEFAULT_DATE_RANGE.end),
+      timeUnit: timeUnits.timeUnit,
+      dateFormat: timeUnits.dateFormat,
     };
   }
 
@@ -246,12 +249,12 @@ class Findings extends Component<FindingsProps, FindingsState> {
     if (recentlyUsedRanges.length > MAX_RECENTLY_USED_TIME_RANGES)
       recentlyUsedRanges = recentlyUsedRanges.slice(0, MAX_RECENTLY_USED_TIME_RANGES);
     const endTime = start === end ? DEFAULT_DATE_RANGE.end : end;
-    const timeUnit = getChartTimeUnit(start, endTime);
+    const timeUnits = getChartTimeUnit(start, endTime);
     this.setState({
       startTime: start,
       endTime: endTime,
       recentlyUsedRanges: recentlyUsedRanges,
-      timeUnit,
+      ...timeUnits,
     });
   };
 
@@ -270,10 +273,14 @@ class Findings extends Component<FindingsProps, FindingsState> {
       });
     });
 
+    const chartTimeUnits = getChartTimeUnit(this.state.startTime, this.state.endTime);
     return getFindingsVisualizationSpec(visData, this.state.groupBy, {
       timeUnit: this.state.timeUnit,
-      dateFormat: getDateFormatByTimeUnit(this.state.startTime, this.state.endTime),
-      domain: getDomainRange([this.state.startTime, this.state.endTime]),
+      dateFormat: chartTimeUnits.dateFormat,
+      domain: getDomainRange(
+        [this.state.startTime, this.state.endTime],
+        chartTimeUnits.timeUnit.unit
+      ),
     });
   }
 

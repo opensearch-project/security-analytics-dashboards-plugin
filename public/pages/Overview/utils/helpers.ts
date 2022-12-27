@@ -8,12 +8,11 @@ import { euiPaletteColorBlind, euiPaletteForStatus } from '@elastic/eui';
 import { TopLevelSpec } from 'vega-lite';
 import { SummaryData } from '../components/Widgets/Summary';
 import dateMath from '@elastic/datemath';
-import { TimeUnitsMap } from './constants';
 import _ from 'lodash';
 import { DEFAULT_DATE_RANGE } from '../../../utils/constants';
 
 export type DateOpts = {
-  timeUnit: string;
+  timeUnit: TimeUnit;
   dateFormat: string;
   domain?: number[];
 };
@@ -37,12 +36,6 @@ const legendSelectionCfg = {
     },
   },
 };
-
-/**
- * Adds interactive legends to the chart layer
- * @param layer
- */
-const addInteractiveLegends = (layer: any) => _.defaultsDeep(layer, legendSelectionCfg);
 
 function getVisualizationSpec(description: string, data: any, layers: any[]): TopLevelSpec {
   return {
@@ -74,8 +67,12 @@ export function getOverviewVisualizationSpec(
   visualizationData: SummaryData[],
   groupBy: string,
   dateOpts: DateOpts = {
-    timeUnit: 'yearmonthdatehoursminutes',
+    timeUnit: {
+      unit: 'yearmonthdatehoursminutes',
+      step: 1,
+    },
     dateFormat: '%Y-%m-%d %H:%M',
+    domain: [parseDateString(DEFAULT_DATE_RANGE.start), parseDateString(DEFAULT_DATE_RANGE.end)],
   }
 ): TopLevelSpec {
   const aggregate = 'sum';
@@ -84,16 +81,42 @@ export function getOverviewVisualizationSpec(
       timeUnit: dateOpts.timeUnit,
       field: 'time',
       title: '',
-      axis: { grid: false, ticks: false, format: dateOpts.dateFormat },
+      type: 'temporal',
+      axis: { grid: false, format: dateOpts.dateFormat },
+      scale: {
+        domain: dateOpts.domain,
+      },
     },
     y: {
       aggregate,
       field: 'finding',
       type: 'quantitative',
       title: 'Count',
-      axis: { grid: true, ticks: false },
+      axis: { grid: true },
     },
-    tooltip: [{ field: 'finding', aggregate: 'sum', type: 'quantitative', title: 'Findings' }],
+    tooltip: [
+      {
+        field: 'finding',
+        aggregate: 'sum',
+        type: 'quantitative',
+        title: 'Findings',
+      },
+      {
+        timeUnit: dateOpts.timeUnit,
+        field: 'time',
+        type: 'temporal',
+        title: 'Time',
+        format: '%Y-%m-%d %H:%M:%S',
+      },
+      {
+        field: groupBy,
+        title: groupBy === 'logType' ? 'Log type' : 'Rule severity',
+      },
+    ],
+    color: {
+      scale: null,
+      value: euiPaletteColorBlind()[1],
+    },
   };
 
   if (groupBy === 'logType') {
@@ -113,16 +136,22 @@ export function getOverviewVisualizationSpec(
     visualizationData,
     [
       addInteractiveLegends({
-        mark: 'bar',
+        mark: {
+          type: 'bar',
+          clip: true,
+        },
         encoding: findingsEncoding,
       }),
       {
         mark: {
           type: 'line',
+          interpolate: 'monotone',
           color: lineColor,
           point: {
-            filled: true,
-            fill: lineColor,
+            filled: false,
+            fill: 'white',
+            color: lineColor,
+            size: 50,
           },
         },
         encoding: {
@@ -130,84 +159,57 @@ export function getOverviewVisualizationSpec(
             timeUnit: dateOpts.timeUnit,
             field: 'time',
             title: '',
-            axis: { grid: false, ticks: false, format: dateOpts.dateFormat },
+            axis: {
+              grid: false,
+              format: dateOpts.dateFormat,
+            },
+            scale: {
+              domain: dateOpts.domain,
+            },
           },
           y: {
             aggregate: 'sum',
             field: 'alert',
             title: 'Count',
-            axis: { grid: true, ticks: false },
+            axis: { grid: true },
           },
-          tooltip: [{ field: 'alert', aggregate: 'sum', title: 'Alerts' }],
+          tooltip: [
+            {
+              field: 'alert',
+              aggregate: 'sum',
+              type: 'quantitative',
+              title: 'Alerts',
+            },
+            {
+              timeUnit: dateOpts.timeUnit,
+              field: 'time',
+              type: 'temporal',
+              title: 'Time',
+              format: '%Y-%m-%d %H:%M:%S',
+            },
+          ],
         },
       },
     ]
   );
 }
 
-export const getDomainRange = (
-  range: string[] = [DEFAULT_DATE_RANGE.start, DEFAULT_DATE_RANGE.end]
-): number[] => {
-  return [
-    dateMath.parse(range[0])?.toDate().getTime(),
-    dateMath.parse(range[1])?.toDate().getTime(),
-  ];
-};
-
-/**
- * Returns chart x-axis date format based on time span
- * @param start
- * @param end
- */
-export function getDateFormatByTimeUnit(start: string, end: string) {
-  const startMoment = dateMath.parse(start);
-  const endMoment = dateMath.parse(end);
-  let dateFormat = '%Y-%m-%d %H:%M';
-
-  if (startMoment && endMoment) {
-    const startData = startMoment.toObject();
-    const endData = endMoment.toObject();
-    const dateDiff = endMoment.diff(startMoment);
-    const momentDiff = moment.duration(dateDiff);
-    const daysDiff = _.get(momentDiff, '_data.days', 0);
-
-    if (startData.years === endData.years) {
-      if (startData.months !== endData.months) {
-        dateFormat = '%Y-%m-%d';
-
-        if (daysDiff < 30 && daysDiff > 1) {
-          dateFormat = '%Y-%m-%d %H:%M';
-        }
-      } else {
-        dateFormat = '%Y-%m-%d %H:%M';
-
-        if (startData.date === endData.date) {
-          dateFormat = '%H:%M:%S';
-        }
-      }
-    }
-  }
-
-  return dateFormat;
-}
-
 export function getFindingsVisualizationSpec(
   visualizationData: any[],
   groupBy: string,
   dateOpts: DateOpts = {
-    timeUnit: 'yearmonthdatehoursminutes',
+    timeUnit: {
+      unit: 'yearmonthdatehoursminutes',
+      step: 1,
+    },
     dateFormat: '%Y-%m-%d %H:%M',
-    domain: [DEFAULT_DATE_RANGE.start, DEFAULT_DATE_RANGE.end],
+    domain: [parseDateString(DEFAULT_DATE_RANGE.start), parseDateString(DEFAULT_DATE_RANGE.end)],
   }
 ) {
-  console.log('TIME UNIT', dateOpts.timeUnit);
-  // dateOpts.timeUnit = 'yearmonthdatehours';
   return getVisualizationSpec('Findings data overview', visualizationData, [
     addInteractiveLegends({
       mark: {
         type: 'bar',
-        strokeWidth: 1,
-        stroke: 'white',
         clip: true,
       },
       encoding: {
@@ -219,10 +221,15 @@ export function getFindingsVisualizationSpec(
             title: 'Findings',
           },
           {
+            timeUnit: dateOpts.timeUnit,
             field: 'time',
             type: 'temporal',
             title: 'Time',
-            format: '%Y-%m-%d %H:%M',
+            format: '%Y-%m-%d %H:%M:%S',
+          },
+          {
+            field: groupBy,
+            title: groupBy === 'logType' ? 'Log type' : 'Rule severity',
           },
         ],
         x: {
@@ -235,8 +242,6 @@ export function getFindingsVisualizationSpec(
             format: dateOpts.dateFormat,
           },
           scale: {
-            type: 'time',
-            field: 'time',
             domain: dateOpts.domain,
           },
         },
@@ -245,11 +250,10 @@ export function getFindingsVisualizationSpec(
           field: 'finding',
           type: 'quantitative',
           title: 'Count',
-          axis: { grid: true, ticks: false },
+          axis: { grid: true },
         },
         color: {
           field: groupBy,
-          type: 'nominal',
           title: groupBy === 'logType' ? 'Log type' : 'Rule severity',
           scale: {
             range: euiPaletteColorBlind(),
@@ -264,23 +268,51 @@ export function getAlertsVisualizationSpec(
   visualizationData: any[],
   groupBy: string,
   dateOpts: DateOpts = {
-    timeUnit: 'yearmonthdatehoursminutes',
+    timeUnit: {
+      unit: 'yearmonthdatehoursminutes',
+      step: 1,
+    },
     dateFormat: '%Y-%m-%d %H:%M',
+    domain: [parseDateString(DEFAULT_DATE_RANGE.start), parseDateString(DEFAULT_DATE_RANGE.end)],
   }
 ) {
   return getVisualizationSpec('Alerts data overview', visualizationData, [
     addInteractiveLegends({
-      mark: 'bar',
+      mark: {
+        type: 'bar',
+        clip: true,
+      },
       encoding: {
-        tooltip: [{ field: 'alert', aggregate: 'sum', title: 'Alerts' }],
+        tooltip: [
+          {
+            field: 'alert',
+            aggregate: 'sum',
+            type: 'quantitative',
+            title: 'Alerts',
+          },
+          {
+            timeUnit: dateOpts.timeUnit,
+            field: 'time',
+            type: 'temporal',
+            title: 'Time',
+            format: '%Y-%m-%d %H:%M:%S',
+          },
+          {
+            field: groupBy,
+            title: groupBy === 'status' ? 'Alert status' : 'Alert severity',
+          },
+        ],
         x: {
           timeUnit: dateOpts.timeUnit,
           field: 'time',
           title: '',
+          type: 'temporal',
           axis: {
             grid: false,
-            ticks: false,
             format: dateOpts.dateFormat,
+          },
+          scale: {
+            domain: dateOpts.domain,
           },
         },
         y: {
@@ -288,7 +320,7 @@ export function getAlertsVisualizationSpec(
           field: 'alert',
           type: 'quantitative',
           title: 'Count',
-          axis: { grid: true, ticks: false },
+          axis: { grid: true },
         },
         color: {
           field: groupBy,
@@ -330,6 +362,17 @@ export function getTopRulesVisualizationSpec(visualizationData: any[]) {
             type: 'quantitative',
             format: '2.0%',
           },
+          {
+            field: 'ruleName',
+            type: 'nominal',
+            title: 'Rule',
+          },
+          {
+            aggregate: 'sum',
+            field: 'count',
+            type: 'quantitative',
+            title: 'Count',
+          },
         ],
         theta: { aggregate: 'sum', field: 'count', type: 'quantitative' },
         color: {
@@ -353,6 +396,16 @@ export function getTimeWithMinPrecision(time: number | string) {
   return date.getTime();
 }
 
+export interface TimeUnit {
+  unit: string;
+  step: number;
+}
+
+export interface TimeUnits {
+  timeUnit: TimeUnit;
+  dateFormat: string;
+}
+
 /**
  * Returns timeUnit based on how big time diff is between start and end dates
  * @param start Chart start time
@@ -363,60 +416,131 @@ export function getChartTimeUnit(
   start: string,
   end: string,
   defaultUnit: string = 'yearmonthdatehoursminutes'
-): string {
+): TimeUnits {
   const startMoment = dateMath.parse(start);
   const endMoment = dateMath.parse(end);
-  let timeUnit: string = 'yearmonthdatehoursminutes';
+  let timeUnit: string = defaultUnit;
+  let dateFormat: string = '%Y-%m-%d %H:%M';
 
-  if (!startMoment || !endMoment) return defaultUnit;
+  if (!startMoment || !endMoment)
+    return {
+      timeUnit: { unit: timeUnit, step: 1 },
+      dateFormat,
+    };
 
   try {
     const timeDiff = endMoment.diff(startMoment);
     const momentTimeDiff = moment.duration(timeDiff);
 
-    console.log('TIME UNIT', momentTimeDiff);
-    const { years, months, days, hours, minutes, seconds } = momentTimeDiff._data;
+    const { years, months, days, hours, minutes, seconds } = momentTimeDiff?._data || {};
 
     if (!years) {
       if (!months) {
         if (!days) {
           if (!hours) {
-            if (minutes < 60) {
-              timeUnit = 'yearmonthdatehoursminutes';
+            if (!minutes) {
+              if (seconds <= 60) {
+                timeUnit = 'yearmonthdatehoursminutesseconds';
+                dateFormat = '%Y-%m-%d %H:%M:%S';
+              } else {
+                timeUnit = 'yearmonthdatehoursminutes';
+                dateFormat = '%Y-%m-%d %H:%M';
+              }
+            } else {
+              if (minutes <= 60) {
+                timeUnit = 'yearmonthdatehoursminutes';
+                dateFormat = '%Y-%m-%d %H:%M';
+
+                if (minutes === 1) {
+                  timeUnit = 'yearmonthdatehoursminutesseconds';
+                  dateFormat = '%Y-%m-%d %H:%M%S';
+                }
+              } else {
+                timeUnit = 'yearmonthdatehours';
+                dateFormat = '%Y-%m-%d %H:%M';
+              }
             }
           } else {
-            if (hours < 60) {
+            if (hours <= 60) {
               timeUnit = 'yearmonthdatehours';
+              dateFormat = '%Y-%m-%d %H:%M';
+
+              if (hours === 1) {
+                timeUnit = 'yearmonthdatehoursminutes';
+                dateFormat = '%Y-%m-%d %H:%M';
+              }
             }
           }
         } else {
           if (days === 1) {
             timeUnit = 'yearmonthdatehours';
+            dateFormat = '%Y-%m-%d %H:%M';
           } else if (days <= 14) {
             timeUnit = 'yearmonthdate';
+            dateFormat = '%Y-%m-%d';
           } else {
             timeUnit = 'yearmonthdate';
+            dateFormat = '%Y-%m-%d';
           }
         }
       } else {
         if (months <= 6) {
           timeUnit = 'yearmonthdate';
+          dateFormat = '%Y-%m-%d';
         } else {
           timeUnit = 'yearmonth';
+          dateFormat = '%Y-%m';
         }
       }
     } else if (years <= 6) {
       timeUnit = 'yearmonth';
+      dateFormat = '%Y-%m';
 
-      if (years > 2) {
-        timeUnit = 'yearquarter';
+      if (years >= 2) {
+        timeUnit = 'quarter';
+        dateFormat = '%Y';
       }
     } else {
       timeUnit = 'year';
+      dateFormat = '%Y';
     }
   } catch (e) {
     console.error(`Time diff can't be calculated for dates: ${start} and ${end}`);
   }
-
-  return timeUnit;
+  return {
+    timeUnit: _.assign(
+      {
+        step: 1,
+      },
+      { unit: timeUnit }
+    ),
+    dateFormat,
+  };
 }
+
+/**
+ * Adds interactive legends to the chart layer
+ * @param layer
+ */
+const addInteractiveLegends = (layer: any) => _.defaultsDeep(layer, legendSelectionCfg);
+
+const parseDateString = (dateString: string): number => {
+  const date = dateMath.parse(dateString);
+  return date ? date.toDate().getTime() : new Date().getTime();
+};
+
+export const getDomainRange = (
+  range: string[] = [DEFAULT_DATE_RANGE.start, DEFAULT_DATE_RANGE.end],
+  timeUnit?: string
+): number[] => {
+  const start: number = parseDateString(range[0] || DEFAULT_DATE_RANGE.start);
+  let rangeEnd = range[1] || DEFAULT_DATE_RANGE.end;
+  if (timeUnit) {
+    const timeUnitSize = timeUnit.match(/.*(seconds|minutes|hours|date|month|year)$/);
+    if (timeUnitSize && timeUnitSize[1]) {
+      rangeEnd = `now+1${timeUnitSize[1][0]}`;
+    }
+  }
+  const end: number = parseDateString(rangeEnd);
+  return [start, end];
+};

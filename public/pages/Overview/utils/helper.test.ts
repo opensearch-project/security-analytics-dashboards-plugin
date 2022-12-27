@@ -1,35 +1,7 @@
-import { getChartTimeUnit, getDateFormatByTimeUnit } from './helpers';
+import { getChartTimeUnit } from './helpers';
 import { TimeUnitsMap } from './constants';
-import moment from 'moment';
 
 describe('helper utilities spec', () => {
-  describe('tests getDateFormatByTimeUnit function', () => {
-    const yearFormat = '%Y-%m-%d';
-    const dayFormat = '%H:%M:%S';
-    const fullFormat = '%Y-%m-%d %H:%M';
-    const hoursAgo = moment().subtract(15, 'hours');
-
-    const timeFormats: {
-      [key: string]: string;
-    } = {
-      'now-15m': dayFormat,
-      'now-15h': hoursAgo.date() === moment().date() ? dayFormat : fullFormat,
-      'now-15d': fullFormat,
-      'now-2M': yearFormat,
-      'now-2y': fullFormat,
-    };
-
-    it(` - function should return default format ${fullFormat} if dates are not valid`, () => {
-      expect(getDateFormatByTimeUnit('', '')).toBe(fullFormat);
-    });
-
-    for (const [start, format] of Object.entries(timeFormats)) {
-      it(` - function should return ${format} if start date is ${start}`, () => {
-        expect(getDateFormatByTimeUnit(start, 'now')).toBe(format);
-      });
-    }
-  });
-
   describe('tests getChartTimeUnit function', () => {
     const defaultTimeUnit = 'yearmonthdatehoursminutes';
     it(' - function should return default timeUnit if fn params are invalid', () => {

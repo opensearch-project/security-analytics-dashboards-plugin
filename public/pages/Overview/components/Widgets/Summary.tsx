@@ -8,9 +8,11 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { WidgetContainer } from './WidgetContainer';
 import { summaryGroupByOptions } from '../../utils/constants';
 import {
-  getDateFormatByTimeUnit,
+  getChartTimeUnit,
+  getDomainRange,
   getOverviewVisualizationSpec,
   getTimeWithMinPrecision,
+  TimeUnit,
 } from '../../utils/helpers';
 import { AlertItem, FindingItem } from '../../models/interfaces';
 import { createSelectComponent, renderVisualization } from '../../../../utils/helpers';
@@ -21,6 +23,9 @@ export interface SummaryProps {
   findings: FindingItem[];
   alerts: AlertItem[];
   loading?: boolean;
+  startTime: string;
+  endTime: string;
+  timeUnit: TimeUnit;
 }
 
 export interface SummaryData {
@@ -62,9 +67,12 @@ export const Summary: React.FC<SummaryProps> = ({
   );
 
   const generateVisualizationSpec = useCallback((summaryData, groupBy) => {
+    const chartTimeUnits = getChartTimeUnit(startTime, endTime);
+
     return getOverviewVisualizationSpec(summaryData, groupBy, {
       timeUnit: timeUnit,
-      dateFormat: getDateFormatByTimeUnit(startTime, endTime),
+      dateFormat: chartTimeUnits.dateFormat,
+      domain: getDomainRange([startTime, endTime], chartTimeUnits.timeUnit.unit),
     });
   }, []);
 

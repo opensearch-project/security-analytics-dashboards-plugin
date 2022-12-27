@@ -28,7 +28,7 @@ import { ServicesContext } from '../../../../services';
 import { Summary } from '../../components/Widgets/Summary';
 import { TopRulesWidget } from '../../components/Widgets/TopRulesWidget';
 import { GettingStartedPopup } from '../../components/GettingStarted/GettingStartedPopup';
-import { getChartTimeUnit } from '../../utils/helpers';
+import { getChartTimeUnit, TimeUnit } from '../../utils/helpers';
 
 export const Overview: React.FC<OverviewProps> = (props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -45,7 +45,9 @@ export const Overview: React.FC<OverviewProps> = (props) => {
   const [endTime, setEndTime] = useState(DEFAULT_DATE_RANGE.end);
   const [recentlyUsedRanges, setRecentlyUsedRanges] = useState([DEFAULT_DATE_RANGE]);
   const [loading, setLoading] = useState(true);
-  const [timeUnit, setTimeUnit] = useState('yearmonthdatehoursminutes');
+
+  const timeUnits = getChartTimeUnit(DEFAULT_DATE_RANGE.start, DEFAULT_DATE_RANGE.end);
+  const [timeUnit, setTimeUnit] = useState<TimeUnit>(timeUnits.timeUnit);
 
   const context = useContext(CoreServicesContext);
   const services = useContext(ServicesContext);
@@ -94,10 +96,10 @@ export const Overview: React.FC<OverviewProps> = (props) => {
       usedRanges = usedRanges.slice(0, MAX_RECENTLY_USED_TIME_RANGES);
 
     const endTime = start === end ? DEFAULT_DATE_RANGE.end : end;
-    const timeUnit = getChartTimeUnit(start, endTime);
+    const timeUnits = getChartTimeUnit(start, endTime);
     setStartTime(start);
     setEndTime(endTime);
-    setTimeUnit(timeUnit);
+    setTimeUnit(timeUnits.timeUnit);
     setRecentlyUsedRanges(usedRanges);
   };
 
