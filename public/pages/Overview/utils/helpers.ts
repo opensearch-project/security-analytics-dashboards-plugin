@@ -163,6 +163,7 @@ export function getOverviewVisualizationSpec(
               grid: false,
               format: dateOpts.dateFormat,
             },
+            band: 0.5,
             scale: {
               domain: dateOpts.domain,
             },
