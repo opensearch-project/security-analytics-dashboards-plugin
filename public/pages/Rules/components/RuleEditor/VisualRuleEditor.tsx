@@ -346,7 +346,7 @@ export const VisualRuleEditor: React.FC<VisualRuleEditorProps> = ({
             <EuiComboBox
               isInvalid={props.touched.status && !!props.errors.status}
               placeholder="Select a rule status"
-              data-test-subj={'rule_type_dropdown'}
+              data-test-subj={'rule_status_dropdown'}
               options={ruleStatus.map((type: string) => ({ value: type, label: type }))}
               singleSelection={{ asPlainText: true }}
               onChange={(e) => {

@@ -70,7 +70,7 @@ describe('Rules', () => {
     cy.get('[data-test-subj="rule_name_field"]').type(SAMPLE_RULE.name);
 
     // Enter the log type
-    cy.get('[data-test-subj="rule_type_dropdown"]').select(SAMPLE_RULE.logType);
+    cy.get('[data-test-subj="rule_type_dropdown"]').type(SAMPLE_RULE.logType);
 
     // Enter the description
     cy.get('[data-test-subj="rule_description_field"]').type(SAMPLE_RULE.description);
@@ -79,7 +79,7 @@ describe('Rules', () => {
     cy.get('[data-test-subj="rule_detection_field"]').type(SAMPLE_RULE.detection);
 
     // Enter the severity
-    cy.get('[data-test-subj="rule_severity_dropdown"]').select(SAMPLE_RULE.severity);
+    cy.get('[data-test-subj="rule_severity_dropdown"]').type(SAMPLE_RULE.severity);
 
     // Enter the tags
     SAMPLE_RULE.tags.forEach((tag) =>
@@ -87,16 +87,18 @@ describe('Rules', () => {
     );
 
     // Enter the reference
-    cy.get('[data-test-subj="rule_references_field_0"]').type(SAMPLE_RULE.references);
+    cy.get('[data-test-subj="rule_references_-_optional_field_0"]').type(SAMPLE_RULE.references);
 
     // Enter the false positive cases
-    cy.get('[data-test-subj="rule_false_positive_cases_field_0"]').type(SAMPLE_RULE.falsePositive);
+    cy.get('[data-test-subj="rule_false_positive_cases_-_optional_field_0"]').type(
+      SAMPLE_RULE.falsePositive
+    );
 
     // Enter the author
     cy.get('[data-test-subj="rule_author_field"]').type(SAMPLE_RULE.author);
 
     // Enter the log type
-    cy.get('[data-test-subj="rule_status_dropdown"]').select(SAMPLE_RULE.status);
+    cy.get('[data-test-subj="rule_status_dropdown"]').type(SAMPLE_RULE.status);
 
     // Switch to YAML editor
     cy.get('[data-test-subj="change-editor-type"] label:nth-child(2)').click({
