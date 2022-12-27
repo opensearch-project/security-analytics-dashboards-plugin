@@ -369,7 +369,11 @@ export const VisualRuleEditor: React.FC<VisualRuleEditorProps> = ({
               <EuiButton onClick={cancel}>Cancel</EuiButton>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
-              <EuiButton onClick={() => props.handleSubmit()} fill>
+              <EuiButton
+                onClick={() => props.handleSubmit()}
+                data-test-subj={'submit_rule_form_button'}
+                fill
+              >
                 {mode === 'create' ? 'Create' : 'Save changes'}
               </EuiButton>
             </EuiFlexItem>

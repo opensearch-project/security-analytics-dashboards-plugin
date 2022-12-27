@@ -164,7 +164,7 @@ export const YamlRuleEditor: React.FC<YamlRuleEditorProps> = ({
             <EuiButton onClick={cancel}>Cancel</EuiButton>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton onClick={submit} fill>
+            <EuiButton onClick={submit} fill data-test-subj={'submit_rule_form_button'}>
               {mode === 'create' ? 'Create' : 'Save changes'}
             </EuiButton>
           </EuiFlexItem>

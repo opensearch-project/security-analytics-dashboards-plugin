@@ -75,9 +75,6 @@ describe('Rules', () => {
     // Enter the description
     cy.get('[data-test-subj="rule_description_field"]').type(SAMPLE_RULE.description);
 
-    // Enter the detection
-    cy.get('[data-test-subj="rule_detection_field"]').type(SAMPLE_RULE.detection);
-
     // Enter the severity
     cy.get('[data-test-subj="rule_severity_dropdown"]').type(SAMPLE_RULE.severity);
 
@@ -100,6 +97,9 @@ describe('Rules', () => {
     // Enter the log type
     cy.get('[data-test-subj="rule_status_dropdown"]').type(SAMPLE_RULE.status);
 
+    // Enter the detection
+    cy.get('[data-test-subj="rule_detection_field"]').type(SAMPLE_RULE.detection);
+
     // Switch to YAML editor
     cy.get('[data-test-subj="change-editor-type"] label:nth-child(2)').click({
       force: true,
@@ -112,7 +112,7 @@ describe('Rules', () => {
     }).as('getRules');
 
     // Click "create" button
-    cy.get('[data-test-subj="create_rule_button"]').click({
+    cy.get('[data-test-subj="submit_rule_form_button"]').click({
       force: true,
     });
 
