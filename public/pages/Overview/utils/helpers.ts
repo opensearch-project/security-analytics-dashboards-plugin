@@ -11,6 +11,16 @@ import dateMath from '@elastic/datemath';
 import _ from 'lodash';
 import { DEFAULT_DATE_RANGE } from '../../../utils/constants';
 
+export interface TimeUnit {
+  unit: string;
+  step: number;
+}
+
+export interface TimeUnits {
+  timeUnit: TimeUnit;
+  dateFormat: string;
+}
+
 export type DateOpts = {
   timeUnit: TimeUnit;
   dateFormat: string;
@@ -36,6 +46,51 @@ const legendSelectionCfg = {
     },
   },
 };
+
+export const defaultTimeUnit = {
+  unit: 'yearmonthdatehoursminutes',
+  step: 1,
+};
+
+export const defaultDateFormat = '%Y-%m-%d %H:%M';
+
+export const parseDateString = (dateString: string): number => {
+  const date = dateMath.parse(dateString);
+  return date ? date.toDate().getTime() : new Date().getTime();
+};
+
+export const defaultScaleDomain = [
+  parseDateString(DEFAULT_DATE_RANGE.start),
+  parseDateString(DEFAULT_DATE_RANGE.end),
+];
+
+export const getYAxis = (field: string, title: string, axisGrid: boolean = true) => ({
+  aggregate: 'sum',
+  field: field,
+  type: 'quantitative',
+  title: title,
+  axis: { grid: axisGrid },
+});
+
+export const getXAxis = (dateOpts: DateOpts, opts: any = {}) =>
+  _.defaultsDeep(opts, {
+    timeUnit: dateOpts.timeUnit,
+    field: 'time',
+    title: '',
+    type: 'temporal',
+    axis: { grid: false, format: dateOpts.dateFormat },
+    scale: {
+      domain: dateOpts.domain,
+    },
+  });
+
+export const getTimeTooltip = (dateOpts: DateOpts) => ({
+  timeUnit: dateOpts.timeUnit,
+  field: 'time',
+  type: 'temporal',
+  title: 'Time',
+  format: '%Y-%m-%d %H:%M:%S',
+});
 
 function getVisualizationSpec(description: string, data: any, layers: any[]): TopLevelSpec {
   return {
@@ -67,47 +122,17 @@ export function getOverviewVisualizationSpec(
   visualizationData: SummaryData[],
   groupBy: string,
   dateOpts: DateOpts = {
-    timeUnit: {
-      unit: 'yearmonthdatehoursminutes',
-      step: 1,
-    },
-    dateFormat: '%Y-%m-%d %H:%M',
-    domain: [parseDateString(DEFAULT_DATE_RANGE.start), parseDateString(DEFAULT_DATE_RANGE.end)],
+    timeUnit: defaultTimeUnit,
+    dateFormat: defaultDateFormat,
+    domain: defaultScaleDomain,
   }
 ): TopLevelSpec {
-  const aggregate = 'sum';
   const findingsEncoding: { [x: string]: any } = {
-    x: {
-      timeUnit: dateOpts.timeUnit,
-      field: 'time',
-      title: '',
-      type: 'temporal',
-      axis: { grid: false, format: dateOpts.dateFormat },
-      scale: {
-        domain: dateOpts.domain,
-      },
-    },
-    y: {
-      aggregate,
-      field: 'finding',
-      type: 'quantitative',
-      title: 'Count',
-      axis: { grid: true },
-    },
+    x: getXAxis(dateOpts),
+    y: getYAxis('finding', 'Count'),
     tooltip: [
-      {
-        field: 'finding',
-        aggregate: 'sum',
-        type: 'quantitative',
-        title: 'Findings',
-      },
-      {
-        timeUnit: dateOpts.timeUnit,
-        field: 'time',
-        type: 'temporal',
-        title: 'Time',
-        format: '%Y-%m-%d %H:%M:%S',
-      },
+      getYAxis('finding', 'Findings'),
+      getTimeTooltip(dateOpts),
       {
         field: groupBy,
         title: groupBy === 'logType' ? 'Log type' : 'Rule severity',
@@ -155,40 +180,11 @@ export function getOverviewVisualizationSpec(
           },
         },
         encoding: {
-          x: {
-            timeUnit: dateOpts.timeUnit,
-            field: 'time',
-            title: '',
-            axis: {
-              grid: false,
-              format: dateOpts.dateFormat,
-            },
+          x: getXAxis(dateOpts, {
             band: 0.5,
-            scale: {
-              domain: dateOpts.domain,
-            },
-          },
-          y: {
-            aggregate: 'sum',
-            field: 'alert',
-            title: 'Count',
-            axis: { grid: true },
-          },
-          tooltip: [
-            {
-              field: 'alert',
-              aggregate: 'sum',
-              type: 'quantitative',
-              title: 'Alerts',
-            },
-            {
-              timeUnit: dateOpts.timeUnit,
-              field: 'time',
-              type: 'temporal',
-              title: 'Time',
-              format: '%Y-%m-%d %H:%M:%S',
-            },
-          ],
+          }),
+          y: getYAxis('alert', 'Count'),
+          tooltip: [getYAxis('alert', 'Alerts'), getTimeTooltip(dateOpts)],
         },
       },
     ]
@@ -199,12 +195,9 @@ export function getFindingsVisualizationSpec(
   visualizationData: any[],
   groupBy: string,
   dateOpts: DateOpts = {
-    timeUnit: {
-      unit: 'yearmonthdatehoursminutes',
-      step: 1,
-    },
-    dateFormat: '%Y-%m-%d %H:%M',
-    domain: [parseDateString(DEFAULT_DATE_RANGE.start), parseDateString(DEFAULT_DATE_RANGE.end)],
+    timeUnit: defaultTimeUnit,
+    dateFormat: defaultDateFormat,
+    domain: defaultScaleDomain,
   }
 ) {
   return getVisualizationSpec('Findings data overview', visualizationData, [
@@ -215,44 +208,15 @@ export function getFindingsVisualizationSpec(
       },
       encoding: {
         tooltip: [
-          {
-            field: 'finding',
-            aggregate: 'sum',
-            type: 'quantitative',
-            title: 'Findings',
-          },
-          {
-            timeUnit: dateOpts.timeUnit,
-            field: 'time',
-            type: 'temporal',
-            title: 'Time',
-            format: '%Y-%m-%d %H:%M:%S',
-          },
+          getYAxis('finding', 'Findings'),
+          getTimeTooltip(dateOpts),
           {
             field: groupBy,
             title: groupBy === 'logType' ? 'Log type' : 'Rule severity',
           },
         ],
-        x: {
-          timeUnit: dateOpts.timeUnit,
-          field: 'time',
-          title: '',
-          type: 'temporal',
-          axis: {
-            grid: false,
-            format: dateOpts.dateFormat,
-          },
-          scale: {
-            domain: dateOpts.domain,
-          },
-        },
-        y: {
-          aggregate: 'sum',
-          field: 'finding',
-          type: 'quantitative',
-          title: 'Count',
-          axis: { grid: true },
-        },
+        x: getXAxis(dateOpts),
+        y: getYAxis('finding', 'Count'),
         color: {
           field: groupBy,
           title: groupBy === 'logType' ? 'Log type' : 'Rule severity',
@@ -269,12 +233,9 @@ export function getAlertsVisualizationSpec(
   visualizationData: any[],
   groupBy: string,
   dateOpts: DateOpts = {
-    timeUnit: {
-      unit: 'yearmonthdatehoursminutes',
-      step: 1,
-    },
-    dateFormat: '%Y-%m-%d %H:%M',
-    domain: [parseDateString(DEFAULT_DATE_RANGE.start), parseDateString(DEFAULT_DATE_RANGE.end)],
+    timeUnit: defaultTimeUnit,
+    dateFormat: defaultDateFormat,
+    domain: defaultScaleDomain,
   }
 ) {
   return getVisualizationSpec('Alerts data overview', visualizationData, [
@@ -285,44 +246,15 @@ export function getAlertsVisualizationSpec(
       },
       encoding: {
         tooltip: [
-          {
-            field: 'alert',
-            aggregate: 'sum',
-            type: 'quantitative',
-            title: 'Alerts',
-          },
-          {
-            timeUnit: dateOpts.timeUnit,
-            field: 'time',
-            type: 'temporal',
-            title: 'Time',
-            format: '%Y-%m-%d %H:%M:%S',
-          },
+          getYAxis('alert', 'Alerts'),
+          getTimeTooltip(dateOpts),
           {
             field: groupBy,
             title: groupBy === 'status' ? 'Alert status' : 'Alert severity',
           },
         ],
-        x: {
-          timeUnit: dateOpts.timeUnit,
-          field: 'time',
-          title: '',
-          type: 'temporal',
-          axis: {
-            grid: false,
-            format: dateOpts.dateFormat,
-          },
-          scale: {
-            domain: dateOpts.domain,
-          },
-        },
-        y: {
-          aggregate: 'sum',
-          field: 'alert',
-          type: 'quantitative',
-          title: 'Count',
-          axis: { grid: true },
-        },
+        x: getXAxis(dateOpts),
+        y: getYAxis('alert', 'Count'),
         color: {
           field: groupBy,
           type: 'nominal',
@@ -368,14 +300,9 @@ export function getTopRulesVisualizationSpec(visualizationData: any[]) {
             type: 'nominal',
             title: 'Rule',
           },
-          {
-            aggregate: 'sum',
-            field: 'count',
-            type: 'quantitative',
-            title: 'Count',
-          },
+          getYAxis('count', 'Count'),
         ],
-        theta: { aggregate: 'sum', field: 'count', type: 'quantitative' },
+        theta: getYAxis('count', ''),
         color: {
           field: 'ruleName',
           type: 'nominal',
@@ -395,16 +322,6 @@ export function getTimeWithMinPrecision(time: number | string) {
   date.setMilliseconds(0);
 
   return date.getTime();
-}
-
-export interface TimeUnit {
-  unit: string;
-  step: number;
-}
-
-export interface TimeUnits {
-  timeUnit: TimeUnit;
-  dateFormat: string;
 }
 
 /**
@@ -433,8 +350,7 @@ export function getChartTimeUnit(
     const timeDiff = endMoment.diff(startMoment);
     const momentTimeDiff = moment.duration(timeDiff);
 
-    const { years, months, days, hours, minutes, seconds } = momentTimeDiff?._data || {};
-
+    const { years, months, days, hours, minutes, seconds } = _.get(momentTimeDiff, '_data');
     if (!years) {
       if (!months) {
         if (!days) {
@@ -524,11 +440,6 @@ export function getChartTimeUnit(
  * @param layer
  */
 const addInteractiveLegends = (layer: any) => _.defaultsDeep(layer, legendSelectionCfg);
-
-const parseDateString = (dateString: string): number => {
-  const date = dateMath.parse(dateString);
-  return date ? date.toDate().getTime() : new Date().getTime();
-};
 
 export const getDomainRange = (
   range: string[] = [DEFAULT_DATE_RANGE.start, DEFAULT_DATE_RANGE.end],
