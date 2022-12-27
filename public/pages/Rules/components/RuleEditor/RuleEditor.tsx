@@ -6,20 +6,25 @@
 import React, { useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { RuleService } from '../../../../services';
+import { ROUTES } from '../../../../utils/constants';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { EuiSpacer, EuiButtonGroup } from '@elastic/eui';
 import { Rule } from '../../../../../models/interfaces';
 import { RuleEditorFormState, ruleEditorStateDefaultValue } from './RuleEditorFormState';
 import { mapFormToRule, mapRuleToForm } from './mappers';
-import { VisualRuleEditor as VisualRuleEditorFormik } from './VisualRuleEditorFormik';
+import { VisualRuleEditor } from './VisualRuleEditor';
 import { YamlRuleEditor } from './YamlRuleEditor';
+import { validateRule } from '../../utils/helpers';
+import { errorNotificationToast } from '../../../../utils/helpers';
 
 export interface RuleEditorProps {
   title: string;
-  FooterActions: React.FC<{ rule: Rule }>;
   rule?: Rule;
   history: RouteComponentProps['history'];
   notifications?: NotificationsStart;
+  ruleService: RuleService;
+  mode: 'create' | 'edit';
 }
 
 export interface VisualEditorFormErrorsState {
@@ -44,7 +49,8 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({
   notifications,
   title,
   rule,
-  FooterActions,
+  ruleService,
+  mode,
 }) => {
   const [ruleEditorFormState, setRuleEditorFormState] = useState<RuleEditorFormState>(
     rule
@@ -58,13 +64,38 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({
     setSelectedEditorType(optionId);
   };
 
-  const getRule = (): Rule => {
-    return mapFormToRule(ruleEditorFormState);
-  };
-
   const onYamlRuleEditorChange = (value: Rule) => {
     const formState = mapRuleToForm(value);
     setRuleEditorFormState(formState);
+  };
+
+  const onSubmit = async () => {
+    const submitingRule = mapFormToRule(ruleEditorFormState);
+    if (!validateRule(submitingRule, notifications!, 'create')) {
+      return;
+    }
+
+    let result;
+    if (mode === 'edit') {
+      if (!rule) {
+        console.error('No rule id found');
+        return;
+      }
+      result = await ruleService.updateRule(rule?.id, submitingRule.category, submitingRule);
+    } else {
+      result = await ruleService.createRule(submitingRule);
+    }
+
+    if (!result.ok) {
+      errorNotificationToast(
+        notifications!,
+        mode === 'create' ? 'create' : 'save',
+        'rule',
+        result.error
+      );
+    } else {
+      history.replace(ROUTES.RULES);
+    }
   };
 
   return (
@@ -79,23 +110,27 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({
         />
         <EuiSpacer size="xl" />
         {selectedEditorType === 'visual' && (
-          <VisualRuleEditorFormik
-            history={history}
+          <VisualRuleEditor
+            mode={mode}
             notifications={notifications}
             ruleEditorFormState={ruleEditorFormState}
             setRuleEditorFormState={setRuleEditorFormState}
+            cancel={() => history.replace(ROUTES.RULES)}
+            submit={onSubmit}
           />
         )}
         {selectedEditorType === 'yaml' && (
           <YamlRuleEditor
+            mode={mode}
             rule={mapFormToRule(ruleEditorFormState)}
             change={onYamlRuleEditorChange}
+            cancel={() => history.replace(ROUTES.RULES)}
+            submit={onSubmit}
           />
         )}
         <EuiSpacer />
       </ContentPanel>
       <EuiSpacer size="xl" />
-      <FooterActions rule={getRule()} />
     </>
   );
 };
