@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import moment from 'moment';
 import { euiPaletteColorBlind, euiPaletteForStatus } from '@elastic/eui';
 import { TopLevelSpec } from 'vega-lite';
 import { SummaryData } from '../components/Widgets/Summary';
@@ -360,34 +359,24 @@ export function getChartTimeUnit(
     if (totalSeconds <= minute) {
       timeUnit = 'yearmonthdatehoursminutesseconds';
       dateFormat = '%Y-%m-%d %H:%M:%S';
+    } else if (totalSeconds <= hour) {
+      timeUnit = 'yearmonthdatehoursminutes';
+      dateFormat = '%Y-%m-%d %H:%M';
+    } else if (totalSeconds <= day) {
+      timeUnit = 'yearmonthdatehours';
+      dateFormat = '%Y-%m-%d %H:%M';
+    } else if (totalSeconds <= month * 6) {
+      timeUnit = 'yearmonthdate';
+      dateFormat = '%Y-%m-%d';
+    } else if (totalSeconds <= year * 2) {
+      timeUnit = 'yearmonth';
+      dateFormat = '%Y-%m';
+    } else if (totalSeconds <= year * 6) {
+      timeUnit = 'yearquarter';
+      dateFormat = '%Y';
     } else {
-      if (totalSeconds <= hour) {
-        timeUnit = 'yearmonthdatehoursminutes';
-        dateFormat = '%Y-%m-%d %H:%M';
-      } else {
-        if (totalSeconds <= day) {
-          timeUnit = 'yearmonthdatehours';
-          dateFormat = '%Y-%m-%d %H:%M';
-        } else {
-          if (totalSeconds <= month * 6) {
-            timeUnit = 'yearmonthdate';
-            dateFormat = '%Y-%m-%d';
-          } else {
-            if (totalSeconds <= year * 2) {
-              timeUnit = 'yearmonth';
-              dateFormat = '%Y-%m';
-            } else {
-              if (totalSeconds <= year * 6) {
-                timeUnit = 'yearquarter';
-                dateFormat = '%Y';
-              } else {
-                timeUnit = 'year';
-                dateFormat = '%Y';
-              }
-            }
-          }
-        }
-      }
+      timeUnit = 'year';
+      dateFormat = '%Y';
     }
   } catch (e) {
     console.error(`Time diff can't be calculated for dates: ${start} and ${end}`);
