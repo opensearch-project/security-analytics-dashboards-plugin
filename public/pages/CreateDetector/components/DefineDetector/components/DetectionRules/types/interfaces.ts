@@ -1,3 +1,4 @@
+import { RuleItemInfoBase } from './../../../../../../Rules/models/types';
 /*
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
@@ -13,6 +14,7 @@ export interface RuleItem {
   library: string;
   description: string;
   active: boolean;
+  ruleInfo: RuleItemInfoBase;
 }
 
 export type RuleItemInfo = RuleItemInfoBase & { enabled: boolean };
