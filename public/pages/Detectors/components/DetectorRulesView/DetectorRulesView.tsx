@@ -32,7 +32,7 @@ const mapRuleItemToRuleTableItem = (ruleItem: RuleItem): RuleTableItem => {
     description: ruleItem.description,
     source: ruleItem.library,
     ruleId: ruleItem.id,
-    ruleInfo: ruleItem.ruleInfo,
+    ruleInfo: { ...ruleItem.ruleInfo, prePackaged: ruleItem.library === 'Sigma' },
   };
 };
 
