@@ -1,8 +1,53 @@
-import { getChartTimeUnit, getDateFormatByTimeUnit } from './helpers';
+import {
+  addInteractiveLegends,
+  DateOpts,
+  getAlertsVisualizationSpec,
+  getChartTimeUnit,
+  getDateFormatByTimeUnit,
+  getFindingsVisualizationSpec,
+  getOverviewVisualizationSpec,
+  getVisualizationSpec,
+  legendSelectionCfg,
+} from './helpers';
 import { TimeUnitsMap } from './constants';
 import moment from 'moment';
+import _ from 'lodash';
 
 describe('helper utilities spec', () => {
+  const description = 'Visualization';
+  const defaultTimeUnit = 'yearmonthdatehoursminutes';
+  const layer = {
+    x: {
+      field: 'xField',
+    },
+    y: {
+      field: 'yField',
+    },
+  };
+
+  const data = [
+    {
+      xField: 1,
+      yField: 1,
+    },
+  ];
+
+  const timeUnits: {
+    [key: string]: string;
+  } = {
+    minutes: 'now-15m',
+    hours: 'now-15h',
+    days: 'now-15d',
+    weeks: 'now-15w',
+    months: 'now-5M',
+    years: 'now-15y',
+  };
+
+  const dateOpts: DateOpts = {
+    timeUnit: 'yearmonthdatehoursminutes',
+    dateFormat: '%Y-%m-%d %H:%M',
+  };
+
   describe('tests getDateFormatByTimeUnit function', () => {
     const yearFormat = '%Y-%m-%d';
     const dayFormat = '%H:%M:%S';
@@ -31,7 +76,6 @@ describe('helper utilities spec', () => {
   });
 
   describe('tests getChartTimeUnit function', () => {
-    const defaultTimeUnit = 'yearmonthdatehoursminutes';
     it(' - function should return default timeUnit if fn params are invalid', () => {
       expect(getChartTimeUnit('', '')).toBe(defaultTimeUnit);
     });
@@ -41,21 +85,45 @@ describe('helper utilities spec', () => {
       expect(getChartTimeUnit('', '', defaultFormat)).toBe(defaultFormat);
     });
 
-    const timeUnits: {
-      [key: string]: string;
-    } = {
-      minutes: 'now-15m',
-      hours: 'now-15h',
-      days: 'now-15d',
-      weeks: 'now-15w',
-      months: 'now-5M',
-      years: 'now-15y',
-    };
-
     for (const [unit, start] of Object.entries(timeUnits)) {
       it(` - function should return ${TimeUnitsMap[unit]} if unit is ${unit}`, () => {
         expect(getChartTimeUnit(start, 'now')).toBe(TimeUnitsMap[unit]);
       });
     }
+  });
+
+  describe('tests addInteractiveLegends function', () => {
+    const result = _.defaultsDeep(layer, legendSelectionCfg);
+    it(' - function should return updated layer', () => {
+      expect(addInteractiveLegends(layer)).toBe(result);
+    });
+  });
+
+  describe('tests getVisualizationSpec function', () => {
+    const result = getVisualizationSpec(description, data, [layer]);
+    it(' - snapshot test', () => {
+      expect(result).toMatchSnapshot('should match visualization spec');
+    });
+  });
+
+  describe('tests getOverviewVisualizationSpec function', () => {
+    const result = getOverviewVisualizationSpec([], '', dateOpts);
+    it(' - snapshot test', () => {
+      expect(result).toMatchSnapshot('should match overview spec');
+    });
+  });
+
+  describe('tests getFindingsVisualizationSpec function', () => {
+    const result = getFindingsVisualizationSpec([], '', dateOpts);
+    it(' - snapshot test', () => {
+      expect(result).toMatchSnapshot('should match findings spec');
+    });
+  });
+
+  describe('tests getAlertsVisualizationSpec function', () => {
+    const result = getAlertsVisualizationSpec([], '', dateOpts);
+    it(' - snapshot test', () => {
+      expect(result).toMatchSnapshot('should match alerts spec');
+    });
   });
 });
