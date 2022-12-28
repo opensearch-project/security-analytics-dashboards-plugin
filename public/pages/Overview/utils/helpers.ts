@@ -348,78 +348,46 @@ export function getChartTimeUnit(
 
   try {
     const timeDiff = endMoment.diff(startMoment);
-    const momentTimeDiff = moment.duration(timeDiff);
+    const totalSeconds = Math.ceil(timeDiff / 1000);
 
-    const { years, months, days, hours, minutes, seconds } = _.get(momentTimeDiff, '_data');
-    if (!years) {
-      if (!months) {
-        if (!days) {
-          if (!hours) {
-            if (!minutes) {
-              if (seconds <= 60) {
-                timeUnit = 'yearmonthdatehoursminutesseconds';
-                dateFormat = '%Y-%m-%d %H:%M:%S';
-              } else {
-                timeUnit = 'yearmonthdatehoursminutes';
-                dateFormat = '%Y-%m-%d %H:%M';
-              }
-            } else {
-              if (minutes <= 60) {
-                timeUnit = 'yearmonthdatehoursminutes';
-                dateFormat = '%Y-%m-%d %H:%M';
+    const second = 1;
+    const minute = second * 60;
+    const hour = minute * 60;
+    const day = hour * 24;
+    const month = day * 30;
+    const year = month * 12;
 
-                if (minutes === 1) {
-                  timeUnit = 'yearmonthdatehoursminutesseconds';
-                  dateFormat = '%Y-%m-%d %H:%M%S';
-                }
-              } else {
-                timeUnit = 'yearmonthdatehours';
-                dateFormat = '%Y-%m-%d %H:%M';
-              }
-            }
-          } else {
-            if (hours <= 60) {
-              timeUnit = 'yearmonthdatehours';
-              dateFormat = '%Y-%m-%d %H:%M';
-
-              if (hours === 1) {
-                timeUnit = 'yearmonthdatehoursminutes';
-                dateFormat = '%Y-%m-%d %H:%M';
-              }
-            }
-          }
-        } else {
-          if (days === 1) {
-            timeUnit = 'yearmonthdatehours';
-            dateFormat = '%Y-%m-%d %H:%M';
-          } else if (days <= 14) {
-            timeUnit = 'yearmonthdate';
-            dateFormat = '%Y-%m-%d';
-          } else {
-            timeUnit = 'yearmonthdate';
-            dateFormat = '%Y-%m-%d';
-          }
-        }
-      } else {
-        if (months <= 6) {
-          timeUnit = 'yearmonthdate';
-          dateFormat = '%Y-%m-%d';
-        } else {
-          timeUnit = 'yearmonth';
-          dateFormat = '%Y-%m';
-        }
-      }
-    } else if (years <= 6) {
-      timeUnit = 'yearmonth';
-      dateFormat = '%Y-%m';
-
-      if (years >= 2) {
-        timeUnit = 'quarter';
-        dateFormat = '%Y';
-      }
+    if (totalSeconds <= minute) {
+      timeUnit = 'yearmonthdatehoursminutesseconds';
+      dateFormat = '%Y-%m-%d %H:%M:%S';
     } else {
-      timeUnit = 'year';
-      dateFormat = '%Y';
+      if (totalSeconds <= hour) {
+        timeUnit = 'yearmonthdatehoursminutes';
+        dateFormat = '%Y-%m-%d %H:%M';
+      } else {
+        if (totalSeconds <= day) {
+          timeUnit = 'yearmonthdatehours';
+          dateFormat = '%Y-%m-%d %H:%M';
+        } else {
+          if (totalSeconds <= month * 6) {
+            timeUnit = 'yearmonthdate';
+            dateFormat = '%Y-%m-%d';
+          } else {
+            if (totalSeconds <= year * 2) {
+              timeUnit = 'yearmonth';
+              dateFormat = '%Y-%m';
+            } else {
+              if (totalSeconds <= year * 6) {
+                timeUnit = 'yearquarter';
+                dateFormat = '%Y';
+              } else {
+                timeUnit = 'year';
+                dateFormat = '%Y';
+              }
+            }
+          }
+        }
+      }
     }
   } catch (e) {
     console.error(`Time diff can't be calculated for dates: ${start} and ${end}`);

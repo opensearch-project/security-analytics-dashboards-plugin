@@ -56,6 +56,7 @@ import {
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { match, withRouter } from 'react-router-dom';
 import { DateTimeFilter } from '../../../Overview/models/interfaces';
+import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 
 export interface AlertsProps {
   alertService: AlertsService;
@@ -102,7 +103,7 @@ class Alerts extends Component<AlertsProps, AlertsState> {
     } = props;
     const timeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
     this.state = {
-      loading: false,
+      loading: true,
       groupBy: 'status',
       recentlyUsedRanges: [DEFAULT_DATE_RANGE],
       selectedItems: [],
@@ -518,7 +519,7 @@ class Alerts extends Component<AlertsProps, AlertsState> {
                   {this.createGroupByControl()}
                 </EuiFlexItem>
                 <EuiFlexItem>
-                  <div id="alerts-view"></div>
+                  <ChartContainer chartViewId={'alerts-view'} loading={loading} />
                 </EuiFlexItem>
               </EuiFlexGroup>
             </EuiPanel>
@@ -535,6 +536,7 @@ class Alerts extends Component<AlertsProps, AlertsState> {
                 search={search}
                 sorting={sorting}
                 selection={selection}
+                loading={loading}
               />
             </ContentPanel>
           </EuiFlexItem>

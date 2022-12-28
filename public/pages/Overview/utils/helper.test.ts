@@ -1,4 +1,4 @@
-import { getChartTimeUnit, TimeUnit, TimeUnits } from './helpers';
+import { getChartTimeUnit, TimeUnits } from './helpers';
 
 describe('helper utilities spec', () => {
   describe('tests getChartTimeUnit function', () => {

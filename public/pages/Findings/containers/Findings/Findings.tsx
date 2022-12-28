@@ -52,6 +52,7 @@ import {
 import { DetectorHit, RuleSource } from '../../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { DateTimeFilter } from '../../../Overview/models/interfaces';
+import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 
 interface FindingsProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -109,7 +110,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
     } = props;
     const timeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
     this.state = {
-      loading: false,
+      loading: true,
       detectors: [],
       findings: [],
       notificationChannels: [],
@@ -365,7 +366,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
                 {this.createGroupByControl()}
               </EuiFlexItem>
               <EuiFlexItem>
-                <div id="findings-view" style={{ width: '100%' }}></div>
+                <ChartContainer chartViewId={'findings-view'} loading={loading} />
               </EuiFlexItem>
             </EuiFlexGroup>
           </EuiPanel>
