@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { RuleService } from '../../../../services';
@@ -98,6 +98,10 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({
     }
   };
 
+  const goToRulesList = useCallback(() => {
+    history.replace(ROUTES.RULES);
+  }, [history]);
+
   return (
     <>
       <ContentPanel title={title}>
@@ -115,7 +119,7 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({
             notifications={notifications}
             ruleEditorFormState={ruleEditorFormState}
             setRuleEditorFormState={setRuleEditorFormState}
-            cancel={() => history.replace(ROUTES.RULES)}
+            cancel={goToRulesList}
             submit={onSubmit}
           />
         )}
@@ -124,7 +128,7 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({
             mode={mode}
             rule={mapFormToRule(ruleEditorFormState)}
             change={onYamlRuleEditorChange}
-            cancel={() => history.replace(ROUTES.RULES)}
+            cancel={goToRulesList}
             submit={onSubmit}
           />
         )}
