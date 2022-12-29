@@ -122,6 +122,7 @@ export function ruleItemInfosToItems(
       logType: detectorType.toLowerCase(),
       name: itemInfo._source.title,
       severity: itemInfo._source.level,
+      ruleInfo: itemInfo,
     }));
   }
 
