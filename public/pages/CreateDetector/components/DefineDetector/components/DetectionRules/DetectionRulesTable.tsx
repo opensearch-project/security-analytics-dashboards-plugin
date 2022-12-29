@@ -70,7 +70,7 @@ export const DetectionRulesTable: React.FC<DetectionRulesTableProps> = ({
       },
     ],
   };
-  const [pagination, setPagination] = useState({ pageIndex: 0 });
+  const [pagination, setPagination] = useState({ pageIndex: pageIndex || 0 });
   const allRulesEnabled = ruleItems.every((item) => item.active);
   ruleItems.sort((a, b) => {
     return (rulePriorityBySeverity[a.severity] || 6) - (rulePriorityBySeverity[b.severity] || 6);
