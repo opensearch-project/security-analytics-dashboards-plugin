@@ -13,7 +13,15 @@ env:
 jobs:
   tests:
     name: Run Cypress E2E tests
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        include:
+          - os: windows-latest
+            cypress_cache_folder: ~/AppData/Local/Cypress/Cache
+          - os: ubuntu-latest
+            cypress_cache_folder: ~/.cache/Cypress
+    runs-on: ${{ matrix.os }}
     env:
       # prevents extra Cypress installation progress messages
       CI: 1
@@ -25,55 +33,98 @@ jobs:
         with:
           # TODO: Parse this from security analytics plugin (https://github.com/opensearch-project/security-analytics/issues/170)
           java-version: 11
+
+      - name: Enable longer filenames
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: git config --system core.longpaths true
+
       - name: Checkout security analytics
         uses: actions/checkout@v2
         with:
           path: security-analytics
           repository: opensearch-project/security-analytics
           ref: ${{ env.SECURITY_ANALYTICS_BRANCH }}
+
       - name: Run opensearch with plugin
         run: |
           cd security-analytics
           ./gradlew run -Dopensearch.version=${{ env.OPENSEARCH_VERSION }} &
           sleep 300
-        # timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9200)" != "200" ]]; do sleep 5; done'
-      - name: Checkout Security Analytics Dashboards plugin
-        uses: actions/checkout@v2
-        with:
-          path: security-analytics-dashboards-plugin
+        shell: bash
+
       - name: Checkout OpenSearch-Dashboards
         uses: actions/checkout@v2
         with:
           repository: opensearch-project/OpenSearch-Dashboards
           path: OpenSearch-Dashboards
           ref: ${{ env.OPENSEARCH_DASHBOARDS_VERSION }}
+
+      - name: Checkout Security Analytics Dashboards plugin
+        uses: actions/checkout@v2
+        with:
+          path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
+
       - name: Get node and yarn versions
         id: versions
         run: |
           echo "::set-output name=node_version::$(node -p "(require('./OpenSearch-Dashboards/package.json').engines.node).match(/[.0-9]+/)[0]")"
           echo "::set-output name=yarn_version::$(node -p "(require('./OpenSearch-Dashboards/package.json').engines.yarn).match(/[.0-9]+/)[0]")"
+
       - name: Setup node
         uses: actions/setup-node@v1
         with:
           node-version: ${{ steps.versions.outputs.node_version }}
           registry-url: 'https://registry.npmjs.org'
+
       - name: Install correct yarn version for OpenSearch-Dashboards
         run: |
           npm uninstall -g yarn
           echo "Installing yarn ${{ steps.versions_step.outputs.yarn_version }}"
           npm i -g yarn@${{ steps.versions.outputs.yarn_version }}
+
       - name: Bootstrap plugin/OpenSearch-Dashboards
         run: |
-          mkdir -p OpenSearch-Dashboards/plugins
-          mv security-analytics-dashboards-plugin OpenSearch-Dashboards/plugins
           cd OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
           yarn osd bootstrap
+
       - name: Run OpenSearch-Dashboards server
         run: |
           cd OpenSearch-Dashboards
           yarn start --no-base-path --no-watch &
-          sleep 300
-        # timeout 300 bash -c 'while [[ "$(curl -s localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
+        shell: bash
+
+      # Window is slow so wait longer
+      - name: Sleep until OSD server starts - windows
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: Start-Sleep -s 400
+        shell: powershell
+
+      - name: Sleep until OSD server starts - non-windows
+        if: ${{ matrix.os != 'windows-latest' }}
+        run: sleep 300
+        shell: bash
+      
+      - name: Install Cypress
+        run: |
+          cd OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
+          # This will install Cypress in case the binary is missing which can happen on Windows and Mac
+          # If the binary exists, this will exit quickly so it should not be an expensive operation
+          npx cypress install
+        shell: bash
+
+      - name: Get Cypress version
+        id: cypress_version
+        run: |
+          cd OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
+          echo "::set-output name=cypress_version::$(cat ./package.json | jq '.dependencies.cypress' | tr -d '"')"
+
+      - name: Cache Cypress
+        id: cache-cypress
+        uses: actions/cache@v2
+        with:
+          path: ${{ matrix.cypress_cache_folder }}
+          key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
+        
       # for now just chrome, use matrix to do all browsers later
       - name: Cypress tests
         uses: cypress-io/github-action@v2
@@ -82,15 +133,19 @@ jobs:
           command: yarn run cypress run
           wait-on: 'http://localhost:5601'
           browser: chrome
+        env:
+          CYPRESS_CACHE_FOLDER: ${{ matrix.cypress_cache_folder }}      
+
       # Screenshots are only captured on failure, will change this once we do visual regression tests
       - uses: actions/upload-artifact@v1
         if: failure()
         with:
-          name: cypress-screenshots
+          name: cypress-screenshots-${{ matrix.os }}
           path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/cypress/screenshots
+
       # Test run video was always captured, so this action uses "always()" condition
       - uses: actions/upload-artifact@v1
         if: always()
         with:
-          name: cypress-videos
+          name: cypress-videos-${{ matrix.os }}
           path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/cypress/videos
