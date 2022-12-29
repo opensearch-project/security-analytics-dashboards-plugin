@@ -257,7 +257,7 @@ class Alerts extends Component<AlertsProps, AlertsState> {
     } = this.props;
     const chartTimeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
     return getAlertsVisualizationSpec(visData, this.state.groupBy, {
-      timeUnit: this.state.timeUnit,
+      timeUnit: chartTimeUnits.timeUnit,
       dateFormat: chartTimeUnits.dateFormat,
       domain: getDomainRange(
         [dateTimeFilter.startTime, dateTimeFilter.endTime],
@@ -352,10 +352,6 @@ class Alerts extends Component<AlertsProps, AlertsState> {
       ...timeUnits,
     });
 
-    console.log('Alert Time change: ', {
-      startTime: start,
-      endTime: endTime,
-    });
     this.props.setDateTimeFilter &&
       this.props.setDateTimeFilter({
         startTime: start,

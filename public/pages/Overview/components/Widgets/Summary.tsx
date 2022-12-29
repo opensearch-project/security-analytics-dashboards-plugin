@@ -69,9 +69,8 @@ export const Summary: React.FC<SummaryProps> = ({
   const generateVisualizationSpec = useCallback(
     (summaryData, groupBy) => {
       const chartTimeUnits = getChartTimeUnit(startTime, endTime);
-
       return getOverviewVisualizationSpec(summaryData, groupBy, {
-        timeUnit: timeUnit,
+        timeUnit: chartTimeUnits.timeUnit,
         dateFormat: chartTimeUnits.dateFormat,
         domain: getDomainRange([startTime, endTime], chartTimeUnits.timeUnit.unit),
       });

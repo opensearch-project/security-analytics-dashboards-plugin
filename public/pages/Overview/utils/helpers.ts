@@ -129,18 +129,19 @@ export function getOverviewVisualizationSpec(
   const findingsEncoding: { [x: string]: any } = {
     x: getXAxis(dateOpts),
     y: getYAxis('finding', 'Count'),
-    tooltip: [
-      getYAxis('finding', 'Findings'),
-      getTimeTooltip(dateOpts),
-      {
-        field: groupBy,
-        title: groupBy === 'logType' ? 'Log type' : 'Rule severity',
-      },
-    ],
+    tooltip: [getYAxis('finding', 'Findings'), getTimeTooltip(dateOpts)],
     color: {
       scale: null,
       value: euiPaletteColorBlind()[1],
     },
+  };
+
+  let barLayer = {
+    mark: {
+      type: 'bar',
+      clip: true,
+    },
+    encoding: findingsEncoding,
   };
 
   if (groupBy === 'logType') {
@@ -152,6 +153,13 @@ export function getOverviewVisualizationSpec(
         range: euiPaletteColorBlind(),
       },
     };
+
+    findingsEncoding['tooltip'].push({
+      field: groupBy,
+      title: groupBy === 'logType' ? 'Log type' : 'Rule severity',
+    });
+
+    barLayer = addInteractiveLegends(barLayer);
   }
 
   const lineColor = '#ff0000';
@@ -159,13 +167,7 @@ export function getOverviewVisualizationSpec(
     'Plot showing average data with raw values in the background.',
     visualizationData,
     [
-      addInteractiveLegends({
-        mark: {
-          type: 'bar',
-          clip: true,
-        },
-        encoding: findingsEncoding,
-      }),
+      barLayer,
       {
         mark: {
           type: 'line',
@@ -346,32 +348,31 @@ export function getChartTimeUnit(
     };
 
   try {
-    const timeDiff = endMoment.diff(startMoment);
-    const totalSeconds = Math.ceil(timeDiff / 1000);
+    const milliseconds = endMoment.diff(startMoment);
 
-    const second = 1;
+    const second = 1001; // set 1ms as a threshold since moment can make a mistake in 1 ms when calculating start and end datetime
     const minute = second * 60;
     const hour = minute * 60;
     const day = hour * 24;
     const month = day * 30;
     const year = month * 12;
 
-    if (totalSeconds <= minute) {
+    if (milliseconds <= minute) {
       timeUnit = 'yearmonthdatehoursminutesseconds';
       dateFormat = '%Y-%m-%d %H:%M:%S';
-    } else if (totalSeconds <= hour) {
+    } else if (milliseconds <= hour) {
       timeUnit = 'yearmonthdatehoursminutes';
       dateFormat = '%Y-%m-%d %H:%M';
-    } else if (totalSeconds <= day) {
+    } else if (milliseconds <= day * 2) {
       timeUnit = 'yearmonthdatehours';
       dateFormat = '%Y-%m-%d %H:%M';
-    } else if (totalSeconds <= month * 6) {
+    } else if (milliseconds <= month * 6) {
       timeUnit = 'yearmonthdate';
       dateFormat = '%Y-%m-%d';
-    } else if (totalSeconds <= year * 2) {
+    } else if (milliseconds <= year * 2) {
       timeUnit = 'yearmonth';
       dateFormat = '%Y-%m';
-    } else if (totalSeconds <= year * 6) {
+    } else if (milliseconds <= year * 6) {
       timeUnit = 'yearquarter';
       dateFormat = '%Y';
     } else {

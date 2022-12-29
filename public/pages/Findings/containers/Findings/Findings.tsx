@@ -290,7 +290,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
     } = this.props;
     const chartTimeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
     return getFindingsVisualizationSpec(visData, this.state.groupBy, {
-      timeUnit: this.state.timeUnit,
+      timeUnit: chartTimeUnits.timeUnit,
       dateFormat: chartTimeUnits.dateFormat,
       domain: getDomainRange(
         [dateTimeFilter.startTime, dateTimeFilter.endTime],
