@@ -1,0 +1,25 @@
+.grid-item {
+  > div {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    > :nth-child(1) {
+      flex: 0;
+    }
+
+    > :nth-child(3) {
+      flex: 1;
+
+      > div {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+
+        > :first-child {
+          flex: 1;
+        }
+      }
+    }
+  }
+}
