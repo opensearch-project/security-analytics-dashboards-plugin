@@ -5,17 +5,7 @@
 
 import React, { useState } from 'react';
 import { load } from 'js-yaml';
-import {
-  EuiFormRow,
-  EuiCodeEditor,
-  EuiLink,
-  EuiSpacer,
-  EuiText,
-  EuiForm,
-  EuiFlexGroup,
-  EuiButton,
-  EuiFlexItem,
-} from '@elastic/eui';
+import { EuiFormRow, EuiCodeEditor, EuiLink, EuiSpacer, EuiText, EuiCallOut } from '@elastic/eui';
 import FormFieldHeader from '../../../../components/FormFieldHeader';
 import { Rule } from '../../../../../models/interfaces';
 import {
@@ -32,12 +22,11 @@ import {
   mapYamlObjectToRule,
 } from '../../utils/mappers';
 
-export interface YamlRuleEditorProps {
+export interface YamlRuleEditorComponentProps {
   rule: Rule;
   change: React.Dispatch<Rule>;
-  submit: () => void;
-  cancel: () => void;
-  mode: 'create' | 'edit';
+  isInvalid: boolean;
+  errors?: string[];
 }
 
 export interface YamlEditorState {
@@ -81,12 +70,11 @@ const validateRule = (rule: Rule): string[] | null => {
   return null;
 };
 
-export const YamlRuleEditor: React.FC<YamlRuleEditorProps> = ({
+export const YamlRuleEditorComponent: React.FC<YamlRuleEditorComponentProps> = ({
   rule,
   change,
-  submit,
-  cancel,
-  mode,
+  isInvalid,
+  errors,
 }) => {
   const yamlObject = mapRuleToYamlObject(rule);
 
@@ -128,48 +116,37 @@ export const YamlRuleEditor: React.FC<YamlRuleEditorProps> = ({
 
   return (
     <>
-      <EuiForm
-        isInvalid={state.errors !== null && state.errors.length > 0}
-        error={state.errors}
-        component="form"
-      >
-        <EuiFormRow
-          label={<FormFieldHeader headerTitle={'Define rule in YAML'} />}
-          fullWidth={true}
-        >
-          <>
-            <EuiText size="s" color="subdued">
-              Use the YAML editor to define a sigma rule. See{' '}
-              <EuiLink href="https://github.com/SigmaHQ/sigma-specification">
-                Sigma specification
-              </EuiLink>{' '}
-              for rule structure and schema.
-            </EuiText>
-            <EuiSpacer size="s" />
-            <EuiCodeEditor
-              mode="yaml"
-              width="100%"
-              value={state.value}
-              onChange={onChange}
-              onBlur={onBlur}
-              data-test-subj={'rule_yaml_editor'}
-            />
-          </>
-        </EuiFormRow>
+      <EuiFormRow label={<FormFieldHeader headerTitle={'Define rule in YAML'} />} fullWidth={true}>
+        <>
+          {errors && errors.length > 0 && (
+            <EuiCallOut size="m" color="danger" title="Please address the highlighted errors.">
+              <ul>
+                {errors.map((error, i) => (
+                  <li key={i}>{error}</li>
+                ))}
+              </ul>
+            </EuiCallOut>
+          )}
 
-        <EuiSpacer />
-
-        <EuiFlexGroup justifyContent="flexEnd">
-          <EuiFlexItem grow={false}>
-            <EuiButton onClick={cancel}>Cancel</EuiButton>
-          </EuiFlexItem>
-          <EuiFlexItem grow={false}>
-            <EuiButton onClick={submit} fill data-test-subj={'submit_rule_form_button'}>
-              {mode === 'create' ? 'Create' : 'Save changes'}
-            </EuiButton>
-          </EuiFlexItem>
-        </EuiFlexGroup>
-      </EuiForm>
+          <EuiSpacer />
+          <EuiText size="s" color="subdued">
+            Use the YAML editor to define a sigma rule. See{' '}
+            <EuiLink href="https://github.com/SigmaHQ/sigma-specification">
+              Sigma specification
+            </EuiLink>{' '}
+            for rule structure and schema.
+          </EuiText>
+          <EuiSpacer size="s" />
+          <EuiCodeEditor
+            mode="yaml"
+            width="100%"
+            value={state.value}
+            onChange={onChange}
+            onBlur={onBlur}
+            data-test-subj={'rule_yaml_editor'}
+          />
+        </>
+      </EuiFormRow>
     </>
   );
 };

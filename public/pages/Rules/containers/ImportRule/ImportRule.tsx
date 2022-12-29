@@ -72,7 +72,14 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
               })) || [],
           };
           setContent(
-            <RuleEditor title="Import a rule" FooterActions={footerActions} rule={rule} />
+            <RuleEditor
+              title="Import a rule"
+              history={history}
+              notifications={notifications}
+              mode={'create'}
+              ruleService={services.ruleService}
+              rule={rule}
+            />
           );
         } catch (error: any) {
           setFileError('Invalid file content');

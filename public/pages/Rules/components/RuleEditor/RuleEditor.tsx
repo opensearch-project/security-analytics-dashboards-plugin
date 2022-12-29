@@ -3,18 +3,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { RuleService } from '../../../../services';
 import { ROUTES } from '../../../../utils/constants';
-import { ContentPanel } from '../../../../components/ContentPanel';
-import { EuiSpacer, EuiButtonGroup } from '@elastic/eui';
+import { EuiSpacer } from '@elastic/eui';
 import { Rule } from '../../../../../models/interfaces';
 import { RuleEditorFormState, ruleEditorStateDefaultValue } from './RuleEditorFormState';
 import { mapFormToRule, mapRuleToForm } from './mappers';
 import { VisualRuleEditor } from './VisualRuleEditor';
-import { YamlRuleEditor } from './YamlRuleEditor';
 import { validateRule } from '../../utils/helpers';
 import { errorNotificationToast } from '../../../../utils/helpers';
 
@@ -33,17 +31,6 @@ export interface VisualEditorFormErrorsState {
   authorError: string | null;
 }
 
-const editorTypes = [
-  {
-    id: 'visual',
-    label: 'Visual Editor',
-  },
-  {
-    id: 'yaml',
-    label: 'YAML Editor',
-  },
-];
-
 export const RuleEditor: React.FC<RuleEditorProps> = ({
   history,
   notifications,
@@ -52,25 +39,12 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({
   ruleService,
   mode,
 }) => {
-  const [ruleEditorFormState, setRuleEditorFormState] = useState<RuleEditorFormState>(
-    rule
-      ? { ...mapRuleToForm(rule), id: ruleEditorStateDefaultValue.id }
-      : ruleEditorStateDefaultValue
-  );
+  const ruleEditorFormState = rule
+    ? { ...mapRuleToForm(rule), id: ruleEditorStateDefaultValue.id }
+    : ruleEditorStateDefaultValue;
 
-  const [selectedEditorType, setSelectedEditorType] = useState('visual');
-
-  const onEditorTypeChange = (optionId: string) => {
-    setSelectedEditorType(optionId);
-  };
-
-  const onYamlRuleEditorChange = (value: Rule) => {
-    const formState = mapRuleToForm(value);
-    setRuleEditorFormState(formState);
-  };
-
-  const onSubmit = async () => {
-    const submitingRule = mapFormToRule(ruleEditorFormState);
+  const onSubmit = async (values: RuleEditorFormState) => {
+    const submitingRule = mapFormToRule(values);
     if (!validateRule(submitingRule, notifications!, 'create')) {
       return;
     }
@@ -104,36 +78,14 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({
 
   return (
     <>
-      <ContentPanel title={title}>
-        <EuiButtonGroup
-          data-test-subj="change-editor-type"
-          legend="This is editor type selector"
-          options={editorTypes}
-          idSelected={selectedEditorType}
-          onChange={(id) => onEditorTypeChange(id)}
-        />
-        <EuiSpacer size="xl" />
-        {selectedEditorType === 'visual' && (
-          <VisualRuleEditor
-            mode={mode}
-            notifications={notifications}
-            ruleEditorFormState={ruleEditorFormState}
-            setRuleEditorFormState={setRuleEditorFormState}
-            cancel={goToRulesList}
-            submit={onSubmit}
-          />
-        )}
-        {selectedEditorType === 'yaml' && (
-          <YamlRuleEditor
-            mode={mode}
-            rule={mapFormToRule(ruleEditorFormState)}
-            change={onYamlRuleEditorChange}
-            cancel={goToRulesList}
-            submit={onSubmit}
-          />
-        )}
-        <EuiSpacer />
-      </ContentPanel>
+      <VisualRuleEditor
+        title={title}
+        mode={mode}
+        notifications={notifications}
+        ruleEditorFormState={ruleEditorFormState}
+        cancel={goToRulesList}
+        submit={onSubmit}
+      />
       <EuiSpacer size="xl" />
     </>
   );

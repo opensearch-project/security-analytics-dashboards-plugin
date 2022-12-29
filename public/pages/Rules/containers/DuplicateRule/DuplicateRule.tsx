@@ -61,8 +61,11 @@ export const DuplicateRule: React.FC<DuplicateRuleProps> = ({
   return (
     <RuleEditor
       title="Duplicate rule"
-      FooterActions={footerActions}
       rule={location.state.ruleItem._source}
+      history={history}
+      notifications={notifications}
+      mode={'create'}
+      ruleService={services.ruleService}
     />
   );
 };
