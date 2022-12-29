@@ -7,7 +7,7 @@ import { BrowserServices } from '../../../models/interfaces';
 import { DetectorHit, RuleSource } from '../../../../server/models/interfaces';
 import { AlertItem, FindingItem } from './interfaces';
 import { RuleService } from '../../../services';
-import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
+import { DEFAULT_DATE_RANGE, DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../../../utils/helpers';
 import dateMath from '@elastic/datemath';
@@ -191,8 +191,8 @@ export class OverviewViewModelActor {
     this.refreshHandlers.push(handler);
   }
 
-  startTime = 'now-15m';
-  endTime = 'now';
+  startTime = DEFAULT_DATE_RANGE.start;
+  endTime = DEFAULT_DATE_RANGE.end;
 
   public async onRefresh(startTime: string, endTime: string) {
     this.startTime = startTime;

@@ -28,9 +28,16 @@ import { ServicesContext } from '../../../../services';
 import { Summary } from '../../components/Widgets/Summary';
 import { TopRulesWidget } from '../../components/Widgets/TopRulesWidget';
 import { GettingStartedPopup } from '../../components/GettingStarted/GettingStartedPopup';
-import { getChartTimeUnit } from '../../utils/helpers';
+import { getChartTimeUnit, TimeUnit } from '../../utils/helpers';
 
 export const Overview: React.FC<OverviewProps> = (props) => {
+  const {
+    dateTimeFilter = {
+      startTime: DEFAULT_DATE_RANGE.start,
+      endTime: DEFAULT_DATE_RANGE.end,
+    },
+  } = props;
+
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [initialLoadingFinished, setInitialLoadingFinished] = useState(false);
   const [state, setState] = useState<OverviewState>({
@@ -41,11 +48,12 @@ export const Overview: React.FC<OverviewProps> = (props) => {
       alerts: [],
     },
   });
-  const [startTime, setStartTime] = useState(DEFAULT_DATE_RANGE.start);
-  const [endTime, setEndTime] = useState(DEFAULT_DATE_RANGE.end);
+
   const [recentlyUsedRanges, setRecentlyUsedRanges] = useState([DEFAULT_DATE_RANGE]);
   const [loading, setLoading] = useState(true);
-  const [timeUnit, setTimeUnit] = useState('yearmonthdatehoursminutes');
+
+  const timeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
+  const [timeUnit, setTimeUnit] = useState<TimeUnit>(timeUnits.timeUnit);
 
   const context = useContext(CoreServicesContext);
   const services = useContext(ServicesContext);
@@ -68,12 +76,12 @@ export const Overview: React.FC<OverviewProps> = (props) => {
     overviewViewModelActor.registerRefreshHandler(updateState);
 
     const updateModel = async () => {
-      await overviewViewModelActor.onRefresh(startTime, endTime);
+      await overviewViewModelActor.onRefresh(dateTimeFilter.startTime, dateTimeFilter.endTime);
       setInitialLoadingFinished(true);
     };
 
     updateModel();
-  }, []);
+  }, [dateTimeFilter.startTime, dateTimeFilter.endTime]);
 
   useEffect(() => {
     if (
@@ -94,20 +102,24 @@ export const Overview: React.FC<OverviewProps> = (props) => {
       usedRanges = usedRanges.slice(0, MAX_RECENTLY_USED_TIME_RANGES);
 
     const endTime = start === end ? DEFAULT_DATE_RANGE.end : end;
-    const timeUnit = getChartTimeUnit(start, endTime);
-    setStartTime(start);
-    setEndTime(endTime);
-    setTimeUnit(timeUnit);
+    const timeUnits = getChartTimeUnit(start, endTime);
+
+    props.setDateTimeFilter &&
+      props.setDateTimeFilter({
+        startTime: start,
+        endTime: endTime,
+      });
+    setTimeUnit(timeUnits.timeUnit);
     setRecentlyUsedRanges(usedRanges);
   };
 
   useEffect(() => {
-    overviewViewModelActor.onRefresh(startTime, endTime);
-  }, [startTime, endTime]);
+    overviewViewModelActor.onRefresh(dateTimeFilter.startTime, dateTimeFilter.endTime);
+  }, [dateTimeFilter.startTime, dateTimeFilter.endTime]);
 
   const onRefresh = async () => {
     setLoading(true);
-    await overviewViewModelActor.onRefresh(startTime, endTime);
+    await overviewViewModelActor.onRefresh(dateTimeFilter.startTime, dateTimeFilter.endTime);
   };
 
   const onButtonClick = () => setIsPopoverOpen((isPopoverOpen) => !isPopoverOpen);
@@ -144,8 +156,8 @@ export const Overview: React.FC<OverviewProps> = (props) => {
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
             <EuiSuperDatePicker
-              start={startTime}
-              end={endTime}
+              start={dateTimeFilter.startTime}
+              end={dateTimeFilter.endTime}
               recentlyUsedRanges={recentlyUsedRanges}
               isLoading={loading}
               onTimeChange={onTimeChange}
@@ -159,8 +171,8 @@ export const Overview: React.FC<OverviewProps> = (props) => {
         <Summary
           alerts={state.overviewViewModel.alerts}
           findings={state.overviewViewModel.findings}
-          startTime={startTime}
-          endTime={endTime}
+          startTime={dateTimeFilter.startTime}
+          endTime={dateTimeFilter.endTime}
           timeUnit={timeUnit}
           loading={loading}
         />

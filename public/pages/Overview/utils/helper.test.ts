@@ -1,93 +1,84 @@
 import {
   addInteractiveLegends,
-  DateOpts,
   getAlertsVisualizationSpec,
   getChartTimeUnit,
-  getDateFormatByTimeUnit,
   getFindingsVisualizationSpec,
   getOverviewVisualizationSpec,
   getVisualizationSpec,
   legendSelectionCfg,
 } from './helpers';
-import { TimeUnitsMap } from './constants';
-import moment from 'moment';
 import _ from 'lodash';
+import { getChartTimeUnit, TimeUnits } from './helpers';
 
 describe('helper utilities spec', () => {
-  const description = 'Visualization';
-  const defaultTimeUnit = 'yearmonthdatehoursminutes';
-  const layer = {
-    x: {
-      field: 'xField',
-    },
-    y: {
-      field: 'yField',
-    },
-  };
-
-  const data = [
-    {
-      xField: 1,
-      yField: 1,
-    },
-  ];
-
-  const timeUnits: {
-    [key: string]: string;
-  } = {
-    minutes: 'now-15m',
-    hours: 'now-15h',
-    days: 'now-15d',
-    weeks: 'now-15w',
-    months: 'now-5M',
-    years: 'now-15y',
-  };
-
-  const dateOpts: DateOpts = {
-    timeUnit: 'yearmonthdatehoursminutes',
-    dateFormat: '%Y-%m-%d %H:%M',
-  };
-
-  describe('tests getDateFormatByTimeUnit function', () => {
-    const yearFormat = '%Y-%m-%d';
-    const dayFormat = '%H:%M:%S';
-    const fullFormat = '%Y-%m-%d %H:%M';
-    const hoursAgo = moment().subtract(15, 'hours');
-
-    const timeFormats: {
-      [key: string]: string;
-    } = {
-      'now-15m': dayFormat,
-      'now-15h': hoursAgo.date() === moment().date() ? dayFormat : fullFormat,
-      'now-15d': fullFormat,
-      'now-2M': yearFormat,
-      'now-2y': fullFormat,
-    };
-
-    it(` - function should return default format ${fullFormat} if dates are not valid`, () => {
-      expect(getDateFormatByTimeUnit('', '')).toBe(fullFormat);
-    });
-
-    for (const [start, format] of Object.entries(timeFormats)) {
-      it(` - function should return ${format} if start date is ${start}`, () => {
-        expect(getDateFormatByTimeUnit(start, 'now')).toBe(format);
-      });
-    }
-  });
-
   describe('tests getChartTimeUnit function', () => {
+    const defaultTimeUnit = {
+      timeUnit: { unit: 'yearmonthdatehoursminutes', step: 1 },
+      dateFormat: '%Y-%m-%d %H:%M',
+    };
     it(' - function should return default timeUnit if fn params are invalid', () => {
-      expect(getChartTimeUnit('', '')).toBe(defaultTimeUnit);
+      const timeUnits = getChartTimeUnit('', '');
+      expect(timeUnits.dateFormat).toBe(defaultTimeUnit.dateFormat);
+      expect(timeUnits.timeUnit.unit).toBe(defaultTimeUnit.timeUnit.unit);
+      expect(timeUnits.timeUnit.step).toBe(defaultTimeUnit.timeUnit.step);
     });
 
     it(' - function should return default timeUnit if one is passed as param', () => {
-      const defaultFormat = 'yearmonthdate';
-      expect(getChartTimeUnit('', '', defaultFormat)).toBe(defaultFormat);
+      const defaultFormat = 'yearmonthdatehoursminutes';
+      const timeUnits = getChartTimeUnit('', '', defaultFormat);
+      expect(timeUnits.timeUnit.unit).toBe(defaultFormat);
     });
 
+    const timeUnitsExpected: {
+      [key: string]: TimeUnits;
+    } = {
+      minutes: {
+        dateFormat: '%Y-%m-%d %H:%M',
+        timeUnit: { step: 1, unit: 'yearmonthdatehoursminutes' },
+      },
+      hours: {
+        dateFormat: '%Y-%m-%d %H:%M',
+        timeUnit: { step: 1, unit: 'yearmonthdatehours' },
+      },
+      days: {
+        dateFormat: '%Y-%m-%d',
+        timeUnit: { step: 1, unit: 'yearmonthdate' },
+      },
+      weeks: {
+        dateFormat: '%Y-%m-%d',
+        timeUnit: { step: 1, unit: 'yearmonthdate' },
+      },
+      months: {
+        dateFormat: '%Y-%m-%d',
+        timeUnit: { step: 1, unit: 'yearmonthdate' },
+      },
+      years: {
+        dateFormat: '%Y',
+        timeUnit: { step: 1, unit: 'year' },
+      },
+    };
+
+    const timeUnits: {
+      [key: string]: string;
+    } = {
+      minutes: 'now-15m',
+      hours: 'now-15h',
+      days: 'now-15d',
+      weeks: 'now-15w',
+      months: 'now-5M',
+      years: 'now-15y',
+    };
+
+    const validateTimeUnit = (timeUnit: TimeUnits, expectedTimeUnit: TimeUnits) => {
+      expect(timeUnit.dateFormat).toBe(expectedTimeUnit.dateFormat);
+      expect(timeUnit.timeUnit.unit).toBe(expectedTimeUnit.timeUnit.unit);
+      expect(timeUnit.timeUnit.step).toBe(expectedTimeUnit.timeUnit.step);
+    };
+
     for (const [unit, start] of Object.entries(timeUnits)) {
-      it(` - function should return ${TimeUnitsMap[unit]} if unit is ${unit}`, () => {
-        expect(getChartTimeUnit(start, 'now')).toBe(TimeUnitsMap[unit]);
+      it(` - filter ${start} should return valid timeUnit object`, () => {
+        const timeUnitResult = getChartTimeUnit(start, 'now');
+        validateTimeUnit(timeUnitResult, timeUnitsExpected[unit]);
       });
     }
   });

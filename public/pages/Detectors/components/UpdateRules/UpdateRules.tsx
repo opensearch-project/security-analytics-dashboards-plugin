@@ -20,6 +20,8 @@ import { ServicesContext } from '../../../../services';
 import { ServerResponse } from '../../../../../server/models/types';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast, successNotificationToast } from '../../../../utils/helpers';
+import { RuleTableItem } from '../../../Rules/utils/helpers';
+import { RuleViewerFlyout } from '../../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
 
 export interface UpdateDetectorRulesProps
   extends RouteComponentProps<
@@ -38,6 +40,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
   const [customRuleItems, setCustomRuleItems] = useState<RuleItem[]>([]);
   const [prePackagedRuleItems, setPrePackagedRuleItems] = useState<RuleItem[]>([]);
   const detectorId = props.location.pathname.replace(`${ROUTES.EDIT_DETECTOR_RULES}/`, '');
+  const [flyoutData, setFlyoutData] = useState<RuleTableItem | null>(null);
 
   useEffect(() => {
     const getDetector = async () => {
@@ -86,6 +89,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
           library: 'Sigma',
           description: rule._source.description,
           active: enabledRuleIds.includes(rule._id),
+          ruleInfo: rule,
         }));
         setPrePackagedRuleItems(ruleItems);
       } else {
@@ -124,6 +128,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
           library: 'Custom',
           description: rule._source.description,
           active: enabledRuleIds.includes(rule._id),
+          ruleInfo: rule,
         }));
         setCustomRuleItems(ruleItems);
       } else {
@@ -210,8 +215,29 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
   };
 
   const ruleItems = prePackagedRuleItems.concat(customRuleItems);
+
+  const onRuleDetails = (ruleItem: RuleItem) => {
+    console.log('onRuleDetails', ruleItem);
+    setFlyoutData(() => ({
+      title: ruleItem.name,
+      level: ruleItem.severity,
+      category: ruleItem.logType,
+      description: ruleItem.description,
+      source: ruleItem.library,
+      ruleInfo: ruleItem.ruleInfo,
+      ruleId: ruleItem.id,
+    }));
+  };
   return (
     <div>
+      {flyoutData ? (
+        <RuleViewerFlyout
+          hideFlyout={() => setFlyoutData(() => null)}
+          history={null as any}
+          ruleTableItem={flyoutData}
+          ruleService={null as any}
+        />
+      ) : null}
       <EuiTitle size={'m'}>
         <h3>Edit detector rules</h3>
       </EuiTitle>
@@ -222,6 +248,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
         ruleItems={ruleItems}
         onRuleActivationToggle={onToggle}
         onAllRulesToggled={onAllRulesToggle}
+        onRuleDetails={onRuleDetails}
       />
 
       <EuiSpacer size="xl" />

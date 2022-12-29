@@ -4,6 +4,7 @@
  */
 
 import { RuleItemInfoBase } from '../../../../../../Rules/models/types';
+import { RuleInfo } from './../../../../../../../../server/models/interfaces/Rules';
 
 export interface RuleItem {
   name: string;
@@ -13,6 +14,7 @@ export interface RuleItem {
   library: string;
   description: string;
   active: boolean;
+  ruleInfo: RuleInfo;
 }
 
 export type RuleItemInfo = RuleItemInfoBase & { enabled: boolean };
