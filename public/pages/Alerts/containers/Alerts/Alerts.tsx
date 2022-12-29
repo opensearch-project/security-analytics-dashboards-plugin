@@ -25,7 +25,8 @@ import { ContentPanel } from '../../../../components/ContentPanel';
 import {
   getAlertsVisualizationSpec,
   getChartTimeUnit,
-  getDateFormatByTimeUnit,
+  getDomainRange,
+  TimeUnit,
 } from '../../../Overview/utils/helpers';
 import moment from 'moment';
 import {
@@ -54,6 +55,8 @@ import {
 } from '../../../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { match, withRouter } from 'react-router-dom';
+import { DateTimeFilter } from '../../../Overview/models/interfaces';
+import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 
 export interface AlertsProps {
   alertService: AlertsService;
@@ -63,12 +66,12 @@ export interface AlertsProps {
   opensearchService: OpenSearchService;
   notifications: NotificationsStart;
   match: match;
+  dateTimeFilter?: DateTimeFilter;
+  setDateTimeFilter?: Function;
 }
 
 export interface AlertsState {
   groupBy: string;
-  startTime: string;
-  endTime: string;
   recentlyUsedRanges: DurationRange[];
   selectedItems: AlertItem[];
   alerts: AlertItem[];
@@ -77,7 +80,8 @@ export interface AlertsState {
   filteredAlerts: AlertItem[];
   detectors: { [key: string]: Detector };
   loading: boolean;
-  timeUnit: string;
+  timeUnit: TimeUnit;
+  dateFormat: string;
 }
 
 const groupByOptions = [
@@ -90,25 +94,38 @@ class Alerts extends Component<AlertsProps, AlertsState> {
 
   constructor(props: AlertsProps) {
     super(props);
+
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+    } = props;
+    const timeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
     this.state = {
+      loading: true,
       groupBy: 'status',
-      startTime: DEFAULT_DATE_RANGE.start,
-      endTime: DEFAULT_DATE_RANGE.end,
       recentlyUsedRanges: [DEFAULT_DATE_RANGE],
       selectedItems: [],
       alerts: [],
       alertsFiltered: false,
       filteredAlerts: [],
       detectors: {},
-      loading: false,
-      timeUnit: 'yearmonthdatehoursminutes',
+      timeUnit: timeUnits.timeUnit,
+      dateFormat: timeUnits.dateFormat,
     };
   }
 
   componentDidUpdate(prevProps: Readonly<AlertsProps>, prevState: Readonly<AlertsState>) {
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+    } = this.props;
     const alertsChanged =
-      prevState.startTime !== this.state.startTime ||
-      prevState.endTime !== this.state.endTime ||
+      prevProps.dateTimeFilter?.startTime !== dateTimeFilter.startTime ||
+      prevProps.dateTimeFilter?.endTime !== dateTimeFilter.endTime ||
       prevState.alerts !== this.state.alerts ||
       prevState.alerts.length !== this.state.alerts.length;
 
@@ -120,9 +137,15 @@ class Alerts extends Component<AlertsProps, AlertsState> {
   }
 
   filterAlerts = () => {
-    const { alerts, startTime, endTime } = this.state;
-    const startMoment = dateMath.parse(startTime);
-    const endMoment = dateMath.parse(endTime);
+    const { alerts } = this.state;
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+    } = this.props;
+    const startMoment = dateMath.parse(dateTimeFilter.startTime);
+    const endMoment = dateMath.parse(dateTimeFilter.endTime);
     const filteredAlerts = alerts.filter((alert) =>
       moment(alert.last_notification_time).isBetween(moment(startMoment), moment(endMoment))
     );
@@ -226,10 +249,20 @@ class Alerts extends Component<AlertsProps, AlertsState> {
         severity: parseAlertSeverityToOption(alert.severity)?.label || alert.severity,
       };
     });
-
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+    } = this.props;
+    const chartTimeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
     return getAlertsVisualizationSpec(visData, this.state.groupBy, {
-      timeUnit: this.state.timeUnit,
-      dateFormat: getDateFormatByTimeUnit(this.state.startTime, this.state.endTime),
+      timeUnit: chartTimeUnits.timeUnit,
+      dateFormat: chartTimeUnits.dateFormat,
+      domain: getDomainRange(
+        [dateTimeFilter.startTime, dateTimeFilter.endTime],
+        chartTimeUnits.timeUnit.unit
+      ),
     });
   }
 
@@ -313,13 +346,17 @@ class Alerts extends Component<AlertsProps, AlertsState> {
       recentlyUsedRanges = recentlyUsedRanges.slice(0, MAX_RECENTLY_USED_TIME_RANGES);
     const endTime = start === end ? DEFAULT_DATE_RANGE.end : end;
 
-    const timeUnit = getChartTimeUnit(start, endTime);
+    const timeUnits = getChartTimeUnit(start, endTime);
     this.setState({
-      startTime: start,
-      endTime: endTime,
       recentlyUsedRanges: recentlyUsedRanges,
-      timeUnit,
+      ...timeUnits,
     });
+
+    this.props.setDateTimeFilter &&
+      this.props.setDateTimeFilter({
+        startTime: start,
+        endTime: endTime,
+      });
   };
 
   onRefresh = async () => {
@@ -375,11 +412,15 @@ class Alerts extends Component<AlertsProps, AlertsState> {
       filteredAlerts,
       flyoutData,
       loading,
-      startTime,
-      endTime,
       recentlyUsedRanges,
     } = this.state;
 
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+    } = this.props;
     const severities = new Set();
     const statuses = new Set();
     filteredAlerts.forEach((alert) => {
@@ -455,8 +496,8 @@ class Alerts extends Component<AlertsProps, AlertsState> {
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
                 <EuiSuperDatePicker
-                  start={startTime}
-                  end={endTime}
+                  start={dateTimeFilter.startTime}
+                  end={dateTimeFilter.endTime}
                   recentlyUsedRanges={recentlyUsedRanges}
                   isLoading={loading}
                   onTimeChange={this.onTimeChange}
@@ -474,7 +515,7 @@ class Alerts extends Component<AlertsProps, AlertsState> {
                   {this.createGroupByControl()}
                 </EuiFlexItem>
                 <EuiFlexItem>
-                  <div id="alerts-view"></div>
+                  <ChartContainer chartViewId={'alerts-view'} loading={loading} />
                 </EuiFlexItem>
               </EuiFlexGroup>
             </EuiPanel>
@@ -491,6 +532,7 @@ class Alerts extends Component<AlertsProps, AlertsState> {
                 search={search}
                 sorting={sorting}
                 selection={selection}
+                loading={loading}
               />
             </ContentPanel>
           </EuiFlexItem>

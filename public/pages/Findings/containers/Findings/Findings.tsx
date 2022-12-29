@@ -28,12 +28,12 @@ import {
   DEFAULT_DATE_RANGE,
   MAX_RECENTLY_USED_TIME_RANGES,
   OS_NOTIFICATION_PLUGIN,
-  ROUTES,
 } from '../../../../utils/constants';
 import {
   getChartTimeUnit,
-  getDateFormatByTimeUnit,
+  getDomainRange,
   getFindingsVisualizationSpec,
+  TimeUnit,
 } from '../../../Overview/utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { Finding } from '../../models/interfaces';
@@ -51,7 +51,8 @@ import {
 } from '../../../../utils/helpers';
 import { DetectorHit, RuleSource } from '../../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { ruleSeverity } from '../../../Rules/utils/constants';
+import { DateTimeFilter } from '../../../Overview/models/interfaces';
+import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 
 interface FindingsProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -61,6 +62,8 @@ interface FindingsProps extends RouteComponentProps {
   ruleService: RuleService;
   notifications: NotificationsStart;
   match: match;
+  dateTimeFilter?: DateTimeFilter;
+  setDateTimeFilter?: Function;
 }
 
 interface FindingsState {
@@ -69,13 +72,12 @@ interface FindingsState {
   findings: FindingItemType[];
   notificationChannels: FeatureChannelList[];
   rules: { [id: string]: RuleSource };
-  startTime: string;
-  endTime: string;
   recentlyUsedRanges: DurationRange[];
   groupBy: FindingsGroupByType;
   filteredFindings: FindingItemType[];
   plugins: string[];
-  timeUnit: string;
+  timeUnit: TimeUnit;
+  dateFormat: string;
 }
 
 interface FindingVisualizationData {
@@ -99,19 +101,26 @@ class Findings extends Component<FindingsProps, FindingsState> {
 
   constructor(props: FindingsProps) {
     super(props);
+
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+    } = props;
+    const timeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
     this.state = {
-      loading: false,
+      loading: true,
       detectors: [],
       findings: [],
       notificationChannels: [],
       rules: {},
-      startTime: DEFAULT_DATE_RANGE.start,
-      endTime: DEFAULT_DATE_RANGE.end,
       recentlyUsedRanges: [DEFAULT_DATE_RANGE],
       groupBy: 'logType',
       filteredFindings: [],
       plugins: [],
-      timeUnit: 'yearmonthdatehoursminutes',
+      timeUnit: timeUnits.timeUnit,
+      dateFormat: timeUnits.dateFormat,
     };
   }
 
@@ -246,13 +255,17 @@ class Findings extends Component<FindingsProps, FindingsState> {
     if (recentlyUsedRanges.length > MAX_RECENTLY_USED_TIME_RANGES)
       recentlyUsedRanges = recentlyUsedRanges.slice(0, MAX_RECENTLY_USED_TIME_RANGES);
     const endTime = start === end ? DEFAULT_DATE_RANGE.end : end;
-    const timeUnit = getChartTimeUnit(start, endTime);
+    const timeUnits = getChartTimeUnit(start, endTime);
     this.setState({
-      startTime: start,
-      endTime: endTime,
       recentlyUsedRanges: recentlyUsedRanges,
-      timeUnit,
+      ...timeUnits,
     });
+
+    this.props.setDateTimeFilter &&
+      this.props.setDateTimeFilter({
+        startTime: start,
+        endTime: endTime,
+      });
   };
 
   generateVisualizationSpec() {
@@ -269,10 +282,20 @@ class Findings extends Component<FindingsProps, FindingsState> {
         ruleSeverity: this.state.rules[finding.queries[0].id].level,
       });
     });
-
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+    } = this.props;
+    const chartTimeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
     return getFindingsVisualizationSpec(visData, this.state.groupBy, {
-      timeUnit: this.state.timeUnit,
-      dateFormat: getDateFormatByTimeUnit(this.state.startTime, this.state.endTime),
+      timeUnit: chartTimeUnits.timeUnit,
+      dateFormat: chartTimeUnits.dateFormat,
+      domain: getDomainRange(
+        [dateTimeFilter.startTime, dateTimeFilter.endTime],
+        chartTimeUnits.timeUnit.unit
+      ),
     });
   }
 
@@ -293,16 +316,15 @@ class Findings extends Component<FindingsProps, FindingsState> {
   };
 
   render() {
-    const {
-      loading,
-      notificationChannels,
-      rules,
-      startTime,
-      endTime,
-      recentlyUsedRanges,
-    } = this.state;
+    const { loading, notificationChannels, rules, recentlyUsedRanges } = this.state;
     let { findings } = this.state;
 
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+    } = this.props;
     if (Object.keys(rules).length > 0) {
       findings = findings.map((finding) => {
         const rule = rules[finding.queries[0].id];
@@ -325,8 +347,8 @@ class Findings extends Component<FindingsProps, FindingsState> {
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
               <EuiSuperDatePicker
-                start={startTime}
-                end={endTime}
+                start={dateTimeFilter.startTime}
+                end={dateTimeFilter.endTime}
                 recentlyUsedRanges={recentlyUsedRanges}
                 isLoading={loading}
                 onTimeChange={this.onTimeChange}
@@ -344,7 +366,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
                 {this.createGroupByControl()}
               </EuiFlexItem>
               <EuiFlexItem>
-                <div id="findings-view" style={{ width: '100%' }}></div>
+                <ChartContainer chartViewId={'findings-view'} loading={loading} />
               </EuiFlexItem>
             </EuiFlexGroup>
           </EuiPanel>
@@ -359,8 +381,8 @@ class Findings extends Component<FindingsProps, FindingsState> {
               findings={findings}
               loading={loading}
               rules={rules}
-              startTime={startTime}
-              endTime={endTime}
+              startTime={dateTimeFilter.startTime}
+              endTime={dateTimeFilter.endTime}
               onRefresh={this.onRefresh}
               notificationChannels={parseNotificationChannelsToOptions(notificationChannels)}
               refreshNotificationChannels={this.getNotificationChannels}
