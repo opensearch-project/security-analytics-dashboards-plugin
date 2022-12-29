@@ -22,7 +22,7 @@ import {
 import { CoreStart } from 'opensearch-dashboards/public';
 import { ServicesConsumer } from '../../services';
 import { BrowserServices } from '../../models/interfaces';
-import { ROUTES } from '../../utils/constants';
+import { DEFAULT_DATE_RANGE, ROUTES } from '../../utils/constants';
 import { CoreServicesConsumer } from '../../components/core_services';
 import Findings from '../Findings';
 import Detectors from '../Detectors';
@@ -39,6 +39,7 @@ import { CreateRule } from '../Rules/containers/CreateRule/CreateRule';
 import { EditRule } from '../Rules/containers/EditRule/EditRule';
 import { ImportRule } from '../Rules/containers/ImportRule/ImportRule';
 import { DuplicateRule } from '../Rules/containers/DuplicateRule/DuplicateRule';
+import { DateTimeFilter } from '../Overview/models/interfaces';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -67,6 +68,7 @@ interface MainProps extends RouteComponentProps {
 interface MainState {
   getStartedDismissedOnce: boolean;
   selectedNavItemIndex: number;
+  dateTimeFilter: DateTimeFilter;
 }
 
 const navItemIndexByRoute: { [route: string]: number } = {
@@ -83,6 +85,10 @@ export default class Main extends Component<MainProps, MainState> {
     this.state = {
       getStartedDismissedOnce: false,
       selectedNavItemIndex: 1,
+      dateTimeFilter: {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
     };
   }
 
@@ -101,6 +107,12 @@ export default class Main extends Component<MainProps, MainState> {
 
     this.updateSelectedNavItem();
   }
+
+  setDateTimeFilter = (dateTimeFilter: DateTimeFilter) => {
+    this.setState({
+      dateTimeFilter: dateTimeFilter,
+    });
+  };
 
   /**
    * Returns current component route index
@@ -215,6 +227,7 @@ export default class Main extends Component<MainProps, MainState> {
         ],
       },
     ];
+
     return (
       <CoreServicesConsumer>
         {(core: CoreStart | null) =>
@@ -260,6 +273,8 @@ export default class Main extends Component<MainProps, MainState> {
                           render={(props: RouteComponentProps) => (
                             <Findings
                               {...props}
+                              setDateTimeFilter={this.setDateTimeFilter}
+                              dateTimeFilter={this.state.dateTimeFilter}
                               findingsService={services.findingsService}
                               opensearchService={services.opensearchService}
                               detectorService={services.detectorsService}
@@ -355,6 +370,8 @@ export default class Main extends Component<MainProps, MainState> {
                           render={(props: RouteComponentProps) => (
                             <Overview
                               {...props}
+                              setDateTimeFilter={this.setDateTimeFilter}
+                              dateTimeFilter={this.state.dateTimeFilter}
                               getStartedDismissedOnce={this.state.getStartedDismissedOnce}
                               onGetStartedDismissed={this.setGetStartedDismissedOnce}
                               notifications={core?.notifications}
@@ -366,6 +383,8 @@ export default class Main extends Component<MainProps, MainState> {
                           render={(props: RouteComponentProps) => (
                             <Alerts
                               {...props}
+                              setDateTimeFilter={this.setDateTimeFilter}
+                              dateTimeFilter={this.state.dateTimeFilter}
                               alertService={services.alertService}
                               detectorService={services.detectorsService}
                               findingService={services.findingsService}
