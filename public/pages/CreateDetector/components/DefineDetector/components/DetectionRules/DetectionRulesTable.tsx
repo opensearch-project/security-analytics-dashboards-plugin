@@ -4,7 +4,7 @@
  */
 
 import { CriteriaWithPagination, EuiInMemoryTable } from '@elastic/eui';
-import React from 'react';
+import React, { useState } from 'react';
 import { RuleItem } from './types/interfaces';
 import { getRulesColumns } from './utils/constants';
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
@@ -70,11 +70,16 @@ export const DetectionRulesTable: React.FC<DetectionRulesTableProps> = ({
       },
     ],
   };
-
+  const [pagination, setPagination] = useState({ pageIndex: pageIndex || 0 });
   const allRulesEnabled = ruleItems.every((item) => item.active);
   ruleItems.sort((a, b) => {
     return (rulePriorityBySeverity[a.severity] || 6) - (rulePriorityBySeverity[b.severity] || 6);
   });
+
+  const onTableChangeHandler = (pagination: CriteriaWithPagination<T>) => {
+    setPagination({ pageIndex: pagination.page.index });
+    onTableChange && onTableChange(pagination);
+  };
 
   return (
     <div style={{ padding: 10 }}>
@@ -88,14 +93,8 @@ export const DetectionRulesTable: React.FC<DetectionRulesTableProps> = ({
         items={ruleItems}
         itemId={(item: RuleItem) => `${item.name}`}
         search={search}
-        pagination={
-          pageIndex !== undefined
-            ? {
-                pageIndex,
-              }
-            : true
-        }
-        onTableChange={onTableChange}
+        pagination={pagination}
+        onTableChange={onTableChangeHandler}
         loading={loading}
         data-test-subj={'edit-detector-rules-table'}
       />
