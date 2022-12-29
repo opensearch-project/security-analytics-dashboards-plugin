@@ -5,7 +5,17 @@
 
 import React, { useState } from 'react';
 import { load } from 'js-yaml';
-import { EuiFormRow, EuiCodeEditor, EuiLink, EuiSpacer, EuiText, EuiForm } from '@elastic/eui';
+import {
+  EuiFormRow,
+  EuiCodeEditor,
+  EuiLink,
+  EuiSpacer,
+  EuiText,
+  EuiForm,
+  EuiFlexGroup,
+  EuiButton,
+  EuiFlexItem,
+} from '@elastic/eui';
 import FormFieldHeader from '../../../../components/FormFieldHeader';
 import { Rule } from '../../../../../models/interfaces';
 import {
@@ -25,6 +35,9 @@ import {
 export interface YamlRuleEditorProps {
   rule: Rule;
   change: React.Dispatch<Rule>;
+  submit: () => void;
+  cancel: () => void;
+  mode: 'create' | 'edit';
 }
 
 export interface YamlEditorState {
@@ -68,7 +81,13 @@ const validateRule = (rule: Rule): string[] | null => {
   return null;
 };
 
-export const YamlRuleEditor: React.FC<YamlRuleEditorProps> = ({ rule, change }) => {
+export const YamlRuleEditor: React.FC<YamlRuleEditorProps> = ({
+  rule,
+  change,
+  submit,
+  cancel,
+  mode,
+}) => {
   const yamlObject = mapRuleToYamlObject(rule);
 
   const [state, setState] = useState<YamlEditorState>({
@@ -90,6 +109,8 @@ export const YamlRuleEditor: React.FC<YamlRuleEditorProps> = ({ rule, change }) 
 
       const rule = mapYamlObjectToRule(yamlObject);
 
+      change(rule);
+
       const errors = validateRule(rule);
 
       if (errors && errors.length > 0) {
@@ -97,7 +118,6 @@ export const YamlRuleEditor: React.FC<YamlRuleEditorProps> = ({ rule, change }) 
         return;
       }
 
-      change(rule);
       setState((prevState) => ({ ...prevState, errors: null }));
     } catch (error) {
       setState((prevState) => ({ ...prevState, errors: ['Invalid YAML'] }));
@@ -136,6 +156,19 @@ export const YamlRuleEditor: React.FC<YamlRuleEditorProps> = ({ rule, change }) 
             />
           </>
         </EuiFormRow>
+
+        <EuiSpacer />
+
+        <EuiFlexGroup justifyContent="flexEnd">
+          <EuiFlexItem grow={false}>
+            <EuiButton onClick={cancel}>Cancel</EuiButton>
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>
+            <EuiButton onClick={submit} fill data-test-subj={'submit_rule_form_button'}>
+              {mode === 'create' ? 'Create' : 'Save changes'}
+            </EuiButton>
+          </EuiFlexItem>
+        </EuiFlexGroup>
       </EuiForm>
     </>
   );
