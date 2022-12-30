@@ -17,6 +17,7 @@ import {
   EuiComboBox,
   EuiCodeEditor,
   EuiButtonGroup,
+  EuiText,
 } from '@elastic/eui';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { FieldTextArray } from './FieldTextArray';
@@ -148,7 +149,11 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                 <EuiFlexGroup component="span">
                   <EuiFlexItem grow={false} style={{ minWidth: 400 }}>
                     <EuiFormRow
-                      label="Rule name"
+                      label={
+                        <EuiText size={'s'}>
+                          <strong>Rule name</strong>
+                        </EuiText>
+                      }
                       isInvalid={props.touched.name && !!props.errors?.name}
                       error={props.errors.name}
                     >
@@ -166,7 +171,11 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                   </EuiFlexItem>
                   <EuiFlexItem>
                     <EuiFormRow
-                      label="Log type"
+                      label={
+                        <EuiText size={'s'}>
+                          <strong>Log type</strong>
+                        </EuiText>
+                      }
                       isInvalid={props.touched.logType && !!props.errors?.logType}
                       error={props.errors.logType}
                     >
@@ -193,7 +202,12 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                 <EuiSpacer />
 
                 <EuiFormRow
-                  label="Description - optional"
+                  label={
+                    <EuiText size={'s'}>
+                      <strong>Description </strong>
+                      <i>- optional</i>
+                    </EuiText>
+                  }
                   fullWidth
                   isInvalid={!!props.errors?.description}
                   error={props.errors.description}
@@ -211,7 +225,11 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                 <EuiSpacer />
 
                 <EuiFormRow
-                  label="Detection"
+                  label={
+                    <EuiText size={'s'}>
+                      <strong>Detection</strong>
+                    </EuiText>
+                  }
                   isInvalid={props.touched.detection && !!props.errors?.detection}
                   error={props.errors.detection}
                 >
@@ -229,7 +247,11 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                 <EuiSpacer />
 
                 <EuiFormRow
-                  label="Rule level"
+                  label={
+                    <EuiText size={'s'}>
+                      <strong>Rule level</strong>
+                    </EuiText>
+                  }
                   isInvalid={props.touched.level && !!props.errors?.level}
                   error={props.errors.level}
                 >
@@ -258,7 +280,14 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
                 <EuiSpacer />
 
-                <EuiFormRow label="Tags - optional">
+                <EuiFormRow
+                  label={
+                    <EuiText size={'s'}>
+                      <strong>Tags </strong>
+                      <i>- optional</i>
+                    </EuiText>
+                  }
+                >
                   <EuiComboBox
                     placeholder="Select or create options"
                     onChange={(value) => {
@@ -276,7 +305,13 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
                 <EuiSpacer />
                 <FieldTextArray
-                  label="References - optional"
+                  name="references"
+                  label={
+                    <EuiText size={'s'}>
+                      <strong>References </strong>
+                      <i>- optional</i>
+                    </EuiText>
+                  }
                   addButtonName="Add another URL"
                   fields={props.values.references}
                   onFieldAdd={() => {
@@ -299,7 +334,13 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                 />
 
                 <FieldTextArray
-                  label="False positive cases - optional"
+                  name="false_positives"
+                  label={
+                    <EuiText size={'s'}>
+                      <strong>False positive cases </strong>
+                      <i>- optional</i>
+                    </EuiText>
+                  }
                   addButtonName="Add another case"
                   fields={props.values.falsePositives}
                   onFieldAdd={() => {
@@ -322,7 +363,11 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                 />
 
                 <EuiFormRow
-                  label="Author"
+                  label={
+                    <EuiText size={'s'}>
+                      <strong>Author</strong>
+                    </EuiText>
+                  }
                   isInvalid={props.touched.author && !!props.errors?.author}
                   error={props.errors.author}
                 >
@@ -341,7 +386,11 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                 <EuiSpacer />
 
                 <EuiFormRow
-                  label="Rule Status"
+                  label={
+                    <EuiText size={'s'}>
+                      <strong>Rule Status</strong>
+                    </EuiText>
+                  }
                   isInvalid={props.touched.status && !!props.errors?.status}
                   error={props.errors.status}
                 >
