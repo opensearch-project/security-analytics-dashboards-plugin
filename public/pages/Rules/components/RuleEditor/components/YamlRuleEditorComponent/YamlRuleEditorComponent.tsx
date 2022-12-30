@@ -91,10 +91,10 @@ export const YamlRuleEditorComponent: React.FC<YamlRuleEditorComponentProps> = (
 
   return (
     <>
+      {renderErrors()}
+      <EuiSpacer size="s" />
       <EuiFormRow label={<FormFieldHeader headerTitle={'Define rule in YAML'} />} fullWidth={true}>
         <>
-          {renderErrors()}
-
           <EuiSpacer />
           <EuiText size="s" color="subdued">
             Use the YAML editor to define a sigma rule. See{' '}

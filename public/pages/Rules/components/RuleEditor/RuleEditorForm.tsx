@@ -55,7 +55,7 @@ const editorTypes = [
 ];
 
 export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
-  initialValue: ruleEditorFormState,
+  initialValue,
   notifications,
   submit,
   cancel,
@@ -70,7 +70,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
   return (
     <Formik
-      initialValues={ruleEditorFormState}
+      initialValues={initialValue}
       validate={(values) => {
         const errors: FormikErrors<RuleEditorFormModel> = {};
 
