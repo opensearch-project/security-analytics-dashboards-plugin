@@ -13,6 +13,9 @@ import { Detector } from '../../../../../models/interfaces';
 import { RuleInfo } from '../../../../../server/models/interfaces';
 import { errorNotificationToast, translateToRuleItems } from '../../../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { RulesTable } from '../../../Rules/components/RulesTable/RulesTable';
+import { RuleTableItem } from '../../../Rules/utils/helpers';
+import { RuleViewerFlyout } from '../../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
 
 export interface DetectorRulesViewProps {
   detector: Detector;
@@ -20,6 +23,18 @@ export interface DetectorRulesViewProps {
   onEditClicked: (enabledRules: RuleItem[], allRuleItems: RuleItem[]) => void;
   notifications: NotificationsStart;
 }
+
+const mapRuleItemToRuleTableItem = (ruleItem: RuleItem): RuleTableItem => {
+  return {
+    title: ruleItem.name,
+    level: ruleItem.severity,
+    category: ruleItem.logType,
+    description: ruleItem.description,
+    source: ruleItem.library,
+    ruleId: ruleItem.id,
+    ruleInfo: { ...ruleItem.ruleInfo, prePackaged: ruleItem.library === 'Sigma' },
+  };
+};
 
 export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
   const totalSelected = props.detector.inputs.reduce((sum, inputObj) => {
@@ -30,6 +45,7 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
     );
   }, 0);
 
+  const [flyoutData, setFlyoutData] = useState<RuleTableItem | null>(null);
   const [enabledRuleItems, setEnabledRuleItems] = useState<RuleItem[]>([]);
   const [allRuleItems, setAllRuleItems] = useState<RuleItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -125,22 +141,44 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
 
   const getDetectionRulesTitle = () => `View detection rules (${totalSelected})`;
 
-  return props.rulesCanFold ? (
-    <EuiAccordion
-      id={props.detector.name}
-      title={getDetectionRulesTitle()}
-      buttonContent={
-        <EuiText size="m">
-          <p>{getDetectionRulesTitle()}</p>
-        </EuiText>
-      }
-    >
-      <EuiSpacer size="l" />
-      {rules}
-    </EuiAccordion>
-  ) : (
-    <ContentPanel title={`Active rules (${totalSelected})`} actions={actions}>
-      {rules}
-    </ContentPanel>
+  const onShowRuleDetails = (rule: RuleTableItem) => {
+    setFlyoutData(() => rule);
+  };
+
+  return (
+    <>
+      {flyoutData ? (
+        <RuleViewerFlyout
+          hideFlyout={() => setFlyoutData(() => null)}
+          history={null as any}
+          ruleTableItem={flyoutData}
+          ruleService={null as any}
+          notifications={props.notifications}
+        />
+      ) : null}
+      {props.rulesCanFold ? (
+        <EuiAccordion
+          id={props.detector.name}
+          title={getDetectionRulesTitle()}
+          buttonContent={
+            <EuiText size="m">
+              <p>{getDetectionRulesTitle()}</p>
+            </EuiText>
+          }
+        >
+          <EuiSpacer size="l" />
+          <RulesTable
+            loading={loading}
+            ruleItems={enabledRuleItems.map((i) => mapRuleItemToRuleTableItem(i))}
+            showRuleDetails={onShowRuleDetails}
+          />
+          {rules}
+        </EuiAccordion>
+      ) : (
+        <ContentPanel title={`Active rules (${totalSelected})`} actions={actions}>
+          {rules}
+        </ContentPanel>
+      )}
+    </>
   );
 };

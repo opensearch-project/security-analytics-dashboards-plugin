@@ -7,10 +7,17 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { RouteComponentProps } from 'react-router-dom';
 import { OverviewViewModel } from './OverviewViewModel';
 
+export interface DateTimeFilter {
+  startTime: string;
+  endTime: string;
+}
+
 export interface OverviewProps extends RouteComponentProps {
   getStartedDismissedOnce: boolean;
   onGetStartedDismissed: () => void;
   notifications?: NotificationsStart;
+  setDateTimeFilter?: Function;
+  dateTimeFilter?: DateTimeFilter;
 }
 
 export interface OverviewState {
