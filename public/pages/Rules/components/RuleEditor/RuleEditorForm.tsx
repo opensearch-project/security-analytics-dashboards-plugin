@@ -30,7 +30,7 @@ import {
   validateName,
 } from '../../../../utils/validation';
 import { RuleEditorFormModel } from './RuleEditorFormModel';
-import { FormSubmitionErrorToastNotification } from './FormSubmitionErrorToastNotification';
+import { FormSubmissionErrorToastNotification } from './FormSubmitionErrorToastNotification';
 import { YamlRuleEditorComponent } from './components/YamlRuleEditorComponent/YamlRuleEditorComponent';
 import { mapFormToRule, mapRuleToForm } from './mappers';
 
@@ -142,7 +142,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                 }}
               ></YamlRuleEditorComponent>
             )}
-            <FormSubmitionErrorToastNotification notifications={notifications} />
+            <FormSubmissionErrorToastNotification notifications={notifications} />
             {selectedEditorType === 'visual' && (
               <>
                 <EuiFlexGroup component="span">
