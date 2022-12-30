@@ -34,7 +34,7 @@ import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components
 import { DetectorsService } from '../../../../services';
 import { DetectorHit } from '../../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { ruleTypes } from "../../../Rules/utils/constants";
+import { ruleTypes } from '../../../Rules/utils/constants';
 
 interface DetectorsProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -274,7 +274,8 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
         sortable: true,
         dataType: 'string',
         render: (logType: string) =>
-          ruleTypes.find(ruleType => ruleType.value === logType.toLowerCase())?.label || DEFAULT_EMPTY_DATA,
+          ruleTypes.find((ruleType) => ruleType.value === logType.toLowerCase())?.label ||
+          DEFAULT_EMPTY_DATA,
       },
       {
         field: 'rulesCount',
@@ -321,7 +322,9 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
           name: 'Log type',
           options: logType.map((logType) => ({
             value: logType,
-            name: ruleTypes.find(ruleType => ruleType.value === logType.toLowerCase())?.label || DEFAULT_EMPTY_DATA,
+            name:
+              ruleTypes.find((ruleType) => ruleType.value === logType.toLowerCase())?.label ||
+              DEFAULT_EMPTY_DATA,
           })),
           multiSelect: 'or',
         } as FieldValueSelectionFilterConfigType,

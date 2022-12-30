@@ -11,7 +11,7 @@ import { TableWidget } from './TableWidget';
 import { WidgetContainer } from './WidgetContainer';
 import { DetectorHit } from '../../../../../server/models/interfaces';
 import { RouteComponentProps } from 'react-router-dom';
-import { ruleTypes } from "../../../Rules/utils/constants";
+import { ruleTypes } from '../../../Rules/utils/constants';
 
 type DetectorIdToHit = { [id: string]: DetectorHit };
 
@@ -39,7 +39,7 @@ const getColumns = (
     sortable: true,
     align: 'left',
     render: (logType: string) =>
-      ruleTypes.find(ruleType => ruleType.value === logType)?.label || DEFAULT_EMPTY_DATA,
+      ruleTypes.find((ruleType) => ruleType.value === logType)?.label || DEFAULT_EMPTY_DATA,
   },
 ];
 
