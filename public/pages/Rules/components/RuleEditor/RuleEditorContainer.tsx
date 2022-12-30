@@ -39,7 +39,7 @@ export const RuleEditorContainer: React.FC<RuleEditorProps> = ({
   ruleService,
   mode,
 }) => {
-  const ruleEditorFormState = rule
+  const initialRuleValue = rule
     ? { ...mapRuleToForm(rule), id: ruleEditorStateDefaultValue.id }
     : ruleEditorStateDefaultValue;
 
@@ -82,7 +82,7 @@ export const RuleEditorContainer: React.FC<RuleEditorProps> = ({
         title={title}
         mode={mode}
         notifications={notifications}
-        ruleEditorFormState={ruleEditorFormState}
+        initialValue={initialRuleValue}
         cancel={goToRulesList}
         submit={onSubmit}
       />

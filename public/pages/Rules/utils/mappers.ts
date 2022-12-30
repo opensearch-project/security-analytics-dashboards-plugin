@@ -24,16 +24,16 @@ export const mapRuleToYamlObject = (rule: Rule): any => {
   }
 
   const yamlObject: any = {
-    id: rule.id,
-    logsource: { product: rule.category },
-    title: rule.title,
-    description: rule.description,
+    id: rule.id || '',
+    logsource: { product: rule.category || '' },
+    title: rule.title || '',
+    description: rule.description || '',
     tags: rule.tags.map((tag) => tag.value),
     falsepositives: rule.false_positives.map((falsePositive) => falsePositive.value),
-    level: rule.level,
-    status: rule.status,
+    level: rule.level || '',
+    status: rule.status || '',
     references: rule.references.map((reference) => reference.value),
-    author: rule.author,
+    author: rule.author || '',
     detection,
   };
 

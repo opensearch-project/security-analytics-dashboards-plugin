@@ -35,7 +35,7 @@ import { YamlRuleEditorComponent } from './components/YamlRuleEditorComponent/Ya
 import { mapFormToRule, mapRuleToForm } from './mappers';
 
 export interface VisualRuleEditorProps {
-  ruleEditorFormState: RuleEditorFormModel;
+  initialValue: RuleEditorFormModel;
   notifications?: NotificationsStart;
   submit: (values: RuleEditorFormModel) => void;
   cancel: () => void;
@@ -55,7 +55,7 @@ const editorTypes = [
 ];
 
 export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
-  ruleEditorFormState,
+  initialValue: ruleEditorFormState,
   notifications,
   submit,
   cancel,
@@ -82,7 +82,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
           }
         }
 
-        if (!validateDescription(values.description)) {
+        if (values.description && !validateDescription(values.description)) {
           errors.description = descriptionErrorString;
         }
 
@@ -218,7 +218,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                   <EuiCodeEditor
                     mode="yaml"
                     width="100%"
-                    value={ruleEditorFormState.detection}
+                    value={props.values.detection}
                     onChange={(value) => {
                       props.handleChange('detection')(value);
                     }}

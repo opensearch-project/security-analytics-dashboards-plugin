@@ -9,14 +9,6 @@ import { EuiFormRow, EuiCodeEditor, EuiLink, EuiSpacer, EuiText, EuiCallOut } fr
 import FormFieldHeader from '../../../../../../components/FormFieldHeader';
 import { Rule } from '../../../../../../../models/interfaces';
 import {
-  AUTHOR_REGEX,
-  validateDescription,
-  validateName,
-  authorErrorString,
-  descriptionErrorString,
-  titleErrorString,
-} from '../../../../../../utils/validation';
-import {
   mapRuleToYamlObject,
   mapYamlObjectToYamlString,
   mapYamlObjectToRule,
@@ -33,42 +25,6 @@ export interface YamlEditorState {
   errors: string[] | null;
   value?: string;
 }
-
-const validateRule = (rule: Rule): string[] | null => {
-  const requiredFiledsValidationErrors: Array<string> = [];
-
-  if (!rule.title) {
-    requiredFiledsValidationErrors.push('Title is required');
-  }
-  if (!rule.category) {
-    requiredFiledsValidationErrors.push('Logsource is required');
-  }
-  if (!rule.level) {
-    requiredFiledsValidationErrors.push('Level is required');
-  }
-  if (!rule.author) {
-    requiredFiledsValidationErrors.push('Author is required');
-  }
-  if (!rule.status) {
-    requiredFiledsValidationErrors.push('Status is required');
-  }
-
-  if (requiredFiledsValidationErrors.length > 0) {
-    return requiredFiledsValidationErrors;
-  }
-
-  if (!validateName(rule.title, AUTHOR_REGEX)) {
-    return [titleErrorString];
-  }
-  if (!validateDescription(rule.description)) {
-    return [descriptionErrorString];
-  }
-  if (!validateName(rule.author, AUTHOR_REGEX)) {
-    return [authorErrorString];
-  }
-
-  return null;
-};
 
 export const YamlRuleEditorComponent: React.FC<YamlRuleEditorComponentProps> = ({
   rule,
@@ -99,13 +55,6 @@ export const YamlRuleEditorComponent: React.FC<YamlRuleEditorComponentProps> = (
 
       change(rule);
 
-      const errors = validateRule(rule);
-
-      if (errors && errors.length > 0) {
-        setState((prevState) => ({ ...prevState, errors: errors }));
-        return;
-      }
-
       setState((prevState) => ({ ...prevState, errors: null }));
     } catch (error) {
       setState((prevState) => ({ ...prevState, errors: ['Invalid YAML'] }));
@@ -114,19 +63,37 @@ export const YamlRuleEditorComponent: React.FC<YamlRuleEditorComponentProps> = (
     }
   };
 
+  const renderErrors = () => {
+    if (state.errors && state.errors.length > 0) {
+      return (
+        <EuiCallOut size="m" color="danger" title="Please address the highlighted errors.">
+          <ul>
+            {state.errors.map((error, i) => (
+              <li key={i}>{error}</li>
+            ))}
+          </ul>
+        </EuiCallOut>
+      );
+    } else if (isInvalid && errors && errors.length > 0) {
+      return (
+        <EuiCallOut size="m" color="danger" title="Please address the highlighted errors.">
+          <ul>
+            {errors.map((error, i) => (
+              <li key={i}>{error}</li>
+            ))}
+          </ul>
+        </EuiCallOut>
+      );
+    } else {
+      return null;
+    }
+  };
+
   return (
     <>
       <EuiFormRow label={<FormFieldHeader headerTitle={'Define rule in YAML'} />} fullWidth={true}>
         <>
-          {errors && errors.length > 0 && (
-            <EuiCallOut size="m" color="danger" title="Please address the highlighted errors.">
-              <ul>
-                {errors.map((error, i) => (
-                  <li key={i}>{error}</li>
-                ))}
-              </ul>
-            </EuiCallOut>
-          )}
+          {renderErrors()}
 
           <EuiSpacer />
           <EuiText size="s" color="subdued">
