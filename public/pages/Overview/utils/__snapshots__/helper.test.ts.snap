@@ -16,7 +16,7 @@ Object {
       "titlePadding": 10,
     },
     "view": Object {
-      "stroke": null,
+      "stroke": "transparent",
     },
   },
   "data": Object {
@@ -43,7 +43,6 @@ Object {
             ],
           },
           "title": "Alert severity",
-          "type": "nominal",
         },
         "opacity": Object {
           "condition": Object {
@@ -55,32 +54,58 @@ Object {
         "tooltip": Array [
           Object {
             "aggregate": "sum",
+            "axis": Object {
+              "grid": true,
+            },
             "field": "alert",
             "title": "Alerts",
+            "type": "quantitative",
+          },
+          Object {
+            "field": "time",
+            "format": "%Y-%m-%d %H:%M:%S",
+            "timeUnit": Object {
+              "step": 1,
+              "unit": "yearmonthdatehoursminutes",
+            },
+            "title": "Time",
+            "type": "temporal",
+          },
+          Object {
+            "field": "",
+            "title": "Alert severity",
           },
         ],
         "x": Object {
           "axis": Object {
             "format": "%Y-%m-%d %H:%M",
             "grid": false,
-            "ticks": false,
           },
           "field": "time",
-          "timeUnit": "yearmonthdatehoursminutes",
+          "scale": Object {
+            "domain": undefined,
+          },
+          "timeUnit": Object {
+            "step": 1,
+            "unit": "yearmonthdatehoursminutes",
+          },
           "title": "",
+          "type": "temporal",
         },
         "y": Object {
           "aggregate": "sum",
           "axis": Object {
             "grid": true,
-            "ticks": false,
           },
           "field": "alert",
           "title": "Count",
           "type": "quantitative",
         },
       },
-      "mark": "bar",
+      "mark": Object {
+        "clip": true,
+        "type": "bar",
+      },
       "selection": Object {
         "series": Object {
           "bind": "legend",
@@ -112,7 +137,7 @@ Object {
       "titlePadding": 10,
     },
     "view": Object {
-      "stroke": null,
+      "stroke": "transparent",
     },
   },
   "data": Object {
@@ -139,7 +164,6 @@ Object {
             ],
           },
           "title": "Rule severity",
-          "type": "nominal",
         },
         "opacity": Object {
           "condition": Object {
@@ -151,9 +175,26 @@ Object {
         "tooltip": Array [
           Object {
             "aggregate": "sum",
+            "axis": Object {
+              "grid": true,
+            },
             "field": "finding",
             "title": "Findings",
             "type": "quantitative",
+          },
+          Object {
+            "field": "time",
+            "format": "%Y-%m-%d %H:%M:%S",
+            "timeUnit": Object {
+              "step": 1,
+              "unit": "yearmonthdatehoursminutes",
+            },
+            "title": "Time",
+            "type": "temporal",
+          },
+          Object {
+            "field": "",
+            "title": "Rule severity",
           },
         ],
         "x": Object {
@@ -162,21 +203,30 @@ Object {
             "grid": false,
           },
           "field": "time",
-          "timeUnit": "yearmonthdatehoursminutes",
+          "scale": Object {
+            "domain": undefined,
+          },
+          "timeUnit": Object {
+            "step": 1,
+            "unit": "yearmonthdatehoursminutes",
+          },
           "title": "",
+          "type": "temporal",
         },
         "y": Object {
           "aggregate": "sum",
           "axis": Object {
             "grid": true,
-            "ticks": false,
           },
           "field": "finding",
           "title": "Count",
           "type": "quantitative",
         },
       },
-      "mark": "bar",
+      "mark": Object {
+        "clip": true,
+        "type": "bar",
+      },
       "selection": Object {
         "series": Object {
           "bind": "legend",
@@ -208,7 +258,7 @@ Object {
       "titlePadding": 10,
     },
     "view": Object {
-      "stroke": null,
+      "stroke": "transparent",
     },
   },
   "data": Object {
@@ -218,52 +268,60 @@ Object {
   "layer": Array [
     Object {
       "encoding": Object {
-        "opacity": Object {
-          "condition": Object {
-            "selection": "series",
-            "value": 1,
-          },
-          "value": 0.2,
+        "color": Object {
+          "scale": null,
+          "value": "#6092C0",
         },
         "tooltip": Array [
           Object {
             "aggregate": "sum",
+            "axis": Object {
+              "grid": true,
+            },
             "field": "finding",
             "title": "Findings",
             "type": "quantitative",
+          },
+          Object {
+            "field": "time",
+            "format": "%Y-%m-%d %H:%M:%S",
+            "timeUnit": Object {
+              "step": 1,
+              "unit": "yearmonthdatehoursminutes",
+            },
+            "title": "Time",
+            "type": "temporal",
           },
         ],
         "x": Object {
           "axis": Object {
             "format": "%Y-%m-%d %H:%M",
             "grid": false,
-            "ticks": false,
           },
           "field": "time",
-          "timeUnit": "yearmonthdatehoursminutes",
+          "scale": Object {
+            "domain": undefined,
+          },
+          "timeUnit": Object {
+            "step": 1,
+            "unit": "yearmonthdatehoursminutes",
+          },
           "title": "",
+          "type": "temporal",
         },
         "y": Object {
           "aggregate": "sum",
           "axis": Object {
             "grid": true,
-            "ticks": false,
           },
           "field": "finding",
           "title": "Count",
           "type": "quantitative",
         },
       },
-      "mark": "bar",
-      "selection": Object {
-        "series": Object {
-          "bind": "legend",
-          "encodings": Array [
-            "color",
-          ],
-          "on": "click",
-          "type": "multi",
-        },
+      "mark": Object {
+        "clip": true,
+        "type": "bar",
       },
     },
     Object {
@@ -271,35 +329,60 @@ Object {
         "tooltip": Array [
           Object {
             "aggregate": "sum",
+            "axis": Object {
+              "grid": true,
+            },
             "field": "alert",
             "title": "Alerts",
+            "type": "quantitative",
+          },
+          Object {
+            "field": "time",
+            "format": "%Y-%m-%d %H:%M:%S",
+            "timeUnit": Object {
+              "step": 1,
+              "unit": "yearmonthdatehoursminutes",
+            },
+            "title": "Time",
+            "type": "temporal",
           },
         ],
         "x": Object {
           "axis": Object {
             "format": "%Y-%m-%d %H:%M",
             "grid": false,
-            "ticks": false,
           },
+          "band": 0.5,
           "field": "time",
-          "timeUnit": "yearmonthdatehoursminutes",
+          "scale": Object {
+            "domain": undefined,
+          },
+          "timeUnit": Object {
+            "step": 1,
+            "unit": "yearmonthdatehoursminutes",
+          },
           "title": "",
+          "type": "temporal",
         },
         "y": Object {
           "aggregate": "sum",
           "axis": Object {
             "grid": true,
-            "ticks": false,
           },
           "field": "alert",
           "title": "Count",
+          "type": "quantitative",
         },
       },
       "mark": Object {
+        "clip": true,
         "color": "#ff0000",
+        "interpolate": "monotone",
         "point": Object {
-          "fill": "#ff0000",
-          "filled": true,
+          "color": "#ff0000",
+          "fill": "white",
+          "filled": false,
+          "size": 50,
         },
         "type": "line",
       },
@@ -307,6 +390,8 @@ Object {
   ],
 }
 `;
+
+exports[`helper utilities spec tests getTimeWithMinPrecision function  - test should be with minutes and seconds eq to 0: 01:00:00 1`] = `NaN`;
 
 exports[`helper utilities spec tests getVisualizationSpec function  - snapshot test: should match visualization spec 1`] = `
 Object {
@@ -324,7 +409,7 @@ Object {
       "titlePadding": 10,
     },
     "view": Object {
-      "stroke": null,
+      "stroke": "transparent",
     },
   },
   "data": Object {

@@ -33,6 +33,7 @@ import { Detector } from '../../../../../models/interfaces';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { Finding } from '../../../Findings/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { RulesViewModelActor } from '../../../Rules/models/RulesViewModelActor';
 
 export interface AlertFlyoutProps {
   alertItem: AlertItem;
@@ -54,8 +55,12 @@ export interface AlertFlyoutState {
 }
 
 export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutState> {
+  private rulesViewModelActor: RulesViewModelActor;
+
   constructor(props: AlertFlyoutProps) {
     super(props);
+
+    this.rulesViewModelActor = new RulesViewModelActor(props.ruleService);
 
     this.state = {
       acknowledged: props.alertItem.state === ALERT_STATE.ACKNOWLEDGED,
@@ -98,50 +103,22 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
   };
 
   getRules = async () => {
-    const { notifications, ruleService } = this.props;
+    const { notifications } = this.props;
     try {
       const { findingItems } = this.state;
       const ruleIds: string[] = [];
       findingItems.forEach((finding) => {
         finding.queries.forEach((query) => ruleIds.push(query.id));
       });
-      const body = {
-        from: 0,
-        size: 5000,
-        query: {
-          nested: {
-            path: 'rule',
-            query: {
-              terms: {
-                _id: ruleIds,
-              },
-            },
-          },
-        },
-      };
 
       if (ruleIds.length > 0) {
-        const prePackagedResponse = await ruleService.getRules(true, body);
-        const customResponse = await ruleService.getRules(false, body);
+        const rulesResponse = await this.rulesViewModelActor.fetchRules({
+          _id: ruleIds,
+        });
 
         const allRules: { [id: string]: RuleSource } = {};
-        if (prePackagedResponse.ok) {
-          prePackagedResponse.response.hits.hits.forEach(
-            (hit) => (allRules[hit._id] = hit._source)
-          );
-        } else {
-          errorNotificationToast(
-            notifications,
-            'retrieve',
-            'pre-packaged rules',
-            prePackagedResponse.error
-          );
-        }
-        if (customResponse.ok) {
-          customResponse.response.hits.hits.forEach((hit) => (allRules[hit._id] = hit._source));
-        } else {
-          errorNotificationToast(notifications, 'retrieve', 'custom rules', customResponse.error);
-        }
+        rulesResponse.forEach((hit) => (allRules[hit._id] = hit._source));
+
         this.setState({ rules: allRules });
       }
     } catch (e: any) {

@@ -53,6 +53,7 @@ import { DetectorHit, RuleSource } from '../../../../../server/models/interfaces
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { DateTimeFilter } from '../../../Overview/models/interfaces';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
+import { RulesViewModelActor } from '../../../Rules/models/RulesViewModelActor';
 
 interface FindingsProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -98,10 +99,12 @@ export const groupByOptions = [
 
 class Findings extends Component<FindingsProps, FindingsState> {
   static contextType = CoreServicesContext;
+  private rulesViewModelActor: RulesViewModelActor;
 
   constructor(props: FindingsProps) {
     super(props);
 
+    this.rulesViewModelActor = new RulesViewModelActor(props.ruleService);
     const {
       dateTimeFilter = {
         startTime: DEFAULT_DATE_RANGE.start,
@@ -192,42 +195,15 @@ class Findings extends Component<FindingsProps, FindingsState> {
   };
 
   getRules = async (ruleIds: string[]) => {
-    const { notifications, ruleService } = this.props;
+    const { notifications } = this.props;
     try {
-      const body = {
-        from: 0,
-        size: 5000,
-        query: {
-          nested: {
-            path: 'rule',
-            query: {
-              terms: {
-                _id: ruleIds,
-              },
-            },
-          },
-        },
-      };
+      const rulesResponse = await this.rulesViewModelActor.fetchRules({
+        _id: ruleIds,
+      });
 
-      const prePackagedResponse = await ruleService.getRules(true, body);
-      const customResponse = await ruleService.getRules(false, body);
+      const allRules: { [id: string]: RuleSource } = {};
+      rulesResponse.forEach((hit) => (allRules[hit._id] = hit._source));
 
-      const allRules: { [id: string]: any } = {};
-      if (prePackagedResponse.ok) {
-        prePackagedResponse.response.hits.hits.forEach((hit) => (allRules[hit._id] = hit._source));
-      } else {
-        errorNotificationToast(
-          notifications,
-          'retrieve',
-          'pre-packaged rules',
-          prePackagedResponse.error
-        );
-      }
-      if (customResponse.ok) {
-        customResponse.response.hits.hits.forEach((hit) => (allRules[hit._id] = hit._source));
-      } else {
-        errorNotificationToast(notifications, 'retrieve', 'custom rules', customResponse.error);
-      }
       this.setState({ rules: allRules });
     } catch (e) {
       errorNotificationToast(notifications, 'retrieve', 'rules', e);

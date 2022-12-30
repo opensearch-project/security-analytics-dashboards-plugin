@@ -1,21 +1,56 @@
 import {
   addInteractiveLegends,
+  DateOpts,
   getAlertsVisualizationSpec,
   getChartTimeUnit,
+  getDomainRange,
   getFindingsVisualizationSpec,
   getOverviewVisualizationSpec,
+  getTimeTooltip,
+  getTimeWithMinPrecision,
   getVisualizationSpec,
+  getXAxis,
+  getYAxis,
   legendSelectionCfg,
+  parseDateString,
+  TimeUnits,
 } from './helpers';
 import _ from 'lodash';
-import { getChartTimeUnit, TimeUnits } from './helpers';
+import dateMath from '@elastic/datemath';
+import { DEFAULT_DATE_RANGE } from '../../../utils/constants';
+import moment from 'moment';
 
 describe('helper utilities spec', () => {
+  const description = 'Visualization';
+  const defaultTimeUnit = {
+    timeUnit: { unit: 'yearmonthdatehoursminutes', step: 1 },
+    dateFormat: '%Y-%m-%d %H:%M',
+  };
+  const layer = {
+    x: {
+      field: 'xField',
+    },
+    y: {
+      field: 'yField',
+    },
+  };
+
+  const data = [
+    {
+      xField: 1,
+      yField: 1,
+    },
+  ];
+
+  const dateOpts: DateOpts = {
+    timeUnit: {
+      unit: 'yearmonthdatehoursminutes',
+      step: 1,
+    },
+    dateFormat: '%Y-%m-%d %H:%M',
+  };
+
   describe('tests getChartTimeUnit function', () => {
-    const defaultTimeUnit = {
-      timeUnit: { unit: 'yearmonthdatehoursminutes', step: 1 },
-      dateFormat: '%Y-%m-%d %H:%M',
-    };
     it(' - function should return default timeUnit if fn params are invalid', () => {
       const timeUnits = getChartTimeUnit('', '');
       expect(timeUnits.dateFormat).toBe(defaultTimeUnit.dateFormat);
@@ -90,6 +125,62 @@ describe('helper utilities spec', () => {
     });
   });
 
+  describe('tests parseDateString function', () => {
+    it(' - function should return datetime in ms', () => {
+      const time = moment(10);
+      jest.spyOn(dateMath, 'parse').mockReturnValue(time);
+      expect(parseDateString(DEFAULT_DATE_RANGE.start)).toBe(time.milliseconds());
+    });
+  });
+
+  describe('tests getYAxis function', () => {
+    it(' - function should return Y axis config', () => {
+      const yAxisConfig = getYAxis('xField', 'Y axis title', false);
+      const expectedYAxisConfig = {
+        aggregate: 'sum',
+        field: 'xField',
+        type: 'quantitative',
+        title: 'Y axis title',
+        axis: { grid: false },
+      };
+      const isEqual = _.isEqual(yAxisConfig, expectedYAxisConfig);
+      expect(isEqual).toBe(true);
+    });
+  });
+
+  describe('tests getXAxis function', () => {
+    it(' - function should return X axis config', () => {
+      const xAxisConfig = getXAxis(dateOpts, {});
+      const expectedXAxisConfig = {
+        timeUnit: dateOpts.timeUnit,
+        field: 'time',
+        title: '',
+        type: 'temporal',
+        axis: { grid: false, format: dateOpts.dateFormat },
+        scale: {
+          domain: dateOpts.domain,
+        },
+      };
+      const isEqual = _.isEqual(xAxisConfig, expectedXAxisConfig);
+      expect(isEqual).toBe(true);
+    });
+  });
+
+  describe('tests getTimeTooltip function', () => {
+    it(' - function should return time tooltip config', () => {
+      const tooltip = getTimeTooltip(dateOpts);
+      const expectedTooltip = {
+        timeUnit: dateOpts.timeUnit,
+        field: 'time',
+        type: 'temporal',
+        title: 'Time',
+        format: '%Y-%m-%d %H:%M:%S',
+      };
+      const isEqual = _.isEqual(tooltip, expectedTooltip);
+      expect(isEqual).toBe(true);
+    });
+  });
+
   describe('tests getVisualizationSpec function', () => {
     const result = getVisualizationSpec(description, data, [layer]);
     it(' - snapshot test', () => {
@@ -115,6 +206,16 @@ describe('helper utilities spec', () => {
     const result = getAlertsVisualizationSpec([], '', dateOpts);
     it(' - snapshot test', () => {
       expect(result).toMatchSnapshot('should match alerts spec');
+    });
+  });
+
+  describe('tests getTimeWithMinPrecision function', () => {
+    const result = getTimeWithMinPrecision('2022/12/01 01:01:01');
+    it(' - test should be with ms and seconds eq to 0', () => {
+      const ms = new Date(result).getMilliseconds();
+      const seconds = new Date(result).getSeconds();
+      expect(ms).toBe(0);
+      expect(seconds).toBe(0);
     });
   });
 });

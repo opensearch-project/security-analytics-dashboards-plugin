@@ -397,7 +397,7 @@ export function getChartTimeUnit(
  * Adds interactive legends to the chart layer
  * @param layer
  */
-const addInteractiveLegends = (layer: any) => _.defaultsDeep(layer, legendSelectionCfg);
+export const addInteractiveLegends = (layer: any) => _.defaultsDeep(layer, legendSelectionCfg);
 
 export const getDomainRange = (
   range: string[] = [DEFAULT_DATE_RANGE.start, DEFAULT_DATE_RANGE.end],
