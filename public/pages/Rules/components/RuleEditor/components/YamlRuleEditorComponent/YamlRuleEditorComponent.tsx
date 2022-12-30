@@ -6,8 +6,8 @@
 import React, { useState } from 'react';
 import { load } from 'js-yaml';
 import { EuiFormRow, EuiCodeEditor, EuiLink, EuiSpacer, EuiText, EuiCallOut } from '@elastic/eui';
-import FormFieldHeader from '../../../../components/FormFieldHeader';
-import { Rule } from '../../../../../models/interfaces';
+import FormFieldHeader from '../../../../../../components/FormFieldHeader';
+import { Rule } from '../../../../../../../models/interfaces';
 import {
   AUTHOR_REGEX,
   validateDescription,
@@ -15,12 +15,12 @@ import {
   authorErrorString,
   descriptionErrorString,
   titleErrorString,
-} from '../../../../utils/validation';
+} from '../../../../../../utils/validation';
 import {
   mapRuleToYamlObject,
   mapYamlObjectToYamlString,
   mapYamlObjectToRule,
-} from '../../utils/mappers';
+} from '../../../../utils/mappers';
 
 export interface YamlRuleEditorComponentProps {
   rule: Rule;

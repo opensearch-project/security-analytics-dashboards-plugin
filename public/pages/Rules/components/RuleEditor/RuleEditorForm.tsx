@@ -31,7 +31,7 @@ import {
 } from '../../../../utils/validation';
 import { RuleEditorFormState } from './RuleEditorFormState';
 import { FormSubmitionErrorToastNotification } from './FormSubmitionErrorToastNotification';
-import { YamlRuleEditorComponent } from './YamlRuleEditorComponent';
+import { YamlRuleEditorComponent } from './components/YamlRuleEditorComponent/YamlRuleEditorComponent';
 import { mapFormToRule, mapRuleToForm } from './mappers';
 
 export interface VisualRuleEditorProps {
@@ -54,7 +54,7 @@ const editorTypes = [
   },
 ];
 
-export const VisualRuleEditor: React.FC<VisualRuleEditorProps> = ({
+export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
   ruleEditorFormState,
   notifications,
   submit,

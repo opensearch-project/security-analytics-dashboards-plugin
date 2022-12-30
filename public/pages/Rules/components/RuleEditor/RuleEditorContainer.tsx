@@ -12,7 +12,7 @@ import { EuiSpacer } from '@elastic/eui';
 import { Rule } from '../../../../../models/interfaces';
 import { RuleEditorFormState, ruleEditorStateDefaultValue } from './RuleEditorFormState';
 import { mapFormToRule, mapRuleToForm } from './mappers';
-import { VisualRuleEditor } from './VisualRuleEditor';
+import { RuleEditorForm } from './RuleEditorForm';
 import { validateRule } from '../../utils/helpers';
 import { errorNotificationToast } from '../../../../utils/helpers';
 
@@ -31,7 +31,7 @@ export interface VisualEditorFormErrorsState {
   authorError: string | null;
 }
 
-export const RuleEditor: React.FC<RuleEditorProps> = ({
+export const RuleEditorContainer: React.FC<RuleEditorProps> = ({
   history,
   notifications,
   title,
@@ -78,7 +78,7 @@ export const RuleEditor: React.FC<RuleEditorProps> = ({
 
   return (
     <>
-      <VisualRuleEditor
+      <RuleEditorForm
         title={title}
         mode={mode}
         notifications={notifications}
