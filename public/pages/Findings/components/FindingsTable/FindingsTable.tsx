@@ -25,6 +25,7 @@ import { NotificationChannelTypeOptions } from '../../../CreateDetector/componen
 import { FindingItemType } from '../../containers/Findings/Findings';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { RuleSource } from '../../../../../server/models/interfaces';
+import { ruleTypes } from "../../../Rules/utils/constants";
 
 interface FindingsTableProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -180,12 +181,12 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         render: (name) => name || DEFAULT_EMPTY_DATA,
       },
       {
-        // field: 'queries',
         field: 'logType',
         name: 'Log type',
         sortable: true,
         dataType: 'string',
-        render: (logType) => capitalizeFirstLetter(logType) || DEFAULT_EMPTY_DATA,
+        render: (logType: string) =>
+          ruleTypes.find(ruleType => ruleType.value === logType)?.label || DEFAULT_EMPTY_DATA,
       },
       {
         field: 'ruleSeverity',
@@ -258,7 +259,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
           name: 'Log type',
           options: Array.from(logTypes).map((type) => ({
             value: type,
-            name: capitalizeFirstLetter(type) || type,
+            name: ruleTypes.find(ruleType => ruleType.value === type.toLowerCase())?.label || DEFAULT_EMPTY_DATA,
           })),
           multiSelect: 'or',
         } as FieldValueSelectionFilterConfigType,
