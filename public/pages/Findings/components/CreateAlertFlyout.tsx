@@ -13,19 +13,18 @@ import {
   EuiFlyoutBody,
   EuiFlyoutHeader,
   EuiFormRow,
-  EuiLink,
   EuiSpacer,
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
 import AlertConditionPanel from '../../CreateDetector/components/ConfigureAlerts/components/AlertCondition';
 import { AlertCondition, Detector } from '../../../../models/interfaces';
-import { EMPTY_DEFAULT_ALERT_CONDITION } from '../../CreateDetector/components/ConfigureAlerts/utils/constants';
 import { DetectorsService } from '../../../services';
 import { RulesSharedState } from '../../../models/interfaces';
 import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 import { NotificationChannelTypeOptions } from '../../CreateDetector/components/ConfigureAlerts/models/interfaces';
 import { Finding } from '../models/interfaces';
+import { getEmptyAlertCondition } from '../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 
 interface CreateAlertFlyoutProps extends RouteComponentProps {
   closeFlyout: (refreshPage?: boolean) => void;
@@ -52,7 +51,7 @@ export default class CreateAlertFlyout extends Component<
   constructor(props: CreateAlertFlyoutProps) {
     super(props);
     this.state = {
-      alertCondition: EMPTY_DEFAULT_ALERT_CONDITION,
+      alertCondition: getEmptyAlertCondition(),
       loading: false,
       detector: this.props.finding.detector._source,
       submitting: false,

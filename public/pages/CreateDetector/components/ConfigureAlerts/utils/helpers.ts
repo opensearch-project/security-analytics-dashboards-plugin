@@ -8,6 +8,7 @@ import { ALERT_SEVERITY_OPTIONS, CHANNEL_TYPES } from './constants';
 import { FeatureChannelList } from '../../../../../../server/models/interfaces/Notifications';
 import { NotificationChannelTypeOptions } from '../models/interfaces';
 import { NotificationsService } from '../../../../../services';
+import { AlertCondition, TriggerAction } from '../../../../../../models/interfaces';
 
 export const parseAlertSeverityToOption = (severity: string): EuiComboBoxOptionOption<string> => {
   return Object.values(ALERT_SEVERITY_OPTIONS).find(
@@ -47,4 +48,35 @@ export function parseNotificationChannelsToOptions(
     label: type,
     options: allOptions.filter((channel) => channel.type === type),
   }));
+}
+
+export function getEmptyAlertCondition(): AlertCondition {
+  const emptyTriggerAction: TriggerAction = {
+    id: '',
+    name: '',
+    destination_id: '',
+    subject_template: {
+      source: '',
+      lang: 'mustache',
+    },
+    message_template: {
+      source: '',
+      lang: 'mustache',
+    },
+    throttle_enabled: false,
+    throttle: {
+      value: 10,
+      unit: 'MINUTES',
+    },
+  };
+
+  return {
+    name: '',
+    sev_levels: [],
+    tags: [],
+    actions: [emptyTriggerAction],
+    types: [],
+    severity: '1',
+    ids: [],
+  };
 }

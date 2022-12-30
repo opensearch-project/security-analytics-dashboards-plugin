@@ -15,13 +15,17 @@ import {
   EuiText,
 } from '@elastic/eui';
 import { createDetectorSteps } from '../../../utils/constants';
-import { EMPTY_DEFAULT_ALERT_CONDITION, MAX_ALERT_CONDITIONS } from '../utils/constants';
+import { MAX_ALERT_CONDITIONS } from '../utils/constants';
 import AlertConditionPanel from '../components/AlertCondition';
 import { Detector } from '../../../../../../models/interfaces';
 import { DetectorCreationStep } from '../../../models/types';
 import { CreateDetectorRulesOptions } from '../../../../../models/types';
 import { NotificationChannelTypeOptions } from '../models/interfaces';
-import { getNotificationChannels, parseNotificationChannelsToOptions } from '../utils/helpers';
+import {
+  getEmptyAlertCondition,
+  getNotificationChannels,
+  parseNotificationChannelsToOptions,
+} from '../utils/helpers';
 import { NotificationsService } from '../../../../../services';
 
 interface ConfigureAlertsProps extends RouteComponentProps {
@@ -71,7 +75,7 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
       detector,
       detector: { triggers },
     } = this.props;
-    triggers.push(EMPTY_DEFAULT_ALERT_CONDITION);
+    triggers.push(getEmptyAlertCondition());
     changeDetector({ ...detector, triggers });
   };
 
