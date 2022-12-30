@@ -22,14 +22,7 @@ import {
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { FieldTextArray } from './FieldTextArray';
 import { ruleStatus, ruleTypes } from '../../utils/constants';
-import {
-  authorErrorString,
-  AUTHOR_REGEX,
-  descriptionErrorString,
-  nameErrorString,
-  validateDescription,
-  validateName,
-} from '../../../../utils/validation';
+import { AUTHOR_REGEX, validateDescription, validateName } from '../../../../utils/validation';
 import { RuleEditorFormModel } from './RuleEditorFormModel';
 import { FormSubmissionErrorToastNotification } from './FormSubmitionErrorToastNotification';
 import { YamlRuleEditorComponent } from './components/YamlRuleEditorComponent/YamlRuleEditorComponent';
@@ -79,12 +72,12 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
           errors.name = 'Rule name is required';
         } else {
           if (!validateName(values.name)) {
-            errors.name = nameErrorString;
+            errors.name = 'Invalid rule name.';
           }
         }
 
         if (values.description && !validateDescription(values.description)) {
-          errors.description = descriptionErrorString;
+          errors.description = 'Invalid description.';
         }
 
         if (!values.logType) {
@@ -103,7 +96,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
           errors.author = 'Author name is required';
         } else {
           if (!validateName(values.author, AUTHOR_REGEX)) {
-            errors.author = authorErrorString;
+            errors.author = 'Invalid author.';
           }
         }
 
@@ -156,6 +149,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                       }
                       isInvalid={props.touched.name && !!props.errors?.name}
                       error={props.errors.name}
+                      helpText="Rule name must contain 5-50 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, and underscores."
                     >
                       <EuiFieldText
                         isInvalid={props.touched.name && !!props.errors.name}
@@ -208,7 +202,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                       <i>- optional</i>
                     </EuiText>
                   }
-                  fullWidth
+                  helpText="Description must contain 5-500 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, dots, commas, and underscores."
                   isInvalid={!!props.errors?.description}
                   error={props.errors.description}
                 >
@@ -368,6 +362,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                       <strong>Author</strong>
                     </EuiText>
                   }
+                  helpText="Author must contain 5-50 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, commas, and underscores."
                   isInvalid={props.touched.author && !!props.errors?.author}
                   error={props.errors.author}
                 >
