@@ -5,7 +5,7 @@
 
 import { EuiComboBoxOptionOption } from '@elastic/eui';
 
-export interface RuleEditorFormState {
+export interface RuleEditorFormModel {
   id: string;
   log_source: string;
   logType: string;
@@ -20,7 +20,7 @@ export interface RuleEditorFormState {
   falsePositives: string[];
 }
 
-export const ruleEditorStateDefaultValue: RuleEditorFormState = {
+export const ruleEditorStateDefaultValue: RuleEditorFormModel = {
   id: '25b9c01c-350d-4b95-bed1-836d04a4f324',
   log_source: '',
   logType: '',

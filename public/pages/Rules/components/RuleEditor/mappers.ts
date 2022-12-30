@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { Rule } from '../../../../../models/interfaces';
-import { RuleEditorFormState, ruleEditorStateDefaultValue } from './RuleEditorFormState';
+import { RuleEditorFormModel, ruleEditorStateDefaultValue } from './RuleEditorFormModel';
 
-export const mapFormToRule = (formState: RuleEditorFormState): Rule => {
+export const mapFormToRule = (formState: RuleEditorFormModel): Rule => {
   return {
     id: formState.id,
     category: formState.logType,
@@ -24,7 +24,7 @@ export const mapFormToRule = (formState: RuleEditorFormState): Rule => {
   };
 };
 
-export const mapRuleToForm = (rule: Rule): RuleEditorFormState => {
+export const mapRuleToForm = (rule: Rule): RuleEditorFormModel => {
   return {
     id: rule.id,
     log_source: rule.log_source,

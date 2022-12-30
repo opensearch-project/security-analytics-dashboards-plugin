@@ -29,15 +29,15 @@ import {
   validateDescription,
   validateName,
 } from '../../../../utils/validation';
-import { RuleEditorFormState } from './RuleEditorFormState';
+import { RuleEditorFormModel } from './RuleEditorFormModel';
 import { FormSubmitionErrorToastNotification } from './FormSubmitionErrorToastNotification';
 import { YamlRuleEditorComponent } from './components/YamlRuleEditorComponent/YamlRuleEditorComponent';
 import { mapFormToRule, mapRuleToForm } from './mappers';
 
 export interface VisualRuleEditorProps {
-  ruleEditorFormState: RuleEditorFormState;
+  ruleEditorFormState: RuleEditorFormModel;
   notifications?: NotificationsStart;
-  submit: (values: RuleEditorFormState) => void;
+  submit: (values: RuleEditorFormModel) => void;
   cancel: () => void;
   mode: 'create' | 'edit';
   title: string;
@@ -72,7 +72,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
     <Formik
       initialValues={ruleEditorFormState}
       validate={(values) => {
-        const errors: FormikErrors<RuleEditorFormState> = {};
+        const errors: FormikErrors<RuleEditorFormModel> = {};
 
         if (!values.name) {
           errors.name = 'Rule name is required';
@@ -134,7 +134,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                 rule={mapFormToRule(props.values)}
                 isInvalid={Object.keys(props.errors).length > 0}
                 errors={Object.keys(props.errors).map(
-                  (key) => props.errors[key as keyof RuleEditorFormState] as string
+                  (key) => props.errors[key as keyof RuleEditorFormModel] as string
                 )}
                 change={(e) => {
                   const formState = mapRuleToForm(e);

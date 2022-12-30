@@ -10,7 +10,7 @@ import { RuleService } from '../../../../services';
 import { ROUTES } from '../../../../utils/constants';
 import { EuiSpacer } from '@elastic/eui';
 import { Rule } from '../../../../../models/interfaces';
-import { RuleEditorFormState, ruleEditorStateDefaultValue } from './RuleEditorFormState';
+import { RuleEditorFormModel, ruleEditorStateDefaultValue } from './RuleEditorFormModel';
 import { mapFormToRule, mapRuleToForm } from './mappers';
 import { RuleEditorForm } from './RuleEditorForm';
 import { validateRule } from '../../utils/helpers';
@@ -43,7 +43,7 @@ export const RuleEditorContainer: React.FC<RuleEditorProps> = ({
     ? { ...mapRuleToForm(rule), id: ruleEditorStateDefaultValue.id }
     : ruleEditorStateDefaultValue;
 
-  const onSubmit = async (values: RuleEditorFormState) => {
+  const onSubmit = async (values: RuleEditorFormModel) => {
     const submitingRule = mapFormToRule(values);
     if (!validateRule(submitingRule, notifications!, 'create')) {
       return;
