@@ -391,8 +391,6 @@ Object {
 }
 `;
 
-exports[`helper utilities spec tests getTimeWithMinPrecision function  - test should be with minutes and seconds eq to 0: 01:00:00 1`] = `NaN`;
-
 exports[`helper utilities spec tests getVisualizationSpec function  - snapshot test: should match visualization spec 1`] = `
 Object {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
