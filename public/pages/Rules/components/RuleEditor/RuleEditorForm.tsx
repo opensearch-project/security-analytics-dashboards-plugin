@@ -27,6 +27,7 @@ import { RuleEditorFormModel } from './RuleEditorFormModel';
 import { FormSubmissionErrorToastNotification } from './FormSubmitionErrorToastNotification';
 import { YamlRuleEditorComponent } from './components/YamlRuleEditorComponent/YamlRuleEditorComponent';
 import { mapFormToRule, mapRuleToForm } from './mappers';
+import { RuleTagsComboBox } from './components/YamlRuleEditorComponent/RuleTagsComboBox';
 
 export interface VisualRuleEditorProps {
   initialValue: RuleEditorFormModel;
@@ -274,28 +275,17 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
                 <EuiSpacer />
 
-                <EuiFormRow
-                  label={
-                    <EuiText size={'s'}>
-                      <strong>Tags </strong>
-                      <i>- optional</i>
-                    </EuiText>
-                  }
-                >
-                  <EuiComboBox
-                    placeholder="Select or create options"
-                    onChange={(value) => {
-                      const tags = value.map((option) => ({ label: option.label }));
-                      props.setFieldValue('tags', tags);
-                    }}
-                    onCreateOption={(newTag) => {
-                      props.setFieldValue('tags', [...props.values.tags, { label: newTag }]);
-                    }}
-                    onBlur={props.handleBlur('tags')}
-                    data-test-subj={'rule_tags_dropdown'}
-                    selectedOptions={props.values.tags}
-                  />
-                </EuiFormRow>
+                <RuleTagsComboBox
+                  selectedOptions={props.values.tags}
+                  onChange={(value) => {
+                    const tags = value.map((option) => ({ label: option.label }));
+                    props.setFieldValue('tags', tags);
+                  }}
+                  onCreateOption={(newTag) => {
+                    props.setFieldValue('tags', [...props.values.tags, { label: newTag }]);
+                  }}
+                  onBlur={props.handleBlur('tags')}
+                />
 
                 <EuiSpacer />
                 <FieldTextArray
