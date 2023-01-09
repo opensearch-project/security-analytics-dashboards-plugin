@@ -24,7 +24,9 @@ export interface RulesProps extends RouteComponentProps {
 export const Rules: React.FC<RulesProps> = (props) => {
   const services = useContext(ServicesContext) as BrowserServices;
   const context = useContext(CoreServicesContext);
-  const rulesViewModelActor = useMemo(() => new RulesViewModelActor(services), [services]);
+  const rulesViewModelActor = useMemo(() => new RulesViewModelActor(services.ruleService), [
+    services,
+  ]);
   const [allRules, setAllRules] = useState<RuleItemInfoBase[]>([]);
   const [flyoutData, setFlyoutData] = useState<RuleTableItem | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
