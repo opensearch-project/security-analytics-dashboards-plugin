@@ -29,7 +29,7 @@ export type DateOpts = {
 /**
  * Legend selection config for the chart layer
  */
-const legendSelectionCfg = {
+export const legendSelectionCfg = {
   selection: {
     series: {
       type: 'multi',
@@ -91,7 +91,7 @@ export const getTimeTooltip = (dateOpts: DateOpts) => ({
   format: '%Y-%m-%d %H:%M:%S',
 });
 
-function getVisualizationSpec(description: string, data: any, layers: any[]): TopLevelSpec {
+export function getVisualizationSpec(description: string, data: any, layers: any[]): TopLevelSpec {
   return {
     config: {
       view: { stroke: 'transparent' },
@@ -397,7 +397,7 @@ export function getChartTimeUnit(
  * Adds interactive legends to the chart layer
  * @param layer
  */
-const addInteractiveLegends = (layer: any) => _.defaultsDeep(layer, legendSelectionCfg);
+export const addInteractiveLegends = (layer: any) => _.defaultsDeep(layer, legendSelectionCfg);
 
 export const getDomainRange = (
   range: string[] = [DEFAULT_DATE_RANGE.start, DEFAULT_DATE_RANGE.end],
