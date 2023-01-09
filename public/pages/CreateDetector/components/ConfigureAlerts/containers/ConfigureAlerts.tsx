@@ -130,9 +130,13 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
                 paddingSize={'none'}
                 initialIsOpen={true}
                 extraAction={
-                  <EuiButton color="danger" onClick={() => this.onDelete(index)}>
-                    Remove alert trigger
-                  </EuiButton>
+                  triggers.length > 1 ? (
+                    <EuiButton color="danger" onClick={() => this.onDelete(index)}>
+                      Remove alert trigger
+                    </EuiButton>
+                  ) : (
+                    <></>
+                  )
                 }
               >
                 <EuiHorizontalRule margin={'xs'} />
