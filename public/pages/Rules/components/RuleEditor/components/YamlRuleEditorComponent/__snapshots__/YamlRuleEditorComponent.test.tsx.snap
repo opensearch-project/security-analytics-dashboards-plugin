@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<YamlRuleEditorComponent /> spec renders the component - invalid state 1`] = `
+<div
+  class="euiCallOut euiCallOut--danger"
+>
+  <div
+    class="euiCallOutHeader"
+  >
+    <span
+      class="euiCallOutHeader__title"
+    >
+      Please address the highlighted errors.
+    </span>
+  </div>
+  <div
+    class="euiText euiText--small"
+  >
+    <div
+      class="euiTextColor euiTextColor--default"
+    >
+      <ul>
+        <li>
+          Validation error message
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`<YamlRuleEditorComponent /> spec renders the component 1`] = `
+<div
+  class="euiSpacer euiSpacer--s"
+/>
+`;

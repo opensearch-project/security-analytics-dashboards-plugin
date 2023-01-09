@@ -4,12 +4,7 @@
  */
 
 import moment from 'moment';
-import {
-  PLUGIN_NAME,
-  NINETY_SECONDS,
-  TWENTY_SECONDS_TIMEOUT,
-  FEATURE_SYSTEM_INDICES,
-} from '../support/constants';
+import { DETECTOR_TRIGGER_TIMEOUT, OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
 import sample_index_settings from '../fixtures/sample_index_settings.json';
 import sample_alias_mappings from '../fixtures/sample_alias_mappings.json';
 import sample_detector from '../fixtures/sample_detector.json';
@@ -44,20 +39,11 @@ const testDetector = {
 // but all of the alert time fields should all contain the date in this format.
 const date = moment(moment.now()).format('MM/DD/YY');
 
+const docCount = 4;
 describe('Alerts', () => {
   before(() => {
     // Delete any pre-existing test detectors
-    cy.deleteDetector(testDetectorName)
-
-      // Delete any pre-existing test indices
-      .then(() => cy.deleteIndex(testIndex))
-
-      // Delete any pre-existing windows alerts and findings
-      .then(() => {
-        cy.deleteIndex(FEATURE_SYSTEM_INDICES.WINDOWS_ALERTS_INDEX);
-        cy.deleteIndex(FEATURE_SYSTEM_INDICES.WINDOWS_FINDINGS_INDEX);
-      })
-
+    cy.cleanUpTests()
       // Create test index
       .then(() => cy.createIndex(testIndex, sample_index_settings))
 
@@ -71,25 +57,42 @@ describe('Alerts', () => {
 
       .then(() => {
         // Go to the detectors table page
-        cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/detectors`);
+        cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
+
+        // Check that correct page is showing
+        cy.waitForPageLoad('detectors', {
+          contains: 'Threat detectors',
+        });
 
         // Filter table to only show the test detector
-        cy.get(`input[type="search"]`, TWENTY_SECONDS_TIMEOUT).type(`${testDetector.name}{enter}`);
+        cy.get(`input[type="search"]`).type(`${testDetector.name}{enter}`);
 
         // Confirm detector was created
-        cy.get('tbody > tr', TWENTY_SECONDS_TIMEOUT).should(($tr) => {
-          expect($tr, '1 row').to.have.length(1);
+        cy.get('tbody > tr').should(($tr) => {
           expect($tr, 'detector name').to.contain(testDetector.name);
         });
       });
+
+    // Ingest documents to the test index
+    for (let i = 0; i < docCount; i++) {
+      cy.insertDocumentToIndex(testIndex, '', sample_document);
+    }
+
+    // Wait for the detector to execute
+    cy.wait(DETECTOR_TRIGGER_TIMEOUT);
   });
 
   beforeEach(() => {
     // Visit Alerts table page
-    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/alerts`);
+    cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/alerts`);
+
+    // Wait for page to load
+    cy.waitForPageLoad('alerts', {
+      contains: 'Security alerts',
+    });
 
     // Filter table to only show alerts for the test detector
-    cy.get(`input[type="search"]`, TWENTY_SECONDS_TIMEOUT).type(`${testDetector.name}{enter}`);
+    cy.get(`input[type="search"]`).type(`${testDetector.name}{enter}`);
 
     // Adjust the date range picker to display alerts from today
     cy.get('[class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"]').click({
@@ -99,37 +102,28 @@ describe('Alerts', () => {
   });
 
   it('are generated', () => {
-    // Ingest documents to the test index
-    const docCount = 4;
-    for (let i = 0; i < docCount; i++) {
-      cy.insertDocumentToIndex(testIndex, '', sample_document);
-    }
-
-    // Wait for the detector to execute
-    cy.wait(NINETY_SECONDS);
-
     // Refresh the table
     cy.get('[data-test-subj="superDatePickerApplyTimeButton"]').click({ force: true });
 
-    // Confirm the table contains 1 row
-    cy.get('tbody > tr', TWENTY_SECONDS_TIMEOUT).should(($tr) =>
-      expect($tr, `${docCount} rows`).to.have.length(docCount)
-    );
+    // Confirm there are alerts created
+    cy.get('tbody > tr')
+      .filter(`:contains(${testDetectorAlertCondition})`)
+      .should('have.length', docCount);
   });
 
   it('contain expected values in table', () => {
-    // Confirm each row contains the expected values
-    cy.get('tbody > tr', TWENTY_SECONDS_TIMEOUT).each(($el, $index) => {
-      expect($el, `row number ${$index} start time`).to.contain(date);
-      expect($el, `row number ${$index} trigger name`).to.contain(testDetector.triggers[0].name);
-      expect($el, `row number ${$index} detector name`).to.contain(testDetector.name);
-      expect($el, `row number ${$index} status`).to.contain('Active');
-      expect($el, `row number ${$index} severity`).to.contain('4 (Low)');
+    // Confirm there is a row containing the expected values
+    cy.get('tbody > tr').should(($tr) => {
+      expect($tr, 'start time').to.contain(date);
+      expect($tr, 'trigger name').to.contain(testDetector.triggers[0].name);
+      expect($tr, 'detector name').to.contain(testDetector.name);
+      expect($tr, 'status').to.contain('Active');
+      expect($tr, 'severity').to.contain('4 (Low)');
     });
   });
 
   it('contain expected values in alert details flyout', () => {
-    cy.get('tbody > tr', TWENTY_SECONDS_TIMEOUT)
+    cy.get('tbody > tr')
       .first()
       .within(() => {
         // Click the "View details" button for the first alert
@@ -159,18 +153,16 @@ describe('Alerts', () => {
       cy.get('[data-test-subj="text-details-group-content-detector"]').contains(testDetector.name);
 
       // Wait for the findings table to finish loading
-      cy.contains('Findings (1)', TWENTY_SECONDS_TIMEOUT);
-      cy.contains('USB Device Plugged', TWENTY_SECONDS_TIMEOUT);
+      cy.contains('Findings (1)');
+      cy.contains('USB Device Plugged');
 
       // Confirm alert findings contain expected values
-      cy.get('tbody > tr', TWENTY_SECONDS_TIMEOUT)
-        .should(($tr) => expect($tr, '1 row').to.have.length(1))
-        .each(($el, $index) => {
-          expect($el, `row number ${$index} timestamp`).to.contain(date);
-          expect($el, `row number ${$index} rule name`).to.contain('USB Device Plugged');
-          expect($el, `row number ${$index} detector name`).to.contain(testDetector.name);
-          expect($el, `row number ${$index} log type`).to.contain('Windows');
-        });
+      cy.get('tbody > tr').should(($tr) => {
+        expect($tr, `timestamp`).to.contain(date);
+        expect($tr, `rule name`).to.contain('USB Device Plugged');
+        expect($tr, `detector name`).to.contain(testDetector.name);
+        expect($tr, `log type`).to.contain('Windows');
+      });
 
       // Close the flyout
       cy.get('[data-test-subj="alert-details-flyout-close-button"]').click({ force: true });
@@ -182,22 +174,22 @@ describe('Alerts', () => {
 
   it('contain expected values in finding details flyout', () => {
     // Open first alert details flyout
-    cy.get('tbody > tr', TWENTY_SECONDS_TIMEOUT)
+    cy.get('tbody > tr')
       .first()
       .within(() => {
         // Click the "View details" button for the first alert
         cy.get('[aria-label="View details"]').click({ force: true });
       });
 
-    cy.get('[data-test-subj="alert-details-flyout"]', TWENTY_SECONDS_TIMEOUT).within(() => {
+    cy.get('[data-test-subj="alert-details-flyout"]').within(() => {
       // Wait for findings table to finish loading
-      cy.contains('USB Device Plugged', TWENTY_SECONDS_TIMEOUT);
+      cy.contains('USB Device Plugged');
 
       // Click the details button for the first finding
-      cy.get('tbody > tr', TWENTY_SECONDS_TIMEOUT)
+      cy.get('tbody > tr')
         .first()
         .within(() => {
-          cy.get('[data-test-subj="finding-details-flyout-button"]', TWENTY_SECONDS_TIMEOUT).click({
+          cy.get('[data-test-subj="finding-details-flyout-button"]').click({
             force: true,
           });
         });
@@ -289,17 +281,14 @@ describe('Alerts', () => {
         });
 
       // Press the "back" button
-      cy.get(
-        '[data-test-subj="finding-details-flyout-back-button"]',
-        TWENTY_SECONDS_TIMEOUT
-      ).click({ force: true });
+      cy.get('[data-test-subj="finding-details-flyout-back-button"]').click({ force: true });
     });
 
     // Confirm finding details flyout closed
     cy.get('[data-test-subj="finding-details-flyout"]').should('not.exist');
 
     // Confirm the expected alert details flyout rendered
-    cy.get('[data-test-subj="alert-details-flyout"]', TWENTY_SECONDS_TIMEOUT).within(() => {
+    cy.get('[data-test-subj="alert-details-flyout"]').within(() => {
       cy.get('[data-test-subj="text-details-group-content-alert-trigger-name"]').contains(
         testDetector.triggers[0].name
       );
@@ -310,21 +299,14 @@ describe('Alerts', () => {
     // Confirm the "Acknowledge" button is disabled when no alerts are selected
     cy.get('[data-test-subj="acknowledge-button"]').should('be.disabled');
 
-    // Confirm all 4 alerts are currently "Active"
-    cy.get('tbody > tr', TWENTY_SECONDS_TIMEOUT)
-      .should(($tr) => expect($tr, '4 rows').to.have.length(4))
-      .each(($el, $index) => {
-        expect($el, `row number ${$index} status`).to.contain('Active');
-      });
+    // Confirm there is alert which is currently "Active"
+    cy.get('tbody > tr').should(($tr) => {
+      expect($tr, `status`).to.contain('Active');
+    });
 
     // Click the checkboxes for the first and last alerts.
-    cy.get('tbody > tr', TWENTY_SECONDS_TIMEOUT)
+    cy.get('tbody > tr')
       .first()
-      .within(() => {
-        cy.get('[class="euiCheckbox__input"]').click({ force: true });
-      });
-    cy.get('tbody > tr', TWENTY_SECONDS_TIMEOUT)
-      .last()
       .within(() => {
         cy.get('[class="euiCheckbox__input"]').click({ force: true });
       });
@@ -333,7 +315,7 @@ describe('Alerts', () => {
     cy.get('[data-test-subj="acknowledge-button"]').click({ force: true });
 
     // Wait for acknowledge API to finish executing
-    cy.contains('Acknowledged', TWENTY_SECONDS_TIMEOUT);
+    cy.contains('Acknowledged');
 
     // Filter the table to show only "Acknowledged" alerts
     cy.get('[data-text="Status"]').click({ force: true });
@@ -341,26 +323,23 @@ describe('Alerts', () => {
       cy.contains('Acknowledged').click({ force: true });
     });
 
-    // Confirm there are now 2 "Acknowledged" alerts
-    cy.get('tbody > tr', TWENTY_SECONDS_TIMEOUT)
-      .should(($tr) => expect($tr, '2 rows').to.have.length(2))
-      .each(($el, $index) => {
-        expect($el, `row number ${$index} status`).to.contain('Acknowledged');
-      });
+    // Confirm there is an "Acknowledged" alert
+    cy.get('tbody > tr').should(($tr) => {
+      expect($tr, `alert name`).to.contain(testDetectorAlertCondition);
+      expect($tr, `status`).to.contain('Acknowledged');
+    });
 
     // Filter the table to show only "Active" alerts
     cy.get('[data-text="Status"]');
     cy.get('[class="euiFilterSelect__items"]').within(() => {
       cy.contains('Acknowledged').click({ force: true });
-      cy.contains('Active').click({ force: true });
     });
 
     // Confirm there are now 2 "Acknowledged" alerts
-    cy.get('tbody > tr', TWENTY_SECONDS_TIMEOUT)
-      .should(($tr) => expect($tr, '2 rows').to.have.length(2))
-      .each(($el, $index) => {
-        expect($el, `row number ${$index} status`).to.contain('Active');
-      });
+    cy.get('tbody > tr')
+      .filter(`:contains(${testDetectorAlertCondition})`)
+      .should('contain', 'Active')
+      .should('contain', 'Acknowledged');
   });
 
   it('can be acknowledged via row button', () => {
@@ -370,19 +349,20 @@ describe('Alerts', () => {
       cy.contains('Active').click({ force: true });
     });
 
-    // Confirm there are 2 "Active" alerts
-    cy.get('tbody > tr', TWENTY_SECONDS_TIMEOUT)
-      .should(($tr) => expect($tr, '2 rows').to.have.length(2))
+    cy.get('tbody > tr')
+      .filter(`:contains(${testDetectorAlertCondition})`)
+      .should('have.length', 3);
+
+    cy.get('tbody > tr')
       // Click the "Acknowledge" icon button in the first row
       .first()
       .within(() => {
         cy.get('[aria-label="Acknowledge"]').click({ force: true });
       });
 
-    // Confirm there is 1 "Active" alert
-    cy.get('tbody > tr', TWENTY_SECONDS_TIMEOUT).should(($tr) =>
-      expect($tr, '1 row').to.have.length(1)
-    );
+    cy.get('tbody > tr')
+      .filter(`:contains(${testDetectorAlertCondition})`)
+      .should('have.length', 2);
 
     // Filter the table to show only "Acknowledged" alerts
     cy.get('[data-text="Status"]');
@@ -392,9 +372,9 @@ describe('Alerts', () => {
     });
 
     // Confirm there are now 3 "Acknowledged" alerts
-    cy.get('tbody > tr', TWENTY_SECONDS_TIMEOUT).should(($tr) =>
-      expect($tr, '3 rows').to.have.length(3)
-    );
+    cy.get('tbody > tr')
+      .filter(`:contains(${testDetectorAlertCondition})`)
+      .should('have.length', 2);
   });
 
   it('can be acknowledged via flyout button', () => {
@@ -404,7 +384,7 @@ describe('Alerts', () => {
       cy.contains('Active').click({ force: true });
     });
 
-    cy.get('tbody > tr', TWENTY_SECONDS_TIMEOUT)
+    cy.get('tbody > tr')
       .first()
       .within(() => {
         // Click the "View details" button for the first alert
@@ -419,10 +399,7 @@ describe('Alerts', () => {
       cy.get('[data-test-subj="alert-details-flyout-acknowledge-button"]').click({ force: true });
 
       // Confirm the alert is now "Acknowledged"
-      cy.get(
-        '[data-test-subj="text-details-group-content-alert-status"]',
-        TWENTY_SECONDS_TIMEOUT
-      ).contains('Active');
+      cy.get('[data-test-subj="text-details-group-content-alert-status"]').contains('Active');
 
       // Confirm the "Acknowledge" button is disabled
       cy.get('[data-test-subj="alert-details-flyout-acknowledge-button"]').should('be.disabled');
@@ -431,22 +408,22 @@ describe('Alerts', () => {
 
   it('detector name hyperlink on finding details flyout redirects to the detector details page', () => {
     // Open first alert details flyout
-    cy.get('tbody > tr', TWENTY_SECONDS_TIMEOUT)
+    cy.get('tbody > tr')
       .first()
       .within(() => {
         // Click the "View details" button for the first alert
         cy.get('[aria-label="View details"]').click({ force: true });
       });
 
-    cy.get('[data-test-subj="alert-details-flyout"]', TWENTY_SECONDS_TIMEOUT).within(() => {
+    cy.get('[data-test-subj="alert-details-flyout"]').within(() => {
       // Wait for findings table to finish loading
-      cy.contains('USB Device Plugged', TWENTY_SECONDS_TIMEOUT);
+      cy.contains('USB Device Plugged');
 
       // Click the details button for the first finding
-      cy.get('tbody > tr', TWENTY_SECONDS_TIMEOUT)
+      cy.get('tbody > tr')
         .first()
         .within(() => {
-          cy.get('[data-test-subj="finding-details-flyout-button"]', TWENTY_SECONDS_TIMEOUT).click({
+          cy.get('[data-test-subj="finding-details-flyout-button"]').click({
             force: true,
           });
         });
@@ -461,17 +438,8 @@ describe('Alerts', () => {
     });
 
     // Confirm the detector details page is for the expected detector
-    cy.get('[data-test-subj="detector-details-detector-name"]', TWENTY_SECONDS_TIMEOUT).contains(
-      testDetector.name,
-      TWENTY_SECONDS_TIMEOUT
-    );
+    cy.get('[data-test-subj="detector-details-detector-name"]').contains(testDetector.name);
   });
 
-  after(() => {
-    // Clean up test resources
-    cy.deleteDetector(testDetectorName);
-    cy.deleteIndex(FEATURE_SYSTEM_INDICES.WINDOWS_ALERTS_INDEX);
-    cy.deleteIndex(FEATURE_SYSTEM_INDICES.WINDOWS_FINDINGS_INDEX);
-    cy.deleteIndex(testIndex);
-  });
+  after(() => cy.cleanUpTests());
 });

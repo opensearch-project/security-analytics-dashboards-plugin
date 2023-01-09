@@ -14,7 +14,8 @@ import {
 import React, { ChangeEvent } from 'react';
 
 export interface FieldTextArrayProps {
-  label: string;
+  label: string | React.ReactNode;
+  name: string;
   fields: string[];
   addButtonName: string;
   onFieldEdit: (value: string, fieldIndex: number) => void;
@@ -25,6 +26,7 @@ export interface FieldTextArrayProps {
 export const FieldTextArray: React.FC<FieldTextArrayProps> = ({
   addButtonName,
   label,
+  name,
   fields,
   onFieldEdit,
   onFieldRemove,
@@ -43,7 +45,7 @@ export const FieldTextArray: React.FC<FieldTextArrayProps> = ({
                     onChange={(e: ChangeEvent<HTMLInputElement>) => {
                       onFieldEdit(e.target.value, index);
                     }}
-                    data-test-subj={`rule_${label
+                    data-test-subj={`rule_${name
                       .toLowerCase()
                       .replaceAll(' ', '_')}_field_${index}`}
                   />
