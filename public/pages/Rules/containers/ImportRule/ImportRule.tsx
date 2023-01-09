@@ -4,7 +4,7 @@
  */
 
 import { BrowserServices } from '../../../../models/interfaces';
-import { RuleEditor } from '../../components/RuleEditor/RuleEditor';
+import { RuleEditorContainer } from '../../components/RuleEditor/RuleEditorContainer';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { EuiButton, EuiFilePicker, EuiFlexGroup, EuiFlexItem, EuiSpacer } from '@elastic/eui';
 import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
@@ -72,10 +72,12 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
               })) || [],
           };
           setContent(
-            <RuleEditor
+            <RuleEditorContainer
               title="Import a rule"
-              services={services}
-              FooterActions={footerActions}
+              history={history}
+              notifications={notifications}
+              mode={'create'}
+              ruleService={services.ruleService}
               rule={rule}
             />
           );

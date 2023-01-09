@@ -217,7 +217,6 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
   const ruleItems = prePackagedRuleItems.concat(customRuleItems);
 
   const onRuleDetails = (ruleItem: RuleItem) => {
-    console.log('onRuleDetails', ruleItem);
     setFlyoutData(() => ({
       title: ruleItem.name,
       level: ruleItem.severity,

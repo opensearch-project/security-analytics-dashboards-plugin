@@ -4,7 +4,7 @@
  */
 
 import { BrowserServices } from '../../../../models/interfaces';
-import { RuleEditor } from '../../components/RuleEditor/RuleEditor';
+import { RuleEditorContainer } from '../../components/RuleEditor/RuleEditorContainer';
 import React, { useContext } from 'react';
 import { EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 import { RouteComponentProps } from 'react-router-dom';
@@ -30,45 +30,15 @@ export const EditRule: React.FC<EditRuleProps> = ({
 }) => {
   const context = useContext(CoreServicesContext);
   setBreadCrumb(BREADCRUMBS.RULES_EDIT, context?.chrome.setBreadcrumbs);
-  const footerActions: React.FC<{ rule: Rule }> = ({ rule }) => {
-    const onSave = async () => {
-      if (!validateRule(rule, notifications!, 'save')) {
-        return;
-      }
-
-      const editRuleRes = await services.ruleService.updateRule(
-        location.state.ruleItem._id,
-        rule.category,
-        rule
-      );
-
-      if (!editRuleRes.ok) {
-        errorNotificationToast(notifications!, 'save', 'rule', editRuleRes.error);
-      } else {
-        history.replace(ROUTES.RULES);
-      }
-    };
-
-    return (
-      <EuiFlexGroup justifyContent="flexEnd">
-        <EuiFlexItem grow={false}>
-          <EuiButton onClick={() => history.replace(ROUTES.RULES)}>Cancel</EuiButton>
-        </EuiFlexItem>
-        <EuiFlexItem grow={false}>
-          <EuiButton fill onClick={onSave}>
-            Save changes
-          </EuiButton>
-        </EuiFlexItem>
-      </EuiFlexGroup>
-    );
-  };
 
   return (
-    <RuleEditor
+    <RuleEditorContainer
       title="Edit rule"
-      services={services}
-      FooterActions={footerActions}
+      mode={'edit'}
       rule={location.state.ruleItem._source}
+      history={history}
+      notifications={notifications}
+      ruleService={services.ruleService}
     />
   );
 };
