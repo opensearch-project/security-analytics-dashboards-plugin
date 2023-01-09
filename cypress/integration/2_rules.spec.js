@@ -5,8 +5,9 @@
 
 import { OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
 
+const uniqueId = Cypress._.random(0, 1e6);
 const SAMPLE_RULE = {
-  name: 'Cypress test rule',
+  name: `Cypress test rule ${uniqueId}`,
   logType: 'windows',
   description: 'This is a rule used to test the rule creation workflow.',
   detection:
@@ -69,16 +70,13 @@ describe('Rules', () => {
     cy.get('[data-test-subj="rule_name_field"]').type(SAMPLE_RULE.name);
 
     // Enter the log type
-    cy.get('[data-test-subj="rule_type_dropdown"]').select(SAMPLE_RULE.logType);
+    cy.get('[data-test-subj="rule_type_dropdown"]').type(SAMPLE_RULE.logType);
 
     // Enter the description
     cy.get('[data-test-subj="rule_description_field"]').type(SAMPLE_RULE.description);
 
-    // Enter the detection
-    cy.get('[data-test-subj="rule_detection_field"]').type(SAMPLE_RULE.detection);
-
     // Enter the severity
-    cy.get('[data-test-subj="rule_severity_dropdown"]').select(SAMPLE_RULE.severity);
+    cy.get('[data-test-subj="rule_severity_dropdown"]').type(SAMPLE_RULE.severity);
 
     // Enter the tags
     SAMPLE_RULE.tags.forEach((tag) =>
@@ -89,13 +87,16 @@ describe('Rules', () => {
     cy.get('[data-test-subj="rule_references_field_0"]').type(SAMPLE_RULE.references);
 
     // Enter the false positive cases
-    cy.get('[data-test-subj="rule_false_positive_cases_field_0"]').type(SAMPLE_RULE.falsePositive);
+    cy.get('[data-test-subj="rule_false_positives_field_0"]').type(SAMPLE_RULE.falsePositive);
 
     // Enter the author
     cy.get('[data-test-subj="rule_author_field"]').type(SAMPLE_RULE.author);
 
     // Enter the log type
-    cy.get('[data-test-subj="rule_status_dropdown"]').select(SAMPLE_RULE.status);
+    cy.get('[data-test-subj="rule_status_dropdown"]').type(SAMPLE_RULE.status);
+
+    // Enter the detection
+    cy.get('[data-test-subj="rule_detection_field"]').type(SAMPLE_RULE.detection);
 
     // Switch to YAML editor
     cy.get('[data-test-subj="change-editor-type"] label:nth-child(2)').click({
@@ -109,7 +110,7 @@ describe('Rules', () => {
     }).as('getRules');
 
     // Click "create" button
-    cy.get('[data-test-subj="create_rule_button"]').click({
+    cy.get('[data-test-subj="submit_rule_form_button"]').click({
       force: true,
     });
 
