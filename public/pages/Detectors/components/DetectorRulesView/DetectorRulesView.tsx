@@ -129,9 +129,21 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
     });
   }, [services, props.detector]);
 
+  const onRuleDetails = (ruleItem: RuleItem) => {
+    setFlyoutData(() => ({
+      title: ruleItem.name,
+      level: ruleItem.severity,
+      category: ruleItem.logType,
+      description: ruleItem.description,
+      source: ruleItem.library,
+      ruleInfo: ruleItem.ruleInfo,
+      ruleId: ruleItem.id,
+    }));
+  };
+
   const rules = (
     <EuiInMemoryTable
-      columns={getRulesColumns(false)}
+      columns={getRulesColumns(false, undefined, undefined, onRuleDetails)}
       items={enabledRuleItems}
       itemId={(item: RuleItem) => `${item.name}`}
       pagination
