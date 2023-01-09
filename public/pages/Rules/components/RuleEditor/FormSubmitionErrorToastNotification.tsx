@@ -7,7 +7,7 @@ import { useFormikContext } from 'formik';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../../../../utils/helpers';
 
-export const FormSubmitionErrorToastNotification = ({
+export const FormSubmissionErrorToastNotification = ({
   notifications,
 }: {
   notifications?: NotificationsStart;

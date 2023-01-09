@@ -84,12 +84,10 @@ describe('Rules', () => {
     );
 
     // Enter the reference
-    cy.get('[data-test-subj="rule_references_-_optional_field_0"]').type(SAMPLE_RULE.references);
+    cy.get('[data-test-subj="rule_references_field_0"]').type(SAMPLE_RULE.references);
 
     // Enter the false positive cases
-    cy.get('[data-test-subj="rule_false_positive_cases_-_optional_field_0"]').type(
-      SAMPLE_RULE.falsePositive
-    );
+    cy.get('[data-test-subj="rule_false_positives_field_0"]').type(SAMPLE_RULE.falsePositive);
 
     // Enter the author
     cy.get('[data-test-subj="rule_author_field"]').type(SAMPLE_RULE.author);

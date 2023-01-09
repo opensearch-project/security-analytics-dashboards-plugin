@@ -4,7 +4,7 @@
  */
 
 import { BrowserServices } from '../../../../models/interfaces';
-import { RuleEditor } from '../../components/RuleEditor/RuleEditor';
+import { RuleEditorContainer } from '../../components/RuleEditor/RuleEditorContainer';
 import React, { useContext } from 'react';
 import { EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 import { RouteComponentProps } from 'react-router-dom';
@@ -59,10 +59,13 @@ export const DuplicateRule: React.FC<DuplicateRuleProps> = ({
   };
 
   return (
-    <RuleEditor
+    <RuleEditorContainer
       title="Duplicate rule"
-      FooterActions={footerActions}
       rule={location.state.ruleItem._source}
+      history={history}
+      notifications={notifications}
+      mode={'create'}
+      ruleService={services.ruleService}
     />
   );
 };
