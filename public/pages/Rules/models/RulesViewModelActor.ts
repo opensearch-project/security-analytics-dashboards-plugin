@@ -5,9 +5,9 @@
 
 import { load, safeDump } from 'js-yaml';
 import { RuleInfo } from '../../../../server/models/interfaces';
-import { BrowserServices } from '../../../models/interfaces';
 import { RuleItemInfoBase } from './types';
-import { ruleTypes } from "../utils/constants";
+import { RuleService } from '../../../services';
+import { ruleTypes } from '../utils/constants';
 
 export interface RulesViewModel {
   allRules: RuleItemInfoBase[];
@@ -16,7 +16,7 @@ export interface RulesViewModel {
 export class RulesViewModelActor {
   private rulesViewModel: RulesViewModel;
 
-  constructor(private readonly services: BrowserServices) {
+  constructor(private readonly service: RuleService) {
     this.rulesViewModel = {
       allRules: [],
     };
@@ -26,29 +26,35 @@ export class RulesViewModelActor {
     return this.rulesViewModel.allRules;
   }
 
-  public async fetchRules(): Promise<RuleItemInfoBase[]> {
-    let prePackagedRules = await this.getRules(true);
-    let customRules = await this.getRules(false);
+  public async fetchRules(terms?: { [key: string]: string[] }): Promise<RuleItemInfoBase[]> {
+    let prePackagedRules = await this.getRules(true, terms);
+    let customRules = await this.getRules(false, terms);
 
     prePackagedRules = this.extractAndAddDetection(prePackagedRules);
     customRules = this.extractAndAddDetection(customRules);
-
     this.rulesViewModel.allRules = customRules.concat(prePackagedRules);
 
     return this.rulesViewModel.allRules;
   }
 
-  private async getRules(prePackaged: boolean): Promise<RuleItemInfoBase[]> {
-    const getRulesRes = await this.services.ruleService.getRules(prePackaged, {
+  private async getRules(
+    prePackaged: boolean,
+    terms?: {
+      [key: string]: string[];
+    }
+  ): Promise<RuleItemInfoBase[]> {
+    const getRulesRes = await this.service.getRules(prePackaged, {
       from: 0,
       size: 5000,
       query: {
         nested: {
           path: 'rule',
           query: {
-            terms: {
-              "rule.category": ruleTypes,
-            }
+            terms: terms
+              ? terms
+              : {
+                  'rule.category': ruleTypes,
+                },
           },
         },
       },
@@ -57,6 +63,10 @@ export class RulesViewModelActor {
     if (getRulesRes?.ok) {
       return getRulesRes.response.hits.hits.map((hit) => ({
         ...hit,
+        _source: {
+          ...hit._source,
+          prePackaged,
+        },
         prePackaged,
       }));
     }

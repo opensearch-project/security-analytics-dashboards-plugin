@@ -92,6 +92,7 @@ export default class FindingDetailsFlyout extends Component<
         source: fullRule.source,
         ruleInfo: {
           _source: fullRule,
+          prePackaged: fullRule.prePackaged,
         } as RuleItemInfoBase,
       },
     });

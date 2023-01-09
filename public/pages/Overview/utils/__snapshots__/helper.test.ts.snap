@@ -1,0 +1,452 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`helper utilities spec tests getAlertsVisualizationSpec function  - snapshot test: should match alerts spec 1`] = `
+Object {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "config": Object {
+    "legend": Object {
+      "labelColor": "#343741",
+      "labelFont": "\\"Inter UI\\", -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Helvetica, Arial, sans-serif, \\"Apple Color Emoji\\", \\"Segoe UI Emoji\\", \\"Segoe UI Symbol\\"",
+      "labelFontSize": 14,
+      "rowPadding": 6,
+      "titleColor": "#1a1c21",
+      "titleFontSize": 14,
+      "titleFontWeight": 600,
+      "titleLineHeight": 21,
+      "titlePadding": 10,
+    },
+    "view": Object {
+      "stroke": "transparent",
+    },
+  },
+  "data": Object {
+    "values": Array [],
+  },
+  "description": "Alerts data overview",
+  "layer": Array [
+    Object {
+      "encoding": Object {
+        "color": Object {
+          "field": "",
+          "scale": Object {
+            "range": Array [
+              "#54B399",
+              "#6092C0",
+              "#D36086",
+              "#9170B8",
+              "#CA8EAE",
+              "#D6BF57",
+              "#B9A888",
+              "#DA8B45",
+              "#AA6556",
+              "#E7664C",
+            ],
+          },
+          "title": "Alert severity",
+        },
+        "opacity": Object {
+          "condition": Object {
+            "selection": "series",
+            "value": 1,
+          },
+          "value": 0.2,
+        },
+        "tooltip": Array [
+          Object {
+            "aggregate": "sum",
+            "axis": Object {
+              "grid": true,
+            },
+            "field": "alert",
+            "title": "Alerts",
+            "type": "quantitative",
+          },
+          Object {
+            "field": "time",
+            "format": "%Y-%m-%d %H:%M:%S",
+            "timeUnit": Object {
+              "step": 1,
+              "unit": "yearmonthdatehoursminutes",
+            },
+            "title": "Time",
+            "type": "temporal",
+          },
+          Object {
+            "field": "",
+            "title": "Alert severity",
+          },
+        ],
+        "x": Object {
+          "axis": Object {
+            "format": "%Y-%m-%d %H:%M",
+            "grid": false,
+          },
+          "field": "time",
+          "scale": Object {
+            "domain": undefined,
+          },
+          "timeUnit": Object {
+            "step": 1,
+            "unit": "yearmonthdatehoursminutes",
+          },
+          "title": "",
+          "type": "temporal",
+        },
+        "y": Object {
+          "aggregate": "sum",
+          "axis": Object {
+            "grid": true,
+          },
+          "field": "alert",
+          "title": "Count",
+          "type": "quantitative",
+        },
+      },
+      "mark": Object {
+        "clip": true,
+        "type": "bar",
+      },
+      "selection": Object {
+        "series": Object {
+          "bind": "legend",
+          "encodings": Array [
+            "color",
+          ],
+          "on": "click",
+          "type": "multi",
+        },
+      },
+    },
+  ],
+}
+`;
+
+exports[`helper utilities spec tests getFindingsVisualizationSpec function  - snapshot test: should match findings spec 1`] = `
+Object {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "config": Object {
+    "legend": Object {
+      "labelColor": "#343741",
+      "labelFont": "\\"Inter UI\\", -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Helvetica, Arial, sans-serif, \\"Apple Color Emoji\\", \\"Segoe UI Emoji\\", \\"Segoe UI Symbol\\"",
+      "labelFontSize": 14,
+      "rowPadding": 6,
+      "titleColor": "#1a1c21",
+      "titleFontSize": 14,
+      "titleFontWeight": 600,
+      "titleLineHeight": 21,
+      "titlePadding": 10,
+    },
+    "view": Object {
+      "stroke": "transparent",
+    },
+  },
+  "data": Object {
+    "values": Array [],
+  },
+  "description": "Findings data overview",
+  "layer": Array [
+    Object {
+      "encoding": Object {
+        "color": Object {
+          "field": "",
+          "scale": Object {
+            "range": Array [
+              "#54B399",
+              "#6092C0",
+              "#D36086",
+              "#9170B8",
+              "#CA8EAE",
+              "#D6BF57",
+              "#B9A888",
+              "#DA8B45",
+              "#AA6556",
+              "#E7664C",
+            ],
+          },
+          "title": "Rule severity",
+        },
+        "opacity": Object {
+          "condition": Object {
+            "selection": "series",
+            "value": 1,
+          },
+          "value": 0.2,
+        },
+        "tooltip": Array [
+          Object {
+            "aggregate": "sum",
+            "axis": Object {
+              "grid": true,
+            },
+            "field": "finding",
+            "title": "Findings",
+            "type": "quantitative",
+          },
+          Object {
+            "field": "time",
+            "format": "%Y-%m-%d %H:%M:%S",
+            "timeUnit": Object {
+              "step": 1,
+              "unit": "yearmonthdatehoursminutes",
+            },
+            "title": "Time",
+            "type": "temporal",
+          },
+          Object {
+            "field": "",
+            "title": "Rule severity",
+          },
+        ],
+        "x": Object {
+          "axis": Object {
+            "format": "%Y-%m-%d %H:%M",
+            "grid": false,
+          },
+          "field": "time",
+          "scale": Object {
+            "domain": undefined,
+          },
+          "timeUnit": Object {
+            "step": 1,
+            "unit": "yearmonthdatehoursminutes",
+          },
+          "title": "",
+          "type": "temporal",
+        },
+        "y": Object {
+          "aggregate": "sum",
+          "axis": Object {
+            "grid": true,
+          },
+          "field": "finding",
+          "title": "Count",
+          "type": "quantitative",
+        },
+      },
+      "mark": Object {
+        "clip": true,
+        "type": "bar",
+      },
+      "selection": Object {
+        "series": Object {
+          "bind": "legend",
+          "encodings": Array [
+            "color",
+          ],
+          "on": "click",
+          "type": "multi",
+        },
+      },
+    },
+  ],
+}
+`;
+
+exports[`helper utilities spec tests getOverviewVisualizationSpec function  - snapshot test: should match overview spec 1`] = `
+Object {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "config": Object {
+    "legend": Object {
+      "labelColor": "#343741",
+      "labelFont": "\\"Inter UI\\", -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Helvetica, Arial, sans-serif, \\"Apple Color Emoji\\", \\"Segoe UI Emoji\\", \\"Segoe UI Symbol\\"",
+      "labelFontSize": 14,
+      "rowPadding": 6,
+      "titleColor": "#1a1c21",
+      "titleFontSize": 14,
+      "titleFontWeight": 600,
+      "titleLineHeight": 21,
+      "titlePadding": 10,
+    },
+    "view": Object {
+      "stroke": "transparent",
+    },
+  },
+  "data": Object {
+    "values": Array [],
+  },
+  "description": "Plot showing average data with raw values in the background.",
+  "layer": Array [
+    Object {
+      "encoding": Object {
+        "color": Object {
+          "scale": null,
+          "value": "#6092C0",
+        },
+        "tooltip": Array [
+          Object {
+            "aggregate": "sum",
+            "axis": Object {
+              "grid": true,
+            },
+            "field": "finding",
+            "title": "Findings",
+            "type": "quantitative",
+          },
+          Object {
+            "field": "time",
+            "format": "%Y-%m-%d %H:%M:%S",
+            "timeUnit": Object {
+              "step": 1,
+              "unit": "yearmonthdatehoursminutes",
+            },
+            "title": "Time",
+            "type": "temporal",
+          },
+        ],
+        "x": Object {
+          "axis": Object {
+            "format": "%Y-%m-%d %H:%M",
+            "grid": false,
+          },
+          "field": "time",
+          "scale": Object {
+            "domain": undefined,
+          },
+          "timeUnit": Object {
+            "step": 1,
+            "unit": "yearmonthdatehoursminutes",
+          },
+          "title": "",
+          "type": "temporal",
+        },
+        "y": Object {
+          "aggregate": "sum",
+          "axis": Object {
+            "grid": true,
+          },
+          "field": "finding",
+          "title": "Count",
+          "type": "quantitative",
+        },
+      },
+      "mark": Object {
+        "clip": true,
+        "type": "bar",
+      },
+    },
+    Object {
+      "encoding": Object {
+        "tooltip": Array [
+          Object {
+            "aggregate": "sum",
+            "axis": Object {
+              "grid": true,
+            },
+            "field": "alert",
+            "title": "Alerts",
+            "type": "quantitative",
+          },
+          Object {
+            "field": "time",
+            "format": "%Y-%m-%d %H:%M:%S",
+            "timeUnit": Object {
+              "step": 1,
+              "unit": "yearmonthdatehoursminutes",
+            },
+            "title": "Time",
+            "type": "temporal",
+          },
+        ],
+        "x": Object {
+          "axis": Object {
+            "format": "%Y-%m-%d %H:%M",
+            "grid": false,
+          },
+          "band": 0.5,
+          "field": "time",
+          "scale": Object {
+            "domain": undefined,
+          },
+          "timeUnit": Object {
+            "step": 1,
+            "unit": "yearmonthdatehoursminutes",
+          },
+          "title": "",
+          "type": "temporal",
+        },
+        "y": Object {
+          "aggregate": "sum",
+          "axis": Object {
+            "grid": true,
+          },
+          "field": "alert",
+          "title": "Count",
+          "type": "quantitative",
+        },
+      },
+      "mark": Object {
+        "clip": true,
+        "color": "#ff0000",
+        "interpolate": "monotone",
+        "point": Object {
+          "color": "#ff0000",
+          "fill": "white",
+          "filled": false,
+          "size": 50,
+        },
+        "type": "line",
+      },
+    },
+  ],
+}
+`;
+
+exports[`helper utilities spec tests getVisualizationSpec function  - snapshot test: should match visualization spec 1`] = `
+Object {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "config": Object {
+    "legend": Object {
+      "labelColor": "#343741",
+      "labelFont": "\\"Inter UI\\", -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Helvetica, Arial, sans-serif, \\"Apple Color Emoji\\", \\"Segoe UI Emoji\\", \\"Segoe UI Symbol\\"",
+      "labelFontSize": 14,
+      "rowPadding": 6,
+      "titleColor": "#1a1c21",
+      "titleFontSize": 14,
+      "titleFontWeight": 600,
+      "titleLineHeight": 21,
+      "titlePadding": 10,
+    },
+    "view": Object {
+      "stroke": "transparent",
+    },
+  },
+  "data": Object {
+    "values": Array [
+      Object {
+        "xField": 1,
+        "yField": 1,
+      },
+    ],
+  },
+  "description": "Visualization",
+  "layer": Array [
+    Object {
+      "encoding": Object {
+        "opacity": Object {
+          "condition": Object {
+            "selection": "series",
+            "value": 1,
+          },
+          "value": 0.2,
+        },
+      },
+      "selection": Object {
+        "series": Object {
+          "bind": "legend",
+          "encodings": Array [
+            "color",
+          ],
+          "on": "click",
+          "type": "multi",
+        },
+      },
+      "x": Object {
+        "field": "xField",
+      },
+      "y": Object {
+        "field": "yField",
+      },
+    },
+  ],
+}
+`;
