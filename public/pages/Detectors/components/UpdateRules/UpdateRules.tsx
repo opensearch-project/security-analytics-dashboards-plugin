@@ -6,11 +6,10 @@
 import { EuiButton, EuiFlexGroup, EuiFlexItem, EuiSpacer, EuiTitle } from '@elastic/eui';
 import {
   DetectorHit,
-  GetRulesResponse,
   SearchDetectorsResponse,
   UpdateDetectorResponse,
 } from '../../../../../server/models/interfaces';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState, useMemo } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { Detector } from '../../../../../models/interfaces';
@@ -22,6 +21,7 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast, successNotificationToast } from '../../../../utils/helpers';
 import { RuleTableItem } from '../../../Rules/utils/helpers';
 import { RuleViewerFlyout } from '../../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
+import { RulesViewModelActor } from '../../../Rules/models/RulesViewModelActor';
 
 export interface UpdateDetectorRulesProps
   extends RouteComponentProps<
@@ -41,6 +41,11 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
   const [prePackagedRuleItems, setPrePackagedRuleItems] = useState<RuleItem[]>([]);
   const detectorId = props.location.pathname.replace(`${ROUTES.EDIT_DETECTOR_RULES}/`, '');
   const [flyoutData, setFlyoutData] = useState<RuleTableItem | null>(null);
+
+  const rulesViewModelActor = useMemo(
+    () => (services ? new RulesViewModelActor(services.ruleService) : null),
+    [services]
+  );
 
   useEffect(() => {
     const getDetector = async () => {
@@ -62,83 +67,41 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
     };
 
     const getRules = async (detector: Detector) => {
-      const prePackagedResponse = (await services?.ruleService.getRules(true, {
-        from: 0,
-        size: 5000,
-        query: {
-          nested: {
-            path: 'rule',
-            query: {
-              bool: {
-                must: [{ match: { 'rule.category': `${detector.detector_type.toLowerCase()}` } }],
-              },
-            },
-          },
-        },
-      })) as ServerResponse<GetRulesResponse>;
-      if (prePackagedResponse.ok) {
-        const ruleInfos = prePackagedResponse.response.hits.hits;
-        const enabledRuleIds = detector.inputs[0].detector_input.pre_packaged_rules.map(
-          (rule) => rule.id
-        );
-        const ruleItems = ruleInfos.map((rule) => ({
-          name: rule._source.title,
-          id: rule._id,
-          severity: rule._source.level,
-          logType: rule._source.category,
-          library: 'Sigma',
-          description: rule._source.description,
-          active: enabledRuleIds.includes(rule._id),
-          ruleInfo: rule,
-        }));
-        setPrePackagedRuleItems(ruleItems);
-      } else {
-        errorNotificationToast(
-          props.notifications,
-          'retrieve',
-          'pre-packaged rules',
-          prePackagedResponse.error
-        );
-      }
+      const enabledRuleIds = detector.inputs[0].detector_input.pre_packaged_rules.map(
+        (rule) => rule.id
+      );
 
-      const customResponse = (await services?.ruleService.getRules(false, {
-        from: 0,
-        size: 5000,
-        query: {
-          nested: {
-            path: 'rule',
-            query: {
-              bool: {
-                must: [{ match: { 'rule.category': `${detector.detector_type.toLowerCase()}` } }],
-              },
-            },
-          },
+      const allRules = await rulesViewModelActor?.fetchRules(undefined, {
+        bool: {
+          must: [{ match: { 'rule.category': `${detector.detector_type.toLowerCase()}` } }],
         },
-      })) as ServerResponse<GetRulesResponse>;
-      if (customResponse.ok) {
-        const ruleInfos = customResponse.response.hits.hits;
-        const enabledRuleIds = detector.inputs[0].detector_input.custom_rules.map(
-          (rule) => rule.id
-        );
-        const ruleItems = ruleInfos.map((rule) => ({
-          name: rule._source.title,
-          id: rule._id,
-          severity: rule._source.level,
-          logType: rule._source.category,
-          library: 'Custom',
-          description: rule._source.description,
-          active: enabledRuleIds.includes(rule._id),
-          ruleInfo: rule,
-        }));
-        setCustomRuleItems(ruleItems);
-      } else {
-        errorNotificationToast(
-          props.notifications,
-          'retrieve',
-          'custom rules',
-          customResponse.error
-        );
-      }
+      });
+
+      const prePackagedRules = allRules?.filter((rule) => rule.prePackaged);
+      const prePackagedRuleItems = prePackagedRules?.map((rule) => ({
+        name: rule._source.title,
+        id: rule._id,
+        severity: rule._source.level,
+        logType: rule._source.category,
+        library: 'Sigma',
+        description: rule._source.description,
+        active: enabledRuleIds.includes(rule._id),
+        ruleInfo: rule,
+      }));
+      setPrePackagedRuleItems(prePackagedRuleItems || []);
+
+      const customRules = allRules?.filter((rule) => !rule.prePackaged);
+      const customRuleItems = customRules?.map((rule) => ({
+        name: rule._source.title,
+        id: rule._id,
+        severity: rule._source.level,
+        logType: rule._source.category,
+        library: 'Custom',
+        description: rule._source.description,
+        active: enabledRuleIds.includes(rule._id),
+        ruleInfo: rule,
+      }));
+      setCustomRuleItems(customRuleItems || []);
     };
 
     const execute = async () => {
