@@ -9,6 +9,7 @@ import { SummaryData } from '../components/Widgets/Summary';
 import dateMath from '@elastic/datemath';
 import _ from 'lodash';
 import { DEFAULT_DATE_RANGE } from '../../../utils/constants';
+import { severityOptions } from '../../Alerts/utils/constants';
 
 export interface TimeUnit {
   unit: string;
@@ -202,6 +203,11 @@ export function getFindingsVisualizationSpec(
     domain: defaultScaleDomain,
   }
 ) {
+  const severities = ['info', 'low', 'medium', 'high', 'critical'];
+  const isGroupedByLogType = groupBy === 'logType';
+  const logTitle = 'Log type';
+  const severityTitle = 'Rule severity';
+  const title = isGroupedByLogType ? logTitle : severityTitle;
   return getVisualizationSpec('Findings data overview', visualizationData, [
     addInteractiveLegends({
       mark: {
@@ -214,16 +220,17 @@ export function getFindingsVisualizationSpec(
           getTimeTooltip(dateOpts),
           {
             field: groupBy,
-            title: groupBy === 'logType' ? 'Log type' : 'Rule severity',
+            title: title,
           },
         ],
         x: getXAxis(dateOpts),
         y: getYAxis('finding', 'Count'),
         color: {
           field: groupBy,
-          title: groupBy === 'logType' ? 'Log type' : 'Rule severity',
+          title: title,
           scale: {
-            range: euiPaletteColorBlind(),
+            domain: isGroupedByLogType ? undefined : severities,
+            range: groupBy === 'logType' ? euiPaletteColorBlind() : euiPaletteForStatus(5),
           },
         },
       },
@@ -240,6 +247,19 @@ export function getAlertsVisualizationSpec(
     domain: defaultScaleDomain,
   }
 ) {
+  const isGroupedByStatus = groupBy === 'status';
+  let severities = severityOptions.map((severity) => severity.text);
+  severities.reverse().pop();
+
+  let states = ['ACTIVE', 'ACKNOWLEDGED'];
+  const statusColors = {
+    euiColorVis6: '#B9A888',
+    euiColorVis9: '#E7664C',
+  };
+
+  const statusTitle = 'Alert status';
+  const severityTitle = 'Alert severity';
+  const title = isGroupedByStatus ? statusTitle : severityTitle;
   return getVisualizationSpec('Alerts data overview', visualizationData, [
     addInteractiveLegends({
       mark: {
@@ -252,16 +272,17 @@ export function getAlertsVisualizationSpec(
           getTimeTooltip(dateOpts),
           {
             field: groupBy,
-            title: groupBy === 'status' ? 'Alert status' : 'Alert severity',
+            title: title,
           },
         ],
         x: getXAxis(dateOpts),
         y: getYAxis('alert', 'Count'),
         color: {
           field: groupBy,
-          title: groupBy === 'status' ? 'Alert status' : 'Alert severity',
+          title: title,
           scale: {
-            range: groupBy === 'status' ? euiPaletteForStatus(5) : euiPaletteColorBlind(),
+            domain: isGroupedByStatus ? states : severities,
+            range: isGroupedByStatus ? Object.values(statusColors) : euiPaletteForStatus(5),
           },
         },
       },
