@@ -44,7 +44,7 @@ import { AlertFlyout } from '../../components/AlertFlyout/AlertFlyout';
 import { FindingsService, RuleService, OpenSearchService } from '../../../../services';
 import { Detector } from '../../../../../models/interfaces';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
-import { DISABLE_ACKNOWLEDGED_ALERT_HELP_TEXT, severityOptions } from '../../utils/constants';
+import { DISABLE_ACKNOWLEDGED_ALERT_HELP_TEXT } from '../../utils/constants';
 import {
   capitalizeFirstLetter,
   createSelectComponent,
@@ -304,10 +304,7 @@ class Alerts extends Component<AlertsProps, AlertsState> {
             if (alertsRes.ok) {
               const detectorAlerts = alertsRes.response.alerts.map((alert) => {
                 const detector = detectors[id];
-
-                // localize alert severity based on severityOptions
-                const severity = { ...severityOptions }[alert.severity]?.text;
-                return { ...alert, detectorName: detector.name, severity };
+                return { ...alert, detectorName: detector.name };
               });
               alerts = alerts.concat(detectorAlerts);
             } else {
