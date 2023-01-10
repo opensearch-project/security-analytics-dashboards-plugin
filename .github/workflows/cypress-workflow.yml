@@ -15,7 +15,7 @@ jobs:
     name: Run Cypress E2E tests
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
         include:
           - os: windows-latest
             cypress_cache_folder: ~/AppData/Local/Cypress/Cache
