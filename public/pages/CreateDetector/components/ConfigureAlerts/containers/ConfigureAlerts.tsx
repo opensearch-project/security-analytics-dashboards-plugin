@@ -27,6 +27,7 @@ import {
   parseNotificationChannelsToOptions,
 } from '../utils/helpers';
 import { NotificationsService } from '../../../../../services';
+import { validateName } from '../../../../../utils/validation';
 
 interface ConfigureAlertsProps extends RouteComponentProps {
   detector: Detector;
@@ -81,8 +82,9 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
 
   onAlertTriggerChanged = (newDetector: Detector): void => {
     const isTriggerDataValid = newDetector.triggers.every((trigger) => {
-      return !!trigger.name && trigger.severity;
+      return !!trigger.name && validateName(trigger.name) && trigger.severity;
     });
+
     this.props.changeDetector(newDetector);
     this.props.updateDataValidState(DetectorCreationStep.CONFIGURE_ALERTS, isTriggerDataValid);
   };
