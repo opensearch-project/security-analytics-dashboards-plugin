@@ -5,12 +5,20 @@
 
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { EuiSpacer, EuiTitle, EuiText } from '@elastic/eui';
+import {
+  EuiSpacer,
+  EuiTitle,
+  EuiText,
+  EuiCallOut,
+  EuiAccordion,
+  EuiHorizontalRule,
+  EuiPanel,
+} from '@elastic/eui';
 import FieldMappingsTable from '../components/RequiredFieldMapping';
 import { createDetectorSteps } from '../../../utils/constants';
 import { ContentPanel } from '../../../../../components/ContentPanel';
 import { Detector, FieldMapping } from '../../../../../../models/interfaces';
-import { EMPTY_FIELD_MAPPINGS } from '../utils/constants';
+import { EMPTY_FIELD_MAPPINGS_VIEW } from '../utils/constants';
 import { DetectorCreationStep } from '../../../models/types';
 import { GetFieldMappingViewResponse } from '../../../../../../server/models/interfaces';
 import FieldMappingService from '../../../../../services/FieldMappingService';
@@ -49,7 +57,7 @@ export default class ConfigureFieldMapping extends Component<
     });
     this.state = {
       loading: props.loading || false,
-      mappingsData: EMPTY_FIELD_MAPPINGS,
+      mappingsData: EMPTY_FIELD_MAPPINGS_VIEW,
       createdMappings,
       invalidMappingFieldNames: [],
     };
@@ -70,16 +78,20 @@ export default class ConfigureFieldMapping extends Component<
       Object.keys(mappingsView.response.properties).forEach((ruleFieldName) => {
         existingMappings[ruleFieldName] = mappingsView.response.properties[ruleFieldName].path;
       });
-      this.setState({ createdMappings: existingMappings, mappingsData: mappingsView.response });
+      this.setState({
+        createdMappings: existingMappings,
+        mappingsData: {
+          ...mappingsView.response,
+          unmapped_field_aliases: [
+            'timestamp',
+            ...(mappingsView.response.unmapped_field_aliases || []),
+          ],
+        },
+      });
       this.updateMappingSharedState(existingMappings);
     }
     this.setState({ loading: false });
   };
-
-  validateMappings(mappings: ruleFieldToIndexFieldMap): boolean {
-    // TODO: Implement validation
-    return true; //allFieldsMapped; // && allAliasesUnique;
-  }
 
   /**
    * Returns the fieldName(s) that have duplicate alias assigned to them
@@ -110,8 +122,7 @@ export default class ConfigureFieldMapping extends Component<
       invalidMappingFieldNames: invalidMappingFieldNames,
     });
     this.updateMappingSharedState(newMappings);
-    const mappingsValid = this.validateMappings(newMappings);
-    this.props.updateDataValidState(DetectorCreationStep.CONFIGURE_FIELD_MAPPING, mappingsValid);
+    this.props.updateDataValidState(DetectorCreationStep.CONFIGURE_FIELD_MAPPING, true);
   };
 
   updateMappingSharedState = (createdMappings: ruleFieldToIndexFieldMap) => {
@@ -126,42 +137,52 @@ export default class ConfigureFieldMapping extends Component<
   };
 
   render() {
-    const { isEdit } = this.props;
     const { loading, mappingsData, createdMappings, invalidMappingFieldNames } = this.state;
     const existingMappings: ruleFieldToIndexFieldMap = {
       ...createdMappings,
     };
+
+    // read only data
+    const mappedRuleFields: string[] = [];
+    const mappedLogFields: string[] = [];
+    Object.keys(mappingsData.properties).forEach((ruleFieldName) => {
+      mappedRuleFields.unshift(ruleFieldName);
+      mappedLogFields.unshift(mappingsData.properties[ruleFieldName].path);
+    });
+
+    // edit data
     const ruleFields = [...(mappingsData.unmapped_field_aliases || [])];
     const indexFields = [...(mappingsData.unmapped_index_fields || [])];
 
-    Object.keys(mappingsData.properties).forEach((ruleFieldName) => {
-      existingMappings[ruleFieldName] = mappingsData.properties[ruleFieldName].path;
-      ruleFields.unshift(ruleFieldName);
-      indexFields.unshift(mappingsData.properties[ruleFieldName].path);
-    });
-
     return (
       <div>
-        {!isEdit && (
+        <EuiTitle size={'m'}>
+          <h3>{createDetectorSteps[DetectorCreationStep.CONFIGURE_FIELD_MAPPING].title}</h3>
+        </EuiTitle>
+
+        <EuiText size="s" color="subdued">
+          To perform threat detection, known field names from your log data source are automatically
+          mapped to rule field names. Additional fields that may require manual mapping will be
+          shown below.
+        </EuiText>
+
+        <EuiSpacer size={'m'} />
+
+        {ruleFields.length > 0 ? (
           <>
-            <EuiTitle size={'m'}>
-              <h3>{createDetectorSteps[DetectorCreationStep.CONFIGURE_FIELD_MAPPING].title}</h3>
-            </EuiTitle>
-
-            <EuiText size="s" color="subdued">
-              To perform threat detection, known field names from your log data source are
-              automatically mapped to rule field names. Additional fields that may require manual
-              mapping will be shown below.
-            </EuiText>
-
+            <EuiCallOut
+              title={`${ruleFields.length} rule fields may need manual mapping`}
+              color={'warning'}
+            >
+              <p>
+                To generate accurate findings, we recommend mapping the following security rules
+                fields with the log field from your data source.
+              </p>
+            </EuiCallOut>
             <EuiSpacer size={'m'} />
-          </>
-        )}
-
-        {ruleFields.length > 0 && (
-          <>
-            <ContentPanel title={`Required field mappings (${ruleFields.length})`} titleSize={'m'}>
+            <ContentPanel title={`Manual field mappings (${ruleFields.length})`} titleSize={'m'}>
               <FieldMappingsTable<MappingViewType.Edit>
+                {...this.props}
                 loading={loading}
                 ruleFields={ruleFields}
                 indexFields={indexFields}
@@ -171,12 +192,48 @@ export default class ConfigureFieldMapping extends Component<
                   invalidMappingFieldNames,
                   onMappingCreation: this.onMappingCreation,
                 }}
-                {...this.props}
               />
             </ContentPanel>
             <EuiSpacer size={'m'} />
           </>
+        ) : (
+          <>
+            <EuiCallOut title={'We have automatically mapped all fields'} color={'success'}>
+              <p>
+                Your data source(s) have been mapped with all security rule fields. No action is
+                needed.
+              </p>
+            </EuiCallOut>
+            <EuiSpacer size={'m'} />
+          </>
         )}
+
+        <EuiPanel>
+          <EuiAccordion
+            buttonContent={
+              <div data-test-subj="mapped-fields-btn">
+                <EuiTitle>
+                  <h4>{`View mapped fields (${mappedRuleFields.length})`}</h4>
+                </EuiTitle>
+              </div>
+            }
+            buttonProps={{ style: { paddingLeft: '10px', paddingRight: '10px' } }}
+            id={'mappedFieldsAccordion'}
+            initialIsOpen={false}
+          >
+            <EuiHorizontalRule margin={'xs'} />
+            <FieldMappingsTable<MappingViewType.Readonly>
+              {...this.props}
+              loading={loading}
+              ruleFields={mappedRuleFields}
+              indexFields={mappedLogFields}
+              mappingProps={{
+                type: MappingViewType.Readonly,
+              }}
+            />
+          </EuiAccordion>
+        </EuiPanel>
+        <EuiSpacer size={'m'} />
       </div>
     );
   }

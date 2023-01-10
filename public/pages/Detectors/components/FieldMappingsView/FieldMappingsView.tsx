@@ -52,10 +52,10 @@ export const FieldMappingsView: React.FC<FieldMappingsViewProps> = ({
     async (indexName: string) => {
       const getMappingRes = await services?.fieldMappingService.getMappings(indexName);
       if (getMappingRes?.ok) {
-        const mappings = getMappingRes.response[detector.detector_type.toLowerCase()];
-        if (mappings) {
+        const mappingsData = getMappingRes.response[indexName];
+        if (mappingsData) {
           let items: FieldMappingsTableItem[] = [];
-          Object.entries(mappings.mappings.properties).forEach((entry) => {
+          Object.entries(mappingsData.mappings.properties).forEach((entry) => {
             items.push({
               ruleFieldName: entry[0],
               logFieldName: entry[1].path,
