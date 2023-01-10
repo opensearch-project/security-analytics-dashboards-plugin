@@ -215,7 +215,7 @@ export default class FindingDetailsFlyout extends Component<
               <h3>Documents</h3>
             </EuiTitle>
           </EuiFlexItem>
-          <EuiFlexItem grow={false}>
+          <EuiFlexItem grow={false} style={{ display: 'none' }}>
             <EuiButton
               href={
                 indexPatternId
