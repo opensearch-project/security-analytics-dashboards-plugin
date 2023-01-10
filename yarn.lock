@@ -2041,6 +2041,11 @@ cyclist@^1.0.1:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
   integrity sha512-NJGVKPS81XejHcLhaLJS7plab0fK3slPh11mESeeDq2W4ZI5kUKK/LRRdVDvjJseojbPB7ZwjnyOybg3Igea/A==
 
+cypress-real-events@1.7.6:
+  version "1.7.6"
+  resolved "https://registry.yarnpkg.com/cypress-real-events/-/cypress-real-events-1.7.6.tgz#6f17e0b2ceea1d6dc60f6737d8f84cc517bbbb4c"
+  integrity sha512-yP6GnRrbm6HK5q4DH6Nnupz37nOfZu/xn1xFYqsE2o4G73giPWQOdu6375QYpwfU1cvHNCgyD2bQ2hPH9D7NMw==
+
 cypress@^6.0.0:
   version "6.9.1"
   resolved "https://registry.yarnpkg.com/cypress/-/cypress-6.9.1.tgz#ce1106bfdc47f8d76381dba63f943447883f864c"
