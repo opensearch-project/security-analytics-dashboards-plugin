@@ -335,7 +335,7 @@ export default class AlertConditionPanel extends Component<
           }
         >
           <EuiComboBox
-            placeholder={'Select rule names.'}
+            placeholder={'Any rules'}
             options={namesOptions}
             onChange={this.onRuleNamesChange}
             selectedOptions={selectedNames}
@@ -352,7 +352,7 @@ export default class AlertConditionPanel extends Component<
           }
         >
           <EuiComboBox
-            placeholder={'Select rule severities.'}
+            placeholder={'Any severities'}
             options={ruleSeverityOptions}
             onChange={this.onRuleSeverityChange}
             noSuggestions={false}
@@ -370,7 +370,7 @@ export default class AlertConditionPanel extends Component<
           }
         >
           <EuiComboBox
-            placeholder={'Enter tags for the alert condition.'}
+            placeholder={'Any tags'}
             options={tagsOptions}
             onChange={this.onTagsChange}
             onCreateOption={this.onCreateTag}
