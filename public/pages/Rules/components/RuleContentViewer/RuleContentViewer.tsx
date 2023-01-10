@@ -123,7 +123,12 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
 
           <EuiFormLabel>Tags</EuiFormLabel>
           {ruleData.tags.length > 0 ? (
-            <EuiFlexGroup direction="row" wrap data-test-subj={'rule_flyout_rule_tags'}>
+            <EuiFlexGroup
+              direction="row"
+              wrap
+              gutterSize="s"
+              data-test-subj={'rule_flyout_rule_tags'}
+            >
               {ruleData.tags.map((tag: any, i: number) => (
                 <EuiFlexItem grow={false} key={i}>
                   <EuiBadge color={'#DDD'}>{tag.value}</EuiBadge>
