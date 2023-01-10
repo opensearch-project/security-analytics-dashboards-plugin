@@ -7,28 +7,28 @@ import { OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
 import sample_index_settings from '../fixtures/sample_index_settings.json';
 
 const testMappings = {
-  "properties": {
-    "host-hostname": {
-      "type": "alias",
-      "path": "HostName"
+  properties: {
+    'host-hostname': {
+      type: 'alias',
+      path: 'HostName',
     },
-    "windows-message": {
-      "type": "alias",
-      "path": "Message"
+    'windows-message': {
+      type: 'alias',
+      path: 'Message',
     },
-    "winlog-provider_name": {
-      "type": "alias",
-      "path": "Provider_Name"
+    'winlog-provider_name': {
+      type: 'alias',
+      path: 'Provider_Name',
     },
-    "winlog-event_data-ServiceName": {
-      "type": "alias",
-      "path": "ServiceName"
+    'winlog-event_data-ServiceName': {
+      type: 'alias',
+      path: 'ServiceName',
     },
-    "winlog-event_id": {
-      "path": "EventID",
-      "type": "alias"
-    }
-  }
+    'winlog-event_id': {
+      path: 'EventID',
+      type: 'alias',
+    },
+  },
 };
 
 describe('Detectors', () => {
