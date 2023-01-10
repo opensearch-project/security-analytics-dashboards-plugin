@@ -304,6 +304,7 @@ class Alerts extends Component<AlertsProps, AlertsState> {
             if (alertsRes.ok) {
               const detectorAlerts = alertsRes.response.alerts.map((alert) => {
                 const detector = detectors[id];
+                if (!alert.detector_id) alert.detector_id = id;
                 return { ...alert, detectorName: detector.name };
               });
               alerts = alerts.concat(detectorAlerts);
