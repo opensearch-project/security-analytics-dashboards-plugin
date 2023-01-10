@@ -5,9 +5,8 @@
 
 import { ContentPanel } from '../../../../components/ContentPanel';
 import React, { useContext, useEffect, useState, useMemo } from 'react';
-import { EuiAccordion, EuiButton, EuiInMemoryTable, EuiSpacer, EuiText } from '@elastic/eui';
+import { EuiAccordion, EuiButton, EuiSpacer, EuiText } from '@elastic/eui';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
-import { getRulesColumns } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/utils/constants';
 import { ServicesContext } from '../../../../services';
 import { Detector } from '../../../../../models/interfaces';
 import { RuleInfo } from '../../../../../server/models/interfaces';
@@ -115,28 +114,6 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
     });
   }, [services, props.detector]);
 
-  const onRuleDetails = (ruleItem: RuleItem) => {
-    setFlyoutData(() => ({
-      title: ruleItem.name,
-      level: ruleItem.severity,
-      category: ruleItem.logType,
-      description: ruleItem.description,
-      source: ruleItem.library,
-      ruleInfo: ruleItem.ruleInfo,
-      ruleId: ruleItem.id,
-    }));
-  };
-
-  const rules = (
-    <EuiInMemoryTable
-      columns={getRulesColumns(false, undefined, undefined, onRuleDetails)}
-      items={enabledRuleItems}
-      itemId={(item: RuleItem) => `${item.name}`}
-      pagination
-      loading={loading}
-    />
-  );
-
   const getDetectionRulesTitle = () => `View detection rules (${totalSelected})`;
 
   const onShowRuleDetails = (rule: RuleTableItem) => {
@@ -170,11 +147,14 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
             ruleItems={enabledRuleItems.map((i) => mapRuleItemToRuleTableItem(i))}
             showRuleDetails={onShowRuleDetails}
           />
-          {rules}
         </EuiAccordion>
       ) : (
         <ContentPanel title={`Active rules (${totalSelected})`} actions={actions}>
-          {rules}
+          <RulesTable
+            loading={loading}
+            ruleItems={enabledRuleItems.map((i) => mapRuleItemToRuleTableItem(i))}
+            showRuleDetails={onShowRuleDetails}
+          />
         </ContentPanel>
       )}
     </>
