@@ -116,8 +116,8 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
         errorNotificationToast(
           this.props.notifications,
           'create',
-          'field mappings',
-          createMappingsRes.error
+          'detector',
+          'Double check the field mappings and try again.'
         );
       } else {
         const createDetectorRes = await this.props.services.detectorsService.createDetector(
