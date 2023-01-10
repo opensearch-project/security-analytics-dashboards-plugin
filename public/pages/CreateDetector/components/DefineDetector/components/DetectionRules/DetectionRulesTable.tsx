@@ -76,7 +76,7 @@ export const DetectionRulesTable: React.FC<DetectionRulesTableProps> = ({
     return (rulePriorityBySeverity[a.severity] || 6) - (rulePriorityBySeverity[b.severity] || 6);
   });
 
-  const onTableChangeHandler = (pagination: CriteriaWithPagination<T>) => {
+  const onTableChangeHandler = (pagination: CriteriaWithPagination<RuleItem>) => {
     setPagination({ pageIndex: pagination.page.index });
     onTableChange && onTableChange(pagination);
   };

@@ -35,18 +35,25 @@ export const getRulesColumns = (
           </EuiLink>
         );
       },
+      width: '30%',
+      sortable: true,
     },
     {
       field: 'severity',
       name: 'Rule severity',
+      width: '10%',
+      sortable: true,
     },
     {
       field: 'logType',
       name: 'Log type',
+      width: '10%',
+      sortable: true,
     },
     {
       field: 'library',
       name: 'Source',
+      width: '10%',
     },
     {
       field: 'description',
