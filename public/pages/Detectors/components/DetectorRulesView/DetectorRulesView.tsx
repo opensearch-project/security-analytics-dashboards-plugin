@@ -4,7 +4,7 @@
  */
 
 import { ContentPanel } from '../../../../components/ContentPanel';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useMemo } from 'react';
 import { EuiAccordion, EuiButton, EuiInMemoryTable, EuiSpacer, EuiText } from '@elastic/eui';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { getRulesColumns } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/utils/constants';
@@ -16,6 +16,7 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { RulesTable } from '../../../Rules/components/RulesTable/RulesTable';
 import { RuleTableItem } from '../../../Rules/utils/helpers';
 import { RuleViewerFlyout } from '../../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
+import { RulesViewModelActor } from '../../../Rules/models/RulesViewModelActor';
 
 export interface DetectorRulesViewProps {
   detector: Detector;
@@ -59,33 +60,12 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
   ];
   const services = useContext(ServicesContext);
 
+  const rulesViewModelActor = useMemo(
+    () => (services ? new RulesViewModelActor(services?.ruleService) : null),
+    [services]
+  );
+
   useEffect(() => {
-    const getRules = async (prePackaged: boolean): Promise<RuleInfo[]> => {
-      const getRulesRes = await services?.ruleService.getRules(prePackaged, {
-        from: 0,
-        size: 5000,
-        query: {
-          nested: {
-            path: 'rule',
-            query: {
-              bool: {
-                must: [
-                  { match: { 'rule.category': `${props.detector.detector_type.toLowerCase()}` } },
-                ],
-              },
-            },
-          },
-        },
-      });
-
-      if (getRulesRes?.ok) {
-        return getRulesRes.response.hits.hits;
-      } else {
-        errorNotificationToast(props.notifications, 'retrieve', 'rules', getRulesRes?.error);
-        return [];
-      }
-    };
-
     const updateRulesState = async () => {
       setLoading(true);
       const enabledPrePackagedRuleIds = new Set(
@@ -95,26 +75,32 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
         props.detector.inputs[0].detector_input.custom_rules.map((ruleInfo) => ruleInfo.id)
       );
 
-      const prePackagedRules = await getRules(true);
-      const customRules = await getRules(false);
+      const allRules = await rulesViewModelActor?.fetchRules(undefined, {
+        bool: {
+          must: [{ match: { 'rule.category': `${props.detector.detector_type.toLowerCase()}` } }],
+        },
+      });
 
-      const enabledPrePackagedRules = prePackagedRules.filter((hit: RuleInfo) => {
+      const prePackagedRules = allRules?.filter((rule) => rule.prePackaged);
+      const customRules = allRules?.filter((rule) => !rule.prePackaged);
+
+      const enabledPrePackagedRules = prePackagedRules?.filter((hit: RuleInfo) => {
         return enabledPrePackagedRuleIds.has(hit._id);
       });
 
-      const enabledCustomRules = customRules.filter((hit: RuleInfo) => {
+      const enabledCustomRules = customRules?.filter((hit: RuleInfo) => {
         return enabledCustomRuleIds.has(hit._id);
       });
 
       const enabledRuleItems = translateToRuleItems(
-        enabledPrePackagedRules,
-        enabledCustomRules,
+        enabledPrePackagedRules || [],
+        enabledCustomRules || [],
         props.detector.detector_type,
         () => true
       );
       const allRuleItems = translateToRuleItems(
-        prePackagedRules,
-        customRules,
+        prePackagedRules || [],
+        customRules || [],
         props.detector.detector_type,
         (ruleInfo) =>
           enabledPrePackagedRuleIds.has(ruleInfo._id) || enabledCustomRuleIds.has(ruleInfo._id)
