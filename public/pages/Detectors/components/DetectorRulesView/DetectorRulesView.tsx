@@ -61,7 +61,7 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
   const services = useContext(ServicesContext);
 
   const rulesViewModelActor = useMemo(
-    () => (services ? new RulesViewModelActor(services?.ruleService) : null),
+    () => (services ? new RulesViewModelActor(services.ruleService) : null),
     [services]
   );
 
