@@ -17,8 +17,6 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         include:
-          - os: windows-latest
-            cypress_cache_folder: ~/AppData/Local/Cypress/Cache
           - os: ubuntu-latest
             cypress_cache_folder: ~/.cache/Cypress
     runs-on: ${{ matrix.os }}
@@ -33,10 +31,6 @@ jobs:
         with:
           # TODO: Parse this from security analytics plugin (https://github.com/opensearch-project/security-analytics/issues/170)
           java-version: 11
-
-      - name: Enable longer filenames
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: git config --system core.longpaths true
 
       - name: Checkout security analytics
         uses: actions/checkout@v2
@@ -93,14 +87,7 @@ jobs:
           yarn start --no-base-path --no-watch &
         shell: bash
 
-      # Window is slow so wait longer
-      - name: Sleep until OSD server starts - windows
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: Start-Sleep -s 400
-        shell: powershell
-
-      - name: Sleep until OSD server starts - non-windows
-        if: ${{ matrix.os != 'windows-latest' }}
+      - name: Sleep until OSD server starts
         run: sleep 300
         shell: bash
       
