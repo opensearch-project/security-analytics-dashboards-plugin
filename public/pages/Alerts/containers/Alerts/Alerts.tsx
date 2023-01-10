@@ -54,11 +54,11 @@ import {
   successNotificationToast,
 } from '../../../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { match, withRouter } from 'react-router-dom';
+import { match, RouteComponentProps, withRouter } from 'react-router-dom';
 import { DateTimeFilter } from '../../../Overview/models/interfaces';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 
-export interface AlertsProps {
+export interface AlertsProps extends RouteComponentProps {
   alertService: AlertsService;
   detectorService: DetectorService;
   findingService: FindingsService;
@@ -543,4 +543,4 @@ class Alerts extends Component<AlertsProps, AlertsState> {
   }
 }
 
-export default withRouter(Alerts);
+export default withRouter<AlertsProps, React.ComponentType<AlertsProps>>(Alerts);
