@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 import { RuleItem } from './types/interfaces';
 import { getRulesColumns } from './utils/constants';
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
-import { ruleTypes, ruleSeverity, ruleSource } from '../../../../../Rules/utils/constants';
+import { ruleSeverity, ruleSource } from '../../../../../Rules/utils/constants';
 
 export interface DetectionRulesTableProps {
   ruleItems: RuleItem[];
@@ -45,15 +45,6 @@ export const DetectionRulesTable: React.FC<DetectionRulesTableProps> = ({
     filters: [
       {
         type: 'field_value_selection',
-        field: 'logType',
-        name: 'Log Type',
-        multiSelect: true,
-        options: ruleTypes.map((type: string) => ({
-          value: type,
-        })),
-      },
-      {
-        type: 'field_value_selection',
         field: 'severity',
         name: 'Rule Severity',
         multiSelect: false,
@@ -76,7 +67,7 @@ export const DetectionRulesTable: React.FC<DetectionRulesTableProps> = ({
     return (rulePriorityBySeverity[a.severity] || 6) - (rulePriorityBySeverity[b.severity] || 6);
   });
 
-  const onTableChangeHandler = (pagination: CriteriaWithPagination<T>) => {
+  const onTableChangeHandler = (pagination: CriteriaWithPagination<RuleItem>) => {
     setPagination({ pageIndex: pagination.page.index });
     onTableChange && onTableChange(pagination);
   };

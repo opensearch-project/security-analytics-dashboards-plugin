@@ -11,13 +11,8 @@ import {
   EuiPageBody,
   EuiPageSideBar,
   EuiSideNavItemType,
-  EuiBetaBadge,
   EuiTitle,
-  EuiFlexItem,
-  EuiFlexGroup,
   EuiSpacer,
-  EuiCallOut,
-  EuiLink,
 } from '@elastic/eui';
 import { CoreStart } from 'opensearch-dashboards/public';
 import { ServicesConsumer } from '../../services';
@@ -118,8 +113,8 @@ export default class Main extends Component<MainProps, MainState> {
    * Returns current component route index
    * @return {number}
    */
-  getCurrentRouteIndex = (): number => {
-    let index: number;
+  getCurrentRouteIndex = (): number | undefined => {
+    let index: number | undefined;
     const pathname = this.props.location.pathname;
     for (const [route, routeIndex] of Object.entries(navItemIndexByRoute)) {
       if (pathname.match(new RegExp(`^${route}`))) {
@@ -159,21 +154,9 @@ export default class Main extends Component<MainProps, MainState> {
         renderItem: () => {
           return (
             <>
-              <EuiFlexGroup alignItems="center" gutterSize="s">
-                <EuiFlexItem grow={false}>
-                  <EuiTitle size="xs">
-                    <h3>{Navigation.SecurityAnalytics}</h3>
-                  </EuiTitle>
-                </EuiFlexItem>
-                <EuiFlexItem grow={false}>
-                  <EuiBetaBadge
-                    label="Experimental"
-                    iconType="beaker"
-                    tooltipContent="Experimental feature"
-                    tooltipPosition="bottom"
-                  />
-                </EuiFlexItem>
-              </EuiFlexGroup>
+              <EuiTitle size="xs">
+                <h3>{Navigation.SecurityAnalytics}</h3>
+              </EuiTitle>
               <EuiSpacer />
             </>
           );
@@ -243,30 +226,6 @@ export default class Main extends Component<MainProps, MainState> {
                       </EuiPageSideBar>
                     )}
                     <EuiPageBody>
-                      <EuiCallOut title="Experimental feature" iconType="beaker">
-                        <p>
-                          The feature is experimental and should not be used in a production
-                          environment. While we are working on the finishing touches, share your
-                          ideas and feedback on{' '}
-                          <EuiLink
-                            target={'_blank'}
-                            href={
-                              'https://forum.opensearch.org/t/feedback-experimental-feature-security-analytics/11418'
-                            }
-                          >
-                            forum.opensearch.org
-                          </EuiLink>
-                          . For more information see{' '}
-                          <EuiLink
-                            target={'_blank'}
-                            href={'https://opensearch.org/docs/latest/security-analytics/index/'}
-                          >
-                            Security Analytics Documentation
-                          </EuiLink>
-                          .
-                        </p>
-                      </EuiCallOut>
-                      <EuiSpacer />
                       <Switch>
                         <Route
                           path={`${ROUTES.FINDINGS}/:detectorId?`}
