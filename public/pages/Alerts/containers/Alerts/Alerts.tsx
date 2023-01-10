@@ -296,6 +296,7 @@ class Alerts extends Component<AlertsProps, AlertsState> {
 
         let alerts: AlertItem[] = [];
         const detectorId = this.props.match.params['detectorId'];
+
         for (let id of detectorIds) {
           if (!detectorId || detectorId === id) {
             const alertsRes = await alertService.getAlerts({ detector_id: id });
