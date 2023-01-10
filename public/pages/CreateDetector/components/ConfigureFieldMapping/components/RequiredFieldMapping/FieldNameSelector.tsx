@@ -14,7 +14,7 @@ interface SIEMFieldNameProps {
 }
 
 interface SIEMFieldNameState {
-  selectedOptions: EuiComboBoxOptionOption<string>[] | undefined;
+  selectedOptions: EuiComboBoxOptionOption<string>[];
   errorMessage?: string;
 }
 
@@ -32,7 +32,7 @@ export default class FieldNameSelector extends Component<SIEMFieldNameProps, SIE
   }
 
   onMappingChange = (selectedOptions: EuiComboBoxOptionOption<string>[]) => {
-    this.setState({ selectedOptions: selectedOptions.length ? selectedOptions : undefined });
+    this.setState({ selectedOptions });
     this.props.onChange(selectedOptions[0]?.label);
   };
 
