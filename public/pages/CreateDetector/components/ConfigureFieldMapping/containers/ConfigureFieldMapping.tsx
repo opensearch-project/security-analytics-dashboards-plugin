@@ -76,7 +76,9 @@ export default class ConfigureFieldMapping extends Component<
     if (mappingsView.ok) {
       const existingMappings = { ...this.state.createdMappings };
       Object.keys(mappingsView.response.properties).forEach((ruleFieldName) => {
-        existingMappings[ruleFieldName] = mappingsView.response.properties[ruleFieldName].path;
+        existingMappings[ruleFieldName] =
+          this.state.createdMappings[ruleFieldName] ||
+          mappingsView.response.properties[ruleFieldName].path;
       });
       this.setState({
         createdMappings: existingMappings,
