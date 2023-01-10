@@ -70,7 +70,16 @@ export default class ConfigureFieldMapping extends Component<
       Object.keys(mappingsView.response.properties).forEach((ruleFieldName) => {
         existingMappings[ruleFieldName] = mappingsView.response.properties[ruleFieldName].path;
       });
-      this.setState({ createdMappings: existingMappings, mappingsData: mappingsView.response });
+      this.setState({
+        createdMappings: existingMappings,
+        mappingsData: {
+          ...mappingsView.response,
+          unmapped_field_aliases: [
+            'timestamp',
+            ...(mappingsView.response.unmapped_field_aliases || []),
+          ],
+        },
+      });
       this.updateMappingSharedState(existingMappings);
     }
     this.setState({ loading: false });
