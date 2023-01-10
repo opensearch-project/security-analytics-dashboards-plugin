@@ -101,6 +101,7 @@ export default class DetectorDataSource extends Component<
           error={isInvalid && (errorMessage || 'Select an input source.')}
         >
           <EuiComboBox
+            singleSelection={{ asPlainText: true }}
             placeholder={'Select an input source for the detector.'}
             isLoading={loading}
             options={indexOptions}
