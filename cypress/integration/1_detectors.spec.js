@@ -69,7 +69,7 @@ describe('Detectors', () => {
     cy.get('button').contains('Next').click({ force: true });
 
     // Check that correct page now showing
-    cy.contains('Required field mappings');
+    cy.contains('Configure field mapping');
 
     // Select appropriate names to map fields to
     for (let field_name in sample_field_mappings.properties) {
