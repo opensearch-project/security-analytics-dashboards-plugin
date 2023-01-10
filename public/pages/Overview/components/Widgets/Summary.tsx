@@ -4,10 +4,12 @@
  */
 
 import { EuiFlexGroup, EuiFlexItem, EuiLink, EuiStat } from '@elastic/eui';
+import { euiPaletteColorBlind } from '@elastic/eui';
 import React, { useCallback, useEffect, useState } from 'react';
 import { WidgetContainer } from './WidgetContainer';
 import { summaryGroupByOptions } from '../../utils/constants';
 import {
+  alertsDefaultColor,
   getChartTimeUnit,
   getDomainRange,
   getOverviewVisualizationSpec,
@@ -40,7 +42,6 @@ export const Summary: React.FC<SummaryProps> = ({
   findings,
   startTime,
   endTime,
-  timeUnit,
   loading = false,
 }) => {
   const [groupBy, setGroupBy] = useState('');
@@ -119,7 +120,11 @@ export const Summary: React.FC<SummaryProps> = ({
           <EuiFlexGroup gutterSize="xl">
             <EuiFlexItem grow={false}>
               <EuiStat
-                title={<EuiLink href={`#${ROUTES.ALERTS}`}>{activeAlerts}</EuiLink>}
+                title={
+                  <EuiLink href={`#${ROUTES.ALERTS}`} style={{ color: alertsDefaultColor }}>
+                    {activeAlerts}
+                  </EuiLink>
+                }
                 description="Total active alerts"
                 textAlign="left"
                 titleColor="primary"
@@ -128,7 +133,14 @@ export const Summary: React.FC<SummaryProps> = ({
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
               <EuiStat
-                title={<EuiLink href={`#${ROUTES.FINDINGS}`}>{totalFindings}</EuiLink>}
+                title={
+                  <EuiLink
+                    href={`#${ROUTES.FINDINGS}`}
+                    style={{ color: euiPaletteColorBlind()[1] }}
+                  >
+                    {totalFindings}
+                  </EuiLink>
+                }
                 description="Total findings"
                 textAlign="left"
                 titleColor="primary"

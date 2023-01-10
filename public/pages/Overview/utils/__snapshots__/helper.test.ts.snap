@@ -29,17 +29,19 @@ Object {
         "color": Object {
           "field": "",
           "scale": Object {
+            "domain": Array [
+              "5 (Lowest)",
+              "4 (Low)",
+              "3 (Medium)",
+              "2 (High)",
+              "1 (Highest)",
+            ],
             "range": Array [
-              "#54B399",
-              "#6092C0",
-              "#D36086",
-              "#9170B8",
-              "#CA8EAE",
-              "#D6BF57",
-              "#B9A888",
-              "#DA8B45",
-              "#AA6556",
-              "#E7664C",
+              "#209280",
+              "#54b399",
+              "#d6bf57",
+              "#e7664c",
+              "#cc5642",
             ],
           },
           "title": "Alert severity",
@@ -150,17 +152,19 @@ Object {
         "color": Object {
           "field": "",
           "scale": Object {
+            "domain": Array [
+              "info",
+              "low",
+              "medium",
+              "high",
+              "critical",
+            ],
             "range": Array [
-              "#54B399",
-              "#6092C0",
-              "#D36086",
-              "#9170B8",
-              "#CA8EAE",
-              "#D6BF57",
-              "#B9A888",
-              "#DA8B45",
-              "#AA6556",
-              "#E7664C",
+              "#209280",
+              "#54b399",
+              "#d6bf57",
+              "#e7664c",
+              "#cc5642",
             ],
           },
           "title": "Rule severity",
@@ -269,8 +273,24 @@ Object {
     Object {
       "encoding": Object {
         "color": Object {
-          "scale": null,
-          "value": "#6092C0",
+          "field": "fieldType",
+          "legend": Object {
+            "values": Array [
+              "Active alerts",
+              "Findings",
+            ],
+          },
+          "scale": Object {
+            "domain": Array [
+              "Active alerts",
+              "Findings",
+            ],
+            "range": Array [
+              "#BD271E",
+              "#6092C0",
+            ],
+          },
+          "title": "",
         },
         "tooltip": Array [
           Object {
@@ -323,6 +343,12 @@ Object {
         "clip": true,
         "type": "bar",
       },
+      "transform": Array [
+        Object {
+          "as": "fieldType",
+          "calculate": "datum.alert == 1 ? 'Active alerts' : 'Findings'",
+        },
+      ],
     },
     Object {
       "encoding": Object {
@@ -376,10 +402,10 @@ Object {
       },
       "mark": Object {
         "clip": true,
-        "color": "#ff0000",
+        "color": "#BD271E",
         "interpolate": "monotone",
         "point": Object {
-          "color": "#ff0000",
+          "color": "#BD271E",
           "fill": "white",
           "filled": false,
           "size": 50,
