@@ -23,6 +23,7 @@ import {
   getPlugins,
   successNotificationToast,
 } from '../../../../utils/helpers';
+import { DetectorCreationStep } from '../../../CreateDetector/models/types';
 
 export interface UpdateAlertConditionsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
@@ -39,6 +40,7 @@ export interface UpdateAlertConditionsState {
   rulesOptions: RuleOptions[];
   submitting: boolean;
   plugins: string[];
+  isTriggerNameValid: boolean;
 }
 
 export default class UpdateAlertConditions extends Component<
@@ -53,6 +55,7 @@ export default class UpdateAlertConditions extends Component<
       rulesOptions: [],
       submitting: false,
       plugins: [],
+      isTriggerNameValid: true,
     };
   }
 
@@ -189,8 +192,15 @@ export default class UpdateAlertConditions extends Component<
     });
   };
 
+  updateDataValidState = (step: DetectorCreationStep, isValid: boolean): void => {
+    this.setState({
+      isTriggerNameValid: isValid,
+    });
+  };
+
   render() {
-    const { detector, rulesOptions, submitting } = this.state;
+    const { detector, rulesOptions, submitting, isTriggerNameValid } = this.state;
+    const isSaveDisabled = submitting || !isTriggerNameValid;
     return (
       <div>
         <ConfigureAlerts
@@ -199,7 +209,7 @@ export default class UpdateAlertConditions extends Component<
           detector={detector}
           rulesOptions={rulesOptions}
           changeDetector={this.changeDetector}
-          updateDataValidState={() => {}}
+          updateDataValidState={this.updateDataValidState}
           hasNotificationPlugin={this.state.plugins.includes(OS_NOTIFICATION_PLUGIN)}
         />
 
@@ -211,7 +221,7 @@ export default class UpdateAlertConditions extends Component<
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
             <EuiButton
-              disabled={submitting}
+              disabled={isSaveDisabled}
               fill={true}
               isLoading={submitting}
               onClick={this.onSave}
