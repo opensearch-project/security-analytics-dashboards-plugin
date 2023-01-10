@@ -117,23 +117,25 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
           'field mappings',
           createMappingsRes.error
         );
-      }
-
-      const createDetectorRes = await this.props.services.detectorsService.createDetector(detector);
-      if (createDetectorRes.ok) {
-        successNotificationToast(
-          this.props.notifications,
-          'created',
-          `detector, "${detector.name}"`
-        );
-        this.props.history.push(`${ROUTES.DETECTOR_DETAILS}/${createDetectorRes.response._id}`);
       } else {
-        errorNotificationToast(
-          this.props.notifications,
-          'create',
-          'detector',
-          createDetectorRes.error
+        const createDetectorRes = await this.props.services.detectorsService.createDetector(
+          detector
         );
+        if (createDetectorRes.ok) {
+          successNotificationToast(
+            this.props.notifications,
+            'created',
+            `detector, "${detector.name}"`
+          );
+          this.props.history.push(`${ROUTES.DETECTOR_DETAILS}/${createDetectorRes.response._id}`);
+        } else {
+          errorNotificationToast(
+            this.props.notifications,
+            'create',
+            'detector',
+            createDetectorRes.error
+          );
+        }
       }
     } catch (error: any) {
       errorNotificationToast(this.props.notifications, 'create', 'detector', error);
