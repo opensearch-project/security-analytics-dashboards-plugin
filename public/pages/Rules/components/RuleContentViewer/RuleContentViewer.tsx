@@ -123,7 +123,7 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
 
           <EuiFormLabel>Tags</EuiFormLabel>
           {ruleData.tags.length > 0 ? (
-            <EuiFlexGroup direction="row" data-test-subj={'rule_flyout_rule_tags'}>
+            <EuiFlexGroup direction="row" wrap data-test-subj={'rule_flyout_rule_tags'}>
               {ruleData.tags.map((tag: any, i: number) => (
                 <EuiFlexItem grow={false} key={i}>
                   <EuiBadge color={'#DDD'}>{tag.value}</EuiBadge>
@@ -140,7 +140,7 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
           <EuiFormLabel>References</EuiFormLabel>
           {ruleData.references.length > 0 ? (
             ruleData.references.map((reference: any, i: number) => (
-              <div key={i}>
+              <div key={i} className="eui-textTruncate">
                 <EuiLink
                   href={reference.value}
                   target="_blank"
