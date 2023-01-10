@@ -59,4 +59,4 @@ Compatible with OpenSearch 2.5.0
 
 ### Documentation
 * Updated UI text and spacing in create detector workflow. ([#150](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/150))
-* Add 2.5.0 release notes. ([#]())
+* Add 2.5.0 release notes. ([#329](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/329))
