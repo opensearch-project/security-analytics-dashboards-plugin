@@ -56,11 +56,22 @@ export default class ConfigureFieldMapping extends Component<
   }
 
   componentDidMount = async () => {
-    this.getAllMappings();
+    this.initializeMappingsData();
   };
 
-  getAllMappings = async () => {
+  initializeMappingsData = async () => {
     this.setState({ loading: true });
+
+    if (this.props.isEdit) {
+      this.setupMappingsUsingExistingData();
+    } else {
+      this.setupMappingsUsingView();
+    }
+
+    this.setState({ loading: false });
+  };
+
+  async setupMappingsUsingView() {
     const mappingsView = await this.props.filedMappingService.getMappingsView(
       this.props.detector.inputs[0].detector_input.indices[0],
       this.props.detector.detector_type.toLowerCase()
@@ -73,12 +84,33 @@ export default class ConfigureFieldMapping extends Component<
       this.setState({ createdMappings: existingMappings, mappingsData: mappingsView.response });
       this.updateMappingSharedState(existingMappings);
     }
-    this.setState({ loading: false });
-  };
+  }
+
+  async setupMappingsUsingExistingData() {
+    const indexName = this.props.detector.inputs[0].detector_input.indices[0];
+    const mappings = await this.props.filedMappingService.getMappings(indexName);
+    if (mappings.ok) {
+      const existingMappings = { ...this.state.createdMappings };
+      const properties = mappings.response[indexName].mappings.properties;
+
+      Object.keys(properties).forEach((ruleFieldName) => {
+        existingMappings[ruleFieldName] = properties[ruleFieldName].path;
+      });
+
+      const mappingsData: GetFieldMappingViewResponse = {
+        properties,
+        unmapped_field_aliases: [],
+        unmapped_index_fields: [],
+      };
+
+      this.setState({ createdMappings: existingMappings, mappingsData });
+      this.updateMappingSharedState(existingMappings);
+    }
+  }
 
   validateMappings(mappings: ruleFieldToIndexFieldMap): boolean {
     // TODO: Implement validation
-    return true; //allFieldsMapped; // && allAliasesUnique;
+    return true;
   }
 
   /**
@@ -162,6 +194,7 @@ export default class ConfigureFieldMapping extends Component<
           <>
             <ContentPanel title={`Required field mappings (${ruleFields.length})`} titleSize={'m'}>
               <FieldMappingsTable<MappingViewType.Edit>
+                {...this.props}
                 loading={loading}
                 ruleFields={ruleFields}
                 indexFields={indexFields}
@@ -171,7 +204,6 @@ export default class ConfigureFieldMapping extends Component<
                   invalidMappingFieldNames,
                   onMappingCreation: this.onMappingCreation,
                 }}
-                {...this.props}
               />
             </ContentPanel>
             <EuiSpacer size={'m'} />
