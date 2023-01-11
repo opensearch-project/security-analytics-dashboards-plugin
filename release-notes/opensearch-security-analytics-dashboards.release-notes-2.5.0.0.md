@@ -34,6 +34,7 @@ Compatible with OpenSearch 2.5.0
 * Feature/hide view docs button. ([#320](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/320))
 * Improved field mapping UX. ([#330](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/330))
 * Data source single select field. ([#333](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/333))
+* Suppressed unnecessary error toast for custom rules. ([#338](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/338))
 
 ### Infrastructure
 * Remove mac os from unit test platforms. ([#211](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/211))
