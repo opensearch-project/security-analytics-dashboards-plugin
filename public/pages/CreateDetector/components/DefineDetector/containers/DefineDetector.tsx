@@ -28,6 +28,7 @@ interface DefineDetectorProps extends RouteComponentProps {
   indexService: IndexService;
   rulesState: CreateDetectorRulesState;
   notifications: NotificationsStart;
+  loadingRules?: boolean;
   changeDetector: (detector: Detector) => void;
   updateDataValidState: (step: DetectorCreationStep, isValid: boolean) => void;
   onPageChange: (page: { index: number; size: number }) => void;
@@ -203,6 +204,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
 
         <DetectionRules
           rulesState={rulesState}
+          loading={this.props.loadingRules}
           onPageChange={onPageChange}
           onRuleToggle={onRuleToggle}
           onAllRulesToggle={onAllRulesToggle}

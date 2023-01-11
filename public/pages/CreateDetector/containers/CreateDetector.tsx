@@ -51,6 +51,7 @@ interface CreateDetectorState {
   creatingDetector: boolean;
   rulesState: CreateDetectorRulesState;
   plugins: string[];
+  loadingRules: boolean;
 }
 
 export default class CreateDetector extends Component<CreateDetectorProps, CreateDetectorState> {
@@ -73,6 +74,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
       creatingDetector: false,
       rulesState: { page: { index: 0 }, allRules: [] },
       plugins: [],
+      loadingRules: false,
     };
   }
 
@@ -182,7 +184,9 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
 
   async setupRulesState() {
     const { detector_type } = this.state.detector;
-
+    this.setState({
+      loadingRules: true,
+    });
     const allRules = await this.rulesViewModelActor.fetchRules(undefined, {
       bool: {
         must: [{ match: { 'rule.category': `${detector_type}` } }],
@@ -212,6 +216,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
           },
         ],
       },
+      loadingRules: false,
     });
   }
 
@@ -299,6 +304,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             detector={this.state.detector}
             indexService={services.indexService}
             rulesState={this.state.rulesState}
+            loadingRules={this.state.loadingRules}
             onRuleToggle={this.onRuleToggle}
             onAllRulesToggle={this.onAllRulesToggle}
             onPageChange={this.onPageChange}
