@@ -34,6 +34,7 @@ import { parseAlertSeverityToOption } from '../../../CreateDetector/components/C
 import { Finding } from '../../../Findings/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { RulesViewModelActor } from '../../../Rules/models/RulesViewModelActor';
+import { ruleTypes } from '../../../Rules/utils/constants';
 
 export interface AlertFlyoutProps {
   alertItem: AlertItem;
@@ -170,7 +171,9 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
         name: 'Log type',
         sortable: true,
         dataType: 'string',
-        render: () => capitalizeFirstLetter(detector.detector_type) || DEFAULT_EMPTY_DATA,
+        render: () =>
+          ruleTypes.find(ruleType => ruleType.value === detector.detector_type)?.label ||
+          DEFAULT_EMPTY_DATA,
       },
     ];
   }
