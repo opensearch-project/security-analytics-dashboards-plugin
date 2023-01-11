@@ -29,3 +29,21 @@ export interface FindingDocument {
   found: boolean;
   document: string;
 }
+
+/**
+ * API interfaces
+ */
+export type GetFindingsParams =
+  | {
+      detectorId: string;
+      detectorType?: string;
+    }
+  | {
+      detectorType: string;
+      detectorId?: string;
+    };
+
+export interface GetFindingsResponse {
+  total_findings: number;
+  findings: Finding[];
+}

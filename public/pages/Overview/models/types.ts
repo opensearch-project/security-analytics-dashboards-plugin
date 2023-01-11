@@ -1,9 +1,7 @@
 /*
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
- */ {
-  loading;
-}
+ */
 
 import { EuiBasicTableColumn } from '@elastic/eui';
 import { AlertItem, DetectorItem, FindingItem } from './interfaces';
