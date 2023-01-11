@@ -76,17 +76,13 @@ export default class ConfigureFieldMapping extends Component<
     if (mappingsView.ok) {
       const existingMappings = { ...this.state.createdMappings };
       Object.keys(mappingsView.response.properties).forEach((ruleFieldName) => {
-        existingMappings[ruleFieldName] = mappingsView.response.properties[ruleFieldName].path;
+        existingMappings[ruleFieldName] =
+          this.state.createdMappings[ruleFieldName] ||
+          mappingsView.response.properties[ruleFieldName].path;
       });
       this.setState({
         createdMappings: existingMappings,
-        mappingsData: {
-          ...mappingsView.response,
-          unmapped_field_aliases: [
-            'timestamp',
-            ...(mappingsView.response.unmapped_field_aliases || []),
-          ],
-        },
+        mappingsData: mappingsView.response,
       });
       this.updateMappingSharedState(existingMappings);
     }
@@ -111,11 +107,16 @@ export default class ConfigureFieldMapping extends Component<
     return invalidFields;
   }
 
-  onMappingCreation = (ruleFieldName: string, indxFieldName: string): void => {
+  onMappingCreation = (ruleFieldName: string, indexFieldName: string): void => {
     const newMappings: ruleFieldToIndexFieldMap = {
       ...this.state.createdMappings,
-      [ruleFieldName]: indxFieldName,
+      [ruleFieldName]: indexFieldName,
     };
+
+    if (!indexFieldName) {
+      delete newMappings[ruleFieldName];
+    }
+
     const invalidMappingFieldNames = this.getInvalidMappingFieldNames(newMappings);
     this.setState({
       createdMappings: newMappings,
@@ -142,17 +143,28 @@ export default class ConfigureFieldMapping extends Component<
       ...createdMappings,
     };
 
-    // read only data
     const mappedRuleFields: string[] = [];
-    const mappedLogFields: string[] = [];
+    const logFields: Set<string> = new Set(mappingsData.unmapped_index_fields || []);
+    let pendingCount = mappingsData.unmapped_field_aliases?.length || 0;
+    const unmappedRuleFields = [...(mappingsData.unmapped_field_aliases || [])];
+
     Object.keys(mappingsData.properties).forEach((ruleFieldName) => {
       mappedRuleFields.unshift(ruleFieldName);
-      mappedLogFields.unshift(mappingsData.properties[ruleFieldName].path);
+
+      // Need this check to avoid adding undefined value
+      // When user removes existing mapping for default mapped values, the mapping will be undefined
+      if (existingMappings[ruleFieldName]) {
+        logFields.add(existingMappings[ruleFieldName]);
+      }
     });
 
-    // edit data
-    const ruleFields = [...(mappingsData.unmapped_field_aliases || [])];
-    const indexFields = [...(mappingsData.unmapped_index_fields || [])];
+    Object.keys(existingMappings).forEach((mappedRuleField) => {
+      if (unmappedRuleFields.includes(mappedRuleField)) {
+        pendingCount--;
+      }
+    });
+
+    const indexFieldOptions = Array.from(logFields);
 
     return (
       <div>
@@ -168,24 +180,31 @@ export default class ConfigureFieldMapping extends Component<
 
         <EuiSpacer size={'m'} />
 
-        {ruleFields.length > 0 ? (
+        {unmappedRuleFields.length > 0 ? (
           <>
-            <EuiCallOut
-              title={`${ruleFields.length} rule fields may need manual mapping`}
-              color={'warning'}
-            >
-              <p>
-                To generate accurate findings, we recommend mapping the following security rules
-                fields with the log field from your data source.
-              </p>
-            </EuiCallOut>
+            {pendingCount > 0 ? (
+              <EuiCallOut
+                title={`${pendingCount} rule fields may need manual mapping`}
+                color={'warning'}
+              >
+                <p>
+                  To generate accurate findings, we recommend mapping the following security rules
+                  fields with the log fields in your data source.
+                </p>
+              </EuiCallOut>
+            ) : (
+              <EuiCallOut title={`All rule fields have been mapped`} color={'success'}>
+                <p>Your data source have been mapped with all security rule fields.</p>
+              </EuiCallOut>
+            )}
+
             <EuiSpacer size={'m'} />
-            <ContentPanel title={`Manual field mappings (${ruleFields.length})`} titleSize={'m'}>
+            <ContentPanel title={`Pending field mappings`} titleSize={'m'}>
               <FieldMappingsTable<MappingViewType.Edit>
                 {...this.props}
                 loading={loading}
-                ruleFields={ruleFields}
-                indexFields={indexFields}
+                ruleFields={unmappedRuleFields}
+                indexFields={indexFieldOptions}
                 mappingProps={{
                   type: MappingViewType.Edit,
                   existingMappings,
@@ -213,7 +232,7 @@ export default class ConfigureFieldMapping extends Component<
             buttonContent={
               <div data-test-subj="mapped-fields-btn">
                 <EuiTitle>
-                  <h4>{`View mapped fields (${mappedRuleFields.length})`}</h4>
+                  <h4>{`Default mapped fields (${mappedRuleFields.length})`}</h4>
                 </EuiTitle>
               </div>
             }
@@ -222,13 +241,16 @@ export default class ConfigureFieldMapping extends Component<
             initialIsOpen={false}
           >
             <EuiHorizontalRule margin={'xs'} />
-            <FieldMappingsTable<MappingViewType.Readonly>
+            <FieldMappingsTable<MappingViewType.Edit>
               {...this.props}
               loading={loading}
               ruleFields={mappedRuleFields}
-              indexFields={mappedLogFields}
+              indexFields={indexFieldOptions}
               mappingProps={{
-                type: MappingViewType.Readonly,
+                type: MappingViewType.Edit,
+                existingMappings,
+                invalidMappingFieldNames,
+                onMappingCreation: this.onMappingCreation,
               }}
             />
           </EuiAccordion>
