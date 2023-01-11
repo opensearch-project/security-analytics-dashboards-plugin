@@ -5,12 +5,10 @@
 
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { EuiSpacer } from '@elastic/eui';
+import { EuiAccordion, EuiHorizontalRule, EuiPanel, EuiSpacer, EuiTitle } from '@elastic/eui';
 import FieldMappingsTable from '../../../CreateDetector/components/ConfigureFieldMapping/components/RequiredFieldMapping';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { Detector, FieldMapping } from '../../../../../models/interfaces';
-import { EMPTY_FIELD_MAPPINGS } from '../../../CreateDetector/components/ConfigureFieldMapping/utils/constants';
-import { FieldMappingPropertyMap } from '../../../../../server/models/interfaces';
 import FieldMappingService from '../../../../services/FieldMappingService';
 import { MappingViewType } from '../../../CreateDetector/components/ConfigureFieldMapping/components/RequiredFieldMapping/FieldMappingsTable';
 
@@ -28,9 +26,11 @@ interface EditFieldMappingsProps extends RouteComponentProps {
 
 interface EditFieldMappingsState {
   loading: boolean;
-  mappingsData: FieldMappingPropertyMap;
   createdMappings: ruleFieldToIndexFieldMap;
   invalidMappingFieldNames: string[];
+  mappedRuleFields: string[];
+  unmappedRuleFields: string[];
+  logFieldOptions: string[];
 }
 
 export default class EditFieldMappings extends Component<
@@ -45,9 +45,11 @@ export default class EditFieldMappings extends Component<
     });
     this.state = {
       loading: props.loading || false,
-      mappingsData: EMPTY_FIELD_MAPPINGS,
       createdMappings,
       invalidMappingFieldNames: [],
+      mappedRuleFields: [],
+      unmappedRuleFields: [],
+      logFieldOptions: [],
     };
   }
 
@@ -58,17 +60,39 @@ export default class EditFieldMappings extends Component<
   getAllMappings = async () => {
     this.setState({ loading: true });
     const indexName = this.props.detector.inputs[0].detector_input.indices[0];
-    const mappingsView = await this.props.filedMappingService.getMappings(indexName);
-    if (mappingsView.ok) {
-      const existingMappings = { ...this.state.createdMappings };
-      const properties = mappingsView.response[indexName]?.mappings.properties;
 
-      if (properties) {
-        Object.keys(properties).forEach((ruleFieldName) => {
-          existingMappings[ruleFieldName] = properties[ruleFieldName].path;
+    const mappingsViewRes = await this.props.filedMappingService.getMappingsView(
+      indexName,
+      this.props.detector.detector_type.toLowerCase()
+    );
+
+    if (mappingsViewRes.ok) {
+      const mappingsRes = await this.props.filedMappingService.getMappings(indexName);
+      if (mappingsRes.ok) {
+        const mappedFieldsInfo = mappingsRes.response[indexName].mappings.properties;
+        const mappedRuleFields = Object.keys(mappedFieldsInfo);
+        const unmappedRuleFields = (mappingsViewRes.response.unmapped_field_aliases || []).filter(
+          (ruleField) => {
+            return !mappedRuleFields.includes(ruleField);
+          }
+        );
+
+        const logFieldsSet = new Set<string>(mappingsViewRes.response.unmapped_index_fields);
+        Object.values(mappingsViewRes.response.properties).forEach((val) => {
+          logFieldsSet.add(val.path);
         });
-        this.setState({ createdMappings: existingMappings, mappingsData: { properties } });
-        this.updateMappingSharedState(existingMappings);
+        const logFieldOptions = Array.from(logFieldsSet);
+        const existingMappings = { ...this.state.createdMappings };
+        mappedRuleFields.forEach((ruleField) => {
+          existingMappings[ruleField] = mappedFieldsInfo[ruleField].path;
+        });
+
+        this.setState({
+          mappedRuleFields,
+          unmappedRuleFields,
+          logFieldOptions,
+          createdMappings: existingMappings,
+        });
       }
     }
     this.setState({ loading: false });
@@ -92,11 +116,14 @@ export default class EditFieldMappings extends Component<
     return invalidFields;
   }
 
-  onMappingCreation = (ruleFieldName: string, indxFieldName: string): void => {
+  onMappingCreation = (ruleFieldName: string, indexFieldName: string): void => {
     const newMappings: ruleFieldToIndexFieldMap = {
       ...this.state.createdMappings,
-      [ruleFieldName]: indxFieldName,
+      [ruleFieldName]: indexFieldName,
     };
+    if (!indexFieldName) {
+      delete newMappings[ruleFieldName];
+    }
     const invalidMappingFieldNames = this.getInvalidMappingFieldNames(newMappings);
     this.setState({
       createdMappings: newMappings,
@@ -117,29 +144,31 @@ export default class EditFieldMappings extends Component<
   };
 
   render() {
-    const { loading, mappingsData, createdMappings, invalidMappingFieldNames } = this.state;
+    const {
+      loading,
+      createdMappings,
+      invalidMappingFieldNames,
+      mappedRuleFields,
+      unmappedRuleFields,
+      logFieldOptions,
+    } = this.state;
     const existingMappings: ruleFieldToIndexFieldMap = {
       ...createdMappings,
     };
-    const ruleFields: string[] = [];
-    const indexFields: string[] = [];
-
-    Object.keys(mappingsData.properties).forEach((ruleFieldName) => {
-      existingMappings[ruleFieldName] = mappingsData.properties[ruleFieldName].path;
-      ruleFields.unshift(ruleFieldName);
-      indexFields.unshift(mappingsData.properties[ruleFieldName].path);
-    });
 
     return (
       <div>
-        {ruleFields.length > 0 && (
+        {unmappedRuleFields.length > 0 && (
           <>
-            <ContentPanel title={`Required field mappings (${ruleFields.length})`} titleSize={'m'}>
+            <ContentPanel
+              title={`Required field mappings (${unmappedRuleFields.length})`}
+              titleSize={'m'}
+            >
               <FieldMappingsTable<MappingViewType.Edit>
                 {...this.props}
                 loading={loading}
-                ruleFields={ruleFields}
-                indexFields={indexFields}
+                ruleFields={unmappedRuleFields}
+                indexFields={logFieldOptions}
                 mappingProps={{
                   type: MappingViewType.Edit,
                   existingMappings,
@@ -151,6 +180,35 @@ export default class EditFieldMappings extends Component<
             <EuiSpacer size={'m'} />
           </>
         )}
+        <EuiPanel>
+          <EuiAccordion
+            buttonContent={
+              <div data-test-subj="mapped-fields-btn">
+                <EuiTitle>
+                  <h4>{`Mapped fields (${mappedRuleFields.length})`}</h4>
+                </EuiTitle>
+              </div>
+            }
+            buttonProps={{ style: { paddingLeft: '10px', paddingRight: '10px' } }}
+            id={'mappedFieldsAccordion'}
+            initialIsOpen={unmappedRuleFields.length === 0}
+          >
+            <EuiHorizontalRule margin={'xs'} />
+            <FieldMappingsTable<MappingViewType.Edit>
+              {...this.props}
+              loading={loading}
+              ruleFields={mappedRuleFields}
+              indexFields={logFieldOptions}
+              mappingProps={{
+                type: MappingViewType.Edit,
+                existingMappings,
+                invalidMappingFieldNames,
+                onMappingCreation: this.onMappingCreation,
+              }}
+            />
+          </EuiAccordion>
+        </EuiPanel>
+        <EuiSpacer size={'m'} />
       </div>
     );
   }
