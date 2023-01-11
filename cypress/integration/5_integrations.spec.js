@@ -138,5 +138,5 @@ describe('Integration tests', () => {
       });
   });
 
-  // after(() => cy.cleanUpTests());
+  after(() => cy.cleanUpTests());
 });
