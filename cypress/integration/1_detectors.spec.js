@@ -4,8 +4,32 @@
  */
 
 import { OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
-import sample_field_mappings from '../fixtures/sample_field_mappings.json';
 import sample_index_settings from '../fixtures/sample_index_settings.json';
+
+const testMappings = {
+  properties: {
+    'host-hostname': {
+      type: 'alias',
+      path: 'HostName',
+    },
+    'windows-message': {
+      type: 'alias',
+      path: 'Message',
+    },
+    'winlog-provider_name': {
+      type: 'alias',
+      path: 'Provider_Name',
+    },
+    'winlog-event_data-ServiceName': {
+      type: 'alias',
+      path: 'ServiceName',
+    },
+    'winlog-event_id': {
+      path: 'EventID',
+      type: 'alias',
+    },
+  },
+};
 
 describe('Detectors', () => {
   const indexName = 'cypress-test-windows';
@@ -71,9 +95,17 @@ describe('Detectors', () => {
     // Check that correct page now showing
     cy.contains('Configure field mapping');
 
+    // Show 50 rows per page
+    cy.contains('Rows per page').click({ force: true });
+    cy.contains('50 rows').click({ force: true });
+
+    // Show 50 rows per page
+    cy.contains('Rows per page').click({ force: true });
+    cy.contains('50 rows').click({ force: true });
+
     // Select appropriate names to map fields to
-    for (let field_name in sample_field_mappings.properties) {
-      const mappedTo = sample_field_mappings.properties[field_name].path;
+    for (let field_name in testMappings.properties) {
+      const mappedTo = testMappings.properties[field_name].path;
 
       cy.contains('tr', field_name).within(() => {
         cy.get(`[data-test-subj="detector-field-mappings-select"]`).click().type(mappedTo);
@@ -105,8 +137,12 @@ describe('Detectors', () => {
     // Confirm field mappings registered
     cy.contains('Field mapping');
 
-    for (let field in sample_field_mappings.properties) {
-      const mappedTo = sample_field_mappings.properties[field].path;
+    // Show 50 rows per page
+    cy.contains('Rows per page').click({ force: true });
+    cy.contains('50 rows').click({ force: true });
+
+    for (let field in testMappings.properties) {
+      const mappedTo = testMappings.properties[field].path;
 
       cy.contains(field);
       cy.contains(mappedTo);

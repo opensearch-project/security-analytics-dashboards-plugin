@@ -7,9 +7,9 @@ on:
     branches:
       - "*"
 env:
-  OPENSEARCH_DASHBOARDS_VERSION: '2.4.0'
-  OPENSEARCH_VERSION: '2.4.0-SNAPSHOT'
-  SECURITY_ANALYTICS_BRANCH: '2.4'
+  OPENSEARCH_DASHBOARDS_VERSION: '2.5'
+  OPENSEARCH_VERSION: '2.5.0-SNAPSHOT'
+  SECURITY_ANALYTICS_BRANCH: '2.5'
 jobs:
   tests:
     name: Run Cypress E2E tests
@@ -90,7 +90,7 @@ jobs:
       - name: Sleep until OSD server starts
         run: sleep 300
         shell: bash
-      
+
       - name: Install Cypress
         run: |
           cd OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
@@ -111,7 +111,7 @@ jobs:
         with:
           path: ${{ matrix.cypress_cache_folder }}
           key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
-        
+
       # for now just chrome, use matrix to do all browsers later
       - name: Cypress tests
         uses: cypress-io/github-action@v2
@@ -121,7 +121,7 @@ jobs:
           wait-on: 'http://localhost:5601'
           browser: chrome
         env:
-          CYPRESS_CACHE_FOLDER: ${{ matrix.cypress_cache_folder }}      
+          CYPRESS_CACHE_FOLDER: ${{ matrix.cypress_cache_folder }}
 
       # Screenshots are only captured on failure, will change this once we do visual regression tests
       - uses: actions/upload-artifact@v1
