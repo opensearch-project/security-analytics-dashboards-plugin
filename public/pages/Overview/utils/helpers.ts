@@ -263,8 +263,8 @@ export function getAlertsVisualizationSpec(
 
   let states = ['ACTIVE', 'ACKNOWLEDGED'];
   const statusColors = {
-    euiColorVis6: '#B9A888',
     euiColorVis9: '#E7664C',
+    euiColorVis6: '#B9A888',
   };
 
   const statusTitle = 'Alert status';
