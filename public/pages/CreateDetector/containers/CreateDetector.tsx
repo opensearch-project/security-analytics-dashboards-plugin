@@ -29,13 +29,13 @@ import {
   RuleItem,
   RuleItemInfo,
 } from '../components/DefineDetector/components/DetectionRules/types/interfaces';
-import { RuleInfo } from '../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import {
   errorNotificationToast,
   successNotificationToast,
   getPlugins,
 } from '../../../utils/helpers';
+import { RulesViewModelActor } from '../../Rules/models/RulesViewModelActor';
 
 interface CreateDetectorProps extends RouteComponentProps {
   isEdit: boolean;
@@ -51,13 +51,16 @@ interface CreateDetectorState {
   creatingDetector: boolean;
   rulesState: CreateDetectorRulesState;
   plugins: string[];
+  loadingRules: boolean;
 }
 
 export default class CreateDetector extends Component<CreateDetectorProps, CreateDetectorState> {
   static contextType = CoreServicesContext;
+  private rulesViewModelActor: RulesViewModelActor;
 
   constructor(props: CreateDetectorProps) {
     super(props);
+    this.rulesViewModelActor = new RulesViewModelActor(props.services.ruleService);
     this.state = {
       currentStep: DetectorCreationStep.DEFINE_DETECTOR,
       detector: EMPTY_DEFAULT_DETECTOR,
@@ -71,6 +74,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
       creatingDetector: false,
       rulesState: { page: { index: 0 }, allRules: [] },
       plugins: [],
+      loadingRules: false,
     };
   }
 
@@ -114,26 +118,28 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
         errorNotificationToast(
           this.props.notifications,
           'create',
-          'field mappings',
-          createMappingsRes.error
-        );
-      }
-
-      const createDetectorRes = await this.props.services.detectorsService.createDetector(detector);
-      if (createDetectorRes.ok) {
-        successNotificationToast(
-          this.props.notifications,
-          'created',
-          `detector, "${detector.name}"`
-        );
-        this.props.history.push(`${ROUTES.DETECTOR_DETAILS}/${createDetectorRes.response._id}`);
-      } else {
-        errorNotificationToast(
-          this.props.notifications,
-          'create',
           'detector',
-          createDetectorRes.error
+          'Double check the field mappings and try again.'
         );
+      } else {
+        const createDetectorRes = await this.props.services.detectorsService.createDetector(
+          detector
+        );
+        if (createDetectorRes.ok) {
+          successNotificationToast(
+            this.props.notifications,
+            'created',
+            `detector, "${detector.name}"`
+          );
+          this.props.history.push(`${ROUTES.DETECTOR_DETAILS}/${createDetectorRes.response._id}`);
+        } else {
+          errorNotificationToast(
+            this.props.notifications,
+            'create',
+            'detector',
+            createDetectorRes.error
+          );
+        }
       }
     } catch (error: any) {
       errorNotificationToast(this.props.notifications, 'create', 'detector', error);
@@ -177,13 +183,23 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
   }
 
   async setupRulesState() {
-    const prePackagedRules = await this.getRules(true);
-    const customRules = await this.getRules(false);
+    const { detector_type } = this.state.detector;
+    this.setState({
+      loadingRules: true,
+    });
+    const allRules = await this.rulesViewModelActor.fetchRules(undefined, {
+      bool: {
+        must: [{ match: { 'rule.category': `${detector_type}` } }],
+      },
+    });
+
+    const prePackagedRules = allRules.filter((rule) => rule.prePackaged);
+    const customRules = allRules.filter((rule) => !rule.prePackaged);
 
     this.setState({
       rulesState: {
         ...this.state.rulesState,
-        allRules: customRules.concat(prePackagedRules),
+        allRules: customRules.concat(prePackagedRules).map((rule) => ({ ...rule, enabled: true })),
         page: {
           index: 0,
         },
@@ -200,6 +216,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
           },
         ],
       },
+      loadingRules: false,
     });
   }
 
@@ -208,59 +225,6 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     const plugins = await getPlugins(services.opensearchService);
 
     this.setState({ plugins });
-  }
-
-  async getRules(prePackaged: boolean): Promise<RuleItemInfo[]> {
-    try {
-      const { detector_type } = this.state.detector;
-
-      if (!detector_type) {
-        return [];
-      }
-
-      const rulesRes = await this.props.services.ruleService.getRules(prePackaged, {
-        from: 0,
-        size: 5000,
-        query: {
-          nested: {
-            path: 'rule',
-            query: {
-              bool: {
-                must: [{ match: { 'rule.category': `${detector_type}` } }],
-              },
-            },
-          },
-        },
-      });
-
-      if (rulesRes.ok) {
-        const rules: RuleItemInfo[] = rulesRes.response.hits.hits.map((ruleInfo: RuleInfo) => {
-          return {
-            ...ruleInfo,
-            enabled: true,
-            prePackaged,
-          };
-        });
-
-        return rules;
-      } else {
-        errorNotificationToast(
-          this.props.notifications,
-          'retrieve',
-          `${prePackaged ? 'pre-packaged' : 'custom'}`,
-          rulesRes.error
-        );
-        return [];
-      }
-    } catch (error: any) {
-      errorNotificationToast(
-        this.props.notifications,
-        'retrieve',
-        `${prePackaged ? 'pre-packaged' : 'custom'}`,
-        error
-      );
-      return [];
-    }
   }
 
   onPageChange = (page: { index: number; size: number }) => {
@@ -340,6 +304,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             detector={this.state.detector}
             indexService={services.indexService}
             rulesState={this.state.rulesState}
+            loadingRules={this.state.loadingRules}
             onRuleToggle={this.onRuleToggle}
             onAllRulesToggle={this.onAllRulesToggle}
             onPageChange={this.onPageChange}
