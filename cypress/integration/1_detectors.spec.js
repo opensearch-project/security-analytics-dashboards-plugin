@@ -199,7 +199,10 @@ describe('Detectors', () => {
     });
 
     // Change detector name
-    cy.get(`[data-test-subj="define-detector-detector-name"]`).focus().realType('__edited');
+    cy.get(`[data-test-subj="define-detector-detector-name"]`)
+      .clear()
+      .focus()
+      .realType('test detector edited');
 
     // Change detector description
     cy.get(`[data-test-subj="define-detector-detector-description"]`)
@@ -227,7 +230,7 @@ describe('Detectors', () => {
     });
 
     // Verify edits are applied
-    cy.contains('test detector_edited');
+    cy.contains('test detector edited');
     cy.contains('Every 10 hours');
     cy.contains('Edited description');
     cy.contains('.opensearch-notifications-config');
@@ -301,7 +304,7 @@ describe('Detectors', () => {
 
   it('...can be deleted', () => {
     // Click on detector to be removed
-    cy.contains('test detector_edited').click({ force: true });
+    cy.contains('test detector edited').click({ force: true });
 
     // Confirm page
     cy.waitForPageLoad('detector-details', {

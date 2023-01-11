@@ -95,7 +95,7 @@ Cypress.Commands.add('getTableFirstRow', (selector) => {
 });
 
 Cypress.Commands.add('triggerSearchField', (placeholder, text) => {
-  cy.get(`[placeholder="${placeholder}"]`).type(`{selectall}${text}`).realPress('Enter');
+  cy.get(`input[placeholder="${placeholder}"]`).clear().focus().realType(text).realPress('Enter');
 });
 
 Cypress.Commands.add('waitForPageLoad', (url, { timeout = 10000, contains = null }) => {
