@@ -28,6 +28,7 @@ export interface CreateDetectorRulesState {
 
 export interface DetectionRulesProps {
   rulesState: CreateDetectorRulesState;
+  loading?: boolean;
   onRuleToggle: (changedItem: RuleItem, isActive: boolean) => void;
   onAllRulesToggle: (enabled: boolean) => void;
   onPageChange: (page: { index: number; size: number }) => void;
@@ -35,6 +36,7 @@ export interface DetectionRulesProps {
 
 export const DetectionRules: React.FC<DetectionRulesProps> = ({
   rulesState,
+  loading,
   onPageChange,
   onRuleToggle,
   onAllRulesToggle,
@@ -103,6 +105,7 @@ export const DetectionRules: React.FC<DetectionRulesProps> = ({
         buttonProps={{ style: { paddingLeft: '10px', paddingRight: '10px' } }}
         id={'detectorRulesAccordion'}
         initialIsOpen={false}
+        isLoading={loading}
       >
         <EuiHorizontalRule margin={'xs'} />
         <DetectionRulesTable
