@@ -78,7 +78,7 @@ export class OverviewViewModelActor {
       }
       if (customResponse.ok) {
         customResponse.response.hits.hits.forEach((hit) => (ruleById[hit._id] = hit._source));
-      } else {
+      } else if (!customResponse.error?.includes('index doesnt exist')) {
         errorNotificationToast(
           this.notifications,
           'retrieve',
