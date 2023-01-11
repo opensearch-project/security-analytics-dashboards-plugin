@@ -32,6 +32,8 @@ Compatible with OpenSearch 2.5.0
 * Improve rules view in detector details. ([#310](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/310))
 * Adds findings alerts legend in overview page. ([#318](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/318))
 * Feature/hide view docs button. ([#320](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/320))
+* Improved field mapping UX. ([#330](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/330))
+* Data source single select field. ([#333](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/333))
 
 ### Infrastructure
 * Remove mac os from unit test platforms. ([#211](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/211))
@@ -55,7 +57,7 @@ Compatible with OpenSearch 2.5.0
 * Cypress windows tests fix. ([#296](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/296))
 * Wait for field mapping creation to succeed before detector creation API call. ([#317](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/317))
 * Fixed styling issues. ([#322](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/322))
-* Fixed failing detector_spec cypress test. ([#325](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/325))
+* Patch missing detector_id with data already on UI. ([#328](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/328))
 
 ### Documentation
 * Updated UI text and spacing in create detector workflow. ([#150](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/150))
