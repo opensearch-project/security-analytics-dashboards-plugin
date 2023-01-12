@@ -56,8 +56,7 @@ export const getRulesTableColumns = (
       width: '10%',
       truncateText: true,
       render: (category: string) =>
-        ruleTypes.find(ruleType => ruleType.value === category)?.label ||
-        DEFAULT_EMPTY_DATA,
+        ruleTypes.find((ruleType) => ruleType.value === category)?.label || DEFAULT_EMPTY_DATA,
     },
     {
       field: 'source',

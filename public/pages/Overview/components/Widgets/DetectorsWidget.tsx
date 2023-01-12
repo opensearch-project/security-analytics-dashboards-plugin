@@ -11,7 +11,7 @@ import { TableWidget } from './TableWidget';
 import { WidgetContainer } from './WidgetContainer';
 import { DetectorHit } from '../../../../../server/models/interfaces';
 import { RouteComponentProps } from 'react-router-dom';
-import {formatRuleType} from "../../../../utils/helpers";
+import { formatRuleType } from '../../../../utils/helpers';
 
 type DetectorIdToHit = { [id: string]: DetectorHit };
 
