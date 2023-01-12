@@ -94,8 +94,22 @@ Cypress.Commands.add('getTableFirstRow', (selector) => {
   return cy.get('tbody > tr:first').find(selector);
 });
 
+Cypress.Commands.add(
+  'clearInput',
+  {
+    prevSubject: true,
+  },
+  (subject) => {
+    return cy.get(subject).type('{selectall}{enter}').clear({ force: true }).invoke('val', '');
+  }
+);
+
 Cypress.Commands.add('triggerSearchField', (placeholder, text) => {
-  cy.get(`input[placeholder="${placeholder}"]`).clear().focus().realType(text).realPress('Enter');
+  cy.get(`input[placeholder="${placeholder}"]`)
+    .clearInput()
+    .focus()
+    .realType(text)
+    .realPress('Enter');
 });
 
 Cypress.Commands.add('waitForPageLoad', (url, { timeout = 10000, contains = null }) => {

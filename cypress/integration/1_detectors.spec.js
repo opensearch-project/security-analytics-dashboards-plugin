@@ -71,25 +71,34 @@ describe('Detectors', () => {
       .focus()
       .realType(indexName);
 
+    cy.intercept({
+      method: 'POST',
+      pathname: '/_plugins/_security_analytics/rules/_search',
+    }).as('getSigmaRules');
+
     // Select threat detector type (Windows logs)
     cy.get(`input[id="windows"]`).click({ force: true });
 
-    // Open Detection rules accordion
-    cy.get('[data-test-subj="detection-rules-btn"]').click({ force: true, timeout: 5000 });
+    cy.wait('@getSigmaRules').then(() => {
+      // Open Detection rules accordion
+      cy.get('[data-test-subj="detection-rules-btn"]').click({ force: true, timeout: 5000 });
 
-    // find search, type USB
-    cy.triggerSearchField('Search...', 'USB Device Plugged');
+      // find search, type USB
+      cy.triggerSearchField('Search...', 'USB Device Plugged');
 
-    // Disable all rules
-    cy.contains('tr', 'USB Device Plugged', { timeout: 1000 });
-    cy.get('table th').within(() => {
-      cy.get('button').first().click({ force: true });
+      // Disable all rules
+      cy.contains('tr', 'USB Device Plugged', { timeout: 1000 });
+      cy.get('table th').within(() => {
+        cy.get('button').first().click({ force: true });
+      });
+
+      // Enable single rule
+      cy.contains('table tr', 'USB Device Plugged').within(() => {
+        cy.get('button').eq(1).click({ force: true });
+      });
     });
-
-    // Enable single rule
-    cy.contains('table tr', 'USB Device Plugged').within(() => {
-      cy.get('button').eq(1).click({ force: true });
-    });
+    // There should be only one call to the API
+    cy.get('@getSigmaRules.all').should('have.length', 2);
 
     // Click Next button to continue
     cy.get('button').contains('Next').click({ force: true });
@@ -200,8 +209,7 @@ describe('Detectors', () => {
 
     // Change detector name
     cy.get(`[data-test-subj="define-detector-detector-name"]`)
-      .clear()
-      .focus()
+      .clearInput()
       .realType('test detector edited');
 
     // Change detector description
@@ -212,13 +220,16 @@ describe('Detectors', () => {
     // Change input source
     cy.get(`[data-test-subj="define-detector-select-data-source"]`)
       .find('input')
-      .clear()
+      .clearInput()
       .focus()
       .realType('.opensearch-notifications-config')
       .realPress('Enter');
 
     // Change detector scheduling
-    cy.get(`[data-test-subj="detector-schedule-number-select"]`).clear().focus().realType('10');
+    cy.get(`[data-test-subj="detector-schedule-number-select"]`)
+      .clearInput()
+      .focus()
+      .realType('10');
     cy.get(`[data-test-subj="detector-schedule-unit-select"]`).select('Hours');
 
     // Save changes to detector details

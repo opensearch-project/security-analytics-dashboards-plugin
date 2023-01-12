@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-///<reference types="cypress" />
+// /<reference types="cypress" />
 
 declare namespace Cypress {
   interface Chainable<Subject> {
@@ -17,6 +17,14 @@ declare namespace Cypress {
      */
     waitForPageLoad(url: string, timeout?: number): Chainable<any>;
 
+    /**
+     * Clears input text
+     * @example
+     * cy.clearInput()
+     */
+    clearInput(): Chainable<any>;
+
+    /**
     /**
      * Deletes all indices in cluster
      * @example
