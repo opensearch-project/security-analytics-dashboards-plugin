@@ -100,7 +100,12 @@ Cypress.Commands.add(
     prevSubject: true,
   },
   (subject) => {
-    return cy.get(subject).type('{selectall}{enter}').clear({ force: true }).invoke('val', '');
+    return cy
+      .get(subject)
+      .wait(10)
+      .type('{selectall}{enter}')
+      .clear({ force: true })
+      .invoke('val', '');
   }
 );
 
