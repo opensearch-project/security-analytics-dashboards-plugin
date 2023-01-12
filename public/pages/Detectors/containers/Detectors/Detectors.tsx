@@ -27,6 +27,7 @@ import { getDetectorNames } from '../../utils/helpers';
 import {
   capitalizeFirstLetter,
   errorNotificationToast,
+  formatRuleType,
   renderTime,
 } from '../../../../utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
@@ -34,7 +35,6 @@ import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components
 import { DetectorsService } from '../../../../services';
 import { DetectorHit } from '../../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { ruleTypes } from '../../../Rules/utils/constants';
 
 interface DetectorsProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -273,9 +273,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
         name: 'Log type',
         sortable: true,
         dataType: 'string',
-        render: (logType: string) =>
-          ruleTypes.find(ruleType => ruleType.value === logType.toLowerCase())?.label ||
-          DEFAULT_EMPTY_DATA,
+        render: (logType: string) => formatRuleType(logType),
       },
       {
         field: 'rulesCount',
@@ -322,9 +320,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
           name: 'Log type',
           options: logType.map((logType) => ({
             value: logType,
-            name:
-              ruleTypes.find(ruleType => ruleType.value === logType.toLowerCase())?.label ||
-              DEFAULT_EMPTY_DATA,
+            name: formatRuleType(logType),
           })),
           multiSelect: 'or',
         } as FieldValueSelectionFilterConfigType,

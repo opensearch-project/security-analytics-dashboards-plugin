@@ -87,8 +87,9 @@ export const getRulesTableSearchConfig = (): Search => {
         field: 'category',
         name: 'Rule Type',
         multiSelect: 'or',
-        options: ruleTypes.map(({ label }) => ({
-          value: label,
+        options: ruleTypes.map(({ value, label }) => ({
+          value,
+          name: label,
         })),
       },
       {

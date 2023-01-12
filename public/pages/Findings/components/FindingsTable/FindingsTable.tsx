@@ -15,7 +15,7 @@ import {
 } from '@elastic/eui';
 import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
 import dateMath from '@elastic/datemath';
-import { capitalizeFirstLetter, renderTime } from '../../../../utils/helpers';
+import { capitalizeFirstLetter, formatRuleType, renderTime } from '../../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
 import { DetectorsService, OpenSearchService } from '../../../../services';
 import FindingDetailsFlyout from '../FindingDetailsFlyout';
@@ -25,7 +25,6 @@ import { NotificationChannelTypeOptions } from '../../../CreateDetector/componen
 import { FindingItemType } from '../../containers/Findings/Findings';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { RuleSource } from '../../../../../server/models/interfaces';
-import { ruleTypes } from '../../../Rules/utils/constants';
 
 interface FindingsTableProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -186,9 +185,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         name: 'Log type',
         sortable: true,
         dataType: 'string',
-        render: (logType: string) =>
-          ruleTypes.find(ruleType => ruleType.value === logType)?.label ||
-          DEFAULT_EMPTY_DATA,
+        render: (logType: string) => formatRuleType(logType),
       },
       {
         field: 'ruleSeverity',
@@ -261,9 +258,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
           name: 'Log type',
           options: Array.from(logTypes).map((type) => ({
             value: type,
-            name:
-              ruleTypes.find(ruleType => ruleType.value === type.toLowerCase())?.label ||
-              DEFAULT_EMPTY_DATA,
+            name: formatRuleType(type),
           })),
           multiSelect: 'or',
         } as FieldValueSelectionFilterConfigType,

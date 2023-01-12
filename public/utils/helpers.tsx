@@ -27,6 +27,7 @@ import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpr
 import { RuleInfo } from '../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { OpenSearchService } from '../services';
+import { ruleTypes } from "../pages/Rules/utils/constants";
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
@@ -240,3 +241,8 @@ export const getPlugins = async (opensearchService: OpenSearchService) => {
     return [];
   }
 };
+
+export const formatRuleType = ((matchingRuleType: string) => {
+  return ruleTypes.find(ruleType => ruleType.value === matchingRuleType.toLowerCase())?.label ||
+      DEFAULT_EMPTY_DATA;
+});
