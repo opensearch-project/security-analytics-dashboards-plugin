@@ -1,6 +1,11 @@
 name: Unit tests workflow
 on:
-
+  pull_request:
+    branches:
+      - "*"
+  push:
+    branches:
+      - "*"
 env:
   OPENSEARCH_DASHBOARDS_VERSION: '2.5'
 jobs:
