@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-// /<reference types="cypress" />
+// eslint-disable-next-line
+///<reference types="cypress" />
 
 declare namespace Cypress {
   interface Chainable<Subject> {
