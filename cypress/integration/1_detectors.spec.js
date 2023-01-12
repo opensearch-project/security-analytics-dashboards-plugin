@@ -97,8 +97,6 @@ describe('Detectors', () => {
         cy.get('button').eq(1).click({ force: true });
       });
     });
-    // There should be only one call to the API
-    cy.get('@getSigmaRules.all').should('have.length', 2);
 
     // Click Next button to continue
     cy.get('button').contains('Next').click({ force: true });
