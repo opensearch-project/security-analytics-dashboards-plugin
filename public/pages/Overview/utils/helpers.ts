@@ -9,6 +9,7 @@ import { SummaryData } from '../components/Widgets/Summary';
 import dateMath from '@elastic/datemath';
 import _ from 'lodash';
 import { DEFAULT_DATE_RANGE } from '../../../utils/constants';
+import { severityOptions } from '../../Alerts/utils/constants';
 
 export interface TimeUnit {
   unit: string;
@@ -52,6 +53,9 @@ export const defaultTimeUnit = {
 };
 
 export const defaultDateFormat = '%Y-%m-%d %H:%M';
+
+// euiColorDanger: #BD271E
+export const alertsDefaultColor = '#BD271E';
 
 export const parseDateString = (dateString: string): number => {
   const date = dateMath.parse(dateString);
@@ -131,8 +135,15 @@ export function getOverviewVisualizationSpec(
     y: getYAxis('finding', 'Count'),
     tooltip: [getYAxis('finding', 'Findings'), getTimeTooltip(dateOpts)],
     color: {
-      scale: null,
-      value: euiPaletteColorBlind()[1],
+      field: 'fieldType',
+      title: '',
+      legend: {
+        values: ['Active alerts', 'Findings'],
+      },
+      scale: {
+        domain: ['Active alerts', 'Findings'],
+        range: [alertsDefaultColor, euiPaletteColorBlind()[1]],
+      },
     },
   };
 
@@ -141,6 +152,7 @@ export function getOverviewVisualizationSpec(
       type: 'bar',
       clip: true,
     },
+    transform: [{ calculate: "datum.alert == 1 ? 'Active alerts' : 'Findings'", as: 'fieldType' }],
     encoding: findingsEncoding,
   };
 
@@ -162,7 +174,6 @@ export function getOverviewVisualizationSpec(
     barLayer = addInteractiveLegends(barLayer);
   }
 
-  const lineColor = '#ff0000';
   return getVisualizationSpec(
     'Plot showing average data with raw values in the background.',
     visualizationData,
@@ -173,11 +184,11 @@ export function getOverviewVisualizationSpec(
           type: 'line',
           clip: true,
           interpolate: 'monotone',
-          color: lineColor,
+          color: alertsDefaultColor,
           point: {
             filled: false,
             fill: 'white',
-            color: lineColor,
+            color: alertsDefaultColor,
             size: 50,
           },
         },
@@ -202,6 +213,11 @@ export function getFindingsVisualizationSpec(
     domain: defaultScaleDomain,
   }
 ) {
+  const severities = ['info', 'low', 'medium', 'high', 'critical'];
+  const isGroupedByLogType = groupBy === 'logType';
+  const logTitle = 'Log type';
+  const severityTitle = 'Rule severity';
+  const title = isGroupedByLogType ? logTitle : severityTitle;
   return getVisualizationSpec('Findings data overview', visualizationData, [
     addInteractiveLegends({
       mark: {
@@ -214,16 +230,17 @@ export function getFindingsVisualizationSpec(
           getTimeTooltip(dateOpts),
           {
             field: groupBy,
-            title: groupBy === 'logType' ? 'Log type' : 'Rule severity',
+            title: title,
           },
         ],
         x: getXAxis(dateOpts),
         y: getYAxis('finding', 'Count'),
         color: {
           field: groupBy,
-          title: groupBy === 'logType' ? 'Log type' : 'Rule severity',
+          title: title,
           scale: {
-            range: euiPaletteColorBlind(),
+            domain: isGroupedByLogType ? undefined : severities,
+            range: groupBy === 'logType' ? euiPaletteColorBlind() : euiPaletteForStatus(5),
           },
         },
       },
@@ -240,6 +257,19 @@ export function getAlertsVisualizationSpec(
     domain: defaultScaleDomain,
   }
 ) {
+  const isGroupedByStatus = groupBy === 'status';
+  let severities = severityOptions.map((severity) => severity.text);
+  severities.reverse().pop();
+
+  let states = ['ACTIVE', 'ACKNOWLEDGED'];
+  const statusColors = {
+    euiColorVis9: '#E7664C',
+    euiColorVis6: '#B9A888',
+  };
+
+  const statusTitle = 'Alert status';
+  const severityTitle = 'Alert severity';
+  const title = isGroupedByStatus ? statusTitle : severityTitle;
   return getVisualizationSpec('Alerts data overview', visualizationData, [
     addInteractiveLegends({
       mark: {
@@ -252,16 +282,17 @@ export function getAlertsVisualizationSpec(
           getTimeTooltip(dateOpts),
           {
             field: groupBy,
-            title: groupBy === 'status' ? 'Alert status' : 'Alert severity',
+            title: title,
           },
         ],
         x: getXAxis(dateOpts),
         y: getYAxis('alert', 'Count'),
         color: {
           field: groupBy,
-          title: groupBy === 'status' ? 'Alert status' : 'Alert severity',
+          title: title,
           scale: {
-            range: groupBy === 'status' ? euiPaletteForStatus(5) : euiPaletteColorBlind(),
+            domain: isGroupedByStatus ? states : severities,
+            range: isGroupedByStatus ? Object.values(statusColors) : euiPaletteForStatus(5),
           },
         },
       },

@@ -4,6 +4,7 @@
  */
 
 import { EuiBasicTableColumn, EuiLink, EuiSwitch } from '@elastic/eui';
+import { capitalizeFirstLetter } from '../../../../../../../utils/helpers';
 import React, { ReactNode } from 'react';
 import { RuleItem } from '../types/interfaces';
 
@@ -35,18 +36,28 @@ export const getRulesColumns = (
           </EuiLink>
         );
       },
+      width: '30%',
+      sortable: true,
     },
     {
       field: 'severity',
       name: 'Rule severity',
+      width: '10%',
+      sortable: true,
+      render: (severity: string) => capitalizeFirstLetter(severity),
     },
     {
       field: 'logType',
       name: 'Log type',
+      width: '10%',
+      sortable: true,
+      render: (logType: string) => capitalizeFirstLetter(logType),
     },
     {
       field: 'library',
       name: 'Source',
+      width: '10%',
+      render: (library: string) => capitalizeFirstLetter(library),
     },
     {
       field: 'description',

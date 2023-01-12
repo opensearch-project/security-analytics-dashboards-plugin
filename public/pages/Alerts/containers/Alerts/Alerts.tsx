@@ -54,11 +54,11 @@ import {
   successNotificationToast,
 } from '../../../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { match, withRouter } from 'react-router-dom';
+import { match, RouteComponentProps, withRouter } from 'react-router-dom';
 import { DateTimeFilter } from '../../../Overview/models/interfaces';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 
-export interface AlertsProps {
+export interface AlertsProps extends RouteComponentProps {
   alertService: AlertsService;
   detectorService: DetectorService;
   findingService: FindingsService;
@@ -296,6 +296,7 @@ class Alerts extends Component<AlertsProps, AlertsState> {
 
         let alerts: AlertItem[] = [];
         const detectorId = this.props.match.params['detectorId'];
+
         for (let id of detectorIds) {
           if (!detectorId || detectorId === id) {
             const alertsRes = await alertService.getAlerts({ detector_id: id });
@@ -303,6 +304,7 @@ class Alerts extends Component<AlertsProps, AlertsState> {
             if (alertsRes.ok) {
               const detectorAlerts = alertsRes.response.alerts.map((alert) => {
                 const detector = detectors[id];
+                if (!alert.detector_id) alert.detector_id = id;
                 return { ...alert, detectorName: detector.name };
               });
               alerts = alerts.concat(detectorAlerts);
@@ -542,4 +544,4 @@ class Alerts extends Component<AlertsProps, AlertsState> {
   }
 }
 
-export default withRouter(Alerts);
+export default withRouter<AlertsProps, React.ComponentType<AlertsProps>>(Alerts);

@@ -26,9 +26,12 @@ export class RulesViewModelActor {
     return this.rulesViewModel.allRules;
   }
 
-  public async fetchRules(terms?: { [key: string]: string[] }): Promise<RuleItemInfoBase[]> {
-    let prePackagedRules = await this.getRules(true, terms);
-    let customRules = await this.getRules(false, terms);
+  public async fetchRules(
+    terms?: { [key: string]: string[] },
+    query?: any
+  ): Promise<RuleItemInfoBase[]> {
+    let prePackagedRules = await this.getRules(true, terms, query);
+    let customRules = await this.getRules(false, terms, query);
 
     prePackagedRules = this.extractAndAddDetection(prePackagedRules);
     customRules = this.extractAndAddDetection(customRules);
@@ -41,7 +44,8 @@ export class RulesViewModelActor {
     prePackaged: boolean,
     terms?: {
       [key: string]: string[];
-    }
+    },
+    query?: any
   ): Promise<RuleItemInfoBase[]> {
     const getRulesRes = await this.service.getRules(prePackaged, {
       from: 0,
@@ -49,7 +53,7 @@ export class RulesViewModelActor {
       query: {
         nested: {
           path: 'rule',
-          query: {
+          query: query || {
             terms: terms
               ? terms
               : {

@@ -28,6 +28,7 @@ import { RuleInfo } from '../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { OpenSearchService } from '../services';
 import { ruleTypes } from '../pages/Rules/utils/constants';
+import { Handler } from 'vega-tooltip';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
@@ -165,11 +166,13 @@ export function renderVisualization(spec: TopLevelSpec, containerId: string) {
   }
 
   function renderVegaSpec(spec: {}) {
+    const handler = new Handler();
     view = new View(parse(spec, null, { expr: vegaExpressionInterpreter }), {
       renderer: 'canvas', // renderer (canvas or svg)
       container: `#${containerId}`, // parent DOM container
       hover: true, // enable hover processing
     });
+    view.tooltip(handler.call);
     return view.runAsync();
   }
 }
