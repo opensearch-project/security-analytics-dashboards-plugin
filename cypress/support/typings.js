@@ -21,8 +21,8 @@ Cypress.Commands.add(
   (subject) => {
     return cy
       .get(subject)
-      .wait(10)
-      .type('{selectall}{enter}')
+      .wait(100)
+      .type('{selectall}{backspace}')
       .clear({ force: true })
       .invoke('val', '');
   }
