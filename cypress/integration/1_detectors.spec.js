@@ -209,6 +209,7 @@ describe('Detectors', () => {
 
     // Change detector name
     cy.get(`input[placeholder="Enter a name for the detector."]`)
+      .wait(1000)
       .ospClear()
       .focus()
       .realType('test detector edited');
