@@ -99,14 +99,14 @@ Cypress.Commands.add('getTableFirstRow', (selector) => {
   return cy.get('tbody > tr:first').find(selector);
 });
 
-Cypress.Commands.add('waitForPageLoad', (url, { timeout = 10000, contains = null }) => {
-  const fullUrl = `${OPENSEARCH_DASHBOARDS_URL}/${url}`;
+Cypress.Commands.add('waitForPageLoad', (pathname, { timeout = 10000, contains = null }) => {
+  const fullUrl = `${OPENSEARCH_DASHBOARDS_URL}/${pathname}`;
   Cypress.log({
     message: `Wait for url: ${fullUrl} to be loaded.`,
   });
   cy.url({ timeout: timeout })
     .should('include', fullUrl)
     .then(() => {
-      contains && cy.contains(contains);
+      contains && cy.contains(contains).should('be.visible');
     });
 });

@@ -9,7 +9,7 @@ Cypress.Commands.add(
     prevSubject: true,
   },
   (subject, text) => {
-    return cy.get(subject).wait(10).focus().realType(text).realPress('Enter');
+    return cy.get(subject).ospType(text).realPress('Enter');
   }
 );
 

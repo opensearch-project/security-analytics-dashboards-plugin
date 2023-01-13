@@ -1,3 +1,8 @@
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 const { OPENSEARCH_DASHBOARDS, NODE_API } = require('./constants');
 
 Cypress.Commands.add('createRule', (ruleJSON) => {

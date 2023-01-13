@@ -142,7 +142,7 @@ describe('Findings', () => {
     });
 
     // filter table to show only sample_detector findings
-    cy.get(`input[placeholder="Search findings"]`).ospSearch('sample_detector');
+    cy.get(`input[placeholder="Search threat detectors"]`).ospSearch('sample_detector');
 
     // intercept detectors and rules requests
     cy.intercept('detectors/_search').as('getDetector');
@@ -166,7 +166,7 @@ describe('Findings', () => {
           cy.get('[data-test-subj="editButton"]').contains('Delete').click({ force: true });
 
           // Search for sample_detector, presumably deleted
-          cy.get(`input[placeholder="Search findings"]`).ospSearch('sample_detector');
+          cy.get(`input[placeholder="Search threat detectors"]`).ospSearch('sample_detector');
 
           // Confirm sample_detector no longer exists
           cy.contains('There are no existing detectors.');

@@ -5,17 +5,26 @@
 
 const { NODE_API } = require('./constants');
 
-Cypress.Commands.add('deleteAllDetectors', () => {
-  cy.request({
-    method: 'DELETE',
-    url: `${Cypress.env('opensearch')}/.opensearch-sap-detectors-config`,
-    failOnStatusCode: false,
-  });
-});
-
 Cypress.Commands.add('createDetector', (detectorJSON) => {
   cy.request('POST', `${Cypress.env('opensearch')}${NODE_API.DETECTORS_BASE}`, detectorJSON);
 });
+
+Cypress.Commands.add(
+  'createAliasMappings',
+  (indexName, ruleTopic, aliasMappingsBody, partial = true) => {
+    const body = {
+      index_name: indexName,
+      rule_topic: ruleTopic,
+      partial: partial,
+      alias_mappings: aliasMappingsBody,
+    };
+    cy.request({
+      method: 'POST',
+      url: `${Cypress.env('opensearch')}${NODE_API.MAPPINGS_BASE}`,
+      body: body,
+    });
+  }
+);
 
 Cypress.Commands.add('updateDetector', (detectorId, detectorJSON) => {
   cy.request(
@@ -54,19 +63,10 @@ Cypress.Commands.add('deleteDetector', (detectorName) => {
   });
 });
 
-Cypress.Commands.add(
-  'createAliasMappings',
-  (indexName, ruleTopic, aliasMappingsBody, partial = true) => {
-    const body = {
-      index_name: indexName,
-      rule_topic: ruleTopic,
-      partial: partial,
-      alias_mappings: aliasMappingsBody,
-    };
-    cy.request({
-      method: 'POST',
-      url: `${Cypress.env('opensearch')}${NODE_API.MAPPINGS_BASE}`,
-      body: body,
-    });
-  }
-);
+Cypress.Commands.add('deleteAllDetectors', () => {
+  cy.request({
+    method: 'DELETE',
+    url: `${Cypress.env('opensearch')}/.opensearch-sap-detectors-config`,
+    failOnStatusCode: false,
+  });
+});
