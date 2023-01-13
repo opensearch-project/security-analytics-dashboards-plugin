@@ -11,6 +11,7 @@ import {
 import { ServerResponse } from '../../server/models/types';
 import { SearchResponse, Plugin } from '../../server/models/interfaces';
 import { API } from '../../server/utils/constants';
+import { GetFieldsOptions } from '../models/interfaces';
 
 export default class OpenSearchService {
   constructor(
@@ -56,4 +57,28 @@ export default class OpenSearchService {
 
     return Promise.resolve(indexPatterns);
   };
+
+  getFieldsForWildcard(options: GetFieldsOptions = {}) {
+    const { pattern, metaFields, type, params, dataSourceId } = options;
+
+    let query;
+
+    if (type) {
+      query = {
+        pattern,
+        meta_fields: metaFields,
+        params: JSON.stringify(params),
+        data_source: dataSourceId,
+      };
+    } else {
+      query = {
+        pattern,
+        meta_fields: metaFields,
+        data_source: dataSourceId,
+      };
+    }
+
+    let url = `../api/index_patterns/_fields_for_wildcard`;
+    return this.httpClient.get(url, { query });
+  }
 }

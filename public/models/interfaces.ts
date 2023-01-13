@@ -32,6 +32,15 @@ export interface RuleOptions {
   tags: string[];
 }
 
+export interface GetFieldsOptions {
+  pattern?: string;
+  type?: string;
+  params?: any;
+  lookBack?: boolean;
+  metaFields?: string[];
+  dataSourceId?: string;
+}
+
 export interface RulesSharedState {
   page: RulesPage;
   rulesOptions: RuleOptions[];
