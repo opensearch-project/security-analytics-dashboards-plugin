@@ -89,10 +89,8 @@ export default class CreateAlertFlyout extends Component<
 
   onAlertConditionChange = (newDetector: Detector): void => {
     const isTriggerDataValid = newDetector.triggers.every((trigger) => {
-      console.log(trigger);
-      return !!trigger.name && validateName(trigger.name) && trigger.severity;
+      return !!trigger.name && validateName(trigger.name);
     });
-
     this.setState({ detector: { ...newDetector }, isTriggerDataValid });
   };
 
