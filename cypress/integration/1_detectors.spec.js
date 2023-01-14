@@ -208,11 +208,9 @@ describe('Detectors', () => {
     });
 
     // Change detector name
-    cy.get(`input[placeholder="Enter a name for the detector."]`)
-      .wait(1000)
-      .ospClear()
-      .focus()
-      .realType('test detector edited');
+    cy.get(`input[placeholder="Enter a name for the detector."]`).type(
+      '{selectall}{backspace}test detector edited'
+    );
 
     // Change detector description
     cy.get(`[data-test-subj="define-detector-detector-description"]`)
