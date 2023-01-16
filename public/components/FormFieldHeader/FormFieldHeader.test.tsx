@@ -9,7 +9,12 @@ import { FormFieldHeader } from './FormFieldHeader';
 
 describe('<FormFieldHeader /> spec', () => {
   it('renders the component', () => {
-    const tree = render(<FormFieldHeader headerTitle={'some title'} />);
+    const tree = render(
+      <FormFieldHeader
+        headerTitle={'some title'}
+      />
+    );
+
     expect(tree).toMatchSnapshot();
   });
 });

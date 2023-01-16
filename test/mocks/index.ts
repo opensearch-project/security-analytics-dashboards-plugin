@@ -5,5 +5,6 @@
 
 import browserServicesMock from './browserServicesMock';
 import httpClientMock from './httpClientMock';
+import modelsMock from './models';
 
-export { browserServicesMock, httpClientMock };
+export { browserServicesMock, httpClientMock, modelsMock };

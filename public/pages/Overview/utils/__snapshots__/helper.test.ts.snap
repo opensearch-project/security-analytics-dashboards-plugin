@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`helper utilities spec tests getAlertsVisualizationSpec function  - snapshot test: should match alerts spec 1`] = `
-Object {
+{
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "config": Object {
-    "legend": Object {
+  "config": {
+    "legend": {
       "labelColor": "#343741",
-      "labelFont": "\\"Inter UI\\", -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Helvetica, Arial, sans-serif, \\"Apple Color Emoji\\", \\"Segoe UI Emoji\\", \\"Segoe UI Symbol\\"",
+      "labelFont": ""Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"",
       "labelFontSize": 14,
       "rowPadding": 6,
       "titleColor": "#1a1c21",
@@ -15,28 +15,28 @@ Object {
       "titleLineHeight": 21,
       "titlePadding": 10,
     },
-    "view": Object {
+    "view": {
       "stroke": "transparent",
     },
   },
-  "data": Object {
-    "values": Array [],
+  "data": {
+    "values": [],
   },
   "description": "Alerts data overview",
-  "layer": Array [
-    Object {
-      "encoding": Object {
-        "color": Object {
+  "layer": [
+    {
+      "encoding": {
+        "color": {
           "field": "",
-          "scale": Object {
-            "domain": Array [
+          "scale": {
+            "domain": [
               "5 (Lowest)",
               "4 (Low)",
               "3 (Medium)",
               "2 (High)",
               "1 (Highest)",
             ],
-            "range": Array [
+            "range": [
               "#209280",
               "#54b399",
               "#d6bf57",
@@ -46,57 +46,57 @@ Object {
           },
           "title": "Alert severity",
         },
-        "opacity": Object {
-          "condition": Object {
+        "opacity": {
+          "condition": {
             "selection": "series",
             "value": 1,
           },
           "value": 0.2,
         },
-        "tooltip": Array [
-          Object {
+        "tooltip": [
+          {
             "aggregate": "sum",
-            "axis": Object {
+            "axis": {
               "grid": true,
             },
             "field": "alert",
             "title": "Alerts",
             "type": "quantitative",
           },
-          Object {
+          {
             "field": "time",
             "format": "%Y-%m-%d %H:%M:%S",
-            "timeUnit": Object {
+            "timeUnit": {
               "step": 1,
               "unit": "yearmonthdatehoursminutes",
             },
             "title": "Time",
             "type": "temporal",
           },
-          Object {
+          {
             "field": "",
             "title": "Alert severity",
           },
         ],
-        "x": Object {
-          "axis": Object {
+        "x": {
+          "axis": {
             "format": "%Y-%m-%d %H:%M",
             "grid": false,
           },
           "field": "time",
-          "scale": Object {
+          "scale": {
             "domain": undefined,
           },
-          "timeUnit": Object {
+          "timeUnit": {
             "step": 1,
             "unit": "yearmonthdatehoursminutes",
           },
           "title": "",
           "type": "temporal",
         },
-        "y": Object {
+        "y": {
           "aggregate": "sum",
-          "axis": Object {
+          "axis": {
             "grid": true,
           },
           "field": "alert",
@@ -104,14 +104,14 @@ Object {
           "type": "quantitative",
         },
       },
-      "mark": Object {
+      "mark": {
         "clip": true,
         "type": "bar",
       },
-      "selection": Object {
-        "series": Object {
+      "selection": {
+        "series": {
           "bind": "legend",
-          "encodings": Array [
+          "encodings": [
             "color",
           ],
           "on": "click",
@@ -124,12 +124,12 @@ Object {
 `;
 
 exports[`helper utilities spec tests getFindingsVisualizationSpec function  - snapshot test: should match findings spec 1`] = `
-Object {
+{
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "config": Object {
-    "legend": Object {
+  "config": {
+    "legend": {
       "labelColor": "#343741",
-      "labelFont": "\\"Inter UI\\", -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Helvetica, Arial, sans-serif, \\"Apple Color Emoji\\", \\"Segoe UI Emoji\\", \\"Segoe UI Symbol\\"",
+      "labelFont": ""Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"",
       "labelFontSize": 14,
       "rowPadding": 6,
       "titleColor": "#1a1c21",
@@ -138,28 +138,28 @@ Object {
       "titleLineHeight": 21,
       "titlePadding": 10,
     },
-    "view": Object {
+    "view": {
       "stroke": "transparent",
     },
   },
-  "data": Object {
-    "values": Array [],
+  "data": {
+    "values": [],
   },
   "description": "Findings data overview",
-  "layer": Array [
-    Object {
-      "encoding": Object {
-        "color": Object {
+  "layer": [
+    {
+      "encoding": {
+        "color": {
           "field": "",
-          "scale": Object {
-            "domain": Array [
+          "scale": {
+            "domain": [
               "info",
               "low",
               "medium",
               "high",
               "critical",
             ],
-            "range": Array [
+            "range": [
               "#209280",
               "#54b399",
               "#d6bf57",
@@ -169,57 +169,57 @@ Object {
           },
           "title": "Rule severity",
         },
-        "opacity": Object {
-          "condition": Object {
+        "opacity": {
+          "condition": {
             "selection": "series",
             "value": 1,
           },
           "value": 0.2,
         },
-        "tooltip": Array [
-          Object {
+        "tooltip": [
+          {
             "aggregate": "sum",
-            "axis": Object {
+            "axis": {
               "grid": true,
             },
             "field": "finding",
             "title": "Findings",
             "type": "quantitative",
           },
-          Object {
+          {
             "field": "time",
             "format": "%Y-%m-%d %H:%M:%S",
-            "timeUnit": Object {
+            "timeUnit": {
               "step": 1,
               "unit": "yearmonthdatehoursminutes",
             },
             "title": "Time",
             "type": "temporal",
           },
-          Object {
+          {
             "field": "",
             "title": "Rule severity",
           },
         ],
-        "x": Object {
-          "axis": Object {
+        "x": {
+          "axis": {
             "format": "%Y-%m-%d %H:%M",
             "grid": false,
           },
           "field": "time",
-          "scale": Object {
+          "scale": {
             "domain": undefined,
           },
-          "timeUnit": Object {
+          "timeUnit": {
             "step": 1,
             "unit": "yearmonthdatehoursminutes",
           },
           "title": "",
           "type": "temporal",
         },
-        "y": Object {
+        "y": {
           "aggregate": "sum",
-          "axis": Object {
+          "axis": {
             "grid": true,
           },
           "field": "finding",
@@ -227,14 +227,14 @@ Object {
           "type": "quantitative",
         },
       },
-      "mark": Object {
+      "mark": {
         "clip": true,
         "type": "bar",
       },
-      "selection": Object {
-        "series": Object {
+      "selection": {
+        "series": {
           "bind": "legend",
-          "encodings": Array [
+          "encodings": [
             "color",
           ],
           "on": "click",
@@ -247,12 +247,12 @@ Object {
 `;
 
 exports[`helper utilities spec tests getOverviewVisualizationSpec function  - snapshot test: should match overview spec 1`] = `
-Object {
+{
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "config": Object {
-    "legend": Object {
+  "config": {
+    "legend": {
       "labelColor": "#343741",
-      "labelFont": "\\"Inter UI\\", -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Helvetica, Arial, sans-serif, \\"Apple Color Emoji\\", \\"Segoe UI Emoji\\", \\"Segoe UI Symbol\\"",
+      "labelFont": ""Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"",
       "labelFontSize": 14,
       "rowPadding": 6,
       "titleColor": "#1a1c21",
@@ -261,51 +261,51 @@ Object {
       "titleLineHeight": 21,
       "titlePadding": 10,
     },
-    "view": Object {
+    "view": {
       "stroke": "transparent",
     },
   },
-  "data": Object {
-    "values": Array [],
+  "data": {
+    "values": [],
   },
   "description": "Plot showing average data with raw values in the background.",
-  "layer": Array [
-    Object {
-      "encoding": Object {
-        "color": Object {
+  "layer": [
+    {
+      "encoding": {
+        "color": {
           "field": "fieldType",
-          "legend": Object {
-            "values": Array [
+          "legend": {
+            "values": [
               "Active alerts",
               "Findings",
             ],
           },
-          "scale": Object {
-            "domain": Array [
+          "scale": {
+            "domain": [
               "Active alerts",
               "Findings",
             ],
-            "range": Array [
+            "range": [
               "#BD271E",
               "#6092C0",
             ],
           },
           "title": "",
         },
-        "tooltip": Array [
-          Object {
+        "tooltip": [
+          {
             "aggregate": "sum",
-            "axis": Object {
+            "axis": {
               "grid": true,
             },
             "field": "finding",
             "title": "Findings",
             "type": "quantitative",
           },
-          Object {
+          {
             "field": "time",
             "format": "%Y-%m-%d %H:%M:%S",
-            "timeUnit": Object {
+            "timeUnit": {
               "step": 1,
               "unit": "yearmonthdatehoursminutes",
             },
@@ -313,25 +313,25 @@ Object {
             "type": "temporal",
           },
         ],
-        "x": Object {
-          "axis": Object {
+        "x": {
+          "axis": {
             "format": "%Y-%m-%d %H:%M",
             "grid": false,
           },
           "field": "time",
-          "scale": Object {
+          "scale": {
             "domain": undefined,
           },
-          "timeUnit": Object {
+          "timeUnit": {
             "step": 1,
             "unit": "yearmonthdatehoursminutes",
           },
           "title": "",
           "type": "temporal",
         },
-        "y": Object {
+        "y": {
           "aggregate": "sum",
-          "axis": Object {
+          "axis": {
             "grid": true,
           },
           "field": "finding",
@@ -339,33 +339,33 @@ Object {
           "type": "quantitative",
         },
       },
-      "mark": Object {
+      "mark": {
         "clip": true,
         "type": "bar",
       },
-      "transform": Array [
-        Object {
+      "transform": [
+        {
           "as": "fieldType",
           "calculate": "datum.alert == 1 ? 'Active alerts' : 'Findings'",
         },
       ],
     },
-    Object {
-      "encoding": Object {
-        "tooltip": Array [
-          Object {
+    {
+      "encoding": {
+        "tooltip": [
+          {
             "aggregate": "sum",
-            "axis": Object {
+            "axis": {
               "grid": true,
             },
             "field": "alert",
             "title": "Alerts",
             "type": "quantitative",
           },
-          Object {
+          {
             "field": "time",
             "format": "%Y-%m-%d %H:%M:%S",
-            "timeUnit": Object {
+            "timeUnit": {
               "step": 1,
               "unit": "yearmonthdatehoursminutes",
             },
@@ -373,26 +373,26 @@ Object {
             "type": "temporal",
           },
         ],
-        "x": Object {
-          "axis": Object {
+        "x": {
+          "axis": {
             "format": "%Y-%m-%d %H:%M",
             "grid": false,
           },
           "band": 0.5,
           "field": "time",
-          "scale": Object {
+          "scale": {
             "domain": undefined,
           },
-          "timeUnit": Object {
+          "timeUnit": {
             "step": 1,
             "unit": "yearmonthdatehoursminutes",
           },
           "title": "",
           "type": "temporal",
         },
-        "y": Object {
+        "y": {
           "aggregate": "sum",
-          "axis": Object {
+          "axis": {
             "grid": true,
           },
           "field": "alert",
@@ -400,11 +400,11 @@ Object {
           "type": "quantitative",
         },
       },
-      "mark": Object {
+      "mark": {
         "clip": true,
         "color": "#BD271E",
         "interpolate": "monotone",
-        "point": Object {
+        "point": {
           "color": "#BD271E",
           "fill": "white",
           "filled": false,
@@ -418,12 +418,12 @@ Object {
 `;
 
 exports[`helper utilities spec tests getVisualizationSpec function  - snapshot test: should match visualization spec 1`] = `
-Object {
+{
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "config": Object {
-    "legend": Object {
+  "config": {
+    "legend": {
       "labelColor": "#343741",
-      "labelFont": "\\"Inter UI\\", -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Helvetica, Arial, sans-serif, \\"Apple Color Emoji\\", \\"Segoe UI Emoji\\", \\"Segoe UI Symbol\\"",
+      "labelFont": ""Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"",
       "labelFontSize": 14,
       "rowPadding": 6,
       "titleColor": "#1a1c21",
@@ -432,44 +432,44 @@ Object {
       "titleLineHeight": 21,
       "titlePadding": 10,
     },
-    "view": Object {
+    "view": {
       "stroke": "transparent",
     },
   },
-  "data": Object {
-    "values": Array [
-      Object {
+  "data": {
+    "values": [
+      {
         "xField": 1,
         "yField": 1,
       },
     ],
   },
   "description": "Visualization",
-  "layer": Array [
-    Object {
-      "encoding": Object {
-        "opacity": Object {
-          "condition": Object {
+  "layer": [
+    {
+      "encoding": {
+        "opacity": {
+          "condition": {
             "selection": "series",
             "value": 1,
           },
           "value": 0.2,
         },
       },
-      "selection": Object {
-        "series": Object {
+      "selection": {
+        "series": {
           "bind": "legend",
-          "encodings": Array [
+          "encodings": [
             "color",
           ],
           "on": "click",
           "type": "multi",
         },
       },
-      "x": Object {
+      "x": {
         "field": "xField",
       },
-      "y": Object {
+      "y": {
         "field": "yField",
       },
     },
