@@ -17,6 +17,12 @@ import {
 } from '@elastic/eui';
 import { OpenSearchService } from '../../../services';
 
+const ILLEGAL_CHARACTERS = [' ', '\\', '/', '?', '"', '<', '>', '|'];
+
+const containsIllegalCharacters = (pattern: string) => {
+  return ILLEGAL_CHARACTERS.some((char) => pattern.includes(char));
+};
+
 export interface CreateIndexPatternFormModel {
   name: string;
   timeField: string;
@@ -39,22 +45,26 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
 }) => {
   const [timeFileds, setTimeFields] = useState<string[]>([]);
 
-  const getTimeFields = async () => {
-    opensearchService
+  const getTimeFields = async (name: string) => {
+    return opensearchService
       .getFieldsForWildcard({
-        pattern: 'cyp*',
+        pattern: `${name}`,
         metaFields: ['_source', '_id', '_type', '_index', '_score'],
         params: {},
       })
-      .then(({ fields }) => {
-        console.log(fields);
-        setTimeFields(fields.map((f) => f.name));
+      .then((res) => {
+        return res.fields.filter((f) => f.type === 'date').map((f) => f.name);
+      })
+      .catch(() => {
+        return [];
       });
   };
 
   useEffect(() => {
-    getTimeFields();
-  }, []);
+    getTimeFields(initialValue.name).then((fields) => {
+      setTimeFields(fields);
+    });
+  }, [initialValue.name]);
 
   return (
     <Formik
@@ -68,6 +78,11 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
 
         if (!values.timeField) {
           errors.timeField = 'Time field is required';
+        }
+
+        if (containsIllegalCharacters(values.name)) {
+          errors.name =
+            'A index pattern cannot contain spaces or the characters: , /, ?, ", <, >, |';
         }
 
         return errors;
@@ -92,8 +107,11 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
               isInvalid={props.touched.name && !!props.errors.name}
               placeholder="Enter index pattern name"
               data-test-subj={'index_pattern_name_field'}
-              onChange={(e) => {
+              onChange={async (e) => {
                 props.handleChange('name')(e);
+                const fileds = await getTimeFields(e.target.value);
+                setTimeFields(fileds);
+                props.setFieldValue('timeField', '');
               }}
               onBlur={props.handleBlur('name')}
               value={props.values.name}
