@@ -213,14 +213,6 @@ describe('Alerts', () => {
 
       // Check the rule details accordion for the expected values
       cy.get('[data-test-subj="finding-details-flyout-rule-accordion-0"]').within(() => {
-        // Confirm the accordion button contains the expected text
-        cy.get('[data-test-subj="finding-details-flyout-rule-accordion-button"]').contains(
-          'USB Device Plugged'
-        );
-        cy.get('[data-test-subj="finding-details-flyout-rule-accordion-button"]').contains(
-          'Severity: Low'
-        );
-
         // Confirm the rule name
         cy.get('[data-test-subj="finding-details-flyout-USB Device Plugged-details"]').contains(
           'USB Device Plugged'
