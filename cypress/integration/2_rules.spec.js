@@ -121,7 +121,7 @@ describe('Rules', () => {
     cy.wait('@getRules');
 
     // Search for the rule
-    cy.triggerSearchField('Search rules', SAMPLE_RULE.name);
+    cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
 
     // Click the rule link to open the details flyout
     cy.get(`[data-test-subj="rule_link_${SAMPLE_RULE.name}"]`).click({ force: true });
@@ -204,7 +204,7 @@ describe('Rules', () => {
       url: '/rules',
     }).as('deleteRule');
 
-    cy.triggerSearchField('Search rules', SAMPLE_RULE.name);
+    cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
 
     // Click the rule link to open the details flyout
     cy.get(`[data-test-subj="rule_link_${SAMPLE_RULE.name}"]`).click({ force: true });
@@ -227,7 +227,7 @@ describe('Rules', () => {
         cy.wait('@deleteRule');
 
         // Search for sample_detector, presumably deleted
-        cy.triggerSearchField('Search rules', SAMPLE_RULE.name);
+        cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
         // Click the rule link to open the details flyout
         cy.get('tbody').contains(SAMPLE_RULE.name).should('not.exist');
       });
