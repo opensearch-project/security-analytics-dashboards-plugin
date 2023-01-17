@@ -91,7 +91,7 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
       }}
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(false);
-        await savedObjectsService.createIndexPattern();
+        await savedObjectsService.createIndexPattern(values.name, values.timeField);
         submit(values);
       }}
     >
