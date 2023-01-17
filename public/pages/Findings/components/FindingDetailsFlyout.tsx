@@ -116,9 +116,10 @@ export default class FindingDetailsFlyout extends Component<
             buttonClassName="euiAccordionForm__button"
             buttonContent={
               <div data-test-subj={'finding-details-flyout-rule-accordion-button'}>
-                <EuiTitle size={'s'}>
-                  <h3>Rule details</h3>
-                </EuiTitle>
+                <EuiText size={'s'}>{fullRule.title}</EuiText>
+                <EuiText size={'s'} color={'subdued'}>
+                  Severity: {severity}
+                </EuiText>
               </div>
             }
             initialIsOpen={rules.length === 1}
@@ -127,7 +128,6 @@ export default class FindingDetailsFlyout extends Component<
             <EuiPanel color="subdued">
               <EuiFlexGroup>
                 <EuiFlexItem>
-                  {/*//TODO: Refactor EuiLink to filter rules table to the specific rule.*/}
                   <EuiFormRow label={'Rule name'}>
                     <EuiLink
                       onClick={() => this.showRuleDetails(fullRule, rule.id)}
@@ -355,7 +355,10 @@ export default class FindingDetailsFlyout extends Component<
           </EuiFlexGroup>
 
           <EuiSpacer size={'m'} />
-
+          <EuiTitle size={'s'}>
+            <h3>Rule details</h3>
+          </EuiTitle>
+          <EuiSpacer size={'m'} />
           {this.renderRuleDetails(queries)}
           <EuiSpacer size="l" />
           {this.renderFindingDocuments()}
