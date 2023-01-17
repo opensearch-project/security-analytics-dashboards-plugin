@@ -12,6 +12,7 @@ import {
   IndexService,
   RuleService,
   NotificationsService,
+  SavedObjectsService,
 } from '../services';
 
 export interface BrowserServices {
@@ -23,6 +24,7 @@ export interface BrowserServices {
   alertService: AlertsService;
   ruleService: RuleService;
   notificationsService: NotificationsService;
+  savedObjectsService: SavedObjectsService;
 }
 
 export interface RuleOptions {

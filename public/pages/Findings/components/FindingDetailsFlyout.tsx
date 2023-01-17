@@ -33,7 +33,7 @@ import { Finding, Query } from '../models/interfaces';
 import { RuleViewerFlyout } from '../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
 import { RuleSource } from '../../../../server/models/interfaces';
 import { RuleItemInfoBase } from '../../Rules/models/types';
-import { OpenSearchService } from '../../../services';
+import { OpenSearchService, SavedObjectsService } from '../../../services';
 import { RuleTableItem } from '../../Rules/utils/helpers';
 import { CreateIndexPatternForm } from './CreateIndexPatternForm';
 
@@ -42,6 +42,7 @@ interface FindingDetailsFlyoutProps {
   backButton?: React.ReactNode;
   allRules: { [id: string]: RuleSource };
   opensearchService: OpenSearchService;
+  savedObjectsService: SavedObjectsService;
   closeFlyout: () => void;
 }
 
@@ -298,6 +299,7 @@ export default class FindingDetailsFlyout extends Component<
             <EuiSpacer />
             <CreateIndexPatternForm
               opensearchService={this.props.opensearchService}
+              savedObjectsService={this.props.savedObjectsService}
               initialValue={{
                 name: this.props.finding.detector._source.inputs[0].detector_input.indices[0] + '*',
               }}

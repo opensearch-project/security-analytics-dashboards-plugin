@@ -15,7 +15,7 @@ import {
   EuiComboBox,
   EuiText,
 } from '@elastic/eui';
-import { OpenSearchService } from '../../../services';
+import { OpenSearchService, SavedObjectsService } from '../../../services';
 
 const ILLEGAL_CHARACTERS = [' ', '\\', '/', '?', '"', '<', '>', '|'];
 
@@ -35,6 +35,7 @@ export interface CreateIndexPatternFormProps {
   submit: (values: CreateIndexPatternFormModel) => void;
   cancel: () => void;
   opensearchService: OpenSearchService;
+  savedObjectsService: SavedObjectsService;
 }
 
 export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
@@ -42,6 +43,7 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
   submit,
   cancel,
   opensearchService,
+  savedObjectsService,
 }) => {
   const [timeFileds, setTimeFields] = useState<string[]>([]);
 
@@ -87,8 +89,9 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
 
         return errors;
       }}
-      onSubmit={(values, { setSubmitting }) => {
+      onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(false);
+        await savedObjectsService.createIndexPattern();
         submit(values);
       }}
     >

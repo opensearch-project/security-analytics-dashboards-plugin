@@ -12,6 +12,7 @@ import AlertsService from './AlertsService';
 import RuleService from './RuleService';
 import IndexService from './IndexService';
 import NotificationsService from './NotificationsService';
+import SavedObjectsService from './SavedObjectsService';
 
 export {
   ServicesConsumer,
@@ -24,4 +25,5 @@ export {
   RuleService,
   IndexService,
   NotificationsService,
+  SavedObjectsService,
 };
