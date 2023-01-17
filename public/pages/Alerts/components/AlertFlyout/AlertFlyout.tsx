@@ -25,6 +25,7 @@ import {
   capitalizeFirstLetter,
   createTextDetailsGroup,
   errorNotificationToast,
+  formatRuleType,
   renderTime,
 } from '../../../../utils/helpers';
 import { FindingsService, RuleService, OpenSearchService } from '../../../../services';
@@ -170,7 +171,7 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
         name: 'Log type',
         sortable: true,
         dataType: 'string',
-        render: () => capitalizeFirstLetter(detector.detector_type) || DEFAULT_EMPTY_DATA,
+        render: () => formatRuleType(detector.detector_type),
       },
     ];
   }
