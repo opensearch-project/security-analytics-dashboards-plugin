@@ -178,7 +178,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                         isInvalid={props.touched.logType && !!props.errors.logType}
                         placeholder="Select a log type"
                         data-test-subj={'rule_type_dropdown'}
-                        options={ruleTypes.map((type: string) => ({ value: type, label: type }))}
+                        options={ruleTypes.map(({ value, label }) => ({ value, label }))}
                         singleSelection={{ asPlainText: true }}
                         onChange={(e) => {
                           props.handleChange('logType')(e[0]?.value ? e[0].value : '');
