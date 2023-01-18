@@ -25,6 +25,7 @@ import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 import { NotificationChannelTypeOptions } from '../../CreateDetector/components/ConfigureAlerts/models/interfaces';
 import { Finding } from '../models/interfaces';
 import { getEmptyAlertCondition } from '../../CreateDetector/components/ConfigureAlerts/utils/helpers';
+import { validateName } from '../../../utils/validation';
 
 interface CreateAlertFlyoutProps extends RouteComponentProps {
   closeFlyout: (refreshPage?: boolean) => void;
@@ -42,6 +43,7 @@ interface CreateAlertFlyoutState {
   loading: boolean;
   detector: Detector;
   submitting: boolean;
+  isTriggerDataValid: boolean;
 }
 
 export default class CreateAlertFlyout extends Component<
@@ -55,6 +57,7 @@ export default class CreateAlertFlyout extends Component<
       loading: false,
       detector: this.props.finding.detector._source,
       submitting: false,
+      isTriggerDataValid: false,
     };
   }
 
@@ -85,7 +88,10 @@ export default class CreateAlertFlyout extends Component<
   };
 
   onAlertConditionChange = (newDetector: Detector): void => {
-    this.setState({ detector: { ...newDetector } });
+    const isTriggerDataValid = newDetector.triggers.every((trigger) => {
+      return !!trigger.name && validateName(trigger.name);
+    });
+    this.setState({ detector: { ...newDetector }, isTriggerDataValid });
   };
 
   onCreate = async () => {
@@ -120,7 +126,7 @@ export default class CreateAlertFlyout extends Component<
       closeFlyout,
       notificationChannels,
     } = this.props;
-    const { alertCondition, loading, detector, submitting } = this.state;
+    const { alertCondition, loading, detector, submitting, isTriggerDataValid } = this.state;
     const indexNum = triggers.length;
     return (
       <EuiFlyout onClose={closeFlyout} ownFocus={true} size={'m'}>
@@ -159,7 +165,7 @@ export default class CreateAlertFlyout extends Component<
 
             <EuiFlexItem grow={false}>
               <EuiButton
-                disabled={submitting}
+                disabled={submitting || !isTriggerDataValid}
                 fill={true}
                 isLoading={submitting}
                 onClick={this.onCreate}
