@@ -33,7 +33,7 @@ import { Finding, Query } from '../models/interfaces';
 import { RuleViewerFlyout } from '../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
 import { RuleSource } from '../../../../server/models/interfaces';
 import { RuleItemInfoBase } from '../../Rules/models/types';
-import { OpenSearchService, SavedObjectsService } from '../../../services';
+import { OpenSearchService, IndexPatternsService } from '../../../services';
 import { RuleTableItem } from '../../Rules/utils/helpers';
 import { CreateIndexPatternForm } from './CreateIndexPatternForm';
 
@@ -42,7 +42,7 @@ interface FindingDetailsFlyoutProps {
   backButton?: React.ReactNode;
   allRules: { [id: string]: RuleSource };
   opensearchService: OpenSearchService;
-  savedObjectsService: SavedObjectsService;
+  indexPatternsService?: IndexPatternsService;
   closeFlyout: () => void;
 }
 
@@ -279,6 +279,9 @@ export default class FindingDetailsFlyout extends Component<
   }
 
   createIndexPatternModal() {
+    const {
+      finding: { related_doc_ids },
+    } = this.props;
     if (this.state.isCreateIndexPatternModalVisible) {
       return (
         <EuiModal
@@ -298,16 +301,22 @@ export default class FindingDetailsFlyout extends Component<
             </EuiText>
             <EuiSpacer />
             <CreateIndexPatternForm
-              opensearchService={this.props.opensearchService}
-              savedObjectsService={this.props.savedObjectsService}
+              indexPatternsService={this.props.indexPatternsService}
               initialValue={{
                 name: this.props.finding.detector._source.inputs[0].detector_input.indices[0] + '*',
               }}
-              timeFileds={[]}
               cancel={() =>
                 this.setState({ ...this.state, isCreateIndexPatternModalVisible: false })
               }
-              submit={console.log}
+              submit={(indexPatternId) => {
+                console.log(indexPatternId);
+                this.setState({
+                  ...this.state,
+                  indexPatternId,
+                  isCreateIndexPatternModalVisible: false,
+                });
+                window.open(`discover#/context/${indexPatternId}/${related_doc_ids[0]}`, '_blank');
+              }}
             ></CreateIndexPatternForm>
           </EuiModalBody>
         </EuiModal>

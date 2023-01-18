@@ -11,7 +11,7 @@ import {
   AlertsService,
   NotificationsService,
   ServicesContext,
-  SavedObjectsService,
+  IndexPatternsService,
 } from './services';
 import { DarkModeContext } from './components/DarkMode';
 import Main from './pages/Main';
@@ -24,8 +24,14 @@ import OpenSearchService from './services/OpenSearchService';
 import { BrowserServices } from './models/interfaces';
 import FieldMappingService from './services/FieldMappingService';
 import RuleService from './services/RuleService';
+import { SecurityAnalyticsPluginStartDeps } from './plugin';
 
-export function renderApp(coreStart: CoreStart, params: AppMountParameters, landingPage: string) {
+export function renderApp(
+  coreStart: CoreStart,
+  params: AppMountParameters,
+  landingPage: string,
+  plugins?: SecurityAnalyticsPluginStartDeps
+) {
   const { http, savedObjects } = coreStart;
 
   const detectorsService = new DetectorsService(http);
@@ -36,7 +42,9 @@ export function renderApp(coreStart: CoreStart, params: AppMountParameters, land
   const alertsService = new AlertsService(http);
   const ruleService = new RuleService(http);
   const notificationsService = new NotificationsService(http);
-  const savedObjectsService = new SavedObjectsService(savedObjects);
+  const indexPatternsService = plugins
+    ? new IndexPatternsService((plugins.data as any).indexPatterns)
+    : undefined;
 
   const services: BrowserServices = {
     detectorsService,
@@ -47,7 +55,7 @@ export function renderApp(coreStart: CoreStart, params: AppMountParameters, land
     ruleService,
     alertService: alertsService,
     notificationsService,
-    savedObjectsService,
+    indexPatternsService,
   };
 
   const isDarkMode = coreStart.uiSettings.get('theme:darkMode') || false;

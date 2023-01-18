@@ -15,7 +15,7 @@ import {
   EuiComboBox,
   EuiText,
 } from '@elastic/eui';
-import { OpenSearchService, SavedObjectsService } from '../../../services';
+import { IndexPatternsService } from '../../../services';
 
 const ILLEGAL_CHARACTERS = [' ', '\\', '/', '?', '"', '<', '>', '|'];
 
@@ -32,30 +32,32 @@ export interface CreateIndexPatternFormProps {
   initialValue: {
     name: string;
   };
-  submit: (values: CreateIndexPatternFormModel) => void;
+  submit: (values: string) => void;
   cancel: () => void;
-  opensearchService: OpenSearchService;
-  savedObjectsService: SavedObjectsService;
+  indexPatternsService?: IndexPatternsService;
 }
 
 export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
   initialValue,
   submit,
   cancel,
-  opensearchService,
-  savedObjectsService,
+  indexPatternsService,
 }) => {
   const [timeFileds, setTimeFields] = useState<string[]>([]);
 
-  const getTimeFields = async (name: string) => {
-    return opensearchService
+  const getTimeFields = async (name: string): Promise<string[]> => {
+    if (!indexPatternsService) {
+      return [];
+    }
+
+    return indexPatternsService
       .getFieldsForWildcard({
         pattern: `${name}`,
         metaFields: ['_source', '_id', '_type', '_index', '_score'],
         params: {},
       })
       .then((res) => {
-        return res.fields.filter((f) => f.type === 'date').map((f) => f.name);
+        return res.filter((f) => f.type === 'date').map((f) => f.name);
       })
       .catch(() => {
         return [];
@@ -91,8 +93,18 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
       }}
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(false);
-        await savedObjectsService.createIndexPattern(values.name, values.timeField);
-        submit(values);
+        if (!indexPatternsService) {
+          return;
+        }
+        try {
+          const newIndex = await indexPatternsService.createAndSave({
+            title: values.name,
+            timeFieldName: values.timeField,
+          });
+          if (newIndex.id) {
+            submit(newIndex.id);
+          }
+        } catch (e) {}
       }}
     >
       {(props) => (
