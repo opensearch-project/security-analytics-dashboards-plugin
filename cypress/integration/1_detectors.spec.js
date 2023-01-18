@@ -85,11 +85,14 @@ describe('Detectors', () => {
       // Open Detection rules accordion
       cy.get('[data-test-subj="detection-rules-btn"]').click({ force: true, timeout: 5000 });
 
+      cy.contains('tr', 'Windows');
+
       // find search, type USB
       cy.get(`input[placeholder="Search..."]`).ospSearch('USB Device Plugged');
 
       // Disable all rules
-      cy.contains('tr', 'USB Device Plugged', { timeout: 1000 });
+      cy.contains('tr', 'USB Device Plugged');
+
       cy.get('table th').within(() => {
         cy.get('button').first().click({ force: true });
       });
