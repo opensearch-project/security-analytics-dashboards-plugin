@@ -1,0 +1,24 @@
+package.AWSSearchServicesKibanaSecurityAnalyticsPlugin = {
+    interfaces = (opensearch_2.5.0);
+	 
+	build-system = custom-build;
+	build-tools = {
+        opensearch_2.5.0 = {
+        };
+    };
+ 
+    # Use runtime-dependencies for when you want to bring in additional
+    # packages when deploying.
+    # Use dependencies instead if you intend for these dependencies to
+    # be exported to other packages that build against you.
+    dependencies = {
+        opensearch_2.5.0 = {
+        };
+    };
+
+    runtime-dependencies = {
+        opensearch_2.5.0 = {
+        };
+    };
+ 
+};

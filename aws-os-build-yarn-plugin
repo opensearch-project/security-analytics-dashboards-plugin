@@ -1,0 +1,126 @@
+#!/bin/bash
+
+##########################################################################
+# Added a shell wrapper script over the python start_version_release.py to make
+# calling it from the TodWorker, easier.
+# It accepts the script arguments as PARAMS and executes the dprelease module
+##########################################################################
+# flake8: noqa
+
+set -e
+
+TARGET=$1
+WORKING_DIR=$2
+YARN_TARGET=$3
+DESTINATION=$4
+
+echo "TARGET: $TARGET"
+echo "DESTINATION: $DESTINATION"
+echo "WORKING_DIR: $WORKING_DIR"
+echo "EXPECTED_NODE_VERSION: $EXPECTED_NODE_VERSION"
+echo "YARN_TARGET: $YARN_TARGET"
+# Set YARN_TARGET=--skip-os-packages for security-dashboard-plugins
+
+if [ -z $DESTINATION ]; then
+    DESTINATION=$WORKING_DIR
+fi
+
+if [ -z $TARGET ]; then
+    echo "TARGET attribute is missing!"
+    exit 1
+fi
+if [ $TARGET != "release" ]; then
+    if [ -z "$DESTINATION" ]; then
+        echo "DESTINATION Missing"
+        exit 1
+    fi
+    # shellcheck disable=SC2006
+    EXPECTED_NODE_VERSION=`sed 's/.*"node": "\(.*\)".*/\1/;t;d' ../../package.json`
+    EXPECTED_NODE_VERSION="v$EXPECTED_NODE_VERSION"
+fi
+echo "EXPECTED_NODE_VERSION: $EXPECTED_NODE_VERSION"
+
+EXPECTED_NVM_VERSION="0.34.0"
+
+# shellcheck disable=SC2155
+# shellcheck disable=SC2006
+export PACKAGE_ROOT=`pwd`
+if [ ! -z "$WORKING_DIR" ]; then
+    export PACKAGE_ROOT=$WORKING_DIR
+fi
+# shellcheck disable=SC2155
+# shellcheck disable=SC2006
+export PACKAGE_BUILD_ROOT=$PACKAGE_ROOT/build
+BACKUP_HOME=$HOME
+cd "$PACKAGE_ROOT"
+
+if [ $TARGET != "release" ]; then
+    # Setup NVM
+    export HOME="/local/nvm"
+    echo "Calling setup_nvm.sh"
+    ./setup_nvm.sh $EXPECTED_NVM_VERSION $EXPECTED_NODE_VERSION
+    source /local/nvm/.zshrc
+    # shellcheck disable=SC2006
+    echo "NVM Version: `nvm --version 2>/dev/null`"
+    # shellcheck disable=SC2006
+    echo "Node Version: `node --version 2>/dev/null`"
+    # shellcheck disable=SC2006
+    echo "NPM Version: `npm --version 2>/dev/null`"
+fi
+
+case $TARGET in
+    release)
+        if [ -d "$PACKAGE_BUILD_ROOT" ]; then
+            echo "Package Build Root exists: $PACKAGE_BUILD_ROOT, removing!"
+            rm -rf "$PACKAGE_BUILD_ROOT"
+        fi
+        # shellcheck disable=SC2086
+        if [ ! -d $PACKAGE_BUILD_ROOT/lib/commonjs/securityAnalyticsDashboards/build/plugins ]; then
+            mkdir -p $PACKAGE_BUILD_ROOT/lib/commonjs/securityAnalyticsDashboards/build/plugins
+        fi
+        echo "cp $PACKAGE_ROOT/security-analytics-dashboards-*.zip $PACKAGE_BUILD_ROOT/lib/commonjs/securityAnalyticsDashboards/build/plugins/securityAnalyticsDashboards.zip"
+        cp $PACKAGE_ROOT/security-analytics-dashboards-*.zip $PACKAGE_BUILD_ROOT/lib/commonjs/securityAnalyticsDashboards/build/plugins/securityAnalyticsDashboards.zip
+    ;;
+    
+    build-plugin-without-test)
+        echo "Bootstrapping OSD Plugin"
+        yarn osd bootstrap
+        echo "Building Security Analytics Dashboard Plugin!"
+        # shellcheck disable=SC2236
+        if [ ! -z "$YARN_TARGET" ]; then
+            echo "Calling: sudo yarn build $YARN_TARGET"
+            yarn build "$YARN_TARGET"
+        else
+            echo "Calling sudo yarn build"
+            yarn build
+        fi
+        if [ -f "$DESTINATION/*.zip" ]; then
+            echo "Removing existing zip file: rm $DESTINATION/*.zip"
+            sudo rm $DESTINATION/*.zip
+        fi
+        echo "sudo cp $PACKAGE_BUILD_ROOT/*.zip $DESTINATION/"
+        # shellcheck disable=SC2086
+        sudo cp "$PACKAGE_BUILD_ROOT"/*.zip $DESTINATION/
+    ;;
+    build-plugin-with-test)
+        echo "Bootstrapping OSD Plugin"
+        yarn osd bootstrap
+        echo "Building Security Dashboard Plugin!"
+        # shellcheck disable=SC2236
+        if [ ! -z "$YARN_TARGET" ]; then
+            echo "Calling: sudo yarn build $YARN_TARGET"
+            yarn build "$YARN_TARGET"
+        else
+            echo "Calling sudo yarn build"
+            yarn build
+        fi
+        if [ -f "$DESTINATION/*.zip" ]; then
+            echo "Removing existing zip file: rm $DESTINATION/*.zip"
+            sudo rm $DESTINATION/*.zip
+        fi
+        echo "sudo cp $PACKAGE_BUILD_ROOT/*.zip $DESTINATION/"
+        # shellcheck disable=SC2086
+        sudo cp "$PACKAGE_BUILD_ROOT"/*.zip $DESTINATION/
+    ;;
+esac
+export HOME=$BACKUP_HOME

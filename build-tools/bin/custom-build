@@ -1,0 +1,8 @@
+set -o errexit
+set -o pipefail
+
+# clean lib dir on every build
+rm -rf build/*
+
+mkdir -p build/lib/commonjs/securityAnalyticsDashboards/build/plugins
+cp security-analytics-dashboards-*.zip build/lib/commonjs/securityAnalyticsDashboards/build/plugins/securityAnalyticsDashboards.zip
