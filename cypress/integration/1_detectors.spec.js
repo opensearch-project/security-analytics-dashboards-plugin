@@ -215,14 +215,15 @@ describe('Detectors', () => {
 
     // Change detector name
     const detectorNameText = 'test detector edited';
+    const detectorNameSelector = 'input[placeholder="Enter a name for the detector."]';
+    cy.get(detectorNameSelector).should('have.value', 'test detector');
+
     recurse(
-      () =>
-        cy
-          .get('input[placeholder="Enter a name for the detector."]')
-          .clear()
-          .type(detectorNameText),
+      () => cy.get(detectorNameSelector).clear().type(detectorNameText),
       ($input) => $input.val() === detectorNameText
-    );
+    ).then(() => {
+      cy.get(detectorNameSelector).should('have.value', 'test detector edited');
+    });
 
     // Change detector description
     cy.get(`[data-test-subj="define-detector-detector-description"]`)
