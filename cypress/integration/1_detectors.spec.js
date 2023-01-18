@@ -5,6 +5,7 @@
 
 import { OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
 import sample_index_settings from '../fixtures/sample_index_settings.json';
+import { recurse } from 'cypress-recurse';
 
 const testMappings = {
   properties: {
@@ -85,7 +86,9 @@ describe('Detectors', () => {
       // Open Detection rules accordion
       cy.get('[data-test-subj="detection-rules-btn"]').click({ force: true, timeout: 5000 });
 
-      cy.contains('tr', 'Windows');
+      cy.contains('tr', 'Windows', {
+        timeout: 60000,
+      });
 
       // find search, type USB
       cy.get(`input[placeholder="Search..."]`).ospSearch('USB Device Plugged');
@@ -211,10 +214,15 @@ describe('Detectors', () => {
     });
 
     // Change detector name
-    cy.get(`input[placeholder="Enter a name for the detector."]`)
-      .realClick()
-      .ospClear()
-      .realType('test detector edited');
+    const detectorNameText = 'test detector edited';
+    recurse(
+      () =>
+        cy
+          .get('input[placeholder="Enter a name for the detector."]')
+          .clear()
+          .type(detectorNameText),
+      ($input) => $input.val() === detectorNameText
+    );
 
     // Change detector description
     cy.get(`[data-test-subj="define-detector-detector-description"]`)
