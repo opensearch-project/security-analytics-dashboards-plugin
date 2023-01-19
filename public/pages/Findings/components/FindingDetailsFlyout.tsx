@@ -112,7 +112,6 @@ export default class FindingDetailsFlyout extends Component<
         <div key={key}>
           <EuiAccordion
             id={`${key}`}
-            className="euiAccordionForm"
             buttonClassName="euiAccordionForm__button"
             buttonContent={
               <div data-test-subj={'finding-details-flyout-rule-accordion-button'}>
@@ -173,11 +172,9 @@ export default class FindingDetailsFlyout extends Component<
               <EuiFormRow label={'Tags'} data-test-subj={'finding-details-flyout-rule-tags'}>
                 <EuiText>{this.renderTags() || DEFAULT_EMPTY_DATA}</EuiText>
               </EuiFormRow>
-
-              <EuiSpacer size={'l'} />
             </EuiPanel>
           </EuiAccordion>
-          {rules.length > 1 && <EuiHorizontalRule />}
+          {rules.length > 1 && <EuiHorizontalRule margin={'xs'} />}
         </div>
       );
     });
