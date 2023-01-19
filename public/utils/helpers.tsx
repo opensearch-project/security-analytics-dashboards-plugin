@@ -191,7 +191,6 @@ export function renderVisualization(spec: TopLevelSpec, containerId: string) {
             </tr>
           `;
         });
-        let tableData = `<table>${rowData}</table>`;
 
         return `
           <div class="vg-tooltip-innerContainer">
@@ -205,7 +204,7 @@ export function renderVisualization(spec: TopLevelSpec, containerId: string) {
               </table>
             </div>
             <div class="vg-tooltip-body">
-              ${tableData}
+             <table>${rowData}</table>
             </div>
           </div>
         `;
