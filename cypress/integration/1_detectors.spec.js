@@ -39,6 +39,16 @@ describe('Detectors', () => {
     cy.cleanUpTests();
     // Create test index
     cy.createIndex(indexName, sample_index_settings);
+    cy.request('POST', '_plugins/_security_analytics/rules/_search?prePackaged=true', {
+      from: 0,
+      size: 5000,
+      query: {
+        nested: {
+          path: 'rule',
+          query: { bool: { must: [{ match: { 'rule.category': 'windows' } }] } },
+        },
+      },
+    });
 
     cy.contains(detectorName).should('not.exist');
   });
