@@ -11,7 +11,6 @@ import {
 import { ServerResponse } from '../../server/models/types';
 import { SearchResponse, Plugin } from '../../server/models/interfaces';
 import { API } from '../../server/utils/constants';
-import { GetFieldsOptions } from '../models/interfaces';
 
 export default class OpenSearchService {
   constructor(

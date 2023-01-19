@@ -14,6 +14,7 @@ import {
   EuiSpacer,
   EuiComboBox,
   EuiText,
+  EuiCallOut,
 } from '@elastic/eui';
 import { IndexPatternsService } from '../../../services';
 
@@ -44,6 +45,8 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
   indexPatternsService,
 }) => {
   const [timeFileds, setTimeFields] = useState<string[]>([]);
+  const [creatingIndexInProgress, setCreatingIndexInProgress] = useState<boolean>(false);
+  const [createdIndex, setCreatedIndex] = useState<{ id?: string; title: string }>();
 
   const getTimeFields = async (name: string): Promise<string[]> => {
     if (!indexPatternsService) {
@@ -70,7 +73,24 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
     });
   }, [initialValue.name]);
 
-  return (
+  return createdIndex ? (
+    <>
+      <EuiCallOut title={`${createdIndex?.title} has been successfully created`} color="success">
+        <p>You may now view surrounding documents within the index</p>
+      </EuiCallOut>
+      <EuiSpacer />
+      <EuiFlexGroup justifyContent="flexEnd">
+        <EuiButton
+          fill
+          onClick={() => {
+            submit(createdIndex?.id || '');
+          }}
+        >
+          View surrounding documents
+        </EuiButton>
+      </EuiFlexGroup>
+    </>
+  ) : (
     <Formik
       initialValues={{ ...initialValue, timeField: '' }}
       validate={(values) => {
@@ -97,18 +117,26 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
           return;
         }
         try {
+          setCreatingIndexInProgress(true);
           const newIndex = await indexPatternsService.createAndSave({
             title: values.name,
             timeFieldName: values.timeField,
           });
-          if (newIndex.id) {
-            submit(newIndex.id);
-          }
+          setCreatingIndexInProgress(false);
+          setCreatedIndex({ id: newIndex.id, title: newIndex.title });
+          // if (newIndex.id) {
+          //   submit(newIndex.id);
+          // }
         } catch (e) {}
       }}
     >
       {(props) => (
         <Form>
+          <EuiText>
+            An index pattern is required to view all surrounding documents within the index. Create
+            an index pattern to continue.
+          </EuiText>
+          <EuiSpacer />
           <EuiFormRow
             label={
               <EuiText size={'s'}>
@@ -167,7 +195,11 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
               <EuiButton onClick={cancel}>Cancel</EuiButton>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
-              <EuiButton fill onClick={() => props.handleSubmit()}>
+              <EuiButton
+                isLoading={creatingIndexInProgress}
+                fill
+                onClick={() => props.handleSubmit()}
+              >
                 Create index pattern
               </EuiButton>
             </EuiFlexItem>

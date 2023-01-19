@@ -295,11 +295,6 @@ export default class FindingDetailsFlyout extends Component<
           </EuiModalHeader>
 
           <EuiModalBody>
-            <EuiText>
-              An index pattern is required to view all surrounding documents within the index.
-              Create an index pattern to continue.
-            </EuiText>
-            <EuiSpacer />
             <CreateIndexPatternForm
               indexPatternsService={this.props.indexPatternsService}
               initialValue={{
@@ -309,7 +304,6 @@ export default class FindingDetailsFlyout extends Component<
                 this.setState({ ...this.state, isCreateIndexPatternModalVisible: false })
               }
               submit={(indexPatternId) => {
-                console.log(indexPatternId);
                 this.setState({
                   ...this.state,
                   indexPatternId,
