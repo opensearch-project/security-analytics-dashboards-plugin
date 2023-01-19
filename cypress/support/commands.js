@@ -100,12 +100,7 @@ Cypress.Commands.add(
     prevSubject: true,
   },
   (subject) => {
-    return cy
-      .get(subject)
-      .wait(10)
-      .type('{selectall}{enter}')
-      .clear({ force: true })
-      .invoke('val', '');
+    return cy.get(subject).type('{selectall}{enter}').clear({ force: true }).invoke('val', '');
   }
 );
 
@@ -117,7 +112,7 @@ Cypress.Commands.add('triggerSearchField', (placeholder, text) => {
     .realPress('Enter');
 });
 
-Cypress.Commands.add('waitForPageLoad', (url, { timeout = 10000, contains = null }) => {
+Cypress.Commands.add('waitForPageLoad', (url, { timeout = 120000, contains = null }) => {
   const fullUrl = `${OPENSEARCH_DASHBOARDS_URL}/${url}`;
   Cypress.log({
     message: `Wait for url: ${fullUrl} to be loaded.`,

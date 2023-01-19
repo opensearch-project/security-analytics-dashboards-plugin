@@ -83,6 +83,10 @@ describe('Detectors', () => {
       // Open Detection rules accordion
       cy.get('[data-test-subj="detection-rules-btn"]').click({ force: true, timeout: 5000 });
 
+      cy.contains('table tr', 'Windows', {
+        timeout: 120000,
+      });
+
       // find search, type USB
       cy.triggerSearchField('Search...', 'USB Device Plugged');
 
