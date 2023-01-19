@@ -300,10 +300,10 @@ export default class FindingDetailsFlyout extends Component<
               initialValue={{
                 name: this.props.finding.detector._source.inputs[0].detector_input.indices[0] + '*',
               }}
-              cancel={() =>
+              close={() =>
                 this.setState({ ...this.state, isCreateIndexPatternModalVisible: false })
               }
-              submit={(indexPatternId) => {
+              created={(indexPatternId) => {
                 this.setState({
                   ...this.state,
                   indexPatternId,

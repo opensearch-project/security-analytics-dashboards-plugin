@@ -33,15 +33,15 @@ export interface CreateIndexPatternFormProps {
   initialValue: {
     name: string;
   };
-  submit: (values: string) => void;
-  cancel: () => void;
+  created: (values: string) => void;
+  close: () => void;
   indexPatternsService?: IndexPatternsService;
 }
 
 export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
   initialValue,
-  submit,
-  cancel,
+  created,
+  close,
   indexPatternsService,
 }) => {
   const [timeFileds, setTimeFields] = useState<string[]>([]);
@@ -83,7 +83,7 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
         <EuiButton
           fill
           onClick={() => {
-            submit(createdIndex?.id || '');
+            created(createdIndex?.id || '');
           }}
         >
           View surrounding documents
@@ -122,12 +122,11 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
             title: values.name,
             timeFieldName: values.timeField,
           });
-          setCreatingIndexInProgress(false);
           setCreatedIndex({ id: newIndex.id, title: newIndex.title });
-          // if (newIndex.id) {
-          //   submit(newIndex.id);
-          // }
-        } catch (e) {}
+        } catch (e) {
+          console.warn(e);
+        }
+        setCreatingIndexInProgress(false);
       }}
     >
       {(props) => (
@@ -192,7 +191,7 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
 
           <EuiFlexGroup justifyContent="flexEnd">
             <EuiFlexItem grow={false}>
-              <EuiButton onClick={cancel}>Cancel</EuiButton>
+              <EuiButton onClick={() => close()}>Cancel</EuiButton>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
               <EuiButton
