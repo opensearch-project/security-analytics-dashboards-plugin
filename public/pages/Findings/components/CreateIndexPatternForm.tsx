@@ -44,7 +44,7 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
   close,
   indexPatternsService,
 }) => {
-  const [timeFileds, setTimeFields] = useState<string[]>([]);
+  const [timeFields, setTimeFields] = useState<string[]>([]);
   const [createdIndex, setCreatedIndex] = useState<{ id?: string; title: string }>();
 
   const getTimeFields = async (name: string): Promise<string[]> => {
@@ -79,14 +79,16 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
       </EuiCallOut>
       <EuiSpacer />
       <EuiFlexGroup justifyContent="flexEnd">
-        <EuiButton
-          fill
-          onClick={() => {
-            created(createdIndex?.id || '');
-          }}
-        >
-          View surrounding documents
-        </EuiButton>
+        <EuiFlexItem grow={false}>
+          <EuiButton
+            fill
+            onClick={() => {
+              created(createdIndex?.id || '');
+            }}
+          >
+            View surrounding documents
+          </EuiButton>
+        </EuiFlexItem>
       </EuiFlexGroup>
     </>
   ) : (
@@ -148,8 +150,8 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
               data-test-subj={'index_pattern_name_field'}
               onChange={async (e) => {
                 props.handleChange('name')(e);
-                const fileds = await getTimeFields(e.target.value);
-                setTimeFields(fileds);
+                const fields = await getTimeFields(e.target.value);
+                setTimeFields(fields);
                 props.setFieldValue('timeField', '');
               }}
               onBlur={props.handleBlur('name')}
@@ -170,7 +172,7 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
               isInvalid={props.touched.timeField && !!props.errors.timeField}
               placeholder="Select a time field"
               data-test-subj={'index_pattern_time_field_dropdown'}
-              options={timeFileds.map((field: string) => ({ value: field, label: field }))}
+              options={timeFields.map((field: string) => ({ value: field, label: field }))}
               singleSelection={{ asPlainText: true }}
               onChange={(e) => {
                 props.handleChange('timeField')(e[0]?.value ? e[0].value : '');

@@ -10,11 +10,7 @@ import {
 } from '../../../../src/plugins/data/common/index_patterns';
 
 export default class IndexPatternsService {
-  private coreIndexPatternsService: CoreIndexPatternsService;
-
-  constructor(coreIndexPatternsService: CoreIndexPatternsService) {
-    this.coreIndexPatternsService = coreIndexPatternsService;
-  }
+  constructor(private coreIndexPatternsService: CoreIndexPatternsService) {}
 
   async getFieldsForWildcard(options: GetFieldsOptions) {
     return this.coreIndexPatternsService.getFieldsForWildcard(options);
