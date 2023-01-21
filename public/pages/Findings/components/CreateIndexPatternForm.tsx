@@ -45,7 +45,6 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
   indexPatternsService,
 }) => {
   const [timeFileds, setTimeFields] = useState<string[]>([]);
-  const [creatingIndexInProgress, setCreatingIndexInProgress] = useState<boolean>(false);
   const [createdIndex, setCreatedIndex] = useState<{ id?: string; title: string }>();
 
   const getTimeFields = async (name: string): Promise<string[]> => {
@@ -112,12 +111,10 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
         return errors;
       }}
       onSubmit={async (values, { setSubmitting }) => {
-        setSubmitting(false);
         if (!indexPatternsService) {
           return;
         }
         try {
-          setCreatingIndexInProgress(true);
           const newIndex = await indexPatternsService.createAndSave({
             title: values.name,
             timeFieldName: values.timeField,
@@ -126,7 +123,7 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
         } catch (e) {
           console.warn(e);
         }
-        setCreatingIndexInProgress(false);
+        setSubmitting(false);
       }}
     >
       {(props) => (
@@ -194,11 +191,7 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
               <EuiButton onClick={() => close()}>Cancel</EuiButton>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
-              <EuiButton
-                isLoading={creatingIndexInProgress}
-                fill
-                onClick={() => props.handleSubmit()}
-              >
+              <EuiButton isLoading={props.isSubmitting} fill onClick={() => props.handleSubmit()}>
                 Create index pattern
               </EuiButton>
             </EuiFlexItem>

@@ -33,8 +33,6 @@ export class SecurityAnalyticsPlugin
     // can retrieve config from initializerContext
   }
 
-  private plugins?: SecurityAnalyticsPluginStartDeps;
-
   public setup(
     core: CoreSetup,
     plugins: SecurityAnalyticsPluginSetupDeps
@@ -50,18 +48,19 @@ export class SecurityAnalyticsPlugin
       },
       mount: async (params: AppMountParameters) => {
         const { renderApp } = await import('./security_analytics_app');
-        const [coreStart] = await core.getStartServices();
-        return renderApp(coreStart, params, ROUTES.LANDING_PAGE, this.plugins);
+        const [coreStart, depsStart] = await core.getStartServices();
+        return renderApp(
+          coreStart,
+          params,
+          ROUTES.LANDING_PAGE,
+          depsStart as SecurityAnalyticsPluginStartDeps
+        );
       },
     });
     return {};
   }
 
-  public start(
-    core: CoreStart,
-    plugins: SecurityAnalyticsPluginStartDeps
-  ): SecurityAnalyticsPluginStart {
-    this.plugins = plugins;
+  public start(core: CoreStart): SecurityAnalyticsPluginStart {
     return {};
   }
 }
