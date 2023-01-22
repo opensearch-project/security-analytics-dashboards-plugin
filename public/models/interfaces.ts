@@ -24,7 +24,7 @@ export interface BrowserServices {
   alertService: AlertsService;
   ruleService: RuleService;
   notificationsService: NotificationsService;
-  indexPatternsService?: IndexPatternsService;
+  indexPatternsService: IndexPatternsService;
 }
 
 export interface RuleOptions {

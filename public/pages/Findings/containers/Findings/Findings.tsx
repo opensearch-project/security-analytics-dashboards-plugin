@@ -60,7 +60,7 @@ interface FindingsProps extends RouteComponentProps {
   detectorService: DetectorsService;
   findingsService: FindingsService;
   notificationsService: NotificationsService;
-  indexPatternsService?: IndexPatternsService;
+  indexPatternsService: IndexPatternsService;
   opensearchService: OpenSearchService;
   ruleService: RuleService;
   notifications: NotificationsStart;

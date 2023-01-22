@@ -30,7 +30,7 @@ export function renderApp(
   coreStart: CoreStart,
   params: AppMountParameters,
   landingPage: string,
-  plugins?: SecurityAnalyticsPluginStartDeps
+  depsStart: SecurityAnalyticsPluginStartDeps
 ) {
   const { http, savedObjects } = coreStart;
 
@@ -42,9 +42,7 @@ export function renderApp(
   const alertsService = new AlertsService(http);
   const ruleService = new RuleService(http);
   const notificationsService = new NotificationsService(http);
-  const indexPatternsService = plugins
-    ? new IndexPatternsService((plugins.data as any).indexPatterns)
-    : undefined;
+  const indexPatternsService = new IndexPatternsService((depsStart.data as any).indexPatterns);
 
   const services: BrowserServices = {
     detectorsService,

@@ -42,7 +42,7 @@ interface FindingDetailsFlyoutProps {
   backButton?: React.ReactNode;
   allRules: { [id: string]: RuleSource };
   opensearchService: OpenSearchService;
-  indexPatternsService?: IndexPatternsService;
+  indexPatternsService: IndexPatternsService;
   closeFlyout: () => void;
 }
 

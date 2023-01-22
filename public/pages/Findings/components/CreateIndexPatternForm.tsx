@@ -35,7 +35,7 @@ export interface CreateIndexPatternFormProps {
   };
   created: (values: string) => void;
   close: () => void;
-  indexPatternsService?: IndexPatternsService;
+  indexPatternsService: IndexPatternsService;
 }
 
 export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
@@ -113,9 +113,6 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
         return errors;
       }}
       onSubmit={async (values, { setSubmitting }) => {
-        if (!indexPatternsService) {
-          return;
-        }
         try {
           const newIndex = await indexPatternsService.createAndSave({
             title: values.name,

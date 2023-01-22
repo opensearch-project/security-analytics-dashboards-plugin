@@ -39,7 +39,7 @@ interface FindingsTableProps extends RouteComponentProps {
   onRefresh: () => void;
   onFindingsFiltered: (findings: FindingItemType[]) => void;
   hasNotificationsPlugin: boolean;
-  indexPatternsService?: IndexPatternsService;
+  indexPatternsService: IndexPatternsService;
 }
 
 interface FindingsTableState {
