@@ -42,7 +42,7 @@ export function renderApp(
   const alertsService = new AlertsService(http);
   const ruleService = new RuleService(http);
   const notificationsService = new NotificationsService(http);
-  const indexPatternsService = new IndexPatternsService((depsStart.data as any).indexPatterns);
+  const indexPatternsService = new IndexPatternsService(depsStart.data.indexPatterns);
 
   const services: BrowserServices = {
     detectorsService,

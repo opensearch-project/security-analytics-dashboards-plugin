@@ -12,13 +12,13 @@ import {
 } from '../../../src/core/public';
 import { PLUGIN_NAME, ROUTES } from './utils/constants';
 import { SecurityAnalyticsPluginSetup, SecurityAnalyticsPluginStart } from './index';
-import { Plugin as DataPublicPlugin } from '../../../src/plugins/data/public';
+import { DataPublicPluginStart, DataPublicPluginSetup } from '../../../src/plugins/data/public';
 
 export interface SecurityAnalyticsPluginSetupDeps {
-  data: DataPublicPlugin;
+  data: DataPublicPluginSetup;
 }
 export interface SecurityAnalyticsPluginStartDeps {
-  data: DataPublicPlugin;
+  data: DataPublicPluginStart;
 }
 
 export class SecurityAnalyticsPlugin
@@ -34,7 +34,7 @@ export class SecurityAnalyticsPlugin
   }
 
   public setup(
-    core: CoreSetup,
+    core: CoreSetup<SecurityAnalyticsPluginStartDeps>,
     plugins: SecurityAnalyticsPluginSetupDeps
   ): SecurityAnalyticsPluginSetup {
     core.application.register({
@@ -49,12 +49,7 @@ export class SecurityAnalyticsPlugin
       mount: async (params: AppMountParameters) => {
         const { renderApp } = await import('./security_analytics_app');
         const [coreStart, depsStart] = await core.getStartServices();
-        return renderApp(
-          coreStart,
-          params,
-          ROUTES.LANDING_PAGE,
-          depsStart as SecurityAnalyticsPluginStartDeps
-        );
+        return renderApp(coreStart, params, ROUTES.LANDING_PAGE, depsStart);
       },
     });
     return {};
