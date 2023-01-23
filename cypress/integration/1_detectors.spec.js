@@ -39,6 +39,16 @@ describe('Detectors', () => {
     cy.cleanUpTests();
     // Create test index
     cy.createIndex(indexName, sample_index_settings);
+    cy.request('POST', '_plugins/_security_analytics/rules/_search?prePackaged=true', {
+      from: 0,
+      size: 5000,
+      query: {
+        nested: {
+          path: 'rule',
+          query: { bool: { must: [{ match: { 'rule.category': 'windows' } }] } },
+        },
+      },
+    });
 
     cy.contains(detectorName).should('not.exist');
   });
@@ -84,6 +94,10 @@ describe('Detectors', () => {
     cy.wait('@getSigmaRules').then(() => {
       // Open Detection rules accordion
       cy.get('[data-test-subj="detection-rules-btn"]').click({ force: true, timeout: 5000 });
+
+      cy.contains('table tr', 'Windows', {
+        timeout: 120000,
+      });
 
       // find search, type USB
       cy.get(`input[placeholder="Search..."]`).ospSearch('USB Device Plugged');
