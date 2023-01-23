@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import 'jest-canvas-mock';
 import '@testing-library/jest-dom/extend-expect';
 import { configure } from '@testing-library/react';
 

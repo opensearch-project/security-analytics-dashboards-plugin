@@ -23,7 +23,7 @@ import {
 } from '../pages/CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { compile, TopLevelSpec } from 'vega-lite';
 import { parse, View } from 'vega/build-es5/vega.js';
-import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter/build/vega-interpreter.module';
+import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter/build/vega-interpreter';
 import { RuleInfo } from '../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { OpenSearchService } from '../services';
@@ -44,7 +44,7 @@ export function createTextDetailsGroup(
   columnNum?: number
 ) {
   const createFormRow = (label: string, content: string, url?: string) => {
-    const dataTestSubj = label.toLowerCase().replaceAll(' ', '-');
+    const dataTestSubj = label.toLowerCase().replace('/ /g', '-');
     return (
       <EuiFormRow label={<EuiText color={'subdued'}>{label}</EuiText>}>
         {url ? (
