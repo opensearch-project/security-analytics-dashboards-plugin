@@ -190,7 +190,12 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
               <EuiButton onClick={() => close()}>Cancel</EuiButton>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
-              <EuiButton isLoading={props.isSubmitting} fill onClick={() => props.handleSubmit()}>
+              <EuiButton
+                data-test-subj={'index_pattern_form_submit_button'}
+                isLoading={props.isSubmitting}
+                fill
+                onClick={() => props.handleSubmit()}
+              >
                 Create index pattern
               </EuiButton>
             </EuiFlexItem>
