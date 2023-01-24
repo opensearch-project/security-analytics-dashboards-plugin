@@ -54,6 +54,9 @@ export const defaultTimeUnit = {
 
 export const defaultDateFormat = '%Y-%m-%d %H:%M';
 
+// euiColorDanger: #BD271E
+export const alertsDefaultColor = '#BD271E';
+
 export const parseDateString = (dateString: string): number => {
   const date = dateMath.parse(dateString);
   return date ? date.toDate().getTime() : new Date().getTime();
@@ -132,8 +135,15 @@ export function getOverviewVisualizationSpec(
     y: getYAxis('finding', 'Count'),
     tooltip: [getYAxis('finding', 'Findings'), getTimeTooltip(dateOpts)],
     color: {
-      scale: null,
-      value: euiPaletteColorBlind()[1],
+      field: 'fieldType',
+      title: '',
+      legend: {
+        values: ['Active alerts', 'Findings'],
+      },
+      scale: {
+        domain: ['Active alerts', 'Findings'],
+        range: [alertsDefaultColor, euiPaletteColorBlind()[1]],
+      },
     },
   };
 
@@ -142,6 +152,7 @@ export function getOverviewVisualizationSpec(
       type: 'bar',
       clip: true,
     },
+    transform: [{ calculate: "datum.alert == 1 ? 'Active alerts' : 'Findings'", as: 'fieldType' }],
     encoding: findingsEncoding,
   };
 
@@ -163,7 +174,6 @@ export function getOverviewVisualizationSpec(
     barLayer = addInteractiveLegends(barLayer);
   }
 
-  const lineColor = '#ff0000';
   return getVisualizationSpec(
     'Plot showing average data with raw values in the background.',
     visualizationData,
@@ -174,11 +184,11 @@ export function getOverviewVisualizationSpec(
           type: 'line',
           clip: true,
           interpolate: 'monotone',
-          color: lineColor,
+          color: alertsDefaultColor,
           point: {
             filled: false,
             fill: 'white',
-            color: lineColor,
+            color: alertsDefaultColor,
             size: 50,
           },
         },
@@ -253,8 +263,8 @@ export function getAlertsVisualizationSpec(
 
   let states = ['ACTIVE', 'ACKNOWLEDGED'];
   const statusColors = {
-    euiColorVis6: '#B9A888',
     euiColorVis9: '#E7664C',
+    euiColorVis6: '#B9A888',
   };
 
   const statusTitle = 'Alert status';

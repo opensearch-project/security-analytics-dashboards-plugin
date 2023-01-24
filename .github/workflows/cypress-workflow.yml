@@ -7,16 +7,18 @@ on:
     branches:
       - "*"
 env:
-  OPENSEARCH_DASHBOARDS_VERSION: '2.4.0'
-  OPENSEARCH_VERSION: '2.4.0-SNAPSHOT'
-  SECURITY_ANALYTICS_BRANCH: '2.4'
+  OPENSEARCH_DASHBOARDS_VERSION: '2.5'
+  OPENSEARCH_VERSION: '2.5.0-SNAPSHOT'
+  SECURITY_ANALYTICS_BRANCH: '2.5'
 jobs:
   tests:
     name: Run Cypress E2E tests
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest]
         include:
+          - os: windows-latest
+            cypress_cache_folder: ~/AppData/Local/Cypress/Cache
           - os: ubuntu-latest
             cypress_cache_folder: ~/.cache/Cypress
     runs-on: ${{ matrix.os }}
@@ -31,6 +33,10 @@ jobs:
         with:
           # TODO: Parse this from security analytics plugin (https://github.com/opensearch-project/security-analytics/issues/170)
           java-version: 11
+
+      - name: Enable longer filenames
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: git config --system core.longpaths true
 
       - name: Checkout security analytics
         uses: actions/checkout@v2
@@ -87,10 +93,17 @@ jobs:
           yarn start --no-base-path --no-watch &
         shell: bash
 
-      - name: Sleep until OSD server starts
+      # Window is slow so wait longer
+      - name: Sleep until OSD server starts - windows
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: Start-Sleep -s 400
+        shell: powershell
+
+      - name: Sleep until OSD server starts - non-windows
+        if: ${{ matrix.os != 'windows-latest' }}
         run: sleep 300
         shell: bash
-      
+
       - name: Install Cypress
         run: |
           cd OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
@@ -111,7 +124,7 @@ jobs:
         with:
           path: ${{ matrix.cypress_cache_folder }}
           key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
-        
+
       # for now just chrome, use matrix to do all browsers later
       - name: Cypress tests
         uses: cypress-io/github-action@v2
@@ -121,7 +134,7 @@ jobs:
           wait-on: 'http://localhost:5601'
           browser: chrome
         env:
-          CYPRESS_CACHE_FOLDER: ${{ matrix.cypress_cache_folder }}      
+          CYPRESS_CACHE_FOLDER: ${{ matrix.cypress_cache_folder }}
 
       # Screenshots are only captured on failure, will change this once we do visual regression tests
       - uses: actions/upload-artifact@v1

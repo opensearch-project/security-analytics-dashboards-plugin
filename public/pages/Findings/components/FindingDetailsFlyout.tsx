@@ -23,6 +23,7 @@ import {
   EuiModalBody,
   EuiModalHeader,
   EuiModalHeaderTitle,
+  EuiPanel,
   EuiSpacer,
   EuiText,
   EuiTitle,
@@ -119,6 +120,7 @@ export default class FindingDetailsFlyout extends Component<
         <div key={key}>
           <EuiAccordion
             id={`${key}`}
+            buttonClassName="euiAccordionForm__button"
             buttonContent={
               <div data-test-subj={'finding-details-flyout-rule-accordion-button'}>
                 <EuiText size={'s'}>{fullRule.title}</EuiText>
@@ -130,59 +132,57 @@ export default class FindingDetailsFlyout extends Component<
             initialIsOpen={rules.length === 1}
             data-test-subj={`finding-details-flyout-rule-accordion-${key}`}
           >
-            <EuiSpacer size={'m'} />
-            <EuiFlexGroup>
-              <EuiFlexItem>
-                {/*//TODO: Refactor EuiLink to filter rules table to the specific rule.*/}
-                <EuiFormRow label={'Rule name'}>
-                  <EuiLink
-                    onClick={() => this.showRuleDetails(fullRule, rule.id)}
-                    data-test-subj={`finding-details-flyout-${fullRule.title}-details`}
+            <EuiPanel color="subdued">
+              <EuiFlexGroup>
+                <EuiFlexItem>
+                  <EuiFormRow label={'Rule name'}>
+                    <EuiLink
+                      onClick={() => this.showRuleDetails(fullRule, rule.id)}
+                      data-test-subj={`finding-details-flyout-${fullRule.title}-details`}
+                    >
+                      {fullRule.title || DEFAULT_EMPTY_DATA}
+                    </EuiLink>
+                  </EuiFormRow>
+                </EuiFlexItem>
+
+                <EuiFlexItem>
+                  <EuiFormRow
+                    label={'Rule severity'}
+                    data-test-subj={'finding-details-flyout-rule-severity'}
                   >
-                    {fullRule.title || DEFAULT_EMPTY_DATA}
-                  </EuiLink>
-                </EuiFormRow>
-              </EuiFlexItem>
+                    <EuiText>{severity || DEFAULT_EMPTY_DATA}</EuiText>
+                  </EuiFormRow>
+                </EuiFlexItem>
 
-              <EuiFlexItem>
-                <EuiFormRow
-                  label={'Rule severity'}
-                  data-test-subj={'finding-details-flyout-rule-severity'}
-                >
-                  <EuiText>{severity || DEFAULT_EMPTY_DATA}</EuiText>
-                </EuiFormRow>
-              </EuiFlexItem>
+                <EuiFlexItem>
+                  <EuiFormRow
+                    label={'Log type'}
+                    data-test-subj={'finding-details-flyout-rule-category'}
+                  >
+                    <EuiText>
+                      {capitalizeFirstLetter(fullRule.category) || DEFAULT_EMPTY_DATA}
+                    </EuiText>
+                  </EuiFormRow>
+                </EuiFlexItem>
+              </EuiFlexGroup>
 
-              <EuiFlexItem>
-                <EuiFormRow
-                  label={'Log type'}
-                  data-test-subj={'finding-details-flyout-rule-category'}
-                >
-                  <EuiText>
-                    {capitalizeFirstLetter(fullRule.category) || DEFAULT_EMPTY_DATA}
-                  </EuiText>
-                </EuiFormRow>
-              </EuiFlexItem>
-            </EuiFlexGroup>
+              <EuiSpacer size={'m'} />
 
-            <EuiSpacer size={'m'} />
+              <EuiFormRow
+                label={'Description'}
+                data-test-subj={'finding-details-flyout-rule-description'}
+              >
+                <EuiText>{fullRule.description || DEFAULT_EMPTY_DATA}</EuiText>
+              </EuiFormRow>
 
-            <EuiFormRow
-              label={'Description'}
-              data-test-subj={'finding-details-flyout-rule-description'}
-            >
-              <EuiText>{fullRule.description || DEFAULT_EMPTY_DATA}</EuiText>
-            </EuiFormRow>
+              <EuiSpacer size={'m'} />
 
-            <EuiSpacer size={'m'} />
-
-            <EuiFormRow label={'Tags'} data-test-subj={'finding-details-flyout-rule-tags'}>
-              <EuiText>{this.renderTags() || DEFAULT_EMPTY_DATA}</EuiText>
-            </EuiFormRow>
-
-            <EuiSpacer size={'l'} />
+              <EuiFormRow label={'Tags'} data-test-subj={'finding-details-flyout-rule-tags'}>
+                <EuiText>{this.renderTags() || DEFAULT_EMPTY_DATA}</EuiText>
+              </EuiFormRow>
+            </EuiPanel>
           </EuiAccordion>
-          {rules.length > 1 && <EuiHorizontalRule />}
+          {rules.length > 1 && <EuiHorizontalRule margin={'xs'} />}
         </div>
       );
     });
@@ -223,7 +223,7 @@ export default class FindingDetailsFlyout extends Component<
               <h3>Documents</h3>
             </EuiTitle>
           </EuiFlexItem>
-          <EuiFlexItem grow={false}>
+          <EuiFlexItem grow={false} style={{ display: 'none' }}>
             <EuiButton
               data-test-subj={'finding-details-flyout-view-surrounding-documents'}
               onClick={() => {
@@ -405,7 +405,6 @@ export default class FindingDetailsFlyout extends Component<
           </EuiFlexGroup>
 
           <EuiSpacer size={'m'} />
-
           <EuiTitle size={'s'}>
             <h3>Rule details</h3>
           </EuiTitle>

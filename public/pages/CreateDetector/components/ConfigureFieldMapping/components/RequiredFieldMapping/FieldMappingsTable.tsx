@@ -6,6 +6,7 @@
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
+  CriteriaWithPagination,
   EuiBasicTableColumn,
   EuiEmptyPrompt,
   EuiIcon,
@@ -42,12 +43,27 @@ interface FieldMappingsTableProps<T extends MappingViewType> extends RouteCompon
   mappingProps: MappingProps[T];
 }
 
-interface FieldMappingsTableState {}
+interface FieldMappingsTableState {
+  pageIndex: number;
+}
 
 export default class FieldMappingsTable<T extends MappingViewType> extends Component<
   FieldMappingsTableProps<T>,
   FieldMappingsTableState
 > {
+  constructor(props: FieldMappingsTableProps<T>) {
+    super(props);
+    this.state = {
+      pageIndex: 0,
+    };
+  }
+
+  private onTableChange = (nextValues: CriteriaWithPagination<FieldMappingsTableItem>) => {
+    this.setState({
+      pageIndex: nextValues.page.index,
+    });
+  };
+
   render() {
     const { loading, indexFields, ruleFields } = this.props;
     let items: FieldMappingsTableItem[];
@@ -70,7 +86,6 @@ export default class FieldMappingsTable<T extends MappingViewType> extends Compo
       {
         field: 'ruleFieldName',
         name: 'Rule field name',
-        sortable: true,
         dataType: 'string',
         width: '25%',
         render: (ruleFieldName: string) => ruleFieldName || DEFAULT_EMPTY_DATA,
@@ -85,7 +100,6 @@ export default class FieldMappingsTable<T extends MappingViewType> extends Compo
       {
         field: 'logFieldName',
         name: 'Log field name',
-        sortable: true,
         dataType: 'string',
         width: '45%',
         render: (logFieldName: string, entry: FieldMappingsTableItem) => {
@@ -150,9 +164,12 @@ export default class FieldMappingsTable<T extends MappingViewType> extends Compo
         loading={loading}
         items={items}
         columns={columns}
-        pagination={true}
+        pagination={{
+          pageIndex: this.state.pageIndex,
+        }}
         sorting={sorting}
         isSelectable={false}
+        onTableChange={this.onTableChange}
         message={
           <EuiEmptyPrompt
             style={{ maxWidth: '45em' }}

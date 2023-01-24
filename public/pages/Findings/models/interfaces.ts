@@ -3,11 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export interface FilterOption {
-  id: string;
-  label: string;
-}
-
 export interface Finding {
   id: string;
   detectorId: string;

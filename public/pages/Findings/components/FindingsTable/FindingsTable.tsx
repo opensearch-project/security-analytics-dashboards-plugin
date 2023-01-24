@@ -15,7 +15,7 @@ import {
 } from '@elastic/eui';
 import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
 import dateMath from '@elastic/datemath';
-import { capitalizeFirstLetter, renderTime } from '../../../../utils/helpers';
+import { capitalizeFirstLetter, formatRuleType, renderTime } from '../../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
 import { DetectorsService, OpenSearchService, IndexPatternsService } from '../../../../services';
 import FindingDetailsFlyout from '../FindingDetailsFlyout';
@@ -187,7 +187,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         name: 'Log type',
         sortable: true,
         dataType: 'string',
-        render: (logType) => capitalizeFirstLetter(logType) || DEFAULT_EMPTY_DATA,
+        render: (logType: string) => formatRuleType(logType),
       },
       {
         field: 'ruleSeverity',
@@ -260,7 +260,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
           name: 'Log type',
           options: Array.from(logTypes).map((type) => ({
             value: type,
-            name: capitalizeFirstLetter(type) || type,
+            name: formatRuleType(type),
           })),
           multiSelect: 'or',
         } as FieldValueSelectionFilterConfigType,
