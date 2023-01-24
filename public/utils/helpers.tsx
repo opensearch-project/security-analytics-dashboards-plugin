@@ -27,6 +27,7 @@ import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpr
 import { RuleInfo } from '../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { OpenSearchService } from '../services';
+import { ruleTypes } from '../pages/Rules/utils/constants';
 import { Handler } from 'vega-tooltip';
 
 export const parseStringsToOptions = (strings: string[]) => {
@@ -242,4 +243,11 @@ export const getPlugins = async (opensearchService: OpenSearchService) => {
   } catch (e) {
     return [];
   }
+};
+
+export const formatRuleType = (matchingRuleType: string) => {
+  return (
+    ruleTypes.find((ruleType) => ruleType.value === matchingRuleType.toLowerCase())?.label ||
+    DEFAULT_EMPTY_DATA
+  );
 };

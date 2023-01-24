@@ -9,32 +9,7 @@
 declare namespace Cypress {
   interface Chainable<Subject> {
     /**
-     * Wait for page to be loaded
-     * @param {string} url
-     * @param {number} timeout
-     * @example
-     * cy.waitForPageLoad('detectors')
-     * cy.waitForPageLoad('detectors', 20000)
-     */
-    waitForPageLoad(url: string, timeout?: number): Chainable<any>;
-
-    /**
-     * Clears input text
-     * @example
-     * cy.clearInput()
-     */
-    clearInput(): Chainable<any>;
-
-    /**
-    /**
-     * Deletes all indices in cluster
-     * @example
-     * cy.deleteAllIndices()
-     */
-    deleteAllIndices(): Chainable<any>;
-
-    /**
-     * Removes custom rules, detectors and indices
+     * Removes custom indices, detectors and rules
      * @example
      * cy.cleanUpTests()
      */
@@ -42,7 +17,7 @@ declare namespace Cypress {
 
     /**
      * Returns table first row
-     * Can find elements deeper in a row with selector
+     * Finds elements deeper in a row with selector
      * @param {string} selector
      * @example
      * cy.getTableFirstRow()
@@ -51,14 +26,64 @@ declare namespace Cypress {
     getTableFirstRow(selector: string): Chainable<any>;
 
     /**
+     * Waits for page to be loaded
+     * @param {string} pathname
+     * @param {any} opts
+     * @example
+     * cy.waitForPageLoad('detectors')
+     * cy.waitForPageLoad('detectors', {
+     *   timeout: 20000,
+     *   contains: 'text to verify'
+     * })
+     */
+    waitForPageLoad(pathname: string, opts?: any): Chainable<any>;
+
+    /**
      * Returns table first row
      * Can find elements deeper in a row with selector
-     * @param {string} placeholder
      * @param {string} text
      * @example
-     * cy.triggerSearchField('Search rules', 'USB Detection Rule')
+     * cy.get('selector').ospSearch('Txt to write into input')
      */
-    triggerSearchField(placeholder: string, text: string): Chainable<any>;
+    ospSearch(text: string): Chainable<any>;
+
+    /**
+     * Clears input text
+     * @example
+     * cy.get('selector').ospClear()
+     */
+    ospClear(): Chainable<any>;
+
+    /**
+     * Returns table first row
+     * Can find elements deeper in a row with selector
+     * @param {string} text
+     * @example
+     * cy.get('selector').ospType('Txt to write into input')
+     */
+    ospType(text: string): Chainable<any>;
+
+    /**
+     * Creates index with policy
+     * @example
+     * cy.createIndex("some_index", "some_policy")
+     */
+    createIndex(index: string, settings?: object): Chainable<any>;
+
+    /**
+     * Creates an index template.
+     * @example
+     * cy.createIndexTemplate("some_index_template", { "index_patterns": "abc", "properties": { ... } })
+     */
+    createIndexTemplate(name: string, template: object): Chainable<any>;
+
+    /**
+    /**
+     * Deletes all indices in cluster
+     * @example
+     * cy.deleteAllIndices()
+     */
+    deleteAllIndices(): Chainable<any>;
 
     /**
      * Deletes all custom rules in cluster
@@ -106,20 +131,6 @@ declare namespace Cypress {
      * cy.updateIndexSettings("some_index", settings)
      */
     updateDetector(detectorId: string, detectorJSON: object): Chainable<any>;
-
-    /**
-     * Creates index with policy
-     * @example
-     * cy.createIndex("some_index", "some_policy")
-     */
-    createIndex(index: string, settings?: object): Chainable<any>;
-
-    /**
-     * Creates an index template.
-     * @example
-     * cy.createIndexTemplate("some_index_template", { "index_patterns": "abc", "properties": { ... } })
-     */
-    createIndexTemplate(name: string, template: object): Chainable<any>;
 
     /**
      * Deletes detector by its name
