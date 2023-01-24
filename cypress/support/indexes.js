@@ -49,6 +49,7 @@ Cypress.Commands.add('deleteAllIndices', () => {
     failOnStatusCode: false,
   }).as('deleteAllIndices');
   cy.get('@deleteAllIndices').should((response) => {
+    // Both statuses are a pass, 200 means deleted successfully and 404 there was no index to delete
     expect(response.status).to.be.oneOf([200, 404]);
   });
 });
