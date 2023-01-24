@@ -90,7 +90,7 @@ describe('Findings', () => {
 
   it('displays finding details and create an index pattern from flyout', () => {
     // filter table to show only sample_detector findings
-    cy.triggerSearchField('Search findings', 'sample_detector');
+    cy.get(`input[placeholder="Search findings"]`).ospSearch('sample_detector');
 
     // Click findingId to trigger Finding details flyout
     cy.getTableFirstRow('[data-test-subj="finding-details-flyout-button"]').then(($el) => {
