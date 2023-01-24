@@ -2,8 +2,8 @@
   "viewportHeight": 900,
   "viewportWidth": 1440,
   "defaultCommandTimeout": 30000,
-  "requestTimeout": 60000,
-  "responseTimeout": 120000,
+  "requestTimeout": 300000,
+  "responseTimeout": 300000,
   "baseUrl": "http://localhost:5601",
   "env": {
     "opensearch_url": "localhost:9200",
