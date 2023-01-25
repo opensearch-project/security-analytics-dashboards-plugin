@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Formik, Form, FormikErrors } from 'formik';
 import {
   EuiFlexGroup,
@@ -47,24 +47,27 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
   const [timeFields, setTimeFields] = useState<string[]>([]);
   const [createdIndex, setCreatedIndex] = useState<{ id?: string; title: string }>();
 
-  const getTimeFields = async (name: string): Promise<string[]> => {
-    if (!indexPatternsService) {
-      return [];
-    }
-
-    return indexPatternsService
-      .getFieldsForWildcard({
-        pattern: `${name}`,
-        metaFields: ['_source', '_id', '_type', '_index', '_score'],
-        params: {},
-      })
-      .then((res) => {
-        return res.filter((f) => f.type === 'date').map((f) => f.name);
-      })
-      .catch(() => {
+  const getTimeFields = useCallback(
+    async (name: string): Promise<string[]> => {
+      if (!indexPatternsService) {
         return [];
-      });
-  };
+      }
+
+      return indexPatternsService
+        .getFieldsForWildcard({
+          pattern: `${name}`,
+          metaFields: ['_source', '_id', '_type', '_index', '_score'],
+          params: {},
+        })
+        .then((res) => {
+          return res.filter((f) => f.type === 'date').map((f) => f.name);
+        })
+        .catch(() => {
+          return [];
+        });
+    },
+    [initialValue]
+  );
 
   useEffect(() => {
     getTimeFields(initialValue.name).then((fields) => {

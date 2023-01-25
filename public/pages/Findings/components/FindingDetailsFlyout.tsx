@@ -223,7 +223,7 @@ export default class FindingDetailsFlyout extends Component<
               <h3>Documents</h3>
             </EuiTitle>
           </EuiFlexItem>
-          <EuiFlexItem grow={false} style={{ display: 'none' }}>
+          <EuiFlexItem grow={false}>
             <EuiButton
               data-test-subj={'finding-details-flyout-view-surrounding-documents'}
               onClick={() => {
