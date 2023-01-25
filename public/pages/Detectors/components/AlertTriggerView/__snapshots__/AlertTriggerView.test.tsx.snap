@@ -313,7 +313,7 @@ Object {
                       data-test-subj="text-details-group-content-trigger alerts with severity"
                       id="some_html_id"
                     >
-                      -
+                      1 (Highest)
                     </div>
                   </div>
                 </div>
@@ -677,7 +677,7 @@ Object {
                     data-test-subj="text-details-group-content-trigger alerts with severity"
                     id="some_html_id"
                   >
-                    -
+                    1 (Highest)
                   </div>
                 </div>
               </div>

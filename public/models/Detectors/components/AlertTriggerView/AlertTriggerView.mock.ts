@@ -4,7 +4,7 @@
  */
 
 import { RuleInfo, RuleSource } from '../../../../../server/models/interfaces';
-import { alertConditionMock, detectorMock } from '../../InterfacesMock.test';
+import { alertConditionMock, detectorMock } from '../../../Interfaces.mock';
 
 const ruleSource: RuleSource = {
   rule: 'ruleName',

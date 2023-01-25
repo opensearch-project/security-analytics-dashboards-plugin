@@ -1,8 +1,5 @@
-import { detectorMock } from '../../InterfacesMock.test';
+import { detectorMock, notificationsStart } from '../../../Interfaces.mock';
 
-const notificationsStart = {
-  toasts: [],
-};
 export default {
   detector: detectorMock,
   rulesCanFold: true,

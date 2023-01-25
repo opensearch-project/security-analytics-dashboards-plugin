@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { render } from '@testing-library/react';
-import props from '../../../../models/Detectors/components/FieldMappingsView/FieldMappingsViewMock.test';
+import props from '../../../../models/Detectors/components/FieldMappingsView/FieldMappingsView.mock';
 import { expect } from '@jest/globals';
 import { FieldMappingsView } from './FieldMappingsView';
 

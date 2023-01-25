@@ -1,4 +1,4 @@
-import { detectorMock } from '../../InterfacesMock.test';
+import { detectorMock } from '../../../Interfaces.mock';
 
 export default {
   detector: detectorMock,

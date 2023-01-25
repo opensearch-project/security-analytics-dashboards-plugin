@@ -298,7 +298,7 @@ Object {
                     data-test-subj="text-details-group-content-created at"
                     id="some_html_id"
                   >
-                    1970-01-01T01:00
+                    2023-01-25T10:05
                   </div>
                 </div>
               </div>
@@ -337,7 +337,7 @@ Object {
                     data-test-subj="text-details-group-content-last updated time"
                     id="some_html_id"
                   >
-                    1970-01-01T01:00
+                    2023-01-25T10:05
                   </div>
                 </div>
               </div>
@@ -644,7 +644,7 @@ Object {
                   data-test-subj="text-details-group-content-created at"
                   id="some_html_id"
                 >
-                  1970-01-01T01:00
+                  2023-01-25T10:05
                 </div>
               </div>
             </div>
@@ -683,7 +683,7 @@ Object {
                   data-test-subj="text-details-group-content-last updated time"
                   id="some_html_id"
                 >
-                  1970-01-01T01:00
+                  2023-01-25T10:05
                 </div>
               </div>
             </div>

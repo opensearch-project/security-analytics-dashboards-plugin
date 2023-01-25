@@ -5,7 +5,8 @@ import {
   DetectorRuleInfo,
   PeriodSchedule,
   TriggerAction,
-} from '../../../models/interfaces';
+} from '../../models/interfaces';
+import { DetectorHit, DetectorResponse } from '../../server/models/interfaces';
 
 export const detectorRuleInfoMock: DetectorRuleInfo = {
   id: 'detectorRuleId',
@@ -61,7 +62,7 @@ export const alertConditionMock: AlertCondition = {
 
   // Alert related fields
   actions: [triggerActionMock, triggerActionMock],
-  severity: 'low',
+  severity: '1',
 };
 
 export const detectorMock: Detector = {
@@ -73,4 +74,20 @@ export const detectorMock: Detector = {
   schedule: periodScheduleMock,
   inputs: [detectorInputMock],
   triggers: [alertConditionMock, alertConditionMock],
+};
+
+export const detectorResponse: DetectorResponse = {
+  last_update_time: 1,
+  enabled_time: 1,
+  ...detectorMock,
+};
+
+export const mockDetectorHit: DetectorHit = {
+  _index: '.windows',
+  _source: detectorResponse,
+  _id: 'detectorHitId',
+};
+
+export const notificationsStart = {
+  toasts: [],
 };

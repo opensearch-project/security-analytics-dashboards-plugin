@@ -1,8 +1,5 @@
 import { FieldMapping } from '../../../../../models/interfaces';
-import { detectorMock } from '../../InterfacesMock.test';
-const notificationsStart = {
-  toasts: [],
-};
+import { detectorMock, notificationsStart } from '../../../Interfaces.mock';
 
 const fieldMapping: FieldMapping = {
   indexFieldName: 'indexFieldName',
