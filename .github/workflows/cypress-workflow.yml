@@ -124,6 +124,8 @@ jobs:
         with:
           path: ${{ matrix.cypress_cache_folder }}
           key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
 
       # for now just chrome, use matrix to do all browsers later
       - name: Cypress tests
@@ -133,7 +135,6 @@ jobs:
           command: yarn run cypress run
           wait-on: 'http://localhost:5601'
           browser: chrome
-          video: false
         env:
           CYPRESS_CACHE_FOLDER: ${{ matrix.cypress_cache_folder }}
 
