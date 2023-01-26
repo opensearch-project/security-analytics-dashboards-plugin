@@ -1,5 +1,4 @@
-import { mockDetectorHit, notificationsStart } from '../../../Interfaces.mock';
-import { DetectorsService } from '../../../../services';
+import { mockDetectorHit, mockDetectorService, notificationsStart } from '../../../Interfaces.mock';
 import FieldMappingService from '../../../../services/FieldMappingService';
 
 const fieldMappingService: FieldMappingService = {
@@ -22,19 +21,6 @@ const fieldMappingService: FieldMappingService = {
           mappings: {
             properties: {},
           },
-        },
-      },
-    };
-  },
-};
-
-const mockDetectorService: DetectorsService = {
-  getDetectors: () => {
-    return {
-      ok: true,
-      response: {
-        hits: {
-          hits: [mockDetectorHit],
         },
       },
     };

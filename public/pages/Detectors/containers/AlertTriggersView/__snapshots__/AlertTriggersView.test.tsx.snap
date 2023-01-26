@@ -1,0 +1,2624 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<AlertTriggersView /> spec renders the component 1`] = `
+<AlertTriggersView
+  detector={
+    Object {
+      "createdBy": "testUser",
+      "detector_type": ".windows",
+      "enabled": true,
+      "inputs": Array [
+        Object {
+          "detector_input": Object {
+            "custom_rules": Array [
+              Object {
+                "id": "detectorRuleId",
+              },
+            ],
+            "description": "detectorDescription",
+            "indices": Array [
+              ".windows",
+            ],
+            "pre_packaged_rules": Array [
+              Object {
+                "id": "detectorRuleId",
+              },
+            ],
+          },
+        },
+      ],
+      "name": "detectorName",
+      "schedule": Object {
+        "period": Object {
+          "interval": 1,
+          "unit": "minute",
+        },
+      },
+      "triggers": Array [
+        Object {
+          "actions": Array [
+            Object {
+              "destination_id": "destinationId",
+              "id": "someId",
+              "message_template": Object {
+                "lang": "en-US",
+                "source": "messageSource",
+              },
+              "name": "triggerName",
+              "subject_template": Object {
+                "lang": "en-US",
+                "source": "sourceTemplate",
+              },
+              "throttle": Object {
+                "unit": "throttleUnit",
+                "value": 1,
+              },
+              "throttle_enabled": false,
+            },
+            Object {
+              "destination_id": "destinationId",
+              "id": "someId",
+              "message_template": Object {
+                "lang": "en-US",
+                "source": "messageSource",
+              },
+              "name": "triggerName",
+              "subject_template": Object {
+                "lang": "en-US",
+                "source": "sourceTemplate",
+              },
+              "throttle": Object {
+                "unit": "throttleUnit",
+                "value": 1,
+              },
+              "throttle_enabled": false,
+            },
+          ],
+          "id": "triggerId_0",
+          "ids": Array [
+            "ruleId1",
+          ],
+          "name": "alertName",
+          "sev_levels": Array [
+            "low",
+          ],
+          "severity": "1",
+          "tags": Array [
+            "any.tag",
+          ],
+          "types": Array [
+            "detectorType1",
+          ],
+        },
+        Object {
+          "actions": Array [
+            Object {
+              "destination_id": "destinationId",
+              "id": "someId",
+              "message_template": Object {
+                "lang": "en-US",
+                "source": "messageSource",
+              },
+              "name": "triggerName",
+              "subject_template": Object {
+                "lang": "en-US",
+                "source": "sourceTemplate",
+              },
+              "throttle": Object {
+                "unit": "throttleUnit",
+                "value": 1,
+              },
+              "throttle_enabled": false,
+            },
+            Object {
+              "destination_id": "destinationId",
+              "id": "someId",
+              "message_template": Object {
+                "lang": "en-US",
+                "source": "messageSource",
+              },
+              "name": "triggerName",
+              "subject_template": Object {
+                "lang": "en-US",
+                "source": "sourceTemplate",
+              },
+              "throttle": Object {
+                "unit": "throttleUnit",
+                "value": 1,
+              },
+              "throttle_enabled": false,
+            },
+          ],
+          "id": "triggerId_1",
+          "ids": Array [
+            "ruleId1",
+          ],
+          "name": "alertName",
+          "sev_levels": Array [
+            "low",
+          ],
+          "severity": "1",
+          "tags": Array [
+            "any.tag",
+          ],
+          "types": Array [
+            "detectorType1",
+          ],
+        },
+      ],
+      "type": "detector",
+    }
+  }
+  editAlertTriggers={[MockFunction]}
+  notifications={
+    Object {
+      "toasts": Object {
+        "addDanger": [MockFunction],
+      },
+    }
+  }
+>
+  <ContentPanel
+    actions={
+      Array [
+        <EuiButton
+          onClick={[MockFunction]}
+        >
+          Edit
+        </EuiButton>,
+      ]
+    }
+    title="Alert triggers (2)"
+  >
+    <EuiPanel
+      style={
+        Object {
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+        }
+      }
+    >
+      <div
+        className="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
+        style={
+          Object {
+            "paddingLeft": "0px",
+            "paddingRight": "0px",
+          }
+        }
+      >
+        <EuiFlexGroup
+          alignItems="center"
+          justifyContent="spaceBetween"
+          style={
+            Object {
+              "padding": "0px 10px",
+            }
+          }
+        >
+          <div
+            className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive"
+            style={
+              Object {
+                "padding": "0px 10px",
+              }
+            }
+          >
+            <EuiFlexItem>
+              <div
+                className="euiFlexItem"
+              >
+                <EuiTitle
+                  size="m"
+                >
+                  <h3
+                    className="euiTitle euiTitle--medium"
+                  >
+                    Alert triggers (2)
+                  </h3>
+                </EuiTitle>
+              </div>
+            </EuiFlexItem>
+            <EuiFlexItem
+              grow={false}
+            >
+              <div
+                className="euiFlexItem euiFlexItem--flexGrowZero"
+              >
+                <EuiFlexGroup
+                  alignItems="center"
+                  justifyContent="spaceBetween"
+                >
+                  <div
+                    className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive"
+                  >
+                    <EuiFlexItem
+                      key="0"
+                    >
+                      <div
+                        className="euiFlexItem"
+                      >
+                        <EuiButton
+                          onClick={[MockFunction]}
+                        >
+                          <EuiButtonDisplay
+                            baseClassName="euiButton"
+                            disabled={false}
+                            element="button"
+                            isDisabled={false}
+                            onClick={[MockFunction]}
+                            type="button"
+                          >
+                            <button
+                              className="euiButton euiButton--primary"
+                              disabled={false}
+                              onClick={[MockFunction]}
+                              style={
+                                Object {
+                                  "minWidth": undefined,
+                                }
+                              }
+                              type="button"
+                            >
+                              <EuiButtonContent
+                                className="euiButton__content"
+                                iconSide="left"
+                                textProps={
+                                  Object {
+                                    "className": "euiButton__text",
+                                  }
+                                }
+                              >
+                                <span
+                                  className="euiButtonContent euiButton__content"
+                                >
+                                  <span
+                                    className="euiButton__text"
+                                  >
+                                    Edit
+                                  </span>
+                                </span>
+                              </EuiButtonContent>
+                            </button>
+                          </EuiButtonDisplay>
+                        </EuiButton>
+                      </div>
+                    </EuiFlexItem>
+                  </div>
+                </EuiFlexGroup>
+              </div>
+            </EuiFlexItem>
+          </div>
+        </EuiFlexGroup>
+        <EuiHorizontalRule
+          className=""
+          margin="xs"
+        >
+          <hr
+            className="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginXSmall"
+          />
+        </EuiHorizontalRule>
+        <div
+          style={
+            Object {
+              "padding": "0px 10px",
+            }
+          }
+        >
+          <AlertTriggerView
+            alertTrigger={
+              Object {
+                "actions": Array [
+                  Object {
+                    "destination_id": "destinationId",
+                    "id": "someId",
+                    "message_template": Object {
+                      "lang": "en-US",
+                      "source": "messageSource",
+                    },
+                    "name": "triggerName",
+                    "subject_template": Object {
+                      "lang": "en-US",
+                      "source": "sourceTemplate",
+                    },
+                    "throttle": Object {
+                      "unit": "throttleUnit",
+                      "value": 1,
+                    },
+                    "throttle_enabled": false,
+                  },
+                  Object {
+                    "destination_id": "destinationId",
+                    "id": "someId",
+                    "message_template": Object {
+                      "lang": "en-US",
+                      "source": "messageSource",
+                    },
+                    "name": "triggerName",
+                    "subject_template": Object {
+                      "lang": "en-US",
+                      "source": "sourceTemplate",
+                    },
+                    "throttle": Object {
+                      "unit": "throttleUnit",
+                      "value": 1,
+                    },
+                    "throttle_enabled": false,
+                  },
+                ],
+                "id": "triggerId_0",
+                "ids": Array [
+                  "ruleId1",
+                ],
+                "name": "alertName",
+                "sev_levels": Array [
+                  "low",
+                ],
+                "severity": "1",
+                "tags": Array [
+                  "any.tag",
+                ],
+                "types": Array [
+                  "detectorType1",
+                ],
+              }
+            }
+            detector={
+              Object {
+                "createdBy": "testUser",
+                "detector_type": ".windows",
+                "enabled": true,
+                "inputs": Array [
+                  Object {
+                    "detector_input": Object {
+                      "custom_rules": Array [
+                        Object {
+                          "id": "detectorRuleId",
+                        },
+                      ],
+                      "description": "detectorDescription",
+                      "indices": Array [
+                        ".windows",
+                      ],
+                      "pre_packaged_rules": Array [
+                        Object {
+                          "id": "detectorRuleId",
+                        },
+                      ],
+                    },
+                  },
+                ],
+                "name": "detectorName",
+                "schedule": Object {
+                  "period": Object {
+                    "interval": 1,
+                    "unit": "minute",
+                  },
+                },
+                "triggers": Array [
+                  Object {
+                    "actions": Array [
+                      Object {
+                        "destination_id": "destinationId",
+                        "id": "someId",
+                        "message_template": Object {
+                          "lang": "en-US",
+                          "source": "messageSource",
+                        },
+                        "name": "triggerName",
+                        "subject_template": Object {
+                          "lang": "en-US",
+                          "source": "sourceTemplate",
+                        },
+                        "throttle": Object {
+                          "unit": "throttleUnit",
+                          "value": 1,
+                        },
+                        "throttle_enabled": false,
+                      },
+                      Object {
+                        "destination_id": "destinationId",
+                        "id": "someId",
+                        "message_template": Object {
+                          "lang": "en-US",
+                          "source": "messageSource",
+                        },
+                        "name": "triggerName",
+                        "subject_template": Object {
+                          "lang": "en-US",
+                          "source": "sourceTemplate",
+                        },
+                        "throttle": Object {
+                          "unit": "throttleUnit",
+                          "value": 1,
+                        },
+                        "throttle_enabled": false,
+                      },
+                    ],
+                    "id": "triggerId_0",
+                    "ids": Array [
+                      "ruleId1",
+                    ],
+                    "name": "alertName",
+                    "sev_levels": Array [
+                      "low",
+                    ],
+                    "severity": "1",
+                    "tags": Array [
+                      "any.tag",
+                    ],
+                    "types": Array [
+                      "detectorType1",
+                    ],
+                  },
+                  Object {
+                    "actions": Array [
+                      Object {
+                        "destination_id": "destinationId",
+                        "id": "someId",
+                        "message_template": Object {
+                          "lang": "en-US",
+                          "source": "messageSource",
+                        },
+                        "name": "triggerName",
+                        "subject_template": Object {
+                          "lang": "en-US",
+                          "source": "sourceTemplate",
+                        },
+                        "throttle": Object {
+                          "unit": "throttleUnit",
+                          "value": 1,
+                        },
+                        "throttle_enabled": false,
+                      },
+                      Object {
+                        "destination_id": "destinationId",
+                        "id": "someId",
+                        "message_template": Object {
+                          "lang": "en-US",
+                          "source": "messageSource",
+                        },
+                        "name": "triggerName",
+                        "subject_template": Object {
+                          "lang": "en-US",
+                          "source": "sourceTemplate",
+                        },
+                        "throttle": Object {
+                          "unit": "throttleUnit",
+                          "value": 1,
+                        },
+                        "throttle_enabled": false,
+                      },
+                    ],
+                    "id": "triggerId_1",
+                    "ids": Array [
+                      "ruleId1",
+                    ],
+                    "name": "alertName",
+                    "sev_levels": Array [
+                      "low",
+                    ],
+                    "severity": "1",
+                    "tags": Array [
+                      "any.tag",
+                    ],
+                    "types": Array [
+                      "detectorType1",
+                    ],
+                  },
+                ],
+                "type": "detector",
+              }
+            }
+            key="triggerId_0"
+            notificationChannels={Array []}
+            orderPosition={0}
+            rules={
+              Object {
+                "detectorHitId": Object {
+                  "_id": "detectorHitId",
+                  "_index": ".windows",
+                  "_source": Object {
+                    "createdBy": "testUser",
+                    "detector_type": ".windows",
+                    "enabled": true,
+                    "enabled_time": 1,
+                    "inputs": Array [
+                      Object {
+                        "detector_input": Object {
+                          "custom_rules": Array [
+                            Object {
+                              "id": "detectorRuleId",
+                            },
+                          ],
+                          "description": "detectorDescription",
+                          "indices": Array [
+                            ".windows",
+                          ],
+                          "pre_packaged_rules": Array [
+                            Object {
+                              "id": "detectorRuleId",
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                    "last_update_time": 1,
+                    "name": "detectorName",
+                    "schedule": Object {
+                      "period": Object {
+                        "interval": 1,
+                        "unit": "minute",
+                      },
+                    },
+                    "triggers": Array [
+                      Object {
+                        "actions": Array [
+                          Object {
+                            "destination_id": "destinationId",
+                            "id": "someId",
+                            "message_template": Object {
+                              "lang": "en-US",
+                              "source": "messageSource",
+                            },
+                            "name": "triggerName",
+                            "subject_template": Object {
+                              "lang": "en-US",
+                              "source": "sourceTemplate",
+                            },
+                            "throttle": Object {
+                              "unit": "throttleUnit",
+                              "value": 1,
+                            },
+                            "throttle_enabled": false,
+                          },
+                          Object {
+                            "destination_id": "destinationId",
+                            "id": "someId",
+                            "message_template": Object {
+                              "lang": "en-US",
+                              "source": "messageSource",
+                            },
+                            "name": "triggerName",
+                            "subject_template": Object {
+                              "lang": "en-US",
+                              "source": "sourceTemplate",
+                            },
+                            "throttle": Object {
+                              "unit": "throttleUnit",
+                              "value": 1,
+                            },
+                            "throttle_enabled": false,
+                          },
+                        ],
+                        "id": "triggerId_0",
+                        "ids": Array [
+                          "ruleId1",
+                        ],
+                        "name": "alertName",
+                        "sev_levels": Array [
+                          "low",
+                        ],
+                        "severity": "1",
+                        "tags": Array [
+                          "any.tag",
+                        ],
+                        "types": Array [
+                          "detectorType1",
+                        ],
+                      },
+                      Object {
+                        "actions": Array [
+                          Object {
+                            "destination_id": "destinationId",
+                            "id": "someId",
+                            "message_template": Object {
+                              "lang": "en-US",
+                              "source": "messageSource",
+                            },
+                            "name": "triggerName",
+                            "subject_template": Object {
+                              "lang": "en-US",
+                              "source": "sourceTemplate",
+                            },
+                            "throttle": Object {
+                              "unit": "throttleUnit",
+                              "value": 1,
+                            },
+                            "throttle_enabled": false,
+                          },
+                          Object {
+                            "destination_id": "destinationId",
+                            "id": "someId",
+                            "message_template": Object {
+                              "lang": "en-US",
+                              "source": "messageSource",
+                            },
+                            "name": "triggerName",
+                            "subject_template": Object {
+                              "lang": "en-US",
+                              "source": "sourceTemplate",
+                            },
+                            "throttle": Object {
+                              "unit": "throttleUnit",
+                              "value": 1,
+                            },
+                            "throttle_enabled": false,
+                          },
+                        ],
+                        "id": "triggerId_1",
+                        "ids": Array [
+                          "ruleId1",
+                        ],
+                        "name": "alertName",
+                        "sev_levels": Array [
+                          "low",
+                        ],
+                        "severity": "1",
+                        "tags": Array [
+                          "any.tag",
+                        ],
+                        "types": Array [
+                          "detectorType1",
+                        ],
+                      },
+                    ],
+                    "type": "detector",
+                  },
+                },
+              }
+            }
+          >
+            <div>
+              <EuiSpacer
+                size="l"
+              >
+                <div
+                  className="euiSpacer euiSpacer--l"
+                />
+              </EuiSpacer>
+              <EuiAccordion
+                arrowDisplay="left"
+                buttonContent={
+                  <EuiText
+                    size="m"
+                  >
+                    <p>
+                      Alert on alertName
+                    </p>
+                  </EuiText>
+                }
+                id="alert-trigger-0"
+                initialIsOpen={false}
+                isLoading={false}
+                isLoadingMessage={false}
+                paddingSize="m"
+              >
+                <div
+                  className="euiAccordion"
+                >
+                  <div
+                    className="euiAccordion__triggerWrapper"
+                  >
+                    <button
+                      aria-controls="alert-trigger-0"
+                      aria-expanded={false}
+                      className="euiAccordion__button"
+                      id="some_html_id"
+                      onClick={[Function]}
+                      type="button"
+                    >
+                      <span
+                        className="euiAccordion__iconWrapper"
+                      >
+                        <EuiIcon
+                          className="euiAccordion__icon"
+                          size="m"
+                          type="arrowRight"
+                        >
+                          EuiIconMock
+                        </EuiIcon>
+                      </span>
+                      <span
+                        className="euiIEFlexWrapFix"
+                      >
+                        <EuiText
+                          size="m"
+                        >
+                          <div
+                            className="euiText euiText--medium"
+                          >
+                            <p>
+                              Alert on alertName
+                            </p>
+                          </div>
+                        </EuiText>
+                      </span>
+                    </button>
+                  </div>
+                  <div
+                    aria-labelledby="some_html_id"
+                    className="euiAccordion__childWrapper"
+                    id="alert-trigger-0"
+                    role="region"
+                    tabIndex={-1}
+                  >
+                    <EuiResizeObserver
+                      onResize={[Function]}
+                    >
+                      <div>
+                        <div
+                          className="euiAccordion__padding--m"
+                        >
+                          <EuiSpacer
+                            size="m"
+                          >
+                            <div
+                              className="euiSpacer euiSpacer--m"
+                            />
+                          </EuiSpacer>
+                          <EuiFormRow
+                            describedByIds={Array []}
+                            display="row"
+                            fullWidth={false}
+                            hasChildLabel={true}
+                            hasEmptyLabelSpace={false}
+                            label={
+                              <EuiText
+                                color="subdued"
+                              >
+                                Trigger name
+                              </EuiText>
+                            }
+                            labelType="label"
+                          >
+                            <div
+                              className="euiFormRow"
+                              id="some_html_id-row"
+                            >
+                              <div
+                                className="euiFormRow__labelWrapper"
+                              >
+                                <EuiFormLabel
+                                  className="euiFormRow__label"
+                                  htmlFor="some_html_id"
+                                  isFocused={false}
+                                  type="label"
+                                >
+                                  <label
+                                    className="euiFormLabel euiFormRow__label"
+                                    htmlFor="some_html_id"
+                                  >
+                                    <EuiText
+                                      color="subdued"
+                                    >
+                                      <div
+                                        className="euiText euiText--medium"
+                                      >
+                                        <EuiTextColor
+                                          color="subdued"
+                                          component="div"
+                                        >
+                                          <div
+                                            className="euiTextColor euiTextColor--subdued"
+                                          >
+                                            Trigger name
+                                          </div>
+                                        </EuiTextColor>
+                                      </div>
+                                    </EuiText>
+                                  </label>
+                                </EuiFormLabel>
+                              </div>
+                              <div
+                                className="euiFormRow__fieldWrapper"
+                              >
+                                <EuiText
+                                  data-test-subj="text-details-group-content-trigger name"
+                                  id="some_html_id"
+                                  onBlur={[Function]}
+                                  onFocus={[Function]}
+                                >
+                                  <div
+                                    className="euiText euiText--medium"
+                                    data-test-subj="text-details-group-content-trigger name"
+                                    id="some_html_id"
+                                    onBlur={[Function]}
+                                    onFocus={[Function]}
+                                  >
+                                    alertName
+                                  </div>
+                                </EuiText>
+                              </div>
+                            </div>
+                          </EuiFormRow>
+                          <EuiSpacer
+                            size="xl"
+                          >
+                            <div
+                              className="euiSpacer euiSpacer--xl"
+                            />
+                          </EuiSpacer>
+                          <EuiTitle
+                            size="s"
+                          >
+                            <h5
+                              className="euiTitle euiTitle--small"
+                            >
+                              If any detection rule matches
+                            </h5>
+                          </EuiTitle>
+                          <EuiSpacer
+                            size="m"
+                          >
+                            <div
+                              className="euiSpacer euiSpacer--m"
+                            />
+                          </EuiSpacer>
+                          <EuiFlexGroup>
+                            <div
+                              className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+                            >
+                              <EuiFlexItem
+                                grow={false}
+                                key="0"
+                                style={
+                                  Object {
+                                    "minWidth": "33.333333333333336%",
+                                  }
+                                }
+                              >
+                                <div
+                                  className="euiFlexItem euiFlexItem--flexGrowZero"
+                                  style={
+                                    Object {
+                                      "minWidth": "33.333333333333336%",
+                                    }
+                                  }
+                                >
+                                  <EuiFormRow
+                                    describedByIds={Array []}
+                                    display="row"
+                                    fullWidth={false}
+                                    hasChildLabel={true}
+                                    hasEmptyLabelSpace={false}
+                                    label={
+                                      <EuiText
+                                        color="subdued"
+                                      >
+                                        Log type
+                                      </EuiText>
+                                    }
+                                    labelType="label"
+                                  >
+                                    <div
+                                      className="euiFormRow"
+                                      id="some_html_id-row"
+                                    >
+                                      <div
+                                        className="euiFormRow__labelWrapper"
+                                      >
+                                        <EuiFormLabel
+                                          className="euiFormRow__label"
+                                          htmlFor="some_html_id"
+                                          isFocused={false}
+                                          type="label"
+                                        >
+                                          <label
+                                            className="euiFormLabel euiFormRow__label"
+                                            htmlFor="some_html_id"
+                                          >
+                                            <EuiText
+                                              color="subdued"
+                                            >
+                                              <div
+                                                className="euiText euiText--medium"
+                                              >
+                                                <EuiTextColor
+                                                  color="subdued"
+                                                  component="div"
+                                                >
+                                                  <div
+                                                    className="euiTextColor euiTextColor--subdued"
+                                                  >
+                                                    Log type
+                                                  </div>
+                                                </EuiTextColor>
+                                              </div>
+                                            </EuiText>
+                                          </label>
+                                        </EuiFormLabel>
+                                      </div>
+                                      <div
+                                        className="euiFormRow__fieldWrapper"
+                                      >
+                                        <EuiText
+                                          data-test-subj="text-details-group-content-log type"
+                                          id="some_html_id"
+                                          onBlur={[Function]}
+                                          onFocus={[Function]}
+                                        >
+                                          <div
+                                            className="euiText euiText--medium"
+                                            data-test-subj="text-details-group-content-log type"
+                                            id="some_html_id"
+                                            onBlur={[Function]}
+                                            onFocus={[Function]}
+                                          >
+                                            detectorType1
+                                          </div>
+                                        </EuiText>
+                                      </div>
+                                    </div>
+                                  </EuiFormRow>
+                                </div>
+                              </EuiFlexItem>
+                              <EuiFlexItem
+                                grow={false}
+                                key="1"
+                                style={
+                                  Object {
+                                    "minWidth": "33.333333333333336%",
+                                  }
+                                }
+                              >
+                                <div
+                                  className="euiFlexItem euiFlexItem--flexGrowZero"
+                                  style={
+                                    Object {
+                                      "minWidth": "33.333333333333336%",
+                                    }
+                                  }
+                                >
+                                  <EuiFormRow
+                                    describedByIds={Array []}
+                                    display="row"
+                                    fullWidth={false}
+                                    hasChildLabel={true}
+                                    hasEmptyLabelSpace={false}
+                                    label={
+                                      <EuiText
+                                        color="subdued"
+                                      >
+                                        Rule names
+                                      </EuiText>
+                                    }
+                                    labelType="label"
+                                  >
+                                    <div
+                                      className="euiFormRow"
+                                      id="some_html_id-row"
+                                    >
+                                      <div
+                                        className="euiFormRow__labelWrapper"
+                                      >
+                                        <EuiFormLabel
+                                          className="euiFormRow__label"
+                                          htmlFor="some_html_id"
+                                          isFocused={false}
+                                          type="label"
+                                        >
+                                          <label
+                                            className="euiFormLabel euiFormRow__label"
+                                            htmlFor="some_html_id"
+                                          >
+                                            <EuiText
+                                              color="subdued"
+                                            >
+                                              <div
+                                                className="euiText euiText--medium"
+                                              >
+                                                <EuiTextColor
+                                                  color="subdued"
+                                                  component="div"
+                                                >
+                                                  <div
+                                                    className="euiTextColor euiTextColor--subdued"
+                                                  >
+                                                    Rule names
+                                                  </div>
+                                                </EuiTextColor>
+                                              </div>
+                                            </EuiText>
+                                          </label>
+                                        </EuiFormLabel>
+                                      </div>
+                                      <div
+                                        className="euiFormRow__fieldWrapper"
+                                      >
+                                        <EuiText
+                                          data-test-subj="text-details-group-content-rule names"
+                                          id="some_html_id"
+                                          onBlur={[Function]}
+                                          onFocus={[Function]}
+                                        >
+                                          <div
+                                            className="euiText euiText--medium"
+                                            data-test-subj="text-details-group-content-rule names"
+                                            id="some_html_id"
+                                            onBlur={[Function]}
+                                            onFocus={[Function]}
+                                          >
+                                            -
+                                          </div>
+                                        </EuiText>
+                                      </div>
+                                    </div>
+                                  </EuiFormRow>
+                                </div>
+                              </EuiFlexItem>
+                            </div>
+                          </EuiFlexGroup>
+                          <EuiSpacer
+                            size="xl"
+                          >
+                            <div
+                              className="euiSpacer euiSpacer--xl"
+                            />
+                          </EuiSpacer>
+                          <EuiFlexGroup>
+                            <div
+                              className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+                            >
+                              <EuiFlexItem
+                                grow={false}
+                                key="0"
+                                style={
+                                  Object {
+                                    "minWidth": "33.333333333333336%",
+                                  }
+                                }
+                              >
+                                <div
+                                  className="euiFlexItem euiFlexItem--flexGrowZero"
+                                  style={
+                                    Object {
+                                      "minWidth": "33.333333333333336%",
+                                    }
+                                  }
+                                >
+                                  <EuiFormRow
+                                    describedByIds={Array []}
+                                    display="row"
+                                    fullWidth={false}
+                                    hasChildLabel={true}
+                                    hasEmptyLabelSpace={false}
+                                    label={
+                                      <EuiText
+                                        color="subdued"
+                                      >
+                                        Rule severities
+                                      </EuiText>
+                                    }
+                                    labelType="label"
+                                  >
+                                    <div
+                                      className="euiFormRow"
+                                      id="some_html_id-row"
+                                    >
+                                      <div
+                                        className="euiFormRow__labelWrapper"
+                                      >
+                                        <EuiFormLabel
+                                          className="euiFormRow__label"
+                                          htmlFor="some_html_id"
+                                          isFocused={false}
+                                          type="label"
+                                        >
+                                          <label
+                                            className="euiFormLabel euiFormRow__label"
+                                            htmlFor="some_html_id"
+                                          >
+                                            <EuiText
+                                              color="subdued"
+                                            >
+                                              <div
+                                                className="euiText euiText--medium"
+                                              >
+                                                <EuiTextColor
+                                                  color="subdued"
+                                                  component="div"
+                                                >
+                                                  <div
+                                                    className="euiTextColor euiTextColor--subdued"
+                                                  >
+                                                    Rule severities
+                                                  </div>
+                                                </EuiTextColor>
+                                              </div>
+                                            </EuiText>
+                                          </label>
+                                        </EuiFormLabel>
+                                      </div>
+                                      <div
+                                        className="euiFormRow__fieldWrapper"
+                                      >
+                                        <EuiText
+                                          data-test-subj="text-details-group-content-rule severities"
+                                          id="some_html_id"
+                                          onBlur={[Function]}
+                                          onFocus={[Function]}
+                                        >
+                                          <div
+                                            className="euiText euiText--medium"
+                                            data-test-subj="text-details-group-content-rule severities"
+                                            id="some_html_id"
+                                            onBlur={[Function]}
+                                            onFocus={[Function]}
+                                          >
+                                            low
+                                          </div>
+                                        </EuiText>
+                                      </div>
+                                    </div>
+                                  </EuiFormRow>
+                                </div>
+                              </EuiFlexItem>
+                              <EuiFlexItem
+                                grow={false}
+                                key="1"
+                                style={
+                                  Object {
+                                    "minWidth": "33.333333333333336%",
+                                  }
+                                }
+                              >
+                                <div
+                                  className="euiFlexItem euiFlexItem--flexGrowZero"
+                                  style={
+                                    Object {
+                                      "minWidth": "33.333333333333336%",
+                                    }
+                                  }
+                                >
+                                  <EuiFormRow
+                                    describedByIds={Array []}
+                                    display="row"
+                                    fullWidth={false}
+                                    hasChildLabel={true}
+                                    hasEmptyLabelSpace={false}
+                                    label={
+                                      <EuiText
+                                        color="subdued"
+                                      >
+                                        Tags
+                                      </EuiText>
+                                    }
+                                    labelType="label"
+                                  >
+                                    <div
+                                      className="euiFormRow"
+                                      id="some_html_id-row"
+                                    >
+                                      <div
+                                        className="euiFormRow__labelWrapper"
+                                      >
+                                        <EuiFormLabel
+                                          className="euiFormRow__label"
+                                          htmlFor="some_html_id"
+                                          isFocused={false}
+                                          type="label"
+                                        >
+                                          <label
+                                            className="euiFormLabel euiFormRow__label"
+                                            htmlFor="some_html_id"
+                                          >
+                                            <EuiText
+                                              color="subdued"
+                                            >
+                                              <div
+                                                className="euiText euiText--medium"
+                                              >
+                                                <EuiTextColor
+                                                  color="subdued"
+                                                  component="div"
+                                                >
+                                                  <div
+                                                    className="euiTextColor euiTextColor--subdued"
+                                                  >
+                                                    Tags
+                                                  </div>
+                                                </EuiTextColor>
+                                              </div>
+                                            </EuiText>
+                                          </label>
+                                        </EuiFormLabel>
+                                      </div>
+                                      <div
+                                        className="euiFormRow__fieldWrapper"
+                                      >
+                                        <EuiText
+                                          data-test-subj="text-details-group-content-tags"
+                                          id="some_html_id"
+                                          onBlur={[Function]}
+                                          onFocus={[Function]}
+                                        >
+                                          <div
+                                            className="euiText euiText--medium"
+                                            data-test-subj="text-details-group-content-tags"
+                                            id="some_html_id"
+                                            onBlur={[Function]}
+                                            onFocus={[Function]}
+                                          >
+                                            any.tag
+                                          </div>
+                                        </EuiText>
+                                      </div>
+                                    </div>
+                                  </EuiFormRow>
+                                </div>
+                              </EuiFlexItem>
+                            </div>
+                          </EuiFlexGroup>
+                          <EuiSpacer
+                            size="xl"
+                          >
+                            <div
+                              className="euiSpacer euiSpacer--xl"
+                            />
+                          </EuiSpacer>
+                          <EuiSpacer
+                            size="xl"
+                          >
+                            <div
+                              className="euiSpacer euiSpacer--xl"
+                            />
+                          </EuiSpacer>
+                          <EuiTitle
+                            size="s"
+                          >
+                            <h5
+                              className="euiTitle euiTitle--small"
+                            >
+                              Alert and notify
+                            </h5>
+                          </EuiTitle>
+                          <EuiSpacer
+                            size="m"
+                          >
+                            <div
+                              className="euiSpacer euiSpacer--m"
+                            />
+                          </EuiSpacer>
+                          <EuiFormRow
+                            describedByIds={Array []}
+                            display="row"
+                            fullWidth={false}
+                            hasChildLabel={true}
+                            hasEmptyLabelSpace={false}
+                            label={
+                              <EuiText
+                                color="subdued"
+                              >
+                                Trigger alerts with severity
+                              </EuiText>
+                            }
+                            labelType="label"
+                          >
+                            <div
+                              className="euiFormRow"
+                              id="some_html_id-row"
+                            >
+                              <div
+                                className="euiFormRow__labelWrapper"
+                              >
+                                <EuiFormLabel
+                                  className="euiFormRow__label"
+                                  htmlFor="some_html_id"
+                                  isFocused={false}
+                                  type="label"
+                                >
+                                  <label
+                                    className="euiFormLabel euiFormRow__label"
+                                    htmlFor="some_html_id"
+                                  >
+                                    <EuiText
+                                      color="subdued"
+                                    >
+                                      <div
+                                        className="euiText euiText--medium"
+                                      >
+                                        <EuiTextColor
+                                          color="subdued"
+                                          component="div"
+                                        >
+                                          <div
+                                            className="euiTextColor euiTextColor--subdued"
+                                          >
+                                            Trigger alerts with severity
+                                          </div>
+                                        </EuiTextColor>
+                                      </div>
+                                    </EuiText>
+                                  </label>
+                                </EuiFormLabel>
+                              </div>
+                              <div
+                                className="euiFormRow__fieldWrapper"
+                              >
+                                <EuiText
+                                  data-test-subj="text-details-group-content-trigger alerts with severity"
+                                  id="some_html_id"
+                                  onBlur={[Function]}
+                                  onFocus={[Function]}
+                                >
+                                  <div
+                                    className="euiText euiText--medium"
+                                    data-test-subj="text-details-group-content-trigger alerts with severity"
+                                    id="some_html_id"
+                                    onBlur={[Function]}
+                                    onFocus={[Function]}
+                                  >
+                                    1 (Highest)
+                                  </div>
+                                </EuiText>
+                              </div>
+                            </div>
+                          </EuiFormRow>
+                          <EuiSpacer
+                            size="l"
+                          >
+                            <div
+                              className="euiSpacer euiSpacer--l"
+                            />
+                          </EuiSpacer>
+                          <EuiFormRow
+                            describedByIds={Array []}
+                            display="row"
+                            fullWidth={false}
+                            hasChildLabel={true}
+                            hasEmptyLabelSpace={false}
+                            label={
+                              <EuiText
+                                color="subdued"
+                              >
+                                Notify channel
+                              </EuiText>
+                            }
+                            labelType="label"
+                          >
+                            <div
+                              className="euiFormRow"
+                              id="some_html_id-row"
+                            >
+                              <div
+                                className="euiFormRow__labelWrapper"
+                              >
+                                <EuiFormLabel
+                                  className="euiFormRow__label"
+                                  htmlFor="some_html_id"
+                                  isFocused={false}
+                                  type="label"
+                                >
+                                  <label
+                                    className="euiFormLabel euiFormRow__label"
+                                    htmlFor="some_html_id"
+                                  >
+                                    <EuiText
+                                      color="subdued"
+                                    >
+                                      <div
+                                        className="euiText euiText--medium"
+                                      >
+                                        <EuiTextColor
+                                          color="subdued"
+                                          component="div"
+                                        >
+                                          <div
+                                            className="euiTextColor euiTextColor--subdued"
+                                          >
+                                            Notify channel
+                                          </div>
+                                        </EuiTextColor>
+                                      </div>
+                                    </EuiText>
+                                  </label>
+                                </EuiFormLabel>
+                              </div>
+                              <div
+                                className="euiFormRow__fieldWrapper"
+                              >
+                                <EuiText
+                                  data-test-subj="text-details-group-content-notify channel"
+                                  id="some_html_id"
+                                  onBlur={[Function]}
+                                  onFocus={[Function]}
+                                >
+                                  <div
+                                    className="euiText euiText--medium"
+                                    data-test-subj="text-details-group-content-notify channel"
+                                    id="some_html_id"
+                                    onBlur={[Function]}
+                                    onFocus={[Function]}
+                                  >
+                                    <EuiText>
+                                      <div
+                                        className="euiText euiText--medium"
+                                      >
+                                        -
+                                      </div>
+                                    </EuiText>
+                                  </div>
+                                </EuiText>
+                              </div>
+                            </div>
+                          </EuiFormRow>
+                        </div>
+                      </div>
+                    </EuiResizeObserver>
+                  </div>
+                </div>
+              </EuiAccordion>
+              <EuiSpacer
+                size="m"
+              >
+                <div
+                  className="euiSpacer euiSpacer--m"
+                />
+              </EuiSpacer>
+            </div>
+          </AlertTriggerView>
+          <AlertTriggerView
+            alertTrigger={
+              Object {
+                "actions": Array [
+                  Object {
+                    "destination_id": "destinationId",
+                    "id": "someId",
+                    "message_template": Object {
+                      "lang": "en-US",
+                      "source": "messageSource",
+                    },
+                    "name": "triggerName",
+                    "subject_template": Object {
+                      "lang": "en-US",
+                      "source": "sourceTemplate",
+                    },
+                    "throttle": Object {
+                      "unit": "throttleUnit",
+                      "value": 1,
+                    },
+                    "throttle_enabled": false,
+                  },
+                  Object {
+                    "destination_id": "destinationId",
+                    "id": "someId",
+                    "message_template": Object {
+                      "lang": "en-US",
+                      "source": "messageSource",
+                    },
+                    "name": "triggerName",
+                    "subject_template": Object {
+                      "lang": "en-US",
+                      "source": "sourceTemplate",
+                    },
+                    "throttle": Object {
+                      "unit": "throttleUnit",
+                      "value": 1,
+                    },
+                    "throttle_enabled": false,
+                  },
+                ],
+                "id": "triggerId_1",
+                "ids": Array [
+                  "ruleId1",
+                ],
+                "name": "alertName",
+                "sev_levels": Array [
+                  "low",
+                ],
+                "severity": "1",
+                "tags": Array [
+                  "any.tag",
+                ],
+                "types": Array [
+                  "detectorType1",
+                ],
+              }
+            }
+            detector={
+              Object {
+                "createdBy": "testUser",
+                "detector_type": ".windows",
+                "enabled": true,
+                "inputs": Array [
+                  Object {
+                    "detector_input": Object {
+                      "custom_rules": Array [
+                        Object {
+                          "id": "detectorRuleId",
+                        },
+                      ],
+                      "description": "detectorDescription",
+                      "indices": Array [
+                        ".windows",
+                      ],
+                      "pre_packaged_rules": Array [
+                        Object {
+                          "id": "detectorRuleId",
+                        },
+                      ],
+                    },
+                  },
+                ],
+                "name": "detectorName",
+                "schedule": Object {
+                  "period": Object {
+                    "interval": 1,
+                    "unit": "minute",
+                  },
+                },
+                "triggers": Array [
+                  Object {
+                    "actions": Array [
+                      Object {
+                        "destination_id": "destinationId",
+                        "id": "someId",
+                        "message_template": Object {
+                          "lang": "en-US",
+                          "source": "messageSource",
+                        },
+                        "name": "triggerName",
+                        "subject_template": Object {
+                          "lang": "en-US",
+                          "source": "sourceTemplate",
+                        },
+                        "throttle": Object {
+                          "unit": "throttleUnit",
+                          "value": 1,
+                        },
+                        "throttle_enabled": false,
+                      },
+                      Object {
+                        "destination_id": "destinationId",
+                        "id": "someId",
+                        "message_template": Object {
+                          "lang": "en-US",
+                          "source": "messageSource",
+                        },
+                        "name": "triggerName",
+                        "subject_template": Object {
+                          "lang": "en-US",
+                          "source": "sourceTemplate",
+                        },
+                        "throttle": Object {
+                          "unit": "throttleUnit",
+                          "value": 1,
+                        },
+                        "throttle_enabled": false,
+                      },
+                    ],
+                    "id": "triggerId_0",
+                    "ids": Array [
+                      "ruleId1",
+                    ],
+                    "name": "alertName",
+                    "sev_levels": Array [
+                      "low",
+                    ],
+                    "severity": "1",
+                    "tags": Array [
+                      "any.tag",
+                    ],
+                    "types": Array [
+                      "detectorType1",
+                    ],
+                  },
+                  Object {
+                    "actions": Array [
+                      Object {
+                        "destination_id": "destinationId",
+                        "id": "someId",
+                        "message_template": Object {
+                          "lang": "en-US",
+                          "source": "messageSource",
+                        },
+                        "name": "triggerName",
+                        "subject_template": Object {
+                          "lang": "en-US",
+                          "source": "sourceTemplate",
+                        },
+                        "throttle": Object {
+                          "unit": "throttleUnit",
+                          "value": 1,
+                        },
+                        "throttle_enabled": false,
+                      },
+                      Object {
+                        "destination_id": "destinationId",
+                        "id": "someId",
+                        "message_template": Object {
+                          "lang": "en-US",
+                          "source": "messageSource",
+                        },
+                        "name": "triggerName",
+                        "subject_template": Object {
+                          "lang": "en-US",
+                          "source": "sourceTemplate",
+                        },
+                        "throttle": Object {
+                          "unit": "throttleUnit",
+                          "value": 1,
+                        },
+                        "throttle_enabled": false,
+                      },
+                    ],
+                    "id": "triggerId_1",
+                    "ids": Array [
+                      "ruleId1",
+                    ],
+                    "name": "alertName",
+                    "sev_levels": Array [
+                      "low",
+                    ],
+                    "severity": "1",
+                    "tags": Array [
+                      "any.tag",
+                    ],
+                    "types": Array [
+                      "detectorType1",
+                    ],
+                  },
+                ],
+                "type": "detector",
+              }
+            }
+            key="triggerId_1"
+            notificationChannels={Array []}
+            orderPosition={1}
+            rules={
+              Object {
+                "detectorHitId": Object {
+                  "_id": "detectorHitId",
+                  "_index": ".windows",
+                  "_source": Object {
+                    "createdBy": "testUser",
+                    "detector_type": ".windows",
+                    "enabled": true,
+                    "enabled_time": 1,
+                    "inputs": Array [
+                      Object {
+                        "detector_input": Object {
+                          "custom_rules": Array [
+                            Object {
+                              "id": "detectorRuleId",
+                            },
+                          ],
+                          "description": "detectorDescription",
+                          "indices": Array [
+                            ".windows",
+                          ],
+                          "pre_packaged_rules": Array [
+                            Object {
+                              "id": "detectorRuleId",
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                    "last_update_time": 1,
+                    "name": "detectorName",
+                    "schedule": Object {
+                      "period": Object {
+                        "interval": 1,
+                        "unit": "minute",
+                      },
+                    },
+                    "triggers": Array [
+                      Object {
+                        "actions": Array [
+                          Object {
+                            "destination_id": "destinationId",
+                            "id": "someId",
+                            "message_template": Object {
+                              "lang": "en-US",
+                              "source": "messageSource",
+                            },
+                            "name": "triggerName",
+                            "subject_template": Object {
+                              "lang": "en-US",
+                              "source": "sourceTemplate",
+                            },
+                            "throttle": Object {
+                              "unit": "throttleUnit",
+                              "value": 1,
+                            },
+                            "throttle_enabled": false,
+                          },
+                          Object {
+                            "destination_id": "destinationId",
+                            "id": "someId",
+                            "message_template": Object {
+                              "lang": "en-US",
+                              "source": "messageSource",
+                            },
+                            "name": "triggerName",
+                            "subject_template": Object {
+                              "lang": "en-US",
+                              "source": "sourceTemplate",
+                            },
+                            "throttle": Object {
+                              "unit": "throttleUnit",
+                              "value": 1,
+                            },
+                            "throttle_enabled": false,
+                          },
+                        ],
+                        "id": "triggerId_0",
+                        "ids": Array [
+                          "ruleId1",
+                        ],
+                        "name": "alertName",
+                        "sev_levels": Array [
+                          "low",
+                        ],
+                        "severity": "1",
+                        "tags": Array [
+                          "any.tag",
+                        ],
+                        "types": Array [
+                          "detectorType1",
+                        ],
+                      },
+                      Object {
+                        "actions": Array [
+                          Object {
+                            "destination_id": "destinationId",
+                            "id": "someId",
+                            "message_template": Object {
+                              "lang": "en-US",
+                              "source": "messageSource",
+                            },
+                            "name": "triggerName",
+                            "subject_template": Object {
+                              "lang": "en-US",
+                              "source": "sourceTemplate",
+                            },
+                            "throttle": Object {
+                              "unit": "throttleUnit",
+                              "value": 1,
+                            },
+                            "throttle_enabled": false,
+                          },
+                          Object {
+                            "destination_id": "destinationId",
+                            "id": "someId",
+                            "message_template": Object {
+                              "lang": "en-US",
+                              "source": "messageSource",
+                            },
+                            "name": "triggerName",
+                            "subject_template": Object {
+                              "lang": "en-US",
+                              "source": "sourceTemplate",
+                            },
+                            "throttle": Object {
+                              "unit": "throttleUnit",
+                              "value": 1,
+                            },
+                            "throttle_enabled": false,
+                          },
+                        ],
+                        "id": "triggerId_1",
+                        "ids": Array [
+                          "ruleId1",
+                        ],
+                        "name": "alertName",
+                        "sev_levels": Array [
+                          "low",
+                        ],
+                        "severity": "1",
+                        "tags": Array [
+                          "any.tag",
+                        ],
+                        "types": Array [
+                          "detectorType1",
+                        ],
+                      },
+                    ],
+                    "type": "detector",
+                  },
+                },
+              }
+            }
+          >
+            <div>
+              <EuiHorizontalRule>
+                <hr
+                  className="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginLarge"
+                />
+              </EuiHorizontalRule>
+              <EuiSpacer
+                size="l"
+              >
+                <div
+                  className="euiSpacer euiSpacer--l"
+                />
+              </EuiSpacer>
+              <EuiAccordion
+                arrowDisplay="left"
+                buttonContent={
+                  <EuiText
+                    size="m"
+                  >
+                    <p>
+                      Alert on alertName
+                    </p>
+                  </EuiText>
+                }
+                id="alert-trigger-1"
+                initialIsOpen={false}
+                isLoading={false}
+                isLoadingMessage={false}
+                paddingSize="m"
+              >
+                <div
+                  className="euiAccordion"
+                >
+                  <div
+                    className="euiAccordion__triggerWrapper"
+                  >
+                    <button
+                      aria-controls="alert-trigger-1"
+                      aria-expanded={false}
+                      className="euiAccordion__button"
+                      id="some_html_id"
+                      onClick={[Function]}
+                      type="button"
+                    >
+                      <span
+                        className="euiAccordion__iconWrapper"
+                      >
+                        <EuiIcon
+                          className="euiAccordion__icon"
+                          size="m"
+                          type="arrowRight"
+                        >
+                          EuiIconMock
+                        </EuiIcon>
+                      </span>
+                      <span
+                        className="euiIEFlexWrapFix"
+                      >
+                        <EuiText
+                          size="m"
+                        >
+                          <div
+                            className="euiText euiText--medium"
+                          >
+                            <p>
+                              Alert on alertName
+                            </p>
+                          </div>
+                        </EuiText>
+                      </span>
+                    </button>
+                  </div>
+                  <div
+                    aria-labelledby="some_html_id"
+                    className="euiAccordion__childWrapper"
+                    id="alert-trigger-1"
+                    role="region"
+                    tabIndex={-1}
+                  >
+                    <EuiResizeObserver
+                      onResize={[Function]}
+                    >
+                      <div>
+                        <div
+                          className="euiAccordion__padding--m"
+                        >
+                          <EuiSpacer
+                            size="m"
+                          >
+                            <div
+                              className="euiSpacer euiSpacer--m"
+                            />
+                          </EuiSpacer>
+                          <EuiFormRow
+                            describedByIds={Array []}
+                            display="row"
+                            fullWidth={false}
+                            hasChildLabel={true}
+                            hasEmptyLabelSpace={false}
+                            label={
+                              <EuiText
+                                color="subdued"
+                              >
+                                Trigger name
+                              </EuiText>
+                            }
+                            labelType="label"
+                          >
+                            <div
+                              className="euiFormRow"
+                              id="some_html_id-row"
+                            >
+                              <div
+                                className="euiFormRow__labelWrapper"
+                              >
+                                <EuiFormLabel
+                                  className="euiFormRow__label"
+                                  htmlFor="some_html_id"
+                                  isFocused={false}
+                                  type="label"
+                                >
+                                  <label
+                                    className="euiFormLabel euiFormRow__label"
+                                    htmlFor="some_html_id"
+                                  >
+                                    <EuiText
+                                      color="subdued"
+                                    >
+                                      <div
+                                        className="euiText euiText--medium"
+                                      >
+                                        <EuiTextColor
+                                          color="subdued"
+                                          component="div"
+                                        >
+                                          <div
+                                            className="euiTextColor euiTextColor--subdued"
+                                          >
+                                            Trigger name
+                                          </div>
+                                        </EuiTextColor>
+                                      </div>
+                                    </EuiText>
+                                  </label>
+                                </EuiFormLabel>
+                              </div>
+                              <div
+                                className="euiFormRow__fieldWrapper"
+                              >
+                                <EuiText
+                                  data-test-subj="text-details-group-content-trigger name"
+                                  id="some_html_id"
+                                  onBlur={[Function]}
+                                  onFocus={[Function]}
+                                >
+                                  <div
+                                    className="euiText euiText--medium"
+                                    data-test-subj="text-details-group-content-trigger name"
+                                    id="some_html_id"
+                                    onBlur={[Function]}
+                                    onFocus={[Function]}
+                                  >
+                                    alertName
+                                  </div>
+                                </EuiText>
+                              </div>
+                            </div>
+                          </EuiFormRow>
+                          <EuiSpacer
+                            size="xl"
+                          >
+                            <div
+                              className="euiSpacer euiSpacer--xl"
+                            />
+                          </EuiSpacer>
+                          <EuiTitle
+                            size="s"
+                          >
+                            <h5
+                              className="euiTitle euiTitle--small"
+                            >
+                              If any detection rule matches
+                            </h5>
+                          </EuiTitle>
+                          <EuiSpacer
+                            size="m"
+                          >
+                            <div
+                              className="euiSpacer euiSpacer--m"
+                            />
+                          </EuiSpacer>
+                          <EuiFlexGroup>
+                            <div
+                              className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+                            >
+                              <EuiFlexItem
+                                grow={false}
+                                key="0"
+                                style={
+                                  Object {
+                                    "minWidth": "33.333333333333336%",
+                                  }
+                                }
+                              >
+                                <div
+                                  className="euiFlexItem euiFlexItem--flexGrowZero"
+                                  style={
+                                    Object {
+                                      "minWidth": "33.333333333333336%",
+                                    }
+                                  }
+                                >
+                                  <EuiFormRow
+                                    describedByIds={Array []}
+                                    display="row"
+                                    fullWidth={false}
+                                    hasChildLabel={true}
+                                    hasEmptyLabelSpace={false}
+                                    label={
+                                      <EuiText
+                                        color="subdued"
+                                      >
+                                        Log type
+                                      </EuiText>
+                                    }
+                                    labelType="label"
+                                  >
+                                    <div
+                                      className="euiFormRow"
+                                      id="some_html_id-row"
+                                    >
+                                      <div
+                                        className="euiFormRow__labelWrapper"
+                                      >
+                                        <EuiFormLabel
+                                          className="euiFormRow__label"
+                                          htmlFor="some_html_id"
+                                          isFocused={false}
+                                          type="label"
+                                        >
+                                          <label
+                                            className="euiFormLabel euiFormRow__label"
+                                            htmlFor="some_html_id"
+                                          >
+                                            <EuiText
+                                              color="subdued"
+                                            >
+                                              <div
+                                                className="euiText euiText--medium"
+                                              >
+                                                <EuiTextColor
+                                                  color="subdued"
+                                                  component="div"
+                                                >
+                                                  <div
+                                                    className="euiTextColor euiTextColor--subdued"
+                                                  >
+                                                    Log type
+                                                  </div>
+                                                </EuiTextColor>
+                                              </div>
+                                            </EuiText>
+                                          </label>
+                                        </EuiFormLabel>
+                                      </div>
+                                      <div
+                                        className="euiFormRow__fieldWrapper"
+                                      >
+                                        <EuiText
+                                          data-test-subj="text-details-group-content-log type"
+                                          id="some_html_id"
+                                          onBlur={[Function]}
+                                          onFocus={[Function]}
+                                        >
+                                          <div
+                                            className="euiText euiText--medium"
+                                            data-test-subj="text-details-group-content-log type"
+                                            id="some_html_id"
+                                            onBlur={[Function]}
+                                            onFocus={[Function]}
+                                          >
+                                            detectorType1
+                                          </div>
+                                        </EuiText>
+                                      </div>
+                                    </div>
+                                  </EuiFormRow>
+                                </div>
+                              </EuiFlexItem>
+                              <EuiFlexItem
+                                grow={false}
+                                key="1"
+                                style={
+                                  Object {
+                                    "minWidth": "33.333333333333336%",
+                                  }
+                                }
+                              >
+                                <div
+                                  className="euiFlexItem euiFlexItem--flexGrowZero"
+                                  style={
+                                    Object {
+                                      "minWidth": "33.333333333333336%",
+                                    }
+                                  }
+                                >
+                                  <EuiFormRow
+                                    describedByIds={Array []}
+                                    display="row"
+                                    fullWidth={false}
+                                    hasChildLabel={true}
+                                    hasEmptyLabelSpace={false}
+                                    label={
+                                      <EuiText
+                                        color="subdued"
+                                      >
+                                        Rule names
+                                      </EuiText>
+                                    }
+                                    labelType="label"
+                                  >
+                                    <div
+                                      className="euiFormRow"
+                                      id="some_html_id-row"
+                                    >
+                                      <div
+                                        className="euiFormRow__labelWrapper"
+                                      >
+                                        <EuiFormLabel
+                                          className="euiFormRow__label"
+                                          htmlFor="some_html_id"
+                                          isFocused={false}
+                                          type="label"
+                                        >
+                                          <label
+                                            className="euiFormLabel euiFormRow__label"
+                                            htmlFor="some_html_id"
+                                          >
+                                            <EuiText
+                                              color="subdued"
+                                            >
+                                              <div
+                                                className="euiText euiText--medium"
+                                              >
+                                                <EuiTextColor
+                                                  color="subdued"
+                                                  component="div"
+                                                >
+                                                  <div
+                                                    className="euiTextColor euiTextColor--subdued"
+                                                  >
+                                                    Rule names
+                                                  </div>
+                                                </EuiTextColor>
+                                              </div>
+                                            </EuiText>
+                                          </label>
+                                        </EuiFormLabel>
+                                      </div>
+                                      <div
+                                        className="euiFormRow__fieldWrapper"
+                                      >
+                                        <EuiText
+                                          data-test-subj="text-details-group-content-rule names"
+                                          id="some_html_id"
+                                          onBlur={[Function]}
+                                          onFocus={[Function]}
+                                        >
+                                          <div
+                                            className="euiText euiText--medium"
+                                            data-test-subj="text-details-group-content-rule names"
+                                            id="some_html_id"
+                                            onBlur={[Function]}
+                                            onFocus={[Function]}
+                                          >
+                                            -
+                                          </div>
+                                        </EuiText>
+                                      </div>
+                                    </div>
+                                  </EuiFormRow>
+                                </div>
+                              </EuiFlexItem>
+                            </div>
+                          </EuiFlexGroup>
+                          <EuiSpacer
+                            size="xl"
+                          >
+                            <div
+                              className="euiSpacer euiSpacer--xl"
+                            />
+                          </EuiSpacer>
+                          <EuiFlexGroup>
+                            <div
+                              className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+                            >
+                              <EuiFlexItem
+                                grow={false}
+                                key="0"
+                                style={
+                                  Object {
+                                    "minWidth": "33.333333333333336%",
+                                  }
+                                }
+                              >
+                                <div
+                                  className="euiFlexItem euiFlexItem--flexGrowZero"
+                                  style={
+                                    Object {
+                                      "minWidth": "33.333333333333336%",
+                                    }
+                                  }
+                                >
+                                  <EuiFormRow
+                                    describedByIds={Array []}
+                                    display="row"
+                                    fullWidth={false}
+                                    hasChildLabel={true}
+                                    hasEmptyLabelSpace={false}
+                                    label={
+                                      <EuiText
+                                        color="subdued"
+                                      >
+                                        Rule severities
+                                      </EuiText>
+                                    }
+                                    labelType="label"
+                                  >
+                                    <div
+                                      className="euiFormRow"
+                                      id="some_html_id-row"
+                                    >
+                                      <div
+                                        className="euiFormRow__labelWrapper"
+                                      >
+                                        <EuiFormLabel
+                                          className="euiFormRow__label"
+                                          htmlFor="some_html_id"
+                                          isFocused={false}
+                                          type="label"
+                                        >
+                                          <label
+                                            className="euiFormLabel euiFormRow__label"
+                                            htmlFor="some_html_id"
+                                          >
+                                            <EuiText
+                                              color="subdued"
+                                            >
+                                              <div
+                                                className="euiText euiText--medium"
+                                              >
+                                                <EuiTextColor
+                                                  color="subdued"
+                                                  component="div"
+                                                >
+                                                  <div
+                                                    className="euiTextColor euiTextColor--subdued"
+                                                  >
+                                                    Rule severities
+                                                  </div>
+                                                </EuiTextColor>
+                                              </div>
+                                            </EuiText>
+                                          </label>
+                                        </EuiFormLabel>
+                                      </div>
+                                      <div
+                                        className="euiFormRow__fieldWrapper"
+                                      >
+                                        <EuiText
+                                          data-test-subj="text-details-group-content-rule severities"
+                                          id="some_html_id"
+                                          onBlur={[Function]}
+                                          onFocus={[Function]}
+                                        >
+                                          <div
+                                            className="euiText euiText--medium"
+                                            data-test-subj="text-details-group-content-rule severities"
+                                            id="some_html_id"
+                                            onBlur={[Function]}
+                                            onFocus={[Function]}
+                                          >
+                                            low
+                                          </div>
+                                        </EuiText>
+                                      </div>
+                                    </div>
+                                  </EuiFormRow>
+                                </div>
+                              </EuiFlexItem>
+                              <EuiFlexItem
+                                grow={false}
+                                key="1"
+                                style={
+                                  Object {
+                                    "minWidth": "33.333333333333336%",
+                                  }
+                                }
+                              >
+                                <div
+                                  className="euiFlexItem euiFlexItem--flexGrowZero"
+                                  style={
+                                    Object {
+                                      "minWidth": "33.333333333333336%",
+                                    }
+                                  }
+                                >
+                                  <EuiFormRow
+                                    describedByIds={Array []}
+                                    display="row"
+                                    fullWidth={false}
+                                    hasChildLabel={true}
+                                    hasEmptyLabelSpace={false}
+                                    label={
+                                      <EuiText
+                                        color="subdued"
+                                      >
+                                        Tags
+                                      </EuiText>
+                                    }
+                                    labelType="label"
+                                  >
+                                    <div
+                                      className="euiFormRow"
+                                      id="some_html_id-row"
+                                    >
+                                      <div
+                                        className="euiFormRow__labelWrapper"
+                                      >
+                                        <EuiFormLabel
+                                          className="euiFormRow__label"
+                                          htmlFor="some_html_id"
+                                          isFocused={false}
+                                          type="label"
+                                        >
+                                          <label
+                                            className="euiFormLabel euiFormRow__label"
+                                            htmlFor="some_html_id"
+                                          >
+                                            <EuiText
+                                              color="subdued"
+                                            >
+                                              <div
+                                                className="euiText euiText--medium"
+                                              >
+                                                <EuiTextColor
+                                                  color="subdued"
+                                                  component="div"
+                                                >
+                                                  <div
+                                                    className="euiTextColor euiTextColor--subdued"
+                                                  >
+                                                    Tags
+                                                  </div>
+                                                </EuiTextColor>
+                                              </div>
+                                            </EuiText>
+                                          </label>
+                                        </EuiFormLabel>
+                                      </div>
+                                      <div
+                                        className="euiFormRow__fieldWrapper"
+                                      >
+                                        <EuiText
+                                          data-test-subj="text-details-group-content-tags"
+                                          id="some_html_id"
+                                          onBlur={[Function]}
+                                          onFocus={[Function]}
+                                        >
+                                          <div
+                                            className="euiText euiText--medium"
+                                            data-test-subj="text-details-group-content-tags"
+                                            id="some_html_id"
+                                            onBlur={[Function]}
+                                            onFocus={[Function]}
+                                          >
+                                            any.tag
+                                          </div>
+                                        </EuiText>
+                                      </div>
+                                    </div>
+                                  </EuiFormRow>
+                                </div>
+                              </EuiFlexItem>
+                            </div>
+                          </EuiFlexGroup>
+                          <EuiSpacer
+                            size="xl"
+                          >
+                            <div
+                              className="euiSpacer euiSpacer--xl"
+                            />
+                          </EuiSpacer>
+                          <EuiSpacer
+                            size="xl"
+                          >
+                            <div
+                              className="euiSpacer euiSpacer--xl"
+                            />
+                          </EuiSpacer>
+                          <EuiTitle
+                            size="s"
+                          >
+                            <h5
+                              className="euiTitle euiTitle--small"
+                            >
+                              Alert and notify
+                            </h5>
+                          </EuiTitle>
+                          <EuiSpacer
+                            size="m"
+                          >
+                            <div
+                              className="euiSpacer euiSpacer--m"
+                            />
+                          </EuiSpacer>
+                          <EuiFormRow
+                            describedByIds={Array []}
+                            display="row"
+                            fullWidth={false}
+                            hasChildLabel={true}
+                            hasEmptyLabelSpace={false}
+                            label={
+                              <EuiText
+                                color="subdued"
+                              >
+                                Trigger alerts with severity
+                              </EuiText>
+                            }
+                            labelType="label"
+                          >
+                            <div
+                              className="euiFormRow"
+                              id="some_html_id-row"
+                            >
+                              <div
+                                className="euiFormRow__labelWrapper"
+                              >
+                                <EuiFormLabel
+                                  className="euiFormRow__label"
+                                  htmlFor="some_html_id"
+                                  isFocused={false}
+                                  type="label"
+                                >
+                                  <label
+                                    className="euiFormLabel euiFormRow__label"
+                                    htmlFor="some_html_id"
+                                  >
+                                    <EuiText
+                                      color="subdued"
+                                    >
+                                      <div
+                                        className="euiText euiText--medium"
+                                      >
+                                        <EuiTextColor
+                                          color="subdued"
+                                          component="div"
+                                        >
+                                          <div
+                                            className="euiTextColor euiTextColor--subdued"
+                                          >
+                                            Trigger alerts with severity
+                                          </div>
+                                        </EuiTextColor>
+                                      </div>
+                                    </EuiText>
+                                  </label>
+                                </EuiFormLabel>
+                              </div>
+                              <div
+                                className="euiFormRow__fieldWrapper"
+                              >
+                                <EuiText
+                                  data-test-subj="text-details-group-content-trigger alerts with severity"
+                                  id="some_html_id"
+                                  onBlur={[Function]}
+                                  onFocus={[Function]}
+                                >
+                                  <div
+                                    className="euiText euiText--medium"
+                                    data-test-subj="text-details-group-content-trigger alerts with severity"
+                                    id="some_html_id"
+                                    onBlur={[Function]}
+                                    onFocus={[Function]}
+                                  >
+                                    1 (Highest)
+                                  </div>
+                                </EuiText>
+                              </div>
+                            </div>
+                          </EuiFormRow>
+                          <EuiSpacer
+                            size="l"
+                          >
+                            <div
+                              className="euiSpacer euiSpacer--l"
+                            />
+                          </EuiSpacer>
+                          <EuiFormRow
+                            describedByIds={Array []}
+                            display="row"
+                            fullWidth={false}
+                            hasChildLabel={true}
+                            hasEmptyLabelSpace={false}
+                            label={
+                              <EuiText
+                                color="subdued"
+                              >
+                                Notify channel
+                              </EuiText>
+                            }
+                            labelType="label"
+                          >
+                            <div
+                              className="euiFormRow"
+                              id="some_html_id-row"
+                            >
+                              <div
+                                className="euiFormRow__labelWrapper"
+                              >
+                                <EuiFormLabel
+                                  className="euiFormRow__label"
+                                  htmlFor="some_html_id"
+                                  isFocused={false}
+                                  type="label"
+                                >
+                                  <label
+                                    className="euiFormLabel euiFormRow__label"
+                                    htmlFor="some_html_id"
+                                  >
+                                    <EuiText
+                                      color="subdued"
+                                    >
+                                      <div
+                                        className="euiText euiText--medium"
+                                      >
+                                        <EuiTextColor
+                                          color="subdued"
+                                          component="div"
+                                        >
+                                          <div
+                                            className="euiTextColor euiTextColor--subdued"
+                                          >
+                                            Notify channel
+                                          </div>
+                                        </EuiTextColor>
+                                      </div>
+                                    </EuiText>
+                                  </label>
+                                </EuiFormLabel>
+                              </div>
+                              <div
+                                className="euiFormRow__fieldWrapper"
+                              >
+                                <EuiText
+                                  data-test-subj="text-details-group-content-notify channel"
+                                  id="some_html_id"
+                                  onBlur={[Function]}
+                                  onFocus={[Function]}
+                                >
+                                  <div
+                                    className="euiText euiText--medium"
+                                    data-test-subj="text-details-group-content-notify channel"
+                                    id="some_html_id"
+                                    onBlur={[Function]}
+                                    onFocus={[Function]}
+                                  >
+                                    <EuiText>
+                                      <div
+                                        className="euiText euiText--medium"
+                                      >
+                                        -
+                                      </div>
+                                    </EuiText>
+                                  </div>
+                                </EuiText>
+                              </div>
+                            </div>
+                          </EuiFormRow>
+                        </div>
+                      </div>
+                    </EuiResizeObserver>
+                  </div>
+                </div>
+              </EuiAccordion>
+              <EuiSpacer
+                size="m"
+              >
+                <div
+                  className="euiSpacer euiSpacer--m"
+                />
+              </EuiSpacer>
+            </div>
+          </AlertTriggerView>
+        </div>
+      </div>
+    </EuiPanel>
+  </ContentPanel>
+</AlertTriggersView>
+`;

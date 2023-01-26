@@ -66,6 +66,16 @@ jest.mock('moment', () => {
 });
 
 const mockUseContext = {
+  notificationsService: {
+    getChannels: () => {
+      return {
+        ok: true,
+        response: {
+          channel_list: [],
+        },
+      };
+    },
+  },
   indexService: {
     getIndices: () => {
       return {

@@ -7,6 +7,8 @@ import {
   TriggerAction,
 } from '../../models/interfaces';
 import { DetectorHit, DetectorResponse } from '../../server/models/interfaces';
+import _ from 'lodash';
+import { DetectorsService } from '../services';
 
 export const detectorRuleInfoMock: DetectorRuleInfo = {
   id: 'detectorRuleId',
@@ -51,6 +53,7 @@ export const triggerActionMock: TriggerAction = {
 export const alertConditionMock: AlertCondition = {
   // Trigger fields
   name: 'alertName',
+  id: 'triggerId',
 
   // Detector types
   types: ['detectorType1'],
@@ -73,7 +76,12 @@ export const detectorMock: Detector = {
   createdBy: 'testUser',
   schedule: periodScheduleMock,
   inputs: [detectorInputMock],
-  triggers: [alertConditionMock, alertConditionMock],
+  triggers: _.times(2, (index) => {
+    return {
+      ...alertConditionMock,
+      id: `triggerId_${index}`,
+    };
+  }),
 };
 
 export const detectorResponse: DetectorResponse = {
@@ -86,6 +94,19 @@ export const mockDetectorHit: DetectorHit = {
   _index: '.windows',
   _source: detectorResponse,
   _id: 'detectorHitId',
+};
+
+export const mockDetectorService: DetectorsService = {
+  getDetectors: () => {
+    return {
+      ok: true,
+      response: {
+        hits: {
+          hits: [mockDetectorHit],
+        },
+      },
+    };
+  },
 };
 
 export const notificationsStart = {

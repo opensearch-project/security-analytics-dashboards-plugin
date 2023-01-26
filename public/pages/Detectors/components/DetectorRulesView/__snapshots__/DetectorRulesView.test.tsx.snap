@@ -74,6 +74,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
               "throttle_enabled": false,
             },
           ],
+          "id": "triggerId_0",
           "ids": Array [
             "ruleId1",
           ],
@@ -128,6 +129,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
               "throttle_enabled": false,
             },
           ],
+          "id": "triggerId_1",
           "ids": Array [
             "ruleId1",
           ],
