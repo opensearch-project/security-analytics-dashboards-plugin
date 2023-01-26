@@ -1,7 +1,7 @@
 import { mockDetectorHit, mockDetectorService, notificationsStart } from '../../../Interfaces.mock';
 import FieldMappingService from '../../../../services/FieldMappingService';
 
-const fieldMappingService: FieldMappingService = {
+export const fieldMappingService: FieldMappingService = {
   createMappings: () => {
     return Promise.resolve({
       ok: true,
@@ -10,7 +10,9 @@ const fieldMappingService: FieldMappingService = {
   getMappingsView: () => {
     return {
       ok: true,
-      response: {},
+      response: {
+        properties: {},
+      },
     };
   },
   getMappings: () => {

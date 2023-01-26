@@ -1,0 +1,1048 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<EditFieldMappings /> spec renders the component 1`] = `
+<EditFieldMappings
+  detector={
+    Object {
+      "createdBy": "testUser",
+      "detector_type": ".windows",
+      "enabled": true,
+      "inputs": Array [
+        Object {
+          "detector_input": Object {
+            "custom_rules": Array [
+              Object {
+                "id": "detectorRuleId",
+              },
+            ],
+            "description": "detectorDescription",
+            "indices": Array [
+              ".windows",
+            ],
+            "pre_packaged_rules": Array [
+              Object {
+                "id": "detectorRuleId",
+              },
+            ],
+          },
+        },
+      ],
+      "name": "detectorName",
+      "schedule": Object {
+        "period": Object {
+          "interval": 1,
+          "unit": "minute",
+        },
+      },
+      "triggers": Array [
+        Object {
+          "actions": Array [
+            Object {
+              "destination_id": "destinationId",
+              "id": "someId",
+              "message_template": Object {
+                "lang": "en-US",
+                "source": "messageSource",
+              },
+              "name": "triggerName",
+              "subject_template": Object {
+                "lang": "en-US",
+                "source": "sourceTemplate",
+              },
+              "throttle": Object {
+                "unit": "throttleUnit",
+                "value": 1,
+              },
+              "throttle_enabled": false,
+            },
+            Object {
+              "destination_id": "destinationId",
+              "id": "someId",
+              "message_template": Object {
+                "lang": "en-US",
+                "source": "messageSource",
+              },
+              "name": "triggerName",
+              "subject_template": Object {
+                "lang": "en-US",
+                "source": "sourceTemplate",
+              },
+              "throttle": Object {
+                "unit": "throttleUnit",
+                "value": 1,
+              },
+              "throttle_enabled": false,
+            },
+          ],
+          "id": "triggerId_0",
+          "ids": Array [
+            "ruleId1",
+          ],
+          "name": "alertName",
+          "sev_levels": Array [
+            "low",
+          ],
+          "severity": "1",
+          "tags": Array [
+            "any.tag",
+          ],
+          "types": Array [
+            "detectorType1",
+          ],
+        },
+        Object {
+          "actions": Array [
+            Object {
+              "destination_id": "destinationId",
+              "id": "someId",
+              "message_template": Object {
+                "lang": "en-US",
+                "source": "messageSource",
+              },
+              "name": "triggerName",
+              "subject_template": Object {
+                "lang": "en-US",
+                "source": "sourceTemplate",
+              },
+              "throttle": Object {
+                "unit": "throttleUnit",
+                "value": 1,
+              },
+              "throttle_enabled": false,
+            },
+            Object {
+              "destination_id": "destinationId",
+              "id": "someId",
+              "message_template": Object {
+                "lang": "en-US",
+                "source": "messageSource",
+              },
+              "name": "triggerName",
+              "subject_template": Object {
+                "lang": "en-US",
+                "source": "sourceTemplate",
+              },
+              "throttle": Object {
+                "unit": "throttleUnit",
+                "value": 1,
+              },
+              "throttle_enabled": false,
+            },
+          ],
+          "id": "triggerId_1",
+          "ids": Array [
+            "ruleId1",
+          ],
+          "name": "alertName",
+          "sev_levels": Array [
+            "low",
+          ],
+          "severity": "1",
+          "tags": Array [
+            "any.tag",
+          ],
+          "types": Array [
+            "detectorType1",
+          ],
+        },
+      ],
+      "type": "detector",
+    }
+  }
+  fieldMappings={Array []}
+  filedMappingService={
+    Object {
+      "createMappings": [Function],
+      "getMappings": [Function],
+      "getMappingsView": [Function],
+    }
+  }
+  loading={false}
+  replaceFieldMappings={[MockFunction]}
+>
+  <div>
+    <EuiPanel>
+      <div
+        className="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
+      >
+        <EuiAccordion
+          arrowDisplay="left"
+          buttonContent={
+            <div
+              data-test-subj="mapped-fields-btn"
+            >
+              <EuiTitle>
+                <h4>
+                  Mapped fields (0)
+                </h4>
+              </EuiTitle>
+            </div>
+          }
+          buttonProps={
+            Object {
+              "style": Object {
+                "paddingLeft": "10px",
+                "paddingRight": "10px",
+              },
+            }
+          }
+          id="mappedFieldsAccordion"
+          initialIsOpen={true}
+          isLoading={false}
+          isLoadingMessage={false}
+          paddingSize="none"
+        >
+          <div
+            className="euiAccordion euiAccordion-isOpen"
+          >
+            <div
+              className="euiAccordion__triggerWrapper"
+            >
+              <button
+                aria-controls="mappedFieldsAccordion"
+                aria-expanded={true}
+                className="euiAccordion__button"
+                id="some_html_id"
+                onClick={[Function]}
+                style={
+                  Object {
+                    "paddingLeft": "10px",
+                    "paddingRight": "10px",
+                  }
+                }
+                type="button"
+              >
+                <span
+                  className="euiAccordion__iconWrapper"
+                >
+                  <EuiIcon
+                    className="euiAccordion__icon euiAccordion__icon-isOpen"
+                    size="m"
+                    type="arrowRight"
+                  >
+                    EuiIconMock
+                  </EuiIcon>
+                </span>
+                <span
+                  className="euiIEFlexWrapFix"
+                >
+                  <div
+                    data-test-subj="mapped-fields-btn"
+                  >
+                    <EuiTitle>
+                      <h4
+                        className="euiTitle euiTitle--medium"
+                      >
+                        Mapped fields (0)
+                      </h4>
+                    </EuiTitle>
+                  </div>
+                </span>
+              </button>
+            </div>
+            <div
+              aria-labelledby="some_html_id"
+              className="euiAccordion__childWrapper"
+              id="mappedFieldsAccordion"
+              role="region"
+              tabIndex={-1}
+            >
+              <EuiResizeObserver
+                onResize={[Function]}
+              >
+                <div>
+                  <div
+                    className=""
+                  >
+                    <EuiHorizontalRule
+                      margin="xs"
+                    >
+                      <hr
+                        className="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginXSmall"
+                      />
+                    </EuiHorizontalRule>
+                    <FieldMappingsTable
+                      detector={
+                        Object {
+                          "createdBy": "testUser",
+                          "detector_type": ".windows",
+                          "enabled": true,
+                          "inputs": Array [
+                            Object {
+                              "detector_input": Object {
+                                "custom_rules": Array [
+                                  Object {
+                                    "id": "detectorRuleId",
+                                  },
+                                ],
+                                "description": "detectorDescription",
+                                "indices": Array [
+                                  ".windows",
+                                ],
+                                "pre_packaged_rules": Array [
+                                  Object {
+                                    "id": "detectorRuleId",
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                          "name": "detectorName",
+                          "schedule": Object {
+                            "period": Object {
+                              "interval": 1,
+                              "unit": "minute",
+                            },
+                          },
+                          "triggers": Array [
+                            Object {
+                              "actions": Array [
+                                Object {
+                                  "destination_id": "destinationId",
+                                  "id": "someId",
+                                  "message_template": Object {
+                                    "lang": "en-US",
+                                    "source": "messageSource",
+                                  },
+                                  "name": "triggerName",
+                                  "subject_template": Object {
+                                    "lang": "en-US",
+                                    "source": "sourceTemplate",
+                                  },
+                                  "throttle": Object {
+                                    "unit": "throttleUnit",
+                                    "value": 1,
+                                  },
+                                  "throttle_enabled": false,
+                                },
+                                Object {
+                                  "destination_id": "destinationId",
+                                  "id": "someId",
+                                  "message_template": Object {
+                                    "lang": "en-US",
+                                    "source": "messageSource",
+                                  },
+                                  "name": "triggerName",
+                                  "subject_template": Object {
+                                    "lang": "en-US",
+                                    "source": "sourceTemplate",
+                                  },
+                                  "throttle": Object {
+                                    "unit": "throttleUnit",
+                                    "value": 1,
+                                  },
+                                  "throttle_enabled": false,
+                                },
+                              ],
+                              "id": "triggerId_0",
+                              "ids": Array [
+                                "ruleId1",
+                              ],
+                              "name": "alertName",
+                              "sev_levels": Array [
+                                "low",
+                              ],
+                              "severity": "1",
+                              "tags": Array [
+                                "any.tag",
+                              ],
+                              "types": Array [
+                                "detectorType1",
+                              ],
+                            },
+                            Object {
+                              "actions": Array [
+                                Object {
+                                  "destination_id": "destinationId",
+                                  "id": "someId",
+                                  "message_template": Object {
+                                    "lang": "en-US",
+                                    "source": "messageSource",
+                                  },
+                                  "name": "triggerName",
+                                  "subject_template": Object {
+                                    "lang": "en-US",
+                                    "source": "sourceTemplate",
+                                  },
+                                  "throttle": Object {
+                                    "unit": "throttleUnit",
+                                    "value": 1,
+                                  },
+                                  "throttle_enabled": false,
+                                },
+                                Object {
+                                  "destination_id": "destinationId",
+                                  "id": "someId",
+                                  "message_template": Object {
+                                    "lang": "en-US",
+                                    "source": "messageSource",
+                                  },
+                                  "name": "triggerName",
+                                  "subject_template": Object {
+                                    "lang": "en-US",
+                                    "source": "sourceTemplate",
+                                  },
+                                  "throttle": Object {
+                                    "unit": "throttleUnit",
+                                    "value": 1,
+                                  },
+                                  "throttle_enabled": false,
+                                },
+                              ],
+                              "id": "triggerId_1",
+                              "ids": Array [
+                                "ruleId1",
+                              ],
+                              "name": "alertName",
+                              "sev_levels": Array [
+                                "low",
+                              ],
+                              "severity": "1",
+                              "tags": Array [
+                                "any.tag",
+                              ],
+                              "types": Array [
+                                "detectorType1",
+                              ],
+                            },
+                          ],
+                          "type": "detector",
+                        }
+                      }
+                      fieldMappings={Array []}
+                      filedMappingService={
+                        Object {
+                          "createMappings": [Function],
+                          "getMappings": [Function],
+                          "getMappingsView": [Function],
+                        }
+                      }
+                      indexFields={Array []}
+                      loading={false}
+                      mappingProps={
+                        Object {
+                          "existingMappings": Object {},
+                          "invalidMappingFieldNames": Array [],
+                          "onMappingCreation": [Function],
+                          "type": 1,
+                        }
+                      }
+                      replaceFieldMappings={[MockFunction]}
+                      ruleFields={Array []}
+                    >
+                      <EuiInMemoryTable
+                        columns={
+                          Array [
+                            Object {
+                              "dataType": "string",
+                              "field": "ruleFieldName",
+                              "name": "Rule field name",
+                              "render": [Function],
+                              "width": "25%",
+                            },
+                            Object {
+                              "align": "center",
+                              "field": "",
+                              "name": "Maps to",
+                              "render": [Function],
+                              "width": "15%",
+                            },
+                            Object {
+                              "dataType": "string",
+                              "field": "logFieldName",
+                              "name": "Log field name",
+                              "render": [Function],
+                              "width": "45%",
+                            },
+                            Object {
+                              "align": "center",
+                              "dataType": "string",
+                              "field": "status",
+                              "name": "Status",
+                              "render": [Function],
+                              "sortable": true,
+                              "width": "15%",
+                            },
+                          ]
+                        }
+                        isSelectable={false}
+                        items={Array []}
+                        loading={false}
+                        message={
+                          <EuiEmptyPrompt
+                            body={
+                              <EuiText>
+                                <p>
+                                  There are no field mappings.
+                                </p>
+                              </EuiText>
+                            }
+                            style={
+                              Object {
+                                "maxWidth": "45em",
+                              }
+                            }
+                          />
+                        }
+                        onTableChange={[Function]}
+                        pagination={
+                          Object {
+                            "pageIndex": 0,
+                          }
+                        }
+                        responsive={true}
+                        sorting={
+                          Object {
+                            "sort": Object {
+                              "direction": "asc",
+                              "field": "ruleFieldName",
+                            },
+                          }
+                        }
+                        tableLayout="fixed"
+                      >
+                        <EuiBasicTable
+                          columns={
+                            Array [
+                              Object {
+                                "dataType": "string",
+                                "field": "ruleFieldName",
+                                "name": "Rule field name",
+                                "render": [Function],
+                                "width": "25%",
+                              },
+                              Object {
+                                "align": "center",
+                                "field": "",
+                                "name": "Maps to",
+                                "render": [Function],
+                                "width": "15%",
+                              },
+                              Object {
+                                "dataType": "string",
+                                "field": "logFieldName",
+                                "name": "Log field name",
+                                "render": [Function],
+                                "width": "45%",
+                              },
+                              Object {
+                                "align": "center",
+                                "dataType": "string",
+                                "field": "status",
+                                "name": "Status",
+                                "render": [Function],
+                                "sortable": true,
+                                "width": "15%",
+                              },
+                            ]
+                          }
+                          isSelectable={false}
+                          items={Array []}
+                          loading={false}
+                          noItemsMessage={
+                            <EuiEmptyPrompt
+                              body={
+                                <EuiText>
+                                  <p>
+                                    There are no field mappings.
+                                  </p>
+                                </EuiText>
+                              }
+                              style={
+                                Object {
+                                  "maxWidth": "45em",
+                                }
+                              }
+                            />
+                          }
+                          onChange={[Function]}
+                          pagination={
+                            Object {
+                              "hidePerPageOptions": undefined,
+                              "pageIndex": 0,
+                              "pageSize": 10,
+                              "pageSizeOptions": Array [
+                                10,
+                                25,
+                                50,
+                              ],
+                              "totalItemCount": 0,
+                            }
+                          }
+                          responsive={true}
+                          sorting={
+                            Object {
+                              "allowNeutralSort": true,
+                              "sort": Object {
+                                "direction": "asc",
+                                "field": "Rule field name",
+                              },
+                            }
+                          }
+                          tableLayout="fixed"
+                        >
+                          <div
+                            className="euiBasicTable"
+                          >
+                            <div>
+                              <EuiTableHeaderMobile>
+                                <div
+                                  className="euiTableHeaderMobile"
+                                >
+                                  <EuiFlexGroup
+                                    alignItems="baseline"
+                                    justifyContent="spaceBetween"
+                                    responsive={false}
+                                  >
+                                    <div
+                                      className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsBaseline euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow"
+                                    >
+                                      <EuiFlexItem
+                                        grow={false}
+                                      >
+                                        <div
+                                          className="euiFlexItem euiFlexItem--flexGrowZero"
+                                        />
+                                      </EuiFlexItem>
+                                      <EuiFlexItem
+                                        grow={false}
+                                      >
+                                        <div
+                                          className="euiFlexItem euiFlexItem--flexGrowZero"
+                                        >
+                                          <EuiTableSortMobile
+                                            items={
+                                              Array [
+                                                Object {
+                                                  "isSortAscending": undefined,
+                                                  "isSorted": false,
+                                                  "key": "_data_s_status_3",
+                                                  "name": "Status",
+                                                  "onSort": [Function],
+                                                },
+                                              ]
+                                            }
+                                          >
+                                            <div
+                                              className="euiTableSortMobile"
+                                            >
+                                              <EuiPopover
+                                                anchorPosition="downRight"
+                                                button={
+                                                  <EuiButtonEmpty
+                                                    flush="right"
+                                                    iconSide="right"
+                                                    iconType="arrowDown"
+                                                    onClick={[Function]}
+                                                    size="xs"
+                                                  >
+                                                    <EuiI18n
+                                                      default="Sorting"
+                                                      token="euiTableSortMobile.sorting"
+                                                    />
+                                                  </EuiButtonEmpty>
+                                                }
+                                                closePopover={[Function]}
+                                                display="inlineBlock"
+                                                hasArrow={true}
+                                                isOpen={false}
+                                                ownFocus={true}
+                                                panelPaddingSize="none"
+                                              >
+                                                <div
+                                                  className="euiPopover euiPopover--anchorDownRight"
+                                                >
+                                                  <div
+                                                    className="euiPopover__anchor"
+                                                  >
+                                                    <EuiButtonEmpty
+                                                      flush="right"
+                                                      iconSide="right"
+                                                      iconType="arrowDown"
+                                                      onClick={[Function]}
+                                                      size="xs"
+                                                    >
+                                                      <button
+                                                        className="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--flushRight"
+                                                        disabled={false}
+                                                        onClick={[Function]}
+                                                        type="button"
+                                                      >
+                                                        <EuiButtonContent
+                                                          className="euiButtonEmpty__content"
+                                                          iconSide="right"
+                                                          iconSize="s"
+                                                          iconType="arrowDown"
+                                                          textProps={
+                                                            Object {
+                                                              "className": "euiButtonEmpty__text",
+                                                            }
+                                                          }
+                                                        >
+                                                          <span
+                                                            className="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                                                          >
+                                                            <EuiIcon
+                                                              className="euiButtonContent__icon"
+                                                              color="inherit"
+                                                              size="s"
+                                                              type="arrowDown"
+                                                            >
+                                                              EuiIconMock
+                                                            </EuiIcon>
+                                                            <span
+                                                              className="euiButtonEmpty__text"
+                                                            >
+                                                              <EuiI18n
+                                                                default="Sorting"
+                                                                token="euiTableSortMobile.sorting"
+                                                              >
+                                                                Sorting
+                                                              </EuiI18n>
+                                                            </span>
+                                                          </span>
+                                                        </EuiButtonContent>
+                                                      </button>
+                                                    </EuiButtonEmpty>
+                                                  </div>
+                                                </div>
+                                              </EuiPopover>
+                                            </div>
+                                          </EuiTableSortMobile>
+                                        </div>
+                                      </EuiFlexItem>
+                                    </div>
+                                  </EuiFlexGroup>
+                                </div>
+                              </EuiTableHeaderMobile>
+                              <EuiTable
+                                id="some_html_id"
+                                responsive={true}
+                                tableLayout="fixed"
+                              >
+                                <table
+                                  className="euiTable euiTable--responsive"
+                                  id="some_html_id"
+                                  tabIndex={-1}
+                                >
+                                  <EuiScreenReaderOnly>
+                                    <caption
+                                      className="euiScreenReaderOnly euiTableCaption"
+                                    >
+                                      <EuiDelayRender
+                                        delay={500}
+                                      />
+                                    </caption>
+                                  </EuiScreenReaderOnly>
+                                  <EuiTableHeader>
+                                    <thead>
+                                      <tr>
+                                        <EuiTableHeaderCell
+                                          align="left"
+                                          data-test-subj="tableHeaderCell_ruleFieldName_0"
+                                          key="_data_h_ruleFieldName_0"
+                                          width="25%"
+                                        >
+                                          <th
+                                            className="euiTableHeaderCell"
+                                            data-test-subj="tableHeaderCell_ruleFieldName_0"
+                                            role="columnheader"
+                                            scope="col"
+                                            style={
+                                              Object {
+                                                "width": "25%",
+                                              }
+                                            }
+                                          >
+                                            <CellContents
+                                              className="euiTableCellContent"
+                                              showSortMsg={false}
+                                            >
+                                              <span
+                                                className="euiTableCellContent"
+                                              >
+                                                <EuiInnerText>
+                                                  <EuiI18n
+                                                    default="{innerText}; {description}"
+                                                    token="euiTableHeaderCell.titleTextWithDesc"
+                                                    values={
+                                                      Object {
+                                                        "description": undefined,
+                                                        "innerText": "Rule field name",
+                                                      }
+                                                    }
+                                                  >
+                                                    <span
+                                                      className="euiTableCellContent__text"
+                                                      title="Rule field name"
+                                                    >
+                                                      Rule field name
+                                                    </span>
+                                                  </EuiI18n>
+                                                </EuiInnerText>
+                                              </span>
+                                            </CellContents>
+                                          </th>
+                                        </EuiTableHeaderCell>
+                                        <EuiTableHeaderCell
+                                          align="center"
+                                          data-test-subj="tableHeaderCell_Maps to_1"
+                                          key="_computed_column_h_1"
+                                          width="15%"
+                                        >
+                                          <th
+                                            className="euiTableHeaderCell"
+                                            data-test-subj="tableHeaderCell_Maps to_1"
+                                            role="columnheader"
+                                            scope="col"
+                                            style={
+                                              Object {
+                                                "width": "15%",
+                                              }
+                                            }
+                                          >
+                                            <CellContents
+                                              className="euiTableCellContent euiTableCellContent--alignCenter"
+                                              showSortMsg={false}
+                                            >
+                                              <span
+                                                className="euiTableCellContent euiTableCellContent--alignCenter"
+                                              >
+                                                <EuiInnerText>
+                                                  <EuiI18n
+                                                    default="{innerText}; {description}"
+                                                    token="euiTableHeaderCell.titleTextWithDesc"
+                                                    values={
+                                                      Object {
+                                                        "description": undefined,
+                                                        "innerText": "Maps to",
+                                                      }
+                                                    }
+                                                  >
+                                                    <span
+                                                      className="euiTableCellContent__text"
+                                                      title="Maps to"
+                                                    >
+                                                      Maps to
+                                                    </span>
+                                                  </EuiI18n>
+                                                </EuiInnerText>
+                                              </span>
+                                            </CellContents>
+                                          </th>
+                                        </EuiTableHeaderCell>
+                                        <EuiTableHeaderCell
+                                          align="left"
+                                          data-test-subj="tableHeaderCell_logFieldName_2"
+                                          key="_data_h_logFieldName_2"
+                                          width="45%"
+                                        >
+                                          <th
+                                            className="euiTableHeaderCell"
+                                            data-test-subj="tableHeaderCell_logFieldName_2"
+                                            role="columnheader"
+                                            scope="col"
+                                            style={
+                                              Object {
+                                                "width": "45%",
+                                              }
+                                            }
+                                          >
+                                            <CellContents
+                                              className="euiTableCellContent"
+                                              showSortMsg={false}
+                                            >
+                                              <span
+                                                className="euiTableCellContent"
+                                              >
+                                                <EuiInnerText>
+                                                  <EuiI18n
+                                                    default="{innerText}; {description}"
+                                                    token="euiTableHeaderCell.titleTextWithDesc"
+                                                    values={
+                                                      Object {
+                                                        "description": undefined,
+                                                        "innerText": "Log field name",
+                                                      }
+                                                    }
+                                                  >
+                                                    <span
+                                                      className="euiTableCellContent__text"
+                                                      title="Log field name"
+                                                    >
+                                                      Log field name
+                                                    </span>
+                                                  </EuiI18n>
+                                                </EuiInnerText>
+                                              </span>
+                                            </CellContents>
+                                          </th>
+                                        </EuiTableHeaderCell>
+                                        <EuiTableHeaderCell
+                                          align="center"
+                                          data-test-subj="tableHeaderCell_status_3"
+                                          isSorted={false}
+                                          key="_data_h_status_3"
+                                          onSort={[Function]}
+                                          width="15%"
+                                        >
+                                          <th
+                                            aria-live="polite"
+                                            aria-sort="none"
+                                            className="euiTableHeaderCell"
+                                            data-test-subj="tableHeaderCell_status_3"
+                                            role="columnheader"
+                                            scope="col"
+                                            style={
+                                              Object {
+                                                "width": "15%",
+                                              }
+                                            }
+                                          >
+                                            <button
+                                              className="euiTableHeaderButton"
+                                              data-test-subj="tableHeaderSortButton"
+                                              onClick={[Function]}
+                                              type="button"
+                                            >
+                                              <CellContents
+                                                className="euiTableCellContent euiTableCellContent--alignCenter"
+                                                isSorted={false}
+                                                showSortMsg={true}
+                                              >
+                                                <span
+                                                  className="euiTableCellContent euiTableCellContent--alignCenter"
+                                                >
+                                                  <EuiInnerText>
+                                                    <EuiI18n
+                                                      default="{innerText}; {description}"
+                                                      token="euiTableHeaderCell.titleTextWithDesc"
+                                                      values={
+                                                        Object {
+                                                          "description": undefined,
+                                                          "innerText": "Status",
+                                                        }
+                                                      }
+                                                    >
+                                                      <span
+                                                        className="euiTableCellContent__text"
+                                                        title="Status"
+                                                      >
+                                                        Status
+                                                      </span>
+                                                    </EuiI18n>
+                                                  </EuiInnerText>
+                                                </span>
+                                              </CellContents>
+                                            </button>
+                                          </th>
+                                        </EuiTableHeaderCell>
+                                      </tr>
+                                    </thead>
+                                  </EuiTableHeader>
+                                  <EuiTableBody>
+                                    <tbody>
+                                      <EuiTableRow>
+                                        <tr
+                                          className="euiTableRow"
+                                        >
+                                          <EuiTableRowCell
+                                            align="center"
+                                            colSpan={4}
+                                            isMobileFullWidth={true}
+                                          >
+                                            <td
+                                              className="euiTableRowCell euiTableRowCell--isMobileFullWidth"
+                                              colSpan={4}
+                                              style={
+                                                Object {
+                                                  "width": undefined,
+                                                }
+                                              }
+                                            >
+                                              <div
+                                                className="euiTableCellContent euiTableCellContent--alignCenter"
+                                              >
+                                                <span
+                                                  className="euiTableCellContent__text"
+                                                >
+                                                  <EuiEmptyPrompt
+                                                    body={
+                                                      <EuiText>
+                                                        <p>
+                                                          There are no field mappings.
+                                                        </p>
+                                                      </EuiText>
+                                                    }
+                                                    style={
+                                                      Object {
+                                                        "maxWidth": "45em",
+                                                      }
+                                                    }
+                                                  >
+                                                    <div
+                                                      className="euiEmptyPrompt"
+                                                      style={
+                                                        Object {
+                                                          "maxWidth": "45em",
+                                                        }
+                                                      }
+                                                    >
+                                                      <EuiTextColor
+                                                        color="subdued"
+                                                      >
+                                                        <span
+                                                          className="euiTextColor euiTextColor--subdued"
+                                                        >
+                                                          <EuiText>
+                                                            <div
+                                                              className="euiText euiText--medium"
+                                                            >
+                                                              <EuiText>
+                                                                <div
+                                                                  className="euiText euiText--medium"
+                                                                >
+                                                                  <p>
+                                                                    There are no field mappings.
+                                                                  </p>
+                                                                </div>
+                                                              </EuiText>
+                                                            </div>
+                                                          </EuiText>
+                                                        </span>
+                                                      </EuiTextColor>
+                                                    </div>
+                                                  </EuiEmptyPrompt>
+                                                </span>
+                                              </div>
+                                            </td>
+                                          </EuiTableRowCell>
+                                        </tr>
+                                      </EuiTableRow>
+                                    </tbody>
+                                  </EuiTableBody>
+                                </table>
+                              </EuiTable>
+                            </div>
+                          </div>
+                        </EuiBasicTable>
+                      </EuiInMemoryTable>
+                    </FieldMappingsTable>
+                  </div>
+                </div>
+              </EuiResizeObserver>
+            </div>
+          </div>
+        </EuiAccordion>
+      </div>
+    </EuiPanel>
+    <EuiSpacer
+      size="m"
+    >
+      <div
+        className="euiSpacer euiSpacer--m"
+      />
+    </EuiSpacer>
+  </div>
+</EditFieldMappings>
+`;
