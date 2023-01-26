@@ -2,7 +2,6 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import { HttpSetup } from 'opensearch-dashboards/public';
 
 const httpClientMock = jest.fn() as any;

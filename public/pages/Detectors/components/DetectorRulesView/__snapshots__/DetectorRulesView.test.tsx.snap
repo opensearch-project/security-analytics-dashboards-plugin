@@ -6,390 +6,393 @@ Object {
   "baseElement": <body>
     <div>
       <div
-        class="euiAccordion"
-        title="View detection rules (2)"
+        class="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
+        style="padding-left: 0px; padding-right: 0px;"
       >
         <div
-          class="euiAccordion__triggerWrapper"
+          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive"
+          style="padding: 0px 10px;"
         >
-          <button
-            aria-controls="detectorName"
-            aria-expanded="false"
-            class="euiAccordion__button"
-            id="some_html_id"
-            type="button"
+          <div
+            class="euiFlexItem"
           >
-            <span
-              class="euiAccordion__iconWrapper"
+            <h3
+              class="euiTitle euiTitle--medium"
             >
-              EuiIconMock
-            </span>
-            <span
-              class="euiIEFlexWrapFix"
+              Active rules (2)
+            </h3>
+          </div>
+          <div
+            class="euiFlexItem euiFlexItem--flexGrowZero"
+          >
+            <div
+              class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive"
             >
               <div
-                class="euiText euiText--medium"
+                class="euiFlexItem"
               >
-                <p>
-                  View detection rules (2)
-                </p>
+                <button
+                  class="euiButton euiButton--primary"
+                  data-test-subj="edit-detector-rules"
+                  type="button"
+                >
+                  <span
+                    class="euiButtonContent euiButton__content"
+                  >
+                    <span
+                      class="euiButton__text"
+                    >
+                      Edit
+                    </span>
+                  </span>
+                </button>
               </div>
-            </span>
-          </button>
+            </div>
+          </div>
         </div>
+        <hr
+          class="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginXSmall"
+        />
         <div
-          aria-labelledby="some_html_id"
-          class="euiAccordion__childWrapper"
-          id="detectorName"
-          role="region"
-          tabindex="-1"
+          style="padding: 0px 10px;"
         >
-          <div>
-            <div
-              class=""
-            >
+          <div
+            class="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
+          >
+            <div>
+              <div
+                class="euiFlexGroup euiFlexGroup--gutterMedium euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow euiFlexGroup--responsive euiFlexGroup--wrap"
+              >
+                <div
+                  class="euiFlexItem euiSearchBar__searchHolder"
+                >
+                  <div
+                    class="euiFormControlLayout euiFormControlLayout--fullWidth"
+                  >
+                    <div
+                      class="euiFormControlLayout__childrenWrapper"
+                    >
+                      <input
+                        aria-label="This is a search bar. After typing your query, hit enter to filter the results lower in the page."
+                        class="euiFieldSearch euiFieldSearch--fullWidth"
+                        placeholder="Search rules"
+                        type="search"
+                        value=""
+                      />
+                      <div
+                        class="euiFormControlLayoutIcons"
+                      >
+                        <span
+                          class="euiFormControlLayoutCustomIcon"
+                        >
+                          EuiIconMock
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="euiFlexItem euiFlexItem--flexGrowZero euiSearchBar__filtersHolder"
+                >
+                  <div
+                    class="euiFilterGroup"
+                  >
+                    <div
+                      class="euiPopover euiPopover--anchorDownCenter"
+                      id="field_value_selection_0"
+                    >
+                      <div
+                        class="euiPopover__anchor"
+                      >
+                        <button
+                          class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
+                          type="button"
+                        >
+                          <span
+                            class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                          >
+                            EuiIconMock
+                            <span
+                              class="euiButtonEmpty__text"
+                            >
+                              <span
+                                class="euiFilterButton__textShift"
+                                data-text="Rule Type"
+                                title="Rule Type"
+                              >
+                                Rule Type
+                              </span>
+                            </span>
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                    <div
+                      class="euiPopover euiPopover--anchorDownCenter"
+                      id="field_value_selection_1"
+                    >
+                      <div
+                        class="euiPopover__anchor"
+                      >
+                        <button
+                          class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
+                          type="button"
+                        >
+                          <span
+                            class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                          >
+                            EuiIconMock
+                            <span
+                              class="euiButtonEmpty__text"
+                            >
+                              <span
+                                class="euiFilterButton__textShift"
+                                data-text="Rule Severity"
+                                title="Rule Severity"
+                              >
+                                Rule Severity
+                              </span>
+                            </span>
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                    <div
+                      class="euiPopover euiPopover--anchorDownCenter"
+                      id="field_value_selection_2"
+                    >
+                      <div
+                        class="euiPopover__anchor"
+                      >
+                        <button
+                          class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
+                          type="button"
+                        >
+                          <span
+                            class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                          >
+                            EuiIconMock
+                            <span
+                              class="euiButtonEmpty__text"
+                            >
+                              <span
+                                class="euiFilterButton__textShift"
+                                data-text="Source"
+                                title="Source"
+                              >
+                                Source
+                              </span>
+                            </span>
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div
                 class="euiSpacer euiSpacer--l"
               />
               <div
-                class="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
+                class="euiBasicTable euiBasicTable-loading"
               >
                 <div>
                   <div
-                    class="euiFlexGroup euiFlexGroup--gutterMedium euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow euiFlexGroup--responsive euiFlexGroup--wrap"
+                    class="euiTableHeaderMobile"
                   >
                     <div
-                      class="euiFlexItem euiSearchBar__searchHolder"
+                      class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsBaseline euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow"
                     >
                       <div
-                        class="euiFormControlLayout euiFormControlLayout--fullWidth"
-                      >
-                        <div
-                          class="euiFormControlLayout__childrenWrapper"
-                        >
-                          <input
-                            aria-label="This is a search bar. After typing your query, hit enter to filter the results lower in the page."
-                            class="euiFieldSearch euiFieldSearch--fullWidth"
-                            placeholder="Search rules"
-                            type="search"
-                            value=""
-                          />
-                          <div
-                            class="euiFormControlLayoutIcons"
-                          >
-                            <span
-                              class="euiFormControlLayoutCustomIcon"
-                            >
-                              EuiIconMock
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      class="euiFlexItem euiFlexItem--flexGrowZero euiSearchBar__filtersHolder"
-                    >
+                        class="euiFlexItem euiFlexItem--flexGrowZero"
+                      />
                       <div
-                        class="euiFilterGroup"
+                        class="euiFlexItem euiFlexItem--flexGrowZero"
                       >
                         <div
-                          class="euiPopover euiPopover--anchorDownCenter"
-                          id="field_value_selection_0"
+                          class="euiTableSortMobile"
                         >
                           <div
-                            class="euiPopover__anchor"
-                          >
-                            <button
-                              class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
-                              type="button"
-                            >
-                              <span
-                                class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
-                              >
-                                EuiIconMock
-                                <span
-                                  class="euiButtonEmpty__text"
-                                >
-                                  <span
-                                    class="euiFilterButton__textShift"
-                                    data-text="Rule Type"
-                                    title="Rule Type"
-                                  >
-                                    Rule Type
-                                  </span>
-                                </span>
-                              </span>
-                            </button>
-                          </div>
-                        </div>
-                        <div
-                          class="euiPopover euiPopover--anchorDownCenter"
-                          id="field_value_selection_1"
-                        >
-                          <div
-                            class="euiPopover__anchor"
-                          >
-                            <button
-                              class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
-                              type="button"
-                            >
-                              <span
-                                class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
-                              >
-                                EuiIconMock
-                                <span
-                                  class="euiButtonEmpty__text"
-                                >
-                                  <span
-                                    class="euiFilterButton__textShift"
-                                    data-text="Rule Severity"
-                                    title="Rule Severity"
-                                  >
-                                    Rule Severity
-                                  </span>
-                                </span>
-                              </span>
-                            </button>
-                          </div>
-                        </div>
-                        <div
-                          class="euiPopover euiPopover--anchorDownCenter"
-                          id="field_value_selection_2"
-                        >
-                          <div
-                            class="euiPopover__anchor"
-                          >
-                            <button
-                              class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
-                              type="button"
-                            >
-                              <span
-                                class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
-                              >
-                                EuiIconMock
-                                <span
-                                  class="euiButtonEmpty__text"
-                                >
-                                  <span
-                                    class="euiFilterButton__textShift"
-                                    data-text="Source"
-                                    title="Source"
-                                  >
-                                    Source
-                                  </span>
-                                </span>
-                              </span>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="euiSpacer euiSpacer--l"
-                  />
-                  <div
-                    class="euiBasicTable euiBasicTable-loading"
-                  >
-                    <div>
-                      <div
-                        class="euiTableHeaderMobile"
-                      >
-                        <div
-                          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsBaseline euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow"
-                        >
-                          <div
-                            class="euiFlexItem euiFlexItem--flexGrowZero"
-                          />
-                          <div
-                            class="euiFlexItem euiFlexItem--flexGrowZero"
+                            class="euiPopover euiPopover--anchorDownRight"
                           >
                             <div
-                              class="euiTableSortMobile"
+                              class="euiPopover__anchor"
                             >
-                              <div
-                                class="euiPopover euiPopover--anchorDownRight"
+                              <button
+                                class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--flushRight"
+                                type="button"
                               >
-                                <div
-                                  class="euiPopover__anchor"
+                                <span
+                                  class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
                                 >
-                                  <button
-                                    class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--flushRight"
-                                    type="button"
+                                  EuiIconMock
+                                  <span
+                                    class="euiButtonEmpty__text"
                                   >
-                                    <span
-                                      class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
-                                    >
-                                      EuiIconMock
-                                      <span
-                                        class="euiButtonEmpty__text"
-                                      >
-                                        Sorting
-                                      </span>
-                                    </span>
-                                  </button>
-                                </div>
-                              </div>
+                                    Sorting
+                                  </span>
+                                </span>
+                              </button>
                             </div>
                           </div>
                         </div>
                       </div>
-                      <table
-                        class="euiTable euiTable--responsive"
-                        id="some_html_id"
-                        tabindex="-1"
-                      >
-                        <caption
-                          class="euiScreenReaderOnly euiTableCaption"
-                        />
-                        <thead>
-                          <tr>
-                            <th
-                              aria-live="polite"
-                              aria-sort="none"
-                              class="euiTableHeaderCell"
-                              data-test-subj="tableHeaderCell_title_0"
-                              role="columnheader"
-                              scope="col"
-                              style="width: 30%;"
-                            >
-                              <button
-                                class="euiTableHeaderButton"
-                                data-test-subj="tableHeaderSortButton"
-                                type="button"
-                              >
-                                <span
-                                  class="euiTableCellContent"
-                                >
-                                  <span
-                                    class="euiTableCellContent__text"
-                                    title="Rule name"
-                                  >
-                                    Rule name
-                                  </span>
-                                </span>
-                              </button>
-                            </th>
-                            <th
-                              aria-live="polite"
-                              aria-sort="none"
-                              class="euiTableHeaderCell"
-                              data-test-subj="tableHeaderCell_level_1"
-                              role="columnheader"
-                              scope="col"
-                              style="width: 10%;"
-                            >
-                              <button
-                                class="euiTableHeaderButton"
-                                data-test-subj="tableHeaderSortButton"
-                                type="button"
-                              >
-                                <span
-                                  class="euiTableCellContent"
-                                >
-                                  <span
-                                    class="euiTableCellContent__text"
-                                    title="Rule Severity"
-                                  >
-                                    Rule Severity
-                                  </span>
-                                </span>
-                              </button>
-                            </th>
-                            <th
-                              aria-live="polite"
-                              aria-sort="none"
-                              class="euiTableHeaderCell"
-                              data-test-subj="tableHeaderCell_category_2"
-                              role="columnheader"
-                              scope="col"
-                              style="width: 10%;"
-                            >
-                              <button
-                                class="euiTableHeaderButton"
-                                data-test-subj="tableHeaderSortButton"
-                                type="button"
-                              >
-                                <span
-                                  class="euiTableCellContent"
-                                >
-                                  <span
-                                    class="euiTableCellContent__text"
-                                    title="Log type"
-                                  >
-                                    Log type
-                                  </span>
-                                </span>
-                              </button>
-                            </th>
-                            <th
-                              aria-live="polite"
-                              aria-sort="none"
-                              class="euiTableHeaderCell"
-                              data-test-subj="tableHeaderCell_source_3"
-                              role="columnheader"
-                              scope="col"
-                              style="width: 10%;"
-                            >
-                              <button
-                                class="euiTableHeaderButton"
-                                data-test-subj="tableHeaderSortButton"
-                                type="button"
-                              >
-                                <span
-                                  class="euiTableCellContent"
-                                >
-                                  <span
-                                    class="euiTableCellContent__text"
-                                    title="Source"
-                                  >
-                                    Source
-                                  </span>
-                                </span>
-                              </button>
-                            </th>
-                            <th
-                              class="euiTableHeaderCell"
-                              data-test-subj="tableHeaderCell_description_4"
-                              role="columnheader"
-                              scope="col"
-                            >
-                              <span
-                                class="euiTableCellContent"
-                              >
-                                <span
-                                  class="euiTableCellContent__text"
-                                  title="Description"
-                                >
-                                  Description
-                                </span>
-                              </span>
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr
-                            class="euiTableRow"
-                          >
-                            <td
-                              class="euiTableRowCell euiTableRowCell--isMobileFullWidth"
-                              colspan="5"
-                            >
-                              <div
-                                class="euiTableCellContent euiTableCellContent--alignCenter"
-                              >
-                                <span
-                                  class="euiTableCellContent__text"
-                                >
-                                  No items found
-                                </span>
-                              </div>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
                     </div>
                   </div>
+                  <table
+                    class="euiTable euiTable--responsive"
+                    id="some_html_id"
+                    tabindex="-1"
+                  >
+                    <caption
+                      class="euiScreenReaderOnly euiTableCaption"
+                    />
+                    <thead>
+                      <tr>
+                        <th
+                          aria-live="polite"
+                          aria-sort="none"
+                          class="euiTableHeaderCell"
+                          data-test-subj="tableHeaderCell_title_0"
+                          role="columnheader"
+                          scope="col"
+                          style="width: 30%;"
+                        >
+                          <button
+                            class="euiTableHeaderButton"
+                            data-test-subj="tableHeaderSortButton"
+                            type="button"
+                          >
+                            <span
+                              class="euiTableCellContent"
+                            >
+                              <span
+                                class="euiTableCellContent__text"
+                                title="Rule name"
+                              >
+                                Rule name
+                              </span>
+                            </span>
+                          </button>
+                        </th>
+                        <th
+                          aria-live="polite"
+                          aria-sort="none"
+                          class="euiTableHeaderCell"
+                          data-test-subj="tableHeaderCell_level_1"
+                          role="columnheader"
+                          scope="col"
+                          style="width: 10%;"
+                        >
+                          <button
+                            class="euiTableHeaderButton"
+                            data-test-subj="tableHeaderSortButton"
+                            type="button"
+                          >
+                            <span
+                              class="euiTableCellContent"
+                            >
+                              <span
+                                class="euiTableCellContent__text"
+                                title="Rule Severity"
+                              >
+                                Rule Severity
+                              </span>
+                            </span>
+                          </button>
+                        </th>
+                        <th
+                          aria-live="polite"
+                          aria-sort="none"
+                          class="euiTableHeaderCell"
+                          data-test-subj="tableHeaderCell_category_2"
+                          role="columnheader"
+                          scope="col"
+                          style="width: 10%;"
+                        >
+                          <button
+                            class="euiTableHeaderButton"
+                            data-test-subj="tableHeaderSortButton"
+                            type="button"
+                          >
+                            <span
+                              class="euiTableCellContent"
+                            >
+                              <span
+                                class="euiTableCellContent__text"
+                                title="Log type"
+                              >
+                                Log type
+                              </span>
+                            </span>
+                          </button>
+                        </th>
+                        <th
+                          aria-live="polite"
+                          aria-sort="none"
+                          class="euiTableHeaderCell"
+                          data-test-subj="tableHeaderCell_source_3"
+                          role="columnheader"
+                          scope="col"
+                          style="width: 10%;"
+                        >
+                          <button
+                            class="euiTableHeaderButton"
+                            data-test-subj="tableHeaderSortButton"
+                            type="button"
+                          >
+                            <span
+                              class="euiTableCellContent"
+                            >
+                              <span
+                                class="euiTableCellContent__text"
+                                title="Source"
+                              >
+                                Source
+                              </span>
+                            </span>
+                          </button>
+                        </th>
+                        <th
+                          class="euiTableHeaderCell"
+                          data-test-subj="tableHeaderCell_description_4"
+                          role="columnheader"
+                          scope="col"
+                        >
+                          <span
+                            class="euiTableCellContent"
+                          >
+                            <span
+                              class="euiTableCellContent__text"
+                              title="Description"
+                            >
+                              Description
+                            </span>
+                          </span>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        class="euiTableRow"
+                      >
+                        <td
+                          class="euiTableRowCell euiTableRowCell--isMobileFullWidth"
+                          colspan="5"
+                        >
+                          <div
+                            class="euiTableCellContent euiTableCellContent--alignCenter"
+                          >
+                            <span
+                              class="euiTableCellContent__text"
+                            >
+                              No items found
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
@@ -400,390 +403,393 @@ Object {
   </body>,
   "container": <div>
     <div
-      class="euiAccordion"
-      title="View detection rules (2)"
+      class="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
+      style="padding-left: 0px; padding-right: 0px;"
     >
       <div
-        class="euiAccordion__triggerWrapper"
+        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive"
+        style="padding: 0px 10px;"
       >
-        <button
-          aria-controls="detectorName"
-          aria-expanded="false"
-          class="euiAccordion__button"
-          id="some_html_id"
-          type="button"
+        <div
+          class="euiFlexItem"
         >
-          <span
-            class="euiAccordion__iconWrapper"
+          <h3
+            class="euiTitle euiTitle--medium"
           >
-            EuiIconMock
-          </span>
-          <span
-            class="euiIEFlexWrapFix"
+            Active rules (2)
+          </h3>
+        </div>
+        <div
+          class="euiFlexItem euiFlexItem--flexGrowZero"
+        >
+          <div
+            class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive"
           >
             <div
-              class="euiText euiText--medium"
+              class="euiFlexItem"
             >
-              <p>
-                View detection rules (2)
-              </p>
+              <button
+                class="euiButton euiButton--primary"
+                data-test-subj="edit-detector-rules"
+                type="button"
+              >
+                <span
+                  class="euiButtonContent euiButton__content"
+                >
+                  <span
+                    class="euiButton__text"
+                  >
+                    Edit
+                  </span>
+                </span>
+              </button>
             </div>
-          </span>
-        </button>
+          </div>
+        </div>
       </div>
+      <hr
+        class="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginXSmall"
+      />
       <div
-        aria-labelledby="some_html_id"
-        class="euiAccordion__childWrapper"
-        id="detectorName"
-        role="region"
-        tabindex="-1"
+        style="padding: 0px 10px;"
       >
-        <div>
-          <div
-            class=""
-          >
+        <div
+          class="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
+        >
+          <div>
+            <div
+              class="euiFlexGroup euiFlexGroup--gutterMedium euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow euiFlexGroup--responsive euiFlexGroup--wrap"
+            >
+              <div
+                class="euiFlexItem euiSearchBar__searchHolder"
+              >
+                <div
+                  class="euiFormControlLayout euiFormControlLayout--fullWidth"
+                >
+                  <div
+                    class="euiFormControlLayout__childrenWrapper"
+                  >
+                    <input
+                      aria-label="This is a search bar. After typing your query, hit enter to filter the results lower in the page."
+                      class="euiFieldSearch euiFieldSearch--fullWidth"
+                      placeholder="Search rules"
+                      type="search"
+                      value=""
+                    />
+                    <div
+                      class="euiFormControlLayoutIcons"
+                    >
+                      <span
+                        class="euiFormControlLayoutCustomIcon"
+                      >
+                        EuiIconMock
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="euiFlexItem euiFlexItem--flexGrowZero euiSearchBar__filtersHolder"
+              >
+                <div
+                  class="euiFilterGroup"
+                >
+                  <div
+                    class="euiPopover euiPopover--anchorDownCenter"
+                    id="field_value_selection_0"
+                  >
+                    <div
+                      class="euiPopover__anchor"
+                    >
+                      <button
+                        class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
+                        type="button"
+                      >
+                        <span
+                          class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                        >
+                          EuiIconMock
+                          <span
+                            class="euiButtonEmpty__text"
+                          >
+                            <span
+                              class="euiFilterButton__textShift"
+                              data-text="Rule Type"
+                              title="Rule Type"
+                            >
+                              Rule Type
+                            </span>
+                          </span>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="euiPopover euiPopover--anchorDownCenter"
+                    id="field_value_selection_1"
+                  >
+                    <div
+                      class="euiPopover__anchor"
+                    >
+                      <button
+                        class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
+                        type="button"
+                      >
+                        <span
+                          class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                        >
+                          EuiIconMock
+                          <span
+                            class="euiButtonEmpty__text"
+                          >
+                            <span
+                              class="euiFilterButton__textShift"
+                              data-text="Rule Severity"
+                              title="Rule Severity"
+                            >
+                              Rule Severity
+                            </span>
+                          </span>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="euiPopover euiPopover--anchorDownCenter"
+                    id="field_value_selection_2"
+                  >
+                    <div
+                      class="euiPopover__anchor"
+                    >
+                      <button
+                        class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
+                        type="button"
+                      >
+                        <span
+                          class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                        >
+                          EuiIconMock
+                          <span
+                            class="euiButtonEmpty__text"
+                          >
+                            <span
+                              class="euiFilterButton__textShift"
+                              data-text="Source"
+                              title="Source"
+                            >
+                              Source
+                            </span>
+                          </span>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div
               class="euiSpacer euiSpacer--l"
             />
             <div
-              class="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
+              class="euiBasicTable euiBasicTable-loading"
             >
               <div>
                 <div
-                  class="euiFlexGroup euiFlexGroup--gutterMedium euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow euiFlexGroup--responsive euiFlexGroup--wrap"
+                  class="euiTableHeaderMobile"
                 >
                   <div
-                    class="euiFlexItem euiSearchBar__searchHolder"
+                    class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsBaseline euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow"
                   >
                     <div
-                      class="euiFormControlLayout euiFormControlLayout--fullWidth"
-                    >
-                      <div
-                        class="euiFormControlLayout__childrenWrapper"
-                      >
-                        <input
-                          aria-label="This is a search bar. After typing your query, hit enter to filter the results lower in the page."
-                          class="euiFieldSearch euiFieldSearch--fullWidth"
-                          placeholder="Search rules"
-                          type="search"
-                          value=""
-                        />
-                        <div
-                          class="euiFormControlLayoutIcons"
-                        >
-                          <span
-                            class="euiFormControlLayoutCustomIcon"
-                          >
-                            EuiIconMock
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="euiFlexItem euiFlexItem--flexGrowZero euiSearchBar__filtersHolder"
-                  >
+                      class="euiFlexItem euiFlexItem--flexGrowZero"
+                    />
                     <div
-                      class="euiFilterGroup"
+                      class="euiFlexItem euiFlexItem--flexGrowZero"
                     >
                       <div
-                        class="euiPopover euiPopover--anchorDownCenter"
-                        id="field_value_selection_0"
+                        class="euiTableSortMobile"
                       >
                         <div
-                          class="euiPopover__anchor"
-                        >
-                          <button
-                            class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
-                            type="button"
-                          >
-                            <span
-                              class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
-                            >
-                              EuiIconMock
-                              <span
-                                class="euiButtonEmpty__text"
-                              >
-                                <span
-                                  class="euiFilterButton__textShift"
-                                  data-text="Rule Type"
-                                  title="Rule Type"
-                                >
-                                  Rule Type
-                                </span>
-                              </span>
-                            </span>
-                          </button>
-                        </div>
-                      </div>
-                      <div
-                        class="euiPopover euiPopover--anchorDownCenter"
-                        id="field_value_selection_1"
-                      >
-                        <div
-                          class="euiPopover__anchor"
-                        >
-                          <button
-                            class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
-                            type="button"
-                          >
-                            <span
-                              class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
-                            >
-                              EuiIconMock
-                              <span
-                                class="euiButtonEmpty__text"
-                              >
-                                <span
-                                  class="euiFilterButton__textShift"
-                                  data-text="Rule Severity"
-                                  title="Rule Severity"
-                                >
-                                  Rule Severity
-                                </span>
-                              </span>
-                            </span>
-                          </button>
-                        </div>
-                      </div>
-                      <div
-                        class="euiPopover euiPopover--anchorDownCenter"
-                        id="field_value_selection_2"
-                      >
-                        <div
-                          class="euiPopover__anchor"
-                        >
-                          <button
-                            class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
-                            type="button"
-                          >
-                            <span
-                              class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
-                            >
-                              EuiIconMock
-                              <span
-                                class="euiButtonEmpty__text"
-                              >
-                                <span
-                                  class="euiFilterButton__textShift"
-                                  data-text="Source"
-                                  title="Source"
-                                >
-                                  Source
-                                </span>
-                              </span>
-                            </span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="euiSpacer euiSpacer--l"
-                />
-                <div
-                  class="euiBasicTable euiBasicTable-loading"
-                >
-                  <div>
-                    <div
-                      class="euiTableHeaderMobile"
-                    >
-                      <div
-                        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsBaseline euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow"
-                      >
-                        <div
-                          class="euiFlexItem euiFlexItem--flexGrowZero"
-                        />
-                        <div
-                          class="euiFlexItem euiFlexItem--flexGrowZero"
+                          class="euiPopover euiPopover--anchorDownRight"
                         >
                           <div
-                            class="euiTableSortMobile"
+                            class="euiPopover__anchor"
                           >
-                            <div
-                              class="euiPopover euiPopover--anchorDownRight"
+                            <button
+                              class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--flushRight"
+                              type="button"
                             >
-                              <div
-                                class="euiPopover__anchor"
+                              <span
+                                class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
                               >
-                                <button
-                                  class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--flushRight"
-                                  type="button"
+                                EuiIconMock
+                                <span
+                                  class="euiButtonEmpty__text"
                                 >
-                                  <span
-                                    class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
-                                  >
-                                    EuiIconMock
-                                    <span
-                                      class="euiButtonEmpty__text"
-                                    >
-                                      Sorting
-                                    </span>
-                                  </span>
-                                </button>
-                              </div>
-                            </div>
+                                  Sorting
+                                </span>
+                              </span>
+                            </button>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <table
-                      class="euiTable euiTable--responsive"
-                      id="some_html_id"
-                      tabindex="-1"
-                    >
-                      <caption
-                        class="euiScreenReaderOnly euiTableCaption"
-                      />
-                      <thead>
-                        <tr>
-                          <th
-                            aria-live="polite"
-                            aria-sort="none"
-                            class="euiTableHeaderCell"
-                            data-test-subj="tableHeaderCell_title_0"
-                            role="columnheader"
-                            scope="col"
-                            style="width: 30%;"
-                          >
-                            <button
-                              class="euiTableHeaderButton"
-                              data-test-subj="tableHeaderSortButton"
-                              type="button"
-                            >
-                              <span
-                                class="euiTableCellContent"
-                              >
-                                <span
-                                  class="euiTableCellContent__text"
-                                  title="Rule name"
-                                >
-                                  Rule name
-                                </span>
-                              </span>
-                            </button>
-                          </th>
-                          <th
-                            aria-live="polite"
-                            aria-sort="none"
-                            class="euiTableHeaderCell"
-                            data-test-subj="tableHeaderCell_level_1"
-                            role="columnheader"
-                            scope="col"
-                            style="width: 10%;"
-                          >
-                            <button
-                              class="euiTableHeaderButton"
-                              data-test-subj="tableHeaderSortButton"
-                              type="button"
-                            >
-                              <span
-                                class="euiTableCellContent"
-                              >
-                                <span
-                                  class="euiTableCellContent__text"
-                                  title="Rule Severity"
-                                >
-                                  Rule Severity
-                                </span>
-                              </span>
-                            </button>
-                          </th>
-                          <th
-                            aria-live="polite"
-                            aria-sort="none"
-                            class="euiTableHeaderCell"
-                            data-test-subj="tableHeaderCell_category_2"
-                            role="columnheader"
-                            scope="col"
-                            style="width: 10%;"
-                          >
-                            <button
-                              class="euiTableHeaderButton"
-                              data-test-subj="tableHeaderSortButton"
-                              type="button"
-                            >
-                              <span
-                                class="euiTableCellContent"
-                              >
-                                <span
-                                  class="euiTableCellContent__text"
-                                  title="Log type"
-                                >
-                                  Log type
-                                </span>
-                              </span>
-                            </button>
-                          </th>
-                          <th
-                            aria-live="polite"
-                            aria-sort="none"
-                            class="euiTableHeaderCell"
-                            data-test-subj="tableHeaderCell_source_3"
-                            role="columnheader"
-                            scope="col"
-                            style="width: 10%;"
-                          >
-                            <button
-                              class="euiTableHeaderButton"
-                              data-test-subj="tableHeaderSortButton"
-                              type="button"
-                            >
-                              <span
-                                class="euiTableCellContent"
-                              >
-                                <span
-                                  class="euiTableCellContent__text"
-                                  title="Source"
-                                >
-                                  Source
-                                </span>
-                              </span>
-                            </button>
-                          </th>
-                          <th
-                            class="euiTableHeaderCell"
-                            data-test-subj="tableHeaderCell_description_4"
-                            role="columnheader"
-                            scope="col"
-                          >
-                            <span
-                              class="euiTableCellContent"
-                            >
-                              <span
-                                class="euiTableCellContent__text"
-                                title="Description"
-                              >
-                                Description
-                              </span>
-                            </span>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr
-                          class="euiTableRow"
-                        >
-                          <td
-                            class="euiTableRowCell euiTableRowCell--isMobileFullWidth"
-                            colspan="5"
-                          >
-                            <div
-                              class="euiTableCellContent euiTableCellContent--alignCenter"
-                            >
-                              <span
-                                class="euiTableCellContent__text"
-                              >
-                                No items found
-                              </span>
-                            </div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
                   </div>
                 </div>
+                <table
+                  class="euiTable euiTable--responsive"
+                  id="some_html_id"
+                  tabindex="-1"
+                >
+                  <caption
+                    class="euiScreenReaderOnly euiTableCaption"
+                  />
+                  <thead>
+                    <tr>
+                      <th
+                        aria-live="polite"
+                        aria-sort="none"
+                        class="euiTableHeaderCell"
+                        data-test-subj="tableHeaderCell_title_0"
+                        role="columnheader"
+                        scope="col"
+                        style="width: 30%;"
+                      >
+                        <button
+                          class="euiTableHeaderButton"
+                          data-test-subj="tableHeaderSortButton"
+                          type="button"
+                        >
+                          <span
+                            class="euiTableCellContent"
+                          >
+                            <span
+                              class="euiTableCellContent__text"
+                              title="Rule name"
+                            >
+                              Rule name
+                            </span>
+                          </span>
+                        </button>
+                      </th>
+                      <th
+                        aria-live="polite"
+                        aria-sort="none"
+                        class="euiTableHeaderCell"
+                        data-test-subj="tableHeaderCell_level_1"
+                        role="columnheader"
+                        scope="col"
+                        style="width: 10%;"
+                      >
+                        <button
+                          class="euiTableHeaderButton"
+                          data-test-subj="tableHeaderSortButton"
+                          type="button"
+                        >
+                          <span
+                            class="euiTableCellContent"
+                          >
+                            <span
+                              class="euiTableCellContent__text"
+                              title="Rule Severity"
+                            >
+                              Rule Severity
+                            </span>
+                          </span>
+                        </button>
+                      </th>
+                      <th
+                        aria-live="polite"
+                        aria-sort="none"
+                        class="euiTableHeaderCell"
+                        data-test-subj="tableHeaderCell_category_2"
+                        role="columnheader"
+                        scope="col"
+                        style="width: 10%;"
+                      >
+                        <button
+                          class="euiTableHeaderButton"
+                          data-test-subj="tableHeaderSortButton"
+                          type="button"
+                        >
+                          <span
+                            class="euiTableCellContent"
+                          >
+                            <span
+                              class="euiTableCellContent__text"
+                              title="Log type"
+                            >
+                              Log type
+                            </span>
+                          </span>
+                        </button>
+                      </th>
+                      <th
+                        aria-live="polite"
+                        aria-sort="none"
+                        class="euiTableHeaderCell"
+                        data-test-subj="tableHeaderCell_source_3"
+                        role="columnheader"
+                        scope="col"
+                        style="width: 10%;"
+                      >
+                        <button
+                          class="euiTableHeaderButton"
+                          data-test-subj="tableHeaderSortButton"
+                          type="button"
+                        >
+                          <span
+                            class="euiTableCellContent"
+                          >
+                            <span
+                              class="euiTableCellContent__text"
+                              title="Source"
+                            >
+                              Source
+                            </span>
+                          </span>
+                        </button>
+                      </th>
+                      <th
+                        class="euiTableHeaderCell"
+                        data-test-subj="tableHeaderCell_description_4"
+                        role="columnheader"
+                        scope="col"
+                      >
+                        <span
+                          class="euiTableCellContent"
+                        >
+                          <span
+                            class="euiTableCellContent__text"
+                            title="Description"
+                          >
+                            Description
+                          </span>
+                        </span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      class="euiTableRow"
+                    >
+                      <td
+                        class="euiTableRowCell euiTableRowCell--isMobileFullWidth"
+                        colspan="5"
+                      >
+                        <div
+                          class="euiTableCellContent euiTableCellContent--alignCenter"
+                        >
+                          <span
+                            class="euiTableCellContent__text"
+                          >
+                            No items found
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>

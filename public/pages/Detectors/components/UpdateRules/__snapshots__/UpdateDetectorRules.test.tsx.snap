@@ -1,0 +1,762 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<UpdateDetectorRules /> spec renders the component 1`] = `
+Object {
+  "asFragment": [Function],
+  "baseElement": <body>
+    <div>
+      <div>
+        <h3
+          class="euiTitle euiTitle--medium"
+        >
+          Edit detector rules
+        </h3>
+        <div
+          class="euiSpacer euiSpacer--xl"
+        />
+        <div
+          style="padding: 10px;"
+        >
+          <div>
+            <div
+              class="euiFlexGroup euiFlexGroup--gutterMedium euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow euiFlexGroup--responsive euiFlexGroup--wrap"
+            >
+              <div
+                class="euiFlexItem euiSearchBar__searchHolder"
+              >
+                <div
+                  class="euiFormControlLayout euiFormControlLayout--fullWidth"
+                >
+                  <div
+                    class="euiFormControlLayout__childrenWrapper"
+                  >
+                    <input
+                      aria-label="This is a search bar. After typing your query, hit enter to filter the results lower in the page."
+                      class="euiFieldSearch euiFieldSearch--fullWidth"
+                      placeholder="Search..."
+                      type="search"
+                      value=""
+                    />
+                    <div
+                      class="euiFormControlLayoutIcons"
+                    >
+                      <span
+                        class="euiFormControlLayoutCustomIcon"
+                      >
+                        EuiIconMock
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="euiFlexItem euiFlexItem--flexGrowZero euiSearchBar__filtersHolder"
+              >
+                <div
+                  class="euiFilterGroup"
+                >
+                  <div
+                    class="euiPopover euiPopover--anchorDownCenter"
+                    id="field_value_selection_0"
+                  >
+                    <div
+                      class="euiPopover__anchor"
+                    >
+                      <button
+                        class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
+                        type="button"
+                      >
+                        <span
+                          class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                        >
+                          EuiIconMock
+                          <span
+                            class="euiButtonEmpty__text"
+                          >
+                            <span
+                              class="euiFilterButton__textShift"
+                              data-text="Rule Severity"
+                              title="Rule Severity"
+                            >
+                              Rule Severity
+                            </span>
+                          </span>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="euiPopover euiPopover--anchorDownCenter"
+                    id="field_value_selection_1"
+                  >
+                    <div
+                      class="euiPopover__anchor"
+                    >
+                      <button
+                        class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
+                        type="button"
+                      >
+                        <span
+                          class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                        >
+                          EuiIconMock
+                          <span
+                            class="euiButtonEmpty__text"
+                          >
+                            <span
+                              class="euiFilterButton__textShift"
+                              data-text="Source"
+                              title="Source"
+                            >
+                              Source
+                            </span>
+                          </span>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="euiSpacer euiSpacer--l"
+            />
+            <div
+              class="euiBasicTable"
+              data-test-subj="edit-detector-rules-table"
+            >
+              <div>
+                <div
+                  class="euiTableHeaderMobile"
+                >
+                  <div
+                    class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsBaseline euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow"
+                  >
+                    <div
+                      class="euiFlexItem euiFlexItem--flexGrowZero"
+                    />
+                    <div
+                      class="euiFlexItem euiFlexItem--flexGrowZero"
+                    />
+                  </div>
+                </div>
+                <table
+                  class="euiTable euiTable--responsive"
+                  id="some_html_id"
+                  tabindex="-1"
+                >
+                  <caption
+                    class="euiScreenReaderOnly euiTableCaption"
+                  />
+                  <thead>
+                    <tr>
+                      <th
+                        class="euiTableHeaderCell"
+                        data-test-subj="tableHeaderCell_[object Object]_0"
+                        role="columnheader"
+                        scope="col"
+                        style="width: 60px;"
+                      >
+                        <span
+                          class="euiTableCellContent"
+                        >
+                          <span
+                            class="euiTableCellContent__text"
+                            title="EuiIconMockEuiIconMock"
+                          >
+                            <div
+                              class="euiSwitch"
+                            >
+                              <button
+                                aria-checked="true"
+                                aria-label=""
+                                class="euiSwitch__button"
+                                id="some_html_id"
+                                role="switch"
+                                type="button"
+                              >
+                                <span
+                                  class="euiSwitch__body"
+                                >
+                                  <span
+                                    class="euiSwitch__thumb"
+                                  />
+                                  <span
+                                    class="euiSwitch__track"
+                                  >
+                                    EuiIconMock
+                                    EuiIconMock
+                                  </span>
+                                </span>
+                              </button>
+                            </div>
+                          </span>
+                        </span>
+                      </th>
+                      <th
+                        class="euiTableHeaderCell"
+                        data-test-subj="tableHeaderCell_name_1"
+                        role="columnheader"
+                        scope="col"
+                        style="width: 30%;"
+                      >
+                        <span
+                          class="euiTableCellContent"
+                        >
+                          <span
+                            class="euiTableCellContent__text"
+                            title="Rule name"
+                          >
+                            Rule name
+                          </span>
+                        </span>
+                      </th>
+                      <th
+                        class="euiTableHeaderCell"
+                        data-test-subj="tableHeaderCell_severity_2"
+                        role="columnheader"
+                        scope="col"
+                        style="width: 10%;"
+                      >
+                        <span
+                          class="euiTableCellContent"
+                        >
+                          <span
+                            class="euiTableCellContent__text"
+                            title="Rule severity"
+                          >
+                            Rule severity
+                          </span>
+                        </span>
+                      </th>
+                      <th
+                        class="euiTableHeaderCell"
+                        data-test-subj="tableHeaderCell_logType_3"
+                        role="columnheader"
+                        scope="col"
+                        style="width: 10%;"
+                      >
+                        <span
+                          class="euiTableCellContent"
+                        >
+                          <span
+                            class="euiTableCellContent__text"
+                            title="Log type"
+                          >
+                            Log type
+                          </span>
+                        </span>
+                      </th>
+                      <th
+                        class="euiTableHeaderCell"
+                        data-test-subj="tableHeaderCell_library_4"
+                        role="columnheader"
+                        scope="col"
+                        style="width: 10%;"
+                      >
+                        <span
+                          class="euiTableCellContent"
+                        >
+                          <span
+                            class="euiTableCellContent__text"
+                            title="Source"
+                          >
+                            Source
+                          </span>
+                        </span>
+                      </th>
+                      <th
+                        class="euiTableHeaderCell"
+                        data-test-subj="tableHeaderCell_description_5"
+                        role="columnheader"
+                        scope="col"
+                      >
+                        <span
+                          class="euiTableCellContent"
+                        >
+                          <span
+                            class="euiTableCellContent__text"
+                            title="Description"
+                          >
+                            Description
+                          </span>
+                        </span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      class="euiTableRow"
+                    >
+                      <td
+                        class="euiTableRowCell euiTableRowCell--isMobileFullWidth"
+                        colspan="6"
+                      >
+                        <div
+                          class="euiTableCellContent euiTableCellContent--alignCenter"
+                        >
+                          <span
+                            class="euiTableCellContent__text"
+                          >
+                            No items found
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="euiSpacer euiSpacer--xl"
+        />
+        <div
+          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
+        >
+          <div
+            class="euiFlexItem euiFlexItem--flexGrowZero"
+          >
+            <button
+              class="euiButton euiButton--primary"
+              type="button"
+            >
+              <span
+                class="euiButtonContent euiButton__content"
+              >
+                <span
+                  class="euiButton__text"
+                >
+                  Cancel
+                </span>
+              </span>
+            </button>
+          </div>
+          <div
+            class="euiFlexItem euiFlexItem--flexGrowZero"
+          >
+            <button
+              class="euiButton euiButton--primary euiButton--fill"
+              data-test-subj="save-detector-rules-edits"
+              type="button"
+            >
+              <span
+                class="euiButtonContent euiButton__content"
+              >
+                <span
+                  class="euiButton__text"
+                >
+                  Save changes
+                </span>
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>,
+  "container": <div>
+    <div>
+      <h3
+        class="euiTitle euiTitle--medium"
+      >
+        Edit detector rules
+      </h3>
+      <div
+        class="euiSpacer euiSpacer--xl"
+      />
+      <div
+        style="padding: 10px;"
+      >
+        <div>
+          <div
+            class="euiFlexGroup euiFlexGroup--gutterMedium euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow euiFlexGroup--responsive euiFlexGroup--wrap"
+          >
+            <div
+              class="euiFlexItem euiSearchBar__searchHolder"
+            >
+              <div
+                class="euiFormControlLayout euiFormControlLayout--fullWidth"
+              >
+                <div
+                  class="euiFormControlLayout__childrenWrapper"
+                >
+                  <input
+                    aria-label="This is a search bar. After typing your query, hit enter to filter the results lower in the page."
+                    class="euiFieldSearch euiFieldSearch--fullWidth"
+                    placeholder="Search..."
+                    type="search"
+                    value=""
+                  />
+                  <div
+                    class="euiFormControlLayoutIcons"
+                  >
+                    <span
+                      class="euiFormControlLayoutCustomIcon"
+                    >
+                      EuiIconMock
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="euiFlexItem euiFlexItem--flexGrowZero euiSearchBar__filtersHolder"
+            >
+              <div
+                class="euiFilterGroup"
+              >
+                <div
+                  class="euiPopover euiPopover--anchorDownCenter"
+                  id="field_value_selection_0"
+                >
+                  <div
+                    class="euiPopover__anchor"
+                  >
+                    <button
+                      class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
+                      type="button"
+                    >
+                      <span
+                        class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                      >
+                        EuiIconMock
+                        <span
+                          class="euiButtonEmpty__text"
+                        >
+                          <span
+                            class="euiFilterButton__textShift"
+                            data-text="Rule Severity"
+                            title="Rule Severity"
+                          >
+                            Rule Severity
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+                <div
+                  class="euiPopover euiPopover--anchorDownCenter"
+                  id="field_value_selection_1"
+                >
+                  <div
+                    class="euiPopover__anchor"
+                  >
+                    <button
+                      class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
+                      type="button"
+                    >
+                      <span
+                        class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                      >
+                        EuiIconMock
+                        <span
+                          class="euiButtonEmpty__text"
+                        >
+                          <span
+                            class="euiFilterButton__textShift"
+                            data-text="Source"
+                            title="Source"
+                          >
+                            Source
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="euiSpacer euiSpacer--l"
+          />
+          <div
+            class="euiBasicTable"
+            data-test-subj="edit-detector-rules-table"
+          >
+            <div>
+              <div
+                class="euiTableHeaderMobile"
+              >
+                <div
+                  class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsBaseline euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow"
+                >
+                  <div
+                    class="euiFlexItem euiFlexItem--flexGrowZero"
+                  />
+                  <div
+                    class="euiFlexItem euiFlexItem--flexGrowZero"
+                  />
+                </div>
+              </div>
+              <table
+                class="euiTable euiTable--responsive"
+                id="some_html_id"
+                tabindex="-1"
+              >
+                <caption
+                  class="euiScreenReaderOnly euiTableCaption"
+                />
+                <thead>
+                  <tr>
+                    <th
+                      class="euiTableHeaderCell"
+                      data-test-subj="tableHeaderCell_[object Object]_0"
+                      role="columnheader"
+                      scope="col"
+                      style="width: 60px;"
+                    >
+                      <span
+                        class="euiTableCellContent"
+                      >
+                        <span
+                          class="euiTableCellContent__text"
+                          title="EuiIconMockEuiIconMock"
+                        >
+                          <div
+                            class="euiSwitch"
+                          >
+                            <button
+                              aria-checked="true"
+                              aria-label=""
+                              class="euiSwitch__button"
+                              id="some_html_id"
+                              role="switch"
+                              type="button"
+                            >
+                              <span
+                                class="euiSwitch__body"
+                              >
+                                <span
+                                  class="euiSwitch__thumb"
+                                />
+                                <span
+                                  class="euiSwitch__track"
+                                >
+                                  EuiIconMock
+                                  EuiIconMock
+                                </span>
+                              </span>
+                            </button>
+                          </div>
+                        </span>
+                      </span>
+                    </th>
+                    <th
+                      class="euiTableHeaderCell"
+                      data-test-subj="tableHeaderCell_name_1"
+                      role="columnheader"
+                      scope="col"
+                      style="width: 30%;"
+                    >
+                      <span
+                        class="euiTableCellContent"
+                      >
+                        <span
+                          class="euiTableCellContent__text"
+                          title="Rule name"
+                        >
+                          Rule name
+                        </span>
+                      </span>
+                    </th>
+                    <th
+                      class="euiTableHeaderCell"
+                      data-test-subj="tableHeaderCell_severity_2"
+                      role="columnheader"
+                      scope="col"
+                      style="width: 10%;"
+                    >
+                      <span
+                        class="euiTableCellContent"
+                      >
+                        <span
+                          class="euiTableCellContent__text"
+                          title="Rule severity"
+                        >
+                          Rule severity
+                        </span>
+                      </span>
+                    </th>
+                    <th
+                      class="euiTableHeaderCell"
+                      data-test-subj="tableHeaderCell_logType_3"
+                      role="columnheader"
+                      scope="col"
+                      style="width: 10%;"
+                    >
+                      <span
+                        class="euiTableCellContent"
+                      >
+                        <span
+                          class="euiTableCellContent__text"
+                          title="Log type"
+                        >
+                          Log type
+                        </span>
+                      </span>
+                    </th>
+                    <th
+                      class="euiTableHeaderCell"
+                      data-test-subj="tableHeaderCell_library_4"
+                      role="columnheader"
+                      scope="col"
+                      style="width: 10%;"
+                    >
+                      <span
+                        class="euiTableCellContent"
+                      >
+                        <span
+                          class="euiTableCellContent__text"
+                          title="Source"
+                        >
+                          Source
+                        </span>
+                      </span>
+                    </th>
+                    <th
+                      class="euiTableHeaderCell"
+                      data-test-subj="tableHeaderCell_description_5"
+                      role="columnheader"
+                      scope="col"
+                    >
+                      <span
+                        class="euiTableCellContent"
+                      >
+                        <span
+                          class="euiTableCellContent__text"
+                          title="Description"
+                        >
+                          Description
+                        </span>
+                      </span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    class="euiTableRow"
+                  >
+                    <td
+                      class="euiTableRowCell euiTableRowCell--isMobileFullWidth"
+                      colspan="6"
+                    >
+                      <div
+                        class="euiTableCellContent euiTableCellContent--alignCenter"
+                      >
+                        <span
+                          class="euiTableCellContent__text"
+                        >
+                          No items found
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="euiSpacer euiSpacer--xl"
+      />
+      <div
+        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
+      >
+        <div
+          class="euiFlexItem euiFlexItem--flexGrowZero"
+        >
+          <button
+            class="euiButton euiButton--primary"
+            type="button"
+          >
+            <span
+              class="euiButtonContent euiButton__content"
+            >
+              <span
+                class="euiButton__text"
+              >
+                Cancel
+              </span>
+            </span>
+          </button>
+        </div>
+        <div
+          class="euiFlexItem euiFlexItem--flexGrowZero"
+        >
+          <button
+            class="euiButton euiButton--primary euiButton--fill"
+            data-test-subj="save-detector-rules-edits"
+            type="button"
+          >
+            <span
+              class="euiButtonContent euiButton__content"
+            >
+              <span
+                class="euiButton__text"
+              >
+                Save changes
+              </span>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>,
+  "debug": [Function],
+  "findAllByAltText": [Function],
+  "findAllByDisplayValue": [Function],
+  "findAllByLabelText": [Function],
+  "findAllByPlaceholderText": [Function],
+  "findAllByRole": [Function],
+  "findAllByTestId": [Function],
+  "findAllByText": [Function],
+  "findAllByTitle": [Function],
+  "findByAltText": [Function],
+  "findByDisplayValue": [Function],
+  "findByLabelText": [Function],
+  "findByPlaceholderText": [Function],
+  "findByRole": [Function],
+  "findByTestId": [Function],
+  "findByText": [Function],
+  "findByTitle": [Function],
+  "getAllByAltText": [Function],
+  "getAllByDisplayValue": [Function],
+  "getAllByLabelText": [Function],
+  "getAllByPlaceholderText": [Function],
+  "getAllByRole": [Function],
+  "getAllByTestId": [Function],
+  "getAllByText": [Function],
+  "getAllByTitle": [Function],
+  "getByAltText": [Function],
+  "getByDisplayValue": [Function],
+  "getByLabelText": [Function],
+  "getByPlaceholderText": [Function],
+  "getByRole": [Function],
+  "getByTestId": [Function],
+  "getByText": [Function],
+  "getByTitle": [Function],
+  "queryAllByAltText": [Function],
+  "queryAllByDisplayValue": [Function],
+  "queryAllByLabelText": [Function],
+  "queryAllByPlaceholderText": [Function],
+  "queryAllByRole": [Function],
+  "queryAllByTestId": [Function],
+  "queryAllByText": [Function],
+  "queryAllByTitle": [Function],
+  "queryByAltText": [Function],
+  "queryByDisplayValue": [Function],
+  "queryByLabelText": [Function],
+  "queryByPlaceholderText": [Function],
+  "queryByRole": [Function],
+  "queryByTestId": [Function],
+  "queryByText": [Function],
+  "queryByTitle": [Function],
+  "rerender": [Function],
+  "unmount": [Function],
+}
+`;

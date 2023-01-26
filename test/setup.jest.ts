@@ -88,6 +88,21 @@ jest.mock('react', () => {
           };
         },
       },
+      ruleService: {
+        fetchRules: () => {
+          return Promise.resolve([mockDetectorHit]);
+        },
+        getRules: () => {
+          return {
+            ok: true,
+            response: {
+              hits: {
+                hits: [mockDetectorHit],
+              },
+            },
+          };
+        },
+      },
     }),
   };
 });
