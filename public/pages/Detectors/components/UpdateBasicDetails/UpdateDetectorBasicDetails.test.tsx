@@ -4,14 +4,19 @@
  */
 
 import React from 'react';
-import { render } from '@testing-library/react';
 import props from '../../../../models/Detectors/components/UpdateDetectorBasicDetails/UpdateDetectorBasicDetails.mock';
 import { expect } from '@jest/globals';
 import { UpdateDetectorBasicDetails } from './UpdateBasicDetails';
+import { act } from 'react-dom/test-utils';
+import { mount } from 'enzyme';
 
 describe('<UpdateDetectorBasicDetails /> spec', () => {
-  it('renders the component', () => {
-    const view = render(<UpdateDetectorBasicDetails {...props} />);
-    expect(view).toMatchSnapshot();
+  it('renders the component', async () => {
+    let wrapper;
+    await act(async () => {
+      wrapper = await mount(<UpdateDetectorBasicDetails {...props} />);
+    });
+    wrapper.update();
+    expect(wrapper).toMatchSnapshot();
   });
 });

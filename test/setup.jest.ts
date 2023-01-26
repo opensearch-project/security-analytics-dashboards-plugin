@@ -7,6 +7,10 @@ import 'jest-canvas-mock';
 import '@testing-library/jest-dom/extend-expect';
 import { configure } from '@testing-library/react';
 import { mockDetectorHit } from '../public/models/Interfaces.mock';
+import Enzyme from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+
+Enzyme.configure({ adapter: new Adapter() });
 
 configure({ testIdAttribute: 'data-test-subj' });
 
@@ -61,49 +65,51 @@ jest.mock('moment', () => {
   return fakeMoment;
 });
 
+const mockUseContext = {
+  indexService: {
+    getIndices: () => {
+      return {
+        ok: true,
+        response: {
+          indices: [],
+        },
+      };
+    },
+  },
+  detectorsService: {
+    getDetectors: () => {
+      return {
+        ok: true,
+        response: {
+          hits: {
+            hits: [mockDetectorHit],
+          },
+        },
+      };
+    },
+  },
+  ruleService: {
+    fetchRules: () => {
+      return Promise.resolve([mockDetectorHit]);
+    },
+    getRules: () => {
+      return {
+        ok: true,
+        response: {
+          hits: {
+            hits: [mockDetectorHit],
+          },
+        },
+      };
+    },
+  },
+};
+
 jest.mock('react', () => {
   const ActualReact = jest.requireActual('react');
   return {
     ...ActualReact,
-    useContext: () => ({
-      indexService: {
-        getIndices: () => {
-          return {
-            ok: true,
-            response: {
-              indices: [],
-            },
-          };
-        },
-      },
-      detectorsService: {
-        getDetectors: () => {
-          return {
-            ok: true,
-            response: {
-              hits: {
-                hits: [mockDetectorHit],
-              },
-            },
-          };
-        },
-      },
-      ruleService: {
-        fetchRules: () => {
-          return Promise.resolve([mockDetectorHit]);
-        },
-        getRules: () => {
-          return {
-            ok: true,
-            response: {
-              hits: {
-                hits: [mockDetectorHit],
-              },
-            },
-          };
-        },
-      },
-    }),
+    useContext: () => mockUseContext,
   };
 });
 

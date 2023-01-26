@@ -89,5 +89,7 @@ export const mockDetectorHit: DetectorHit = {
 };
 
 export const notificationsStart = {
-  toasts: [],
+  toasts: {
+    addDanger: jest.fn(),
+  },
 };
