@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { detectorMock } from '../../../Interfaces.mock';
-import { fieldMappingService } from '../../components/UpdateFieldMappings/UpdateFieldMappings.mock';
+import { mockDetector } from '../../../Interfaces.mock';
+import { mockFieldMappingService } from '../../components/UpdateFieldMappings/UpdateFieldMappings.mock';
 
 export default {
-  detector: detectorMock,
-  filedMappingService: fieldMappingService,
+  detector: mockDetector,
+  filedMappingService: mockFieldMappingService,
   fieldMappings: [],
   loading: false,
   replaceFieldMappings: jest.fn(),

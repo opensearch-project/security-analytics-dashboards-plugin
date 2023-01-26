@@ -10,27 +10,27 @@ import { DetectorHit, DetectorResponse } from '../../server/models/interfaces';
 import _ from 'lodash';
 import { DetectorsService } from '../services';
 
-export const detectorRuleInfoMock: DetectorRuleInfo = {
+export const mockDetectorRuleInfo: DetectorRuleInfo = {
   id: 'detectorRuleId',
 };
 
-export const detectorInputMock: DetectorInput = {
+export const mockDetectorInput: DetectorInput = {
   detector_input: {
     description: 'detectorDescription',
     indices: ['.windows'],
-    pre_packaged_rules: [detectorRuleInfoMock],
-    custom_rules: [detectorRuleInfoMock],
+    pre_packaged_rules: [mockDetectorRuleInfo],
+    custom_rules: [mockDetectorRuleInfo],
   },
 };
 
-export const periodScheduleMock: PeriodSchedule = {
+export const mockPeriodSchedule: PeriodSchedule = {
   period: {
     interval: 1,
     unit: 'minute',
   },
 };
 
-export const triggerActionMock: TriggerAction = {
+export const mockTriggerAction: TriggerAction = {
   id: 'someId',
   // Id of notification channel
   destination_id: 'destinationId',
@@ -50,7 +50,7 @@ export const triggerActionMock: TriggerAction = {
   },
 };
 
-export const alertConditionMock: AlertCondition = {
+export const mockAlertCondition: AlertCondition = {
   // Trigger fields
   name: 'alertName',
   id: 'triggerId',
@@ -64,35 +64,35 @@ export const alertConditionMock: AlertCondition = {
   ids: ['ruleId1'],
 
   // Alert related fields
-  actions: [triggerActionMock, triggerActionMock],
+  actions: [mockTriggerAction, mockTriggerAction],
   severity: '1',
 };
 
-export const detectorMock: Detector = {
+export const mockDetector: Detector = {
   type: 'detector',
   detector_type: '.windows',
   name: 'detectorName',
   enabled: true,
   createdBy: 'testUser',
-  schedule: periodScheduleMock,
-  inputs: [detectorInputMock],
+  schedule: mockPeriodSchedule,
+  inputs: [mockDetectorInput],
   triggers: _.times(2, (index) => {
     return {
-      ...alertConditionMock,
+      ...mockAlertCondition,
       id: `triggerId_${index}`,
     };
   }),
 };
 
-export const detectorResponse: DetectorResponse = {
+export const mockDetectorResponse: DetectorResponse = {
   last_update_time: 1,
   enabled_time: 1,
-  ...detectorMock,
+  ...mockDetector,
 };
 
 export const mockDetectorHit: DetectorHit = {
   _index: '.windows',
-  _source: detectorResponse,
+  _source: mockDetectorResponse,
   _id: 'detectorHitId',
 };
 
@@ -109,8 +109,12 @@ export const mockDetectorService: DetectorsService = {
   },
 };
 
-export const notificationsStart = {
+export const mockNotificationsStart = {
   toasts: {
     addDanger: jest.fn(),
   },
+};
+
+export const mockHistory = {
+  replace: jest.fn(),
 };

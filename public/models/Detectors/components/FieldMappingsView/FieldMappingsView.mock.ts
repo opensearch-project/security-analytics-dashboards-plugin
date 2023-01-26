@@ -1,13 +1,13 @@
 import { FieldMapping } from '../../../../../models/interfaces';
-import { detectorMock, notificationsStart } from '../../../Interfaces.mock';
+import { mockDetector, mockNotificationsStart } from '../../../Interfaces.mock';
 
-const fieldMapping: FieldMapping = {
+const mockFieldMapping: FieldMapping = {
   indexFieldName: 'indexFieldName',
   ruleFieldName: 'ruleFieldName',
 };
 export default {
-  detector: detectorMock,
-  existingMappings: [fieldMapping, fieldMapping],
+  detector: mockDetector,
+  existingMappings: [mockFieldMapping, mockFieldMapping],
   editFieldMappings: jest.fn(),
-  notifications: notificationsStart,
+  notifications: mockNotificationsStart,
 };

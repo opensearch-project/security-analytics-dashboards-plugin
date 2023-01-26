@@ -1,7 +1,7 @@
-import { detectorMock } from '../../../Interfaces.mock';
+import { mockDetector } from '../../../Interfaces.mock';
 
 export default {
-  detector: detectorMock,
+  detector: mockDetector,
   rulesCanFold: true,
   enabled_time: 1,
   last_update_time: 1,

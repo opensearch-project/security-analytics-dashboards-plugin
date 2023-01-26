@@ -1,13 +1,16 @@
-import { mockDetectorHit, mockDetectorService, notificationsStart } from '../../../Interfaces.mock';
+import {
+  mockDetectorHit,
+  mockDetectorService,
+  mockHistory,
+  mockNotificationsStart,
+} from '../../../Interfaces.mock';
 
 export default {
   detectorHit: mockDetectorHit,
   detectorService: mockDetectorService,
-  notifications: notificationsStart,
+  notifications: mockNotificationsStart,
   location: {
     pathname: '/detector-details/detectorHitId',
   },
-  history: {
-    replace: jest.fn(),
-  },
+  history: mockHistory,
 };

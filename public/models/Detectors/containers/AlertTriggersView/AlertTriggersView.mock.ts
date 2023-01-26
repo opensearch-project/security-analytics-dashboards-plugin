@@ -1,7 +1,7 @@
-import { detectorMock, notificationsStart } from '../../../Interfaces.mock';
+import { mockDetector, mockNotificationsStart } from '../../../Interfaces.mock';
 
 export default {
-  detector: detectorMock,
+  detector: mockDetector,
   editAlertTriggers: jest.fn(),
-  notifications: notificationsStart,
+  notifications: mockNotificationsStart,
 };

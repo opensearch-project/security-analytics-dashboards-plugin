@@ -4,26 +4,26 @@
  */
 
 import { RuleInfo, RuleSource } from '../../../../../server/models/interfaces';
-import { alertConditionMock, detectorMock } from '../../../Interfaces.mock';
+import { mockAlertCondition, mockDetector } from '../../../Interfaces.mock';
 
-const ruleSource: RuleSource = {
+const mockRuleSource: RuleSource = {
   rule: 'ruleName',
   last_update_time: '12/12/2022',
   queries: [{ value: '.windows' }],
 };
 
-const ruleInfo: RuleInfo = {
+const mockRuleInfo: RuleInfo = {
   _id: 'ruleId',
   _index: '.windows',
   _primary_term: 1,
-  _source: ruleSource,
+  _source: mockRuleSource,
   _version: 1,
 };
 
 export default {
-  alertTrigger: alertConditionMock,
+  alertTrigger: mockAlertCondition,
   orderPosition: 1,
-  detector: detectorMock,
+  detector: mockDetector,
   notificationChannels: [],
-  rules: { rileId: ruleInfo },
+  rules: { rileId: mockRuleInfo },
 };

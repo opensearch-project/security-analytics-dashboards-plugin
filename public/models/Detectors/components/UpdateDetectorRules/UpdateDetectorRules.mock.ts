@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { mockDetectorHit, notificationsStart } from '../../../Interfaces.mock';
+import { mockDetectorHit, mockNotificationsStart } from '../../../Interfaces.mock';
 
 export default {
-  notifications: notificationsStart,
+  notifications: mockNotificationsStart,
   detectorHit: mockDetectorHit,
   location: {
     pathname: '',

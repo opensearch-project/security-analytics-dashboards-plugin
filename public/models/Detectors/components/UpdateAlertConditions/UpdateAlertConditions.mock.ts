@@ -9,9 +9,9 @@ import {
   OpenSearchService,
   RuleService,
 } from '../../../../services';
-import { mockDetectorHit, notificationsStart } from '../../../Interfaces.mock';
+import { mockDetectorHit, mockNotificationsStart } from '../../../Interfaces.mock';
 
-const notificationsService: NotificationsService = {
+const mockNotificationsService: NotificationsService = {
   getChannels: () => {
     return {
       ok: true,
@@ -22,7 +22,7 @@ const notificationsService: NotificationsService = {
   },
 };
 
-const ruleService: RuleService = {
+const mockRuleService: RuleService = {
   getRules: () => {
     return {
       ok: true,
@@ -38,9 +38,9 @@ export default {
   detectorHit: mockDetectorHit,
   detectorService: DetectorsService,
   opensearchService: OpenSearchService,
-  ruleService: ruleService,
-  notificationsService: notificationsService,
-  notifications: notificationsStart,
+  ruleService: mockRuleService,
+  notificationsService: mockNotificationsService,
+  notifications: mockNotificationsStart,
   location: {
     state: {
       detectorHit: mockDetectorHit,
