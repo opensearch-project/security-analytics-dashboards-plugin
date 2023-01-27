@@ -39,6 +39,16 @@ describe('Detectors', () => {
     cy.cleanUpTests();
     // Create test index
     cy.createIndex(indexName, sample_index_settings);
+    cy.request('POST', '_plugins/_security_analytics/rules/_search?prePackaged=true', {
+      from: 0,
+      size: 5000,
+      query: {
+        nested: {
+          path: 'rule',
+          query: { bool: { must: [{ match: { 'rule.category': 'windows' } }] } },
+        },
+      },
+    });
 
     cy.contains(detectorName).should('not.exist');
   });
@@ -72,8 +82,10 @@ describe('Detectors', () => {
       .realType(indexName);
 
     cy.intercept({
-      method: 'POST',
       pathname: '/_plugins/_security_analytics/rules/_search',
+      query: {
+        prePackaged: 'true',
+      },
     }).as('getSigmaRules');
 
     // Select threat detector type (Windows logs)
@@ -83,8 +95,12 @@ describe('Detectors', () => {
       // Open Detection rules accordion
       cy.get('[data-test-subj="detection-rules-btn"]').click({ force: true, timeout: 5000 });
 
+      cy.contains('table tr', 'Windows', {
+        timeout: 120000,
+      });
+
       // find search, type USB
-      cy.triggerSearchField('Search...', 'USB Device Plugged');
+      cy.get(`input[placeholder="Search..."]`).ospSearch('USB Device Plugged');
 
       // Disable all rules
       cy.contains('tr', 'USB Device Plugged', { timeout: 1000 });
@@ -207,8 +223,8 @@ describe('Detectors', () => {
 
     // Change detector name
     cy.get(`input[placeholder="Enter a name for the detector."]`)
-      .clearInput()
-      .focus()
+      .realClick()
+      .ospClear()
       .realType('test detector edited');
 
     // Change detector description
@@ -219,16 +235,13 @@ describe('Detectors', () => {
     // Change input source
     cy.get(`[data-test-subj="define-detector-select-data-source"]`)
       .find('input')
-      .clearInput()
+      .ospClear()
       .focus()
       .realType('.opensearch-notifications-config')
       .realPress('Enter');
 
     // Change detector scheduling
-    cy.get(`[data-test-subj="detector-schedule-number-select"]`)
-      .clearInput()
-      .focus()
-      .realType('10');
+    cy.get(`[data-test-subj="detector-schedule-number-select"]`).ospClear().focus().realType('10');
     cy.get(`[data-test-subj="detector-schedule-unit-select"]`).select('Hours');
 
     // Save changes to detector details
@@ -270,7 +283,7 @@ describe('Detectors', () => {
     });
 
     // Search for specific rule
-    cy.triggerSearchField('Search...', 'USB Device');
+    cy.get(`input[placeholder="Search..."]`).ospSearch('USB Device');
 
     // Toggle single search result to unchecked
     cy.contains('table tr', 'USB Device Plugged').within(() => {
@@ -294,7 +307,7 @@ describe('Detectors', () => {
     });
 
     // Search for specific rule
-    cy.triggerSearchField('Search...', 'USB');
+    cy.get(`input[placeholder="Search..."]`).ospSearch('USB');
 
     // Toggle single search result to checked
     cy.contains('table tr', 'USB Device Plugged').within(() => {
