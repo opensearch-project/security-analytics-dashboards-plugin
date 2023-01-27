@@ -123,4 +123,17 @@ jest.mock('react', () => {
   };
 });
 
+jest.mock('../public/pages/CreateDetector/components/ConfigureAlerts/utils/constants.ts', () => ({
+  ...jest.requireActual(
+    '../public/pages/CreateDetector/components/ConfigureAlerts/utils/constants.ts'
+  ),
+  ALERT_SEVERITY_OPTIONS: {
+    HIGHEST: { id: '1', value: '1', label: '1 (Highest)', text: '1 (Highest)' },
+    HIGH: { id: '2', value: '2', label: '2 (High)', text: '2 (High)' },
+    MEDIUM: { id: '3', value: '3', label: '3 (Medium)', text: '3 (Medium)' },
+    LOW: { id: '4', value: '4', label: '4 (Low)', text: '4 (Low)' },
+    LOWEST: { id: '5', value: '5', label: '5 (Lowest)', text: '5 (Lowest)' },
+  },
+}));
+
 jest.setTimeout(10000); // in milliseconds
