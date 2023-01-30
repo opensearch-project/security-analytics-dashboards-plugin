@@ -1,5 +1,5 @@
 [![Unit tests](https://github.com/opensearch-project/security-analytics-dashboards-plugin/workflows/Unit%20tests%20workflow/badge.svg)](https://github.com/opensearch-project/security-analytics-dashboards-plugin/actions?query=workflow%3A%22Unit+tests+workflow%22)
-[![Integration tests](https://github.com/opensearch-project/security-analytics-dashboards-plugin/workflows/E2E%20tests%20workflow/badge.svg)](https://github.com/opensearch-project/security-analytics-dashboards-plugin/actions?query=workflow%3A%22E2E+tests+workflow%22)
+[![Integration tests](https://github.com/opensearch-project/security-analytics-dashboards-plugin/workflows/Cypress%20integration%20tests%20workflow/badge.svg)](https://github.com/opensearch-project/security-analytics-dashboards-plugin/actions/workflows/cypress-workflow.yml?query=workflow%3A%22Cypress+integration+tests+workflow%22)
 [![codecov](https://codecov.io/gh/opensearch-project/security-analytics-dashboards-plugin/branch/main/graph/badge.svg)](https://codecov.io/gh/opensearch-project/security-analytics-dashboards-plugin)
 [![Documentation](https://img.shields.io/badge/doc-reference-blue)](https://opensearch.org/docs/security-analytics-plugin/index/)
 [![Forum](https://img.shields.io/badge/chat-on%20forums-blue)](https://discuss.opendistrocommunity.dev/c/Use-this-category-for-all-questions-around-machine-learning-plugins)
@@ -17,7 +17,7 @@
 
 ## OpenSearch Security Analytics Dashboards Plugin
 
-The Security Analytics Dashboards plugin lets you manage your [Security Analytics Dashboards plugin](https://github.com/opensearch-project/security-analytics-dashboards-plugin) to generate critical security insights from their existing security event logs (such as firewall logs, windows logs, authentication audit logs, etc.) directly from OpenSearch-Dashboards.
+The Security Analytics Dashboards plugin lets you manage your [Security Analytics plugin](https://github.com/opensearch-project/security-analytics) to generate critical security insights from existing security event logs (such as firewall logs, windows logs, authentication audit logs, etc.) directly from OpenSearch-Dashboards. Security Analytics is a security information and event management (SIEM) solution for OpenSearch, designed to investigate, detect, analyze, and respond to security threats that can jeopardize the success of businesses and organizations and their online operations. These threats include the potential exposure of confidential data, cyber attacks, and other adverse security events. Security Analytics provides an out-of-the-box solution that installs automatically with any OpenSearch distribution. It includes the tools and features necessary for defining detection parameters, generating alerts, and responding effectively to potential threats.
 
 ## Documentation
 
