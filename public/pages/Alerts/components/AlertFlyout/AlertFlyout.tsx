@@ -25,23 +25,26 @@ import {
   capitalizeFirstLetter,
   createTextDetailsGroup,
   errorNotificationToast,
+  formatRuleType,
   renderTime,
 } from '../../../../utils/helpers';
-import { FindingsService, RuleService } from '../../../../services';
+import { FindingsService, RuleService, OpenSearchService } from '../../../../services';
 import FindingDetailsFlyout from '../../../Findings/components/FindingDetailsFlyout';
-import { Detector, Rule } from '../../../../../models/interfaces';
+import { Detector } from '../../../../../models/interfaces';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { Finding } from '../../../Findings/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { RulesViewModelActor } from '../../../Rules/models/RulesViewModelActor';
 
 export interface AlertFlyoutProps {
   alertItem: AlertItem;
   detector: Detector;
   findingsService: FindingsService;
   ruleService: RuleService;
+  notifications: NotificationsStart;
+  opensearchService: OpenSearchService;
   onClose: () => void;
   onAcknowledge: (selectedItems: AlertItem[]) => void;
-  notifications: NotificationsStart;
 }
 
 export interface AlertFlyoutState {
@@ -49,12 +52,16 @@ export interface AlertFlyoutState {
   findingFlyoutData?: Finding;
   findingItems: Finding[];
   loading: boolean;
-  rules: { [key: string]: Rule };
+  rules: { [key: string]: RuleSource };
 }
 
 export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutState> {
+  private rulesViewModelActor: RulesViewModelActor;
+
   constructor(props: AlertFlyoutProps) {
     super(props);
+
+    this.rulesViewModelActor = new RulesViewModelActor(props.ruleService);
 
     this.state = {
       acknowledged: props.alertItem.state === ALERT_STATE.ACKNOWLEDGED,
@@ -82,11 +89,14 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
     try {
       const findingRes = await findingsService.getFindings({ detectorId: detector_id });
       if (findingRes.ok) {
-        this.setState({ findingItems: findingRes.response.findings });
+        const relatedFindings = findingRes.response.findings.filter((finding) =>
+          this.props.alertItem.finding_ids.includes(finding.id)
+        );
+        this.setState({ findingItems: relatedFindings });
       } else {
         errorNotificationToast(notifications, 'retrieve', 'findings', findingRes.error);
       }
-    } catch (e) {
+    } catch (e: any) {
       errorNotificationToast(notifications, 'retrieve', 'findings', e);
     }
     await this.getRules();
@@ -94,53 +104,25 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
   };
 
   getRules = async () => {
-    const { notifications, ruleService } = this.props;
+    const { notifications } = this.props;
     try {
       const { findingItems } = this.state;
       const ruleIds: string[] = [];
       findingItems.forEach((finding) => {
         finding.queries.forEach((query) => ruleIds.push(query.id));
       });
-      const body = {
-        from: 0,
-        size: 5000,
-        query: {
-          nested: {
-            path: 'rule',
-            query: {
-              terms: {
-                _id: ruleIds,
-              },
-            },
-          },
-        },
-      };
 
       if (ruleIds.length > 0) {
-        const prePackagedResponse = await ruleService.getRules(true, body);
-        const customResponse = await ruleService.getRules(false, body);
+        const rulesResponse = await this.rulesViewModelActor.fetchRules({
+          _id: ruleIds,
+        });
 
         const allRules: { [id: string]: RuleSource } = {};
-        if (prePackagedResponse.ok) {
-          prePackagedResponse.response.hits.hits.forEach(
-            (hit) => (allRules[hit._id] = hit._source)
-          );
-        } else {
-          errorNotificationToast(
-            notifications,
-            'retrieve',
-            'pre-packaged rules',
-            prePackagedResponse.error
-          );
-        }
-        if (customResponse.ok) {
-          customResponse.response.hits.hits.forEach((hit) => (allRules[hit._id] = hit._source));
-        } else {
-          errorNotificationToast(notifications, 'retrieve', 'custom rules', customResponse.error);
-        }
+        rulesResponse.forEach((hit) => (allRules[hit._id] = hit._source));
+
         this.setState({ rules: allRules });
       }
-    } catch (e) {
+    } catch (e: any) {
       errorNotificationToast(notifications, 'retrieve', 'rules', e);
     }
   };
@@ -189,7 +171,7 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
         name: 'Log type',
         sortable: true,
         dataType: 'string',
-        render: () => capitalizeFirstLetter(detector.detector_type) || DEFAULT_EMPTY_DATA,
+        render: () => formatRuleType(detector.detector_type),
       },
     ];
   }

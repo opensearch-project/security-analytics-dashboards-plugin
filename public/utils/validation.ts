@@ -12,7 +12,7 @@ export const NAME_REGEX = new RegExp(/^[a-zA-Z0-9 _-]{5,50}$/);
 
 // This regex pattern support MIN to MAX character limit, capital and lowercase letters,
 // numbers 0-9, hyphens, spaces, and underscores.
-export const AUTHOR_REGEX = new RegExp(/^[a-zA-Z0-9 _,-]{5,50}$/);
+export const AUTHOR_REGEX = new RegExp(/^[a-zA-Z0-9 _,-.]{5,50}$/);
 
 /**
  * Validates a string against NAME_REGEX.
@@ -23,9 +23,11 @@ export function validateName(name: string, regex: RegExp = NAME_REGEX): boolean 
   return name.trim().match(regex) !== null;
 }
 
-export const nameErrorString = `Name should only consist of upper and lowercase letters, numbers 0-9, hyphens, spaces, and underscores. 
+const nameOrTitleErrorBase = `should only consist of upper and lowercase letters, numbers 0-9, hyphens, spaces, and underscores.
 Use between ${MIN_NAME_CHARACTERS} and ${MAX_NAME_CHARACTERS} characters.`;
-export const authorErrorString = `Author name should only consist of upper and lowercase letters, numbers 0-9, hyphens, commas, spaces, and underscores. 
+export const nameErrorString = `Name ${nameOrTitleErrorBase}`;
+export const titleErrorString = `Title ${nameOrTitleErrorBase}`;
+export const authorErrorString = `Author name should only consist of upper and lowercase letters, numbers 0-9, hyphens, commas, spaces, and underscores.
 Use between ${MIN_NAME_CHARACTERS} and ${MAX_NAME_CHARACTERS} characters.`;
 
 export function getNameErrorMessage(

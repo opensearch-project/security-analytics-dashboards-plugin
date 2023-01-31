@@ -27,6 +27,7 @@ import { getDetectorNames } from '../../utils/helpers';
 import {
   capitalizeFirstLetter,
   errorNotificationToast,
+  formatRuleType,
   renderTime,
 } from '../../../../utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
@@ -272,12 +273,11 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
         name: 'Log type',
         sortable: true,
         dataType: 'string',
-        render: (detector_type: string) =>
-          capitalizeFirstLetter(detector_type) || DEFAULT_EMPTY_DATA,
+        render: (logType: string) => formatRuleType(logType),
       },
       {
         field: 'rulesCount',
-        name: 'Rules',
+        name: 'Active rules',
         sortable: true,
         dataType: 'number',
         align: 'left',
@@ -320,7 +320,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
           name: 'Log type',
           options: logType.map((logType) => ({
             value: logType,
-            name: capitalizeFirstLetter(logType),
+            name: formatRuleType(logType),
           })),
           multiSelect: 'or',
         } as FieldValueSelectionFilterConfigType,

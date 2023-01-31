@@ -11,9 +11,13 @@ import {
   CriteriaWithPagination,
   EuiText,
 } from '@elastic/eui';
-import React, { useMemo } from 'react';
+
+import React, { useMemo, useState } from 'react';
 import { DetectionRulesTable } from './DetectionRulesTable';
 import { RuleItem, RuleItemInfo } from './types/interfaces';
+import { RuleViewerFlyout } from '../../../../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
+import { RuleTableItem } from '../../../../../Rules/utils/helpers';
+import { RuleItemInfoBase } from '../../../../../Rules/models/types';
 
 export interface CreateDetectorRulesState {
   allRules: RuleItemInfo[];
@@ -24,6 +28,7 @@ export interface CreateDetectorRulesState {
 
 export interface DetectionRulesProps {
   rulesState: CreateDetectorRulesState;
+  loading?: boolean;
   onRuleToggle: (changedItem: RuleItem, isActive: boolean) => void;
   onAllRulesToggle: (enabled: boolean) => void;
   onPageChange: (page: { index: number; size: number }) => void;
@@ -31,10 +36,13 @@ export interface DetectionRulesProps {
 
 export const DetectionRules: React.FC<DetectionRulesProps> = ({
   rulesState,
+  loading,
   onPageChange,
   onRuleToggle,
   onAllRulesToggle,
 }) => {
+  const [flyoutData, setFlyoutData] = useState<RuleTableItem | null>(null);
+
   let enabledRulesCount = 0;
   rulesState.allRules.forEach((ruleItem) => {
     if (ruleItem.enabled) {
@@ -60,8 +68,28 @@ export const DetectionRules: React.FC<DetectionRulesProps> = ({
     onPageChange(nextValues.page);
   };
 
+  const onRuleDetails = (ruleItem: RuleItem) => {
+    setFlyoutData(() => ({
+      title: ruleItem.name,
+      level: ruleItem.severity,
+      category: ruleItem.logType,
+      description: ruleItem.description,
+      source: ruleItem.library,
+      ruleInfo: rulesState.allRules.find((r) => r._id === ruleItem.id) as RuleItemInfoBase,
+      ruleId: ruleItem.id,
+    }));
+  };
+
   return (
     <EuiPanel style={{ paddingLeft: '0px', paddingRight: '0px' }}>
+      {flyoutData ? (
+        <RuleViewerFlyout
+          hideFlyout={() => setFlyoutData(() => null)}
+          history={null as any}
+          ruleTableItem={flyoutData}
+          ruleService={null as any}
+        />
+      ) : null}
       <EuiAccordion
         buttonContent={
           <div data-test-subj="detection-rules-btn">
@@ -77,6 +105,7 @@ export const DetectionRules: React.FC<DetectionRulesProps> = ({
         buttonProps={{ style: { paddingLeft: '10px', paddingRight: '10px' } }}
         id={'detectorRulesAccordion'}
         initialIsOpen={false}
+        isLoading={loading}
       >
         <EuiHorizontalRule margin={'xs'} />
         <DetectionRulesTable
@@ -85,6 +114,7 @@ export const DetectionRules: React.FC<DetectionRulesProps> = ({
           onAllRulesToggled={onAllRulesToggle}
           onRuleActivationToggle={onRuleToggle}
           onTableChange={onTableChange}
+          onRuleDetails={onRuleDetails}
         />
       </EuiAccordion>
     </EuiPanel>

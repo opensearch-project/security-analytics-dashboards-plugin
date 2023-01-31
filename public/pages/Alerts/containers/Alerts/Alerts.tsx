@@ -7,11 +7,11 @@ import {
   DurationRange,
   EuiBasicTableColumn,
   EuiButton,
-  EuiButtonEmpty,
   EuiButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
   EuiInMemoryTable,
+  EuiLink,
   EuiPanel,
   EuiSpacer,
   EuiSuperDatePicker,
@@ -22,7 +22,12 @@ import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components
 import dateMath from '@elastic/datemath';
 import React, { Component } from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
-import { getAlertsVisualizationSpec } from '../../../Overview/utils/helpers';
+import {
+  getAlertsVisualizationSpec,
+  getChartTimeUnit,
+  getDomainRange,
+  TimeUnit,
+} from '../../../Overview/utils/helpers';
 import moment from 'moment';
 import {
   ALERT_STATE,
@@ -36,7 +41,7 @@ import AlertsService from '../../../../services/AlertsService';
 import DetectorService from '../../../../services/DetectorService';
 import { AlertItem } from '../../../../../server/models/interfaces';
 import { AlertFlyout } from '../../components/AlertFlyout/AlertFlyout';
-import { FindingsService, RuleService } from '../../../../services';
+import { FindingsService, RuleService, OpenSearchService } from '../../../../services';
 import { Detector } from '../../../../../models/interfaces';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { DISABLE_ACKNOWLEDGED_ALERT_HELP_TEXT } from '../../utils/constants';
@@ -49,19 +54,24 @@ import {
   successNotificationToast,
 } from '../../../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { match, RouteComponentProps, withRouter } from 'react-router-dom';
+import { DateTimeFilter } from '../../../Overview/models/interfaces';
+import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 
-export interface AlertsProps {
+export interface AlertsProps extends RouteComponentProps {
   alertService: AlertsService;
   detectorService: DetectorService;
   findingService: FindingsService;
   ruleService: RuleService;
+  opensearchService: OpenSearchService;
   notifications: NotificationsStart;
+  match: match;
+  dateTimeFilter?: DateTimeFilter;
+  setDateTimeFilter?: Function;
 }
 
 export interface AlertsState {
   groupBy: string;
-  startTime: string;
-  endTime: string;
   recentlyUsedRanges: DurationRange[];
   selectedItems: AlertItem[];
   alerts: AlertItem[];
@@ -70,6 +80,8 @@ export interface AlertsState {
   filteredAlerts: AlertItem[];
   detectors: { [key: string]: Detector };
   loading: boolean;
+  timeUnit: TimeUnit;
+  dateFormat: string;
 }
 
 const groupByOptions = [
@@ -77,29 +89,43 @@ const groupByOptions = [
   { text: 'Alert severity', value: 'severity' },
 ];
 
-export default class Alerts extends Component<AlertsProps, AlertsState> {
+class Alerts extends Component<AlertsProps, AlertsState> {
   static contextType = CoreServicesContext;
 
   constructor(props: AlertsProps) {
     super(props);
+
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+    } = props;
+    const timeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
     this.state = {
+      loading: true,
       groupBy: 'status',
-      startTime: DEFAULT_DATE_RANGE.start,
-      endTime: DEFAULT_DATE_RANGE.end,
       recentlyUsedRanges: [DEFAULT_DATE_RANGE],
       selectedItems: [],
       alerts: [],
       alertsFiltered: false,
       filteredAlerts: [],
       detectors: {},
-      loading: false,
+      timeUnit: timeUnits.timeUnit,
+      dateFormat: timeUnits.dateFormat,
     };
   }
 
   componentDidUpdate(prevProps: Readonly<AlertsProps>, prevState: Readonly<AlertsState>) {
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+    } = this.props;
     const alertsChanged =
-      prevState.startTime !== this.state.startTime ||
-      prevState.endTime !== this.state.endTime ||
+      prevProps.dateTimeFilter?.startTime !== dateTimeFilter.startTime ||
+      prevProps.dateTimeFilter?.endTime !== dateTimeFilter.endTime ||
       prevState.alerts !== this.state.alerts ||
       prevState.alerts.length !== this.state.alerts.length;
 
@@ -111,9 +137,15 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
   }
 
   filterAlerts = () => {
-    const { alerts, startTime, endTime } = this.state;
-    const startMoment = dateMath.parse(startTime);
-    const endMoment = dateMath.parse(endTime);
+    const { alerts } = this.state;
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+    } = this.props;
+    const startMoment = dateMath.parse(dateTimeFilter.startTime);
+    const endMoment = dateMath.parse(dateTimeFilter.endTime);
     const filteredAlerts = alerts.filter((alert) =>
       moment(alert.last_notification_time).isBetween(moment(startMoment), moment(endMoment))
     );
@@ -136,7 +168,7 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
         sortable: false,
         dataType: 'string',
         render: (triggerName: string, alertItem: AlertItem) => (
-          <EuiButtonEmpty onClick={() => this.setFlyout(alertItem)}>{triggerName}</EuiButtonEmpty>
+          <EuiLink onClick={() => this.setFlyout(alertItem)}>{triggerName}</EuiLink>
         ),
       },
       {
@@ -214,11 +246,24 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
         alert: 1,
         time,
         status: alert.state,
-        severity: alert.severity,
+        severity: parseAlertSeverityToOption(alert.severity)?.label || alert.severity,
       };
     });
-
-    return getAlertsVisualizationSpec(visData, this.state.groupBy);
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+    } = this.props;
+    const chartTimeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
+    return getAlertsVisualizationSpec(visData, this.state.groupBy, {
+      timeUnit: chartTimeUnits.timeUnit,
+      dateFormat: chartTimeUnits.dateFormat,
+      domain: getDomainRange(
+        [dateTimeFilter.startTime, dateTimeFilter.endTime],
+        chartTimeUnits.timeUnit.unit
+      ),
+    });
   }
 
   createGroupByControl(): React.ReactNode {
@@ -250,17 +295,22 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
         });
 
         let alerts: AlertItem[] = [];
-        for (let id of detectorIds) {
-          const alertsRes = await alertService.getAlerts({ detector_id: id });
+        const detectorId = this.props.match.params['detectorId'];
 
-          if (alertsRes.ok) {
-            const detectorAlerts = alertsRes.response.alerts.map((alert) => {
-              const detector = detectors[id];
-              return { ...alert, detectorName: detector.name };
-            });
-            alerts = alerts.concat(detectorAlerts);
-          } else {
-            errorNotificationToast(notifications, 'retrieve', 'alerts', alertsRes.error);
+        for (let id of detectorIds) {
+          if (!detectorId || detectorId === id) {
+            const alertsRes = await alertService.getAlerts({ detector_id: id });
+
+            if (alertsRes.ok) {
+              const detectorAlerts = alertsRes.response.alerts.map((alert) => {
+                const detector = detectors[id];
+                if (!alert.detector_id) alert.detector_id = id;
+                return { ...alert, detectorName: detector.name };
+              });
+              alerts = alerts.concat(detectorAlerts);
+            } else {
+              errorNotificationToast(notifications, 'retrieve', 'alerts', alertsRes.error);
+            }
           }
         }
 
@@ -297,11 +347,18 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
     if (recentlyUsedRanges.length > MAX_RECENTLY_USED_TIME_RANGES)
       recentlyUsedRanges = recentlyUsedRanges.slice(0, MAX_RECENTLY_USED_TIME_RANGES);
     const endTime = start === end ? DEFAULT_DATE_RANGE.end : end;
+
+    const timeUnits = getChartTimeUnit(start, endTime);
     this.setState({
-      startTime: start,
-      endTime: endTime,
       recentlyUsedRanges: recentlyUsedRanges,
+      ...timeUnits,
     });
+
+    this.props.setDateTimeFilter &&
+      this.props.setDateTimeFilter({
+        startTime: start,
+        endTime: endTime,
+      });
   };
 
   onRefresh = async () => {
@@ -357,11 +414,15 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
       filteredAlerts,
       flyoutData,
       loading,
-      startTime,
-      endTime,
       recentlyUsedRanges,
     } = this.state;
 
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+    } = this.props;
     const severities = new Set();
     const statuses = new Set();
     filteredAlerts.forEach((alert) => {
@@ -410,7 +471,7 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
     const sorting: any = {
       sort: {
         field: 'start_time',
-        direction: 'asc',
+        direction: 'dsc',
       },
     };
 
@@ -437,8 +498,8 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
                 <EuiSuperDatePicker
-                  start={startTime}
-                  end={endTime}
+                  start={dateTimeFilter.startTime}
+                  end={dateTimeFilter.endTime}
                   recentlyUsedRanges={recentlyUsedRanges}
                   isLoading={loading}
                   onTimeChange={this.onTimeChange}
@@ -456,7 +517,7 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
                   {this.createGroupByControl()}
                 </EuiFlexItem>
                 <EuiFlexItem>
-                  <div id="alerts-view"></div>
+                  <ChartContainer chartViewId={'alerts-view'} loading={loading} />
                 </EuiFlexItem>
               </EuiFlexGroup>
             </EuiPanel>
@@ -473,6 +534,7 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
                 search={search}
                 sorting={sorting}
                 selection={selection}
+                loading={loading}
               />
             </ContentPanel>
           </EuiFlexItem>
@@ -481,3 +543,5 @@ export default class Alerts extends Component<AlertsProps, AlertsState> {
     );
   }
 }
+
+export default withRouter<AlertsProps, React.ComponentType<AlertsProps>>(Alerts);

@@ -7,9 +7,11 @@ import { BrowserServices } from '../../../models/interfaces';
 import { DetectorHit, RuleSource } from '../../../../server/models/interfaces';
 import { AlertItem, FindingItem } from './interfaces';
 import { RuleService } from '../../../services';
-import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
+import { DEFAULT_DATE_RANGE, DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../../../utils/helpers';
+import dateMath from '@elastic/datemath';
+import moment from 'moment';
 
 export interface OverviewViewModel {
   detectors: DetectorHit[];
@@ -76,7 +78,7 @@ export class OverviewViewModelActor {
       }
       if (customResponse.ok) {
         customResponse.response.hits.hits.forEach((hit) => (ruleById[hit._id] = hit._source));
-      } else {
+      } else if (!customResponse.error?.includes('index doesnt exist')) {
         errorNotificationToast(
           this.notifications,
           'retrieve',
@@ -114,11 +116,14 @@ export class OverviewViewModelActor {
             const ids = finding.queries.map((query) => query.id);
             ids.forEach((id) => ruleIds.add(id));
 
+            const findingTime = new Date(finding.timestamp);
+            findingTime.setMilliseconds(0);
+            findingTime.setSeconds(0);
             return {
               detector: detectorName,
               findingName: finding.id,
               id: finding.id,
-              time: finding.timestamp,
+              time: findingTime,
               logType: logType || '',
               ruleId: finding.queries[0].id,
               ruleName: '',
@@ -141,7 +146,7 @@ export class OverviewViewModelActor {
       ruleSeverity: rulesRes[item.ruleId]?.level || DEFAULT_EMPTY_DATA,
     }));
 
-    this.overviewViewModel.findings = findingItems;
+    this.overviewViewModel.findings = this.filterChartDataByTime(findingItems);
   }
 
   private async updateAlerts() {
@@ -175,7 +180,7 @@ export class OverviewViewModelActor {
       errorNotificationToast(this.notifications, 'retrieve', 'alerts', e);
     }
 
-    this.overviewViewModel.alerts = alertItems;
+    this.overviewViewModel.alerts = this.filterChartDataByTime(alertItems);
   }
 
   public getOverviewViewModel() {
@@ -186,7 +191,13 @@ export class OverviewViewModelActor {
     this.refreshHandlers.push(handler);
   }
 
-  public async onRefresh() {
+  startTime = DEFAULT_DATE_RANGE.start;
+  endTime = DEFAULT_DATE_RANGE.end;
+
+  public async onRefresh(startTime: string, endTime: string) {
+    this.startTime = startTime;
+    this.endTime = endTime;
+
     if (this.refreshState === 'InProgress') {
       return;
     }
@@ -202,4 +213,12 @@ export class OverviewViewModelActor {
 
     this.refreshState = 'Complete';
   }
+
+  private filterChartDataByTime = (chartData) => {
+    const startMoment = dateMath.parse(this.startTime);
+    const endMoment = dateMath.parse(this.endTime);
+    return chartData.filter((dataItem) => {
+      return moment(dataItem.time).isBetween(moment(startMoment), moment(endMoment));
+    });
+  };
 }

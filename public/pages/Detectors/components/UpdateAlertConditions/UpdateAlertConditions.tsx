@@ -6,7 +6,7 @@
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
-import { DetectorHit } from '../../../../../server/models/interfaces';
+import { DetectorHit, RuleSource } from '../../../../../server/models/interfaces';
 import { Detector } from '../../../../../models/interfaces';
 import ConfigureAlerts from '../../../CreateDetector/components/ConfigureAlerts';
 import {
@@ -15,10 +15,15 @@ import {
   RuleService,
   OpenSearchService,
 } from '../../../../services';
-import { RulesSharedState } from '../../../../models/interfaces';
+import { RuleOptions } from '../../../../models/interfaces';
 import { ROUTES, OS_NOTIFICATION_PLUGIN } from '../../../../utils/constants';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { errorNotificationToast, getPlugins } from '../../../../utils/helpers';
+import {
+  errorNotificationToast,
+  getPlugins,
+  successNotificationToast,
+} from '../../../../utils/helpers';
+import { DetectorCreationStep } from '../../../CreateDetector/models/types';
 
 export interface UpdateAlertConditionsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
@@ -32,9 +37,10 @@ export interface UpdateAlertConditionsProps
 export interface UpdateAlertConditionsState {
   detector: Detector;
   rules: object;
-  rulesOptions: Pick<RulesSharedState, 'rulesOptions'>['rulesOptions'];
+  rulesOptions: RuleOptions[];
   submitting: boolean;
   plugins: string[];
+  isTriggerNameValid: boolean;
 }
 
 export default class UpdateAlertConditions extends Component<
@@ -49,6 +55,7 @@ export default class UpdateAlertConditions extends Component<
       rulesOptions: [],
       submitting: false,
       plugins: [],
+      isTriggerNameValid: true,
     };
   }
 
@@ -83,8 +90,8 @@ export default class UpdateAlertConditions extends Component<
       const prePackagedResponse = await ruleService.getRules(true, body);
       const customResponse = await ruleService.getRules(false, body);
 
-      const allRules = {};
-      const rulesOptions = new Set();
+      const allRules: { [id: string]: RuleSource } = {};
+      const rulesOptions = new Set<RuleOptions>();
 
       if (prePackagedResponse.ok) {
         prePackagedResponse.response.hits.hits.forEach((hit) => {
@@ -127,7 +134,7 @@ export default class UpdateAlertConditions extends Component<
       }
 
       this.setState({ rules: allRules, rulesOptions: Array.from(rulesOptions) });
-    } catch (e) {
+    } catch (e: any) {
       errorNotificationToast(this.props.notifications, 'retrieve', 'rules', e);
     }
   };
@@ -169,8 +176,10 @@ export default class UpdateAlertConditions extends Component<
           'detector',
           updateDetectorResponse.error
         );
+      } else {
+        successNotificationToast(this.props.notifications, 'updated', 'detector');
       }
-    } catch (e) {
+    } catch (e: any) {
       errorNotificationToast(this.props.notifications, 'update', 'detector', e);
     }
 
@@ -183,8 +192,15 @@ export default class UpdateAlertConditions extends Component<
     });
   };
 
+  updateDataValidState = (step: DetectorCreationStep, isValid: boolean): void => {
+    this.setState({
+      isTriggerNameValid: isValid,
+    });
+  };
+
   render() {
-    const { detector, rulesOptions, submitting } = this.state;
+    const { detector, rulesOptions, submitting, isTriggerNameValid } = this.state;
+    const isSaveDisabled = submitting || !isTriggerNameValid;
     return (
       <div>
         <ConfigureAlerts
@@ -193,7 +209,7 @@ export default class UpdateAlertConditions extends Component<
           detector={detector}
           rulesOptions={rulesOptions}
           changeDetector={this.changeDetector}
-          updateDataValidState={() => {}}
+          updateDataValidState={this.updateDataValidState}
           hasNotificationPlugin={this.state.plugins.includes(OS_NOTIFICATION_PLUGIN)}
         />
 
@@ -205,7 +221,7 @@ export default class UpdateAlertConditions extends Component<
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
             <EuiButton
-              disabled={submitting}
+              disabled={isSaveDisabled}
               fill={true}
               isLoading={submitting}
               onClick={this.onSave}

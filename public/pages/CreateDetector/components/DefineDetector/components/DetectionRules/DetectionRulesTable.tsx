@@ -4,11 +4,11 @@
  */
 
 import { CriteriaWithPagination, EuiInMemoryTable } from '@elastic/eui';
-import React from 'react';
+import React, { useState } from 'react';
 import { RuleItem } from './types/interfaces';
 import { getRulesColumns } from './utils/constants';
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
-import { ruleTypes, ruleSeverity, ruleSource } from '../../../../../Rules/utils/constants';
+import { ruleSeverity, ruleSource } from '../../../../../Rules/utils/constants';
 
 export interface DetectionRulesTableProps {
   ruleItems: RuleItem[];
@@ -17,6 +17,7 @@ export interface DetectionRulesTableProps {
   onRuleActivationToggle: (changedItem: RuleItem, isActive: boolean) => void;
   onTableChange?: (nextValues: CriteriaWithPagination<RuleItem>) => void;
   loading?: boolean;
+  onRuleDetails?: (ruleItem: RuleItem) => void;
 }
 
 const rulePriorityBySeverity: { [severity: string]: number } = {
@@ -34,6 +35,7 @@ export const DetectionRulesTable: React.FC<DetectionRulesTableProps> = ({
   onRuleActivationToggle,
   onTableChange,
   loading = false,
+  onRuleDetails,
 }) => {
   //Filter table by rule type
   const search: Search = {
@@ -41,15 +43,6 @@ export const DetectionRulesTable: React.FC<DetectionRulesTableProps> = ({
       schema: true,
     },
     filters: [
-      {
-        type: 'field_value_selection',
-        field: 'logType',
-        name: 'Log Type',
-        multiSelect: true,
-        options: ruleTypes.map((type: string) => ({
-          value: type,
-        })),
-      },
       {
         type: 'field_value_selection',
         field: 'severity',
@@ -68,27 +61,31 @@ export const DetectionRulesTable: React.FC<DetectionRulesTableProps> = ({
       },
     ],
   };
-
+  const [pagination, setPagination] = useState({ pageIndex: pageIndex || 0 });
   const allRulesEnabled = ruleItems.every((item) => item.active);
   ruleItems.sort((a, b) => {
     return (rulePriorityBySeverity[a.severity] || 6) - (rulePriorityBySeverity[b.severity] || 6);
   });
 
+  const onTableChangeHandler = (pagination: CriteriaWithPagination<RuleItem>) => {
+    setPagination({ pageIndex: pagination.page.index });
+    onTableChange && onTableChange(pagination);
+  };
+
   return (
     <div style={{ padding: 10 }}>
       <EuiInMemoryTable
-        columns={getRulesColumns(allRulesEnabled, onAllRulesToggled, onRuleActivationToggle)}
+        columns={getRulesColumns(
+          allRulesEnabled,
+          onAllRulesToggled,
+          onRuleActivationToggle,
+          onRuleDetails
+        )}
         items={ruleItems}
         itemId={(item: RuleItem) => `${item.name}`}
         search={search}
-        pagination={
-          pageIndex !== undefined
-            ? {
-                pageIndex,
-              }
-            : true
-        }
-        onTableChange={onTableChange}
+        pagination={pagination}
+        onTableChange={onTableChangeHandler}
         loading={loading}
         data-test-subj={'edit-detector-rules-table'}
       />

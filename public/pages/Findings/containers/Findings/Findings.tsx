@@ -4,7 +4,7 @@
  */
 
 import React, { Component } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, withRouter, match } from 'react-router-dom';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import {
   DurationRange,
@@ -22,6 +22,7 @@ import {
   NotificationsService,
   OpenSearchService,
   RuleService,
+  IndexPatternsService,
 } from '../../../../services';
 import {
   BREADCRUMBS,
@@ -29,11 +30,16 @@ import {
   MAX_RECENTLY_USED_TIME_RANGES,
   OS_NOTIFICATION_PLUGIN,
 } from '../../../../utils/constants';
-import { getFindingsVisualizationSpec } from '../../../Overview/utils/helpers';
+import {
+  getChartTimeUnit,
+  getDomainRange,
+  getFindingsVisualizationSpec,
+  TimeUnit,
+} from '../../../Overview/utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { Finding } from '../../models/interfaces';
 import { Detector } from '../../../../../models/interfaces';
-import { FeatureChannelList } from '../../../../../server/models/interfaces/Notifications';
+import { FeatureChannelList } from '../../../../../server/models/interfaces';
 import {
   getNotificationChannels,
   parseNotificationChannelsToOptions,
@@ -46,14 +52,21 @@ import {
 } from '../../../../utils/helpers';
 import { DetectorHit, RuleSource } from '../../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { DateTimeFilter } from '../../../Overview/models/interfaces';
+import { ChartContainer } from '../../../../components/Charts/ChartContainer';
+import { RulesViewModelActor } from '../../../Rules/models/RulesViewModelActor';
 
 interface FindingsProps extends RouteComponentProps {
   detectorService: DetectorsService;
   findingsService: FindingsService;
   notificationsService: NotificationsService;
+  indexPatternsService: IndexPatternsService;
   opensearchService: OpenSearchService;
   ruleService: RuleService;
   notifications: NotificationsStart;
+  match: match;
+  dateTimeFilter?: DateTimeFilter;
+  setDateTimeFilter?: Function;
 }
 
 interface FindingsState {
@@ -62,12 +75,12 @@ interface FindingsState {
   findings: FindingItemType[];
   notificationChannels: FeatureChannelList[];
   rules: { [id: string]: RuleSource };
-  startTime: string;
-  endTime: string;
   recentlyUsedRanges: DurationRange[];
   groupBy: FindingsGroupByType;
   filteredFindings: FindingItemType[];
   plugins: string[];
+  timeUnit: TimeUnit;
+  dateFormat: string;
 }
 
 interface FindingVisualizationData {
@@ -86,23 +99,33 @@ export const groupByOptions = [
   { text: 'Rule severity', value: 'ruleSeverity' },
 ];
 
-export default class Findings extends Component<FindingsProps, FindingsState> {
+class Findings extends Component<FindingsProps, FindingsState> {
   static contextType = CoreServicesContext;
+  private rulesViewModelActor: RulesViewModelActor;
 
   constructor(props: FindingsProps) {
     super(props);
+
+    this.rulesViewModelActor = new RulesViewModelActor(props.ruleService);
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+    } = props;
+    const timeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
     this.state = {
-      loading: false,
+      loading: true,
       detectors: [],
       findings: [],
       notificationChannels: [],
       rules: {},
-      startTime: DEFAULT_DATE_RANGE.start,
-      endTime: DEFAULT_DATE_RANGE.end,
       recentlyUsedRanges: [DEFAULT_DATE_RANGE],
       groupBy: 'logType',
       filteredFindings: [],
       plugins: [],
+      timeUnit: timeUnits.timeUnit,
+      dateFormat: timeUnits.dateFormat,
     };
   }
 
@@ -137,24 +160,27 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
         const ruleIds = new Set<string>();
         let findings: FindingItemType[] = [];
 
+        const detectorId = this.props.match.params['detectorId'];
         for (let detector of detectors) {
-          const findingRes = await findingsService.getFindings({ detectorId: detector._id });
+          if (!detectorId || detector._id === detectorId) {
+            const findingRes = await findingsService.getFindings({ detectorId: detector._id });
 
-          if (findingRes.ok) {
-            const detectorFindings: FindingItemType[] = findingRes.response.findings.map(
-              (finding) => {
-                finding.queries.forEach((rule) => ruleIds.add(rule.id));
-                return {
-                  ...finding,
-                  detectorName: detector._source.name,
-                  logType: detector._source.detector_type,
-                  detector: detector,
-                };
-              }
-            );
-            findings = findings.concat(detectorFindings);
-          } else {
-            errorNotificationToast(notifications, 'retrieve', 'findings', findingRes.error);
+            if (findingRes.ok) {
+              const detectorFindings: FindingItemType[] = findingRes.response.findings.map(
+                (finding) => {
+                  finding.queries.forEach((rule) => ruleIds.add(rule.id));
+                  return {
+                    ...finding,
+                    detectorName: detector._source.name,
+                    logType: detector._source.detector_type,
+                    detector: detector,
+                  };
+                }
+              );
+              findings = findings.concat(detectorFindings);
+            } else {
+              errorNotificationToast(notifications, 'retrieve', 'findings', findingRes.error);
+            }
           }
         }
 
@@ -171,42 +197,15 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
   };
 
   getRules = async (ruleIds: string[]) => {
-    const { notifications, ruleService } = this.props;
+    const { notifications } = this.props;
     try {
-      const body = {
-        from: 0,
-        size: 5000,
-        query: {
-          nested: {
-            path: 'rule',
-            query: {
-              terms: {
-                _id: ruleIds,
-              },
-            },
-          },
-        },
-      };
+      const rulesResponse = await this.rulesViewModelActor.fetchRules({
+        _id: ruleIds,
+      });
 
-      const prePackagedResponse = await ruleService.getRules(true, body);
-      const customResponse = await ruleService.getRules(false, body);
+      const allRules: { [id: string]: RuleSource } = {};
+      rulesResponse.forEach((hit) => (allRules[hit._id] = hit._source));
 
-      const allRules: { [id: string]: any } = {};
-      if (prePackagedResponse.ok) {
-        prePackagedResponse.response.hits.hits.forEach((hit) => (allRules[hit._id] = hit._source));
-      } else {
-        errorNotificationToast(
-          notifications,
-          'retrieve',
-          'pre-packaged rules',
-          prePackagedResponse.error
-        );
-      }
-      if (customResponse.ok) {
-        customResponse.response.hits.hits.forEach((hit) => (allRules[hit._id] = hit._source));
-      } else {
-        errorNotificationToast(notifications, 'retrieve', 'custom rules', customResponse.error);
-      }
       this.setState({ rules: allRules });
     } catch (e) {
       errorNotificationToast(notifications, 'retrieve', 'rules', e);
@@ -234,11 +233,17 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
     if (recentlyUsedRanges.length > MAX_RECENTLY_USED_TIME_RANGES)
       recentlyUsedRanges = recentlyUsedRanges.slice(0, MAX_RECENTLY_USED_TIME_RANGES);
     const endTime = start === end ? DEFAULT_DATE_RANGE.end : end;
+    const timeUnits = getChartTimeUnit(start, endTime);
     this.setState({
-      startTime: start,
-      endTime: endTime,
       recentlyUsedRanges: recentlyUsedRanges,
+      ...timeUnits,
     });
+
+    this.props.setDateTimeFilter &&
+      this.props.setDateTimeFilter({
+        startTime: start,
+        endTime: endTime,
+      });
   };
 
   generateVisualizationSpec() {
@@ -255,8 +260,21 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
         ruleSeverity: this.state.rules[finding.queries[0].id].level,
       });
     });
-
-    return getFindingsVisualizationSpec(visData, this.state.groupBy);
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+    } = this.props;
+    const chartTimeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
+    return getFindingsVisualizationSpec(visData, this.state.groupBy, {
+      timeUnit: chartTimeUnits.timeUnit,
+      dateFormat: chartTimeUnits.dateFormat,
+      domain: getDomainRange(
+        [dateTimeFilter.startTime, dateTimeFilter.endTime],
+        chartTimeUnits.timeUnit.unit
+      ),
+    });
   }
 
   createGroupByControl(): React.ReactNode {
@@ -276,16 +294,15 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
   };
 
   render() {
-    const {
-      loading,
-      notificationChannels,
-      rules,
-      startTime,
-      endTime,
-      recentlyUsedRanges,
-    } = this.state;
+    const { loading, notificationChannels, rules, recentlyUsedRanges } = this.state;
     let { findings } = this.state;
 
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+    } = this.props;
     if (Object.keys(rules).length > 0) {
       findings = findings.map((finding) => {
         const rule = rules[finding.queries[0].id];
@@ -308,8 +325,8 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
               <EuiSuperDatePicker
-                start={startTime}
-                end={endTime}
+                start={dateTimeFilter.startTime}
+                end={dateTimeFilter.endTime}
                 recentlyUsedRanges={recentlyUsedRanges}
                 isLoading={loading}
                 onTimeChange={this.onTimeChange}
@@ -327,7 +344,7 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
                 {this.createGroupByControl()}
               </EuiFlexItem>
               <EuiFlexItem>
-                <div id="findings-view" style={{ width: '100%' }}></div>
+                <ChartContainer chartViewId={'findings-view'} loading={loading} />
               </EuiFlexItem>
             </EuiFlexGroup>
           </EuiPanel>
@@ -342,8 +359,8 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
               findings={findings}
               loading={loading}
               rules={rules}
-              startTime={startTime}
-              endTime={endTime}
+              startTime={dateTimeFilter.startTime}
+              endTime={dateTimeFilter.endTime}
               onRefresh={this.onRefresh}
               notificationChannels={parseNotificationChannelsToOptions(notificationChannels)}
               refreshNotificationChannels={this.getNotificationChannels}
@@ -356,3 +373,5 @@ export default class Findings extends Component<FindingsProps, FindingsState> {
     );
   }
 }
+
+export default withRouter(Findings);

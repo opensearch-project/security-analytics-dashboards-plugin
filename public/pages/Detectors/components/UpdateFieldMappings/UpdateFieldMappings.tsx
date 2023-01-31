@@ -6,7 +6,6 @@
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { EuiButton, EuiFlexGroup, EuiFlexItem, EuiSpacer, EuiTitle } from '@elastic/eui';
-import ConfigureFieldMapping from '../../../CreateDetector/components/ConfigureFieldMapping';
 import { Detector, FieldMapping } from '../../../../../models/interfaces';
 import FieldMappingService from '../../../../services/FieldMappingService';
 import { DetectorHit, SearchDetectorsResponse } from '../../../../../server/models/interfaces';
@@ -14,7 +13,8 @@ import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/c
 import { DetectorsService } from '../../../../services';
 import { ServerResponse } from '../../../../../server/models/types';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { errorNotificationToast } from '../../../../utils/helpers';
+import { errorNotificationToast, successNotificationToast } from '../../../../utils/helpers';
+import EditFieldMappings from '../../containers/FieldMappings/EditFieldMapping';
 
 export interface UpdateFieldMappingsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
@@ -136,6 +136,8 @@ export default class UpdateFieldMappings extends Component<
           'detector',
           updateDetectorResponse.error
         );
+      } else {
+        successNotificationToast(this.props.notifications, 'updated', 'detector');
       }
     } catch (error: any) {
       errorNotificationToast(this.props.notifications, 'update', 'detector', error);
@@ -165,14 +167,12 @@ export default class UpdateFieldMappings extends Component<
         <EuiSpacer size={'xxl'} />
 
         {!loading && (
-          <ConfigureFieldMapping
+          <EditFieldMappings
             {...this.props}
-            isEdit={true}
             detector={detector}
             fieldMappings={fieldMappings}
             filedMappingService={filedMappingService}
             replaceFieldMappings={this.replaceFieldMappings}
-            updateDataValidState={() => {}}
             loading={loading}
           />
         )}

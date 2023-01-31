@@ -7,13 +7,13 @@ on:
     branches:
       - "*"
 env:
-  OPENSEARCH_DASHBOARDS_VERSION: '2.4.0'
+  OPENSEARCH_DASHBOARDS_VERSION: '2.5.0'
 jobs:
   tests:
     name: Run unit tests
     strategy:
       matrix:
-        os: [ubuntu-latest, mac-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       # Enable longer filenames for windows

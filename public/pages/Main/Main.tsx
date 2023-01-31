@@ -11,18 +11,13 @@ import {
   EuiPageBody,
   EuiPageSideBar,
   EuiSideNavItemType,
-  EuiBetaBadge,
   EuiTitle,
-  EuiFlexItem,
-  EuiFlexGroup,
   EuiSpacer,
-  EuiCallOut,
-  EuiLink,
 } from '@elastic/eui';
 import { CoreStart } from 'opensearch-dashboards/public';
 import { ServicesConsumer } from '../../services';
 import { BrowserServices } from '../../models/interfaces';
-import { ROUTES } from '../../utils/constants';
+import { DEFAULT_DATE_RANGE, ROUTES } from '../../utils/constants';
 import { CoreServicesConsumer } from '../../components/core_services';
 import Findings from '../Findings';
 import Detectors from '../Detectors';
@@ -39,6 +34,7 @@ import { CreateRule } from '../Rules/containers/CreateRule/CreateRule';
 import { EditRule } from '../Rules/containers/EditRule/EditRule';
 import { ImportRule } from '../Rules/containers/ImportRule/ImportRule';
 import { DuplicateRule } from '../Rules/containers/DuplicateRule/DuplicateRule';
+import { DateTimeFilter } from '../Overview/models/interfaces';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -58,6 +54,10 @@ const HIDDEN_NAV_ROUTES: string[] = [
   ROUTES.RULES_EDIT,
   ROUTES.RULES_DUPLICATE,
   ROUTES.RULES_IMPORT,
+  ROUTES.EDIT_DETECTOR_DETAILS,
+  ROUTES.EDIT_DETECTOR_RULES,
+  ROUTES.EDIT_FIELD_MAPPINGS,
+  ROUTES.EDIT_DETECTOR_ALERT_TRIGGERS,
 ];
 
 interface MainProps extends RouteComponentProps {
@@ -67,6 +67,7 @@ interface MainProps extends RouteComponentProps {
 interface MainState {
   getStartedDismissedOnce: boolean;
   selectedNavItemIndex: number;
+  dateTimeFilter: DateTimeFilter;
 }
 
 const navItemIndexByRoute: { [route: string]: number } = {
@@ -83,6 +84,10 @@ export default class Main extends Component<MainProps, MainState> {
     this.state = {
       getStartedDismissedOnce: false,
       selectedNavItemIndex: 1,
+      dateTimeFilter: {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
     };
   }
 
@@ -102,9 +107,33 @@ export default class Main extends Component<MainProps, MainState> {
     this.updateSelectedNavItem();
   }
 
+  setDateTimeFilter = (dateTimeFilter: DateTimeFilter) => {
+    this.setState({
+      dateTimeFilter: dateTimeFilter,
+    });
+  };
+
+  /**
+   * Returns current component route index
+   * @return {number}
+   */
+  getCurrentRouteIndex = (): number | undefined => {
+    let index: number | undefined;
+    const pathname = this.props.location.pathname;
+    for (const [route, routeIndex] of Object.entries(navItemIndexByRoute)) {
+      if (pathname.match(new RegExp(`^${route}`))) {
+        index = routeIndex;
+        break;
+      }
+    }
+
+    return index;
+  };
+
   updateSelectedNavItem() {
-    if (navItemIndexByRoute[this.props.location.pathname] !== undefined) {
-      this.setState({ selectedNavItemIndex: navItemIndexByRoute[this.props.location.pathname] });
+    const routeIndex = this.getCurrentRouteIndex();
+    if (routeIndex) {
+      this.setState({ selectedNavItemIndex: routeIndex });
     }
 
     if (this.props.location.pathname.includes('detector-details')) {
@@ -129,21 +158,9 @@ export default class Main extends Component<MainProps, MainState> {
         renderItem: () => {
           return (
             <>
-              <EuiFlexGroup alignItems="center" gutterSize="s">
-                <EuiFlexItem grow={false}>
-                  <EuiTitle size="xs">
-                    <h3>{Navigation.SecurityAnalytics}</h3>
-                  </EuiTitle>
-                </EuiFlexItem>
-                <EuiFlexItem grow={false}>
-                  <EuiBetaBadge
-                    label="Experimental"
-                    iconType="beaker"
-                    tooltipContent="Experimental feature"
-                    tooltipPosition="bottom"
-                  />
-                </EuiFlexItem>
-              </EuiFlexGroup>
+              <EuiTitle size="xs">
+                <h3>{Navigation.SecurityAnalytics}</h3>
+              </EuiTitle>
               <EuiSpacer />
             </>
           );
@@ -197,6 +214,7 @@ export default class Main extends Component<MainProps, MainState> {
         ],
       },
     ];
+
     return (
       <CoreServicesConsumer>
         {(core: CoreStart | null) =>
@@ -206,47 +224,26 @@ export default class Main extends Component<MainProps, MainState> {
                 services && (
                   <EuiPage restrictWidth={'100%'}>
                     {/* Hide side navigation bar when on any HIDDEN_NAV_ROUTES pages. */}
-                    {!HIDDEN_NAV_ROUTES.includes(pathname) && (
+                    {!HIDDEN_NAV_ROUTES.some((route) => pathname.match(route)) && (
                       <EuiPageSideBar style={{ minWidth: 200 }}>
                         <EuiSideNav style={{ width: 200 }} items={sideNav} />
                       </EuiPageSideBar>
                     )}
                     <EuiPageBody>
-                      <EuiCallOut title="Experimental feature" iconType="beaker">
-                        <p>
-                          The feature is experimental and should not be used in a production
-                          environment. While we are working on the finishing touches, share your
-                          ideas and feedback on{' '}
-                          <EuiLink
-                            target={'_blank'}
-                            href={
-                              'https://forum.opensearch.org/t/feedback-experimental-feature-security-analytics/11418'
-                            }
-                          >
-                            forum.opensearch.org
-                          </EuiLink>
-                          . For more information see{' '}
-                          <EuiLink
-                            target={'_blank'}
-                            href={'https://opensearch.org/docs/latest/security-analytics/index/'}
-                          >
-                            Security Analytics Documentation
-                          </EuiLink>
-                          .
-                        </p>
-                      </EuiCallOut>
-                      <EuiSpacer />
                       <Switch>
                         <Route
-                          path={ROUTES.FINDINGS}
+                          path={`${ROUTES.FINDINGS}/:detectorId?`}
                           render={(props: RouteComponentProps) => (
                             <Findings
                               {...props}
+                              setDateTimeFilter={this.setDateTimeFilter}
+                              dateTimeFilter={this.state.dateTimeFilter}
                               findingsService={services.findingsService}
                               opensearchService={services.opensearchService}
                               detectorService={services.detectorsService}
                               ruleService={services.ruleService}
                               notificationsService={services.notificationsService}
+                              indexPatternsService={services.indexPatternsService}
                               notifications={core?.notifications}
                             />
                           )}
@@ -337,6 +334,8 @@ export default class Main extends Component<MainProps, MainState> {
                           render={(props: RouteComponentProps) => (
                             <Overview
                               {...props}
+                              setDateTimeFilter={this.setDateTimeFilter}
+                              dateTimeFilter={this.state.dateTimeFilter}
                               getStartedDismissedOnce={this.state.getStartedDismissedOnce}
                               onGetStartedDismissed={this.setGetStartedDismissedOnce}
                               notifications={core?.notifications}
@@ -344,15 +343,18 @@ export default class Main extends Component<MainProps, MainState> {
                           )}
                         />
                         <Route
-                          path={ROUTES.ALERTS}
+                          path={`${ROUTES.ALERTS}/:detectorId?`}
                           render={(props: RouteComponentProps) => (
                             <Alerts
                               {...props}
+                              setDateTimeFilter={this.setDateTimeFilter}
+                              dateTimeFilter={this.state.dateTimeFilter}
                               alertService={services.alertService}
                               detectorService={services.detectorsService}
                               findingService={services.findingsService}
                               ruleService={services.ruleService}
                               notifications={core?.notifications}
+                              opensearchService={services.opensearchService}
                             />
                           )}
                         />

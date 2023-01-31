@@ -27,6 +27,8 @@ import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpr
 import { RuleInfo } from '../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { OpenSearchService } from '../services';
+import { ruleTypes } from '../pages/Rules/utils/constants';
+import { Handler } from 'vega-tooltip';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
@@ -65,10 +67,10 @@ export function createTextDetailsGroup(
   ) : (
     <>
       <EuiFlexGroup>
-        {data.map(({ label, content, url }) => {
+        {data.map(({ label, content, url }, index) => {
           return (
             <EuiFlexItem
-              key={label}
+              key={index}
               grow={false}
               style={{ minWidth: `${100 / (columnNum || data.length)}%` }}
             >
@@ -122,6 +124,7 @@ export function ruleItemInfosToItems(
       logType: detectorType.toLowerCase(),
       name: itemInfo._source.title,
       severity: itemInfo._source.level,
+      ruleInfo: itemInfo,
     }));
   }
 
@@ -163,11 +166,13 @@ export function renderVisualization(spec: TopLevelSpec, containerId: string) {
   }
 
   function renderVegaSpec(spec: {}) {
+    const handler = new Handler();
     view = new View(parse(spec, null, { expr: vegaExpressionInterpreter }), {
       renderer: 'canvas', // renderer (canvas or svg)
       container: `#${containerId}`, // parent DOM container
       hover: true, // enable hover processing
     });
+    view.tooltip(handler.call);
     return view.runAsync();
   }
 }
@@ -181,10 +186,7 @@ export function createSelectComponent(
   return (
     <EuiFlexGroup justifyContent="flexEnd" alignItems="center">
       <EuiFlexItem grow={false}>
-        <h5>Group by</h5>
-      </EuiFlexItem>
-      <EuiFlexItem grow={false}>
-        <EuiSelect id={id} options={options} value={value} onChange={onChange} />
+        <EuiSelect id={id} options={options} value={value} onChange={onChange} prepend="Group by" />
       </EuiFlexItem>
     </EuiFlexGroup>
   );
@@ -241,4 +243,11 @@ export const getPlugins = async (opensearchService: OpenSearchService) => {
   } catch (e) {
     return [];
   }
+};
+
+export const formatRuleType = (matchingRuleType: string) => {
+  return (
+    ruleTypes.find((ruleType) => ruleType.value === matchingRuleType.toLowerCase())?.label ||
+    DEFAULT_EMPTY_DATA
+  );
 };

@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const { NODE_API } = require('./constants');
+const { OPENSEARCH_DASHBOARDS_URL } = require('./constants');
+require('./detectors');
+require('./rules');
+require('./indexes');
+require('./typings');
 
 // ***********************************************
 // This example commands.js shows you how to
@@ -75,166 +79,34 @@ Cypress.Commands.overwrite('request', (originalFn, ...args) => {
     [options.method, options.url, options.body] = args;
   }
 
+  Object.assign(options, {
+    headers: {
+      'osd-xsrf': '',
+    },
+  });
+
   return originalFn(Object.assign({}, defaults, options));
 });
 
-Cypress.Commands.add('deleteAllIndices', () => {
-  cy.request(
-    'DELETE',
-    `${Cypress.env('opensearch')}/index*,sample*,opensearch_dashboards*,test*,cypress*`
-  );
+Cypress.Commands.add('cleanUpTests', () => {
+  cy.deleteAllCustomRules();
+  cy.deleteAllDetectors();
+  cy.deleteAllIndices();
 });
 
-Cypress.Commands.add('createDetector', (detectorJSON) => {
-  cy.request('POST', `${Cypress.env('opensearch')}${NODE_API.DETECTORS_BASE}`, detectorJSON);
+Cypress.Commands.add('getTableFirstRow', (selector) => {
+  if (!selector) return cy.get('tbody > tr').first();
+  return cy.get('tbody > tr:first').find(selector);
 });
 
-Cypress.Commands.add('updateDetector', (detectorId, detectorJSON) => {
-  cy.request(
-    'PUT',
-    `${Cypress.env('opensearch')}/${NODE_API.DETECTORS_BASE}/${detectorId}`,
-    detectorJSON
-  );
-});
-
-Cypress.Commands.add('deleteDetector', (detectorName) => {
-  const body = {
-    from: 0,
-    size: 5000,
-    query: {
-      nested: {
-        path: 'detector',
-        query: {
-          bool: {
-            must: [{ match: { 'detector.name': detectorName } }],
-          },
-        },
-      },
-    },
-  };
-  cy.request({
-    method: 'POST',
-    url: `${Cypress.env('opensearch')}${NODE_API.DETECTORS_BASE}/_search`,
-    failOnStatusCode: false,
-    body,
-  }).then((response) => {
-    if (response.status === 200) {
-      for (let hit of response.body.hits.hits) {
-        cy.request('DELETE', `${Cypress.env('opensearch')}${NODE_API.DETECTORS_BASE}/${hit._id}`);
-      }
-    }
+Cypress.Commands.add('waitForPageLoad', (pathname, { timeout = 60000, contains = null }) => {
+  const fullUrl = `${OPENSEARCH_DASHBOARDS_URL}/${pathname}`;
+  Cypress.log({
+    message: `Wait for url: ${fullUrl} to be loaded.`,
   });
-});
-
-Cypress.Commands.add('deleteIndex', (indexName, options = {}) => {
-  cy.request({
-    method: 'DELETE',
-    url: `${Cypress.env('opensearch')}/${indexName}`,
-    failOnStatusCode: false,
-    ...options,
-  });
-});
-
-Cypress.Commands.add(
-  'createAliasMappings',
-  (indexName, ruleTopic, aliasMappingsBody, partial = true) => {
-    const body = {
-      index_name: indexName,
-      rule_topic: ruleTopic,
-      partial: partial,
-      alias_mappings: aliasMappingsBody,
-    };
-    cy.request({
-      method: 'POST',
-      url: `${Cypress.env('opensearch')}${NODE_API.MAPPINGS_BASE}`,
-      body: body,
+  cy.url({ timeout: timeout })
+    .should('include', fullUrl)
+    .then(() => {
+      contains && cy.contains(contains).should('be.visible');
     });
-  }
-);
-
-Cypress.Commands.add('createRule', (ruleJSON) => {
-  cy.request('POST', `${Cypress.env('opensearch')}${NODE_API.RULES_BASE}`, ruleJSON);
-});
-
-Cypress.Commands.add('updateRule', (ruleId, ruleJSON) => {
-  cy.request('PUT', `${Cypress.env('opensearch')}/${NODE_API.RULES_BASE}/${ruleId}`, ruleJSON);
-});
-
-Cypress.Commands.add('createIndex', (index, settings = {}) => {
-  cy.request('PUT', `${Cypress.env('opensearch')}/${index}`, settings);
-});
-
-Cypress.Commands.add('ingestDocument', (indexId, documentJSON) => {
-  cy.request('POST', `${Cypress.env('opensearch')}/${indexId}/_doc`, documentJSON);
-});
-
-Cypress.Commands.add('deleteRule', (ruleName) => {
-  const body = {
-    from: 0,
-    size: 5000,
-    query: {
-      nested: {
-        path: 'rule',
-        query: {
-          bool: {
-            must: [{ match: { 'rule.title': 'Cypress test rule' } }],
-          },
-        },
-      },
-    },
-  };
-  cy.request({
-    method: 'POST',
-    url: `${Cypress.env('opensearch')}${NODE_API.RULES_BASE}/_search?pre_packaged=false`,
-    failOnStatusCode: false,
-    body,
-  }).then((response) => {
-    if (response.status === 200) {
-      for (let hit of response.body.hits.hits) {
-        if (hit._source.title === ruleName)
-          cy.request(
-            'DELETE',
-            `${Cypress.env('opensearch')}${NODE_API.RULES_BASE}/${hit._id}?forced=true`
-          );
-      }
-    }
-  });
-});
-
-Cypress.Commands.add('deleteAllCustomRules', () => {
-  cy.request({
-    method: 'POST',
-    url: `${Cypress.env('opensearch')}${NODE_API.RULES_BASE}/_search?pre_packaged=false`,
-    failOnStatusCode: false,
-    body: { query: { match_all: {} } },
-  }).then((response) => {
-    if (response.status === 200) {
-      for (let hit of response.body.hits.hits) {
-        cy.request(
-          'DELETE',
-          `${Cypress.env('opensearch')}${NODE_API.RULES_BASE}/${hit._id}?forced=true`
-        );
-      }
-    }
-  });
-});
-
-Cypress.Commands.add('createIndex', (index, settings = {}) => {
-  cy.request('PUT', `${Cypress.env('opensearch')}/${index}`, settings);
-});
-
-Cypress.Commands.add('createIndexTemplate', (name, template) => {
-  cy.request(
-    'PUT',
-    `${Cypress.env('opensearch')}${NODE_API.INDEX_TEMPLATE_BASE}/${name}`,
-    template
-  );
-});
-
-Cypress.Commands.add('insertDocumentToIndex', (indexName, documentId, documentBody) => {
-  cy.request({
-    method: 'POST',
-    url: `${Cypress.env('opensearch')}/${indexName}/_doc/${documentId}`,
-    body: documentBody,
-  });
 });

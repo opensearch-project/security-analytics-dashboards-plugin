@@ -44,9 +44,13 @@ const columns: EuiBasicTableColumn<FindingItem>[] = [
 
 export interface RecentFindingsWidgetProps {
   items: FindingItem[];
+  loading?: boolean;
 }
 
-export const RecentFindingsWidget: React.FC<RecentFindingsWidgetProps> = ({ items }) => {
+export const RecentFindingsWidget: React.FC<RecentFindingsWidgetProps> = ({
+  items,
+  loading = false,
+}) => {
   const [findingItems, setFindingItems] = useState<FindingItem[]>([]);
 
   useEffect(() => {
@@ -62,11 +66,8 @@ export const RecentFindingsWidget: React.FC<RecentFindingsWidgetProps> = ({ item
   );
 
   return (
-    <WidgetContainer
-      title={`Top ${findingItems.length < 20 ? '' : 20} recent findings`}
-      actions={actions}
-    >
-      <TableWidget columns={columns} items={findingItems} />
+    <WidgetContainer title={'Recent findings'} actions={actions}>
+      <TableWidget columns={columns} items={findingItems} loading={loading} />
     </WidgetContainer>
   );
 };

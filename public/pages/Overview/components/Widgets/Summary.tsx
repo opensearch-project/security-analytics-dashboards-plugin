@@ -4,17 +4,30 @@
  */
 
 import { EuiFlexGroup, EuiFlexItem, EuiLink, EuiStat } from '@elastic/eui';
+import { euiPaletteColorBlind } from '@elastic/eui';
 import React, { useCallback, useEffect, useState } from 'react';
 import { WidgetContainer } from './WidgetContainer';
 import { summaryGroupByOptions } from '../../utils/constants';
-import { getOverviewVisualizationSpec, getTimeWithMinPrecision } from '../../utils/helpers';
+import {
+  alertsDefaultColor,
+  getChartTimeUnit,
+  getDomainRange,
+  getOverviewVisualizationSpec,
+  getTimeWithMinPrecision,
+  TimeUnit,
+} from '../../utils/helpers';
 import { AlertItem, FindingItem } from '../../models/interfaces';
 import { createSelectComponent, renderVisualization } from '../../../../utils/helpers';
 import { ROUTES } from '../../../../utils/constants';
+import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 
 export interface SummaryProps {
   findings: FindingItem[];
   alerts: AlertItem[];
+  loading?: boolean;
+  startTime: string;
+  endTime: string;
+  timeUnit: TimeUnit;
 }
 
 export interface SummaryData {
@@ -24,7 +37,13 @@ export interface SummaryData {
   logType?: string;
 }
 
-export const Summary: React.FC<SummaryProps> = ({ alerts, findings }) => {
+export const Summary: React.FC<SummaryProps> = ({
+  alerts,
+  findings,
+  startTime,
+  endTime,
+  loading = false,
+}) => {
   const [groupBy, setGroupBy] = useState('');
   const [summaryData, setSummaryData] = useState<SummaryData[]>([]);
   const [activeAlerts, setActiveAlerts] = useState(0);
@@ -48,9 +67,17 @@ export const Summary: React.FC<SummaryProps> = ({ alerts, findings }) => {
     [onGroupByChange]
   );
 
-  const generateVisualizationSpec = useCallback((summaryData, groupBy) => {
-    return getOverviewVisualizationSpec(summaryData, groupBy);
-  }, []);
+  const generateVisualizationSpec = useCallback(
+    (summaryData, groupBy) => {
+      const chartTimeUnits = getChartTimeUnit(startTime, endTime);
+      return getOverviewVisualizationSpec(summaryData, groupBy, {
+        timeUnit: chartTimeUnits.timeUnit,
+        dateFormat: chartTimeUnits.dateFormat,
+        domain: getDomainRange([startTime, endTime], chartTimeUnits.timeUnit.unit),
+      });
+    },
+    [startTime, endTime]
+  );
 
   useEffect(() => {
     const summaryData: SummaryData[] = [];
@@ -93,7 +120,11 @@ export const Summary: React.FC<SummaryProps> = ({ alerts, findings }) => {
           <EuiFlexGroup gutterSize="xl">
             <EuiFlexItem grow={false}>
               <EuiStat
-                title={<EuiLink href={`#${ROUTES.ALERTS}`}>{activeAlerts}</EuiLink>}
+                title={
+                  <EuiLink href={`#${ROUTES.ALERTS}`} style={{ color: alertsDefaultColor }}>
+                    {activeAlerts}
+                  </EuiLink>
+                }
                 description="Total active alerts"
                 textAlign="left"
                 titleColor="primary"
@@ -102,7 +133,14 @@ export const Summary: React.FC<SummaryProps> = ({ alerts, findings }) => {
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
               <EuiStat
-                title={<EuiLink href={`#${ROUTES.FINDINGS}`}>{totalFindings}</EuiLink>}
+                title={
+                  <EuiLink
+                    href={`#${ROUTES.FINDINGS}`}
+                    style={{ color: euiPaletteColorBlind()[1] }}
+                  >
+                    {totalFindings}
+                  </EuiLink>
+                }
                 description="Total findings"
                 textAlign="left"
                 titleColor="primary"
@@ -112,7 +150,7 @@ export const Summary: React.FC<SummaryProps> = ({ alerts, findings }) => {
           </EuiFlexGroup>
         </EuiFlexItem>
         <EuiFlexItem>
-          <div id="summary-view" style={{ width: '100%' }}></div>
+          <ChartContainer chartViewId={'summary-view'} loading={loading} />
         </EuiFlexItem>
       </EuiFlexGroup>
     </WidgetContainer>

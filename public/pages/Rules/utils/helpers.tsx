@@ -13,7 +13,7 @@ import { Rule } from '../../../../models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { AUTHOR_REGEX, validateDescription, validateName } from '../../../utils/validation';
 import { dump, load } from 'js-yaml';
-import { BREADCRUMBS } from '../../../utils/constants';
+import { BREADCRUMBS, DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 
 export interface RuleTableItem {
   title: string;
@@ -55,6 +55,8 @@ export const getRulesTableColumns = (
       sortable: true,
       width: '10%',
       truncateText: true,
+      render: (category: string) =>
+        ruleTypes.find((ruleType) => ruleType.value === category)?.label || DEFAULT_EMPTY_DATA,
     },
     {
       field: 'source',
@@ -84,8 +86,9 @@ export const getRulesTableSearchConfig = (): Search => {
         field: 'category',
         name: 'Rule Type',
         multiSelect: 'or',
-        options: ruleTypes.map((type: string) => ({
-          value: type,
+        options: ruleTypes.map(({ value, label }) => ({
+          value,
+          name: label,
         })),
       },
       {

@@ -10,7 +10,9 @@ import {
   EuiFlyoutBody,
   EuiFlyoutHeader,
   EuiTitle,
+  EuiButtonIcon,
 } from '@elastic/eui';
+import { errorNotificationToast } from '../../../../utils/helpers';
 import { ROUTES } from '../../../../utils/constants';
 import React, { useMemo, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
@@ -19,11 +21,13 @@ import { DeleteRuleModal } from '../DeleteModal/DeleteModal';
 import { RuleContentViewer } from '../RuleContentViewer/RuleContentViewer';
 import { RuleViewerFlyoutHeaderActions } from './RuleViewFlyoutHeaderActions';
 import { RuleService } from '../../../../services';
+import { NotificationsStart } from 'opensearch-dashboards/public';
 
 export interface RuleViewerFlyoutProps {
-  history: RouteComponentProps['history'];
+  history?: RouteComponentProps['history'];
   ruleTableItem: RuleTableItem;
-  ruleService: RuleService;
+  ruleService?: RuleService;
+  notifications?: NotificationsStart;
   hideFlyout: (refreshRules?: boolean) => void;
 }
 
@@ -32,6 +36,7 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
   hideFlyout,
   ruleTableItem,
   ruleService,
+  notifications,
 }) => {
   const [actionsPopoverOpen, setActionsPopoverOpen] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
@@ -42,14 +47,14 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
     setActionsPopoverOpen(false);
   };
   const duplicateRule = () => {
-    history.push({
+    history?.push({
       pathname: ROUTES.RULES_DUPLICATE,
       state: { ruleItem: ruleTableItem.ruleInfo },
     });
   };
 
   const editRule = () => {
-    history.push({
+    history?.push({
       pathname: ROUTES.RULES_EDIT,
       state: { ruleItem: ruleTableItem.ruleInfo },
     });
@@ -74,14 +79,19 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
   };
 
   const onDeleteRuleConfirmed = async () => {
+    if (!ruleService) {
+      return;
+    }
     const deleteRuleRes = await ruleService.deleteRule(ruleTableItem.ruleId);
 
-    if (!deleteRuleRes.ok) {
-      // TODO: show error
+    if (deleteRuleRes.ok) {
+      closeDeleteModal();
+      hideFlyout(true);
+    } else {
+      if (notifications) {
+        errorNotificationToast(notifications, 'delete', 'rule', deleteRuleRes.error);
+      }
     }
-
-    closeDeleteModal();
-    hideFlyout(true);
   };
 
   const deleteModal = useMemo(
@@ -97,17 +107,35 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
   );
 
   return (
-    <EuiFlyout onClose={hideFlyout} data-test-subj={`rule_flyout_${ruleTableItem.title}`}>
+    <EuiFlyout
+      onClose={hideFlyout}
+      hideCloseButton
+      ownFocus={true}
+      size={'m'}
+      data-test-subj={`rule_flyout_${ruleTableItem.title}`}
+    >
       {isDeleteModalVisible && deleteModal ? deleteModal : null}
-      <EuiFlyoutHeader hasBorder>
-        <EuiFlexGroup>
+      <EuiFlyoutHeader hasBorder={true}>
+        <EuiFlexGroup alignItems="center">
           <EuiFlexItem>
             <EuiTitle size="m">
               <h3>{ruleTableItem.title}</h3>
             </EuiTitle>
           </EuiFlexItem>
-          <EuiFlexItem grow={false} style={{ marginRight: '50px' }}>
-            {headerActions}
+          {ruleService && history && (
+            <EuiFlexItem grow={false} style={{ marginRight: '50px' }}>
+              {headerActions}
+            </EuiFlexItem>
+          )}
+          <EuiFlexItem grow={false}>
+            <EuiButtonIcon
+              aria-label="close"
+              iconType="cross"
+              display="empty"
+              iconSize="m"
+              onClick={() => hideFlyout()}
+              data-test-subj={`close-rule-details-flyout`}
+            />
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiFlyoutHeader>

@@ -1,6 +1,6 @@
 {
   "name": "opensearch_security_analytics_dashboards",
-  "version": "2.4.0.0",
+  "version": "2.5.0.0",
   "description": "OpenSearch Dashboards plugin for Security Analytics",
   "main": "index.js",
   "license": "Apache-2.0",
@@ -20,6 +20,7 @@
     "lint": "node ../../scripts/eslint .",
     "plugin-helpers": "node ../../scripts/plugin_helpers",
     "test:jest": "../../node_modules/.bin/jest --config ./test/jest.config.js",
+    "test:jest:dev": "../../node_modules/.bin/jest --watch --config ./test/jest.config.js",
     "build": "yarn plugin-helpers build",
     "postbuild": "echo Renaming build artifact to [$npm_package_config_zip_name-$npm_package_version.zip] && mv build/$npm_package_config_id*.zip build/$npm_package_config_zip_name-$npm_package_version.zip"
   },
@@ -57,10 +58,16 @@
     "eslint-plugin-no-unsanitized": "^3.0.2",
     "eslint-plugin-prefer-object-spread": "^1.2.1",
     "husky": "^3.0.0",
+    "jest-cli": "^27.5.1",
+    "jest-environment-jsdom": "^27.5.1",
     "lint-staged": "^9.2.0",
-    "ts-loader": "^6.2.1"
+    "ts-loader": "^6.2.1",
+    "cypress-real-events": "1.7.6"
   },
   "engines": {
     "yarn": "^1.21.1"
+  },
+  "dependencies": {
+    "formik": "^2.2.6"
   }
 }

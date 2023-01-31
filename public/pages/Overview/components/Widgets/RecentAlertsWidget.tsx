@@ -37,9 +37,13 @@ const columns: EuiBasicTableColumn<AlertItem>[] = [
 
 export interface RecentAlertsWidgetProps {
   items: AlertItem[];
+  loading?: boolean;
 }
 
-export const RecentAlertsWidget: React.FC<RecentAlertsWidgetProps> = ({ items }) => {
+export const RecentAlertsWidget: React.FC<RecentAlertsWidgetProps> = ({
+  items,
+  loading = false,
+}) => {
   const [alertItems, setAlertItems] = useState<AlertItem[]>([]);
 
   useEffect(() => {
@@ -57,11 +61,8 @@ export const RecentAlertsWidget: React.FC<RecentAlertsWidgetProps> = ({ items })
   );
 
   return (
-    <WidgetContainer
-      title={`Top ${alertItems.length < 20 ? '' : 20} recent alerts`}
-      actions={actions}
-    >
-      <TableWidget columns={columns} items={alertItems} />
+    <WidgetContainer title={'Recent alerts'} actions={actions}>
+      <TableWidget columns={columns} items={alertItems} loading={loading} />
     </WidgetContainer>
   );
 };

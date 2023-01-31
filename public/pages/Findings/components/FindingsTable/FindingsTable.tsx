@@ -9,23 +9,22 @@ import moment from 'moment';
 import {
   EuiBasicTableColumn,
   EuiButtonIcon,
-  EuiEmptyPrompt,
   EuiInMemoryTable,
   EuiLink,
-  EuiText,
   EuiToolTip,
 } from '@elastic/eui';
 import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
 import dateMath from '@elastic/datemath';
-import { capitalizeFirstLetter, renderTime } from '../../../../utils/helpers';
+import { capitalizeFirstLetter, formatRuleType, renderTime } from '../../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
-import { DetectorsService, OpenSearchService } from '../../../../services';
+import { DetectorsService, OpenSearchService, IndexPatternsService } from '../../../../services';
 import FindingDetailsFlyout from '../FindingDetailsFlyout';
 import { Finding } from '../../models/interfaces';
 import CreateAlertFlyout from '../CreateAlertFlyout';
 import { NotificationChannelTypeOptions } from '../../../CreateDetector/components/ConfigureAlerts/models/interfaces';
 import { FindingItemType } from '../../containers/Findings/Findings';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
+import { RuleSource } from '../../../../../server/models/interfaces';
 
 interface FindingsTableProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -34,12 +33,13 @@ interface FindingsTableProps extends RouteComponentProps {
   notificationChannels: NotificationChannelTypeOptions[];
   refreshNotificationChannels: () => void;
   loading: boolean;
-  rules: any;
+  rules: { [id: string]: RuleSource };
   startTime: string;
   endTime: string;
   onRefresh: () => void;
   onFindingsFiltered: (findings: FindingItemType[]) => void;
   hasNotificationsPlugin: boolean;
+  indexPatternsService: IndexPatternsService;
 }
 
 interface FindingsTableState {
@@ -101,6 +101,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
             finding={finding}
             closeFlyout={this.closeFlyout}
             allRules={this.props.rules}
+            indexPatternsService={this.props.indexPatternsService}
           />
         ),
         flyoutOpen: true,
@@ -186,7 +187,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         name: 'Log type',
         sortable: true,
         dataType: 'string',
-        render: (logType) => capitalizeFirstLetter(logType) || DEFAULT_EMPTY_DATA,
+        render: (logType: string) => formatRuleType(logType),
       },
       {
         field: 'ruleSeverity',
@@ -259,7 +260,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
           name: 'Log type',
           options: Array.from(logTypes).map((type) => ({
             value: type,
-            name: capitalizeFirstLetter(type) || type,
+            name: formatRuleType(type),
           })),
           multiSelect: 'or',
         } as FieldValueSelectionFilterConfigType,

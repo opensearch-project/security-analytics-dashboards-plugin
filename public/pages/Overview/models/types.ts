@@ -11,4 +11,5 @@ export type TableWidgetItem = FindingItem | AlertItem | DetectorItem;
 export type TableWidgetProps<T extends TableWidgetItem> = {
   columns: EuiBasicTableColumn<T>[];
   items: T[];
+  loading?: boolean;
 };
