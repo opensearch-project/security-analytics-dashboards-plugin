@@ -45,7 +45,7 @@ export interface DashboardSavedObjectCreationConfig extends SavedObjectCreationC
     hits: number;
     optionsJSON: string;
     panelsJSON: string;
-    visState: string;
+    timeRestore: boolean;
     kibanaSavedObjectMeta: {
       searchSourceJSON: string;
     };
