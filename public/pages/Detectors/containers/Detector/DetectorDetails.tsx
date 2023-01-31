@@ -9,7 +9,6 @@ import {
   EuiContextMenuPanel,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiPanel,
   EuiPopover,
   EuiSpacer,
   EuiTab,
@@ -328,7 +327,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     const { selectedTabContent } = this.state;
 
     return (
-      <EuiPanel>
+      <>
         <EuiFlexGroup>
           <EuiFlexItem>
             <EuiFlexGroup alignItems="center">
@@ -360,7 +359,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
         <EuiTabs>{this.renderTabs()}</EuiTabs>
         <EuiSpacer size="xl" />
         {selectedTabContent}
-      </EuiPanel>
+      </>
     );
   }
 }
