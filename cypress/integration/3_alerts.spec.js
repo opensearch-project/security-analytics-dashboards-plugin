@@ -84,7 +84,10 @@ describe('Alerts', () => {
 
   beforeEach(() => {
     // Visit Alerts table page
+    cy.intercept('/detectors/_search').as('detectorsSearch');
+    // Visit Detectors page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/alerts`);
+    cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
 
     // Wait for page to load
     cy.waitForPageLoad('alerts', {
@@ -213,10 +216,12 @@ describe('Alerts', () => {
 
       // Check the rule details accordion for the expected values
       cy.get('[data-test-subj="finding-details-flyout-rule-accordion-0"]').within(() => {
-        // Confirm the accordion button contains the expected text
+        // Confirm the accordion button contains the expected name
         cy.get('[data-test-subj="finding-details-flyout-rule-accordion-button"]').contains(
           'USB Device Plugged'
         );
+
+        // Confirm the accordion button contains the expected severity
         cy.get('[data-test-subj="finding-details-flyout-rule-accordion-button"]').contains(
           'Severity: Low'
         );

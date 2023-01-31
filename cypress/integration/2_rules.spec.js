@@ -131,8 +131,10 @@ const checkRulesFlyout = () => {
 describe('Rules', () => {
   before(() => cy.cleanUpTests());
   beforeEach(() => {
+    cy.intercept('/rules/_search').as('rulesSearch');
     // Visit Rules page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
+    cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
 
     // Check that correct page is showing
     cy.waitForPageLoad('rules', {
@@ -194,11 +196,11 @@ describe('Rules', () => {
       force: true,
     });
 
+    cy.wait('@getRules');
+
     cy.waitForPageLoad('rules', {
       contains: 'Rules',
     });
-
-    cy.wait('@getRules');
 
     checkRulesFlyout();
   });

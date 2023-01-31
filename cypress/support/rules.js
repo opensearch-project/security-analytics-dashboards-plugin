@@ -51,10 +51,14 @@ Cypress.Commands.add('deleteRule', (ruleName) => {
 });
 
 Cypress.Commands.add('deleteAllCustomRules', () => {
+  const url = `${Cypress.env('opensearch')}/.opensearch-sap-custom-rules-config`;
   cy.request({
     method: 'DELETE',
-    url: `${Cypress.env('opensearch')}/.opensearch-sap-custom-rules-config`,
+    url: url,
     failOnStatusCode: false,
     body: { query: { match_all: {} } },
+  }).as('deleteAllCustomRules');
+  cy.get('@deleteAllCustomRules').should((response) => {
+    expect(response.status).to.be.oneOf([200, 404]);
   });
 });
