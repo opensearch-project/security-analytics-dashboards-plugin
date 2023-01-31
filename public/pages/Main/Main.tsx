@@ -239,6 +239,7 @@ export default class Main extends Component<MainProps, MainState> {
                               detectorService={services.detectorsService}
                               ruleService={services.ruleService}
                               notificationsService={services.notificationsService}
+                              indexPatternsService={services.indexPatternsService}
                               notifications={core?.notifications}
                             />
                           )}
