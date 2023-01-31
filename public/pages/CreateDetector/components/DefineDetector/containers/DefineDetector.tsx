@@ -43,7 +43,8 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
     const isDataValid =
       !!detector.name &&
       !!detector.detector_type &&
-      detector.inputs[0].detector_input.indices.length >= MIN_NUM_DATA_SOURCES;
+      detector.inputs[0].detector_input.indices.length >= MIN_NUM_DATA_SOURCES &&
+      !!detector.schedule.period.interval;
     this.props.changeDetector(detector);
     this.props.updateDataValidState(DetectorCreationStep.DEFINE_DETECTOR, isDataValid);
   }
