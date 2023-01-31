@@ -35,6 +35,7 @@ import { EditRule } from '../Rules/containers/EditRule/EditRule';
 import { ImportRule } from '../Rules/containers/ImportRule/ImportRule';
 import { DuplicateRule } from '../Rules/containers/DuplicateRule/DuplicateRule';
 import { DateTimeFilter } from '../Overview/models/interfaces';
+import Dashboards from '../Dashboards';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -43,6 +44,7 @@ enum Navigation {
   Rules = 'Rules',
   Overview = 'Overview',
   Alerts = 'Alerts',
+  Dashboards = 'Dashboards',
 }
 
 /**
@@ -72,6 +74,7 @@ const navItemIndexByRoute: { [route: string]: number } = {
   [ROUTES.ALERTS]: 3,
   [ROUTES.DETECTORS]: 4,
   [ROUTES.RULES]: 5,
+  [ROUTES.DASHBOARDS]: 6,
 };
 
 export default class Main extends Component<MainProps, MainState> {
@@ -206,6 +209,15 @@ export default class Main extends Component<MainProps, MainState> {
               history.push(ROUTES.RULES);
             },
             isSelected: this.state.selectedNavItemIndex === 5,
+          },
+          {
+            name: Navigation.Dashboards,
+            id: 6,
+            onClick: () => {
+              this.setState({ selectedNavItemIndex: 6 });
+              history.push(ROUTES.DASHBOARDS);
+            },
+            isSelected: this.state.selectedNavItemIndex === 6,
           },
         ],
       },
@@ -399,6 +411,15 @@ export default class Main extends Component<MainProps, MainState> {
                               notificationsService={services.notificationsService}
                               notifications={core?.notifications}
                               opensearchService={services.opensearchService}
+                            />
+                          )}
+                        />
+                        <Route
+                          path={`${ROUTES.DASHBOARDS}`}
+                          render={(props: RouteComponentProps) => (
+                            <Dashboards
+                              {...props}
+                              savedObjectsService={services.savedObjectsService}
                             />
                           )}
                         />

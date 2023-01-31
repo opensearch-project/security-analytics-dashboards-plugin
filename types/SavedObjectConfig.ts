@@ -56,3 +56,9 @@ export type SavedObjectCreationConfig =
   | IndexPatternSavedObjectCreationConfig
   | VisualizationSavedObjectCreationConfig
   | DashboardSavedObjectCreationConfig;
+
+export type DashboardCreationConfig = {
+  'index-pattern': IndexPatternSavedObjectCreationConfig;
+  visualizations: VisualizationSavedObjectCreationConfig[];
+  dashboard: DashboardSavedObjectCreationConfig;
+};

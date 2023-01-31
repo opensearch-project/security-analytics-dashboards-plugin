@@ -23,7 +23,63 @@ export const vpcFlowLogsDashboardConfig: DashboardSavedObjectCreationConfig = {
     title: 'VPCFlowLogs Summary',
     version: 1,
   },
-  references: [],
+  references: [
+    {
+      id: 'e64d06f0-8225-11ea-9ba8-7fa25bc74a6f',
+      name: 'panel_0',
+      type: 'visualization',
+    },
+    {
+      id: '8079b750-8226-11ea-945d-8d0868f4a377',
+      name: 'panel_1',
+      type: 'visualization',
+    },
+    {
+      id: '93a6db30-8228-11ea-9ba8-7fa25bc74a6f',
+      name: 'panel_2',
+      type: 'visualization',
+    },
+    {
+      id: 'c3100a20-8234-11ea-8450-d1d13849d130',
+      name: 'panel_3',
+      type: 'visualization',
+    },
+    {
+      id: 'e3231530-823b-11ea-8450-d1d13849d130',
+      name: 'panel_4',
+      type: 'visualization',
+    },
+    {
+      id: '41ffb5a0-823b-11ea-8dd2-6fda3f2e19c6',
+      name: 'panel_5',
+      type: 'visualization',
+    },
+    {
+      id: '82c6bd20-823d-11ea-a1e6-856110366757',
+      name: 'panel_6',
+      type: 'visualization',
+    },
+    {
+      id: '435e9770-823d-11ea-8dd2-6fda3f2e19c6',
+      name: 'panel_7',
+      type: 'visualization',
+    },
+    {
+      id: '77dae980-823e-11ea-a1e6-856110366757',
+      name: 'panel_8',
+      type: 'visualization',
+    },
+    {
+      id: 'b7f8a390-823e-11ea-8450-d1d13849d130',
+      name: 'panel_9',
+      type: 'visualization',
+    },
+    {
+      id: 'e530dac0-8073-11ea-9ba8-7fa25bc74a6f',
+      name: 'panel_10',
+      type: 'visualization',
+    },
+  ],
   type: 'dashboard',
 };
 

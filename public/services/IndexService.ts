@@ -7,8 +7,9 @@ import { HttpSetup } from 'opensearch-dashboards/public';
 import { ServerResponse } from '../../server/models/types';
 import { GetIndicesResponse } from '../../server/models/interfaces';
 import { API } from '../../server/utils/constants';
+import { IIndexService } from '../../types';
 
-export default class IndexService {
+export default class IndexService implements IIndexService {
   httpClient: HttpSetup;
 
   constructor(httpClient: HttpSetup) {

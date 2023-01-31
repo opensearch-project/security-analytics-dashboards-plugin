@@ -19,6 +19,7 @@ import OpenSearchService from './services/OpenSearchService';
 import { BrowserServices } from './models/interfaces';
 import FieldMappingService from './services/FieldMappingService';
 import RuleService from './services/RuleService';
+import SavedObjectService from './services/SavedObjectService';
 
 export function renderApp(coreStart: CoreStart, params: AppMountParameters, landingPage: string) {
   const { http, savedObjects } = coreStart;
@@ -31,6 +32,7 @@ export function renderApp(coreStart: CoreStart, params: AppMountParameters, land
   const alertsService = new AlertsService(http);
   const ruleService = new RuleService(http);
   const notificationsService = new NotificationsService(http);
+  const savedObjectsService = new SavedObjectService(savedObjects.client);
 
   const services: BrowserServices = {
     detectorsService,
@@ -41,6 +43,7 @@ export function renderApp(coreStart: CoreStart, params: AppMountParameters, land
     ruleService,
     alertService: alertsService,
     notificationsService,
+    savedObjectsService,
   };
 
   const isDarkMode = coreStart.uiSettings.get('theme:darkMode') || false;
