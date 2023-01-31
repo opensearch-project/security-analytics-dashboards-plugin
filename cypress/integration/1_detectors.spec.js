@@ -38,24 +38,29 @@ describe('Detectors', () => {
   before(() => {
     cy.cleanUpTests();
     // Create test index
-    cy.createIndex(indexName, sample_index_settings);
-    cy.request('POST', '_plugins/_security_analytics/rules/_search?prePackaged=true', {
-      from: 0,
-      size: 5000,
-      query: {
-        nested: {
-          path: 'rule',
-          query: { bool: { must: [{ match: { 'rule.category': 'windows' } }] } },
-        },
-      },
-    });
+    cy.createIndex(indexName, sample_index_settings).then(() =>
+      cy
+        .request('POST', '_plugins/_security_analytics/rules/_search?prePackaged=true', {
+          from: 0,
+          size: 5000,
+          query: {
+            nested: {
+              path: 'rule',
+              query: { bool: { must: [{ match: { 'rule.category': 'windows' } }] } },
+            },
+          },
+        })
+        .should('have.property', 'status', 200)
+    );
 
     cy.contains(detectorName).should('not.exist');
   });
 
   beforeEach(() => {
+    cy.intercept('/detectors/_search').as('detectorsSearch');
     // Visit Detectors page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
+    cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
 
     // Check that correct page is showing
     cy.waitForPageLoad('detectors', {

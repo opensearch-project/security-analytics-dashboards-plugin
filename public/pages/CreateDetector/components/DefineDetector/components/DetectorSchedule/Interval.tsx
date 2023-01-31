@@ -20,14 +20,25 @@ export interface IntervalProps {
   onDetectorScheduleChange(schedule: PeriodSchedule): void;
 }
 
+export interface IntervalState {
+  isIntervalValid: boolean;
+}
+
 const unitOptions: EuiSelectOption[] = [
   { value: 'MINUTES', text: 'Minutes' },
   { value: 'HOURS', text: 'Hours' },
   { value: 'DAYS', text: 'Days' },
 ];
 
-export class Interval extends React.Component<IntervalProps> {
+export class Interval extends React.Component<IntervalProps, IntervalState> {
+  state = {
+    isIntervalValid: true,
+  };
+
   onTimeIntervalChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({
+      isIntervalValid: !!event.target.value,
+    });
     this.props.onDetectorScheduleChange({
       period: {
         ...this.props.detector.schedule.period,
@@ -46,9 +57,14 @@ export class Interval extends React.Component<IntervalProps> {
   };
 
   render() {
+    const { isIntervalValid } = this.state;
     const { period } = this.props.detector.schedule;
     return (
-      <EuiFormRow label={<FormFieldHeader headerTitle={'Run every'} />}>
+      <EuiFormRow
+        label={<FormFieldHeader headerTitle={'Run every'} />}
+        isInvalid={!isIntervalValid}
+        error={'Enter schedule interval.'}
+      >
         <EuiFlexGroup>
           <EuiFlexItem>
             <EuiFieldNumber
@@ -57,6 +73,8 @@ export class Interval extends React.Component<IntervalProps> {
               value={period.interval}
               onChange={this.onTimeIntervalChange}
               data-test-subj={'detector-schedule-number-select'}
+              required={true}
+              isInvalid={!isIntervalValid}
             />
           </EuiFlexItem>
           <EuiFlexItem>

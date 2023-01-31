@@ -84,7 +84,10 @@ describe('Alerts', () => {
 
   beforeEach(() => {
     // Visit Alerts table page
+    cy.intercept('/detectors/_search').as('detectorsSearch');
+    // Visit Detectors page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/alerts`);
+    cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
 
     // Wait for page to load
     cy.waitForPageLoad('alerts', {
