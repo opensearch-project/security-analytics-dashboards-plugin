@@ -17,7 +17,7 @@ import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components
 import dateMath from '@elastic/datemath';
 import { capitalizeFirstLetter, formatRuleType, renderTime } from '../../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
-import { DetectorsService, OpenSearchService } from '../../../../services';
+import { DetectorsService, OpenSearchService, IndexPatternsService } from '../../../../services';
 import FindingDetailsFlyout from '../FindingDetailsFlyout';
 import { Finding } from '../../models/interfaces';
 import CreateAlertFlyout from '../CreateAlertFlyout';
@@ -39,6 +39,7 @@ interface FindingsTableProps extends RouteComponentProps {
   onRefresh: () => void;
   onFindingsFiltered: (findings: FindingItemType[]) => void;
   hasNotificationsPlugin: boolean;
+  indexPatternsService: IndexPatternsService;
 }
 
 interface FindingsTableState {
@@ -100,6 +101,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
             finding={finding}
             closeFlyout={this.closeFlyout}
             allRules={this.props.rules}
+            indexPatternsService={this.props.indexPatternsService}
           />
         ),
         flyoutOpen: true,
