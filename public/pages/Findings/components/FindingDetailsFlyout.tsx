@@ -19,6 +19,10 @@ import {
   EuiFormRow,
   EuiHorizontalRule,
   EuiLink,
+  EuiModal,
+  EuiModalBody,
+  EuiModalHeader,
+  EuiModalHeaderTitle,
   EuiPanel,
   EuiSpacer,
   EuiText,
@@ -30,14 +34,16 @@ import { Finding, Query } from '../models/interfaces';
 import { RuleViewerFlyout } from '../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
 import { RuleSource } from '../../../../server/models/interfaces';
 import { RuleItemInfoBase } from '../../Rules/models/types';
-import { OpenSearchService } from '../../../services';
+import { OpenSearchService, IndexPatternsService } from '../../../services';
 import { RuleTableItem } from '../../Rules/utils/helpers';
+import { CreateIndexPatternForm } from './CreateIndexPatternForm';
 
 interface FindingDetailsFlyoutProps {
   finding: Finding;
   backButton?: React.ReactNode;
   allRules: { [id: string]: RuleSource };
   opensearchService: OpenSearchService;
+  indexPatternsService: IndexPatternsService;
   closeFlyout: () => void;
 }
 
@@ -45,6 +51,7 @@ interface FindingDetailsFlyoutState {
   loading: boolean;
   ruleViewerFlyoutData: RuleTableItem | null;
   indexPatternId?: string;
+  isCreateIndexPatternModalVisible: boolean;
 }
 
 export default class FindingDetailsFlyout extends Component<
@@ -56,6 +63,7 @@ export default class FindingDetailsFlyout extends Component<
     this.state = {
       loading: false,
       ruleViewerFlyoutData: null,
+      isCreateIndexPatternModalVisible: false,
     };
   }
 
@@ -215,14 +223,19 @@ export default class FindingDetailsFlyout extends Component<
               <h3>Documents</h3>
             </EuiTitle>
           </EuiFlexItem>
-          <EuiFlexItem grow={false} style={{ display: 'none' }}>
+          <EuiFlexItem grow={false}>
             <EuiButton
-              href={
-                indexPatternId
-                  ? `discover#/context/${indexPatternId}/${related_doc_ids[0]}`
-                  : `#${ROUTES.FINDINGS}`
-              }
-              target={indexPatternId ? '_blank' : undefined}
+              data-test-subj={'finding-details-flyout-view-surrounding-documents'}
+              onClick={() => {
+                if (indexPatternId) {
+                  window.open(
+                    `discover#/context/${indexPatternId}/${related_doc_ids[0]}`,
+                    '_blank'
+                  );
+                } else {
+                  this.setState({ ...this.state, isCreateIndexPatternModalVisible: true });
+                }
+              }}
             >
               View surrounding documents
             </EuiButton>
@@ -266,6 +279,46 @@ export default class FindingDetailsFlyout extends Component<
     );
   }
 
+  createIndexPatternModal() {
+    const {
+      finding: { related_doc_ids },
+    } = this.props;
+    if (this.state.isCreateIndexPatternModalVisible) {
+      return (
+        <EuiModal
+          style={{ width: 800 }}
+          onClose={() => this.setState({ ...this.state, isCreateIndexPatternModalVisible: false })}
+        >
+          <EuiModalHeader>
+            <EuiModalHeaderTitle>
+              <h1>Create index pattern to view documents</h1>
+            </EuiModalHeaderTitle>
+          </EuiModalHeader>
+
+          <EuiModalBody>
+            <CreateIndexPatternForm
+              indexPatternsService={this.props.indexPatternsService}
+              initialValue={{
+                name: this.props.finding.detector._source.inputs[0].detector_input.indices[0] + '*',
+              }}
+              close={() =>
+                this.setState({ ...this.state, isCreateIndexPatternModalVisible: false })
+              }
+              created={(indexPatternId) => {
+                this.setState({
+                  ...this.state,
+                  indexPatternId,
+                  isCreateIndexPatternModalVisible: false,
+                });
+                window.open(`discover#/context/${indexPatternId}/${related_doc_ids[0]}`, '_blank');
+              }}
+            ></CreateIndexPatternForm>
+          </EuiModalBody>
+        </EuiModal>
+      );
+    }
+  }
+
   render() {
     const {
       finding: {
@@ -294,7 +347,7 @@ export default class FindingDetailsFlyout extends Component<
             ruleTableItem={this.state.ruleViewerFlyoutData}
           />
         )}
-
+        {this.createIndexPatternModal()}
         <EuiFlyoutHeader hasBorder={true}>
           <EuiFlexGroup justifyContent="flexStart" alignItems="center">
             <EuiFlexItem>
