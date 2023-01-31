@@ -22,6 +22,7 @@ import {
   NotificationsService,
   OpenSearchService,
   RuleService,
+  IndexPatternsService,
 } from '../../../../services';
 import {
   BREADCRUMBS,
@@ -59,6 +60,7 @@ interface FindingsProps extends RouteComponentProps {
   detectorService: DetectorsService;
   findingsService: FindingsService;
   notificationsService: NotificationsService;
+  indexPatternsService: IndexPatternsService;
   opensearchService: OpenSearchService;
   ruleService: RuleService;
   notifications: NotificationsStart;

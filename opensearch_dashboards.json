@@ -3,7 +3,7 @@
   "version": "2.5.0.0",
   "opensearchDashboardsVersion": "2.5.0",
   "configPath": ["opensearch_security_analytics"],
-  "requiredPlugins": [],
+  "requiredPlugins": ["data"],
   "server": true,
   "ui": true
 }
