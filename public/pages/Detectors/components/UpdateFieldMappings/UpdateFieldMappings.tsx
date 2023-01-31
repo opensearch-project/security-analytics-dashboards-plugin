@@ -10,7 +10,7 @@ import ConfigureFieldMapping from '../../../CreateDetector/components/ConfigureF
 import { Detector, FieldMapping } from '../../../../../models/interfaces';
 import FieldMappingService from '../../../../services/FieldMappingService';
 import { DetectorHit, SearchDetectorsResponse } from '../../../../../server/models/interfaces';
-import { EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
+import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
 import { DetectorsService } from '../../../../services';
 import { ServerResponse } from '../../../../../server/models/types';
 import { NotificationsStart } from 'opensearch-dashboards/public';
@@ -72,7 +72,15 @@ export default class UpdateFieldMappings extends Component<
             detectorHit: { ...detectorHit, _source: { ...detectorHit._source, ...detector } },
           },
         });
-
+        debugger;
+        this.context.chrome.setBreadcrumbs([
+          BREADCRUMBS.SECURITY_ANALYTICS,
+          BREADCRUMBS.DETECTORS,
+          BREADCRUMBS.DETECTORS_DETAILS(detectorHit._source.name, detectorHit._id),
+          {
+            text: 'Edit detector field mappings',
+          },
+        ]);
         this.setState({ detector: detector });
       } else {
         errorNotificationToast(this.props.notifications, 'retrieve', 'detector', response.error);

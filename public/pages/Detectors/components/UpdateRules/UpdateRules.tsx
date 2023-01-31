@@ -15,11 +15,12 @@ import { RouteComponentProps } from 'react-router-dom';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { Detector } from '../../../../../models/interfaces';
 import { DetectionRulesTable } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/DetectionRulesTable';
-import { EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
+import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
 import { ServicesContext } from '../../../../services';
 import { ServerResponse } from '../../../../../server/models/types';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../../../../utils/helpers';
+import { CoreServicesContext } from '../../../../components/core_services';
 
 export interface UpdateDetectorRulesProps
   extends RouteComponentProps<
@@ -39,6 +40,8 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
   const [prePackagedRuleItems, setPrePackagedRuleItems] = useState<RuleItem[]>([]);
   const detectorId = props.location.pathname.replace(`${ROUTES.EDIT_DETECTOR_RULES}/`, '');
 
+  const context = useContext(CoreServicesContext);
+
   useEffect(() => {
     const getDetector = async () => {
       setLoading(true);
@@ -51,6 +54,15 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
         ) as DetectorHit;
         const newDetector = { ...detectorHit._source, id: detectorId };
         setDetector(newDetector);
+
+        context?.chrome.setBreadcrumbs([
+          BREADCRUMBS.SECURITY_ANALYTICS,
+          BREADCRUMBS.DETECTORS,
+          BREADCRUMBS.DETECTORS_DETAILS(detectorHit._source.name, detectorHit._id),
+          {
+            text: 'Edit detector rules',
+          },
+        ]);
         await getRules(newDetector);
       } else {
         errorNotificationToast(props.notifications, 'retrieve', 'detector', response.error);
