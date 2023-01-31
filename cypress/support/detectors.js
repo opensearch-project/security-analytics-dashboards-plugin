@@ -68,5 +68,8 @@ Cypress.Commands.add('deleteAllDetectors', () => {
     method: 'DELETE',
     url: `${Cypress.env('opensearch')}/.opensearch-sap-detectors-config`,
     failOnStatusCode: false,
+  }).as('deleteAllDetectors');
+  cy.get('@deleteAllDetectors').should((response) => {
+    expect(response.status).to.be.oneOf([200, 404]);
   });
 });
