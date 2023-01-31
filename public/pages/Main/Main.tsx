@@ -56,6 +56,10 @@ const HIDDEN_NAV_ROUTES: string[] = [
   ROUTES.RULES_EDIT,
   ROUTES.RULES_DUPLICATE,
   ROUTES.RULES_IMPORT,
+  ROUTES.EDIT_DETECTOR_DETAILS,
+  ROUTES.EDIT_DETECTOR_RULES,
+  ROUTES.EDIT_FIELD_MAPPINGS,
+  ROUTES.EDIT_DETECTOR_ALERT_TRIGGERS,
 ];
 
 interface MainProps extends RouteComponentProps {
@@ -232,7 +236,7 @@ export default class Main extends Component<MainProps, MainState> {
                 services && (
                   <EuiPage restrictWidth={'100%'}>
                     {/* Hide side navigation bar when on any HIDDEN_NAV_ROUTES pages. */}
-                    {!HIDDEN_NAV_ROUTES.includes(pathname) && (
+                    {!HIDDEN_NAV_ROUTES.some((route) => pathname.match(route)) && (
                       <EuiPageSideBar style={{ minWidth: 200 }}>
                         <EuiSideNav style={{ width: 200 }} items={sideNav} />
                       </EuiPageSideBar>
@@ -251,6 +255,7 @@ export default class Main extends Component<MainProps, MainState> {
                               detectorService={services.detectorsService}
                               ruleService={services.ruleService}
                               notificationsService={services.notificationsService}
+                              indexPatternsService={services.indexPatternsService}
                               notifications={core?.notifications}
                             />
                           )}

@@ -7,7 +7,12 @@ import { CoreStart, AppMountParameters } from 'opensearch-dashboards/public';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter as Router, Route } from 'react-router-dom';
-import { AlertsService, NotificationsService, ServicesContext } from './services';
+import {
+  AlertsService,
+  NotificationsService,
+  ServicesContext,
+  IndexPatternsService,
+} from './services';
 import { DarkModeContext } from './components/DarkMode';
 import Main from './pages/Main';
 import { CoreServicesContext } from './components/core_services';
@@ -20,8 +25,14 @@ import { BrowserServices } from './models/interfaces';
 import FieldMappingService from './services/FieldMappingService';
 import RuleService from './services/RuleService';
 import SavedObjectService from './services/SavedObjectService';
+import { SecurityAnalyticsPluginStartDeps } from './plugin';
 
-export function renderApp(coreStart: CoreStart, params: AppMountParameters, landingPage: string) {
+export function renderApp(
+  coreStart: CoreStart,
+  params: AppMountParameters,
+  landingPage: string,
+  depsStart: SecurityAnalyticsPluginStartDeps
+) {
   const { http, savedObjects } = coreStart;
 
   const detectorsService = new DetectorsService(http);
@@ -33,6 +44,7 @@ export function renderApp(coreStart: CoreStart, params: AppMountParameters, land
   const ruleService = new RuleService(http);
   const notificationsService = new NotificationsService(http);
   const savedObjectsService = new SavedObjectService(savedObjects.client);
+  const indexPatternsService = new IndexPatternsService(depsStart.data.indexPatterns);
 
   const services: BrowserServices = {
     detectorsService,
@@ -44,6 +56,7 @@ export function renderApp(coreStart: CoreStart, params: AppMountParameters, land
     alertService: alertsService,
     notificationsService,
     savedObjectsService,
+    indexPatternsService,
   };
 
   const isDarkMode = coreStart.uiSettings.get('theme:darkMode') || false;
