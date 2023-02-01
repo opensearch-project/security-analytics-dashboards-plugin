@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiButton, EuiFlexGroup, EuiFlexItem, EuiSpacer, EuiTitle } from '@elastic/eui';
+import { EuiButton, EuiFlexGroup, EuiFlexItem, EuiPanel, EuiSpacer, EuiTitle } from '@elastic/eui';
 import { ServicesContext } from '../../../../services';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
@@ -119,7 +119,9 @@ export const Rules: React.FC<RulesProps> = (props) => {
           <EuiSpacer size={'m'} />
         </EuiFlexItem>
         <EuiFlexItem>
-          <RulesTable loading={loading} ruleItems={ruleItems} showRuleDetails={setFlyoutData} />
+          <EuiPanel>
+            <RulesTable loading={loading} ruleItems={ruleItems} showRuleDetails={setFlyoutData} />
+          </EuiPanel>
         </EuiFlexItem>
       </EuiFlexGroup>
     </>

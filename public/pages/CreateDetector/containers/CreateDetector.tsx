@@ -79,7 +79,11 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
   }
 
   componentDidMount(): void {
-    this.context.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.DETECTORS]);
+    this.context.chrome.setBreadcrumbs([
+      BREADCRUMBS.SECURITY_ANALYTICS,
+      BREADCRUMBS.DETECTORS,
+      BREADCRUMBS.DETECTORS_CREATE,
+    ]);
     this.setupRulesState();
     this.getPlugins();
   }
