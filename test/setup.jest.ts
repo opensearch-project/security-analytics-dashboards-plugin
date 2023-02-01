@@ -6,9 +6,9 @@
 import 'jest-canvas-mock';
 import '@testing-library/jest-dom/extend-expect';
 import { configure } from '@testing-library/react';
-import { mockDetectorHit } from '../public/models/Interfaces.mock';
 import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { mockDetectorHit } from './mocks/Detectors/containers/Detectors/Detectors.mock';
 
 Enzyme.configure({ adapter: new Adapter() });
 

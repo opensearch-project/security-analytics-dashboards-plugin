@@ -6,7 +6,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { AlertTriggerView } from './AlertTriggerView';
-import props from '../../../../models/Detectors/components/AlertTriggerView/AlertTriggerView.mock';
+import props from '../../../../../test/mocks/Detectors/components/AlertTriggerView/AlertTriggerView.mock';
 import { expect } from '@jest/globals';
 
 describe('<AlertTriggerView /> spec', () => {

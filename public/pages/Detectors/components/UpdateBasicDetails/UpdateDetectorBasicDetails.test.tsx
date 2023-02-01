@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import props from '../../../../models/Detectors/components/UpdateDetectorBasicDetails/UpdateDetectorBasicDetails.mock';
+import props from '../../../../../test/mocks/Detectors/components/UpdateDetectorBasicDetails/UpdateDetectorBasicDetails.mock';
 import { expect } from '@jest/globals';
 import { UpdateDetectorBasicDetails } from './UpdateBasicDetails';
 import { act } from 'react-dom/test-utils';

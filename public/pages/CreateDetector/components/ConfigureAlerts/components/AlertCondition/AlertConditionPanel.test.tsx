@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { render } from '@testing-library/react';
-import props from '../../../../../../models/CreateDetector/components/ConfigureAlerts/components/AlertCondition/AlertConditionPanel.mock';
+import props from '../../../../../../../test/mocks/CreateDetector/components/ConfigureAlerts/components/AlertCondition/AlertConditionPanel.mock';
 import { expect } from '@jest/globals';
 import AlertConditionPanel from './AlertConditionPanel';
 

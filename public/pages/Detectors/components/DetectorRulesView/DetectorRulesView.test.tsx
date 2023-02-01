@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import props from '../../../../models/Detectors/components/DetectorRulesView/DetectorRulesView.mock';
+import props from '../../../../../test/mocks/Detectors/components/DetectorRulesView/DetectorRulesView.mock';
 import { expect } from '@jest/globals';
 import { DetectorRulesView } from './DetectorRulesView';
 import { act } from 'react-dom/test-utils';

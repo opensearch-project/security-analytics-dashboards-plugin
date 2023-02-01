@@ -6,7 +6,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { DetectorBasicDetailsView } from './DetectorBasicDetailsView';
-import props from '../../../../models/Detectors/components/DetectorBasicDetailsView/DetectorBasicDetailsView.mock';
+import props from '../../../../../test/mocks/Detectors/components/DetectorBasicDetailsView/DetectorBasicDetailsView.mock';
 import { expect } from '@jest/globals';
 
 describe('<DetectorBasicDetailsView /> spec', () => {

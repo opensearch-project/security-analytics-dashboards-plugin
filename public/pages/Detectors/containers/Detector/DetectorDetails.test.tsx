@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import props from '../../../../models/Detectors/containers/DetectorDetails/DetectorDetails.mock';
+import props from '../../../../../test/mocks/Detectors/containers/DetectorDetails/DetectorDetails.mock';
 import { expect } from '@jest/globals';
 import { act } from 'react-dom/test-utils';
 import { mount } from 'enzyme';

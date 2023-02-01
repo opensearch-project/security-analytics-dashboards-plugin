@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { render } from '@testing-library/react';
-import props from '../../../../models/Detectors/components/UpdateDetectorRules/UpdateDetectorRules.mock';
+import props from '../../../../../test/mocks/Detectors/components/UpdateDetectorRules/UpdateDetectorRules.mock';
 import { expect } from '@jest/globals';
 import { UpdateDetectorRules } from './UpdateRules';
 

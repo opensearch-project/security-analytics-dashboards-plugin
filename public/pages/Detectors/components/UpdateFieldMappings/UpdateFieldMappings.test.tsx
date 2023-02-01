@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { render } from '@testing-library/react';
-import props from '../../../../models/Detectors/components/UpdateFieldMappings/UpdateFieldMappings.mock';
+import props from '../../../../../test/mocks/Detectors/components/UpdateFieldMappings/UpdateFieldMappings.mock';
 import { expect } from '@jest/globals';
 import UpdateFieldMappings from './UpdateFieldMappings';
 

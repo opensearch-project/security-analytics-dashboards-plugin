@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import props from '../../../../models/Detectors/containers/AlertTriggersView/AlertTriggersView.mock';
+import props from '../../../../../test/mocks/Detectors/containers/AlertTriggersView/AlertTriggersView.mock';
 import { expect } from '@jest/globals';
 import { AlertTriggersView } from './AlertTriggersView';
 import { act } from 'react-dom/test-utils';

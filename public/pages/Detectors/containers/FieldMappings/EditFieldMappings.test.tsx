@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import props from '../../../../models/Detectors/containers/EditFieldMappings/EditFieldMappings.mock';
+import props from '../../../../../test/mocks/Detectors/containers/EditFieldMappings/EditFieldMappings.mock';
 import { expect } from '@jest/globals';
 import { act } from 'react-dom/test-utils';
 import { mount } from 'enzyme';
