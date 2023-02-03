@@ -24,4 +24,4 @@ Object.assign(fieldMappingService, {
     }),
 });
 
-export default fieldMappingService;
+export default fieldMappingService as FieldMappingService;

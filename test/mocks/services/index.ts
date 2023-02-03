@@ -14,6 +14,7 @@ import notificationsService from './notifications/notificationsService.mock';
 import ruleService from './ruleService.mock';
 import findingsService from './findingsService.mock';
 import alertService from './alertService.mock';
+import indexService from './indexService.mock';
 
 const openSearchService = new OpenSearchService(httpClientMock, savedObjectsClientMock);
 
@@ -22,6 +23,7 @@ export default {
   detectorService,
   fieldMappingService,
   findingsService,
+  indexService,
   ruleService,
   notificationsService,
   httpClientMock,

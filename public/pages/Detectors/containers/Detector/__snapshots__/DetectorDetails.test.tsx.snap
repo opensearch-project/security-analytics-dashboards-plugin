@@ -208,7 +208,23 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
   notifications={
     Object {
       "toasts": Object {
-        "addDanger": [MockFunction],
+        "addDanger": [MockFunction] {
+          "calls": Array [
+            Array [
+              Object {
+                "text": [TypeError: Cannot read property 'getRules' of undefined],
+                "title": "Failed to retrieve rules:",
+                "toastLifeTimeMs": 5000,
+              },
+            ],
+          ],
+          "results": Array [
+            Object {
+              "type": "return",
+              "value": undefined,
+            },
+          ],
+        },
       },
     }
   }
@@ -992,7 +1008,23 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
     notifications={
       Object {
         "toasts": Object {
-          "addDanger": [MockFunction],
+          "addDanger": [MockFunction] {
+            "calls": Array [
+              Array [
+                Object {
+                  "text": [TypeError: Cannot read property 'getRules' of undefined],
+                  "title": "Failed to retrieve rules:",
+                  "toastLifeTimeMs": 5000,
+                },
+              ],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": undefined,
+              },
+            ],
+          },
         },
       }
     }
@@ -1382,7 +1414,23 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
       notifications={
         Object {
           "toasts": Object {
-            "addDanger": [MockFunction],
+            "addDanger": [MockFunction] {
+              "calls": Array [
+                Array [
+                  Object {
+                    "text": [TypeError: Cannot read property 'getRules' of undefined],
+                    "title": "Failed to retrieve rules:",
+                    "toastLifeTimeMs": 5000,
+                  },
+                ],
+              ],
+              "results": Array [
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+              ],
+            },
           },
         }
       }
@@ -2627,7 +2675,23 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
       notifications={
         Object {
           "toasts": Object {
-            "addDanger": [MockFunction],
+            "addDanger": [MockFunction] {
+              "calls": Array [
+                Array [
+                  Object {
+                    "text": [TypeError: Cannot read property 'getRules' of undefined],
+                    "title": "Failed to retrieve rules:",
+                    "toastLifeTimeMs": 5000,
+                  },
+                ],
+              ],
+              "results": Array [
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+              ],
+            },
           },
         }
       }
@@ -2785,7 +2849,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
               }
             >
               <RulesTable
-                loading={false}
+                loading={true}
                 ruleItems={Array []}
                 showRuleDetails={[Function]}
               >
@@ -2832,7 +2896,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     ]
                   }
                   items={Array []}
-                  loading={false}
+                  loading={true}
                   onTableChange={[Function]}
                   pagination={
                     Object {
@@ -3774,7 +3838,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         ]
                       }
                       items={Array []}
-                      loading={false}
+                      loading={true}
                       noItemsMessage="No items found"
                       onChange={[Function]}
                       pagination={
@@ -3800,7 +3864,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                       tableLayout="fixed"
                     >
                       <div
-                        className="euiBasicTable"
+                        className="euiBasicTable euiBasicTable-loading"
                       >
                         <div>
                           <EuiTableHeaderMobile>

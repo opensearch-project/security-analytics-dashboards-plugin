@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import detector from '../Detectors/Detector.mock';
 import notificationsStartMock from '../../../services/notifications/NotificationsStart.mock';
+import detectorMock from '../Detectors/Detector.mock';
+
 export default {
-  detector: detector,
+  detector: detectorMock,
   editAlertTriggers: jest.fn(),
   notifications: notificationsStartMock,
 };

@@ -1,7 +1,7 @@
-import httpClientMock from './httpClient.mock';
 import { AlertService } from '../../../server/services';
+import legacyClusterClientMock from './iLegacyCustomClusterClient.mock';
 
-const alertService = new AlertService(httpClientMock);
+const alertService = new AlertService(legacyClusterClientMock);
 Object.assign(alertService, {
   getAlerts: () =>
     Promise.resolve({
@@ -12,4 +12,4 @@ Object.assign(alertService, {
     }),
 });
 
-export default alertService;
+export default alertService as AlertService;

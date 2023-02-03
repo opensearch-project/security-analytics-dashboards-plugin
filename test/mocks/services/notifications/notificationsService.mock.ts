@@ -1,8 +1,7 @@
 import { NotificationsService } from '../../../../public/services';
 import httpClientMock from '../httpClient.mock';
 
-const notificationsService = new NotificationsService(httpClientMock);
-Object.assign(notificationsService, {
+const notificationsServiceMock = {
   getChannels: () =>
     Promise.resolve({
       ok: true,
@@ -10,6 +9,10 @@ Object.assign(notificationsService, {
         channel_list: [],
       },
     }),
-});
+};
 
-export default notificationsService;
+const notificationsService = new NotificationsService(httpClientMock);
+Object.assign(notificationsService, notificationsServiceMock);
+
+export { notificationsServiceMock };
+export default notificationsService as NotificationsService;

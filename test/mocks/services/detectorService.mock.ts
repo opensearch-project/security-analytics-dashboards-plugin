@@ -1,8 +1,8 @@
-import httpClientMock from './httpClient.mock';
 import { DetectorService } from '../../../server/services';
 import detectorHitMock from '../Detectors/containers/Detectors/DetectorHit.mock';
+import legacyClusterClientMock from './iLegacyCustomClusterClient.mock';
 
-const detectorService = new DetectorService(httpClientMock);
+const detectorService = new DetectorService(legacyClusterClientMock);
 Object.assign(detectorService, {
   getDetectors: () =>
     Promise.resolve({
@@ -15,4 +15,4 @@ Object.assign(detectorService, {
     }),
 });
 
-export default detectorService;
+export default detectorService as DetectorService;

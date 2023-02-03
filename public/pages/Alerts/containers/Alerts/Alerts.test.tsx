@@ -5,7 +5,7 @@
 
 import React from 'react';
 import Alerts from './Alerts';
-import contextMock from '../../../../../test/mocks/context.mock';
+import contextMock from '../../../../../test/mocks/useContext.mock';
 import { mount } from 'enzyme';
 import alertsMock from '../../../../../test/mocks/Alerts/Alerts.mock';
 import { shallowToJson } from 'enzyme-to-json';

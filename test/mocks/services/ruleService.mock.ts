@@ -14,4 +14,4 @@ Object.assign(ruleService, {
     }),
 });
 
-export default ruleService;
+export default ruleService as RuleService;

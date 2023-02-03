@@ -8,7 +8,12 @@ import '@testing-library/jest-dom/extend-expect';
 import { configure } from '@testing-library/react';
 import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import detectorHitMock from './mocks/Detectors/containers/Detectors/DetectorHit.mock';
+import { notificationsServiceMock } from './mocks/services/notifications/notificationsService.mock';
+import indexServiceMock from './mocks/services/indexService.mock';
+import detectorServiceMock from './mocks/services/detectorService.mock';
+import ruleServiceMock from './mocks/services/ruleService.mock';
+import { NotificationsService } from '../public/services';
+// import { RulesViewModelActor } from '../public/pages/Rules/models/RulesViewModelActor';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -46,6 +51,13 @@ jest.mock('@elastic/eui/lib/eui_components/icon', () => ({
   ICON_COLORS: require('@elastic/eui/lib/eui_components/icon/icon').COLORS,
 }));
 
+/**
+ * Moment timezones are not working from jest so here we mock
+ * moment.tz.names function
+ *
+ * Also, format function is mocked to return always the same value so that we can correctly test
+ * functions that call this
+ */
 jest.mock('moment', () => {
   const moment = jest.requireActual('moment');
 
@@ -64,76 +76,46 @@ jest.mock('moment', () => {
 
   return fakeMoment;
 });
+//
+// jest.mock('../public/pages/Rules/models/RulesViewModelActor.ts', () => {
+//   const rulesViewModelActor = jest.requireActual(
+//     '../public/pages/Rules/models/RulesViewModelActor.ts'
+//   );
+//   const rulesViewModelActorMock = {
+//     ...rulesViewModelActor,
+//     getRules: () =>
+//       Promise.resolve({
+//         ok: true,
+//         response: {
+//           hits: {
+//             hits: [],
+//           },
+//         },
+//       }),
+//   };
+//
+//   return rulesViewModelActorMock as RulesViewModelActor;
+// });
 
-const mockUseContext = {
-  notificationsService: {
-    getChannels: () => {
-      return {
-        ok: true,
-        response: {
-          channel_list: [],
-        },
-      };
-    },
-  },
-  indexService: {
-    getIndices: () => {
-      return {
-        ok: true,
-        response: {
-          indices: [],
-        },
-      };
-    },
-  },
-  detectorsService: {
-    getDetectors: () => {
-      return {
-        ok: true,
-        response: {
-          hits: {
-            hits: [detectorHitMock],
-          },
-        },
-      };
-    },
-  },
-  ruleService: {
-    fetchRules: () => {
-      return Promise.resolve([detectorHitMock]);
-    },
-    getRules: () => {
-      return {
-        ok: true,
-        response: {
-          hits: {
-            hits: [detectorHitMock],
-          },
-        },
-      };
-    },
-  },
+const notificationsService: NotificationsService = notificationsServiceMock;
+
+const useContextMock = {
+  notificationsService: notificationsService,
+  indexService: indexServiceMock,
+  detectorsService: detectorServiceMock,
+  ruleService: ruleServiceMock,
 };
 
+/**
+ * React useContext is mocked to return the mocked services
+ * so that this work in all tests
+ */
 jest.mock('react', () => {
   const ActualReact = jest.requireActual('react');
   return {
     ...ActualReact,
-    useContext: () => mockUseContext,
+    useContext: () => useContextMock,
   };
 });
-
-jest.mock('../public/pages/CreateDetector/components/ConfigureAlerts/utils/constants.ts', () => ({
-  ...jest.requireActual(
-    '../public/pages/CreateDetector/components/ConfigureAlerts/utils/constants.ts'
-  ),
-  ALERT_SEVERITY_OPTIONS: {
-    HIGHEST: { id: '1', value: '1', label: '1 (Highest)', text: '1 (Highest)' },
-    HIGH: { id: '2', value: '2', label: '2 (High)', text: '2 (High)' },
-    MEDIUM: { id: '3', value: '3', label: '3 (Medium)', text: '3 (Medium)' },
-    LOW: { id: '4', value: '4', label: '4 (Low)', text: '4 (Low)' },
-    LOWEST: { id: '5', value: '5', label: '5 (Lowest)', text: '5 (Lowest)' },
-  },
-}));
 
 jest.setTimeout(10000); // in milliseconds

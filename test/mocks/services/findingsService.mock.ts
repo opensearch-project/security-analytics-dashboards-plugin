@@ -12,4 +12,4 @@ Object.assign(findingsService, {
     }),
 });
 
-export default findingsService;
+export default findingsService as FindingsService;
