@@ -8,8 +8,8 @@ import '@testing-library/jest-dom/extend-expect';
 import { configure } from '@testing-library/react';
 import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import detectorHitMock from './mocks/Detectors/containers/Detectors/DetectorHit.mock';
 import { RulesViewModelActor } from '../public/pages/Rules/models/RulesViewModelActor';
+import { contextServicesMock as mockContextServices } from './mocks/useContext.mock';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -97,56 +97,6 @@ jest.mock('../public/pages/Rules/models/RulesViewModelActor.ts', () => {
   return rulesViewModelActorMock as RulesViewModelActor;
 });
 
-const mockUseContext = {
-  notificationsService: {
-    getChannels: () => {
-      return {
-        ok: true,
-        response: {
-          channel_list: [],
-        },
-      };
-    },
-  },
-  indexService: {
-    getIndices: () => {
-      return {
-        ok: true,
-        response: {
-          indices: [],
-        },
-      };
-    },
-  },
-  detectorsService: {
-    getDetectors: () => {
-      return {
-        ok: true,
-        response: {
-          hits: {
-            hits: [detectorHitMock],
-          },
-        },
-      };
-    },
-  },
-  ruleService: {
-    fetchRules: () => {
-      return Promise.resolve([detectorHitMock]);
-    },
-    getRules: () => {
-      return {
-        ok: true,
-        response: {
-          hits: {
-            hits: [detectorHitMock],
-          },
-        },
-      };
-    },
-  },
-};
-
 /**
  * React useContext is mocked to return the mocked services
  * so that this works in all tests
@@ -155,7 +105,7 @@ jest.mock('react', () => {
   const ActualReact = jest.requireActual('react');
   return {
     ...ActualReact,
-    useContext: () => mockUseContext,
+    useContext: () => mockContextServices,
   };
 });
 
