@@ -12,6 +12,7 @@ import {
   IndexService,
   RuleService,
   NotificationsService,
+  IndexPatternsService,
 } from '../services';
 
 export interface BrowserServices {
@@ -23,6 +24,7 @@ export interface BrowserServices {
   alertService: AlertsService;
   ruleService: RuleService;
   notificationsService: NotificationsService;
+  indexPatternsService: IndexPatternsService;
 }
 
 export interface RuleOptions {

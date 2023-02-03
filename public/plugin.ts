@@ -12,14 +12,31 @@ import {
 } from '../../../src/core/public';
 import { PLUGIN_NAME, ROUTES } from './utils/constants';
 import { SecurityAnalyticsPluginSetup, SecurityAnalyticsPluginStart } from './index';
+import { DataPublicPluginStart, DataPublicPluginSetup } from '../../../src/plugins/data/public';
+
+export interface SecurityAnalyticsPluginSetupDeps {
+  data: DataPublicPluginSetup;
+}
+export interface SecurityAnalyticsPluginStartDeps {
+  data: DataPublicPluginStart;
+}
 
 export class SecurityAnalyticsPlugin
-  implements Plugin<SecurityAnalyticsPluginSetup, SecurityAnalyticsPluginStart> {
+  implements
+    Plugin<
+      SecurityAnalyticsPluginSetup,
+      SecurityAnalyticsPluginStart,
+      SecurityAnalyticsPluginSetupDeps,
+      SecurityAnalyticsPluginStartDeps
+    > {
   constructor(private readonly initializerContext: PluginInitializerContext) {
     // can retrieve config from initializerContext
   }
 
-  public setup(core: CoreSetup): SecurityAnalyticsPluginSetup {
+  public setup(
+    core: CoreSetup<SecurityAnalyticsPluginStartDeps>,
+    plugins: SecurityAnalyticsPluginSetupDeps
+  ): SecurityAnalyticsPluginSetup {
     core.application.register({
       id: PLUGIN_NAME,
       title: 'Security Analytics',
@@ -31,8 +48,8 @@ export class SecurityAnalyticsPlugin
       },
       mount: async (params: AppMountParameters) => {
         const { renderApp } = await import('./security_analytics_app');
-        const [coreStart] = await core.getStartServices();
-        return renderApp(coreStart, params, ROUTES.LANDING_PAGE);
+        const [coreStart, depsStart] = await core.getStartServices();
+        return renderApp(coreStart, params, ROUTES.LANDING_PAGE, depsStart);
       },
     });
     return {};
