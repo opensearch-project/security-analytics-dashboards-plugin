@@ -177,23 +177,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
   notifications={
     Object {
       "toasts": Object {
-        "addDanger": [MockFunction] {
-          "calls": Array [
-            Array [
-              Object {
-                "text": [TypeError: Cannot read property 'getRules' of undefined],
-                "title": "Failed to retrieve rules:",
-                "toastLifeTimeMs": 5000,
-              },
-            ],
-          ],
-          "results": Array [
-            Object {
-              "type": "return",
-              "value": undefined,
-            },
-          ],
-        },
+        "addDanger": [MockFunction],
       },
     }
   }
@@ -352,7 +336,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
           }
         >
           <RulesTable
-            loading={true}
+            loading={false}
             ruleItems={Array []}
             showRuleDetails={[Function]}
           >
@@ -399,7 +383,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                 ]
               }
               items={Array []}
-              loading={true}
+              loading={false}
               onTableChange={[Function]}
               pagination={
                 Object {
@@ -1341,7 +1325,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                     ]
                   }
                   items={Array []}
-                  loading={true}
+                  loading={false}
                   noItemsMessage="No items found"
                   onChange={[Function]}
                   pagination={
@@ -1367,7 +1351,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                   tableLayout="fixed"
                 >
                   <div
-                    className="euiBasicTable euiBasicTable-loading"
+                    className="euiBasicTable"
                   >
                     <div>
                       <EuiTableHeaderMobile>

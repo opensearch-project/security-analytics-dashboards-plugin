@@ -1,8 +1,7 @@
 import httpClientMock from './httpClient.mock';
 import { IndexService } from '../../../public/services';
 
-const indexService = new IndexService(httpClientMock);
-Object.assign(indexService, {
+const indexServiceMock = {
   getIndices: () =>
     Promise.resolve({
       ok: true,
@@ -10,6 +9,9 @@ Object.assign(indexService, {
         indices: [],
       },
     }),
-});
+};
+const indexService = new IndexService(httpClientMock);
+Object.assign(indexService, indexServiceMock);
 
+export { indexServiceMock };
 export default indexService as IndexService;

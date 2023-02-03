@@ -1,8 +1,7 @@
 import httpClientMock from './httpClient.mock';
 import { RuleService } from '../../../public/services';
 
-const ruleService = new RuleService(httpClientMock);
-Object.assign(ruleService, {
+const ruleServiceMock = {
   getRules: () =>
     Promise.resolve({
       ok: true,
@@ -12,6 +11,9 @@ Object.assign(ruleService, {
         },
       },
     }),
-});
+};
+const ruleService = new RuleService(httpClientMock);
+Object.assign(ruleService, ruleServiceMock);
 
+export { ruleServiceMock };
 export default ruleService as RuleService;
