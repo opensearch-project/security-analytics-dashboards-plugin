@@ -3,28 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RuleInfo, RuleSource } from '../../../../../server/models/interfaces';
-import { mockAlertCondition } from '../../containers/AlertTriggersView/AlertTriggersView.mock';
-import { mockDetector } from '../../containers/Detectors/Detectors.mock';
-
-const mockRuleSource: RuleSource = {
-  rule: 'ruleName',
-  last_update_time: '12/12/2022',
-  queries: [{ value: '.windows' }],
-};
-
-const mockRuleInfo: RuleInfo = {
-  _id: 'ruleId',
-  _index: '.windows',
-  _primary_term: 1,
-  _source: mockRuleSource,
-  _version: 1,
-};
+import alertConditionMock from '../../../CreateDetector/components/ConfigureAlerts/components/AlertCondition/AlertCondition.mock';
+import detectorMock from '../../containers/Detectors/Detector.mock';
+import ruleInfoMock from '../../../Rules/RuleInfo.mock';
 
 export default {
-  alertTrigger: mockAlertCondition,
+  alertTrigger: alertConditionMock,
   orderPosition: 1,
-  detector: mockDetector,
+  detector: detectorMock,
   notificationChannels: [],
-  rules: { rileId: mockRuleInfo },
+  rules: { rileId: ruleInfoMock },
 };

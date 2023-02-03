@@ -1,7 +1,12 @@
-import { mockDetector } from '../../containers/Detectors/Detectors.mock';
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import detectorMock from '../../containers/Detectors/Detector.mock';
 
 export default {
-  detector: mockDetector,
+  detector: detectorMock,
   rulesCanFold: true,
   enabled_time: 1,
   last_update_time: 1,

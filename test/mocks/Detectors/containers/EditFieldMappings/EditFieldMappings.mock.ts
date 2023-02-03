@@ -2,13 +2,13 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
-
-import { mockFieldMappingService } from '../../components/UpdateFieldMappings/UpdateFieldMappings.mock';
-import { mockDetector } from '../Detectors/Detectors.mock';
+import detector from '../Detectors/Detector.mock';
+import services from '../../../services';
+const { fieldMappingService } = services;
 
 export default {
-  detector: mockDetector,
-  filedMappingService: mockFieldMappingService,
+  detector: detector,
+  filedMappingService: fieldMappingService,
   fieldMappings: [],
   loading: false,
   replaceFieldMappings: jest.fn(),

@@ -5,13 +5,12 @@
 
 import React from 'react';
 import { render } from '@testing-library/react';
-import props from '../../../../../../../test/mocks/CreateDetector/components/ConfigureAlerts/components/AlertCondition/AlertConditionPanel.mock';
-import { expect } from '@jest/globals';
 import AlertConditionPanel from './AlertConditionPanel';
+import alertConditionPanelMock from '../../../../../../../test/mocks/CreateDetector/components/ConfigureAlerts/components/AlertCondition/AlertConditionPanel.mock';
 
 describe('<AlertConditionPanel /> spec', () => {
   it('renders the component', () => {
-    const view = render(<AlertConditionPanel {...props} />);
-    expect(view).toMatchSnapshot();
+    const tree = render(<AlertConditionPanel {...alertConditionPanelMock} />);
+    expect(tree).toMatchSnapshot();
   });
 });

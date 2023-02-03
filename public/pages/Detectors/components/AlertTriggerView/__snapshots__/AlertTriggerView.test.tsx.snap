@@ -37,7 +37,7 @@ Object {
                   class="euiText euiText--medium"
                 >
                   <p>
-                    Alert on alertName
+                    Alert on alert_name
                   </p>
                 </div>
               </span>
@@ -87,7 +87,7 @@ Object {
                       data-test-subj="text-details-group-content-trigger name"
                       id="some_html_id"
                     >
-                      alertName
+                      alert_name
                     </div>
                   </div>
                 </div>
@@ -139,7 +139,7 @@ Object {
                           data-test-subj="text-details-group-content-log type"
                           id="some_html_id"
                         >
-                          detectorType1
+                          detector_type_1
                         </div>
                       </div>
                     </div>
@@ -224,7 +224,7 @@ Object {
                           data-test-subj="text-details-group-content-rule severities"
                           id="some_html_id"
                         >
-                          low
+                          severity_level_low
                         </div>
                       </div>
                     </div>
@@ -401,7 +401,7 @@ Object {
                 class="euiText euiText--medium"
               >
                 <p>
-                  Alert on alertName
+                  Alert on alert_name
                 </p>
               </div>
             </span>
@@ -451,7 +451,7 @@ Object {
                     data-test-subj="text-details-group-content-trigger name"
                     id="some_html_id"
                   >
-                    alertName
+                    alert_name
                   </div>
                 </div>
               </div>
@@ -503,7 +503,7 @@ Object {
                         data-test-subj="text-details-group-content-log type"
                         id="some_html_id"
                       >
-                        detectorType1
+                        detector_type_1
                       </div>
                     </div>
                   </div>
@@ -588,7 +588,7 @@ Object {
                         data-test-subj="text-details-group-content-rule severities"
                         id="some_html_id"
                       >
-                        low
+                        severity_level_low
                       </div>
                     </div>
                   </div>

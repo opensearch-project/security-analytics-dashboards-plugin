@@ -138,7 +138,7 @@ Object {
                         <span
                           class="euiTableCellContent__text"
                         >
-                          ruleFieldName
+                          index_field_name
                         </span>
                       </div>
                     </td>
@@ -156,7 +156,7 @@ Object {
                         <span
                           class="euiTableCellContent__text"
                         >
-                          indexFieldName
+                          index_field_name
                         </span>
                       </div>
                     </td>
@@ -178,7 +178,7 @@ Object {
                         <span
                           class="euiTableCellContent__text"
                         >
-                          ruleFieldName
+                          index_field_name
                         </span>
                       </div>
                     </td>
@@ -196,7 +196,7 @@ Object {
                         <span
                           class="euiTableCellContent__text"
                         >
-                          indexFieldName
+                          index_field_name
                         </span>
                       </div>
                     </td>
@@ -343,7 +343,7 @@ Object {
                       <span
                         class="euiTableCellContent__text"
                       >
-                        ruleFieldName
+                        index_field_name
                       </span>
                     </div>
                   </td>
@@ -361,7 +361,7 @@ Object {
                       <span
                         class="euiTableCellContent__text"
                       >
-                        indexFieldName
+                        index_field_name
                       </span>
                     </div>
                   </td>
@@ -383,7 +383,7 @@ Object {
                       <span
                         class="euiTableCellContent__text"
                       >
-                        ruleFieldName
+                        index_field_name
                       </span>
                     </div>
                   </td>
@@ -401,7 +401,7 @@ Object {
                       <span
                         class="euiTableCellContent__text"
                       >
-                        indexFieldName
+                        index_field_name
                       </span>
                     </div>
                   </td>

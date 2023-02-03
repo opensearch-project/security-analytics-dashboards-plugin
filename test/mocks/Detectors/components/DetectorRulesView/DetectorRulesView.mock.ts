@@ -1,9 +1,14 @@
-import { mockDetector } from '../../containers/Detectors/Detectors.mock';
-import { mockNotificationsStart } from '../../../browserServicesMock';
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import detectorMock from '../../containers/Detectors/Detector.mock';
+import notificationsStartMock from '../../../services/notifications/NotificationsStart.mock';
 
 export default {
-  detector: mockDetector,
+  detector: detectorMock,
   rulesCanFold: false,
   onEditClicked: jest.fn(),
-  notifications: mockNotificationsStart,
+  notifications: notificationsStartMock,
 };

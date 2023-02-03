@@ -8,7 +8,7 @@ import '@testing-library/jest-dom/extend-expect';
 import { configure } from '@testing-library/react';
 import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import { mockDetectorHit } from './mocks/Detectors/containers/Detectors/Detectors.mock';
+import detectorHitMock from './mocks/Detectors/containers/Detectors/DetectorHit.mock';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -92,7 +92,7 @@ const mockUseContext = {
         ok: true,
         response: {
           hits: {
-            hits: [mockDetectorHit],
+            hits: [detectorHitMock],
           },
         },
       };
@@ -100,14 +100,14 @@ const mockUseContext = {
   },
   ruleService: {
     fetchRules: () => {
-      return Promise.resolve([mockDetectorHit]);
+      return Promise.resolve([detectorHitMock]);
     },
     getRules: () => {
       return {
         ok: true,
         response: {
           hits: {
-            hits: [mockDetectorHit],
+            hits: [detectorHitMock],
           },
         },
       };

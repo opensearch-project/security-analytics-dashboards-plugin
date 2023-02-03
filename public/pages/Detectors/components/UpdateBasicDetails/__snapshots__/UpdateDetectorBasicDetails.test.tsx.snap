@@ -4,19 +4,32 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
 <UpdateDetectorBasicDetails
   detectorHit={
     Object {
-      "_id": "detectorHitId",
+      "_id": "detector_id_1",
       "_index": ".windows",
       "_source": Object {
-        "createdBy": "testUser",
-        "detector_type": ".windows",
+        "createdBy": "someone",
+        "detector_type": "detector_type",
         "enabled": true,
         "enabled_time": 1,
+        "id": "detector_id_1",
         "inputs": Array [
           Object {
             "detector_input": Object {
               "custom_rules": Array [
                 Object {
-                  "id": "detectorRuleId",
+                  "_id": "rule_id_1",
+                  "_index": ".windows",
+                  "_primary_term": 1,
+                  "_source": Object {
+                    "last_update_time": "12/12/2022",
+                    "queries": Array [
+                      Object {
+                        "value": ".windows",
+                      },
+                    ],
+                    "rule": "rule_name",
+                  },
+                  "_version": 1,
                 },
               ],
               "description": "detectorDescription",
@@ -25,14 +38,26 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
               ],
               "pre_packaged_rules": Array [
                 Object {
-                  "id": "detectorRuleId",
+                  "_id": "rule_id_1",
+                  "_index": ".windows",
+                  "_primary_term": 1,
+                  "_source": Object {
+                    "last_update_time": "12/12/2022",
+                    "queries": Array [
+                      Object {
+                        "value": ".windows",
+                      },
+                    ],
+                    "rule": "rule_name",
+                  },
+                  "_version": 1,
                 },
               ],
             },
           },
         ],
         "last_update_time": 1,
-        "name": "detectorName",
+        "name": "detector_name",
         "schedule": Object {
           "period": Object {
             "interval": 1,
@@ -43,111 +68,111 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
           Object {
             "actions": Array [
               Object {
-                "destination_id": "destinationId",
-                "id": "someId",
+                "destination_id": "some_destination_id_1",
+                "id": "trigger_id_1_0",
                 "message_template": Object {
-                  "lang": "en-US",
-                  "source": "messageSource",
+                  "lang": "some_lang",
+                  "source": "some_source",
                 },
-                "name": "triggerName",
+                "name": "some_name",
                 "subject_template": Object {
-                  "lang": "en-US",
-                  "source": "sourceTemplate",
+                  "lang": "some_lang",
+                  "source": "some_source",
                 },
                 "throttle": Object {
-                  "unit": "throttleUnit",
+                  "unit": "minutes",
                   "value": 1,
                 },
-                "throttle_enabled": false,
+                "throttle_enabled": true,
               },
               Object {
-                "destination_id": "destinationId",
-                "id": "someId",
+                "destination_id": "some_destination_id_1",
+                "id": "trigger_id_1_1",
                 "message_template": Object {
-                  "lang": "en-US",
-                  "source": "messageSource",
+                  "lang": "some_lang",
+                  "source": "some_source",
                 },
-                "name": "triggerName",
+                "name": "some_name",
                 "subject_template": Object {
-                  "lang": "en-US",
-                  "source": "sourceTemplate",
+                  "lang": "some_lang",
+                  "source": "some_source",
                 },
                 "throttle": Object {
-                  "unit": "throttleUnit",
+                  "unit": "minutes",
                   "value": 1,
                 },
-                "throttle_enabled": false,
+                "throttle_enabled": true,
               },
             ],
-            "id": "triggerId_0",
+            "id": "trigger_id_0",
             "ids": Array [
-              "ruleId1",
+              "rule_id_1",
             ],
-            "name": "alertName",
+            "name": "alert_name",
             "sev_levels": Array [
-              "low",
+              "severity_level_low",
             ],
             "severity": "1",
             "tags": Array [
               "any.tag",
             ],
             "types": Array [
-              "detectorType1",
+              "detector_type_1",
             ],
           },
           Object {
             "actions": Array [
               Object {
-                "destination_id": "destinationId",
-                "id": "someId",
+                "destination_id": "some_destination_id_1",
+                "id": "trigger_id_1_0",
                 "message_template": Object {
-                  "lang": "en-US",
-                  "source": "messageSource",
+                  "lang": "some_lang",
+                  "source": "some_source",
                 },
-                "name": "triggerName",
+                "name": "some_name",
                 "subject_template": Object {
-                  "lang": "en-US",
-                  "source": "sourceTemplate",
+                  "lang": "some_lang",
+                  "source": "some_source",
                 },
                 "throttle": Object {
-                  "unit": "throttleUnit",
+                  "unit": "minutes",
                   "value": 1,
                 },
-                "throttle_enabled": false,
+                "throttle_enabled": true,
               },
               Object {
-                "destination_id": "destinationId",
-                "id": "someId",
+                "destination_id": "some_destination_id_1",
+                "id": "trigger_id_1_1",
                 "message_template": Object {
-                  "lang": "en-US",
-                  "source": "messageSource",
+                  "lang": "some_lang",
+                  "source": "some_source",
                 },
-                "name": "triggerName",
+                "name": "some_name",
                 "subject_template": Object {
-                  "lang": "en-US",
-                  "source": "sourceTemplate",
+                  "lang": "some_lang",
+                  "source": "some_source",
                 },
                 "throttle": Object {
-                  "unit": "throttleUnit",
+                  "unit": "minutes",
                   "value": 1,
                 },
-                "throttle_enabled": false,
+                "throttle_enabled": true,
               },
             ],
-            "id": "triggerId_1",
+            "id": "trigger_id_1",
             "ids": Array [
-              "ruleId1",
+              "rule_id_1",
             ],
-            "name": "alertName",
+            "name": "alert_name",
             "sev_levels": Array [
-              "low",
+              "severity_level_low",
             ],
             "severity": "1",
             "tags": Array [
               "any.tag",
             ],
             "types": Array [
-              "detectorType1",
+              "detector_type_1",
             ],
           },
         ],
@@ -157,29 +182,46 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
   }
   history={
     Object {
+      "listen": [MockFunction],
+      "location": Object {
+        "pathname": "",
+      },
       "replace": [MockFunction] {
         "calls": Array [
           Array [
             Object {
-              "pathname": "/edit-detector-details/detectorHitId",
+              "pathname": "/edit-detector-details/detector_id_1",
               "state": Object {
                 "detectorHit": Object {
-                  "_id": "detectorHitId",
+                  "_id": "detector_id_1",
                   "_index": ".windows",
                   "_source": Object {
-                    "_id": "detectorHitId",
+                    "_id": "detector_id_1",
                     "_index": ".windows",
                     "_source": Object {
-                      "createdBy": "testUser",
-                      "detector_type": ".windows",
+                      "createdBy": "someone",
+                      "detector_type": "detector_type",
                       "enabled": true,
                       "enabled_time": 1,
+                      "id": "detector_id_1",
                       "inputs": Array [
                         Object {
                           "detector_input": Object {
                             "custom_rules": Array [
                               Object {
-                                "id": "detectorRuleId",
+                                "_id": "rule_id_1",
+                                "_index": ".windows",
+                                "_primary_term": 1,
+                                "_source": Object {
+                                  "last_update_time": "12/12/2022",
+                                  "queries": Array [
+                                    Object {
+                                      "value": ".windows",
+                                    },
+                                  ],
+                                  "rule": "rule_name",
+                                },
+                                "_version": 1,
                               },
                             ],
                             "description": "detectorDescription",
@@ -188,14 +230,26 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                             ],
                             "pre_packaged_rules": Array [
                               Object {
-                                "id": "detectorRuleId",
+                                "_id": "rule_id_1",
+                                "_index": ".windows",
+                                "_primary_term": 1,
+                                "_source": Object {
+                                  "last_update_time": "12/12/2022",
+                                  "queries": Array [
+                                    Object {
+                                      "value": ".windows",
+                                    },
+                                  ],
+                                  "rule": "rule_name",
+                                },
+                                "_version": 1,
                               },
                             ],
                           },
                         },
                       ],
                       "last_update_time": 1,
-                      "name": "detectorName",
+                      "name": "detector_name",
                       "schedule": Object {
                         "period": Object {
                           "interval": 1,
@@ -206,126 +260,139 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                         Object {
                           "actions": Array [
                             Object {
-                              "destination_id": "destinationId",
-                              "id": "someId",
+                              "destination_id": "some_destination_id_1",
+                              "id": "trigger_id_1_0",
                               "message_template": Object {
-                                "lang": "en-US",
-                                "source": "messageSource",
+                                "lang": "some_lang",
+                                "source": "some_source",
                               },
-                              "name": "triggerName",
+                              "name": "some_name",
                               "subject_template": Object {
-                                "lang": "en-US",
-                                "source": "sourceTemplate",
+                                "lang": "some_lang",
+                                "source": "some_source",
                               },
                               "throttle": Object {
-                                "unit": "throttleUnit",
+                                "unit": "minutes",
                                 "value": 1,
                               },
-                              "throttle_enabled": false,
+                              "throttle_enabled": true,
                             },
                             Object {
-                              "destination_id": "destinationId",
-                              "id": "someId",
+                              "destination_id": "some_destination_id_1",
+                              "id": "trigger_id_1_1",
                               "message_template": Object {
-                                "lang": "en-US",
-                                "source": "messageSource",
+                                "lang": "some_lang",
+                                "source": "some_source",
                               },
-                              "name": "triggerName",
+                              "name": "some_name",
                               "subject_template": Object {
-                                "lang": "en-US",
-                                "source": "sourceTemplate",
+                                "lang": "some_lang",
+                                "source": "some_source",
                               },
                               "throttle": Object {
-                                "unit": "throttleUnit",
+                                "unit": "minutes",
                                 "value": 1,
                               },
-                              "throttle_enabled": false,
+                              "throttle_enabled": true,
                             },
                           ],
-                          "id": "triggerId_0",
+                          "id": "trigger_id_0",
                           "ids": Array [
-                            "ruleId1",
+                            "rule_id_1",
                           ],
-                          "name": "alertName",
+                          "name": "alert_name",
                           "sev_levels": Array [
-                            "low",
+                            "severity_level_low",
                           ],
                           "severity": "1",
                           "tags": Array [
                             "any.tag",
                           ],
                           "types": Array [
-                            "detectorType1",
+                            "detector_type_1",
                           ],
                         },
                         Object {
                           "actions": Array [
                             Object {
-                              "destination_id": "destinationId",
-                              "id": "someId",
+                              "destination_id": "some_destination_id_1",
+                              "id": "trigger_id_1_0",
                               "message_template": Object {
-                                "lang": "en-US",
-                                "source": "messageSource",
+                                "lang": "some_lang",
+                                "source": "some_source",
                               },
-                              "name": "triggerName",
+                              "name": "some_name",
                               "subject_template": Object {
-                                "lang": "en-US",
-                                "source": "sourceTemplate",
+                                "lang": "some_lang",
+                                "source": "some_source",
                               },
                               "throttle": Object {
-                                "unit": "throttleUnit",
+                                "unit": "minutes",
                                 "value": 1,
                               },
-                              "throttle_enabled": false,
+                              "throttle_enabled": true,
                             },
                             Object {
-                              "destination_id": "destinationId",
-                              "id": "someId",
+                              "destination_id": "some_destination_id_1",
+                              "id": "trigger_id_1_1",
                               "message_template": Object {
-                                "lang": "en-US",
-                                "source": "messageSource",
+                                "lang": "some_lang",
+                                "source": "some_source",
                               },
-                              "name": "triggerName",
+                              "name": "some_name",
                               "subject_template": Object {
-                                "lang": "en-US",
-                                "source": "sourceTemplate",
+                                "lang": "some_lang",
+                                "source": "some_source",
                               },
                               "throttle": Object {
-                                "unit": "throttleUnit",
+                                "unit": "minutes",
                                 "value": 1,
                               },
-                              "throttle_enabled": false,
+                              "throttle_enabled": true,
                             },
                           ],
-                          "id": "triggerId_1",
+                          "id": "trigger_id_1",
                           "ids": Array [
-                            "ruleId1",
+                            "rule_id_1",
                           ],
-                          "name": "alertName",
+                          "name": "alert_name",
                           "sev_levels": Array [
-                            "low",
+                            "severity_level_low",
                           ],
                           "severity": "1",
                           "tags": Array [
                             "any.tag",
                           ],
                           "types": Array [
-                            "detectorType1",
+                            "detector_type_1",
                           ],
                         },
                       ],
                       "type": "detector",
                     },
-                    "createdBy": "testUser",
-                    "detector_type": ".windows",
+                    "createdBy": "someone",
+                    "detector_type": "detector_type",
                     "enabled": true,
                     "enabled_time": 1,
+                    "id": "detector_id_1",
                     "inputs": Array [
                       Object {
                         "detector_input": Object {
                           "custom_rules": Array [
                             Object {
-                              "id": "detectorRuleId",
+                              "_id": "rule_id_1",
+                              "_index": ".windows",
+                              "_primary_term": 1,
+                              "_source": Object {
+                                "last_update_time": "12/12/2022",
+                                "queries": Array [
+                                  Object {
+                                    "value": ".windows",
+                                  },
+                                ],
+                                "rule": "rule_name",
+                              },
+                              "_version": 1,
                             },
                           ],
                           "description": "detectorDescription",
@@ -334,14 +401,26 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                           ],
                           "pre_packaged_rules": Array [
                             Object {
-                              "id": "detectorRuleId",
+                              "_id": "rule_id_1",
+                              "_index": ".windows",
+                              "_primary_term": 1,
+                              "_source": Object {
+                                "last_update_time": "12/12/2022",
+                                "queries": Array [
+                                  Object {
+                                    "value": ".windows",
+                                  },
+                                ],
+                                "rule": "rule_name",
+                              },
+                              "_version": 1,
                             },
                           ],
                         },
                       },
                     ],
                     "last_update_time": 1,
-                    "name": "detectorName",
+                    "name": "detector_name",
                     "schedule": Object {
                       "period": Object {
                         "interval": 1,
@@ -352,111 +431,111 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                       Object {
                         "actions": Array [
                           Object {
-                            "destination_id": "destinationId",
-                            "id": "someId",
+                            "destination_id": "some_destination_id_1",
+                            "id": "trigger_id_1_0",
                             "message_template": Object {
-                              "lang": "en-US",
-                              "source": "messageSource",
+                              "lang": "some_lang",
+                              "source": "some_source",
                             },
-                            "name": "triggerName",
+                            "name": "some_name",
                             "subject_template": Object {
-                              "lang": "en-US",
-                              "source": "sourceTemplate",
+                              "lang": "some_lang",
+                              "source": "some_source",
                             },
                             "throttle": Object {
-                              "unit": "throttleUnit",
+                              "unit": "minutes",
                               "value": 1,
                             },
-                            "throttle_enabled": false,
+                            "throttle_enabled": true,
                           },
                           Object {
-                            "destination_id": "destinationId",
-                            "id": "someId",
+                            "destination_id": "some_destination_id_1",
+                            "id": "trigger_id_1_1",
                             "message_template": Object {
-                              "lang": "en-US",
-                              "source": "messageSource",
+                              "lang": "some_lang",
+                              "source": "some_source",
                             },
-                            "name": "triggerName",
+                            "name": "some_name",
                             "subject_template": Object {
-                              "lang": "en-US",
-                              "source": "sourceTemplate",
+                              "lang": "some_lang",
+                              "source": "some_source",
                             },
                             "throttle": Object {
-                              "unit": "throttleUnit",
+                              "unit": "minutes",
                               "value": 1,
                             },
-                            "throttle_enabled": false,
+                            "throttle_enabled": true,
                           },
                         ],
-                        "id": "triggerId_0",
+                        "id": "trigger_id_0",
                         "ids": Array [
-                          "ruleId1",
+                          "rule_id_1",
                         ],
-                        "name": "alertName",
+                        "name": "alert_name",
                         "sev_levels": Array [
-                          "low",
+                          "severity_level_low",
                         ],
                         "severity": "1",
                         "tags": Array [
                           "any.tag",
                         ],
                         "types": Array [
-                          "detectorType1",
+                          "detector_type_1",
                         ],
                       },
                       Object {
                         "actions": Array [
                           Object {
-                            "destination_id": "destinationId",
-                            "id": "someId",
+                            "destination_id": "some_destination_id_1",
+                            "id": "trigger_id_1_0",
                             "message_template": Object {
-                              "lang": "en-US",
-                              "source": "messageSource",
+                              "lang": "some_lang",
+                              "source": "some_source",
                             },
-                            "name": "triggerName",
+                            "name": "some_name",
                             "subject_template": Object {
-                              "lang": "en-US",
-                              "source": "sourceTemplate",
+                              "lang": "some_lang",
+                              "source": "some_source",
                             },
                             "throttle": Object {
-                              "unit": "throttleUnit",
+                              "unit": "minutes",
                               "value": 1,
                             },
-                            "throttle_enabled": false,
+                            "throttle_enabled": true,
                           },
                           Object {
-                            "destination_id": "destinationId",
-                            "id": "someId",
+                            "destination_id": "some_destination_id_1",
+                            "id": "trigger_id_1_1",
                             "message_template": Object {
-                              "lang": "en-US",
-                              "source": "messageSource",
+                              "lang": "some_lang",
+                              "source": "some_source",
                             },
-                            "name": "triggerName",
+                            "name": "some_name",
                             "subject_template": Object {
-                              "lang": "en-US",
-                              "source": "sourceTemplate",
+                              "lang": "some_lang",
+                              "source": "some_source",
                             },
                             "throttle": Object {
-                              "unit": "throttleUnit",
+                              "unit": "minutes",
                               "value": 1,
                             },
-                            "throttle_enabled": false,
+                            "throttle_enabled": true,
                           },
                         ],
-                        "id": "triggerId_1",
+                        "id": "trigger_id_1",
                         "ids": Array [
-                          "ruleId1",
+                          "rule_id_1",
                         ],
-                        "name": "alertName",
+                        "name": "alert_name",
                         "sev_levels": Array [
-                          "low",
+                          "severity_level_low",
                         ],
                         "severity": "1",
                         "tags": Array [
                           "any.tag",
                         ],
                         "types": Array [
-                          "detectorType1",
+                          "detector_type_1",
                         ],
                       },
                     ],
@@ -478,7 +557,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
   }
   location={
     Object {
-      "pathname": "/edit-detector-details/detectorHitId",
+      "pathname": "/edit-detector-details/detector_id_1",
     }
   }
   notifications={
@@ -508,7 +587,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
     </EuiSpacer>
     <DetectorBasicDetailsForm
       detectorDescription="detectorDescription"
-      detectorName="detectorName"
+      detectorName="detector_name"
       isEdit={true}
       onDetectorInputDescriptionChange={[Function]}
       onDetectorNameChange={[Function]}
@@ -654,7 +733,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                       placeholder="Enter a name for the detector."
                       readOnly={false}
                       required={true}
-                      value="detectorName"
+                      value="detector_name"
                     >
                       <EuiFormControlLayout
                         fullWidth={false}
@@ -679,7 +758,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                                 readOnly={false}
                                 required={true}
                                 type="text"
-                                value="detectorName"
+                                value="detector_name"
                               />
                             </EuiValidatableControl>
                             <EuiFormControlLayoutIcons />
@@ -1234,16 +1313,29 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
     <DetectorSchedule
       detector={
         Object {
-          "createdBy": "testUser",
-          "detector_type": ".windows",
+          "createdBy": "someone",
+          "detector_type": "detector_type",
           "enabled": true,
           "enabled_time": 1,
+          "id": "detector_id_1",
           "inputs": Array [
             Object {
               "detector_input": Object {
                 "custom_rules": Array [
                   Object {
-                    "id": "detectorRuleId",
+                    "_id": "rule_id_1",
+                    "_index": ".windows",
+                    "_primary_term": 1,
+                    "_source": Object {
+                      "last_update_time": "12/12/2022",
+                      "queries": Array [
+                        Object {
+                          "value": ".windows",
+                        },
+                      ],
+                      "rule": "rule_name",
+                    },
+                    "_version": 1,
                   },
                 ],
                 "description": "detectorDescription",
@@ -1252,14 +1344,26 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                 ],
                 "pre_packaged_rules": Array [
                   Object {
-                    "id": "detectorRuleId",
+                    "_id": "rule_id_1",
+                    "_index": ".windows",
+                    "_primary_term": 1,
+                    "_source": Object {
+                      "last_update_time": "12/12/2022",
+                      "queries": Array [
+                        Object {
+                          "value": ".windows",
+                        },
+                      ],
+                      "rule": "rule_name",
+                    },
+                    "_version": 1,
                   },
                 ],
               },
             },
           ],
           "last_update_time": 1,
-          "name": "detectorName",
+          "name": "detector_name",
           "schedule": Object {
             "period": Object {
               "interval": 1,
@@ -1270,111 +1374,111 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
             Object {
               "actions": Array [
                 Object {
-                  "destination_id": "destinationId",
-                  "id": "someId",
+                  "destination_id": "some_destination_id_1",
+                  "id": "trigger_id_1_0",
                   "message_template": Object {
-                    "lang": "en-US",
-                    "source": "messageSource",
+                    "lang": "some_lang",
+                    "source": "some_source",
                   },
-                  "name": "triggerName",
+                  "name": "some_name",
                   "subject_template": Object {
-                    "lang": "en-US",
-                    "source": "sourceTemplate",
+                    "lang": "some_lang",
+                    "source": "some_source",
                   },
                   "throttle": Object {
-                    "unit": "throttleUnit",
+                    "unit": "minutes",
                     "value": 1,
                   },
-                  "throttle_enabled": false,
+                  "throttle_enabled": true,
                 },
                 Object {
-                  "destination_id": "destinationId",
-                  "id": "someId",
+                  "destination_id": "some_destination_id_1",
+                  "id": "trigger_id_1_1",
                   "message_template": Object {
-                    "lang": "en-US",
-                    "source": "messageSource",
+                    "lang": "some_lang",
+                    "source": "some_source",
                   },
-                  "name": "triggerName",
+                  "name": "some_name",
                   "subject_template": Object {
-                    "lang": "en-US",
-                    "source": "sourceTemplate",
+                    "lang": "some_lang",
+                    "source": "some_source",
                   },
                   "throttle": Object {
-                    "unit": "throttleUnit",
+                    "unit": "minutes",
                     "value": 1,
                   },
-                  "throttle_enabled": false,
+                  "throttle_enabled": true,
                 },
               ],
-              "id": "triggerId_0",
+              "id": "trigger_id_0",
               "ids": Array [
-                "ruleId1",
+                "rule_id_1",
               ],
-              "name": "alertName",
+              "name": "alert_name",
               "sev_levels": Array [
-                "low",
+                "severity_level_low",
               ],
               "severity": "1",
               "tags": Array [
                 "any.tag",
               ],
               "types": Array [
-                "detectorType1",
+                "detector_type_1",
               ],
             },
             Object {
               "actions": Array [
                 Object {
-                  "destination_id": "destinationId",
-                  "id": "someId",
+                  "destination_id": "some_destination_id_1",
+                  "id": "trigger_id_1_0",
                   "message_template": Object {
-                    "lang": "en-US",
-                    "source": "messageSource",
+                    "lang": "some_lang",
+                    "source": "some_source",
                   },
-                  "name": "triggerName",
+                  "name": "some_name",
                   "subject_template": Object {
-                    "lang": "en-US",
-                    "source": "sourceTemplate",
+                    "lang": "some_lang",
+                    "source": "some_source",
                   },
                   "throttle": Object {
-                    "unit": "throttleUnit",
+                    "unit": "minutes",
                     "value": 1,
                   },
-                  "throttle_enabled": false,
+                  "throttle_enabled": true,
                 },
                 Object {
-                  "destination_id": "destinationId",
-                  "id": "someId",
+                  "destination_id": "some_destination_id_1",
+                  "id": "trigger_id_1_1",
                   "message_template": Object {
-                    "lang": "en-US",
-                    "source": "messageSource",
+                    "lang": "some_lang",
+                    "source": "some_source",
                   },
-                  "name": "triggerName",
+                  "name": "some_name",
                   "subject_template": Object {
-                    "lang": "en-US",
-                    "source": "sourceTemplate",
+                    "lang": "some_lang",
+                    "source": "some_source",
                   },
                   "throttle": Object {
-                    "unit": "throttleUnit",
+                    "unit": "minutes",
                     "value": 1,
                   },
-                  "throttle_enabled": false,
+                  "throttle_enabled": true,
                 },
               ],
-              "id": "triggerId_1",
+              "id": "trigger_id_1",
               "ids": Array [
-                "ruleId1",
+                "rule_id_1",
               ],
-              "name": "alertName",
+              "name": "alert_name",
               "sev_levels": Array [
-                "low",
+                "severity_level_low",
               ],
               "severity": "1",
               "tags": Array [
                 "any.tag",
               ],
               "types": Array [
-                "detectorType1",
+                "detector_type_1",
               ],
             },
           ],
@@ -1596,16 +1700,29 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
               <Interval
                 detector={
                   Object {
-                    "createdBy": "testUser",
-                    "detector_type": ".windows",
+                    "createdBy": "someone",
+                    "detector_type": "detector_type",
                     "enabled": true,
                     "enabled_time": 1,
+                    "id": "detector_id_1",
                     "inputs": Array [
                       Object {
                         "detector_input": Object {
                           "custom_rules": Array [
                             Object {
-                              "id": "detectorRuleId",
+                              "_id": "rule_id_1",
+                              "_index": ".windows",
+                              "_primary_term": 1,
+                              "_source": Object {
+                                "last_update_time": "12/12/2022",
+                                "queries": Array [
+                                  Object {
+                                    "value": ".windows",
+                                  },
+                                ],
+                                "rule": "rule_name",
+                              },
+                              "_version": 1,
                             },
                           ],
                           "description": "detectorDescription",
@@ -1614,14 +1731,26 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                           ],
                           "pre_packaged_rules": Array [
                             Object {
-                              "id": "detectorRuleId",
+                              "_id": "rule_id_1",
+                              "_index": ".windows",
+                              "_primary_term": 1,
+                              "_source": Object {
+                                "last_update_time": "12/12/2022",
+                                "queries": Array [
+                                  Object {
+                                    "value": ".windows",
+                                  },
+                                ],
+                                "rule": "rule_name",
+                              },
+                              "_version": 1,
                             },
                           ],
                         },
                       },
                     ],
                     "last_update_time": 1,
-                    "name": "detectorName",
+                    "name": "detector_name",
                     "schedule": Object {
                       "period": Object {
                         "interval": 1,
@@ -1632,111 +1761,111 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                       Object {
                         "actions": Array [
                           Object {
-                            "destination_id": "destinationId",
-                            "id": "someId",
+                            "destination_id": "some_destination_id_1",
+                            "id": "trigger_id_1_0",
                             "message_template": Object {
-                              "lang": "en-US",
-                              "source": "messageSource",
+                              "lang": "some_lang",
+                              "source": "some_source",
                             },
-                            "name": "triggerName",
+                            "name": "some_name",
                             "subject_template": Object {
-                              "lang": "en-US",
-                              "source": "sourceTemplate",
+                              "lang": "some_lang",
+                              "source": "some_source",
                             },
                             "throttle": Object {
-                              "unit": "throttleUnit",
+                              "unit": "minutes",
                               "value": 1,
                             },
-                            "throttle_enabled": false,
+                            "throttle_enabled": true,
                           },
                           Object {
-                            "destination_id": "destinationId",
-                            "id": "someId",
+                            "destination_id": "some_destination_id_1",
+                            "id": "trigger_id_1_1",
                             "message_template": Object {
-                              "lang": "en-US",
-                              "source": "messageSource",
+                              "lang": "some_lang",
+                              "source": "some_source",
                             },
-                            "name": "triggerName",
+                            "name": "some_name",
                             "subject_template": Object {
-                              "lang": "en-US",
-                              "source": "sourceTemplate",
+                              "lang": "some_lang",
+                              "source": "some_source",
                             },
                             "throttle": Object {
-                              "unit": "throttleUnit",
+                              "unit": "minutes",
                               "value": 1,
                             },
-                            "throttle_enabled": false,
+                            "throttle_enabled": true,
                           },
                         ],
-                        "id": "triggerId_0",
+                        "id": "trigger_id_0",
                         "ids": Array [
-                          "ruleId1",
+                          "rule_id_1",
                         ],
-                        "name": "alertName",
+                        "name": "alert_name",
                         "sev_levels": Array [
-                          "low",
+                          "severity_level_low",
                         ],
                         "severity": "1",
                         "tags": Array [
                           "any.tag",
                         ],
                         "types": Array [
-                          "detectorType1",
+                          "detector_type_1",
                         ],
                       },
                       Object {
                         "actions": Array [
                           Object {
-                            "destination_id": "destinationId",
-                            "id": "someId",
+                            "destination_id": "some_destination_id_1",
+                            "id": "trigger_id_1_0",
                             "message_template": Object {
-                              "lang": "en-US",
-                              "source": "messageSource",
+                              "lang": "some_lang",
+                              "source": "some_source",
                             },
-                            "name": "triggerName",
+                            "name": "some_name",
                             "subject_template": Object {
-                              "lang": "en-US",
-                              "source": "sourceTemplate",
+                              "lang": "some_lang",
+                              "source": "some_source",
                             },
                             "throttle": Object {
-                              "unit": "throttleUnit",
+                              "unit": "minutes",
                               "value": 1,
                             },
-                            "throttle_enabled": false,
+                            "throttle_enabled": true,
                           },
                           Object {
-                            "destination_id": "destinationId",
-                            "id": "someId",
+                            "destination_id": "some_destination_id_1",
+                            "id": "trigger_id_1_1",
                             "message_template": Object {
-                              "lang": "en-US",
-                              "source": "messageSource",
+                              "lang": "some_lang",
+                              "source": "some_source",
                             },
-                            "name": "triggerName",
+                            "name": "some_name",
                             "subject_template": Object {
-                              "lang": "en-US",
-                              "source": "sourceTemplate",
+                              "lang": "some_lang",
+                              "source": "some_source",
                             },
                             "throttle": Object {
-                              "unit": "throttleUnit",
+                              "unit": "minutes",
                               "value": 1,
                             },
-                            "throttle_enabled": false,
+                            "throttle_enabled": true,
                           },
                         ],
-                        "id": "triggerId_1",
+                        "id": "trigger_id_1",
                         "ids": Array [
-                          "ruleId1",
+                          "rule_id_1",
                         ],
-                        "name": "alertName",
+                        "name": "alert_name",
                         "sev_levels": Array [
-                          "low",
+                          "severity_level_low",
                         ],
                         "severity": "1",
                         "tags": Array [
                           "any.tag",
                         ],
                         "types": Array [
-                          "detectorType1",
+                          "detector_type_1",
                         ],
                       },
                     ],
@@ -1748,9 +1877,11 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                 <EuiFormRow
                   describedByIds={Array []}
                   display="row"
+                  error="Enter schedule interval."
                   fullWidth={false}
                   hasChildLabel={true}
                   hasEmptyLabelSpace={false}
+                  isInvalid={false}
                   label={
                     <FormFieldHeader
                       headerTitle="Run every"
@@ -1766,12 +1897,15 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                       className="euiFormRow__labelWrapper"
                     >
                       <EuiFormLabel
+                        aria-invalid={false}
                         className="euiFormRow__label"
                         htmlFor="some_html_id"
                         isFocused={false}
+                        isInvalid={false}
                         type="label"
                       >
                         <label
+                          aria-invalid={false}
                           className="euiFormLabel euiFormRow__label"
                           htmlFor="some_html_id"
                         >
@@ -1814,8 +1948,10 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                               <EuiFieldNumber
                                 data-test-subj="detector-schedule-number-select"
                                 icon="clock"
+                                isInvalid={false}
                                 min={1}
                                 onChange={[Function]}
+                                required={true}
                                 value={1}
                               >
                                 <EuiFormControlLayout
@@ -1830,12 +1966,15 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                                     <div
                                       className="euiFormControlLayout__childrenWrapper"
                                     >
-                                      <EuiValidatableControl>
+                                      <EuiValidatableControl
+                                        isInvalid={false}
+                                      >
                                         <input
                                           className="euiFieldNumber euiFieldNumber--withIcon"
                                           data-test-subj="detector-schedule-number-select"
                                           min={1}
                                           onChange={[Function]}
+                                          required={true}
                                           type="number"
                                           value={1}
                                         />

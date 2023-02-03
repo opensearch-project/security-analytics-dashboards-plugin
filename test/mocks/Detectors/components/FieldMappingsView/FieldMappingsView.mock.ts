@@ -1,15 +1,10 @@
-import { FieldMapping } from '../../../../../models/interfaces';
-import { mockDetector } from '../../containers/Detectors/Detectors.mock';
-import { mockNotificationsStart } from '../../../browserServicesMock';
-
-const mockFieldMapping: FieldMapping = {
-  indexFieldName: 'indexFieldName',
-  ruleFieldName: 'ruleFieldName',
-};
+import notificationsStartMock from '../../../services/notifications/NotificationsStart.mock';
+import detectorMock from '../../containers/Detectors/Detector.mock';
+import fieldMappingMock from './FieldMapping.mock';
 
 export default {
-  detector: mockDetector,
-  existingMappings: [mockFieldMapping, mockFieldMapping],
+  detector: detectorMock,
+  existingMappings: [fieldMappingMock, fieldMappingMock],
   editFieldMappings: jest.fn(),
-  notifications: mockNotificationsStart,
+  notifications: notificationsStartMock,
 };

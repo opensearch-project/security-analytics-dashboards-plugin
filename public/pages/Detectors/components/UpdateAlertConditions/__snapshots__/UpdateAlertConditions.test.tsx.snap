@@ -130,7 +130,7 @@ Object {
                                   placeholder="Enter a name for the alert condition."
                                   required=""
                                   type="text"
-                                  value="alertName"
+                                  value="alert_name"
                                 />
                               </div>
                             </div>
@@ -276,8 +276,8 @@ Object {
                                   >
                                     <span
                                       class="euiBadge euiBadge--hollow euiBadge--iconRight euiComboBoxPill"
-                                      id="low"
-                                      title="low"
+                                      id="severity_level_low"
+                                      title="severity_level_low"
                                     >
                                       <span
                                         class="euiBadge__content"
@@ -285,12 +285,12 @@ Object {
                                         <span
                                           class="euiBadge__text"
                                         >
-                                          low
+                                          severity_level_low
                                         </span>
                                         <button
-                                          aria-label="Remove low from selection in this group"
+                                          aria-label="Remove severity_level_low from selection in this group"
                                           class="euiBadge__iconButton"
-                                          title="Remove low from selection in this group"
+                                          title="Remove severity_level_low from selection in this group"
                                           type="button"
                                         >
                                           EuiIconMock
@@ -791,7 +791,7 @@ Object {
                                               placeholder="Enter a subject for the notification message."
                                               required=""
                                               type="text"
-                                              value="sourceTemplate"
+                                              value="some_source"
                                             />
                                           </div>
                                         </div>
@@ -831,7 +831,7 @@ Object {
                                           required=""
                                           rows="6"
                                         >
-                                          messageSource
+                                          some_source
                                         </textarea>
                                       </div>
                                     </div>
@@ -988,7 +988,7 @@ Object {
                                   placeholder="Enter a name for the alert condition."
                                   required=""
                                   type="text"
-                                  value="alertName"
+                                  value="alert_name"
                                 />
                               </div>
                             </div>
@@ -1134,8 +1134,8 @@ Object {
                                   >
                                     <span
                                       class="euiBadge euiBadge--hollow euiBadge--iconRight euiComboBoxPill"
-                                      id="low"
-                                      title="low"
+                                      id="severity_level_low"
+                                      title="severity_level_low"
                                     >
                                       <span
                                         class="euiBadge__content"
@@ -1143,12 +1143,12 @@ Object {
                                         <span
                                           class="euiBadge__text"
                                         >
-                                          low
+                                          severity_level_low
                                         </span>
                                         <button
-                                          aria-label="Remove low from selection in this group"
+                                          aria-label="Remove severity_level_low from selection in this group"
                                           class="euiBadge__iconButton"
-                                          title="Remove low from selection in this group"
+                                          title="Remove severity_level_low from selection in this group"
                                           type="button"
                                         >
                                           EuiIconMock
@@ -1649,7 +1649,7 @@ Object {
                                               placeholder="Enter a subject for the notification message."
                                               required=""
                                               type="text"
-                                              value="sourceTemplate"
+                                              value="some_source"
                                             />
                                           </div>
                                         </div>
@@ -1689,7 +1689,7 @@ Object {
                                           required=""
                                           rows="6"
                                         >
-                                          messageSource
+                                          some_source
                                         </textarea>
                                       </div>
                                     </div>
@@ -1924,7 +1924,7 @@ Object {
                                 placeholder="Enter a name for the alert condition."
                                 required=""
                                 type="text"
-                                value="alertName"
+                                value="alert_name"
                               />
                             </div>
                           </div>
@@ -2070,8 +2070,8 @@ Object {
                                 >
                                   <span
                                     class="euiBadge euiBadge--hollow euiBadge--iconRight euiComboBoxPill"
-                                    id="low"
-                                    title="low"
+                                    id="severity_level_low"
+                                    title="severity_level_low"
                                   >
                                     <span
                                       class="euiBadge__content"
@@ -2079,12 +2079,12 @@ Object {
                                       <span
                                         class="euiBadge__text"
                                       >
-                                        low
+                                        severity_level_low
                                       </span>
                                       <button
-                                        aria-label="Remove low from selection in this group"
+                                        aria-label="Remove severity_level_low from selection in this group"
                                         class="euiBadge__iconButton"
-                                        title="Remove low from selection in this group"
+                                        title="Remove severity_level_low from selection in this group"
                                         type="button"
                                       >
                                         EuiIconMock
@@ -2585,7 +2585,7 @@ Object {
                                             placeholder="Enter a subject for the notification message."
                                             required=""
                                             type="text"
-                                            value="sourceTemplate"
+                                            value="some_source"
                                           />
                                         </div>
                                       </div>
@@ -2625,7 +2625,7 @@ Object {
                                         required=""
                                         rows="6"
                                       >
-                                        messageSource
+                                        some_source
                                       </textarea>
                                     </div>
                                   </div>
@@ -2782,7 +2782,7 @@ Object {
                                 placeholder="Enter a name for the alert condition."
                                 required=""
                                 type="text"
-                                value="alertName"
+                                value="alert_name"
                               />
                             </div>
                           </div>
@@ -2928,8 +2928,8 @@ Object {
                                 >
                                   <span
                                     class="euiBadge euiBadge--hollow euiBadge--iconRight euiComboBoxPill"
-                                    id="low"
-                                    title="low"
+                                    id="severity_level_low"
+                                    title="severity_level_low"
                                   >
                                     <span
                                       class="euiBadge__content"
@@ -2937,12 +2937,12 @@ Object {
                                       <span
                                         class="euiBadge__text"
                                       >
-                                        low
+                                        severity_level_low
                                       </span>
                                       <button
-                                        aria-label="Remove low from selection in this group"
+                                        aria-label="Remove severity_level_low from selection in this group"
                                         class="euiBadge__iconButton"
-                                        title="Remove low from selection in this group"
+                                        title="Remove severity_level_low from selection in this group"
                                         type="button"
                                       >
                                         EuiIconMock
@@ -3443,7 +3443,7 @@ Object {
                                             placeholder="Enter a subject for the notification message."
                                             required=""
                                             type="text"
-                                            value="sourceTemplate"
+                                            value="some_source"
                                           />
                                         </div>
                                       </div>
@@ -3483,7 +3483,7 @@ Object {
                                         required=""
                                         rows="6"
                                       >
-                                        messageSource
+                                        some_source
                                       </textarea>
                                     </div>
                                   </div>

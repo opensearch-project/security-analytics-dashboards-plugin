@@ -8,13 +8,13 @@ import { EuiButton, EuiOverlayMask, EuiModal } from '@elastic/eui';
 import { render, fireEvent } from '@testing-library/react';
 import ModalRoot from './ModalRoot';
 import { ModalConsumer, ModalProvider } from './Modal';
-import { ServicesConsumer, ServicesContext } from '../../services/Services';
-import { browserServicesMock } from '../../../test/mocks';
+import { ServicesConsumer, ServicesContext } from '../../services';
+import services from '../../../test/mocks/services';
 
 describe('<ModalRoot /> spec', () => {
   it('renders nothing when not used', () => {
     const { container } = render(
-      <ServicesContext.Provider value={browserServicesMock}>
+      <ServicesContext.Provider value={services}>
         <ModalProvider>
           <ServicesConsumer>
             {(services) => services && <ModalRoot services={services} />}
@@ -34,7 +34,7 @@ describe('<ModalRoot /> spec', () => {
     );
     const { queryByText, getByTestId, getByLabelText } = render(
       <div>
-        <ServicesContext.Provider value={browserServicesMock}>
+        <ServicesContext.Provider value={services}>
           <ModalProvider>
             <ServicesConsumer>
               {(services) => services && <ModalRoot services={services} />}

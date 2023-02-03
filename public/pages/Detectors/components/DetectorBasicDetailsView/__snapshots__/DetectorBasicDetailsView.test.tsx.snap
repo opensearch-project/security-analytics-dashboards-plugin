@@ -96,7 +96,7 @@ Object {
                     data-test-subj="text-details-group-content-detector name"
                     id="some_html_id"
                   >
-                    detectorName
+                    detector_name
                   </div>
                 </div>
               </div>
@@ -135,7 +135,7 @@ Object {
                     data-test-subj="text-details-group-content-log type"
                     id="some_html_id"
                   >
-                    .windows
+                    detector_type
                   </div>
                 </div>
               </div>
@@ -442,7 +442,7 @@ Object {
                   data-test-subj="text-details-group-content-detector name"
                   id="some_html_id"
                 >
-                  detectorName
+                  detector_name
                 </div>
               </div>
             </div>
@@ -481,7 +481,7 @@ Object {
                   data-test-subj="text-details-group-content-log type"
                   id="some_html_id"
                 >
-                  .windows
+                  detector_type
                 </div>
               </div>
             </div>
