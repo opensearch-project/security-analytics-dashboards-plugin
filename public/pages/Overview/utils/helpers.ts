@@ -123,15 +123,19 @@ export function getVisualizationSpec(description: string, data: any, layers: any
   };
 }
 
+/**
+ * Recalculates vertical domain range to add a bit of space
+ * so that the topmost items in the chart are not clipped
+ * @param {any} data
+ * @param {string} timeUnit
+ */
 export const getYDomainRange = (data: any[], timeUnit: string): number[] => {
   data = data.filter((item) => item.finding === 1);
 
   let dateFormat = 'mm';
   const timeUnitSize = timeUnit.match(/.*(seconds|minutes|hours|date|month|year)$/);
-  if (timeUnitSize) {
-    if (timeUnitSize && timeUnitSize[1]) {
-      dateFormat = `${timeUnitSize[1][0]}${timeUnitSize[1][0]}`;
-    }
+  if (timeUnitSize && timeUnitSize[1]) {
+    dateFormat = `${timeUnitSize[1][0]}${timeUnitSize[1][0]}`;
   }
   let dataGroups = _.groupBy(data, (item) => moment(item.time).format(dateFormat));
   const domainMax = _.maxBy(Object.values(dataGroups), (group) => group.length) || [];
