@@ -73,6 +73,10 @@ jest.mock('moment', () => {
   return fakeMoment;
 });
 
+/**
+ * Mocks rules view model actor as it is instantiated in the component classes
+ * Mocked here so that is applied to all tests
+ */
 jest.mock('../public/pages/Rules/models/RulesViewModelActor.ts', () => {
   const rulesViewModelActor = jest.requireActual(
     '../public/pages/Rules/models/RulesViewModelActor.ts'
@@ -142,9 +146,10 @@ const mockUseContext = {
     },
   },
 };
+
 /**
  * React useContext is mocked to return the mocked services
- * so that this work in all tests
+ * so that this works in all tests
  */
 jest.mock('react', () => {
   const ActualReact = jest.requireActual('react');
@@ -154,6 +159,9 @@ jest.mock('react', () => {
   };
 });
 
+/**
+ * Mocks the vega view renderer
+ */
 jest.mock('vega/build-es5/vega.js', () => {
   const vega = jest.requireActual('vega/build-es5/vega.js');
   return {
