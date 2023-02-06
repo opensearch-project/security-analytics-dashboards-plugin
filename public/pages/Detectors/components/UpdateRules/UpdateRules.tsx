@@ -23,6 +23,7 @@ import { errorNotificationToast, successNotificationToast } from '../../../../ut
 import { RuleTableItem } from '../../../Rules/utils/helpers';
 import { RuleViewerFlyout } from '../../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
 import { RulesViewModelActor } from '../../../Rules/models/RulesViewModelActor';
+import { ContentPanel } from '../../../../components/ContentPanel';
 
 export interface UpdateDetectorRulesProps
   extends RouteComponentProps<
@@ -79,9 +80,13 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
     };
 
     const getRules = async (detector: Detector) => {
-      const enabledRuleIds = detector.inputs[0].detector_input.pre_packaged_rules.map(
+      let enabledRuleIds = detector.inputs[0].detector_input.pre_packaged_rules.map(
         (rule) => rule.id
       );
+      const enabledCustomRuleIds = detector.inputs[0].detector_input.custom_rules.map(
+        (rule) => rule.id
+      );
+      enabledRuleIds = enabledRuleIds.concat(enabledCustomRuleIds);
 
       const allRules = await rulesViewModelActor?.fetchRules(undefined, {
         bool: {
@@ -217,34 +222,41 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
       </EuiTitle>
       <EuiSpacer size="xl" />
 
-      <DetectionRulesTable
-        loading={loading}
-        ruleItems={ruleItems}
-        onRuleActivationToggle={onToggle}
-        onAllRulesToggled={onAllRulesToggle}
-        onRuleDetails={onRuleDetails}
-      />
+      <ContentPanel
+        title={`Detection rules (${
+          prePackagedRuleItems.concat(customRuleItems).filter((item) => item.active).length
+        })`}
+      >
+        <DetectionRulesTable
+          loading={loading}
+          ruleItems={ruleItems}
+          onRuleActivationToggle={onToggle}
+          onAllRulesToggled={onAllRulesToggle}
+          onRuleDetails={onRuleDetails}
+        />
 
-      <EuiSpacer size="xl" />
+        <EuiSpacer size="xl" />
 
-      <EuiFlexGroup justifyContent="flexEnd">
-        <EuiFlexItem grow={false}>
-          <EuiButton disabled={submitting} onClick={onCancel}>
-            Cancel
-          </EuiButton>
-        </EuiFlexItem>
-        <EuiFlexItem grow={false}>
-          <EuiButton
-            disabled={loading}
-            fill={true}
-            isLoading={submitting}
-            onClick={onSave}
-            data-test-subj={'save-detector-rules-edits'}
-          >
-            Save changes
-          </EuiButton>
-        </EuiFlexItem>
-      </EuiFlexGroup>
+        <EuiFlexGroup justifyContent="flexEnd">
+          <EuiFlexItem grow={false}>
+            <EuiButton disabled={submitting} onClick={onCancel}>
+              Cancel
+            </EuiButton>
+          </EuiFlexItem>
+
+          <EuiFlexItem grow={false}>
+            <EuiButton
+              disabled={loading}
+              fill={true}
+              isLoading={submitting}
+              onClick={onSave}
+              data-test-subj={'save-detector-rules-edits'}
+            >
+              Save changes
+            </EuiButton>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      </ContentPanel>
     </div>
   );
 };
