@@ -28,6 +28,8 @@ import {
 } from '../utils/helpers';
 import { NotificationsService } from '../../../../../services';
 import { validateName } from '../../../../../utils/validation';
+import { CoreServicesContext } from '../../../../../components/core_services';
+import { BREADCRUMBS } from '../../../../../utils/constants';
 
 interface ConfigureAlertsProps extends RouteComponentProps {
   detector: Detector;
@@ -45,6 +47,8 @@ interface ConfigureAlertsState {
 }
 
 export default class ConfigureAlerts extends Component<ConfigureAlertsProps, ConfigureAlertsState> {
+  static contextType = CoreServicesContext;
+
   constructor(props: ConfigureAlertsProps) {
     super(props);
     this.state = {
@@ -53,15 +57,42 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
     };
   }
 
+  updateBreadcrumbs = () => {
+    const {
+      isEdit,
+      detector: { id = '', name },
+    } = this.props;
+
+    isEdit &&
+      this.context.chrome.setBreadcrumbs([
+        BREADCRUMBS.SECURITY_ANALYTICS,
+        BREADCRUMBS.DETECTORS,
+        BREADCRUMBS.DETECTORS_DETAILS(name, id),
+        {
+          text: 'Edit alert triggers',
+        },
+      ]);
+  };
+
   componentDidMount = async () => {
+    this.updateBreadcrumbs();
     const {
       detector: { triggers },
     } = this.props;
+
     this.getNotificationChannels();
     if (triggers.length === 0) {
       this.addCondition();
     }
   };
+
+  componentDidUpdate(
+    prevProps: Readonly<ConfigureAlertsProps>,
+    prevState: Readonly<ConfigureAlertsState>,
+    snapshot?: any
+  ) {
+    this.updateBreadcrumbs();
+  }
 
   getNotificationChannels = async () => {
     this.setState({ loading: true });
@@ -100,6 +131,7 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
 
   render() {
     const {
+      isEdit,
       detector: { triggers },
     } = this.props;
     const { loading, notificationChannels } = this.state;
@@ -107,8 +139,10 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
       <div>
         <EuiTitle size={'m'}>
           <h3>
-            {createDetectorSteps[DetectorCreationStep.CONFIGURE_ALERTS].title +
-              ` (${triggers.length})`}
+            {isEdit
+              ? 'Edit alert triggers'
+              : createDetectorSteps[DetectorCreationStep.CONFIGURE_ALERTS].title +
+                ` (${triggers.length})`}
           </h3>
         </EuiTitle>
 
@@ -126,7 +160,7 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
                 id={`alert-condition-${index}`}
                 buttonContent={
                   <EuiTitle>
-                    <h4>Alert trigger</h4>
+                    <h4>{alertCondition.name}</h4>
                   </EuiTitle>
                 }
                 paddingSize={'none'}
