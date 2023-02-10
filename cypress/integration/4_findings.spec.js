@@ -89,7 +89,7 @@ describe('Findings', () => {
   });
 
   // TODO: this one triggers a button handler which goes throw condition and therefor is flaky
-  // find a better way to test this dialog
+  // find a better way to test this dialog, condition is based on `indexPatternId`
   xit('displays finding details and create an index pattern from flyout', () => {
     // filter table to show only sample_detector findings
     cy.get(`input[placeholder="Search findings"]`).ospSearch('sample_detector');
