@@ -6,6 +6,7 @@
 import services from '../../../services';
 import detectorHitMock from '../../containers/Detectors/DetectorHit.mock';
 import notificationsStartMock from '../../../services/notifications/NotificationsStart.mock';
+
 const { notificationsService, detectorService, openSearchService, ruleService } = services;
 
 export default {
