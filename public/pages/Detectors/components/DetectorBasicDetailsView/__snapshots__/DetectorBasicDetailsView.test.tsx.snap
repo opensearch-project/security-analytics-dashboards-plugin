@@ -93,7 +93,7 @@ Object {
                 >
                   <div
                     class="euiText euiText--medium"
-                    data-test-subj="text-details-group-content-detector name"
+                    data-test-subj="text-details-group-content-detector-name"
                     id="some_html_id"
                   >
                     detector_name
@@ -132,7 +132,7 @@ Object {
                 >
                   <div
                     class="euiText euiText--medium"
-                    data-test-subj="text-details-group-content-log type"
+                    data-test-subj="text-details-group-content-log-type"
                     id="some_html_id"
                   >
                     detector_type
@@ -171,7 +171,7 @@ Object {
                 >
                   <div
                     class="euiText euiText--medium"
-                    data-test-subj="text-details-group-content-data source"
+                    data-test-subj="text-details-group-content-data-source"
                     id="some_html_id"
                   >
                     .windows
@@ -256,7 +256,7 @@ Object {
                 >
                   <div
                     class="euiText euiText--medium"
-                    data-test-subj="text-details-group-content-detector schedule"
+                    data-test-subj="text-details-group-content-detector-schedule"
                     id="some_html_id"
                   >
                     Every 1 minute
@@ -295,7 +295,7 @@ Object {
                 >
                   <div
                     class="euiText euiText--medium"
-                    data-test-subj="text-details-group-content-created at"
+                    data-test-subj="text-details-group-content-created-at"
                     id="some_html_id"
                   >
                     2023-01-25T10:05
@@ -334,7 +334,7 @@ Object {
                 >
                   <div
                     class="euiText euiText--medium"
-                    data-test-subj="text-details-group-content-last updated time"
+                    data-test-subj="text-details-group-content-last-updated-time"
                     id="some_html_id"
                   >
                     2023-01-25T10:05
@@ -439,7 +439,7 @@ Object {
               >
                 <div
                   class="euiText euiText--medium"
-                  data-test-subj="text-details-group-content-detector name"
+                  data-test-subj="text-details-group-content-detector-name"
                   id="some_html_id"
                 >
                   detector_name
@@ -478,7 +478,7 @@ Object {
               >
                 <div
                   class="euiText euiText--medium"
-                  data-test-subj="text-details-group-content-log type"
+                  data-test-subj="text-details-group-content-log-type"
                   id="some_html_id"
                 >
                   detector_type
@@ -517,7 +517,7 @@ Object {
               >
                 <div
                   class="euiText euiText--medium"
-                  data-test-subj="text-details-group-content-data source"
+                  data-test-subj="text-details-group-content-data-source"
                   id="some_html_id"
                 >
                   .windows
@@ -602,7 +602,7 @@ Object {
               >
                 <div
                   class="euiText euiText--medium"
-                  data-test-subj="text-details-group-content-detector schedule"
+                  data-test-subj="text-details-group-content-detector-schedule"
                   id="some_html_id"
                 >
                   Every 1 minute
@@ -641,7 +641,7 @@ Object {
               >
                 <div
                   class="euiText euiText--medium"
-                  data-test-subj="text-details-group-content-created at"
+                  data-test-subj="text-details-group-content-created-at"
                   id="some_html_id"
                 >
                   2023-01-25T10:05
@@ -680,7 +680,7 @@ Object {
               >
                 <div
                   class="euiText euiText--medium"
-                  data-test-subj="text-details-group-content-last updated time"
+                  data-test-subj="text-details-group-content-last-updated-time"
                   id="some_html_id"
                 >
                   2023-01-25T10:05

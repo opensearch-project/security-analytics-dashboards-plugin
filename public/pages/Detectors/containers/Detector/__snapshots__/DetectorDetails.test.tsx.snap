@@ -1624,14 +1624,14 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             className="euiFormRow__fieldWrapper"
                           >
                             <EuiText
-                              data-test-subj="text-details-group-content-detector name"
+                              data-test-subj="text-details-group-content-detector-name"
                               id="some_html_id"
                               onBlur={[Function]}
                               onFocus={[Function]}
                             >
                               <div
                                 className="euiText euiText--medium"
-                                data-test-subj="text-details-group-content-detector name"
+                                data-test-subj="text-details-group-content-detector-name"
                                 id="some_html_id"
                                 onBlur={[Function]}
                                 onFocus={[Function]}
@@ -1718,14 +1718,14 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             className="euiFormRow__fieldWrapper"
                           >
                             <EuiText
-                              data-test-subj="text-details-group-content-log type"
+                              data-test-subj="text-details-group-content-log-type"
                               id="some_html_id"
                               onBlur={[Function]}
                               onFocus={[Function]}
                             >
                               <div
                                 className="euiText euiText--medium"
-                                data-test-subj="text-details-group-content-log type"
+                                data-test-subj="text-details-group-content-log-type"
                                 id="some_html_id"
                                 onBlur={[Function]}
                                 onFocus={[Function]}
@@ -1812,14 +1812,14 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             className="euiFormRow__fieldWrapper"
                           >
                             <EuiText
-                              data-test-subj="text-details-group-content-data source"
+                              data-test-subj="text-details-group-content-data-source"
                               id="some_html_id"
                               onBlur={[Function]}
                               onFocus={[Function]}
                             >
                               <div
                                 className="euiText euiText--medium"
-                                data-test-subj="text-details-group-content-data source"
+                                data-test-subj="text-details-group-content-data-source"
                                 id="some_html_id"
                                 onBlur={[Function]}
                                 onFocus={[Function]}
@@ -2013,14 +2013,14 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             className="euiFormRow__fieldWrapper"
                           >
                             <EuiText
-                              data-test-subj="text-details-group-content-detector schedule"
+                              data-test-subj="text-details-group-content-detector-schedule"
                               id="some_html_id"
                               onBlur={[Function]}
                               onFocus={[Function]}
                             >
                               <div
                                 className="euiText euiText--medium"
-                                data-test-subj="text-details-group-content-detector schedule"
+                                data-test-subj="text-details-group-content-detector-schedule"
                                 id="some_html_id"
                                 onBlur={[Function]}
                                 onFocus={[Function]}
@@ -2107,14 +2107,14 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             className="euiFormRow__fieldWrapper"
                           >
                             <EuiText
-                              data-test-subj="text-details-group-content-created at"
+                              data-test-subj="text-details-group-content-created-at"
                               id="some_html_id"
                               onBlur={[Function]}
                               onFocus={[Function]}
                             >
                               <div
                                 className="euiText euiText--medium"
-                                data-test-subj="text-details-group-content-created at"
+                                data-test-subj="text-details-group-content-created-at"
                                 id="some_html_id"
                                 onBlur={[Function]}
                                 onFocus={[Function]}
@@ -2201,14 +2201,14 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             className="euiFormRow__fieldWrapper"
                           >
                             <EuiText
-                              data-test-subj="text-details-group-content-last updated time"
+                              data-test-subj="text-details-group-content-last-updated-time"
                               id="some_html_id"
                               onBlur={[Function]}
                               onFocus={[Function]}
                             >
                               <div
                                 className="euiText euiText--medium"
-                                data-test-subj="text-details-group-content-last updated time"
+                                data-test-subj="text-details-group-content-last-updated-time"
                                 id="some_html_id"
                                 onBlur={[Function]}
                                 onFocus={[Function]}

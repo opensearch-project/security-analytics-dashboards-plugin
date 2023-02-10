@@ -84,7 +84,7 @@ Object {
                   >
                     <div
                       class="euiText euiText--medium"
-                      data-test-subj="text-details-group-content-trigger name"
+                      data-test-subj="text-details-group-content-trigger-name"
                       id="some_html_id"
                     >
                       alert_name
@@ -136,7 +136,7 @@ Object {
                       >
                         <div
                           class="euiText euiText--medium"
-                          data-test-subj="text-details-group-content-log type"
+                          data-test-subj="text-details-group-content-log-type"
                           id="some_html_id"
                         >
                           detector_type_1
@@ -175,7 +175,7 @@ Object {
                       >
                         <div
                           class="euiText euiText--medium"
-                          data-test-subj="text-details-group-content-rule names"
+                          data-test-subj="text-details-group-content-rule-names"
                           id="some_html_id"
                         >
                           -
@@ -221,7 +221,7 @@ Object {
                       >
                         <div
                           class="euiText euiText--medium"
-                          data-test-subj="text-details-group-content-rule severities"
+                          data-test-subj="text-details-group-content-rule-severities"
                           id="some_html_id"
                         >
                           severity_level_low
@@ -310,7 +310,7 @@ Object {
                   >
                     <div
                       class="euiText euiText--medium"
-                      data-test-subj="text-details-group-content-trigger alerts with severity"
+                      data-test-subj="text-details-group-content-trigger-alerts-with-severity"
                       id="some_html_id"
                     >
                       1 (Highest)
@@ -347,7 +347,7 @@ Object {
                   >
                     <div
                       class="euiText euiText--medium"
-                      data-test-subj="text-details-group-content-notify channel"
+                      data-test-subj="text-details-group-content-notify-channel"
                       id="some_html_id"
                     >
                       <div
@@ -448,7 +448,7 @@ Object {
                 >
                   <div
                     class="euiText euiText--medium"
-                    data-test-subj="text-details-group-content-trigger name"
+                    data-test-subj="text-details-group-content-trigger-name"
                     id="some_html_id"
                   >
                     alert_name
@@ -500,7 +500,7 @@ Object {
                     >
                       <div
                         class="euiText euiText--medium"
-                        data-test-subj="text-details-group-content-log type"
+                        data-test-subj="text-details-group-content-log-type"
                         id="some_html_id"
                       >
                         detector_type_1
@@ -539,7 +539,7 @@ Object {
                     >
                       <div
                         class="euiText euiText--medium"
-                        data-test-subj="text-details-group-content-rule names"
+                        data-test-subj="text-details-group-content-rule-names"
                         id="some_html_id"
                       >
                         -
@@ -585,7 +585,7 @@ Object {
                     >
                       <div
                         class="euiText euiText--medium"
-                        data-test-subj="text-details-group-content-rule severities"
+                        data-test-subj="text-details-group-content-rule-severities"
                         id="some_html_id"
                       >
                         severity_level_low
@@ -674,7 +674,7 @@ Object {
                 >
                   <div
                     class="euiText euiText--medium"
-                    data-test-subj="text-details-group-content-trigger alerts with severity"
+                    data-test-subj="text-details-group-content-trigger-alerts-with-severity"
                     id="some_html_id"
                   >
                     1 (Highest)
@@ -711,7 +711,7 @@ Object {
                 >
                   <div
                     class="euiText euiText--medium"
-                    data-test-subj="text-details-group-content-notify channel"
+                    data-test-subj="text-details-group-content-notify-channel"
                     id="some_html_id"
                   >
                     <div

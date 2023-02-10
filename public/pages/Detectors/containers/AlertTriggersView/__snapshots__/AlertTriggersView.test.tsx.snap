@@ -889,14 +889,14 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                 className="euiFormRow__fieldWrapper"
                               >
                                 <EuiText
-                                  data-test-subj="text-details-group-content-trigger name"
+                                  data-test-subj="text-details-group-content-trigger-name"
                                   id="some_html_id"
                                   onBlur={[Function]}
                                   onFocus={[Function]}
                                 >
                                   <div
                                     className="euiText euiText--medium"
-                                    data-test-subj="text-details-group-content-trigger name"
+                                    data-test-subj="text-details-group-content-trigger-name"
                                     id="some_html_id"
                                     onBlur={[Function]}
                                     onFocus={[Function]}
@@ -1008,14 +1008,14 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                         className="euiFormRow__fieldWrapper"
                                       >
                                         <EuiText
-                                          data-test-subj="text-details-group-content-log type"
+                                          data-test-subj="text-details-group-content-log-type"
                                           id="some_html_id"
                                           onBlur={[Function]}
                                           onFocus={[Function]}
                                         >
                                           <div
                                             className="euiText euiText--medium"
-                                            data-test-subj="text-details-group-content-log type"
+                                            data-test-subj="text-details-group-content-log-type"
                                             id="some_html_id"
                                             onBlur={[Function]}
                                             onFocus={[Function]}
@@ -1102,14 +1102,14 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                         className="euiFormRow__fieldWrapper"
                                       >
                                         <EuiText
-                                          data-test-subj="text-details-group-content-rule names"
+                                          data-test-subj="text-details-group-content-rule-names"
                                           id="some_html_id"
                                           onBlur={[Function]}
                                           onFocus={[Function]}
                                         >
                                           <div
                                             className="euiText euiText--medium"
-                                            data-test-subj="text-details-group-content-rule names"
+                                            data-test-subj="text-details-group-content-rule-names"
                                             id="some_html_id"
                                             onBlur={[Function]}
                                             onFocus={[Function]}
@@ -1209,14 +1209,14 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                         className="euiFormRow__fieldWrapper"
                                       >
                                         <EuiText
-                                          data-test-subj="text-details-group-content-rule severities"
+                                          data-test-subj="text-details-group-content-rule-severities"
                                           id="some_html_id"
                                           onBlur={[Function]}
                                           onFocus={[Function]}
                                         >
                                           <div
                                             className="euiText euiText--medium"
-                                            data-test-subj="text-details-group-content-rule severities"
+                                            data-test-subj="text-details-group-content-rule-severities"
                                             id="some_html_id"
                                             onBlur={[Function]}
                                             onFocus={[Function]}
@@ -1412,14 +1412,14 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                 className="euiFormRow__fieldWrapper"
                               >
                                 <EuiText
-                                  data-test-subj="text-details-group-content-trigger alerts with severity"
+                                  data-test-subj="text-details-group-content-trigger-alerts-with-severity"
                                   id="some_html_id"
                                   onBlur={[Function]}
                                   onFocus={[Function]}
                                 >
                                   <div
                                     className="euiText euiText--medium"
-                                    data-test-subj="text-details-group-content-trigger alerts with severity"
+                                    data-test-subj="text-details-group-content-trigger-alerts-with-severity"
                                     id="some_html_id"
                                     onBlur={[Function]}
                                     onFocus={[Function]}
@@ -1494,14 +1494,14 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                 className="euiFormRow__fieldWrapper"
                               >
                                 <EuiText
-                                  data-test-subj="text-details-group-content-notify channel"
+                                  data-test-subj="text-details-group-content-notify-channel"
                                   id="some_html_id"
                                   onBlur={[Function]}
                                   onFocus={[Function]}
                                 >
                                   <div
                                     className="euiText euiText--medium"
-                                    data-test-subj="text-details-group-content-notify channel"
+                                    data-test-subj="text-details-group-content-notify-channel"
                                     id="some_html_id"
                                     onBlur={[Function]}
                                     onFocus={[Function]}
@@ -2097,14 +2097,14 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                 className="euiFormRow__fieldWrapper"
                               >
                                 <EuiText
-                                  data-test-subj="text-details-group-content-trigger name"
+                                  data-test-subj="text-details-group-content-trigger-name"
                                   id="some_html_id"
                                   onBlur={[Function]}
                                   onFocus={[Function]}
                                 >
                                   <div
                                     className="euiText euiText--medium"
-                                    data-test-subj="text-details-group-content-trigger name"
+                                    data-test-subj="text-details-group-content-trigger-name"
                                     id="some_html_id"
                                     onBlur={[Function]}
                                     onFocus={[Function]}
@@ -2216,14 +2216,14 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                         className="euiFormRow__fieldWrapper"
                                       >
                                         <EuiText
-                                          data-test-subj="text-details-group-content-log type"
+                                          data-test-subj="text-details-group-content-log-type"
                                           id="some_html_id"
                                           onBlur={[Function]}
                                           onFocus={[Function]}
                                         >
                                           <div
                                             className="euiText euiText--medium"
-                                            data-test-subj="text-details-group-content-log type"
+                                            data-test-subj="text-details-group-content-log-type"
                                             id="some_html_id"
                                             onBlur={[Function]}
                                             onFocus={[Function]}
@@ -2310,14 +2310,14 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                         className="euiFormRow__fieldWrapper"
                                       >
                                         <EuiText
-                                          data-test-subj="text-details-group-content-rule names"
+                                          data-test-subj="text-details-group-content-rule-names"
                                           id="some_html_id"
                                           onBlur={[Function]}
                                           onFocus={[Function]}
                                         >
                                           <div
                                             className="euiText euiText--medium"
-                                            data-test-subj="text-details-group-content-rule names"
+                                            data-test-subj="text-details-group-content-rule-names"
                                             id="some_html_id"
                                             onBlur={[Function]}
                                             onFocus={[Function]}
@@ -2417,14 +2417,14 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                         className="euiFormRow__fieldWrapper"
                                       >
                                         <EuiText
-                                          data-test-subj="text-details-group-content-rule severities"
+                                          data-test-subj="text-details-group-content-rule-severities"
                                           id="some_html_id"
                                           onBlur={[Function]}
                                           onFocus={[Function]}
                                         >
                                           <div
                                             className="euiText euiText--medium"
-                                            data-test-subj="text-details-group-content-rule severities"
+                                            data-test-subj="text-details-group-content-rule-severities"
                                             id="some_html_id"
                                             onBlur={[Function]}
                                             onFocus={[Function]}
@@ -2620,14 +2620,14 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                 className="euiFormRow__fieldWrapper"
                               >
                                 <EuiText
-                                  data-test-subj="text-details-group-content-trigger alerts with severity"
+                                  data-test-subj="text-details-group-content-trigger-alerts-with-severity"
                                   id="some_html_id"
                                   onBlur={[Function]}
                                   onFocus={[Function]}
                                 >
                                   <div
                                     className="euiText euiText--medium"
-                                    data-test-subj="text-details-group-content-trigger alerts with severity"
+                                    data-test-subj="text-details-group-content-trigger-alerts-with-severity"
                                     id="some_html_id"
                                     onBlur={[Function]}
                                     onFocus={[Function]}
@@ -2702,14 +2702,14 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                 className="euiFormRow__fieldWrapper"
                               >
                                 <EuiText
-                                  data-test-subj="text-details-group-content-notify channel"
+                                  data-test-subj="text-details-group-content-notify-channel"
                                   id="some_html_id"
                                   onBlur={[Function]}
                                   onFocus={[Function]}
                                 >
                                   <div
                                     className="euiText euiText--medium"
-                                    data-test-subj="text-details-group-content-notify channel"
+                                    data-test-subj="text-details-group-content-notify-channel"
                                     id="some_html_id"
                                     onBlur={[Function]}
                                     onFocus={[Function]}
