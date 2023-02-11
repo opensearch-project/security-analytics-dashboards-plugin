@@ -67,9 +67,13 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
     };
 
     const getRules = async (detector: Detector) => {
-      const enabledRuleIds = detector.inputs[0].detector_input.pre_packaged_rules.map(
+      let enabledRuleIds = detector.inputs[0].detector_input.pre_packaged_rules.map(
         (rule) => rule.id
       );
+      const enabledCustomRuleIds = detector.inputs[0].detector_input.custom_rules.map(
+        (rule) => rule.id
+      );
+      enabledRuleIds = enabledRuleIds.concat(enabledCustomRuleIds);
 
       const allRules = await rulesViewModelActor?.fetchRules(undefined, {
         bool: {
