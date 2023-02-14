@@ -49,8 +49,12 @@ export default class UpdateAlertConditions extends Component<
 > {
   constructor(props: UpdateAlertConditionsProps) {
     super(props);
+    const detector = {
+      ...props.location.state.detectorHit._source,
+      id: props.location.state.detectorHit._id,
+    };
     this.state = {
-      detector: props.location.state.detectorHit._source,
+      detector,
       rules: {},
       rulesOptions: [],
       submitting: false,
