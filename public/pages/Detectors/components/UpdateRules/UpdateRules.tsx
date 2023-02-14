@@ -14,14 +14,16 @@ import { RouteComponentProps } from 'react-router-dom';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { Detector } from '../../../../../models/interfaces';
 import { DetectionRulesTable } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/DetectionRulesTable';
-import { EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
+import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
 import { ServicesContext } from '../../../../services';
 import { ServerResponse } from '../../../../../server/models/types';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { CoreServicesContext } from '../../../../components/core_services';
 import { errorNotificationToast, successNotificationToast } from '../../../../utils/helpers';
 import { RuleTableItem } from '../../../Rules/utils/helpers';
 import { RuleViewerFlyout } from '../../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
 import { RulesViewModelActor } from '../../../Rules/models/RulesViewModelActor';
+import { ContentPanel } from '../../../../components/ContentPanel';
 
 export interface UpdateDetectorRulesProps
   extends RouteComponentProps<
@@ -47,6 +49,8 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
     [services]
   );
 
+  const context = useContext(CoreServicesContext);
+
   useEffect(() => {
     const getDetector = async () => {
       setLoading(true);
@@ -59,6 +63,15 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
         ) as DetectorHit;
         const newDetector = { ...detectorHit._source, id: detectorId };
         setDetector(newDetector);
+
+        context?.chrome.setBreadcrumbs([
+          BREADCRUMBS.SECURITY_ANALYTICS,
+          BREADCRUMBS.DETECTORS,
+          BREADCRUMBS.DETECTORS_DETAILS(detectorHit._source.name, detectorHit._id),
+          {
+            text: 'Edit detector rules',
+          },
+        ]);
         await getRules(newDetector);
       } else {
         errorNotificationToast(props.notifications, 'retrieve', 'detector', response.error);
@@ -67,9 +80,13 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
     };
 
     const getRules = async (detector: Detector) => {
-      const enabledRuleIds = detector.inputs[0].detector_input.pre_packaged_rules.map(
+      let enabledRuleIds = detector.inputs[0].detector_input.pre_packaged_rules.map(
         (rule) => rule.id
       );
+      const enabledCustomRuleIds = detector.inputs[0].detector_input.custom_rules.map(
+        (rule) => rule.id
+      );
+      enabledRuleIds = enabledRuleIds.concat(enabledCustomRuleIds);
 
       const allRules = await rulesViewModelActor?.fetchRules(undefined, {
         bool: {
@@ -205,34 +222,41 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
       </EuiTitle>
       <EuiSpacer size="xl" />
 
-      <DetectionRulesTable
-        loading={loading}
-        ruleItems={ruleItems}
-        onRuleActivationToggle={onToggle}
-        onAllRulesToggled={onAllRulesToggle}
-        onRuleDetails={onRuleDetails}
-      />
+      <ContentPanel
+        title={`Detection rules (${
+          prePackagedRuleItems.concat(customRuleItems).filter((item) => item.active).length
+        })`}
+      >
+        <DetectionRulesTable
+          loading={loading}
+          ruleItems={ruleItems}
+          onRuleActivationToggle={onToggle}
+          onAllRulesToggled={onAllRulesToggle}
+          onRuleDetails={onRuleDetails}
+        />
 
-      <EuiSpacer size="xl" />
+        <EuiSpacer size="xl" />
 
-      <EuiFlexGroup justifyContent="flexEnd">
-        <EuiFlexItem grow={false}>
-          <EuiButton disabled={submitting} onClick={onCancel}>
-            Cancel
-          </EuiButton>
-        </EuiFlexItem>
-        <EuiFlexItem grow={false}>
-          <EuiButton
-            disabled={loading}
-            fill={true}
-            isLoading={submitting}
-            onClick={onSave}
-            data-test-subj={'save-detector-rules-edits'}
-          >
-            Save changes
-          </EuiButton>
-        </EuiFlexItem>
-      </EuiFlexGroup>
+        <EuiFlexGroup justifyContent="flexEnd">
+          <EuiFlexItem grow={false}>
+            <EuiButton disabled={submitting} onClick={onCancel}>
+              Cancel
+            </EuiButton>
+          </EuiFlexItem>
+
+          <EuiFlexItem grow={false}>
+            <EuiButton
+              disabled={loading}
+              fill={true}
+              isLoading={submitting}
+              onClick={onSave}
+              data-test-subj={'save-detector-rules-edits'}
+            >
+              Save changes
+            </EuiButton>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      </ContentPanel>
     </div>
   );
 };

@@ -5,16 +5,17 @@
 
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { EuiButton, EuiFlexGroup, EuiFlexItem, EuiSpacer, EuiTitle } from '@elastic/eui';
+import { EuiButton, EuiFlexGroup, EuiFlexItem, EuiSpacer, EuiTitle, EuiText } from '@elastic/eui';
 import { Detector, FieldMapping } from '../../../../../models/interfaces';
 import FieldMappingService from '../../../../services/FieldMappingService';
 import { DetectorHit, SearchDetectorsResponse } from '../../../../../server/models/interfaces';
-import { EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
+import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
 import { DetectorsService } from '../../../../services';
 import { ServerResponse } from '../../../../../server/models/types';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast, successNotificationToast } from '../../../../utils/helpers';
 import EditFieldMappings from '../../containers/FieldMappings/EditFieldMapping';
+import { CoreServicesContext } from '../../../../components/core_services';
 
 export interface UpdateFieldMappingsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
@@ -35,6 +36,8 @@ export default class UpdateFieldMappings extends Component<
   UpdateFieldMappingsProps,
   UpdateFieldMappingsState
 > {
+  static contextType = CoreServicesContext;
+
   constructor(props: UpdateFieldMappingsProps) {
     super(props);
     const { location } = props;
@@ -65,6 +68,15 @@ export default class UpdateFieldMappings extends Component<
         ) as DetectorHit;
         const detector = detectorHit._source;
         detector.detector_type = detector.detector_type.toLowerCase();
+
+        this.context.chrome.setBreadcrumbs([
+          BREADCRUMBS.SECURITY_ANALYTICS,
+          BREADCRUMBS.DETECTORS,
+          BREADCRUMBS.DETECTORS_DETAILS(detectorHit._source.name, detectorHit._id),
+          {
+            text: 'Edit field mapping',
+          },
+        ]);
 
         history.replace({
           pathname: `${ROUTES.EDIT_FIELD_MAPPINGS}/${detectorId}`,
@@ -156,6 +168,14 @@ export default class UpdateFieldMappings extends Component<
         <EuiTitle size={'m'}>
           <h3>Edit detector details</h3>
         </EuiTitle>
+
+        <EuiText size="s" color="subdued">
+          To perform threat detections, your data source will need to be in a common schema format.
+          <br />
+          Rule field names are automatically mapped to the most common fields in your log data
+          source.
+        </EuiText>
+
         <EuiSpacer size={'xxl'} />
 
         {!loading && (
