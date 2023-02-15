@@ -20,10 +20,11 @@ import { IndexService, ServicesContext } from '../../../../services';
 import { DetectorSchedule } from '../../../CreateDetector/components/DefineDetector/components/DetectorSchedule/DetectorSchedule';
 import { useCallback } from 'react';
 import { DetectorHit, SearchDetectorsResponse } from '../../../../../server/models/interfaces';
-import { EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
+import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
 import { ServerResponse } from '../../../../../server/models/types';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast, successNotificationToast } from '../../../../utils/helpers';
+import { CoreServicesContext } from '../../../../components/core_services';
 
 export interface UpdateDetectorBasicDetailsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
@@ -41,6 +42,8 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
   const description = inputs[0].detector_input.description;
   const detectorId = props.location.pathname.replace(`${ROUTES.EDIT_DETECTOR_DETAILS}/`, '');
 
+  const context = useContext(CoreServicesContext);
+
   useEffect(() => {
     const getDetector = async () => {
       const response = (await services?.detectorsService.getDetectors()) as ServerResponse<
@@ -51,6 +54,15 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
           (detectorHit) => detectorHit._id === detectorId
         ) as DetectorHit;
         setDetector(detectorHit._source);
+
+        context?.chrome.setBreadcrumbs([
+          BREADCRUMBS.SECURITY_ANALYTICS,
+          BREADCRUMBS.DETECTORS,
+          BREADCRUMBS.DETECTORS_DETAILS(detectorHit._source.name, detectorHit._id),
+          {
+            text: 'Edit detector details',
+          },
+        ]);
         props.history.replace({
           pathname: `${ROUTES.EDIT_DETECTOR_DETAILS}/${detectorId}`,
           state: {
