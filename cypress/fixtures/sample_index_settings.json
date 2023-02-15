@@ -18,6 +18,9 @@
       },
       "ServiceName": {
         "type": "text"
+      },
+      "DnsQuestionName": {
+        "type": "text"
       }
     }
   },
