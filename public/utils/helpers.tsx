@@ -45,7 +45,7 @@ export function createTextDetailsGroup(
   columnNum?: number
 ) {
   const createFormRow = (label: string, content: string, url?: string) => {
-    const dataTestSubj = label.toLowerCase().replaceAll(' ', '-');
+    const dataTestSubj = label.toLowerCase().replace(/ /g, '-');
     return (
       <EuiFormRow label={<EuiText color={'subdued'}>{label}</EuiText>}>
         {url ? (

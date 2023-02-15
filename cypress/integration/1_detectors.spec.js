@@ -5,34 +5,21 @@
 
 import { OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
 import sample_index_settings from '../fixtures/sample_index_settings.json';
+import dns_rule_data from '../fixtures/integration_tests/rule/create_dns_rule.json';
 
 const testMappings = {
   properties: {
-    'host-hostname': {
+    'dns-question-name': {
       type: 'alias',
-      path: 'HostName',
-    },
-    'windows-message': {
-      type: 'alias',
-      path: 'Message',
-    },
-    'winlog-provider_name': {
-      type: 'alias',
-      path: 'Provider_Name',
-    },
-    'winlog-event_data-ServiceName': {
-      type: 'alias',
-      path: 'ServiceName',
-    },
-    'winlog-event_id': {
-      path: 'EventID',
-      type: 'alias',
+      path: 'DnsQuestionName',
     },
   },
 };
 
+const cypressDNSRule = 'Cypress DNS Rule';
+
 describe('Detectors', () => {
-  const indexName = 'cypress-test-windows';
+  const indexName = 'cypress-test-dns';
   const detectorName = 'test detector';
 
   before(() => {
@@ -46,12 +33,14 @@ describe('Detectors', () => {
           query: {
             nested: {
               path: 'rule',
-              query: { bool: { must: [{ match: { 'rule.category': 'windows' } }] } },
+              query: { bool: { must: [{ match: { 'rule.category': 'dns' } }] } },
             },
           },
         })
         .should('have.property', 'status', 200)
     );
+
+    cy.createRule(dns_rule_data);
 
     cy.contains(detectorName).should('not.exist');
   });
@@ -94,28 +83,28 @@ describe('Detectors', () => {
     }).as('getSigmaRules');
 
     // Select threat detector type (Windows logs)
-    cy.get(`input[id="windows"]`).click({ force: true });
+    cy.get(`input[id="dns"]`).click({ force: true });
 
     cy.wait('@getSigmaRules').then(() => {
       // Open Detection rules accordion
       cy.get('[data-test-subj="detection-rules-btn"]').click({ force: true, timeout: 5000 });
 
-      cy.contains('table tr', 'Windows', {
+      cy.contains('table tr', 'DNS', {
         timeout: 120000,
       });
 
       // find search, type USB
-      cy.get(`input[placeholder="Search..."]`).ospSearch('USB Device Plugged');
+      cy.get(`input[placeholder="Search..."]`).ospSearch(cypressDNSRule);
 
       // Disable all rules
-      cy.contains('tr', 'USB Device Plugged', { timeout: 1000 });
+      cy.contains('tr', cypressDNSRule, { timeout: 1000 });
       cy.get('table th').within(() => {
         cy.get('button').first().click({ force: true });
       });
 
       // Enable single rule
-      cy.contains('table tr', 'USB Device Plugged').within(() => {
-        cy.get('button').eq(1).click({ force: true });
+      cy.contains('table tr', cypressDNSRule).within(() => {
+        cy.get('button').eq(1).click({ force: true, timeout: 2000 });
       });
     });
 
@@ -124,14 +113,6 @@ describe('Detectors', () => {
 
     // Check that correct page now showing
     cy.contains('Configure field mapping');
-
-    // Show 50 rows per page
-    cy.contains('Rows per page').click({ force: true });
-    cy.contains('50 rows').click({ force: true });
-
-    // Show 50 rows per page
-    cy.contains('Rows per page').click({ force: true });
-    cy.contains('50 rows').click({ force: true });
 
     // Select appropriate names to map fields to
     for (let field_name in testMappings.properties) {
@@ -173,10 +154,6 @@ describe('Detectors', () => {
     // Confirm field mappings registered
     cy.contains('Field mapping');
 
-    // Show 50 rows per page
-    cy.contains('Rows per page').click({ force: true });
-    cy.contains('50 rows').click({ force: true });
-
     for (let field in testMappings.properties) {
       const mappedTo = testMappings.properties[field].path;
 
@@ -187,7 +164,7 @@ describe('Detectors', () => {
     // Confirm entries user has made
     cy.contains('Detector details');
     cy.contains(detectorName);
-    cy.contains('windows');
+    cy.contains('dns');
     cy.contains(indexName);
     cy.contains('Alert on test_trigger');
 
@@ -288,10 +265,10 @@ describe('Detectors', () => {
     });
 
     // Search for specific rule
-    cy.get(`input[placeholder="Search..."]`).ospSearch('USB Device');
+    cy.get(`input[placeholder="Search..."]`).ospSearch(cypressDNSRule);
 
     // Toggle single search result to unchecked
-    cy.contains('table tr', 'USB Device Plugged').within(() => {
+    cy.contains('table tr', cypressDNSRule).within(() => {
       // Of note, timeout can sometimes work instead of wait here, but is very unreliable from case to case.
       cy.wait(1000);
       cy.get('button').eq(1).click();
@@ -312,10 +289,10 @@ describe('Detectors', () => {
     });
 
     // Search for specific rule
-    cy.get(`input[placeholder="Search..."]`).ospSearch('USB');
+    cy.get(`input[placeholder="Search..."]`).ospSearch(cypressDNSRule);
 
     // Toggle single search result to checked
-    cy.contains('table tr', 'USB Device Plugged').within(() => {
+    cy.contains('table tr', cypressDNSRule).within(() => {
       cy.wait(2000);
       cy.get('button').eq(1).click({ force: true });
     });
