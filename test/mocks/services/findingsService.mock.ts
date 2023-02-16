@@ -2,6 +2,7 @@ import httpClientMock from './httpClient.mock';
 import { FindingsService } from '../../../public/services';
 
 const findingsService = new FindingsService(httpClientMock);
+
 Object.assign(findingsService, {
   getFindings: () =>
     Promise.resolve({
