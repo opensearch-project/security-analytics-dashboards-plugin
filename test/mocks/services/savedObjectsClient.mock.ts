@@ -5,7 +5,7 @@
 
 import { SavedObjectsClientContract } from 'opensearch-dashboards/public';
 
-const savedObjectsClientMock = jest.fn() as any;
+const savedObjectsClientMock = {} as any;
 
 savedObjectsClientMock.delete = jest.fn();
 savedObjectsClientMock.get = jest.fn();

@@ -5,9 +5,10 @@
 
 import services from '../services';
 import notificationsStartMock from '../services/notifications/NotificationsStart.mock';
+import { Alerts } from '../../../public/pages/Alerts/containers/Alerts/Alerts';
 const { alertService, detectorService, findingsService, ruleService, openSearchService } = services;
 
-export default {
+export default ({
   alertService: alertService,
   detectorService: detectorService,
   findingService: findingsService,
@@ -20,4 +21,4 @@ export default {
     endTime: 'now',
   },
   setDateTimeFilter: jest.fn(),
-};
+} as unknown) as Alerts;

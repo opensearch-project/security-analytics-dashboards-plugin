@@ -6,6 +6,7 @@
 import { TriggerAction } from '../../../../../../../types';
 import triggerActionMock from './TriggerAction.mock';
 import { times } from 'lodash';
+import { AlertCondition } from '../../../../../../../models/interfaces';
 
 const triggerAction: TriggerAction = triggerActionMock;
 
@@ -23,4 +24,4 @@ export default {
     };
   }),
   severity: '1',
-};
+} as AlertCondition;

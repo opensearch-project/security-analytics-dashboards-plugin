@@ -57,7 +57,13 @@ exports[`<Alerts /> spec renders the component 1`] = `
       "getIndexPatterns": [Function],
       "getPlugins": [Function],
       "httpClient": [MockFunction],
-      "savedObjectsClient": [MockFunction],
+      "savedObjectsClient": Object {
+        "delete": [MockFunction],
+        "get": [MockFunction],
+        "head": [MockFunction],
+        "post": [MockFunction],
+        "put": [MockFunction],
+      },
     }
   }
   ruleService={
@@ -160,7 +166,13 @@ exports[`<Alerts /> spec renders the component 1`] = `
         "getIndexPatterns": [Function],
         "getPlugins": [Function],
         "httpClient": [MockFunction],
-        "savedObjectsClient": [MockFunction],
+        "savedObjectsClient": Object {
+          "delete": [MockFunction],
+          "get": [MockFunction],
+          "head": [MockFunction],
+          "post": [MockFunction],
+          "put": [MockFunction],
+        },
       }
     }
     ruleService={

@@ -5,8 +5,9 @@
 
 import detectorServiceMock from '../../../services/detectorService.mock';
 import notificationsStartMock from '../../../services/notifications/NotificationsStart.mock';
+import { DetectorsProps } from '../../../../../public/pages/Detectors/containers/Detectors/Detectors';
 
-export default {
+export default ({
   detectorService: detectorServiceMock,
   notifications: notificationsStartMock,
-};
+} as unknown) as DetectorsProps;

@@ -4,6 +4,7 @@
  */
 
 import ruleInfoMock from '../../../Rules/RuleInfo.mock';
+import { DetectorInput } from '../../../../../models/interfaces';
 
 export default {
   detector_input: {
@@ -12,4 +13,4 @@ export default {
     pre_packaged_rules: [ruleInfoMock],
     custom_rules: [ruleInfoMock],
   },
-};
+} as DetectorInput;

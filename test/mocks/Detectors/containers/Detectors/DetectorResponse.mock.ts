@@ -4,9 +4,10 @@
  */
 
 import detectorMock from './Detector.mock';
+import { DetectorResponse } from '../../../../../types';
 
 export default {
   last_update_time: 1,
   enabled_time: 1,
   ...detectorMock,
-};
+} as DetectorResponse;

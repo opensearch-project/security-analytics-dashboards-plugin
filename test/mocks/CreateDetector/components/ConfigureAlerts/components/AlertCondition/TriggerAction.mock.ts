@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { TriggerAction } from '../../../../../../../models/interfaces';
+
 export default {
   id: 'trigger_id_1',
   destination_id: 'some_destination_id_1',
@@ -20,4 +22,4 @@ export default {
     unit: 'minutes',
     value: 1,
   },
-};
+} as TriggerAction;

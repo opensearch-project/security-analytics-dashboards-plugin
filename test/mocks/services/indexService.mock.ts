@@ -1,5 +1,6 @@
 import httpClientMock from './httpClient.mock';
 import { IndexService } from '../../../public/services';
+jest.fn();
 
 const indexServiceMock = {
   getIndices: () =>

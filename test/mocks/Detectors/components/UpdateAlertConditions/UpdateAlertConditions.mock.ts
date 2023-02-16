@@ -6,10 +6,11 @@
 import services from '../../../services';
 import detectorHitMock from '../../containers/Detectors/DetectorHit.mock';
 import notificationsStartMock from '../../../services/notifications/NotificationsStart.mock';
+import UpdateAlertConditions from '../../../../../public/pages/Detectors/components/UpdateAlertConditions/UpdateAlertConditions';
 
 const { notificationsService, detectorService, openSearchService, ruleService } = services;
 
-export default {
+export default ({
   detectorHit: detectorHitMock,
   detectorService: detectorService,
   opensearchService: openSearchService,
@@ -21,4 +22,4 @@ export default {
       detectorHit: detectorHitMock,
     },
   },
-};
+} as unknown) as typeof UpdateAlertConditions;
