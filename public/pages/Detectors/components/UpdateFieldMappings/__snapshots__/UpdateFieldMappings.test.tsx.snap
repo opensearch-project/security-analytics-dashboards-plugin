@@ -12,6 +12,17 @@ Object {
           Edit detector details
         </h3>
         <div
+          class="euiText euiText--small"
+        >
+          <div
+            class="euiTextColor euiTextColor--subdued"
+          >
+            To perform threat detections, your data source will need to be in a common schema format.
+            <br />
+            Rule field names are automatically mapped to the most common fields in your log data source.
+          </div>
+        </div>
+        <div
           class="euiSpacer euiSpacer--xxl"
         />
         <div
@@ -64,6 +75,17 @@ Object {
       >
         Edit detector details
       </h3>
+      <div
+        class="euiText euiText--small"
+      >
+        <div
+          class="euiTextColor euiTextColor--subdued"
+        >
+          To perform threat detections, your data source will need to be in a common schema format.
+          <br />
+          Rule field names are automatically mapped to the most common fields in your log data source.
+        </div>
+      </div>
       <div
         class="euiSpacer euiSpacer--xxl"
       />

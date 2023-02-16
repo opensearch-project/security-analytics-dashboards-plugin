@@ -10,7 +10,7 @@ Object {
           <h3
             class="euiTitle euiTitle--medium"
           >
-            Set up alerts (2)
+            Edit alert triggers
           </h3>
           <div
             class="euiText euiText--small"
@@ -52,7 +52,7 @@ Object {
                       <h4
                         class="euiTitle euiTitle--medium"
                       >
-                        Alert trigger
+                        alert_name
                       </h4>
                     </span>
                   </button>
@@ -591,7 +591,7 @@ Object {
                                       class="euiFormControlLayout__childrenWrapper"
                                     >
                                       <div
-                                        class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isLoading"
+                                        class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap"
                                         data-test-subj="comboBoxInput"
                                         tabindex="-1"
                                       >
@@ -621,9 +621,6 @@ Object {
                                       <div
                                         class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
                                       >
-                                        <span
-                                          class="euiLoadingSpinner euiLoadingSpinner--medium"
-                                        />
                                         <button
                                           aria-label="Open list of options"
                                           class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
@@ -910,7 +907,7 @@ Object {
                       <h4
                         class="euiTitle euiTitle--medium"
                       >
-                        Alert trigger
+                        alert_name
                       </h4>
                     </span>
                   </button>
@@ -1449,7 +1446,7 @@ Object {
                                       class="euiFormControlLayout__childrenWrapper"
                                     >
                                       <div
-                                        class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isLoading"
+                                        class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap"
                                         data-test-subj="comboBoxInput"
                                         tabindex="-1"
                                       >
@@ -1479,9 +1476,6 @@ Object {
                                       <div
                                         class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
                                       >
-                                        <span
-                                          class="euiLoadingSpinner euiLoadingSpinner--medium"
-                                        />
                                         <button
                                           aria-label="Open list of options"
                                           class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
@@ -1804,7 +1798,7 @@ Object {
         <h3
           class="euiTitle euiTitle--medium"
         >
-          Set up alerts (2)
+          Edit alert triggers
         </h3>
         <div
           class="euiText euiText--small"
@@ -1846,7 +1840,7 @@ Object {
                     <h4
                       class="euiTitle euiTitle--medium"
                     >
-                      Alert trigger
+                      alert_name
                     </h4>
                   </span>
                 </button>
@@ -2385,7 +2379,7 @@ Object {
                                     class="euiFormControlLayout__childrenWrapper"
                                   >
                                     <div
-                                      class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isLoading"
+                                      class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap"
                                       data-test-subj="comboBoxInput"
                                       tabindex="-1"
                                     >
@@ -2415,9 +2409,6 @@ Object {
                                     <div
                                       class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
                                     >
-                                      <span
-                                        class="euiLoadingSpinner euiLoadingSpinner--medium"
-                                      />
                                       <button
                                         aria-label="Open list of options"
                                         class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
@@ -2704,7 +2695,7 @@ Object {
                     <h4
                       class="euiTitle euiTitle--medium"
                     >
-                      Alert trigger
+                      alert_name
                     </h4>
                   </span>
                 </button>
@@ -3243,7 +3234,7 @@ Object {
                                     class="euiFormControlLayout__childrenWrapper"
                                   >
                                     <div
-                                      class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isLoading"
+                                      class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap"
                                       data-test-subj="comboBoxInput"
                                       tabindex="-1"
                                     >
@@ -3273,9 +3264,6 @@ Object {
                                     <div
                                       class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
                                     >
-                                      <span
-                                        class="euiLoadingSpinner euiLoadingSpinner--medium"
-                                      />
                                       <button
                                         aria-label="Open list of options"
                                         class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"

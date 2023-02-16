@@ -8,7 +8,13 @@ exports[`<Detectors /> spec renders the component 1`] = `
       "deleteDetector": [Function],
       "getDetector": [Function],
       "getDetectors": [Function],
-      "osDriver": [MockFunction],
+      "osDriver": Object {
+        "delete": [MockFunction],
+        "get": [MockFunction],
+        "head": [MockFunction],
+        "post": [MockFunction],
+        "put": [MockFunction],
+      },
       "searchDetectors": [Function],
       "updateDetector": [Function],
     }

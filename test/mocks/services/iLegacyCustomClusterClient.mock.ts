@@ -4,7 +4,7 @@
  */
 
 import { ILegacyCustomClusterClient } from 'opensearch-dashboards/server';
-const legacyClusterClientMock = jest.fn() as any;
+const legacyClusterClientMock = {} as any;
 
 legacyClusterClientMock.delete = jest.fn();
 legacyClusterClientMock.get = jest.fn();
