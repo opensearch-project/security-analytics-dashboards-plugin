@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import browserServicesMock from './browserServicesMock';
-import httpClientMock from './httpClientMock';
+import services from './services';
+import rules from './Rules';
+import detectors from './Detectors';
+import createDetector from './CreateDetector';
+import alerts from './Alerts';
+import history from './services/browserHistory.mock';
 
-export { browserServicesMock, httpClientMock };
+export default { services, rules, detectors, createDetector, alerts, history };
