@@ -57,28 +57,44 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
     };
   }
 
-  componentDidMount = async () => {
+  updateBreadcrumbs = () => {
     const {
       isEdit,
-      detector,
-      detector: { triggers },
+      detector: { id = '', name },
     } = this.props;
 
     isEdit &&
       this.context.chrome.setBreadcrumbs([
         BREADCRUMBS.SECURITY_ANALYTICS,
         BREADCRUMBS.DETECTORS,
-        BREADCRUMBS.DETECTORS_DETAILS(detector.name, detector.id),
+        BREADCRUMBS.DETECTORS_DETAILS(name, id),
         {
           text: 'Edit alert triggers',
         },
       ]);
+  };
 
+  componentDidMount = async () => {
+    this.updateBreadcrumbs();
+    const {
+      isEdit,
+      detector,
+      detector: { triggers },
+    } = this.props;
     this.getNotificationChannels();
+    
     if (triggers.length === 0) {
       this.addCondition();
     }
   };
+
+  componentDidUpdate(
+    prevProps: Readonly<ConfigureAlertsProps>,
+    prevState: Readonly<ConfigureAlertsState>,
+    snapshot?: any
+  ) {
+    this.updateBreadcrumbs();
+  }
 
   getNotificationChannels = async () => {
     this.setState({ loading: true });
