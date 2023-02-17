@@ -6,7 +6,11 @@
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
-import { DetectorHit, RuleSource } from '../../../../../server/models/interfaces';
+import {
+  DetectorHit,
+  RuleSource,
+  SearchDetectorsResponse,
+} from '../../../../../server/models/interfaces';
 import { Detector } from '../../../../../models/interfaces';
 import ConfigureAlerts from '../../../CreateDetector/components/ConfigureAlerts';
 import {
@@ -16,7 +20,11 @@ import {
   OpenSearchService,
 } from '../../../../services';
 import { RuleOptions } from '../../../../models/interfaces';
-import { ROUTES, OS_NOTIFICATION_PLUGIN } from '../../../../utils/constants';
+import {
+  ROUTES,
+  OS_NOTIFICATION_PLUGIN,
+  EMPTY_DEFAULT_DETECTOR,
+} from '../../../../utils/constants';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import {
   errorNotificationToast,
@@ -24,6 +32,7 @@ import {
   successNotificationToast,
 } from '../../../../utils/helpers';
 import { DetectorCreationStep } from '../../../CreateDetector/models/types';
+import { ServerResponse } from '../../../../../server/models/types';
 
 export interface UpdateAlertConditionsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
@@ -49,9 +58,10 @@ export default class UpdateAlertConditions extends Component<
 > {
   constructor(props: UpdateAlertConditionsProps) {
     super(props);
+
     const detector = {
-      ...props.location.state.detectorHit._source,
-      id: props.location.state.detectorHit._id,
+      ...(props.location.state?.detectorHit?._source || EMPTY_DEFAULT_DETECTOR),
+      id: props.location.pathname.replace(`${ROUTES.EDIT_DETECTOR_ALERT_TRIGGERS}/`, ''),
     };
     this.state = {
       detector,
@@ -74,8 +84,24 @@ export default class UpdateAlertConditions extends Component<
 
   getRules = async () => {
     try {
-      const { ruleService } = this.props;
+      const { ruleService, detectorService } = this.props;
       const { detector } = this.state;
+      if (!detector.name) {
+        const response = (await detectorService.getDetectors()) as ServerResponse<
+          SearchDetectorsResponse
+        >;
+        if (response.ok) {
+          const detectorHit = response.response.hits.hits.find(
+            (detectorHit) => detectorHit._id === detector.id
+          ) as DetectorHit;
+          this.setState({
+            detector: {
+              ...detectorHit._source,
+              id: detectorHit._id,
+            },
+          });
+        }
+      }
       const body = {
         from: 0,
         size: 5000,
@@ -159,14 +185,19 @@ export default class UpdateAlertConditions extends Component<
 
   onSave = async () => {
     this.setState({ submitting: true });
+    const { detector } = this.state;
     const {
       history,
-      location: {
-        state: { detectorHit },
-      },
       detectorService,
+      location: { state },
     } = this.props;
-    const { detector } = this.state;
+
+    const {
+      detectorHit = {
+        _source: detector,
+        _id: detector.id || '',
+      },
+    } = state || {};
 
     try {
       const updateDetectorResponse = await detectorService.updateDetector(
@@ -189,7 +220,7 @@ export default class UpdateAlertConditions extends Component<
 
     this.setState({ submitting: false });
     history.replace({
-      pathname: `${ROUTES.DETECTOR_DETAILS}/${this.props.location.state?.detectorHit._id}`,
+      pathname: `${ROUTES.DETECTOR_DETAILS}/${detectorHit._id}`,
       state: {
         detectorHit: { ...detectorHit, _source: { ...detectorHit._source, ...detector } },
       },
