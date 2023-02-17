@@ -11,9 +11,9 @@ import { createDetectorSteps } from '../utils/constants';
 import {
   BREADCRUMBS,
   EMPTY_DEFAULT_DETECTOR,
+  OS_NOTIFICATION_PLUGIN,
   PLUGIN_NAME,
   ROUTES,
-  OS_NOTIFICATION_PLUGIN,
   logTypesWithDashboards,
   pendingDashboardCreations,
 } from '../../../utils/constants';
@@ -34,8 +34,8 @@ import {
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import {
   errorNotificationToast,
-  successNotificationToast,
   getPlugins,
+  successNotificationToast,
 } from '../../../utils/helpers';
 import { RulesViewModelActor } from '../../Rules/models/RulesViewModelActor';
 
@@ -196,14 +196,12 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
 
   getRulesOptions(): CreateDetectorRulesOptions {
     const enabledRules = this.state.rulesState.allRules.filter((rule) => rule.enabled);
-    const options: CreateDetectorRulesOptions = enabledRules.map((rule) => ({
+    return enabledRules.map((rule) => ({
       id: rule._id,
       name: rule._source.title,
       severity: rule._source.level,
       tags: rule._source.tags.map((tag: { value: string }) => tag.value),
     }));
-
-    return options;
   }
 
   async setupRulesState() {
@@ -327,6 +325,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             {...this.props}
             detector={this.state.detector}
             indexService={services.indexService}
+            filedMappingService={services.fieldMappingService}
             rulesState={this.state.rulesState}
             loadingRules={this.state.loadingRules}
             onRuleToggle={this.onRuleToggle}

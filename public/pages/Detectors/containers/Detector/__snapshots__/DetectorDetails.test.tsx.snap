@@ -220,6 +220,18 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
       },
     }
   }
+  savedObjectsService={
+    SavedObjectService {
+      "getDashboards": [Function],
+      "savedObjectsClient": Object {
+        "delete": [MockFunction],
+        "get": [MockFunction],
+        "head": [MockFunction],
+        "post": [MockFunction],
+        "put": [MockFunction],
+      },
+    }
+  }
 >
   <EuiFlexGroup>
     <div
@@ -908,6 +920,18 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
         },
       }
     }
+    savedObjectsService={
+      SavedObjectService {
+        "getDashboards": [Function],
+        "savedObjectsClient": Object {
+          "delete": [MockFunction],
+          "get": [MockFunction],
+          "head": [MockFunction],
+          "post": [MockFunction],
+          "put": [MockFunction],
+        },
+      }
+    }
   >
     <DetectorBasicDetailsView
       detector={
@@ -1309,6 +1333,18 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
         }
       }
       onEditClicked={[Function]}
+      savedObjectsService={
+        SavedObjectService {
+          "getDashboards": [Function],
+          "savedObjectsClient": Object {
+            "delete": [MockFunction],
+            "get": [MockFunction],
+            "head": [MockFunction],
+            "post": [MockFunction],
+            "put": [MockFunction],
+          },
+        }
+      }
     >
       <ContentPanel
         actions={
@@ -2658,6 +2694,18 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
         }
       }
       onEditClicked={[Function]}
+      savedObjectsService={
+        SavedObjectService {
+          "getDashboards": [Function],
+          "savedObjectsClient": Object {
+            "delete": [MockFunction],
+            "get": [MockFunction],
+            "head": [MockFunction],
+            "post": [MockFunction],
+            "put": [MockFunction],
+          },
+        }
+      }
     >
       <ContentPanel
         actions={
