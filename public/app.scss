@@ -60,6 +60,7 @@ $euiTextColor: $euiColorDarkestShade !default;
 
   .vg-tooltip-innerContainer {
     .vg-tooltip-header {
+      padding: 4px;
       border-bottom: 1px solid gray;
       table tr:nth-child(odd) {
         background-color: #535353 !important;
