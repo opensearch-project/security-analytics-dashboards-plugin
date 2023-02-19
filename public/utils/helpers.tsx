@@ -167,13 +167,13 @@ export function renderVisualization(spec: TopLevelSpec, containerId: string) {
   }
 
   function renderVegaSpec(spec: {}) {
-    let pathGroup: any[] = [];
+    let chartColoredItems: any[] = [];
     const handler = new Handler({
       formatTooltip: (value, sanitize) => {
         let tooltipData = { ...value };
         let values = Object.entries(tooltipData);
         if (!values.length) return '';
-        const tooltipItem = pathGroup.filter((groupItem: any) =>
+        const tooltipItem = chartColoredItems.filter((groupItem: any) =>
           _.isEqual(groupItem.tooltip, tooltipData)
         );
         const color = tooltipItem.length
@@ -222,7 +222,7 @@ export function renderVisualization(spec: TopLevelSpec, containerId: string) {
         (item: any) => item.name && item.name.match(/^(layer_).*(_marks)$/)
       );
       for (let item of groups) {
-        pathGroup = pathGroup.concat(item.items);
+        chartColoredItems = chartColoredItems.concat(item.items);
       }
     });
   }
