@@ -23,6 +23,7 @@ import { DetectorCreationStep } from '../../../models/types';
 import { GetFieldMappingViewResponse } from '../../../../../../server/models/interfaces';
 import FieldMappingService from '../../../../../services/FieldMappingService';
 import { MappingViewType } from '../components/RequiredFieldMapping/FieldMappingsTable';
+import _ from 'lodash';
 
 export interface ruleFieldToIndexFieldMap {
   [fieldName: string]: string;
@@ -69,23 +70,55 @@ export default class ConfigureFieldMapping extends Component<
 
   getAllMappings = async () => {
     this.setState({ loading: true });
-    const mappingsView = await this.props.filedMappingService.getMappingsView(
-      this.props.detector.inputs[0].detector_input.indices[0],
-      this.props.detector.detector_type.toLowerCase()
-    );
-    if (mappingsView.ok) {
+    const allIndices = this.props.detector.inputs[0].detector_input.indices;
+    let indicesPromises: Promise<any>[] = [];
+    allIndices.forEach((ind) => {
+      indicesPromises.push(
+        this.props.filedMappingService.getMappingsView(
+          ind,
+          this.props.detector.detector_type.toLowerCase()
+        )
+      );
+    });
+
+    const results = await Promise.all(indicesPromises);
+    const allResponses = _.map(results, 'ok');
+    const isResponseValid = !allResponses.filter((ok: boolean) => !ok).length;
+
+    let properties: any = {};
+    let responses: any = {
+      properties: {},
+      unmapped_field_aliases: [],
+      unmapped_index_fields: [],
+    };
+    results.forEach((response) => {
+      properties = _.defaultsDeep(properties, response.response.properties);
+      responses = {
+        properties,
+        unmapped_field_aliases: [
+          ...responses.unmapped_field_aliases,
+          ...response.response.unmapped_field_aliases,
+        ],
+        unmapped_index_fields: [
+          ...responses.unmapped_index_fields,
+          ...response.response.unmapped_index_fields,
+        ],
+      };
+    });
+
+    if (isResponseValid) {
       const existingMappings = { ...this.state.createdMappings };
-      Object.keys(mappingsView.response.properties).forEach((ruleFieldName) => {
+      Object.keys(properties).forEach((ruleFieldName) => {
         existingMappings[ruleFieldName] =
-          this.state.createdMappings[ruleFieldName] ||
-          mappingsView.response.properties[ruleFieldName].path;
+          this.state.createdMappings[ruleFieldName] || properties[ruleFieldName].path;
       });
       this.setState({
         createdMappings: existingMappings,
-        mappingsData: mappingsView.response,
+        mappingsData: responses,
       });
       this.updateMappingSharedState(existingMappings);
     }
+
     this.setState({ loading: false });
   };
 
