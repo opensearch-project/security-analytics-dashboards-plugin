@@ -39,4 +39,5 @@ module.exports = {
   testPathIgnorePatterns: ['<rootDir>/build/', '<rootDir>/node_modules/'],
   modulePathIgnorePatterns: ['securityAnalyticsDashboards'],
   testEnvironment: 'jsdom',
+  snapshotSerializers: ['enzyme-to-json/serializer'],
 };

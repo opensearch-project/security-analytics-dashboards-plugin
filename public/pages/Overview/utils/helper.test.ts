@@ -3,7 +3,6 @@ import {
   DateOpts,
   getAlertsVisualizationSpec,
   getChartTimeUnit,
-  getDomainRange,
   getFindingsVisualizationSpec,
   getOverviewVisualizationSpec,
   getTimeTooltip,
@@ -127,9 +126,10 @@ describe('helper utilities spec', () => {
 
   describe('tests parseDateString function', () => {
     it(' - function should return datetime in ms', () => {
-      const time = moment(10);
-      jest.spyOn(dateMath, 'parse').mockReturnValue(time);
-      expect(parseDateString(DEFAULT_DATE_RANGE.start)).toBe(time.milliseconds());
+      const mockTime = moment('2023-01-25T10:05:00');
+      jest.spyOn(dateMath, 'parse').mockReturnValue(mockTime);
+      jest.fn().mockImplementation('parseDateString', () => mockTime.milliseconds());
+      expect(parseDateString(DEFAULT_DATE_RANGE.start)).toBe(mockTime._d.getTime());
     });
   });
 

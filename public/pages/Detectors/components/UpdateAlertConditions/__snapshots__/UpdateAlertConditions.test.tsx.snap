@@ -1,0 +1,1153 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
+<UpdateAlertConditions
+  detectorHit={
+    Object {
+      "_id": "detector_id_1",
+      "_index": ".windows",
+      "_source": Object {
+        "createdBy": "someone",
+        "detector_type": "detector_type",
+        "enabled": true,
+        "enabled_time": 1,
+        "id": "detector_id_1",
+        "inputs": Array [
+          Object {
+            "detector_input": Object {
+              "custom_rules": Array [
+                Object {
+                  "_id": "rule_id_1",
+                  "_index": ".windows",
+                  "_primary_term": 1,
+                  "_source": Object {
+                    "last_update_time": "12/12/2022",
+                    "queries": Array [
+                      Object {
+                        "value": ".windows",
+                      },
+                    ],
+                    "rule": "rule_name",
+                  },
+                  "_version": 1,
+                  "id": "rule_id_1",
+                },
+              ],
+              "description": "detectorDescription",
+              "indices": Array [
+                ".windows",
+              ],
+              "pre_packaged_rules": Array [
+                Object {
+                  "_id": "rule_id_1",
+                  "_index": ".windows",
+                  "_primary_term": 1,
+                  "_source": Object {
+                    "last_update_time": "12/12/2022",
+                    "queries": Array [
+                      Object {
+                        "value": ".windows",
+                      },
+                    ],
+                    "rule": "rule_name",
+                  },
+                  "_version": 1,
+                  "id": "rule_id_1",
+                },
+              ],
+            },
+          },
+        ],
+        "last_update_time": 1,
+        "name": "detector_name",
+        "schedule": Object {
+          "period": Object {
+            "interval": 1,
+            "unit": "minute",
+          },
+        },
+        "triggers": Array [
+          Object {
+            "actions": Array [
+              Object {
+                "destination_id": "some_destination_id_1",
+                "id": "trigger_id_1_0",
+                "message_template": Object {
+                  "lang": "some_lang",
+                  "source": "some_source",
+                },
+                "name": "some_name",
+                "subject_template": Object {
+                  "lang": "some_lang",
+                  "source": "some_source",
+                },
+                "throttle": Object {
+                  "unit": "minutes",
+                  "value": 1,
+                },
+                "throttle_enabled": true,
+              },
+              Object {
+                "destination_id": "some_destination_id_1",
+                "id": "trigger_id_1_1",
+                "message_template": Object {
+                  "lang": "some_lang",
+                  "source": "some_source",
+                },
+                "name": "some_name",
+                "subject_template": Object {
+                  "lang": "some_lang",
+                  "source": "some_source",
+                },
+                "throttle": Object {
+                  "unit": "minutes",
+                  "value": 1,
+                },
+                "throttle_enabled": true,
+              },
+            ],
+            "id": "trigger_id_0",
+            "ids": Array [
+              "rule_id_1",
+            ],
+            "name": "alert_name",
+            "sev_levels": Array [
+              "severity_level_low",
+            ],
+            "severity": "1",
+            "tags": Array [
+              "any.tag",
+            ],
+            "types": Array [
+              "detector_type_1",
+            ],
+          },
+          Object {
+            "actions": Array [
+              Object {
+                "destination_id": "some_destination_id_1",
+                "id": "trigger_id_1_0",
+                "message_template": Object {
+                  "lang": "some_lang",
+                  "source": "some_source",
+                },
+                "name": "some_name",
+                "subject_template": Object {
+                  "lang": "some_lang",
+                  "source": "some_source",
+                },
+                "throttle": Object {
+                  "unit": "minutes",
+                  "value": 1,
+                },
+                "throttle_enabled": true,
+              },
+              Object {
+                "destination_id": "some_destination_id_1",
+                "id": "trigger_id_1_1",
+                "message_template": Object {
+                  "lang": "some_lang",
+                  "source": "some_source",
+                },
+                "name": "some_name",
+                "subject_template": Object {
+                  "lang": "some_lang",
+                  "source": "some_source",
+                },
+                "throttle": Object {
+                  "unit": "minutes",
+                  "value": 1,
+                },
+                "throttle_enabled": true,
+              },
+            ],
+            "id": "trigger_id_1",
+            "ids": Array [
+              "rule_id_1",
+            ],
+            "name": "alert_name",
+            "sev_levels": Array [
+              "severity_level_low",
+            ],
+            "severity": "1",
+            "tags": Array [
+              "any.tag",
+            ],
+            "types": Array [
+              "detector_type_1",
+            ],
+          },
+        ],
+        "type": "detector",
+      },
+    }
+  }
+  detectorService={
+    DetectorService {
+      "createDetector": [Function],
+      "deleteDetector": [Function],
+      "getDetector": [Function],
+      "getDetectors": [Function],
+      "osDriver": Object {
+        "delete": [MockFunction],
+        "get": [MockFunction],
+        "head": [MockFunction],
+        "post": [MockFunction],
+        "put": [MockFunction],
+      },
+      "searchDetectors": [Function],
+      "updateDetector": [Function],
+    }
+  }
+  location={
+    Object {
+      "pathname": "/edit-alert-triggers/detector_id_1",
+      "state": Object {
+        "detectorHit": Object {
+          "_id": "detector_id_1",
+          "_index": ".windows",
+          "_source": Object {
+            "createdBy": "someone",
+            "detector_type": "detector_type",
+            "enabled": true,
+            "enabled_time": 1,
+            "id": "detector_id_1",
+            "inputs": Array [
+              Object {
+                "detector_input": Object {
+                  "custom_rules": Array [
+                    Object {
+                      "_id": "rule_id_1",
+                      "_index": ".windows",
+                      "_primary_term": 1,
+                      "_source": Object {
+                        "last_update_time": "12/12/2022",
+                        "queries": Array [
+                          Object {
+                            "value": ".windows",
+                          },
+                        ],
+                        "rule": "rule_name",
+                      },
+                      "_version": 1,
+                      "id": "rule_id_1",
+                    },
+                  ],
+                  "description": "detectorDescription",
+                  "indices": Array [
+                    ".windows",
+                  ],
+                  "pre_packaged_rules": Array [
+                    Object {
+                      "_id": "rule_id_1",
+                      "_index": ".windows",
+                      "_primary_term": 1,
+                      "_source": Object {
+                        "last_update_time": "12/12/2022",
+                        "queries": Array [
+                          Object {
+                            "value": ".windows",
+                          },
+                        ],
+                        "rule": "rule_name",
+                      },
+                      "_version": 1,
+                      "id": "rule_id_1",
+                    },
+                  ],
+                },
+              },
+            ],
+            "last_update_time": 1,
+            "name": "detector_name",
+            "schedule": Object {
+              "period": Object {
+                "interval": 1,
+                "unit": "minute",
+              },
+            },
+            "triggers": Array [
+              Object {
+                "actions": Array [
+                  Object {
+                    "destination_id": "some_destination_id_1",
+                    "id": "trigger_id_1_0",
+                    "message_template": Object {
+                      "lang": "some_lang",
+                      "source": "some_source",
+                    },
+                    "name": "some_name",
+                    "subject_template": Object {
+                      "lang": "some_lang",
+                      "source": "some_source",
+                    },
+                    "throttle": Object {
+                      "unit": "minutes",
+                      "value": 1,
+                    },
+                    "throttle_enabled": true,
+                  },
+                  Object {
+                    "destination_id": "some_destination_id_1",
+                    "id": "trigger_id_1_1",
+                    "message_template": Object {
+                      "lang": "some_lang",
+                      "source": "some_source",
+                    },
+                    "name": "some_name",
+                    "subject_template": Object {
+                      "lang": "some_lang",
+                      "source": "some_source",
+                    },
+                    "throttle": Object {
+                      "unit": "minutes",
+                      "value": 1,
+                    },
+                    "throttle_enabled": true,
+                  },
+                ],
+                "id": "trigger_id_0",
+                "ids": Array [
+                  "rule_id_1",
+                ],
+                "name": "alert_name",
+                "sev_levels": Array [
+                  "severity_level_low",
+                ],
+                "severity": "1",
+                "tags": Array [
+                  "any.tag",
+                ],
+                "types": Array [
+                  "detector_type_1",
+                ],
+              },
+              Object {
+                "actions": Array [
+                  Object {
+                    "destination_id": "some_destination_id_1",
+                    "id": "trigger_id_1_0",
+                    "message_template": Object {
+                      "lang": "some_lang",
+                      "source": "some_source",
+                    },
+                    "name": "some_name",
+                    "subject_template": Object {
+                      "lang": "some_lang",
+                      "source": "some_source",
+                    },
+                    "throttle": Object {
+                      "unit": "minutes",
+                      "value": 1,
+                    },
+                    "throttle_enabled": true,
+                  },
+                  Object {
+                    "destination_id": "some_destination_id_1",
+                    "id": "trigger_id_1_1",
+                    "message_template": Object {
+                      "lang": "some_lang",
+                      "source": "some_source",
+                    },
+                    "name": "some_name",
+                    "subject_template": Object {
+                      "lang": "some_lang",
+                      "source": "some_source",
+                    },
+                    "throttle": Object {
+                      "unit": "minutes",
+                      "value": 1,
+                    },
+                    "throttle_enabled": true,
+                  },
+                ],
+                "id": "trigger_id_1",
+                "ids": Array [
+                  "rule_id_1",
+                ],
+                "name": "alert_name",
+                "sev_levels": Array [
+                  "severity_level_low",
+                ],
+                "severity": "1",
+                "tags": Array [
+                  "any.tag",
+                ],
+                "types": Array [
+                  "detector_type_1",
+                ],
+              },
+            ],
+            "type": "detector",
+          },
+        },
+      },
+    }
+  }
+  notifications={
+    Object {
+      "toasts": Object {
+        "addDanger": [MockFunction],
+      },
+    }
+  }
+  notificationsService={
+    NotificationsService {
+      "getChannel": [Function],
+      "getChannels": [Function],
+      "httpClient": [MockFunction],
+    }
+  }
+  opensearchService={
+    OpenSearchService {
+      "getIndexPatterns": [Function],
+      "getPlugins": [Function],
+      "httpClient": [MockFunction],
+      "savedObjectsClient": Object {
+        "delete": [MockFunction],
+        "get": [MockFunction],
+        "head": [MockFunction],
+        "post": [MockFunction],
+        "put": [MockFunction],
+      },
+    }
+  }
+  ruleService={
+    RuleService {
+      "createRule": [Function],
+      "deleteRule": [Function],
+      "getRules": [Function],
+      "httpClient": [MockFunction],
+      "updateRule": [Function],
+    }
+  }
+>
+  <div>
+    <Component
+      changeDetector={[Function]}
+      detector={
+        Object {
+          "createdBy": "someone",
+          "detector_type": "detector_type",
+          "enabled": true,
+          "enabled_time": 1,
+          "id": "detector_id_1",
+          "inputs": Array [
+            Object {
+              "detector_input": Object {
+                "custom_rules": Array [
+                  Object {
+                    "_id": "rule_id_1",
+                    "_index": ".windows",
+                    "_primary_term": 1,
+                    "_source": Object {
+                      "last_update_time": "12/12/2022",
+                      "queries": Array [
+                        Object {
+                          "value": ".windows",
+                        },
+                      ],
+                      "rule": "rule_name",
+                    },
+                    "_version": 1,
+                    "id": "rule_id_1",
+                  },
+                ],
+                "description": "detectorDescription",
+                "indices": Array [
+                  ".windows",
+                ],
+                "pre_packaged_rules": Array [
+                  Object {
+                    "_id": "rule_id_1",
+                    "_index": ".windows",
+                    "_primary_term": 1,
+                    "_source": Object {
+                      "last_update_time": "12/12/2022",
+                      "queries": Array [
+                        Object {
+                          "value": ".windows",
+                        },
+                      ],
+                      "rule": "rule_name",
+                    },
+                    "_version": 1,
+                    "id": "rule_id_1",
+                  },
+                ],
+              },
+            },
+          ],
+          "last_update_time": 1,
+          "name": "detector_name",
+          "schedule": Object {
+            "period": Object {
+              "interval": 1,
+              "unit": "minute",
+            },
+          },
+          "triggers": Array [
+            Object {
+              "actions": Array [
+                Object {
+                  "destination_id": "some_destination_id_1",
+                  "id": "trigger_id_1_0",
+                  "message_template": Object {
+                    "lang": "some_lang",
+                    "source": "some_source",
+                  },
+                  "name": "some_name",
+                  "subject_template": Object {
+                    "lang": "some_lang",
+                    "source": "some_source",
+                  },
+                  "throttle": Object {
+                    "unit": "minutes",
+                    "value": 1,
+                  },
+                  "throttle_enabled": true,
+                },
+                Object {
+                  "destination_id": "some_destination_id_1",
+                  "id": "trigger_id_1_1",
+                  "message_template": Object {
+                    "lang": "some_lang",
+                    "source": "some_source",
+                  },
+                  "name": "some_name",
+                  "subject_template": Object {
+                    "lang": "some_lang",
+                    "source": "some_source",
+                  },
+                  "throttle": Object {
+                    "unit": "minutes",
+                    "value": 1,
+                  },
+                  "throttle_enabled": true,
+                },
+              ],
+              "id": "trigger_id_0",
+              "ids": Array [
+                "rule_id_1",
+              ],
+              "name": "alert_name",
+              "sev_levels": Array [
+                "severity_level_low",
+              ],
+              "severity": "1",
+              "tags": Array [
+                "any.tag",
+              ],
+              "types": Array [
+                "detector_type_1",
+              ],
+            },
+            Object {
+              "actions": Array [
+                Object {
+                  "destination_id": "some_destination_id_1",
+                  "id": "trigger_id_1_0",
+                  "message_template": Object {
+                    "lang": "some_lang",
+                    "source": "some_source",
+                  },
+                  "name": "some_name",
+                  "subject_template": Object {
+                    "lang": "some_lang",
+                    "source": "some_source",
+                  },
+                  "throttle": Object {
+                    "unit": "minutes",
+                    "value": 1,
+                  },
+                  "throttle_enabled": true,
+                },
+                Object {
+                  "destination_id": "some_destination_id_1",
+                  "id": "trigger_id_1_1",
+                  "message_template": Object {
+                    "lang": "some_lang",
+                    "source": "some_source",
+                  },
+                  "name": "some_name",
+                  "subject_template": Object {
+                    "lang": "some_lang",
+                    "source": "some_source",
+                  },
+                  "throttle": Object {
+                    "unit": "minutes",
+                    "value": 1,
+                  },
+                  "throttle_enabled": true,
+                },
+              ],
+              "id": "trigger_id_1",
+              "ids": Array [
+                "rule_id_1",
+              ],
+              "name": "alert_name",
+              "sev_levels": Array [
+                "severity_level_low",
+              ],
+              "severity": "1",
+              "tags": Array [
+                "any.tag",
+              ],
+              "types": Array [
+                "detector_type_1",
+              ],
+            },
+          ],
+          "type": "detector",
+        }
+      }
+      detectorHit={
+        Object {
+          "_id": "detector_id_1",
+          "_index": ".windows",
+          "_source": Object {
+            "createdBy": "someone",
+            "detector_type": "detector_type",
+            "enabled": true,
+            "enabled_time": 1,
+            "id": "detector_id_1",
+            "inputs": Array [
+              Object {
+                "detector_input": Object {
+                  "custom_rules": Array [
+                    Object {
+                      "_id": "rule_id_1",
+                      "_index": ".windows",
+                      "_primary_term": 1,
+                      "_source": Object {
+                        "last_update_time": "12/12/2022",
+                        "queries": Array [
+                          Object {
+                            "value": ".windows",
+                          },
+                        ],
+                        "rule": "rule_name",
+                      },
+                      "_version": 1,
+                      "id": "rule_id_1",
+                    },
+                  ],
+                  "description": "detectorDescription",
+                  "indices": Array [
+                    ".windows",
+                  ],
+                  "pre_packaged_rules": Array [
+                    Object {
+                      "_id": "rule_id_1",
+                      "_index": ".windows",
+                      "_primary_term": 1,
+                      "_source": Object {
+                        "last_update_time": "12/12/2022",
+                        "queries": Array [
+                          Object {
+                            "value": ".windows",
+                          },
+                        ],
+                        "rule": "rule_name",
+                      },
+                      "_version": 1,
+                      "id": "rule_id_1",
+                    },
+                  ],
+                },
+              },
+            ],
+            "last_update_time": 1,
+            "name": "detector_name",
+            "schedule": Object {
+              "period": Object {
+                "interval": 1,
+                "unit": "minute",
+              },
+            },
+            "triggers": Array [
+              Object {
+                "actions": Array [
+                  Object {
+                    "destination_id": "some_destination_id_1",
+                    "id": "trigger_id_1_0",
+                    "message_template": Object {
+                      "lang": "some_lang",
+                      "source": "some_source",
+                    },
+                    "name": "some_name",
+                    "subject_template": Object {
+                      "lang": "some_lang",
+                      "source": "some_source",
+                    },
+                    "throttle": Object {
+                      "unit": "minutes",
+                      "value": 1,
+                    },
+                    "throttle_enabled": true,
+                  },
+                  Object {
+                    "destination_id": "some_destination_id_1",
+                    "id": "trigger_id_1_1",
+                    "message_template": Object {
+                      "lang": "some_lang",
+                      "source": "some_source",
+                    },
+                    "name": "some_name",
+                    "subject_template": Object {
+                      "lang": "some_lang",
+                      "source": "some_source",
+                    },
+                    "throttle": Object {
+                      "unit": "minutes",
+                      "value": 1,
+                    },
+                    "throttle_enabled": true,
+                  },
+                ],
+                "id": "trigger_id_0",
+                "ids": Array [
+                  "rule_id_1",
+                ],
+                "name": "alert_name",
+                "sev_levels": Array [
+                  "severity_level_low",
+                ],
+                "severity": "1",
+                "tags": Array [
+                  "any.tag",
+                ],
+                "types": Array [
+                  "detector_type_1",
+                ],
+              },
+              Object {
+                "actions": Array [
+                  Object {
+                    "destination_id": "some_destination_id_1",
+                    "id": "trigger_id_1_0",
+                    "message_template": Object {
+                      "lang": "some_lang",
+                      "source": "some_source",
+                    },
+                    "name": "some_name",
+                    "subject_template": Object {
+                      "lang": "some_lang",
+                      "source": "some_source",
+                    },
+                    "throttle": Object {
+                      "unit": "minutes",
+                      "value": 1,
+                    },
+                    "throttle_enabled": true,
+                  },
+                  Object {
+                    "destination_id": "some_destination_id_1",
+                    "id": "trigger_id_1_1",
+                    "message_template": Object {
+                      "lang": "some_lang",
+                      "source": "some_source",
+                    },
+                    "name": "some_name",
+                    "subject_template": Object {
+                      "lang": "some_lang",
+                      "source": "some_source",
+                    },
+                    "throttle": Object {
+                      "unit": "minutes",
+                      "value": 1,
+                    },
+                    "throttle_enabled": true,
+                  },
+                ],
+                "id": "trigger_id_1",
+                "ids": Array [
+                  "rule_id_1",
+                ],
+                "name": "alert_name",
+                "sev_levels": Array [
+                  "severity_level_low",
+                ],
+                "severity": "1",
+                "tags": Array [
+                  "any.tag",
+                ],
+                "types": Array [
+                  "detector_type_1",
+                ],
+              },
+            ],
+            "type": "detector",
+          },
+        }
+      }
+      detectorService={
+        DetectorService {
+          "createDetector": [Function],
+          "deleteDetector": [Function],
+          "getDetector": [Function],
+          "getDetectors": [Function],
+          "osDriver": Object {
+            "delete": [MockFunction],
+            "get": [MockFunction],
+            "head": [MockFunction],
+            "post": [MockFunction],
+            "put": [MockFunction],
+          },
+          "searchDetectors": [Function],
+          "updateDetector": [Function],
+        }
+      }
+      hasNotificationPlugin={false}
+      isEdit={true}
+      location={
+        Object {
+          "pathname": "/edit-alert-triggers/detector_id_1",
+          "state": Object {
+            "detectorHit": Object {
+              "_id": "detector_id_1",
+              "_index": ".windows",
+              "_source": Object {
+                "createdBy": "someone",
+                "detector_type": "detector_type",
+                "enabled": true,
+                "enabled_time": 1,
+                "id": "detector_id_1",
+                "inputs": Array [
+                  Object {
+                    "detector_input": Object {
+                      "custom_rules": Array [
+                        Object {
+                          "_id": "rule_id_1",
+                          "_index": ".windows",
+                          "_primary_term": 1,
+                          "_source": Object {
+                            "last_update_time": "12/12/2022",
+                            "queries": Array [
+                              Object {
+                                "value": ".windows",
+                              },
+                            ],
+                            "rule": "rule_name",
+                          },
+                          "_version": 1,
+                          "id": "rule_id_1",
+                        },
+                      ],
+                      "description": "detectorDescription",
+                      "indices": Array [
+                        ".windows",
+                      ],
+                      "pre_packaged_rules": Array [
+                        Object {
+                          "_id": "rule_id_1",
+                          "_index": ".windows",
+                          "_primary_term": 1,
+                          "_source": Object {
+                            "last_update_time": "12/12/2022",
+                            "queries": Array [
+                              Object {
+                                "value": ".windows",
+                              },
+                            ],
+                            "rule": "rule_name",
+                          },
+                          "_version": 1,
+                          "id": "rule_id_1",
+                        },
+                      ],
+                    },
+                  },
+                ],
+                "last_update_time": 1,
+                "name": "detector_name",
+                "schedule": Object {
+                  "period": Object {
+                    "interval": 1,
+                    "unit": "minute",
+                  },
+                },
+                "triggers": Array [
+                  Object {
+                    "actions": Array [
+                      Object {
+                        "destination_id": "some_destination_id_1",
+                        "id": "trigger_id_1_0",
+                        "message_template": Object {
+                          "lang": "some_lang",
+                          "source": "some_source",
+                        },
+                        "name": "some_name",
+                        "subject_template": Object {
+                          "lang": "some_lang",
+                          "source": "some_source",
+                        },
+                        "throttle": Object {
+                          "unit": "minutes",
+                          "value": 1,
+                        },
+                        "throttle_enabled": true,
+                      },
+                      Object {
+                        "destination_id": "some_destination_id_1",
+                        "id": "trigger_id_1_1",
+                        "message_template": Object {
+                          "lang": "some_lang",
+                          "source": "some_source",
+                        },
+                        "name": "some_name",
+                        "subject_template": Object {
+                          "lang": "some_lang",
+                          "source": "some_source",
+                        },
+                        "throttle": Object {
+                          "unit": "minutes",
+                          "value": 1,
+                        },
+                        "throttle_enabled": true,
+                      },
+                    ],
+                    "id": "trigger_id_0",
+                    "ids": Array [
+                      "rule_id_1",
+                    ],
+                    "name": "alert_name",
+                    "sev_levels": Array [
+                      "severity_level_low",
+                    ],
+                    "severity": "1",
+                    "tags": Array [
+                      "any.tag",
+                    ],
+                    "types": Array [
+                      "detector_type_1",
+                    ],
+                  },
+                  Object {
+                    "actions": Array [
+                      Object {
+                        "destination_id": "some_destination_id_1",
+                        "id": "trigger_id_1_0",
+                        "message_template": Object {
+                          "lang": "some_lang",
+                          "source": "some_source",
+                        },
+                        "name": "some_name",
+                        "subject_template": Object {
+                          "lang": "some_lang",
+                          "source": "some_source",
+                        },
+                        "throttle": Object {
+                          "unit": "minutes",
+                          "value": 1,
+                        },
+                        "throttle_enabled": true,
+                      },
+                      Object {
+                        "destination_id": "some_destination_id_1",
+                        "id": "trigger_id_1_1",
+                        "message_template": Object {
+                          "lang": "some_lang",
+                          "source": "some_source",
+                        },
+                        "name": "some_name",
+                        "subject_template": Object {
+                          "lang": "some_lang",
+                          "source": "some_source",
+                        },
+                        "throttle": Object {
+                          "unit": "minutes",
+                          "value": 1,
+                        },
+                        "throttle_enabled": true,
+                      },
+                    ],
+                    "id": "trigger_id_1",
+                    "ids": Array [
+                      "rule_id_1",
+                    ],
+                    "name": "alert_name",
+                    "sev_levels": Array [
+                      "severity_level_low",
+                    ],
+                    "severity": "1",
+                    "tags": Array [
+                      "any.tag",
+                    ],
+                    "types": Array [
+                      "detector_type_1",
+                    ],
+                  },
+                ],
+                "type": "detector",
+              },
+            },
+          },
+        }
+      }
+      notifications={
+        Object {
+          "toasts": Object {
+            "addDanger": [MockFunction],
+          },
+        }
+      }
+      notificationsService={
+        NotificationsService {
+          "getChannel": [Function],
+          "getChannels": [Function],
+          "httpClient": [MockFunction],
+        }
+      }
+      opensearchService={
+        OpenSearchService {
+          "getIndexPatterns": [Function],
+          "getPlugins": [Function],
+          "httpClient": [MockFunction],
+          "savedObjectsClient": Object {
+            "delete": [MockFunction],
+            "get": [MockFunction],
+            "head": [MockFunction],
+            "post": [MockFunction],
+            "put": [MockFunction],
+          },
+        }
+      }
+      ruleService={
+        RuleService {
+          "createRule": [Function],
+          "deleteRule": [Function],
+          "getRules": [Function],
+          "httpClient": [MockFunction],
+          "updateRule": [Function],
+        }
+      }
+      rulesOptions={Array []}
+      updateDataValidState={[Function]}
+    >
+      <mock-component
+        mock="ConfigureAlerts"
+      />
+    </Component>
+    <EuiFlexGroup
+      justifyContent="flexEnd"
+    >
+      <div
+        className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
+      >
+        <EuiFlexItem
+          grow={false}
+        >
+          <div
+            className="euiFlexItem euiFlexItem--flexGrowZero"
+          >
+            <EuiButton
+              disabled={false}
+              onClick={[Function]}
+            >
+              <EuiButtonDisplay
+                baseClassName="euiButton"
+                disabled={false}
+                element="button"
+                isDisabled={false}
+                onClick={[Function]}
+                type="button"
+              >
+                <button
+                  className="euiButton euiButton--primary"
+                  disabled={false}
+                  onClick={[Function]}
+                  style={
+                    Object {
+                      "minWidth": undefined,
+                    }
+                  }
+                  type="button"
+                >
+                  <EuiButtonContent
+                    className="euiButton__content"
+                    iconSide="left"
+                    textProps={
+                      Object {
+                        "className": "euiButton__text",
+                      }
+                    }
+                  >
+                    <span
+                      className="euiButtonContent euiButton__content"
+                    >
+                      <span
+                        className="euiButton__text"
+                      >
+                        Cancel
+                      </span>
+                    </span>
+                  </EuiButtonContent>
+                </button>
+              </EuiButtonDisplay>
+            </EuiButton>
+          </div>
+        </EuiFlexItem>
+        <EuiFlexItem
+          grow={false}
+        >
+          <div
+            className="euiFlexItem euiFlexItem--flexGrowZero"
+          >
+            <EuiButton
+              disabled={false}
+              fill={true}
+              isLoading={false}
+              onClick={[Function]}
+            >
+              <EuiButtonDisplay
+                baseClassName="euiButton"
+                disabled={false}
+                element="button"
+                fill={true}
+                isDisabled={false}
+                isLoading={false}
+                onClick={[Function]}
+                type="button"
+              >
+                <button
+                  className="euiButton euiButton--primary euiButton--fill"
+                  disabled={false}
+                  onClick={[Function]}
+                  style={
+                    Object {
+                      "minWidth": undefined,
+                    }
+                  }
+                  type="button"
+                >
+                  <EuiButtonContent
+                    className="euiButton__content"
+                    iconSide="left"
+                    isLoading={false}
+                    textProps={
+                      Object {
+                        "className": "euiButton__text",
+                      }
+                    }
+                  >
+                    <span
+                      className="euiButtonContent euiButton__content"
+                    >
+                      <span
+                        className="euiButton__text"
+                      >
+                        Save changes
+                      </span>
+                    </span>
+                  </EuiButtonContent>
+                </button>
+              </EuiButtonDisplay>
+            </EuiButton>
+          </div>
+        </EuiFlexItem>
+      </div>
+    </EuiFlexGroup>
+  </div>
+</UpdateAlertConditions>
+`;

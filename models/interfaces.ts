@@ -20,7 +20,7 @@ export interface Rule {
 
 export interface Detector {
   id?: string;
-  type: 'detector';
+  type: string;
   detector_type: string;
   name: string;
   enabled: boolean;
