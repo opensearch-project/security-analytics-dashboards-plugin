@@ -201,7 +201,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
             >
               <EuiTitle>
                 <h4>
-                  Mapped fields (0)
+                  Automatically mapped fields (0)
                 </h4>
               </EuiTitle>
             </div>
@@ -261,7 +261,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                       <h4
                         className="euiTitle euiTitle--medium"
                       >
-                        Mapped fields (0)
+                        Automatically mapped fields (0)
                       </h4>
                     </EuiTitle>
                   </div>
@@ -1092,6 +1092,13 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
         </EuiAccordion>
       </div>
     </EuiPanel>
+    <EuiSpacer
+      size="m"
+    >
+      <div
+        className="euiSpacer euiSpacer--m"
+      />
+    </EuiSpacer>
     <EuiSpacer
       size="m"
     >
