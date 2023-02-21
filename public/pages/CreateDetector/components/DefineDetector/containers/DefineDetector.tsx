@@ -38,13 +38,11 @@ interface DefineDetectorProps extends RouteComponentProps {
   onAllRulesToggle: (enabled: boolean) => void;
 }
 
-interface DefineDetectorState {
-  message: string[];
-}
+interface DefineDetectorState {}
 
 export default class DefineDetector extends Component<DefineDetectorProps, DefineDetectorState> {
-  async updateDetectorCreationState(detector: Detector) {
-    let isDataValid =
+  updateDetectorCreationState(detector: Detector) {
+    const isDataValid =
       !!detector.name &&
       !!detector.detector_type &&
       detector.inputs[0].detector_input.indices.length >= MIN_NUM_DATA_SOURCES &&
@@ -196,7 +194,6 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
 
         <DetectorDataSource
           {...this.props}
-          detector_type={detector_type}
           detectorIndices={indices}
           filedMappingService={filedMappingService}
           onDetectorInputIndicesChange={this.onDetectorInputIndicesChange}
