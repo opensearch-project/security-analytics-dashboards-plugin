@@ -36,7 +36,7 @@ import { DetectorsService } from '../../../../services';
 import { DetectorHit } from '../../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 
-interface DetectorsProps extends RouteComponentProps {
+export interface DetectorsProps extends RouteComponentProps {
   detectorService: DetectorsService;
   notifications: NotificationsStart;
 }
