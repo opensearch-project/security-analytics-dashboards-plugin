@@ -31,8 +31,7 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
   }
 
   componentDidMount(): void {
-    const detectorTypeIds = this.props.allRuleCategories.map((option) => option.key);
-    this.setState({ detectorTypeIds });
+    this.updateDetectorTypes();
   }
 
   componentDidUpdate(
@@ -41,8 +40,7 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
     snapshot?: any
   ): void {
     if (prevProps.allRuleCategories !== this.props.allRuleCategories) {
-      const detectorTypeIds = this.props.allRuleCategories.map((option) => option.key);
-      this.setState({ detectorTypeIds });
+      this.updateDetectorTypes();
     }
   }
 
@@ -64,6 +62,11 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
     }
     return '';
   };
+
+  private updateDetectorTypes() {
+    const detectorTypeIds = this.props.allRuleCategories.map((option) => option.key);
+    this.setState({ detectorTypeIds });
+  }
 
   render() {
     const { detectorType, allRuleCategories } = this.props;
