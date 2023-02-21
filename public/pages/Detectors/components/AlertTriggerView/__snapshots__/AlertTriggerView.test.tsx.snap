@@ -1,0 +1,786 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<AlertTriggerView /> spec renders the component 1`] = `
+Object {
+  "asFragment": [Function],
+  "baseElement": <body>
+    <div>
+      <div>
+        <hr
+          class="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginLarge"
+        />
+        <div
+          class="euiSpacer euiSpacer--l"
+        />
+        <div
+          class="euiAccordion"
+        >
+          <div
+            class="euiAccordion__triggerWrapper"
+          >
+            <button
+              aria-controls="alert-trigger-1"
+              aria-expanded="false"
+              class="euiAccordion__button"
+              id="some_html_id"
+              type="button"
+            >
+              <span
+                class="euiAccordion__iconWrapper"
+              >
+                EuiIconMock
+              </span>
+              <span
+                class="euiIEFlexWrapFix"
+              >
+                <div
+                  class="euiText euiText--medium"
+                >
+                  <p>
+                    Alert on alert_name
+                  </p>
+                </div>
+              </span>
+            </button>
+          </div>
+          <div
+            aria-labelledby="some_html_id"
+            class="euiAccordion__childWrapper"
+            id="alert-trigger-1"
+            role="region"
+            tabindex="-1"
+          >
+            <div>
+              <div
+                class="euiAccordion__padding--m"
+              >
+                <div
+                  class="euiSpacer euiSpacer--m"
+                />
+                <div
+                  class="euiFormRow"
+                  id="some_html_id-row"
+                >
+                  <div
+                    class="euiFormRow__labelWrapper"
+                  >
+                    <label
+                      class="euiFormLabel euiFormRow__label"
+                      for="some_html_id"
+                    >
+                      <div
+                        class="euiText euiText--medium"
+                      >
+                        <div
+                          class="euiTextColor euiTextColor--subdued"
+                        >
+                          Trigger name
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+                  <div
+                    class="euiFormRow__fieldWrapper"
+                  >
+                    <div
+                      class="euiText euiText--medium"
+                      data-test-subj="text-details-group-content-trigger-name"
+                      id="some_html_id"
+                    >
+                      alert_name
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="euiSpacer euiSpacer--xl"
+                />
+                <h5
+                  class="euiTitle euiTitle--small"
+                >
+                  If any detection rule matches
+                </h5>
+                <div
+                  class="euiSpacer euiSpacer--m"
+                />
+                <div
+                  class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+                >
+                  <div
+                    class="euiFlexItem euiFlexItem--flexGrowZero"
+                    style="min-width: 33.333333333333336%;"
+                  >
+                    <div
+                      class="euiFormRow"
+                      id="some_html_id-row"
+                    >
+                      <div
+                        class="euiFormRow__labelWrapper"
+                      >
+                        <label
+                          class="euiFormLabel euiFormRow__label"
+                          for="some_html_id"
+                        >
+                          <div
+                            class="euiText euiText--medium"
+                          >
+                            <div
+                              class="euiTextColor euiTextColor--subdued"
+                            >
+                              Log type
+                            </div>
+                          </div>
+                        </label>
+                      </div>
+                      <div
+                        class="euiFormRow__fieldWrapper"
+                      >
+                        <div
+                          class="euiText euiText--medium"
+                          data-test-subj="text-details-group-content-log-type"
+                          id="some_html_id"
+                        >
+                          detector_type_1
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="euiFlexItem euiFlexItem--flexGrowZero"
+                    style="min-width: 33.333333333333336%;"
+                  >
+                    <div
+                      class="euiFormRow"
+                      id="some_html_id-row"
+                    >
+                      <div
+                        class="euiFormRow__labelWrapper"
+                      >
+                        <label
+                          class="euiFormLabel euiFormRow__label"
+                          for="some_html_id"
+                        >
+                          <div
+                            class="euiText euiText--medium"
+                          >
+                            <div
+                              class="euiTextColor euiTextColor--subdued"
+                            >
+                              Rule names
+                            </div>
+                          </div>
+                        </label>
+                      </div>
+                      <div
+                        class="euiFormRow__fieldWrapper"
+                      >
+                        <div
+                          class="euiText euiText--medium"
+                          data-test-subj="text-details-group-content-rule-names"
+                          id="some_html_id"
+                        >
+                          -
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="euiSpacer euiSpacer--xl"
+                />
+                <div
+                  class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+                >
+                  <div
+                    class="euiFlexItem euiFlexItem--flexGrowZero"
+                    style="min-width: 33.333333333333336%;"
+                  >
+                    <div
+                      class="euiFormRow"
+                      id="some_html_id-row"
+                    >
+                      <div
+                        class="euiFormRow__labelWrapper"
+                      >
+                        <label
+                          class="euiFormLabel euiFormRow__label"
+                          for="some_html_id"
+                        >
+                          <div
+                            class="euiText euiText--medium"
+                          >
+                            <div
+                              class="euiTextColor euiTextColor--subdued"
+                            >
+                              Rule severities
+                            </div>
+                          </div>
+                        </label>
+                      </div>
+                      <div
+                        class="euiFormRow__fieldWrapper"
+                      >
+                        <div
+                          class="euiText euiText--medium"
+                          data-test-subj="text-details-group-content-rule-severities"
+                          id="some_html_id"
+                        >
+                          severity_level_low
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="euiFlexItem euiFlexItem--flexGrowZero"
+                    style="min-width: 33.333333333333336%;"
+                  >
+                    <div
+                      class="euiFormRow"
+                      id="some_html_id-row"
+                    >
+                      <div
+                        class="euiFormRow__labelWrapper"
+                      >
+                        <label
+                          class="euiFormLabel euiFormRow__label"
+                          for="some_html_id"
+                        >
+                          <div
+                            class="euiText euiText--medium"
+                          >
+                            <div
+                              class="euiTextColor euiTextColor--subdued"
+                            >
+                              Tags
+                            </div>
+                          </div>
+                        </label>
+                      </div>
+                      <div
+                        class="euiFormRow__fieldWrapper"
+                      >
+                        <div
+                          class="euiText euiText--medium"
+                          data-test-subj="text-details-group-content-tags"
+                          id="some_html_id"
+                        >
+                          any.tag
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="euiSpacer euiSpacer--xl"
+                />
+                <div
+                  class="euiSpacer euiSpacer--xl"
+                />
+                <h5
+                  class="euiTitle euiTitle--small"
+                >
+                  Alert and notify
+                </h5>
+                <div
+                  class="euiSpacer euiSpacer--m"
+                />
+                <div
+                  class="euiFormRow"
+                  id="some_html_id-row"
+                >
+                  <div
+                    class="euiFormRow__labelWrapper"
+                  >
+                    <label
+                      class="euiFormLabel euiFormRow__label"
+                      for="some_html_id"
+                    >
+                      <div
+                        class="euiText euiText--medium"
+                      >
+                        <div
+                          class="euiTextColor euiTextColor--subdued"
+                        >
+                          Trigger alerts with severity
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+                  <div
+                    class="euiFormRow__fieldWrapper"
+                  >
+                    <div
+                      class="euiText euiText--medium"
+                      data-test-subj="text-details-group-content-trigger-alerts-with-severity"
+                      id="some_html_id"
+                    >
+                      1 (Highest)
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="euiSpacer euiSpacer--l"
+                />
+                <div
+                  class="euiFormRow"
+                  id="some_html_id-row"
+                >
+                  <div
+                    class="euiFormRow__labelWrapper"
+                  >
+                    <label
+                      class="euiFormLabel euiFormRow__label"
+                      for="some_html_id"
+                    >
+                      <div
+                        class="euiText euiText--medium"
+                      >
+                        <div
+                          class="euiTextColor euiTextColor--subdued"
+                        >
+                          Notify channel
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+                  <div
+                    class="euiFormRow__fieldWrapper"
+                  >
+                    <div
+                      class="euiText euiText--medium"
+                      data-test-subj="text-details-group-content-notify-channel"
+                      id="some_html_id"
+                    >
+                      <div
+                        class="euiText euiText--medium"
+                      >
+                        -
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="euiSpacer euiSpacer--m"
+        />
+      </div>
+    </div>
+  </body>,
+  "container": <div>
+    <div>
+      <hr
+        class="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginLarge"
+      />
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <div
+        class="euiAccordion"
+      >
+        <div
+          class="euiAccordion__triggerWrapper"
+        >
+          <button
+            aria-controls="alert-trigger-1"
+            aria-expanded="false"
+            class="euiAccordion__button"
+            id="some_html_id"
+            type="button"
+          >
+            <span
+              class="euiAccordion__iconWrapper"
+            >
+              EuiIconMock
+            </span>
+            <span
+              class="euiIEFlexWrapFix"
+            >
+              <div
+                class="euiText euiText--medium"
+              >
+                <p>
+                  Alert on alert_name
+                </p>
+              </div>
+            </span>
+          </button>
+        </div>
+        <div
+          aria-labelledby="some_html_id"
+          class="euiAccordion__childWrapper"
+          id="alert-trigger-1"
+          role="region"
+          tabindex="-1"
+        >
+          <div>
+            <div
+              class="euiAccordion__padding--m"
+            >
+              <div
+                class="euiSpacer euiSpacer--m"
+              />
+              <div
+                class="euiFormRow"
+                id="some_html_id-row"
+              >
+                <div
+                  class="euiFormRow__labelWrapper"
+                >
+                  <label
+                    class="euiFormLabel euiFormRow__label"
+                    for="some_html_id"
+                  >
+                    <div
+                      class="euiText euiText--medium"
+                    >
+                      <div
+                        class="euiTextColor euiTextColor--subdued"
+                      >
+                        Trigger name
+                      </div>
+                    </div>
+                  </label>
+                </div>
+                <div
+                  class="euiFormRow__fieldWrapper"
+                >
+                  <div
+                    class="euiText euiText--medium"
+                    data-test-subj="text-details-group-content-trigger-name"
+                    id="some_html_id"
+                  >
+                    alert_name
+                  </div>
+                </div>
+              </div>
+              <div
+                class="euiSpacer euiSpacer--xl"
+              />
+              <h5
+                class="euiTitle euiTitle--small"
+              >
+                If any detection rule matches
+              </h5>
+              <div
+                class="euiSpacer euiSpacer--m"
+              />
+              <div
+                class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+              >
+                <div
+                  class="euiFlexItem euiFlexItem--flexGrowZero"
+                  style="min-width: 33.333333333333336%;"
+                >
+                  <div
+                    class="euiFormRow"
+                    id="some_html_id-row"
+                  >
+                    <div
+                      class="euiFormRow__labelWrapper"
+                    >
+                      <label
+                        class="euiFormLabel euiFormRow__label"
+                        for="some_html_id"
+                      >
+                        <div
+                          class="euiText euiText--medium"
+                        >
+                          <div
+                            class="euiTextColor euiTextColor--subdued"
+                          >
+                            Log type
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                    <div
+                      class="euiFormRow__fieldWrapper"
+                    >
+                      <div
+                        class="euiText euiText--medium"
+                        data-test-subj="text-details-group-content-log-type"
+                        id="some_html_id"
+                      >
+                        detector_type_1
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="euiFlexItem euiFlexItem--flexGrowZero"
+                  style="min-width: 33.333333333333336%;"
+                >
+                  <div
+                    class="euiFormRow"
+                    id="some_html_id-row"
+                  >
+                    <div
+                      class="euiFormRow__labelWrapper"
+                    >
+                      <label
+                        class="euiFormLabel euiFormRow__label"
+                        for="some_html_id"
+                      >
+                        <div
+                          class="euiText euiText--medium"
+                        >
+                          <div
+                            class="euiTextColor euiTextColor--subdued"
+                          >
+                            Rule names
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                    <div
+                      class="euiFormRow__fieldWrapper"
+                    >
+                      <div
+                        class="euiText euiText--medium"
+                        data-test-subj="text-details-group-content-rule-names"
+                        id="some_html_id"
+                      >
+                        -
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="euiSpacer euiSpacer--xl"
+              />
+              <div
+                class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+              >
+                <div
+                  class="euiFlexItem euiFlexItem--flexGrowZero"
+                  style="min-width: 33.333333333333336%;"
+                >
+                  <div
+                    class="euiFormRow"
+                    id="some_html_id-row"
+                  >
+                    <div
+                      class="euiFormRow__labelWrapper"
+                    >
+                      <label
+                        class="euiFormLabel euiFormRow__label"
+                        for="some_html_id"
+                      >
+                        <div
+                          class="euiText euiText--medium"
+                        >
+                          <div
+                            class="euiTextColor euiTextColor--subdued"
+                          >
+                            Rule severities
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                    <div
+                      class="euiFormRow__fieldWrapper"
+                    >
+                      <div
+                        class="euiText euiText--medium"
+                        data-test-subj="text-details-group-content-rule-severities"
+                        id="some_html_id"
+                      >
+                        severity_level_low
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="euiFlexItem euiFlexItem--flexGrowZero"
+                  style="min-width: 33.333333333333336%;"
+                >
+                  <div
+                    class="euiFormRow"
+                    id="some_html_id-row"
+                  >
+                    <div
+                      class="euiFormRow__labelWrapper"
+                    >
+                      <label
+                        class="euiFormLabel euiFormRow__label"
+                        for="some_html_id"
+                      >
+                        <div
+                          class="euiText euiText--medium"
+                        >
+                          <div
+                            class="euiTextColor euiTextColor--subdued"
+                          >
+                            Tags
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                    <div
+                      class="euiFormRow__fieldWrapper"
+                    >
+                      <div
+                        class="euiText euiText--medium"
+                        data-test-subj="text-details-group-content-tags"
+                        id="some_html_id"
+                      >
+                        any.tag
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="euiSpacer euiSpacer--xl"
+              />
+              <div
+                class="euiSpacer euiSpacer--xl"
+              />
+              <h5
+                class="euiTitle euiTitle--small"
+              >
+                Alert and notify
+              </h5>
+              <div
+                class="euiSpacer euiSpacer--m"
+              />
+              <div
+                class="euiFormRow"
+                id="some_html_id-row"
+              >
+                <div
+                  class="euiFormRow__labelWrapper"
+                >
+                  <label
+                    class="euiFormLabel euiFormRow__label"
+                    for="some_html_id"
+                  >
+                    <div
+                      class="euiText euiText--medium"
+                    >
+                      <div
+                        class="euiTextColor euiTextColor--subdued"
+                      >
+                        Trigger alerts with severity
+                      </div>
+                    </div>
+                  </label>
+                </div>
+                <div
+                  class="euiFormRow__fieldWrapper"
+                >
+                  <div
+                    class="euiText euiText--medium"
+                    data-test-subj="text-details-group-content-trigger-alerts-with-severity"
+                    id="some_html_id"
+                  >
+                    1 (Highest)
+                  </div>
+                </div>
+              </div>
+              <div
+                class="euiSpacer euiSpacer--l"
+              />
+              <div
+                class="euiFormRow"
+                id="some_html_id-row"
+              >
+                <div
+                  class="euiFormRow__labelWrapper"
+                >
+                  <label
+                    class="euiFormLabel euiFormRow__label"
+                    for="some_html_id"
+                  >
+                    <div
+                      class="euiText euiText--medium"
+                    >
+                      <div
+                        class="euiTextColor euiTextColor--subdued"
+                      >
+                        Notify channel
+                      </div>
+                    </div>
+                  </label>
+                </div>
+                <div
+                  class="euiFormRow__fieldWrapper"
+                >
+                  <div
+                    class="euiText euiText--medium"
+                    data-test-subj="text-details-group-content-notify-channel"
+                    id="some_html_id"
+                  >
+                    <div
+                      class="euiText euiText--medium"
+                    >
+                      -
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="euiSpacer euiSpacer--m"
+      />
+    </div>
+  </div>,
+  "debug": [Function],
+  "findAllByAltText": [Function],
+  "findAllByDisplayValue": [Function],
+  "findAllByLabelText": [Function],
+  "findAllByPlaceholderText": [Function],
+  "findAllByRole": [Function],
+  "findAllByTestId": [Function],
+  "findAllByText": [Function],
+  "findAllByTitle": [Function],
+  "findByAltText": [Function],
+  "findByDisplayValue": [Function],
+  "findByLabelText": [Function],
+  "findByPlaceholderText": [Function],
+  "findByRole": [Function],
+  "findByTestId": [Function],
+  "findByText": [Function],
+  "findByTitle": [Function],
+  "getAllByAltText": [Function],
+  "getAllByDisplayValue": [Function],
+  "getAllByLabelText": [Function],
+  "getAllByPlaceholderText": [Function],
+  "getAllByRole": [Function],
+  "getAllByTestId": [Function],
+  "getAllByText": [Function],
+  "getAllByTitle": [Function],
+  "getByAltText": [Function],
+  "getByDisplayValue": [Function],
+  "getByLabelText": [Function],
+  "getByPlaceholderText": [Function],
+  "getByRole": [Function],
+  "getByTestId": [Function],
+  "getByText": [Function],
+  "getByTitle": [Function],
+  "queryAllByAltText": [Function],
+  "queryAllByDisplayValue": [Function],
+  "queryAllByLabelText": [Function],
+  "queryAllByPlaceholderText": [Function],
+  "queryAllByRole": [Function],
+  "queryAllByTestId": [Function],
+  "queryAllByText": [Function],
+  "queryAllByTitle": [Function],
+  "queryByAltText": [Function],
+  "queryByDisplayValue": [Function],
+  "queryByLabelText": [Function],
+  "queryByPlaceholderText": [Function],
+  "queryByRole": [Function],
+  "queryByTestId": [Function],
+  "queryByText": [Function],
+  "queryByTitle": [Function],
+  "rerender": [Function],
+  "unmount": [Function],
+}
+`;

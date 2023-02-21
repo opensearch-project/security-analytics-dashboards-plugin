@@ -17,6 +17,7 @@ describe('<DeleteModal /> spec', () => {
         type={'some type'}
       />
     );
+
     expect(tree).toMatchSnapshot();
   });
 });

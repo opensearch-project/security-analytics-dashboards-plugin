@@ -201,7 +201,7 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
   }
   location={
     Object {
-      "pathname": "",
+      "pathname": "/edit-alert-triggers/detector_id_1",
       "state": Object {
         "detectorHit": Object {
           "_id": "detector_id_1",
@@ -431,7 +431,7 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
           "detector_type": "detector_type",
           "enabled": true,
           "enabled_time": 1,
-          "id": "",
+          "id": "detector_id_1",
           "inputs": Array [
             Object {
               "detector_input": Object {
@@ -802,7 +802,7 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
       isEdit={true}
       location={
         Object {
-          "pathname": "",
+          "pathname": "/edit-alert-triggers/detector_id_1",
           "state": Object {
             "detectorHit": Object {
               "_id": "detector_id_1",
