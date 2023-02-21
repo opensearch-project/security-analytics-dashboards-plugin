@@ -6,13 +6,14 @@
 import React from 'react';
 import detectorHitMock from './Detectors/containers/Detectors/DetectorHit.mock';
 
-const context = {
+const browserContext = {
   chrome: {
     setBreadcrumbs: jest.fn(),
   },
 };
 
 const contextServicesMock = {
+  ...browserContext,
   notificationsService: {
     getChannels: () => {
       return {
@@ -62,6 +63,6 @@ const contextServicesMock = {
   },
 };
 
-export default React.createContext(context);
+export default React.createContext(browserContext);
 
-export { contextServicesMock };
+export { contextServicesMock, browserContext };

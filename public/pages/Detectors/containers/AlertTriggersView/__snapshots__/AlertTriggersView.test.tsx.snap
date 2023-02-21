@@ -1026,7 +1026,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                             onBlur={[Function]}
                                             onFocus={[Function]}
                                           >
-                                            detector_type_1
+                                            -
                                           </div>
                                         </EuiText>
                                       </div>
@@ -2238,7 +2238,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                             onBlur={[Function]}
                                             onFocus={[Function]}
                                           >
-                                            detector_type_1
+                                            -
                                           </div>
                                         </EuiText>
                                       </div>
