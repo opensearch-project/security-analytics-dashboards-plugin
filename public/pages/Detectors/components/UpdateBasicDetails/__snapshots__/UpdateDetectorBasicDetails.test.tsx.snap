@@ -719,11 +719,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                           },
                         ]
                       }
-                      singleSelection={
-                        Object {
-                          "asPlainText": true,
-                        }
-                      }
+                      singleSelection={false}
                       sortMatchesBy="none"
                     >
                       <div
@@ -762,11 +758,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                               },
                             ]
                           }
-                          singleSelection={
-                            Object {
-                              "asPlainText": true,
-                            }
-                          }
+                          singleSelection={false}
                           toggleButtonRef={[Function]}
                           updatePosition={[Function]}
                           value=".windows"
@@ -800,26 +792,81 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                                 className="euiFormControlLayout__childrenWrapper"
                               >
                                 <div
-                                  className="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isClearable"
+                                  className="euiComboBox__inputWrap euiComboBox__inputWrap-isClearable"
                                   data-test-subj="comboBoxInput"
                                   onClick={[Function]}
                                   tabIndex={-1}
                                 >
                                   <EuiComboBoxPill
-                                    asPlainText={true}
+                                    asPlainText={false}
                                     color="hollow"
                                     key=".windows"
+                                    onClose={[Function]}
                                     option={
                                       Object {
                                         "label": ".windows",
                                       }
                                     }
                                   >
-                                    <span
-                                      className="euiComboBoxPill euiComboBoxPill--plainText"
+                                    <EuiI18n
+                                      default="Remove {children} from selection in this group"
+                                      token="euiComboBoxPill.removeSelection"
+                                      values={
+                                        Object {
+                                          "children": ".windows",
+                                        }
+                                      }
                                     >
-                                      .windows
-                                    </span>
+                                      <EuiBadge
+                                        className="euiComboBoxPill"
+                                        closeButtonProps={
+                                          Object {
+                                            "tabIndex": -1,
+                                          }
+                                        }
+                                        color="hollow"
+                                        iconOnClick={[Function]}
+                                        iconOnClickAriaLabel="Remove .windows from selection in this group"
+                                        iconSide="right"
+                                        iconType="cross"
+                                        title=".windows"
+                                      >
+                                        <EuiInnerText>
+                                          <span
+                                            className="euiBadge euiBadge--hollow euiBadge--iconRight euiComboBoxPill"
+                                            title=".windows"
+                                          >
+                                            <span
+                                              className="euiBadge__content"
+                                            >
+                                              <span
+                                                className="euiBadge__text"
+                                              >
+                                                .windows
+                                              </span>
+                                              <button
+                                                aria-label="Remove .windows from selection in this group"
+                                                className="euiBadge__iconButton"
+                                                disabled={false}
+                                                onClick={[Function]}
+                                                title="Remove .windows from selection in this group"
+                                                type="button"
+                                              >
+                                                <EuiIcon
+                                                  className="euiBadge__icon"
+                                                  color="inherit"
+                                                  size="s"
+                                                  tabIndex={-1}
+                                                  type="cross"
+                                                >
+                                                  EuiIconMock
+                                                </EuiIcon>
+                                              </button>
+                                            </span>
+                                          </span>
+                                        </EuiInnerText>
+                                      </EuiBadge>
+                                    </EuiI18n>
                                   </EuiComboBoxPill>
                                   <AutosizeInput
                                     aria-controls=""

@@ -5,13 +5,13 @@
 
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { EuiSpacer, EuiTitle, EuiText } from '@elastic/eui';
+import { EuiSpacer, EuiTitle, EuiText, EuiCallOut, EuiTextColor } from '@elastic/eui';
 import { Detector, PeriodSchedule } from '../../../../../../models/interfaces';
 import DetectorBasicDetailsForm from '../components/DetectorDetails';
 import DetectorDataSource from '../components/DetectorDataSource';
 import DetectorType from '../components/DetectorType';
 import { EuiComboBoxOptionOption } from '@opensearch-project/oui';
-import { IndexService } from '../../../../../services';
+import { FieldMappingService, IndexService } from '../../../../../services';
 import { MIN_NUM_DATA_SOURCES } from '../../../../Detectors/utils/constants';
 import { DetectorCreationStep } from '../../../models/types';
 import { DetectorSchedule } from '../components/DetectorSchedule/DetectorSchedule';
@@ -21,11 +21,13 @@ import {
   DetectionRules,
 } from '../components/DetectionRules/DetectionRules';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import _ from 'lodash';
 
 interface DefineDetectorProps extends RouteComponentProps {
   detector: Detector;
   isEdit: boolean;
   indexService: IndexService;
+  filedMappingService: FieldMappingService;
   rulesState: CreateDetectorRulesState;
   notifications: NotificationsStart;
   loadingRules?: boolean;
@@ -36,16 +38,59 @@ interface DefineDetectorProps extends RouteComponentProps {
   onAllRulesToggle: (enabled: boolean) => void;
 }
 
-interface DefineDetectorState {}
+interface DefineDetectorState {
+  message: string[];
+}
 
 export default class DefineDetector extends Component<DefineDetectorProps, DefineDetectorState> {
-  updateDetectorCreationState(detector: Detector) {
-    const isDataValid =
+  state = {
+    message: [],
+  };
+
+  private indicesMappings: any = {};
+
+  async updateDetectorCreationState(detector: Detector) {
+    let isDataValid =
       !!detector.name &&
       !!detector.detector_type &&
       detector.inputs[0].detector_input.indices.length >= MIN_NUM_DATA_SOURCES &&
       !!detector.schedule.period.interval;
     this.props.changeDetector(detector);
+
+    const allIndices = detector.inputs[0].detector_input.indices;
+    for (const indexName of allIndices) {
+      if (!this.indicesMappings[indexName]) {
+        const detectorType = this.props.detector.detector_type.toLowerCase();
+        const result = await this.props.filedMappingService.getMappingsView(
+          indexName,
+          detectorType
+        );
+        result.ok && (this.indicesMappings[indexName] = result.response.unmapped_field_aliases);
+      }
+    }
+
+    if (!_.isEmpty(this.indicesMappings)) {
+      let firstMapping: string[] = [];
+      let firstMatchMappingIndex: string = '';
+      let message: string[] = [];
+      for (let mapping in this.indicesMappings) {
+        if (this.indicesMappings.hasOwnProperty(mapping)) {
+          if (!firstMapping.length) firstMapping = this.indicesMappings[mapping];
+          !firstMatchMappingIndex.length && (firstMatchMappingIndex = mapping);
+          if (!_.isEqual(firstMapping, this.indicesMappings[mapping])) {
+            message = [
+              `The below log sources don't have same fields, please consider creating separate detectors for them.`,
+              firstMatchMappingIndex,
+              mapping,
+            ];
+            break;
+          }
+        }
+      }
+
+      this.setState({ message });
+    }
+
     this.props.updateDataValidState(DetectorCreationStep.DEFINE_DETECTOR, isDataValid);
   }
 
@@ -162,6 +207,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
       onPageChange,
       onAllRulesToggle,
     } = this.props;
+    const { message } = this.state;
     const { name, inputs, detector_type } = this.props.detector;
     const { description, indices } = inputs[0].detector_input;
 
@@ -177,6 +223,22 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
         </EuiText>
 
         <EuiSpacer size={'m'} />
+        {message.length ? (
+          <>
+            <EuiCallOut title="Detector configuration warning" color="warning" iconType="alert">
+              {message.map((messageItem: string, index: number) => (
+                <EuiTextColor
+                  color={index === 0 ? 'default' : 'warning'}
+                  key={`callout-message-part-${index}`}
+                >
+                  {messageItem}
+                  <br />
+                </EuiTextColor>
+              ))}
+            </EuiCallOut>
+            <EuiSpacer size={'m'} />
+          </>
+        ) : null}
 
         <DetectorBasicDetailsForm
           {...this.props}
