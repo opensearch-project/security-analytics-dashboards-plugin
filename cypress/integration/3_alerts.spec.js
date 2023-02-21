@@ -164,7 +164,7 @@ describe('Alerts', () => {
         expect($tr, `timestamp`).to.contain(date);
         expect($tr, `rule name`).to.contain('USB Device Plugged');
         expect($tr, `detector name`).to.contain(testDetector.name);
-        expect($tr, `log type`).to.contain('Windows');
+        expect($tr, `log type`).to.contain('Windows logs');
       });
 
       // Close the flyout

@@ -186,7 +186,15 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                         onBlur={props.handleBlur('logType')}
                         selectedOptions={
                           props.values.logType
-                            ? [{ value: props.values.logType, label: props.values.logType }]
+                            ? [
+                                {
+                                  value: props.values.logType,
+                                  label:
+                                    ruleTypes.find(
+                                      (ruleType) => ruleType.value === props.values.logType
+                                    )?.label || props.values.logType,
+                                },
+                              ]
                             : []
                         }
                       />

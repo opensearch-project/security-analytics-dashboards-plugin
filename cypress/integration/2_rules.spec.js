@@ -6,6 +6,10 @@
 import { OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
 
 const uniqueId = Cypress._.random(0, 1e6);
+const ruleTypes = {
+  windows: 'Windows logs',
+  dns: 'DNS logs',
+};
 const SAMPLE_RULE = {
   name: `Cypress test rule ${uniqueId}`,
   logType: 'windows',
@@ -152,7 +156,7 @@ describe('Rules', () => {
     cy.get('[data-test-subj="rule_name_field"]').type(SAMPLE_RULE.name);
 
     // Enter the log type
-    cy.get('[data-test-subj="rule_type_dropdown"]').type(SAMPLE_RULE.logType);
+    cy.get('[data-test-subj="rule_type_dropdown"]').type(ruleTypes[SAMPLE_RULE.logType]);
 
     // Enter the description
     cy.get('[data-test-subj="rule_description_field"]').type(SAMPLE_RULE.description);
@@ -235,8 +239,8 @@ describe('Rules', () => {
     SAMPLE_RULE.logType = 'dns';
     YAML_RULE_LINES[2] = `product: ${SAMPLE_RULE.logType}`;
     YAML_RULE_LINES[3] = `title: ${SAMPLE_RULE.name}`;
-    cy.get(logSelector).type(SAMPLE_RULE.logType).type('{enter}');
-    cy.get(logSelector).contains(SAMPLE_RULE.logType, {
+    cy.get(logSelector).type(ruleTypes[SAMPLE_RULE.logType]).type('{enter}');
+    cy.get(logSelector).contains(ruleTypes[SAMPLE_RULE.logType], {
       matchCase: false,
     });
 
