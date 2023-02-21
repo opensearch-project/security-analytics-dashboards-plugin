@@ -76,7 +76,6 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
       }
     }
 
-    debugger;
     if (!_.isEmpty(this.indicesMappings)) {
       let firstMapping: string[] = [];
       let firstMatchMappingIndex: string = '';
