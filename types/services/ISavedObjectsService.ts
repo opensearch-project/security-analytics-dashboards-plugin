@@ -7,5 +7,9 @@ import { SimpleSavedObject } from 'opensearch-dashboards/public';
 import { ServerResponse } from './ServerResponse';
 
 export interface ISavedObjectsService {
-  createSavedObject(logType: string): Promise<ServerResponse<SimpleSavedObject>>;
+  createSavedObject(
+    name: string,
+    logType: string,
+    detectorId: string
+  ): Promise<ServerResponse<SimpleSavedObject>>;
 }

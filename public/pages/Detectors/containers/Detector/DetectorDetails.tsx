@@ -27,13 +27,19 @@ import { AlertTriggersView } from '../AlertTriggersView/AlertTriggersView';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { DetectorsService } from '../../../../services';
 import { errorNotificationToast } from '../../../../utils/helpers';
-import { NotificationsStart } from 'opensearch-dashboards/public';
+import { NotificationsStart, SimpleSavedObject } from 'opensearch-dashboards/public';
+import { ServerResponse } from '../../../../../types';
 
 export interface DetectorDetailsProps
   extends RouteComponentProps<
     {},
     any,
-    { detectorHit: DetectorHit; enabledRules?: RuleItem[]; allRules?: RuleItem[] }
+    {
+      detectorHit: DetectorHit;
+      createDashboardPromise?: Promise<void | ServerResponse<SimpleSavedObject<unknown>>>;
+      enabledRules?: RuleItem[];
+      allRules?: RuleItem[];
+    }
   > {
   detectorService: DetectorsService;
   notifications: NotificationsStart;
@@ -47,6 +53,7 @@ export interface DetectorDetailsState {
   detectorId: string;
   tabs: any[];
   loading: boolean;
+  dashboardId?: string;
 }
 
 enum TabId {
@@ -105,6 +112,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
             detector={this.detectorHit._source}
             enabled_time={this.detectorHit._source.enabled_time}
             last_update_time={this.detectorHit._source.last_update_time}
+            dashboardId={this.state.dashboardId}
             editBasicDetails={this.editDetectorBasicDetails}
             editDetectorRules={this.editDetectorRules}
           />
@@ -148,6 +156,9 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
       tabs: [],
       loading: false,
     };
+    this.props.location.state.createDashboardPromise?.then((savedObject) => {
+      if (savedObject && savedObject.ok) this.setState({ dashboardId: savedObject.response.id });
+    });
   }
 
   async componentDidMount() {

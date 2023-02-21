@@ -35,7 +35,6 @@ export const ROUTES = Object.freeze({
   EDIT_DETECTOR_RULES: '/edit-detector-rules',
   EDIT_FIELD_MAPPINGS: '/edit-field-mappings',
   EDIT_DETECTOR_ALERT_TRIGGERS: '/edit-alert-triggers',
-  DASHBOARDS: '/create-dashboard',
 
   get LANDING_PAGE(): string {
     return this.OVERVIEW;
@@ -140,3 +139,5 @@ export const ALERT_STATE = Object.freeze({
   ERROR: 'ERROR',
   DELETED: 'DELETED',
 });
+
+export const logTypesWithDashboards = new Set(['network', 'cloudtrail', 's3']);

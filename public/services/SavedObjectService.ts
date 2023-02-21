@@ -6,14 +6,17 @@
 import { SavedObjectsClientContract, SimpleSavedObject } from 'opensearch-dashboards/public';
 import { ISavedObjectsService, ServerResponse } from '../../types';
 import { getSavedObjectConfigs } from '../store/savedObjectsConfig';
+import { logTypesWithDashboards } from '../utils/constants';
 
 export default class SavedObjectService implements ISavedObjectsService {
-  private supportedLogTypes = new Set(['network', 'cloudtrail', 's3']);
-
   constructor(private savedObjectsClient: SavedObjectsClientContract) {}
 
-  public async createSavedObject(logType: string): Promise<ServerResponse<SimpleSavedObject>> {
-    if (this.supportedLogTypes.has(logType)) {
+  public async createSavedObject(
+    name: string,
+    logType: string,
+    detectorId: string
+  ): Promise<ServerResponse<SimpleSavedObject>> {
+    if (logTypesWithDashboards.has(logType)) {
       const savedObjectConfig = getSavedObjectConfigs(logType);
 
       if (savedObjectConfig) {
@@ -45,23 +48,33 @@ export default class SavedObjectService implements ISavedObjectsService {
           );
 
           const visCreationRes = await Promise.allSettled(visCreationPromises);
+          const dashboardReferences = savedObjectConfig.dashboard.references.map((ref, index) => {
+            const createdVisRes = visCreationRes[index];
+            if (createdVisRes.status === 'fulfilled') {
+              return {
+                ...ref,
+                id: createdVisRes.value.id,
+              };
+            }
+
+            return ref;
+          });
+          dashboardReferences.push({
+            id: detectorId,
+            name: name,
+            type: 'detector-SA',
+          });
 
           const dashboardCreationRes = await this.savedObjectsClient.create(
             savedObjectConfig.dashboard.type,
-            savedObjectConfig.dashboard.attributes,
+            {
+              ...savedObjectConfig.dashboard.attributes,
+              title: `${name} summary`,
+              description: `Analyze ${logType} log data in security detector ${name}`,
+            },
             {
               ...savedObjectConfig.dashboard,
-              references: savedObjectConfig.dashboard.references.map((ref, index) => {
-                const createdVisRes = visCreationRes[index];
-                if (createdVisRes.status === 'fulfilled') {
-                  return {
-                    ...ref,
-                    id: createdVisRes.value.id,
-                  };
-                }
-
-                return ref;
-              }),
+              references: dashboardReferences,
             }
           );
 
