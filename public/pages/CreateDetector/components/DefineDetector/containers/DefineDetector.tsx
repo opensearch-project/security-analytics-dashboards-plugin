@@ -79,7 +79,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
           !firstMatchMappingIndex.length && (firstMatchMappingIndex = mapping);
           if (!_.isEqual(firstMapping, this.indicesMappings[mapping])) {
             message = [
-              `The below log sources don't have same fields, please consider creating separate detectors for them.`,
+              `The below log sources don't have the same fields, please consider creating separate detectors for them.`,
               firstMatchMappingIndex,
               mapping,
             ];
