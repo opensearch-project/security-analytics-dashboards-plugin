@@ -4,10 +4,15 @@
  */
 
 import { load, safeDump } from 'js-yaml';
-import { RuleInfo } from '../../../../server/models/interfaces';
+import {
+  GetAllRuleCategoriesResponse,
+  RuleCategory,
+  RuleInfo,
+} from '../../../../server/models/interfaces';
 import { RuleItemInfoBase } from './types';
 import { RuleService } from '../../../services';
 import { ruleTypes } from '../utils/constants';
+import { setRuleTypes } from '../utils/helpers';
 
 export interface RulesViewModel {
   allRules: RuleItemInfoBase[];
@@ -15,21 +20,34 @@ export interface RulesViewModel {
 
 export class RulesViewModelActor {
   private rulesViewModel: RulesViewModel;
+  private allRuleCategories: RuleCategory[] = [];
+  private initRuleCategoriesPromise;
+  public static instance: RulesViewModelActor | undefined = undefined;
 
   constructor(private readonly service: RuleService) {
     this.rulesViewModel = {
       allRules: [],
     };
+    this.initRuleCategoriesPromise = this.initRuleCategories();
   }
 
   public get allRules(): RuleInfo[] {
     return this.rulesViewModel.allRules;
   }
 
+  public static setupRulesViewModelActor(service: RuleService): RulesViewModelActor {
+    if (!this.instance) {
+      this.instance = new RulesViewModelActor(service);
+    }
+
+    return this.instance;
+  }
+
   public async fetchRules(
     terms?: { [key: string]: string[] },
     query?: any
   ): Promise<RuleItemInfoBase[]> {
+    await this.initRuleCategoriesPromise;
     let prePackagedRules = await this.getRules(true, terms, query);
     let customRules = await this.getRules(false, terms, query);
 
@@ -38,6 +56,21 @@ export class RulesViewModelActor {
     this.rulesViewModel.allRules = customRules.concat(prePackagedRules);
 
     return this.rulesViewModel.allRules;
+  }
+
+  public async getAllRuleCategories(): Promise<GetAllRuleCategoriesResponse['rule_categories']> {
+    const allRuleCategories = await this.service.getAllRuleCategories();
+
+    if (allRuleCategories.ok) {
+      return allRuleCategories.response.rule_categories;
+    }
+
+    return [];
+  }
+
+  private async initRuleCategories() {
+    this.allRuleCategories = await this.getAllRuleCategories();
+    setRuleTypes(this.allRuleCategories);
   }
 
   private async getRules(

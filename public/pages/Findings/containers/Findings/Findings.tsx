@@ -106,7 +106,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
   constructor(props: FindingsProps) {
     super(props);
 
-    this.rulesViewModelActor = new RulesViewModelActor(props.ruleService);
+    this.rulesViewModelActor = RulesViewModelActor.setupRulesViewModelActor(props.ruleService);
     const {
       dateTimeFilter = {
         startTime: DEFAULT_DATE_RANGE.start,

@@ -16,6 +16,7 @@ import {
   CreateRuleResponse,
   DeleteRuleParams,
   DeleteRuleResponse,
+  GetAllRuleCategoriesResponse,
   GetRulesParams,
   GetRulesResponse,
   UpdateRuleParams,
@@ -245,6 +246,41 @@ export default class RulesService {
       });
     } catch (error: any) {
       console.error('Security Analytics - RulesService - updateRule:', error);
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: false,
+          error: error.message,
+        },
+      });
+    }
+  };
+
+  /**
+   * Calls backend GET Categories API
+   */
+  getAllRuleCategories = async (
+    _context: RequestHandlerContext,
+    request: OpenSearchDashboardsRequest,
+    response: OpenSearchDashboardsResponseFactory
+  ): Promise<
+    IOpenSearchDashboardsResponse<ServerResponse<GetAllRuleCategoriesResponse> | ResponseError>
+  > => {
+    try {
+      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
+      const getAllRuleCategoriesResponse: GetAllRuleCategoriesResponse = await callWithRequest(
+        CLIENT_RULE_METHODS.GET_ALL_RULE_CATEGORIES
+      );
+
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: true,
+          response: getAllRuleCategoriesResponse,
+        },
+      });
+    } catch (error: any) {
+      console.error('Security Analytics - RulesService - getAllRuleCategories:', error);
       return response.custom({
         statusCode: 200,
         body: {

@@ -21,6 +21,7 @@ import {
   DetectionRules,
 } from '../components/DetectionRules/DetectionRules';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { RuleCategory } from '../../../../../../server/models/interfaces';
 
 interface DefineDetectorProps extends RouteComponentProps {
   detector: Detector;
@@ -28,6 +29,7 @@ interface DefineDetectorProps extends RouteComponentProps {
   indexService: IndexService;
   rulesState: CreateDetectorRulesState;
   notifications: NotificationsStart;
+  allRuleCategories: RuleCategory[];
   loadingRules?: boolean;
   changeDetector: (detector: Detector) => void;
   updateDataValidState: (step: DetectorCreationStep, isValid: boolean) => void;
@@ -198,6 +200,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
 
         <DetectorType
           detectorType={detector_type}
+          allRuleCategories={this.props.allRuleCategories}
           onDetectorTypeChange={this.onDetectorTypeChange}
         />
 

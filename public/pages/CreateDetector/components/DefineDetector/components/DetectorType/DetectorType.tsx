@@ -7,17 +7,16 @@ import React, { Component } from 'react';
 import { ContentPanel } from '../../../../../../components/ContentPanel';
 import { EuiFormRow, EuiFlexGrid, EuiFlexItem, EuiRadio, EuiSpacer } from '@elastic/eui';
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
-import { DETECTOR_TYPES } from '../../../../../Detectors/utils/constants';
-import { DetectorTypeOption } from '../../../../../Detectors/models/interfaces';
+import { RuleCategory } from '../../../../../../../server/models/interfaces';
 
 interface DetectorTypeProps {
   detectorType: string;
+  allRuleCategories: RuleCategory[];
   onDetectorTypeChange: (detectorType: string) => void;
 }
 
 interface DetectorTypeState {
   fieldTouched: boolean;
-  detectorTypeOptions: DetectorTypeOption[];
   detectorTypeIds: string[];
 }
 
@@ -25,13 +24,26 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
   constructor(props: DetectorTypeProps) {
     super(props);
 
-    const detectorTypeOptions = Object.values(DETECTOR_TYPES);
-    const detectorTypeIds = detectorTypeOptions.map((option) => option.id);
     this.state = {
       fieldTouched: false,
-      detectorTypeOptions,
-      detectorTypeIds,
+      detectorTypeIds: [],
     };
+  }
+
+  componentDidMount(): void {
+    const detectorTypeIds = this.props.allRuleCategories.map((option) => option.key);
+    this.setState({ detectorTypeIds });
+  }
+
+  componentDidUpdate(
+    prevProps: Readonly<DetectorTypeProps>,
+    prevState: Readonly<DetectorTypeState>,
+    snapshot?: any
+  ): void {
+    if (prevProps.allRuleCategories !== this.props.allRuleCategories) {
+      const detectorTypeIds = this.props.allRuleCategories.map((option) => option.key);
+      this.setState({ detectorTypeIds });
+    }
   }
 
   onChange = (detectorType: string) => {
@@ -48,22 +60,20 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
     const { detectorType } = this.props;
     if (detectorType.length < 1) return 'Select a detector type.';
     if (!this.state.detectorTypeIds.includes(detectorType)) {
-      console.warn(`Unsupported detector type found: ${detectorType}`);
       return 'Unsupported detector type.';
     }
     return '';
   };
 
   render() {
-    const { detectorType } = this.props;
-    const { detectorTypeOptions } = this.state;
-    const radioButtons = detectorTypeOptions.map((type) => (
-      <EuiFlexItem key={type.id}>
+    const { detectorType, allRuleCategories } = this.props;
+    const radioButtons = allRuleCategories.map((category) => (
+      <EuiFlexItem key={category.key}>
         <EuiRadio
-          id={type.id}
-          label={type.label}
-          checked={type.id === detectorType}
-          onChange={() => this.onChange(type.id)}
+          id={category.key}
+          label={category.display_name}
+          checked={category.key === detectorType}
+          onChange={() => this.onChange(category.key)}
         />
       </EuiFlexItem>
     ));

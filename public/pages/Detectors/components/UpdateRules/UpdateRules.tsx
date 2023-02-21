@@ -45,7 +45,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
   const [flyoutData, setFlyoutData] = useState<RuleTableItem | null>(null);
 
   const rulesViewModelActor = useMemo(
-    () => (services ? new RulesViewModelActor(services.ruleService) : null),
+    () => (services ? RulesViewModelActor.setupRulesViewModelActor(services.ruleService) : null),
     [services]
   );
 

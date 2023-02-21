@@ -61,4 +61,12 @@ export function setupRulesRoutes(services: NodeServices, router: IRouter) {
     },
     rulesService.updateRule
   );
+
+  router.get(
+    {
+      path: `${API.RULES_BASE}/categories`,
+      validate: false,
+    },
+    rulesService.getAllRuleCategories
+  );
 }

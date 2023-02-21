@@ -3,6 +3,7 @@ import { ServerResponse } from '../../server/models/types';
 import {
   CreateRuleResponse,
   DeleteRuleResponse,
+  GetAllRuleCategoriesResponse,
   GetRulesResponse,
   UpdateRuleResponse,
 } from '../../server/models/interfaces/Rules';
@@ -56,6 +57,15 @@ export default class RuleService {
   deleteRule = async (ruleId: string): Promise<ServerResponse<DeleteRuleResponse>> => {
     const url = `..${API.RULES_BASE}/${ruleId}`;
     const response = (await this.httpClient.delete(url)) as ServerResponse<DeleteRuleResponse>;
+
+    return response;
+  };
+
+  getAllRuleCategories = async (): Promise<ServerResponse<GetAllRuleCategoriesResponse>> => {
+    const url = `..${API.RULES_BASE}/categories`;
+    const response = (await this.httpClient.get(url)) as ServerResponse<
+      GetAllRuleCategoriesResponse
+    >;
 
     return response;
   };

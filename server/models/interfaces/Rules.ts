@@ -64,6 +64,14 @@ export interface RuleInfo {
   _version: number;
 }
 
+export interface RuleCategory {
+  key: string;
+  display_name: string;
+}
+export interface GetAllRuleCategoriesResponse {
+  rule_categories: RuleCategory[];
+}
+
 export type RuleSource = Rule & {
   rule: string;
   last_update_time: string;

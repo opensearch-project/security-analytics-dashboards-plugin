@@ -6,8 +6,3 @@
 export interface IndexOption {
   label: string;
 }
-
-export interface DetectorTypeOption {
-  id: string;
-  label: string;
-}

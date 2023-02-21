@@ -65,4 +65,11 @@ export function addRulesMethods(securityAnalytics: any, createAction: any): void
     needBody: true,
     method: 'PUT',
   });
+
+  securityAnalytics[METHOD_NAMES.GET_ALL_RULE_CATEGORIES] = createAction({
+    url: {
+      fmt: `${API.RULES_BASE}/categories`,
+      method: 'GET',
+    },
+  });
 }

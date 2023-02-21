@@ -13,7 +13,7 @@ import {
 } from '@elastic/eui';
 import { AlertCondition, Detector } from '../../../../../models/interfaces';
 import React from 'react';
-import { createTextDetailsGroup } from '../../../../utils/helpers';
+import { createTextDetailsGroup, formatRuleType } from '../../../../utils/helpers';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { DEFAULT_EMPTY_DATA, getNotificationDetailsHref } from '../../../../utils/constants';
 import { FeatureChannelList, RuleInfo } from '../../../../../server/models/interfaces';
@@ -65,7 +65,7 @@ export const AlertTriggerView: React.FC<AlertTriggerViewProps> = ({
         <EuiSpacer size={'m'} />
         {createTextDetailsGroup(
           [
-            { label: 'Log type', content: `${types[0]}` || DEFAULT_EMPTY_DATA },
+            { label: 'Log type', content: `${formatRuleType(types[0])}` || DEFAULT_EMPTY_DATA },
             { label: 'Rule names', content: conditionRuleNames.join('\n') || DEFAULT_EMPTY_DATA },
           ],
           3

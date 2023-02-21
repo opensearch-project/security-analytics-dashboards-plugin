@@ -14,6 +14,7 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { AUTHOR_REGEX, validateDescription, validateName } from '../../../utils/validation';
 import { dump, load } from 'js-yaml';
 import { BREADCRUMBS, DEFAULT_EMPTY_DATA } from '../../../utils/constants';
+import { RuleCategory } from '../../../../server/models/interfaces';
 
 export interface RuleTableItem {
   title: string;
@@ -23,6 +24,16 @@ export interface RuleTableItem {
   description: string;
   ruleInfo: RuleItemInfoBase;
   ruleId: string;
+}
+
+export function setRuleTypes(ruleCategories: RuleCategory[]) {
+  ruleTypes.splice(0, ruleTypes.length);
+  ruleCategories.forEach((ruleCategory) => {
+    ruleTypes.push({
+      label: ruleCategory.display_name,
+      value: ruleCategory.key,
+    });
+  });
 }
 
 export const getRulesTableColumns = (

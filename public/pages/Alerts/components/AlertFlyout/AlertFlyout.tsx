@@ -61,7 +61,7 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
   constructor(props: AlertFlyoutProps) {
     super(props);
 
-    this.rulesViewModelActor = new RulesViewModelActor(props.ruleService);
+    this.rulesViewModelActor = RulesViewModelActor.setupRulesViewModelActor(props.ruleService);
 
     this.state = {
       acknowledged: props.alertItem.state === ALERT_STATE.ACKNOWLEDGED,

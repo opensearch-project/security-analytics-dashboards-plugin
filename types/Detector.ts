@@ -54,11 +54,6 @@ export interface SourceIndexOption {
   label: string;
 }
 
-export interface DetectorTypeOption {
-  id: string;
-  label: string;
-}
-
 export enum DetectorCreationStep {
   DEFINE_DETECTOR = 1,
   CONFIGURE_FIELD_MAPPING = 2,
