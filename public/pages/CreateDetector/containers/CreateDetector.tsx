@@ -15,6 +15,7 @@ import {
   ROUTES,
   OS_NOTIFICATION_PLUGIN,
   logTypesWithDashboards,
+  pendingDashboardCreations,
 } from '../../../utils/constants';
 import ConfigureFieldMapping from '../components/ConfigureFieldMapping';
 import ConfigureAlerts from '../components/ConfigureAlerts';
@@ -144,10 +145,9 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
               detector.detector_type,
               createDetectorRes.response._id
             );
+            pendingDashboardCreations[createDetectorRes.response._id] = createDashboardPromise;
           }
-          this.props.history.push(`${ROUTES.DETECTOR_DETAILS}/${createDetectorRes.response._id}`, {
-            createDashboardPromise,
-          });
+          this.props.history.push(`${ROUTES.DETECTOR_DETAILS}/${createDetectorRes.response._id}`);
         } else {
           errorNotificationToast(
             this.props.notifications,

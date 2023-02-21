@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { SimpleSavedObject } from 'opensearch-dashboards/public';
+import { ServerResponse } from '../../types';
 import { Detector, DetectorInput, PeriodSchedule } from '../../models/interfaces';
 import { DetectorHit } from '../../server/models/interfaces';
 import { DETECTOR_TYPES } from '../pages/Detectors/utils/constants';
@@ -141,3 +143,7 @@ export const ALERT_STATE = Object.freeze({
 });
 
 export const logTypesWithDashboards = new Set(['network', 'cloudtrail', 's3']);
+
+export const pendingDashboardCreations: {
+  [detectorId: string]: undefined | Promise<void | ServerResponse<SimpleSavedObject<unknown>>>;
+} = {};
