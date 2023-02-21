@@ -62,6 +62,15 @@ export class RulesViewModelActor {
     const allRuleCategories = await this.service.getAllRuleCategories();
 
     if (allRuleCategories.ok) {
+      const updatedLabel: { [key: string]: string } = {
+        network: 'Network events',
+        github: 'Github actions',
+        m365: 'Microsoft 365 events',
+        okta: 'Okta events',
+      };
+      allRuleCategories.response.rule_categories.forEach((ruleCategory) => {
+        ruleCategory.display_name = updatedLabel[ruleCategory.key] || ruleCategory.display_name;
+      });
       return allRuleCategories.response.rule_categories;
     }
 
