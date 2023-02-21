@@ -831,7 +831,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                                 Description
                               </strong>
                               <i>
-                                 - optional
+                                 - optional 
                               </i>
                             </div>
                           </EuiText>
