@@ -139,7 +139,7 @@ Object {
                           data-test-subj="text-details-group-content-log-type"
                           id="some_html_id"
                         >
-                          detector_type_1
+                          -
                         </div>
                       </div>
                     </div>
@@ -503,7 +503,7 @@ Object {
                         data-test-subj="text-details-group-content-log-type"
                         id="some_html_id"
                       >
-                        detector_type_1
+                        -
                       </div>
                     </div>
                   </div>
