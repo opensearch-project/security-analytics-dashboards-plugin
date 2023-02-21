@@ -58,6 +58,13 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
     this.props.changeDetector(detector);
 
     const allIndices = detector.inputs[0].detector_input.indices;
+    for (let indexName in this.indicesMappings) {
+      if (allIndices.indexOf(indexName) === -1) {
+        // cleanup removed indexes
+        delete this.indicesMappings[indexName];
+      }
+    }
+
     for (const indexName of allIndices) {
       if (!this.indicesMappings[indexName]) {
         const detectorType = this.props.detector.detector_type.toLowerCase();
@@ -69,19 +76,20 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
       }
     }
 
+    debugger;
     if (!_.isEmpty(this.indicesMappings)) {
       let firstMapping: string[] = [];
       let firstMatchMappingIndex: string = '';
       let message: string[] = [];
-      for (let mapping in this.indicesMappings) {
-        if (this.indicesMappings.hasOwnProperty(mapping)) {
-          if (!firstMapping.length) firstMapping = this.indicesMappings[mapping];
-          !firstMatchMappingIndex.length && (firstMatchMappingIndex = mapping);
-          if (!_.isEqual(firstMapping, this.indicesMappings[mapping])) {
+      for (let indexName in this.indicesMappings) {
+        if (this.indicesMappings.hasOwnProperty(indexName)) {
+          if (!firstMapping.length) firstMapping = this.indicesMappings[indexName];
+          !firstMatchMappingIndex.length && (firstMatchMappingIndex = indexName);
+          if (!_.isEqual(firstMapping, this.indicesMappings[indexName])) {
             message = [
               `The below log sources don't have the same fields, please consider creating separate detectors for them.`,
               firstMatchMappingIndex,
-              mapping,
+              indexName,
             ];
             break;
           }
