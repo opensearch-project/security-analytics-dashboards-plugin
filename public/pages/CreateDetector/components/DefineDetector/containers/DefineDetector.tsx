@@ -194,6 +194,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
 
         <DetectorDataSource
           {...this.props}
+          detector_type={detector_type}
           detectorIndices={indices}
           filedMappingService={filedMappingService}
           onDetectorInputIndicesChange={this.onDetectorInputIndicesChange}
