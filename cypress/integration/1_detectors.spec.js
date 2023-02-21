@@ -6,6 +6,7 @@
 import { OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
 import sample_index_settings from '../fixtures/sample_index_settings.json';
 import dns_rule_data from '../fixtures/integration_tests/rule/create_dns_rule.json';
+import sample_dns_settings from '../fixtures/integration_tests/index/create_dns_settings.json';
 
 const testMappings = {
   properties: {
@@ -16,7 +17,7 @@ const testMappings = {
   },
 };
 
-const cypressDNSRule = 'Cypress DNS Rule';
+const cypressDNSRule = dns_rule_data.title;
 
 describe('Detectors', () => {
   const indexName = 'cypress-test-dns';
@@ -24,6 +25,7 @@ describe('Detectors', () => {
 
   before(() => {
     cy.cleanUpTests();
+
     // Create test index
     cy.createIndex(indexName, sample_index_settings).then(() =>
       cy
@@ -41,8 +43,6 @@ describe('Detectors', () => {
     );
 
     cy.createRule(dns_rule_data);
-
-    cy.contains(detectorName).should('not.exist');
   });
 
   beforeEach(() => {
@@ -55,6 +55,39 @@ describe('Detectors', () => {
     cy.waitForPageLoad('detectors', {
       contains: 'Threat detectors',
     });
+  });
+
+  it('...should show mappings warning', () => {
+    const indexName = 'cypress-index-windows';
+    const dnsName = 'cypress-index-dns';
+    cy.createIndex(indexName, sample_index_settings);
+    cy.createIndex(dnsName, sample_dns_settings);
+
+    // Locate Create detector button click to start
+    cy.get('.euiButton').filter(':contains("Create detector")').click({ force: true });
+
+    // Check to ensure process started
+    cy.waitForPageLoad('create-detector', {
+      contains: 'Define detector',
+    });
+
+    // Select our pre-seeded data source (check indexName)
+    cy.get(`[data-test-subj="define-detector-select-data-source"]`)
+      .find('input')
+      .focus()
+      .realType(indexName);
+
+    // Select threat detector type (Windows logs)
+    cy.get(`input[id="dns"]`).click({ force: true });
+
+    // Select our pre-seeded data source (check indexName)
+    cy.get(`[data-test-subj="define-detector-select-data-source"]`)
+      .find('input')
+      .focus()
+      .realType(dnsName)
+      .realPress('Enter');
+
+    cy.get('.euiCallOut').should('be.visible').contains('Detector configuration warning');
   });
 
   it('...can be created', () => {
