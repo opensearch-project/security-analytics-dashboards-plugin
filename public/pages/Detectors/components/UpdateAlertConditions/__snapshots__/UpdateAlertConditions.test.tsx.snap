@@ -416,6 +416,7 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
     RuleService {
       "createRule": [Function],
       "deleteRule": [Function],
+      "getAllRuleCategories": [Function],
       "getRules": [Function],
       "httpClient": [MockFunction],
       "updateRule": [Function],
@@ -1017,6 +1018,7 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
         RuleService {
           "createRule": [Function],
           "deleteRule": [Function],
+          "getAllRuleCategories": [Function],
           "getRules": [Function],
           "httpClient": [MockFunction],
           "updateRule": [Function],
