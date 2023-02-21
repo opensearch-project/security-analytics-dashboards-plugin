@@ -23,5 +23,6 @@ export default ({
     state: {
       detectorHit: detectorHitMock,
     },
+    pathname: '',
   },
 } as unknown) as typeof UpdateAlertConditions;

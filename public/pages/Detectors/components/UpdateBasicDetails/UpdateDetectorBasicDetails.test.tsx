@@ -9,7 +9,12 @@ import { expect } from '@jest/globals';
 import { UpdateDetectorBasicDetails } from './UpdateBasicDetails';
 import { act } from 'react-dom/test-utils';
 import { mount } from 'enzyme';
-
+jest.mock(
+  '../../../CreateDetector/components/DefineDetector/components/DetectorDataSource/DetectorDataSource.tsx',
+  () => () => {
+    return <mock-component mock="DetectorDataSource" />;
+  }
+);
 describe('<UpdateDetectorBasicDetails /> spec', () => {
   it('renders the component', async () => {
     let wrapper;
