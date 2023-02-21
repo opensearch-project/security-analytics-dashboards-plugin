@@ -2897,7 +2897,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                           "name": "Rule Type",
                           "options": Array [
                             Object {
-                              "name": "Network",
+                              "name": "Network events",
                               "value": "network",
                             },
                             Object {
@@ -3014,7 +3014,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             "name": "Rule Type",
                             "options": Array [
                               Object {
-                                "name": "Network",
+                                "name": "Network events",
                                 "value": "network",
                               },
                               Object {
@@ -3203,7 +3203,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                       "name": "Rule Type",
                                       "options": Array [
                                         Object {
-                                          "name": "Network",
+                                          "name": "Network events",
                                           "value": "network",
                                         },
                                         Object {
@@ -3314,7 +3314,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                           "name": "Rule Type",
                                           "options": Array [
                                             Object {
-                                              "name": "Network",
+                                              "name": "Network events",
                                               "value": "network",
                                             },
                                             Object {

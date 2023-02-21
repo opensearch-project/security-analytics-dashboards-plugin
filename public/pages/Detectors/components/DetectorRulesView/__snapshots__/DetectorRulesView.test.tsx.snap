@@ -412,7 +412,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                       "name": "Rule Type",
                       "options": Array [
                         Object {
-                          "name": "Network",
+                          "name": "Network events",
                           "value": "network",
                         },
                         Object {
@@ -529,7 +529,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                         "name": "Rule Type",
                         "options": Array [
                           Object {
-                            "name": "Network",
+                            "name": "Network events",
                             "value": "network",
                           },
                           Object {
@@ -718,7 +718,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                   "name": "Rule Type",
                                   "options": Array [
                                     Object {
-                                      "name": "Network",
+                                      "name": "Network events",
                                       "value": "network",
                                     },
                                     Object {
@@ -829,7 +829,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                       "name": "Rule Type",
                                       "options": Array [
                                         Object {
-                                          "name": "Network",
+                                          "name": "Network events",
                                           "value": "network",
                                         },
                                         Object {
