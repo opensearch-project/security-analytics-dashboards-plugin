@@ -282,6 +282,17 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
 
         <EuiSpacer size={'m'} />
 
+        <EuiCallOut
+          title={'Detector dashboard will be created to visualize insights for this detector'}
+        >
+          <p>
+            A detector dashboard will be automatically created to provide insights for this
+            detector.
+          </p>
+        </EuiCallOut>
+
+        <EuiSpacer size={'m'} />
+
         <DetectorSchedule
           detector={detector}
           onDetectorScheduleChange={this.onDetectorScheduleChange}
