@@ -88,7 +88,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
           };
         });
         this.setState({ detectorHits: detectors });
-      } else {
+      } else if (!res.error.includes('no such index')) {
         errorNotificationToast(notifications, 'retrieve', 'detectors', res.error);
       }
     } catch (e) {
