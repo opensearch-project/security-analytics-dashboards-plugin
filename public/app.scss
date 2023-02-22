@@ -11,6 +11,9 @@ $euiColorGhost: #FFF !default;
 $euiColorInk: #000 !default;
 $euiTextColor: $euiColorDarkestShade !default;
 
+@import "./components/Charts/ChartContainer.scss";
+@import "./pages/Overview/components/Widgets/WidgetContainer.scss";
+
 .selected-radio-panel {
   background-color: tintOrShade($euiColorPrimary, 90%, 70%);
   border-color: $euiColorPrimary;
@@ -45,5 +48,71 @@ $euiTextColor: $euiColorDarkestShade !default;
   text-decoration: none;
 }
 
-@import "./components/Charts/ChartContainer.scss";
-@import "./pages/Overview/components/Widgets/WidgetContainer.scss";
+.vg-tooltip {
+  background-color: #404040 !important;
+  border-radius: 4px !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  padding: 0 !important;
+  font-family: "Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol" !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+
+  .vg-tooltip-innerContainer {
+    .vg-tooltip-header {
+      padding: 4px;
+      border-bottom: 1px solid gray;
+
+      table tr:nth-child(odd) {
+        background-color: #535353 !important;
+      }
+
+      td:nth-child(1) {
+        position: relative;
+        width: 6px;
+        padding: 0 0 0 2px !important;
+
+        .vg-tooltip-color {
+          width: 4px;
+          position: absolute;
+          top: 2px;
+          height: calc(100% - 4px);
+        }
+      }
+
+      td:nth-child(3) {
+        padding-right: 8px !important;
+        text-align: right;
+      }
+    }
+
+    .vg-tooltip-body {
+      padding: 4px;
+
+      table tr:nth-child(even) {
+        background-color: #535353 !important;
+      }
+
+      td:nth-child(2) {
+        text-align: right;
+      }
+    }
+
+    table {
+      width: 100%;
+
+      tbody tr {
+        td {
+          height: 28px;
+          padding: 4px !important;
+          vertical-align: middle !important;
+        }
+
+        td:nth-child(1) {
+          padding-right: 10px !important;
+          font-weight: 400 !important;
+        }
+      }
+    }
+  }
+}
