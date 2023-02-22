@@ -5,7 +5,7 @@
 
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { EuiSpacer, EuiTitle, EuiText } from '@elastic/eui';
+import { EuiSpacer, EuiTitle, EuiText, EuiCallOut } from '@elastic/eui';
 import { Detector, PeriodSchedule } from '../../../../../../models/interfaces';
 import DetectorBasicDetailsForm from '../components/DetectorDetails';
 import DetectorDataSource from '../components/DetectorDataSource';
@@ -216,6 +216,17 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
           onRuleToggle={onRuleToggle}
           onAllRulesToggle={onAllRulesToggle}
         />
+
+        <EuiSpacer size={'m'} />
+
+        <EuiCallOut
+          title={'Detector dashboard will be created to visualize insights for this detector'}
+        >
+          <p>
+            A detector dashboard will be automatically created to provide insights for this
+            detector.
+          </p>
+        </EuiCallOut>
 
         <EuiSpacer size={'m'} />
 

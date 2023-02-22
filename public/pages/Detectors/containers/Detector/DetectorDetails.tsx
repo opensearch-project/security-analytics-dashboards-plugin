@@ -9,6 +9,7 @@ import {
   EuiContextMenuPanel,
   EuiFlexGroup,
   EuiFlexItem,
+  EuiHorizontalRule,
   EuiPopover,
   EuiSpacer,
   EuiTab,
@@ -19,7 +20,12 @@ import {
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { CoreServicesContext } from '../../../../components/core_services';
-import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR_HIT, ROUTES } from '../../../../utils/constants';
+import {
+  BREADCRUMBS,
+  EMPTY_DEFAULT_DETECTOR_HIT,
+  pendingDashboardCreations,
+  ROUTES,
+} from '../../../../utils/constants';
 import { DetectorHit } from '../../../../../server/models/interfaces';
 import { DetectorDetailsView } from '../DetectorDetailsView/DetectorDetailsView';
 import { FieldMappingsView } from '../../components/FieldMappingsView/FieldMappingsView';
@@ -27,16 +33,23 @@ import { AlertTriggersView } from '../AlertTriggersView/AlertTriggersView';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { DetectorsService } from '../../../../services';
 import { errorNotificationToast } from '../../../../utils/helpers';
-import { NotificationsStart } from 'opensearch-dashboards/public';
+import { NotificationsStart, SimpleSavedObject } from 'opensearch-dashboards/public';
+import { ISavedObjectsService, ServerResponse } from '../../../../../types';
 
 export interface DetectorDetailsProps
   extends RouteComponentProps<
     {},
     any,
-    { detectorHit: DetectorHit; enabledRules?: RuleItem[]; allRules?: RuleItem[] }
+    {
+      detectorHit: DetectorHit;
+      createDashboardPromise?: Promise<void | ServerResponse<SimpleSavedObject<unknown>>>;
+      enabledRules?: RuleItem[];
+      allRules?: RuleItem[];
+    }
   > {
   detectorService: DetectorsService;
   notifications: NotificationsStart;
+  savedObjectsService: ISavedObjectsService;
 }
 
 export interface DetectorDetailsState {
@@ -47,6 +60,7 @@ export interface DetectorDetailsState {
   detectorId: string;
   tabs: any[];
   loading: boolean;
+  dashboardId?: string;
 }
 
 enum TabId {
@@ -105,6 +119,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
             detector={this.detectorHit._source}
             enabled_time={this.detectorHit._source.enabled_time}
             last_update_time={this.detectorHit._source.last_update_time}
+            dashboardId={this.state.dashboardId}
             editBasicDetails={this.editDetectorBasicDetails}
             editDetectorRules={this.editDetectorRules}
           />
@@ -152,6 +167,35 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
 
   async componentDidMount() {
     this.getDetector();
+
+    const pendingDashboardCreationPromise = pendingDashboardCreations[this.state.detectorId];
+    if (pendingDashboardCreationPromise) {
+      pendingDashboardCreationPromise.then((savedObject) => {
+        if (savedObject && savedObject.ok) {
+          this.setState({ dashboardId: savedObject.response.id });
+          this.getTabs();
+        }
+        delete pendingDashboardCreations[this.state.detectorId];
+      });
+    } else {
+      const dashboards = await this.props.savedObjectsService.getDashboards();
+      let detectorDashboardId;
+      dashboards.some((dashboard) => {
+        if (
+          dashboard.references.findIndex((reference) => reference.id === this.state.detectorId) > -1
+        ) {
+          detectorDashboardId = dashboard.id;
+          return true;
+        }
+
+        return false;
+      });
+
+      if (detectorDashboardId) {
+        this.setState({ dashboardId: detectorDashboardId });
+        this.getTabs();
+      }
+    }
   }
 
   getDetector = async () => {
@@ -242,15 +286,8 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
 
   createHeaderActions(): React.ReactNode[] {
     const { loading } = this.state;
-    const onClickActions = [
-      { name: 'View Alerts', onClick: this.onViewAlertsClick },
-      { name: 'View Findings', onClick: this.onViewFindingsClick },
-    ];
     const { isActionsMenuOpen } = this.state;
     return [
-      ...onClickActions.map((action) => (
-        <EuiButton onClick={action.onClick}>{action.name}</EuiButton>
-      )),
       <EuiPopover
         id={'detectorsActionsPopover'}
         button={
@@ -274,16 +311,38 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
           items={[
             <EuiContextMenuItem
               disabled={loading}
-              key={'Delete'}
+              key={'ViewAlerts'}
               icon={'empty'}
-              onClick={() => {
-                this.closeActionsPopover();
-                this.onDelete();
-              }}
-              data-test-subj={'editButton'}
+              onClick={this.onViewAlertsClick}
+              data-test-subj={'viewAlertsButton'}
             >
-              Delete
+              View Alerts
             </EuiContextMenuItem>,
+            <EuiContextMenuItem
+              disabled={loading}
+              key={'ViewFindings'}
+              icon={'empty'}
+              onClick={this.onViewFindingsClick}
+              data-test-subj={'viewFindingsButton'}
+            >
+              View Findings
+            </EuiContextMenuItem>,
+            <>
+              {this.state.dashboardId ? (
+                <EuiContextMenuItem
+                  disabled={loading}
+                  key={'ViewDashboard'}
+                  icon={'empty'}
+                  onClick={() =>
+                    window.open(`dashboards#/view/${this.state.dashboardId}`, '_blank')
+                  }
+                  data-test-subj={'viewDashboard'}
+                >
+                  View detector dashboard
+                </EuiContextMenuItem>
+              ) : null}
+            </>,
+            <EuiHorizontalRule margin="xs" />,
             <EuiContextMenuItem
               disabled={loading}
               key={'Toggle detector'}
@@ -295,6 +354,18 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
               data-test-subj={'deleteButton'}
             >
               {`${this.detectorHit._source.enabled ? 'Stop' : 'Start'} detector`}
+            </EuiContextMenuItem>,
+            <EuiContextMenuItem
+              disabled={loading}
+              key={'Delete'}
+              icon={'empty'}
+              onClick={() => {
+                this.closeActionsPopover();
+                this.onDelete();
+              }}
+              data-test-subj={'editButton'}
+            >
+              Delete
             </EuiContextMenuItem>,
           ]}
         />
