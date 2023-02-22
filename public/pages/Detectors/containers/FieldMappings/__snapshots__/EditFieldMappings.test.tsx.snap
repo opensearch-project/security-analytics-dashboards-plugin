@@ -201,7 +201,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
             >
               <EuiTitle>
                 <h4>
-                  Mapped fields (0)
+                  Automatically mapped fields (0)
                 </h4>
               </EuiTitle>
             </div>
@@ -261,7 +261,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                       <h4
                         className="euiTitle euiTitle--medium"
                       >
-                        Mapped fields (0)
+                        Automatically mapped fields (0)
                       </h4>
                     </EuiTitle>
                   </div>
@@ -492,7 +492,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                             Object {
                               "dataType": "string",
                               "field": "ruleFieldName",
-                              "name": "Rule field name",
+                              "name": "Detector field name",
                               "render": [Function],
                               "width": "25%",
                             },
@@ -506,7 +506,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                             Object {
                               "dataType": "string",
                               "field": "logFieldName",
-                              "name": "Log field name",
+                              "name": "Log source field name",
                               "render": [Function],
                               "width": "45%",
                             },
@@ -563,7 +563,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                               Object {
                                 "dataType": "string",
                                 "field": "ruleFieldName",
-                                "name": "Rule field name",
+                                "name": "Detector field name",
                                 "render": [Function],
                                 "width": "25%",
                               },
@@ -577,7 +577,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                               Object {
                                 "dataType": "string",
                                 "field": "logFieldName",
-                                "name": "Log field name",
+                                "name": "Log source field name",
                                 "render": [Function],
                                 "width": "45%",
                               },
@@ -631,7 +631,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                               "allowNeutralSort": true,
                               "sort": Object {
                                 "direction": "asc",
-                                "field": "Rule field name",
+                                "field": "Detector field name",
                               },
                             }
                           }
@@ -824,15 +824,15 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                                                     values={
                                                       Object {
                                                         "description": undefined,
-                                                        "innerText": "Rule field name",
+                                                        "innerText": "Detector field name",
                                                       }
                                                     }
                                                   >
                                                     <span
                                                       className="euiTableCellContent__text"
-                                                      title="Rule field name"
+                                                      title="Detector field name"
                                                     >
-                                                      Rule field name
+                                                      Detector field name
                                                     </span>
                                                   </EuiI18n>
                                                 </EuiInnerText>
@@ -918,15 +918,15 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                                                     values={
                                                       Object {
                                                         "description": undefined,
-                                                        "innerText": "Log field name",
+                                                        "innerText": "Log source field name",
                                                       }
                                                     }
                                                   >
                                                     <span
                                                       className="euiTableCellContent__text"
-                                                      title="Log field name"
+                                                      title="Log source field name"
                                                     >
-                                                      Log field name
+                                                      Log source field name
                                                     </span>
                                                   </EuiI18n>
                                                 </EuiInnerText>
@@ -1092,6 +1092,13 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
         </EuiAccordion>
       </div>
     </EuiPanel>
+    <EuiSpacer
+      size="m"
+    >
+      <div
+        className="euiSpacer euiSpacer--m"
+      />
+    </EuiSpacer>
     <EuiSpacer
       size="m"
     >
