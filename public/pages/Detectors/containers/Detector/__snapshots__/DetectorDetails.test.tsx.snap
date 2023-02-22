@@ -2928,6 +2928,26 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                               "name": "S3",
                               "value": "s3",
                             },
+                            Object {
+                              "name": "Google Workspace",
+                              "value": "gworkspace",
+                            },
+                            Object {
+                              "name": "Github actions",
+                              "value": "github",
+                            },
+                            Object {
+                              "name": "Microsoft 365",
+                              "value": "m365",
+                            },
+                            Object {
+                              "name": "Okta",
+                              "value": "okta",
+                            },
+                            Object {
+                              "name": "Azure",
+                              "value": "azure",
+                            },
                           ],
                           "type": "field_value_selection",
                         },
@@ -3044,6 +3064,26 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                               Object {
                                 "name": "S3",
                                 "value": "s3",
+                              },
+                              Object {
+                                "name": "Google Workspace",
+                                "value": "gworkspace",
+                              },
+                              Object {
+                                "name": "Github actions",
+                                "value": "github",
+                              },
+                              Object {
+                                "name": "Microsoft 365",
+                                "value": "m365",
+                              },
+                              Object {
+                                "name": "Okta",
+                                "value": "okta",
+                              },
+                              Object {
+                                "name": "Azure",
+                                "value": "azure",
                               },
                             ],
                             "type": "field_value_selection",
@@ -3234,6 +3274,26 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                           "name": "S3",
                                           "value": "s3",
                                         },
+                                        Object {
+                                          "name": "Google Workspace",
+                                          "value": "gworkspace",
+                                        },
+                                        Object {
+                                          "name": "Github actions",
+                                          "value": "github",
+                                        },
+                                        Object {
+                                          "name": "Microsoft 365",
+                                          "value": "m365",
+                                        },
+                                        Object {
+                                          "name": "Okta",
+                                          "value": "okta",
+                                        },
+                                        Object {
+                                          "name": "Azure",
+                                          "value": "azure",
+                                        },
                                       ],
                                       "type": "field_value_selection",
                                     },
@@ -3344,6 +3404,26 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                             Object {
                                               "name": "S3",
                                               "value": "s3",
+                                            },
+                                            Object {
+                                              "name": "Google Workspace",
+                                              "value": "gworkspace",
+                                            },
+                                            Object {
+                                              "name": "Github actions",
+                                              "value": "github",
+                                            },
+                                            Object {
+                                              "name": "Microsoft 365",
+                                              "value": "m365",
+                                            },
+                                            Object {
+                                              "name": "Okta",
+                                              "value": "okta",
+                                            },
+                                            Object {
+                                              "name": "Azure",
+                                              "value": "azure",
                                             },
                                           ],
                                           "type": "field_value_selection",
