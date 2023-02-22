@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiButton, EuiSpacer, EuiLink } from '@elastic/eui';
+import { EuiButton, EuiSpacer, EuiLink, EuiIcon } from '@elastic/eui';
 import React from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { createTextDetailsGroup, parseSchedule } from '../../../../utils/helpers';
@@ -39,18 +39,18 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
     { label: 'Detector name', content: name },
     { label: 'Log type', content: detector_type.toLowerCase() },
     { label: 'Data source', content: inputs[0].detector_input.indices[0] },
-  ];
-
-  if (dashboardId) {
-    firstTextDetailsGroupEntries.push({
+    {
       label: 'Detector dashboard',
-      content: (
-        <EuiLink onClick={() => window.open(`dashboards#/view/${dashboardId}`, '_self')}>
-          {}
+      content: (dashboardId ? (
+        <EuiLink onClick={() => window.open(`dashboards#/view/${dashboardId}`, '_blank')}>
+          {`${name} summary`}
+          <EuiIcon type={'popout'} />
         </EuiLink>
-      ) as any,
-    });
-  }
+      ) : (
+        'Not available for this log type'
+      )) as any,
+    },
+  ];
 
   return (
     <ContentPanel

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { SimpleSavedObject } from 'opensearch-dashboards/public';
+import { SavedObjectReference, SimpleSavedObject } from 'opensearch-dashboards/public';
 import { ServerResponse } from './ServerResponse';
 
 export interface ISavedObjectsService {
@@ -12,4 +12,7 @@ export interface ISavedObjectsService {
     logType: string,
     detectorId: string
   ): Promise<ServerResponse<SimpleSavedObject>>;
+  getDashboards(): Promise<
+    SimpleSavedObject<{ references: SavedObjectReference[]; id?: string }>[]
+  >;
 }

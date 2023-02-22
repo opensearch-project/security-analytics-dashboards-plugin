@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { SavedObjectsClientContract, SimpleSavedObject } from 'opensearch-dashboards/public';
+import {
+  SavedObjectReference,
+  SavedObjectsClientContract,
+  SimpleSavedObject,
+} from 'opensearch-dashboards/public';
 import { ISavedObjectsService, ServerResponse } from '../../types';
 import { getSavedObjectConfigs } from '../store/savedObjectsConfig';
 import { logTypesWithDashboards } from '../utils/constants';
@@ -90,4 +94,18 @@ export default class SavedObjectService implements ISavedObjectsService {
 
     return Promise.reject('Log type not yet supported');
   }
+
+  public getDashboards = async (): Promise<
+    SimpleSavedObject<{ references: SavedObjectReference[]; id?: string }>[]
+  > => {
+    const dashboards = await this.savedObjectsClient
+      .find<{ references: SavedObjectReference[]; id?: string }>({
+        type: 'dashboard',
+        fields: ['references', 'id'],
+        perPage: 10000,
+      })
+      .then((response) => response.savedObjects);
+
+    return Promise.resolve(dashboards);
+  };
 }
