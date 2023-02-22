@@ -24,6 +24,7 @@ import OpenSearchService from './services/OpenSearchService';
 import { BrowserServices } from './models/interfaces';
 import FieldMappingService from './services/FieldMappingService';
 import RuleService from './services/RuleService';
+import SavedObjectService from './services/SavedObjectService';
 import { SecurityAnalyticsPluginStartDeps } from './plugin';
 
 export function renderApp(
@@ -42,6 +43,7 @@ export function renderApp(
   const alertsService = new AlertsService(http);
   const ruleService = new RuleService(http);
   const notificationsService = new NotificationsService(http);
+  const savedObjectsService = new SavedObjectService(savedObjects.client, indexService);
   const indexPatternsService = new IndexPatternsService(depsStart.data.indexPatterns);
 
   const services: BrowserServices = {
@@ -53,6 +55,7 @@ export function renderApp(
     ruleService,
     alertService: alertsService,
     notificationsService,
+    savedObjectsService,
     indexPatternsService,
   };
 

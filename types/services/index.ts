@@ -13,3 +13,4 @@ export * from './INotificationService';
 export * from './IOpensearchService';
 export * from './IRuleService';
 export * from './ServerResponse';
+export * from './ISavedObjectsService';
