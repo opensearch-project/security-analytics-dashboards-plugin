@@ -115,7 +115,7 @@ export const EMPTY_DEFAULT_DETECTOR_INPUT: DetectorInput = {
 
 export const EMPTY_DEFAULT_DETECTOR: Detector = {
   type: 'detector',
-  detector_type: DETECTOR_TYPES.NETFLOW.id,
+  detector_type: DETECTOR_TYPES.NETWORK.id,
   name: '',
   enabled: true,
   createdBy: '',

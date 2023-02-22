@@ -180,6 +180,37 @@ export default class ConfigureFieldMapping extends Component<
 
         <EuiSpacer size={'m'} />
 
+        <EuiPanel>
+          <EuiAccordion
+            buttonContent={
+              <div data-test-subj="mapped-fields-btn">
+                <EuiTitle>
+                  <h4>{`Automatically mapped fields (${mappedRuleFields.length})`}</h4>
+                </EuiTitle>
+              </div>
+            }
+            buttonProps={{ style: { paddingLeft: '10px', paddingRight: '10px' } }}
+            id={'mappedFieldsAccordion'}
+            initialIsOpen={false}
+          >
+            <EuiHorizontalRule margin={'xs'} />
+            <FieldMappingsTable<MappingViewType.Edit>
+              {...this.props}
+              loading={loading}
+              ruleFields={mappedRuleFields}
+              indexFields={indexFieldOptions}
+              mappingProps={{
+                type: MappingViewType.Edit,
+                existingMappings,
+                invalidMappingFieldNames,
+                onMappingCreation: this.onMappingCreation,
+              }}
+            />
+          </EuiAccordion>
+        </EuiPanel>
+
+        <EuiSpacer size={'m'} />
+
         {unmappedRuleFields.length > 0 ? (
           <>
             {pendingCount > 0 ? (
@@ -227,34 +258,6 @@ export default class ConfigureFieldMapping extends Component<
           </>
         )}
 
-        <EuiPanel>
-          <EuiAccordion
-            buttonContent={
-              <div data-test-subj="mapped-fields-btn">
-                <EuiTitle>
-                  <h4>{`Default mapped fields (${mappedRuleFields.length})`}</h4>
-                </EuiTitle>
-              </div>
-            }
-            buttonProps={{ style: { paddingLeft: '10px', paddingRight: '10px' } }}
-            id={'mappedFieldsAccordion'}
-            initialIsOpen={false}
-          >
-            <EuiHorizontalRule margin={'xs'} />
-            <FieldMappingsTable<MappingViewType.Edit>
-              {...this.props}
-              loading={loading}
-              ruleFields={mappedRuleFields}
-              indexFields={indexFieldOptions}
-              mappingProps={{
-                type: MappingViewType.Edit,
-                existingMappings,
-                invalidMappingFieldNames,
-                onMappingCreation: this.onMappingCreation,
-              }}
-            />
-          </EuiAccordion>
-        </EuiPanel>
         <EuiSpacer size={'m'} />
       </div>
     );
