@@ -12,3 +12,4 @@ export * from './Notification';
 export * from './Overview';
 export * from './Rule';
 export * from './services';
+export * from './SavedObjectConfig';

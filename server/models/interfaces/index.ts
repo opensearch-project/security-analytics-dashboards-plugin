@@ -28,6 +28,7 @@ export interface SecurityAnalyticsApi {
   readonly CHANNELS: string;
   readonly PLUGINS: string;
   readonly ACKNOWLEDGE_ALERTS: string;
+  readonly UPDATE_ALIASES: string;
 }
 
 export interface NodeServices {
