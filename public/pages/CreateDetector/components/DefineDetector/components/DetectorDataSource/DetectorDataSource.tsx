@@ -127,7 +127,7 @@ export default class DetectorDataSource extends Component<
           !firstMatchMappingIndex.length && (firstMatchMappingIndex = indexName);
           if (!_.isEqual(firstMapping, this.indicesMappings[indexName])) {
             message = [
-              `The below log sources don't have the same fields, please consider creating separate detectors for them.`,
+              `We recommend creating separate detectors for each of the following log sources:`,
               firstMatchMappingIndex,
               indexName,
             ];
@@ -151,12 +151,13 @@ export default class DetectorDataSource extends Component<
         <EuiSpacer size={'m'} />
         {message.length ? (
           <>
-            <EuiCallOut title="Detector configuration warning" color="warning" iconType="alert">
+            <EuiCallOut
+              title="The selected log sources contain different types of logs"
+              color="warning"
+            >
               {message.map((messageItem: string, index: number) => (
-                <EuiTextColor
-                  color={index === 0 ? 'default' : 'warning'}
-                  key={`callout-message-part-${index}`}
-                >
+                <EuiTextColor color={'default'} key={`callout-message-part-${index}`}>
+                  {index === 0 ? '' : 'ㅤ•ㅤ'}
                   {messageItem}
                   <br />
                 </EuiTextColor>
