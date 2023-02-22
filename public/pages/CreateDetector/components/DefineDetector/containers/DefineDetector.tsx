@@ -22,6 +22,7 @@ import {
 } from '../components/DetectionRules/DetectionRules';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import _ from 'lodash';
+import { logTypesWithDashboards } from '../../../../../utils/constants';
 
 interface DefineDetectorProps extends RouteComponentProps {
   detector: Detector;
@@ -219,16 +220,20 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
 
         <EuiSpacer size={'m'} />
 
-        <EuiCallOut
-          title={'Detector dashboard will be created to visualize insights for this detector'}
-        >
-          <p>
-            A detector dashboard will be automatically created to provide insights for this
-            detector.
-          </p>
-        </EuiCallOut>
+        {logTypesWithDashboards.has(detector_type) ? (
+          <>
+            <EuiCallOut
+              title={'Detector dashboard will be created to visualize insights for this detector'}
+            >
+              <p>
+                A detector dashboard will be automatically created to provide insights for this
+                detector.
+              </p>
+            </EuiCallOut>
 
-        <EuiSpacer size={'m'} />
+            <EuiSpacer size={'m'} />
+          </>
+        ) : null}
 
         <DetectorSchedule
           detector={detector}
