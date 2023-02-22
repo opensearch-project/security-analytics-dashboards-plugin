@@ -5,7 +5,7 @@
 
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { EuiSpacer, EuiTitle, EuiText, EuiCallOut, EuiTextColor } from '@elastic/eui';
+import { EuiSpacer, EuiTitle, EuiText } from '@elastic/eui';
 import { Detector, PeriodSchedule } from '../../../../../../models/interfaces';
 import DetectorBasicDetailsForm from '../components/DetectorDetails';
 import DetectorDataSource from '../components/DetectorDataSource';
@@ -38,66 +38,17 @@ interface DefineDetectorProps extends RouteComponentProps {
   onAllRulesToggle: (enabled: boolean) => void;
 }
 
-interface DefineDetectorState {
-  message: string[];
-}
+interface DefineDetectorState {}
 
 export default class DefineDetector extends Component<DefineDetectorProps, DefineDetectorState> {
-  state = {
-    message: [],
-  };
-
-  private indicesMappings: any = {};
-
-  async updateDetectorCreationState(detector: Detector) {
-    let isDataValid =
+  updateDetectorCreationState(detector: Detector) {
+    const isDataValid =
       !!detector.name &&
       !!detector.detector_type &&
       detector.inputs[0].detector_input.indices.length >= MIN_NUM_DATA_SOURCES &&
       !!detector.schedule.period.interval;
+
     this.props.changeDetector(detector);
-
-    const allIndices = detector.inputs[0].detector_input.indices;
-    for (let indexName in this.indicesMappings) {
-      if (allIndices.indexOf(indexName) === -1) {
-        // cleanup removed indexes
-        delete this.indicesMappings[indexName];
-      }
-    }
-
-    for (const indexName of allIndices) {
-      if (!this.indicesMappings[indexName]) {
-        const detectorType = this.props.detector.detector_type.toLowerCase();
-        const result = await this.props.filedMappingService.getMappingsView(
-          indexName,
-          detectorType
-        );
-        result.ok && (this.indicesMappings[indexName] = result.response.unmapped_field_aliases);
-      }
-    }
-
-    if (!_.isEmpty(this.indicesMappings)) {
-      let firstMapping: string[] = [];
-      let firstMatchMappingIndex: string = '';
-      let message: string[] = [];
-      for (let indexName in this.indicesMappings) {
-        if (this.indicesMappings.hasOwnProperty(indexName)) {
-          if (!firstMapping.length) firstMapping = this.indicesMappings[indexName];
-          !firstMatchMappingIndex.length && (firstMatchMappingIndex = indexName);
-          if (!_.isEqual(firstMapping, this.indicesMappings[indexName])) {
-            message = [
-              `The below log sources don't have the same fields, please consider creating separate detectors for them.`,
-              firstMatchMappingIndex,
-              indexName,
-            ];
-            break;
-          }
-        }
-      }
-
-      this.setState({ message });
-    }
-
     this.props.updateDataValidState(DetectorCreationStep.DEFINE_DETECTOR, isDataValid);
   }
 
@@ -213,8 +164,8 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
       onRuleToggle,
       onPageChange,
       onAllRulesToggle,
+      filedMappingService,
     } = this.props;
-    const { message } = this.state;
     const { name, inputs, detector_type } = this.props.detector;
     const { description, indices } = inputs[0].detector_input;
 
@@ -230,22 +181,6 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
         </EuiText>
 
         <EuiSpacer size={'m'} />
-        {message.length ? (
-          <>
-            <EuiCallOut title="Detector configuration warning" color="warning" iconType="alert">
-              {message.map((messageItem: string, index: number) => (
-                <EuiTextColor
-                  color={index === 0 ? 'default' : 'warning'}
-                  key={`callout-message-part-${index}`}
-                >
-                  {messageItem}
-                  <br />
-                </EuiTextColor>
-              ))}
-            </EuiCallOut>
-            <EuiSpacer size={'m'} />
-          </>
-        ) : null}
 
         <DetectorBasicDetailsForm
           {...this.props}
@@ -259,7 +194,9 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
 
         <DetectorDataSource
           {...this.props}
+          detector_type={detector_type}
           detectorIndices={indices}
+          filedMappingService={filedMappingService}
           onDetectorInputIndicesChange={this.onDetectorInputIndicesChange}
         />
 
