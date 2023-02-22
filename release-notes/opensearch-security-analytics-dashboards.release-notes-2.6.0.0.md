@@ -8,6 +8,9 @@ Compatible with OpenSearch 2.6.0
 
 ### Features
 
+* Added new log types. ([#439](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/439))
+* added create dashboard feature. ([#437](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/437))
+* Improvements for field mappings. ([#432](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/432))
 * Added multi select data source for creating detector. ([#424](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/424))
 * Chart vertical domain UX improvement. ([#372](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/372))
 * Various detectors page UX/UI improvements. ([#387](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/387))
@@ -19,6 +22,7 @@ Compatible with OpenSearch 2.6.0
 
 ### Infrastructure
 
+* Fix Node.js and Yarn installation in CI. ([#446](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/446))
 * Added untriaged issue workflow. ([#410](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/410))
 
 ### Bug Fixes
