@@ -12,6 +12,7 @@ import {
   EuiIcon,
   EuiInMemoryTable,
   EuiText,
+  EuiToolTip,
 } from '@elastic/eui';
 import { DEFAULT_EMPTY_DATA } from '../../../../../../utils/constants';
 import { STATUS_ICON_PROPS } from '../../utils/constants';
@@ -140,14 +141,22 @@ export default class FieldMappingsTable<T extends MappingViewType> extends Compo
           const { existingMappings: createdMappings, invalidMappingFieldNames } = this.props
             .mappingProps as MappingProps[MappingViewType.Edit];
           let iconProps = STATUS_ICON_PROPS['unmapped'];
+          let iconTooltip = 'This field needs to be mapped with a field from your log source.';
           if (
             createdMappings[entry.ruleFieldName] &&
             !invalidMappingFieldNames.includes(entry.ruleFieldName)
           ) {
             iconProps = STATUS_ICON_PROPS['mapped'];
+            iconTooltip = 'This field has been mapped.';
           }
 
-          return <EuiIcon {...iconProps} /> || DEFAULT_EMPTY_DATA;
+          return (
+            (
+              <EuiToolTip position="top" content={iconTooltip}>
+                <EuiIcon {...iconProps} />
+              </EuiToolTip>
+            ) || DEFAULT_EMPTY_DATA
+          );
         },
       });
     }
