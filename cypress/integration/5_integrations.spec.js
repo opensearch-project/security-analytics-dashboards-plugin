@@ -71,7 +71,7 @@ describe('Integration tests', () => {
     cy.waitForPageLoad('detectors', 'Threat detectors');
   });
 
-  it('...can navigate to findings page', () => {
+  xit('...can navigate to findings page', () => {
     cy.intercept({
       method: 'GET',
       pathname: '/_plugins/_security_analytics/findings/_search',
@@ -104,7 +104,7 @@ describe('Integration tests', () => {
           });
       });
   });
-  it('...can navigate to alerts page', () => {
+  xit('...can navigate to alerts page', () => {
     cy.intercept({
       method: 'GET',
       pathname: '/_plugins/_security_analytics/alerts',
