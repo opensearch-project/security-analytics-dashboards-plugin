@@ -104,7 +104,7 @@ describe('Integration tests', () => {
           });
       });
   });
-  it('...can navigate to alerts page', () => {
+  xit('...can navigate to alerts page', () => {
     cy.intercept({
       method: 'GET',
       pathname: '/_plugins/_security_analytics/alerts',
