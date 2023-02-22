@@ -20,14 +20,17 @@ const testMappings = {
 const cypressDNSRule = dns_rule_data.title;
 
 describe('Detectors', () => {
-  const indexName = 'cypress-test-dns';
+  const cypressIndexDns = 'cypress-index-dns';
+  const cypressIndexWindows = 'cypress-index-windows';
   const detectorName = 'test detector';
 
   before(() => {
     cy.cleanUpTests();
 
+    cy.createIndex(cypressIndexWindows, sample_index_settings);
+
     // Create test index
-    cy.createIndex(indexName, sample_index_settings).then(() =>
+    cy.createIndex(cypressIndexDns, sample_index_settings).then(() =>
       cy
         .request('POST', '_plugins/_security_analytics/rules/_search?prePackaged=true', {
           from: 0,
@@ -58,11 +61,6 @@ describe('Detectors', () => {
   });
 
   it('...should show mappings warning', () => {
-    const indexName = 'cypress-index-windows';
-    const dnsName = 'cypress-index-dns';
-    cy.createIndex(indexName, sample_index_settings);
-    cy.createIndex(dnsName, sample_dns_settings);
-
     // Locate Create detector button click to start
     cy.get('.euiButton').filter(':contains("Create detector")').click({ force: true });
 
@@ -71,23 +69,25 @@ describe('Detectors', () => {
       contains: 'Define detector',
     });
 
-    // Select our pre-seeded data source (check indexName)
+    // Select our pre-seeded data source (check cypressIndexDns)
     cy.get(`[data-test-subj="define-detector-select-data-source"]`)
       .find('input')
       .focus()
-      .realType(indexName);
+      .realType(cypressIndexDns);
 
     // Select threat detector type (Windows logs)
     cy.get(`input[id="dns"]`).click({ force: true });
 
-    // Select our pre-seeded data source (check indexName)
+    // Select our pre-seeded data source (check cypressIndexDns)
     cy.get(`[data-test-subj="define-detector-select-data-source"]`)
       .find('input')
       .focus()
-      .realType(dnsName)
+      .realType(cypressIndexWindows)
       .realPress('Enter');
 
-    cy.get('.euiCallOut').should('be.visible').contains('Detector configuration warning');
+    cy.get('.euiCallOut')
+      .should('be.visible')
+      .contains('The selected log sources contain different types of logs');
   });
 
   it('...can be created', () => {
@@ -102,11 +102,11 @@ describe('Detectors', () => {
     // Enter a name for the detector in the appropriate input
     cy.get(`input[placeholder="Enter a name for the detector."]`).focus().realType('test detector');
 
-    // Select our pre-seeded data source (check indexName)
+    // Select our pre-seeded data source (check cypressIndexDns)
     cy.get(`[data-test-subj="define-detector-select-data-source"]`)
       .find('input')
       .focus()
-      .realType(indexName);
+      .realType(cypressIndexDns);
 
     cy.intercept({
       pathname: '/_plugins/_security_analytics/rules/_search',
@@ -198,7 +198,7 @@ describe('Detectors', () => {
     cy.contains('Detector details');
     cy.contains(detectorName);
     cy.contains('dns');
-    cy.contains(indexName);
+    cy.contains(cypressIndexDns);
     cy.contains('Alert on test_trigger');
 
     // Create the detector
@@ -252,8 +252,7 @@ describe('Detectors', () => {
       .find('input')
       .ospClear()
       .focus()
-      .realType('.opensearch-notifications-config')
-      .realPress('Enter');
+      .realType(cypressIndexWindows);
 
     // Change detector scheduling
     cy.get(`[data-test-subj="detector-schedule-number-select"]`).ospClear().focus().realType('10');
@@ -271,7 +270,7 @@ describe('Detectors', () => {
     cy.contains('test detector edited');
     cy.contains('Every 10 hours');
     cy.contains('Edited description');
-    cy.contains('.opensearch-notifications-config');
+    cy.contains(cypressIndexWindows);
   });
 
   it('...rules can be edited', () => {
