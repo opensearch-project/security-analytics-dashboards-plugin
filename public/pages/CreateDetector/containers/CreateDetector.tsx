@@ -14,6 +14,8 @@ import {
   OS_NOTIFICATION_PLUGIN,
   PLUGIN_NAME,
   ROUTES,
+  logTypesWithDashboards,
+  pendingDashboardCreations,
 } from '../../../utils/constants';
 import ConfigureFieldMapping from '../components/ConfigureFieldMapping';
 import ConfigureAlerts from '../components/ConfigureAlerts';
@@ -135,6 +137,16 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             'created',
             `detector, "${detector.name}"`
           );
+          // Create the dashboard
+          let createDashboardPromise;
+          if (logTypesWithDashboards.has(detector.detector_type)) {
+            createDashboardPromise = this.createDashboard(
+              detector.name,
+              detector.detector_type,
+              createDetectorRes.response._id
+            );
+            pendingDashboardCreations[createDetectorRes.response._id] = createDashboardPromise;
+          }
           this.props.history.push(`${ROUTES.DETECTOR_DETAILS}/${createDetectorRes.response._id}`);
         } else {
           errorNotificationToast(
@@ -149,6 +161,14 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
       errorNotificationToast(this.props.notifications, 'create', 'detector', error);
     }
     this.setState({ creatingDetector: false });
+  };
+
+  private createDashboard = (detectorName: string, logType: string, detectorId: string) => {
+    return this.props.services.savedObjectsService
+      .createSavedObject(detectorName, logType, detectorId)
+      .catch((error: any) => {
+        console.error(error);
+      });
   };
 
   onNextClick = () => {

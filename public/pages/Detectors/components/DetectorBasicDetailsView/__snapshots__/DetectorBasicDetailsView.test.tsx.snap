@@ -179,6 +179,45 @@ Object {
                 </div>
               </div>
             </div>
+            <div
+              class="euiFlexItem euiFlexItem--flexGrowZero"
+              style="min-width: 25%;"
+            >
+              <div
+                class="euiFormRow"
+                id="some_html_id-row"
+              >
+                <div
+                  class="euiFormRow__labelWrapper"
+                >
+                  <label
+                    class="euiFormLabel euiFormRow__label"
+                    for="some_html_id"
+                  >
+                    <div
+                      class="euiText euiText--medium"
+                    >
+                      <div
+                        class="euiTextColor euiTextColor--subdued"
+                      >
+                        Detector dashboard
+                      </div>
+                    </div>
+                  </label>
+                </div>
+                <div
+                  class="euiFormRow__fieldWrapper"
+                >
+                  <div
+                    class="euiText euiText--medium"
+                    data-test-subj="text-details-group-content-detector-dashboard"
+                    id="some_html_id"
+                  >
+                    Not available for this log type
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div
             class="euiSpacer euiSpacer--xl"
@@ -521,6 +560,45 @@ Object {
                   id="some_html_id"
                 >
                   .windows
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="euiFlexItem euiFlexItem--flexGrowZero"
+            style="min-width: 25%;"
+          >
+            <div
+              class="euiFormRow"
+              id="some_html_id-row"
+            >
+              <div
+                class="euiFormRow__labelWrapper"
+              >
+                <label
+                  class="euiFormLabel euiFormRow__label"
+                  for="some_html_id"
+                >
+                  <div
+                    class="euiText euiText--medium"
+                  >
+                    <div
+                      class="euiTextColor euiTextColor--subdued"
+                    >
+                      Detector dashboard
+                    </div>
+                  </div>
+                </label>
+              </div>
+              <div
+                class="euiFormRow__fieldWrapper"
+              >
+                <div
+                  class="euiText euiText--medium"
+                  data-test-subj="text-details-group-content-detector-dashboard"
+                  id="some_html_id"
+                >
+                  Not available for this log type
                 </div>
               </div>
             </div>

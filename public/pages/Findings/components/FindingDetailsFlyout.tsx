@@ -27,6 +27,7 @@ import {
   EuiSpacer,
   EuiText,
   EuiTitle,
+  EuiIcon,
 } from '@elastic/eui';
 import { capitalizeFirstLetter, renderTime } from '../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA, ROUTES } from '../../../utils/constants';
@@ -238,6 +239,7 @@ export default class FindingDetailsFlyout extends Component<
               }}
             >
               View surrounding documents
+              <EuiIcon type={'popout'} />
             </EuiButton>
           </EuiFlexItem>
         </EuiFlexGroup>
