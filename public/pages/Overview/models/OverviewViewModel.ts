@@ -39,7 +39,7 @@ export class OverviewViewModelActor {
     const res = await this.services?.detectorsService.getDetectors();
     if (res?.ok) {
       this.overviewViewModel.detectors = res.response.hits.hits;
-    } else {
+    } else if (!res?.error.includes('no such index')) {
       errorNotificationToast(this.notifications, 'retrieve', 'detectors', res.error);
     }
   }
