@@ -29,6 +29,7 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { OpenSearchService } from '../services';
 import { ruleTypes } from '../pages/Rules/utils/constants';
 import { Handler } from 'vega-tooltip';
+import _ from 'lodash';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
@@ -166,14 +167,64 @@ export function renderVisualization(spec: TopLevelSpec, containerId: string) {
   }
 
   function renderVegaSpec(spec: {}) {
-    const handler = new Handler();
+    let chartColoredItems: any[] = [];
+    const handler = new Handler({
+      formatTooltip: (value, sanitize) => {
+        let tooltipData = { ...value };
+        let values = Object.entries(tooltipData);
+        if (!values.length) return '';
+        const tooltipItem = chartColoredItems.filter((groupItem: any) =>
+          _.isEqual(groupItem.tooltip, tooltipData)
+        );
+        const color = tooltipItem.length
+          ? tooltipItem[0].fill || tooltipItem[0].stroke
+          : 'transparent';
+
+        const firstItem = values.pop() || ['', ''];
+
+        let rowData = '';
+        values.forEach((item: any) => {
+          rowData += `
+            <tr>
+              <td>${sanitize(item[0])}</td>
+              <td>${sanitize(item[1])}</td>
+            </tr>
+          `;
+        });
+
+        return `
+          <div class="vg-tooltip-innerContainer">
+            <div class="vg-tooltip-header">
+              <table>
+                <tr>
+                  <td><div class="vg-tooltip-color" style="background-color: ${color}"></div></td>
+                  <td>${sanitize(firstItem[0])}</td>
+                  <td>${sanitize(firstItem[1])}</td>
+                </tr>
+              </table>
+            </div>
+            <div class="vg-tooltip-body">
+             <table>${rowData}</table>
+            </div>
+          </div>
+        `;
+      },
+    });
     view = new View(parse(spec, null, { expr: vegaExpressionInterpreter }), {
       renderer: 'canvas', // renderer (canvas or svg)
       container: `#${containerId}`, // parent DOM container
       hover: true, // enable hover processing
     });
     view.tooltip(handler.call);
-    return view.runAsync();
+    return view.runAsync().then((view: any) => {
+      const items = view.scenegraph().root.items[0].items || [];
+      const groups = items.filter(
+        (item: any) => item.name && item.name.match(/^(layer_).*(_marks)$/)
+      );
+      for (let item of groups) {
+        chartColoredItems = chartColoredItems.concat(item.items);
+      }
+    });
   }
 }
 

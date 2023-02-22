@@ -12,6 +12,11 @@ export const ruleTypes: { label: string; value: string }[] = [
   { label: 'Linux', value: 'linux' },
   { label: 'Cloudtrail', value: 'cloudtrail' },
   { label: 'S3', value: 's3' },
+  { label: 'Google Workspace', value: 'gworkspace' },
+  { label: 'Github actions', value: 'github' },
+  { label: 'Microsoft 365', value: 'm365' },
+  { label: 'Okta', value: 'okta' },
+  { label: 'Azure', value: 'azure' },
 ];
 
 export const ruleSeverity: { name: string; value: string }[] = [

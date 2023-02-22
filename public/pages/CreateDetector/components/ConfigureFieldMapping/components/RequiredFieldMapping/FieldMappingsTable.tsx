@@ -12,6 +12,7 @@ import {
   EuiIcon,
   EuiInMemoryTable,
   EuiText,
+  EuiToolTip,
 } from '@elastic/eui';
 import { DEFAULT_EMPTY_DATA } from '../../../../../../utils/constants';
 import { STATUS_ICON_PROPS } from '../../utils/constants';
@@ -85,7 +86,7 @@ export default class FieldMappingsTable<T extends MappingViewType> extends Compo
     const columns: EuiBasicTableColumn<FieldMappingsTableItem>[] = [
       {
         field: 'ruleFieldName',
-        name: 'Rule field name',
+        name: 'Detector field name',
         dataType: 'string',
         width: '25%',
         render: (ruleFieldName: string) => ruleFieldName || DEFAULT_EMPTY_DATA,
@@ -99,7 +100,7 @@ export default class FieldMappingsTable<T extends MappingViewType> extends Compo
       },
       {
         field: 'logFieldName',
-        name: 'Log field name',
+        name: 'Log source field name',
         dataType: 'string',
         width: '45%',
         render: (logFieldName: string, entry: FieldMappingsTableItem) => {
@@ -140,14 +141,22 @@ export default class FieldMappingsTable<T extends MappingViewType> extends Compo
           const { existingMappings: createdMappings, invalidMappingFieldNames } = this.props
             .mappingProps as MappingProps[MappingViewType.Edit];
           let iconProps = STATUS_ICON_PROPS['unmapped'];
+          let iconTooltip = 'This field needs to be mapped with a field from your log source.';
           if (
             createdMappings[entry.ruleFieldName] &&
             !invalidMappingFieldNames.includes(entry.ruleFieldName)
           ) {
             iconProps = STATUS_ICON_PROPS['mapped'];
+            iconTooltip = 'This field has been mapped.';
           }
 
-          return <EuiIcon {...iconProps} /> || DEFAULT_EMPTY_DATA;
+          return (
+            (
+              <EuiToolTip position="top" content={iconTooltip}>
+                <EuiIcon {...iconProps} />
+              </EuiToolTip>
+            ) || DEFAULT_EMPTY_DATA
+          );
         },
       });
     }

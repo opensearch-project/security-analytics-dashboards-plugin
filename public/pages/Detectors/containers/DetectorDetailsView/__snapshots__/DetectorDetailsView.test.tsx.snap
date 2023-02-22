@@ -822,6 +822,100 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                     </EuiFormRow>
                   </div>
                 </EuiFlexItem>
+                <EuiFlexItem
+                  grow={false}
+                  key="3"
+                  style={
+                    Object {
+                      "minWidth": "25%",
+                    }
+                  }
+                >
+                  <div
+                    className="euiFlexItem euiFlexItem--flexGrowZero"
+                    style={
+                      Object {
+                        "minWidth": "25%",
+                      }
+                    }
+                  >
+                    <EuiFormRow
+                      describedByIds={Array []}
+                      display="row"
+                      fullWidth={false}
+                      hasChildLabel={true}
+                      hasEmptyLabelSpace={false}
+                      label={
+                        <EuiText
+                          color="subdued"
+                        >
+                          Detector dashboard
+                        </EuiText>
+                      }
+                      labelType="label"
+                    >
+                      <div
+                        className="euiFormRow"
+                        id="some_html_id-row"
+                      >
+                        <div
+                          className="euiFormRow__labelWrapper"
+                        >
+                          <EuiFormLabel
+                            className="euiFormRow__label"
+                            htmlFor="some_html_id"
+                            isFocused={false}
+                            type="label"
+                          >
+                            <label
+                              className="euiFormLabel euiFormRow__label"
+                              htmlFor="some_html_id"
+                            >
+                              <EuiText
+                                color="subdued"
+                              >
+                                <div
+                                  className="euiText euiText--medium"
+                                >
+                                  <EuiTextColor
+                                    color="subdued"
+                                    component="div"
+                                  >
+                                    <div
+                                      className="euiTextColor euiTextColor--subdued"
+                                    >
+                                      Detector dashboard
+                                    </div>
+                                  </EuiTextColor>
+                                </div>
+                              </EuiText>
+                            </label>
+                          </EuiFormLabel>
+                        </div>
+                        <div
+                          className="euiFormRow__fieldWrapper"
+                        >
+                          <EuiText
+                            data-test-subj="text-details-group-content-detector-dashboard"
+                            id="some_html_id"
+                            onBlur={[Function]}
+                            onFocus={[Function]}
+                          >
+                            <div
+                              className="euiText euiText--medium"
+                              data-test-subj="text-details-group-content-detector-dashboard"
+                              id="some_html_id"
+                              onBlur={[Function]}
+                              onFocus={[Function]}
+                            >
+                              Not available for this log type
+                            </div>
+                          </EuiText>
+                        </div>
+                      </div>
+                    </EuiFormRow>
+                  </div>
+                </EuiFlexItem>
               </div>
             </EuiFlexGroup>
             <EuiSpacer
@@ -1678,6 +1772,26 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                             "name": "S3",
                             "value": "s3",
                           },
+                          Object {
+                            "name": "Google Workspace",
+                            "value": "gworkspace",
+                          },
+                          Object {
+                            "name": "Github actions",
+                            "value": "github",
+                          },
+                          Object {
+                            "name": "Microsoft 365",
+                            "value": "m365",
+                          },
+                          Object {
+                            "name": "Okta",
+                            "value": "okta",
+                          },
+                          Object {
+                            "name": "Azure",
+                            "value": "azure",
+                          },
                         ],
                         "type": "field_value_selection",
                       },
@@ -1794,6 +1908,26 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                             Object {
                               "name": "S3",
                               "value": "s3",
+                            },
+                            Object {
+                              "name": "Google Workspace",
+                              "value": "gworkspace",
+                            },
+                            Object {
+                              "name": "Github actions",
+                              "value": "github",
+                            },
+                            Object {
+                              "name": "Microsoft 365",
+                              "value": "m365",
+                            },
+                            Object {
+                              "name": "Okta",
+                              "value": "okta",
+                            },
+                            Object {
+                              "name": "Azure",
+                              "value": "azure",
                             },
                           ],
                           "type": "field_value_selection",
@@ -1984,6 +2118,26 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                         "name": "S3",
                                         "value": "s3",
                                       },
+                                      Object {
+                                        "name": "Google Workspace",
+                                        "value": "gworkspace",
+                                      },
+                                      Object {
+                                        "name": "Github actions",
+                                        "value": "github",
+                                      },
+                                      Object {
+                                        "name": "Microsoft 365",
+                                        "value": "m365",
+                                      },
+                                      Object {
+                                        "name": "Okta",
+                                        "value": "okta",
+                                      },
+                                      Object {
+                                        "name": "Azure",
+                                        "value": "azure",
+                                      },
                                     ],
                                     "type": "field_value_selection",
                                   },
@@ -2094,6 +2248,26 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                           Object {
                                             "name": "S3",
                                             "value": "s3",
+                                          },
+                                          Object {
+                                            "name": "Google Workspace",
+                                            "value": "gworkspace",
+                                          },
+                                          Object {
+                                            "name": "Github actions",
+                                            "value": "github",
+                                          },
+                                          Object {
+                                            "name": "Microsoft 365",
+                                            "value": "m365",
+                                          },
+                                          Object {
+                                            "name": "Okta",
+                                            "value": "okta",
+                                          },
+                                          Object {
+                                            "name": "Azure",
+                                            "value": "azure",
                                           },
                                         ],
                                         "type": "field_value_selection",

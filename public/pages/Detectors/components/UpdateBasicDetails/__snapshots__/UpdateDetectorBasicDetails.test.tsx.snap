@@ -188,7 +188,377 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
       "location": Object {
         "pathname": "",
       },
-      "replace": [MockFunction],
+      "replace": [MockFunction] {
+        "calls": Array [
+          Array [
+            Object {
+              "pathname": "/edit-detector-details/detector_id_1",
+              "state": Object {
+                "detectorHit": Object {
+                  "_id": "detector_id_1",
+                  "_index": ".windows",
+                  "_source": Object {
+                    "_id": "detector_id_1",
+                    "_index": ".windows",
+                    "_source": Object {
+                      "createdBy": "someone",
+                      "detector_type": "detector_type",
+                      "enabled": true,
+                      "enabled_time": 1,
+                      "id": "detector_id_1",
+                      "inputs": Array [
+                        Object {
+                          "detector_input": Object {
+                            "custom_rules": Array [
+                              Object {
+                                "_id": "rule_id_1",
+                                "_index": ".windows",
+                                "_primary_term": 1,
+                                "_source": Object {
+                                  "last_update_time": "12/12/2022",
+                                  "queries": Array [
+                                    Object {
+                                      "value": ".windows",
+                                    },
+                                  ],
+                                  "rule": "rule_name",
+                                },
+                                "_version": 1,
+                                "id": "rule_id_1",
+                              },
+                            ],
+                            "description": "detectorDescription",
+                            "indices": Array [
+                              ".windows",
+                            ],
+                            "pre_packaged_rules": Array [
+                              Object {
+                                "_id": "rule_id_1",
+                                "_index": ".windows",
+                                "_primary_term": 1,
+                                "_source": Object {
+                                  "last_update_time": "12/12/2022",
+                                  "queries": Array [
+                                    Object {
+                                      "value": ".windows",
+                                    },
+                                  ],
+                                  "rule": "rule_name",
+                                },
+                                "_version": 1,
+                                "id": "rule_id_1",
+                              },
+                            ],
+                          },
+                        },
+                      ],
+                      "last_update_time": 1,
+                      "name": "detector_name",
+                      "schedule": Object {
+                        "period": Object {
+                          "interval": 1,
+                          "unit": "minute",
+                        },
+                      },
+                      "triggers": Array [
+                        Object {
+                          "actions": Array [
+                            Object {
+                              "destination_id": "some_destination_id_1",
+                              "id": "trigger_id_1_0",
+                              "message_template": Object {
+                                "lang": "some_lang",
+                                "source": "some_source",
+                              },
+                              "name": "some_name",
+                              "subject_template": Object {
+                                "lang": "some_lang",
+                                "source": "some_source",
+                              },
+                              "throttle": Object {
+                                "unit": "minutes",
+                                "value": 1,
+                              },
+                              "throttle_enabled": true,
+                            },
+                            Object {
+                              "destination_id": "some_destination_id_1",
+                              "id": "trigger_id_1_1",
+                              "message_template": Object {
+                                "lang": "some_lang",
+                                "source": "some_source",
+                              },
+                              "name": "some_name",
+                              "subject_template": Object {
+                                "lang": "some_lang",
+                                "source": "some_source",
+                              },
+                              "throttle": Object {
+                                "unit": "minutes",
+                                "value": 1,
+                              },
+                              "throttle_enabled": true,
+                            },
+                          ],
+                          "id": "trigger_id_0",
+                          "ids": Array [
+                            "rule_id_1",
+                          ],
+                          "name": "alert_name",
+                          "sev_levels": Array [
+                            "severity_level_low",
+                          ],
+                          "severity": "1",
+                          "tags": Array [
+                            "any.tag",
+                          ],
+                          "types": Array [
+                            "detector_type_1",
+                          ],
+                        },
+                        Object {
+                          "actions": Array [
+                            Object {
+                              "destination_id": "some_destination_id_1",
+                              "id": "trigger_id_1_0",
+                              "message_template": Object {
+                                "lang": "some_lang",
+                                "source": "some_source",
+                              },
+                              "name": "some_name",
+                              "subject_template": Object {
+                                "lang": "some_lang",
+                                "source": "some_source",
+                              },
+                              "throttle": Object {
+                                "unit": "minutes",
+                                "value": 1,
+                              },
+                              "throttle_enabled": true,
+                            },
+                            Object {
+                              "destination_id": "some_destination_id_1",
+                              "id": "trigger_id_1_1",
+                              "message_template": Object {
+                                "lang": "some_lang",
+                                "source": "some_source",
+                              },
+                              "name": "some_name",
+                              "subject_template": Object {
+                                "lang": "some_lang",
+                                "source": "some_source",
+                              },
+                              "throttle": Object {
+                                "unit": "minutes",
+                                "value": 1,
+                              },
+                              "throttle_enabled": true,
+                            },
+                          ],
+                          "id": "trigger_id_1",
+                          "ids": Array [
+                            "rule_id_1",
+                          ],
+                          "name": "alert_name",
+                          "sev_levels": Array [
+                            "severity_level_low",
+                          ],
+                          "severity": "1",
+                          "tags": Array [
+                            "any.tag",
+                          ],
+                          "types": Array [
+                            "detector_type_1",
+                          ],
+                        },
+                      ],
+                      "type": "detector",
+                    },
+                    "createdBy": "someone",
+                    "detector_type": "detector_type",
+                    "enabled": true,
+                    "enabled_time": 1,
+                    "id": "detector_id_1",
+                    "inputs": Array [
+                      Object {
+                        "detector_input": Object {
+                          "custom_rules": Array [
+                            Object {
+                              "_id": "rule_id_1",
+                              "_index": ".windows",
+                              "_primary_term": 1,
+                              "_source": Object {
+                                "last_update_time": "12/12/2022",
+                                "queries": Array [
+                                  Object {
+                                    "value": ".windows",
+                                  },
+                                ],
+                                "rule": "rule_name",
+                              },
+                              "_version": 1,
+                              "id": "rule_id_1",
+                            },
+                          ],
+                          "description": "detectorDescription",
+                          "indices": Array [
+                            ".windows",
+                          ],
+                          "pre_packaged_rules": Array [
+                            Object {
+                              "_id": "rule_id_1",
+                              "_index": ".windows",
+                              "_primary_term": 1,
+                              "_source": Object {
+                                "last_update_time": "12/12/2022",
+                                "queries": Array [
+                                  Object {
+                                    "value": ".windows",
+                                  },
+                                ],
+                                "rule": "rule_name",
+                              },
+                              "_version": 1,
+                              "id": "rule_id_1",
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                    "last_update_time": 1,
+                    "name": "detector_name",
+                    "schedule": Object {
+                      "period": Object {
+                        "interval": 1,
+                        "unit": "minute",
+                      },
+                    },
+                    "triggers": Array [
+                      Object {
+                        "actions": Array [
+                          Object {
+                            "destination_id": "some_destination_id_1",
+                            "id": "trigger_id_1_0",
+                            "message_template": Object {
+                              "lang": "some_lang",
+                              "source": "some_source",
+                            },
+                            "name": "some_name",
+                            "subject_template": Object {
+                              "lang": "some_lang",
+                              "source": "some_source",
+                            },
+                            "throttle": Object {
+                              "unit": "minutes",
+                              "value": 1,
+                            },
+                            "throttle_enabled": true,
+                          },
+                          Object {
+                            "destination_id": "some_destination_id_1",
+                            "id": "trigger_id_1_1",
+                            "message_template": Object {
+                              "lang": "some_lang",
+                              "source": "some_source",
+                            },
+                            "name": "some_name",
+                            "subject_template": Object {
+                              "lang": "some_lang",
+                              "source": "some_source",
+                            },
+                            "throttle": Object {
+                              "unit": "minutes",
+                              "value": 1,
+                            },
+                            "throttle_enabled": true,
+                          },
+                        ],
+                        "id": "trigger_id_0",
+                        "ids": Array [
+                          "rule_id_1",
+                        ],
+                        "name": "alert_name",
+                        "sev_levels": Array [
+                          "severity_level_low",
+                        ],
+                        "severity": "1",
+                        "tags": Array [
+                          "any.tag",
+                        ],
+                        "types": Array [
+                          "detector_type_1",
+                        ],
+                      },
+                      Object {
+                        "actions": Array [
+                          Object {
+                            "destination_id": "some_destination_id_1",
+                            "id": "trigger_id_1_0",
+                            "message_template": Object {
+                              "lang": "some_lang",
+                              "source": "some_source",
+                            },
+                            "name": "some_name",
+                            "subject_template": Object {
+                              "lang": "some_lang",
+                              "source": "some_source",
+                            },
+                            "throttle": Object {
+                              "unit": "minutes",
+                              "value": 1,
+                            },
+                            "throttle_enabled": true,
+                          },
+                          Object {
+                            "destination_id": "some_destination_id_1",
+                            "id": "trigger_id_1_1",
+                            "message_template": Object {
+                              "lang": "some_lang",
+                              "source": "some_source",
+                            },
+                            "name": "some_name",
+                            "subject_template": Object {
+                              "lang": "some_lang",
+                              "source": "some_source",
+                            },
+                            "throttle": Object {
+                              "unit": "minutes",
+                              "value": 1,
+                            },
+                            "throttle_enabled": true,
+                          },
+                        ],
+                        "id": "trigger_id_1",
+                        "ids": Array [
+                          "rule_id_1",
+                        ],
+                        "name": "alert_name",
+                        "sev_levels": Array [
+                          "severity_level_low",
+                        ],
+                        "severity": "1",
+                        "tags": Array [
+                          "any.tag",
+                        ],
+                        "types": Array [
+                          "detector_type_1",
+                        ],
+                      },
+                    ],
+                    "type": "detector",
+                  },
+                },
+              },
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      },
     }
   }
   location={
@@ -199,23 +569,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
   notifications={
     Object {
       "toasts": Object {
-        "addDanger": [MockFunction] {
-          "calls": Array [
-            Array [
-              Object {
-                "text": [TypeError: Cannot read property 'setBreadcrumbs' of undefined],
-                "title": "Failed to retrieve detector:",
-                "toastLifeTimeMs": 5000,
-              },
-            ],
-          ],
-          "results": Array [
-            Object {
-              "type": "return",
-              "value": undefined,
-            },
-          ],
-        },
+        "addDanger": [MockFunction],
       },
     }
   }
@@ -527,12 +881,13 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
         className="euiSpacer euiSpacer--xl"
       />
     </EuiSpacer>
-    <DetectorDataSource
+    <Component
       detectorIndices={
         Array [
           ".windows",
         ]
       }
+      detector_type="detector_type"
       indexService={
         Object {
           "getIndices": [Function],
@@ -542,435 +897,16 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
       notifications={
         Object {
           "toasts": Object {
-            "addDanger": [MockFunction] {
-              "calls": Array [
-                Array [
-                  Object {
-                    "text": [TypeError: Cannot read property 'setBreadcrumbs' of undefined],
-                    "title": "Failed to retrieve detector:",
-                    "toastLifeTimeMs": 5000,
-                  },
-                ],
-              ],
-              "results": Array [
-                Object {
-                  "type": "return",
-                  "value": undefined,
-                },
-              ],
-            },
+            "addDanger": [MockFunction],
           },
         }
       }
       onDetectorInputIndicesChange={[Function]}
     >
-      <ContentPanel
-        title="Data source"
-        titleSize="m"
-      >
-        <EuiPanel
-          style={
-            Object {
-              "paddingLeft": "0px",
-              "paddingRight": "0px",
-            }
-          }
-        >
-          <div
-            className="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
-            style={
-              Object {
-                "paddingLeft": "0px",
-                "paddingRight": "0px",
-              }
-            }
-          >
-            <EuiFlexGroup
-              alignItems="center"
-              justifyContent="spaceBetween"
-              style={
-                Object {
-                  "padding": "0px 10px",
-                }
-              }
-            >
-              <div
-                className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive"
-                style={
-                  Object {
-                    "padding": "0px 10px",
-                  }
-                }
-              >
-                <EuiFlexItem>
-                  <div
-                    className="euiFlexItem"
-                  >
-                    <EuiTitle
-                      size="m"
-                    >
-                      <h3
-                        className="euiTitle euiTitle--medium"
-                      >
-                        Data source
-                      </h3>
-                    </EuiTitle>
-                  </div>
-                </EuiFlexItem>
-              </div>
-            </EuiFlexGroup>
-            <EuiHorizontalRule
-              className=""
-              margin="xs"
-            >
-              <hr
-                className="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginXSmall"
-              />
-            </EuiHorizontalRule>
-            <div
-              style={
-                Object {
-                  "padding": "0px 10px",
-                }
-              }
-            >
-              <EuiSpacer
-                size="m"
-              >
-                <div
-                  className="euiSpacer euiSpacer--m"
-                />
-              </EuiSpacer>
-              <EuiFormRow
-                describedByIds={Array []}
-                display="row"
-                error={false}
-                fullWidth={false}
-                hasChildLabel={true}
-                hasEmptyLabelSpace={false}
-                isInvalid={false}
-                label={
-                  <FormFieldHeader
-                    headerTitle="Select or input source indexes or index patterns"
-                  />
-                }
-                labelType="label"
-              >
-                <div
-                  className="euiFormRow"
-                  id="some_html_id-row"
-                >
-                  <div
-                    className="euiFormRow__labelWrapper"
-                  >
-                    <EuiFormLabel
-                      aria-invalid={false}
-                      className="euiFormRow__label"
-                      htmlFor="some_html_id"
-                      isFocused={false}
-                      isInvalid={false}
-                      type="label"
-                    >
-                      <label
-                        aria-invalid={false}
-                        className="euiFormLabel euiFormRow__label"
-                        htmlFor="some_html_id"
-                      >
-                        <FormFieldHeader
-                          headerTitle="Select or input source indexes or index patterns"
-                        >
-                          <EuiText
-                            size="s"
-                          >
-                            <div
-                              className="euiText euiText--small"
-                            >
-                              <strong>
-                                Select or input source indexes or index patterns
-                              </strong>
-                            </div>
-                          </EuiText>
-                        </FormFieldHeader>
-                      </label>
-                    </EuiFormLabel>
-                  </div>
-                  <div
-                    className="euiFormRow__fieldWrapper"
-                  >
-                    <EuiComboBox
-                      async={false}
-                      compressed={false}
-                      data-test-subj="define-detector-select-data-source"
-                      fullWidth={false}
-                      id="some_html_id"
-                      isClearable={true}
-                      isInvalid={false}
-                      isLoading={false}
-                      onBlur={[Function]}
-                      onChange={[Function]}
-                      onCreateOption={[Function]}
-                      onFocus={[Function]}
-                      options={Array []}
-                      placeholder="Select an input source for the detector."
-                      selectedOptions={
-                        Array [
-                          Object {
-                            "label": ".windows",
-                          },
-                        ]
-                      }
-                      singleSelection={
-                        Object {
-                          "asPlainText": true,
-                        }
-                      }
-                      sortMatchesBy="none"
-                    >
-                      <div
-                        aria-expanded={false}
-                        aria-haspopup="listbox"
-                        className="euiComboBox"
-                        data-test-subj="define-detector-select-data-source"
-                        onFocus={[Function]}
-                        onKeyDown={[Function]}
-                        role="combobox"
-                      >
-                        <EuiComboBoxInput
-                          autoSizeInputRef={[Function]}
-                          compressed={false}
-                          fullWidth={false}
-                          hasSelectedOptions={true}
-                          id="some_html_id"
-                          inputRef={[Function]}
-                          isListOpen={false}
-                          isLoading={false}
-                          noIcon={false}
-                          onChange={[Function]}
-                          onClear={[Function]}
-                          onClick={[Function]}
-                          onCloseListClick={[Function]}
-                          onFocus={[Function]}
-                          onOpenListClick={[Function]}
-                          onRemoveOption={[Function]}
-                          placeholder="Select an input source for the detector."
-                          rootId={[Function]}
-                          searchValue=""
-                          selectedOptions={
-                            Array [
-                              Object {
-                                "label": ".windows",
-                              },
-                            ]
-                          }
-                          singleSelection={
-                            Object {
-                              "asPlainText": true,
-                            }
-                          }
-                          toggleButtonRef={[Function]}
-                          updatePosition={[Function]}
-                          value=".windows"
-                        >
-                          <EuiFormControlLayout
-                            clear={
-                              Object {
-                                "data-test-subj": "comboBoxClearButton",
-                                "onClick": [Function],
-                              }
-                            }
-                            compressed={false}
-                            fullWidth={false}
-                            icon={
-                              Object {
-                                "aria-label": "Open list of options",
-                                "data-test-subj": "comboBoxToggleListButton",
-                                "disabled": undefined,
-                                "onClick": [Function],
-                                "ref": [Function],
-                                "side": "right",
-                                "type": "arrowDown",
-                              }
-                            }
-                            isLoading={false}
-                          >
-                            <div
-                              className="euiFormControlLayout"
-                            >
-                              <div
-                                className="euiFormControlLayout__childrenWrapper"
-                              >
-                                <div
-                                  className="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isClearable"
-                                  data-test-subj="comboBoxInput"
-                                  onClick={[Function]}
-                                  tabIndex={-1}
-                                >
-                                  <EuiComboBoxPill
-                                    asPlainText={true}
-                                    color="hollow"
-                                    key=".windows"
-                                    option={
-                                      Object {
-                                        "label": ".windows",
-                                      }
-                                    }
-                                  >
-                                    <span
-                                      className="euiComboBoxPill euiComboBoxPill--plainText"
-                                    >
-                                      .windows
-                                    </span>
-                                  </EuiComboBoxPill>
-                                  <AutosizeInput
-                                    aria-controls=""
-                                    className="euiComboBox__input"
-                                    data-test-subj="comboBoxSearchInput"
-                                    id="some_html_id"
-                                    injectStyles={true}
-                                    inputRef={[Function]}
-                                    minWidth={1}
-                                    onBlur={[Function]}
-                                    onChange={[Function]}
-                                    onFocus={[Function]}
-                                    role="textbox"
-                                    style={
-                                      Object {
-                                        "fontSize": 14,
-                                      }
-                                    }
-                                    value=""
-                                  >
-                                    <div
-                                      className="euiComboBox__input"
-                                      style={
-                                        Object {
-                                          "display": "inline-block",
-                                          "fontSize": 14,
-                                        }
-                                      }
-                                    >
-                                      <input
-                                        aria-controls=""
-                                        data-test-subj="comboBoxSearchInput"
-                                        id="some_html_id"
-                                        onBlur={[Function]}
-                                        onChange={[Function]}
-                                        onFocus={[Function]}
-                                        role="textbox"
-                                        style={
-                                          Object {
-                                            "boxSizing": "content-box",
-                                            "width": "2px",
-                                          }
-                                        }
-                                        value=""
-                                      />
-                                      <div
-                                        style={
-                                          Object {
-                                            "height": 0,
-                                            "left": 0,
-                                            "overflow": "scroll",
-                                            "position": "absolute",
-                                            "top": 0,
-                                            "visibility": "hidden",
-                                            "whiteSpace": "pre",
-                                          }
-                                        }
-                                      />
-                                    </div>
-                                  </AutosizeInput>
-                                </div>
-                                <EuiFormControlLayoutIcons
-                                  clear={
-                                    Object {
-                                      "data-test-subj": "comboBoxClearButton",
-                                      "onClick": [Function],
-                                    }
-                                  }
-                                  compressed={false}
-                                  icon={
-                                    Object {
-                                      "aria-label": "Open list of options",
-                                      "data-test-subj": "comboBoxToggleListButton",
-                                      "disabled": undefined,
-                                      "onClick": [Function],
-                                      "ref": [Function],
-                                      "side": "right",
-                                      "type": "arrowDown",
-                                    }
-                                  }
-                                  isLoading={false}
-                                >
-                                  <div
-                                    className="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
-                                  >
-                                    <EuiFormControlLayoutClearButton
-                                      data-test-subj="comboBoxClearButton"
-                                      onClick={[Function]}
-                                      size="m"
-                                    >
-                                      <EuiI18n
-                                        default="Clear input"
-                                        token="euiFormControlLayoutClearButton.label"
-                                      >
-                                        <button
-                                          aria-label="Clear input"
-                                          className="euiFormControlLayoutClearButton"
-                                          data-test-subj="comboBoxClearButton"
-                                          onClick={[Function]}
-                                          type="button"
-                                        >
-                                          <EuiIcon
-                                            className="euiFormControlLayoutClearButton__icon"
-                                            type="cross"
-                                          >
-                                            EuiIconMock
-                                          </EuiIcon>
-                                        </button>
-                                      </EuiI18n>
-                                    </EuiFormControlLayoutClearButton>
-                                    <EuiFormControlLayoutCustomIcon
-                                      aria-label="Open list of options"
-                                      data-test-subj="comboBoxToggleListButton"
-                                      iconRef={[Function]}
-                                      onClick={[Function]}
-                                      size="m"
-                                      type="arrowDown"
-                                    >
-                                      <button
-                                        aria-label="Open list of options"
-                                        className="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
-                                        data-test-subj="comboBoxToggleListButton"
-                                        onClick={[Function]}
-                                        type="button"
-                                      >
-                                        <EuiIcon
-                                          aria-hidden="true"
-                                          className="euiFormControlLayoutCustomIcon__icon"
-                                          size="m"
-                                          type="arrowDown"
-                                        >
-                                          EuiIconMock
-                                        </EuiIcon>
-                                      </button>
-                                    </EuiFormControlLayoutCustomIcon>
-                                  </div>
-                                </EuiFormControlLayoutIcons>
-                              </div>
-                            </div>
-                          </EuiFormControlLayout>
-                        </EuiComboBoxInput>
-                      </div>
-                    </EuiComboBox>
-                  </div>
-                </div>
-              </EuiFormRow>
-            </div>
-          </div>
-        </EuiPanel>
-      </ContentPanel>
-    </DetectorDataSource>
+      <mock-component
+        mock="DetectorDataSource"
+      />
+    </Component>
     <EuiSpacer
       size="xl"
     >
@@ -1823,20 +1759,20 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
             className="euiFlexItem euiFlexItem--flexGrowZero"
           >
             <EuiButton
-              disabled={true}
+              disabled={false}
               onClick={[Function]}
             >
               <EuiButtonDisplay
                 baseClassName="euiButton"
-                disabled={true}
+                disabled={false}
                 element="button"
-                isDisabled={true}
+                isDisabled={false}
                 onClick={[Function]}
                 type="button"
               >
                 <button
-                  className="euiButton euiButton--primary euiButton-isDisabled"
-                  disabled={true}
+                  className="euiButton euiButton--primary"
+                  disabled={false}
                   onClick={[Function]}
                   style={
                     Object {
@@ -1877,24 +1813,24 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
           >
             <EuiButton
               data-test-subj="save-basic-details-edits"
-              disabled={true}
+              disabled={false}
               isLoading={false}
               onClick={[Function]}
             >
               <EuiButtonDisplay
                 baseClassName="euiButton"
                 data-test-subj="save-basic-details-edits"
-                disabled={true}
+                disabled={false}
                 element="button"
-                isDisabled={true}
+                isDisabled={false}
                 isLoading={false}
                 onClick={[Function]}
                 type="button"
               >
                 <button
-                  className="euiButton euiButton--primary euiButton-isDisabled"
+                  className="euiButton euiButton--primary"
                   data-test-subj="save-basic-details-edits"
-                  disabled={true}
+                  disabled={false}
                   onClick={[Function]}
                   style={
                     Object {

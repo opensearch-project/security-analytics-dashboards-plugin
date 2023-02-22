@@ -5,7 +5,14 @@
 
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { EuiAccordion, EuiHorizontalRule, EuiPanel, EuiSpacer, EuiTitle } from '@elastic/eui';
+import {
+  EuiAccordion,
+  EuiHorizontalRule,
+  EuiPanel,
+  EuiSpacer,
+  EuiTitle,
+  EuiCallOut,
+} from '@elastic/eui';
 import FieldMappingsTable from '../../../CreateDetector/components/ConfigureFieldMapping/components/RequiredFieldMapping';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { Detector, FieldMapping } from '../../../../../models/interfaces';
@@ -158,34 +165,12 @@ export default class EditFieldMappings extends Component<
 
     return (
       <div>
-        {unmappedRuleFields.length > 0 && (
-          <>
-            <ContentPanel
-              title={`Required field mappings (${unmappedRuleFields.length})`}
-              titleSize={'m'}
-            >
-              <FieldMappingsTable<MappingViewType.Edit>
-                {...this.props}
-                loading={loading}
-                ruleFields={unmappedRuleFields}
-                indexFields={logFieldOptions}
-                mappingProps={{
-                  type: MappingViewType.Edit,
-                  existingMappings,
-                  invalidMappingFieldNames,
-                  onMappingCreation: this.onMappingCreation,
-                }}
-              />
-            </ContentPanel>
-            <EuiSpacer size={'m'} />
-          </>
-        )}
         <EuiPanel>
           <EuiAccordion
             buttonContent={
               <div data-test-subj="mapped-fields-btn">
                 <EuiTitle>
-                  <h4>{`Mapped fields (${mappedRuleFields.length})`}</h4>
+                  <h4>{`Automatically mapped fields (${mappedRuleFields.length})`}</h4>
                 </EuiTitle>
               </div>
             }
@@ -208,6 +193,46 @@ export default class EditFieldMappings extends Component<
             />
           </EuiAccordion>
         </EuiPanel>
+
+        <EuiSpacer size={'m'} />
+
+        {unmappedRuleFields.length > 0 && (
+          <>
+            {unmappedRuleFields.length > 0 ? (
+              <EuiCallOut
+                title={`${unmappedRuleFields.length} rule fields may need manual mapping`}
+                color={'warning'}
+              >
+                <p>
+                  To generate accurate findings, we recommend mapping the following security rules
+                  fields with the log fields in your data source.
+                </p>
+              </EuiCallOut>
+            ) : (
+              <EuiCallOut title={`All rule fields have been mapped`} color={'success'}>
+                <p>Your data source have been mapped with all security rule fields.</p>
+              </EuiCallOut>
+            )}
+
+            <EuiSpacer size={'m'} />
+            <ContentPanel title={`Pending field mappings`} titleSize={'m'}>
+              <FieldMappingsTable<MappingViewType.Edit>
+                {...this.props}
+                loading={loading}
+                ruleFields={unmappedRuleFields}
+                indexFields={logFieldOptions}
+                mappingProps={{
+                  type: MappingViewType.Edit,
+                  existingMappings,
+                  invalidMappingFieldNames,
+                  onMappingCreation: this.onMappingCreation,
+                }}
+              />
+            </ContentPanel>
+            <EuiSpacer size={'m'} />
+          </>
+        )}
+
         <EuiSpacer size={'m'} />
       </div>
     );

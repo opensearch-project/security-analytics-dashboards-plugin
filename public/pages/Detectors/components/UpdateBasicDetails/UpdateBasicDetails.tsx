@@ -217,9 +217,11 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
 
       <DetectorDataSource
         isEdit={true}
+        detector_type={detector.detector_type}
         notifications={props.notifications}
         indexService={services?.indexService as IndexService}
         detectorIndices={inputs[0].detector_input.indices}
+        filedMappingService={services?.fieldMappingService}
         onDetectorInputIndicesChange={onDetectorInputIndicesChange}
       />
       <EuiSpacer size={'xl'} />
