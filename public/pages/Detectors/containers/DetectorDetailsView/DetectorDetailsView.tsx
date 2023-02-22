@@ -17,6 +17,7 @@ export interface DetectorDetailsViewProps {
   last_update_time?: number;
   rulesCanFold?: boolean;
   notifications: NotificationsStart;
+  dashboardId?: string;
   editBasicDetails: () => void;
   editDetectorRules: (enabledRules: RuleItem[], allRuleItems: RuleItem[]) => void;
 }
@@ -33,6 +34,7 @@ export class DetectorDetailsView extends React.Component<
       enabled_time,
       last_update_time,
       rulesCanFold,
+      dashboardId,
       editBasicDetails,
       editDetectorRules,
     } = this.props;
@@ -53,6 +55,7 @@ export class DetectorDetailsView extends React.Component<
           enabled_time={enabled_time}
           last_update_time={last_update_time}
           rulesCanFold={rulesCanFold}
+          dashboardId={dashboardId}
           onEditClicked={editBasicDetails}
         >
           {rulesCanFold ? detectorRules : null}

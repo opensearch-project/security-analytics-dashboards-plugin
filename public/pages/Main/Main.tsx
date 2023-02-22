@@ -363,6 +363,7 @@ export default class Main extends Component<MainProps, MainState> {
                           render={(props: RouteComponentProps<{}, any, any>) => (
                             <DetectorDetails
                               detectorService={services.detectorsService}
+                              savedObjectsService={services.savedObjectsService}
                               {...props}
                               notifications={core?.notifications}
                             />
