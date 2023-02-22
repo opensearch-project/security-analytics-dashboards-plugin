@@ -56,4 +56,33 @@ export default class IndexService {
       });
     }
   };
+
+  updateAliases = async (
+    _context: RequestHandlerContext,
+    request: OpenSearchDashboardsRequest,
+    response: OpenSearchDashboardsResponseFactory
+  ): Promise<IOpenSearchDashboardsResponse<ServerResponse<GetIndicesResponse> | ResponseError>> => {
+    try {
+      const actions = request.body;
+      const params = { body: actions };
+      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
+      await callWithRequest('indices.updateAliases', params);
+
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: true,
+        },
+      });
+    } catch (error: any) {
+      console.error('Security Analytics - IndexService - createAliases:', error);
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: false,
+          error: error.message,
+        },
+      });
+    }
+  };
 }

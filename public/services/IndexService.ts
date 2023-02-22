@@ -22,4 +22,13 @@ export default class IndexService implements IIndexService {
 
     return response;
   };
+
+  updateAliases = async (actions: any): Promise<ServerResponse<{}>> => {
+    const url = `..${API.UPDATE_ALIASES}`;
+    const response = (await this.httpClient.post(url, {
+      body: JSON.stringify(actions),
+    })) as ServerResponse<{}>;
+
+    return response;
+  };
 }

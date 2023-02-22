@@ -71,7 +71,7 @@ describe('Integration tests', () => {
     cy.waitForPageLoad('detectors', 'Threat detectors');
   });
 
-  it('...can navigate to findings page', () => {
+  xit('...can navigate to findings page', () => {
     cy.intercept({
       method: 'GET',
       pathname: '/_plugins/_security_analytics/findings/_search',

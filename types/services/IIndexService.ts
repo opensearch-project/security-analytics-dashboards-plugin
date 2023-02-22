@@ -8,4 +8,5 @@ import { GetIndicesResponse } from '../Indices';
 
 export interface IIndexService {
   getIndices(): Promise<ServerResponse<GetIndicesResponse>>;
+  updateAliases(actions: any): Promise<ServerResponse<{}>>;
 }

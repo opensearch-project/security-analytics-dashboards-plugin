@@ -143,7 +143,8 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             createDashboardPromise = this.createDashboard(
               detector.name,
               detector.detector_type,
-              createDetectorRes.response._id
+              createDetectorRes.response._id,
+              detector.inputs[0].detector_input.indices
             );
             pendingDashboardCreations[createDetectorRes.response._id] = createDashboardPromise;
           }
@@ -163,9 +164,14 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     this.setState({ creatingDetector: false });
   };
 
-  private createDashboard = (detectorName: string, logType: string, detectorId: string) => {
+  private createDashboard = (
+    detectorName: string,
+    logType: string,
+    detectorId: string,
+    inputIndices: string[]
+  ) => {
     return this.props.services.savedObjectsService
-      .createSavedObject(detectorName, logType, detectorId)
+      .createSavedObject(detectorName, logType, detectorId, inputIndices)
       .catch((error: any) => {
         console.error(error);
       });

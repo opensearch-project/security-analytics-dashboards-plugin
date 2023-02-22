@@ -10,7 +10,8 @@ export interface ISavedObjectsService {
   createSavedObject(
     name: string,
     logType: string,
-    detectorId: string
+    detectorId: string,
+    inputIndices: string[]
   ): Promise<ServerResponse<SimpleSavedObject>>;
   getDashboards(): Promise<
     SimpleSavedObject<{ references: SavedObjectReference[]; id?: string }>[]

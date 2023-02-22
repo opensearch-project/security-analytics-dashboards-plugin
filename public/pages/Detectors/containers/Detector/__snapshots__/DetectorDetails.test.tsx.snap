@@ -223,6 +223,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
   savedObjectsService={
     SavedObjectService {
       "getDashboards": [Function],
+      "indexService": undefined,
       "savedObjectsClient": Object {
         "delete": [MockFunction],
         "get": [MockFunction],
@@ -923,6 +924,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
     savedObjectsService={
       SavedObjectService {
         "getDashboards": [Function],
+        "indexService": undefined,
         "savedObjectsClient": Object {
           "delete": [MockFunction],
           "get": [MockFunction],
@@ -1336,6 +1338,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
       savedObjectsService={
         SavedObjectService {
           "getDashboards": [Function],
+          "indexService": undefined,
           "savedObjectsClient": Object {
             "delete": [MockFunction],
             "get": [MockFunction],
@@ -2697,6 +2700,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
       savedObjectsService={
         SavedObjectService {
           "getDashboards": [Function],
+          "indexService": undefined,
           "savedObjectsClient": Object {
             "delete": [MockFunction],
             "get": [MockFunction],

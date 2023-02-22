@@ -8,26 +8,47 @@ import {
   SavedObjectsClientContract,
   SimpleSavedObject,
 } from 'opensearch-dashboards/public';
-import { ISavedObjectsService, ServerResponse } from '../../types';
+import { IIndexService, ISavedObjectsService, ServerResponse } from '../../types';
 import { getSavedObjectConfigs } from '../store/savedObjectsConfig';
 import { logTypesWithDashboards } from '../utils/constants';
 
 export default class SavedObjectService implements ISavedObjectsService {
-  constructor(private savedObjectsClient: SavedObjectsClientContract) {}
+  constructor(
+    private savedObjectsClient: SavedObjectsClientContract,
+    private readonly indexService: IIndexService
+  ) {}
 
   public async createSavedObject(
     name: string,
     logType: string,
-    detectorId: string
+    detectorId: string,
+    inputIndices: string[]
   ): Promise<ServerResponse<SimpleSavedObject>> {
     if (logTypesWithDashboards.has(logType)) {
       const savedObjectConfig = getSavedObjectConfigs(logType);
 
       if (savedObjectConfig) {
         try {
+          // Determine the name to be used for the index pattern and if it already exists then use that id for visualizations
+          const aliasName = `${logType}-${detectorId}`;
+          const indexActions = inputIndices.map((index) => {
+            return {
+              add: {
+                index,
+                alias: aliasName,
+              },
+            };
+          });
+          const createAliasRes = await this.indexService.updateAliases({
+            actions: indexActions,
+          });
+
           const indexPattern = await this.savedObjectsClient.create(
             savedObjectConfig['index-pattern'].type,
-            savedObjectConfig['index-pattern'].attributes,
+            {
+              ...savedObjectConfig['index-pattern'].attributes,
+              title: aliasName,
+            },
             {
               ...savedObjectConfig['index-pattern'],
             }
@@ -108,4 +129,16 @@ export default class SavedObjectService implements ISavedObjectsService {
 
     return Promise.resolve(dashboards);
   };
+
+  public async getIndexPatterns(): Promise<SimpleSavedObject<{ title: string }>[]> {
+    const indexPatterns = await this.savedObjectsClient
+      .find<{ title: string }>({
+        type: 'index-pattern',
+        fields: ['title', 'type'],
+        perPage: 10000,
+      })
+      .then((response) => response.savedObjects);
+
+    return Promise.resolve(indexPatterns);
+  }
 }

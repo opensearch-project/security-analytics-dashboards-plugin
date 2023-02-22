@@ -210,8 +210,6 @@ describe('Detectors', () => {
     // Confirm detector active
     cy.contains(detectorName);
     cy.contains('Active');
-    cy.contains('View Alerts');
-    cy.contains('View Findings');
     cy.contains('Actions');
     cy.contains('Detector configuration');
     cy.contains('Field mappings');

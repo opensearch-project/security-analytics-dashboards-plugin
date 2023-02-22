@@ -43,7 +43,7 @@ export function renderApp(
   const alertsService = new AlertsService(http);
   const ruleService = new RuleService(http);
   const notificationsService = new NotificationsService(http);
-  const savedObjectsService = new SavedObjectService(savedObjects.client);
+  const savedObjectsService = new SavedObjectService(savedObjects.client, indexService);
   const indexPatternsService = new IndexPatternsService(depsStart.data.indexPatterns);
 
   const services: BrowserServices = {

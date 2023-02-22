@@ -27,6 +27,7 @@ export const API: SecurityAnalyticsApi = {
   CHANNELS: `${BASE_API_PATH}/_notifications/channels`,
   PLUGINS: `${BASE_API_PATH}/_notifications/plugins`,
   ACKNOWLEDGE_ALERTS: `${BASE_API_PATH}/detectors/{detector_id}/_acknowledge/alerts`,
+  UPDATE_ALIASES: `${BASE_API_PATH}/update_aliases`,
 };
 
 /**
