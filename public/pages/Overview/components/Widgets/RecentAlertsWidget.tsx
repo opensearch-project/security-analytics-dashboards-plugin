@@ -4,7 +4,7 @@
  */
 
 import { EuiBasicTableColumn, EuiButton } from '@elastic/eui';
-import { DEFAULT_EMPTY_DATA, ROUTES } from '../../../../utils/constants';
+import { DEFAULT_EMPTY_DATA, ROUTES, SortDirection } from '../../../../utils/constants';
 import React, { useEffect, useState } from 'react';
 import { AlertItem } from '../../models/interfaces';
 import { TableWidget } from './TableWidget';
@@ -62,7 +62,12 @@ export const RecentAlertsWidget: React.FC<RecentAlertsWidgetProps> = ({
 
   return (
     <WidgetContainer title={'Recent alerts'} actions={actions}>
-      <TableWidget columns={columns} items={alertItems} loading={loading} />
+      <TableWidget
+        columns={columns}
+        items={alertItems}
+        sorting={{ sort: { field: 'time', direction: SortDirection.DESC } }}
+        loading={loading}
+      />
     </WidgetContainer>
   );
 };

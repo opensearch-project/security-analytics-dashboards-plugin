@@ -4,7 +4,7 @@
  */
 
 import { EuiBasicTableColumn, EuiButton } from '@elastic/eui';
-import { ROUTES } from '../../../../utils/constants';
+import { ROUTES, SortDirection } from '../../../../utils/constants';
 import React, { useEffect, useState } from 'react';
 import { FindingItem } from '../../models/interfaces';
 import { TableWidget } from './TableWidget';
@@ -67,7 +67,12 @@ export const RecentFindingsWidget: React.FC<RecentFindingsWidgetProps> = ({
 
   return (
     <WidgetContainer title={'Recent findings'} actions={actions}>
-      <TableWidget columns={columns} items={findingItems} loading={loading} />
+      <TableWidget
+        columns={columns}
+        items={findingItems}
+        sorting={{ sort: { field: 'time', direction: SortDirection.DESC } }}
+        loading={loading}
+      />
     </WidgetContainer>
   );
 };

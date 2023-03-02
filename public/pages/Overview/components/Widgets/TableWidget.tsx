@@ -9,7 +9,7 @@ import { TableWidgetItem, TableWidgetProps } from '../../models/types';
 
 export class TableWidget<T extends TableWidgetItem> extends React.Component<TableWidgetProps<T>> {
   render() {
-    const { columns, items, loading = false } = this.props;
+    const { columns, items, sorting, loading = false } = this.props;
 
     return (
       <EuiInMemoryTable<T>
@@ -18,6 +18,7 @@ export class TableWidget<T extends TableWidgetItem> extends React.Component<Tabl
         items={items}
         itemId={(item: T) => `${item.id}`}
         pagination={{ pageSize: 10, pageSizeOptions: [10] }}
+        sorting={sorting}
         loading={loading}
       />
     );
