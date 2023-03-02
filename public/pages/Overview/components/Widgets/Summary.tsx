@@ -3,13 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiFlexGroup, EuiFlexItem, EuiLink, EuiStat } from '@elastic/eui';
-import { euiPaletteColorBlind } from '@elastic/eui';
+import { EuiEmptyPrompt, EuiFlexGroup, EuiFlexItem, EuiLink, EuiStat } from '@elastic/eui';
 import React, { useCallback, useEffect, useState } from 'react';
 import { WidgetContainer } from './WidgetContainer';
 import { summaryGroupByOptions } from '../../utils/constants';
 import {
-  alertsDefaultColor,
   getChartTimeUnit,
   getDomainRange,
   getOverviewVisualizationSpec,
@@ -46,8 +44,8 @@ export const Summary: React.FC<SummaryProps> = ({
 }) => {
   const [groupBy, setGroupBy] = useState('');
   const [summaryData, setSummaryData] = useState<SummaryData[]>([]);
-  const [activeAlerts, setActiveAlerts] = useState(0);
-  const [totalFindings, setTotalFindings] = useState(0);
+  const [activeAlerts, setActiveAlerts] = useState<undefined | number>(undefined);
+  const [totalFindings, setTotalFindings] = useState<undefined | number>(undefined);
 
   const onGroupByChange = useCallback((event) => {
     setGroupBy(event.target.value);
@@ -121,14 +119,14 @@ export const Summary: React.FC<SummaryProps> = ({
             <EuiFlexItem grow={false}>
               <EuiStat
                 title={
-                  <EuiLink href={`#${ROUTES.ALERTS}`} style={{ color: alertsDefaultColor }}>
+                  <EuiLink href={`#${ROUTES.ALERTS}`} color={!activeAlerts ? 'subdued' : 'danger'}>
                     {activeAlerts}
                   </EuiLink>
                 }
                 description="Total active alerts"
                 textAlign="left"
                 titleColor="primary"
-                isLoading={!activeAlerts}
+                isLoading={activeAlerts === undefined}
               />
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
@@ -136,7 +134,7 @@ export const Summary: React.FC<SummaryProps> = ({
                 title={
                   <EuiLink
                     href={`#${ROUTES.FINDINGS}`}
-                    style={{ color: euiPaletteColorBlind()[1] }}
+                    color={!totalFindings ? 'subdued' : 'primary'}
                   >
                     {totalFindings}
                   </EuiLink>
@@ -144,13 +142,26 @@ export const Summary: React.FC<SummaryProps> = ({
                 description="Total findings"
                 textAlign="left"
                 titleColor="primary"
-                isLoading={!totalFindings}
+                isLoading={totalFindings === undefined}
               />
             </EuiFlexItem>
           </EuiFlexGroup>
         </EuiFlexItem>
         <EuiFlexItem>
-          <ChartContainer chartViewId={'summary-view'} loading={loading} />
+          {activeAlerts === 0 && totalFindings === 0 ? (
+            <EuiEmptyPrompt
+              title={<h2>No alerts and findings found</h2>}
+              body={
+                <p>
+                  Adjust the time range to see more results or{' '}
+                  <EuiLink href={`#${ROUTES.DETECTORS_CREATE}`}>create a detector</EuiLink> to
+                  generate findings.{' '}
+                </p>
+              }
+            />
+          ) : (
+            <ChartContainer chartViewId={'summary-view'} loading={loading} />
+          )}
         </EuiFlexItem>
       </EuiFlexGroup>
     </WidgetContainer>
