@@ -18,5 +18,7 @@ export type TableWidgetProps<T extends TableWidgetItem> = {
       direction: SortDirection;
     };
   };
+  className?: string;
   loading?: boolean;
+  message?: React.ReactNode;
 };

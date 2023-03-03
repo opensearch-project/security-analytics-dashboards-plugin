@@ -119,29 +119,39 @@ export const Summary: React.FC<SummaryProps> = ({
             <EuiFlexItem grow={false}>
               <EuiStat
                 title={
-                  <EuiLink href={`#${ROUTES.ALERTS}`} color={!activeAlerts ? 'subdued' : 'danger'}>
-                    {activeAlerts}
-                  </EuiLink>
+                  activeAlerts === 0 ? (
+                    0
+                  ) : (
+                    <EuiLink href={`#${ROUTES.ALERTS}`} color={'danger'}>
+                      {activeAlerts}
+                    </EuiLink>
+                  )
                 }
                 description="Total active alerts"
                 textAlign="left"
-                titleColor="primary"
+                titleSize="l"
+                titleColor="subdued"
                 isLoading={activeAlerts === undefined}
               />
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
               <EuiStat
                 title={
-                  <EuiLink
-                    href={`#${ROUTES.FINDINGS}`}
-                    color={!totalFindings ? 'subdued' : 'primary'}
-                  >
-                    {totalFindings}
-                  </EuiLink>
+                  totalFindings === 0 ? (
+                    0
+                  ) : (
+                    <EuiLink
+                      href={`#${ROUTES.FINDINGS}`}
+                      color={!totalFindings ? 'subdued' : 'primary'}
+                    >
+                      {totalFindings}
+                    </EuiLink>
+                  )
                 }
                 description="Total findings"
                 textAlign="left"
-                titleColor="primary"
+                titleSize="l"
+                titleColor="subdued"
                 isLoading={totalFindings === undefined}
               />
             </EuiFlexItem>
