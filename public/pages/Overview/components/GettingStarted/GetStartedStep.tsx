@@ -20,7 +20,7 @@ interface GetStartedStepProps {
 
 export const GetStartedStep: React.FC<GetStartedStepProps> = ({ buttons, title }) => {
   return (
-    <div style={{ marginTop: '-20px' }}>
+    <div>
       <EuiText>
         <p>{title}</p>
       </EuiText>
