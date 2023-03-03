@@ -3,7 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiEmptyPrompt, EuiFlexGroup, EuiFlexItem, EuiLink, EuiStat } from '@elastic/eui';
+import {
+  EuiEmptyPrompt,
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiLink,
+  EuiLinkColor,
+  EuiStat,
+} from '@elastic/eui';
 import React, { useCallback, useEffect, useState } from 'react';
 import { WidgetContainer } from './WidgetContainer';
 import { summaryGroupByOptions } from '../../utils/constants';
@@ -111,50 +118,45 @@ export const Summary: React.FC<SummaryProps> = ({
     renderVisualization(generateVisualizationSpec(summaryData, groupBy), 'summary-view');
   }, [summaryData, groupBy]);
 
+  const createStatComponent = useCallback(
+    (description: string, urlData: { url: string; color: EuiLinkColor }, stat?: number) => (
+      <EuiFlexItem grow={false}>
+        <EuiStat
+          title={
+            stat === 0 ? (
+              0
+            ) : (
+              <EuiLink href={`#${urlData.url}`} color={urlData.color}>
+                {stat}
+              </EuiLink>
+            )
+          }
+          description={description}
+          textAlign="left"
+          titleSize="l"
+          titleColor="subdued"
+          isLoading={stat === undefined}
+        />
+      </EuiFlexItem>
+    ),
+    []
+  );
+
   return (
     <WidgetContainer title="Findings and alert count" actions={createVisualizationActions(groupBy)}>
       <EuiFlexGroup gutterSize="s" direction="column">
         <EuiFlexItem>
           <EuiFlexGroup gutterSize="xl">
-            <EuiFlexItem grow={false}>
-              <EuiStat
-                title={
-                  activeAlerts === 0 ? (
-                    0
-                  ) : (
-                    <EuiLink href={`#${ROUTES.ALERTS}`} color={'danger'}>
-                      {activeAlerts}
-                    </EuiLink>
-                  )
-                }
-                description="Total active alerts"
-                textAlign="left"
-                titleSize="l"
-                titleColor="subdued"
-                isLoading={activeAlerts === undefined}
-              />
-            </EuiFlexItem>
-            <EuiFlexItem grow={false}>
-              <EuiStat
-                title={
-                  totalFindings === 0 ? (
-                    0
-                  ) : (
-                    <EuiLink
-                      href={`#${ROUTES.FINDINGS}`}
-                      color={!totalFindings ? 'subdued' : 'primary'}
-                    >
-                      {totalFindings}
-                    </EuiLink>
-                  )
-                }
-                description="Total findings"
-                textAlign="left"
-                titleSize="l"
-                titleColor="subdued"
-                isLoading={totalFindings === undefined}
-              />
-            </EuiFlexItem>
+            {createStatComponent(
+              'Total active alerts',
+              { url: ROUTES.ALERTS, color: 'danger' },
+              activeAlerts
+            )}
+            {createStatComponent(
+              'Total findings',
+              { url: ROUTES.FINDINGS, color: 'primary' },
+              totalFindings
+            )}
           </EuiFlexGroup>
         </EuiFlexItem>
         <EuiFlexItem>
