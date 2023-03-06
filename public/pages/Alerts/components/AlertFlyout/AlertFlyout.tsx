@@ -34,7 +34,7 @@ import { Detector } from '../../../../../models/interfaces';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { Finding } from '../../../Findings/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { RulesViewModelActor } from '../../../Rules/models/RulesViewModelActor';
+import { DataStore } from '../../../../store/DataStore';
 
 export interface AlertFlyoutProps {
   alertItem: AlertItem;
@@ -56,12 +56,8 @@ export interface AlertFlyoutState {
 }
 
 export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutState> {
-  private rulesViewModelActor: RulesViewModelActor;
-
   constructor(props: AlertFlyoutProps) {
     super(props);
-
-    this.rulesViewModelActor = new RulesViewModelActor(props.ruleService);
 
     this.state = {
       acknowledged: props.alertItem.state === ALERT_STATE.ACKNOWLEDGED,
@@ -113,7 +109,7 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
       });
 
       if (ruleIds.length > 0) {
-        const rulesResponse = await this.rulesViewModelActor.fetchRules({
+        const rulesResponse = await DataStore.rules.getAllRules({
           _id: ruleIds,
         });
 

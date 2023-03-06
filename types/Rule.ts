@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { RuleService } from '../public/services';
+
 export interface Rule {
   id: string;
   category: string;
@@ -91,3 +93,25 @@ export interface DeleteRuleParams {
 }
 
 export interface DeleteRuleResponse {}
+
+export interface IRulesCache {
+  [key: string]: RuleItemInfoBase[] | [];
+}
+
+export interface IRulesStore {
+  cache: IRulesCache;
+
+  readonly service: RuleService;
+
+  invalidateCache: () => void;
+
+  getAllRules: (terms?: { [key: string]: string[] }, query?: any) => Promise<RuleItemInfoBase[]>;
+
+  readonly getRules: (
+    prePackaged: boolean,
+    terms?: { [key: string]: string[] },
+    query?: any
+  ) => Promise<RuleItemInfoBase[]>;
+
+  validateAndAddDetection: (rules: RuleItemInfoBase[]) => RuleItemInfoBase[];
+}

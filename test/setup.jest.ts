@@ -7,8 +7,8 @@ import 'jest-canvas-mock';
 import '@testing-library/jest-dom/extend-expect';
 import { configure } from '@testing-library/react';
 import Enzyme from 'enzyme';
+// @ts-ignore
 import Adapter from 'enzyme-adapter-react-16';
-import { RulesViewModelActor } from '../public/pages/Rules/models/RulesViewModelActor';
 import { contextServicesMock as mockContextServices } from './mocks/useContext.mock';
 
 Enzyme.configure({ adapter: new Adapter() });
@@ -71,30 +71,6 @@ jest.mock('moment', () => {
   Object.assign(fakeMoment, moment);
 
   return fakeMoment;
-});
-
-/**
- * Mocks rules view model actor as it is instantiated in the component classes
- * Mocked here so that is applied to all tests
- */
-jest.mock('../public/pages/Rules/models/RulesViewModelActor.ts', () => {
-  const rulesViewModelActor = jest.requireActual(
-    '../public/pages/Rules/models/RulesViewModelActor.ts'
-  );
-  const rulesViewModelActorMock = {
-    ...rulesViewModelActor,
-    getRules: () =>
-      Promise.resolve({
-        ok: true,
-        response: {
-          hits: {
-            hits: [],
-          },
-        },
-      }),
-  };
-
-  return rulesViewModelActorMock as RulesViewModelActor;
 });
 
 /**

@@ -14,7 +14,6 @@ import { RuleEditorFormModel, ruleEditorStateDefaultValue } from './RuleEditorFo
 import { mapFormToRule, mapRuleToForm } from './mappers';
 import { RuleEditorForm } from './RuleEditorForm';
 import { validateRule } from '../../utils/helpers';
-import { errorNotificationToast } from '../../../../utils/helpers';
 
 export interface RuleEditorProps {
   title: string;
@@ -60,14 +59,7 @@ export const RuleEditorContainer: React.FC<RuleEditorProps> = ({
       result = await ruleService.createRule(submitingRule);
     }
 
-    if (!result.ok) {
-      errorNotificationToast(
-        notifications!,
-        mode === 'create' ? 'create' : 'save',
-        'rule',
-        result.error
-      );
-    } else {
+    if (result) {
       history.replace(ROUTES.RULES);
     }
   };

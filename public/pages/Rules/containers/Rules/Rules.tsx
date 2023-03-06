@@ -8,14 +8,14 @@ import { ServicesContext } from '../../../../services';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { BrowserServices } from '../../../../models/interfaces';
-import { RulesViewModelActor } from '../../models/RulesViewModelActor';
 import { RulesTable } from '../../components/RulesTable/RulesTable';
 import { RuleTableItem } from '../../utils/helpers';
-import { RuleItemInfoBase } from '../../models/types';
 import { RuleViewerFlyout } from '../../components/RuleViewerFlyout/RuleViewerFlyout';
 import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { CoreServicesContext } from '../../../../components/core_services';
+import { DataStore } from '../../../../store/DataStore';
+import { RuleItemInfoBase } from '../../../../../types';
 
 export interface RulesProps extends RouteComponentProps {
   notifications?: NotificationsStart;
@@ -24,9 +24,7 @@ export interface RulesProps extends RouteComponentProps {
 export const Rules: React.FC<RulesProps> = (props) => {
   const services = useContext(ServicesContext) as BrowserServices;
   const context = useContext(CoreServicesContext);
-  const rulesViewModelActor = useMemo(() => new RulesViewModelActor(services.ruleService), [
-    services,
-  ]);
+
   const [allRules, setAllRules] = useState<RuleItemInfoBase[]>([]);
   const [flyoutData, setFlyoutData] = useState<RuleTableItem | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
@@ -46,10 +44,12 @@ export const Rules: React.FC<RulesProps> = (props) => {
 
   const getRules = useCallback(async () => {
     setLoading(true);
-    const allRules = await rulesViewModelActor.fetchRules();
+
+    const allRules = await DataStore.rules.getAllRules();
     setAllRules(allRules);
+
     setLoading(false);
-  }, [rulesViewModelActor]);
+  }, [DataStore.rules.getAllRules]);
 
   useEffect(() => {
     context?.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.RULES]);

@@ -37,7 +37,7 @@ import {
   getPlugins,
   successNotificationToast,
 } from '../../../utils/helpers';
-import { RulesViewModelActor } from '../../Rules/models/RulesViewModelActor';
+import { DataStore } from '../../../store/DataStore';
 
 interface CreateDetectorProps extends RouteComponentProps {
   isEdit: boolean;
@@ -58,11 +58,9 @@ interface CreateDetectorState {
 
 export default class CreateDetector extends Component<CreateDetectorProps, CreateDetectorState> {
   static contextType = CoreServicesContext;
-  private rulesViewModelActor: RulesViewModelActor;
 
   constructor(props: CreateDetectorProps) {
     super(props);
-    this.rulesViewModelActor = new RulesViewModelActor(props.services.ruleService);
     this.state = {
       currentStep: DetectorCreationStep.DEFINE_DETECTOR,
       detector: EMPTY_DEFAULT_DETECTOR,
@@ -215,7 +213,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     this.setState({
       loadingRules: true,
     });
-    const allRules = await this.rulesViewModelActor.fetchRules(undefined, {
+    const allRules = await DataStore.rules.getAllRules(undefined, {
       bool: {
         must: [{ match: { 'rule.category': `${detector_type}` } }],
       },
