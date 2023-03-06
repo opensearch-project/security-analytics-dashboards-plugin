@@ -95,7 +95,7 @@ export class RulesStore implements IRulesStore {
       return this.cache[cacheKey];
     }
 
-    const getRulesRes = await this.service.getRules(prePackaged, {
+    const response = await this.service.getRules(prePackaged, {
       from: 0,
       size: 5000,
       query: {
@@ -112,8 +112,8 @@ export class RulesStore implements IRulesStore {
       },
     });
 
-    if (getRulesRes?.ok) {
-      return (this.cache[cacheKey] = getRulesRes.response.hits.hits.map((hit) => ({
+    if (response?.ok) {
+      return (this.cache[cacheKey] = response.response.hits.hits.map((hit) => ({
         ...hit,
         _source: {
           ...hit._source,
