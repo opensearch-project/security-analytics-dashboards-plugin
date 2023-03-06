@@ -10,6 +10,9 @@ import Enzyme from 'enzyme';
 // @ts-ignore
 import Adapter from 'enzyme-adapter-react-16';
 import { contextServicesMock as mockContextServices } from './mocks/useContext.mock';
+import { DataStore } from '../public/store/DataStore';
+import services from './mocks/services';
+import notificationsStartMock from './mocks/services/notifications/NotificationsStart.mock';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -98,5 +101,7 @@ jest.mock('vega/build-es5/vega.js', () => {
     }),
   };
 });
+
+DataStore.init(services, notificationsStartMock);
 
 jest.setTimeout(10000); // in milliseconds

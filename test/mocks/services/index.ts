@@ -15,10 +15,11 @@ import ruleService from './ruleService.mock';
 import findingsService from './findingsService.mock';
 import alertService from './alertService.mock';
 import indexService from './indexService.mock';
+import { BrowserServices } from '../../../public/models/interfaces';
 
 const openSearchService = new OpenSearchService(httpClientMock, savedObjectsClientMock);
 
-export default {
+export default ({
   alertService,
   detectorService,
   fieldMappingService,
@@ -29,4 +30,4 @@ export default {
   httpClientMock,
   notificationsMock,
   openSearchService,
-};
+} as unknown) as BrowserServices;

@@ -1,3 +1,8 @@
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import { RulesStore } from '../pages/Rules/store/RulesStore';
 import { BrowserServices } from '../models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';

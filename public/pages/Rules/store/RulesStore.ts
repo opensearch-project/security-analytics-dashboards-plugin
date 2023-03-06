@@ -1,3 +1,8 @@
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import { RuleService } from '../../../services';
 import { ruleTypes } from '../utils/constants';
 import { load, safeDump } from 'js-yaml';
