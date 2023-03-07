@@ -14,6 +14,7 @@ import { RuleEditorFormModel, ruleEditorStateDefaultValue } from './RuleEditorFo
 import { mapFormToRule, mapRuleToForm } from './mappers';
 import { RuleEditorForm } from './RuleEditorForm';
 import { validateRule } from '../../utils/helpers';
+import { DataStore } from '../../../../store/DataStore';
 
 export interface RuleEditorProps {
   title: string;
@@ -54,9 +55,9 @@ export const RuleEditorContainer: React.FC<RuleEditorProps> = ({
         console.error('No rule id found');
         return;
       }
-      result = await ruleService.updateRule(rule?.id, submitingRule.category, submitingRule);
+      result = await DataStore.rules.updateRule(rule?.id, submitingRule.category, submitingRule);
     } else {
-      result = await ruleService.createRule(submitingRule);
+      result = await DataStore.rules.createRule(submitingRule);
     }
 
     if (result) {

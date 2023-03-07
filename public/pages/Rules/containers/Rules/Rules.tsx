@@ -28,25 +28,22 @@ export const Rules: React.FC<RulesProps> = (props) => {
   const [allRules, setAllRules] = useState<RuleItemInfoBase[]>([]);
   const [flyoutData, setFlyoutData] = useState<RuleTableItem | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
-  const ruleItems: RuleTableItem[] = useMemo(
-    () =>
-      allRules.map((rule) => ({
-        title: rule._source.title,
-        level: rule._source.level,
-        category: rule._source.category,
-        description: rule._source.description,
-        source: rule.prePackaged ? 'Sigma' : 'Custom',
-        ruleInfo: rule,
-        ruleId: rule._id,
-      })),
-    [allRules]
-  );
 
   const getRules = useCallback(async () => {
     setLoading(true);
 
     const allRules = await DataStore.rules.getAllRules();
-    setAllRules(allRules);
+    const rules = allRules.map((rule) => ({
+      title: rule._source.title,
+      level: rule._source.level,
+      category: rule._source.category,
+      description: rule._source.description,
+      source: rule.prePackaged ? 'Sigma' : 'Custom',
+      ruleInfo: rule,
+      ruleId: rule._id,
+    }));
+
+    setAllRules(rules);
 
     setLoading(false);
   }, [DataStore.rules.getAllRules]);
@@ -120,7 +117,7 @@ export const Rules: React.FC<RulesProps> = (props) => {
         </EuiFlexItem>
         <EuiFlexItem>
           <EuiPanel>
-            <RulesTable loading={loading} ruleItems={ruleItems} showRuleDetails={setFlyoutData} />
+            <RulesTable loading={loading} ruleItems={allRules} showRuleDetails={setFlyoutData} />
           </EuiPanel>
         </EuiFlexItem>
       </EuiFlexGroup>

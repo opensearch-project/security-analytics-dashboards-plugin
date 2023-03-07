@@ -164,6 +164,21 @@ export class RulesStore implements IRulesStore {
   };
 
   /**
+   * Update a rule
+   *
+   * @param {string} id
+   * @returns {Promise<boolean>}
+   */
+  deleteRule = async (id: string): Promise<boolean> => {
+    const response = await this.invalidateCache().service.deleteRule(id);
+    if (!response.ok) {
+      errorNotificationToast(this.notifications, 'delete', 'rule', response.error);
+    }
+
+    return response.ok;
+  };
+
+  /**
    * Validates and adds detection yaml to rule items
    *
    * @param {RuleItemInfoBase[]} rules

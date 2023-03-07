@@ -12,7 +12,6 @@ import {
   EuiTitle,
   EuiButtonIcon,
 } from '@elastic/eui';
-import { errorNotificationToast } from '../../../../utils/helpers';
 import { ROUTES } from '../../../../utils/constants';
 import React, { useMemo, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
@@ -22,6 +21,7 @@ import { RuleContentViewer } from '../RuleContentViewer/RuleContentViewer';
 import { RuleViewerFlyoutHeaderActions } from './RuleViewFlyoutHeaderActions';
 import { RuleService } from '../../../../services';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { DataStore } from '../../../../store/DataStore';
 
 export interface RuleViewerFlyoutProps {
   history?: RouteComponentProps['history'];
@@ -82,15 +82,12 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
     if (!ruleService) {
       return;
     }
-    const deleteRuleRes = await ruleService.deleteRule(ruleTableItem.ruleId);
 
-    if (deleteRuleRes.ok) {
+    const response = await DataStore.rules.deleteRule(ruleTableItem.ruleId);
+
+    if (response) {
       closeDeleteModal();
       hideFlyout(true);
-    } else {
-      if (notifications) {
-        errorNotificationToast(notifications, 'delete', 'rule', deleteRuleRes.error);
-      }
     }
   };
 

@@ -13,9 +13,9 @@ import { RouteComponentProps } from 'react-router-dom';
 import { dump, load } from 'js-yaml';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { errorNotificationToast } from '../../../../utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { setBreadCrumb, validateRule } from '../../utils/helpers';
+import { DataStore } from '../../../../store/DataStore';
 
 export interface ImportRuleProps {
   services: BrowserServices;
@@ -124,12 +124,9 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
       if (!validateRule(rule, notifications!, 'create')) {
         return;
       }
+      const response = await DataStore.rules.createRule(rule);
 
-      const updateRuleRes = await services.ruleService.createRule(rule);
-
-      if (!updateRuleRes.ok) {
-        errorNotificationToast(notifications!, 'create', 'rule', updateRuleRes.error);
-      } else {
+      if (response) {
         history.replace(ROUTES.RULES);
       }
     };
