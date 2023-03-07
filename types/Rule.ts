@@ -4,6 +4,7 @@
  */
 
 import { RuleService } from '../public/services';
+import { NotificationsStart } from 'opensearch-dashboards/public';
 
 export interface Rule {
   id: string;
@@ -103,9 +104,17 @@ export interface IRulesStore {
 
   readonly service: RuleService;
 
+  readonly notifications: NotificationsStart;
+
   invalidateCache: () => void;
 
   getAllRules: (terms?: { [key: string]: string[] }, query?: any) => Promise<RuleItemInfoBase[]>;
+
+  createRule: (rule: Rule) => Promise<boolean>;
+
+  updateRule: (id: string, category: string, rule: Rule) => Promise<boolean>;
+
+  deleteRule: (id: string) => Promise<boolean>;
 
   readonly getRules: (
     prePackaged: boolean,
