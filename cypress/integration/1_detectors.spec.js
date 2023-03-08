@@ -6,6 +6,7 @@
 import { OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
 import sample_index_settings from '../fixtures/sample_index_settings.json';
 import dns_rule_data from '../fixtures/integration_tests/rule/create_dns_rule.json';
+import sample_dns_settings from '../fixtures/integration_tests/index/create_dns_settings.json';
 
 const testMappings = {
   properties: {
@@ -16,16 +17,20 @@ const testMappings = {
   },
 };
 
-const cypressDNSRule = 'Cypress DNS Rule';
+const cypressDNSRule = dns_rule_data.title;
 
 describe('Detectors', () => {
-  const indexName = 'cypress-test-dns';
+  const cypressIndexDns = 'cypress-index-dns';
+  const cypressIndexWindows = 'cypress-index-windows';
   const detectorName = 'test detector';
 
   before(() => {
     cy.cleanUpTests();
+
+    cy.createIndex(cypressIndexWindows, sample_index_settings);
+
     // Create test index
-    cy.createIndex(indexName, sample_index_settings).then(() =>
+    cy.createIndex(cypressIndexDns, sample_index_settings).then(() =>
       cy
         .request('POST', '_plugins/_security_analytics/rules/_search?prePackaged=true', {
           from: 0,
@@ -41,8 +46,6 @@ describe('Detectors', () => {
     );
 
     cy.createRule(dns_rule_data);
-
-    cy.contains(detectorName).should('not.exist');
   });
 
   beforeEach(() => {
@@ -57,6 +60,36 @@ describe('Detectors', () => {
     });
   });
 
+  it('...should show mappings warning', () => {
+    // Locate Create detector button click to start
+    cy.get('.euiButton').filter(':contains("Create detector")').click({ force: true });
+
+    // Check to ensure process started
+    cy.waitForPageLoad('create-detector', {
+      contains: 'Define detector',
+    });
+
+    // Select our pre-seeded data source (check cypressIndexDns)
+    cy.get(`[data-test-subj="define-detector-select-data-source"]`)
+      .find('input')
+      .focus()
+      .realType(cypressIndexDns);
+
+    // Select threat detector type (Windows logs)
+    cy.get(`input[id="dns"]`).click({ force: true });
+
+    // Select our pre-seeded data source (check cypressIndexDns)
+    cy.get(`[data-test-subj="define-detector-select-data-source"]`)
+      .find('input')
+      .focus()
+      .realType(cypressIndexWindows)
+      .realPress('Enter');
+
+    cy.get('.euiCallOut')
+      .should('be.visible')
+      .contains('The selected log sources contain different types of logs');
+  });
+
   it('...can be created', () => {
     // Locate Create detector button click to start
     cy.get('.euiButton').filter(':contains("Create detector")').click({ force: true });
@@ -69,11 +102,11 @@ describe('Detectors', () => {
     // Enter a name for the detector in the appropriate input
     cy.get(`input[placeholder="Enter a name for the detector."]`).focus().realType('test detector');
 
-    // Select our pre-seeded data source (check indexName)
+    // Select our pre-seeded data source (check cypressIndexDns)
     cy.get(`[data-test-subj="define-detector-select-data-source"]`)
       .find('input')
       .focus()
-      .realType(indexName);
+      .realType(cypressIndexDns);
 
     cy.intercept({
       pathname: '/_plugins/_security_analytics/rules/_search',
@@ -165,7 +198,7 @@ describe('Detectors', () => {
     cy.contains('Detector details');
     cy.contains(detectorName);
     cy.contains('dns');
-    cy.contains(indexName);
+    cy.contains(cypressIndexDns);
     cy.contains('Alert on test_trigger');
 
     // Create the detector
@@ -177,8 +210,6 @@ describe('Detectors', () => {
     // Confirm detector active
     cy.contains(detectorName);
     cy.contains('Active');
-    cy.contains('View Alerts');
-    cy.contains('View Findings');
     cy.contains('Actions');
     cy.contains('Detector configuration');
     cy.contains('Field mappings');
@@ -219,8 +250,7 @@ describe('Detectors', () => {
       .find('input')
       .ospClear()
       .focus()
-      .realType('.opensearch-notifications-config')
-      .realPress('Enter');
+      .realType(cypressIndexWindows);
 
     // Change detector scheduling
     cy.get(`[data-test-subj="detector-schedule-number-select"]`).ospClear().focus().realType('10');
@@ -238,7 +268,7 @@ describe('Detectors', () => {
     cy.contains('test detector edited');
     cy.contains('Every 10 hours');
     cy.contains('Edited description');
-    cy.contains('.opensearch-notifications-config');
+    cy.contains(cypressIndexWindows);
   });
 
   it('...rules can be edited', () => {

@@ -89,7 +89,7 @@ const groupByOptions = [
   { text: 'Alert severity', value: 'severity' },
 ];
 
-class Alerts extends Component<AlertsProps, AlertsState> {
+export class Alerts extends Component<AlertsProps, AlertsState> {
   static contextType = CoreServicesContext;
 
   constructor(props: AlertsProps) {

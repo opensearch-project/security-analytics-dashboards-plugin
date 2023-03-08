@@ -5,13 +5,13 @@
 
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { EuiSpacer, EuiTitle, EuiText } from '@elastic/eui';
+import { EuiSpacer, EuiTitle, EuiText, EuiCallOut } from '@elastic/eui';
 import { Detector, PeriodSchedule } from '../../../../../../models/interfaces';
 import DetectorBasicDetailsForm from '../components/DetectorDetails';
 import DetectorDataSource from '../components/DetectorDataSource';
 import DetectorType from '../components/DetectorType';
 import { EuiComboBoxOptionOption } from '@opensearch-project/oui';
-import { IndexService } from '../../../../../services';
+import { FieldMappingService, IndexService } from '../../../../../services';
 import { MIN_NUM_DATA_SOURCES } from '../../../../Detectors/utils/constants';
 import { DetectorCreationStep } from '../../../models/types';
 import { DetectorSchedule } from '../components/DetectorSchedule/DetectorSchedule';
@@ -21,11 +21,14 @@ import {
   DetectionRules,
 } from '../components/DetectionRules/DetectionRules';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import _ from 'lodash';
+import { logTypesWithDashboards } from '../../../../../utils/constants';
 
 interface DefineDetectorProps extends RouteComponentProps {
   detector: Detector;
   isEdit: boolean;
   indexService: IndexService;
+  filedMappingService: FieldMappingService;
   rulesState: CreateDetectorRulesState;
   notifications: NotificationsStart;
   loadingRules?: boolean;
@@ -45,6 +48,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
       !!detector.detector_type &&
       detector.inputs[0].detector_input.indices.length >= MIN_NUM_DATA_SOURCES &&
       !!detector.schedule.period.interval;
+
     this.props.changeDetector(detector);
     this.props.updateDataValidState(DetectorCreationStep.DEFINE_DETECTOR, isDataValid);
   }
@@ -161,6 +165,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
       onRuleToggle,
       onPageChange,
       onAllRulesToggle,
+      filedMappingService,
     } = this.props;
     const { name, inputs, detector_type } = this.props.detector;
     const { description, indices } = inputs[0].detector_input;
@@ -190,7 +195,9 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
 
         <DetectorDataSource
           {...this.props}
+          detector_type={detector_type}
           detectorIndices={indices}
+          filedMappingService={filedMappingService}
           onDetectorInputIndicesChange={this.onDetectorInputIndicesChange}
         />
 
@@ -212,6 +219,21 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
         />
 
         <EuiSpacer size={'m'} />
+
+        {logTypesWithDashboards.has(detector_type) ? (
+          <>
+            <EuiCallOut
+              title={'Detector dashboard will be created to visualize insights for this detector'}
+            >
+              <p>
+                A detector dashboard will be automatically created to provide insights for this
+                detector.
+              </p>
+            </EuiCallOut>
+
+            <EuiSpacer size={'m'} />
+          </>
+        ) : null}
 
         <DetectorSchedule
           detector={detector}

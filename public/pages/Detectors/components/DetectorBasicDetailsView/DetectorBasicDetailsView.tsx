@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiButton, EuiSpacer } from '@elastic/eui';
+import { EuiButton, EuiSpacer, EuiLink, EuiIcon } from '@elastic/eui';
 import React from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { createTextDetailsGroup, parseSchedule } from '../../../../utils/helpers';
@@ -13,6 +13,7 @@ import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
 
 export interface DetectorBasicDetailsViewProps {
   detector: Detector;
+  dashboardId?: string;
   rulesCanFold?: boolean;
   enabled_time?: number;
   last_update_time?: number;
@@ -25,6 +26,7 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
   last_update_time,
   rulesCanFold,
   children,
+  dashboardId,
   onEditClicked,
 }) => {
   const { name, detector_type, inputs, schedule } = detector;
@@ -33,6 +35,22 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
   const lastUpdated = last_update_time
     ? moment(last_update_time).format('YYYY-MM-DDTHH:mm')
     : undefined;
+  const firstTextDetailsGroupEntries = [
+    { label: 'Detector name', content: name },
+    { label: 'Log type', content: detector_type.toLowerCase() },
+    { label: 'Data source', content: inputs[0].detector_input.indices[0] },
+    {
+      label: 'Detector dashboard',
+      content: (dashboardId ? (
+        <EuiLink onClick={() => window.open(`dashboards#/view/${dashboardId}`, '_blank')}>
+          {`${name} summary`}
+          <EuiIcon type={'popout'} />
+        </EuiLink>
+      ) : (
+        'Not available for this log type'
+      )) as any,
+    },
+  ];
 
   return (
     <ContentPanel
@@ -44,14 +62,7 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
       ]}
     >
       <EuiSpacer size={'l'} />
-      {createTextDetailsGroup(
-        [
-          { label: 'Detector name', content: name },
-          { label: 'Log type', content: detector_type.toLowerCase() },
-          { label: 'Data source', content: inputs[0].detector_input.indices[0] },
-        ],
-        4
-      )}
+      {createTextDetailsGroup(firstTextDetailsGroupEntries, 4)}
       {createTextDetailsGroup(
         [
           { label: 'Description', content: inputs[0].detector_input.description },

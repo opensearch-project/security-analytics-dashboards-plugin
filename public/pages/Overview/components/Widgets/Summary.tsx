@@ -3,13 +3,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiFlexGroup, EuiFlexItem, EuiLink, EuiStat } from '@elastic/eui';
-import { euiPaletteColorBlind } from '@elastic/eui';
+import {
+  EuiEmptyPrompt,
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiLink,
+  EuiLinkColor,
+  EuiStat,
+} from '@elastic/eui';
 import React, { useCallback, useEffect, useState } from 'react';
 import { WidgetContainer } from './WidgetContainer';
 import { summaryGroupByOptions } from '../../utils/constants';
 import {
-  alertsDefaultColor,
   getChartTimeUnit,
   getDomainRange,
   getOverviewVisualizationSpec,
@@ -46,8 +51,8 @@ export const Summary: React.FC<SummaryProps> = ({
 }) => {
   const [groupBy, setGroupBy] = useState('');
   const [summaryData, setSummaryData] = useState<SummaryData[]>([]);
-  const [activeAlerts, setActiveAlerts] = useState(0);
-  const [totalFindings, setTotalFindings] = useState(0);
+  const [activeAlerts, setActiveAlerts] = useState<undefined | number>(undefined);
+  const [totalFindings, setTotalFindings] = useState<undefined | number>(undefined);
 
   const onGroupByChange = useCallback((event) => {
     setGroupBy(event.target.value);
@@ -113,44 +118,62 @@ export const Summary: React.FC<SummaryProps> = ({
     renderVisualization(generateVisualizationSpec(summaryData, groupBy), 'summary-view');
   }, [summaryData, groupBy]);
 
+  const createStatComponent = useCallback(
+    (description: string, urlData: { url: string; color: EuiLinkColor }, stat?: number) => (
+      <EuiFlexItem grow={false}>
+        <EuiStat
+          title={
+            stat === 0 ? (
+              0
+            ) : (
+              <EuiLink href={`#${urlData.url}`} color={urlData.color}>
+                {stat}
+              </EuiLink>
+            )
+          }
+          description={description}
+          textAlign="left"
+          titleSize="l"
+          titleColor="subdued"
+          isLoading={stat === undefined}
+        />
+      </EuiFlexItem>
+    ),
+    []
+  );
+
   return (
     <WidgetContainer title="Findings and alert count" actions={createVisualizationActions(groupBy)}>
       <EuiFlexGroup gutterSize="s" direction="column">
         <EuiFlexItem>
           <EuiFlexGroup gutterSize="xl">
-            <EuiFlexItem grow={false}>
-              <EuiStat
-                title={
-                  <EuiLink href={`#${ROUTES.ALERTS}`} style={{ color: alertsDefaultColor }}>
-                    {activeAlerts}
-                  </EuiLink>
-                }
-                description="Total active alerts"
-                textAlign="left"
-                titleColor="primary"
-                isLoading={!activeAlerts}
-              />
-            </EuiFlexItem>
-            <EuiFlexItem grow={false}>
-              <EuiStat
-                title={
-                  <EuiLink
-                    href={`#${ROUTES.FINDINGS}`}
-                    style={{ color: euiPaletteColorBlind()[1] }}
-                  >
-                    {totalFindings}
-                  </EuiLink>
-                }
-                description="Total findings"
-                textAlign="left"
-                titleColor="primary"
-                isLoading={!totalFindings}
-              />
-            </EuiFlexItem>
+            {createStatComponent(
+              'Total active alerts',
+              { url: ROUTES.ALERTS, color: 'danger' },
+              activeAlerts
+            )}
+            {createStatComponent(
+              'Total findings',
+              { url: ROUTES.FINDINGS, color: 'primary' },
+              totalFindings
+            )}
           </EuiFlexGroup>
         </EuiFlexItem>
         <EuiFlexItem>
-          <ChartContainer chartViewId={'summary-view'} loading={loading} />
+          {activeAlerts === 0 && totalFindings === 0 ? (
+            <EuiEmptyPrompt
+              title={<h2>No alerts and findings found</h2>}
+              body={
+                <p>
+                  Adjust the time range to see more results or{' '}
+                  <EuiLink href={`#${ROUTES.DETECTORS_CREATE}`}>create a detector</EuiLink> to
+                  generate findings.{' '}
+                </p>
+              }
+            />
+          ) : (
+            <ChartContainer chartViewId={'summary-view'} loading={loading} />
+          )}
         </EuiFlexItem>
       </EuiFlexGroup>
     </WidgetContainer>

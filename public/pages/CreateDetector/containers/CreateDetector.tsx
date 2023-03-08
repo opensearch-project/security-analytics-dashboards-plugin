@@ -11,9 +11,11 @@ import { createDetectorSteps } from '../utils/constants';
 import {
   BREADCRUMBS,
   EMPTY_DEFAULT_DETECTOR,
+  OS_NOTIFICATION_PLUGIN,
   PLUGIN_NAME,
   ROUTES,
-  OS_NOTIFICATION_PLUGIN,
+  logTypesWithDashboards,
+  pendingDashboardCreations,
 } from '../../../utils/constants';
 import ConfigureFieldMapping from '../components/ConfigureFieldMapping';
 import ConfigureAlerts from '../components/ConfigureAlerts';
@@ -32,8 +34,8 @@ import {
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import {
   errorNotificationToast,
-  successNotificationToast,
   getPlugins,
+  successNotificationToast,
 } from '../../../utils/helpers';
 import { RulesViewModelActor } from '../../Rules/models/RulesViewModelActor';
 
@@ -135,6 +137,17 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             'created',
             `detector, "${detector.name}"`
           );
+          // Create the dashboard
+          let createDashboardPromise;
+          if (logTypesWithDashboards.has(detector.detector_type)) {
+            createDashboardPromise = this.createDashboard(
+              detector.name,
+              detector.detector_type,
+              createDetectorRes.response._id,
+              detector.inputs[0].detector_input.indices
+            );
+            pendingDashboardCreations[createDetectorRes.response._id] = createDashboardPromise;
+          }
           this.props.history.push(`${ROUTES.DETECTOR_DETAILS}/${createDetectorRes.response._id}`);
         } else {
           errorNotificationToast(
@@ -149,6 +162,19 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
       errorNotificationToast(this.props.notifications, 'create', 'detector', error);
     }
     this.setState({ creatingDetector: false });
+  };
+
+  private createDashboard = (
+    detectorName: string,
+    logType: string,
+    detectorId: string,
+    inputIndices: string[]
+  ) => {
+    return this.props.services.savedObjectsService
+      .createSavedObject(detectorName, logType, detectorId, inputIndices)
+      .catch((error: any) => {
+        console.error(error);
+      });
   };
 
   onNextClick = () => {
@@ -176,14 +202,12 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
 
   getRulesOptions(): CreateDetectorRulesOptions {
     const enabledRules = this.state.rulesState.allRules.filter((rule) => rule.enabled);
-    const options: CreateDetectorRulesOptions = enabledRules.map((rule) => ({
+    return enabledRules.map((rule) => ({
       id: rule._id,
       name: rule._source.title,
       severity: rule._source.level,
       tags: rule._source.tags.map((tag: { value: string }) => tag.value),
     }));
-
-    return options;
   }
 
   async setupRulesState() {
@@ -307,6 +331,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             {...this.props}
             detector={this.state.detector}
             indexService={services.indexService}
+            filedMappingService={services.fieldMappingService}
             rulesState={this.state.rulesState}
             loadingRules={this.state.loadingRules}
             onRuleToggle={this.onRuleToggle}

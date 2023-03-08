@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { SimpleSavedObject } from 'opensearch-dashboards/public';
+import { ServerResponse } from '../../types';
 import { Detector, DetectorInput, PeriodSchedule } from '../../models/interfaces';
 import { DetectorHit } from '../../server/models/interfaces';
 import { DETECTOR_TYPES } from '../pages/Detectors/utils/constants';
@@ -113,7 +115,7 @@ export const EMPTY_DEFAULT_DETECTOR_INPUT: DetectorInput = {
 
 export const EMPTY_DEFAULT_DETECTOR: Detector = {
   type: 'detector',
-  detector_type: DETECTOR_TYPES.NETFLOW.id,
+  detector_type: DETECTOR_TYPES.NETWORK.id,
   name: '',
   enabled: true,
   createdBy: '',
@@ -139,3 +141,9 @@ export const ALERT_STATE = Object.freeze({
   ERROR: 'ERROR',
   DELETED: 'DELETED',
 });
+
+export const logTypesWithDashboards = new Set(['network', 'cloudtrail', 's3']);
+
+export const pendingDashboardCreations: {
+  [detectorId: string]: undefined | Promise<void | ServerResponse<SimpleSavedObject<unknown>>>;
+} = {};
