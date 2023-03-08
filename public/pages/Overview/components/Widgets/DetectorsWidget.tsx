@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiBasicTableColumn, EuiButton, EuiLink } from '@elastic/eui';
+import { EuiBasicTableColumn, EuiButton, EuiEmptyPrompt, EuiLink } from '@elastic/eui';
 import { ROUTES } from '../../../../utils/constants';
 import React, { useCallback } from 'react';
 import { DetectorItem } from '../../models/interfaces';
@@ -71,6 +71,23 @@ export const DetectorsWidget: React.FC<DetectorsWidgetProps> = ({
     });
   }, []);
 
+  const widgetEmptyMessage =
+    detectors.length === 0 ? (
+      <EuiEmptyPrompt
+        body={
+          <p>
+            <span style={{ display: 'block' }}>No security detectors.</span>Create a detector to
+            generate findings.
+          </p>
+        }
+        actions={[
+          <EuiButton fill={false} href={`#${ROUTES.DETECTORS_CREATE}`}>
+            Create detector
+          </EuiButton>,
+        ]}
+      />
+    ) : undefined;
+
   const actions = React.useMemo(
     () => [
       <EuiButton href={`#${ROUTES.DETECTORS}`}>View all detectors</EuiButton>,
@@ -85,6 +102,8 @@ export const DetectorsWidget: React.FC<DetectorsWidgetProps> = ({
         columns={getColumns(detectorIdToHit, showDetectorDetails)}
         items={detectors}
         loading={loading}
+        message={widgetEmptyMessage}
+        className={widgetEmptyMessage ? 'sa-overview-widget-empty' : undefined}
       />
     </WidgetContainer>
   );
