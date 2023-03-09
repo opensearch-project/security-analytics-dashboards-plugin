@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiBasicTableColumn, EuiButton } from '@elastic/eui';
-import { ROUTES } from '../../../../utils/constants';
+import { EuiBasicTableColumn, EuiButton, EuiEmptyPrompt } from '@elastic/eui';
+import { ROUTES, SortDirection } from '../../../../utils/constants';
 import React, { useEffect, useState } from 'react';
 import { FindingItem } from '../../models/interfaces';
 import { TableWidget } from './TableWidget';
@@ -52,12 +52,27 @@ export const RecentFindingsWidget: React.FC<RecentFindingsWidgetProps> = ({
   loading = false,
 }) => {
   const [findingItems, setFindingItems] = useState<FindingItem[]>([]);
+  const [widgetEmptyMessage, setWidgetEmptyMessage] = useState<React.ReactNode | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     items.sort((a, b) => {
       return a.time - b.time;
     });
     setFindingItems(items.slice(0, 20));
+    setWidgetEmptyMessage(
+      items.length > 0 ? undefined : (
+        <EuiEmptyPrompt
+          body={
+            <p>
+              <span style={{ display: 'block' }}>No recent findings.</span>Adjust the time range to
+              see more results.
+            </p>
+          }
+        />
+      )
+    );
   }, [items]);
 
   const actions = React.useMemo(
@@ -67,7 +82,14 @@ export const RecentFindingsWidget: React.FC<RecentFindingsWidgetProps> = ({
 
   return (
     <WidgetContainer title={'Recent findings'} actions={actions}>
-      <TableWidget columns={columns} items={findingItems} loading={loading} />
+      <TableWidget
+        columns={columns}
+        items={findingItems}
+        sorting={{ sort: { field: 'time', direction: SortDirection.DESC } }}
+        loading={loading}
+        message={widgetEmptyMessage}
+        className={widgetEmptyMessage ? 'sa-overview-widget-empty' : undefined}
+      />
     </WidgetContainer>
   );
 };
