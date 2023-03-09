@@ -274,6 +274,10 @@ describe('Rules', () => {
       url: '/rules',
     }).as('deleteRule');
 
+    cy.intercept('POST', 'rules/_search?prePackaged=true', {
+      delay: 5000,
+    }).as('getPrePackagedRules');
+
     cy.intercept('POST', 'rules/_search?prePackaged=false', {
       delay: 5000,
     }).as('getCustomRules');
@@ -298,6 +302,7 @@ describe('Rules', () => {
 
         cy.wait('@deleteRule');
         cy.wait('@getCustomRules');
+        cy.wait('@getPrePackagedRules');
 
         // Search for sample_detector, presumably deleted
         cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
