@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiBasicTableColumn, EuiButton } from '@elastic/eui';
-import { DEFAULT_EMPTY_DATA, ROUTES } from '../../../../utils/constants';
+import { EuiBasicTableColumn, EuiButton, EuiEmptyPrompt } from '@elastic/eui';
+import { DEFAULT_EMPTY_DATA, ROUTES, SortDirection } from '../../../../utils/constants';
 import React, { useEffect, useState } from 'react';
 import { AlertItem } from '../../models/interfaces';
 import { TableWidget } from './TableWidget';
@@ -45,6 +45,9 @@ export const RecentAlertsWidget: React.FC<RecentAlertsWidgetProps> = ({
   loading = false,
 }) => {
   const [alertItems, setAlertItems] = useState<AlertItem[]>([]);
+  const [widgetEmptyMessage, setwidgetEmptyMessage] = useState<React.ReactNode | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     items.sort((a, b) => {
@@ -53,6 +56,18 @@ export const RecentAlertsWidget: React.FC<RecentAlertsWidgetProps> = ({
       return timeA - timeB;
     });
     setAlertItems(items.slice(0, 20));
+    setwidgetEmptyMessage(
+      items.length > 0 ? undefined : (
+        <EuiEmptyPrompt
+          body={
+            <p>
+              <span style={{ display: 'block' }}>No recent alerts.</span>Adjust the time range to
+              see more results.
+            </p>
+          }
+        />
+      )
+    );
   }, [items]);
 
   const actions = React.useMemo(
@@ -62,7 +77,14 @@ export const RecentAlertsWidget: React.FC<RecentAlertsWidgetProps> = ({
 
   return (
     <WidgetContainer title={'Recent alerts'} actions={actions}>
-      <TableWidget columns={columns} items={alertItems} loading={loading} />
+      <TableWidget
+        columns={columns}
+        items={alertItems}
+        sorting={{ sort: { field: 'time', direction: SortDirection.DESC } }}
+        loading={loading}
+        message={widgetEmptyMessage}
+        className={widgetEmptyMessage ? 'sa-overview-widget-empty' : undefined}
+      />
     </WidgetContainer>
   );
 };
