@@ -19,14 +19,12 @@ import { RuleTableItem } from '../../utils/helpers';
 import { DeleteRuleModal } from '../DeleteModal/DeleteModal';
 import { RuleContentViewer } from '../RuleContentViewer/RuleContentViewer';
 import { RuleViewerFlyoutHeaderActions } from './RuleViewFlyoutHeaderActions';
-import { RuleService } from '../../../../services';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { DataStore } from '../../../../store/DataStore';
 
 export interface RuleViewerFlyoutProps {
   history?: RouteComponentProps['history'];
   ruleTableItem: RuleTableItem;
-  ruleService?: RuleService;
   notifications?: NotificationsStart;
   hideFlyout: (refreshRules?: boolean) => void;
 }
@@ -35,7 +33,6 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
   history,
   hideFlyout,
   ruleTableItem,
-  ruleService,
   notifications,
 }) => {
   const [actionsPopoverOpen, setActionsPopoverOpen] = useState(false);
@@ -79,10 +76,6 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
   };
 
   const onDeleteRuleConfirmed = async () => {
-    if (!ruleService) {
-      return;
-    }
-
     const response = await DataStore.rules.deleteRule(ruleTableItem.ruleId);
 
     if (response) {
@@ -119,7 +112,7 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
               <h3>{ruleTableItem.title}</h3>
             </EuiTitle>
           </EuiFlexItem>
-          {ruleService && history && (
+          {history && (
             <EuiFlexItem grow={false} style={{ marginRight: '50px' }}>
               {headerActions}
             </EuiFlexItem>

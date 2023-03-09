@@ -77,7 +77,6 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
               history={history}
               notifications={notifications}
               mode={'create'}
-              ruleService={services.ruleService}
               rule={rule}
             />
           );

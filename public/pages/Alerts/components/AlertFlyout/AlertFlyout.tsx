@@ -28,7 +28,7 @@ import {
   formatRuleType,
   renderTime,
 } from '../../../../utils/helpers';
-import { FindingsService, RuleService, OpenSearchService } from '../../../../services';
+import { FindingsService, OpenSearchService } from '../../../../services';
 import FindingDetailsFlyout from '../../../Findings/components/FindingDetailsFlyout';
 import { Detector } from '../../../../../models/interfaces';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
@@ -40,7 +40,6 @@ export interface AlertFlyoutProps {
   alertItem: AlertItem;
   detector: Detector;
   findingsService: FindingsService;
-  ruleService: RuleService;
   notifications: NotificationsStart;
   opensearchService: OpenSearchService;
   onClose: () => void;
@@ -109,12 +108,23 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
       });
 
       if (ruleIds.length > 0) {
-        const rulesResponse = await DataStore.rules.getAllRules({
-          _id: ruleIds,
+        const rules = await DataStore.rules.getAllRules({
+          from: 0,
+          size: 5000,
+          query: {
+            nested: {
+              path: 'rule',
+              query: {
+                terms: {
+                  _id: ruleIds,
+                },
+              },
+            },
+          },
         });
 
         const allRules: { [id: string]: RuleSource } = {};
-        rulesResponse.forEach((hit) => (allRules[hit._id] = hit._source));
+        rules.forEach((hit) => (allRules[hit._id] = hit._source));
 
         this.setState({ rules: allRules });
       }

@@ -4,12 +4,12 @@
  */
 
 import { RuleService } from '../../../services';
-import { ruleTypes } from '../utils/constants';
 import { load, safeDump } from 'js-yaml';
 import { RuleItemInfoBase, IRulesStore, IRulesCache } from '../../../../types';
 import { Rule } from '../../../../models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../../../utils/helpers';
+import { ruleTypes } from '../utils/constants';
 
 /**
  * Class is used to make rule's API calls and cache the rules.
@@ -46,12 +46,12 @@ export class RulesStore implements IRulesStore {
    *
    * @property {IRulesCache} cache
    */
-  cache: IRulesCache = {};
+  private cache: IRulesCache = {};
 
   /**
    * Invalidates all rules data
    */
-  invalidateCache = () => {
+  private invalidateCache = () => {
     this.cache = {};
     return this;
   };
@@ -60,18 +60,27 @@ export class RulesStore implements IRulesStore {
    * Returns all rules, custom and pre-packaged
    *
    * @method getAllRules
-   * @param {{ [key: string]: string[] }} terms
-   * @param {any} query
-   * @param {boolean} invalidateCache
+   * @param {any} [body]
    * @returns {Promise<RuleItemInfoBase[]>}
    */
   public async getAllRules(
-    terms?: { [key: string]: string[] },
-    query?: any,
-    invalidateCache: boolean = false
+    body: any = {
+      from: 0,
+      size: 5000,
+      query: {
+        nested: {
+          path: 'rule',
+          query: {
+            terms: {
+              'rule.category': ruleTypes,
+            },
+          },
+        },
+      },
+    }
   ): Promise<RuleItemInfoBase[]> {
-    let prePackagedRules = await this.getRules(true, terms, query, invalidateCache);
-    let customRules = await this.getRules(false, terms, query, invalidateCache);
+    let prePackagedRules = await this.getRules(true, body);
+    let customRules = await this.getRules(false, body);
 
     prePackagedRules = this.validateAndAddDetection(prePackagedRules);
     customRules = this.validateAndAddDetection(customRules);
@@ -81,41 +90,19 @@ export class RulesStore implements IRulesStore {
 
   /**
    * Makes the request to get pre-packaged or custom rules
-   * Pass `invalidateCache` to invalidate cache
    *
    * @param {boolean} prePackaged
-   * @param {{ [key: string]: string[] }} terms
-   * @param {any} query
-   * @param {boolean} invalidateCache
+   * @param {any} body
    * @returns {Promise<RuleItemInfoBase[]>}
    */
-  async getRules(
-    prePackaged: boolean,
-    terms?: { [key: string]: string[] },
-    query?: any,
-    invalidateCache: boolean = false
-  ): Promise<RuleItemInfoBase[]> {
+  public async getRules(prePackaged: boolean, body: any): Promise<RuleItemInfoBase[]> {
     const cacheKey: string = `getRules:${JSON.stringify(arguments)}`;
-    if (this.cache[cacheKey] && !invalidateCache) {
+
+    if (this.cache[cacheKey]) {
       return this.cache[cacheKey];
     }
 
-    const response = await this.service.getRules(prePackaged, {
-      from: 0,
-      size: 5000,
-      query: {
-        nested: {
-          path: 'rule',
-          query: query || {
-            terms: terms
-              ? terms
-              : {
-                  'rule.category': ruleTypes,
-                },
-          },
-        },
-      },
-    });
+    const response = await this.service.getRules(prePackaged, body);
 
     if (response?.ok) {
       return (this.cache[cacheKey] = response.response.hits.hits.map((hit) => ({
@@ -126,6 +113,10 @@ export class RulesStore implements IRulesStore {
         },
         prePackaged,
       })));
+    } else {
+      if (!response.error?.includes('index doesnt exist')) {
+        errorNotificationToast(this.notifications, 'retrieve', 'rules', response.error);
+      }
     }
 
     return [];
@@ -137,7 +128,7 @@ export class RulesStore implements IRulesStore {
    * @param {Rule} rule
    * @returns {Promise<boolean>}
    */
-  createRule = async (rule: Rule): Promise<boolean> => {
+  public createRule = async (rule: Rule): Promise<boolean> => {
     const response = await this.invalidateCache().service.createRule(rule);
     if (!response.ok) {
       errorNotificationToast(this.notifications, 'create', 'rule', response.error);
@@ -154,7 +145,7 @@ export class RulesStore implements IRulesStore {
    * @param {Rule} rule
    * @returns {Promise<boolean>}
    */
-  updateRule = async (id: string, category: string, rule: Rule): Promise<boolean> => {
+  public updateRule = async (id: string, category: string, rule: Rule): Promise<boolean> => {
     const response = await this.invalidateCache().service.updateRule(id, category, rule);
     if (!response.ok) {
       errorNotificationToast(this.notifications, 'update', 'rule', response.error);
@@ -169,7 +160,7 @@ export class RulesStore implements IRulesStore {
    * @param {string} id
    * @returns {Promise<boolean>}
    */
-  deleteRule = async (id: string): Promise<boolean> => {
+  public deleteRule = async (id: string): Promise<boolean> => {
     const response = await this.invalidateCache().service.deleteRule(id);
     if (!response.ok) {
       errorNotificationToast(this.notifications, 'delete', 'rule', response.error);
@@ -184,7 +175,7 @@ export class RulesStore implements IRulesStore {
    * @param {RuleItemInfoBase[]} rules
    * @returns {RuleItemInfoBase[]}
    */
-  validateAndAddDetection(rules: RuleItemInfoBase[]): RuleItemInfoBase[] {
+  private validateAndAddDetection(rules: RuleItemInfoBase[]): RuleItemInfoBase[] {
     return rules.map((ruleInfo) => {
       let detectionYaml = '';
 

@@ -83,9 +83,18 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
       );
       enabledRuleIds = enabledRuleIds.concat(enabledCustomRuleIds);
 
-      const allRules = await DataStore.rules.getAllRules(undefined, {
-        bool: {
-          must: [{ match: { 'rule.category': `${detector.detector_type.toLowerCase()}` } }],
+      const allRules = await DataStore.rules.getAllRules({
+        from: 0,
+        size: 5000,
+        query: {
+          nested: {
+            path: 'rule',
+            query: {
+              terms: {
+                'rule.category': [detector.detector_type.toLowerCase()],
+              },
+            },
+          },
         },
       });
 
@@ -209,7 +218,6 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
           hideFlyout={() => setFlyoutData(() => null)}
           history={null as any}
           ruleTableItem={flyoutData}
-          ruleService={null as any}
         />
       ) : null}
       <EuiTitle size={'m'}>

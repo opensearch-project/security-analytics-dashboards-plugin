@@ -275,9 +275,10 @@ describe('Rules', () => {
     }).as('deleteRule');
 
     cy.intercept('POST', 'rules/_search?prePackaged=false', {
-      delay: 2000,
+      delay: 5000,
     }).as('getCustomRules');
 
+    cy.wait('@rulesSearch');
     cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
 
     // Click the rule link to open the details flyout

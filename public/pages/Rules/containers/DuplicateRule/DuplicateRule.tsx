@@ -63,7 +63,6 @@ export const DuplicateRule: React.FC<DuplicateRuleProps> = ({
       history={history}
       notifications={notifications}
       mode={'create'}
-      ruleService={services.ruleService}
     />
   );
 };

@@ -6,7 +6,6 @@
 import React, { useCallback } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { RuleService } from '../../../../services';
 import { ROUTES } from '../../../../utils/constants';
 import { EuiSpacer } from '@elastic/eui';
 import { Rule } from '../../../../../models/interfaces';
@@ -21,7 +20,6 @@ export interface RuleEditorProps {
   rule?: Rule;
   history: RouteComponentProps['history'];
   notifications?: NotificationsStart;
-  ruleService: RuleService;
   mode: 'create' | 'edit';
 }
 
@@ -36,7 +34,6 @@ export const RuleEditorContainer: React.FC<RuleEditorProps> = ({
   notifications,
   title,
   rule,
-  ruleService,
   mode,
 }) => {
   const initialRuleValue = rule

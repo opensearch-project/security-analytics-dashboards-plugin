@@ -213,9 +213,18 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     this.setState({
       loadingRules: true,
     });
-    const allRules = await DataStore.rules.getAllRules(undefined, {
-      bool: {
-        must: [{ match: { 'rule.category': `${detector_type}` } }],
+    const allRules = await DataStore.rules.getAllRules({
+      from: 0,
+      size: 5000,
+      query: {
+        nested: {
+          path: 'rule',
+          query: {
+            terms: {
+              'rule.category': [detector_type],
+            },
+          },
+        },
       },
     });
 

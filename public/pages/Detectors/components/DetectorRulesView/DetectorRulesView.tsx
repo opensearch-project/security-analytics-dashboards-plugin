@@ -69,9 +69,18 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
         props.detector.inputs[0].detector_input.custom_rules.map((ruleInfo) => ruleInfo.id)
       );
 
-      const allRules = await DataStore.rules.getAllRules(undefined, {
-        bool: {
-          must: [{ match: { 'rule.category': `${props.detector.detector_type.toLowerCase()}` } }],
+      const allRules = await DataStore.rules.getAllRules({
+        from: 0,
+        size: 5000,
+        query: {
+          nested: {
+            path: 'rule',
+            query: {
+              terms: {
+                'rule.category': [props.detector.detector_type.toLowerCase()],
+              },
+            },
+          },
         },
       });
 
@@ -122,7 +131,6 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
           hideFlyout={() => setFlyoutData(() => null)}
           history={null as any}
           ruleTableItem={flyoutData}
-          ruleService={null as any}
           notifications={props.notifications}
         />
       ) : null}

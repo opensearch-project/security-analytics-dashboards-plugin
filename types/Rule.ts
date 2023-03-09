@@ -96,17 +96,13 @@ export interface DeleteRuleParams {
 export interface DeleteRuleResponse {}
 
 export interface IRulesCache {
-  [key: string]: RuleItemInfoBase[] | [];
+  [key: string]: RuleItemInfoBase[];
 }
 
 export interface IRulesStore {
-  cache: IRulesCache;
-
   readonly service: RuleService;
 
   readonly notifications: NotificationsStart;
-
-  invalidateCache: () => void;
 
   getAllRules: (terms?: { [key: string]: string[] }, query?: any) => Promise<RuleItemInfoBase[]>;
 
@@ -116,11 +112,9 @@ export interface IRulesStore {
 
   deleteRule: (id: string) => Promise<boolean>;
 
-  readonly getRules: (
+  getRules: (
     prePackaged: boolean,
     terms?: { [key: string]: string[] },
     query?: any
   ) => Promise<RuleItemInfoBase[]>;
-
-  validateAndAddDetection: (rules: RuleItemInfoBase[]) => RuleItemInfoBase[];
 }

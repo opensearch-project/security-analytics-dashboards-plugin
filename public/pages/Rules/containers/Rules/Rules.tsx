@@ -91,7 +91,6 @@ export const Rules: React.FC<RulesProps> = (props) => {
           hideFlyout={hideFlyout}
           history={props.history}
           ruleTableItem={flyoutData}
-          ruleService={services.ruleService}
           notifications={props.notifications}
         />
       ) : null}

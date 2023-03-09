@@ -21,7 +21,6 @@ import {
   DetectorsService,
   NotificationsService,
   OpenSearchService,
-  RuleService,
   IndexPatternsService,
 } from '../../../../services';
 import {
@@ -62,7 +61,6 @@ interface FindingsProps extends RouteComponentProps {
   notificationsService: NotificationsService;
   indexPatternsService: IndexPatternsService;
   opensearchService: OpenSearchService;
-  ruleService: RuleService;
   notifications: NotificationsStart;
   match: match;
   dateTimeFilter?: DateTimeFilter;
@@ -197,12 +195,23 @@ class Findings extends Component<FindingsProps, FindingsState> {
   getRules = async (ruleIds: string[]) => {
     const { notifications } = this.props;
     try {
-      const rulesResponse = await DataStore.rules.getAllRules({
-        _id: ruleIds,
+      const rules = await DataStore.rules.getAllRules({
+        from: 0,
+        size: 5000,
+        query: {
+          nested: {
+            path: 'rule',
+            query: {
+              terms: {
+                _id: ruleIds,
+              },
+            },
+          },
+        },
       });
 
       const allRules: { [id: string]: RuleSource } = {};
-      rulesResponse.forEach((hit) => (allRules[hit._id] = hit._source));
+      rules.forEach((hit) => (allRules[hit._id] = hit._source));
 
       this.setState({ rules: allRules });
     } catch (e) {
