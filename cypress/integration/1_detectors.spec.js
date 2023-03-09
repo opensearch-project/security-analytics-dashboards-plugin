@@ -191,7 +191,9 @@ describe('Detectors', () => {
     });
 
     // Change detector name
-    cy.get(`[data-test-subj="define-detector-detector-name"]`).type('_edited');
+    cy.get(`[data-test-subj="define-detector-detector-name"]`)
+      .wait(100)
+      .type('{selectall}{backspace}test detector_edited');
 
     // Change detector description
     cy.get(`[data-test-subj="define-detector-detector-description"]`).type('Edited description');
