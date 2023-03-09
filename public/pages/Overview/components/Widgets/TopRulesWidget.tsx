@@ -9,6 +9,7 @@ import { FindingItem } from '../../models/interfaces';
 import { WidgetContainer } from './WidgetContainer';
 import { getTopRulesVisualizationSpec } from '../../utils/helpers';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
+import { EuiEmptyPrompt } from '@elastic/eui';
 
 export interface TopRulesWidgetProps {
   findings: FindingItem[];
@@ -35,7 +36,21 @@ export const TopRulesWidget: React.FC<TopRulesWidgetProps> = ({ findings, loadin
 
   return (
     <WidgetContainer title="Most frequent detection rules">
-      <ChartContainer chartViewId={'top-rules-view'} loading={loading} />
+      {findings.length === 0 ? (
+        <EuiEmptyPrompt
+          style={{ position: 'relative' }}
+          body={
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <p style={{ position: 'absolute', top: 'calc(50% - 20px)' }}>
+                <span style={{ display: 'block' }}>No findings with detection rules.</span>Adjust
+                the time range to see more results.
+              </p>
+            </div>
+          }
+        />
+      ) : (
+        <ChartContainer chartViewId={'top-rules-view'} loading={loading} />
+      )}
     </WidgetContainer>
   );
 };
