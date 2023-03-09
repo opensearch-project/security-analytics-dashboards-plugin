@@ -182,23 +182,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
   notifications={
     Object {
       "toasts": Object {
-        "addDanger": [MockFunction] {
-          "calls": Array [
-            Array [
-              Object {
-                "text": "",
-                "title": "Failed to retrieve pre-packaged rules:",
-                "toastLifeTimeMs": 5000,
-              },
-            ],
-          ],
-          "results": Array [
-            Object {
-              "type": "return",
-              "value": undefined,
-            },
-          ],
-        },
+        "addDanger": [MockFunction],
       },
     }
   }
