@@ -38,6 +38,12 @@ import {
   successNotificationToast,
 } from '../../../utils/helpers';
 import { RulesViewModelActor } from '../../Rules/models/RulesViewModelActor';
+import { DetectorState } from '../utils/DetectorState';
+import { ServerResponse } from '../../../../server/models/types';
+import {
+  CreateDetectorResponse,
+  CreateMappingsResponse,
+} from '../../../../server/models/interfaces';
 
 interface CreateDetectorProps extends RouteComponentProps {
   isEdit: boolean;
@@ -115,7 +121,29 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     }
     this.setState({ creatingDetector: true });
     try {
-      const createMappingsRes = await this.props.services.fieldMappingService.createMappings(
+      const createMappingsRes = this.props.services.fieldMappingService.createMappings(
+        detector.inputs[0].detector_input.indices[0],
+        detector.detector_type,
+        fieldMappings
+      );
+      const createDetectorRes = this.props.services.detectorsService.createDetector(detector);
+      const responses = [createMappingsRes, createDetectorRes];
+      let promises: [
+        Promise<ServerResponse<CreateMappingsResponse>>,
+        Promise<ServerResponse<CreateDetectorResponse>>
+      ] = Promise.all<
+        [
+          Promise<ServerResponse<CreateMappingsResponse>>,
+          Promise<ServerResponse<CreateDetectorResponse>>
+        ]
+      >(responses);
+      DetectorState.setState(promises, {
+        ...this.state,
+      });
+
+      this.props.history.push(`${ROUTES.DETECTOR_DETAILS}/pending_detector_creation`);
+
+      /*const createMappingsRes = await this.props.services.fieldMappingService.createMappings(
         detector.inputs[0].detector_input.indices[0],
         detector.detector_type,
         fieldMappings
@@ -157,7 +185,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             createDetectorRes.error
           );
         }
-      }
+      }*/
     } catch (error: any) {
       errorNotificationToast(this.props.notifications, 'create', 'detector', error);
     }

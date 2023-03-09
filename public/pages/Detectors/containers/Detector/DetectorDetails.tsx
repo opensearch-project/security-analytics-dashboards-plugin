@@ -35,6 +35,7 @@ import { DetectorsService } from '../../../../services';
 import { errorNotificationToast } from '../../../../utils/helpers';
 import { NotificationsStart, SimpleSavedObject } from 'opensearch-dashboards/public';
 import { ISavedObjectsService, ServerResponse } from '../../../../../types';
+import { DetectorState } from '../../../CreateDetector/utils/DetectorState';
 
 export interface DetectorDetailsProps
   extends RouteComponentProps<
@@ -165,7 +166,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     };
   }
 
-  async componentDidMount() {
+  getDetectorDetails = async () => {
     this.getDetector();
 
     const pendingDashboardCreationPromise = pendingDashboardCreations[this.state.detectorId];
@@ -196,32 +197,56 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
         this.getTabs();
       }
     }
+  };
+
+  async componentDidMount() {
+    this.getDetectorDetails();
   }
 
   getDetector = async () => {
     this.setState({ loading: true });
     const { detectorService, notifications } = this.props;
     try {
-      const response = await detectorService.getDetectors();
-      if (response.ok) {
-        const { detectorId } = this.state;
-        const detector = response.response.hits.hits.find(
-          (detectorHit) => detectorHit._id === detectorId
-        ) as DetectorHit;
-        this.detectorHit = {
-          ...detector,
-          _source: {
-            ...detector._source,
-            enabled: detector._source.enabled,
-          },
-        };
-        this.context.chrome.setBreadcrumbs([
-          BREADCRUMBS.SECURITY_ANALYTICS,
-          BREADCRUMBS.DETECTORS,
-          BREADCRUMBS.DETECTORS_DETAILS(detector._source.name, detector._id),
-        ]);
+      const { detectorId } = this.state;
+      const { promises, data } = DetectorState.getState() || {};
+      if (promises && data) {
+        const [mappings, detector] = await promises;
+        console.log(mappings, detector);
+
+        if (mappings.ok && detector.ok) {
+          this.setState(
+            {
+              detectorId: detector.response._id,
+            },
+            () => {
+              DetectorState.deleteState();
+              this.props.history.push(`${ROUTES.DETECTOR_DETAILS}/${detector.response._id}`);
+              this.getDetectorDetails();
+            }
+          );
+        } else {
+        }
       } else {
-        errorNotificationToast(notifications, 'retrieve', 'detector', response.error);
+        const response = await detectorService.getDetectors();
+        if (response.ok) {
+          const detector = response.response.hits.hits.find(
+            (detectorHit) => detectorHit._id === detectorId
+          ) as DetectorHit;
+          this.detectorHit = {
+            ...detector,
+            _source: {
+              ...detector._source,
+              enabled: detector._source.enabled,
+            },
+          };
+          this.context.chrome.setBreadcrumbs([
+            BREADCRUMBS.SECURITY_ANALYTICS,
+            BREADCRUMBS.DETECTORS,
+            BREADCRUMBS.DETECTORS_DETAILS(detector._source.name, detector._id),
+          ]);
+        } else {
+          errorNotificationToast(notifications, 'retrieve', 'detector', response.error);
+        }
       }
     } catch (e: any) {
       errorNotificationToast(notifications, 'retrieve', 'detector', e);
