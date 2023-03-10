@@ -305,6 +305,7 @@ describe('Rules', () => {
         cy.wait('@getPrePackagedRules');
 
         // Search for sample_detector, presumably deleted
+        cy.wait(2000);
         cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
         // Click the rule link to open the details flyout
         cy.get('tbody').contains(SAMPLE_RULE.name).should('not.exist');
