@@ -24,3 +24,5 @@ export const createDetectorSteps: Record<DetectorCreationStep, DetectorCreationS
     step: 4,
   },
 };
+
+export const PENDING_DETECTOR_ID = 'pending_detector_id';

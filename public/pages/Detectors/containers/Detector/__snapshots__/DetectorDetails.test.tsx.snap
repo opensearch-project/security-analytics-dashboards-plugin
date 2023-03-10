@@ -234,6 +234,149 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
     }
   }
 >
+  <EuiCallOut
+    color="primary"
+    title={
+      <EuiFlexGroup
+        alignItems="center"
+      >
+        <EuiPanel
+          color="transparent"
+          hasBorder={false}
+          paddingSize="s"
+        >
+          <EuiLoadingSpinner
+            size="l"
+          />
+        </EuiPanel>
+        <EuiPanel
+          color="transparent"
+          hasBorder={false}
+          paddingSize="s"
+        >
+          Attempting to create the detector. This process can take up to 20 minutes.
+        </EuiPanel>
+      </EuiFlexGroup>
+    }
+  >
+    <div
+      className="euiCallOut euiCallOut--primary"
+    >
+      <div
+        className="euiCallOutHeader"
+      >
+        <span
+          className="euiCallOutHeader__title"
+        >
+          <EuiFlexGroup
+            alignItems="center"
+          >
+            <div
+              className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow euiFlexGroup--responsive"
+            >
+              <EuiPanel
+                color="transparent"
+                hasBorder={false}
+                paddingSize="s"
+              >
+                <div
+                  className="euiPanel euiPanel--paddingSmall euiPanel--borderRadiusMedium euiPanel--transparent euiPanel--noShadow euiPanel--noBorder"
+                >
+                  <EuiLoadingSpinner
+                    size="l"
+                  >
+                    <span
+                      className="euiLoadingSpinner euiLoadingSpinner--large"
+                    />
+                  </EuiLoadingSpinner>
+                </div>
+              </EuiPanel>
+              <EuiPanel
+                color="transparent"
+                hasBorder={false}
+                paddingSize="s"
+              >
+                <div
+                  className="euiPanel euiPanel--paddingSmall euiPanel--borderRadiusMedium euiPanel--transparent euiPanel--noShadow euiPanel--noBorder"
+                >
+                  Attempting to create the detector. This process can take up to 20 minutes.
+                </div>
+              </EuiPanel>
+            </div>
+          </EuiFlexGroup>
+        </span>
+      </div>
+      <EuiText
+        color="default"
+        size="s"
+      >
+        <div
+          className="euiText euiText--small"
+        >
+          <EuiTextColor
+            color="default"
+            component="div"
+          >
+            <div
+              className="euiTextColor euiTextColor--default"
+            >
+              <EuiButton
+                onClick={[Function]}
+              >
+                <EuiButtonDisplay
+                  baseClassName="euiButton"
+                  disabled={false}
+                  element="button"
+                  isDisabled={false}
+                  onClick={[Function]}
+                  type="button"
+                >
+                  <button
+                    className="euiButton euiButton--primary"
+                    disabled={false}
+                    onClick={[Function]}
+                    style={
+                      Object {
+                        "minWidth": undefined,
+                      }
+                    }
+                    type="button"
+                  >
+                    <EuiButtonContent
+                      className="euiButton__content"
+                      iconSide="left"
+                      textProps={
+                        Object {
+                          "className": "euiButton__text",
+                        }
+                      }
+                    >
+                      <span
+                        className="euiButtonContent euiButton__content"
+                      >
+                        <span
+                          className="euiButton__text"
+                        >
+                          View detector configuration
+                        </span>
+                      </span>
+                    </EuiButtonContent>
+                  </button>
+                </EuiButtonDisplay>
+              </EuiButton>
+            </div>
+          </EuiTextColor>
+        </div>
+      </EuiText>
+    </div>
+  </EuiCallOut>
+  <EuiSpacer
+    size="xl"
+  >
+    <div
+      className="euiSpacer euiSpacer--xl"
+    />
+  </EuiSpacer>
   <EuiFlexGroup>
     <div
       className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
@@ -273,7 +416,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                   className="euiFlexItem euiFlexItem--flexGrowZero"
                 >
                   <EuiHealth
-                    color="success"
+                    color="primary"
                   >
                     <div
                       className="euiHealth euiHealth--textSizeS"
@@ -293,7 +436,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                               className="euiFlexItem euiFlexItem--flexGrowZero"
                             >
                               <EuiIcon
-                                color="success"
+                                color="primary"
                                 type="dot"
                               >
                                 EuiIconMock
@@ -306,7 +449,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             <div
                               className="euiFlexItem euiFlexItem--flexGrowZero"
                             >
-                              Active
+                              Initializing
                             </div>
                           </EuiFlexItem>
                         </div>

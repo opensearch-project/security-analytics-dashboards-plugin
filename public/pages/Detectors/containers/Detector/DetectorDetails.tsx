@@ -16,6 +16,9 @@ import {
   EuiTabs,
   EuiTitle,
   EuiHealth,
+  EuiCallOut,
+  EuiLoadingSpinner,
+  EuiPanel,
 } from '@elastic/eui';
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
@@ -23,19 +26,20 @@ import { CoreServicesContext } from '../../../../components/core_services';
 import {
   BREADCRUMBS,
   EMPTY_DEFAULT_DETECTOR_HIT,
-  pendingDashboardCreations,
+  logTypesWithDashboards,
   ROUTES,
 } from '../../../../utils/constants';
-import { DetectorHit } from '../../../../../server/models/interfaces';
+import { CreateMappingsResponse, DetectorHit } from '../../../../../server/models/interfaces';
 import { DetectorDetailsView } from '../DetectorDetailsView/DetectorDetailsView';
 import { FieldMappingsView } from '../../components/FieldMappingsView/FieldMappingsView';
 import { AlertTriggersView } from '../AlertTriggersView/AlertTriggersView';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { DetectorsService } from '../../../../services';
-import { errorNotificationToast } from '../../../../utils/helpers';
+import { errorNotificationToast, successNotificationToast } from '../../../../utils/helpers';
 import { NotificationsStart, SimpleSavedObject } from 'opensearch-dashboards/public';
-import { ISavedObjectsService, ServerResponse } from '../../../../../types';
-import { DetectorState } from '../../../CreateDetector/utils/DetectorState';
+import { CreateDetectorResponse, ISavedObjectsService, ServerResponse } from '../../../../../types';
+import DetectorState from '../../../CreateDetector/utils/DetectorState';
+import { PENDING_DETECTOR_ID } from '../../../CreateDetector/utils/constants';
 
 export interface DetectorDetailsProps
   extends RouteComponentProps<
@@ -155,52 +159,132 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   constructor(props: DetectorDetailsProps) {
     super(props);
     const detectorId = props.location.pathname.replace(`${ROUTES.DETECTOR_DETAILS}/`, '');
+    const { detector } = DetectorState.getPendingState();
+
     this.state = {
       isActionsMenuOpen: false,
       selectedTabId: TabId.DetectorDetails,
       selectedTabContent: null,
-      detectorHit: EMPTY_DEFAULT_DETECTOR_HIT,
+      detectorHit: detector
+        ? {
+            ...detector,
+            _source: {
+              ...detector,
+            },
+          }
+        : EMPTY_DEFAULT_DETECTOR_HIT,
       detectorId: detectorId,
       tabs: [],
       loading: false,
     };
   }
 
-  getDetectorDetails = async () => {
-    this.getDetector();
-
-    const pendingDashboardCreationPromise = pendingDashboardCreations[this.state.detectorId];
-    if (pendingDashboardCreationPromise) {
-      pendingDashboardCreationPromise.then((savedObject) => {
-        if (savedObject && savedObject.ok) {
-          this.setState({ dashboardId: savedObject.response.id });
-          this.getTabs();
-        }
-        delete pendingDashboardCreations[this.state.detectorId];
+  private createDashboard = (
+    detectorName: string,
+    logType: string,
+    detectorId: string,
+    inputIndices: string[]
+  ) => {
+    return this.props.savedObjectsService
+      .createSavedObject(detectorName, logType, detectorId, inputIndices)
+      .catch((error: any) => {
+        console.error(error);
       });
-    } else {
-      const dashboards = await this.props.savedObjectsService.getDashboards();
-      let detectorDashboardId;
-      dashboards.some((dashboard) => {
-        if (
-          dashboard.references.findIndex((reference) => reference.id === this.state.detectorId) > -1
-        ) {
-          detectorDashboardId = dashboard.id;
-          return true;
+  };
+
+  pendingDetectorDetails = async () => {
+    const { pendingRequests, detector } = DetectorState.getPendingState();
+    this.getTabs();
+
+    if (pendingRequests && detector) {
+      this.detectorHit = {
+        ...detector,
+        _source: {
+          ...detector,
+        },
+      };
+
+      this.context.chrome.setBreadcrumbs([
+        BREADCRUMBS.SECURITY_ANALYTICS,
+        BREADCRUMBS.DETECTORS,
+        BREADCRUMBS.DETECTORS_DETAILS(detector.name, PENDING_DETECTOR_ID),
+      ]);
+
+      const [mappingsResponse, detectorResponse] = (await Promise.all(pendingRequests)) as [
+        ServerResponse<CreateMappingsResponse>,
+        ServerResponse<CreateDetectorResponse>
+      ];
+
+      if (mappingsResponse.ok) {
+        if (detectorResponse.ok) {
+          let dashboardId;
+          const detectorId = detectorResponse.response._id;
+          if (logTypesWithDashboards.has(detector.detector_type)) {
+            const dashboardResponse = await this.createDashboard(
+              detector.name,
+              detector.detector_type,
+              detectorResponse.response._id,
+              detector.inputs[0].detector_input.indices
+            );
+            if (dashboardResponse && dashboardResponse.ok) {
+              dashboardId = dashboardResponse.response.id;
+            } else {
+              const dashboards = await this.props.savedObjectsService.getDashboards();
+              dashboards.some((dashboard) => {
+                if (
+                  dashboard.references.findIndex(
+                    (reference) => reference.id === this.state.detectorId
+                  ) > -1
+                ) {
+                  dashboardId = dashboard.id;
+                  return true;
+                }
+
+                return false;
+              });
+            }
+          }
+
+          this.setState(
+            {
+              detectorId,
+              dashboardId,
+            },
+            () => {
+              DetectorState.deletePendingState();
+              this.props.history.push(`${ROUTES.DETECTOR_DETAILS}/${detectorId}`);
+              this.getDetector();
+            }
+          );
+
+          successNotificationToast(
+            this.props.notifications,
+            'created',
+            `detector, "${detector.name}"`
+          );
+        } else {
+          errorNotificationToast(
+            this.props.notifications,
+            'create',
+            'detector',
+            detectorResponse.error
+          );
         }
-
-        return false;
-      });
-
-      if (detectorDashboardId) {
-        this.setState({ dashboardId: detectorDashboardId });
-        this.getTabs();
+      } else {
+        errorNotificationToast(
+          this.props.notifications,
+          'create',
+          'detector',
+          'Double check the field mappings and try again.'
+        );
       }
     }
+    this.setState({ loading: false });
   };
 
   async componentDidMount() {
-    this.getDetectorDetails();
+    const { detectorState } = DetectorState.getPendingState();
+    detectorState ? this.pendingDetectorDetails() : this.getDetector();
   }
 
   getDetector = async () => {
@@ -208,49 +292,31 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     const { detectorService, notifications } = this.props;
     try {
       const { detectorId } = this.state;
-      const { promises, data } = DetectorState.getState() || {};
-      if (promises && data) {
-        const [mappings, detector] = await promises;
-        console.log(mappings, detector);
+      const response = await detectorService.getDetectors();
+      if (response.ok) {
+        const detector = response.response.hits.hits.find(
+          (detectorHit) => detectorHit._id === detectorId
+        ) as DetectorHit;
 
-        if (mappings.ok && detector.ok) {
-          this.setState(
-            {
-              detectorId: detector.response._id,
-            },
-            () => {
-              DetectorState.deleteState();
-              this.props.history.push(`${ROUTES.DETECTOR_DETAILS}/${detector.response._id}`);
-              this.getDetectorDetails();
-            }
-          );
-        } else {
-        }
+        this.detectorHit = {
+          ...detector,
+          _source: {
+            ...detector._source,
+            enabled: detector._source.enabled,
+          },
+        };
+        this.context.chrome.setBreadcrumbs([
+          BREADCRUMBS.SECURITY_ANALYTICS,
+          BREADCRUMBS.DETECTORS,
+          BREADCRUMBS.DETECTORS_DETAILS(detector._source.name, detector._id),
+        ]);
       } else {
-        const response = await detectorService.getDetectors();
-        if (response.ok) {
-          const detector = response.response.hits.hits.find(
-            (detectorHit) => detectorHit._id === detectorId
-          ) as DetectorHit;
-          this.detectorHit = {
-            ...detector,
-            _source: {
-              ...detector._source,
-              enabled: detector._source.enabled,
-            },
-          };
-          this.context.chrome.setBreadcrumbs([
-            BREADCRUMBS.SECURITY_ANALYTICS,
-            BREADCRUMBS.DETECTORS,
-            BREADCRUMBS.DETECTORS_DETAILS(detector._source.name, detector._id),
-          ]);
-        } else {
-          errorNotificationToast(notifications, 'retrieve', 'detector', response.error);
-        }
+        errorNotificationToast(notifications, 'retrieve', 'detector', response.error);
       }
     } catch (e: any) {
       errorNotificationToast(notifications, 'retrieve', 'detector', e);
     }
+
     this.getTabs();
     this.setState({ loading: false });
   };
@@ -418,12 +484,44 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     ));
   }
 
+  viewDetectorConfiguration = () => {
+    this.props.history.push({
+      pathname: `${ROUTES.DETECTORS_CREATE}`,
+      state: {
+        ...DetectorState.getPendingState().detectorState,
+      },
+    });
+  };
+
   render() {
     const { _source: detector } = this.detectorHit;
-    const { selectedTabContent } = this.state;
+    const { selectedTabContent, detectorId } = this.state;
+    const creatingDetector: boolean = detectorId !== PENDING_DETECTOR_ID;
 
     return (
       <>
+        {creatingDetector ? (
+          <>
+            <EuiCallOut
+              title={
+                <EuiFlexGroup alignItems="center">
+                  <EuiPanel paddingSize="s" color={'transparent'} hasBorder={false}>
+                    <EuiLoadingSpinner size="l" />
+                  </EuiPanel>
+                  <EuiPanel paddingSize="s" color={'transparent'} hasBorder={false}>
+                    Attempting to create the detector. This process can take up to 20 minutes.
+                  </EuiPanel>
+                </EuiFlexGroup>
+              }
+              color="primary"
+            >
+              <EuiButton onClick={this.viewDetectorConfiguration}>
+                View detector configuration
+              </EuiButton>
+            </EuiCallOut>
+            <EuiSpacer size="xl" />
+          </>
+        ) : null}
         <EuiFlexGroup>
           <EuiFlexItem>
             <EuiFlexGroup alignItems="center">
@@ -433,8 +531,10 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
                 </EuiTitle>
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
-                <EuiHealth color={detector.enabled ? 'success' : 'subdued'}>
-                  {detector.enabled ? 'Active' : 'Inactive'}
+                <EuiHealth
+                  color={creatingDetector ? 'primary' : detector.enabled ? 'success' : 'subdued'}
+                >
+                  {creatingDetector ? 'Initializing' : detector.enabled ? 'Active' : 'Inactive'}
                 </EuiHealth>
               </EuiFlexItem>
             </EuiFlexGroup>
