@@ -60,6 +60,7 @@ export const DetectionRules: React.FC<DetectionRulesProps> = ({
         logType: rule._source.category,
         name: rule._source.title,
         severity: rule._source.level,
+        ruleInfo: rule,
       })),
     [rulesState.allRules]
   );

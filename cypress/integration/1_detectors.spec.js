@@ -6,7 +6,6 @@
 import { OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
 import sample_index_settings from '../fixtures/sample_index_settings.json';
 import dns_rule_data from '../fixtures/integration_tests/rule/create_dns_rule.json';
-import sample_dns_settings from '../fixtures/integration_tests/index/create_dns_settings.json';
 
 const testMappings = {
   properties: {
