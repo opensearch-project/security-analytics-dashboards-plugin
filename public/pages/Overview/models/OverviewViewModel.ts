@@ -46,23 +46,12 @@ export class OverviewViewModelActor {
 
   private async getRules(ruleIds: string[]): Promise<{ [id: string]: RuleSource }> {
     try {
-      const body = {
-        from: 0,
-        size: 5000,
-        query: {
-          nested: {
-            path: 'rule',
-            query: {
-              terms: {
-                _id: ruleIds,
-              },
-            },
-          },
-        },
+      const terms = {
+        _id: ruleIds,
       };
 
-      const prePackagedResponse = await DataStore.rules.getRules(true, body);
-      const customResponse = await DataStore.rules.getRules(false, body);
+      const prePackagedResponse = await DataStore.rules.getRules(true, terms);
+      const customResponse = await DataStore.rules.getRules(false, terms);
 
       const ruleById: { [id: string]: any } = {};
       prePackagedResponse.forEach((hit) => (ruleById[hit._id] = hit._source));

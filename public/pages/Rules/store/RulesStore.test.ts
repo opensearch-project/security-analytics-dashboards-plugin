@@ -8,7 +8,6 @@ import notificationsStartMock from '../../../../test/mocks/services/notification
 import services from '../../../../test/mocks/services';
 import { RulesStore } from './RulesStore';
 import { expect } from '@jest/globals';
-import { ruleTypes } from '../utils/constants';
 import * as rulesResponseMock from '../../../../cypress/fixtures/sample_rule.json';
 describe('Rules store specs', () => {
   Object.assign(services, {
@@ -31,27 +30,12 @@ describe('Rules store specs', () => {
   it('getRules should return an array', async () => {
     const serviceSpy = jest.spyOn(DataStore.rules.service, 'getRules');
 
-    const body = {
-      from: 0,
-      size: 5000,
-      query: {
-        nested: {
-          path: 'rule',
-          query: {
-            terms: {
-              'rule.category': ruleTypes,
-            },
-          },
-        },
-      },
-    };
-
     // first call
-    const rules = await DataStore.rules.getRules(true, body);
+    const rules = await DataStore.rules.getRules(true);
     expect(rules.length).toStrictEqual(2);
 
     // second call
-    await DataStore.rules.getRules(true, body);
+    await DataStore.rules.getRules(true);
 
     // service.getRules is called only once as the second time is returned from the cache
     expect(serviceSpy).toBeCalledTimes(1);

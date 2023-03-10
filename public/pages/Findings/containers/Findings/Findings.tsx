@@ -196,18 +196,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
     const { notifications } = this.props;
     try {
       const rules = await DataStore.rules.getAllRules({
-        from: 0,
-        size: 5000,
-        query: {
-          nested: {
-            path: 'rule',
-            query: {
-              terms: {
-                _id: ruleIds,
-              },
-            },
-          },
-        },
+        _id: ruleIds,
       });
 
       const allRules: { [id: string]: RuleSource } = {};

@@ -97,23 +97,10 @@ export default class UpdateAlertConditions extends Component<
           });
         }
       }
-      const body = {
-        from: 0,
-        size: 5000,
-        query: {
-          nested: {
-            path: 'rule',
-            query: {
-              bool: {
-                must: [{ match: { 'rule.category': detector.detector_type.toLowerCase() } }],
-              },
-            },
-          },
-        },
-      };
+      const terms = { 'rule.category': [detector.detector_type.toLowerCase()] };
 
-      const prePackagedRules = await DataStore.rules.getRules(true, body);
-      const customRules = await DataStore.rules.getRules(false, body);
+      const prePackagedRules = await DataStore.rules.getRules(true, terms);
+      const customRules = await DataStore.rules.getRules(false, terms);
 
       const allRules: { [id: string]: RuleSource } = {};
       const rulesOptions = new Set<RuleOptions>();

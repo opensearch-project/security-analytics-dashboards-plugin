@@ -10,6 +10,7 @@ import { Rule } from '../../../../models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../../../utils/helpers';
 import { ruleTypes } from '../utils/constants';
+import _ from 'lodash';
 
 /**
  * Class is used to make rule's API calls and cache the rules.
@@ -60,27 +61,12 @@ export class RulesStore implements IRulesStore {
    * Returns all rules, custom and pre-packaged
    *
    * @method getAllRules
-   * @param {any} [body]
+   * @param {terms?: { [key: string]: string[] }} [terms]
    * @returns {Promise<RuleItemInfoBase[]>}
    */
-  public async getAllRules(
-    body: any = {
-      from: 0,
-      size: 5000,
-      query: {
-        nested: {
-          path: 'rule',
-          query: {
-            terms: {
-              'rule.category': ruleTypes,
-            },
-          },
-        },
-      },
-    }
-  ): Promise<RuleItemInfoBase[]> {
-    let prePackagedRules = await this.getRules(true, body);
-    let customRules = await this.getRules(false, body);
+  public async getAllRules(terms?: { [key: string]: string[] }): Promise<RuleItemInfoBase[]> {
+    let prePackagedRules = await this.getRules(true, terms);
+    let customRules = await this.getRules(false, terms);
 
     prePackagedRules = this.validateAndAddDetection(prePackagedRules);
     customRules = this.validateAndAddDetection(customRules);
@@ -92,15 +78,37 @@ export class RulesStore implements IRulesStore {
    * Makes the request to get pre-packaged or custom rules
    *
    * @param {boolean} prePackaged
-   * @param {any} body
+   * @param {terms?: { [key: string]: string[] }} terms
    * @returns {Promise<RuleItemInfoBase[]>}
    */
-  public async getRules(prePackaged: boolean, body: any): Promise<RuleItemInfoBase[]> {
+  public async getRules(
+    prePackaged: boolean,
+    terms?: { [key: string]: string[] }
+  ): Promise<RuleItemInfoBase[]> {
     const cacheKey: string = `getRules:${JSON.stringify(arguments)}`;
 
     if (this.cache[cacheKey]) {
       return this.cache[cacheKey];
     }
+
+    if (!terms) {
+      terms = {
+        'rule.category': _.map(ruleTypes, 'value'),
+      };
+    }
+
+    const body = {
+      from: 0,
+      size: 5000,
+      query: {
+        nested: {
+          path: 'rule',
+          query: {
+            terms: { ...terms },
+          },
+        },
+      },
+    };
 
     const response = await this.service.getRules(prePackaged, body);
 

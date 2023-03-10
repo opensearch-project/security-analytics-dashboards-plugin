@@ -70,18 +70,7 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
       );
 
       const allRules = await DataStore.rules.getAllRules({
-        from: 0,
-        size: 5000,
-        query: {
-          nested: {
-            path: 'rule',
-            query: {
-              terms: {
-                'rule.category': [props.detector.detector_type.toLowerCase()],
-              },
-            },
-          },
-        },
+        'rule.category': [props.detector.detector_type.toLowerCase()],
       });
 
       const prePackagedRules = allRules?.filter((rule) => rule.prePackaged);

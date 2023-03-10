@@ -55,11 +55,7 @@ export const AlertTriggersView: React.FC<AlertTriggersViewProps> = ({
         (rule) => rule.id
       );
       if (prepackagedRuleIds.length > 0) {
-        const prePackagedRules = await DataStore.rules.getRules(true, {
-          from: 0,
-          size: 5000,
-          query: { nested: { path: 'rule', query: { terms: { _id: prepackagedRuleIds } } } },
-        });
+        const prePackagedRules = await DataStore.rules.getRules(true, { _id: prepackagedRuleIds });
 
         prePackagedRules.forEach((rule) => (parseRules[rule._id] = rule));
       }
@@ -67,11 +63,7 @@ export const AlertTriggersView: React.FC<AlertTriggersViewProps> = ({
       // Retrieve the custom rules.
       const customRuleIds = detector.inputs[0].detector_input.custom_rules.map((rule) => rule.id);
       if (customRuleIds.length > 0) {
-        const prePackagedRules = await DataStore.rules.getRules(true, {
-          from: 0,
-          size: 5000,
-          query: { nested: { path: 'rule', query: { terms: { _id: customRuleIds } } } },
-        });
+        const prePackagedRules = await DataStore.rules.getRules(true, { _id: customRuleIds });
 
         prePackagedRules.forEach((rule) => (parseRules[rule._id] = rule));
       }
