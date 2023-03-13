@@ -66,6 +66,7 @@ export interface DetectorDetailsState {
   tabs: any[];
   loading: boolean;
   dashboardId?: string;
+  createFailed: boolean;
 }
 
 enum TabId {
@@ -263,19 +264,31 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
             `detector, "${detector.name}"`
           );
         } else {
-          errorNotificationToast(
-            this.props.notifications,
-            'create',
-            'detector',
-            detectorResponse.error
+          this.setState(
+            {
+              createFailed: true,
+            },
+            () =>
+              errorNotificationToast(
+                this.props.notifications,
+                'create',
+                'detector',
+                detectorResponse.error
+              )
           );
         }
       } else {
-        errorNotificationToast(
-          this.props.notifications,
-          'create',
-          'detector',
-          'Double check the field mappings and try again.'
+        this.setState(
+          {
+            createFailed: true,
+          },
+          () =>
+            errorNotificationToast(
+              this.props.notifications,
+              'create',
+              'detector',
+              'Double check the field mappings and try again.'
+            )
         );
       }
     }
@@ -496,7 +509,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   render() {
     const { _source: detector } = this.detectorHit;
     const { selectedTabContent, detectorId } = this.state;
-    const creatingDetector: boolean = detectorId !== PENDING_DETECTOR_ID;
+    const creatingDetector: boolean = detectorId === PENDING_DETECTOR_ID;
 
     return (
       <>
