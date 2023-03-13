@@ -16,7 +16,7 @@
     }
   ],
   "log_source": "",
-  "detection": "selection:\n  DnsQuestionName:\n    - QWE\n    - ASD\n    - YXC\ncondition: selection",
+  "detection": "selection:\n  query:\n    - QWE\n    - ASD\n    - YXC\ncondition: selection",
   "level": "low",
   "false_positives": [
     {
