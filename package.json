@@ -45,7 +45,8 @@
     "ansi-regex": "^5.0.1",
     "minimist": "^1.2.6",
     "moment": "^2.29.2",
-    "async": "^3.2.3"
+    "async": "^3.2.3",
+    "json5": "^2.2.3"
   },
   "devDependencies": {
     "@elastic/elastic-eslint-config-kibana": "link:../../packages/opensearch-eslint-config-opensearch-dashboards",
