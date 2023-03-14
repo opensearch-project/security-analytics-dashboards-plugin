@@ -17,6 +17,7 @@ export interface FieldMappingsViewProps {
   existingMappings?: FieldMapping[];
   editFieldMappings: () => void;
   notifications: NotificationsStart;
+  isEditable: boolean;
 }
 
 const columns: EuiBasicTableColumn<FieldMappingsTableItem>[] = [
@@ -36,13 +37,17 @@ export const FieldMappingsView: React.FC<FieldMappingsViewProps> = ({
   existingMappings,
   editFieldMappings,
   notifications,
+  isEditable,
 }) => {
   const actions = useMemo(
-    () => [
-      <EuiButton onClick={editFieldMappings} data-test-subj={'edit-detector-field-mappings'}>
-        Edit
-      </EuiButton>,
-    ],
+    () =>
+      isEditable
+        ? [
+            <EuiButton onClick={editFieldMappings} data-test-subj={'edit-detector-field-mappings'}>
+              Edit
+            </EuiButton>,
+          ]
+        : null,
     []
   );
   const [fieldMappingItems, setFieldMappingItems] = useState<FieldMappingsTableItem[]>([]);

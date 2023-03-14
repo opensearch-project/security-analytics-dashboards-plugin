@@ -22,6 +22,7 @@ export interface DetectorRulesViewProps {
   rulesCanFold?: boolean;
   onEditClicked: (enabledRules: RuleItem[], allRuleItems: RuleItem[]) => void;
   notifications: NotificationsStart;
+  isEditable: boolean;
 }
 
 const mapRuleItemToRuleTableItem = (ruleItem: RuleItem): RuleTableItem => {
@@ -49,14 +50,16 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
   const [enabledRuleItems, setEnabledRuleItems] = useState<RuleItem[]>([]);
   const [allRuleItems, setAllRuleItems] = useState<RuleItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const actions = [
-    <EuiButton
-      onClick={() => props.onEditClicked(enabledRuleItems, allRuleItems)}
-      data-test-subj={'edit-detector-rules'}
-    >
-      Edit
-    </EuiButton>,
-  ];
+  const actions = props.isEditable
+    ? [
+        <EuiButton
+          onClick={() => props.onEditClicked(enabledRuleItems, allRuleItems)}
+          data-test-subj={'edit-detector-rules'}
+        >
+          Edit
+        </EuiButton>,
+      ]
+    : null;
   const services = useContext(ServicesContext);
 
   const rulesViewModelActor = useMemo(

@@ -18,6 +18,7 @@ export interface DetectorBasicDetailsViewProps {
   enabled_time?: number;
   last_update_time?: number;
   onEditClicked: () => void;
+  isEditable: boolean;
 }
 
 export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> = ({
@@ -28,6 +29,7 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
   children,
   dashboardId,
   onEditClicked,
+  isEditable,
 }) => {
   const { name, detector_type, inputs, schedule } = detector;
   const detectorSchedule = parseSchedule(schedule);
@@ -55,11 +57,15 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
   return (
     <ContentPanel
       title={'Detector details'}
-      actions={[
-        <EuiButton onClick={onEditClicked} data-test-subj={'edit-detector-basic-details'}>
-          Edit
-        </EuiButton>,
-      ]}
+      actions={
+        isEditable
+          ? [
+              <EuiButton onClick={onEditClicked} data-test-subj={'edit-detector-basic-details'}>
+                Edit
+              </EuiButton>,
+            ]
+          : null
+      }
     >
       <EuiSpacer size={'l'} />
       {createTextDetailsGroup(firstTextDetailsGroupEntries, 4)}

@@ -115,6 +115,9 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   };
 
   private getTabs() {
+    const { detectorId, createFailed } = this.state;
+    const creatingDetector: boolean = detectorId === PENDING_DETECTOR_ID;
+    const isEditable = !creatingDetector && !createFailed;
     const tabs = [
       {
         id: TabId.DetectorDetails,
@@ -128,6 +131,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
             dashboardId={this.state.dashboardId}
             editBasicDetails={this.editDetectorBasicDetails}
             editDetectorRules={this.editDetectorRules}
+            isEditable={isEditable}
           />
         ),
       },
@@ -139,6 +143,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
             {...this.props}
             detector={this.detectorHit._source}
             editFieldMappings={this.editFieldMappings}
+            isEditable={isEditable}
           />
         ),
       },
@@ -150,6 +155,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
             {...this.props}
             detector={this.detectorHit._source}
             editAlertTriggers={this.editAlertTriggers}
+            isEditable={isEditable}
           />
         ),
       },
@@ -160,23 +166,25 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   constructor(props: DetectorDetailsProps) {
     super(props);
     const detectorId = props.location.pathname.replace(`${ROUTES.DETECTOR_DETAILS}/`, '');
-    const { detector } = DetectorState.getPendingState();
+    const pendingState = DetectorState.getPendingState();
+    const detector = pendingState?.detectorState?.detector;
 
     this.state = {
       isActionsMenuOpen: false,
       selectedTabId: TabId.DetectorDetails,
       selectedTabContent: null,
       detectorHit: detector
-        ? {
+        ? Object.assign({}, EMPTY_DEFAULT_DETECTOR_HIT, {
             ...detector,
             _source: {
               ...detector,
             },
-          }
+          })
         : EMPTY_DEFAULT_DETECTOR_HIT,
       detectorId: detectorId,
       tabs: [],
       loading: false,
+      createFailed: false,
     };
   }
 
@@ -194,16 +202,18 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   };
 
   pendingDetectorDetails = async () => {
-    const { pendingRequests, detector } = DetectorState.getPendingState();
+    const pendingState = DetectorState.getPendingState();
+    const detector = pendingState?.detectorState?.detector;
+    const pendingRequests = pendingState?.pendingRequests;
     this.getTabs();
 
     if (pendingRequests && detector) {
-      this.detectorHit = {
+      this.detectorHit = Object.assign({}, EMPTY_DEFAULT_DETECTOR_HIT, {
         ...detector,
         _source: {
           ...detector,
         },
-      };
+      });
 
       this.context.chrome.setBreadcrumbs([
         BREADCRUMBS.SECURITY_ANALYTICS,
@@ -296,8 +306,8 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   };
 
   async componentDidMount() {
-    const { detectorState } = DetectorState.getPendingState();
-    detectorState ? this.pendingDetectorDetails() : this.getDetector();
+    const pendingState = DetectorState.getPendingState();
+    pendingState ? this.pendingDetectorDetails() : this.getDetector();
   }
 
   getDetector = async () => {
@@ -498,18 +508,39 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   }
 
   viewDetectorConfiguration = () => {
+    const pendingState = DetectorState.getPendingState();
+    const detectorState = pendingState?.detectorState;
     this.props.history.push({
       pathname: `${ROUTES.DETECTORS_CREATE}`,
       state: {
-        ...DetectorState.getPendingState().detectorState,
+        detectorState,
       },
     });
+    DetectorState.deletePendingState();
   };
 
   render() {
     const { _source: detector } = this.detectorHit;
-    const { selectedTabContent, detectorId } = this.state;
+    const { selectedTabContent, detectorId, createFailed } = this.state;
     const creatingDetector: boolean = detectorId === PENDING_DETECTOR_ID;
+
+    let statusColor = 'primary';
+    let statusText = 'Initializing';
+
+    if (creatingDetector) {
+      if (createFailed) {
+        statusColor = 'danger';
+        statusText = 'Failed';
+      }
+    } else {
+      if (detector.enabled) {
+        statusColor = 'success';
+        statusText = 'Active';
+      } else {
+        statusColor = 'subdued';
+        statusText = 'Inactive';
+      }
+    }
 
     return (
       <>
@@ -544,23 +575,21 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
                 </EuiTitle>
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
-                <EuiHealth
-                  color={creatingDetector ? 'primary' : detector.enabled ? 'success' : 'subdued'}
-                >
-                  {creatingDetector ? 'Initializing' : detector.enabled ? 'Active' : 'Inactive'}
-                </EuiHealth>
+                <EuiHealth color={statusColor}>{statusText}</EuiHealth>
               </EuiFlexItem>
             </EuiFlexGroup>
           </EuiFlexItem>
           <EuiFlexItem>
             <EuiFlexGroup justifyContent="flexEnd" alignItems="center">
-              {this.createHeaderActions().map(
-                (action: React.ReactNode, idx: number): React.ReactNode => (
-                  <EuiFlexItem key={idx} grow={false}>
-                    {action}
-                  </EuiFlexItem>
-                )
-              )}
+              {!creatingDetector && !createFailed
+                ? this.createHeaderActions().map(
+                    (action: React.ReactNode, idx: number): React.ReactNode => (
+                      <EuiFlexItem key={idx} grow={false}>
+                        {action}
+                      </EuiFlexItem>
+                    )
+                  )
+                : null}
             </EuiFlexGroup>
           </EuiFlexItem>
         </EuiFlexGroup>

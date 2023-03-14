@@ -20,6 +20,7 @@ export interface DetectorDetailsViewProps {
   dashboardId?: string;
   editBasicDetails: () => void;
   editDetectorRules: (enabledRules: RuleItem[], allRuleItems: RuleItem[]) => void;
+  isEditable: boolean;
 }
 
 export interface DetectorDetailsViewState {}
@@ -37,6 +38,7 @@ export class DetectorDetailsView extends React.Component<
       dashboardId,
       editBasicDetails,
       editDetectorRules,
+      isEditable,
     } = this.props;
     const detectorRules = (
       <DetectorRulesView
@@ -44,6 +46,7 @@ export class DetectorDetailsView extends React.Component<
         detector={detector}
         rulesCanFold={rulesCanFold}
         onEditClicked={editDetectorRules}
+        isEditable={isEditable}
       />
     );
 
@@ -57,6 +60,7 @@ export class DetectorDetailsView extends React.Component<
           rulesCanFold={rulesCanFold}
           dashboardId={dashboardId}
           onEditClicked={editBasicDetails}
+          isEditable={isEditable}
         >
           {rulesCanFold ? detectorRules : null}
         </DetectorBasicDetailsView>

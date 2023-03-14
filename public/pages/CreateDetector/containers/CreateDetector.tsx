@@ -38,6 +38,7 @@ import { Detector } from '../../../../types';
 interface CreateDetectorProps extends RouteComponentProps {
   isEdit: boolean;
   services: BrowserServices;
+  history: RouteComponentProps['history'];
   notifications: NotificationsStart;
 }
 
@@ -60,7 +61,8 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     super(props);
     this.rulesViewModelActor = new RulesViewModelActor(props.services.ruleService);
 
-    const { detectorState } = DetectorState.getPendingState();
+    let detectorState = this.props.history.location.state as any;
+    if (!detectorState) detectorState = null;
 
     this.state = {
       currentStep: DetectorCreationStep.DEFINE_DETECTOR,
@@ -126,10 +128,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
 
     DetectorState.setPendingState({
       pendingRequests: [fieldsMappingPromise, createDetectorPromise],
-      detector,
-      detectorState: {
-        ...this.state,
-      },
+      detectorState: { ...this.state },
     });
 
     this.setState({ creatingDetector: false });

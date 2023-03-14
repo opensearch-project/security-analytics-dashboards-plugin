@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Detector } from '../../../../types';
 import { CreateDetectorState } from '../containers/CreateDetector';
 
 export interface IDetectorState {
@@ -13,9 +12,8 @@ export interface IDetectorState {
 }
 
 export interface IDetectorPendingState {
-  pendingRequests?: Promise<any>[];
-  detector?: Detector;
-  detectorState?: CreateDetectorState;
+  pendingRequests: Promise<any>[];
+  detectorState: CreateDetectorState;
 }
 
 class DetectorState implements IDetectorState {
@@ -32,7 +30,7 @@ class DetectorState implements IDetectorState {
   };
 
   public getPendingState = () => {
-    if (!this.state) return {};
+    if (!this.state) return undefined;
     return {
       ...this.state,
     };
