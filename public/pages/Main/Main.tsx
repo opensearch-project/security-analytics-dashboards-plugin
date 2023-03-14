@@ -35,6 +35,7 @@ import { EditRule } from '../Rules/containers/EditRule/EditRule';
 import { ImportRule } from '../Rules/containers/ImportRule/ImportRule';
 import { DuplicateRule } from '../Rules/containers/DuplicateRule/DuplicateRule';
 import { DateTimeFilter } from '../Overview/models/interfaces';
+import NewFieldMappings from '../Detectors/components/UpdateFieldMappings/NewFieldMappings';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -387,7 +388,7 @@ export default class Main extends Component<MainProps, MainState> {
                         <Route
                           path={`${ROUTES.EDIT_FIELD_MAPPINGS}/:id`}
                           render={(props: RouteComponentProps<any, any, any>) => (
-                            <UpdateFieldMappings
+                            <NewFieldMappings
                               {...props}
                               filedMappingService={services.fieldMappingService}
                               detectorService={services.detectorsService}

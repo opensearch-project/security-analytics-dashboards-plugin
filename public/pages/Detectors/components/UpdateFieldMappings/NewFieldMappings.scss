@@ -1,0 +1,17 @@
+.newFieldMappings {
+  .editFieldMappings {
+    .euiPanel {
+      &.euiPanel--hasShadow {
+        border: none !important;
+        box-shadow: none !important;
+      }
+
+      &.euiPanel--paddingMedium, .euiAccordion__button {
+        padding-left: 0 !important;
+      }
+    }
+    .euiHorizontalRule {
+      background-color: transparent !important;
+    }
+  }
+}

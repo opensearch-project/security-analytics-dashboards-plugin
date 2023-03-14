@@ -29,6 +29,7 @@ interface EditFieldMappingsProps extends RouteComponentProps {
   fieldMappings: FieldMapping[];
   loading: boolean;
   replaceFieldMappings: (mappings: FieldMapping[]) => void;
+  initialIsOpen?: boolean;
 }
 
 interface EditFieldMappingsState {
@@ -159,12 +160,13 @@ export default class EditFieldMappings extends Component<
       unmappedRuleFields,
       logFieldOptions,
     } = this.state;
+    const { initialIsOpen } = this.props;
     const existingMappings: ruleFieldToIndexFieldMap = {
       ...createdMappings,
     };
 
     return (
-      <div>
+      <div className={'editFieldMappings'}>
         <EuiPanel>
           <EuiAccordion
             buttonContent={
@@ -176,7 +178,9 @@ export default class EditFieldMappings extends Component<
             }
             buttonProps={{ style: { paddingLeft: '10px', paddingRight: '10px' } }}
             id={'mappedFieldsAccordion'}
-            initialIsOpen={unmappedRuleFields.length === 0}
+            initialIsOpen={
+              initialIsOpen !== undefined ? initialIsOpen : unmappedRuleFields.length === 0
+            }
           >
             <EuiHorizontalRule margin={'xs'} />
             <FieldMappingsTable<MappingViewType.Edit>
@@ -196,23 +200,17 @@ export default class EditFieldMappings extends Component<
 
         <EuiSpacer size={'m'} />
 
-        {unmappedRuleFields.length > 0 && (
+        {unmappedRuleFields.length > 0 ? (
           <>
-            {unmappedRuleFields.length > 0 ? (
-              <EuiCallOut
-                title={`${unmappedRuleFields.length} rule fields may need manual mapping`}
-                color={'warning'}
-              >
-                <p>
-                  To generate accurate findings, we recommend mapping the following security rules
-                  fields with the log fields in your data source.
-                </p>
-              </EuiCallOut>
-            ) : (
-              <EuiCallOut title={`All rule fields have been mapped`} color={'success'}>
-                <p>Your data source have been mapped with all security rule fields.</p>
-              </EuiCallOut>
-            )}
+            <EuiCallOut
+              title={`${unmappedRuleFields.length} rule fields may need manual mapping`}
+              color={'warning'}
+            >
+              <p>
+                To generate accurate findings, we recommend mapping the following security rules
+                fields with the log fields in your data source.
+              </p>
+            </EuiCallOut>
 
             <EuiSpacer size={'m'} />
             <ContentPanel title={`Pending field mappings`} titleSize={'m'}>
@@ -229,8 +227,16 @@ export default class EditFieldMappings extends Component<
                 }}
               />
             </ContentPanel>
-            <EuiSpacer size={'m'} />
           </>
+        ) : (
+          <EuiCallOut
+            title={`We have automatically mapped ${mappedRuleFields.length} field(s)`}
+            color={'success'}
+          >
+            <p>
+              Your data sources have been mapped with every rule field name. No action is needed.
+            </p>
+          </EuiCallOut>
         )}
 
         <EuiSpacer size={'m'} />
