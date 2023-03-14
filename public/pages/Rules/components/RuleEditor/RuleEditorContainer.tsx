@@ -6,7 +6,6 @@
 import React, { useCallback } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { RuleService } from '../../../../services';
 import { ROUTES } from '../../../../utils/constants';
 import { EuiSpacer } from '@elastic/eui';
 import { Rule } from '../../../../../models/interfaces';
@@ -14,14 +13,13 @@ import { RuleEditorFormModel, ruleEditorStateDefaultValue } from './RuleEditorFo
 import { mapFormToRule, mapRuleToForm } from './mappers';
 import { RuleEditorForm } from './RuleEditorForm';
 import { validateRule } from '../../utils/helpers';
-import { errorNotificationToast } from '../../../../utils/helpers';
+import { DataStore } from '../../../../store/DataStore';
 
 export interface RuleEditorProps {
   title: string;
   rule?: Rule;
   history: RouteComponentProps['history'];
   notifications?: NotificationsStart;
-  ruleService: RuleService;
   mode: 'create' | 'edit';
 }
 
@@ -36,7 +34,6 @@ export const RuleEditorContainer: React.FC<RuleEditorProps> = ({
   notifications,
   title,
   rule,
-  ruleService,
   mode,
 }) => {
   const initialRuleValue = rule
@@ -55,19 +52,12 @@ export const RuleEditorContainer: React.FC<RuleEditorProps> = ({
         console.error('No rule id found');
         return;
       }
-      result = await ruleService.updateRule(rule?.id, submitingRule.category, submitingRule);
+      result = await DataStore.rules.updateRule(rule?.id, submitingRule.category, submitingRule);
     } else {
-      result = await ruleService.createRule(submitingRule);
+      result = await DataStore.rules.createRule(submitingRule);
     }
 
-    if (!result.ok) {
-      errorNotificationToast(
-        notifications!,
-        mode === 'create' ? 'create' : 'save',
-        'rule',
-        result.error
-      );
-    } else {
+    if (result) {
       history.replace(ROUTES.RULES);
     }
   };

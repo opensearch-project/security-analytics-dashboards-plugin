@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { RuleService } from '../public/services';
+import { NotificationsStart } from 'opensearch-dashboards/public';
+
 export interface Rule {
   id: string;
   category: string;
@@ -91,3 +94,31 @@ export interface DeleteRuleParams {
 }
 
 export interface DeleteRuleResponse {}
+
+export interface IRulesCache {
+  [key: string]: RuleItemInfoBase[];
+}
+
+export interface IRulesStore {
+  readonly service: RuleService;
+
+  readonly notifications: NotificationsStart;
+
+  getAllRules: (terms?: { [key: string]: string[] }, query?: any) => Promise<RuleItemInfoBase[]>;
+
+  createRule: (rule: Rule) => Promise<boolean>;
+
+  updateRule: (id: string, category: string, rule: Rule) => Promise<boolean>;
+
+  deleteRule: (id: string) => Promise<boolean>;
+
+  getRules: (
+    prePackaged: boolean,
+    terms?: { [key: string]: string[] },
+    query?: any
+  ) => Promise<RuleItemInfoBase[]>;
+
+  getPrePackagedRules: (terms?: { [key: string]: string[] }) => Promise<RuleItemInfoBase[]>;
+
+  getCustomRules: (terms?: { [key: string]: string[] }) => Promise<RuleItemInfoBase[]>;
+}
