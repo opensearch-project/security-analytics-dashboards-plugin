@@ -4,7 +4,7 @@
  */
 
 import ruleSourceMock from './RuleSource.mock';
-import { DetectorRuleInfo } from '../../../models/interfaces';
+import { RuleItemInfoBase } from '../../../types';
 
 export default {
   id: 'rule_id_1',
@@ -13,4 +13,5 @@ export default {
   _primary_term: 1,
   _source: ruleSourceMock,
   _version: 1,
-} as DetectorRuleInfo;
+  prePackaged: true,
+} as RuleItemInfoBase;

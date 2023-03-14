@@ -38,7 +38,6 @@ export const EditRule: React.FC<EditRuleProps> = ({
       rule={location.state.ruleItem._source}
       history={history}
       notifications={notifications}
-      ruleService={services.ruleService}
     />
   );
 };

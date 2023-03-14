@@ -26,6 +26,7 @@ import FieldMappingService from './services/FieldMappingService';
 import RuleService from './services/RuleService';
 import SavedObjectService from './services/SavedObjectService';
 import { SecurityAnalyticsPluginStartDeps } from './plugin';
+import { DataStore } from './store/DataStore';
 
 export function renderApp(
   coreStart: CoreStart,
@@ -60,6 +61,7 @@ export function renderApp(
   };
 
   const isDarkMode = coreStart.uiSettings.get('theme:darkMode') || false;
+  DataStore.init(services, coreStart.notifications);
 
   ReactDOM.render(
     <Router>

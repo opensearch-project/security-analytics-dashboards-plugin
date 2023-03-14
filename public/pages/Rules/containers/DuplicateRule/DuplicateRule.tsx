@@ -10,11 +10,11 @@ import { EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 import { RouteComponentProps } from 'react-router-dom';
 import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { Rule } from '../../../../../models/interfaces';
-import { RuleItemInfoBase } from '../../models/types';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { setBreadCrumb, validateRule } from '../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { errorNotificationToast } from '../../../../utils/helpers';
+import { DataStore } from '../../../../store/DataStore';
+import { RuleItemInfoBase } from '../../../../../types';
 
 export interface DuplicateRuleProps
   extends RouteComponentProps<any, any, { ruleItem: RuleItemInfoBase }> {
@@ -35,11 +35,9 @@ export const DuplicateRule: React.FC<DuplicateRuleProps> = ({
       if (!validateRule(rule, notifications!, 'create')) {
         return;
       }
-      const updateRuleRes = await services.ruleService.createRule(rule);
+      const response = await DataStore.rules.createRule(rule);
 
-      if (!updateRuleRes.ok) {
-        errorNotificationToast(notifications!, 'create', 'rule', updateRuleRes.error);
-      } else {
+      if (response) {
         history.replace(ROUTES.RULES);
       }
     };
@@ -65,7 +63,6 @@ export const DuplicateRule: React.FC<DuplicateRuleProps> = ({
       history={history}
       notifications={notifications}
       mode={'create'}
-      ruleService={services.ruleService}
     />
   );
 };
