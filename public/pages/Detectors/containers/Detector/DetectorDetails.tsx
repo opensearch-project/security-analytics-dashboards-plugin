@@ -169,6 +169,10 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     const pendingState = DetectorState.getPendingState();
     const detector = pendingState?.detectorState?.detector;
 
+    if (!pendingState && detectorId === PENDING_DETECTOR_ID) {
+      this.props.history.push(`${ROUTES.DETECTORS}`);
+    }
+
     this.state = {
       isActionsMenuOpen: false,
       selectedTabId: TabId.DetectorDetails,
@@ -553,14 +557,14 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
                     <EuiLoadingSpinner size="l" />
                   </EuiPanel>
                   <EuiPanel paddingSize="s" color={'transparent'} hasBorder={false}>
-                    Attempting to create the detector. This process can take up to 20 minutes.
+                    Attempting to create the detector.
                   </EuiPanel>
                 </EuiFlexGroup>
               }
               color="primary"
             >
               <EuiButton onClick={this.viewDetectorConfiguration}>
-                View detector configuration
+                Review detector configuration
               </EuiButton>
             </EuiCallOut>
             <EuiSpacer size="xl" />
