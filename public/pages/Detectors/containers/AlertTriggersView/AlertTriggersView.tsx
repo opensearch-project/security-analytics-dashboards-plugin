@@ -50,20 +50,22 @@ export const AlertTriggersView: React.FC<AlertTriggersViewProps> = ({
     const getRules = async () => {
       const parseRules: { [key: string]: RuleInfo } = {};
 
+      // Retrieve the custom rules.
+      const customRuleIds = detector.inputs[0].detector_input.custom_rules.map((rule) => rule.id);
+      if (customRuleIds.length > 0) {
+        const customRules = await DataStore.rules.getCustomRules({ _id: customRuleIds });
+
+        customRules.forEach((rule) => (parseRules[rule._id] = rule));
+      }
+
       // Retrieve the prepackaged rules.
       const prepackagedRuleIds = detector.inputs[0].detector_input.pre_packaged_rules.map(
         (rule) => rule.id
       );
       if (prepackagedRuleIds.length > 0) {
-        const prePackagedRules = await DataStore.rules.getRules(true, { _id: prepackagedRuleIds });
-
-        prePackagedRules.forEach((rule) => (parseRules[rule._id] = rule));
-      }
-
-      // Retrieve the custom rules.
-      const customRuleIds = detector.inputs[0].detector_input.custom_rules.map((rule) => rule.id);
-      if (customRuleIds.length > 0) {
-        const prePackagedRules = await DataStore.rules.getRules(true, { _id: customRuleIds });
+        const prePackagedRules = await DataStore.rules.getPrePackagedRules({
+          _id: prepackagedRuleIds,
+        });
 
         prePackagedRules.forEach((rule) => (parseRules[rule._id] = rule));
       }

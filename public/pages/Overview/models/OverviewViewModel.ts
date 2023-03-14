@@ -50,8 +50,8 @@ export class OverviewViewModelActor {
         _id: ruleIds,
       };
 
-      const prePackagedResponse = await DataStore.rules.getRules(true, terms);
-      const customResponse = await DataStore.rules.getRules(false, terms);
+      const customResponse = await DataStore.rules.getCustomRules(terms);
+      const prePackagedResponse = await DataStore.rules.getPrePackagedRules(terms);
 
       const ruleById: { [id: string]: any } = {};
       prePackagedResponse.forEach((hit) => (ruleById[hit._id] = hit._source));

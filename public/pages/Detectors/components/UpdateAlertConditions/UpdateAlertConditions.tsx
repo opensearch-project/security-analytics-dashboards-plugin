@@ -99,8 +99,8 @@ export default class UpdateAlertConditions extends Component<
       }
       const terms = { 'rule.category': [detector.detector_type.toLowerCase()] };
 
-      const prePackagedRules = await DataStore.rules.getRules(true, terms);
-      const customRules = await DataStore.rules.getRules(false, terms);
+      const customRules = await DataStore.rules.getCustomRules(terms);
+      const prePackagedRules = await DataStore.rules.getPrePackagedRules(terms);
 
       const allRules: { [id: string]: RuleSource } = {};
       const rulesOptions = new Set<RuleOptions>();

@@ -117,4 +117,8 @@ export interface IRulesStore {
     terms?: { [key: string]: string[] },
     query?: any
   ) => Promise<RuleItemInfoBase[]>;
+
+  getPrePackagedRules: (terms?: { [key: string]: string[] }) => Promise<RuleItemInfoBase[]>;
+
+  getCustomRules: (terms?: { [key: string]: string[] }) => Promise<RuleItemInfoBase[]>;
 }

@@ -31,11 +31,11 @@ describe('Rules store specs', () => {
     const serviceSpy = jest.spyOn(DataStore.rules.service, 'getRules');
 
     // first call
-    const rules = await DataStore.rules.getRules(true);
+    const rules = await DataStore.rules.getPrePackagedRules();
     expect(rules.length).toStrictEqual(2);
 
     // second call
-    await DataStore.rules.getRules(true);
+    await DataStore.rules.getPrePackagedRules();
 
     // service.getRules is called only once as the second time is returned from the cache
     expect(serviceSpy).toBeCalledTimes(1);
