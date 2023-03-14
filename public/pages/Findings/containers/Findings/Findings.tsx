@@ -21,7 +21,6 @@ import {
   DetectorsService,
   NotificationsService,
   OpenSearchService,
-  RuleService,
   IndexPatternsService,
 } from '../../../../services';
 import {
@@ -54,7 +53,7 @@ import { DetectorHit, RuleSource } from '../../../../../server/models/interfaces
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { DateTimeFilter } from '../../../Overview/models/interfaces';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
-import { RulesViewModelActor } from '../../../Rules/models/RulesViewModelActor';
+import { DataStore } from '../../../../store/DataStore';
 
 interface FindingsProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -62,7 +61,6 @@ interface FindingsProps extends RouteComponentProps {
   notificationsService: NotificationsService;
   indexPatternsService: IndexPatternsService;
   opensearchService: OpenSearchService;
-  ruleService: RuleService;
   notifications: NotificationsStart;
   match: match;
   dateTimeFilter?: DateTimeFilter;
@@ -101,12 +99,10 @@ export const groupByOptions = [
 
 class Findings extends Component<FindingsProps, FindingsState> {
   static contextType = CoreServicesContext;
-  private rulesViewModelActor: RulesViewModelActor;
 
   constructor(props: FindingsProps) {
     super(props);
 
-    this.rulesViewModelActor = new RulesViewModelActor(props.ruleService);
     const {
       dateTimeFilter = {
         startTime: DEFAULT_DATE_RANGE.start,
@@ -199,12 +195,12 @@ class Findings extends Component<FindingsProps, FindingsState> {
   getRules = async (ruleIds: string[]) => {
     const { notifications } = this.props;
     try {
-      const rulesResponse = await this.rulesViewModelActor.fetchRules({
+      const rules = await DataStore.rules.getAllRules({
         _id: ruleIds,
       });
 
       const allRules: { [id: string]: RuleSource } = {};
-      rulesResponse.forEach((hit) => (allRules[hit._id] = hit._source));
+      rules.forEach((hit) => (allRules[hit._id] = hit._source));
 
       this.setState({ rules: allRules });
     } catch (e) {

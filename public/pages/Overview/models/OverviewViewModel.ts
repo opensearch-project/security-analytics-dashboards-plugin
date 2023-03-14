@@ -6,12 +6,12 @@
 import { BrowserServices } from '../../../models/interfaces';
 import { DetectorHit, RuleSource } from '../../../../server/models/interfaces';
 import { AlertItem, FindingItem } from './interfaces';
-import { RuleService } from '../../../services';
 import { DEFAULT_DATE_RANGE, DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../../../utils/helpers';
 import dateMath from '@elastic/datemath';
 import moment from 'moment';
+import { DataStore } from '../../../store/DataStore';
 
 export interface OverviewViewModel {
   detectors: DetectorHit[];
@@ -46,46 +46,17 @@ export class OverviewViewModelActor {
 
   private async getRules(ruleIds: string[]): Promise<{ [id: string]: RuleSource }> {
     try {
-      const rulesService = this.services?.ruleService as RuleService;
-      const body = {
-        from: 0,
-        size: 5000,
-        query: {
-          nested: {
-            path: 'rule',
-            query: {
-              terms: {
-                _id: ruleIds,
-              },
-            },
-          },
-        },
+      const terms = {
+        _id: ruleIds,
       };
 
-      const prePackagedResponse = await rulesService.getRules(true, body);
-      const customResponse = await rulesService.getRules(false, body);
+      const customResponse = await DataStore.rules.getCustomRules(terms);
+      const prePackagedResponse = await DataStore.rules.getPrePackagedRules(terms);
 
       const ruleById: { [id: string]: any } = {};
-      if (prePackagedResponse.ok) {
-        prePackagedResponse.response.hits.hits.forEach((hit) => (ruleById[hit._id] = hit._source));
-      } else {
-        errorNotificationToast(
-          this.notifications,
-          'retrieve',
-          'pre-packaged rules',
-          prePackagedResponse.error
-        );
-      }
-      if (customResponse.ok) {
-        customResponse.response.hits.hits.forEach((hit) => (ruleById[hit._id] = hit._source));
-      } else if (!customResponse.error?.includes('index doesnt exist')) {
-        errorNotificationToast(
-          this.notifications,
-          'retrieve',
-          'custom rules',
-          customResponse.error
-        );
-      }
+      prePackagedResponse.forEach((hit) => (ruleById[hit._id] = hit._source));
+      customResponse.forEach((hit) => (ruleById[hit._id] = hit._source));
+
       return ruleById;
     } catch (error: any) {
       errorNotificationToast(this.notifications, 'retrieve', 'rules', error);

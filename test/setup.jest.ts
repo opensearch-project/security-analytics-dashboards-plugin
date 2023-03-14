@@ -7,9 +7,12 @@ import 'jest-canvas-mock';
 import '@testing-library/jest-dom/extend-expect';
 import { configure } from '@testing-library/react';
 import Enzyme from 'enzyme';
+// @ts-ignore
 import Adapter from 'enzyme-adapter-react-16';
-import { RulesViewModelActor } from '../public/pages/Rules/models/RulesViewModelActor';
 import { contextServicesMock as mockContextServices } from './mocks/useContext.mock';
+import { DataStore } from '../public/store/DataStore';
+import services from './mocks/services';
+import notificationsStartMock from './mocks/services/notifications/NotificationsStart.mock';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -74,30 +77,6 @@ jest.mock('moment', () => {
 });
 
 /**
- * Mocks rules view model actor as it is instantiated in the component classes
- * Mocked here so that is applied to all tests
- */
-jest.mock('../public/pages/Rules/models/RulesViewModelActor.ts', () => {
-  const rulesViewModelActor = jest.requireActual(
-    '../public/pages/Rules/models/RulesViewModelActor.ts'
-  );
-  const rulesViewModelActorMock = {
-    ...rulesViewModelActor,
-    getRules: () =>
-      Promise.resolve({
-        ok: true,
-        response: {
-          hits: {
-            hits: [],
-          },
-        },
-      }),
-  };
-
-  return rulesViewModelActorMock as RulesViewModelActor;
-});
-
-/**
  * React useContext is mocked to return the mocked services
  * so that this works in all tests
  */
@@ -122,5 +101,7 @@ jest.mock('vega/build-es5/vega.js', () => {
     }),
   };
 });
+
+DataStore.init(services, notificationsStartMock);
 
 jest.setTimeout(10000); // in milliseconds

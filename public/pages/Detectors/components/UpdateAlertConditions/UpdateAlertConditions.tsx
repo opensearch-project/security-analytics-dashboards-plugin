@@ -13,12 +13,7 @@ import {
 } from '../../../../../server/models/interfaces';
 import { Detector } from '../../../../../models/interfaces';
 import ConfigureAlerts from '../../../CreateDetector/components/ConfigureAlerts';
-import {
-  DetectorsService,
-  NotificationsService,
-  RuleService,
-  OpenSearchService,
-} from '../../../../services';
+import { DetectorsService, NotificationsService, OpenSearchService } from '../../../../services';
 import { RuleOptions } from '../../../../models/interfaces';
 import {
   ROUTES,
@@ -33,12 +28,12 @@ import {
 } from '../../../../utils/helpers';
 import { DetectorCreationStep } from '../../../CreateDetector/models/types';
 import { ServerResponse } from '../../../../../server/models/types';
+import { DataStore } from '../../../../store/DataStore';
 
 export interface UpdateAlertConditionsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
   detectorService: DetectorsService;
   opensearchService: OpenSearchService;
-  ruleService: RuleService;
   notificationsService: NotificationsService;
   notifications: NotificationsStart;
 }
@@ -84,7 +79,7 @@ export default class UpdateAlertConditions extends Component<
 
   getRules = async () => {
     try {
-      const { ruleService, detectorService } = this.props;
+      const { detectorService } = this.props;
       const { detector } = this.state;
       if (!detector.name) {
         const response = (await detectorService.getDetectors()) as ServerResponse<
@@ -102,66 +97,35 @@ export default class UpdateAlertConditions extends Component<
           });
         }
       }
-      const body = {
-        from: 0,
-        size: 5000,
-        query: {
-          nested: {
-            path: 'rule',
-            query: {
-              bool: {
-                must: [{ match: { 'rule.category': detector.detector_type.toLowerCase() } }],
-              },
-            },
-          },
-        },
-      };
+      const terms = { 'rule.category': [detector.detector_type.toLowerCase()] };
 
-      const prePackagedResponse = await ruleService.getRules(true, body);
-      const customResponse = await ruleService.getRules(false, body);
+      const customRules = await DataStore.rules.getCustomRules(terms);
+      const prePackagedRules = await DataStore.rules.getPrePackagedRules(terms);
 
       const allRules: { [id: string]: RuleSource } = {};
       const rulesOptions = new Set<RuleOptions>();
 
-      if (prePackagedResponse.ok) {
-        prePackagedResponse.response.hits.hits.forEach((hit) => {
-          allRules[hit._id] = hit._source;
-          const rule = allRules[hit._id];
-          rulesOptions.add({
-            name: rule.title,
-            id: hit._id,
-            severity: rule.level,
-            tags: rule.tags.map((tag) => tag.value),
-          });
+      prePackagedRules.forEach((hit) => {
+        allRules[hit._id] = hit._source;
+        const rule = allRules[hit._id];
+        rulesOptions.add({
+          name: rule.title,
+          id: hit._id,
+          severity: rule.level,
+          tags: rule.tags.map((tag) => tag.value),
         });
-      } else {
-        errorNotificationToast(
-          this.props.notifications,
-          'retrieve',
-          'pre-packaged rules',
-          prePackagedResponse.error
-        );
-      }
+      });
 
-      if (customResponse.ok) {
-        customResponse.response.hits.hits.forEach((hit) => {
-          allRules[hit._id] = hit._source;
-          const rule = allRules[hit._id];
-          rulesOptions.add({
-            name: rule.title,
-            id: hit._id,
-            severity: rule.level,
-            tags: rule.tags.map((tag) => tag.value),
-          });
+      customRules.forEach((hit) => {
+        allRules[hit._id] = hit._source;
+        const rule = allRules[hit._id];
+        rulesOptions.add({
+          name: rule.title,
+          id: hit._id,
+          severity: rule.level,
+          tags: rule.tags.map((tag) => tag.value),
         });
-      } else {
-        errorNotificationToast(
-          this.props.notifications,
-          'retrieve',
-          'custom rules',
-          customResponse.error
-        );
-      }
+      });
 
       this.setState({ rules: allRules, rulesOptions: Array.from(rulesOptions) });
     } catch (e: any) {

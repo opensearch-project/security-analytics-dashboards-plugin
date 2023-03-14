@@ -8,14 +8,14 @@ import { ServicesContext } from '../../../../services';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { BrowserServices } from '../../../../models/interfaces';
-import { RulesViewModelActor } from '../../models/RulesViewModelActor';
 import { RulesTable } from '../../components/RulesTable/RulesTable';
 import { RuleTableItem } from '../../utils/helpers';
-import { RuleItemInfoBase } from '../../models/types';
 import { RuleViewerFlyout } from '../../components/RuleViewerFlyout/RuleViewerFlyout';
 import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { CoreServicesContext } from '../../../../components/core_services';
+import { DataStore } from '../../../../store/DataStore';
+import { RuleItemInfoBase } from '../../../../../types';
 
 export interface RulesProps extends RouteComponentProps {
   notifications?: NotificationsStart;
@@ -24,32 +24,29 @@ export interface RulesProps extends RouteComponentProps {
 export const Rules: React.FC<RulesProps> = (props) => {
   const services = useContext(ServicesContext) as BrowserServices;
   const context = useContext(CoreServicesContext);
-  const rulesViewModelActor = useMemo(() => new RulesViewModelActor(services.ruleService), [
-    services,
-  ]);
+
   const [allRules, setAllRules] = useState<RuleItemInfoBase[]>([]);
   const [flyoutData, setFlyoutData] = useState<RuleTableItem | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
-  const ruleItems: RuleTableItem[] = useMemo(
-    () =>
-      allRules.map((rule) => ({
-        title: rule._source.title,
-        level: rule._source.level,
-        category: rule._source.category,
-        description: rule._source.description,
-        source: rule.prePackaged ? 'Sigma' : 'Custom',
-        ruleInfo: rule,
-        ruleId: rule._id,
-      })),
-    [allRules]
-  );
 
   const getRules = useCallback(async () => {
     setLoading(true);
-    const allRules = await rulesViewModelActor.fetchRules();
-    setAllRules(allRules);
+
+    const allRules = await DataStore.rules.getAllRules();
+    const rules = allRules.map((rule) => ({
+      title: rule._source.title,
+      level: rule._source.level,
+      category: rule._source.category,
+      description: rule._source.description,
+      source: rule.prePackaged ? 'Sigma' : 'Custom',
+      ruleInfo: rule,
+      ruleId: rule._id,
+    }));
+
+    setAllRules(rules);
+
     setLoading(false);
-  }, [rulesViewModelActor]);
+  }, [DataStore.rules.getAllRules]);
 
   useEffect(() => {
     context?.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.RULES]);
@@ -94,7 +91,6 @@ export const Rules: React.FC<RulesProps> = (props) => {
           hideFlyout={hideFlyout}
           history={props.history}
           ruleTableItem={flyoutData}
-          ruleService={services.ruleService}
           notifications={props.notifications}
         />
       ) : null}
@@ -120,7 +116,7 @@ export const Rules: React.FC<RulesProps> = (props) => {
         </EuiFlexItem>
         <EuiFlexItem>
           <EuiPanel>
-            <RulesTable loading={loading} ruleItems={ruleItems} showRuleDetails={setFlyoutData} />
+            <RulesTable loading={loading} ruleItems={allRules} showRuleDetails={setFlyoutData} />
           </EuiPanel>
         </EuiFlexItem>
       </EuiFlexGroup>

@@ -28,19 +28,18 @@ import {
   formatRuleType,
   renderTime,
 } from '../../../../utils/helpers';
-import { FindingsService, RuleService, OpenSearchService } from '../../../../services';
+import { FindingsService, OpenSearchService } from '../../../../services';
 import FindingDetailsFlyout from '../../../Findings/components/FindingDetailsFlyout';
 import { Detector } from '../../../../../models/interfaces';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { Finding } from '../../../Findings/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { RulesViewModelActor } from '../../../Rules/models/RulesViewModelActor';
+import { DataStore } from '../../../../store/DataStore';
 
 export interface AlertFlyoutProps {
   alertItem: AlertItem;
   detector: Detector;
   findingsService: FindingsService;
-  ruleService: RuleService;
   notifications: NotificationsStart;
   opensearchService: OpenSearchService;
   onClose: () => void;
@@ -56,12 +55,8 @@ export interface AlertFlyoutState {
 }
 
 export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutState> {
-  private rulesViewModelActor: RulesViewModelActor;
-
   constructor(props: AlertFlyoutProps) {
     super(props);
-
-    this.rulesViewModelActor = new RulesViewModelActor(props.ruleService);
 
     this.state = {
       acknowledged: props.alertItem.state === ALERT_STATE.ACKNOWLEDGED,
@@ -113,12 +108,12 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
       });
 
       if (ruleIds.length > 0) {
-        const rulesResponse = await this.rulesViewModelActor.fetchRules({
+        const rules = await DataStore.rules.getAllRules({
           _id: ruleIds,
         });
 
         const allRules: { [id: string]: RuleSource } = {};
-        rulesResponse.forEach((hit) => (allRules[hit._id] = hit._source));
+        rules.forEach((hit) => (allRules[hit._id] = hit._source));
 
         this.setState({ rules: allRules });
       }
