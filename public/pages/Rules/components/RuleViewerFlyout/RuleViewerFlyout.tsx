@@ -12,7 +12,6 @@ import {
   EuiTitle,
   EuiButtonIcon,
 } from '@elastic/eui';
-import { errorNotificationToast } from '../../../../utils/helpers';
 import { ROUTES } from '../../../../utils/constants';
 import React, { useMemo, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
@@ -20,13 +19,12 @@ import { RuleTableItem } from '../../utils/helpers';
 import { DeleteRuleModal } from '../DeleteModal/DeleteModal';
 import { RuleContentViewer } from '../RuleContentViewer/RuleContentViewer';
 import { RuleViewerFlyoutHeaderActions } from './RuleViewFlyoutHeaderActions';
-import { RuleService } from '../../../../services';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { DataStore } from '../../../../store/DataStore';
 
 export interface RuleViewerFlyoutProps {
   history?: RouteComponentProps['history'];
   ruleTableItem: RuleTableItem;
-  ruleService?: RuleService;
   notifications?: NotificationsStart;
   hideFlyout: (refreshRules?: boolean) => void;
 }
@@ -35,7 +33,6 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
   history,
   hideFlyout,
   ruleTableItem,
-  ruleService,
   notifications,
 }) => {
   const [actionsPopoverOpen, setActionsPopoverOpen] = useState(false);
@@ -79,18 +76,11 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
   };
 
   const onDeleteRuleConfirmed = async () => {
-    if (!ruleService) {
-      return;
-    }
-    const deleteRuleRes = await ruleService.deleteRule(ruleTableItem.ruleId);
+    const response = await DataStore.rules.deleteRule(ruleTableItem.ruleId);
 
-    if (deleteRuleRes.ok) {
+    if (response) {
       closeDeleteModal();
       hideFlyout(true);
-    } else {
-      if (notifications) {
-        errorNotificationToast(notifications, 'delete', 'rule', deleteRuleRes.error);
-      }
     }
   };
 
@@ -122,7 +112,7 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
               <h3>{ruleTableItem.title}</h3>
             </EuiTitle>
           </EuiFlexItem>
-          {ruleService && history && (
+          {history && (
             <EuiFlexItem grow={false} style={{ marginRight: '50px' }}>
               {headerActions}
             </EuiFlexItem>

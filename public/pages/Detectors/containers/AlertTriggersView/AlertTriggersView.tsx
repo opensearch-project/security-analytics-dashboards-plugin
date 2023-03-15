@@ -13,11 +13,11 @@ import { ServerResponse } from '../../../../../server/models/types';
 import {
   FeatureChannelList,
   GetChannelsResponse,
-  GetRulesResponse,
   RuleInfo,
 } from '../../../../../server/models/interfaces';
 import { errorNotificationToast } from '../../../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { DataStore } from '../../../../store/DataStore';
 
 export interface AlertTriggersViewProps {
   detector: Detector;
@@ -55,43 +55,24 @@ export const AlertTriggersView: React.FC<AlertTriggersViewProps> = ({
     const getRules = async () => {
       const parseRules: { [key: string]: RuleInfo } = {};
 
+      // Retrieve the custom rules.
+      const customRuleIds = detector.inputs[0].detector_input.custom_rules.map((rule) => rule.id);
+      if (customRuleIds.length > 0) {
+        const customRules = await DataStore.rules.getCustomRules({ _id: customRuleIds });
+
+        customRules.forEach((rule) => (parseRules[rule._id] = rule));
+      }
+
       // Retrieve the prepackaged rules.
       const prepackagedRuleIds = detector.inputs[0].detector_input.pre_packaged_rules.map(
         (rule) => rule.id
       );
       if (prepackagedRuleIds.length > 0) {
-        const prePackagedResponse = (await services?.ruleService.getRules(true, {
-          from: 0,
-          size: 5000,
-          query: { nested: { path: 'rule', query: { terms: { _id: prepackagedRuleIds } } } },
-        })) as ServerResponse<GetRulesResponse>;
+        const prePackagedRules = await DataStore.rules.getPrePackagedRules({
+          _id: prepackagedRuleIds,
+        });
 
-        if (prePackagedResponse.ok) {
-          prePackagedResponse.response.hits.hits.forEach((rule) => (parseRules[rule._id] = rule));
-        } else {
-          errorNotificationToast(
-            notifications,
-            'retrieve',
-            'pre-packaged rules',
-            prePackagedResponse.error
-          );
-        }
-      }
-
-      // Retrieve the custom rules.
-      const customRuleIds = detector.inputs[0].detector_input.custom_rules.map((rule) => rule.id);
-      if (customRuleIds.length > 0) {
-        const customResponse = (await services?.ruleService.getRules(true, {
-          from: 0,
-          size: 5000,
-          query: { nested: { path: 'rule', query: { terms: { _id: customRuleIds } } } },
-        })) as ServerResponse<GetRulesResponse>;
-
-        if (customResponse.ok) {
-          customResponse.response.hits.hits.forEach((rule) => (parseRules[rule._id] = rule));
-        } else {
-          errorNotificationToast(notifications, 'retrieve', 'custom rules', customResponse.error);
-        }
+        prePackagedRules.forEach((rule) => (parseRules[rule._id] = rule));
       }
 
       // Set all enabled rules.

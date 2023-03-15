@@ -148,6 +148,9 @@ describe('Rules', () => {
       force: true,
     });
 
+    // Enter the log type
+    cy.get('[data-test-subj="rule_status_dropdown"]').type(SAMPLE_RULE.status);
+
     // Enter the name
     cy.get('[data-test-subj="rule_name_field"]').type(SAMPLE_RULE.name);
 
@@ -162,23 +165,24 @@ describe('Rules', () => {
 
     // Enter the tags
     SAMPLE_RULE.tags.forEach((tag) =>
-      cy.get('[data-test-subj="rule_tags_dropdown"]').type(`${tag}{enter}{esc}`)
+      cy.get('[data-test-subj="rule_tags_dropdown"]').type(`${tag}{enter}`)
     );
 
     // Enter the reference
     cy.get('[data-test-subj="rule_references_field_0"]').type(SAMPLE_RULE.references);
 
     // Enter the false positive cases
-    cy.get('[data-test-subj="rule_false_positives_field_0"]').type(SAMPLE_RULE.falsePositive);
+    cy.get('[data-test-subj="rule_false_positives_field_0"]').type(
+      `${SAMPLE_RULE.falsePositive}{enter}`
+    );
 
     // Enter the author
-    cy.get('[data-test-subj="rule_author_field"]').type(SAMPLE_RULE.author);
-
-    // Enter the log type
-    cy.get('[data-test-subj="rule_status_dropdown"]').type(SAMPLE_RULE.status);
+    cy.get('[data-test-subj="rule_author_field"]').type(`${SAMPLE_RULE.author}{enter}`);
 
     // Enter the detection
-    cy.get('[data-test-subj="rule_detection_field"]').type(SAMPLE_RULE.detection);
+    cy.get('[data-test-subj="rule_detection_field"] textarea').type(SAMPLE_RULE.detection, {
+      force: true,
+    });
 
     // Switch to YAML editor
     cy.get('[data-test-subj="change-editor-type"] label:nth-child(2)').click({
@@ -270,6 +274,15 @@ describe('Rules', () => {
       url: '/rules',
     }).as('deleteRule');
 
+    cy.intercept('POST', 'rules/_search?prePackaged=true', {
+      delay: 5000,
+    }).as('getPrePackagedRules');
+
+    cy.intercept('POST', 'rules/_search?prePackaged=false', {
+      delay: 5000,
+    }).as('getCustomRules');
+
+    cy.wait('@rulesSearch');
     cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
 
     // Click the rule link to open the details flyout
@@ -288,8 +301,11 @@ describe('Rules', () => {
           .then(() => cy.get('.euiModalFooter > .euiButton').contains('Delete').click());
 
         cy.wait('@deleteRule');
+        cy.wait('@getCustomRules');
+        cy.wait('@getPrePackagedRules');
 
         // Search for sample_detector, presumably deleted
+        cy.wait(3000);
         cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
         // Click the rule link to open the details flyout
         cy.get('tbody').contains(SAMPLE_RULE.name).should('not.exist');

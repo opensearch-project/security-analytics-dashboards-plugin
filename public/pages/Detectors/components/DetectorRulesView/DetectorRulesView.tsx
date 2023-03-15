@@ -4,7 +4,7 @@
  */
 
 import { ContentPanel } from '../../../../components/ContentPanel';
-import React, { useContext, useEffect, useState, useMemo } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { EuiAccordion, EuiButton, EuiSpacer, EuiText } from '@elastic/eui';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { ServicesContext } from '../../../../services';
@@ -15,7 +15,7 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { RulesTable } from '../../../Rules/components/RulesTable/RulesTable';
 import { RuleTableItem } from '../../../Rules/utils/helpers';
 import { RuleViewerFlyout } from '../../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
-import { RulesViewModelActor } from '../../../Rules/models/RulesViewModelActor';
+import { DataStore } from '../../../../store/DataStore';
 
 export interface DetectorRulesViewProps {
   detector: Detector;
@@ -62,11 +62,6 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
     : null;
   const services = useContext(ServicesContext);
 
-  const rulesViewModelActor = useMemo(
-    () => (services ? new RulesViewModelActor(services.ruleService) : null),
-    [services]
-  );
-
   useEffect(() => {
     const updateRulesState = async () => {
       setLoading(true);
@@ -77,10 +72,8 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
         props.detector.inputs[0].detector_input.custom_rules.map((ruleInfo) => ruleInfo.id)
       );
 
-      const allRules = await rulesViewModelActor?.fetchRules(undefined, {
-        bool: {
-          must: [{ match: { 'rule.category': `${props.detector.detector_type.toLowerCase()}` } }],
-        },
+      const allRules = await DataStore.rules.getAllRules({
+        'rule.category': [props.detector.detector_type.toLowerCase()],
       });
 
       const prePackagedRules = allRules?.filter((rule) => rule.prePackaged);
@@ -130,7 +123,6 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
           hideFlyout={() => setFlyoutData(() => null)}
           history={null as any}
           ruleTableItem={flyoutData}
-          ruleService={null as any}
           notifications={props.notifications}
         />
       ) : null}

@@ -34,6 +34,12 @@ import { getPlugins } from '../../../utils/helpers';
 import { RulesViewModelActor } from '../../Rules/models/RulesViewModelActor';
 import DetectorState from '../utils/DetectorState';
 import { Detector } from '../../../../types';
+import {
+  errorNotificationToast,
+  getPlugins,
+  successNotificationToast,
+} from '../../../utils/helpers';
+import { DataStore } from '../../../store/DataStore';
 
 interface CreateDetectorProps extends RouteComponentProps {
   isEdit: boolean;
@@ -55,11 +61,9 @@ export interface CreateDetectorState {
 
 export default class CreateDetector extends Component<CreateDetectorProps, CreateDetectorState> {
   static contextType = CoreServicesContext;
-  private rulesViewModelActor: RulesViewModelActor;
 
   constructor(props: CreateDetectorProps) {
     super(props);
-    this.rulesViewModelActor = new RulesViewModelActor(props.services.ruleService);
 
     let detectorState = this.props.history.location.state as any;
     if (!detectorState) detectorState = null;
@@ -173,10 +177,9 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     this.setState({
       loadingRules: true,
     });
-    const allRules = await this.rulesViewModelActor.fetchRules(undefined, {
-      bool: {
-        must: [{ match: { 'rule.category': `${detector_type}` } }],
-      },
+
+    const allRules = await DataStore.rules.getAllRules({
+      'rule.category': [detector_type],
     });
 
     const prePackagedRules = allRules.filter((rule) => rule.prePackaged);

@@ -384,7 +384,7 @@ Object {
             "format": "%Y-%m-%d %H:%M",
             "grid": false,
           },
-          "bandPosition": 0.5,
+          "band": 0.5,
           "field": "time",
           "scale": Object {
             "domain": undefined,

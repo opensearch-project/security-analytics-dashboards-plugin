@@ -219,7 +219,7 @@ export function getOverviewVisualizationSpec(
         },
         encoding: {
           x: getXAxis(dateOpts, {
-            bandPosition: 0.5,
+            band: 0.5,
           }),
           y: getYAxis('alert', 'Count'),
           tooltip: [getYAxis('alert', 'Alerts'), getTimeTooltip(dateOpts)],

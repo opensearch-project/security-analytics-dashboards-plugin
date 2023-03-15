@@ -88,7 +88,6 @@ export const DetectionRules: React.FC<DetectionRulesProps> = ({
           hideFlyout={() => setFlyoutData(() => null)}
           history={null as any}
           ruleTableItem={flyoutData}
-          ruleService={null as any}
         />
       ) : null}
       <EuiAccordion
