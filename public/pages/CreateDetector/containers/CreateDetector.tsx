@@ -31,14 +31,8 @@ import {
 } from '../components/DefineDetector/components/DetectionRules/types/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { getPlugins } from '../../../utils/helpers';
-import { RulesViewModelActor } from '../../Rules/models/RulesViewModelActor';
 import DetectorState from '../utils/DetectorState';
 import { Detector } from '../../../../types';
-import {
-  errorNotificationToast,
-  getPlugins,
-  successNotificationToast,
-} from '../../../utils/helpers';
 import { DataStore } from '../../../store/DataStore';
 
 interface CreateDetectorProps extends RouteComponentProps {
@@ -65,8 +59,9 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
   constructor(props: CreateDetectorProps) {
     super(props);
 
-    let detectorState = this.props.history.location.state as any;
-    if (!detectorState) detectorState = null;
+    let detectorState = {};
+    let historyState = this.props.history.location.state as any;
+    if (historyState) detectorState = historyState.detectorState;
 
     this.state = {
       currentStep: DetectorCreationStep.DEFINE_DETECTOR,

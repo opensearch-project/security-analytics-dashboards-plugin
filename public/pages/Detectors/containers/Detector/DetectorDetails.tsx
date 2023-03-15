@@ -516,9 +516,8 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     const detectorState = pendingState?.detectorState;
     this.props.history.push({
       pathname: `${ROUTES.DETECTORS_CREATE}`,
-      state: {
-        detectorState,
-      },
+      // @ts-ignore
+      state: { detectorState },
     });
     DetectorState.deletePendingState();
   };
@@ -553,17 +552,24 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
             <EuiCallOut
               title={
                 <EuiFlexGroup alignItems="center">
+                  {!createFailed && (
+                    <EuiPanel paddingSize="s" color={'transparent'} hasBorder={false}>
+                      <EuiLoadingSpinner size="l" />
+                    </EuiPanel>
+                  )}
                   <EuiPanel paddingSize="s" color={'transparent'} hasBorder={false}>
-                    <EuiLoadingSpinner size="l" />
-                  </EuiPanel>
-                  <EuiPanel paddingSize="s" color={'transparent'} hasBorder={false}>
-                    Attempting to create the detector.
+                    {createFailed
+                      ? 'Detector creation failed. Please review detector configuration and try again.'
+                      : 'Attempting to create the detector.'}
                   </EuiPanel>
                 </EuiFlexGroup>
               }
-              color="primary"
+              color={createFailed ? 'danger' : 'primary'}
             >
-              <EuiButton onClick={this.viewDetectorConfiguration}>
+              <EuiButton
+                color={createFailed ? 'danger' : 'primary'}
+                onClick={this.viewDetectorConfiguration}
+              >
                 Review detector configuration
               </EuiButton>
             </EuiCallOut>

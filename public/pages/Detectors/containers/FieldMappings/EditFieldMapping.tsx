@@ -15,9 +15,10 @@ import {
 } from '@elastic/eui';
 import FieldMappingsTable from '../../../CreateDetector/components/ConfigureFieldMapping/components/RequiredFieldMapping';
 import { ContentPanel } from '../../../../components/ContentPanel';
-import { Detector, FieldMapping } from '../../../../../models/interfaces';
+import { FieldMapping } from '../../../../../models/interfaces';
 import FieldMappingService from '../../../../services/FieldMappingService';
 import { MappingViewType } from '../../../CreateDetector/components/ConfigureFieldMapping/components/RequiredFieldMapping/FieldMappingsTable';
+import { Detector } from '../../../../../types';
 
 export interface ruleFieldToIndexFieldMap {
   [fieldName: string]: string;
@@ -196,23 +197,17 @@ export default class EditFieldMappings extends Component<
 
         <EuiSpacer size={'m'} />
 
-        {unmappedRuleFields.length > 0 && (
+        {unmappedRuleFields.length > 0 ? (
           <>
-            {unmappedRuleFields.length > 0 ? (
-              <EuiCallOut
-                title={`${unmappedRuleFields.length} rule fields may need manual mapping`}
-                color={'warning'}
-              >
-                <p>
-                  To generate accurate findings, we recommend mapping the following security rules
-                  fields with the log fields in your data source.
-                </p>
-              </EuiCallOut>
-            ) : (
-              <EuiCallOut title={`All rule fields have been mapped`} color={'success'}>
-                <p>Your data source have been mapped with all security rule fields.</p>
-              </EuiCallOut>
-            )}
+            <EuiCallOut
+              title={`${unmappedRuleFields.length} rule fields may need manual mapping`}
+              color={'warning'}
+            >
+              <p>
+                To generate accurate findings, we recommend mapping the following security rules
+                fields with the log fields in your data source.
+              </p>
+            </EuiCallOut>
 
             <EuiSpacer size={'m'} />
             <ContentPanel title={`Pending field mappings`} titleSize={'m'}>
@@ -229,8 +224,11 @@ export default class EditFieldMappings extends Component<
                 }}
               />
             </ContentPanel>
-            <EuiSpacer size={'m'} />
           </>
+        ) : (
+          <EuiCallOut title={`All rule fields have been mapped`} color={'success'}>
+            <p>Your data source have been mapped with all security rule fields.</p>
+          </EuiCallOut>
         )}
 
         <EuiSpacer size={'m'} />
