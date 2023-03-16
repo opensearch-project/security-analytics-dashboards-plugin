@@ -59,7 +59,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
   constructor(props: CreateDetectorProps) {
     super(props);
 
-    let detectorState = {};
+    let detectorState = {}; // if there is detector state in history, then use it to populate all the fields
     let historyState = this.props.history.location.state as any;
     if (historyState) detectorState = historyState.detectorState;
 
@@ -125,12 +125,15 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
 
     const createDetectorPromise = this.props.services.detectorsService.createDetector(detector);
 
+    // set detector pending state, this will be used in detector details page
     DetectorState.setPendingState({
       pendingRequests: [fieldsMappingPromise, createDetectorPromise],
       detectorState: { ...this.state },
     });
 
     this.setState({ creatingDetector: false });
+
+    // navigate to detector details
     this.props.history.push(`${ROUTES.DETECTOR_DETAILS}/${PENDING_DETECTOR_ID}`);
   };
 

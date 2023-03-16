@@ -6,7 +6,7 @@
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { EuiButton, EuiFlexGroup, EuiFlexItem, EuiSpacer, EuiTitle, EuiText } from '@elastic/eui';
-import { Detector, FieldMapping } from '../../../../../models/interfaces';
+import { FieldMapping } from '../../../../../models/interfaces';
 import FieldMappingService from '../../../../services/FieldMappingService';
 import { DetectorHit, SearchDetectorsResponse } from '../../../../../server/models/interfaces';
 import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
@@ -16,6 +16,7 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast, successNotificationToast } from '../../../../utils/helpers';
 import EditFieldMappings from '../../containers/FieldMappings/EditFieldMapping';
 import { CoreServicesContext } from '../../../../components/core_services';
+import { Detector } from '../../../../../types';
 
 export interface UpdateFieldMappingsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {

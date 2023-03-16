@@ -566,12 +566,11 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
               }
               color={createFailed ? 'danger' : 'primary'}
             >
-              <EuiButton
-                color={createFailed ? 'danger' : 'primary'}
-                onClick={this.viewDetectorConfiguration}
-              >
-                Review detector configuration
-              </EuiButton>
+              {createFailed && (
+                <EuiButton color={'danger'} onClick={this.viewDetectorConfiguration}>
+                  Review detector configuration
+                </EuiButton>
+              )}
             </EuiCallOut>
             <EuiSpacer size="xl" />
           </>

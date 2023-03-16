@@ -30,7 +30,7 @@ export const AlertTriggersView: React.FC<AlertTriggersViewProps> = ({
   detector,
   editAlertTriggers,
   notifications,
-  isEditable,
+  isEditable = true,
 }) => {
   const services = useContext(ServicesContext);
   const [channels, setChannels] = useState<FeatureChannelList[]>([]);

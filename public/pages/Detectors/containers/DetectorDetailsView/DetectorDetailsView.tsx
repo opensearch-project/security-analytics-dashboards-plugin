@@ -38,7 +38,7 @@ export class DetectorDetailsView extends React.Component<
       dashboardId,
       editBasicDetails,
       editDetectorRules,
-      isEditable,
+      isEditable = true,
     } = this.props;
     const detectorRules = (
       <DetectorRulesView

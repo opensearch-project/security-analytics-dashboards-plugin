@@ -8,8 +8,8 @@ import React from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { createTextDetailsGroup, parseSchedule } from '../../../../utils/helpers';
 import moment from 'moment';
-import { Detector } from '../../../../../models/interfaces';
 import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
+import { Detector } from '../../../../../types';
 
 export interface DetectorBasicDetailsViewProps {
   detector: Detector;
@@ -29,7 +29,7 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
   children,
   dashboardId,
   onEditClicked,
-  isEditable,
+  isEditable = true,
 }) => {
   const { name, detector_type, inputs, schedule } = detector;
   const detectorSchedule = parseSchedule(schedule);

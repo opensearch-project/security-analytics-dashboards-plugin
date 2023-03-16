@@ -8,7 +8,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { EuiAccordion, EuiButton, EuiSpacer, EuiText } from '@elastic/eui';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { ServicesContext } from '../../../../services';
-import { Detector } from '../../../../../models/interfaces';
 import { RuleInfo } from '../../../../../server/models/interfaces';
 import { errorNotificationToast, translateToRuleItems } from '../../../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
@@ -16,6 +15,7 @@ import { RulesTable } from '../../../Rules/components/RulesTable/RulesTable';
 import { RuleTableItem } from '../../../Rules/utils/helpers';
 import { RuleViewerFlyout } from '../../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
 import { DataStore } from '../../../../store/DataStore';
+import { Detector } from '../../../../../types';
 
 export interface DetectorRulesViewProps {
   detector: Detector;

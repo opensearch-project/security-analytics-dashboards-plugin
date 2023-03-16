@@ -8,9 +8,10 @@ import React, { useCallback, useContext, useEffect, useMemo, useState } from 're
 import { EuiBasicTableColumn, EuiButton, EuiInMemoryTable } from '@elastic/eui';
 import { FieldMappingsTableItem } from '../../../CreateDetector/models/interfaces';
 import { ServicesContext } from '../../../../services';
-import { Detector, FieldMapping } from '../../../../../models/interfaces';
+import { FieldMapping } from '../../../../../models/interfaces';
 import { errorNotificationToast } from '../../../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { Detector } from '../../../../../types';
 
 export interface FieldMappingsViewProps {
   detector: Detector;
@@ -37,7 +38,7 @@ export const FieldMappingsView: React.FC<FieldMappingsViewProps> = ({
   existingMappings,
   editFieldMappings,
   notifications,
-  isEditable,
+  isEditable = true,
 }) => {
   const actions = useMemo(
     () =>
