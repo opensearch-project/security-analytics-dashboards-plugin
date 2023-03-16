@@ -41,7 +41,7 @@ import AlertsService from '../../../../services/AlertsService';
 import DetectorService from '../../../../services/DetectorService';
 import { AlertItem } from '../../../../../server/models/interfaces';
 import { AlertFlyout } from '../../components/AlertFlyout/AlertFlyout';
-import { FindingsService, RuleService, OpenSearchService } from '../../../../services';
+import { FindingsService, OpenSearchService } from '../../../../services';
 import { Detector } from '../../../../../models/interfaces';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { DISABLE_ACKNOWLEDGED_ALERT_HELP_TEXT } from '../../utils/constants';
@@ -62,7 +62,6 @@ export interface AlertsProps extends RouteComponentProps {
   alertService: AlertsService;
   detectorService: DetectorService;
   findingService: FindingsService;
-  ruleService: RuleService;
   opensearchService: OpenSearchService;
   notifications: NotificationsStart;
   match: match;
@@ -406,7 +405,6 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
   };
 
   render() {
-    const { ruleService } = this.props;
     const {
       alerts,
       alertsFiltered,
@@ -485,7 +483,6 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
             onClose={this.onFlyoutClose}
             onAcknowledge={this.onAcknowledge}
             findingsService={this.props.findingService}
-            ruleService={ruleService}
           />
         )}
         <EuiFlexGroup direction="column">

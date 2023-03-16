@@ -9,7 +9,7 @@ import {
   SearchDetectorsResponse,
   UpdateDetectorResponse,
 } from '../../../../../server/models/interfaces';
-import React, { useCallback, useContext, useEffect, useState, useMemo } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { Detector } from '../../../../../models/interfaces';
@@ -22,8 +22,8 @@ import { CoreServicesContext } from '../../../../components/core_services';
 import { errorNotificationToast, successNotificationToast } from '../../../../utils/helpers';
 import { RuleTableItem } from '../../../Rules/utils/helpers';
 import { RuleViewerFlyout } from '../../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
-import { RulesViewModelActor } from '../../../Rules/models/RulesViewModelActor';
 import { ContentPanel } from '../../../../components/ContentPanel';
+import { DataStore } from '../../../../store/DataStore';
 
 export interface UpdateDetectorRulesProps
   extends RouteComponentProps<
@@ -43,11 +43,6 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
   const [prePackagedRuleItems, setPrePackagedRuleItems] = useState<RuleItem[]>([]);
   const detectorId = props.location.pathname.replace(`${ROUTES.EDIT_DETECTOR_RULES}/`, '');
   const [flyoutData, setFlyoutData] = useState<RuleTableItem | null>(null);
-
-  const rulesViewModelActor = useMemo(
-    () => (services ? new RulesViewModelActor(services.ruleService) : null),
-    [services]
-  );
 
   const context = useContext(CoreServicesContext);
 
@@ -88,10 +83,8 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
       );
       enabledRuleIds = enabledRuleIds.concat(enabledCustomRuleIds);
 
-      const allRules = await rulesViewModelActor?.fetchRules(undefined, {
-        bool: {
-          must: [{ match: { 'rule.category': `${detector.detector_type.toLowerCase()}` } }],
-        },
+      const allRules = await DataStore.rules.getAllRules({
+        'rule.category': [detector.detector_type.toLowerCase()],
       });
 
       const prePackagedRules = allRules?.filter((rule) => rule.prePackaged);
@@ -214,7 +207,6 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
           hideFlyout={() => setFlyoutData(() => null)}
           history={null as any}
           ruleTableItem={flyoutData}
-          ruleService={null as any}
         />
       ) : null}
       <EuiTitle size={'m'}>

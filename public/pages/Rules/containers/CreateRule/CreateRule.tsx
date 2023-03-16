@@ -28,7 +28,6 @@ export const CreateRule: React.FC<CreateRuleProps> = ({ history, services, notif
       history={history}
       notifications={notifications}
       mode={'create'}
-      ruleService={services.ruleService}
     />
   );
 };
