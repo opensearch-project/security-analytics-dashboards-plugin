@@ -169,6 +169,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     const pendingState = DetectorState.getPendingState();
     const detector = pendingState?.detectorState?.detector;
 
+    // if user reloads the page all data is lost so just redirect to detectors page
     if (!pendingState && detectorId === PENDING_DETECTOR_ID) {
       this.props.history.push(`${ROUTES.DETECTORS}`);
     }
@@ -205,7 +206,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
       });
   };
 
-  pendingDetectorDetails = async () => {
+  getPendingDetector = async () => {
     const pendingState = DetectorState.getPendingState();
     const detector = pendingState?.detectorState?.detector;
     const pendingRequests = pendingState?.pendingRequests;
@@ -311,7 +312,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
 
   async componentDidMount() {
     const pendingState = DetectorState.getPendingState();
-    pendingState ? this.pendingDetectorDetails() : this.getDetector();
+    pendingState ? this.getPendingDetector() : this.getDetector();
   }
 
   getDetector = async () => {
