@@ -1,16 +1,15 @@
 import detectorHitMock from '../../containers/Detectors/DetectorHit.mock';
-import services from '../../../services';
 import notificationsStartMock from '../../../services/notifications/NotificationsStart.mock';
 import browserHistoryMock from '../../../services/browserHistory.mock';
 import UpdateFieldMappings from '../../../../../public/pages/Detectors/components/UpdateFieldMappings/UpdateFieldMappings';
-
-const { detectorService, fieldMappingService } = services;
+import { detectorServiceMock } from '../../../services/detectorService.mock';
+import fieldMappingServiceMock from '../../../services/fieldMappingService.mock';
 
 export default ({
   detectorHit: detectorHitMock,
-  detectorService: detectorService,
+  detectorService: detectorServiceMock,
   notifications: notificationsStartMock,
-  filedMappingService: fieldMappingService,
+  filedMappingService: fieldMappingServiceMock,
   location: {
     state: {
       detectorHit: detectorHitMock,
