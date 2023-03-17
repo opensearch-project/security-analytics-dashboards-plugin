@@ -18,6 +18,7 @@ import { ContentPanel } from '../../../../components/ContentPanel';
 import { Detector, FieldMapping } from '../../../../../models/interfaces';
 import FieldMappingService from '../../../../services/FieldMappingService';
 import { MappingViewType } from '../../../CreateDetector/components/ConfigureFieldMapping/components/RequiredFieldMapping/FieldMappingsTable';
+import _ from 'lodash';
 
 export interface ruleFieldToIndexFieldMap {
   [fieldName: string]: string;
@@ -39,7 +40,6 @@ interface EditFieldMappingsState {
   mappedRuleFields: string[];
   unmappedRuleFields: string[];
   logFieldOptions: string[];
-  detector: Detector;
 }
 
 export default class EditFieldMappings extends Component<
@@ -59,7 +59,6 @@ export default class EditFieldMappings extends Component<
       mappedRuleFields: [],
       unmappedRuleFields: [],
       logFieldOptions: [],
-      detector: props.detector,
     };
   }
 
@@ -67,9 +66,22 @@ export default class EditFieldMappings extends Component<
     this.getAllMappings();
   };
 
+  public componentDidUpdate(
+    prevProps: Readonly<EditFieldMappingsProps>,
+    prevState: Readonly<EditFieldMappingsState>,
+    snapshot?: any
+  ): void {
+    const indexVariablePath = 'detector.inputs[0].detector_input.indices[0]';
+    const currentIndex: string = _.get(this.props, indexVariablePath);
+    const previousIndex: string = _.get(prevProps, indexVariablePath);
+    if (!!currentIndex && currentIndex !== previousIndex) {
+      this.getAllMappings();
+    }
+  }
+
   getAllMappings = async () => {
     this.setState({ loading: true });
-    const indexName = this.state.detector.inputs[0].detector_input.indices[0];
+    const indexName = this.props.detector.inputs[0].detector_input.indices[0];
     const mappingsViewRes = await this.props.fieldMappingService?.getMappingsView(
       indexName,
       this.props.detector.detector_type.toLowerCase()
@@ -95,6 +107,12 @@ export default class EditFieldMappings extends Component<
         mappedRuleFields.forEach((ruleField) => {
           existingMappings[ruleField] = mappedFieldsInfo[ruleField].path;
         });
+
+        for (let key in existingMappings) {
+          if (logFieldOptions.indexOf(existingMappings[key]) === -1) {
+            existingMappings[key] = undefined;
+          }
+        }
 
         this.setState({
           mappedRuleFields,
