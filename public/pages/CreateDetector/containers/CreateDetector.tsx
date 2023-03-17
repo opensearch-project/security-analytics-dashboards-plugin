@@ -59,7 +59,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     super(props);
 
     let detectorState = {}; // if there is detector state in history, then use it to populate all the fields
-    let historyState = this.props.history.location.state as any;
+    const historyState = this.props.history.location.state as any;
     if (historyState) detectorState = historyState.detectorState;
 
     this.state = {
