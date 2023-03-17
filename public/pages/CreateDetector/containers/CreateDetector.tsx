@@ -31,7 +31,6 @@ import {
 } from '../components/DefineDetector/components/DetectionRules/types/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { getPlugins } from '../../../utils/helpers';
-import DetectorState from '../utils/DetectorState';
 import { Detector } from '../../../../types';
 import { DataStore } from '../../../store/DataStore';
 
@@ -126,7 +125,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     const createDetectorPromise = this.props.services.detectorsService.createDetector(detector);
 
     // set detector pending state, this will be used in detector details page
-    DetectorState.setPendingState({
+    DataStore.detectors.setPendingState({
       pendingRequests: [fieldsMappingPromise, createDetectorPromise],
       detectorState: { ...this.state },
     });

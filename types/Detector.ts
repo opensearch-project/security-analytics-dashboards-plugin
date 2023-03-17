@@ -133,8 +133,3 @@ export interface DeleteDetectorParams {
 }
 
 export interface DeleteDetectorResponse {}
-
-export {
-  IDetectorState,
-  IDetectorPendingState,
-} from '../public/pages/CreateDetector/utils/DetectorState';

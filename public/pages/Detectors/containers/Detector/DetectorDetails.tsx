@@ -38,8 +38,8 @@ import { DetectorsService } from '../../../../services';
 import { errorNotificationToast, successNotificationToast } from '../../../../utils/helpers';
 import { NotificationsStart, SimpleSavedObject } from 'opensearch-dashboards/public';
 import { CreateDetectorResponse, ISavedObjectsService, ServerResponse } from '../../../../../types';
-import DetectorState from '../../../CreateDetector/utils/DetectorState';
 import { PENDING_DETECTOR_ID } from '../../../CreateDetector/utils/constants';
+import { DataStore } from '../../../../store/DataStore';
 
 export interface DetectorDetailsProps
   extends RouteComponentProps<
@@ -166,7 +166,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   constructor(props: DetectorDetailsProps) {
     super(props);
     const detectorId = props.location.pathname.replace(`${ROUTES.DETECTOR_DETAILS}/`, '');
-    const pendingState = DetectorState.getPendingState();
+    const pendingState = DataStore.detectors.getPendingState();
     const detector = pendingState?.detectorState?.detector;
 
     // if user reloads the page all data is lost so just redirect to detectors page
@@ -207,7 +207,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   };
 
   getPendingDetector = async () => {
-    const pendingState = DetectorState.getPendingState();
+    const pendingState = DataStore.detectors.getPendingState();
     const detector = pendingState?.detectorState?.detector;
     const pendingRequests = pendingState?.pendingRequests;
     this.getTabs();
@@ -267,7 +267,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
               dashboardId,
             },
             () => {
-              DetectorState.deletePendingState();
+              DataStore.detectors.deletePendingState();
               this.props.history.push(`${ROUTES.DETECTOR_DETAILS}/${detectorId}`);
               this.getDetector();
             }
@@ -311,7 +311,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   };
 
   async componentDidMount() {
-    const pendingState = DetectorState.getPendingState();
+    const pendingState = DataStore.detectors.getPendingState();
     pendingState ? this.getPendingDetector() : this.getDetector();
   }
 
@@ -513,14 +513,14 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   }
 
   viewDetectorConfiguration = () => {
-    const pendingState = DetectorState.getPendingState();
+    const pendingState = DataStore.detectors.getPendingState();
     const detectorState = pendingState?.detectorState;
     this.props.history.push({
       pathname: `${ROUTES.DETECTORS_CREATE}`,
       // @ts-ignore
       state: { detectorState },
     });
-    DetectorState.deletePendingState();
+    DataStore.detectors.deletePendingState();
   };
 
   render() {
