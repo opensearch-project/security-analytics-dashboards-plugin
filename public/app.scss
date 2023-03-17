@@ -13,7 +13,7 @@ $euiTextColor: $euiColorDarkestShade !default;
 
 @import "./components/Charts/ChartContainer.scss";
 @import "./pages/Overview/components/Widgets/WidgetContainer.scss";
-@import "./pages/Detectors/components/UpdateFieldMappings/NewFieldMappings.scss";
+@import "./pages/Detectors/components/NewFieldMappings/NewFieldMappings";
 
 .selected-radio-panel {
   background-color: tintOrShade($euiColorPrimary, 90%, 70%);

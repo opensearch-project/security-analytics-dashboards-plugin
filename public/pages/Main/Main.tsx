@@ -35,7 +35,6 @@ import { EditRule } from '../Rules/containers/EditRule/EditRule';
 import { ImportRule } from '../Rules/containers/ImportRule/ImportRule';
 import { DuplicateRule } from '../Rules/containers/DuplicateRule/DuplicateRule';
 import { DateTimeFilter } from '../Overview/models/interfaces';
-import NewFieldMappings from '../Detectors/components/UpdateFieldMappings/NewFieldMappings';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -242,7 +241,6 @@ export default class Main extends Component<MainProps, MainState> {
                               findingsService={services.findingsService}
                               opensearchService={services.opensearchService}
                               detectorService={services.detectorsService}
-                              ruleService={services.ruleService}
                               notificationsService={services.notificationsService}
                               indexPatternsService={services.indexPatternsService}
                               notifications={core?.notifications}
@@ -353,7 +351,6 @@ export default class Main extends Component<MainProps, MainState> {
                               alertService={services.alertService}
                               detectorService={services.detectorsService}
                               findingService={services.findingsService}
-                              ruleService={services.ruleService}
                               notifications={core?.notifications}
                               opensearchService={services.opensearchService}
                             />
@@ -388,9 +385,9 @@ export default class Main extends Component<MainProps, MainState> {
                         <Route
                           path={`${ROUTES.EDIT_FIELD_MAPPINGS}/:id`}
                           render={(props: RouteComponentProps<any, any, any>) => (
-                            <NewFieldMappings
+                            <UpdateFieldMappings
                               {...props}
-                              filedMappingService={services.fieldMappingService}
+                              fieldMappingService={services.fieldMappingService}
                               detectorService={services.detectorsService}
                               notifications={core?.notifications}
                             />
@@ -402,7 +399,6 @@ export default class Main extends Component<MainProps, MainState> {
                             <UpdateAlertConditions
                               {...props}
                               detectorService={services.detectorsService}
-                              ruleService={services.ruleService}
                               notificationsService={services.notificationsService}
                               notifications={core?.notifications}
                               opensearchService={services.opensearchService}

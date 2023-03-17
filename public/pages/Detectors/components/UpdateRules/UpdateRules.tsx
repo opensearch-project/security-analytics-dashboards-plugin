@@ -12,7 +12,6 @@ import {
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
-import { Detector } from '../../../../../models/interfaces';
 import { DetectionRulesTable } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/DetectionRulesTable';
 import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
 import { ServicesContext } from '../../../../services';
@@ -24,6 +23,8 @@ import { RuleTableItem } from '../../../Rules/utils/helpers';
 import { RuleViewerFlyout } from '../../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { DataStore } from '../../../../store/DataStore';
+import NewFieldMappings from '../NewFieldMappings/NewFieldMappings';
+import { FieldMapping, Detector } from '../../../../../types';
 
 export interface UpdateDetectorRulesProps
   extends RouteComponentProps<
@@ -43,6 +44,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
   const [prePackagedRuleItems, setPrePackagedRuleItems] = useState<RuleItem[]>([]);
   const detectorId = props.location.pathname.replace(`${ROUTES.EDIT_DETECTOR_RULES}/`, '');
   const [flyoutData, setFlyoutData] = useState<RuleTableItem | null>(null);
+  const [fieldMappings, setFieldMappings] = useState<FieldMapping[]>();
 
   const context = useContext(CoreServicesContext);
 
@@ -159,6 +161,23 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
   const onSave = async () => {
     setSubmitting(true);
     try {
+      if (fieldMappings?.length) {
+        const createMappingsResponse = await services?.fieldMappingService?.createMappings(
+          detector.inputs[0].detector_input.indices[0],
+          detector.detector_type.toLowerCase(),
+          fieldMappings
+        );
+
+        if (!createMappingsResponse?.ok) {
+          errorNotificationToast(
+            props.notifications,
+            'update',
+            'field mappings',
+            createMappingsResponse?.error
+          );
+        }
+      }
+
       const newDetector = { ...detector };
       newDetector.inputs[0].detector_input.custom_rules = customRuleItems
         .filter((rule) => rule.active)
@@ -200,6 +219,22 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
       ruleId: ruleItem.id,
     }));
   };
+
+  const updateMappingState = useCallback(
+    (mapping: FieldMapping[]) => {
+      setFieldMappings(mapping);
+    },
+    [setFieldMappings]
+  );
+
+  const onFieldMappingChange = useCallback(
+    (fields: FieldMapping[]) => {
+      const updatedFields = [...fields];
+      updateMappingState(updatedFields);
+    },
+    [fieldMappings, updateMappingState]
+  );
+
   return (
     <div>
       {flyoutData ? (
@@ -226,6 +261,17 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
           onAllRulesToggled={onAllRulesToggle}
           onRuleDetails={onRuleDetails}
         />
+
+        <EuiSpacer size="xl" />
+
+        {detector?.inputs[0]?.detector_input.indices[0] ? (
+          <NewFieldMappings
+            {...props}
+            detector={detector}
+            fieldMappingService={services?.fieldMappingService}
+            onFieldMappingChange={onFieldMappingChange}
+          />
+        ) : null}
 
         <EuiSpacer size="xl" />
 

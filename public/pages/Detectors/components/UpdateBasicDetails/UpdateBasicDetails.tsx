@@ -25,6 +25,8 @@ import { ServerResponse } from '../../../../../server/models/types';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast, successNotificationToast } from '../../../../utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
+import NewFieldMappings from '../NewFieldMappings/NewFieldMappings';
+import { FieldMapping } from '../../../../../types';
 
 export interface UpdateDetectorBasicDetailsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
@@ -36,6 +38,8 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
   const [detector, setDetector] = useState<Detector>(
     props.location.state?.detectorHit?._source || EMPTY_DEFAULT_DETECTOR
   );
+  const [detectorHit, setDetectorHit] = useState<DetectorHit>(props.location.state?.detectorHit);
+  const [fieldMappings, setFieldMappings] = useState<FieldMapping[]>();
   const { name, inputs } = detector;
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -50,15 +54,16 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
         SearchDetectorsResponse
       >;
       if (response.ok) {
-        const detectorHit = response.response.hits.hits.find(
+        const foundDetectorHit = response.response.hits.hits.find(
           (detectorHit) => detectorHit._id === detectorId
         ) as DetectorHit;
-        setDetector(detectorHit._source);
+        setDetector(foundDetectorHit._source);
+        setDetectorHit(foundDetectorHit);
 
         context?.chrome.setBreadcrumbs([
           BREADCRUMBS.SECURITY_ANALYTICS,
           BREADCRUMBS.DETECTORS,
-          BREADCRUMBS.DETECTORS_DETAILS(detectorHit._source.name, detectorHit._id),
+          BREADCRUMBS.DETECTORS_DETAILS(foundDetectorHit._source.name, foundDetectorHit._id),
           {
             text: 'Edit detector details',
           },
@@ -66,7 +71,10 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
         props.history.replace({
           pathname: `${ROUTES.EDIT_DETECTOR_DETAILS}/${detectorId}`,
           state: {
-            detectorHit: { ...detectorHit, _source: { ...detectorHit._source, ...detectorHit } },
+            detectorHit: {
+              ...foundDetectorHit,
+              _source: { ...foundDetectorHit._source, ...foundDetectorHit },
+            },
           },
         });
       } else {
@@ -92,6 +100,13 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
       setDetector(detector);
     },
     [setDetector]
+  );
+
+  const updateMappingState = useCallback(
+    (mapping: FieldMapping[]) => {
+      setFieldMappings(mapping);
+    },
+    [setFieldMappings]
   );
 
   const onDetectorNameChange = useCallback(
@@ -162,6 +177,14 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
     [detector, updateDetectorState]
   );
 
+  const onFieldMappingChange = useCallback(
+    (fields: FieldMapping[]) => {
+      const updatedFields = [...fields];
+      updateMappingState(updatedFields);
+    },
+    [fieldMappings, updateMappingState]
+  );
+
   const onCancel = useCallback(() => {
     props.history.replace({
       pathname: `${ROUTES.DETECTOR_DETAILS}/${detectorId}`,
@@ -170,12 +193,30 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
   }, []);
 
   const onSave = useCallback(() => {
-    const detectorHit = props.location.state.detectorHit;
+    const stateDetectorHit = props.location.state.detectorHit;
 
     const updateDetector = async () => {
       setSubmitting(true);
+
+      if (fieldMappings?.length) {
+        const createMappingsResponse = await services?.fieldMappingService?.createMappings(
+          detector.inputs[0].detector_input.indices[0],
+          detector.detector_type.toLowerCase(),
+          fieldMappings
+        );
+
+        if (!createMappingsResponse?.ok) {
+          errorNotificationToast(
+            props.notifications,
+            'update',
+            'field mappings',
+            createMappingsResponse?.error
+          );
+        }
+      }
+
       const updateDetectorRes = await services?.detectorsService?.updateDetector(
-        detectorHit._id,
+        stateDetectorHit._id,
         detector
       );
 
@@ -189,7 +230,10 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
       props.history.replace({
         pathname: `${ROUTES.DETECTOR_DETAILS}/${detectorId}`,
         state: {
-          detectorHit: { ...detectorHit, _source: { ...detectorHit._source, ...detector } },
+          detectorHit: {
+            ...stateDetectorHit,
+            _source: { ...stateDetectorHit._source, ...detector },
+          },
         },
       });
     };
@@ -197,7 +241,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
     updateDetector().catch((e) => {
       errorNotificationToast(props.notifications, 'update', 'detector', e);
     });
-  }, [detector]);
+  }, [detector, fieldMappings]);
 
   return (
     <div>
@@ -221,12 +265,20 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
         notifications={props.notifications}
         indexService={services?.indexService as IndexService}
         detectorIndices={inputs[0].detector_input.indices}
-        filedMappingService={services?.fieldMappingService}
+        fieldMappingService={services?.fieldMappingService}
         onDetectorInputIndicesChange={onDetectorInputIndicesChange}
       />
       <EuiSpacer size={'xl'} />
 
       <DetectorSchedule detector={detector} onDetectorScheduleChange={onDetectorScheduleChange} />
+      <EuiSpacer size="xl" />
+
+      <NewFieldMappings
+        {...props}
+        detector={detector}
+        fieldMappingService={services?.fieldMappingService}
+        onFieldMappingChange={onFieldMappingChange}
+      />
       <EuiSpacer size="xl" />
 
       <EuiFlexGroup justifyContent="flexEnd">

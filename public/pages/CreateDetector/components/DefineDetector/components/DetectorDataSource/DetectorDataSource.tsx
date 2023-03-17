@@ -25,7 +25,7 @@ import { FieldMappingService } from '../../../../../../services';
 interface DetectorDataSourceProps {
   detectorIndices: string[];
   indexService: IndexService;
-  filedMappingService: FieldMappingService;
+  fieldMappingService: FieldMappingService;
   isEdit: boolean;
   onDetectorInputIndicesChange: (selectedOptions: EuiComboBoxOptionOption<string>[]) => void;
   notifications: NotificationsStart;
@@ -109,7 +109,7 @@ export default class DetectorDataSource extends Component<
     for (const indexName of allIndices) {
       if (!this.indicesMappings[indexName]) {
         const detectorType = this.props.detector_type.toLowerCase();
-        const result = await this.props.filedMappingService.getMappingsView(
+        const result = await this.props.fieldMappingService.getMappingsView(
           indexName,
           detectorType
         );

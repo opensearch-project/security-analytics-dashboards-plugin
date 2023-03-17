@@ -25,7 +25,7 @@ export interface ruleFieldToIndexFieldMap {
 
 interface EditFieldMappingsProps extends RouteComponentProps {
   detector: Detector;
-  filedMappingService: FieldMappingService;
+  fieldMappingService?: FieldMappingService;
   fieldMappings: FieldMapping[];
   loading: boolean;
   replaceFieldMappings: (mappings: FieldMapping[]) => void;
@@ -39,6 +39,7 @@ interface EditFieldMappingsState {
   mappedRuleFields: string[];
   unmappedRuleFields: string[];
   logFieldOptions: string[];
+  detector: Detector;
 }
 
 export default class EditFieldMappings extends Component<
@@ -58,6 +59,7 @@ export default class EditFieldMappings extends Component<
       mappedRuleFields: [],
       unmappedRuleFields: [],
       logFieldOptions: [],
+      detector: props.detector,
     };
   }
 
@@ -67,16 +69,15 @@ export default class EditFieldMappings extends Component<
 
   getAllMappings = async () => {
     this.setState({ loading: true });
-    const indexName = this.props.detector.inputs[0].detector_input.indices[0];
-
-    const mappingsViewRes = await this.props.filedMappingService.getMappingsView(
+    const indexName = this.state.detector.inputs[0].detector_input.indices[0];
+    const mappingsViewRes = await this.props.fieldMappingService?.getMappingsView(
       indexName,
       this.props.detector.detector_type.toLowerCase()
     );
 
-    if (mappingsViewRes.ok) {
-      const mappingsRes = await this.props.filedMappingService.getMappings(indexName);
-      if (mappingsRes.ok) {
+    if (mappingsViewRes?.ok) {
+      const mappingsRes = await this.props.fieldMappingService?.getMappings(indexName);
+      if (mappingsRes?.ok) {
         const mappedFieldsInfo = mappingsRes.response[indexName].mappings.properties;
         const mappedRuleFields = Object.keys(mappedFieldsInfo);
         const unmappedRuleFields = (mappingsViewRes.response.unmapped_field_aliases || []).filter(

@@ -179,7 +179,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
     }
   }
   fieldMappings={Array []}
-  filedMappingService={
+  fieldMappingService={
     FieldMappingService {
       "createMappings": [Function],
       "getMappings": [Function],
@@ -469,7 +469,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                         }
                       }
                       fieldMappings={Array []}
-                      filedMappingService={
+                      fieldMappingService={
                         FieldMappingService {
                           "createMappings": [Function],
                           "getMappings": [Function],
