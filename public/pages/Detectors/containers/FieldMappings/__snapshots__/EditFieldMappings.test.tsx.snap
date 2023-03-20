@@ -179,7 +179,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
     }
   }
   fieldMappings={Array []}
-  fieldMappingService={
+  filedMappingService={
     FieldMappingService {
       "createMappings": [Function],
       "getMappings": [Function],
@@ -190,7 +190,9 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
   loading={false}
   replaceFieldMappings={[MockFunction]}
 >
-  <div>
+  <div
+    className="editFieldMappings"
+  >
     <EuiPanel>
       <div
         className="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
@@ -469,7 +471,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                         }
                       }
                       fieldMappings={Array []}
-                      fieldMappingService={
+                      filedMappingService={
                         FieldMappingService {
                           "createMappings": [Function],
                           "getMappings": [Function],
@@ -1103,6 +1105,45 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
         className="euiSpacer euiSpacer--m"
       />
     </EuiSpacer>
+    <EuiCallOut
+      color="success"
+      title="We have automatically mapped 0 field(s)"
+    >
+      <div
+        className="euiCallOut euiCallOut--success"
+      >
+        <div
+          className="euiCallOutHeader"
+        >
+          <span
+            className="euiCallOutHeader__title"
+          >
+            We have automatically mapped 0 field(s)
+          </span>
+        </div>
+        <EuiText
+          color="default"
+          size="s"
+        >
+          <div
+            className="euiText euiText--small"
+          >
+            <EuiTextColor
+              color="default"
+              component="div"
+            >
+              <div
+                className="euiTextColor euiTextColor--default"
+              >
+                <p>
+                  Your data sources have been mapped with every rule field name. No action is needed.
+                </p>
+              </div>
+            </EuiTextColor>
+          </div>
+        </EuiText>
+      </div>
+    </EuiCallOut>
     <EuiSpacer
       size="m"
     >

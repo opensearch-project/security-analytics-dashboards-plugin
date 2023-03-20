@@ -45,6 +45,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
   const detectorId = props.location.pathname.replace(`${ROUTES.EDIT_DETECTOR_RULES}/`, '');
   const [flyoutData, setFlyoutData] = useState<RuleTableItem | null>(null);
   const [fieldMappings, setFieldMappings] = useState<FieldMapping[]>();
+  const [showMappings, setShowMappings] = useState(false);
 
   const context = useContext(CoreServicesContext);
 
@@ -126,6 +127,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
   }, [services, detectorId]);
 
   const onToggle = (changedItem: RuleItem, isActive: boolean) => {
+    setShowMappings(true);
     switch (changedItem.library) {
       case 'Custom':
         setCustomRuleItems(
@@ -147,6 +149,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
   };
 
   const onAllRulesToggle = (isActive: boolean) => {
+    setShowMappings(true);
     setCustomRuleItems(customRuleItems.map((rule) => ({ ...rule, active: isActive })));
     setPrePackagedRuleItems(prePackagedRuleItems.map((rule) => ({ ...rule, active: isActive })));
   };
@@ -264,7 +267,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
 
         <EuiSpacer size="xl" />
 
-        {detector?.inputs[0]?.detector_input.indices[0] ? (
+        {showMappings ? (
           <NewFieldMappings
             {...props}
             detector={detector}
