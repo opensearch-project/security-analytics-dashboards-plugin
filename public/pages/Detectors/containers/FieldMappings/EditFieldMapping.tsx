@@ -110,7 +110,7 @@ export default class EditFieldMappings extends Component<
 
         for (let key in existingMappings) {
           if (logFieldOptions.indexOf(existingMappings[key]) === -1) {
-            existingMappings[key] = undefined;
+            delete existingMappings[key];
           }
         }
 

@@ -31,6 +31,18 @@ export default class FieldNameSelector extends Component<SIEMFieldNameProps, SIE
     };
   }
 
+  public componentDidUpdate(
+    prevProps: Readonly<SIEMFieldNameProps>,
+    prevState: Readonly<SIEMFieldNameState>,
+    snapshot?: any
+  ): void {
+    if (this.props.selectedField !== prevProps.selectedField) {
+      this.setState({
+        selectedOptions: [{ label: this.props.selectedField }],
+      });
+    }
+  }
+
   onMappingChange = (selectedOptions: EuiComboBoxOptionOption<string>[]) => {
     this.setState({ selectedOptions });
     this.props.onChange(selectedOptions[0]?.label);
