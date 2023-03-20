@@ -42,6 +42,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
   const { name, inputs } = detector;
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [showMappings, setShowMappings] = useState(false);
   const description = inputs[0].detector_input.description;
   const detectorId = props.location.pathname.replace(`${ROUTES.EDIT_DETECTOR_DETAILS}/`, '');
 
@@ -159,6 +160,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
       };
 
       updateDetectorState(newDetector);
+      setShowMappings(true);
     },
     [detector, updateDetectorState]
   );
@@ -271,13 +273,17 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
       <DetectorSchedule detector={detector} onDetectorScheduleChange={onDetectorScheduleChange} />
       <EuiSpacer size="xl" />
 
-      <NewFieldMappings
-        {...props}
-        detector={detector}
-        fieldMappingService={services?.fieldMappingService}
-        onFieldMappingChange={onFieldMappingChange}
-      />
-      <EuiSpacer size="xl" />
+      {showMappings ? (
+        <>
+          <NewFieldMappings
+            {...props}
+            detector={detector}
+            fieldMappingService={services?.fieldMappingService}
+            onFieldMappingChange={onFieldMappingChange}
+          />
+          <EuiSpacer size="xl" />
+        </>
+      ) : null}
 
       <EuiFlexGroup justifyContent="flexEnd">
         <EuiFlexItem grow={false}>
