@@ -38,7 +38,6 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
   const [detector, setDetector] = useState<Detector>(
     props.location.state?.detectorHit?._source || EMPTY_DEFAULT_DETECTOR
   );
-  const [detectorHit, setDetectorHit] = useState<DetectorHit>(props.location.state?.detectorHit);
   const [fieldMappings, setFieldMappings] = useState<FieldMapping[]>();
   const { name, inputs } = detector;
   const [loading, setLoading] = useState(false);
@@ -54,16 +53,15 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
         SearchDetectorsResponse
       >;
       if (response.ok) {
-        const foundDetectorHit = response.response.hits.hits.find(
+        const detectorHit = response.response.hits.hits.find(
           (detectorHit) => detectorHit._id === detectorId
         ) as DetectorHit;
-        setDetector(foundDetectorHit._source);
-        setDetectorHit(foundDetectorHit);
+        setDetector(detectorHit._source);
 
         context?.chrome.setBreadcrumbs([
           BREADCRUMBS.SECURITY_ANALYTICS,
           BREADCRUMBS.DETECTORS,
-          BREADCRUMBS.DETECTORS_DETAILS(foundDetectorHit._source.name, foundDetectorHit._id),
+          BREADCRUMBS.DETECTORS_DETAILS(detectorHit._source.name, detectorHit._id),
           {
             text: 'Edit detector details',
           },
@@ -72,8 +70,8 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
           pathname: `${ROUTES.EDIT_DETECTOR_DETAILS}/${detectorId}`,
           state: {
             detectorHit: {
-              ...foundDetectorHit,
-              _source: { ...foundDetectorHit._source, ...foundDetectorHit },
+              ...detectorHit,
+              _source: { ...detectorHit._source, ...detectorHit },
             },
           },
         });
@@ -193,7 +191,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
   }, []);
 
   const onSave = useCallback(() => {
-    const stateDetectorHit = props.location.state.detectorHit;
+    const detectorHit = props.location.state.detectorHit;
 
     const updateDetector = async () => {
       setSubmitting(true);
@@ -216,7 +214,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
       }
 
       const updateDetectorRes = await services?.detectorsService?.updateDetector(
-        stateDetectorHit._id,
+        detectorHit._id,
         detector
       );
 
@@ -231,8 +229,8 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
         pathname: `${ROUTES.DETECTOR_DETAILS}/${detectorId}`,
         state: {
           detectorHit: {
-            ...stateDetectorHit,
-            _source: { ...stateDetectorHit._source, ...detector },
+            ...detectorHit,
+            _source: { ...detectorHit._source, ...detector },
           },
         },
       });
