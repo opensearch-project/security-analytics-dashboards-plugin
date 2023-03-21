@@ -24,7 +24,7 @@ import { RuleViewerFlyout } from '../../../Rules/components/RuleViewerFlyout/Rul
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { DataStore } from '../../../../store/DataStore';
 import NewFieldMappings from '../NewFieldMappings/NewFieldMappings';
-import { FieldMapping, Detector } from '../../../../../types';
+import { FieldMapping, Detector, RuleInfo } from '../../../../../types';
 
 export interface UpdateDetectorRulesProps
   extends RouteComponentProps<
@@ -46,6 +46,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
   const [flyoutData, setFlyoutData] = useState<RuleTableItem | null>(null);
   const [fieldMappings, setFieldMappings] = useState<FieldMapping[]>();
   const [showMappings, setShowMappings] = useState(false);
+  const [ruleQueryFields, setRuleQueryFields] = useState<Set<string>>();
 
   const context = useContext(CoreServicesContext);
 
@@ -126,32 +127,47 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
     });
   }, [services, detectorId]);
 
-  const onToggle = (changedItem: RuleItem, isActive: boolean) => {
+  const onToggle = async (changedItem: RuleItem, isActive: boolean) => {
     setShowMappings(true);
     switch (changedItem.library) {
       case 'Custom':
-        setCustomRuleItems(
-          customRuleItems.map((rule) =>
-            rule.id === changedItem.id ? { ...rule, active: isActive } : rule
-          )
+        const updatedCustomRules: RuleItem[] = customRuleItems.map((rule) =>
+          rule.id === changedItem.id ? { ...rule, active: isActive } : rule
         );
+        setCustomRuleItems(updatedCustomRules);
+        const withCustomRulesUpdated = prePackagedRuleItems
+          .concat(updatedCustomRules)
+          .filter((rule) => rule.active);
+        await getRuleFieldsForEnabledRules(withCustomRulesUpdated);
         break;
       case 'Sigma':
-        setPrePackagedRuleItems(
-          prePackagedRuleItems.map((rule) =>
-            rule.id === changedItem.id ? { ...rule, active: isActive } : rule
-          )
+        const updatedPrePackgedRules: RuleItem[] = prePackagedRuleItems.map((rule) =>
+          rule.id === changedItem.id ? { ...rule, active: isActive } : rule
         );
+        setPrePackagedRuleItems(updatedPrePackgedRules);
+        debugger;
+        const withPrePackagedRulesUpdated = updatedPrePackgedRules
+          .concat(customRuleItems)
+          .filter((rule) => rule.active);
+        await getRuleFieldsForEnabledRules(withPrePackagedRulesUpdated);
         break;
       default:
         console.warn('Unsupported rule library detected.');
     }
   };
 
-  const onAllRulesToggle = (isActive: boolean) => {
+  const onAllRulesToggle = async (isActive: boolean) => {
     setShowMappings(true);
-    setCustomRuleItems(customRuleItems.map((rule) => ({ ...rule, active: isActive })));
-    setPrePackagedRuleItems(prePackagedRuleItems.map((rule) => ({ ...rule, active: isActive })));
+    const customRules: RuleItem[] = customRuleItems.map((rule) => ({ ...rule, active: isActive }));
+    const prePackagedRules: RuleItem[] = prePackagedRuleItems.map((rule) => ({
+      ...rule,
+      active: isActive,
+    }));
+    setCustomRuleItems(customRules);
+    setPrePackagedRuleItems(prePackagedRules);
+
+    const enabledRules = prePackagedRules.concat(customRules);
+    await getRuleFieldsForEnabledRules(enabledRules);
   };
 
   const onCancel = useCallback(() => {
@@ -238,6 +254,22 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
     [fieldMappings, updateMappingState]
   );
 
+  const getRuleFieldsForEnabledRules = useCallback(
+    async (enabledRules) => {
+      const ruleFieldsForEnabledRules = new Set<string>();
+      enabledRules.forEach((rule: RuleItem) => {
+        const fieldNames = rule.ruleInfo._source.query_field_names;
+        fieldNames.forEach((fieldname: { value: string }) => {
+          ruleFieldsForEnabledRules.add(fieldname.value);
+        });
+      });
+
+      console.log(ruleFieldsForEnabledRules);
+      setRuleQueryFields(ruleFieldsForEnabledRules);
+    },
+    [DataStore.rules.getAllRules, setRuleQueryFields]
+  );
+
   return (
     <div>
       {flyoutData ? (
@@ -270,6 +302,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
         {showMappings ? (
           <NewFieldMappings
             {...props}
+            ruleQueryFields={ruleQueryFields}
             detector={detector}
             fieldMappingService={services?.fieldMappingService}
             onFieldMappingChange={onFieldMappingChange}

@@ -18,11 +18,13 @@ export interface UpdateFieldMappingsProps {
   fieldMappingService?: FieldMappingService;
   notifications: NotificationsStart;
   onFieldMappingChange: (fieldMappings: FieldMapping[]) => void;
+  ruleQueryFields: Set<string>;
 }
 
 export interface UpdateFieldMappingsState {
   fieldMappings: FieldMapping[];
   loading: boolean;
+  ruleQueryFields: string[];
 }
 
 export default class NewFieldMappings extends Component<
@@ -35,9 +37,22 @@ export default class NewFieldMappings extends Component<
     super(props);
 
     this.state = {
+      ruleQueryFields: [],
       fieldMappings: [],
       loading: false,
     };
+  }
+
+  public componentDidUpdate(
+    prevProps: Readonly<UpdateFieldMappingsProps>,
+    prevState: Readonly<UpdateFieldMappingsState>,
+    snapshot?: any
+  ): void {
+    if (prevProps.ruleQueryFields !== this.props.ruleQueryFields) {
+      this.setState({
+        ruleQueryFields: this.props.ruleQueryFields,
+      });
+    }
   }
 
   replaceFieldMappings = (fieldMappings: FieldMapping[]): void => {
@@ -46,7 +61,7 @@ export default class NewFieldMappings extends Component<
 
   render() {
     const { detector, fieldMappingService } = this.props;
-    const { fieldMappings = [], loading } = this.state;
+    const { fieldMappings = [], loading, ruleQueryFields = [] } = this.state;
     return (
       <ContentPanel
         className={'newFieldMappings'}
@@ -70,6 +85,7 @@ export default class NewFieldMappings extends Component<
             {...this.props}
             detector={detector}
             fieldMappings={fieldMappings}
+            ruleQueryFields={ruleQueryFields}
             fieldMappingService={fieldMappingService}
             replaceFieldMappings={this.replaceFieldMappings}
             loading={loading}

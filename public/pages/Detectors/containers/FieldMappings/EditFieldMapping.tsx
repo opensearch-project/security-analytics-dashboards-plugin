@@ -31,6 +31,7 @@ interface EditFieldMappingsProps extends RouteComponentProps {
   loading: boolean;
   replaceFieldMappings: (mappings: FieldMapping[]) => void;
   initialIsOpen?: boolean;
+  ruleQueryFields?: string[];
 }
 
 interface EditFieldMappingsState {
@@ -40,6 +41,7 @@ interface EditFieldMappingsState {
   mappedRuleFields: string[];
   unmappedRuleFields: string[];
   logFieldOptions: string[];
+  ruleQueryFields?: Set<string>;
 }
 
 export default class EditFieldMappings extends Component<
@@ -77,6 +79,15 @@ export default class EditFieldMappings extends Component<
     if (!!currentIndex && currentIndex !== previousIndex) {
       this.getAllMappings();
     }
+
+    if (prevProps.ruleQueryFields !== this.props.ruleQueryFields) {
+      this.setState(
+        {
+          ruleQueryFields: this.props.ruleQueryFields,
+        },
+        () => this.getAllMappings()
+      );
+    }
   }
 
   getAllMappings = async () => {
@@ -91,8 +102,8 @@ export default class EditFieldMappings extends Component<
       const mappingsRes = await this.props.fieldMappingService?.getMappings(indexName);
       if (mappingsRes?.ok) {
         const mappedFieldsInfo = mappingsRes.response[indexName].mappings.properties;
-        const mappedRuleFields = Object.keys(mappedFieldsInfo);
-        const unmappedRuleFields = (mappingsViewRes.response.unmapped_field_aliases || []).filter(
+        let mappedRuleFields = Object.keys(mappedFieldsInfo);
+        let unmappedRuleFields = (mappingsViewRes.response.unmapped_field_aliases || []).filter(
           (ruleField) => {
             return !mappedRuleFields.includes(ruleField);
           }
@@ -112,6 +123,15 @@ export default class EditFieldMappings extends Component<
           if (logFieldOptions.indexOf(existingMappings[key]) === -1) {
             delete existingMappings[key];
           }
+        }
+
+        if (this.state.ruleQueryFields?.size) {
+          mappedRuleFields = mappedRuleFields.filter((ruleField) => {
+            return this.state.ruleQueryFields?.has(ruleField);
+          });
+          unmappedRuleFields = unmappedRuleFields.filter((ruleField) => {
+            return this.state.ruleQueryFields?.has(ruleField);
+          });
         }
 
         this.setState({
