@@ -55,6 +55,7 @@ export default class EditFieldMappings extends Component<
       createdMappings[mapping.ruleFieldName] = mapping.indexFieldName;
     });
     this.state = {
+      ruleQueryFields: props.ruleQueryFields ? props.ruleQueryFields : new Set<string>(),
       loading: props.loading || false,
       createdMappings,
       invalidMappingFieldNames: [],
@@ -144,6 +145,12 @@ export default class EditFieldMappings extends Component<
             createdMappings: existingMappings,
           });
         } else {
+          if (this.state.ruleQueryFields?.size) {
+            unmappedRuleFields = _.intersection(unmappedRuleFields, [
+              ...this.state.ruleQueryFields,
+            ]);
+          }
+
           this.setState({
             mappedRuleFields: [],
             unmappedRuleFields,

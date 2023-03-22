@@ -38,7 +38,7 @@ export default class ReviewFieldMappings extends Component<
     super(props);
 
     this.state = {
-      ruleQueryFields: new Set(),
+      ruleQueryFields: props.ruleQueryFields ? props.ruleQueryFields : new Set<string>(),
       fieldMappings: [],
       loading: false,
     };
