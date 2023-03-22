@@ -45,7 +45,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
   const detectorId = props.location.pathname.replace(`${ROUTES.EDIT_DETECTOR_RULES}/`, '');
   const [flyoutData, setFlyoutData] = useState<RuleTableItem | null>(null);
   const [fieldMappings, setFieldMappings] = useState<FieldMapping[]>();
-  const [showMappings, setShowMappings] = useState(false);
+  const [fieldMappingsIsVisible, setFieldMappingsIsVisible] = useState(false);
   const [ruleQueryFields, setRuleQueryFields] = useState<Set<string>>();
 
   const context = useContext(CoreServicesContext);
@@ -128,7 +128,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
   }, [services, detectorId]);
 
   const onToggle = async (changedItem: RuleItem, isActive: boolean) => {
-    setShowMappings(true);
+    setFieldMappingsIsVisible(true);
     switch (changedItem.library) {
       case 'Custom':
         const updatedCustomRules: RuleItem[] = customRuleItems.map((rule) =>
@@ -156,7 +156,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
   };
 
   const onAllRulesToggle = async (isActive: boolean) => {
-    setShowMappings(true);
+    setFieldMappingsIsVisible(true);
     const customRules: RuleItem[] = customRuleItems.map((rule) => ({ ...rule, active: isActive }));
     const prePackagedRules: RuleItem[] = prePackagedRuleItems.map((rule) => ({
       ...rule,
@@ -178,24 +178,8 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
 
   const onSave = async () => {
     setSubmitting(true);
-    try {
-      if (fieldMappings?.length) {
-        const createMappingsResponse = await services?.fieldMappingService?.createMappings(
-          detector.inputs[0].detector_input.indices[0],
-          detector.detector_type.toLowerCase(),
-          fieldMappings
-        );
 
-        if (!createMappingsResponse?.ok) {
-          errorNotificationToast(
-            props.notifications,
-            'update',
-            'field mappings',
-            createMappingsResponse?.error
-          );
-        }
-      }
-
+    const updateDetector = async () => {
       const newDetector = { ...detector };
       newDetector.inputs[0].detector_input.custom_rules = customRuleItems
         .filter((rule) => rule.active)
@@ -215,9 +199,33 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
         successNotificationToast(props.notifications, 'updated', 'detector');
       }
 
+      setSubmitting(false);
       props.history.replace({
         pathname: `${ROUTES.DETECTOR_DETAILS}/${detectorId}`,
       });
+    };
+
+    try {
+      if (fieldMappings?.length) {
+        const createMappingsResponse = await services?.fieldMappingService?.createMappings(
+          detector.inputs[0].detector_input.indices[0],
+          detector.detector_type.toLowerCase(),
+          fieldMappings
+        );
+
+        if (!createMappingsResponse?.ok) {
+          errorNotificationToast(
+            props.notifications,
+            'update',
+            'field mappings',
+            createMappingsResponse?.error
+          );
+        } else {
+          await updateDetector();
+        }
+      } else {
+        await updateDetector();
+      }
     } catch (e: any) {
       errorNotificationToast(props.notifications, 'update', 'detector', e);
     }
@@ -238,7 +246,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
     }));
   };
 
-  const updateMappingState = useCallback(
+  const updateFieldMappingsState = useCallback(
     (mapping: FieldMapping[]) => {
       setFieldMappings(mapping);
     },
@@ -248,9 +256,9 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
   const onFieldMappingChange = useCallback(
     (fields: FieldMapping[]) => {
       const updatedFields = [...fields];
-      updateMappingState(updatedFields);
+      updateFieldMappingsState(updatedFields);
     },
-    [fieldMappings, updateMappingState]
+    [fieldMappings, updateFieldMappingsState]
   );
 
   const getRuleFieldsForEnabledRules = useCallback(
@@ -263,7 +271,6 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
         });
       });
 
-      console.log(ruleFieldsForEnabledRules);
       setRuleQueryFields(ruleFieldsForEnabledRules);
     },
     [DataStore.rules.getAllRules, setRuleQueryFields]
@@ -298,7 +305,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
 
         <EuiSpacer size="xl" />
 
-        {showMappings ? (
+        {fieldMappingsIsVisible ? (
           <ReviewFieldMappings
             {...props}
             ruleQueryFields={ruleQueryFields}

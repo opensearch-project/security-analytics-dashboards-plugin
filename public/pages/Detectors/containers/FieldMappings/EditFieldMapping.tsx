@@ -76,13 +76,17 @@ export default class EditFieldMappings extends Component<
     const indexVariablePath = 'detector.inputs[0].detector_input.indices[0]';
     const currentIndex: string = _.get(this.props, indexVariablePath);
     const previousIndex: string = _.get(prevProps, indexVariablePath);
+
+    // if index is changed reload mappings
     if (!!currentIndex && currentIndex !== previousIndex) {
       this.getAllMappings();
     }
 
+    // if rule selection is changed reload mappings
     if (prevProps.ruleQueryFields !== this.props.ruleQueryFields) {
       this.setState(
         {
+          // update ruleQueryField, this is used to filter field mappings based on rule selection
           ruleQueryFields: this.props.ruleQueryFields,
         },
         () => this.getAllMappings()
@@ -126,12 +130,8 @@ export default class EditFieldMappings extends Component<
         }
 
         if (this.state.ruleQueryFields?.size) {
-          mappedRuleFields = mappedRuleFields.filter((ruleField) => {
-            return this.state.ruleQueryFields?.has(ruleField);
-          });
-          unmappedRuleFields = unmappedRuleFields.filter((ruleField) => {
-            return this.state.ruleQueryFields?.has(ruleField);
-          });
+          mappedRuleFields = _.intersection(mappedRuleFields, [...this.state.ruleQueryFields]);
+          unmappedRuleFields = _.intersection(unmappedRuleFields, [...this.state.ruleQueryFields]);
         }
 
         this.setState({
