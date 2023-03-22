@@ -97,49 +97,60 @@ export default class EditFieldMappings extends Component<
   getAllMappings = async () => {
     this.setState({ loading: true });
     const indexName = this.props.detector.inputs[0].detector_input.indices[0];
-    const mappingsViewRes = await this.props.fieldMappingService?.getMappingsView(
-      indexName,
-      this.props.detector.detector_type.toLowerCase()
-    );
+    if (indexName) {
+      const mappingsViewRes = await this.props.fieldMappingService?.getMappingsView(
+        indexName,
+        this.props.detector.detector_type.toLowerCase()
+      );
 
-    if (mappingsViewRes?.ok) {
-      const mappingsRes = await this.props.fieldMappingService?.getMappings(indexName);
-      if (mappingsRes?.ok) {
-        const mappedFieldsInfo = mappingsRes.response[indexName].mappings.properties;
-        let mappedRuleFields = Object.keys(mappedFieldsInfo);
-        let unmappedRuleFields = (mappingsViewRes.response.unmapped_field_aliases || []).filter(
-          (ruleField) => {
-            return !mappedRuleFields.includes(ruleField);
-          }
-        );
-
+      if (mappingsViewRes?.ok) {
+        let unmappedRuleFields = mappingsViewRes.response.unmapped_field_aliases || [];
         const logFieldsSet = new Set<string>(mappingsViewRes.response.unmapped_index_fields);
         Object.values(mappingsViewRes.response.properties).forEach((val) => {
           logFieldsSet.add(val.path);
         });
         const logFieldOptions = Array.from(logFieldsSet);
         const existingMappings = { ...this.state.createdMappings };
-        mappedRuleFields.forEach((ruleField) => {
-          existingMappings[ruleField] = mappedFieldsInfo[ruleField].path;
-        });
 
-        for (let key in existingMappings) {
-          if (logFieldOptions.indexOf(existingMappings[key]) === -1) {
-            delete existingMappings[key];
+        const mappingsRes = await this.props.fieldMappingService?.getMappings(indexName);
+        if (mappingsRes?.ok) {
+          const mappedFieldsInfo = mappingsRes.response[indexName].mappings.properties;
+          let mappedRuleFields = Object.keys(mappedFieldsInfo);
+          unmappedRuleFields = unmappedRuleFields.filter((ruleField) => {
+            return !mappedRuleFields.includes(ruleField);
+          });
+
+          mappedRuleFields.forEach((ruleField) => {
+            existingMappings[ruleField] = mappedFieldsInfo[ruleField].path;
+          });
+
+          for (let key in existingMappings) {
+            if (logFieldOptions.indexOf(existingMappings[key]) === -1) {
+              delete existingMappings[key];
+            }
           }
-        }
 
-        if (this.state.ruleQueryFields?.size) {
-          mappedRuleFields = _.intersection(mappedRuleFields, [...this.state.ruleQueryFields]);
-          unmappedRuleFields = _.intersection(unmappedRuleFields, [...this.state.ruleQueryFields]);
-        }
+          if (this.state.ruleQueryFields?.size) {
+            mappedRuleFields = _.intersection(mappedRuleFields, [...this.state.ruleQueryFields]);
+            unmappedRuleFields = _.intersection(unmappedRuleFields, [
+              ...this.state.ruleQueryFields,
+            ]);
+          }
 
-        this.setState({
-          mappedRuleFields,
-          unmappedRuleFields,
-          logFieldOptions,
-          createdMappings: existingMappings,
-        });
+          this.setState({
+            mappedRuleFields,
+            unmappedRuleFields,
+            logFieldOptions,
+            createdMappings: existingMappings,
+          });
+        } else {
+          this.setState({
+            mappedRuleFields: [],
+            unmappedRuleFields,
+            logFieldOptions,
+            createdMappings: existingMappings,
+          });
+        }
       }
     }
     this.setState({ loading: false });

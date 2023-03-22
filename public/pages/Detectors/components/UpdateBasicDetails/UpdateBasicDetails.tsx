@@ -159,10 +159,10 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
         ],
       };
 
-      updateDetectorState(newDetector);
       setFieldMappingsIsVisible(true);
+      updateDetectorState(newDetector);
     },
-    [detector, updateDetectorState]
+    [detector, updateDetectorState, setFieldMappingsIsVisible]
   );
 
   const onDetectorScheduleChange = useCallback(
