@@ -23,8 +23,8 @@ import { RuleTableItem } from '../../../Rules/utils/helpers';
 import { RuleViewerFlyout } from '../../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { DataStore } from '../../../../store/DataStore';
-import NewFieldMappings from '../NewFieldMappings/NewFieldMappings';
-import { FieldMapping, Detector, RuleInfo } from '../../../../../types';
+import ReviewFieldMappings from '../ReviewFieldMappings/ReviewFieldMappings';
+import { FieldMapping, Detector } from '../../../../../types';
 
 export interface UpdateDetectorRulesProps
   extends RouteComponentProps<
@@ -39,7 +39,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
   const services = useContext(ServicesContext);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [detector, setDetector] = useState<Detector>(EMPTY_DEFAULT_DETECTOR);
+  const [detector, setDetector] = useState<Detector>(EMPTY_DEFAULT_DETECTOR as Detector);
   const [customRuleItems, setCustomRuleItems] = useState<RuleItem[]>([]);
   const [prePackagedRuleItems, setPrePackagedRuleItems] = useState<RuleItem[]>([]);
   const detectorId = props.location.pathname.replace(`${ROUTES.EDIT_DETECTOR_RULES}/`, '');
@@ -60,7 +60,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
         const detectorHit = response.response.hits.hits.find(
           (detectorHit) => detectorHit._id === detectorId
         ) as DetectorHit;
-        const newDetector = { ...detectorHit._source, id: detectorId };
+        const newDetector = { ...detectorHit._source, id: detectorId } as Detector;
         setDetector(newDetector);
 
         context?.chrome.setBreadcrumbs([
@@ -145,7 +145,6 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
           rule.id === changedItem.id ? { ...rule, active: isActive } : rule
         );
         setPrePackagedRuleItems(updatedPrePackgedRules);
-        debugger;
         const withPrePackagedRulesUpdated = updatedPrePackgedRules
           .concat(customRuleItems)
           .filter((rule) => rule.active);
@@ -300,7 +299,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
         <EuiSpacer size="xl" />
 
         {showMappings ? (
-          <NewFieldMappings
+          <ReviewFieldMappings
             {...props}
             ruleQueryFields={ruleQueryFields}
             detector={detector}

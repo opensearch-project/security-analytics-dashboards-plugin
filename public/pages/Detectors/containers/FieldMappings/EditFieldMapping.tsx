@@ -31,7 +31,7 @@ interface EditFieldMappingsProps extends RouteComponentProps {
   loading: boolean;
   replaceFieldMappings: (mappings: FieldMapping[]) => void;
   initialIsOpen?: boolean;
-  ruleQueryFields?: string[];
+  ruleQueryFields?: Set<string>;
 }
 
 interface EditFieldMappingsState {

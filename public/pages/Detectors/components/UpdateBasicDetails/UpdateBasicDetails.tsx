@@ -11,12 +11,12 @@ import {
   EuiSpacer,
   EuiTitle,
 } from '@elastic/eui';
-import { Detector, PeriodSchedule } from '../../../../../models/interfaces';
+import { PeriodSchedule } from '../../../../../models/interfaces';
 import React, { useContext, useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import DetectorBasicDetailsForm from '../../../CreateDetector/components/DefineDetector/components/DetectorDetails';
 import DetectorDataSource from '../../../CreateDetector/components/DefineDetector/components/DetectorDataSource';
-import { IndexService, ServicesContext } from '../../../../services';
+import { FieldMappingService, IndexService, ServicesContext } from '../../../../services';
 import { DetectorSchedule } from '../../../CreateDetector/components/DefineDetector/components/DetectorSchedule/DetectorSchedule';
 import { useCallback } from 'react';
 import { DetectorHit, SearchDetectorsResponse } from '../../../../../server/models/interfaces';
@@ -25,8 +25,8 @@ import { ServerResponse } from '../../../../../server/models/types';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast, successNotificationToast } from '../../../../utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
-import NewFieldMappings from '../NewFieldMappings/NewFieldMappings';
-import { FieldMapping } from '../../../../../types';
+import ReviewFieldMappings from '../ReviewFieldMappings/ReviewFieldMappings';
+import { FieldMapping, Detector } from '../../../../../types';
 
 export interface UpdateDetectorBasicDetailsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
@@ -36,7 +36,7 @@ export interface UpdateDetectorBasicDetailsProps
 export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProps> = (props) => {
   const services = useContext(ServicesContext);
   const [detector, setDetector] = useState<Detector>(
-    props.location.state?.detectorHit?._source || EMPTY_DEFAULT_DETECTOR
+    (props.location.state?.detectorHit?._source || EMPTY_DEFAULT_DETECTOR) as Detector
   );
   const [fieldMappings, setFieldMappings] = useState<FieldMapping[]>();
   const { name, inputs } = detector;
@@ -57,7 +57,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
         const detectorHit = response.response.hits.hits.find(
           (detectorHit) => detectorHit._id === detectorId
         ) as DetectorHit;
-        setDetector(detectorHit._source);
+        setDetector(detectorHit._source as Detector);
 
         context?.chrome.setBreadcrumbs([
           BREADCRUMBS.SECURITY_ANALYTICS,
@@ -265,7 +265,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
         notifications={props.notifications}
         indexService={services?.indexService as IndexService}
         detectorIndices={inputs[0].detector_input.indices}
-        fieldMappingService={services?.fieldMappingService}
+        fieldMappingService={services?.fieldMappingService as FieldMappingService}
         onDetectorInputIndicesChange={onDetectorInputIndicesChange}
       />
       <EuiSpacer size={'xl'} />
@@ -275,7 +275,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
 
       {showMappings ? (
         <>
-          <NewFieldMappings
+          <ReviewFieldMappings
             {...props}
             detector={detector}
             fieldMappingService={services?.fieldMappingService}

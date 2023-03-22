@@ -12,22 +12,23 @@ import { ContentPanel } from '../../../../components/ContentPanel';
 import { FieldMappingService } from '../../../../services';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { Detector } from '../../../../../types';
+import { RouteComponentProps } from 'react-router-dom';
 
-export interface UpdateFieldMappingsProps {
+export interface UpdateFieldMappingsProps extends RouteComponentProps<any, any> {
   detector: Detector;
   fieldMappingService?: FieldMappingService;
   notifications: NotificationsStart;
   onFieldMappingChange: (fieldMappings: FieldMapping[]) => void;
-  ruleQueryFields: Set<string>;
+  ruleQueryFields?: Set<string>;
 }
 
 export interface UpdateFieldMappingsState {
   fieldMappings: FieldMapping[];
   loading: boolean;
-  ruleQueryFields: string[];
+  ruleQueryFields?: Set<string>;
 }
 
-export default class NewFieldMappings extends Component<
+export default class ReviewFieldMappings extends Component<
   UpdateFieldMappingsProps,
   UpdateFieldMappingsState
 > {
@@ -37,7 +38,7 @@ export default class NewFieldMappings extends Component<
     super(props);
 
     this.state = {
-      ruleQueryFields: [],
+      ruleQueryFields: new Set(),
       fieldMappings: [],
       loading: false,
     };
@@ -61,10 +62,10 @@ export default class NewFieldMappings extends Component<
 
   render() {
     const { detector, fieldMappingService } = this.props;
-    const { fieldMappings = [], loading, ruleQueryFields = [] } = this.state;
+    const { fieldMappings = [], loading, ruleQueryFields = new Set([]) } = this.state;
     return (
       <ContentPanel
-        className={'newFieldMappings'}
+        className={'reviewFieldMappings'}
         title={
           <>
             <EuiTitle size={'m'}>
