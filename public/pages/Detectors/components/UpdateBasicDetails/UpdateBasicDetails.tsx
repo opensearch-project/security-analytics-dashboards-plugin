@@ -219,10 +219,6 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
           },
         },
       });
-
-      updateDetector().catch((e) => {
-        errorNotificationToast(props.notifications, 'update', 'detector', e);
-      });
     };
 
     if (fieldMappings?.length) {
