@@ -178,6 +178,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
       "type": "detector",
     }
   }
+  isEditable={true}
   notifications={
     Object {
       "toasts": Object {

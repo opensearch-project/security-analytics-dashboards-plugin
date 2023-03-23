@@ -16,6 +16,9 @@ import {
   EuiTabs,
   EuiTitle,
   EuiHealth,
+  EuiCallOut,
+  EuiLoadingSpinner,
+  EuiPanel,
 } from '@elastic/eui';
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
@@ -23,18 +26,20 @@ import { CoreServicesContext } from '../../../../components/core_services';
 import {
   BREADCRUMBS,
   EMPTY_DEFAULT_DETECTOR_HIT,
-  pendingDashboardCreations,
+  logTypesWithDashboards,
   ROUTES,
 } from '../../../../utils/constants';
-import { DetectorHit } from '../../../../../server/models/interfaces';
+import { CreateMappingsResponse, DetectorHit } from '../../../../../server/models/interfaces';
 import { DetectorDetailsView } from '../DetectorDetailsView/DetectorDetailsView';
 import { FieldMappingsView } from '../../components/FieldMappingsView/FieldMappingsView';
 import { AlertTriggersView } from '../AlertTriggersView/AlertTriggersView';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { DetectorsService } from '../../../../services';
-import { errorNotificationToast } from '../../../../utils/helpers';
+import { errorNotificationToast, successNotificationToast } from '../../../../utils/helpers';
 import { NotificationsStart, SimpleSavedObject } from 'opensearch-dashboards/public';
-import { ISavedObjectsService, ServerResponse } from '../../../../../types';
+import { CreateDetectorResponse, ISavedObjectsService, ServerResponse } from '../../../../../types';
+import { PENDING_DETECTOR_ID } from '../../../CreateDetector/utils/constants';
+import { DataStore } from '../../../../store/DataStore';
 
 export interface DetectorDetailsProps
   extends RouteComponentProps<
@@ -61,6 +66,7 @@ export interface DetectorDetailsState {
   tabs: any[];
   loading: boolean;
   dashboardId?: string;
+  createFailed: boolean;
 }
 
 enum TabId {
@@ -109,6 +115,9 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   };
 
   private getTabs() {
+    const { detectorId, createFailed } = this.state;
+    const creatingDetector: boolean = detectorId === PENDING_DETECTOR_ID;
+    const isEditable = !creatingDetector && !createFailed;
     const tabs = [
       {
         id: TabId.DetectorDetails,
@@ -122,6 +131,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
             dashboardId={this.state.dashboardId}
             editBasicDetails={this.editDetectorBasicDetails}
             editDetectorRules={this.editDetectorRules}
+            isEditable={isEditable}
           />
         ),
       },
@@ -133,6 +143,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
             {...this.props}
             detector={this.detectorHit._source}
             editFieldMappings={this.editFieldMappings}
+            isEditable={isEditable}
           />
         ),
       },
@@ -144,6 +155,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
             {...this.props}
             detector={this.detectorHit._source}
             editAlertTriggers={this.editAlertTriggers}
+            isEditable={isEditable}
           />
         ),
       },
@@ -154,60 +166,166 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   constructor(props: DetectorDetailsProps) {
     super(props);
     const detectorId = props.location.pathname.replace(`${ROUTES.DETECTOR_DETAILS}/`, '');
+    const pendingState = DataStore.detectors.getPendingState();
+    const detector = pendingState?.detectorState?.detector;
+
+    // if user reloads the page all data is lost so just redirect to detectors page
+    if (!pendingState && detectorId === PENDING_DETECTOR_ID) {
+      this.props.history.push(`${ROUTES.DETECTORS}`);
+    }
+
     this.state = {
       isActionsMenuOpen: false,
       selectedTabId: TabId.DetectorDetails,
       selectedTabContent: null,
-      detectorHit: EMPTY_DEFAULT_DETECTOR_HIT,
+      detectorHit: detector
+        ? Object.assign({}, EMPTY_DEFAULT_DETECTOR_HIT, {
+            ...detector,
+            _source: {
+              ...detector,
+            },
+          })
+        : EMPTY_DEFAULT_DETECTOR_HIT,
       detectorId: detectorId,
       tabs: [],
       loading: false,
+      createFailed: false,
     };
   }
 
-  async componentDidMount() {
-    this.getDetector();
-
-    const pendingDashboardCreationPromise = pendingDashboardCreations[this.state.detectorId];
-    if (pendingDashboardCreationPromise) {
-      pendingDashboardCreationPromise.then((savedObject) => {
-        if (savedObject && savedObject.ok) {
-          this.setState({ dashboardId: savedObject.response.id });
-          this.getTabs();
-        }
-        delete pendingDashboardCreations[this.state.detectorId];
+  private createDashboard = (
+    detectorName: string,
+    logType: string,
+    detectorId: string,
+    inputIndices: string[]
+  ) => {
+    return this.props.savedObjectsService
+      .createSavedObject(detectorName, logType, detectorId, inputIndices)
+      .catch((error: any) => {
+        console.error(error);
       });
-    } else {
-      const dashboards = await this.props.savedObjectsService.getDashboards();
-      let detectorDashboardId;
-      dashboards.some((dashboard) => {
-        if (
-          dashboard.references.findIndex((reference) => reference.id === this.state.detectorId) > -1
-        ) {
-          detectorDashboardId = dashboard.id;
-          return true;
-        }
+  };
 
-        return false;
+  getPendingDetector = async () => {
+    const pendingState = DataStore.detectors.getPendingState();
+    const detector = pendingState?.detectorState?.detector;
+    const pendingRequests = pendingState?.pendingRequests;
+    this.getTabs();
+
+    if (pendingRequests && detector) {
+      this.detectorHit = Object.assign({}, EMPTY_DEFAULT_DETECTOR_HIT, {
+        ...detector,
+        _source: {
+          ...detector,
+        },
       });
 
-      if (detectorDashboardId) {
-        this.setState({ dashboardId: detectorDashboardId });
-        this.getTabs();
+      this.context.chrome.setBreadcrumbs([
+        BREADCRUMBS.SECURITY_ANALYTICS,
+        BREADCRUMBS.DETECTORS,
+        BREADCRUMBS.DETECTORS_DETAILS(detector.name, PENDING_DETECTOR_ID),
+      ]);
+
+      const [mappingsResponse, detectorResponse] = (await Promise.all(pendingRequests)) as [
+        ServerResponse<CreateMappingsResponse>,
+        ServerResponse<CreateDetectorResponse>
+      ];
+
+      if (mappingsResponse.ok) {
+        if (detectorResponse.ok) {
+          let dashboardId;
+          const detectorId = detectorResponse.response._id;
+          if (logTypesWithDashboards.has(detector.detector_type)) {
+            const dashboardResponse = await this.createDashboard(
+              detector.name,
+              detector.detector_type,
+              detectorResponse.response._id,
+              detector.inputs[0].detector_input.indices
+            );
+            if (dashboardResponse && dashboardResponse.ok) {
+              dashboardId = dashboardResponse.response.id;
+            } else {
+              const dashboards = await this.props.savedObjectsService.getDashboards();
+              dashboards.some((dashboard) => {
+                if (
+                  dashboard.references.findIndex(
+                    (reference) => reference.id === this.state.detectorId
+                  ) > -1
+                ) {
+                  dashboardId = dashboard.id;
+                  return true;
+                }
+
+                return false;
+              });
+            }
+          }
+
+          this.setState(
+            {
+              detectorId,
+              dashboardId,
+            },
+            () => {
+              DataStore.detectors.deletePendingState();
+              this.props.history.push(`${ROUTES.DETECTOR_DETAILS}/${detectorId}`);
+              this.getDetector();
+            }
+          );
+
+          successNotificationToast(
+            this.props.notifications,
+            'created',
+            `detector, "${detector.name}"`
+          );
+        } else {
+          this.setState(
+            {
+              createFailed: true,
+            },
+            () =>
+              errorNotificationToast(
+                this.props.notifications,
+                'create',
+                'detector',
+                detectorResponse.error
+              )
+          );
+        }
+      } else {
+        this.setState(
+          {
+            createFailed: true,
+          },
+          () =>
+            errorNotificationToast(
+              this.props.notifications,
+              'create',
+              'detector',
+              'Double check the field mappings and try again.'
+            )
+        );
       }
     }
+    this.setState({ loading: false });
+  };
+
+  async componentDidMount() {
+    const pendingState = DataStore.detectors.getPendingState();
+    pendingState ? this.getPendingDetector() : this.getDetector();
   }
 
   getDetector = async () => {
     this.setState({ loading: true });
     const { detectorService, notifications } = this.props;
     try {
+      const { detectorId } = this.state;
       const response = await detectorService.getDetectors();
       if (response.ok) {
-        const { detectorId } = this.state;
         const detector = response.response.hits.hits.find(
           (detectorHit) => detectorHit._id === detectorId
         ) as DetectorHit;
+
         this.detectorHit = {
           ...detector,
           _source: {
@@ -226,6 +344,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     } catch (e: any) {
       errorNotificationToast(notifications, 'retrieve', 'detector', e);
     }
+
     this.getTabs();
     this.setState({ loading: false });
   };
@@ -393,12 +512,70 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     ));
   }
 
+  viewDetectorConfiguration = () => {
+    const pendingState = DataStore.detectors.getPendingState();
+    const detectorState = pendingState?.detectorState;
+    this.props.history.push({
+      pathname: `${ROUTES.DETECTORS_CREATE}`,
+      // @ts-ignore
+      state: { detectorState },
+    });
+    DataStore.detectors.deletePendingState();
+  };
+
   render() {
     const { _source: detector } = this.detectorHit;
-    const { selectedTabContent } = this.state;
+    const { selectedTabContent, detectorId, createFailed } = this.state;
+    const creatingDetector: boolean = detectorId === PENDING_DETECTOR_ID;
+
+    let statusColor = 'primary';
+    let statusText = 'Initializing';
+
+    if (creatingDetector) {
+      if (createFailed) {
+        statusColor = 'danger';
+        statusText = 'Failed';
+      }
+    } else {
+      if (detector.enabled) {
+        statusColor = 'success';
+        statusText = 'Active';
+      } else {
+        statusColor = 'subdued';
+        statusText = 'Inactive';
+      }
+    }
 
     return (
       <>
+        {creatingDetector ? (
+          <>
+            <EuiCallOut
+              title={
+                <EuiFlexGroup alignItems="center">
+                  {!createFailed && (
+                    <EuiPanel paddingSize="s" color={'transparent'} hasBorder={false}>
+                      <EuiLoadingSpinner size="l" />
+                    </EuiPanel>
+                  )}
+                  <EuiPanel paddingSize="s" color={'transparent'} hasBorder={false}>
+                    {createFailed
+                      ? 'Detector creation failed. Please review detector configuration and try again.'
+                      : 'Attempting to create the detector.'}
+                  </EuiPanel>
+                </EuiFlexGroup>
+              }
+              color={createFailed ? 'danger' : 'primary'}
+            >
+              {createFailed && (
+                <EuiButton color={'danger'} onClick={this.viewDetectorConfiguration}>
+                  Review detector configuration
+                </EuiButton>
+              )}
+            </EuiCallOut>
+            <EuiSpacer size="xl" />
+          </>
+        ) : null}
         <EuiFlexGroup>
           <EuiFlexItem>
             <EuiFlexGroup alignItems="center">
@@ -408,21 +585,21 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
                 </EuiTitle>
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
-                <EuiHealth color={detector.enabled ? 'success' : 'subdued'}>
-                  {detector.enabled ? 'Active' : 'Inactive'}
-                </EuiHealth>
+                <EuiHealth color={statusColor}>{statusText}</EuiHealth>
               </EuiFlexItem>
             </EuiFlexGroup>
           </EuiFlexItem>
           <EuiFlexItem>
             <EuiFlexGroup justifyContent="flexEnd" alignItems="center">
-              {this.createHeaderActions().map(
-                (action: React.ReactNode, idx: number): React.ReactNode => (
-                  <EuiFlexItem key={idx} grow={false}>
-                    {action}
-                  </EuiFlexItem>
-                )
-              )}
+              {!creatingDetector && !createFailed
+                ? this.createHeaderActions().map(
+                    (action: React.ReactNode, idx: number): React.ReactNode => (
+                      <EuiFlexItem key={idx} grow={false}>
+                        {action}
+                      </EuiFlexItem>
+                    )
+                  )
+                : null}
             </EuiFlexGroup>
           </EuiFlexItem>
         </EuiFlexGroup>

@@ -12,4 +12,5 @@ export default ({
   enabled_time: 1,
   last_update_time: 1,
   onEditClicked: () => jest.fn(),
+  isEditable: true,
 } as unknown) as typeof DetectorBasicDetailsView;
