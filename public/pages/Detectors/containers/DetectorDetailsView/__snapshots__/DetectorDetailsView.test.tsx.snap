@@ -371,6 +371,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
     editBasicDetails={[MockFunction]}
     editDetectorRules={[MockFunction]}
     enabled_time={1}
+    isEditable={true}
     last_update_time={1}
     notifications={
       Object {
@@ -1511,6 +1512,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
     editBasicDetails={[MockFunction]}
     editDetectorRules={[MockFunction]}
     enabled_time={1}
+    isEditable={true}
     last_update_time={1}
     notifications={
       Object {

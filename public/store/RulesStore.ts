@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RuleService } from '../../../services';
+import { RuleService } from '../services';
 import { load, safeDump } from 'js-yaml';
-import { RuleItemInfoBase, IRulesStore, IRulesCache } from '../../../../types';
-import { Rule } from '../../../../models/interfaces';
+import { RuleItemInfoBase, IRulesStore, IRulesCache } from '../../types';
+import { Rule } from '../../models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { errorNotificationToast } from '../../../utils/helpers';
-import { ruleTypes } from '../utils/constants';
+import { errorNotificationToast } from '../utils/helpers';
+import { ruleTypes } from '../pages/Rules/utils/constants';
 import _ from 'lodash';
 
 /**

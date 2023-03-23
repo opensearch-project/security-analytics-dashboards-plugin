@@ -15,9 +15,10 @@ import {
 } from '@elastic/eui';
 import FieldMappingsTable from '../../../CreateDetector/components/ConfigureFieldMapping/components/RequiredFieldMapping';
 import { ContentPanel } from '../../../../components/ContentPanel';
-import { Detector, FieldMapping } from '../../../../../models/interfaces';
+import { FieldMapping } from '../../../../../models/interfaces';
 import FieldMappingService from '../../../../services/FieldMappingService';
 import { MappingViewType } from '../../../CreateDetector/components/ConfigureFieldMapping/components/RequiredFieldMapping/FieldMappingsTable';
+import { Detector } from '../../../../../types';
 import _ from 'lodash';
 
 export interface ruleFieldToIndexFieldMap {

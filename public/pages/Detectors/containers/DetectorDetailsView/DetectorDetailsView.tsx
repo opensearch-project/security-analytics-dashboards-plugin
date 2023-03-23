@@ -7,9 +7,9 @@ import React from 'react';
 import { DetectorBasicDetailsView } from '../../components/DetectorBasicDetailsView/DetectorBasicDetailsView';
 import { DetectorRulesView } from '../../components/DetectorRulesView/DetectorRulesView';
 import { EuiSpacer } from '@elastic/eui';
-import { Detector } from '../../../../../models/interfaces';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { Detector } from '../../../../../types';
 
 export interface DetectorDetailsViewProps {
   detector: Detector;
@@ -20,6 +20,7 @@ export interface DetectorDetailsViewProps {
   dashboardId?: string;
   editBasicDetails: () => void;
   editDetectorRules: (enabledRules: RuleItem[], allRuleItems: RuleItem[]) => void;
+  isEditable: boolean;
 }
 
 export interface DetectorDetailsViewState {}
@@ -37,6 +38,7 @@ export class DetectorDetailsView extends React.Component<
       dashboardId,
       editBasicDetails,
       editDetectorRules,
+      isEditable = true,
     } = this.props;
     const detectorRules = (
       <DetectorRulesView
@@ -44,6 +46,7 @@ export class DetectorDetailsView extends React.Component<
         detector={detector}
         rulesCanFold={rulesCanFold}
         onEditClicked={editDetectorRules}
+        isEditable={isEditable}
       />
     );
 
@@ -57,6 +60,7 @@ export class DetectorDetailsView extends React.Component<
           rulesCanFold={rulesCanFold}
           dashboardId={dashboardId}
           onEditClicked={editBasicDetails}
+          isEditable={isEditable}
         >
           {rulesCanFold ? detectorRules : null}
         </DetectorBasicDetailsView>

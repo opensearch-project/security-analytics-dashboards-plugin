@@ -7,19 +7,17 @@ import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { EuiButton, EuiButtonEmpty, EuiFlexGroup, EuiFlexItem, EuiSteps } from '@elastic/eui';
 import DefineDetector from '../components/DefineDetector/containers/DefineDetector';
-import { createDetectorSteps } from '../utils/constants';
+import { createDetectorSteps, PENDING_DETECTOR_ID } from '../utils/constants';
 import {
   BREADCRUMBS,
   EMPTY_DEFAULT_DETECTOR,
   OS_NOTIFICATION_PLUGIN,
   PLUGIN_NAME,
   ROUTES,
-  logTypesWithDashboards,
-  pendingDashboardCreations,
 } from '../../../utils/constants';
 import ConfigureFieldMapping from '../components/ConfigureFieldMapping';
 import ConfigureAlerts from '../components/ConfigureAlerts';
-import { Detector, FieldMapping } from '../../../../models/interfaces';
+import { FieldMapping } from '../../../../models/interfaces';
 import { EuiContainedStepProps } from '@elastic/eui/src/components/steps/steps';
 import { CoreServicesContext } from '../../../components/core_services';
 import { DetectorCreationStep } from '../models/types';
@@ -32,20 +30,18 @@ import {
   RuleItemInfo,
 } from '../components/DefineDetector/components/DetectionRules/types/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import {
-  errorNotificationToast,
-  getPlugins,
-  successNotificationToast,
-} from '../../../utils/helpers';
+import { getPlugins } from '../../../utils/helpers';
+import { Detector } from '../../../../types';
 import { DataStore } from '../../../store/DataStore';
 
 interface CreateDetectorProps extends RouteComponentProps {
   isEdit: boolean;
   services: BrowserServices;
+  history: RouteComponentProps['history'];
   notifications: NotificationsStart;
 }
 
-interface CreateDetectorState {
+export interface CreateDetectorState {
   currentStep: DetectorCreationStep;
   detector: Detector;
   fieldMappings: FieldMapping[];
@@ -61,6 +57,11 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
 
   constructor(props: CreateDetectorProps) {
     super(props);
+
+    let detectorState = {}; // if there is detector state in history, then use it to populate all the fields
+    const historyState = this.props.history.location.state as any;
+    if (historyState) detectorState = historyState.detectorState;
+
     this.state = {
       currentStep: DetectorCreationStep.DEFINE_DETECTOR,
       detector: EMPTY_DEFAULT_DETECTOR,
@@ -75,6 +76,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
       rulesState: { page: { index: 0 }, allRules: [] },
       plugins: [],
       loadingRules: false,
+      ...detectorState,
     };
   }
 
@@ -106,73 +108,32 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     this.setState({ fieldMappings });
   };
 
-  onCreateClick = async () => {
+  onCreateClick = () => {
     const { creatingDetector, detector, fieldMappings } = this.state;
     if (creatingDetector) {
       return;
     }
-    this.setState({ creatingDetector: true });
-    try {
-      const createMappingsRes = await this.props.services.fieldMappingService.createMappings(
-        detector.inputs[0].detector_input.indices[0],
-        detector.detector_type,
-        fieldMappings
-      );
-      if (!createMappingsRes.ok) {
-        errorNotificationToast(
-          this.props.notifications,
-          'create',
-          'detector',
-          'Double check the field mappings and try again.'
-        );
-      } else {
-        const createDetectorRes = await this.props.services.detectorsService.createDetector(
-          detector
-        );
-        if (createDetectorRes.ok) {
-          successNotificationToast(
-            this.props.notifications,
-            'created',
-            `detector, "${detector.name}"`
-          );
-          // Create the dashboard
-          let createDashboardPromise;
-          if (logTypesWithDashboards.has(detector.detector_type)) {
-            createDashboardPromise = this.createDashboard(
-              detector.name,
-              detector.detector_type,
-              createDetectorRes.response._id,
-              detector.inputs[0].detector_input.indices
-            );
-            pendingDashboardCreations[createDetectorRes.response._id] = createDashboardPromise;
-          }
-          this.props.history.push(`${ROUTES.DETECTOR_DETAILS}/${createDetectorRes.response._id}`);
-        } else {
-          errorNotificationToast(
-            this.props.notifications,
-            'create',
-            'detector',
-            createDetectorRes.error
-          );
-        }
-      }
-    } catch (error: any) {
-      errorNotificationToast(this.props.notifications, 'create', 'detector', error);
-    }
-    this.setState({ creatingDetector: false });
-  };
 
-  private createDashboard = (
-    detectorName: string,
-    logType: string,
-    detectorId: string,
-    inputIndices: string[]
-  ) => {
-    return this.props.services.savedObjectsService
-      .createSavedObject(detectorName, logType, detectorId, inputIndices)
-      .catch((error: any) => {
-        console.error(error);
-      });
+    this.setState({ creatingDetector: true });
+
+    const fieldsMappingPromise = this.props.services.fieldMappingService.createMappings(
+      detector.inputs[0].detector_input.indices[0],
+      detector.detector_type,
+      fieldMappings
+    );
+
+    const createDetectorPromise = this.props.services.detectorsService.createDetector(detector);
+
+    // set detector pending state, this will be used in detector details page
+    DataStore.detectors.setPendingState({
+      pendingRequests: [fieldsMappingPromise, createDetectorPromise],
+      detectorState: { ...this.state },
+    });
+
+    this.setState({ creatingDetector: false });
+
+    // navigate to detector details
+    this.props.history.push(`${ROUTES.DETECTOR_DETAILS}/${PENDING_DETECTOR_ID}`);
   };
 
   onNextClick = () => {
