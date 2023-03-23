@@ -23,17 +23,22 @@ export interface AlertTriggersViewProps {
   detector: Detector;
   editAlertTriggers: () => void;
   notifications: NotificationsStart;
+  isEditable: boolean;
 }
 
 export const AlertTriggersView: React.FC<AlertTriggersViewProps> = ({
   detector,
   editAlertTriggers,
   notifications,
+  isEditable = true,
 }) => {
   const services = useContext(ServicesContext);
   const [channels, setChannels] = useState<FeatureChannelList[]>([]);
   const [rules, setRules] = useState<{ [key: string]: RuleInfo }>({});
-  const actions = useMemo(() => [<EuiButton onClick={editAlertTriggers}>Edit</EuiButton>], []);
+  const actions = useMemo(
+    () => (isEditable ? [<EuiButton onClick={editAlertTriggers}>Edit</EuiButton>] : null),
+    []
+  );
 
   useEffect(() => {
     const getNotificationChannels = async () => {

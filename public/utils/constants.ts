@@ -4,8 +4,8 @@
  */
 
 import { SimpleSavedObject } from 'opensearch-dashboards/public';
-import { ServerResponse } from '../../types';
-import { Detector, DetectorInput, PeriodSchedule } from '../../models/interfaces';
+import { Detector, ServerResponse } from '../../types';
+import { DetectorInput, PeriodSchedule } from '../../models/interfaces';
 import { DetectorHit } from '../../server/models/interfaces';
 import { DETECTOR_TYPES } from '../pages/Detectors/utils/constants';
 

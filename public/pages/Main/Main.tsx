@@ -265,6 +265,7 @@ export default class Main extends Component<MainProps, MainState> {
                               {...props}
                               isEdit={false}
                               services={services}
+                              history={props.history}
                               notifications={core?.notifications}
                             />
                           )}
