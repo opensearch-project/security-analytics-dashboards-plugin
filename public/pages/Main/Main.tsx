@@ -35,6 +35,8 @@ import { EditRule } from '../Rules/containers/EditRule/EditRule';
 import { ImportRule } from '../Rules/containers/ImportRule/ImportRule';
 import { DuplicateRule } from '../Rules/containers/DuplicateRule/DuplicateRule';
 import { DateTimeFilter } from '../Overview/models/interfaces';
+import Callout, { ICalloutProps } from './components/Callout';
+import { DataStore } from '../../store/DataStore';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -68,6 +70,7 @@ interface MainState {
   getStartedDismissedOnce: boolean;
   selectedNavItemIndex: number;
   dateTimeFilter: DateTimeFilter;
+  callout?: ICalloutProps;
 }
 
 const navItemIndexByRoute: { [route: string]: number } = {
@@ -89,7 +92,15 @@ export default class Main extends Component<MainProps, MainState> {
         endTime: DEFAULT_DATE_RANGE.end,
       },
     };
+
+    DataStore.detectors.setCalloutHandler(this.showCallout);
   }
+
+  showCallout = (callout?: ICalloutProps) => {
+    this.setState({
+      callout,
+    });
+  };
 
   componentDidMount(): void {
     this.updateSelectedNavItem();
@@ -151,6 +162,8 @@ export default class Main extends Component<MainProps, MainState> {
       location: { pathname },
       history,
     } = this.props;
+
+    const { callout } = this.state;
     const sideNav: EuiSideNavItemType<{ style: any }>[] = [
       {
         name: Navigation.SecurityAnalytics,
@@ -230,6 +243,7 @@ export default class Main extends Component<MainProps, MainState> {
                       </EuiPageSideBar>
                     )}
                     <EuiPageBody>
+                      {callout ? <Callout {...callout} /> : null}
                       <Switch>
                         <Route
                           path={`${ROUTES.FINDINGS}/:detectorId?`}
