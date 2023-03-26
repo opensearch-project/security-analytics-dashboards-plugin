@@ -8,7 +8,7 @@ import ReactDOM from 'react-dom';
 import { DetectorsService } from '../services';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { CreateDetectorState } from '../pages/CreateDetector/containers/CreateDetector';
-import { ICalloutProps } from '../pages/Main/components/Callout';
+import { ICalloutProps, TCalloutColor } from '../pages/Main/components/Callout';
 import { CreateDetectorResponse, ISavedObjectsService, ServerResponse } from '../../types';
 import { CreateMappingsResponse } from '../../server/models/interfaces';
 import { logTypesWithDashboards, ROUTES } from '../utils/constants';
@@ -16,7 +16,22 @@ import { EuiButton } from '@elastic/eui';
 import { RouteComponentProps } from 'react-router-dom';
 import { DataStore } from './DataStore';
 
-export interface IDetectorsStore {}
+export interface IDetectorsStore {
+  readonly service: DetectorsService;
+  readonly notifications: NotificationsStart;
+  readonly savedObjectsService: ISavedObjectsService;
+  readonly history: RouteComponentProps['history'] | undefined;
+  setState: (state: IDetectorsState, history: RouteComponentProps['history']) => void;
+  getState: () => IDetectorsState | undefined;
+  deleteState: () => void;
+  getPendingState: () => Promise<{
+    detectorId?: string;
+    dashboardId?: string;
+    ok: boolean;
+  }>;
+  setCalloutHandler: (calloutHandler: (callout?: ICalloutProps) => void) => void;
+}
+
 export interface IDetectorsCache {}
 
 export interface IDetectorsState {
@@ -51,7 +66,7 @@ export class DetectorsStore implements IDetectorsStore {
 
   /**
    * SavedObjectsService
-   * @property {SavedObjectsService}
+   * @property {ISavedObjectsService}
    * @readonly
    */
   readonly savedObjectsService: ISavedObjectsService;
@@ -61,7 +76,7 @@ export class DetectorsStore implements IDetectorsStore {
    * @property {RouteComponentProps['history']}
    * @readonly
    */
-  private history: RouteComponentProps['history'] | undefined = undefined;
+  history: RouteComponentProps['history'] | undefined = undefined;
 
   /**
    * Keeps detector's data cached
@@ -89,38 +104,98 @@ export class DetectorsStore implements IDetectorsStore {
   /**
    * Invalidates all detectors data
    */
-  private invalidateCache = () => {
+  private invalidateCache = (): DetectorsStore => {
     this.cache = {};
     return this;
   };
 
-  public setState = async (state: IDetectorsState, history: RouteComponentProps['history']) => {
+  public setState = (state: IDetectorsState, history: RouteComponentProps['history']): void => {
     this.state = state;
     this.history = history;
 
-    this.showCallout({
-      title: 'Attempting to create the detector.',
-      loading: true,
-    });
+    this.showNotification('Attempting to create the detector.', undefined, 'primary', true);
   };
 
-  public getState = () => (this.state ? this.state : undefined);
+  public getState = (): IDetectorsState | undefined => (this.state ? this.state : undefined);
 
-  public deleteState = () => {
+  public deleteState = (): void => {
     delete this.state;
   };
 
-  mountToaster = (component: React.ReactElement) => (container: HTMLElement) => {
+  private showNotification = (
+    title: string,
+    message?: string,
+    type?: TCalloutColor,
+    loading?: boolean,
+    btnText?: string,
+    btnHandler?: (e: any) => void
+  ): void => {
+    if (!type) type = 'primary';
+
+    const btn = btnText ? (
+      <EuiButton
+        color={type}
+        onClick={(e: any) => {
+          btnHandler && btnHandler(e);
+          this.hideCallout();
+          this.notifications?.toasts.remove(toast);
+        }}
+        size="s"
+      >
+        {btnText}
+      </EuiButton>
+    ) : null;
+
+    this.showCallout({
+      type,
+      title,
+      message: (
+        <>
+          {message}
+          {btn}
+        </>
+      ),
+      closeHandler: this.showCallout,
+    });
+
+    let toastGenerator;
+    switch (type) {
+      case 'danger':
+        toastGenerator = this.notifications?.toasts.addDanger;
+        break;
+      case 'warning':
+        toastGenerator = this.notifications?.toasts.addWarning;
+        break;
+      case 'success':
+        toastGenerator = this.notifications?.toasts.addSuccess;
+        break;
+      default:
+        toastGenerator = this.notifications?.toasts.addInfo;
+        break;
+    }
+
+    const toast = toastGenerator.bind(this.notifications?.toasts)({
+      title: title,
+      text: this.mountToaster(
+        <>
+          {message ? <p>{message}</p> : null}
+          {btn}
+        </>
+      ),
+      toastLifeTimeMs: 5000,
+    });
+  };
+
+  private mountToaster = (component: React.ReactElement) => (container: HTMLElement) => {
     ReactDOM.render(component, container);
     return () => ReactDOM.unmountComponentAtNode(container);
   };
 
-  viewDetectorConfiguration = () => {
+  private viewDetectorConfiguration = (): void => {
     const pendingState = DataStore.detectors.getState();
     const detectorState = pendingState?.detectorState;
     this.history?.push({
       pathname: `${ROUTES.DETECTORS_CREATE}`,
-      // @ts-ignore
       state: { detectorState },
     });
     DataStore.detectors.deleteState();
@@ -136,78 +211,41 @@ export class DetectorsStore implements IDetectorsStore {
         this.state?.pendingRequests
       )) as [ServerResponse<CreateMappingsResponse>, ServerResponse<CreateDetectorResponse>];
 
+      let title: string = `Create detector failed.`;
       if (!mappingsResponse.ok) {
-        const error = {
-          title: `Create detector failed.`,
-          message: 'Double check the field mappings and try again.',
-        };
-        this.showCallout({
-          ...error,
-          closeHandler: this.showCallout,
-        });
+        const message = 'Double check the field mappings and try again.';
 
-        const toast = this.notifications?.toasts.addDanger({
-          title: error.title,
-          text: this.mountToaster(
-            <>
-              <p>{error.message}</p>
-              <EuiButton
-                color="danger"
-                onClick={() => {
-                  this.hideCallout();
-                  DataStore.detectors.viewDetectorConfiguration();
-                  this.notifications?.toasts.remove(toast);
-                }}
-                size="s"
-              >
-                Review detector configuration
-              </EuiButton>
-            </>
-          ),
-          toastLifeTimeMs: 30000,
-        });
+        this.showNotification(
+          title,
+          message,
+          'danger',
+          false,
+          'Review detector configuration',
+          DataStore.detectors.viewDetectorConfiguration
+        );
 
         return Promise.resolve({
           ok: false,
-          error: error,
+          error: { title, message },
         });
       }
 
       if (!detectorResponse.ok) {
-        const error = {
-          title: `Create detector failed.`,
-          message: detectorResponse.error,
-        };
-
-        this.showCallout({
-          ...error,
-          closeHandler: this.showCallout,
-        });
-
-        const toast = this.notifications?.toasts.addDanger({
-          title: error.title,
-          text: this.mountToaster(
-            <>
-              <p>{error.message}</p>
-              <EuiButton
-                color="danger"
-                onClick={() => {
-                  this.hideCallout();
-                  DataStore.detectors.viewDetectorConfiguration();
-                  this.notifications?.toasts.remove(toast);
-                }}
-                size="s"
-              >
-                Review detector configuration
-              </EuiButton>
-            </>
-          ),
-          toastLifeTimeMs: 30000,
-        });
+        this.showNotification(
+          title,
+          detectorResponse.error,
+          'danger',
+          false,
+          'Review detector configuration',
+          DataStore.detectors.viewDetectorConfiguration
+        );
 
         return Promise.resolve({
           ok: false,
-          error: error,
+          error: {
+            title,
+            message: detectorResponse.error,
+          },
         });
       }
 
@@ -236,32 +274,21 @@ export class DetectorsStore implements IDetectorsStore {
         }
       }
 
-      const success = {
-        title: `Detector created successfully: ${detectorResponse.response.detector.name}`,
+      const goToDetectorDetails = (e: any) => {
+        e.preventDefault();
+        DataStore.detectors.deleteState();
+        this.history?.push(`${ROUTES.DETECTOR_DETAILS}/${detectorId}`);
       };
-      this.showCallout({
-        type: 'success',
-        ...success,
-        closeHandler: this.showCallout,
-      });
 
-      const toast = this.notifications?.toasts.addSuccess({
-        title: success.title,
-        text: this.mountToaster(
-          <EuiButton
-            onClick={() => {
-              this.hideCallout();
-              DataStore.detectors.deleteState();
-              this.history?.push(`${ROUTES.DETECTOR_DETAILS}/${detectorId}`);
-              this.notifications?.toasts.remove(toast);
-            }}
-            size="s"
-          >
-            View detector
-          </EuiButton>
-        ),
-        toastLifeTimeMs: 30000,
-      });
+      title = `Detector created successfully: ${detectorResponse.response.detector.name}`;
+      this.showNotification(
+        title,
+        undefined,
+        'success',
+        false,
+        'View detector',
+        goToDetectorDetails
+      );
 
       return Promise.resolve({
         detectorId: detectorId,
@@ -271,22 +298,6 @@ export class DetectorsStore implements IDetectorsStore {
     }
 
     return Promise.resolve({ ok: false });
-  };
-
-  showNotification = (
-    title: string,
-    message: string,
-    loading: boolean,
-    type: string = 'success',
-    btnText: string,
-    btnHandler: () => void
-  ) => {
-    this.showCallout({
-      type,
-      title,
-      message,
-      closeHandler: this.showCallout,
-    });
   };
 
   private createDashboard = (
@@ -302,11 +313,11 @@ export class DetectorsStore implements IDetectorsStore {
       });
   };
 
-  showCallout = (callout?: ICalloutProps | undefined): void => {};
+  private showCallout = (callout?: ICalloutProps | undefined): void => {};
 
-  hideCallout = () => this.showCallout(undefined);
+  private hideCallout = (): void => this.showCallout(undefined);
 
-  public setCalloutHandler = (calloutHandler: (callout?: ICalloutProps) => void) => {
+  public setCalloutHandler = (calloutHandler: (callout?: ICalloutProps) => void): void => {
     this.showCallout = calloutHandler;
   };
 }

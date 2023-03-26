@@ -13,8 +13,8 @@ import {
   EuiLoadingSpinner,
 } from '@elastic/eui';
 
-export type TCalloutColor = 'primary' | 'success' | 'warning' | 'danger' | undefined;
-export type TCalloutIcon = 'iInCircle' | 'check' | 'help' | 'alert' | undefined;
+export type TCalloutColor = 'primary' | 'success' | 'warning' | 'danger';
+export type TCalloutIcon = 'iInCircle' | 'check' | 'help' | 'alert';
 
 interface ICalloutType {
   color: TCalloutColor;
@@ -22,10 +22,9 @@ interface ICalloutType {
 }
 
 export interface ICalloutProps {
-  title: string;
+  title: string | JSX.Element;
   message?: string | JSX.Element;
   type?: ICalloutType | TCalloutColor;
-
   closable?: boolean;
   loading?: boolean;
   closeHandler?: (callout?: ICalloutProps) => void;
@@ -40,7 +39,7 @@ export const CallOut = ({
   closeHandler,
 }: ICalloutProps) => {
   const toastTypes: {
-    [Key in TCalloutColor]?: TCalloutIcon;
+    [Key in TCalloutColor]: TCalloutIcon;
   } = {
     primary: 'iInCircle',
     success: 'check',
@@ -48,7 +47,7 @@ export const CallOut = ({
     danger: 'alert',
   };
 
-  const resolveType = (type?: ICalloutType | TCalloutColor | undefined): ICalloutType => {
+  const resolveType = (type?: ICalloutType | TCalloutColor): ICalloutType => {
     if (type === undefined) {
       return {
         color: 'primary',
@@ -65,8 +64,6 @@ export const CallOut = ({
       }
     }
   };
-
-  const { color, iconType } = resolveType(type);
 
   const closeCallout = () => closeHandler && closeHandler(undefined);
 
@@ -88,6 +85,7 @@ export const CallOut = ({
     );
   };
 
+  const { color, iconType } = resolveType(type);
   return (
     <>
       <EuiCallOut
