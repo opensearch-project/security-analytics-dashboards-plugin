@@ -12,7 +12,7 @@ import { ICalloutProps, TCalloutColor } from '../pages/Main/components/Callout';
 import { CreateDetectorResponse, ISavedObjectsService, ServerResponse } from '../../types';
 import { CreateMappingsResponse } from '../../server/models/interfaces';
 import { logTypesWithDashboards, ROUTES } from '../utils/constants';
-import { EuiButton } from '@elastic/eui';
+import { EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 import { RouteComponentProps } from 'react-router-dom';
 import { DataStore } from './DataStore';
 
@@ -146,15 +146,17 @@ export class DetectorsStore implements IDetectorsStore {
       </EuiButton>
     ) : null;
 
+    const messageBody = (
+      <EuiFlexGroup direction={'column'} alignItems={'flexStart'}>
+        <EuiFlexItem grow={false}>{message ? <p>{message}</p> : null}</EuiFlexItem>
+        <EuiFlexItem grow={false}>{btn}</EuiFlexItem>
+      </EuiFlexGroup>
+    );
+
     this.showCallout({
       type,
       title,
-      message: (
-        <>
-          {message}
-          {btn}
-        </>
-      ),
+      message: messageBody,
       closeHandler: this.showCallout,
     });
 
@@ -176,12 +178,7 @@ export class DetectorsStore implements IDetectorsStore {
 
     const toast = toastGenerator.bind(this.notifications?.toasts)({
       title: title,
-      text: this.mountToaster(
-        <>
-          {message ? <p>{message}</p> : null}
-          {btn}
-        </>
-      ),
+      text: this.mountToaster(messageBody),
       toastLifeTimeMs: 5000,
     });
   };
