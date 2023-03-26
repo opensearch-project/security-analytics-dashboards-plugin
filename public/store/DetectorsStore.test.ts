@@ -12,6 +12,7 @@ import detectorResponseMock from '../../test/mocks/Detectors/containers/Detector
 import browserHistoryMock from '../../test/mocks/services/browserHistory.mock';
 import { CreateDetectorState } from '../pages/CreateDetector/containers/CreateDetector';
 import DetectorMock from '../../test/mocks/Detectors/containers/Detectors/Detector.mock';
+
 describe('Detectors store specs', () => {
   Object.assign(services, {
     detectorService: {
