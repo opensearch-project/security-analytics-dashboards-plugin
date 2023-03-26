@@ -190,6 +190,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
       "location": Object {
         "pathname": "",
       },
+      "push": [MockFunction],
       "replace": [MockFunction] {
         "calls": Array [
           Array [
@@ -576,6 +577,9 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
     Object {
       "toasts": Object {
         "addDanger": [MockFunction],
+        "addInfo": [MockFunction],
+        "addSuccess": [MockFunction],
+        "addWarning": [MockFunction],
       },
     }
   }
@@ -904,6 +908,9 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
         Object {
           "toasts": Object {
             "addDanger": [MockFunction],
+            "addInfo": [MockFunction],
+            "addSuccess": [MockFunction],
+            "addWarning": [MockFunction],
           },
         }
       }
