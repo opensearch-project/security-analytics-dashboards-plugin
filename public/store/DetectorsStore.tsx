@@ -206,7 +206,6 @@ export class DetectorsStore implements IDetectorsStore {
     dashboardId?: string;
     ok: boolean;
   }> => {
-    debugger;
     if (this.state?.pendingRequests) {
       const [mappingsResponse, detectorResponse] = (await Promise.all(
         this.state?.pendingRequests
