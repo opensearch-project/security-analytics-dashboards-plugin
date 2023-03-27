@@ -13,7 +13,9 @@ import {
   EuiSideNavItemType,
   EuiTitle,
   EuiSpacer,
+  EuiGlobalToastList,
 } from '@elastic/eui';
+import { Toast } from '@opensearch-project/oui/src/eui_components/toast/global_toast_list';
 import { CoreStart } from 'opensearch-dashboards/public';
 import { ServicesConsumer } from '../../services';
 import { BrowserServices } from '../../models/interfaces';
@@ -71,6 +73,7 @@ interface MainState {
   selectedNavItemIndex: number;
   dateTimeFilter: DateTimeFilter;
   callout?: ICalloutProps;
+  toasts?: Toast[];
 }
 
 const navItemIndexByRoute: { [route: string]: number } = {
@@ -93,12 +96,18 @@ export default class Main extends Component<MainProps, MainState> {
       },
     };
 
-    DataStore.detectors.setCalloutHandler(this.showCallout);
+    DataStore.detectors.setHandlers(this.showCallout, this.showToast);
   }
 
   showCallout = (callout?: ICalloutProps) => {
     this.setState({
       callout,
+    });
+  };
+
+  showToast = (toasts?: any[]) => {
+    this.setState({
+      toasts,
     });
   };
 
@@ -426,6 +435,11 @@ export default class Main extends Component<MainProps, MainState> {
                         <Redirect from={'/'} to={landingPage} />
                       </Switch>
                     </EuiPageBody>
+                    <EuiGlobalToastList
+                      toasts={this.state.toasts}
+                      dismissToast={DataStore.detectors.hideToast}
+                      toastLifeTimeMs={6000}
+                    />
                   </EuiPage>
                 )
               }

@@ -4,17 +4,18 @@
  */
 
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { DetectorsService } from '../services';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { CreateDetectorState } from '../pages/CreateDetector/containers/CreateDetector';
-import { ICalloutProps, TCalloutColor } from '../pages/Main/components/Callout';
+import { ICalloutProps, resolveType, TCalloutColor } from '../pages/Main/components/Callout';
 import { CreateDetectorResponse, ISavedObjectsService, ServerResponse } from '../../types';
 import { CreateMappingsResponse } from '../../server/models/interfaces';
 import { logTypesWithDashboards, ROUTES } from '../utils/constants';
 import { EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
+import { Toast } from '@opensearch-project/oui/src/eui_components/toast/global_toast_list';
 import { RouteComponentProps } from 'react-router-dom';
 import { DataStore } from './DataStore';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface IDetectorsStore {
   readonly service: DetectorsService;
@@ -29,7 +30,10 @@ export interface IDetectorsStore {
     dashboardId?: string;
     ok: boolean;
   }>;
-  setCalloutHandler: (calloutHandler: (callout?: ICalloutProps) => void) => void;
+  setHandlers: (
+    calloutHandler: (callout?: ICalloutProps) => void,
+    toastHandler: (toasts?: Toast[]) => void
+  ) => void;
 }
 
 export interface IDetectorsCache {}
@@ -95,7 +99,7 @@ export class DetectorsStore implements IDetectorsStore {
    * List of all shown toasts
    * @private
    */
-  private toasts: any[] = [];
+  private toasts: Toast[] = [];
 
   constructor(
     service: DetectorsService,
@@ -138,12 +142,9 @@ export class DetectorsStore implements IDetectorsStore {
   ): void => {
     if (!type) type = 'primary';
 
-    const closeToasts = () => {
-      while (this.toasts.length) {
-        const toast = this.toasts.pop();
-        this.notifications?.toasts.remove(toast);
-        closeToasts();
-      }
+    const closeAllToasts = () => {
+      this.toasts = [];
+      this.showToast(this.toasts);
     };
 
     const btn = btnText && (
@@ -152,7 +153,7 @@ export class DetectorsStore implements IDetectorsStore {
         onClick={(e: any) => {
           btnHandler && btnHandler(e);
           this.hideCallout();
-          closeToasts();
+          closeAllToasts();
         }}
         size="s"
       >
@@ -174,33 +175,15 @@ export class DetectorsStore implements IDetectorsStore {
       closeHandler: this.hideCallout,
     });
 
-    let toastGenerator;
-    switch (type) {
-      case 'danger':
-        toastGenerator = this.notifications?.toasts.addDanger;
-        break;
-      case 'warning':
-        toastGenerator = this.notifications?.toasts.addWarning;
-        break;
-      case 'success':
-        toastGenerator = this.notifications?.toasts.addSuccess;
-        break;
-      default:
-        toastGenerator = this.notifications?.toasts.addInfo;
-        break;
-    }
-
-    this.toasts.push(
-      toastGenerator.bind(this.notifications?.toasts)({
-        title: title,
-        text: this.mountToaster(messageBody),
-      })
-    );
-  };
-
-  private mountToaster = (component: React.ReactElement) => (container: HTMLElement) => {
-    ReactDOM.render(component, container);
-    return () => ReactDOM.unmountComponentAtNode(container);
+    const { color, iconType } = resolveType(type);
+    this.toasts.push({
+      title,
+      color,
+      iconType,
+      id: `toastsKey_${uuidv4()}`,
+      text: messageBody,
+    });
+    this.showToast(this.toasts);
   };
 
   private viewDetectorConfiguration = (): void => {
@@ -329,7 +312,18 @@ export class DetectorsStore implements IDetectorsStore {
 
   private hideCallout = (): void => this.showCallout(undefined);
 
-  public setCalloutHandler = (calloutHandler: (callout?: ICalloutProps) => void): void => {
+  private showToast = (toasts?: Toast[] | undefined): void => {};
+
+  public hideToast = (removedToast: any): void => {
+    const toasts = this.toasts.filter((toast: Toast) => toast.id !== removedToast.id);
+    this.showToast(toasts);
+  };
+
+  public setHandlers = (
+    calloutHandler: (callout?: ICalloutProps) => void,
+    toastHandler: (toasts?: Toast[]) => void
+  ): void => {
     this.showCallout = calloutHandler;
+    this.showToast = toastHandler;
   };
 }

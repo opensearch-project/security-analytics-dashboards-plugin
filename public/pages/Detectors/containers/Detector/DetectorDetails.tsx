@@ -222,6 +222,8 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
               this.getDetector();
             }
           );
+      } else {
+        this.setState({ createFailed: true });
       }
     }
     this.setState({ loading: false });

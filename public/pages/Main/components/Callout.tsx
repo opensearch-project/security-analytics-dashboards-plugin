@@ -30,6 +30,33 @@ export interface ICalloutProps {
   closeHandler?: (callout?: ICalloutProps) => void;
 }
 
+export const toastTypes: {
+  [Key in TCalloutColor]: TCalloutIcon;
+} = {
+  primary: 'iInCircle',
+  success: 'check',
+  warning: 'help',
+  danger: 'alert',
+};
+
+export const resolveType = (type?: ICalloutType | TCalloutColor): ICalloutType => {
+  if (type === undefined) {
+    return {
+      color: 'primary',
+      iconType: 'iInCircle',
+    };
+  } else {
+    if (typeof type === 'string') {
+      return {
+        color: type,
+        iconType: toastTypes[type],
+      };
+    } else {
+      return type;
+    }
+  }
+};
+
 export const CallOut = ({
   title,
   message,
@@ -38,33 +65,6 @@ export const CallOut = ({
   loading = false,
   closeHandler,
 }: ICalloutProps) => {
-  const toastTypes: {
-    [Key in TCalloutColor]: TCalloutIcon;
-  } = {
-    primary: 'iInCircle',
-    success: 'check',
-    warning: 'help',
-    danger: 'alert',
-  };
-
-  const resolveType = (type?: ICalloutType | TCalloutColor): ICalloutType => {
-    if (type === undefined) {
-      return {
-        color: 'primary',
-        iconType: 'iInCircle',
-      };
-    } else {
-      if (typeof type === 'string') {
-        return {
-          color: type,
-          iconType: toastTypes[type],
-        };
-      } else {
-        return type;
-      }
-    }
-  };
-
   const closeCallout = () => closeHandler && closeHandler(undefined);
 
   const getTitle = (): JSX.Element => {
