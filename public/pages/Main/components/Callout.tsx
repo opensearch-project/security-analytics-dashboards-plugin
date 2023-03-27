@@ -70,17 +70,17 @@ export const CallOut = ({
   const getTitle = (): JSX.Element => {
     return (
       <EuiFlexGroup>
-        {loading ? (
+        {loading && (
           <EuiFlexItem grow={false}>
             <EuiLoadingSpinner size="l" />
           </EuiFlexItem>
-        ) : null}
+        )}
         <EuiFlexItem grow={false}>{title}</EuiFlexItem>
-        {closable ? (
+        {closable && (
           <EuiFlexItem className={'mainCalloutCloseButton'}>
             <EuiButtonIcon onClick={() => closeCallout()} iconType="cross" aria-label="Close" />
           </EuiFlexItem>
-        ) : null}
+        )}
       </EuiFlexGroup>
     );
   };
@@ -94,7 +94,7 @@ export const CallOut = ({
         iconType={!loading ? iconType : undefined}
         className={'mainCallout'}
       >
-        {message ? <p>{message}</p> : null}
+        {message}
       </EuiCallOut>
 
       <EuiSpacer size="m" />

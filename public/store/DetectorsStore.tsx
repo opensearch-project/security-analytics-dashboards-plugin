@@ -91,6 +91,12 @@ export class DetectorsStore implements IDetectorsStore {
    */
   private state: IDetectorsState | undefined;
 
+  /**
+   * List of all shown toasts
+   * @private
+   */
+  private toasts: any[] = [];
+
   constructor(
     service: DetectorsService,
     notifications: NotificationsStart,
@@ -132,23 +138,31 @@ export class DetectorsStore implements IDetectorsStore {
   ): void => {
     if (!type) type = 'primary';
 
-    const btn = btnText ? (
+    const closeToasts = () => {
+      while (this.toasts.length) {
+        const toast = this.toasts.pop();
+        this.notifications?.toasts.remove(toast);
+        closeToasts();
+      }
+    };
+
+    const btn = btnText && (
       <EuiButton
         color={type}
         onClick={(e: any) => {
           btnHandler && btnHandler(e);
           this.hideCallout();
-          this.notifications?.toasts.remove(toast);
+          closeToasts();
         }}
         size="s"
       >
         {btnText}
       </EuiButton>
-    ) : null;
+    );
 
     const messageBody = (
       <EuiFlexGroup direction={'column'} alignItems={'flexStart'}>
-        <EuiFlexItem grow={false}>{message ? <p>{message}</p> : null}</EuiFlexItem>
+        {message && <EuiFlexItem grow={false}>{message}</EuiFlexItem>}
         <EuiFlexItem grow={false}>{btn}</EuiFlexItem>
       </EuiFlexGroup>
     );
@@ -157,7 +171,7 @@ export class DetectorsStore implements IDetectorsStore {
       type,
       title,
       message: messageBody,
-      closeHandler: this.showCallout,
+      closeHandler: this.hideCallout,
     });
 
     let toastGenerator;
@@ -176,11 +190,12 @@ export class DetectorsStore implements IDetectorsStore {
         break;
     }
 
-    const toast = toastGenerator.bind(this.notifications?.toasts)({
-      title: title,
-      text: this.mountToaster(messageBody),
-      toastLifeTimeMs: 5000,
-    });
+    this.toasts.push(
+      toastGenerator.bind(this.notifications?.toasts)({
+        title: title,
+        text: this.mountToaster(messageBody),
+      })
+    );
   };
 
   private mountToaster = (component: React.ReactElement) => (container: HTMLElement) => {
