@@ -315,8 +315,8 @@ export class DetectorsStore implements IDetectorsStore {
   private showToast = (toasts?: Toast[] | undefined): void => {};
 
   public hideToast = (removedToast: any): void => {
-    const toasts = this.toasts.filter((toast: Toast) => toast.id !== removedToast.id);
-    this.showToast(toasts);
+    this.toasts = this.toasts.filter((toast: Toast) => toast.id !== removedToast.id);
+    this.showToast(this.toasts);
   };
 
   public setHandlers = (
