@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DataStore } from '../../../store/DataStore';
-import notificationsStartMock from '../../../../test/mocks/services/notifications/NotificationsStart.mock';
-import services from '../../../../test/mocks/services';
+import { DataStore } from './DataStore';
+import notificationsStartMock from '../../test/mocks/services/notifications/NotificationsStart.mock';
+import services from '../../test/mocks/services';
 import { RulesStore } from './RulesStore';
 import { expect } from '@jest/globals';
-import * as rulesResponseMock from '../../../../cypress/fixtures/sample_rule.json';
+import * as rulesResponseMock from '../../cypress/fixtures/sample_rule.json';
 describe('Rules store specs', () => {
   Object.assign(services, {
     ruleService: {

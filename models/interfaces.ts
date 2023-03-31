@@ -18,18 +18,6 @@ export interface Rule {
   detection: string;
 }
 
-export interface Detector {
-  id?: string;
-  type: string;
-  detector_type: string;
-  name: string;
-  enabled: boolean;
-  createdBy: string;
-  schedule: PeriodSchedule;
-  inputs: DetectorInput[];
-  triggers: AlertCondition[];
-}
-
 export interface PeriodSchedule {
   period: {
     interval: number;

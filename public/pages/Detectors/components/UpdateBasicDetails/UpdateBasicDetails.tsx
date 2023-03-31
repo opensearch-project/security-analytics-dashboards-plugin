@@ -11,7 +11,7 @@ import {
   EuiSpacer,
   EuiTitle,
 } from '@elastic/eui';
-import { Detector, PeriodSchedule } from '../../../../../models/interfaces';
+import { PeriodSchedule } from '../../../../../models/interfaces';
 import React, { useContext, useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import DetectorBasicDetailsForm from '../../../CreateDetector/components/DefineDetector/components/DetectorDetails';
@@ -25,6 +25,7 @@ import { ServerResponse } from '../../../../../server/models/types';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast, successNotificationToast } from '../../../../utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
+import { Detector } from '../../../../../types';
 
 export interface UpdateDetectorBasicDetailsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
