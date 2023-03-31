@@ -7,7 +7,6 @@ import { ContentPanel } from '../../../../components/ContentPanel';
 import React, { useMemo, useEffect, useState, useContext } from 'react';
 import { EuiButton } from '@elastic/eui';
 import { AlertTriggerView } from '../../components/AlertTriggerView/AlertTriggerView';
-import { Detector } from '../../../../../models/interfaces';
 import { ServicesContext } from '../../../../services';
 import { ServerResponse } from '../../../../../server/models/types';
 import {
@@ -18,6 +17,7 @@ import {
 import { errorNotificationToast } from '../../../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { DataStore } from '../../../../store/DataStore';
+import { Detector } from '../../../../../types';
 
 export interface AlertTriggersViewProps {
   detector: Detector;

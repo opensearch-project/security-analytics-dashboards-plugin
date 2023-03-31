@@ -64,7 +64,6 @@ export class DetectorDetailsView extends React.Component<
         >
           {rulesCanFold ? detectorRules : null}
         </DetectorBasicDetailsView>
-        <EuiSpacer size="xxl" />
 
         {rulesCanFold ? null : detectorRules}
       </>

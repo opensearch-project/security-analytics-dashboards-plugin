@@ -9,10 +9,17 @@ import { EuiFormRow, EuiFlexGrid, EuiFlexItem, EuiRadio, EuiSpacer } from '@elas
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
 import { DETECTOR_TYPES } from '../../../../../Detectors/utils/constants';
 import { DetectorTypeOption } from '../../../../../Detectors/models/interfaces';
+import { CreateDetectorRulesState, DetectionRules } from '../DetectionRules/DetectionRules';
+import { RuleItem } from '../DetectionRules/types/interfaces';
 
 interface DetectorTypeProps {
   detectorType: string;
   onDetectorTypeChange: (detectorType: string) => void;
+  rulesState: CreateDetectorRulesState;
+  loadingRules?: boolean;
+  onPageChange: (page: { index: number; size: number }) => void;
+  onRuleToggle: (changedItem: RuleItem, isActive: boolean) => void;
+  onAllRulesToggle: (enabled: boolean) => void;
 }
 
 interface DetectorTypeState {
@@ -67,6 +74,7 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
         />
       </EuiFlexItem>
     ));
+
     return (
       <ContentPanel
         title={'Log types and rules'}
@@ -85,6 +93,16 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
           error={this.getErrorMessage()}
         >
           <EuiFlexGrid columns={4}>{radioButtons}</EuiFlexGrid>
+        </EuiFormRow>
+
+        <EuiFormRow fullWidth={true}>
+          <DetectionRules
+            rulesState={this.props.rulesState}
+            loading={this.props.loadingRules}
+            onPageChange={this.props.onPageChange}
+            onRuleToggle={this.props.onRuleToggle}
+            onAllRulesToggle={this.props.onAllRulesToggle}
+          />
         </EuiFormRow>
       </ContentPanel>
     );
