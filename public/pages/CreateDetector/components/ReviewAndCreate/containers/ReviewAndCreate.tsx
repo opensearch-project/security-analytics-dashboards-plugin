@@ -9,9 +9,10 @@ import { DetectorDetailsView } from '../../../../Detectors/containers/DetectorDe
 import { FieldMappingsView } from '../../../../Detectors/components/FieldMappingsView/FieldMappingsView';
 import { AlertTriggersView } from '../../../../Detectors/containers/AlertTriggersView/AlertTriggersView';
 import { RouteComponentProps } from 'react-router-dom';
-import { Detector, FieldMapping } from '../../../../../../models/interfaces';
+import { FieldMapping } from '../../../../../../models/interfaces';
 import { DetectorCreationStep } from '../../../models/types';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { Detector } from '../../../../../../types';
 
 export interface ReviewAndCreateProps extends RouteComponentProps {
   detector: Detector;
