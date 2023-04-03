@@ -39,7 +39,6 @@ export interface ReviewAndCreateData {
 
 export interface DetectorDataByStep {
   [DetectorCreationStep.DEFINE_DETECTOR]: DefineDetectorData;
-  ['CONFIGURE_FIELD_MAPPING']: ConfigureFieldMappingData;
   [DetectorCreationStep.CONFIGURE_ALERTS]: ConfigureAlertsData;
   [DetectorCreationStep.REVIEW_CREATE]: ReviewAndCreateData;
 }

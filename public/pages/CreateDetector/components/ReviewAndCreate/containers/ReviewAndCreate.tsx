@@ -28,7 +28,7 @@ export class ReviewAndCreate extends React.Component<ReviewAndCreateProps, Revie
   };
 
   setConfigureFieldMappingStep = () => {
-    this.props.setDetectorCreationStep(DetectorCreationStep.CONFIGURE_FIELD_MAPPING);
+    this.props.setDetectorCreationStep(DetectorCreationStep.DEFINE_DETECTOR);
   };
 
   setConfigureAlertsStep = () => {

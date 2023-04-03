@@ -23,7 +23,7 @@ export interface AlertTriggersViewProps {
   detector: Detector;
   editAlertTriggers: () => void;
   notifications: NotificationsStart;
-  isEditable: boolean;
+  isEditable?: boolean;
 }
 
 export const AlertTriggersView: React.FC<AlertTriggersViewProps> = ({

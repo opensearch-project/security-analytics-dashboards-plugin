@@ -67,7 +67,6 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
       fieldMappings: [],
       stepDataValid: {
         [DetectorCreationStep.DEFINE_DETECTOR]: false,
-        ['CONFIGURE_FIELD_MAPPING']: true,
         [DetectorCreationStep.CONFIGURE_ALERTS]: false,
         [DetectorCreationStep.REVIEW_CREATE]: false,
       },
