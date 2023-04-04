@@ -37,7 +37,7 @@ interface DetectorDataSourceState {
   fieldTouched: boolean;
   indexOptions: IndexOption[];
   errorMessage?: string;
-  differentLogTypeDetected: boolean;
+  differentLogTypesDetected: boolean;
 }
 
 export default class DetectorDataSource extends Component<
@@ -52,7 +52,7 @@ export default class DetectorDataSource extends Component<
       loading: true,
       fieldTouched: props.isEdit,
       indexOptions: [],
-      differentLogTypeDetected: false,
+      differentLogTypesDetected: false,
     };
   }
 
@@ -120,19 +120,19 @@ export default class DetectorDataSource extends Component<
     if (!_.isEmpty(this.indicesMappings)) {
       let firstMapping: string[] = [];
       let firstMatchMappingIndex: string = '';
-      let differentLogTypeDetected = false;
+      let differentLogTypesDetected = false;
       for (let indexName in this.indicesMappings) {
         if (this.indicesMappings.hasOwnProperty(indexName)) {
           if (!firstMapping.length) firstMapping = this.indicesMappings[indexName];
           !firstMatchMappingIndex.length && (firstMatchMappingIndex = indexName);
           if (!_.isEqual(firstMapping, this.indicesMappings[indexName])) {
-            differentLogTypeDetected = true;
+            differentLogTypesDetected = true;
             break;
           }
         }
       }
 
-      this.setState({ differentLogTypeDetected });
+      this.setState({ differentLogTypesDetected });
     }
 
     this.props.onDetectorInputIndicesChange(options);
@@ -145,7 +145,7 @@ export default class DetectorDataSource extends Component<
       fieldTouched,
       indexOptions,
       errorMessage,
-      differentLogTypeDetected,
+      differentLogTypesDetected,
     } = this.state;
     const isInvalid = fieldTouched && detectorIndices.length < MIN_NUM_DATA_SOURCES;
     return (
@@ -171,7 +171,7 @@ export default class DetectorDataSource extends Component<
             data-test-subj={'define-detector-select-data-source'}
           />
         </EuiFormRow>
-        {differentLogTypeDetected ? (
+        {differentLogTypesDetected ? (
           <>
             <EuiSpacer size={'m'} />
             <EuiCallOut
