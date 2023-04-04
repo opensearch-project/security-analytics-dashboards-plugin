@@ -200,6 +200,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
     title="Alert triggers (2)"
   >
     <EuiPanel
+      className=""
       style={
         Object {
           "paddingLeft": "0px",

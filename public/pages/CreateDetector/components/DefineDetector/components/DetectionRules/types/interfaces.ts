@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RuleItemInfoBase } from '../../../../../../Rules/models/types';
-import { RuleInfo } from './../../../../../../../../server/models/interfaces/Rules';
+import { RuleInfo } from '../../../../../../../../server/models/interfaces';
+import { RuleItemInfoBase } from '../../../../../../../../types';
 
 export interface RuleItem {
   name: string;

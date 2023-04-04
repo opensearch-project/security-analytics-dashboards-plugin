@@ -943,6 +943,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
               title="Alerts"
             >
               <EuiPanel
+                className=""
                 style={
                   Object {
                     "paddingLeft": "0px",
