@@ -21,7 +21,7 @@ import { Detector } from '../../../../../types';
 export interface UpdateFieldMappingsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
   detectorService: DetectorsService;
-  filedMappingService: FieldMappingService;
+  fieldMappingService: FieldMappingService;
   notifications: NotificationsStart;
 }
 
@@ -111,12 +111,12 @@ export default class UpdateFieldMappings extends Component<
         state: { detectorHit },
       },
       detectorService,
-      filedMappingService,
+      fieldMappingService,
     } = this.props;
     const { detector, fieldMappings } = this.state;
 
     try {
-      const createMappingsResponse = await filedMappingService.createMappings(
+      const createMappingsResponse = await fieldMappingService.createMappings(
         detector.inputs[0].detector_input.indices[0],
         detector.detector_type.toLowerCase(),
         fieldMappings
@@ -162,7 +162,7 @@ export default class UpdateFieldMappings extends Component<
   };
 
   render() {
-    const { filedMappingService } = this.props;
+    const { fieldMappingService } = this.props;
     const { submitting, detector, fieldMappings, loading } = this.state;
     return (
       <div>
@@ -184,7 +184,7 @@ export default class UpdateFieldMappings extends Component<
             {...this.props}
             detector={detector}
             fieldMappings={fieldMappings}
-            filedMappingService={filedMappingService}
+            fieldMappingService={fieldMappingService}
             replaceFieldMappings={this.replaceFieldMappings}
             loading={loading}
           />
