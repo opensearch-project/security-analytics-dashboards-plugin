@@ -37,7 +37,7 @@ interface DetectorDataSourceState {
   fieldTouched: boolean;
   indexOptions: IndexOption[];
   errorMessage?: string;
-  message: string[];
+  differentLogTypeDetected: boolean;
 }
 
 export default class DetectorDataSource extends Component<
@@ -52,7 +52,7 @@ export default class DetectorDataSource extends Component<
       loading: true,
       fieldTouched: props.isEdit,
       indexOptions: [],
-      message: [],
+      differentLogTypeDetected: false,
     };
   }
 
@@ -120,23 +120,19 @@ export default class DetectorDataSource extends Component<
     if (!_.isEmpty(this.indicesMappings)) {
       let firstMapping: string[] = [];
       let firstMatchMappingIndex: string = '';
-      let message: string[] = [];
+      let differentLogTypeDetected = false;
       for (let indexName in this.indicesMappings) {
         if (this.indicesMappings.hasOwnProperty(indexName)) {
           if (!firstMapping.length) firstMapping = this.indicesMappings[indexName];
           !firstMatchMappingIndex.length && (firstMatchMappingIndex = indexName);
           if (!_.isEqual(firstMapping, this.indicesMappings[indexName])) {
-            message = [
-              `We recommend creating separate detectors for each of the following log sources:`,
-              firstMatchMappingIndex,
-              indexName,
-            ];
+            differentLogTypeDetected = true;
             break;
           }
         }
       }
 
-      this.setState({ message });
+      this.setState({ differentLogTypeDetected });
     }
 
     this.props.onDetectorInputIndicesChange(options);
@@ -144,28 +140,17 @@ export default class DetectorDataSource extends Component<
 
   render() {
     const { detectorIndices } = this.props;
-    const { loading, fieldTouched, indexOptions, errorMessage, message } = this.state;
+    const {
+      loading,
+      fieldTouched,
+      indexOptions,
+      errorMessage,
+      differentLogTypeDetected,
+    } = this.state;
     const isInvalid = fieldTouched && detectorIndices.length < MIN_NUM_DATA_SOURCES;
     return (
       <ContentPanel title={'Data source'} titleSize={'m'}>
         <EuiSpacer size={'m'} />
-        {message.length ? (
-          <>
-            <EuiCallOut
-              title="The selected log sources contain different types of logs"
-              color="warning"
-            >
-              {message.map((messageItem: string, index: number) => (
-                <EuiTextColor color={'default'} key={`callout-message-part-${index}`}>
-                  {index === 0 ? '' : 'ㅤ•ㅤ'}
-                  {messageItem}
-                  <br />
-                </EuiTextColor>
-              ))}
-            </EuiCallOut>
-            <EuiSpacer size={'m'} />
-          </>
-        ) : null}
         <EuiFormRow
           label={
             <FormFieldHeader headerTitle={'Select or input source indexes or index patterns'} />
@@ -186,6 +171,20 @@ export default class DetectorDataSource extends Component<
             data-test-subj={'define-detector-select-data-source'}
           />
         </EuiFormRow>
+        {differentLogTypeDetected ? (
+          <>
+            <EuiSpacer size={'m'} />
+            <EuiCallOut
+              title="The selected log sources contain different log types"
+              color="warning"
+            >
+              <EuiTextColor color={'default'}>
+                To avoid issues with field mappings, we recommend creating separate detectors for
+                different log types.
+              </EuiTextColor>
+            </EuiCallOut>
+          </>
+        ) : null}
       </ContentPanel>
     );
   }

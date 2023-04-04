@@ -15,7 +15,6 @@ import {
   EuiPanel,
 } from '@elastic/eui';
 import FieldMappingsTable from '../components/RequiredFieldMapping';
-import { ContentPanel } from '../../../../../components/ContentPanel';
 import { FieldMapping } from '../../../../../../models/interfaces';
 import { EMPTY_FIELD_MAPPINGS_VIEW } from '../utils/constants';
 import { GetFieldMappingViewResponse } from '../../../../../../server/models/interfaces';
@@ -44,6 +43,7 @@ interface ConfigureFieldMappingState {
   mappingsData: GetFieldMappingViewResponse;
   createdMappings: ruleFieldToIndexFieldMap;
   invalidMappingFieldNames: string[];
+  fieldMappingIsOpen: boolean;
 }
 
 export default class ConfigureFieldMapping extends Component<
@@ -62,6 +62,7 @@ export default class ConfigureFieldMapping extends Component<
       createdMappings,
       invalidMappingFieldNames: [],
       detector: props.detector,
+      fieldMappingIsOpen: false,
     };
   }
 
@@ -131,6 +132,7 @@ export default class ConfigureFieldMapping extends Component<
             ...mappingsView.response,
             unmapped_field_aliases: Array.from(unmappedRuleFields),
           },
+          fieldMappingIsOpen: !!unmappedRuleFields.size,
         });
         this.updateMappingSharedState(existingMappings);
       }
@@ -186,7 +188,13 @@ export default class ConfigureFieldMapping extends Component<
   };
 
   render() {
-    const { loading, mappingsData, createdMappings, invalidMappingFieldNames } = this.state;
+    const {
+      loading,
+      mappingsData,
+      createdMappings,
+      invalidMappingFieldNames,
+      fieldMappingIsOpen,
+    } = this.state;
     const existingMappings: ruleFieldToIndexFieldMap = {
       ...createdMappings,
     };
@@ -233,10 +241,14 @@ export default class ConfigureFieldMapping extends Component<
             }
             buttonProps={{ style: { padding: '5px' } }}
             id={'mappedTitleFieldsAccordion'}
-            initialIsOpen={false}
+            initialIsOpen={!!unmappedRuleFields.length}
+            forceState={fieldMappingIsOpen ? 'open' : 'closed'}
+            onToggle={(isOpen) => {
+              this.setState({ fieldMappingIsOpen: isOpen });
+            }}
           >
             <EuiHorizontalRule margin={'xs'} />
-            <EuiSpacer size={'m'} />
+            <EuiSpacer size={'s'} />
 
             <EuiAccordion
               buttonContent={
@@ -252,19 +264,20 @@ export default class ConfigureFieldMapping extends Component<
               id={'mappedFieldsAccordion'}
               initialIsOpen={false}
             >
-              <EuiHorizontalRule margin={'xs'} />
-              <FieldMappingsTable<MappingViewType.Edit>
-                {...this.props}
-                loading={loading}
-                ruleFields={mappedRuleFields}
-                indexFields={indexFieldOptions}
-                mappingProps={{
-                  type: MappingViewType.Edit,
-                  existingMappings,
-                  invalidMappingFieldNames,
-                  onMappingCreation: this.onMappingCreation,
-                }}
-              />
+              <EuiPanel hasBorder={false} hasShadow={false} paddingSize="s">
+                <FieldMappingsTable<MappingViewType.Edit>
+                  {...this.props}
+                  loading={loading}
+                  ruleFields={mappedRuleFields}
+                  indexFields={indexFieldOptions}
+                  mappingProps={{
+                    type: MappingViewType.Edit,
+                    existingMappings,
+                    invalidMappingFieldNames,
+                    onMappingCreation: this.onMappingCreation,
+                  }}
+                />
+              </EuiPanel>
             </EuiAccordion>
 
             <EuiSpacer size={'m'} />
@@ -274,7 +287,7 @@ export default class ConfigureFieldMapping extends Component<
                 <>
                   {pendingCount > 0 ? (
                     <EuiCallOut
-                      title={`${pendingCount} rule fields may need manual mapping`}
+                      title={`${pendingCount} log fields are pending for field mapping`}
                       color={'warning'}
                     >
                       <p>
@@ -284,26 +297,27 @@ export default class ConfigureFieldMapping extends Component<
                     </EuiCallOut>
                   ) : (
                     <EuiCallOut title={`All rule fields have been mapped`} color={'success'}>
-                      <p>Your data source have been mapped with all security rule fields.</p>
+                      <p>Your data source(s) have been mapped with all security rule fields.</p>
                     </EuiCallOut>
                   )}
 
                   <EuiSpacer size={'m'} />
 
-                  <ContentPanel title={`Pending field mappings`} titleSize={'m'}>
-                    <FieldMappingsTable<MappingViewType.Edit>
-                      {...this.props}
-                      loading={loading}
-                      ruleFields={unmappedRuleFields}
-                      indexFields={indexFieldOptions}
-                      mappingProps={{
-                        type: MappingViewType.Edit,
-                        existingMappings,
-                        invalidMappingFieldNames,
-                        onMappingCreation: this.onMappingCreation,
-                      }}
-                    />
-                  </ContentPanel>
+                  <EuiTitle>
+                    <h6>Pending field mappings</h6>
+                  </EuiTitle>
+                  <FieldMappingsTable<MappingViewType.Edit>
+                    {...this.props}
+                    loading={loading}
+                    ruleFields={unmappedRuleFields}
+                    indexFields={indexFieldOptions}
+                    mappingProps={{
+                      type: MappingViewType.Edit,
+                      existingMappings,
+                      invalidMappingFieldNames,
+                      onMappingCreation: this.onMappingCreation,
+                    }}
+                  />
                 </>
               ) : (
                 <>
