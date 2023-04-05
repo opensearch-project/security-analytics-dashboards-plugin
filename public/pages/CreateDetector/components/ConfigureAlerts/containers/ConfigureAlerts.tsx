@@ -17,7 +17,6 @@ import {
 import { createDetectorSteps } from '../../../utils/constants';
 import { MAX_ALERT_CONDITIONS } from '../utils/constants';
 import AlertConditionPanel from '../components/AlertCondition';
-import { Detector } from '../../../../../../models/interfaces';
 import { DetectorCreationStep } from '../../../models/types';
 import { CreateDetectorRulesOptions } from '../../../../../models/types';
 import { NotificationChannelTypeOptions } from '../models/interfaces';
@@ -30,6 +29,7 @@ import { NotificationsService } from '../../../../../services';
 import { validateName } from '../../../../../utils/validation';
 import { CoreServicesContext } from '../../../../../components/core_services';
 import { BREADCRUMBS } from '../../../../../utils/constants';
+import { Detector } from '../../../../../../types';
 
 interface ConfigureAlertsProps extends RouteComponentProps {
   detector: Detector;
@@ -82,7 +82,7 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
       detector: { triggers },
     } = this.props;
     this.getNotificationChannels();
-    
+
     if (triggers.length === 0) {
       this.addCondition();
     }
@@ -142,9 +142,8 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
         <EuiTitle size={'m'}>
           <h3>
             {isEdit
-              ? 'Edit alert triggers'
-              : createDetectorSteps[DetectorCreationStep.CONFIGURE_ALERTS].title +
-                ` (${triggers.length})`}
+              ? `Alert triggers (${triggers.length})`
+              : createDetectorSteps[DetectorCreationStep.CONFIGURE_ALERTS].title}
           </h3>
         </EuiTitle>
 
@@ -162,19 +161,15 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
                 id={`alert-condition-${index}`}
                 buttonContent={
                   <EuiTitle>
-                    <h4>{alertCondition.name}</h4>
+                    <h4>{isEdit ? alertCondition.name : 'Alert trigger'}</h4>
                   </EuiTitle>
                 }
                 paddingSize={'none'}
                 initialIsOpen={true}
                 extraAction={
-                  triggers.length > 1 ? (
-                    <EuiButton color="danger" onClick={() => this.onDelete(index)}>
-                      Remove alert trigger
-                    </EuiButton>
-                  ) : (
-                    <></>
-                  )
+                  <EuiButton color="danger" onClick={() => this.onDelete(index)}>
+                    Remove
+                  </EuiButton>
                 }
               >
                 <EuiHorizontalRule margin={'xs'} />
@@ -197,7 +192,7 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
         <EuiSpacer size={'m'} />
 
         <EuiButton disabled={triggers.length >= MAX_ALERT_CONDITIONS} onClick={this.addCondition}>
-          {`Add ${triggers.length > 0 ? 'another' : 'an'} alert condition`}
+          {triggers.length > 0 ? 'Add another alert trigger' : 'Add alert triggers'}
         </EuiButton>
       </div>
     );

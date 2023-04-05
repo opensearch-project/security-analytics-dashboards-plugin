@@ -311,7 +311,7 @@ export default class AlertConditionPanel extends Component<
           error={getNameErrorMessage(name, nameIsInvalid, nameFieldTouched)}
         >
           <EuiFieldText
-            placeholder={'Enter a name for the alert condition.'}
+            placeholder={'Enter a name to describe the alert condition'}
             readOnly={false}
             value={name}
             onBlur={this.onNameBlur}
