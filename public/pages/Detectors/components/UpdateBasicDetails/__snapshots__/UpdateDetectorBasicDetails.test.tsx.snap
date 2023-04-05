@@ -613,6 +613,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
         titleSize="m"
       >
         <EuiPanel
+          className=""
           style={
             Object {
               "paddingLeft": "0px",
@@ -1112,6 +1113,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
         title="Detector schedule"
       >
         <EuiPanel
+          className=""
           style={
             Object {
               "paddingLeft": "0px",

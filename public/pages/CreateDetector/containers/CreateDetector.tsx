@@ -292,7 +292,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             {...this.props}
             detector={this.state.detector}
             indexService={services.indexService}
-            filedMappingService={services.fieldMappingService}
+            fieldMappingService={services.fieldMappingService}
             rulesState={this.state.rulesState}
             loadingRules={this.state.loadingRules}
             onRuleToggle={this.onRuleToggle}
@@ -308,7 +308,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             {...this.props}
             detector={this.state.detector}
             loading={false}
-            filedMappingService={services.fieldMappingService}
+            fieldMappingService={services.fieldMappingService}
             fieldMappings={this.state.fieldMappings}
             enabledRules={this.state.rulesState.allRules.filter((rule) => rule.enabled)}
             replaceFieldMappings={this.replaceFieldMappings}

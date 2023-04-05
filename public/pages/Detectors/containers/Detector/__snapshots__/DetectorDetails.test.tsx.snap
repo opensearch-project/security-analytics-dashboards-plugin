@@ -1351,6 +1351,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
         title="Detector details"
       >
         <EuiPanel
+          className=""
           style={
             Object {
               "paddingLeft": "0px",
@@ -2710,6 +2711,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
         title="Active rules (2)"
       >
         <EuiPanel
+          className=""
           style={
             Object {
               "paddingLeft": "0px",
