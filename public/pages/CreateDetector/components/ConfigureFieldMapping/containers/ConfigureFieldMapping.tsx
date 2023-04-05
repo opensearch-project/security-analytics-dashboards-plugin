@@ -30,7 +30,7 @@ export interface ruleFieldToIndexFieldMap {
 interface ConfigureFieldMappingProps extends RouteComponentProps {
   isEdit: boolean;
   detector: Detector;
-  filedMappingService: FieldMappingService;
+  fieldMappingService: FieldMappingService;
   fieldMappings: FieldMapping[];
   loading: boolean;
   enabledRules: CreateDetectorRulesState['allRules'];
@@ -101,7 +101,7 @@ export default class ConfigureFieldMapping extends Component<
   getAllMappings = async () => {
     if (this.state.detector.inputs[0]?.detector_input.indices[0]) {
       this.setState({ loading: true });
-      const mappingsView = await this.props.filedMappingService.getMappingsView(
+      const mappingsView = await this.props.fieldMappingService.getMappingsView(
         this.state.detector.inputs[0].detector_input.indices[0],
         this.state.detector.detector_type.toLowerCase()
       );

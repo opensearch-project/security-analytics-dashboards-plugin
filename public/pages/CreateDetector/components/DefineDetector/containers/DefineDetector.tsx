@@ -181,7 +181,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
   render() {
     const { isEdit, fieldMappingService } = this.props;
     const { detector } = this.state;
-    const { name, inputs, detector_type } = this.state.detector;
+    const { name, inputs, detector_type } = this.props.detector;
     const { description, indices } = inputs[0].detector_input;
 
     return (
@@ -248,7 +248,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
           {...this.props}
           detector={detector}
           loading={false}
-          filedMappingService={this.props.fieldMappingService}
+          fieldMappingService={this.props.fieldMappingService}
           fieldMappings={this.props.fieldMappings}
           enabledRules={this.props.rulesState.allRules.filter((rule) => rule.enabled)}
           replaceFieldMappings={this.props.replaceFieldMappings}
