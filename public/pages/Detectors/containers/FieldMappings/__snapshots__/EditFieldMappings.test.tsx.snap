@@ -190,7 +190,9 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
   loading={false}
   replaceFieldMappings={[MockFunction]}
 >
-  <div>
+  <div
+    className="editFieldMappings"
+  >
     <EuiPanel>
       <div
         className="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
@@ -1105,7 +1107,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
     </EuiSpacer>
     <EuiCallOut
       color="success"
-      title="All rule fields have been mapped"
+      title="We have automatically mapped 0 field(s)"
     >
       <div
         className="euiCallOut euiCallOut--success"
@@ -1116,7 +1118,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
           <span
             className="euiCallOutHeader__title"
           >
-            All rule fields have been mapped
+            We have automatically mapped 0 field(s)
           </span>
         </div>
         <EuiText
@@ -1134,7 +1136,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                 className="euiTextColor euiTextColor--default"
               >
                 <p>
-                  Your data source have been mapped with all security rule fields.
+                  Your data sources have been mapped with every rule field name. No action is needed.
                 </p>
               </div>
             </EuiTextColor>

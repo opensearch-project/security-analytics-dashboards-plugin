@@ -241,7 +241,6 @@ export default class Main extends Component<MainProps, MainState> {
                               findingsService={services.findingsService}
                               opensearchService={services.opensearchService}
                               detectorService={services.detectorsService}
-                              ruleService={services.ruleService}
                               notificationsService={services.notificationsService}
                               indexPatternsService={services.indexPatternsService}
                               notifications={core?.notifications}
@@ -353,7 +352,6 @@ export default class Main extends Component<MainProps, MainState> {
                               alertService={services.alertService}
                               detectorService={services.detectorsService}
                               findingService={services.findingsService}
-                              ruleService={services.ruleService}
                               notifications={core?.notifications}
                               opensearchService={services.opensearchService}
                             />
@@ -390,7 +388,7 @@ export default class Main extends Component<MainProps, MainState> {
                           render={(props: RouteComponentProps<any, any, any>) => (
                             <UpdateFieldMappings
                               {...props}
-                              filedMappingService={services.fieldMappingService}
+                              fieldMappingService={services.fieldMappingService}
                               detectorService={services.detectorsService}
                               notifications={core?.notifications}
                             />
@@ -402,7 +400,6 @@ export default class Main extends Component<MainProps, MainState> {
                             <UpdateAlertConditions
                               {...props}
                               detectorService={services.detectorsService}
-                              ruleService={services.ruleService}
                               notificationsService={services.notificationsService}
                               notifications={core?.notifications}
                               opensearchService={services.opensearchService}
