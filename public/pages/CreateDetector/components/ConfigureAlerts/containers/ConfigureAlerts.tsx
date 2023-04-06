@@ -77,8 +77,6 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
   componentDidMount = async () => {
     this.updateBreadcrumbs();
     const {
-      isEdit,
-      detector,
       detector: { triggers },
     } = this.props;
     this.getNotificationChannels();
