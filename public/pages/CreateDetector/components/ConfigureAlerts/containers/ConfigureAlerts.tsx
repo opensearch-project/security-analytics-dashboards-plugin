@@ -13,8 +13,10 @@ import {
   EuiSpacer,
   EuiTitle,
   EuiText,
+  EuiCallOut,
+  EuiFlexGroup,
+  EuiFlexItem,
 } from '@elastic/eui';
-import { createDetectorSteps } from '../../../utils/constants';
 import { MAX_ALERT_CONDITIONS } from '../utils/constants';
 import AlertConditionPanel from '../components/AlertCondition';
 import { DetectorCreationStep } from '../../../models/types';
@@ -39,6 +41,7 @@ interface ConfigureAlertsProps extends RouteComponentProps {
   updateDataValidState: (step: DetectorCreationStep, isValid: boolean) => void;
   notificationsService: NotificationsService;
   hasNotificationPlugin: boolean;
+  skipAndConfigureHandler: () => void;
 }
 
 interface ConfigureAlertsState {
@@ -112,9 +115,11 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
   };
 
   onAlertTriggerChanged = (newDetector: Detector): void => {
-    const isTriggerDataValid = newDetector.triggers.every((trigger) => {
-      return !!trigger.name && validateName(trigger.name) && trigger.severity;
-    });
+    const isTriggerDataValid =
+      !newDetector.triggers.length ||
+      newDetector.triggers.every((trigger) => {
+        return !!trigger.name && validateName(trigger.name) && trigger.severity;
+      });
 
     this.props.changeDetector(newDetector);
     this.props.updateDataValidState(DetectorCreationStep.CONFIGURE_ALERTS, isTriggerDataValid);
@@ -133,21 +138,45 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
     const {
       isEdit,
       detector: { triggers },
+      skipAndConfigureHandler,
     } = this.props;
+
+    let getPageTitle = (): string | JSX.Element => {
+      let title = (
+        <EuiFlexGroup alignItems={'center'}>
+          <EuiFlexItem grow={true}>
+            <EuiTitle size={'m'}>
+              <h3>Set up alert triggers</h3>
+            </EuiTitle>
+            <EuiText size="s" color="subdued">
+              Get notified when specific rule conditions are found by the detector.
+            </EuiText>
+          </EuiFlexItem>
+          {triggers?.length && (
+            <EuiFlexItem grow={false}>
+              <EuiButton
+                onClick={() => {
+                  const { changeDetector, detector } = this.props;
+                  changeDetector({ ...detector, triggers: [] });
+                  skipAndConfigureHandler();
+                }}
+              >
+                Skip and configure later
+              </EuiButton>
+            </EuiFlexItem>
+          )}
+        </EuiFlexGroup>
+      );
+      if (isEdit) {
+        title = <>Alert triggers (${triggers.length})</>;
+      }
+
+      return title;
+    };
     const { loading, notificationChannels } = this.state;
     return (
       <div>
-        <EuiTitle size={'m'}>
-          <h3>
-            {isEdit
-              ? `Alert triggers (${triggers.length})`
-              : createDetectorSteps[DetectorCreationStep.CONFIGURE_ALERTS].title}
-          </h3>
-        </EuiTitle>
-
-        <EuiText size="s" color="subdued">
-          Get notified when specific rule conditions are found by the detector.
-        </EuiText>
+        {getPageTitle()}
 
         <EuiSpacer size={'m'} />
 
@@ -186,6 +215,21 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
             </EuiPanel>
           </div>
         ))}
+        {!triggers?.length && (
+          <EuiCallOut
+            color={'primary'}
+            iconType={'iInCircle'}
+            title={
+              <>
+                <p>
+                  We recommend creating alert triggers to get notified when specific conditions are
+                  found by the detector.
+                </p>
+                <p>You can also configure alert triggers after the detector is created.</p>
+              </>
+            }
+          />
+        )}
 
         <EuiSpacer size={'m'} />
 

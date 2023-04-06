@@ -20,7 +20,7 @@ export interface DetectorDetailsViewProps {
   dashboardId?: string;
   editBasicDetails: () => void;
   editDetectorRules: (enabledRules: RuleItem[], allRuleItems: RuleItem[]) => void;
-  isEditable: boolean;
+  isEditable?: boolean;
 }
 
 export interface DetectorDetailsViewState {}

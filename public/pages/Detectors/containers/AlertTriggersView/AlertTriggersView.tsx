@@ -5,9 +5,8 @@
 
 import { ContentPanel } from '../../../../components/ContentPanel';
 import React, { useMemo, useEffect, useState, useContext } from 'react';
-import { EuiButton } from '@elastic/eui';
+import { EuiButton, EuiCallOut, EuiSpacer } from '@elastic/eui';
 import { AlertTriggerView } from '../../components/AlertTriggerView/AlertTriggerView';
-import { Detector } from '../../../../../models/interfaces';
 import { ServicesContext } from '../../../../services';
 import { ServerResponse } from '../../../../../server/models/types';
 import {
@@ -18,12 +17,13 @@ import {
 import { errorNotificationToast } from '../../../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { DataStore } from '../../../../store/DataStore';
+import { Detector } from '../../../../../types';
 
 export interface AlertTriggersViewProps {
   detector: Detector;
   editAlertTriggers: () => void;
   notifications: NotificationsStart;
-  isEditable: boolean;
+  isEditable?: boolean;
 }
 
 export const AlertTriggersView: React.FC<AlertTriggersViewProps> = ({
@@ -102,6 +102,27 @@ export const AlertTriggersView: React.FC<AlertTriggersViewProps> = ({
           rules={rules}
         />
       ))}
+      {!detector?.triggers?.length && (
+        <>
+          <EuiSpacer size={'m'} />
+          <p>No alert triggers defined.</p>
+          <EuiSpacer size={'m'} />
+
+          <EuiCallOut
+            color={'primary'}
+            iconType={'iInCircle'}
+            title={
+              <>
+                <p>
+                  We recommend creating alert triggers to get notified when specific conditions are
+                  found by the detector.
+                </p>
+                <p>You can also configure alert triggers after the detector is created.</p>
+              </>
+            }
+          />
+        </>
+      )}
     </ContentPanel>
   );
 };
