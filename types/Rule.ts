@@ -25,6 +25,7 @@ export type RuleSource = Rule & {
   rule: string;
   last_update_time: string;
   queries: { value: string }[];
+  query_field_names: string[];
 };
 
 export interface RuleInfo {

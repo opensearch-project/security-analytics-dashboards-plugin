@@ -16,7 +16,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import DetectorBasicDetailsForm from '../../../CreateDetector/components/DefineDetector/components/DetectorDetails';
 import DetectorDataSource from '../../../CreateDetector/components/DefineDetector/components/DetectorDataSource';
-import { IndexService, ServicesContext } from '../../../../services';
+import { FieldMappingService, IndexService, ServicesContext } from '../../../../services';
 import { DetectorSchedule } from '../../../CreateDetector/components/DefineDetector/components/DetectorSchedule/DetectorSchedule';
 import { useCallback } from 'react';
 import { DetectorHit, SearchDetectorsResponse } from '../../../../../server/models/interfaces';
@@ -25,7 +25,8 @@ import { ServerResponse } from '../../../../../server/models/types';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast, successNotificationToast } from '../../../../utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
-import { Detector } from '../../../../../types';
+import ReviewFieldMappings from '../ReviewFieldMappings/ReviewFieldMappings';
+import { FieldMapping, Detector } from '../../../../../types';
 
 export interface UpdateDetectorBasicDetailsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
@@ -35,11 +36,13 @@ export interface UpdateDetectorBasicDetailsProps
 export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProps> = (props) => {
   const services = useContext(ServicesContext);
   const [detector, setDetector] = useState<Detector>(
-    props.location.state?.detectorHit?._source || EMPTY_DEFAULT_DETECTOR
+    (props.location.state?.detectorHit?._source || EMPTY_DEFAULT_DETECTOR) as Detector
   );
+  const [fieldMappings, setFieldMappings] = useState<FieldMapping[]>();
   const { name, inputs } = detector;
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [fieldMappingsIsVisible, setFieldMappingsIsVisible] = useState(false);
   const description = inputs[0].detector_input.description;
   const detectorId = props.location.pathname.replace(`${ROUTES.EDIT_DETECTOR_DETAILS}/`, '');
 
@@ -54,7 +57,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
         const detectorHit = response.response.hits.hits.find(
           (detectorHit) => detectorHit._id === detectorId
         ) as DetectorHit;
-        setDetector(detectorHit._source);
+        setDetector(detectorHit._source as Detector);
 
         context?.chrome.setBreadcrumbs([
           BREADCRUMBS.SECURITY_ANALYTICS,
@@ -67,7 +70,10 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
         props.history.replace({
           pathname: `${ROUTES.EDIT_DETECTOR_DETAILS}/${detectorId}`,
           state: {
-            detectorHit: { ...detectorHit, _source: { ...detectorHit._source, ...detectorHit } },
+            detectorHit: {
+              ...detectorHit,
+              _source: { ...detectorHit._source, ...detectorHit },
+            },
           },
         });
       } else {
@@ -93,6 +99,13 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
       setDetector(detector);
     },
     [setDetector]
+  );
+
+  const updateFieldMappingsState = useCallback(
+    (mappings: FieldMapping[]) => {
+      setFieldMappings(mappings);
+    },
+    [setFieldMappings]
   );
 
   const onDetectorNameChange = useCallback(
@@ -146,9 +159,10 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
         ],
       };
 
+      setFieldMappingsIsVisible(true);
       updateDetectorState(newDetector);
     },
-    [detector, updateDetectorState]
+    [detector, updateDetectorState, setFieldMappingsIsVisible]
   );
 
   const onDetectorScheduleChange = useCallback(
@@ -163,6 +177,14 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
     [detector, updateDetectorState]
   );
 
+  const onFieldMappingChange = useCallback(
+    (fields: FieldMapping[]) => {
+      const updatedFields = [...fields];
+      updateFieldMappingsState(updatedFields);
+    },
+    [fieldMappings, updateFieldMappingsState]
+  );
+
   const onCancel = useCallback(() => {
     props.history.replace({
       pathname: `${ROUTES.DETECTOR_DETAILS}/${detectorId}`,
@@ -170,11 +192,11 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
     });
   }, []);
 
-  const onSave = useCallback(() => {
-    const detectorHit = props.location.state.detectorHit;
+  const onSave = useCallback(async () => {
+    setSubmitting(true);
 
     const updateDetector = async () => {
-      setSubmitting(true);
+      const detectorHit = props.location.state.detectorHit;
       const updateDetectorRes = await services?.detectorsService?.updateDetector(
         detectorHit._id,
         detector
@@ -187,18 +209,39 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
       }
 
       setSubmitting(false);
+
       props.history.replace({
         pathname: `${ROUTES.DETECTOR_DETAILS}/${detectorId}`,
         state: {
-          detectorHit: { ...detectorHit, _source: { ...detectorHit._source, ...detector } },
+          detectorHit: {
+            ...detectorHit,
+            _source: { ...detectorHit._source, ...detector },
+          },
         },
       });
     };
 
-    updateDetector().catch((e) => {
-      errorNotificationToast(props.notifications, 'update', 'detector', e);
-    });
-  }, [detector]);
+    if (fieldMappings?.length) {
+      const createMappingsResponse = await services?.fieldMappingService?.createMappings(
+        detector.inputs[0].detector_input.indices[0],
+        detector.detector_type.toLowerCase(),
+        fieldMappings
+      );
+
+      if (!createMappingsResponse?.ok) {
+        errorNotificationToast(
+          props.notifications,
+          'update',
+          'field mappings',
+          createMappingsResponse?.error
+        );
+      } else {
+        await updateDetector();
+      }
+    } else {
+      await updateDetector();
+    }
+  }, [detector, fieldMappings]);
 
   return (
     <div>
@@ -222,13 +265,25 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
         notifications={props.notifications}
         indexService={services?.indexService as IndexService}
         detectorIndices={inputs[0].detector_input.indices}
-        filedMappingService={services?.fieldMappingService}
+        fieldMappingService={services?.fieldMappingService as FieldMappingService}
         onDetectorInputIndicesChange={onDetectorInputIndicesChange}
       />
       <EuiSpacer size={'xl'} />
 
       <DetectorSchedule detector={detector} onDetectorScheduleChange={onDetectorScheduleChange} />
       <EuiSpacer size="xl" />
+
+      {fieldMappingsIsVisible ? (
+        <>
+          <ReviewFieldMappings
+            {...props}
+            detector={detector}
+            fieldMappingService={services?.fieldMappingService}
+            onFieldMappingChange={onFieldMappingChange}
+          />
+          <EuiSpacer size="xl" />
+        </>
+      ) : null}
 
       <EuiFlexGroup justifyContent="flexEnd">
         <EuiFlexItem grow={false}>

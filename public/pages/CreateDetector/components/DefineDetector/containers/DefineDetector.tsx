@@ -28,7 +28,7 @@ interface DefineDetectorProps extends RouteComponentProps {
   detector: Detector;
   isEdit: boolean;
   indexService: IndexService;
-  filedMappingService: FieldMappingService;
+  fieldMappingService: FieldMappingService;
   rulesState: CreateDetectorRulesState;
   notifications: NotificationsStart;
   loadingRules?: boolean;
@@ -165,7 +165,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
       onRuleToggle,
       onPageChange,
       onAllRulesToggle,
-      filedMappingService,
+      fieldMappingService,
     } = this.props;
     const { name, inputs, detector_type } = this.props.detector;
     const { description, indices } = inputs[0].detector_input;
@@ -197,7 +197,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
           {...this.props}
           detector_type={detector_type}
           detectorIndices={indices}
-          filedMappingService={filedMappingService}
+          fieldMappingService={fieldMappingService}
           onDetectorInputIndicesChange={this.onDetectorInputIndicesChange}
         />
 

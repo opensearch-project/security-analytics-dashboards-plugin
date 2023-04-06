@@ -19,6 +19,7 @@ import { FieldMapping } from '../../../../../models/interfaces';
 import FieldMappingService from '../../../../services/FieldMappingService';
 import { MappingViewType } from '../../../CreateDetector/components/ConfigureFieldMapping/components/RequiredFieldMapping/FieldMappingsTable';
 import { Detector } from '../../../../../types';
+import _ from 'lodash';
 
 export interface ruleFieldToIndexFieldMap {
   [fieldName: string]: string;
@@ -26,10 +27,12 @@ export interface ruleFieldToIndexFieldMap {
 
 interface EditFieldMappingsProps extends RouteComponentProps {
   detector: Detector;
-  filedMappingService: FieldMappingService;
+  fieldMappingService?: FieldMappingService;
   fieldMappings: FieldMapping[];
   loading: boolean;
   replaceFieldMappings: (mappings: FieldMapping[]) => void;
+  initialIsOpen?: boolean;
+  ruleQueryFields?: Set<string>;
 }
 
 interface EditFieldMappingsState {
@@ -39,6 +42,7 @@ interface EditFieldMappingsState {
   mappedRuleFields: string[];
   unmappedRuleFields: string[];
   logFieldOptions: string[];
+  ruleQueryFields?: Set<string>;
 }
 
 export default class EditFieldMappings extends Component<
@@ -52,6 +56,7 @@ export default class EditFieldMappings extends Component<
       createdMappings[mapping.ruleFieldName] = mapping.indexFieldName;
     });
     this.state = {
+      ruleQueryFields: props.ruleQueryFields ? props.ruleQueryFields : new Set<string>(),
       loading: props.loading || false,
       createdMappings,
       invalidMappingFieldNames: [],
@@ -65,42 +70,95 @@ export default class EditFieldMappings extends Component<
     this.getAllMappings();
   };
 
+  public componentDidUpdate(
+    prevProps: Readonly<EditFieldMappingsProps>,
+    prevState: Readonly<EditFieldMappingsState>,
+    snapshot?: any
+  ): void {
+    const indexVariablePath = 'detector.inputs[0].detector_input.indices[0]';
+    const currentIndex: string = _.get(this.props, indexVariablePath);
+    const previousIndex: string = _.get(prevProps, indexVariablePath);
+
+    // if index is changed reload mappings
+    if (!!currentIndex && currentIndex !== previousIndex) {
+      this.getAllMappings();
+    }
+
+    // if rule selection is changed reload mappings
+    if (prevProps.ruleQueryFields !== this.props.ruleQueryFields) {
+      this.setState(
+        {
+          // update ruleQueryField, this is used to filter field mappings based on rule selection
+          ruleQueryFields: this.props.ruleQueryFields,
+        },
+        () => this.getAllMappings()
+      );
+    }
+  }
+
   getAllMappings = async () => {
     this.setState({ loading: true });
     const indexName = this.props.detector.inputs[0].detector_input.indices[0];
+    if (indexName) {
+      const mappingsViewRes = await this.props.fieldMappingService?.getMappingsView(
+        indexName,
+        this.props.detector.detector_type.toLowerCase()
+      );
 
-    const mappingsViewRes = await this.props.filedMappingService.getMappingsView(
-      indexName,
-      this.props.detector.detector_type.toLowerCase()
-    );
-
-    if (mappingsViewRes.ok) {
-      const mappingsRes = await this.props.filedMappingService.getMappings(indexName);
-      if (mappingsRes.ok) {
-        const mappedFieldsInfo = mappingsRes.response[indexName].mappings.properties;
-        const mappedRuleFields = Object.keys(mappedFieldsInfo);
-        const unmappedRuleFields = (mappingsViewRes.response.unmapped_field_aliases || []).filter(
-          (ruleField) => {
-            return !mappedRuleFields.includes(ruleField);
-          }
-        );
-
+      if (mappingsViewRes?.ok) {
+        let unmappedRuleFields = mappingsViewRes.response.unmapped_field_aliases || [];
         const logFieldsSet = new Set<string>(mappingsViewRes.response.unmapped_index_fields);
         Object.values(mappingsViewRes.response.properties).forEach((val) => {
           logFieldsSet.add(val.path);
         });
         const logFieldOptions = Array.from(logFieldsSet);
         const existingMappings = { ...this.state.createdMappings };
-        mappedRuleFields.forEach((ruleField) => {
-          existingMappings[ruleField] = mappedFieldsInfo[ruleField].path;
-        });
 
-        this.setState({
-          mappedRuleFields,
-          unmappedRuleFields,
-          logFieldOptions,
-          createdMappings: existingMappings,
-        });
+        const mappingsRes = await this.props.fieldMappingService?.getMappings(indexName);
+        if (mappingsRes?.ok) {
+          const mappedFieldsInfo = mappingsRes.response[indexName].mappings.properties;
+          let mappedRuleFields = Object.keys(mappedFieldsInfo);
+          unmappedRuleFields = unmappedRuleFields.filter((ruleField) => {
+            return !mappedRuleFields.includes(ruleField);
+          });
+
+          mappedRuleFields.forEach((ruleField) => {
+            existingMappings[ruleField] = mappedFieldsInfo[ruleField].path;
+          });
+
+          for (let key in existingMappings) {
+            if (logFieldOptions.indexOf(existingMappings[key]) === -1) {
+              delete existingMappings[key];
+            }
+          }
+
+          if (this.state.ruleQueryFields?.size) {
+            mappedRuleFields = _.intersection(mappedRuleFields, [...this.state.ruleQueryFields]);
+            unmappedRuleFields = _.intersection(unmappedRuleFields, [
+              ...this.state.ruleQueryFields,
+            ]);
+          }
+
+          this.setState({
+            mappedRuleFields,
+            unmappedRuleFields,
+            logFieldOptions,
+            createdMappings: existingMappings,
+          });
+        } else {
+          if (this.state.ruleQueryFields?.size) {
+            unmappedRuleFields = _.intersection(unmappedRuleFields, [
+              ...this.state.ruleQueryFields,
+            ]);
+          }
+
+          this.setState({
+            mappedRuleFields: [],
+            unmappedRuleFields,
+            logFieldOptions,
+            createdMappings: existingMappings,
+          });
+        }
       }
     }
     this.setState({ loading: false });
@@ -160,12 +218,13 @@ export default class EditFieldMappings extends Component<
       unmappedRuleFields,
       logFieldOptions,
     } = this.state;
+    const { initialIsOpen } = this.props;
     const existingMappings: ruleFieldToIndexFieldMap = {
       ...createdMappings,
     };
 
     return (
-      <div>
+      <div className={'editFieldMappings'}>
         <EuiPanel>
           <EuiAccordion
             buttonContent={
@@ -177,7 +236,9 @@ export default class EditFieldMappings extends Component<
             }
             buttonProps={{ style: { paddingLeft: '10px', paddingRight: '10px' } }}
             id={'mappedFieldsAccordion'}
-            initialIsOpen={unmappedRuleFields.length === 0}
+            initialIsOpen={
+              initialIsOpen !== undefined ? initialIsOpen : unmappedRuleFields.length === 0
+            }
           >
             <EuiHorizontalRule margin={'xs'} />
             <FieldMappingsTable<MappingViewType.Edit>
@@ -226,8 +287,13 @@ export default class EditFieldMappings extends Component<
             </ContentPanel>
           </>
         ) : (
-          <EuiCallOut title={`All rule fields have been mapped`} color={'success'}>
-            <p>Your data source have been mapped with all security rule fields.</p>
+          <EuiCallOut
+            title={`We have automatically mapped ${mappedRuleFields.length} field(s)`}
+            color={'success'}
+          >
+            <p>
+              Your data sources have been mapped with every rule field name. No action is needed.
+            </p>
           </EuiCallOut>
         )}
 
