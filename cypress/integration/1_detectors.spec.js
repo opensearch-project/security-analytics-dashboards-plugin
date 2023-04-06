@@ -53,20 +53,6 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
     cy.contains('table tr', 'DNS', {
       timeout: 120000,
     });
-
-    // find search, type USB
-    cy.get(`input[placeholder="Search..."]`).ospSearch(cypressDNSRule);
-
-    // Disable all rules
-    cy.contains('tr', cypressDNSRule, { timeout: 1000 });
-    cy.get('table th').within(() => {
-      cy.get('button').first().click({ force: true });
-    });
-
-    // Enable single rule
-    cy.contains('table tr', cypressDNSRule).within(() => {
-      cy.get('button').eq(1).click({ force: true, timeout: 2000 });
-    });
   });
 
   // Click Next button to continue
@@ -303,7 +289,7 @@ describe('Detectors', () => {
     });
 
     // Confirm number of rules before edit
-    cy.contains('Active rules (1)');
+    cy.contains('Active rules (13)');
 
     // Click "Edit" button in Detector rules panel
     cy.get(`[data-test-subj="edit-detector-rules"]`).click({ force: true });
@@ -327,7 +313,7 @@ describe('Detectors', () => {
     cy.get(`[data-test-subj="save-detector-rules-edits"]`).click({ force: true });
 
     // Confirm 1 rule has been removed from detector
-    cy.contains('Active rules (0)');
+    cy.contains('Active rules (12)');
 
     // Click "Edit" button in Detector rules panel
     cy.get(`[data-test-subj="edit-detector-rules"]`).click({ force: true });
@@ -353,7 +339,7 @@ describe('Detectors', () => {
     });
 
     // Confirm 1 rule has been added to detector
-    cy.contains('Active rules (1)');
+    cy.contains('Active rules (13)');
   });
 
   it('...should update field mappings if data source is changed', () => {
@@ -374,25 +360,22 @@ describe('Detectors', () => {
     cy.get('.reviewFieldMappings').should('not.exist');
 
     // Change input source
-    cy.get(`[data-test-subj="define-detector-select-data-source"]`)
-      .find('input')
-      .ospClear()
-      .focus()
-      .realType(cypressIndexWindows)
-      .realPress('Enter');
+    cy.get('.euiBadge__iconButton > .euiIcon').click({ force: true });
+    cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(
+      `${cypressIndexWindows}{enter}`
+    );
 
     cy.get('.reviewFieldMappings').should('be.visible');
     cy.get('.reviewFieldMappings').within(($el) => {
       cy.get($el).contains('Automatically mapped fields (0)');
+      cy.get($el).contains('4 rule fields may need manual mapping');
     });
 
     // Change input source
-    cy.get(`[data-test-subj="define-detector-select-data-source"]`)
-      .find('input')
-      .ospClear()
-      .focus()
-      .realType(cypressIndexDns)
-      .realPress('Enter');
+    cy.get('.euiBadge__iconButton > .euiIcon').click({ force: true });
+    cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(
+      `${cypressIndexDns}{enter}`
+    );
 
     cy.get('.reviewFieldMappings').should('be.visible');
     cy.get('.reviewFieldMappings').within(($el) => {
@@ -420,46 +403,16 @@ describe('Detectors', () => {
 
     cy.get('.reviewFieldMappings').should('not.exist');
 
-    // Search for specific rule
-    cy.get(`input[placeholder="Search..."]`).ospSearch(cypressDNSRule);
-
     cy.intercept('mappings/view').as('getMappingsView');
 
-    // Toggle single search result to unchecked
-    cy.contains('table tr', cypressDNSRule).within(() => {
-      // Of note, timeout can sometimes work instead of wait here, but is very unreliable from case to case.
-      cy.wait(1000);
-      cy.get('button').eq(1).click();
+    cy.get('table th').within(() => {
+      cy.get('button').first().click({ force: true });
     });
 
     cy.wait('@getMappingsView');
     cy.get('.reviewFieldMappings').should('be.visible');
     cy.get('.reviewFieldMappings').within(($el) => {
       cy.get($el).contains('Automatically mapped fields (0)');
-    });
-
-    //Suspicious DNS Query with B64 Encoded String
-    cy.get(`input[placeholder="Search..."]`).ospSearch(cypressDNSRule);
-    cy.contains('table tr', cypressDNSRule).within(() => {
-      // Of note, timeout can sometimes work instead of wait here, but is very unreliable from case to case.
-      cy.wait(1000);
-      cy.get('button').eq(1).click();
-    });
-
-    cy.wait('@getMappingsView');
-    cy.get(`input[placeholder="Search..."]`).ospSearch(
-      'Suspicious DNS Query with B64 Encoded String'
-    );
-    cy.contains('table tr', 'Suspicious DNS Query with B64 Encoded String').within(() => {
-      // Of note, timeout can sometimes work instead of wait here, but is very unreliable from case to case.
-      cy.wait(1000);
-      cy.get('button').eq(1).click();
-    });
-
-    cy.wait('@getMappingsView');
-    cy.get('.reviewFieldMappings').should('be.visible');
-    cy.get('.reviewFieldMappings').within(($el) => {
-      cy.get($el).contains('Automatically mapped fields (1)');
     });
 
     cy.get(`input[placeholder="Search..."]`).ospSearch('High TXT Records Requests Rate');
@@ -469,11 +422,23 @@ describe('Detectors', () => {
       cy.get('button').eq(1).click();
     });
 
-    cy.wait('@getMappingsView');
+    cy.get('.reviewFieldMappings').within(($el) => {
+      cy.get($el).contains('Automatically mapped fields (1)');
+    });
+
+    cy.get(`input[placeholder="Search..."]`).ospSearch(
+      'Suspicious DNS Query with B64 Encoded String'
+    );
+
+    cy.contains('table tr', 'Suspicious DNS Query with B64 Encoded String').within(() => {
+      // Of note, timeout can sometimes work instead of wait here, but is very unreliable from case to case.
+      cy.wait(1000);
+      cy.get('button').eq(1).click();
+    });
+
     cy.get('.reviewFieldMappings').should('be.visible');
     cy.get('.reviewFieldMappings').within(($el) => {
       cy.get($el).contains('Automatically mapped fields (1)');
-      cy.get($el).contains('1 rule fields may need manual mapping');
     });
   });
 
