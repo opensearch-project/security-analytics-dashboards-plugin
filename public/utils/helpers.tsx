@@ -41,10 +41,7 @@ export const renderTime = (time: number | string) => {
   return DEFAULT_EMPTY_DATA;
 };
 
-export function createTextDetailsGroup(
-  data: { label: string; content: any; url?: string }[],
-  columnNum?: number
-) {
+export function createTextDetailsGroup(data: { label: string; content: any; url?: string }[]) {
   const createFormRow = (label: string, content: string, url?: string) => {
     const dataTestSubj = label.toLowerCase().replace(/ /g, '-');
     return (
