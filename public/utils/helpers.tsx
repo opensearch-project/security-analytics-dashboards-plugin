@@ -16,7 +16,7 @@ import {
 import moment from 'moment';
 import { PeriodSchedule } from '../../models/interfaces';
 import React from 'react';
-import { DEFAULT_EMPTY_DATA } from './constants';
+import { DEFAULT_EMPTY_DATA, scheduleUnitText } from './constants';
 import {
   RuleItem,
   RuleItemInfo,
@@ -81,8 +81,12 @@ export function createTextDetailsGroup(
   );
 }
 
+export const pluralize = (count: number, singular: string, plural = singular + 's') => {
+  return [1, -1].includes(Number(count)) ? singular : plural;
+};
+
 export function parseSchedule({ period: { interval, unit } }: PeriodSchedule) {
-  return `Every ${interval} ${unit.toLowerCase()}`;
+  return `Every ${interval} ${pluralize(interval, scheduleUnitText[unit])}`;
 }
 
 export function translateToRuleItems(
