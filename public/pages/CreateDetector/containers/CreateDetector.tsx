@@ -366,7 +366,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
           {currentStep > DetectorCreationStep.DEFINE_DETECTOR && (
             <EuiFlexItem grow={false}>
               <EuiButton disabled={creatingDetector} onClick={this.onPreviousClick}>
-                Previous
+                Back
               </EuiButton>
             </EuiFlexItem>
           )}
