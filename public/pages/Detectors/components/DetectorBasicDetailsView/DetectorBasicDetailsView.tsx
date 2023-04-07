@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiButton, EuiSpacer, EuiLink, EuiIcon } from '@elastic/eui';
+import { EuiButton, EuiSpacer, EuiLink, EuiIcon, EuiText } from '@elastic/eui';
 import React from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { createTextDetailsGroup, parseSchedule } from '../../../../utils/helpers';
@@ -71,7 +71,16 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
       )}
       {createTextDetailsGroup(
         [
-          { label: 'Data source', content: inputs[0].detector_input.indices.join(', ') },
+          {
+            label: 'Data source',
+            content: (
+              <>
+                {inputs[0].detector_input.indices.map((ind: string) => (
+                  <EuiText>{ind}</EuiText>
+                ))}
+              </>
+            ),
+          },
           { label: 'Log type', content: detector_type.toLowerCase() },
           {
             label: 'Detector dashboard',
