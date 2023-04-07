@@ -122,7 +122,7 @@ Object {
                       <div
                         class="euiTextColor euiTextColor--subdued"
                       >
-                        Log type
+                        Description
                       </div>
                     </div>
                   </label>
@@ -132,14 +132,60 @@ Object {
                 >
                   <div
                     class="euiText euiText--medium"
-                    data-test-subj="text-details-group-content-log-type"
+                    data-test-subj="text-details-group-content-description"
                     id="some_html_id"
                   >
-                    detector_type
+                    detectorDescription
                   </div>
                 </div>
               </div>
             </div>
+            <div
+              class="euiFlexItem euiFlexItem--flexGrowZero"
+              style="min-width: 25%;"
+            >
+              <div
+                class="euiFormRow"
+                id="some_html_id-row"
+              >
+                <div
+                  class="euiFormRow__labelWrapper"
+                >
+                  <label
+                    class="euiFormLabel euiFormRow__label"
+                    for="some_html_id"
+                  >
+                    <div
+                      class="euiText euiText--medium"
+                    >
+                      <div
+                        class="euiTextColor euiTextColor--subdued"
+                      >
+                        Detector schedule
+                      </div>
+                    </div>
+                  </label>
+                </div>
+                <div
+                  class="euiFormRow__fieldWrapper"
+                >
+                  <div
+                    class="euiText euiText--medium"
+                    data-test-subj="text-details-group-content-detector-schedule"
+                    id="some_html_id"
+                  >
+                    Every 1 minute
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="euiSpacer euiSpacer--xl"
+          />
+          <div
+            class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+          >
             <div
               class="euiFlexItem euiFlexItem--flexGrowZero"
               style="min-width: 25%;"
@@ -175,6 +221,45 @@ Object {
                     id="some_html_id"
                   >
                     .windows
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="euiFlexItem euiFlexItem--flexGrowZero"
+              style="min-width: 25%;"
+            >
+              <div
+                class="euiFormRow"
+                id="some_html_id-row"
+              >
+                <div
+                  class="euiFormRow__labelWrapper"
+                >
+                  <label
+                    class="euiFormLabel euiFormRow__label"
+                    for="some_html_id"
+                  >
+                    <div
+                      class="euiText euiText--medium"
+                    >
+                      <div
+                        class="euiTextColor euiTextColor--subdued"
+                      >
+                        Log type
+                      </div>
+                    </div>
+                  </label>
+                </div>
+                <div
+                  class="euiFormRow__fieldWrapper"
+                >
+                  <div
+                    class="euiText euiText--medium"
+                    data-test-subj="text-details-group-content-log-type"
+                    id="some_html_id"
+                  >
+                    detector_type
                   </div>
                 </div>
               </div>
@@ -246,7 +331,7 @@ Object {
                       <div
                         class="euiTextColor euiTextColor--subdued"
                       >
-                        Description
+                        Detection rules
                       </div>
                     </div>
                   </label>
@@ -256,49 +341,10 @@ Object {
                 >
                   <div
                     class="euiText euiText--medium"
-                    data-test-subj="text-details-group-content-description"
+                    data-test-subj="text-details-group-content-detection-rules"
                     id="some_html_id"
                   >
-                    detectorDescription
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="euiFlexItem euiFlexItem--flexGrowZero"
-              style="min-width: 25%;"
-            >
-              <div
-                class="euiFormRow"
-                id="some_html_id-row"
-              >
-                <div
-                  class="euiFormRow__labelWrapper"
-                >
-                  <label
-                    class="euiFormLabel euiFormRow__label"
-                    for="some_html_id"
-                  >
-                    <div
-                      class="euiText euiText--medium"
-                    >
-                      <div
-                        class="euiTextColor euiTextColor--subdued"
-                      >
-                        Detector schedule
-                      </div>
-                    </div>
-                  </label>
-                </div>
-                <div
-                  class="euiFormRow__fieldWrapper"
-                >
-                  <div
-                    class="euiText euiText--medium"
-                    data-test-subj="text-details-group-content-detector-schedule"
-                    id="some_html_id"
-                  >
-                    Every 1 minute
+                    2
                   </div>
                 </div>
               </div>
@@ -507,7 +553,7 @@ Object {
                     <div
                       class="euiTextColor euiTextColor--subdued"
                     >
-                      Log type
+                      Description
                     </div>
                   </div>
                 </label>
@@ -517,14 +563,60 @@ Object {
               >
                 <div
                   class="euiText euiText--medium"
-                  data-test-subj="text-details-group-content-log-type"
+                  data-test-subj="text-details-group-content-description"
                   id="some_html_id"
                 >
-                  detector_type
+                  detectorDescription
                 </div>
               </div>
             </div>
           </div>
+          <div
+            class="euiFlexItem euiFlexItem--flexGrowZero"
+            style="min-width: 25%;"
+          >
+            <div
+              class="euiFormRow"
+              id="some_html_id-row"
+            >
+              <div
+                class="euiFormRow__labelWrapper"
+              >
+                <label
+                  class="euiFormLabel euiFormRow__label"
+                  for="some_html_id"
+                >
+                  <div
+                    class="euiText euiText--medium"
+                  >
+                    <div
+                      class="euiTextColor euiTextColor--subdued"
+                    >
+                      Detector schedule
+                    </div>
+                  </div>
+                </label>
+              </div>
+              <div
+                class="euiFormRow__fieldWrapper"
+              >
+                <div
+                  class="euiText euiText--medium"
+                  data-test-subj="text-details-group-content-detector-schedule"
+                  id="some_html_id"
+                >
+                  Every 1 minute
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="euiSpacer euiSpacer--xl"
+        />
+        <div
+          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+        >
           <div
             class="euiFlexItem euiFlexItem--flexGrowZero"
             style="min-width: 25%;"
@@ -560,6 +652,45 @@ Object {
                   id="some_html_id"
                 >
                   .windows
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="euiFlexItem euiFlexItem--flexGrowZero"
+            style="min-width: 25%;"
+          >
+            <div
+              class="euiFormRow"
+              id="some_html_id-row"
+            >
+              <div
+                class="euiFormRow__labelWrapper"
+              >
+                <label
+                  class="euiFormLabel euiFormRow__label"
+                  for="some_html_id"
+                >
+                  <div
+                    class="euiText euiText--medium"
+                  >
+                    <div
+                      class="euiTextColor euiTextColor--subdued"
+                    >
+                      Log type
+                    </div>
+                  </div>
+                </label>
+              </div>
+              <div
+                class="euiFormRow__fieldWrapper"
+              >
+                <div
+                  class="euiText euiText--medium"
+                  data-test-subj="text-details-group-content-log-type"
+                  id="some_html_id"
+                >
+                  detector_type
                 </div>
               </div>
             </div>
@@ -631,7 +762,7 @@ Object {
                     <div
                       class="euiTextColor euiTextColor--subdued"
                     >
-                      Description
+                      Detection rules
                     </div>
                   </div>
                 </label>
@@ -641,49 +772,10 @@ Object {
               >
                 <div
                   class="euiText euiText--medium"
-                  data-test-subj="text-details-group-content-description"
+                  data-test-subj="text-details-group-content-detection-rules"
                   id="some_html_id"
                 >
-                  detectorDescription
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            class="euiFlexItem euiFlexItem--flexGrowZero"
-            style="min-width: 25%;"
-          >
-            <div
-              class="euiFormRow"
-              id="some_html_id-row"
-            >
-              <div
-                class="euiFormRow__labelWrapper"
-              >
-                <label
-                  class="euiFormLabel euiFormRow__label"
-                  for="some_html_id"
-                >
-                  <div
-                    class="euiText euiText--medium"
-                  >
-                    <div
-                      class="euiTextColor euiTextColor--subdued"
-                    >
-                      Detector schedule
-                    </div>
-                  </div>
-                </label>
-              </div>
-              <div
-                class="euiFormRow__fieldWrapper"
-              >
-                <div
-                  class="euiText euiText--medium"
-                  data-test-subj="text-details-group-content-detector-schedule"
-                  id="some_html_id"
-                >
-                  Every 1 minute
+                  2
                 </div>
               </div>
             </div>
