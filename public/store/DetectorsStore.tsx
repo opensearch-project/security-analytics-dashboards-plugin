@@ -25,7 +25,7 @@ export interface IDetectorsStore {
   setState: (state: IDetectorsState, history: RouteComponentProps['history']) => void;
   getState: () => IDetectorsState | undefined;
   deleteState: () => void;
-  getPendingState: () => Promise<{
+  resolvePendingCreationRequest: () => Promise<{
     detectorId?: string;
     dashboardId?: string;
     ok: boolean;
@@ -40,13 +40,13 @@ export interface IDetectorsCache {}
 
 export interface IDetectorsState {
   pendingRequests: Promise<any>[];
-  detectorState: CreateDetectorState;
+  detectorInput: CreateDetectorState;
 }
 
 /**
  * Class is used to make detector's API calls and cache the detectors.
  * If there is a cache data requests are skipped and result is returned from the cache.
- * If cache is invalidated then the request is made to get a new set of data.
+ * If cache is invalidated then the request is triggered to get a new set of data.
  *
  * @class DetectorsStore
  * @implements IDetectorsStore
@@ -187,16 +187,17 @@ export class DetectorsStore implements IDetectorsStore {
   };
 
   private viewDetectorConfiguration = (): void => {
-    const pendingState = DataStore.detectors.getState();
-    const detectorState = pendingState?.detectorState;
+    const state = DataStore.detectors.getState();
+    const detectorInput = { ...state?.detectorInput };
+    DataStore.detectors.deleteState();
+
     this.history?.push({
       pathname: `${ROUTES.DETECTORS_CREATE}`,
-      state: { detectorState },
+      state: { detectorInput },
     });
-    DataStore.detectors.deleteState();
   };
 
-  public getPendingState = async (): Promise<{
+  public resolvePendingCreationRequest = async (): Promise<{
     detectorId?: string;
     dashboardId?: string;
     ok: boolean;
@@ -308,10 +309,18 @@ export class DetectorsStore implements IDetectorsStore {
       });
   };
 
+  /**
+   * A handler function that store gets from the Main component to show/hide the callout message
+   * @param {ICalloutProps | undefined} callout
+   */
   private showCallout = (callout?: ICalloutProps | undefined): void => {};
 
   private hideCallout = (): void => this.showCallout(undefined);
 
+  /**
+   * A handler function that store gets from the Main component to show/hide the toast message
+   * @param {Toast[] | undefined} toasts
+   */
   private showToast = (toasts?: Toast[] | undefined): void => {};
 
   public hideToast = (removedToast: any): void => {

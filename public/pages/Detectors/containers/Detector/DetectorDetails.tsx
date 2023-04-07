@@ -158,11 +158,11 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   constructor(props: DetectorDetailsProps) {
     super(props);
     const detectorId = props.location.pathname.replace(`${ROUTES.DETECTOR_DETAILS}/`, '');
-    const pendingState = DataStore.detectors.getState();
-    const detector = pendingState?.detectorState?.detector;
+    const state = DataStore.detectors.getState();
+    const detector = state?.detectorInput?.detector;
 
     // if user reloads the page all data is lost so just redirect to detectors page
-    if (!pendingState && detectorId === PENDING_DETECTOR_ID) {
+    if (!state && detectorId === PENDING_DETECTOR_ID) {
       this.props.history.push(`${ROUTES.DETECTORS}`);
     }
 
@@ -186,9 +186,9 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   }
 
   getPendingDetector = async () => {
-    const pendingState = DataStore.detectors.getState();
-    const detector = pendingState?.detectorState?.detector;
-    const pendingRequests = pendingState?.pendingRequests;
+    const state = DataStore.detectors.getState();
+    const detector = state?.detectorInput?.detector;
+    const pendingRequests = state?.pendingRequests;
     this.getTabs();
 
     if (pendingRequests && detector) {
@@ -205,7 +205,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
         BREADCRUMBS.DETECTORS_DETAILS(detector.name, PENDING_DETECTOR_ID),
       ]);
 
-      const pendingResponse = await DataStore.detectors.getPendingState();
+      const pendingResponse = await DataStore.detectors.resolvePendingCreationRequest();
 
       if (pendingResponse.ok) {
         const { detectorId, dashboardId } = pendingResponse;
@@ -230,8 +230,8 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   };
 
   async componentDidMount() {
-    const pendingState = DataStore.detectors.getState();
-    pendingState ? this.getPendingDetector() : this.getDetector();
+    const state = DataStore.detectors.getState();
+    state ? this.getPendingDetector() : this.getDetector();
   }
 
   getDetector = async () => {

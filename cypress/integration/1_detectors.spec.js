@@ -412,7 +412,7 @@ describe('Detectors', () => {
     cy.wait('@getMappingsView');
     cy.get('.reviewFieldMappings').should('be.visible');
     cy.get('.reviewFieldMappings').within(($el) => {
-      cy.get($el).contains('Automatically mapped fields (0)');
+      cy.get($el).contains('Automatically mapped fields (1)');
     });
 
     cy.get(`input[placeholder="Search..."]`).ospSearch('High TXT Records Requests Rate');

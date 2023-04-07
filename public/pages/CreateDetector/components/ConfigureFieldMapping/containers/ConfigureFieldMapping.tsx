@@ -17,13 +17,14 @@ import {
 import FieldMappingsTable from '../components/RequiredFieldMapping';
 import { createDetectorSteps } from '../../../utils/constants';
 import { ContentPanel } from '../../../../../components/ContentPanel';
-import { Detector, FieldMapping } from '../../../../../../models/interfaces';
+import { FieldMapping } from '../../../../../../models/interfaces';
 import { EMPTY_FIELD_MAPPINGS_VIEW } from '../utils/constants';
 import { DetectorCreationStep } from '../../../models/types';
 import { GetFieldMappingViewResponse } from '../../../../../../server/models/interfaces';
 import FieldMappingService from '../../../../../services/FieldMappingService';
 import { MappingViewType } from '../components/RequiredFieldMapping/FieldMappingsTable';
 import { CreateDetectorRulesState } from '../../DefineDetector/components/DetectionRules/DetectionRules';
+import { Detector } from '../../../../../../types';
 
 export interface ruleFieldToIndexFieldMap {
   [fieldName: string]: string;

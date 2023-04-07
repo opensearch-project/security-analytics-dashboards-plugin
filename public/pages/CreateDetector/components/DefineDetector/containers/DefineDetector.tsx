@@ -6,7 +6,7 @@
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { EuiSpacer, EuiTitle, EuiText, EuiCallOut } from '@elastic/eui';
-import { Detector, PeriodSchedule } from '../../../../../../models/interfaces';
+import { PeriodSchedule } from '../../../../../../models/interfaces';
 import DetectorBasicDetailsForm from '../components/DetectorDetails';
 import DetectorDataSource from '../components/DetectorDataSource';
 import DetectorType from '../components/DetectorType';
@@ -23,6 +23,7 @@ import {
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import _ from 'lodash';
 import { logTypesWithDashboards } from '../../../../../utils/constants';
+import { Detector } from '../../../../../../types';
 
 interface DefineDetectorProps extends RouteComponentProps {
   detector: Detector;

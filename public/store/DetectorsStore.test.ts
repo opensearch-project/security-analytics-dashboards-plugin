@@ -35,7 +35,7 @@ describe('Detectors store specs', () => {
     DataStore.detectors.setState(
       {
         pendingRequests: [Promise.resolve()],
-        detectorState: {
+        detectorInput: {
           detector: { detector_type: 'test_detector_type' } as typeof DetectorMock,
         } as CreateDetectorState,
       },
@@ -43,7 +43,7 @@ describe('Detectors store specs', () => {
     );
 
     let state = DataStore.detectors.getState();
-    expect(state?.detectorState?.detector.detector_type).toBe('test_detector_type');
+    expect(state?.detectorInput?.detector.detector_type).toBe('test_detector_type');
 
     DataStore.detectors.deleteState();
     state = DataStore.detectors.getState();
@@ -74,13 +74,13 @@ describe('Detectors store specs', () => {
             },
           }),
         ],
-        detectorState: {
+        detectorInput: {
           detector: { detector_type: 'test_detector_type' } as typeof DetectorMock,
         } as CreateDetectorState,
       },
       browserHistoryMock
     );
-    const pending = await DataStore.detectors.getPendingState();
+    const pending = await DataStore.detectors.resolvePendingCreationRequest();
     expect(pending.ok).toBe(true);
   });
 
@@ -92,13 +92,13 @@ describe('Detectors store specs', () => {
             ok: false,
           }),
         ],
-        detectorState: {
+        detectorInput: {
           detector: { detector_type: 'test_detector_type' } as typeof DetectorMock,
         } as CreateDetectorState,
       },
       browserHistoryMock
     );
-    const pending = await DataStore.detectors.getPendingState();
+    const pending = await DataStore.detectors.resolvePendingCreationRequest();
     expect(pending.ok).toBe(false);
   });
 });
