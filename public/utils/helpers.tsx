@@ -48,7 +48,7 @@ export function createTextDetailsGroup(
   const createFormRow = (label: string, content: string, url?: string) => {
     const dataTestSubj = label.toLowerCase().replace(/ /g, '-');
     return (
-      <EuiFormRow label={<EuiText color={'subdued'}>{label}</EuiText>}>
+      <EuiFormRow fullWidth label={<EuiText color={'subdued'}>{label}</EuiText>}>
         {url ? (
           <EuiLink data-test-subj={`text-details-group-content-${dataTestSubj}`}>
             {content ?? DEFAULT_EMPTY_DATA}
@@ -67,14 +67,10 @@ export function createTextDetailsGroup(
     )
   ) : (
     <>
-      <EuiFlexGroup>
+      <EuiFlexGroup className={'detailsFormRow'}>
         {data.map(({ label, content, url }, index) => {
           return (
-            <EuiFlexItem
-              key={index}
-              grow={false}
-              style={{ minWidth: `${100 / (columnNum || data.length)}%` }}
-            >
+            <EuiFlexItem key={index} grow={true}>
               {createFormRow(label, content, url)}
             </EuiFlexItem>
           );
