@@ -220,7 +220,11 @@ Object {
                     data-test-subj="text-details-group-content-data-source"
                     id="some_html_id"
                   >
-                    .windows
+                    <div
+                      class="euiText euiText--medium"
+                    >
+                      .windows
+                    </div>
                   </div>
                 </div>
               </div>
@@ -651,7 +655,11 @@ Object {
                   data-test-subj="text-details-group-content-data-source"
                   id="some_html_id"
                 >
-                  .windows
+                  <div
+                    class="euiText euiText--medium"
+                  >
+                    .windows
+                  </div>
                 </div>
               </div>
             </div>
