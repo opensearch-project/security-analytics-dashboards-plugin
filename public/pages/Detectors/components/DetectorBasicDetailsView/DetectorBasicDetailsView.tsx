@@ -37,23 +37,13 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
   const lastUpdated = last_update_time
     ? moment(last_update_time).format('YYYY-MM-DDTHH:mm')
     : undefined;
-  const firstTextDetailsGroupEntries = [
-    { label: 'Detector name', content: name },
-    { label: 'Log type', content: detector_type.toLowerCase() },
-    { label: 'Data source', content: inputs[0].detector_input.indices[0] },
-    {
-      label: 'Detector dashboard',
-      content: (dashboardId ? (
-        <EuiLink onClick={() => window.open(`dashboards#/view/${dashboardId}`, '_blank')}>
-          {`${name} summary`}
-          <EuiIcon type={'popout'} />
-        </EuiLink>
-      ) : (
-        'Not available for this log type'
-      )) as any,
-    },
-  ];
-
+  const totalSelected = detector.inputs.reduce((sum, inputObj) => {
+    return (
+      sum +
+      inputObj.detector_input.custom_rules.length +
+      inputObj.detector_input.pre_packaged_rules.length
+    );
+  }, 0);
   return (
     <ContentPanel
       title={'Detector details'}
@@ -68,11 +58,38 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
       }
     >
       <EuiSpacer size={'l'} />
-      {createTextDetailsGroup(firstTextDetailsGroupEntries, 4)}
       {createTextDetailsGroup(
         [
-          { label: 'Description', content: inputs[0].detector_input.description },
+          { label: 'Detector name', content: name },
+          {
+            label: 'Description',
+            content: inputs[0].detector_input.description || DEFAULT_EMPTY_DATA,
+          },
           { label: 'Detector schedule', content: detectorSchedule },
+        ],
+        4
+      )}
+      {createTextDetailsGroup(
+        [
+          { label: 'Data source', content: inputs[0].detector_input.indices.join(', ') },
+          { label: 'Log type', content: detector_type.toLowerCase() },
+          {
+            label: 'Detector dashboard',
+            content: (dashboardId ? (
+              <EuiLink onClick={() => window.open(`dashboards#/view/${dashboardId}`, '_blank')}>
+                {`${name} summary`}
+                <EuiIcon type={'popout'} />
+              </EuiLink>
+            ) : (
+              'Not available for this log type'
+            )) as any,
+          },
+        ],
+        4
+      )}
+      {createTextDetailsGroup(
+        [
+          { label: 'Detection rules', content: totalSelected },
           { label: 'Created at', content: createdAt || DEFAULT_EMPTY_DATA },
           { label: 'Last updated time', content: lastUpdated || DEFAULT_EMPTY_DATA },
         ],
