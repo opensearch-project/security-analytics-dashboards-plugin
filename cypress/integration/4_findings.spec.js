@@ -5,7 +5,7 @@
 
 import { DETECTOR_TRIGGER_TIMEOUT, OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
 import sample_document from '../fixtures/sample_document.json';
-import sample_index_settings from '../fixtures/sample_index_settings.json';
+import sample_index_settings from '../fixtures/sample_windows_index_settings.json';
 import sample_field_mappings from '../fixtures/sample_field_mappings.json';
 import sample_detector from '../fixtures/sample_detector.json';
 

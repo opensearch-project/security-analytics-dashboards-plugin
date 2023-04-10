@@ -1,8 +1,8 @@
 {
   "id": "25b9c01c-350d-4b95-bed1-836d04a4f325",
   "category": "dns",
-  "title": "Cypress DNS Rule",
-  "description": "Detects DNS name as QWE",
+  "title": "Cypress DNS Type Rule",
+  "description": "Detects DNS type as QWE",
   "status": "experimental",
   "author": "Cypress Tests",
   "references": [
@@ -16,7 +16,7 @@
     }
   ],
   "log_source": "",
-  "detection": "selection:\n  query:\n    - QWE\n    - ASD\n    - YXC\ncondition: selection",
+  "detection": "selection:\n  DnsAnswerType:\n    - QWE\n    - ASD\n    - YXC\ncondition: selection",
   "level": "low",
   "false_positives": [
     {

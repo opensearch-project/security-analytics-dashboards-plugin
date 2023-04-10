@@ -5,7 +5,7 @@
 
 import moment from 'moment';
 import { DETECTOR_TRIGGER_TIMEOUT, OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
-import sample_index_settings from '../fixtures/sample_index_settings.json';
+import sample_index_settings from '../fixtures/sample_windows_index_settings.json';
 import sample_alias_mappings from '../fixtures/sample_alias_mappings.json';
 import sample_detector from '../fixtures/sample_detector.json';
 import sample_document from '../fixtures/sample_document.json';
