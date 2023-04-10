@@ -11,17 +11,13 @@ export const createDetectorSteps: Record<DetectorCreationStep, DetectorCreationS
     title: 'Define detector',
     step: 1,
   },
-  [DetectorCreationStep.CONFIGURE_FIELD_MAPPING]: {
-    title: 'Configure field mapping',
-    step: 2,
-  },
   [DetectorCreationStep.CONFIGURE_ALERTS]: {
     title: 'Set up alerts',
-    step: 3,
+    step: 2,
   },
   [DetectorCreationStep.REVIEW_CREATE]: {
     title: 'Review and create',
-    step: 4,
+    step: 3,
   },
 };
 

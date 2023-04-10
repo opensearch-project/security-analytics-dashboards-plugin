@@ -11,12 +11,13 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import { AlertCondition, Detector } from '../../../../../models/interfaces';
+import { AlertCondition } from '../../../../../models/interfaces';
 import React from 'react';
 import { createTextDetailsGroup } from '../../../../utils/helpers';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { DEFAULT_EMPTY_DATA, getNotificationDetailsHref } from '../../../../utils/constants';
 import { FeatureChannelList, RuleInfo } from '../../../../../server/models/interfaces';
+import { Detector } from '../../../../../types';
 
 export interface AlertTriggerViewProps {
   alertTrigger: AlertCondition;
