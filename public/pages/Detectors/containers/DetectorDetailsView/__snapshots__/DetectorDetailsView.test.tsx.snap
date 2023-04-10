@@ -1438,13 +1438,6 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
       </EuiPanel>
     </ContentPanel>
   </DetectorBasicDetailsView>
-  <EuiSpacer
-    size="xxl"
-  >
-    <div
-      className="euiSpacer euiSpacer--xxl"
-    />
-  </EuiSpacer>
   <DetectorRulesView
     detector={
       Object {
