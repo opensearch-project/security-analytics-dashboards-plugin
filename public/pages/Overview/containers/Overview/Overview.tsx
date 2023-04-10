@@ -11,6 +11,7 @@ import {
   EuiPopover,
   EuiSuperDatePicker,
   EuiTitle,
+  EuiSpacer,
 } from '@elastic/eui';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import {
@@ -166,6 +167,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
             />
           </EuiFlexItem>
         </EuiFlexGroup>
+        <EuiSpacer size={'m'} />
       </EuiFlexItem>
       <EuiFlexItem>
         <Summary
