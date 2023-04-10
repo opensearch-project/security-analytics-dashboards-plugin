@@ -5,14 +5,14 @@
 
 import { ContentPanel } from '../../../../../../components/ContentPanel';
 import React from 'react';
-import { EuiFormRow, EuiSelect, EuiSelectOption } from '@elastic/eui';
-import FormFieldHeader from '../../../../../../components/FormFieldHeader';
-import { Detector, PeriodSchedule } from '../../../../../../../models/interfaces';
+import { EuiSelectOption } from '@elastic/eui';
+import { PeriodSchedule } from '../../../../../../../models/interfaces';
 import { Interval } from './Interval';
 import { CustomCron } from './CustomCron';
 import { Daily } from './Daily';
 import { Monthly } from './Monthly';
 import { Weekly } from './Weekly';
+import { Detector } from '../../../../../../../types';
 
 const frequencies: EuiSelectOption[] = [{ value: 'interval', text: 'By interval' }];
 
@@ -53,15 +53,6 @@ export class DetectorSchedule extends React.Component<
 
     return (
       <ContentPanel title={'Detector schedule'}>
-        <EuiFormRow label={<FormFieldHeader headerTitle={'Frequency'} />}>
-          <EuiSelect
-            id="overview-vis-options"
-            options={frequencies}
-            value={this.state.selectedFrequency}
-            onChange={this.onFrequencySelected}
-          />
-        </EuiFormRow>
-
         <FrequencyPicker {...this.props} />
       </ContentPanel>
     );
