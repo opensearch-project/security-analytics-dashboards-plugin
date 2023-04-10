@@ -5,9 +5,8 @@
 
 export enum DetectorCreationStep {
   DEFINE_DETECTOR = 1,
-  CONFIGURE_FIELD_MAPPING = 2,
-  CONFIGURE_ALERTS = 3,
-  REVIEW_CREATE = 4,
+  CONFIGURE_ALERTS = 2,
+  REVIEW_CREATE = 3,
 }
 
 export interface DefineDetectorData {
@@ -40,7 +39,6 @@ export interface ReviewAndCreateData {
 
 export interface DetectorDataByStep {
   [DetectorCreationStep.DEFINE_DETECTOR]: DefineDetectorData;
-  [DetectorCreationStep.CONFIGURE_FIELD_MAPPING]: ConfigureFieldMappingData;
   [DetectorCreationStep.CONFIGURE_ALERTS]: ConfigureAlertsData;
   [DetectorCreationStep.REVIEW_CREATE]: ReviewAndCreateData;
 }

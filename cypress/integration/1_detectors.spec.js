@@ -86,7 +86,7 @@ describe('Detectors', () => {
 
     cy.get('.euiCallOut')
       .should('be.visible')
-      .contains('The selected log sources contain different types of logs');
+      .contains('The selected log sources contain different log types');
   });
 
   it('...can be created', () => {
@@ -140,12 +140,6 @@ describe('Detectors', () => {
       });
     });
 
-    // Click Next button to continue
-    cy.get('button').contains('Next').click({ force: true });
-
-    // Check that correct page now showing
-    cy.contains('Configure field mapping');
-
     // Select appropriate names to map fields to
     for (let field_name in testMappings.properties) {
       const mappedTo = testMappings.properties[field_name].path;
@@ -155,8 +149,8 @@ describe('Detectors', () => {
       });
     }
 
-    // Continue to next page
-    cy.get('button').contains('Next').click({ force: true, timeout: 2000 });
+    // Click Next button to continue
+    cy.get('button').contains('Next').click({ force: true });
 
     // Check that correct page now showing
     cy.contains('Set up alert triggers');
@@ -245,11 +239,10 @@ describe('Detectors', () => {
       .realType('Edited description');
 
     // Change input source
-    cy.get(`[data-test-subj="define-detector-select-data-source"]`)
-      .find('input')
-      .ospClear()
-      .focus()
-      .realType(cypressIndexWindows);
+    cy.get('.euiBadge__iconButton > .euiIcon').click({ force: true });
+    cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(
+      `${cypressIndexWindows}{enter}`
+    );
 
     // Change detector scheduling
     cy.get(`[data-test-subj="detector-schedule-number-select"]`).ospClear().focus().realType('10');

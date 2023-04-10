@@ -12,6 +12,7 @@ import {
   EuiInMemoryTable,
   EuiLink,
   EuiToolTip,
+  EuiEmptyPrompt,
 } from '@elastic/eui';
 import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
 import dateMath from '@elastic/datemath';
@@ -48,6 +49,7 @@ interface FindingsTableState {
   flyout: object | undefined;
   flyoutOpen: boolean;
   selectedFinding?: Finding;
+  widgetEmptyMessage: React.ReactNode | undefined;
 }
 
 export default class FindingsTable extends Component<FindingsTableProps, FindingsTableState> {
@@ -59,6 +61,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
       flyout: undefined,
       flyoutOpen: false,
       selectedFinding: undefined,
+      widgetEmptyMessage: undefined,
     };
   }
 
@@ -82,7 +85,21 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
     const filteredFindings = findings.filter((finding) =>
       moment(finding.timestamp).isBetween(moment(startMoment), moment(endMoment))
     );
-    this.setState({ findingsFiltered: true, filteredFindings: filteredFindings });
+    this.setState({
+      findingsFiltered: true,
+      filteredFindings: filteredFindings,
+      widgetEmptyMessage:
+        filteredFindings.length || findings.length ? undefined : (
+          <EuiEmptyPrompt
+            body={
+              <p>
+                <span style={{ display: 'block' }}>No findings.</span>Adjust the time range to see
+                more results.
+              </p>
+            }
+          />
+        ),
+    });
     this.props.onFindingsFiltered(filteredFindings);
   };
 
@@ -142,7 +159,13 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
 
   render() {
     const { findings, loading, rules } = this.props;
-    const { findingsFiltered, filteredFindings, flyout, flyoutOpen } = this.state;
+    const {
+      findingsFiltered,
+      filteredFindings,
+      flyout,
+      flyoutOpen,
+      widgetEmptyMessage,
+    } = this.state;
 
     const columns: EuiBasicTableColumn<Finding>[] = [
       {
@@ -285,6 +308,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
           sorting={sorting}
           isSelectable={false}
           loading={loading}
+          message={widgetEmptyMessage}
         />
         {flyoutOpen && flyout}
       </div>
