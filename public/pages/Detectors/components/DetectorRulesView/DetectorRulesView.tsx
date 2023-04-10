@@ -110,7 +110,7 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
     });
   }, [services, props.detector]);
 
-  const getDetectionRulesTitle = () => `View detection rules (${totalSelected})`;
+  const getDetectionRulesTitle = () => `View detection rules`;
 
   const onShowRuleDetails = (rule: RuleTableItem) => {
     setFlyoutData(() => rule);
