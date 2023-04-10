@@ -6,7 +6,6 @@
 import React from 'react';
 import { DetectorBasicDetailsView } from '../../components/DetectorBasicDetailsView/DetectorBasicDetailsView';
 import { DetectorRulesView } from '../../components/DetectorRulesView/DetectorRulesView';
-import { EuiSpacer } from '@elastic/eui';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { Detector } from '../../../../../types';
@@ -20,7 +19,7 @@ export interface DetectorDetailsViewProps {
   dashboardId?: string;
   editBasicDetails: () => void;
   editDetectorRules: (enabledRules: RuleItem[], allRuleItems: RuleItem[]) => void;
-  isEditable: boolean;
+  isEditable?: boolean;
 }
 
 export interface DetectorDetailsViewState {}
@@ -64,7 +63,6 @@ export class DetectorDetailsView extends React.Component<
         >
           {rulesCanFold ? detectorRules : null}
         </DetectorBasicDetailsView>
-        <EuiSpacer size="xxl" />
 
         {rulesCanFold ? null : detectorRules}
       </>

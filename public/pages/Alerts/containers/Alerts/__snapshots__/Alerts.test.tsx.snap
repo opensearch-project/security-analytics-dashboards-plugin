@@ -714,10 +714,10 @@ exports[`<Alerts /> spec renders the component 1`] = `
               </div>
             </EuiFlexGroup>
             <EuiSpacer
-              size="xxl"
+              size="m"
             >
               <div
-                className="euiSpacer euiSpacer--xxl"
+                className="euiSpacer euiSpacer--m"
               />
             </EuiSpacer>
           </div>
@@ -880,42 +880,76 @@ exports[`<Alerts /> spec renders the component 1`] = `
                       <div
                         className="euiFlexItem"
                       >
-                        <ChartContainer
-                          chartViewId="alerts-view"
-                          loading={true}
+                        <EuiEmptyPrompt
+                          body={
+                            <p>
+                              Adjust the time range to see more results or create alert triggers in your
+                               
+                              <EuiLink
+                                href="/#/detectors"
+                              >
+                                detectors
+                              </EuiLink>
+                               to generate alerts.
+                            </p>
+                          }
+                          title={
+                            <h2>
+                              No alerts
+                            </h2>
+                          }
                         >
                           <div
-                            className="chart-view-container"
+                            className="euiEmptyPrompt"
                           >
-                            <EuiLoadingChart
-                              className="chart-view-container-loading"
-                              size="xl"
+                            <EuiTitle
+                              size="m"
+                            >
+                              <h2
+                                className="euiTitle euiTitle--medium"
+                              >
+                                No alerts
+                              </h2>
+                            </EuiTitle>
+                            <EuiTextColor
+                              color="subdued"
                             >
                               <span
-                                className="euiLoadingChart chart-view-container-loading euiLoadingChart--xLarge"
+                                className="euiTextColor euiTextColor--subdued"
                               >
-                                <span
-                                  className="euiLoadingChart__bar"
-                                />
-                                <span
-                                  className="euiLoadingChart__bar"
-                                />
-                                <span
-                                  className="euiLoadingChart__bar"
-                                />
-                                <span
-                                  className="euiLoadingChart__bar"
-                                />
+                                <EuiSpacer
+                                  size="m"
+                                >
+                                  <div
+                                    className="euiSpacer euiSpacer--m"
+                                  />
+                                </EuiSpacer>
+                                <EuiText>
+                                  <div
+                                    className="euiText euiText--medium"
+                                  >
+                                    <p>
+                                      Adjust the time range to see more results or create alert triggers in your
+                                       
+                                      <EuiLink
+                                        href="/#/detectors"
+                                      >
+                                        <a
+                                          className="euiLink euiLink--primary"
+                                          href="/#/detectors"
+                                          rel="noreferrer"
+                                        >
+                                          detectors
+                                        </a>
+                                      </EuiLink>
+                                       to generate alerts.
+                                    </p>
+                                  </div>
+                                </EuiText>
                               </span>
-                            </EuiLoadingChart>
-                            <div
-                              className="chart-view-container-mask"
-                            />
-                            <div
-                              id="alerts-view"
-                            />
+                            </EuiTextColor>
                           </div>
-                        </ChartContainer>
+                        </EuiEmptyPrompt>
                       </div>
                     </EuiFlexItem>
                   </div>

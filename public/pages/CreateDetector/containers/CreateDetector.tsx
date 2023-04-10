@@ -15,7 +15,6 @@ import {
   PLUGIN_NAME,
   ROUTES,
 } from '../../../utils/constants';
-import ConfigureFieldMapping from '../components/ConfigureFieldMapping';
 import ConfigureAlerts from '../components/ConfigureAlerts';
 import { FieldMapping } from '../../../../models/interfaces';
 import { EuiContainedStepProps } from '@elastic/eui/src/components/steps/steps';
@@ -45,7 +44,7 @@ export interface CreateDetectorState {
   currentStep: DetectorCreationStep;
   detector: Detector;
   fieldMappings: FieldMapping[];
-  stepDataValid: { [step in DetectorCreationStep]: boolean };
+  stepDataValid: { [step in DetectorCreationStep | string]: boolean };
   creatingDetector: boolean;
   rulesState: CreateDetectorRulesState;
   plugins: string[];
@@ -68,7 +67,6 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
       fieldMappings: [],
       stepDataValid: {
         [DetectorCreationStep.DEFINE_DETECTOR]: false,
-        [DetectorCreationStep.CONFIGURE_FIELD_MAPPING]: true,
         [DetectorCreationStep.CONFIGURE_ALERTS]: false,
         [DetectorCreationStep.REVIEW_CREATE]: false,
       },
@@ -153,7 +151,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     this.setState({ currentStep });
   };
 
-  updateDataValidState = (step: DetectorCreationStep, isValid: boolean): void => {
+  updateDataValidState = (step: DetectorCreationStep | string, isValid: boolean): void => {
     this.setState({
       stepDataValid: {
         ...this.state.stepDataValid,
@@ -293,24 +291,13 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             detector={this.state.detector}
             indexService={services.indexService}
             fieldMappingService={services.fieldMappingService}
+            fieldMappings={this.state.fieldMappings}
             rulesState={this.state.rulesState}
             loadingRules={this.state.loadingRules}
             onRuleToggle={this.onRuleToggle}
             onAllRulesToggle={this.onAllRulesToggle}
             onPageChange={this.onPageChange}
             changeDetector={this.changeDetector}
-            updateDataValidState={this.updateDataValidState}
-          />
-        );
-      case DetectorCreationStep.CONFIGURE_FIELD_MAPPING:
-        return (
-          <ConfigureFieldMapping
-            {...this.props}
-            detector={this.state.detector}
-            loading={false}
-            fieldMappingService={services.fieldMappingService}
-            fieldMappings={this.state.fieldMappings}
-            enabledRules={this.state.rulesState.allRules.filter((rule) => rule.enabled)}
             replaceFieldMappings={this.replaceFieldMappings}
             updateDataValidState={this.updateDataValidState}
           />

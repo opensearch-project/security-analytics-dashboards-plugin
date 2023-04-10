@@ -251,11 +251,10 @@ describe('Detectors', () => {
       .realType('Edited description');
 
     // Change input source
-    cy.get(`[data-test-subj="define-detector-select-data-source"]`)
-      .find('input')
-      .ospClear()
-      .focus()
-      .realType(cypressIndexWindows);
+    cy.get('.euiBadge__iconButton > .euiIcon').click({ force: true });
+    cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(
+      `${cypressIndexWindows}{enter}`
+    );
 
     // Change detector scheduling
     cy.get(`[data-test-subj="detector-schedule-number-select"]`).ospClear().focus().realType('10');
