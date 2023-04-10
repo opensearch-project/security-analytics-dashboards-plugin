@@ -13,7 +13,8 @@ import {
 } from '@elastic/eui';
 import FormFieldHeader from '../../../../../../components/FormFieldHeader';
 import React from 'react';
-import { Detector, PeriodSchedule } from '../../../../../../../models/interfaces';
+import { PeriodSchedule } from '../../../../../../../models/interfaces';
+import { Detector } from '../../../../../../../types';
 
 export interface IntervalProps {
   detector: Detector;
