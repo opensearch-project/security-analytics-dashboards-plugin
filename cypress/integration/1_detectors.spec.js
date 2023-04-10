@@ -55,9 +55,6 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
     });
   });
 
-  // Click Next button to continue
-  cy.get('button').contains('Next').click({ force: true });
-
   // Check that correct page now showing
   cy.contains('Configure field mapping');
 
@@ -72,8 +69,8 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
     }
   }
 
-  // Continue to next page
-  cy.get('button').contains('Next').click({ force: true, timeout: 2000 });
+  // Click Next button to continue
+  cy.get('button').contains('Next').click({ force: true });
 
   // Check that correct page now showing
   cy.contains('Set up alerts');
@@ -211,7 +208,9 @@ describe('Detectors', () => {
 
     cy.get('.euiCallOut')
       .should('be.visible')
-      .contains('The selected log sources contain different types of logs');
+      .contains(
+        'To avoid issues with field mappings, we recommend creating separate detectors for different log types.'
+      );
   });
 
   it('...can be created', () => {
