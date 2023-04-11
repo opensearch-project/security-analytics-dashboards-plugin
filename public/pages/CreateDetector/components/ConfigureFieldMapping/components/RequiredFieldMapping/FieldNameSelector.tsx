@@ -39,7 +39,7 @@ export default class FieldNameSelector extends Component<SIEMFieldNameProps, SIE
     if (this.props.selectedField !== prevProps.selectedField) {
       // if the props.selectedField is changed, update the state
       this.setState({
-        selectedOptions: [{ label: this.props.selectedField }],
+        selectedOptions: this.props.selectedField ? [{ label: this.props.selectedField }] : [],
       });
     }
   }

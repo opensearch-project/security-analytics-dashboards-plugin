@@ -183,6 +183,9 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
     Object {
       "toasts": Object {
         "addDanger": [MockFunction],
+        "addInfo": [MockFunction],
+        "addSuccess": [MockFunction],
+        "addWarning": [MockFunction],
       },
     }
   }
@@ -665,7 +668,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                           <EuiFormRow
                             describedByIds={Array []}
                             display="row"
-                            fullWidth={false}
+                            fullWidth={true}
                             hasChildLabel={true}
                             hasEmptyLabelSpace={false}
                             label={
@@ -678,7 +681,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                             labelType="label"
                           >
                             <div
-                              className="euiFormRow"
+                              className="euiFormRow euiFormRow--fullWidth"
                               id="some_html_id-row"
                             >
                               <div
@@ -760,31 +763,23 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                               className="euiSpacer euiSpacer--m"
                             />
                           </EuiSpacer>
-                          <EuiFlexGroup>
+                          <EuiFlexGroup
+                            className="detailsFormRow"
+                          >
                             <div
-                              className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+                              className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
                             >
                               <EuiFlexItem
-                                grow={false}
+                                grow={true}
                                 key="0"
-                                style={
-                                  Object {
-                                    "minWidth": "33.333333333333336%",
-                                  }
-                                }
                               >
                                 <div
-                                  className="euiFlexItem euiFlexItem--flexGrowZero"
-                                  style={
-                                    Object {
-                                      "minWidth": "33.333333333333336%",
-                                    }
-                                  }
+                                  className="euiFlexItem"
                                 >
                                   <EuiFormRow
                                     describedByIds={Array []}
                                     display="row"
-                                    fullWidth={false}
+                                    fullWidth={true}
                                     hasChildLabel={true}
                                     hasEmptyLabelSpace={false}
                                     label={
@@ -797,7 +792,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                     labelType="label"
                                   >
                                     <div
-                                      className="euiFormRow"
+                                      className="euiFormRow euiFormRow--fullWidth"
                                       id="some_html_id-row"
                                     >
                                       <div
@@ -859,26 +854,16 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                 </div>
                               </EuiFlexItem>
                               <EuiFlexItem
-                                grow={false}
+                                grow={true}
                                 key="1"
-                                style={
-                                  Object {
-                                    "minWidth": "33.333333333333336%",
-                                  }
-                                }
                               >
                                 <div
-                                  className="euiFlexItem euiFlexItem--flexGrowZero"
-                                  style={
-                                    Object {
-                                      "minWidth": "33.333333333333336%",
-                                    }
-                                  }
+                                  className="euiFlexItem"
                                 >
                                   <EuiFormRow
                                     describedByIds={Array []}
                                     display="row"
-                                    fullWidth={false}
+                                    fullWidth={true}
                                     hasChildLabel={true}
                                     hasEmptyLabelSpace={false}
                                     label={
@@ -891,7 +876,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                     labelType="label"
                                   >
                                     <div
-                                      className="euiFormRow"
+                                      className="euiFormRow euiFormRow--fullWidth"
                                       id="some_html_id-row"
                                     >
                                       <div
@@ -961,31 +946,23 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                               className="euiSpacer euiSpacer--xl"
                             />
                           </EuiSpacer>
-                          <EuiFlexGroup>
+                          <EuiFlexGroup
+                            className="detailsFormRow"
+                          >
                             <div
-                              className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+                              className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
                             >
                               <EuiFlexItem
-                                grow={false}
+                                grow={true}
                                 key="0"
-                                style={
-                                  Object {
-                                    "minWidth": "33.333333333333336%",
-                                  }
-                                }
                               >
                                 <div
-                                  className="euiFlexItem euiFlexItem--flexGrowZero"
-                                  style={
-                                    Object {
-                                      "minWidth": "33.333333333333336%",
-                                    }
-                                  }
+                                  className="euiFlexItem"
                                 >
                                   <EuiFormRow
                                     describedByIds={Array []}
                                     display="row"
-                                    fullWidth={false}
+                                    fullWidth={true}
                                     hasChildLabel={true}
                                     hasEmptyLabelSpace={false}
                                     label={
@@ -998,7 +975,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                     labelType="label"
                                   >
                                     <div
-                                      className="euiFormRow"
+                                      className="euiFormRow euiFormRow--fullWidth"
                                       id="some_html_id-row"
                                     >
                                       <div
@@ -1060,26 +1037,16 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                 </div>
                               </EuiFlexItem>
                               <EuiFlexItem
-                                grow={false}
+                                grow={true}
                                 key="1"
-                                style={
-                                  Object {
-                                    "minWidth": "33.333333333333336%",
-                                  }
-                                }
                               >
                                 <div
-                                  className="euiFlexItem euiFlexItem--flexGrowZero"
-                                  style={
-                                    Object {
-                                      "minWidth": "33.333333333333336%",
-                                    }
-                                  }
+                                  className="euiFlexItem"
                                 >
                                   <EuiFormRow
                                     describedByIds={Array []}
                                     display="row"
-                                    fullWidth={false}
+                                    fullWidth={true}
                                     hasChildLabel={true}
                                     hasEmptyLabelSpace={false}
                                     label={
@@ -1092,7 +1059,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                     labelType="label"
                                   >
                                     <div
-                                      className="euiFormRow"
+                                      className="euiFormRow euiFormRow--fullWidth"
                                       id="some_html_id-row"
                                     >
                                       <div
@@ -1188,7 +1155,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                           <EuiFormRow
                             describedByIds={Array []}
                             display="row"
-                            fullWidth={false}
+                            fullWidth={true}
                             hasChildLabel={true}
                             hasEmptyLabelSpace={false}
                             label={
@@ -1201,7 +1168,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                             labelType="label"
                           >
                             <div
-                              className="euiFormRow"
+                              className="euiFormRow euiFormRow--fullWidth"
                               id="some_html_id-row"
                             >
                               <div
@@ -1270,7 +1237,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                           <EuiFormRow
                             describedByIds={Array []}
                             display="row"
-                            fullWidth={false}
+                            fullWidth={true}
                             hasChildLabel={true}
                             hasEmptyLabelSpace={false}
                             label={
@@ -1283,7 +1250,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                             labelType="label"
                           >
                             <div
-                              className="euiFormRow"
+                              className="euiFormRow euiFormRow--fullWidth"
                               id="some_html_id-row"
                             >
                               <div
@@ -1686,7 +1653,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                           <EuiFormRow
                             describedByIds={Array []}
                             display="row"
-                            fullWidth={false}
+                            fullWidth={true}
                             hasChildLabel={true}
                             hasEmptyLabelSpace={false}
                             label={
@@ -1699,7 +1666,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                             labelType="label"
                           >
                             <div
-                              className="euiFormRow"
+                              className="euiFormRow euiFormRow--fullWidth"
                               id="some_html_id-row"
                             >
                               <div
@@ -1781,31 +1748,23 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                               className="euiSpacer euiSpacer--m"
                             />
                           </EuiSpacer>
-                          <EuiFlexGroup>
+                          <EuiFlexGroup
+                            className="detailsFormRow"
+                          >
                             <div
-                              className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+                              className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
                             >
                               <EuiFlexItem
-                                grow={false}
+                                grow={true}
                                 key="0"
-                                style={
-                                  Object {
-                                    "minWidth": "33.333333333333336%",
-                                  }
-                                }
                               >
                                 <div
-                                  className="euiFlexItem euiFlexItem--flexGrowZero"
-                                  style={
-                                    Object {
-                                      "minWidth": "33.333333333333336%",
-                                    }
-                                  }
+                                  className="euiFlexItem"
                                 >
                                   <EuiFormRow
                                     describedByIds={Array []}
                                     display="row"
-                                    fullWidth={false}
+                                    fullWidth={true}
                                     hasChildLabel={true}
                                     hasEmptyLabelSpace={false}
                                     label={
@@ -1818,7 +1777,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                     labelType="label"
                                   >
                                     <div
-                                      className="euiFormRow"
+                                      className="euiFormRow euiFormRow--fullWidth"
                                       id="some_html_id-row"
                                     >
                                       <div
@@ -1880,26 +1839,16 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                 </div>
                               </EuiFlexItem>
                               <EuiFlexItem
-                                grow={false}
+                                grow={true}
                                 key="1"
-                                style={
-                                  Object {
-                                    "minWidth": "33.333333333333336%",
-                                  }
-                                }
                               >
                                 <div
-                                  className="euiFlexItem euiFlexItem--flexGrowZero"
-                                  style={
-                                    Object {
-                                      "minWidth": "33.333333333333336%",
-                                    }
-                                  }
+                                  className="euiFlexItem"
                                 >
                                   <EuiFormRow
                                     describedByIds={Array []}
                                     display="row"
-                                    fullWidth={false}
+                                    fullWidth={true}
                                     hasChildLabel={true}
                                     hasEmptyLabelSpace={false}
                                     label={
@@ -1912,7 +1861,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                     labelType="label"
                                   >
                                     <div
-                                      className="euiFormRow"
+                                      className="euiFormRow euiFormRow--fullWidth"
                                       id="some_html_id-row"
                                     >
                                       <div
@@ -1982,31 +1931,23 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                               className="euiSpacer euiSpacer--xl"
                             />
                           </EuiSpacer>
-                          <EuiFlexGroup>
+                          <EuiFlexGroup
+                            className="detailsFormRow"
+                          >
                             <div
-                              className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+                              className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
                             >
                               <EuiFlexItem
-                                grow={false}
+                                grow={true}
                                 key="0"
-                                style={
-                                  Object {
-                                    "minWidth": "33.333333333333336%",
-                                  }
-                                }
                               >
                                 <div
-                                  className="euiFlexItem euiFlexItem--flexGrowZero"
-                                  style={
-                                    Object {
-                                      "minWidth": "33.333333333333336%",
-                                    }
-                                  }
+                                  className="euiFlexItem"
                                 >
                                   <EuiFormRow
                                     describedByIds={Array []}
                                     display="row"
-                                    fullWidth={false}
+                                    fullWidth={true}
                                     hasChildLabel={true}
                                     hasEmptyLabelSpace={false}
                                     label={
@@ -2019,7 +1960,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                     labelType="label"
                                   >
                                     <div
-                                      className="euiFormRow"
+                                      className="euiFormRow euiFormRow--fullWidth"
                                       id="some_html_id-row"
                                     >
                                       <div
@@ -2081,26 +2022,16 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                 </div>
                               </EuiFlexItem>
                               <EuiFlexItem
-                                grow={false}
+                                grow={true}
                                 key="1"
-                                style={
-                                  Object {
-                                    "minWidth": "33.333333333333336%",
-                                  }
-                                }
                               >
                                 <div
-                                  className="euiFlexItem euiFlexItem--flexGrowZero"
-                                  style={
-                                    Object {
-                                      "minWidth": "33.333333333333336%",
-                                    }
-                                  }
+                                  className="euiFlexItem"
                                 >
                                   <EuiFormRow
                                     describedByIds={Array []}
                                     display="row"
-                                    fullWidth={false}
+                                    fullWidth={true}
                                     hasChildLabel={true}
                                     hasEmptyLabelSpace={false}
                                     label={
@@ -2113,7 +2044,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                     labelType="label"
                                   >
                                     <div
-                                      className="euiFormRow"
+                                      className="euiFormRow euiFormRow--fullWidth"
                                       id="some_html_id-row"
                                     >
                                       <div
@@ -2209,7 +2140,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                           <EuiFormRow
                             describedByIds={Array []}
                             display="row"
-                            fullWidth={false}
+                            fullWidth={true}
                             hasChildLabel={true}
                             hasEmptyLabelSpace={false}
                             label={
@@ -2222,7 +2153,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                             labelType="label"
                           >
                             <div
-                              className="euiFormRow"
+                              className="euiFormRow euiFormRow--fullWidth"
                               id="some_html_id-row"
                             >
                               <div
@@ -2291,7 +2222,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                           <EuiFormRow
                             describedByIds={Array []}
                             display="row"
-                            fullWidth={false}
+                            fullWidth={true}
                             hasChildLabel={true}
                             hasEmptyLabelSpace={false}
                             label={
@@ -2304,7 +2235,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                             labelType="label"
                           >
                             <div
-                              className="euiFormRow"
+                              className="euiFormRow euiFormRow--fullWidth"
                               id="some_html_id-row"
                             >
                               <div
