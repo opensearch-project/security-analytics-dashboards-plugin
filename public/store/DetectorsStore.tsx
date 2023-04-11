@@ -144,7 +144,7 @@ export class DetectorsStore implements IDetectorsStore {
 
     const closeAllToasts = () => {
       this.toasts = [];
-      this.showToast(this.toasts);
+      this.showToastCallback(this.toasts);
     };
 
     const btn = btnText && (
@@ -168,7 +168,7 @@ export class DetectorsStore implements IDetectorsStore {
       </EuiFlexGroup>
     );
 
-    this.showCallout({
+    this.showCalloutCallback({
       type,
       title,
       message: messageBody,
@@ -183,7 +183,7 @@ export class DetectorsStore implements IDetectorsStore {
       id: `toastsKey_${uuidv4()}`,
       text: messageBody,
     });
-    this.showToast(this.toasts);
+    this.showToastCallback(this.toasts);
   };
 
   private viewDetectorConfiguration = (): void => {
@@ -313,26 +313,26 @@ export class DetectorsStore implements IDetectorsStore {
    * A handler function that store gets from the Main component to show/hide the callout message
    * @param {ICalloutProps | undefined} callout
    */
-  private showCallout = (callout?: ICalloutProps | undefined): void => {};
+  private showCalloutCallback = (callout?: ICalloutProps | undefined): void => {};
 
-  private hideCallout = (): void => this.showCallout(undefined);
+  private hideCallout = (): void => this.showCalloutCallback(undefined);
 
   /**
    * A handler function that store gets from the Main component to show/hide the toast message
    * @param {Toast[] | undefined} toasts
    */
-  private showToast = (toasts?: Toast[] | undefined): void => {};
+  private showToastCallback = (toasts?: Toast[] | undefined): void => {};
 
   public hideToast = (removedToast: any): void => {
     this.toasts = this.toasts.filter((toast: Toast) => toast.id !== removedToast.id);
-    this.showToast(this.toasts);
+    this.showToastCallback(this.toasts);
   };
 
   public setHandlers = (
     calloutHandler: (callout?: ICalloutProps) => void,
     toastHandler: (toasts?: Toast[]) => void
   ): void => {
-    this.showCallout = calloutHandler;
-    this.showToast = toastHandler;
+    this.showCalloutCallback = calloutHandler;
+    this.showToastCallback = toastHandler;
   };
 }
