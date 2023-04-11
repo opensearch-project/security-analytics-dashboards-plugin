@@ -121,3 +121,7 @@ $euiTextColor: $euiColorDarkestShade !default;
 .sa-overview-widget-empty tbody > .euiTableRow > .euiTableRowCell {
   border-bottom: none;
 }
+
+.detailsFormRow {
+  width: auto !important;
+}
