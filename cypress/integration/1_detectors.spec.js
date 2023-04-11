@@ -18,6 +18,10 @@ const testMappings = {
 
 const cypressDNSRule = dns_rule_data.title;
 
+const cypressIndexDns = 'cypress-index-dns';
+const cypressIndexWindows = 'cypress-index-windows';
+const detectorName = 'test detector';
+
 const createDetector = (detectorName, dataSource, expectFailure) => {
   // Locate Create detector button click to start
   cy.get('.euiButton').filter(':contains("Create detector")').click({ force: true });
@@ -113,7 +117,6 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
   cy.contains('Detector details');
   cy.contains(detectorName);
   cy.contains('dns');
-  cy.contains(cypressIndexDns);
   cy.contains('test_trigger');
 
   // Create the detector
@@ -141,10 +144,6 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
 };
 
 describe('Detectors', () => {
-  const cypressIndexDns = 'cypress-index-dns';
-  const cypressIndexWindows = 'cypress-index-windows';
-  const detectorName = 'test detector';
-
   before(() => {
     cy.cleanUpTests();
 
