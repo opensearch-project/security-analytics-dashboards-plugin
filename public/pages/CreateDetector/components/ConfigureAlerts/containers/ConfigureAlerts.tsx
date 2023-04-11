@@ -8,14 +8,14 @@ import { RouteComponentProps } from 'react-router-dom';
 import {
   EuiAccordion,
   EuiButton,
-  EuiHorizontalRule,
-  EuiPanel,
-  EuiSpacer,
-  EuiTitle,
-  EuiText,
   EuiCallOut,
   EuiFlexGroup,
   EuiFlexItem,
+  EuiHorizontalRule,
+  EuiPanel,
+  EuiSpacer,
+  EuiText,
+  EuiTitle,
 } from '@elastic/eui';
 import { MAX_ALERT_CONDITIONS } from '../utils/constants';
 import AlertConditionPanel from '../components/AlertCondition';
@@ -142,7 +142,11 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
     } = this.props;
 
     let getPageTitle = (): string | JSX.Element => {
-      let title = (
+      if (isEdit) {
+        return <>Alert triggers (${triggers.length})</>;
+      }
+
+      return (
         <EuiFlexGroup alignItems={'center'}>
           <EuiFlexItem grow={true}>
             <EuiTitle size={'m'}>
@@ -167,12 +171,8 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
           )}
         </EuiFlexGroup>
       );
-      if (isEdit) {
-        title = <>Alert triggers (${triggers.length})</>;
-      }
-
-      return title;
     };
+
     const { loading, notificationChannels } = this.state;
     return (
       <div>
