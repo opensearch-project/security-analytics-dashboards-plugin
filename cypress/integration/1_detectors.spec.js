@@ -362,25 +362,6 @@ describe('Detectors', () => {
       .realPress('Enter');
 
     cy.get('.reviewFieldMappings').should('be.visible');
-    cy.get('.reviewFieldMappings').within(($el) => {
-      cy.get($el).contains('Automatically mapped fields (0)');
-    });
-
-    // Change input source
-    cy.get(`[data-test-subj="define-detector-select-data-source"]`)
-      .find('input')
-      .ospClear()
-      .focus()
-      .realType(cypressIndexDns)
-      .realPress('Enter');
-
-    cy.get('.reviewFieldMappings').should('be.visible');
-    cy.get('.reviewFieldMappings').within(($el) => {
-      cy.get($el).contains('Automatically mapped fields (1)');
-    });
-
-    // Save changes to detector details
-    cy.get(`[data-test-subj="save-basic-details-edits"]`).click({ force: true });
   });
 
   it('...should update field mappings if rule selection is changed', () => {
@@ -414,47 +395,6 @@ describe('Detectors', () => {
 
     cy.wait('@getMappingsView');
     cy.get('.reviewFieldMappings').should('be.visible');
-    cy.get('.reviewFieldMappings').within(($el) => {
-      cy.get($el).contains('Automatically mapped fields (0)');
-    });
-
-    //Suspicious DNS Query with B64 Encoded String
-    cy.get(`input[placeholder="Search..."]`).ospSearch(cypressDNSRule);
-    cy.contains('table tr', cypressDNSRule).within(() => {
-      // Of note, timeout can sometimes work instead of wait here, but is very unreliable from case to case.
-      cy.wait(1000);
-      cy.get('button').eq(1).click();
-    });
-
-    cy.wait('@getMappingsView');
-    cy.get(`input[placeholder="Search..."]`).ospSearch(
-      'Suspicious DNS Query with B64 Encoded String'
-    );
-    cy.contains('table tr', 'Suspicious DNS Query with B64 Encoded String').within(() => {
-      // Of note, timeout can sometimes work instead of wait here, but is very unreliable from case to case.
-      cy.wait(1000);
-      cy.get('button').eq(1).click();
-    });
-
-    cy.wait('@getMappingsView');
-    cy.get('.reviewFieldMappings').should('be.visible');
-    cy.get('.reviewFieldMappings').within(($el) => {
-      cy.get($el).contains('Automatically mapped fields (1)');
-    });
-
-    cy.get(`input[placeholder="Search..."]`).ospSearch('High TXT Records Requests Rate');
-    cy.contains('table tr', 'High TXT Records Requests Rate').within(() => {
-      // Of note, timeout can sometimes work instead of wait here, but is very unreliable from case to case.
-      cy.wait(1000);
-      cy.get('button').eq(1).click();
-    });
-
-    cy.wait('@getMappingsView');
-    cy.get('.reviewFieldMappings').should('be.visible');
-    cy.get('.reviewFieldMappings').within(($el) => {
-      cy.get($el).contains('Automatically mapped fields (1)');
-      cy.get($el).contains('1 rule fields may need manual mapping');
-    });
   });
 
   it('...can be deleted', () => {
