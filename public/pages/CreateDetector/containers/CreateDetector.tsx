@@ -57,9 +57,9 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
   constructor(props: CreateDetectorProps) {
     super(props);
 
-    let detectorState = {}; // if there is detector state in history, then use it to populate all the fields
+    let detectorInput = {}; // if there is detector state in history, then use it to populate all the fields
     const historyState = this.props.history.location.state as any;
-    if (historyState) detectorState = historyState.detectorState;
+    if (historyState) detectorInput = historyState.detectorInput;
 
     this.state = {
       currentStep: DetectorCreationStep.DEFINE_DETECTOR,
@@ -74,7 +74,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
       rulesState: { page: { index: 0 }, allRules: [] },
       plugins: [],
       loadingRules: false,
-      ...detectorState,
+      ...detectorInput,
     };
   }
 
@@ -123,10 +123,13 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     const createDetectorPromise = this.props.services.detectorsService.createDetector(detector);
 
     // set detector pending state, this will be used in detector details page
-    DataStore.detectors.setPendingState({
-      pendingRequests: [fieldsMappingPromise, createDetectorPromise],
-      detectorState: { ...this.state },
-    });
+    DataStore.detectors.setState(
+      {
+        pendingRequests: [fieldsMappingPromise, createDetectorPromise],
+        detectorInput: { ...this.state },
+      },
+      this.props.history
+    );
 
     this.setState({ creatingDetector: false });
 

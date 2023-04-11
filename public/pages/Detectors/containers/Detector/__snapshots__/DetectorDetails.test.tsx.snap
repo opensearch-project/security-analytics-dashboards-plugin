@@ -195,6 +195,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
       "location": Object {
         "pathname": "",
       },
+      "push": [MockFunction],
       "replace": [MockFunction],
     }
   }
@@ -207,6 +208,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
     Object {
       "toasts": Object {
         "addDanger": [MockFunction],
+        "addInfo": [MockFunction],
+        "addSuccess": [MockFunction],
+        "addWarning": [MockFunction],
       },
     }
   }
@@ -887,6 +891,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
         "location": Object {
           "pathname": "",
         },
+        "push": [MockFunction],
         "replace": [MockFunction],
       }
     }
@@ -901,6 +906,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
       Object {
         "toasts": Object {
           "addDanger": [MockFunction],
+          "addInfo": [MockFunction],
+          "addSuccess": [MockFunction],
+          "addWarning": [MockFunction],
         },
       }
     }
@@ -1293,6 +1301,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
           "location": Object {
             "pathname": "",
           },
+          "push": [MockFunction],
           "replace": [MockFunction],
         }
       }
@@ -1307,6 +1316,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
         Object {
           "toasts": Object {
             "addDanger": [MockFunction],
+            "addInfo": [MockFunction],
+            "addSuccess": [MockFunction],
+            "addWarning": [MockFunction],
           },
         }
       }
@@ -1484,31 +1496,23 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                   className="euiSpacer euiSpacer--l"
                 />
               </EuiSpacer>
-              <EuiFlexGroup>
+              <EuiFlexGroup
+                className="detailsFormRow"
+              >
                 <div
-                  className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+                  className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
                 >
                   <EuiFlexItem
-                    grow={false}
+                    grow={true}
                     key="0"
-                    style={
-                      Object {
-                        "minWidth": "25%",
-                      }
-                    }
                   >
                     <div
-                      className="euiFlexItem euiFlexItem--flexGrowZero"
-                      style={
-                        Object {
-                          "minWidth": "25%",
-                        }
-                      }
+                      className="euiFlexItem"
                     >
                       <EuiFormRow
                         describedByIds={Array []}
                         display="row"
-                        fullWidth={false}
+                        fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
                         label={
@@ -1521,7 +1525,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         labelType="label"
                       >
                         <div
-                          className="euiFormRow"
+                          className="euiFormRow euiFormRow--fullWidth"
                           id="some_html_id-row"
                         >
                           <div
@@ -1583,26 +1587,16 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     </div>
                   </EuiFlexItem>
                   <EuiFlexItem
-                    grow={false}
+                    grow={true}
                     key="1"
-                    style={
-                      Object {
-                        "minWidth": "25%",
-                      }
-                    }
                   >
                     <div
-                      className="euiFlexItem euiFlexItem--flexGrowZero"
-                      style={
-                        Object {
-                          "minWidth": "25%",
-                        }
-                      }
+                      className="euiFlexItem"
                     >
                       <EuiFormRow
                         describedByIds={Array []}
                         display="row"
-                        fullWidth={false}
+                        fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
                         label={
@@ -1615,7 +1609,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         labelType="label"
                       >
                         <div
-                          className="euiFormRow"
+                          className="euiFormRow euiFormRow--fullWidth"
                           id="some_html_id-row"
                         >
                           <div
@@ -1677,26 +1671,16 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     </div>
                   </EuiFlexItem>
                   <EuiFlexItem
-                    grow={false}
+                    grow={true}
                     key="2"
-                    style={
-                      Object {
-                        "minWidth": "25%",
-                      }
-                    }
                   >
                     <div
-                      className="euiFlexItem euiFlexItem--flexGrowZero"
-                      style={
-                        Object {
-                          "minWidth": "25%",
-                        }
-                      }
+                      className="euiFlexItem"
                     >
                       <EuiFormRow
                         describedByIds={Array []}
                         display="row"
-                        fullWidth={false}
+                        fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
                         label={
@@ -1816,7 +1800,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         labelType="label"
                       >
                         <div
-                          className="euiFormRow"
+                          className="euiFormRow euiFormRow--fullWidth"
                           id="some_html_id-row"
                         >
                           <div
@@ -1884,26 +1868,16 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     </div>
                   </EuiFlexItem>
                   <EuiFlexItem
-                    grow={false}
-                    key="1"
-                    style={
-                      Object {
-                        "minWidth": "25%",
-                      }
-                    }
+                    grow={true}
+                    key="3"
                   >
                     <div
-                      className="euiFlexItem euiFlexItem--flexGrowZero"
-                      style={
-                        Object {
-                          "minWidth": "25%",
-                        }
-                      }
+                      className="euiFlexItem"
                     >
                       <EuiFormRow
                         describedByIds={Array []}
                         display="row"
-                        fullWidth={false}
+                        fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
                         label={
@@ -1916,7 +1890,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         labelType="label"
                       >
                         <div
-                          className="euiFormRow"
+                          className="euiFormRow euiFormRow--fullWidth"
                           id="some_html_id-row"
                         >
                           <div
@@ -1977,27 +1951,32 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                       </EuiFormRow>
                     </div>
                   </EuiFlexItem>
+                </div>
+              </EuiFlexGroup>
+              <EuiSpacer
+                size="xl"
+              >
+                <div
+                  className="euiSpacer euiSpacer--xl"
+                />
+              </EuiSpacer>
+              <EuiFlexGroup
+                className="detailsFormRow"
+              >
+                <div
+                  className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
+                >
                   <EuiFlexItem
-                    grow={false}
-                    key="2"
-                    style={
-                      Object {
-                        "minWidth": "25%",
-                      }
-                    }
+                    grow={true}
+                    key="0"
                   >
                     <div
-                      className="euiFlexItem euiFlexItem--flexGrowZero"
-                      style={
-                        Object {
-                          "minWidth": "25%",
-                        }
-                      }
+                      className="euiFlexItem"
                     >
                       <EuiFormRow
                         describedByIds={Array []}
                         display="row"
-                        fullWidth={false}
+                        fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
                         label={
@@ -2010,7 +1989,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         labelType="label"
                       >
                         <div
-                          className="euiFormRow"
+                          className="euiFormRow euiFormRow--fullWidth"
                           id="some_html_id-row"
                         >
                           <div
@@ -2085,26 +2064,16 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                   className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
                 >
                   <EuiFlexItem
-                    grow={false}
-                    key="0"
-                    style={
-                      Object {
-                        "minWidth": "25%",
-                      }
-                    }
+                    grow={true}
+                    key="1"
                   >
                     <div
-                      className="euiFlexItem euiFlexItem--flexGrowZero"
-                      style={
-                        Object {
-                          "minWidth": "25%",
-                        }
-                      }
+                      className="euiFlexItem"
                     >
                       <EuiFormRow
                         describedByIds={Array []}
                         display="row"
-                        fullWidth={false}
+                        fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
                         label={
@@ -2117,7 +2086,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         labelType="label"
                       >
                         <div
-                          className="euiFormRow"
+                          className="euiFormRow euiFormRow--fullWidth"
                           id="some_html_id-row"
                         >
                           <div
@@ -2170,7 +2139,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                 onBlur={[Function]}
                                 onFocus={[Function]}
                               >
-                                2
+                                Every 1 minute
                               </div>
                             </EuiText>
                           </div>
@@ -2179,26 +2148,16 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     </div>
                   </EuiFlexItem>
                   <EuiFlexItem
-                    grow={false}
-                    key="1"
-                    style={
-                      Object {
-                        "minWidth": "25%",
-                      }
-                    }
+                    grow={true}
+                    key="2"
                   >
                     <div
-                      className="euiFlexItem euiFlexItem--flexGrowZero"
-                      style={
-                        Object {
-                          "minWidth": "25%",
-                        }
-                      }
+                      className="euiFlexItem"
                     >
                       <EuiFormRow
                         describedByIds={Array []}
                         display="row"
-                        fullWidth={false}
+                        fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
                         label={
@@ -2211,7 +2170,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         labelType="label"
                       >
                         <div
-                          className="euiFormRow"
+                          className="euiFormRow euiFormRow--fullWidth"
                           id="some_html_id-row"
                         >
                           <div
@@ -2273,26 +2232,16 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     </div>
                   </EuiFlexItem>
                   <EuiFlexItem
-                    grow={false}
-                    key="2"
-                    style={
-                      Object {
-                        "minWidth": "25%",
-                      }
-                    }
+                    grow={true}
+                    key="3"
                   >
                     <div
-                      className="euiFlexItem euiFlexItem--flexGrowZero"
-                      style={
-                        Object {
-                          "minWidth": "25%",
-                        }
-                      }
+                      className="euiFlexItem"
                     >
                       <EuiFormRow
                         describedByIds={Array []}
                         display="row"
-                        fullWidth={false}
+                        fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
                         label={
@@ -2305,7 +2254,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         labelType="label"
                       >
                         <div
-                          className="euiFormRow"
+                          className="euiFormRow euiFormRow--fullWidth"
                           id="some_html_id-row"
                         >
                           <div
@@ -2755,6 +2704,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
           "location": Object {
             "pathname": "",
           },
+          "push": [MockFunction],
           "replace": [MockFunction],
         }
       }
@@ -2769,6 +2719,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
         Object {
           "toasts": Object {
             "addDanger": [MockFunction],
+            "addInfo": [MockFunction],
+            "addSuccess": [MockFunction],
+            "addWarning": [MockFunction],
           },
         }
       }
