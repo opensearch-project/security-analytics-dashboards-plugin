@@ -195,6 +195,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
       "location": Object {
         "pathname": "",
       },
+      "push": [MockFunction],
       "replace": [MockFunction],
     }
   }
@@ -207,6 +208,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
     Object {
       "toasts": Object {
         "addDanger": [MockFunction],
+        "addInfo": [MockFunction],
+        "addSuccess": [MockFunction],
+        "addWarning": [MockFunction],
       },
     }
   }
@@ -887,6 +891,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
         "location": Object {
           "pathname": "",
         },
+        "push": [MockFunction],
         "replace": [MockFunction],
       }
     }
@@ -901,6 +906,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
       Object {
         "toasts": Object {
           "addDanger": [MockFunction],
+          "addInfo": [MockFunction],
+          "addSuccess": [MockFunction],
+          "addWarning": [MockFunction],
         },
       }
     }
@@ -1293,6 +1301,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
           "location": Object {
             "pathname": "",
           },
+          "push": [MockFunction],
           "replace": [MockFunction],
         }
       }
@@ -1307,6 +1316,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
         Object {
           "toasts": Object {
             "addDanger": [MockFunction],
+            "addInfo": [MockFunction],
+            "addSuccess": [MockFunction],
+            "addWarning": [MockFunction],
           },
         }
       }
@@ -2566,6 +2578,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
           "location": Object {
             "pathname": "",
           },
+          "push": [MockFunction],
           "replace": [MockFunction],
         }
       }
@@ -2580,6 +2593,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
         Object {
           "toasts": Object {
             "addDanger": [MockFunction],
+            "addInfo": [MockFunction],
+            "addSuccess": [MockFunction],
+            "addWarning": [MockFunction],
           },
         }
       }

@@ -392,6 +392,9 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
     Object {
       "toasts": Object {
         "addDanger": [MockFunction],
+        "addInfo": [MockFunction],
+        "addSuccess": [MockFunction],
+        "addWarning": [MockFunction],
       },
     }
   }
@@ -999,6 +1002,9 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
         Object {
           "toasts": Object {
             "addDanger": [MockFunction],
+            "addInfo": [MockFunction],
+            "addSuccess": [MockFunction],
+            "addWarning": [MockFunction],
           },
         }
       }
