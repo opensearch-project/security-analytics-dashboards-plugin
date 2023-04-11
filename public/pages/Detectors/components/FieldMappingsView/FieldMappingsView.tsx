@@ -18,7 +18,7 @@ export interface FieldMappingsViewProps {
   existingMappings?: FieldMapping[];
   editFieldMappings: () => void;
   notifications: NotificationsStart;
-  isEditable: boolean;
+  isEditable?: boolean;
 }
 
 const columns: EuiBasicTableColumn<FieldMappingsTableItem>[] = [
