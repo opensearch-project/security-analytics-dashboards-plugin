@@ -65,7 +65,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
         "schedule": Object {
           "period": Object {
             "interval": 1,
-            "unit": "MINUTES",
+            "unit": "minute",
           },
         },
         "triggers": Array [
@@ -195,7 +195,6 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
       "location": Object {
         "pathname": "",
       },
-      "push": [MockFunction],
       "replace": [MockFunction],
     }
   }
@@ -208,9 +207,6 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
     Object {
       "toasts": Object {
         "addDanger": [MockFunction],
-        "addInfo": [MockFunction],
-        "addSuccess": [MockFunction],
-        "addWarning": [MockFunction],
       },
     }
   }
@@ -577,7 +573,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
         "schedule": Object {
           "period": Object {
             "interval": 1,
-            "unit": "MINUTES",
+            "unit": "minute",
           },
         },
         "triggers": Array [
@@ -758,7 +754,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
           "schedule": Object {
             "period": Object {
               "interval": 1,
-              "unit": "MINUTES",
+              "unit": "minute",
             },
           },
           "triggers": Array [
@@ -891,7 +887,6 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
         "location": Object {
           "pathname": "",
         },
-        "push": [MockFunction],
         "replace": [MockFunction],
       }
     }
@@ -906,9 +901,6 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
       Object {
         "toasts": Object {
           "addDanger": [MockFunction],
-          "addInfo": [MockFunction],
-          "addSuccess": [MockFunction],
-          "addWarning": [MockFunction],
         },
       }
     }
@@ -987,7 +979,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
           "schedule": Object {
             "period": Object {
               "interval": 1,
-              "unit": "MINUTES",
+              "unit": "minute",
             },
           },
           "triggers": Array [
@@ -1168,7 +1160,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
             "schedule": Object {
               "period": Object {
                 "interval": 1,
-                "unit": "MINUTES",
+                "unit": "minute",
               },
             },
             "triggers": Array [
@@ -1301,7 +1293,6 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
           "location": Object {
             "pathname": "",
           },
-          "push": [MockFunction],
           "replace": [MockFunction],
         }
       }
@@ -1316,9 +1307,6 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
         Object {
           "toasts": Object {
             "addDanger": [MockFunction],
-            "addInfo": [MockFunction],
-            "addSuccess": [MockFunction],
-            "addWarning": [MockFunction],
           },
         }
       }
@@ -1496,31 +1484,23 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                   className="euiSpacer euiSpacer--l"
                 />
               </EuiSpacer>
-              <EuiFlexGroup>
+              <EuiFlexGroup
+                className="detailsFormRow"
+              >
                 <div
-                  className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+                  className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
                 >
                   <EuiFlexItem
-                    grow={false}
+                    grow={true}
                     key="0"
-                    style={
-                      Object {
-                        "minWidth": "33.333333333333336%",
-                      }
-                    }
                   >
                     <div
-                      className="euiFlexItem euiFlexItem--flexGrowZero"
-                      style={
-                        Object {
-                          "minWidth": "33.333333333333336%",
-                        }
-                      }
+                      className="euiFlexItem"
                     >
                       <EuiFormRow
                         describedByIds={Array []}
                         display="row"
-                        fullWidth={false}
+                        fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
                         label={
@@ -1533,7 +1513,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         labelType="label"
                       >
                         <div
-                          className="euiFormRow"
+                          className="euiFormRow euiFormRow--fullWidth"
                           id="some_html_id-row"
                         >
                           <div
@@ -1595,327 +1575,16 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     </div>
                   </EuiFlexItem>
                   <EuiFlexItem
-                    grow={false}
+                    grow={true}
                     key="1"
-                    style={
-                      Object {
-                        "minWidth": "33.333333333333336%",
-                      }
-                    }
                   >
                     <div
-                      className="euiFlexItem euiFlexItem--flexGrowZero"
-                      style={
-                        Object {
-                          "minWidth": "33.333333333333336%",
-                        }
-                      }
+                      className="euiFlexItem"
                     >
                       <EuiFormRow
                         describedByIds={Array []}
                         display="row"
-                        fullWidth={false}
-                        hasChildLabel={true}
-                        hasEmptyLabelSpace={false}
-                        label={
-                          <EuiText
-                            color="subdued"
-                          >
-                            Description
-                          </EuiText>
-                        }
-                        labelType="label"
-                      >
-                        <div
-                          className="euiFormRow"
-                          id="some_html_id-row"
-                        >
-                          <div
-                            className="euiFormRow__labelWrapper"
-                          >
-                            <EuiFormLabel
-                              className="euiFormRow__label"
-                              htmlFor="some_html_id"
-                              isFocused={false}
-                              type="label"
-                            >
-                              <label
-                                className="euiFormLabel euiFormRow__label"
-                                htmlFor="some_html_id"
-                              >
-                                <EuiText
-                                  color="subdued"
-                                >
-                                  <div
-                                    className="euiText euiText--medium"
-                                  >
-                                    <EuiTextColor
-                                      color="subdued"
-                                      component="div"
-                                    >
-                                      <div
-                                        className="euiTextColor euiTextColor--subdued"
-                                      >
-                                        Description
-                                      </div>
-                                    </EuiTextColor>
-                                  </div>
-                                </EuiText>
-                              </label>
-                            </EuiFormLabel>
-                          </div>
-                          <div
-                            className="euiFormRow__fieldWrapper"
-                          >
-                            <EuiText
-                              data-test-subj="text-details-group-content-description"
-                              id="some_html_id"
-                              onBlur={[Function]}
-                              onFocus={[Function]}
-                            >
-                              <div
-                                className="euiText euiText--medium"
-                                data-test-subj="text-details-group-content-description"
-                                id="some_html_id"
-                                onBlur={[Function]}
-                                onFocus={[Function]}
-                              >
-                                detectorDescription
-                              </div>
-                            </EuiText>
-                          </div>
-                        </div>
-                      </EuiFormRow>
-                    </div>
-                  </EuiFlexItem>
-                  <EuiFlexItem
-                    grow={false}
-                    key="2"
-                    style={
-                      Object {
-                        "minWidth": "33.333333333333336%",
-                      }
-                    }
-                  >
-                    <div
-                      className="euiFlexItem euiFlexItem--flexGrowZero"
-                      style={
-                        Object {
-                          "minWidth": "33.333333333333336%",
-                        }
-                      }
-                    >
-                      <EuiFormRow
-                        describedByIds={Array []}
-                        display="row"
-                        fullWidth={false}
-                        hasChildLabel={true}
-                        hasEmptyLabelSpace={false}
-                        label={
-                          <EuiText
-                            color="subdued"
-                          >
-                            Detector schedule
-                          </EuiText>
-                        }
-                        labelType="label"
-                      >
-                        <div
-                          className="euiFormRow"
-                          id="some_html_id-row"
-                        >
-                          <div
-                            className="euiFormRow__labelWrapper"
-                          >
-                            <EuiFormLabel
-                              className="euiFormRow__label"
-                              htmlFor="some_html_id"
-                              isFocused={false}
-                              type="label"
-                            >
-                              <label
-                                className="euiFormLabel euiFormRow__label"
-                                htmlFor="some_html_id"
-                              >
-                                <EuiText
-                                  color="subdued"
-                                >
-                                  <div
-                                    className="euiText euiText--medium"
-                                  >
-                                    <EuiTextColor
-                                      color="subdued"
-                                      component="div"
-                                    >
-                                      <div
-                                        className="euiTextColor euiTextColor--subdued"
-                                      >
-                                        Detector schedule
-                                      </div>
-                                    </EuiTextColor>
-                                  </div>
-                                </EuiText>
-                              </label>
-                            </EuiFormLabel>
-                          </div>
-                          <div
-                            className="euiFormRow__fieldWrapper"
-                          >
-                            <EuiText
-                              data-test-subj="text-details-group-content-detector-schedule"
-                              id="some_html_id"
-                              onBlur={[Function]}
-                              onFocus={[Function]}
-                            >
-                              <div
-                                className="euiText euiText--medium"
-                                data-test-subj="text-details-group-content-detector-schedule"
-                                id="some_html_id"
-                                onBlur={[Function]}
-                                onFocus={[Function]}
-                              >
-                                Every 1 minutes
-                              </div>
-                            </EuiText>
-                          </div>
-                        </div>
-                      </EuiFormRow>
-                    </div>
-                  </EuiFlexItem>
-                </div>
-              </EuiFlexGroup>
-              <EuiSpacer
-                size="xl"
-              >
-                <div
-                  className="euiSpacer euiSpacer--xl"
-                />
-              </EuiSpacer>
-              <EuiFlexGroup>
-                <div
-                  className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
-                >
-                  <EuiFlexItem
-                    grow={false}
-                    key="0"
-                    style={
-                      Object {
-                        "minWidth": "33.333333333333336%",
-                      }
-                    }
-                  >
-                    <div
-                      className="euiFlexItem euiFlexItem--flexGrowZero"
-                      style={
-                        Object {
-                          "minWidth": "33.333333333333336%",
-                        }
-                      }
-                    >
-                      <EuiFormRow
-                        describedByIds={Array []}
-                        display="row"
-                        fullWidth={false}
-                        hasChildLabel={true}
-                        hasEmptyLabelSpace={false}
-                        label={
-                          <EuiText
-                            color="subdued"
-                          >
-                            Data source
-                          </EuiText>
-                        }
-                        labelType="label"
-                      >
-                        <div
-                          className="euiFormRow"
-                          id="some_html_id-row"
-                        >
-                          <div
-                            className="euiFormRow__labelWrapper"
-                          >
-                            <EuiFormLabel
-                              className="euiFormRow__label"
-                              htmlFor="some_html_id"
-                              isFocused={false}
-                              type="label"
-                            >
-                              <label
-                                className="euiFormLabel euiFormRow__label"
-                                htmlFor="some_html_id"
-                              >
-                                <EuiText
-                                  color="subdued"
-                                >
-                                  <div
-                                    className="euiText euiText--medium"
-                                  >
-                                    <EuiTextColor
-                                      color="subdued"
-                                      component="div"
-                                    >
-                                      <div
-                                        className="euiTextColor euiTextColor--subdued"
-                                      >
-                                        Data source
-                                      </div>
-                                    </EuiTextColor>
-                                  </div>
-                                </EuiText>
-                              </label>
-                            </EuiFormLabel>
-                          </div>
-                          <div
-                            className="euiFormRow__fieldWrapper"
-                          >
-                            <EuiText
-                              data-test-subj="text-details-group-content-data-source"
-                              id="some_html_id"
-                              onBlur={[Function]}
-                              onFocus={[Function]}
-                            >
-                              <div
-                                className="euiText euiText--medium"
-                                data-test-subj="text-details-group-content-data-source"
-                                id="some_html_id"
-                                onBlur={[Function]}
-                                onFocus={[Function]}
-                              >
-                                <EuiText>
-                                  <div
-                                    className="euiText euiText--medium"
-                                  >
-                                    .windows
-                                  </div>
-                                </EuiText>
-                              </div>
-                            </EuiText>
-                          </div>
-                        </div>
-                      </EuiFormRow>
-                    </div>
-                  </EuiFlexItem>
-                  <EuiFlexItem
-                    grow={false}
-                    key="1"
-                    style={
-                      Object {
-                        "minWidth": "33.333333333333336%",
-                      }
-                    }
-                  >
-                    <div
-                      className="euiFlexItem euiFlexItem--flexGrowZero"
-                      style={
-                        Object {
-                          "minWidth": "33.333333333333336%",
-                        }
-                      }
-                    >
-                      <EuiFormRow
-                        describedByIds={Array []}
-                        display="row"
-                        fullWidth={false}
+                        fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
                         label={
@@ -1928,7 +1597,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         labelType="label"
                       >
                         <div
-                          className="euiFormRow"
+                          className="euiFormRow euiFormRow--fullWidth"
                           id="some_html_id-row"
                         >
                           <div
@@ -1990,26 +1659,100 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     </div>
                   </EuiFlexItem>
                   <EuiFlexItem
-                    grow={false}
+                    grow={true}
                     key="2"
-                    style={
-                      Object {
-                        "minWidth": "33.333333333333336%",
-                      }
-                    }
                   >
                     <div
-                      className="euiFlexItem euiFlexItem--flexGrowZero"
-                      style={
-                        Object {
-                          "minWidth": "33.333333333333336%",
-                        }
-                      }
+                      className="euiFlexItem"
                     >
                       <EuiFormRow
                         describedByIds={Array []}
                         display="row"
-                        fullWidth={false}
+                        fullWidth={true}
+                        hasChildLabel={true}
+                        hasEmptyLabelSpace={false}
+                        label={
+                          <EuiText
+                            color="subdued"
+                          >
+                            Data source
+                          </EuiText>
+                        }
+                        labelType="label"
+                      >
+                        <div
+                          className="euiFormRow euiFormRow--fullWidth"
+                          id="some_html_id-row"
+                        >
+                          <div
+                            className="euiFormRow__labelWrapper"
+                          >
+                            <EuiFormLabel
+                              className="euiFormRow__label"
+                              htmlFor="some_html_id"
+                              isFocused={false}
+                              type="label"
+                            >
+                              <label
+                                className="euiFormLabel euiFormRow__label"
+                                htmlFor="some_html_id"
+                              >
+                                <EuiText
+                                  color="subdued"
+                                >
+                                  <div
+                                    className="euiText euiText--medium"
+                                  >
+                                    <EuiTextColor
+                                      color="subdued"
+                                      component="div"
+                                    >
+                                      <div
+                                        className="euiTextColor euiTextColor--subdued"
+                                      >
+                                        Data source
+                                      </div>
+                                    </EuiTextColor>
+                                  </div>
+                                </EuiText>
+                              </label>
+                            </EuiFormLabel>
+                          </div>
+                          <div
+                            className="euiFormRow__fieldWrapper"
+                          >
+                            <EuiText
+                              data-test-subj="text-details-group-content-data-source"
+                              id="some_html_id"
+                              onBlur={[Function]}
+                              onFocus={[Function]}
+                            >
+                              <div
+                                className="euiText euiText--medium"
+                                data-test-subj="text-details-group-content-data-source"
+                                id="some_html_id"
+                                onBlur={[Function]}
+                                onFocus={[Function]}
+                              >
+                                .windows
+                              </div>
+                            </EuiText>
+                          </div>
+                        </div>
+                      </EuiFormRow>
+                    </div>
+                  </EuiFlexItem>
+                  <EuiFlexItem
+                    grow={true}
+                    key="3"
+                  >
+                    <div
+                      className="euiFlexItem"
+                    >
+                      <EuiFormRow
+                        describedByIds={Array []}
+                        display="row"
+                        fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
                         label={
@@ -2022,7 +1765,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         labelType="label"
                       >
                         <div
-                          className="euiFormRow"
+                          className="euiFormRow euiFormRow--fullWidth"
                           id="some_html_id-row"
                         >
                           <div
@@ -2092,44 +1835,36 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                   className="euiSpacer euiSpacer--xl"
                 />
               </EuiSpacer>
-              <EuiFlexGroup>
+              <EuiFlexGroup
+                className="detailsFormRow"
+              >
                 <div
-                  className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+                  className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
                 >
                   <EuiFlexItem
-                    grow={false}
+                    grow={true}
                     key="0"
-                    style={
-                      Object {
-                        "minWidth": "33.333333333333336%",
-                      }
-                    }
                   >
                     <div
-                      className="euiFlexItem euiFlexItem--flexGrowZero"
-                      style={
-                        Object {
-                          "minWidth": "33.333333333333336%",
-                        }
-                      }
+                      className="euiFlexItem"
                     >
                       <EuiFormRow
                         describedByIds={Array []}
                         display="row"
-                        fullWidth={false}
+                        fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
                         label={
                           <EuiText
                             color="subdued"
                           >
-                            Detection rules
+                            Description
                           </EuiText>
                         }
                         labelType="label"
                       >
                         <div
-                          className="euiFormRow"
+                          className="euiFormRow euiFormRow--fullWidth"
                           id="some_html_id-row"
                         >
                           <div
@@ -2158,7 +1893,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                       <div
                                         className="euiTextColor euiTextColor--subdued"
                                       >
-                                        Detection rules
+                                        Description
                                       </div>
                                     </EuiTextColor>
                                   </div>
@@ -2170,19 +1905,19 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             className="euiFormRow__fieldWrapper"
                           >
                             <EuiText
-                              data-test-subj="text-details-group-content-detection-rules"
+                              data-test-subj="text-details-group-content-description"
                               id="some_html_id"
                               onBlur={[Function]}
                               onFocus={[Function]}
                             >
                               <div
                                 className="euiText euiText--medium"
-                                data-test-subj="text-details-group-content-detection-rules"
+                                data-test-subj="text-details-group-content-description"
                                 id="some_html_id"
                                 onBlur={[Function]}
                                 onFocus={[Function]}
                               >
-                                2
+                                detectorDescription
                               </div>
                             </EuiText>
                           </div>
@@ -2191,26 +1926,100 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     </div>
                   </EuiFlexItem>
                   <EuiFlexItem
-                    grow={false}
+                    grow={true}
                     key="1"
-                    style={
-                      Object {
-                        "minWidth": "33.333333333333336%",
-                      }
-                    }
                   >
                     <div
-                      className="euiFlexItem euiFlexItem--flexGrowZero"
-                      style={
-                        Object {
-                          "minWidth": "33.333333333333336%",
-                        }
-                      }
+                      className="euiFlexItem"
                     >
                       <EuiFormRow
                         describedByIds={Array []}
                         display="row"
-                        fullWidth={false}
+                        fullWidth={true}
+                        hasChildLabel={true}
+                        hasEmptyLabelSpace={false}
+                        label={
+                          <EuiText
+                            color="subdued"
+                          >
+                            Detector schedule
+                          </EuiText>
+                        }
+                        labelType="label"
+                      >
+                        <div
+                          className="euiFormRow euiFormRow--fullWidth"
+                          id="some_html_id-row"
+                        >
+                          <div
+                            className="euiFormRow__labelWrapper"
+                          >
+                            <EuiFormLabel
+                              className="euiFormRow__label"
+                              htmlFor="some_html_id"
+                              isFocused={false}
+                              type="label"
+                            >
+                              <label
+                                className="euiFormLabel euiFormRow__label"
+                                htmlFor="some_html_id"
+                              >
+                                <EuiText
+                                  color="subdued"
+                                >
+                                  <div
+                                    className="euiText euiText--medium"
+                                  >
+                                    <EuiTextColor
+                                      color="subdued"
+                                      component="div"
+                                    >
+                                      <div
+                                        className="euiTextColor euiTextColor--subdued"
+                                      >
+                                        Detector schedule
+                                      </div>
+                                    </EuiTextColor>
+                                  </div>
+                                </EuiText>
+                              </label>
+                            </EuiFormLabel>
+                          </div>
+                          <div
+                            className="euiFormRow__fieldWrapper"
+                          >
+                            <EuiText
+                              data-test-subj="text-details-group-content-detector-schedule"
+                              id="some_html_id"
+                              onBlur={[Function]}
+                              onFocus={[Function]}
+                            >
+                              <div
+                                className="euiText euiText--medium"
+                                data-test-subj="text-details-group-content-detector-schedule"
+                                id="some_html_id"
+                                onBlur={[Function]}
+                                onFocus={[Function]}
+                              >
+                                Every 1 undefined
+                              </div>
+                            </EuiText>
+                          </div>
+                        </div>
+                      </EuiFormRow>
+                    </div>
+                  </EuiFlexItem>
+                  <EuiFlexItem
+                    grow={true}
+                    key="2"
+                  >
+                    <div
+                      className="euiFlexItem"
+                    >
+                      <EuiFormRow
+                        describedByIds={Array []}
+                        display="row"
+                        fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
                         label={
@@ -2223,7 +2032,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         labelType="label"
                       >
                         <div
-                          className="euiFormRow"
+                          className="euiFormRow euiFormRow--fullWidth"
                           id="some_html_id-row"
                         >
                           <div
@@ -2285,26 +2094,16 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     </div>
                   </EuiFlexItem>
                   <EuiFlexItem
-                    grow={false}
-                    key="2"
-                    style={
-                      Object {
-                        "minWidth": "33.333333333333336%",
-                      }
-                    }
+                    grow={true}
+                    key="3"
                   >
                     <div
-                      className="euiFlexItem euiFlexItem--flexGrowZero"
-                      style={
-                        Object {
-                          "minWidth": "33.333333333333336%",
-                        }
-                      }
+                      className="euiFlexItem"
                     >
                       <EuiFormRow
                         describedByIds={Array []}
                         display="row"
-                        fullWidth={false}
+                        fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
                         label={
@@ -2317,7 +2116,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         labelType="label"
                       >
                         <div
-                          className="euiFormRow"
+                          className="euiFormRow euiFormRow--fullWidth"
                           id="some_html_id-row"
                         >
                           <div
@@ -2453,7 +2252,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
           "schedule": Object {
             "period": Object {
               "interval": 1,
-              "unit": "MINUTES",
+              "unit": "minute",
             },
           },
           "triggers": Array [
@@ -2634,7 +2433,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
             "schedule": Object {
               "period": Object {
                 "interval": 1,
-                "unit": "MINUTES",
+                "unit": "minute",
               },
             },
             "triggers": Array [
@@ -2767,7 +2566,6 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
           "location": Object {
             "pathname": "",
           },
-          "push": [MockFunction],
           "replace": [MockFunction],
         }
       }
@@ -2782,9 +2580,6 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
         Object {
           "toasts": Object {
             "addDanger": [MockFunction],
-            "addInfo": [MockFunction],
-            "addSuccess": [MockFunction],
-            "addWarning": [MockFunction],
           },
         }
       }

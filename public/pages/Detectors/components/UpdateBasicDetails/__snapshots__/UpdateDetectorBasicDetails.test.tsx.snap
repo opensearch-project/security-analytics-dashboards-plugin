@@ -1692,6 +1692,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
             <EuiButton
               data-test-subj="save-basic-details-edits"
               disabled={false}
+              fill={true}
               isLoading={false}
               onClick={[Function]}
             >
@@ -1700,13 +1701,14 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                 data-test-subj="save-basic-details-edits"
                 disabled={false}
                 element="button"
+                fill={true}
                 isDisabled={false}
                 isLoading={false}
                 onClick={[Function]}
                 type="button"
               >
                 <button
-                  className="euiButton euiButton--primary"
+                  className="euiButton euiButton--primary euiButton--fill"
                   data-test-subj="save-basic-details-edits"
                   disabled={false}
                   onClick={[Function]}
