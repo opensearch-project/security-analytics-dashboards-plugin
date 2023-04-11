@@ -65,7 +65,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
         "schedule": Object {
           "period": Object {
             "interval": 1,
-            "unit": "minute",
+            "unit": "MINUTES",
           },
         },
         "triggers": Array [
@@ -577,7 +577,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
         "schedule": Object {
           "period": Object {
             "interval": 1,
-            "unit": "minute",
+            "unit": "MINUTES",
           },
         },
         "triggers": Array [
@@ -758,7 +758,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
           "schedule": Object {
             "period": Object {
               "interval": 1,
-              "unit": "minute",
+              "unit": "MINUTES",
             },
           },
           "triggers": Array [
@@ -987,7 +987,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
           "schedule": Object {
             "period": Object {
               "interval": 1,
-              "unit": "minute",
+              "unit": "MINUTES",
             },
           },
           "triggers": Array [
@@ -1168,7 +1168,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
             "schedule": Object {
               "period": Object {
                 "interval": 1,
-                "unit": "minute",
+                "unit": "MINUTES",
               },
             },
             "triggers": Array [
@@ -1693,7 +1693,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         labelType="label"
                       >
                         <div
-                          className="euiFormRow"
+                          className="euiFormRow euiFormRow--fullWidth"
                           id="some_html_id-row"
                         >
                           <div
@@ -1763,31 +1763,23 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                   className="euiSpacer euiSpacer--xl"
                 />
               </EuiSpacer>
-              <EuiFlexGroup>
+              <EuiFlexGroup
+                className="detailsFormRow"
+              >
                 <div
-                  className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+                  className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
                 >
                   <EuiFlexItem
-                    grow={false}
+                    grow={true}
                     key="0"
-                    style={
-                      Object {
-                        "minWidth": "25%",
-                      }
-                    }
                   >
                     <div
-                      className="euiFlexItem euiFlexItem--flexGrowZero"
-                      style={
-                        Object {
-                          "minWidth": "25%",
-                        }
-                      }
+                      className="euiFlexItem"
                     >
                       <EuiFormRow
                         describedByIds={Array []}
                         display="row"
-                        fullWidth={false}
+                        fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
                         label={
@@ -1869,7 +1861,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                   </EuiFlexItem>
                   <EuiFlexItem
                     grow={true}
-                    key="3"
+                    key="1"
                   >
                     <div
                       className="euiFlexItem"
@@ -1951,24 +1943,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                       </EuiFormRow>
                     </div>
                   </EuiFlexItem>
-                </div>
-              </EuiFlexGroup>
-              <EuiSpacer
-                size="xl"
-              >
-                <div
-                  className="euiSpacer euiSpacer--xl"
-                />
-              </EuiSpacer>
-              <EuiFlexGroup
-                className="detailsFormRow"
-              >
-                <div
-                  className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
-                >
                   <EuiFlexItem
                     grow={true}
-                    key="0"
+                    key="2"
                   >
                     <div
                       className="euiFlexItem"
@@ -2059,13 +2036,15 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                   className="euiSpacer euiSpacer--xl"
                 />
               </EuiSpacer>
-              <EuiFlexGroup>
+              <EuiFlexGroup
+                className="detailsFormRow"
+              >
                 <div
-                  className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+                  className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
                 >
                   <EuiFlexItem
                     grow={true}
-                    key="1"
+                    key="0"
                   >
                     <div
                       className="euiFlexItem"
@@ -2139,7 +2118,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                 onBlur={[Function]}
                                 onFocus={[Function]}
                               >
-                                Every 1 minute
+                                2
                               </div>
                             </EuiText>
                           </div>
@@ -2149,7 +2128,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                   </EuiFlexItem>
                   <EuiFlexItem
                     grow={true}
-                    key="2"
+                    key="1"
                   >
                     <div
                       className="euiFlexItem"
@@ -2233,7 +2212,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                   </EuiFlexItem>
                   <EuiFlexItem
                     grow={true}
-                    key="3"
+                    key="2"
                   >
                     <div
                       className="euiFlexItem"
@@ -2390,7 +2369,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
           "schedule": Object {
             "period": Object {
               "interval": 1,
-              "unit": "minute",
+              "unit": "MINUTES",
             },
           },
           "triggers": Array [
@@ -2571,7 +2550,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
             "schedule": Object {
               "period": Object {
                 "interval": 1,
-                "unit": "minute",
+                "unit": "MINUTES",
               },
             },
             "triggers": Array [

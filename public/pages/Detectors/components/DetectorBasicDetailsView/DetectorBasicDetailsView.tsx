@@ -58,52 +58,43 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
       }
     >
       <EuiSpacer size={'l'} />
-      {createTextDetailsGroup(
-        [
-          { label: 'Detector name', content: name },
-          {
-            label: 'Description',
-            content: inputs[0].detector_input.description || DEFAULT_EMPTY_DATA,
-          },
-          { label: 'Detector schedule', content: detectorSchedule },
-        ],
-        4
-      )}
-      {createTextDetailsGroup(
-        [
-          {
-            label: 'Data source',
-            content: (
-              <>
-                {inputs[0].detector_input.indices.map((ind: string) => (
-                  <EuiText>{ind}</EuiText>
-                ))}
-              </>
-            ),
-          },
-          { label: 'Log type', content: detector_type.toLowerCase() },
-          {
-            label: 'Detector dashboard',
-            content: (dashboardId ? (
-              <EuiLink onClick={() => window.open(`dashboards#/view/${dashboardId}`, '_blank')}>
-                {`${name} summary`}
-                <EuiIcon type={'popout'} />
-              </EuiLink>
-            ) : (
-              'Not available for this log type'
-            )) as any,
-          },
-        ],
-        4
-      )}
-      {createTextDetailsGroup(
-        [
-          { label: 'Detection rules', content: totalSelected },
-          { label: 'Created at', content: createdAt || DEFAULT_EMPTY_DATA },
-          { label: 'Last updated time', content: lastUpdated || DEFAULT_EMPTY_DATA },
-        ],
-        4
-      )}
+      {createTextDetailsGroup([
+        { label: 'Detector name', content: name },
+        {
+          label: 'Description',
+          content: inputs[0].detector_input.description || DEFAULT_EMPTY_DATA,
+        },
+        { label: 'Detector schedule', content: detectorSchedule },
+      ])}
+      {createTextDetailsGroup([
+        {
+          label: 'Data source',
+          content: (
+            <>
+              {inputs[0].detector_input.indices.map((ind: string) => (
+                <EuiText>{ind}</EuiText>
+              ))}
+            </>
+          ),
+        },
+        { label: 'Log type', content: detector_type.toLowerCase() },
+        {
+          label: 'Detector dashboard',
+          content: (dashboardId ? (
+            <EuiLink onClick={() => window.open(`dashboards#/view/${dashboardId}`, '_blank')}>
+              {`${name} summary`}
+              <EuiIcon type={'popout'} />
+            </EuiLink>
+          ) : (
+            'Not available for this log type'
+          )) as any,
+        },
+      ])}
+      {createTextDetailsGroup([
+        { label: 'Detection rules', content: totalSelected },
+        { label: 'Created at', content: createdAt || DEFAULT_EMPTY_DATA },
+        { label: 'Last updated time', content: lastUpdated || DEFAULT_EMPTY_DATA },
+      ])}
       {rulesCanFold ? children : null}
     </ContentPanel>
   );

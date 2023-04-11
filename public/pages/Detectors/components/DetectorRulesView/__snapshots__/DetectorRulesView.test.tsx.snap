@@ -60,7 +60,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
       "schedule": Object {
         "period": Object {
           "interval": 1,
-          "unit": "minute",
+          "unit": "MINUTES",
         },
       },
       "triggers": Array [

@@ -181,7 +181,7 @@ Object {
             class="euiSpacer euiSpacer--xl"
           />
           <div
-            class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+            class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
           >
             <div
               class="euiFlexItem"
@@ -216,18 +216,53 @@ Object {
                     data-test-subj="text-details-group-content-data-source"
                     id="some_html_id"
                   >
-                    Not available for this log type
+                    <div
+                      class="euiText euiText--medium"
+                    >
+                      .windows
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div
-            class="euiSpacer euiSpacer--xl"
-          />
-          <div
-            class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
-          >
+            <div
+              class="euiFlexItem"
+            >
+              <div
+                class="euiFormRow euiFormRow--fullWidth"
+                id="some_html_id-row"
+              >
+                <div
+                  class="euiFormRow__labelWrapper"
+                >
+                  <label
+                    class="euiFormLabel euiFormRow__label"
+                    for="some_html_id"
+                  >
+                    <div
+                      class="euiText euiText--medium"
+                    >
+                      <div
+                        class="euiTextColor euiTextColor--subdued"
+                      >
+                        Log type
+                      </div>
+                    </div>
+                  </label>
+                </div>
+                <div
+                  class="euiFormRow__fieldWrapper"
+                >
+                  <div
+                    class="euiText euiText--medium"
+                    data-test-subj="text-details-group-content-log-type"
+                    id="some_html_id"
+                  >
+                    detector_type
+                  </div>
+                </div>
+              </div>
+            </div>
             <div
               class="euiFlexItem"
             >
@@ -271,7 +306,7 @@ Object {
             class="euiSpacer euiSpacer--xl"
           />
           <div
-            class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+            class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
           >
             <div
               class="euiFlexItem"
@@ -306,7 +341,7 @@ Object {
                     data-test-subj="text-details-group-content-detection-rules"
                     id="some_html_id"
                   >
-                    Every 1 minute
+                    2
                   </div>
                 </div>
               </div>
@@ -572,7 +607,7 @@ Object {
           class="euiSpacer euiSpacer--xl"
         />
         <div
-          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
         >
           <div
             class="euiFlexItem"
@@ -607,18 +642,53 @@ Object {
                   data-test-subj="text-details-group-content-data-source"
                   id="some_html_id"
                 >
-                  Not available for this log type
+                  <div
+                    class="euiText euiText--medium"
+                  >
+                    .windows
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="euiSpacer euiSpacer--xl"
-        />
-        <div
-          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
-        >
+          <div
+            class="euiFlexItem"
+          >
+            <div
+              class="euiFormRow euiFormRow--fullWidth"
+              id="some_html_id-row"
+            >
+              <div
+                class="euiFormRow__labelWrapper"
+              >
+                <label
+                  class="euiFormLabel euiFormRow__label"
+                  for="some_html_id"
+                >
+                  <div
+                    class="euiText euiText--medium"
+                  >
+                    <div
+                      class="euiTextColor euiTextColor--subdued"
+                    >
+                      Log type
+                    </div>
+                  </div>
+                </label>
+              </div>
+              <div
+                class="euiFormRow__fieldWrapper"
+              >
+                <div
+                  class="euiText euiText--medium"
+                  data-test-subj="text-details-group-content-log-type"
+                  id="some_html_id"
+                >
+                  detector_type
+                </div>
+              </div>
+            </div>
+          </div>
           <div
             class="euiFlexItem"
           >
@@ -662,7 +732,7 @@ Object {
           class="euiSpacer euiSpacer--xl"
         />
         <div
-          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
         >
           <div
             class="euiFlexItem"
@@ -697,7 +767,7 @@ Object {
                   data-test-subj="text-details-group-content-detection-rules"
                   id="some_html_id"
                 >
-                  Every 1 minute
+                  2
                 </div>
               </div>
             </div>
