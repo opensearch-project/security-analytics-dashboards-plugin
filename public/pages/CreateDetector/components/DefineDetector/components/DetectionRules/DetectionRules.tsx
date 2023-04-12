@@ -4,7 +4,6 @@
  */
 
 import {
-  EuiPanel,
   EuiAccordion,
   EuiTitle,
   EuiHorizontalRule,
@@ -17,7 +16,7 @@ import { DetectionRulesTable } from './DetectionRulesTable';
 import { RuleItem, RuleItemInfo } from './types/interfaces';
 import { RuleViewerFlyout } from '../../../../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
 import { RuleTableItem } from '../../../../../Rules/utils/helpers';
-import { RuleItemInfoBase } from '../../../../../Rules/models/types';
+import { RuleItemInfoBase } from '../../../../../../../types';
 
 export interface CreateDetectorRulesState {
   allRules: RuleItemInfo[];
@@ -82,7 +81,7 @@ export const DetectionRules: React.FC<DetectionRulesProps> = ({
   };
 
   return (
-    <EuiPanel style={{ paddingLeft: '0px', paddingRight: '0px' }}>
+    <>
       {flyoutData ? (
         <RuleViewerFlyout
           hideFlyout={() => setFlyoutData(() => null)}
@@ -102,7 +101,6 @@ export const DetectionRules: React.FC<DetectionRulesProps> = ({
             </EuiText>
           </div>
         }
-        buttonProps={{ style: { paddingLeft: '10px', paddingRight: '10px' } }}
         id={'detectorRulesAccordion'}
         initialIsOpen={false}
         isLoading={loading}
@@ -117,6 +115,6 @@ export const DetectionRules: React.FC<DetectionRulesProps> = ({
           onRuleDetails={onRuleDetails}
         />
       </EuiAccordion>
-    </EuiPanel>
+    </>
   );
 };

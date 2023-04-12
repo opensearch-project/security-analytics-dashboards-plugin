@@ -186,6 +186,9 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
     Object {
       "toasts": Object {
         "addDanger": [MockFunction],
+        "addInfo": [MockFunction],
+        "addSuccess": [MockFunction],
+        "addWarning": [MockFunction],
       },
     }
   }
@@ -377,6 +380,9 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
       Object {
         "toasts": Object {
           "addDanger": [MockFunction],
+          "addInfo": [MockFunction],
+          "addSuccess": [MockFunction],
+          "addWarning": [MockFunction],
         },
       }
     }
@@ -1325,13 +1331,6 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
       </EuiPanel>
     </ContentPanel>
   </DetectorBasicDetailsView>
-  <EuiSpacer
-    size="xxl"
-  >
-    <div
-      className="euiSpacer euiSpacer--xxl"
-    />
-  </EuiSpacer>
   <DetectorRulesView
     detector={
       Object {
@@ -1518,6 +1517,9 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
       Object {
         "toasts": Object {
           "addDanger": [MockFunction],
+          "addInfo": [MockFunction],
+          "addSuccess": [MockFunction],
+          "addWarning": [MockFunction],
         },
       }
     }
