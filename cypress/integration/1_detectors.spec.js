@@ -22,6 +22,11 @@ const testMappings = {
   },
 };
 
+// cy.get('.euiBadge__iconButton > .euiIcon').click({ force: true });
+// cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(
+//   `${cypressIndexWindows}{enter}`
+// );
+
 const cypressDNSRule = dns_name_rule_data.title;
 const cypressDNSTypeRule = dns_type_rule_data.title;
 
