@@ -1839,7 +1839,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                 onBlur={[Function]}
                                 onFocus={[Function]}
                               >
-                                -
+                                Not available for this log type
                               </div>
                             </EuiText>
                           </div>

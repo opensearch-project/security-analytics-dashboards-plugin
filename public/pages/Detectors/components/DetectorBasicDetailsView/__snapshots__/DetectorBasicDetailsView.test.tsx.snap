@@ -209,7 +209,7 @@ Object {
                     data-test-subj="text-details-group-content-detector-dashboard"
                     id="some_html_id"
                   >
-                    -
+                    Not available for this log type
                   </div>
                 </div>
               </div>
@@ -586,7 +586,7 @@ Object {
                   data-test-subj="text-details-group-content-detector-dashboard"
                   id="some_html_id"
                 >
-                  -
+                  Not available for this log type
                 </div>
               </div>
             </div>
