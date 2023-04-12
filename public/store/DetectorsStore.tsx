@@ -132,6 +132,12 @@ export class DetectorsStore implements IDetectorsStore {
     delete this.state;
   };
 
+  public clearNotifications = (): void => {
+    this.hideCallout();
+    this.toasts = [];
+    this.showToastCallback([]);
+  };
+
   private showNotification = (
     title: string,
     message?: string,
@@ -258,15 +264,10 @@ export class DetectorsStore implements IDetectorsStore {
         if (dashboardResponse && dashboardResponse.ok) {
           dashboardId = dashboardResponse.response.id;
         } else {
-          const dashboards = await this.savedObjectsService.getDashboards();
-          dashboards.some((dashboard) => {
-            if (dashboard.references.findIndex((reference) => reference.id === detectorId) > -1) {
-              dashboardId = dashboard.id;
-              return true;
-            }
-
-            return false;
-          });
+          const dashboard = await this.savedObjectsService.getDashboard(detectorId);
+          if (dashboard) {
+            dashboardId = dashboard.id;
+          }
         }
       }
 

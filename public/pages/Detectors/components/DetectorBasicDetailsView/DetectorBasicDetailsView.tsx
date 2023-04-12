@@ -49,7 +49,7 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
           <EuiIcon type={'popout'} />
         </EuiLink>
       ) : (
-        'Not available for this log type'
+        '-'
       )) as any,
     },
   ];
@@ -68,16 +68,13 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
       }
     >
       <EuiSpacer size={'l'} />
-      {createTextDetailsGroup(firstTextDetailsGroupEntries, 4)}
-      {createTextDetailsGroup(
-        [
-          { label: 'Description', content: inputs[0].detector_input.description },
-          { label: 'Detector schedule', content: detectorSchedule },
-          { label: 'Created at', content: createdAt || DEFAULT_EMPTY_DATA },
-          { label: 'Last updated time', content: lastUpdated || DEFAULT_EMPTY_DATA },
-        ],
-        4
-      )}
+      {createTextDetailsGroup(firstTextDetailsGroupEntries)}
+      {createTextDetailsGroup([
+        { label: 'Description', content: inputs[0].detector_input.description },
+        { label: 'Detector schedule', content: detectorSchedule },
+        { label: 'Created at', content: createdAt || DEFAULT_EMPTY_DATA },
+        { label: 'Last updated time', content: lastUpdated || DEFAULT_EMPTY_DATA },
+      ])}
       {rulesCanFold ? children : null}
     </ContentPanel>
   );
