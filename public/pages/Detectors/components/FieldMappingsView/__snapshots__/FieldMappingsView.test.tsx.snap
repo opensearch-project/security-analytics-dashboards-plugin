@@ -112,9 +112,9 @@ Object {
                       >
                         <span
                           class="euiTableCellContent__text"
-                          title="Mapped index field name"
+                          title="Mapped log field name"
                         >
-                          Mapped index field name
+                          Mapped log field name
                         </span>
                       </span>
                     </th>
@@ -148,7 +148,7 @@ Object {
                       <div
                         class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
                       >
-                        Mapped index field name
+                        Mapped log field name
                       </div>
                       <div
                         class="euiTableCellContent"
@@ -188,7 +188,7 @@ Object {
                       <div
                         class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
                       >
-                        Mapped index field name
+                        Mapped log field name
                       </div>
                       <div
                         class="euiTableCellContent"
@@ -317,9 +317,9 @@ Object {
                     >
                       <span
                         class="euiTableCellContent__text"
-                        title="Mapped index field name"
+                        title="Mapped log field name"
                       >
-                        Mapped index field name
+                        Mapped log field name
                       </span>
                     </span>
                   </th>
@@ -353,7 +353,7 @@ Object {
                     <div
                       class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
                     >
-                      Mapped index field name
+                      Mapped log field name
                     </div>
                     <div
                       class="euiTableCellContent"
@@ -393,7 +393,7 @@ Object {
                     <div
                       class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
                     >
-                      Mapped index field name
+                      Mapped log field name
                     </div>
                     <div
                       class="euiTableCellContent"
