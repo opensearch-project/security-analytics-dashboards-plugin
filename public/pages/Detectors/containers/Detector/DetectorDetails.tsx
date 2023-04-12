@@ -16,28 +16,20 @@ import {
   EuiTabs,
   EuiTitle,
   EuiHealth,
-  EuiCallOut,
-  EuiLoadingSpinner,
-  EuiPanel,
 } from '@elastic/eui';
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { CoreServicesContext } from '../../../../components/core_services';
-import {
-  BREADCRUMBS,
-  EMPTY_DEFAULT_DETECTOR_HIT,
-  logTypesWithDashboards,
-  ROUTES,
-} from '../../../../utils/constants';
-import { CreateMappingsResponse, DetectorHit } from '../../../../../server/models/interfaces';
+import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR_HIT, ROUTES } from '../../../../utils/constants';
+import { DetectorHit } from '../../../../../server/models/interfaces';
 import { DetectorDetailsView } from '../DetectorDetailsView/DetectorDetailsView';
 import { FieldMappingsView } from '../../components/FieldMappingsView/FieldMappingsView';
 import { AlertTriggersView } from '../AlertTriggersView/AlertTriggersView';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { DetectorsService } from '../../../../services';
-import { errorNotificationToast, successNotificationToast } from '../../../../utils/helpers';
+import { errorNotificationToast } from '../../../../utils/helpers';
 import { NotificationsStart, SimpleSavedObject } from 'opensearch-dashboards/public';
-import { CreateDetectorResponse, ISavedObjectsService, ServerResponse } from '../../../../../types';
+import { ISavedObjectsService, ServerResponse } from '../../../../../types';
 import { PENDING_DETECTOR_ID } from '../../../CreateDetector/utils/constants';
 import { DataStore } from '../../../../store/DataStore';
 
@@ -166,11 +158,11 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   constructor(props: DetectorDetailsProps) {
     super(props);
     const detectorId = props.location.pathname.replace(`${ROUTES.DETECTOR_DETAILS}/`, '');
-    const pendingState = DataStore.detectors.getPendingState();
-    const detector = pendingState?.detectorState?.detector;
+    const state = DataStore.detectors.getState();
+    const detector = state?.detectorInput?.detector;
 
     // if user reloads the page all data is lost so just redirect to detectors page
-    if (!pendingState && detectorId === PENDING_DETECTOR_ID) {
+    if (!state && detectorId === PENDING_DETECTOR_ID) {
       this.props.history.push(`${ROUTES.DETECTORS}`);
     }
 
@@ -193,23 +185,10 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     };
   }
 
-  private createDashboard = (
-    detectorName: string,
-    logType: string,
-    detectorId: string,
-    inputIndices: string[]
-  ) => {
-    return this.props.savedObjectsService
-      .createSavedObject(detectorName, logType, detectorId, inputIndices)
-      .catch((error: any) => {
-        console.error(error);
-      });
-  };
-
   getPendingDetector = async () => {
-    const pendingState = DataStore.detectors.getPendingState();
-    const detector = pendingState?.detectorState?.detector;
-    const pendingRequests = pendingState?.pendingRequests;
+    const state = DataStore.detectors.getState();
+    const detector = state?.detectorInput?.detector;
+    const pendingRequests = state?.pendingRequests;
     this.getTabs();
 
     if (pendingRequests && detector) {
@@ -226,93 +205,33 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
         BREADCRUMBS.DETECTORS_DETAILS(detector.name, PENDING_DETECTOR_ID),
       ]);
 
-      const [mappingsResponse, detectorResponse] = (await Promise.all(pendingRequests)) as [
-        ServerResponse<CreateMappingsResponse>,
-        ServerResponse<CreateDetectorResponse>
-      ];
+      const pendingResponse = await DataStore.detectors.resolvePendingCreationRequest();
 
-      if (mappingsResponse.ok) {
-        if (detectorResponse.ok) {
-          let dashboardId;
-          const detectorId = detectorResponse.response._id;
-          if (logTypesWithDashboards.has(detector.detector_type)) {
-            const dashboardResponse = await this.createDashboard(
-              detector.name,
-              detector.detector_type,
-              detectorResponse.response._id,
-              detector.inputs[0].detector_input.indices
-            );
-            if (dashboardResponse && dashboardResponse.ok) {
-              dashboardId = dashboardResponse.response.id;
-            } else {
-              const dashboards = await this.props.savedObjectsService.getDashboards();
-              dashboards.some((dashboard) => {
-                if (
-                  dashboard.references.findIndex(
-                    (reference) => reference.id === this.state.detectorId
-                  ) > -1
-                ) {
-                  dashboardId = dashboard.id;
-                  return true;
-                }
+      if (pendingResponse.ok) {
+        const { detectorId, dashboardId } = pendingResponse;
 
-                return false;
-              });
-            }
-          }
-
+        detectorId &&
           this.setState(
             {
               detectorId,
               dashboardId,
             },
             () => {
-              DataStore.detectors.deletePendingState();
+              DataStore.detectors.deleteState();
               this.props.history.push(`${ROUTES.DETECTOR_DETAILS}/${detectorId}`);
               this.getDetector();
             }
           );
-
-          successNotificationToast(
-            this.props.notifications,
-            'created',
-            `detector, "${detector.name}"`
-          );
-        } else {
-          this.setState(
-            {
-              createFailed: true,
-            },
-            () =>
-              errorNotificationToast(
-                this.props.notifications,
-                'create',
-                'detector',
-                detectorResponse.error
-              )
-          );
-        }
       } else {
-        this.setState(
-          {
-            createFailed: true,
-          },
-          () =>
-            errorNotificationToast(
-              this.props.notifications,
-              'create',
-              'detector',
-              'Double check the field mappings and try again.'
-            )
-        );
+        this.setState({ createFailed: true });
       }
     }
     this.setState({ loading: false });
   };
 
   async componentDidMount() {
-    const pendingState = DataStore.detectors.getPendingState();
-    pendingState ? this.getPendingDetector() : this.getDetector();
+    const state = DataStore.detectors.getState();
+    state ? this.getPendingDetector() : this.getDetector();
   }
 
   getDetector = async () => {
@@ -512,17 +431,6 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     ));
   }
 
-  viewDetectorConfiguration = () => {
-    const pendingState = DataStore.detectors.getPendingState();
-    const detectorState = pendingState?.detectorState;
-    this.props.history.push({
-      pathname: `${ROUTES.DETECTORS_CREATE}`,
-      // @ts-ignore
-      state: { detectorState },
-    });
-    DataStore.detectors.deletePendingState();
-  };
-
   render() {
     const { _source: detector } = this.detectorHit;
     const { selectedTabContent, detectorId, createFailed } = this.state;
@@ -548,34 +456,6 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
 
     return (
       <>
-        {creatingDetector ? (
-          <>
-            <EuiCallOut
-              title={
-                <EuiFlexGroup alignItems="center">
-                  {!createFailed && (
-                    <EuiPanel paddingSize="s" color={'transparent'} hasBorder={false}>
-                      <EuiLoadingSpinner size="l" />
-                    </EuiPanel>
-                  )}
-                  <EuiPanel paddingSize="s" color={'transparent'} hasBorder={false}>
-                    {createFailed
-                      ? 'Detector creation failed. Please review detector configuration and try again.'
-                      : 'Attempting to create the detector.'}
-                  </EuiPanel>
-                </EuiFlexGroup>
-              }
-              color={createFailed ? 'danger' : 'primary'}
-            >
-              {createFailed && (
-                <EuiButton color={'danger'} onClick={this.viewDetectorConfiguration}>
-                  Review detector configuration
-                </EuiButton>
-              )}
-            </EuiCallOut>
-            <EuiSpacer size="xl" />
-          </>
-        ) : null}
         <EuiFlexGroup>
           <EuiFlexItem>
             <EuiFlexGroup alignItems="center">
