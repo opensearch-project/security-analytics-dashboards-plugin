@@ -25,6 +25,7 @@ export interface IDetectorsStore {
   setState: (state: IDetectorsState, history: RouteComponentProps['history']) => void;
   getState: () => IDetectorsState | undefined;
   deleteState: () => void;
+  clearNotifications: () => void;
   resolvePendingCreationRequest: () => Promise<{
     detectorId?: string;
     dashboardId?: string;
