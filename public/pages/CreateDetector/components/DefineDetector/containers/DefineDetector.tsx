@@ -16,10 +16,7 @@ import { MIN_NUM_DATA_SOURCES } from '../../../../Detectors/utils/constants';
 import { DetectorCreationStep } from '../../../models/types';
 import { DetectorSchedule } from '../components/DetectorSchedule/DetectorSchedule';
 import { RuleItem } from '../components/DetectionRules/types/interfaces';
-import {
-  CreateDetectorRulesState,
-  DetectionRules,
-} from '../components/DetectionRules/DetectionRules';
+import { CreateDetectorRulesState } from '../components/DetectionRules/DetectionRules';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { logTypesWithDashboards } from '../../../../../utils/constants';
 import ConfigureFieldMapping from '../../ConfigureFieldMapping';
