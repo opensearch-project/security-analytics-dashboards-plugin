@@ -216,6 +216,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
   }
   savedObjectsService={
     SavedObjectService {
+      "deleteDashboard": [Function],
+      "deleteVisualization": [Function],
+      "getDashboard": [Function],
       "getDashboards": [Function],
       "indexService": undefined,
       "savedObjectsClient": Object {
@@ -914,6 +917,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
     }
     savedObjectsService={
       SavedObjectService {
+        "deleteDashboard": [Function],
+        "deleteVisualization": [Function],
+        "getDashboard": [Function],
         "getDashboards": [Function],
         "indexService": undefined,
         "savedObjectsClient": Object {
@@ -1325,6 +1331,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
       onEditClicked={[Function]}
       savedObjectsService={
         SavedObjectService {
+          "deleteDashboard": [Function],
+          "deleteVisualization": [Function],
+          "getDashboard": [Function],
           "getDashboards": [Function],
           "indexService": undefined,
           "savedObjectsClient": Object {
@@ -1830,7 +1839,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                 onBlur={[Function]}
                                 onFocus={[Function]}
                               >
-                                Not available for this log type
+                                -
                               </div>
                             </EuiText>
                           </div>
@@ -2602,6 +2611,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
       onEditClicked={[Function]}
       savedObjectsService={
         SavedObjectService {
+          "deleteDashboard": [Function],
+          "deleteVisualization": [Function],
+          "getDashboard": [Function],
           "getDashboards": [Function],
           "indexService": undefined,
           "savedObjectsClient": Object {
