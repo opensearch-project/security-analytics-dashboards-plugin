@@ -97,6 +97,16 @@ export enum IntervalType {
   CALENDAR = 'calendar',
 }
 
+export const scheduleUnitText: { [key: string]: string } = {
+  MINUTES: 'minute',
+  HOURS: 'hour',
+  DAYS: 'day',
+  WEEKS: 'week',
+  MONTHS: 'month',
+  QUARTERS: 'quarter',
+  YEARS: 'year',
+};
+
 export const EMPTY_DEFAULT_PERIOD_SCHEDULE: PeriodSchedule = {
   period: {
     interval: 1,

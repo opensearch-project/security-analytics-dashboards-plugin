@@ -16,7 +16,7 @@ import {
 import moment from 'moment';
 import { PeriodSchedule } from '../../models/interfaces';
 import React from 'react';
-import { DEFAULT_EMPTY_DATA } from './constants';
+import { DEFAULT_EMPTY_DATA, scheduleUnitText } from './constants';
 import {
   RuleItem,
   RuleItemInfo,
@@ -41,14 +41,11 @@ export const renderTime = (time: number | string) => {
   return DEFAULT_EMPTY_DATA;
 };
 
-export function createTextDetailsGroup(
-  data: { label: string; content: any; url?: string }[],
-  columnNum?: number
-) {
+export function createTextDetailsGroup(data: { label: string; content: any; url?: string }[]) {
   const createFormRow = (label: string, content: string, url?: string) => {
     const dataTestSubj = label.toLowerCase().replace(/ /g, '-');
     return (
-      <EuiFormRow label={<EuiText color={'subdued'}>{label}</EuiText>}>
+      <EuiFormRow fullWidth label={<EuiText color={'subdued'}>{label}</EuiText>}>
         {url ? (
           <EuiLink data-test-subj={`text-details-group-content-${dataTestSubj}`}>
             {content ?? DEFAULT_EMPTY_DATA}
@@ -67,14 +64,10 @@ export function createTextDetailsGroup(
     )
   ) : (
     <>
-      <EuiFlexGroup>
+      <EuiFlexGroup className={'detailsFormRow'}>
         {data.map(({ label, content, url }, index) => {
           return (
-            <EuiFlexItem
-              key={index}
-              grow={false}
-              style={{ minWidth: `${100 / (columnNum || data.length)}%` }}
-            >
+            <EuiFlexItem key={index} grow={true}>
               {createFormRow(label, content, url)}
             </EuiFlexItem>
           );
@@ -85,8 +78,12 @@ export function createTextDetailsGroup(
   );
 }
 
+export const pluralize = (count: number, singular: string, plural = singular + 's') => {
+  return [1, -1].includes(Number(count)) ? singular : plural;
+};
+
 export function parseSchedule({ period: { interval, unit } }: PeriodSchedule) {
-  return `Every ${interval} ${unit.toLowerCase()}`;
+  return `Every ${interval} ${pluralize(interval, scheduleUnitText[unit])}`;
 }
 
 export function translateToRuleItems(
