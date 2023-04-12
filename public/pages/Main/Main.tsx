@@ -44,9 +44,11 @@ enum Navigation {
   SecurityAnalytics = 'Security Analytics',
   Findings = 'Findings',
   Detectors = 'Detectors',
-  Rules = 'Rules',
+  Rules = 'Detection rules',
   Overview = 'Overview',
   Alerts = 'Alerts',
+  Correlations = 'Correlations',
+  CorrelationRules = 'Correlation rules',
 }
 
 /**
@@ -232,6 +234,27 @@ export default class Main extends Component<MainProps, MainState> {
               history.push(ROUTES.RULES);
             },
             isSelected: this.state.selectedNavItemIndex === 5,
+          },
+          {
+            name: Navigation.Correlations,
+            id: 6,
+            onClick: () => {
+              this.setState({ selectedNavItemIndex: 6 });
+              history.push(ROUTES.CORRELATIONS);
+            },
+            isSelected: this.state.selectedNavItemIndex === 6,
+            forceOpen: true,
+            items: [
+              {
+                name: Navigation.CorrelationRules,
+                id: 7,
+                onClick: () => {
+                  this.setState({ selectedNavItemIndex: 7 });
+                  history.push(ROUTES.CORRELATION_RULES);
+                },
+                isSelected: this.state.selectedNavItemIndex === 7,
+              },
+            ],
           },
         ],
       },
