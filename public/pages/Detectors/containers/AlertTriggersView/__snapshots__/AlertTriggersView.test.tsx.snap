@@ -60,7 +60,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
       "schedule": Object {
         "period": Object {
           "interval": 1,
-          "unit": "minute",
+          "unit": "MINUTES",
         },
       },
       "triggers": Array [
@@ -454,7 +454,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                 "schedule": Object {
                   "period": Object {
                     "interval": 1,
-                    "unit": "minute",
+                    "unit": "MINUTES",
                   },
                 },
                 "triggers": Array [
@@ -1439,7 +1439,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                 "schedule": Object {
                   "period": Object {
                     "interval": 1,
-                    "unit": "minute",
+                    "unit": "MINUTES",
                   },
                 },
                 "triggers": Array [
