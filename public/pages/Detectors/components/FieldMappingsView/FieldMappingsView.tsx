@@ -29,7 +29,7 @@ const columns: EuiBasicTableColumn<FieldMappingsTableItem>[] = [
   },
   {
     field: 'logFieldName',
-    name: 'Mapped index field name',
+    name: 'Mapped log field name',
   },
 ];
 

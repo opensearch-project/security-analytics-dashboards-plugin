@@ -44,15 +44,15 @@ export const AlertTriggerView: React.FC<AlertTriggerViewProps> = ({
   const conditionRuleNames = ids.map((ruleId) => rules[ruleId]?._source.title);
   return (
     <div>
-      {orderPosition > 0 && <EuiHorizontalRule />}
-      <EuiSpacer size={'l'} />
+      {orderPosition > 0 && <EuiHorizontalRule margin={'m'} />}
+      {orderPosition === 0 && <EuiSpacer size={'s'} />}
       <EuiAccordion
         id={`alert-trigger-${orderPosition}`}
         paddingSize={'m'}
         initialIsOpen={false}
         buttonContent={
           <EuiText size="m">
-            <p>{`Alert on ${name}`}</p>
+            <p>{name}</p>
           </EuiText>
         }
       >
@@ -104,7 +104,6 @@ export const AlertTriggerView: React.FC<AlertTriggerViewProps> = ({
           },
         ])}
       </EuiAccordion>
-      <EuiSpacer size={'m'} />
     </div>
   );
 };
