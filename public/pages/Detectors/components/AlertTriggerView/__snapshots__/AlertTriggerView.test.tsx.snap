@@ -7,10 +7,7 @@ Object {
     <div>
       <div>
         <hr
-          class="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginLarge"
-        />
-        <div
-          class="euiSpacer euiSpacer--l"
+          class="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginMedium"
         />
         <div
           class="euiAccordion"
@@ -37,7 +34,7 @@ Object {
                   class="euiText euiText--medium"
                 >
                   <p>
-                    Alert on alert_name
+                    alert_name
                   </p>
                 </div>
               </span>
@@ -358,19 +355,13 @@ Object {
             </div>
           </div>
         </div>
-        <div
-          class="euiSpacer euiSpacer--m"
-        />
       </div>
     </div>
   </body>,
   "container": <div>
     <div>
       <hr
-        class="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginLarge"
-      />
-      <div
-        class="euiSpacer euiSpacer--l"
+        class="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginMedium"
       />
       <div
         class="euiAccordion"
@@ -397,7 +388,7 @@ Object {
                 class="euiText euiText--medium"
               >
                 <p>
-                  Alert on alert_name
+                  alert_name
                 </p>
               </div>
             </span>
@@ -718,9 +709,6 @@ Object {
           </div>
         </div>
       </div>
-      <div
-        class="euiSpacer euiSpacer--m"
-      />
     </div>
   </div>,
   "debug": [Function],

@@ -18,6 +18,10 @@ const testMappings = {
 
 const cypressDNSRule = dns_rule_data.title;
 
+const cypressIndexDns = 'cypress-index-dns';
+const cypressIndexWindows = 'cypress-index-windows';
+const detectorName = 'test detector';
+
 const createDetector = (detectorName, dataSource, expectFailure) => {
   // Locate Create detector button click to start
   cy.get('.euiButton').filter(':contains("Create detector")').click({ force: true });
@@ -73,10 +77,10 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
   cy.get('button').contains('Next').click({ force: true });
 
   // Check that correct page now showing
-  cy.contains('Set up alerts');
+  cy.contains('Set up alert triggers');
 
   // Type name of new trigger
-  cy.get(`input[placeholder="Enter a name for the alert condition."]`)
+  cy.get(`input[placeholder="Enter a name to describe the alert condition"]`)
     .focus()
     .realType('test_trigger');
 
@@ -113,8 +117,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
   cy.contains('Detector details');
   cy.contains(detectorName);
   cy.contains('dns');
-  cy.contains(dataSource);
-  cy.contains('Alert on test_trigger');
+  cy.contains('test_trigger');
 
   // Create the detector
   cy.get('button').contains('Create').click({ force: true });
@@ -141,10 +144,6 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
 };
 
 describe('Detectors', () => {
-  const cypressIndexDns = 'cypress-index-dns';
-  const cypressIndexWindows = 'cypress-index-windows';
-  const detectorName = 'test detector';
-
   before(() => {
     cy.cleanUpTests();
 
@@ -362,6 +361,8 @@ describe('Detectors', () => {
     cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(
       `${cypressIndexWindows}{enter}`
     );
+
+    cy.get('.reviewFieldMappings').should('be.visible');
   });
 
   it('...should update field mappings if rule selection is changed', () => {

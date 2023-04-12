@@ -312,6 +312,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             updateDataValidState={this.updateDataValidState}
             notificationsService={services.notificationsService}
             hasNotificationPlugin={this.state.plugins.includes(OS_NOTIFICATION_PLUGIN)}
+            skipAndConfigureHandler={this.onNextClick}
           />
         );
       case DetectorCreationStep.REVIEW_CREATE:
@@ -355,7 +356,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
           {currentStep > DetectorCreationStep.DEFINE_DETECTOR && (
             <EuiFlexItem grow={false}>
               <EuiButton disabled={creatingDetector} onClick={this.onPreviousClick}>
-                Previous
+                Back
               </EuiButton>
             </EuiFlexItem>
           )}
@@ -380,7 +381,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
                 fill={true}
                 onClick={this.onCreateClick}
               >
-                Create
+                Create detector
               </EuiButton>
             </EuiFlexItem>
           )}
