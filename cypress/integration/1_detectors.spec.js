@@ -447,7 +447,7 @@ describe('Detectors', () => {
     // Toggle single search result to unchecked
     cy.get(
       '[data-test-subj="edit-detector-rules-table"] table thead tr:first th:first button'
-    ).click();
+    ).click({ force: true });
 
     cy.wait('@getMappingsView');
     cy.get('.reviewFieldMappings').should('be.visible');
