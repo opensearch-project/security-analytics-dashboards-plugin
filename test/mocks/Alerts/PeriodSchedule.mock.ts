@@ -8,6 +8,6 @@ import { PeriodSchedule } from '../../../models/interfaces';
 export default {
   period: {
     interval: 1,
-    unit: 'minute',
+    unit: 'MINUTES',
   },
 } as PeriodSchedule;

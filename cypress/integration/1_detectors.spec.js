@@ -340,7 +340,7 @@ describe('Detectors', () => {
     cy.contains('Active rules (13)');
   });
 
-  it('...should update field mappings if data source is changed', () => {
+  it('...should show field mappings if data source is changed', () => {
     // Click on detector name
     cy.contains(detectorName).click({ force: true });
     cy.waitForPageLoad('detector-details', {
@@ -364,7 +364,7 @@ describe('Detectors', () => {
     );
   });
 
-  it('...should update field mappings if rule selection is changed', () => {
+  it('...should show field mappings if rule selection is changed', () => {
     // Click on detector name
     cy.contains(detectorName).click({ force: true });
     cy.waitForPageLoad('detector-details', {
