@@ -9,4 +9,5 @@ export default ({
   location: {
     pathname: '',
   },
+  push: jest.fn(),
 } as unknown) as History;

@@ -1,0 +1,10 @@
+.mainCallout {
+  .euiCallOutHeader__title {
+    width: 100% !important;
+
+    .mainCalloutCloseButton {
+      flex-wrap: wrap;
+      align-content: end;
+    }
+  }
+}

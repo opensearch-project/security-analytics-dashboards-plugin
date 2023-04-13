@@ -6,7 +6,7 @@
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { EuiSpacer, EuiTitle, EuiText, EuiCallOut } from '@elastic/eui';
-import { Detector, PeriodSchedule } from '../../../../../../models/interfaces';
+import { PeriodSchedule } from '../../../../../../models/interfaces';
 import DetectorBasicDetailsForm from '../components/DetectorDetails';
 import DetectorDataSource from '../components/DetectorDataSource';
 import DetectorType from '../components/DetectorType';
@@ -16,19 +16,18 @@ import { MIN_NUM_DATA_SOURCES } from '../../../../Detectors/utils/constants';
 import { DetectorCreationStep } from '../../../models/types';
 import { DetectorSchedule } from '../components/DetectorSchedule/DetectorSchedule';
 import { RuleItem } from '../components/DetectionRules/types/interfaces';
-import {
-  CreateDetectorRulesState,
-  DetectionRules,
-} from '../components/DetectionRules/DetectionRules';
+import { CreateDetectorRulesState } from '../components/DetectionRules/DetectionRules';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import _ from 'lodash';
 import { logTypesWithDashboards } from '../../../../../utils/constants';
+import ConfigureFieldMapping from '../../ConfigureFieldMapping';
+import { Detector, FieldMapping } from '../../../../../../types';
 
 interface DefineDetectorProps extends RouteComponentProps {
   detector: Detector;
   isEdit: boolean;
   indexService: IndexService;
   fieldMappingService: FieldMappingService;
+  fieldMappings: FieldMapping[];
   rulesState: CreateDetectorRulesState;
   notifications: NotificationsStart;
   loadingRules?: boolean;
@@ -37,11 +36,33 @@ interface DefineDetectorProps extends RouteComponentProps {
   onPageChange: (page: { index: number; size: number }) => void;
   onRuleToggle: (changedItem: RuleItem, isActive: boolean) => void;
   onAllRulesToggle: (enabled: boolean) => void;
+  replaceFieldMappings: (mappings: FieldMapping[]) => void;
 }
 
-interface DefineDetectorState {}
+interface DefineDetectorState {
+  detector: Detector;
+}
 
 export default class DefineDetector extends Component<DefineDetectorProps, DefineDetectorState> {
+  constructor(props: DefineDetectorProps) {
+    super(props);
+    this.state = {
+      detector: this.props.detector,
+    };
+  }
+
+  componentDidUpdate(
+    prevProps: Readonly<DefineDetectorProps>,
+    prevState: Readonly<DefineDetectorState>,
+    snapshot?: any
+  ) {
+    if (prevProps.detector !== this.props.detector) {
+      this.setState({
+        detector: this.props.detector,
+      });
+    }
+  }
+
   updateDetectorCreationState(detector: Detector) {
     const isDataValid =
       !!detector.name &&
@@ -55,7 +76,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
 
   onDetectorNameChange = (detectorName: string) => {
     const newDetector: Detector = {
-      ...this.props.detector,
+      ...this.state.detector,
       name: detectorName,
     };
 
@@ -63,9 +84,9 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
   };
 
   onDetectorInputDescriptionChange = (description: string) => {
-    const { inputs } = this.props.detector;
+    const { inputs } = this.state.detector;
     const newDetector: Detector = {
-      ...this.props.detector,
+      ...this.state.detector,
       inputs: [
         {
           detector_input: {
@@ -82,9 +103,9 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
   onDetectorInputIndicesChange = (selectedOptions: EuiComboBoxOptionOption<string>[]) => {
     const detectorIndices = selectedOptions.map((selectedOption) => selectedOption.label);
 
-    const { inputs } = this.props.detector;
+    const { inputs } = this.state.detector;
     const newDetector: Detector = {
-      ...this.props.detector,
+      ...this.state.detector,
       inputs: [
         {
           detector_input: {
@@ -101,7 +122,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
 
   onDetectorTypeChange = (detectorType: string) => {
     const newDetector: Detector = {
-      ...this.props.detector,
+      ...this.state.detector,
       detector_type: detectorType,
     };
 
@@ -109,9 +130,9 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
   };
 
   onPrepackagedRulesChanged = (enabledRuleIds: string[]) => {
-    const { inputs } = this.props.detector;
+    const { inputs } = this.state.detector;
     const newDetector: Detector = {
-      ...this.props.detector,
+      ...this.state.detector,
       inputs: [
         {
           detector_input: {
@@ -129,9 +150,9 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
   };
 
   onCustomRulesChanged = (enabledRuleIds: string[]) => {
-    const { inputs } = this.props.detector;
+    const { inputs } = this.state.detector;
     const newDetector: Detector = {
-      ...this.props.detector,
+      ...this.state.detector,
       inputs: [
         {
           detector_input: {
@@ -150,7 +171,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
 
   onDetectorScheduleChange = (schedule: PeriodSchedule) => {
     const newDetector: Detector = {
-      ...this.props.detector,
+      ...this.state.detector,
       schedule,
     };
 
@@ -158,15 +179,8 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
   };
 
   render() {
-    const {
-      isEdit,
-      detector,
-      rulesState,
-      onRuleToggle,
-      onPageChange,
-      onAllRulesToggle,
-      fieldMappingService,
-    } = this.props;
+    const { isEdit, fieldMappingService } = this.props;
+    const { detector } = this.state;
     const { name, inputs, detector_type } = this.props.detector;
     const { description, indices } = inputs[0].detector_input;
 
@@ -206,16 +220,11 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
         <DetectorType
           detectorType={detector_type}
           onDetectorTypeChange={this.onDetectorTypeChange}
-        />
-
-        <EuiSpacer size={'m'} />
-
-        <DetectionRules
-          rulesState={rulesState}
-          loading={this.props.loadingRules}
-          onPageChange={onPageChange}
-          onRuleToggle={onRuleToggle}
-          onAllRulesToggle={onAllRulesToggle}
+          rulesState={this.props.rulesState}
+          loadingRules={this.props.loadingRules}
+          onAllRulesToggle={this.props.onAllRulesToggle}
+          onPageChange={this.props.onPageChange}
+          onRuleToggle={this.props.onRuleToggle}
         />
 
         <EuiSpacer size={'m'} />
@@ -234,6 +243,18 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
             <EuiSpacer size={'m'} />
           </>
         ) : null}
+
+        <ConfigureFieldMapping
+          {...this.props}
+          detector={detector}
+          loading={false}
+          fieldMappingService={this.props.fieldMappingService}
+          fieldMappings={this.props.fieldMappings}
+          enabledRules={this.props.rulesState.allRules.filter((rule) => rule.enabled)}
+          replaceFieldMappings={this.props.replaceFieldMappings}
+        />
+
+        <EuiSpacer size={'m'} />
 
         <DetectorSchedule
           detector={detector}
