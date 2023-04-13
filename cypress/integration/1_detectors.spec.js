@@ -4,23 +4,30 @@
  */
 
 import { OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
-import sample_index_settings from '../fixtures/sample_index_settings.json';
-import dns_rule_data from '../fixtures/integration_tests/rule/create_dns_rule.json';
+import sample_windows_index_settings from '../fixtures/sample_windows_index_settings.json';
+import sample_dns_index_settings from '../fixtures/sample_dns_index_settings.json';
+import dns_name_rule_data from '../fixtures/integration_tests/rule/create_dns_rule_with_name_selection.json';
+import dns_type_rule_data from '../fixtures/integration_tests/rule/create_dns_rule_with_type_selection.json';
+
+const cypressIndexDns = 'cypress-index-dns';
+const cypressIndexWindows = 'cypress-index-windows';
+const detectorName = 'test detector';
 
 const testMappings = {
   properties: {
     'dns-question-name': {
       type: 'alias',
-      path: 'DnsQuestionName',
+      path: 'dns.question_name',
     },
   },
 };
 
-const cypressDNSRule = dns_rule_data.title;
+const cypressDNSRule = dns_name_rule_data.title;
+const cypressDNSTypeRule = dns_type_rule_data.title;
 
-const cypressIndexDns = 'cypress-index-dns';
-const cypressIndexWindows = 'cypress-index-windows';
-const detectorName = 'test detector';
+const getNameField = () => cy.get(`input[placeholder="Enter a name for the detector."]`);
+const getDataSourceField = () => cy.get(`.euiComboBox__input input`);
+const getNextButton = () => cy.get('.euiButton').filter(':contains("Next")');
 
 const createDetector = (detectorName, dataSource, expectFailure) => {
   // Locate Create detector button click to start
@@ -32,13 +39,11 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
   });
 
   // Enter a name for the detector in the appropriate input
-  cy.get(`input[placeholder="Enter a name for the detector."]`).focus().realType(detectorName);
+  cy.get(`input[placeholder="Enter a name for the detector."]`).focus().type(detectorName);
 
   // Select our pre-seeded data source (check cypressIndexDns)
-  cy.get(`[data-test-subj="define-detector-select-data-source"]`)
-    .find('input')
-    .focus()
-    .realType(dataSource);
+  // cy.get('.euiBadge__iconButton > .euiIcon').click({ force: true });
+  cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(`${dataSource}{enter}`);
 
   cy.intercept({
     pathname: '/_plugins/_security_analytics/rules/_search',
@@ -60,7 +65,12 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
   });
 
   // Check that correct page now showing
-  cy.contains('Configure field mapping');
+  cy.contains('Configure field mapping - optional');
+  cy.get('[aria-controls="mappedTitleFieldsAccordion"]').then(($btn) => {
+    if ($btn && $btn[0] && $btn[0].getAttribute('aria-expanded') === 'false') {
+      $btn[0].click();
+    }
+  });
 
   if (!expectFailure) {
     // Select appropriate names to map fields to
@@ -82,14 +92,10 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
   // Type name of new trigger
   cy.get(`input[placeholder="Enter a name to describe the alert condition"]`)
     .focus()
-    .realType('test_trigger');
+    .type('test_trigger');
 
   // Type in (or select) tags for the alert condition
-  cy.get(`[data-test-subj="alert-tags-combo-box"]`)
-    .find('input')
-    .focus()
-    .realType('attack.defense_evasion')
-    .realPress('Enter');
+  cy.get(`[data-test-subj="alert-tags-combo-box"]`).type(`attack.defense_evasion{enter}`);
 
   // Select applicable severity levels
   cy.get(`[data-test-subj="security-levels-combo-box"]`).click({ force: true });
@@ -121,6 +127,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
 
   // Create the detector
   cy.get('button').contains('Create').click({ force: true });
+
   cy.waitForPageLoad('detector-details', {
     contains: detectorName,
   });
@@ -147,10 +154,10 @@ describe('Detectors', () => {
   before(() => {
     cy.cleanUpTests();
 
-    cy.createIndex(cypressIndexWindows, sample_index_settings);
+    cy.createIndex(cypressIndexWindows, sample_windows_index_settings);
 
     // Create test index
-    cy.createIndex(cypressIndexDns, sample_index_settings).then(() =>
+    cy.createIndex(cypressIndexDns, sample_dns_index_settings).then(() =>
       cy
         .request('POST', '_plugins/_security_analytics/rules/_search?prePackaged=true', {
           from: 0,
@@ -165,7 +172,8 @@ describe('Detectors', () => {
         .should('have.property', 'status', 200)
     );
 
-    cy.createRule(dns_rule_data);
+    cy.createRule(dns_name_rule_data);
+    cy.createRule(dns_type_rule_data);
   });
 
   beforeEach(() => {
@@ -180,6 +188,37 @@ describe('Detectors', () => {
     });
   });
 
+  it('...should validate form', () => {
+    // Locate Create detector button click to start
+    cy.get('.euiButton').filter(':contains("Create detector")').click({ force: true });
+
+    // Check to ensure process started
+    cy.waitForPageLoad('create-detector', {
+      contains: 'Define detector',
+    });
+
+    getNextButton().should('be.disabled');
+
+    getNameField().should('be.empty');
+    getNameField().type('text').blur();
+
+    cy.get('.euiFormErrorText').contains(
+      'Name should only consist of upper and lowercase letters, numbers 0-9, hyphens, spaces, and underscores. Use between 5 and 50 characters.'
+    );
+
+    getNameField().type(' and more text').blur();
+    cy.get('.euiFormErrorText').should('not.exist');
+    getNextButton().should('be.disabled');
+
+    getDataSourceField().focus().blur();
+    cy.get('.euiFormErrorText').contains('Select an input source');
+    getNextButton().should('be.disabled');
+
+    getDataSourceField().type(`${cypressIndexDns}{enter}`);
+    cy.get('.euiFormErrorText').should('not.exist');
+    getNextButton().should('not.be.disabled');
+  });
+
   it('...should show mappings warning', () => {
     // Locate Create detector button click to start
     cy.get('.euiButton').filter(':contains("Create detector")').click({ force: true });
@@ -190,20 +229,19 @@ describe('Detectors', () => {
     });
 
     // Select our pre-seeded data source (check cypressIndexDns)
-    cy.get(`[data-test-subj="define-detector-select-data-source"]`)
-      .find('input')
-      .focus()
-      .realType(cypressIndexDns);
+
+    // cy.get('.euiBadge__iconButton > .euiIcon').click({ force: true });
+    cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(
+      `${cypressIndexDns}{enter}`
+    );
 
     // Select threat detector type (Windows logs)
     cy.get(`input[id="dns"]`).click({ force: true });
 
     // Select our pre-seeded data source (check cypressIndexDns)
-    cy.get(`[data-test-subj="define-detector-select-data-source"]`)
-      .find('input')
-      .focus()
-      .realType(cypressIndexWindows)
-      .realPress('Enter');
+    cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(
+      `${cypressIndexWindows}{enter}`
+    );
 
     cy.get('.euiCallOut')
       .should('be.visible')
@@ -239,14 +277,13 @@ describe('Detectors', () => {
 
     // Change detector name
     cy.get(`input[placeholder="Enter a name for the detector."]`)
-      .realClick()
-      .ospClear()
-      .realType('test detector edited');
+      .type('{selectall}{backspace}')
+      .type('test detector edited');
 
     // Change detector description
     cy.get(`[data-test-subj="define-detector-detector-description"]`)
       .focus()
-      .realType('Edited description');
+      .type('Edited description');
 
     // Change input source
     cy.get('.euiBadge__iconButton > .euiIcon').click({ force: true });
@@ -255,7 +292,10 @@ describe('Detectors', () => {
     );
 
     // Change detector scheduling
-    cy.get(`[data-test-subj="detector-schedule-number-select"]`).ospClear().focus().realType('10');
+    cy.get(`[data-test-subj="detector-schedule-number-select"]`)
+      .focus()
+      .type('{selectall}{backspace}')
+      .type('10');
     cy.get(`[data-test-subj="detector-schedule-unit-select"]`).select('Hours');
 
     // Save changes to detector details
@@ -271,6 +311,15 @@ describe('Detectors', () => {
     cy.contains('Every 10 hours');
     cy.contains('Edited description');
     cy.contains(cypressIndexWindows);
+
+    // Change input source
+    cy.get(`[data-test-subj="edit-detector-basic-details"]`).click({ force: true });
+    cy.get('.euiBadge__iconButton > .euiIcon').click({ force: true });
+    cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(
+      `${cypressIndexDns}{enter}`
+    );
+    cy.get(`[data-test-subj="save-basic-details-edits"]`).click({ force: true });
+    cy.contains(cypressIndexDns);
   });
 
   it('...rules can be edited', () => {
@@ -286,7 +335,7 @@ describe('Detectors', () => {
     });
 
     // Confirm number of rules before edit
-    cy.contains('Active rules (13)');
+    cy.contains('Active rules (14)');
 
     // Click "Edit" button in Detector rules panel
     cy.get(`[data-test-subj="edit-detector-rules"]`).click({ force: true });
@@ -310,7 +359,7 @@ describe('Detectors', () => {
     cy.get(`[data-test-subj="save-detector-rules-edits"]`).click({ force: true });
 
     // Confirm 1 rule has been removed from detector
-    cy.contains('Active rules (12)');
+    cy.contains('Active rules (13)');
 
     // Click "Edit" button in Detector rules panel
     cy.get(`[data-test-subj="edit-detector-rules"]`).click({ force: true });
@@ -336,10 +385,10 @@ describe('Detectors', () => {
     });
 
     // Confirm 1 rule has been added to detector
-    cy.contains('Active rules (13)');
+    cy.contains('Active rules (14)');
   });
 
-  it('...should show field mappings if data source is changed', () => {
+  it('...should update field mappings if data source is changed', () => {
     // Click on detector name
     cy.contains(detectorName).click({ force: true });
     cy.waitForPageLoad('detector-details', {
@@ -358,14 +407,20 @@ describe('Detectors', () => {
 
     // Change input source
     cy.get('.euiBadge__iconButton > .euiIcon').click({ force: true });
-    cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(
-      `${cypressIndexWindows}{enter}`
-    );
 
     cy.get('.reviewFieldMappings').should('be.visible');
+    cy.contains('Automatically mapped fields (0)');
+
+    cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(
+      `${cypressIndexDns}{enter}`
+    );
+
+    cy.contains('Automatically mapped fields (3)');
   });
 
-  it('...should show field mappings if rule selection is changed', () => {
+  it('...should update field mappings if rule selection is changed', () => {
+    cy.intercept('mappings/view').as('getMappingsView');
+
     // Click on detector name
     cy.contains(detectorName).click({ force: true });
     cy.waitForPageLoad('detector-details', {
@@ -382,14 +437,16 @@ describe('Detectors', () => {
 
     cy.get('.reviewFieldMappings').should('not.exist');
 
-    cy.intercept('mappings/view').as('getMappingsView');
+    cy.wait('@detectorsSearch');
 
-    cy.get('table th').within(() => {
-      cy.get('button').first().click({ force: true });
-    });
+    // Toggle single search result to unchecked
+    cy.get(
+      '[data-test-subj="edit-detector-rules-table"] table thead tr:first th:first button'
+    ).click();
 
     cy.wait('@getMappingsView');
     cy.get('.reviewFieldMappings').should('be.visible');
+    cy.contains('Automatically mapped fields (3)');
   });
 
   it('...can be deleted', () => {

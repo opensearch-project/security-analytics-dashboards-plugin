@@ -1,13 +1,10 @@
 {
   "mappings": {
     "properties": {
-      "DnsAnswerType": {
+      "dns.answers.type": {
         "type": "text"
       },
-      "DnsQuestionRegisteredDomain": {
-        "type": "text"
-      },
-      "DnsQuestionName": {
+      "dns.question.registered_domain": {
         "type": "text"
       }
     }
