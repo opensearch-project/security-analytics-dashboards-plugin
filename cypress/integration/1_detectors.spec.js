@@ -285,9 +285,9 @@ describe('Detectors', () => {
       .type('Edited description');
 
     // Change input source
-    cy.get(`[data-test-subj="define-detector-select-data-source"]`).within(() => {
-      cy.get('.euiFormControlLayoutClearButton').click({ force: true });
-    });
+    cy.get(
+      '.euiFormControlLayoutIcons > .euiFormControlLayoutClearButton > .euiIcon > path'
+    ).click({ force: true });
     cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(
       `${cypressIndexWindows}{enter}`
     );
@@ -315,9 +315,9 @@ describe('Detectors', () => {
 
     // Change input source
     cy.get(`[data-test-subj="edit-detector-basic-details"]`).click({ force: true });
-    cy.get(`[data-test-subj="define-detector-select-data-source"]`).within(() => {
-      cy.get('.euiFormControlLayoutClearButton').click({ force: true });
-    });
+    cy.get(
+      '.euiFormControlLayoutIcons > .euiFormControlLayoutClearButton > .euiIcon > path'
+    ).click({ force: true });
     cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(
       `${cypressIndexDns}{enter}`
     );
@@ -409,17 +409,15 @@ describe('Detectors', () => {
     cy.get('.reviewFieldMappings').should('not.exist');
 
     // Change input source
-    cy.get(`[data-test-subj="define-detector-select-data-source"]`).within(() => {
-      cy.get('.euiFormControlLayoutClearButton').click({ force: true });
-    });
-
-    cy.get('.reviewFieldMappings').should('be.visible');
-    cy.contains('Automatically mapped fields (0)');
+    cy.get(
+      '.euiFormControlLayoutIcons > .euiFormControlLayoutClearButton > .euiIcon > path'
+    ).click({ force: true });
 
     cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(
       `${cypressIndexDns}{enter}`
     );
 
+    cy.get('.reviewFieldMappings').should('be.visible');
     cy.contains('Automatically mapped fields (3)');
   });
 
