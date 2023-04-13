@@ -409,10 +409,7 @@ describe('Detectors', () => {
     cy.get('.reviewFieldMappings').should('not.exist');
 
     // Change input source
-    cy.get(
-      '.euiFormControlLayoutIcons > .euiFormControlLayoutClearButton > .euiIcon > path'
-    ).click({ force: true });
-
+    cy.get(`[data-test-subj="define-detector-select-data-source"]`).type('{backspace}');
     cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(
       `${cypressIndexDns}{enter}`
     );
@@ -422,6 +419,14 @@ describe('Detectors', () => {
   });
 
   it('...should show field mappings if rule selection is changed', () => {
+    cy.intercept('POST', 'rules/_search?prePackaged=true', {
+      delay: 5000,
+    }).as('getPrePackagedRules');
+
+    cy.intercept('POST', 'rules/_search?prePackaged=false', {
+      delay: 5000,
+    }).as('getCustomRules');
+
     cy.intercept('mappings/view').as('getMappingsView');
 
     // Click on detector name
@@ -441,6 +446,8 @@ describe('Detectors', () => {
     cy.get('.reviewFieldMappings').should('not.exist');
 
     cy.wait('@detectorsSearch');
+    cy.wait('@getCustomRules');
+    cy.wait('@getPrePackagedRules');
 
     // Toggle single search result to unchecked
     cy.get(
