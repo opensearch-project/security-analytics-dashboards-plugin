@@ -418,7 +418,7 @@ describe('Detectors', () => {
     cy.contains('Automatically mapped fields (3)');
   });
 
-  it('...should update field mappings if rule selection is changed', () => {
+  it('...should show field mappings if rule selection is changed', () => {
     cy.intercept('mappings/view').as('getMappingsView');
 
     // Click on detector name
