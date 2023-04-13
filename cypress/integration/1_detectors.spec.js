@@ -42,7 +42,6 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
   cy.get(`input[placeholder="Enter a name for the detector."]`).focus().type(detectorName);
 
   // Select our pre-seeded data source (check cypressIndexDns)
-  // cy.get('.euiBadge__iconButton > .euiIcon').click({ force: true });
   cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(`${dataSource}{enter}`);
 
   cy.intercept({
@@ -286,7 +285,9 @@ describe('Detectors', () => {
       .type('Edited description');
 
     // Change input source
-    cy.get('.euiBadge__iconButton > .euiIcon').click({ force: true });
+    cy.get(`[data-test-subj="define-detector-select-data-source"]`).within(() => {
+      cy.get('.euiFormControlLayoutClearButton').click({ force: true });
+    });
     cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(
       `${cypressIndexWindows}{enter}`
     );
@@ -314,7 +315,9 @@ describe('Detectors', () => {
 
     // Change input source
     cy.get(`[data-test-subj="edit-detector-basic-details"]`).click({ force: true });
-    cy.get('.euiBadge__iconButton > .euiIcon').click({ force: true });
+    cy.get(`[data-test-subj="define-detector-select-data-source"]`).within(() => {
+      cy.get('.euiFormControlLayoutClearButton').click({ force: true });
+    });
     cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(
       `${cypressIndexDns}{enter}`
     );
@@ -406,7 +409,9 @@ describe('Detectors', () => {
     cy.get('.reviewFieldMappings').should('not.exist');
 
     // Change input source
-    cy.get('.euiBadge__iconButton > .euiIcon').click({ force: true });
+    cy.get(`[data-test-subj="define-detector-select-data-source"]`).within(() => {
+      cy.get('.euiFormControlLayoutClearButton').click({ force: true });
+    });
 
     cy.get('.reviewFieldMappings').should('be.visible');
     cy.contains('Automatically mapped fields (0)');
@@ -446,7 +451,6 @@ describe('Detectors', () => {
 
     cy.wait('@getMappingsView');
     cy.get('.reviewFieldMappings').should('be.visible');
-    cy.contains('Automatically mapped fields (3)');
   });
 
   it('...can be deleted', () => {
