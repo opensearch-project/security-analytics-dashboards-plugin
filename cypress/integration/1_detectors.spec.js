@@ -23,7 +23,7 @@ const testMappings = {
 };
 
 const cypressDNSRule = dns_name_rule_data.title;
-const cypressDNSTypeRule = dns_type_rule_data.title;
+// const cypressDNSTypeRule = dns_type_rule_data.title;
 
 const getNameField = () => cy.get(`input[placeholder="Enter a name for the detector."]`);
 const getDataSourceField = () => cy.get(`.euiComboBox__input input`);
