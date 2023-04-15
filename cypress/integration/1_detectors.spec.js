@@ -409,7 +409,10 @@ describe('Detectors', () => {
     cy.get('.reviewFieldMappings').should('not.exist');
 
     // Change input source
-    cy.get(`[data-test-subj="define-detector-select-data-source"]`).type('{backspace}');
+    cy.get(`[data-test-subj="define-detector-select-data-source"]`).within(($el) => {
+      cy.get('.euiFormControlLayoutClearButton').click({ force: true });
+      cy.get($el).find('input').type('{selectall}{backspace}');
+    });
     cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(
       `${cypressIndexDns}{enter}`
     );
