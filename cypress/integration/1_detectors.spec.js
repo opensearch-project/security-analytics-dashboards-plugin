@@ -412,13 +412,9 @@ describe('Detectors', () => {
     cy.get(
       '.euiFormControlLayoutIcons > .euiFormControlLayoutClearButton > .euiIcon > path'
     ).click({ force: true });
-    cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(
-      `${cypressIndexWindows}{enter}`
-    );
-
-    cy.get(
-      '.euiFormControlLayoutIcons > .euiFormControlLayoutClearButton > .euiIcon > path'
-    ).click({ force: true });
+    cy.get(`[data-test-subj="define-detector-select-data-source"]`)
+      .find('input')
+      .should('not.have.value');
     cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(
       `${cypressIndexDns}{enter}`
     );
