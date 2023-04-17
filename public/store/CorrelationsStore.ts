@@ -17,7 +17,7 @@ import { DETECTOR_TYPES } from '../pages/Detectors/utils/constants';
 import { euiPaletteColorBlind } from '@elastic/eui';
 import { FilterItem } from '../pages/Correlations/components/LogTypeFilterGroup';
 import 'font-awesome/css/font-awesome.min.css';
-import { iconByLogType, sizeBySeverity } from '../pages/Correlations/utils/constants';
+import { iconByLogType } from '../pages/Correlations/utils/constants';
 
 class ColorProvider {
   // private palette = euiPaletteColorBlindBehindText({ sortBy: 'natural' });
@@ -43,19 +43,19 @@ class ColorProvider {
 
 class DummyCorrelationDataProvider {
   private generatedPairs: Set<string> = new Set();
-  private severities: ('Critical' | 'Medium' | 'Info' | 'Low')[] = [
-    'Critical',
-    'Medium',
-    'Info',
-    'Low',
-  ];
+  // private severities: ('Critical' | 'Medium' | 'Info' | 'Low')[] = [
+  //   'Critical',
+  //   'Medium',
+  //   'Info',
+  //   'Low',
+  // ];
 
   public generateDummyFindings() {
     const now = new Date();
     const threeDaysAgo = new Date();
     threeDaysAgo.setDate(now.getDate() - 3);
-    const startTime = threeDaysAgo.getTime();
-    const diff = now.getTime() - startTime;
+    // const startTime = threeDaysAgo.getTime();
+    // const diff = now.getTime() - startTime;
 
     // const eachLogtypeCount = {};
     const findings: { [id: string]: CorrelationFinding } = {};
@@ -147,6 +147,7 @@ class DummyCorrelationDataProvider {
 export class CorrelationsStore implements ICorrelationsStore {
   private correlationRules: CorrelationRule[] = [
     {
+      id: 's3-dns',
       name: 'Correlate S3 and DNS findings',
       queries: [
         {
@@ -165,6 +166,7 @@ export class CorrelationsStore implements ICorrelationsStore {
       ],
     },
     {
+      id: 'nw-windows',
       name: 'Correlate Network and Windows findings',
       queries: [
         {
@@ -180,6 +182,7 @@ export class CorrelationsStore implements ICorrelationsStore {
       ],
     },
     {
+      id: 'nw-ad_ldap',
       name: 'Correlate Network and AD_LDAP findings',
       queries: [
         {

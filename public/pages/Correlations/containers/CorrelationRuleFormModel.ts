@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CorrelationRule } from '../../../../types';
+import { CorrelationRuleModel } from '../../../../types';
 
-export const correlationRuleStateDefaultValue: CorrelationRule = {
+export const correlationRuleStateDefaultValue: CorrelationRuleModel = {
   name: '',
   queries: [
     {

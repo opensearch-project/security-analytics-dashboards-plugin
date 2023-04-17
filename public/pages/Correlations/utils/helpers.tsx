@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { EuiBasicTableColumn, EuiBadge, EuiLink, EuiToolTip, EuiButtonIcon } from '@elastic/eui';
+import { EuiBasicTableColumn, EuiBadge, EuiToolTip, EuiButtonIcon } from '@elastic/eui';
 import {
   ArgsWithError,
   ArgsWithQuery,
@@ -18,7 +18,7 @@ import { FieldClause } from '@opensearch-project/oui/src/eui_components/search_b
 import { DataStore } from '../../../store/DataStore';
 
 export const getCorrelationRulesTableColumns = (
-  onEditRule: (ruleItem: CorrelationRule) => void
+  _onEditRule: (ruleItem: CorrelationRule) => void
 ): EuiBasicTableColumn<CorrelationRuleTableItem>[] => {
   return [
     {
@@ -26,9 +26,9 @@ export const getCorrelationRulesTableColumns = (
       name: 'Name',
       sortable: true,
       truncateText: true,
-      render: (name: string, item: CorrelationRule) => {
-        return <EuiLink onClick={() => onEditRule(item)}>{name}</EuiLink>;
-      },
+      // render: (name: string, item: CorrelationRule) => {
+      //   return <EuiLink onClick={() => onEditRule(item)}>{name}</EuiLink>;
+      // },
     },
     {
       name: 'Log types',

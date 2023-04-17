@@ -22,7 +22,7 @@ import {
   EuiTitle,
 } from '@elastic/eui';
 import { ruleTypes } from '../../Rules/utils/constants';
-import { CorrelationRule, CorrelationRuleQuery } from '../../../../types';
+import { CorrelationRule, CorrelationRuleModel, CorrelationRuleQuery } from '../../../../types';
 import { BREADCRUMBS, ROUTES } from '../../../utils/constants';
 import { CoreServicesContext } from '../../../components/core_services';
 import { RouteComponentProps } from 'react-router-dom';
@@ -44,8 +44,8 @@ export const CreateCorrelationRule: React.FC<RouteComponentProps<
 
   const createForm = (
     correlationQueries: CorrelationRuleQuery[],
-    touchedInputs: FormikTouched<CorrelationRule>,
-    formikErrors: FormikErrors<CorrelationRule>,
+    touchedInputs: FormikTouched<CorrelationRuleModel>,
+    formikErrors: FormikErrors<CorrelationRuleModel>,
     props: any
   ) => {
     return (
