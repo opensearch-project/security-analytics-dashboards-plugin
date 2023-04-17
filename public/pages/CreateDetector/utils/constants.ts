@@ -12,7 +12,7 @@ export const createDetectorSteps: Record<DetectorCreationStep, DetectorCreationS
     step: 1,
   },
   [DetectorCreationStep.CONFIGURE_ALERTS]: {
-    title: 'Set up alerts',
+    title: 'Set up alert triggers',
     step: 2,
   },
   [DetectorCreationStep.REVIEW_CREATE]: {

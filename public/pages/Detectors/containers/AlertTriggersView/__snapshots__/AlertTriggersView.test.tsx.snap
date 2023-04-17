@@ -579,10 +579,10 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
           >
             <div>
               <EuiSpacer
-                size="l"
+                size="s"
               >
                 <div
-                  className="euiSpacer euiSpacer--l"
+                  className="euiSpacer euiSpacer--s"
                 />
               </EuiSpacer>
               <EuiAccordion
@@ -592,7 +592,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                     size="m"
                   >
                     <p>
-                      Alert on alert_name
+                      alert_name
                     </p>
                   </EuiText>
                 }
@@ -637,7 +637,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                             className="euiText euiText--medium"
                           >
                             <p>
-                              Alert on alert_name
+                              alert_name
                             </p>
                           </div>
                         </EuiText>
@@ -1357,13 +1357,6 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                   </div>
                 </div>
               </EuiAccordion>
-              <EuiSpacer
-                size="m"
-              >
-                <div
-                  className="euiSpacer euiSpacer--m"
-                />
-              </EuiSpacer>
             </div>
           </AlertTriggerView>
           <AlertTriggerView
@@ -1606,18 +1599,13 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
             rules={Object {}}
           >
             <div>
-              <EuiHorizontalRule>
+              <EuiHorizontalRule
+                margin="m"
+              >
                 <hr
-                  className="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginLarge"
+                  className="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginMedium"
                 />
               </EuiHorizontalRule>
-              <EuiSpacer
-                size="l"
-              >
-                <div
-                  className="euiSpacer euiSpacer--l"
-                />
-              </EuiSpacer>
               <EuiAccordion
                 arrowDisplay="left"
                 buttonContent={
@@ -1625,7 +1613,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                     size="m"
                   >
                     <p>
-                      Alert on alert_name
+                      alert_name
                     </p>
                   </EuiText>
                 }
@@ -1670,7 +1658,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                             className="euiText euiText--medium"
                           >
                             <p>
-                              Alert on alert_name
+                              alert_name
                             </p>
                           </div>
                         </EuiText>
@@ -2390,13 +2378,6 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                   </div>
                 </div>
               </EuiAccordion>
-              <EuiSpacer
-                size="m"
-              >
-                <div
-                  className="euiSpacer euiSpacer--m"
-                />
-              </EuiSpacer>
             </div>
           </AlertTriggerView>
         </div>

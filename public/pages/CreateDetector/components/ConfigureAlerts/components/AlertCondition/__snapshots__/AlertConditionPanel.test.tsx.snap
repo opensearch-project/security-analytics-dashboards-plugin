@@ -40,7 +40,7 @@ Object {
                   class="euiFieldText"
                   data-test-subj="alert-condition-name-0"
                   id="some_html_id"
-                  placeholder="Enter a name for the alert condition."
+                  placeholder="Enter a name to describe the alert condition"
                   type="text"
                   value="alert_name"
                 />
@@ -779,7 +779,7 @@ Object {
                 class="euiFieldText"
                 data-test-subj="alert-condition-name-0"
                 id="some_html_id"
-                placeholder="Enter a name for the alert condition."
+                placeholder="Enter a name to describe the alert condition"
                 type="text"
                 value="alert_name"
               />
