@@ -409,11 +409,16 @@ describe('Detectors', () => {
     cy.get('.reviewFieldMappings').should('not.exist');
 
     // Change input source
-    cy.get(`[data-test-subj="define-detector-select-data-source"]`).within(($el) => {
-      const clearBtn = $el.find('.euiFormControlLayoutClearButton__icon');
-      clearBtn[0] && cy.get(clearBtn[0]).click({ force: true });
-      cy.wait(1000);
-    });
+    cy.get(
+      '.euiFormControlLayoutIcons > .euiFormControlLayoutClearButton > .euiIcon > path'
+    ).click({ force: true });
+    cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(
+      `${cypressIndexWindows}{enter}`
+    );
+
+    cy.get(
+      '.euiFormControlLayoutIcons > .euiFormControlLayoutClearButton > .euiIcon > path'
+    ).click({ force: true });
     cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(
       `${cypressIndexDns}{enter}`
     );
