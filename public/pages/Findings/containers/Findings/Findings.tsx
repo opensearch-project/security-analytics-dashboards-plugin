@@ -55,7 +55,7 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { DateTimeFilter } from '../../../Overview/models/interfaces';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 import { DataStore } from '../../../../store/DataStore';
-import { Detector } from '../../../../../types';
+import { CorrelationFinding, Detector } from '../../../../../types';
 
 interface FindingsProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -90,7 +90,9 @@ interface FindingVisualizationData {
   ruleSeverity: string;
 }
 
-export type FindingItemType = Finding & { detector: DetectorHit };
+export type FindingItemType = Finding & { detector: DetectorHit } & {
+  correlations: CorrelationFinding[];
+};
 
 type FindingsGroupByType = 'logType' | 'ruleSeverity';
 
@@ -172,6 +174,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
                     detectorName: detector._source.name,
                     logType: detector._source.detector_type,
                     detector: detector,
+                    correlations: Object.values(DataStore.correlationsStore.findings).slice(0, 10),
                   };
                 }
               );

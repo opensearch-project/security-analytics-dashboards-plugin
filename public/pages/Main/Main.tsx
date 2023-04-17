@@ -14,6 +14,9 @@ import {
   EuiTitle,
   EuiSpacer,
   EuiGlobalToastList,
+  EuiBadge,
+  EuiFlexGroup,
+  EuiFlexItem,
 } from '@elastic/eui';
 import { Toast } from '@opensearch-project/oui/src/eui_components/toast/global_toast_list';
 import { CoreStart } from 'opensearch-dashboards/public';
@@ -39,6 +42,8 @@ import { DuplicateRule } from '../Rules/containers/DuplicateRule/DuplicateRule';
 import { DateTimeFilter } from '../Overview/models/interfaces';
 import Callout, { ICalloutProps } from './components/Callout';
 import { DataStore } from '../../store/DataStore';
+import { CreateCorrelationRule } from '../Correlations/containers/CreateCorrelationRule';
+import { CorrelationRules } from '../Correlations/containers/CorrelationRules';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -242,6 +247,19 @@ export default class Main extends Component<MainProps, MainState> {
               this.setState({ selectedNavItemIndex: 6 });
               history.push(ROUTES.CORRELATIONS);
             },
+            renderItem: (props) => {
+              console.log(props);
+              return (
+                <EuiFlexGroup alignItems="center" gutterSize="xs">
+                  <EuiFlexItem grow={false}>
+                    <span className={props.className}>{props.children}</span>
+                  </EuiFlexItem>
+                  <EuiFlexItem grow={false}>
+                    <EuiBadge>Experimental</EuiBadge>
+                  </EuiFlexItem>
+                </EuiFlexGroup>
+              );
+            },
             isSelected: this.state.selectedNavItemIndex === 6,
             forceOpen: true,
             items: [
@@ -400,6 +418,7 @@ export default class Main extends Component<MainProps, MainState> {
                               findingService={services.findingsService}
                               notifications={core?.notifications}
                               opensearchService={services.opensearchService}
+                              indexPatternService={services.indexPatternsService}
                             />
                           )}
                         />
@@ -450,6 +469,18 @@ export default class Main extends Component<MainProps, MainState> {
                               notifications={core?.notifications}
                               opensearchService={services.opensearchService}
                             />
+                          )}
+                        />
+                        <Route
+                          path={`${ROUTES.CORRELATION_RULES}`}
+                          render={(props: RouteComponentProps<any, any, any>) => (
+                            <CorrelationRules {...props} />
+                          )}
+                        />
+                        <Route
+                          path={`${ROUTES.CORRELATION_RULE_CREATE}`}
+                          render={(props: RouteComponentProps<any, any, any>) => (
+                            <CreateCorrelationRule {...props} />
                           )}
                         />
                         <Redirect from={'/'} to={landingPage} />

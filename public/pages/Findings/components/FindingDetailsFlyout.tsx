@@ -28,19 +28,26 @@ import {
   EuiText,
   EuiTitle,
   EuiIcon,
+  EuiTabs,
+  EuiTab,
+  EuiInMemoryTable,
+  EuiBasicTableColumn,
 } from '@elastic/eui';
 import { capitalizeFirstLetter, renderTime } from '../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA, ROUTES } from '../../../utils/constants';
-import { Finding, Query } from '../models/interfaces';
+import { Query } from '../models/interfaces';
 import { RuleViewerFlyout } from '../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
 import { RuleSource } from '../../../../server/models/interfaces';
-import { RuleItemInfoBase } from '../../Rules/models/types';
 import { OpenSearchService, IndexPatternsService } from '../../../services';
 import { RuleTableItem } from '../../Rules/utils/helpers';
 import { CreateIndexPatternForm } from './CreateIndexPatternForm';
+import { FindingItemType } from '../containers/Findings/Findings';
+import { CorrelationRule, CorrelationRuleQuery, RuleItemInfoBase } from '../../../../types';
+import { FindingFlyoutTabId, FindingFlyoutTabs } from '../utils/constants';
+import { DataStore } from '../../../store/DataStore';
 
 interface FindingDetailsFlyoutProps {
-  finding: Finding;
+  finding: FindingItemType;
   backButton?: React.ReactNode;
   allRules: { [id: string]: RuleSource };
   opensearchService: OpenSearchService;
@@ -53,6 +60,7 @@ interface FindingDetailsFlyoutState {
   ruleViewerFlyoutData: RuleTableItem | null;
   indexPatternId?: string;
   isCreateIndexPatternModalVisible: boolean;
+  selectedTab: { id: string; content: React.ReactNode | null };
 }
 
 export default class FindingDetailsFlyout extends Component<
@@ -65,6 +73,7 @@ export default class FindingDetailsFlyout extends Component<
       loading: false,
       ruleViewerFlyoutData: null,
       isCreateIndexPatternModalVisible: false,
+      selectedTab: { id: FindingFlyoutTabId.DETAILS, content: null },
     };
   }
 
@@ -73,6 +82,12 @@ export default class FindingDetailsFlyout extends Component<
       if (patternId) {
         this.setState({ indexPatternId: patternId });
       }
+    });
+    this.setState({
+      selectedTab: {
+        id: FindingFlyoutTabId.DETAILS,
+        content: this.getTabContent(FindingFlyoutTabId.DETAILS),
+      },
     });
   }
 
@@ -321,7 +336,56 @@ export default class FindingDetailsFlyout extends Component<
     }
   }
 
-  render() {
+  private getTabContent(tabId: FindingFlyoutTabId) {
+    switch (tabId) {
+      case FindingFlyoutTabId.CORRELATIONS:
+        return this.createCorrelationsTable();
+      case FindingFlyoutTabId.DETAILS:
+      default:
+        return this.createFindingDetails();
+    }
+  }
+
+  private createCorrelationsTable() {
+    const rules = DataStore.correlationsStore.getCorrelationRules();
+
+    const columns: EuiBasicTableColumn<CorrelationRule>[] = [
+      {
+        field: 'name',
+        name: 'Name',
+        sortable: true,
+        truncateText: true,
+      },
+      {
+        name: 'Log types',
+        render: (ruleItem: CorrelationRule) => {
+          return 'DNS, S3';
+        },
+      },
+      {
+        field: 'queries',
+        name: 'Queries',
+        render: (queries: CorrelationRuleQuery, ruleItem: CorrelationRule) => {
+          return 10;
+        },
+      },
+      {
+        name: 'Correlations for last 24 hrs',
+        render: (ruleItem: CorrelationRule) => {
+          return 'hello world';
+        },
+      },
+      {
+        name: 'Actions',
+        field: '',
+        actions: [{ render: (ruleItem: CorrelationRule) => <p>hello</p> }],
+      },
+    ];
+
+    return <EuiInMemoryTable columns={columns} items={rules} pagination={true} search={true} />;
+  }
+
+  private createFindingDetails() {
     const {
       finding: {
         id,
@@ -332,9 +396,52 @@ export default class FindingDetailsFlyout extends Component<
         queries,
         timestamp,
       },
-      closeFlyout,
-      backButton,
     } = this.props;
+
+    return (
+      <>
+        <EuiFlexGroup>
+          <EuiFlexItem>
+            <EuiFormRow label={'Finding ID'}>
+              <EuiText data-test-subj={'finding-details-flyout-finding-id'}>
+                {id || DEFAULT_EMPTY_DATA}
+              </EuiText>
+            </EuiFormRow>
+          </EuiFlexItem>
+
+          <EuiFlexItem>
+            <EuiFormRow label={'Finding time'} data-test-subj={'finding-details-flyout-timestamp'}>
+              <EuiText>{renderTime(timestamp) || DEFAULT_EMPTY_DATA}</EuiText>
+            </EuiFormRow>
+          </EuiFlexItem>
+
+          <EuiFlexItem>
+            <EuiFormRow label={'Detector'}>
+              <EuiLink
+                href={`#${ROUTES.DETECTOR_DETAILS}/${_id}`}
+                target={'_blank'}
+                data-test-subj={'finding-details-flyout-detector-link'}
+              >
+                {name || DEFAULT_EMPTY_DATA}
+              </EuiLink>
+            </EuiFormRow>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+
+        <EuiSpacer size={'m'} />
+        <EuiTitle size={'s'}>
+          <h3>Rule details</h3>
+        </EuiTitle>
+        <EuiSpacer size={'m'} />
+        {this.renderRuleDetails(queries)}
+        <EuiSpacer size="l" />
+        {this.renderFindingDocuments()}
+      </>
+    );
+  }
+
+  render() {
+    const { closeFlyout, backButton } = this.props;
     return (
       <EuiFlyout
         onClose={closeFlyout}
@@ -375,45 +482,25 @@ export default class FindingDetailsFlyout extends Component<
           </EuiFlexGroup>
         </EuiFlyoutHeader>
         <EuiFlyoutBody>
-          <EuiFlexGroup>
-            <EuiFlexItem>
-              <EuiFormRow label={'Finding ID'}>
-                <EuiText data-test-subj={'finding-details-flyout-finding-id'}>
-                  {id || DEFAULT_EMPTY_DATA}
-                </EuiText>
-              </EuiFormRow>
-            </EuiFlexItem>
-
-            <EuiFlexItem>
-              <EuiFormRow
-                label={'Finding time'}
-                data-test-subj={'finding-details-flyout-timestamp'}
-              >
-                <EuiText>{renderTime(timestamp) || DEFAULT_EMPTY_DATA}</EuiText>
-              </EuiFormRow>
-            </EuiFlexItem>
-
-            <EuiFlexItem>
-              <EuiFormRow label={'Detector'}>
-                <EuiLink
-                  href={`#${ROUTES.DETECTOR_DETAILS}/${_id}`}
-                  target={'_blank'}
-                  data-test-subj={'finding-details-flyout-detector-link'}
+          <EuiTabs>
+            {FindingFlyoutTabs.map((tab) => {
+              return (
+                <EuiTab
+                  key={tab.id}
+                  isSelected={tab.id === this.state.selectedTab.id}
+                  onClick={() => {
+                    this.setState({
+                      selectedTab: { id: tab.id, content: this.getTabContent(tab.id) },
+                    });
+                  }}
                 >
-                  {name || DEFAULT_EMPTY_DATA}
-                </EuiLink>
-              </EuiFormRow>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-
-          <EuiSpacer size={'m'} />
-          <EuiTitle size={'s'}>
-            <h3>Rule details</h3>
-          </EuiTitle>
-          <EuiSpacer size={'m'} />
-          {this.renderRuleDetails(queries)}
-          <EuiSpacer size="l" />
-          {this.renderFindingDocuments()}
+                  {tab.name}
+                </EuiTab>
+              );
+            })}
+          </EuiTabs>
+          <EuiSpacer />
+          {this.state.selectedTab.content}
         </EuiFlyoutBody>
       </EuiFlyout>
     );

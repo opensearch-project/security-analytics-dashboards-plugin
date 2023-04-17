@@ -45,7 +45,7 @@ interface FindingsTableProps extends RouteComponentProps {
 
 interface FindingsTableState {
   findingsFiltered: boolean;
-  filteredFindings: Finding[];
+  filteredFindings: FindingItemType[];
   flyout: object | undefined;
   flyoutOpen: boolean;
   selectedFinding?: Finding;
@@ -108,7 +108,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
     if (refreshPage) this.props.onRefresh();
   };
 
-  renderFindingDetailsFlyout = (finding: Finding) => {
+  renderFindingDetailsFlyout = (finding: FindingItemType) => {
     if (this.state.flyoutOpen) this.closeFlyout();
     else
       this.setState({
@@ -167,7 +167,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
       widgetEmptyMessage,
     } = this.state;
 
-    const columns: EuiBasicTableColumn<Finding>[] = [
+    const columns: EuiBasicTableColumn<FindingItemType>[] = [
       {
         field: 'timestamp',
         name: 'Time',
@@ -195,14 +195,14 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         name: 'Rule name',
         sortable: true,
         dataType: 'string',
-        render: (ruleName) => ruleName || DEFAULT_EMPTY_DATA,
+        render: (ruleName: string) => ruleName || DEFAULT_EMPTY_DATA,
       },
       {
         field: 'detectorName',
         name: 'Threat detector',
         sortable: true,
         dataType: 'string',
-        render: (name) => name || DEFAULT_EMPTY_DATA,
+        render: (name: string) => name || DEFAULT_EMPTY_DATA,
       },
       {
         // field: 'queries',
@@ -217,7 +217,13 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         name: 'Rule severity',
         sortable: true,
         dataType: 'string',
-        render: (ruleSeverity) => capitalizeFirstLetter(ruleSeverity) || DEFAULT_EMPTY_DATA,
+        render: (ruleSeverity: string) => capitalizeFirstLetter(ruleSeverity) || DEFAULT_EMPTY_DATA,
+      },
+      {
+        name: 'Correlations',
+        render: (item: FindingItemType) => {
+          return `${item.correlations.length}`;
+        },
       },
       {
         name: 'Actions',
@@ -250,8 +256,8 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
       },
     ];
 
-    const logTypes = new Set();
-    const severities = new Set();
+    const logTypes = new Set<string>();
+    const severities = new Set<string>();
     filteredFindings.forEach((finding) => {
       if (finding) {
         const queryId = finding.queries[0].id;
