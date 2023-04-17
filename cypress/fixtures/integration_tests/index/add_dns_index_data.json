@@ -1,5 +1,5 @@
 {
   "dns.answers.type": "AnswerType",
   "dns.question.registered_domain": "EC2AMAZ-EPWO7HKA",
-  "dns.question_name": "QuestionName"
+  "dns.question.name": "QuestionName"
 }

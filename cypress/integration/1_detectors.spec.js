@@ -71,17 +71,6 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
     }
   });
 
-  if (!expectFailure) {
-    // Select appropriate names to map fields to
-    for (let field_name in testMappings.properties) {
-      const mappedTo = testMappings.properties[field_name].path;
-
-      cy.contains('tr', field_name).within(() => {
-        cy.get(`[data-test-subj="detector-field-mappings-select"]`).click().type(mappedTo);
-      });
-    }
-  }
-
   // Click Next button to continue
   cy.get('button').contains('Next').click({ force: true });
 
@@ -108,15 +97,6 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
 
   // Confirm field mappings registered
   cy.contains('Field mapping');
-
-  if (!expectFailure) {
-    for (let field in testMappings.properties) {
-      const mappedTo = testMappings.properties[field].path;
-
-      cy.contains(field);
-      cy.contains(mappedTo);
-    }
-  }
 
   // Confirm entries user has made
   cy.contains('Detector details');

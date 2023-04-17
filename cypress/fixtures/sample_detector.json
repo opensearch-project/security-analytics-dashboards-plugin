@@ -27,7 +27,7 @@
   "triggers": [
     {
       "name": "sample_alert_condition",
-      "sev_levels": [],
+      "sev_levels": ["low"],
       "tags": [],
       "actions": [
         {

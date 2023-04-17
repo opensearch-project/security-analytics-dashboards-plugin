@@ -4,9 +4,9 @@
       "type": "alias",
       "path": "winlog.event_id"
     },
-    "winlog.provider_name": {
+    "winlog-provider_name": {
       "type": "alias",
-      "path": "winlog-provider_name"
+      "path": "winlog.provider_name"
     }
   }
 }

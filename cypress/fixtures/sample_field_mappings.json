@@ -1,6 +1,6 @@
 {
   "properties": {
-    "winlog-event_uid": {
+    "winlog-event_id": {
       "path": "winlog.event_id",
       "type": "alias"
     }
