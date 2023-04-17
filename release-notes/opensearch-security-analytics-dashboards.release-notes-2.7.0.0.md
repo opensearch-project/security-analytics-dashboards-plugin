@@ -27,4 +27,4 @@ Compatible with OpenSearch 2.7.0
 * Update detector details component. ([#504](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/504))
 
 ### Documentation
-* Added 2.7 release notes. ([#]())
+* Added 2.7 release notes. ([#523](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/523))
