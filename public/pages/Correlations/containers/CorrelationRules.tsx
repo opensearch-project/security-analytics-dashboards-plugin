@@ -109,7 +109,7 @@ export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComp
         </EuiFlexItem>
         <EuiFlexItem>
           <EuiPanel>
-            {!allRules.length ? (
+            {allRules.length ? (
               <EuiInMemoryTable
                 columns={getCorrelationRulesTableColumns(onRuleNameClick)}
                 items={filteredRules}
