@@ -20,7 +20,11 @@
             "id": "1a4bd6e3-4c6e-405d-a9a3-53a116e341d4"
           }
         ],
-        "custom_rules": []
+        "custom_rules": [
+          {
+            "id": ""
+          }
+        ]
       }
     }
   ],
@@ -51,7 +55,7 @@
       ],
       "types": ["windows"],
       "severity": "4",
-      "ids": ["1a4bd6e3-4c6e-405d-a9a3-53a116e341d4"]
+      "ids": []
     }
   ]
 }

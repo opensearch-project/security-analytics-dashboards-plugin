@@ -7,8 +7,9 @@ import moment from 'moment';
 import { DETECTOR_TRIGGER_TIMEOUT, OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
 import sample_index_settings from '../fixtures/sample_windows_index_settings.json';
 import sample_alias_mappings from '../fixtures/sample_alias_mappings.json';
-import sample_detector from '../fixtures/sample_detector.json';
+import sample_detector from '../fixtures/integration_tests/detector/create_usb_detector_data.json';
 import sample_document from '../fixtures/sample_document.json';
+import windows_rule_data from '../fixtures/integration_tests/rule/create_windows_usb_rule.json';
 
 const testIndex = 'sample_alerts_spec_cypress_test_index';
 const testDetectorName = 'alerts_spec_cypress_test_detector';
@@ -53,7 +54,16 @@ describe('Alerts', () => {
       )
 
       // Create test detector
-      .then(() => cy.createDetector(testDetector))
+      .then(() => {
+        cy.createRule(windows_rule_data)
+          .then((response) => {
+            testDetector.inputs[0].detector_input.custom_rules[0].id = response.body.response._id;
+            testDetector.triggers[0].ids.push(response.body.response._id);
+          })
+          .then((response) => {
+            cy.createDetector(testDetector);
+          });
+      })
 
       .then(() => {
         // Go to the detectors table page
