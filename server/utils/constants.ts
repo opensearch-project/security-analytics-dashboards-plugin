@@ -18,6 +18,7 @@ export const API: SecurityAnalyticsApi = {
   CORRELATION_BASE: `${BASE_API_PATH}/correlation/rules`,
   SEARCH_DETECTORS: `${BASE_API_PATH}/detectors/_search`,
   INDICES_BASE: `${BASE_API_PATH}/indices`,
+  FINDINGS_BASE: `${BASE_API_PATH}/findings`,
   GET_FINDINGS: `${BASE_API_PATH}/findings/_search`,
   DOCUMENT_IDS_QUERY: `${BASE_API_PATH}/document_ids_query`,
   TIME_RANGE_QUERY: `${BASE_API_PATH}/time_range_query`,
@@ -56,6 +57,7 @@ export const METHOD_NAMES = {
   GET_CORRELATION_RULES: 'getCorrelationRules',
   CREATE_CORRELATION_RULE: 'createCorrelationRule',
   DELETE_CORRELATION_RULE: 'deleteCorrelationRule',
+  GET_CORRELATED_FINDINGS: 'getCorrelatedFindings',
 
   // Finding methods
   GET_FINDINGS: 'getFindings',

@@ -45,13 +45,16 @@ import { FindingItemType } from '../containers/Findings/Findings';
 import { CorrelationRule, CorrelationRuleQuery, RuleItemInfoBase } from '../../../../types';
 import { FindingFlyoutTabId, FindingFlyoutTabs } from '../utils/constants';
 import { DataStore } from '../../../store/DataStore';
+import CorrelationService from '../../../services/CorrelationService';
 
 interface FindingDetailsFlyoutProps {
   finding: FindingItemType;
+  findings: FindingItemType[];
   backButton?: React.ReactNode;
   allRules: { [id: string]: RuleSource };
   opensearchService: OpenSearchService;
   indexPatternsService: IndexPatternsService;
+  correlationService: CorrelationService;
   closeFlyout: () => void;
 }
 
@@ -83,6 +86,25 @@ export default class FindingDetailsFlyout extends Component<
         this.setState({ indexPatternId: patternId });
       }
     });
+
+    const { id, detector } = this.props.finding;
+    const allFindings = this.props.findings;
+    DataStore.correlationsStore
+      .getCorrelatedFindings(id, detector._source?.detector_type)
+      .then((findings) => {
+        if (findings?.length) {
+          let correlatedFindings = [];
+          findings.map((finding) => {
+            allFindings.map((item) => {
+              if (finding.finding === item.id) {
+                correlatedFindings.push(item);
+              }
+            });
+          });
+          this.setState({ correlatedFindings });
+        }
+      });
+
     this.setState({
       selectedTab: {
         id: FindingFlyoutTabId.DETAILS,
@@ -346,9 +368,22 @@ export default class FindingDetailsFlyout extends Component<
     }
   }
 
-  private createCorrelationsTable() {
-    const rules = DataStore.correlationsStore.getCorrelationRules();
+  private goToCorrelationsPage = () => {
+    const { correlatedFindings } = this.state;
+    const { finding } = this.props;
 
+    this.props.history.push({
+      pathname: `${ROUTES.CORRELATIONS}`,
+      state: {
+        correlation: {
+          finding: finding,
+          correlatedFindings: correlatedFindings,
+        },
+      },
+    });
+  };
+
+  private createCorrelationsTable() {
     const columns: EuiBasicTableColumn<CorrelationRule>[] = [
       {
         field: 'name',
@@ -382,7 +417,32 @@ export default class FindingDetailsFlyout extends Component<
       },
     ];
 
-    return <EuiInMemoryTable columns={columns} items={rules} pagination={true} search={true} />;
+    return (
+      <>
+        <EuiFlexGroup>
+          <EuiFlexItem>
+            <EuiTitle>
+              <EuiText>Correlated findings</EuiText>
+            </EuiTitle>
+          </EuiFlexItem>
+          <EuiFlexItem>
+            <EuiButton onClick={() => this.goToCorrelationsPage()}>
+              View correlations graph
+            </EuiButton>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+        <EuiFlexGroup>
+          <EuiFlexItem>
+            <EuiInMemoryTable
+              columns={columns}
+              items={this.state.correlatedFindings}
+              pagination={true}
+              search={true}
+            />
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      </>
+    );
   }
 
   private createFindingDetails() {

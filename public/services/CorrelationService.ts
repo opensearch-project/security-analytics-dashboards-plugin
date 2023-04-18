@@ -10,11 +10,27 @@ import { ICorrelationsService } from '../../types/services/ICorrelationService';
 import {
   CreateCorrelationRuleResponse,
   DeleteCorrelationRuleResponse,
+  GetCorrelationFindingsResponse,
   SearchCorrelationRulesResponse,
 } from '../../types';
 
 export default class CorrelationService implements ICorrelationsService {
   constructor(private httpClient: HttpSetup) {}
+
+  getCorrelatedFindings = async (
+    finding: string,
+    detector_type: string,
+    nearby_findings: number = 20
+  ): Promise<ServerResponse<GetCorrelationFindingsResponse>> => {
+    const url = `..${API.FINDINGS_BASE}/correlate`;
+    return (await this.httpClient.get(url, {
+      query: {
+        finding,
+        detector_type,
+        nearby_findings,
+      },
+    })) as ServerResponse<GetCorrelationFindingsResponse>;
+  };
 
   getCorrelationRules = async (
     index?: string

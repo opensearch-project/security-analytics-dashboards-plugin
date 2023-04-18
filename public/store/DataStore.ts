@@ -24,6 +24,8 @@ export class DataStore {
     );
     DataStore.correlationsStore = new CorrelationsStore(
       services.correlationsService,
+      services.detectorsService,
+      services.findingsService,
       notifications
     );
   };

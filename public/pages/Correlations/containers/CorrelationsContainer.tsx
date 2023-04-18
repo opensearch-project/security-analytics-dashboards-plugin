@@ -99,7 +99,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
   };
 
   getFindingCardData(findingId: string) {
-    const allFindings = DataStore.correlationsStore.getAllFindings();
+    const allFindings = DataStore.correlationsStore.allFindings;
     const mainFinding = allFindings[findingId] || {
       id: 'dummy id',
       logType: 'dns',
@@ -109,8 +109,9 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         severity: 'Critical',
       },
     };
-    const correlatedFindings = DataStore.correlationsStore.getCorrelatedFindings(findingId);
-
+    // const correlatedFindings = DataStore.correlationsStore.getCorrelatedFindings(findingId);
+    const correlatedFindings = [];
+    console.log('Correlations history state', this.props.history.location.state);
     return {
       finding: mainFinding,
       correlatedFindings,

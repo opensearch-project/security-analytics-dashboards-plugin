@@ -11,9 +11,13 @@ import {
   RequestHandlerContext,
   ILegacyCustomClusterClient,
 } from 'opensearch-dashboards/server';
-import { CLIENT_CORRELATION_METHODS } from '../utils/constants';
+import { API, CLIENT_CORRELATION_METHODS } from '../utils/constants';
 import { ServerResponse } from '../models/types';
-import { SearchCorrelationRulesResponse } from '../../types';
+import {
+  GetCorrelationFindingsParams,
+  GetCorrelationFindingsResponse,
+  SearchCorrelationRulesResponse,
+} from '../../types';
 
 export default class CorrelationService {
   osDriver: ILegacyCustomClusterClient;
@@ -94,7 +98,7 @@ export default class CorrelationService {
 
   deleteCorrelationRule = async (
     _context: RequestHandlerContext,
-    request: OpenSearchDashboardsRequest,
+    request: OpenSearchDashboardsRequest<{}, GetCorrelationFindingsParams>,
     response: OpenSearchDashboardsResponseFactory
   ) => {
     try {
@@ -112,6 +116,50 @@ export default class CorrelationService {
         },
       });
     } catch (error: any) {
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: false,
+          error: error.message,
+        },
+      });
+    }
+  };
+
+  getCorrelatedFindings = async (
+    _context: RequestHandlerContext,
+    request: OpenSearchDashboardsRequest,
+    response: OpenSearchDashboardsResponseFactory
+  ): Promise<
+    IOpenSearchDashboardsResponse<ServerResponse<GetCorrelationFindingsResponse> | ResponseError>
+  > => {
+    try {
+      const { finding, detector_type, nearby_findings = 20 } = request.query;
+      const params: any = { finding, detector_type, nearby_findings };
+      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
+      // const getCorrelationFindingsResponse: GetCorrelationFindingsResponse = await callWithRequest(
+      //   `${API.FINDINGS_BASE}/correlate`,
+      //   params
+      // );
+      const getCorrelationFindingsResponse: GetCorrelationFindingsResponse = {
+        findings: [
+          {
+            finding: '1d18ad20-1559-4a49-938a-b6013c2c3ad3',
+            detector_type: 'dns',
+            score: 0.00001632626481296029,
+          },
+        ],
+      };
+
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: true,
+          response: getCorrelationFindingsResponse,
+        },
+      });
+    } catch (error: any) {
+      console.error('Security Analytics - CorrelationService - getCorrelatedFindings:', error);
       return response.custom({
         statusCode: 200,
         body: {
