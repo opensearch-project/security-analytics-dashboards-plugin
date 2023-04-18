@@ -51,6 +51,7 @@ export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComp
             ...correlate,
             logType: correlate.category,
           })),
+          logTypes: rule._source?.correlate?.map((correlate) => correlate.category).join(', '),
         })
       );
 
