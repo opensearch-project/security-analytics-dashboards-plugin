@@ -25,6 +25,7 @@ export interface IDetectorsStore {
   setState: (state: IDetectorsState, history: RouteComponentProps['history']) => void;
   getState: () => IDetectorsState | undefined;
   deleteState: () => void;
+  clearNotifications: () => void;
   resolvePendingCreationRequest: () => Promise<{
     detectorId?: string;
     dashboardId?: string;
@@ -130,6 +131,12 @@ export class DetectorsStore implements IDetectorsStore {
 
   public deleteState = (): void => {
     delete this.state;
+  };
+
+  public clearNotifications = (): void => {
+    this.hideCallout();
+    this.toasts = [];
+    this.showToastCallback([]);
   };
 
   private showNotification = (
@@ -258,15 +265,10 @@ export class DetectorsStore implements IDetectorsStore {
         if (dashboardResponse && dashboardResponse.ok) {
           dashboardId = dashboardResponse.response.id;
         } else {
-          const dashboards = await this.savedObjectsService.getDashboards();
-          dashboards.some((dashboard) => {
-            if (dashboard.references.findIndex((reference) => reference.id === detectorId) > -1) {
-              dashboardId = dashboard.id;
-              return true;
-            }
-
-            return false;
-          });
+          const dashboard = await this.savedObjectsService.getDashboard(detectorId);
+          if (dashboard) {
+            dashboardId = dashboard.id;
+          }
         }
       }
 
