@@ -10,6 +10,7 @@ import dateMath from '@elastic/datemath';
 import _ from 'lodash';
 import { DEFAULT_DATE_RANGE } from '../../../utils/constants';
 import { severityOptions } from '../../Alerts/utils/constants';
+import moment from 'moment';
 
 export interface TimeUnit {
   unit: string;
@@ -67,13 +68,14 @@ export const defaultScaleDomain = [
   parseDateString(DEFAULT_DATE_RANGE.end),
 ];
 
-export const getYAxis = (field: string, title: string, axisGrid: boolean = true) => ({
-  aggregate: 'sum',
-  field: field,
-  type: 'quantitative',
-  title: title,
-  axis: { grid: axisGrid },
-});
+export const getYAxis = (field: string, title: string, axisGrid: boolean = true, opts: any = {}) =>
+  _.defaultsDeep(opts, {
+    aggregate: 'sum',
+    field: field,
+    type: 'quantitative',
+    title: title,
+    axis: { grid: axisGrid },
+  });
 
 export const getXAxis = (dateOpts: DateOpts, opts: any = {}) =>
   _.defaultsDeep(opts, {
@@ -121,6 +123,25 @@ export function getVisualizationSpec(description: string, data: any, layers: any
   };
 }
 
+/**
+ * Recalculates vertical domain range to add a bit of space
+ * so that the topmost items in the chart are not clipped
+ * @param {any} data
+ * @param {string} timeUnit
+ */
+export const getYDomainRange = (data: any[], timeUnit: string): number[] => {
+  data = data.filter((item) => item.finding === 1);
+
+  let dateFormat = 'mm';
+  const timeUnitSize = timeUnit.match(/.*(seconds|minutes|hours|date|month|year)$/);
+  if (timeUnitSize && timeUnitSize[1]) {
+    dateFormat = `${timeUnitSize[1][0]}${timeUnitSize[1][0]}`;
+  }
+  let dataGroups = _.groupBy(data, (item) => moment(item.time).format(dateFormat));
+  const domainMax = _.maxBy(Object.values(dataGroups), (group) => group.length) || [];
+  return [0, domainMax.length + 0.1];
+};
+
 export function getOverviewVisualizationSpec(
   visualizationData: SummaryData[],
   groupBy: string,
@@ -132,7 +153,11 @@ export function getOverviewVisualizationSpec(
 ): TopLevelSpec {
   const findingsEncoding: { [x: string]: any } = {
     x: getXAxis(dateOpts),
-    y: getYAxis('finding', 'Count'),
+    y: getYAxis('finding', 'Count', true, {
+      scale: {
+        domain: getYDomainRange(visualizationData, dateOpts.timeUnit.unit),
+      },
+    }),
     tooltip: [getYAxis('finding', 'Findings'), getTimeTooltip(dateOpts)],
     color: {
       field: 'fieldType',

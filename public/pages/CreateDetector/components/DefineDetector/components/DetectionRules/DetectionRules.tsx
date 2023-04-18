@@ -92,7 +92,7 @@ export const DetectionRules: React.FC<DetectionRulesProps> = ({
       <EuiAccordion
         buttonContent={
           <div data-test-subj="detection-rules-btn">
-            <EuiTitle>
+            <EuiTitle size={'s'}>
               <h4>{`Detection rules (${enabledRulesCount} selected)`}</h4>
             </EuiTitle>
             <EuiText size="s" color="subdued">

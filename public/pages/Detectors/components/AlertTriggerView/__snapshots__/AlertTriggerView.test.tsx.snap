@@ -55,7 +55,7 @@ Object {
                   class="euiSpacer euiSpacer--m"
                 />
                 <div
-                  class="euiFormRow"
+                  class="euiFormRow euiFormRow--fullWidth"
                   id="some_html_id-row"
                 >
                   <div
@@ -100,14 +100,13 @@ Object {
                   class="euiSpacer euiSpacer--m"
                 />
                 <div
-                  class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+                  class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
                 >
                   <div
-                    class="euiFlexItem euiFlexItem--flexGrowZero"
-                    style="min-width: 33.333333333333336%;"
+                    class="euiFlexItem"
                   >
                     <div
-                      class="euiFormRow"
+                      class="euiFormRow euiFormRow--fullWidth"
                       id="some_html_id-row"
                     >
                       <div
@@ -142,11 +141,10 @@ Object {
                     </div>
                   </div>
                   <div
-                    class="euiFlexItem euiFlexItem--flexGrowZero"
-                    style="min-width: 33.333333333333336%;"
+                    class="euiFlexItem"
                   >
                     <div
-                      class="euiFormRow"
+                      class="euiFormRow euiFormRow--fullWidth"
                       id="some_html_id-row"
                     >
                       <div
@@ -185,14 +183,13 @@ Object {
                   class="euiSpacer euiSpacer--xl"
                 />
                 <div
-                  class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+                  class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
                 >
                   <div
-                    class="euiFlexItem euiFlexItem--flexGrowZero"
-                    style="min-width: 33.333333333333336%;"
+                    class="euiFlexItem"
                   >
                     <div
-                      class="euiFormRow"
+                      class="euiFormRow euiFormRow--fullWidth"
                       id="some_html_id-row"
                     >
                       <div
@@ -227,11 +224,10 @@ Object {
                     </div>
                   </div>
                   <div
-                    class="euiFlexItem euiFlexItem--flexGrowZero"
-                    style="min-width: 33.333333333333336%;"
+                    class="euiFlexItem"
                   >
                     <div
-                      class="euiFormRow"
+                      class="euiFormRow euiFormRow--fullWidth"
                       id="some_html_id-row"
                     >
                       <div
@@ -281,7 +277,7 @@ Object {
                   class="euiSpacer euiSpacer--m"
                 />
                 <div
-                  class="euiFormRow"
+                  class="euiFormRow euiFormRow--fullWidth"
                   id="some_html_id-row"
                 >
                   <div
@@ -318,7 +314,7 @@ Object {
                   class="euiSpacer euiSpacer--l"
                 />
                 <div
-                  class="euiFormRow"
+                  class="euiFormRow euiFormRow--fullWidth"
                   id="some_html_id-row"
                 >
                   <div
@@ -413,7 +409,7 @@ Object {
                 class="euiSpacer euiSpacer--m"
               />
               <div
-                class="euiFormRow"
+                class="euiFormRow euiFormRow--fullWidth"
                 id="some_html_id-row"
               >
                 <div
@@ -458,14 +454,13 @@ Object {
                 class="euiSpacer euiSpacer--m"
               />
               <div
-                class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+                class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
               >
                 <div
-                  class="euiFlexItem euiFlexItem--flexGrowZero"
-                  style="min-width: 33.333333333333336%;"
+                  class="euiFlexItem"
                 >
                   <div
-                    class="euiFormRow"
+                    class="euiFormRow euiFormRow--fullWidth"
                     id="some_html_id-row"
                   >
                     <div
@@ -500,11 +495,10 @@ Object {
                   </div>
                 </div>
                 <div
-                  class="euiFlexItem euiFlexItem--flexGrowZero"
-                  style="min-width: 33.333333333333336%;"
+                  class="euiFlexItem"
                 >
                   <div
-                    class="euiFormRow"
+                    class="euiFormRow euiFormRow--fullWidth"
                     id="some_html_id-row"
                   >
                     <div
@@ -543,14 +537,13 @@ Object {
                 class="euiSpacer euiSpacer--xl"
               />
               <div
-                class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+                class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
               >
                 <div
-                  class="euiFlexItem euiFlexItem--flexGrowZero"
-                  style="min-width: 33.333333333333336%;"
+                  class="euiFlexItem"
                 >
                   <div
-                    class="euiFormRow"
+                    class="euiFormRow euiFormRow--fullWidth"
                     id="some_html_id-row"
                   >
                     <div
@@ -585,11 +578,10 @@ Object {
                   </div>
                 </div>
                 <div
-                  class="euiFlexItem euiFlexItem--flexGrowZero"
-                  style="min-width: 33.333333333333336%;"
+                  class="euiFlexItem"
                 >
                   <div
-                    class="euiFormRow"
+                    class="euiFormRow euiFormRow--fullWidth"
                     id="some_html_id-row"
                   >
                     <div
@@ -639,7 +631,7 @@ Object {
                 class="euiSpacer euiSpacer--m"
               />
               <div
-                class="euiFormRow"
+                class="euiFormRow euiFormRow--fullWidth"
                 id="some_html_id-row"
               >
                 <div
@@ -676,7 +668,7 @@ Object {
                 class="euiSpacer euiSpacer--l"
               />
               <div
-                class="euiFormRow"
+                class="euiFormRow euiFormRow--fullWidth"
                 id="some_html_id-row"
               >
                 <div

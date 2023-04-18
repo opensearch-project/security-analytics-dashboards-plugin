@@ -253,7 +253,7 @@ export default class ConfigureFieldMapping extends Component<
             <EuiAccordion
               buttonContent={
                 <div data-test-subj="mapped-fields-btn">
-                  <EuiTitle>
+                  <EuiTitle size={'s'}>
                     <h6>{`Automatically mapped fields (${mappedRuleFields.length})`}</h6>
                   </EuiTitle>
                 </div>
@@ -303,7 +303,7 @@ export default class ConfigureFieldMapping extends Component<
 
                   <EuiSpacer size={'m'} />
 
-                  <EuiTitle>
+                  <EuiTitle size={'s'}>
                     <h6>Pending field mappings</h6>
                   </EuiTitle>
                   <FieldMappingsTable<MappingViewType.Edit>
