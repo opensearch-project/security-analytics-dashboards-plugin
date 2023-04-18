@@ -212,6 +212,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
   }
   savedObjectsService={
     SavedObjectService {
+      "deleteDashboard": [Function],
+      "deleteVisualization": [Function],
+      "getDashboard": [Function],
       "getDashboards": [Function],
       "indexService": undefined,
       "savedObjectsClient": Object {
@@ -906,6 +909,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
     }
     savedObjectsService={
       SavedObjectService {
+        "deleteDashboard": [Function],
+        "deleteVisualization": [Function],
+        "getDashboard": [Function],
         "getDashboards": [Function],
         "indexService": undefined,
         "savedObjectsClient": Object {
@@ -1313,6 +1319,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
       onEditClicked={[Function]}
       savedObjectsService={
         SavedObjectService {
+          "deleteDashboard": [Function],
+          "deleteVisualization": [Function],
+          "getDashboard": [Function],
           "getDashboards": [Function],
           "indexService": undefined,
           "savedObjectsClient": Object {
@@ -2191,6 +2200,13 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
         </EuiPanel>
       </ContentPanel>
     </DetectorBasicDetailsView>
+    <EuiSpacer
+      size="m"
+    >
+      <div
+        className="euiSpacer euiSpacer--m"
+      />
+    </EuiSpacer>
     <DetectorRulesView
       detector={
         Object {
@@ -2586,6 +2602,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
       onEditClicked={[Function]}
       savedObjectsService={
         SavedObjectService {
+          "deleteDashboard": [Function],
+          "deleteVisualization": [Function],
+          "getDashboard": [Function],
           "getDashboards": [Function],
           "indexService": undefined,
           "savedObjectsClient": Object {
