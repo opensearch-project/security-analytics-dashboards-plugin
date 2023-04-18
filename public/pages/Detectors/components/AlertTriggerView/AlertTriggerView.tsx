@@ -64,20 +64,14 @@ export const AlertTriggerView: React.FC<AlertTriggerViewProps> = ({
           <h5>If any detection rule matches</h5>
         </EuiTitle>
         <EuiSpacer size={'m'} />
-        {createTextDetailsGroup(
-          [
-            { label: 'Log type', content: `${types[0]}` || DEFAULT_EMPTY_DATA },
-            { label: 'Rule names', content: conditionRuleNames.join('\n') || DEFAULT_EMPTY_DATA },
-          ],
-          3
-        )}
-        {createTextDetailsGroup(
-          [
-            { label: 'Rule severities', content: sev_levels.join('\n') || DEFAULT_EMPTY_DATA },
-            { label: 'Tags', content: tags.join('\n') || DEFAULT_EMPTY_DATA },
-          ],
-          3
-        )}
+        {createTextDetailsGroup([
+          { label: 'Log type', content: `${types[0]}` || DEFAULT_EMPTY_DATA },
+          { label: 'Rule names', content: conditionRuleNames.join('\n') || DEFAULT_EMPTY_DATA },
+        ])}
+        {createTextDetailsGroup([
+          { label: 'Rule severities', content: sev_levels.join('\n') || DEFAULT_EMPTY_DATA },
+          { label: 'Tags', content: tags.join('\n') || DEFAULT_EMPTY_DATA },
+        ])}
         <EuiSpacer size="xl" />
 
         <EuiTitle size="s">

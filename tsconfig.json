@@ -9,6 +9,6 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "outDir": "./target",
-    "types": ["cypress", "node", "cypress-real-events"]
+    "types": ["cypress", "node", "cypress-real-events", "jest"]
   }
 }
