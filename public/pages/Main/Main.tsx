@@ -489,7 +489,11 @@ export default class Main extends Component<MainProps, MainState> {
                         <Route
                           path={`${ROUTES.CORRELATION_RULE_CREATE}`}
                           render={(props: RouteComponentProps<any, any, any>) => (
-                            <CreateCorrelationRule {...props} />
+                            <CreateCorrelationRule
+                              {...props}
+                              indexService={services?.indexService}
+                              fieldMappingService={services?.fieldMappingService}
+                            />
                           )}
                         />
                         <Route

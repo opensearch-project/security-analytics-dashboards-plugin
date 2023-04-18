@@ -21,32 +21,55 @@ import {
   getCorrelationRulesTableColumns,
   getCorrelationRulesTableSearchConfig,
 } from '../utils/helpers';
-import { CorrelationRule, CorrelationRuleTableItem } from '../../../../types';
+import {
+  CorrelationRule,
+  CorrelationRuleHit,
+  CorrelationRuleSourceQueries,
+  CorrelationRuleTableItem,
+} from '../../../../types';
 import { RouteComponentProps } from 'react-router-dom';
 import { CorrelationsExperimentalBanner } from '../components/ExperimentalBanner';
+import { DeleteCorrelationRuleModal } from '../components/DeleteModal';
 
 export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComponentProps) => {
   const context = useContext(CoreServicesContext);
   const [allRules, setAllRules] = useState<CorrelationRuleTableItem[]>([]);
   const [filteredRules, setFilteredRules] = useState<CorrelationRuleTableItem[]>([]);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [selectedRule, setSelectedRule] = useState<CorrelationRule | undefined>(undefined);
+
+  const getCorrelationRules = useCallback(
+    async (ruleItem?) => {
+      const allCorrelationRules: CorrelationRuleHit[] = await DataStore.correlationsStore.getCorrelationRules();
+      const allRuleItems: CorrelationRuleTableItem[] = allCorrelationRules.map(
+        (rule: CorrelationRuleHit) => ({
+          ...rule,
+          ...rule._source,
+          id: rule._id,
+          name: rule._source?.name || '-',
+          queries: rule._source?.correlate?.map((correlate: CorrelationRuleSourceQueries) => ({
+            ...correlate,
+            logType: correlate.category,
+          })),
+          logTypes: rule._source?.correlate?.map((correlate) => correlate.category).join(', '),
+        })
+      );
+
+      setAllRules(allRuleItems);
+      setFilteredRules(allRuleItems);
+    },
+    [DataStore.correlationsStore.getCorrelationRules]
+  );
+
   useEffect(() => {
     context?.chrome.setBreadcrumbs([
       BREADCRUMBS.SECURITY_ANALYTICS,
       BREADCRUMBS.CORRELATIONS,
       BREADCRUMBS.CORRELATION_RULES,
     ]);
-    const allRules = DataStore.correlationsStore.getCorrelationRules();
 
-    const allRuleItems: CorrelationRuleTableItem[] = allRules.map((rule) => {
-      return {
-        ...rule,
-        logTypes: rule.queries.map((query) => query.logType).join(','),
-      };
-    });
-
-    setAllRules(allRuleItems);
-    setFilteredRules(allRuleItems);
-  }, []);
+    getCorrelationRules();
+  }, [getCorrelationRules]);
 
   const headerActions = useMemo(
     () => [
@@ -84,8 +107,37 @@ export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComp
     });
   }, []);
 
+  const closeDeleteModal = () => {
+    setIsDeleteModalVisible(false);
+  };
+
+  const onDeleteRuleConfirmed = async (rule: any) => {
+    if (selectedRule) {
+      const response = await DataStore.correlationsStore.deleteCorrelationRule(selectedRule.id);
+
+      if (response) {
+        closeDeleteModal();
+        setSelectedRule(undefined);
+        await getCorrelationRules();
+      }
+    }
+  };
+
+  const deleteModal = useMemo(
+    () =>
+      selectedRule ? (
+        <DeleteCorrelationRuleModal
+          title={selectedRule.name}
+          onCancel={closeDeleteModal}
+          onConfirm={onDeleteRuleConfirmed}
+        />
+      ) : null,
+    [closeDeleteModal, onDeleteRuleConfirmed]
+  );
+
   return (
     <>
+      {isDeleteModalVisible && deleteModal ? deleteModal : null}
       <CorrelationsExperimentalBanner />
       <EuiFlexGroup direction="column">
         <EuiFlexItem>
@@ -111,7 +163,10 @@ export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComp
           <EuiPanel>
             {allRules.length ? (
               <EuiInMemoryTable
-                columns={getCorrelationRulesTableColumns(onRuleNameClick)}
+                columns={getCorrelationRulesTableColumns((rule) => {
+                  setIsDeleteModalVisible(true);
+                  setSelectedRule(rule);
+                })}
                 items={filteredRules}
                 pagination={true}
                 sorting={true}

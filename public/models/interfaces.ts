@@ -15,9 +15,11 @@ import {
   NotificationsService,
   IndexPatternsService,
 } from '../services';
+import CorrelationService from '../services/CorrelationService';
 
 export interface BrowserServices {
   detectorsService: DetectorsService;
+  correlationsService: CorrelationService;
   findingsService: FindingsService;
   indexService: IndexService;
   opensearchService: OpenSearchService;

@@ -6,6 +6,7 @@
 // import { Edge, GraphEvents, Node } from 'react-graph-vis';
 import { FilterItem } from '../public/pages/Correlations/components/FilterGroup';
 import { Query } from '@opensearch-project/oui/src/eui_components/search_bar/search_bar';
+import { RuleInfo } from './Rule';
 
 export enum CorrelationsLevel {
   AllFindings = 'AllFindings',
@@ -53,14 +54,50 @@ export interface CorrelationRuleModel {
   queries: CorrelationRuleQuery[];
 }
 
+export interface CorrelationRuleSourceQueries {
+  index: string;
+  query: string;
+  category: string;
+}
+
+export interface CorrelationRuleSource {
+  name: string;
+  correlate: CorrelationRuleSourceQueries[];
+}
+
+export interface CorrelationRuleHit {
+  _index: string;
+  _id: string;
+  _version: number;
+  _seq_no: number;
+  _primary_term: number;
+  _score: number;
+  _source: CorrelationRuleSource;
+}
+
+export interface SearchCorrelationRulesResponse {
+  hits: {
+    total: { value: number };
+    hits: CorrelationRuleHit[];
+  };
+}
+
+export interface CreateCorrelationRuleResponse {
+  rule: CorrelationRuleSource;
+  _id: string;
+  _version: number;
+}
+
+export interface DeleteCorrelationRuleResponse {}
+
 export type CorrelationRuleTableItem = CorrelationRule & { logTypes: string };
 
 export interface ICorrelationsStore {
-  getCorrelationRules(): CorrelationRule[];
+  getCorrelationRules(): Promise<CorrelationRuleHit[]>;
   getCorrelatedFindings(findingId: string): CorrelationFinding[];
   getAllCorrelationsInWindow(timeWindow?: any): { [id: string]: CorrelationFinding[] };
   createCorrelationRule(correlationRule: CorrelationRule): void;
-  deleteCorrelationRule(ruleId: string): void;
+  deleteCorrelationRule(ruleId: string): Promise<boolean>;
   registerGraphEventHandler(event: string, handler: CorrelationGraphEventHandler): void;
   getAllFindings(): { [id: string]: CorrelationFinding };
 }
@@ -85,4 +122,15 @@ export interface ArgsWithError {
   query: null;
   queryText: string;
   error: Error;
+}
+
+export interface GetCorrelationRulesResponse {
+  hits: {
+    hits: RuleInfo[];
+    total: {
+      value: number;
+      relation: string;
+    };
+    timed_out: boolean;
+  };
 }
