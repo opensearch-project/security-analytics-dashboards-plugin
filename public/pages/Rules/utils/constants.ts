@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { euiPaletteForStatus } from '@elastic/eui';
+
 export const ruleTypes: { label: string; value: string; abbr: string }[] = [
   { abbr: 'NTW', label: 'Network', value: 'network' },
   { abbr: 'DNS', label: 'DNS', value: 'dns' },
@@ -19,12 +21,14 @@ export const ruleTypes: { label: string; value: string; abbr: string }[] = [
   { abbr: 'AZR', label: 'Azure', value: 'azure' },
 ];
 
-export const ruleSeverity: { name: string; value: string; priority: string }[] = [
-  { name: 'Critical', value: 'critical', priority: '1' },
-  { name: 'High', value: 'high', priority: '2' },
-  { name: 'Medium', value: 'medium', priority: '3' },
-  { name: 'Low', value: 'low', priority: '4' },
-  { name: 'Informational', value: 'informational', priority: '5' },
+const paletteColors = euiPaletteForStatus(5);
+
+export const ruleSeverity: { name: string; value: string; priority: string; color: string }[] = [
+  { name: 'Critical', value: 'critical', priority: '1', color: paletteColors[4] },
+  { name: 'High', value: 'high', priority: '2', color: paletteColors[3] },
+  { name: 'Medium', value: 'medium', priority: '3', color: paletteColors[2] },
+  { name: 'Low', value: 'low', priority: '4', color: paletteColors[1] },
+  { name: 'Informational', value: 'informational', priority: '5', color: paletteColors[0] },
 ];
 
 export const ruleSource: string[] = ['Sigma', 'Custom'];
