@@ -39,10 +39,17 @@ export default class SavedObjectService implements ISavedObjectsService {
               },
             };
           });
-          const createAliasRes = await this.indexService.updateAliases({
+          await this.indexService.updateAliases({
             actions: indexActions,
           });
 
+          const detectorReferences = [
+            {
+              id: detectorId,
+              name: name,
+              type: 'detector-SA',
+            },
+          ];
           const indexPattern = await this.savedObjectsClient.create(
             savedObjectConfig['index-pattern'].type,
             {
@@ -51,6 +58,7 @@ export default class SavedObjectService implements ISavedObjectsService {
             },
             {
               ...savedObjectConfig['index-pattern'],
+              references: detectorReferences,
             }
           );
 
@@ -130,6 +138,23 @@ export default class SavedObjectService implements ISavedObjectsService {
     return Promise.resolve(dashboards);
   };
 
+  public getDashboard = async (
+    detectorId: string
+  ): Promise<Promise<SimpleSavedObject<SavedObjectReference>> | Promise<undefined>> => {
+    let dashboard;
+    const dashboards = await this.getDashboards();
+    dashboards?.some((dashRef) => {
+      if (dashRef.references.findIndex((reference) => reference.id === detectorId) > -1) {
+        dashboard = dashRef;
+        return true;
+      }
+
+      return false;
+    });
+
+    return dashboard;
+  };
+
   public async getIndexPatterns(): Promise<SimpleSavedObject<{ title: string }>[]> {
     const indexPatterns = await this.savedObjectsClient
       .find<{ title: string }>({
@@ -141,4 +166,10 @@ export default class SavedObjectService implements ISavedObjectsService {
 
     return Promise.resolve(indexPatterns);
   }
+
+  public deleteDashboard = async (dashboardId: string) =>
+    await this.savedObjectsClient.delete('dashboard', dashboardId);
+
+  public deleteVisualization = async (visualizationId: string) =>
+    await this.savedObjectsClient.delete('visualization', visualizationId);
 }
