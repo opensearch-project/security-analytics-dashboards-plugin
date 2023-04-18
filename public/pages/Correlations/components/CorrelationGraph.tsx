@@ -141,6 +141,7 @@ export const CorrelationGraph = ({ graph: { nodes, edges }, options, events }) =
       options={options}
       events={events}
       getNetwork={(nw) => setNetwork(nw)}
+      style={{ border: '1px solid' }}
     />
   ) : (
     <p>Loading...</p>

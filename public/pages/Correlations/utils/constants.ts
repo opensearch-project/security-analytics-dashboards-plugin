@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { CorrelationGraphData } from '../../../../types';
 import { DETECTOR_TYPES } from '../../Detectors/utils/constants';
-import { FilterItem } from '../components/LogTypeFilterGroup';
+import { ruleSeverity, ruleTypes } from '../../Rules/utils/constants';
+import { FilterItem } from '../components/FilterGroup';
 
 export const graphRenderOptions = {
   nodes: {
@@ -54,12 +56,22 @@ export const tabs = [
   { id: TabIds.CORRELATION_RULES, name: 'Correlation rules' },
 ];
 
-export const defaultLogTypeFilterItemOptions: FilterItem[] = Object.values(DETECTOR_TYPES).map(
-  (type, index) => {
+export const defaultLogTypeFilterItemOptions: FilterItem[] = Object.values(ruleTypes).map(
+  (type) => {
     return {
-      name: type.label,
-      id: type.id,
-      checked: index < 8 ? 'on' : undefined,
+      name: `${type.abbr}: ${type.label}`,
+      id: type.value,
+      checked: 'on',
+    };
+  }
+);
+
+export const defaultSeverityFilterItemOptions: FilterItem[] = Object.values(ruleSeverity).map(
+  (sev) => {
+    return {
+      name: `${sev.priority} ${sev.name}`,
+      id: sev.value,
+      checked: 'on',
     };
   }
 );
@@ -92,4 +104,12 @@ export const colorBySeverity = {
   Medium: 'yellow',
   Info: 'blue',
   Low: 'gray',
+};
+
+export const emptyGraphData: CorrelationGraphData = {
+  graph: {
+    nodes: [],
+    edges: [],
+  },
+  events: {},
 };

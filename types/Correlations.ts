@@ -4,7 +4,7 @@
  */
 
 // import { Edge, GraphEvents, Node } from 'react-graph-vis';
-import { FilterItem } from '../public/pages/Correlations/components/LogTypeFilterGroup';
+import { FilterItem } from '../public/pages/Correlations/components/FilterGroup';
 import { Query } from '@opensearch-project/oui/src/eui_components/search_bar/search_bar';
 
 export enum CorrelationsLevel {
@@ -13,7 +13,7 @@ export enum CorrelationsLevel {
 }
 
 export interface CorrelationGraphData {
-  level: CorrelationsLevel;
+  // level: CorrelationsLevel;
   graph: {
     nodes: (Node & { chosen?: boolean })[];
     edges: any[];
@@ -25,9 +25,11 @@ export type CorrelationGraphUpdateHandler = (newGraphData: CorrelationGraphData)
 export type CorrelationGraphEventHandler = (eventParams: any) => void;
 export type CorrelationFinding = {
   id: string;
-  correlationScore: number;
+  correlationScore?: number;
   logType: string;
-  // rule: { name: string; severity: 'Critical' | 'Medium' | 'Info' | 'Low' };
+  timestamp: string;
+  detectionRule: { name: string; severity: 'Critical' | 'Medium' | 'Info' | 'Low' };
+  correlationRule?: { name: string };
 };
 
 export interface CorrelationRuleQuery {
@@ -54,16 +56,13 @@ export interface CorrelationRuleModel {
 export type CorrelationRuleTableItem = CorrelationRule & { logTypes: string };
 
 export interface ICorrelationsStore {
-  findings: { [id: string]: CorrelationFinding };
-  correlations: { [finding: string]: string[] };
-  colorByLogType: { [logType: string]: string };
-  // getCorrelationsGraphData(levelInfo?: CorrelationLevelInfo): CorrelationGraphData;
-  // registerGraphUpdateHandler(handler: CorrelationGraphUpdateHandler): void;
-  registerGraphEventHandler(event: string, handler: CorrelationGraphEventHandler): void;
-  resetCorrelationsLevel(): void;
-  createCorrelationRule(correlationRule: CorrelationRule): void;
   getCorrelationRules(): CorrelationRule[];
+  getCorrelatedFindings(findingId: string): CorrelationFinding[];
+  getAllCorrelationsInWindow(timeWindow?: any): { [id: string]: CorrelationFinding[] };
+  createCorrelationRule(correlationRule: CorrelationRule): void;
   deleteCorrelationRule(ruleId: string): void;
+  registerGraphEventHandler(event: string, handler: CorrelationGraphEventHandler): void;
+  getAllFindings(): { [id: string]: CorrelationFinding };
 }
 
 export type CorrelationLevelInfo =

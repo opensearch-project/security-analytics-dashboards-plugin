@@ -56,7 +56,7 @@ import { DataStore } from '../../../store/DataStore';
 import { CoreServicesContext } from '../../../components/core_services';
 import { RouteComponentProps } from 'react-router-dom';
 import { CorrelationGraph } from '../components/CorrelationGraph';
-import { FilterItem, LogTypeFilterGroup } from '../components/LogTypeFilterGroup';
+import { FilterItem, FilterGroup } from '../components/FilterGroup';
 
 export interface CorrelationsProps extends RouteComponentProps {
   setDateTimeFilter?: Function;
@@ -65,13 +65,9 @@ export interface CorrelationsProps extends RouteComponentProps {
 
 export interface CorrelationsState {
   recentlyUsedRanges: DurationRange[];
-  tabId: string;
-  tabContent: React.ReactNode | null;
   graphData: CorrelationGraphData;
-  prevGraphData: CorrelationGraphData[];
   filterdLogTypes: FilterItem[];
-  findingsList: CorrelationFinding[];
-  showCorrelationDetails: boolean;
+  findingsList?: CorrelationFinding[];
 }
 
 export class Correlations extends React.Component<CorrelationsProps, CorrelationsState> {
@@ -82,22 +78,21 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
   constructor(props: CorrelationsProps) {
     super(props);
     this.correlationsStore = DataStore.correlationsStore;
-    this.correlationsStore.resetCorrelationsLevel();
-    this.correlationsStore.registerGraphUpdateHandler(this.onNextLevelUpdate);
+    // this.correlationsStore.resetCorrelationsLevel();
+    // this.correlationsStore.registerGraphUpdateHandler(this.onNextLevelUpdate);
     this.correlationsStore.registerGraphEventHandler('click', this.onNodeClick);
     const initialFilteredLogTypes = [...defaultLogTypeFilterItemOptions];
     this.state = {
       recentlyUsedRanges: [DEFAULT_DATE_RANGE],
-      tabId: tabs[0].id,
-      tabContent: null,
-      graphData: this.correlationsStore.getCorrelationsGraphData({
-        level: CorrelationsLevel.AllFindings,
-        logTypeFilterItems: initialFilteredLogTypes,
-      }),
-      prevGraphData: [],
+      graphData: {
+        graph: {
+          nodes: [],
+          edges: [],
+        },
+        events: {},
+      },
       filterdLogTypes: initialFilteredLogTypes,
-      findingsList: [],
-      showCorrelationDetails: false,
+      findingsList: undefined,
     };
     this.dateTimeFilter = this.props.dateTimeFilter || {
       startTime: DEFAULT_DATE_RANGE.start,
@@ -126,7 +121,6 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       this.onNodeClick({ nodes: [id] });
     }
     this.context.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.CORRELATIONS]);
-    this.setState({ tabContent: this.createCorrelationsGraph() });
   }
 
   componentDidUpdate(
@@ -190,12 +184,12 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       });
       findings.sort((a, b) => a.timestamp - b.timestamp);
       findings.unshift(allFindings[nodeId]);
-      this.setState({ findingsList: findings, showCorrelationDetails: false });
+      this.setState({ findingsList: findings, showSidePanel: false });
     } else if (params.nodes.length === 0 && params.edges.length === 1) {
       const [node1, node2] = params.edges[0].split(':');
       const allFindings = this.correlationsStore.findings;
       const findings: CorrelationFinding[] = [allFindings[node1], allFindings[node2]];
-      this.setState({ findingsList: findings, showCorrelationDetails: true });
+      this.setState({ findingsList: findings, showSidePanel: true });
     }
   };
 
@@ -210,83 +204,6 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     });
   };
 
-  getColumns = (): EuiBasicTableColumn<CorrelationRule>[] => {
-    return [
-      {
-        field: 'name',
-        name: 'Rule name',
-        sortable: true,
-        width: '20%',
-        render: (name: string) => <EuiLink>{name}</EuiLink>,
-      },
-      {
-        name: 'Rule queries',
-        field: 'fields',
-        render: (queries: CorrelationRuleQuery[]) => {
-          return (
-            <div>
-              {queries.map(({ logType, conditions: fieldConditions }) => (
-                <EuiBadge style={{ fontSize: 14, padding: 10 }}>
-                  <p>Logtype: {logType}</p>
-                  {fieldConditions.length ? (
-                    <p style={{ marginTop: 10 }}>
-                      Conditions:{' '}
-                      {fieldConditions
-                        .map(
-                          (cond, idx) =>
-                            `${idx > 0 ? `${cond.condition} ` : ''}${cond.name}=${cond.value}`
-                        )
-                        .join(' ')}
-                    </p>
-                  ) : null}
-                </EuiBadge>
-              ))}
-            </div>
-          );
-        },
-      },
-      {
-        name: 'Status',
-        render: (_record: CorrelationRule) => <p>Enabled</p>,
-        width: '10%',
-      },
-    ];
-  };
-
-  getCorrelationRuleItems() {
-    return this.correlationsStore.getCorrelationRules();
-  }
-
-  createCorrelationRuleAction() {
-    return (
-      <EuiButton
-        href={`${PLUGIN_NAME}#${ROUTES.CORRELATIONS_CREATE_RULE}`}
-        fill={true}
-        data-test-subject={'correlationRuleCreateButton'}
-      >
-        Create correlation rule
-      </EuiButton>
-    );
-  }
-
-  renderCorrelationRules() {
-    return (
-      <ContentPanel title={'Correlation rules'} actions={[this.createCorrelationRuleAction()]}>
-        <EuiInMemoryTable
-          columns={this.getColumns()}
-          items={this.getCorrelationRuleItems()}
-          // itemId={(item) => `${item.id}`}
-          isSelectable={true}
-          pagination
-          // search={search}
-          // sorting={sorting}
-          // selection={selection}
-          // loading={loading}
-        />
-      </ContentPanel>
-    );
-  }
-
   onFilteredLogTypesChange = (filterdLogTypes: FilterItem[]) => {
     this.setState({ filterdLogTypes });
   };
@@ -299,7 +216,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
           body={
             <p>
               Adjust the time range to see more results or{' '}
-              <EuiLink href={`#${ROUTES.CORRELATIONS_CREATE_RULE}`}>create a rule</EuiLink> to
+              <EuiLink href={`#${ROUTES.CORRELATION_RULE_CREATE}`}>create a rule</EuiLink> to
               generate correlations between findings.{' '}
             </p>
           }
@@ -308,7 +225,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     }
 
     const createComment = (finding: CorrelationFinding, type: 'update' | 'regular' = 'regular') => {
-      const parentFinding = this.state.findingsList[0];
+      const parentFinding = this.state.findingsList?.[0];
 
       return {
         username: <span style={{ fontSize: 16 }}>{finding.name}</span>,
@@ -327,8 +244,8 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
           <>
             <p>
               Severity:{' '}
-              <EuiBadge color={colorBySeverity[finding.rule.severity]}>
-                {finding.rule.severity}
+              <EuiBadge color={colorBySeverity[finding.detectionRule.severity]}>
+                {finding.detectionRule.severity}
               </EuiBadge>
             </p>
             <EuiSpacer size="s" />
@@ -360,7 +277,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     };
 
     const { graph, events } = this.state.graphData;
-    const comments: EuiCommentProps[] = this.state.findingsList.slice(1).map((finding) => {
+    const comments: EuiCommentProps[] = (this.state.findingsList || []).slice(1).map((finding) => {
       return createComment(finding);
     });
 
@@ -388,7 +305,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
             </EuiButton>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <LogTypeFilterGroup
+            <FilterGroup
               items={this.state.filterdLogTypes}
               setItems={this.onFilteredLogTypesChange}
               colorByLogType={this.correlationsStore.colorByLogType}
@@ -457,15 +374,17 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                     <>
                       <p>
                         Severity:{' '}
-                        <EuiBadge color={colorBySeverity[this.state.findingsList[0].rule.severity]}>
-                          {this.state.findingsList[0].rule.severity}
+                        <EuiBadge
+                          color={colorBySeverity[this.state.findingsList[0].detectionRule.severity]}
+                        >
+                          {this.state.findingsList[0].detectionRule.severity}
                         </EuiBadge>
                       </p>
                       <EuiSpacer size="s" />
                       <p>Logtype: {this.state.findingsList[0].logType}</p>
                       <EuiSpacer size="s" />
                       <p>
-                        Rule: <EuiLink>{this.state.findingsList[0].rule.name}</EuiLink>
+                        Rule: <EuiLink>{this.state.findingsList[0].detectionRule.name}</EuiLink>
                       </p>
                     </>
                   </EuiCard>
@@ -482,7 +401,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                   </div>
                 </>
               ) : null}
-              {this.state.showCorrelationDetails ? (
+              {this.state.showSidePanel ? (
                 <EuiCard title={'Correlation details'} textAlign="left" description={``}>
                   <em>Fields correlated:</em>
                   <EuiSpacer size="s" />
@@ -502,17 +421,6 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         </EuiFlexGroup>
       </>
     );
-  }
-
-  getTabContent(tabId: string) {
-    switch (tabId) {
-      case TabIds.CORRELATIONS:
-        return this.createCorrelationsGraph();
-      case TabIds.CORRELATION_RULES:
-        return this.renderCorrelationRules();
-      default:
-        return this.createCorrelationsGraph();
-    }
   }
 
   render() {
@@ -539,24 +447,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
             </EuiFlexItem>
           </EuiFlexGroup>
         </EuiFlexItem>
-        <EuiFlexItem grow={true}>
-          <EuiTabs>
-            {tabs.map((tab) => {
-              return (
-                <EuiTab
-                  key={tab.id}
-                  isSelected={tab.id === this.state.tabId}
-                  onClick={() => {
-                    this.setState({ tabId: tab.id, tabContent: this.getTabContent(tab.id) });
-                  }}
-                >
-                  {tab.name}
-                </EuiTab>
-              );
-            })}
-          </EuiTabs>
-          {this.state.tabContent}
-        </EuiFlexItem>
+        <EuiFlexItem grow={true}>{this.createCorrelationsGraph()}</EuiFlexItem>
       </EuiFlexGroup>
     );
   }

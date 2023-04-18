@@ -13,20 +13,15 @@ import {
   EuiFieldSearch,
   FilterChecked,
 } from '@elastic/eui';
-import { iconByLogType } from '../utils/constants';
 
 export type FilterItem = { name: string; id: string; checked?: FilterChecked };
 export interface LogTypeFilterGroupProps {
+  groupName: string;
   items: FilterItem[];
   setItems: (items: FilterItem[]) => void;
-  colorByLogType: { [logType: string]: string };
 }
 
-export const LogTypeFilterGroup: React.FC<LogTypeFilterGroupProps> = ({
-  items,
-  setItems,
-  colorByLogType,
-}) => {
+export const FilterGroup: React.FC<LogTypeFilterGroupProps> = ({ groupName, items, setItems }) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const onButtonClick = () => {
@@ -71,7 +66,7 @@ export const LogTypeFilterGroup: React.FC<LogTypeFilterGroupProps> = ({
       hasActiveFilters={!!items.find((item) => item.checked === 'on')}
       numActiveFilters={items.filter((item) => item.checked === 'on').length}
     >
-      Log types
+      {groupName}
     </EuiFilterButton>
   );
 
@@ -94,11 +89,8 @@ export const LogTypeFilterGroup: React.FC<LogTypeFilterGroupProps> = ({
               key={index}
               onClick={() => updateItem(index)}
               showIcons={true}
-              style={{ color: colorByLogType[item.id] }}
             >
-              <p>
-                <i className="fa">{iconByLogType[item.id]}</i>&nbsp;&nbsp;{item.name}
-              </p>
+              <p>{item.name}</p>
             </EuiFilterSelectItem>
           ))}
         </div>

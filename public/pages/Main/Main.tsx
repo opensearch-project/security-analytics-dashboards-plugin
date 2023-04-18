@@ -44,6 +44,7 @@ import Callout, { ICalloutProps } from './components/Callout';
 import { DataStore } from '../../store/DataStore';
 import { CreateCorrelationRule } from '../Correlations/containers/CreateCorrelationRule';
 import { CorrelationRules } from '../Correlations/containers/CorrelationRules';
+import { Correlations } from '../Correlations/containers/CorrelationsContainer';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -252,7 +253,15 @@ export default class Main extends Component<MainProps, MainState> {
               return (
                 <EuiFlexGroup alignItems="center" gutterSize="xs">
                   <EuiFlexItem grow={false}>
-                    <span className={props.className}>{props.children}</span>
+                    <span
+                      className={props.className}
+                      onClick={() => {
+                        this.setState({ selectedNavItemIndex: 6 });
+                        history.push(ROUTES.CORRELATIONS);
+                      }}
+                    >
+                      {props.children}
+                    </span>
                   </EuiFlexItem>
                   <EuiFlexItem grow={false}>
                     <EuiBadge>Experimental</EuiBadge>
@@ -481,6 +490,12 @@ export default class Main extends Component<MainProps, MainState> {
                           path={`${ROUTES.CORRELATION_RULE_CREATE}`}
                           render={(props: RouteComponentProps<any, any, any>) => (
                             <CreateCorrelationRule {...props} />
+                          )}
+                        />
+                        <Route
+                          path={`${ROUTES.CORRELATIONS}`}
+                          render={(props: RouteComponentProps<any, any, any>) => (
+                            <Correlations {...props} />
                           )}
                         />
                         <Redirect from={'/'} to={landingPage} />
