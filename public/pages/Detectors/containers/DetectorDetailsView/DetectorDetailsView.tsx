@@ -4,11 +4,13 @@
  */
 
 import React from 'react';
+import { EuiSpacer } from '@elastic/eui';
 import { DetectorBasicDetailsView } from '../../components/DetectorBasicDetailsView/DetectorBasicDetailsView';
 import { DetectorRulesView } from '../../components/DetectorRulesView/DetectorRulesView';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { Detector } from '../../../../../types';
+import { EuiSpacer } from '@elastic/eui';
 
 export interface DetectorDetailsViewProps {
   detector: Detector;
@@ -40,13 +42,16 @@ export class DetectorDetailsView extends React.Component<
       isEditable = true,
     } = this.props;
     const detectorRules = (
-      <DetectorRulesView
-        {...this.props}
-        detector={detector}
-        rulesCanFold={rulesCanFold}
-        onEditClicked={editDetectorRules}
-        isEditable={isEditable}
-      />
+      <>
+        <EuiSpacer size="m" />
+        <DetectorRulesView
+          {...this.props}
+          detector={detector}
+          rulesCanFold={rulesCanFold}
+          onEditClicked={editDetectorRules}
+          isEditable={isEditable}
+        />
+      </>
     );
 
     return (
@@ -64,7 +69,12 @@ export class DetectorDetailsView extends React.Component<
           {rulesCanFold ? detectorRules : null}
         </DetectorBasicDetailsView>
 
-        {rulesCanFold ? null : detectorRules}
+        {rulesCanFold ? null : (
+          <>
+            <EuiSpacer size={'m'} />
+            {detectorRules}
+          </>
+        )}
       </>
     );
   }

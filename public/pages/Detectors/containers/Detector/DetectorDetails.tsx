@@ -26,7 +26,7 @@ import { DetectorDetailsView } from '../DetectorDetailsView/DetectorDetailsView'
 import { FieldMappingsView } from '../../components/FieldMappingsView/FieldMappingsView';
 import { AlertTriggersView } from '../AlertTriggersView/AlertTriggersView';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
-import { DetectorsService } from '../../../../services';
+import { DetectorsService, IndexPatternsService } from '../../../../services';
 import { errorNotificationToast } from '../../../../utils/helpers';
 import { NotificationsStart, SimpleSavedObject } from 'opensearch-dashboards/public';
 import { ISavedObjectsService, ServerResponse } from '../../../../../types';
@@ -47,6 +47,7 @@ export interface DetectorDetailsProps
   detectorService: DetectorsService;
   notifications: NotificationsStart;
   savedObjectsService: ISavedObjectsService;
+  indexPatternsService: IndexPatternsService;
 }
 
 export interface DetectorDetailsState {
@@ -257,6 +258,11 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
           BREADCRUMBS.DETECTORS,
           BREADCRUMBS.DETECTORS_DETAILS(detector._source.name, detector._id),
         ]);
+
+        const dashboard = await this.props.savedObjectsService.getDashboard(detectorId);
+        if (dashboard?.id) {
+          this.setState({ dashboardId: dashboard.id });
+        }
       } else {
         errorNotificationToast(notifications, 'retrieve', 'detector', response.error);
       }
@@ -282,10 +288,28 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     const { detectorService, notifications } = this.props;
     const detectorId = this.detectorHit._id;
     try {
+      const dashboard = await this.props.savedObjectsService.getDashboard(detectorId);
+      if (dashboard) {
+        // delete dashboard
+        dashboard.references?.map(async (ref) => {
+          if (ref.type === 'visualization') {
+            await this.props.savedObjectsService.deleteVisualization(ref.id);
+          }
+        });
+        await this.props.savedObjectsService.deleteDashboard(dashboard.id);
+      }
+
+      const index = await this.props.indexPatternsService.getIndexPattern(detectorId);
+      if (index) {
+        await this.props.indexPatternsService.deleteIndexPattern(index.id);
+      }
+
       const deleteRes = await detectorService.deleteDetector(detectorId);
       if (!deleteRes.ok) {
         errorNotificationToast(notifications, 'delete', 'detector', deleteRes.error);
       } else {
+        DataStore.detectors.deleteState();
+        DataStore.detectors.clearNotifications();
         this.props.history.push(ROUTES.DETECTORS);
       }
     } catch (e: any) {
