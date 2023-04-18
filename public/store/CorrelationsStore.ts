@@ -10,6 +10,7 @@ import {
   CorrelationGraphUpdateHandler,
   CorrelationLevelInfo,
   CorrelationRule,
+  CorrelationRuleHit,
   CorrelationsLevel,
   ICorrelationsStore,
 } from '../../types';
@@ -164,59 +165,6 @@ export class CorrelationsStore implements ICorrelationsStore {
    */
   readonly notifications: NotificationsStart;
 
-  private correlationRules: CorrelationRule[] = [
-    /* {
-      id: 's3-dns',
-      name: 'Correlate S3 and DNS findings',
-      queries: [
-        {
-          logType: 'dns',
-          conditions: [
-            { name: 'source.ip', value: '1.2.3.4', condition: 'AND' },
-            { name: 'EventID', value: '2100', condition: 'AND' },
-          ],
-          index: 'dns-logs',
-        },
-        {
-          logType: 's3',
-          conditions: [{ name: 'src.ip', value: '1.2.3.4', condition: 'AND' }],
-          index: 's3-logs',
-        },
-      ],
-    },
-    {
-      id: 'nw-windows',
-      name: 'Correlate Network and Windows findings',
-      queries: [
-        {
-          logType: 'network',
-          conditions: [{ name: 'src.ip', value: '172.10.0.0', condition: 'AND' }],
-          index: 'network-logs',
-        },
-        {
-          logType: 'Windows',
-          conditions: [{ name: 'host', value: '172.10.0.0', condition: 'AND' }],
-          index: 'windows-logs',
-        },
-      ],
-    },
-    {
-      id: 'nw-ad_ldap',
-      name: 'Correlate Network and AD_LDAP findings',
-      queries: [
-        {
-          logType: 'network',
-          conditions: [{ name: 'src.ip', value: '172.10.0.0', condition: 'AND' }],
-          index: 'network-logs',
-        },
-        {
-          logType: DETECTOR_TYPES.AD_LDAP.id,
-          conditions: [{ name: 'account.id', value: '13452', condition: 'AND' }],
-          index: 'ad_ldap-logs',
-        },
-      ],
-    },*/
-  ];
   private graphEventHandlers: { [event: string]: CorrelationGraphEventHandler[] } = {};
   public findings;
   private allCorrelations: { [finding: string]: string[] };
@@ -257,7 +205,7 @@ export class CorrelationsStore implements ICorrelationsStore {
     return response.ok;
   }
 
-  public async getCorrelationRules(index?: string): Promise<CorrelationRule[]> {
+  public async getCorrelationRules(index?: string): Promise<CorrelationRuleHit[]> {
     const response = await this.service.getCorrelationRules(index);
 
     if (response?.ok) {

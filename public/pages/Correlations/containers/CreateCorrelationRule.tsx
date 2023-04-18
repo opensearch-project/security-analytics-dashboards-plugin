@@ -8,6 +8,8 @@ import { Form, Formik, FormikErrors, FormikTouched } from 'formik';
 import { ContentPanel } from '../../../components/ContentPanel';
 import { DataStore } from '../../../store/DataStore';
 import { correlationRuleStateDefaultValue } from './CorrelationRuleFormModel';
+import { NotificationsStart } from 'opensearch-dashboards/public';
+
 import {
   EuiButton,
   EuiFlexGroup,
@@ -26,46 +28,61 @@ import {
   EuiHorizontalRule,
 } from '@elastic/eui';
 import { ruleTypes } from '../../Rules/utils/constants';
-import { CorrelationRule, CorrelationRuleModel, CorrelationRuleQuery } from '../../../../types';
+import { CorrelationRuleModel, CorrelationRuleQuery } from '../../../../types';
 import { BREADCRUMBS, ROUTES } from '../../../utils/constants';
 import { CoreServicesContext } from '../../../components/core_services';
 import { RouteComponentProps } from 'react-router-dom';
 import { CorrelationsExperimentalBanner } from '../components/ExperimentalBanner';
 import { validateName } from '../../../utils/validation';
-import { IndexService } from '../../../services';
+import { FieldMappingService, IndexService } from '../../../services';
 
-export const CreateCorrelationRule: React.FC<RouteComponentProps<
-  {},
-  {},
-  { rule: CorrelationRule; indexService: IndexService }
->> = (
-  props: RouteComponentProps<{}, {}, { rule: CorrelationRule; indexService: IndexService }>
+export interface CreateCorrelationRuleProps {
+  indexService: IndexService;
+  fieldMappingService: FieldMappingService;
+  history: RouteComponentProps['history'];
+  notifications?: NotificationsStart;
+}
+
+export interface CorrelationOptions {
+  label: string;
+  value: string;
+}
+
+export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
+  props: CreateCorrelationRuleProps
 ) => {
   const correlationStore = DataStore.correlationsStore;
-  const submit = (values: any) => {
-    correlationStore.createCorrelationRule(values);
+
+  const submit = async (values: any) => {
+    await correlationStore.createCorrelationRule(values);
   };
+
   const context = useContext(CoreServicesContext);
   const isEdit = !!props.history.location.state?.rule;
   const initialValues = props.history.location.state?.rule || {
     ...correlationRuleStateDefaultValue,
   };
 
-  const [indices, setIndices] = useState([]);
-  const [logFields, setLogFields] = useState([]);
+  const [indices, setIndices] = useState<CorrelationOptions[]>([]);
+  const [logFields, setLogFields] = useState<CorrelationOptions[]>([]);
 
   const parseOptions = (indices: string[]) => {
-    return indices.map((index) => ({ label: index, value: index }));
+    return indices.map(
+      (index: string): CorrelationOptions => ({
+        label: index,
+        value: index,
+      })
+    );
   };
 
   const getIndices = useCallback(async () => {
     try {
       const indicesResponse = await props.indexService.getIndices();
       if (indicesResponse.ok) {
-        const indices = indicesResponse.response.indices;
-        const indicesNames = indices.map((index) => index.index);
-
-        setIndices(parseOptions(indicesNames));
+        const indicesNames = parseOptions(
+          indicesResponse.response.indices.map((index) => index.index)
+        );
+        setIndices(indicesNames);
       }
     } catch (error: any) {}
   }, [props.indexService.getIndices]);
@@ -79,11 +96,15 @@ export const CreateCorrelationRule: React.FC<RouteComponentProps<
       if (indexName && logType) {
         const result = await props.fieldMappingService?.getMappingsView(indexName, logType);
         if (result?.ok) {
-          let fields = result.response.unmapped_field_aliases.map((field) => ({
-            label: field,
-            value: field,
-          }));
-          fields = fields.concat(
+          let fields: {
+            label: string;
+            value: string;
+          }[] =
+            result.response?.unmapped_field_aliases?.map((field) => ({
+              label: field,
+              value: field,
+            })) || [];
+          fields = fields?.concat(
             Object.keys(result.response.properties).map((field) => ({
               label: field,
               value: field,

@@ -21,7 +21,12 @@ import {
   getCorrelationRulesTableColumns,
   getCorrelationRulesTableSearchConfig,
 } from '../utils/helpers';
-import { CorrelationRule, CorrelationRuleTableItem } from '../../../../types';
+import {
+  CorrelationRule,
+  CorrelationRuleHit,
+  CorrelationRuleSourceQueries,
+  CorrelationRuleTableItem,
+} from '../../../../types';
 import { RouteComponentProps } from 'react-router-dom';
 import { CorrelationsExperimentalBanner } from '../components/ExperimentalBanner';
 
@@ -32,16 +37,19 @@ export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComp
 
   const getCorrelationRules = useCallback(
     async (ruleItem?) => {
-      const allRules = await DataStore.correlationsStore.getCorrelationRules();
-      const allRuleItems: CorrelationRuleTableItem[] = allRules.map((rule) => ({
-        ...rule,
-        ...rule._source,
-        name: rule._source?.name || '-',
-        queries: rule._source?.correlate?.map((correlate) => ({
-          ...correlate,
-          logType: correlate.category,
-        })),
-      }));
+      const allCorrelationRules: CorrelationRuleHit[] = await DataStore.correlationsStore.getCorrelationRules();
+      const allRuleItems: CorrelationRuleTableItem[] = allCorrelationRules.map(
+        (rule: CorrelationRuleHit) => ({
+          ...rule,
+          ...rule._source,
+          id: rule._id,
+          name: rule._source?.name || '-',
+          queries: rule._source?.correlate?.map((correlate: CorrelationRuleSourceQueries) => ({
+            ...correlate,
+            logType: correlate.category,
+          })),
+        })
+      );
 
       setAllRules(allRuleItems);
       setFilteredRules(allRuleItems);

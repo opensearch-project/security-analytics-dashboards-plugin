@@ -13,6 +13,7 @@ import {
 } from 'opensearch-dashboards/server';
 import { CLIENT_CORRELATION_METHODS } from '../utils/constants';
 import { ServerResponse } from '../models/types';
+import { SearchCorrelationRulesResponse } from '../../types';
 
 export default class CorrelationService {
   osDriver: ILegacyCustomClusterClient;
@@ -60,12 +61,14 @@ export default class CorrelationService {
     _context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
-  ): Promise<IOpenSearchDashboardsResponse<ServerResponse<any> | ResponseError>> => {
+  ): Promise<
+    IOpenSearchDashboardsResponse<ServerResponse<SearchCorrelationRulesResponse> | ResponseError>
+  > => {
     try {
       const { query } = request.body as { query: object };
       const params: any = { body: { from: 0, size: 10000, query } };
       const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const getCorrelationsResponse: any = await callWithRequest(
+      const getCorrelationsResponse: SearchCorrelationRulesResponse = await callWithRequest(
         CLIENT_CORRELATION_METHODS.GET_CORRELATION_RULES,
         params
       );
@@ -96,7 +99,7 @@ export default class CorrelationService {
   ) => {
     try {
       const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const deleteRuleResponse = await callWithRequest(
+      const deleteCorrelationRuleResponse = await callWithRequest(
         CLIENT_CORRELATION_METHODS.DELETE_CORRELATION_RULE,
         request.params
       );
@@ -105,7 +108,7 @@ export default class CorrelationService {
         statusCode: 200,
         body: {
           ok: true,
-          response: deleteRuleResponse,
+          response: deleteCorrelationRuleResponse,
         },
       });
     } catch (error: any) {
