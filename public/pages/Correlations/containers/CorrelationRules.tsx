@@ -29,24 +29,35 @@ export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComp
   const context = useContext(CoreServicesContext);
   const [allRules, setAllRules] = useState<CorrelationRuleTableItem[]>([]);
   const [filteredRules, setFilteredRules] = useState<CorrelationRuleTableItem[]>([]);
+
+  const getCorrelationRules = useCallback(
+    async (ruleItem?) => {
+      const allRules = await DataStore.correlationsStore.getCorrelationRules();
+      const allRuleItems: CorrelationRuleTableItem[] = allRules.map((rule) => ({
+        ...rule,
+        ...rule._source,
+        name: rule._source?.name || '-',
+        queries: rule._source?.correlate?.map((correlate) => ({
+          ...correlate,
+          logType: correlate.category,
+        })),
+      }));
+
+      setAllRules(allRuleItems);
+      setFilteredRules(allRuleItems);
+    },
+    [DataStore.correlationsStore.getCorrelationRules]
+  );
+
   useEffect(() => {
     context?.chrome.setBreadcrumbs([
       BREADCRUMBS.SECURITY_ANALYTICS,
       BREADCRUMBS.CORRELATIONS,
       BREADCRUMBS.CORRELATION_RULES,
     ]);
-    const allRules = DataStore.correlationsStore.getCorrelationRules();
 
-    const allRuleItems: CorrelationRuleTableItem[] = allRules.map((rule) => {
-      return {
-        ...rule,
-        logTypes: rule.queries.map((query) => query.logType).join(','),
-      };
-    });
-
-    setAllRules(allRuleItems);
-    setFilteredRules(allRuleItems);
-  }, []);
+    getCorrelationRules();
+  }, [getCorrelationRules]);
 
   const headerActions = useMemo(
     () => [
@@ -111,7 +122,7 @@ export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComp
           <EuiPanel>
             {allRules.length ? (
               <EuiInMemoryTable
-                columns={getCorrelationRulesTableColumns(onRuleNameClick)}
+                columns={getCorrelationRulesTableColumns(getCorrelationRules)}
                 items={filteredRules}
                 pagination={true}
                 sorting={true}

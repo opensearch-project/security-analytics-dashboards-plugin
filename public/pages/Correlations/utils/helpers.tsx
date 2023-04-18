@@ -18,7 +18,7 @@ import { FieldClause } from '@opensearch-project/oui/src/eui_components/search_b
 import { DataStore } from '../../../store/DataStore';
 
 export const getCorrelationRulesTableColumns = (
-  _onEditRule: (ruleItem: CorrelationRule) => void
+  _refreshRules: (ruleItem: CorrelationRule) => void
 ): EuiBasicTableColumn<CorrelationRuleTableItem>[] => {
   return [
     {
@@ -30,10 +30,14 @@ export const getCorrelationRulesTableColumns = (
     {
       name: 'Log types',
       render: (ruleItem: CorrelationRule) => {
-        const badges = ruleItem.queries.map((query) => {
-          return <EuiBadge color="hollow">{query.logType}</EuiBadge>;
-        });
-        return <>{badges}</>;
+        const badges = [...new Set(ruleItem.queries?.map((query) => query.logType))];
+        return (
+          <>
+            {badges.map((badge) => (
+              <EuiBadge color="hollow">{badge}</EuiBadge>
+            ))}
+          </>
+        );
       },
     },
     {
@@ -65,7 +69,10 @@ export const getCorrelationRulesTableColumns = (
                 data-test-subj={`view-details-icon`}
                 iconType={'trash'}
                 color="danger"
-                onClick={() => DataStore.correlationsStore.deleteCorrelationRule(ruleItem.name)}
+                onClick={async () => {
+                  await DataStore.correlationsStore.deleteCorrelationRule(ruleItem._id);
+                  await _refreshRules(ruleItem);
+                }}
               />
             </EuiToolTip>
           ),

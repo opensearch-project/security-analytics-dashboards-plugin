@@ -56,7 +56,7 @@ export interface CorrelationRuleModel {
 export type CorrelationRuleTableItem = CorrelationRule & { logTypes: string };
 
 export interface ICorrelationsStore {
-  getCorrelationRules(): CorrelationRule[];
+  getCorrelationRules(): Promise<CorrelationRule[]>;
   getCorrelatedFindings(findingId: string): CorrelationFinding[];
   getAllCorrelationsInWindow(timeWindow?: any): { [id: string]: CorrelationFinding[] };
   createCorrelationRule(correlationRule: CorrelationRule): void;

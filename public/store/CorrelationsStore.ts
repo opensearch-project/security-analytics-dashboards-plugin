@@ -18,6 +18,10 @@ import { euiPaletteColorBlind } from '@elastic/eui';
 import { FilterItem } from '../pages/Correlations/components/FilterGroup';
 import 'font-awesome/css/font-awesome.min.css';
 import { iconByLogType } from '../pages/Correlations/utils/constants';
+import { DetectorsService } from '../services';
+import CorrelationService from '../services/CorrelationService';
+import { NotificationsStart } from 'opensearch-dashboards/public';
+import { errorNotificationToast } from '../utils/helpers';
 
 class ColorProvider {
   // private palette = euiPaletteColorBlindBehindText({ sortBy: 'natural' });
@@ -145,8 +149,23 @@ class DummyCorrelationDataProvider {
 }
 
 export class CorrelationsStore implements ICorrelationsStore {
+  /**
+   * Correlation rules service instance
+   *
+   * @property {CorrelationService} service
+   * @readonly
+   */
+  readonly service: CorrelationService;
+
+  /**
+   * Notifications
+   * @property {NotificationsStart}
+   * @readonly
+   */
+  readonly notifications: NotificationsStart;
+
   private correlationRules: CorrelationRule[] = [
-    {
+    /* {
       id: 's3-dns',
       name: 'Correlate S3 and DNS findings',
       queries: [
@@ -196,14 +215,17 @@ export class CorrelationsStore implements ICorrelationsStore {
           index: 'ad_ldap-logs',
         },
       ],
-    },
+    },*/
   ];
   private graphEventHandlers: { [event: string]: CorrelationGraphEventHandler[] } = {};
   public findings;
   private allCorrelations: { [finding: string]: string[] };
   public correlations: { [finding: string]: string[] };
 
-  constructor() {
+  constructor(service: CorrelationService, notifications: NotificationsStart) {
+    this.service = service;
+    this.notifications = notifications;
+
     const dataProvider = new DummyCorrelationDataProvider();
     this.findings = dataProvider.generateDummyFindings();
     this.allCorrelations = dataProvider.generateDummyCorrelations(this.findings);
@@ -215,18 +237,45 @@ export class CorrelationsStore implements ICorrelationsStore {
     this.graphEventHandlers[event].push(handler);
   }
 
-  public createCorrelationRule(correlationRule: CorrelationRule): void {
-    correlationRule.queries.forEach((query) => {
-      query.conditions = query.conditions.filter((cond) => !!cond.name);
+  public async createCorrelationRule(correlationRule: CorrelationRule): Promise<boolean> {
+    const response = await this.service.createCorrelationRule({
+      name: correlationRule.name,
+      correlate: correlationRule.queries?.map((query) => ({
+        index: query.index,
+        category: query.logType,
+        query: query.conditions
+          .map((condition) => `${condition.name}:${condition.value}`)
+          .join(' AND '),
+      })),
     });
-    this.correlationRules.push(correlationRule);
+
+    if (!response.ok) {
+      errorNotificationToast(this.notifications, 'create', 'correlation rule', response.error);
+      return false;
+    }
+
+    return response.ok;
   }
 
-  public getCorrelationRules(): CorrelationRule[] {
-    return this.correlationRules;
+  public async getCorrelationRules(index?: string): Promise<CorrelationRule[]> {
+    const response = await this.service.getCorrelationRules(index);
+
+    if (response?.ok) {
+      return response.response.hits.hits;
+    }
+
+    return [];
   }
 
-  public deleteCorrelationRule(ruleId: string): void {}
+  public async deleteCorrelationRule(ruleId: string): Promise<boolean> {
+    const response = await this.service.deleteCorrelationRule(ruleId);
+
+    if (!response.ok) {
+      errorNotificationToast(this.notifications, 'delete', 'correlation rule', response.error);
+    }
+
+    return response.ok;
+  }
 
   public getAllCorrelationsInWindow(timeWindow?: any): { [id: string]: CorrelationFinding[] } {
     return {};

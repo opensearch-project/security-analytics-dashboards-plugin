@@ -22,6 +22,9 @@ export class DataStore {
       notifications,
       services.savedObjectsService
     );
-    DataStore.correlationsStore = new CorrelationsStore();
+    DataStore.correlationsStore = new CorrelationsStore(
+      services.correlationsService,
+      notifications
+    );
   };
 }

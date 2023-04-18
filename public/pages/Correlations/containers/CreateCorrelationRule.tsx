@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Form, Formik, FormikErrors, FormikTouched } from 'formik';
 import { ContentPanel } from '../../../components/ContentPanel';
 import { DataStore } from '../../../store/DataStore';
@@ -32,12 +32,15 @@ import { CoreServicesContext } from '../../../components/core_services';
 import { RouteComponentProps } from 'react-router-dom';
 import { CorrelationsExperimentalBanner } from '../components/ExperimentalBanner';
 import { validateName } from '../../../utils/validation';
+import { IndexService } from '../../../services';
 
 export const CreateCorrelationRule: React.FC<RouteComponentProps<
   {},
   {},
-  { rule: CorrelationRule }
->> = (props: RouteComponentProps<{}, {}, { rule: CorrelationRule }>) => {
+  { rule: CorrelationRule; indexService: IndexService }
+>> = (
+  props: RouteComponentProps<{}, {}, { rule: CorrelationRule; indexService: IndexService }>
+) => {
   const correlationStore = DataStore.correlationsStore;
   const submit = (values: any) => {
     correlationStore.createCorrelationRule(values);
@@ -47,6 +50,52 @@ export const CreateCorrelationRule: React.FC<RouteComponentProps<
   const initialValues = props.history.location.state?.rule || {
     ...correlationRuleStateDefaultValue,
   };
+
+  const [indices, setIndices] = useState([]);
+  const [logFields, setLogFields] = useState([]);
+
+  const parseOptions = (indices: string[]) => {
+    return indices.map((index) => ({ label: index, value: index }));
+  };
+
+  const getIndices = useCallback(async () => {
+    try {
+      const indicesResponse = await props.indexService.getIndices();
+      if (indicesResponse.ok) {
+        const indices = indicesResponse.response.indices;
+        const indicesNames = indices.map((index) => index.index);
+
+        setIndices(parseOptions(indicesNames));
+      }
+    } catch (error: any) {}
+  }, [props.indexService.getIndices]);
+
+  useEffect(() => {
+    getIndices();
+  }, [props.indexService]);
+
+  const getLogFields = useCallback(
+    async (indexName: string, logType: string) => {
+      if (indexName && logType) {
+        const result = await props.fieldMappingService?.getMappingsView(indexName, logType);
+        if (result?.ok) {
+          let fields = result.response.unmapped_field_aliases.map((field) => ({
+            label: field,
+            value: field,
+          }));
+          fields = fields.concat(
+            Object.keys(result.response.properties).map((field) => ({
+              label: field,
+              value: field,
+            }))
+          );
+
+          setLogFields(fields);
+        }
+      }
+    },
+    [props.fieldMappingService?.getMappingsView]
+  );
 
   const createForm = (
     correlationQueries: CorrelationRuleQuery[],
@@ -100,7 +149,7 @@ export const CreateCorrelationRule: React.FC<RouteComponentProps<
                       isInvalid={isInvalidInputForQuery('index')}
                       placeholder="Select index or index pattern"
                       data-test-subj={'index_dropdown'}
-                      options={[]}
+                      options={indices}
                       singleSelection={{ asPlainText: true }}
                       onCreateOption={(val: string) => {
                         props.handleChange(`queries[${queryIdx}].index`)(val);
@@ -109,6 +158,7 @@ export const CreateCorrelationRule: React.FC<RouteComponentProps<
                         props.handleChange(`queries[${queryIdx}].index`)(
                           e[0]?.value ? e[0].value : ''
                         );
+                        getLogFields(e[0]?.value ? e[0].value : '', query.logType);
                       }}
                       onBlur={props.handleBlur(`queries[${queryIdx}].index`)}
                       selectedOptions={
@@ -136,6 +186,7 @@ export const CreateCorrelationRule: React.FC<RouteComponentProps<
                         props.handleChange(`queries[${queryIdx}].logType`)(
                           e[0]?.value ? e[0].value : ''
                         );
+                        getLogFields(query.index, e[0]?.value ? e[0].value : '');
                       }}
                       onBlur={props.handleBlur(`queries[${queryIdx}].logType`)}
                       selectedOptions={
@@ -154,7 +205,7 @@ export const CreateCorrelationRule: React.FC<RouteComponentProps<
                         // isInvalid={isInvalidInputForQuery('logType')}
                         placeholder="Select a field"
                         data-test-subj={'field_dropdown'}
-                        options={[]}
+                        options={logFields}
                         singleSelection={{ asPlainText: true }}
                         onChange={(e) => {
                           props.handleChange(
