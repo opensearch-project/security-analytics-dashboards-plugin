@@ -7,11 +7,15 @@ import {
   CorrelationFinding,
   CorrelationGraphEventHandler,
   CorrelationRule,
+  CorrelationRuleHit,
   ICorrelationsStore,
 } from '../../types';
 import { DETECTOR_TYPES } from '../pages/Detectors/utils/constants';
 import 'font-awesome/css/font-awesome.min.css';
 import { ruleSeverity, ruleTypes } from '../pages/Rules/utils/constants';
+import CorrelationService from '../services/CorrelationService';
+import { NotificationsStart } from 'opensearch-dashboards/public';
+import { errorNotificationToast } from '../utils/helpers';
 
 class DummyCorrelationDataProvider {
   private generatedPairs: Set<string> = new Set();
