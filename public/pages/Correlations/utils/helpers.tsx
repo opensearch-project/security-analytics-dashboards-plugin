@@ -26,9 +26,6 @@ export const getCorrelationRulesTableColumns = (
       name: 'Name',
       sortable: true,
       truncateText: true,
-      // render: (name: string, item: CorrelationRule) => {
-      //   return <EuiLink onClick={() => onEditRule(item)}>{name}</EuiLink>;
-      // },
     },
     {
       name: 'Log types',
