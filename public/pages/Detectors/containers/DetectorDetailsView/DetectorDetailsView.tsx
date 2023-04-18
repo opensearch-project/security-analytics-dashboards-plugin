@@ -10,7 +10,6 @@ import { DetectorRulesView } from '../../components/DetectorRulesView/DetectorRu
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { Detector } from '../../../../../types';
-import { EuiSpacer } from '@elastic/eui';
 
 export interface DetectorDetailsViewProps {
   detector: Detector;

@@ -335,6 +335,12 @@ Object {
             "grid": true,
           },
           "field": "finding",
+          "scale": Object {
+            "domain": Array [
+              0,
+              0.1,
+            ],
+          },
           "title": "Count",
           "type": "quantitative",
         },
