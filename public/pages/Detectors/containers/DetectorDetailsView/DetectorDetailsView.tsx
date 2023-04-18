@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { EuiSpacer } from '@elastic/eui';
 import { DetectorBasicDetailsView } from '../../components/DetectorBasicDetailsView/DetectorBasicDetailsView';
 import { DetectorRulesView } from '../../components/DetectorRulesView/DetectorRulesView';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
@@ -64,7 +65,12 @@ export class DetectorDetailsView extends React.Component<
           {rulesCanFold ? detectorRules : null}
         </DetectorBasicDetailsView>
 
-        {rulesCanFold ? null : detectorRules}
+        {rulesCanFold ? null : (
+          <>
+            <EuiSpacer size={'m'} />
+            {detectorRules}
+          </>
+        )}
       </>
     );
   }
