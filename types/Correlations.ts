@@ -97,7 +97,7 @@ export interface ICorrelationsStore {
   getCorrelatedFindings(findingId: string): CorrelationFinding[];
   getAllCorrelationsInWindow(timeWindow?: any): { [id: string]: CorrelationFinding[] };
   createCorrelationRule(correlationRule: CorrelationRule): void;
-  deleteCorrelationRule(ruleId: string): void;
+  deleteCorrelationRule(ruleId: string): Promise<boolean>;
   registerGraphEventHandler(event: string, handler: CorrelationGraphEventHandler): void;
   getAllFindings(): { [id: string]: CorrelationFinding };
 }

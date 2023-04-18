@@ -15,7 +15,6 @@ import {
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
 import { ruleTypes } from '../../Rules/utils/constants';
 import { FieldClause } from '@opensearch-project/oui/src/eui_components/search_bar/query/ast';
-import { DataStore } from '../../../store/DataStore';
 
 export const getCorrelationRulesTableColumns = (
   _refreshRules: (ruleItem: CorrelationRule) => void
@@ -69,10 +68,7 @@ export const getCorrelationRulesTableColumns = (
                 data-test-subj={`view-details-icon`}
                 iconType={'trash'}
                 color="danger"
-                onClick={async () => {
-                  await DataStore.correlationsStore.deleteCorrelationRule(ruleItem._id);
-                  await _refreshRules(ruleItem);
-                }}
+                onClick={() => _refreshRules(ruleItem)}
               />
             </EuiToolTip>
           ),

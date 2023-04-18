@@ -29,11 +29,14 @@ import {
 } from '../../../../types';
 import { RouteComponentProps } from 'react-router-dom';
 import { CorrelationsExperimentalBanner } from '../components/ExperimentalBanner';
+import { DeleteCorrelationRuleModal } from '../components/DeleteModal';
 
 export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComponentProps) => {
   const context = useContext(CoreServicesContext);
   const [allRules, setAllRules] = useState<CorrelationRuleTableItem[]>([]);
   const [filteredRules, setFilteredRules] = useState<CorrelationRuleTableItem[]>([]);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [selectedRule, setSelectedRule] = useState<CorrelationRule | undefined>(undefined);
 
   const getCorrelationRules = useCallback(
     async (ruleItem?) => {
@@ -103,8 +106,37 @@ export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComp
     });
   }, []);
 
+  const closeDeleteModal = () => {
+    setIsDeleteModalVisible(false);
+  };
+
+  const onDeleteRuleConfirmed = async (rule: any) => {
+    if (selectedRule) {
+      const response = await DataStore.correlationsStore.deleteCorrelationRule(selectedRule.id);
+
+      if (response) {
+        closeDeleteModal();
+        setSelectedRule(undefined);
+        await getCorrelationRules();
+      }
+    }
+  };
+
+  const deleteModal = useMemo(
+    () =>
+      selectedRule ? (
+        <DeleteCorrelationRuleModal
+          title={selectedRule.name}
+          onCancel={closeDeleteModal}
+          onConfirm={onDeleteRuleConfirmed}
+        />
+      ) : null,
+    [closeDeleteModal, onDeleteRuleConfirmed]
+  );
+
   return (
     <>
+      {isDeleteModalVisible && deleteModal ? deleteModal : null}
       <CorrelationsExperimentalBanner />
       <EuiFlexGroup direction="column">
         <EuiFlexItem>
@@ -130,7 +162,10 @@ export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComp
           <EuiPanel>
             {allRules.length ? (
               <EuiInMemoryTable
-                columns={getCorrelationRulesTableColumns(getCorrelationRules)}
+                columns={getCorrelationRulesTableColumns((rule) => {
+                  setIsDeleteModalVisible(true);
+                  setSelectedRule(rule);
+                })}
                 items={filteredRules}
                 pagination={true}
                 sorting={true}
