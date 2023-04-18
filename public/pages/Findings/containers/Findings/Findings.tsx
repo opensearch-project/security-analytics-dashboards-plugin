@@ -56,10 +56,12 @@ import { DateTimeFilter } from '../../../Overview/models/interfaces';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 import { DataStore } from '../../../../store/DataStore';
 import { CorrelationFinding, Detector } from '../../../../../types';
+import { CorrelationService } from '../../../../../server/services';
 
 interface FindingsProps extends RouteComponentProps {
   detectorService: DetectorsService;
   findingsService: FindingsService;
+  correlationService: CorrelationService;
   notificationsService: NotificationsService;
   indexPatternsService: IndexPatternsService;
   opensearchService: OpenSearchService;
@@ -174,7 +176,6 @@ class Findings extends Component<FindingsProps, FindingsState> {
                     detectorName: detector._source.name,
                     logType: detector._source.detector_type,
                     detector: detector,
-                    correlations: Object.values(DataStore.correlationsStore.findings).slice(0, 10),
                   };
                 }
               );
@@ -372,6 +373,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
           <ContentPanel title={'Findings'}>
             <FindingsTable
               {...this.props}
+              history={this.props.history}
               findings={findings}
               loading={loading}
               rules={rules}
@@ -382,6 +384,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
               refreshNotificationChannels={this.getNotificationChannels}
               onFindingsFiltered={this.onFindingsFiltered}
               hasNotificationsPlugin={this.state.plugins.includes(OS_NOTIFICATION_PLUGIN)}
+              correlationService={this.props.correlationService}
             />
           </ContentPanel>
         </EuiFlexItem>

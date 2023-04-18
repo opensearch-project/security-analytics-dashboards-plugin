@@ -80,6 +80,15 @@ export interface SearchCorrelationRulesResponse {
   };
 }
 
+export interface CorrelationFindingHit {
+  finding: string;
+  detector_type: string;
+  score: number;
+}
+export interface GetCorrelationFindingsResponse {
+  findings: CorrelationFindingHit[];
+}
+
 export interface CreateCorrelationRuleResponse {
   rule: CorrelationRuleSource;
   _id: string;
@@ -92,6 +101,12 @@ export type CorrelationRuleTableItem = CorrelationRule & { logTypes: string };
 
 export interface ICorrelationsStore {
   getCorrelationRules(): Promise<CorrelationRuleHit[]>;
+  getCorrelatedFindings(
+    finding: string,
+    detector_type: string,
+    nearby_findings?: number
+  ): Promise<{ finding: CorrelationFinding; correlatedFindings: CorrelationFinding[] }>;
+  //getAllCorrelationsInWindow(timeWindow?: any): { [id: string]: CorrelationFinding[] };
   createCorrelationRule(correlationRule: CorrelationRule): void;
   deleteCorrelationRule(ruleId: string): Promise<boolean>;
   registerGraphEventHandler(event: string, handler: CorrelationGraphEventHandler): void;
@@ -100,9 +115,9 @@ export interface ICorrelationsStore {
   getAllCorrelationsInWindow(
     timeWindow?: any
   ): { finding1: CorrelationFinding; finding2: CorrelationFinding }[];
-  getCorrelatedFindings(
-    findingId: string
-  ): { finding: CorrelationFinding; correlatedFindings: CorrelationFinding[] };
+  //getCorrelatedFindings(
+  //  findingId: string
+  //): { finding: CorrelationFinding; correlatedFindings: CorrelationFinding[] };
   allFindings: { [id: string]: CorrelationFinding };
   fetchAllFindings(): { [id: string]: CorrelationFinding };
 }
@@ -138,4 +153,10 @@ export interface GetCorrelationRulesResponse {
     };
     timed_out: boolean;
   };
+}
+
+export interface GetCorrelationFindingsParams {
+  finding: string;
+  detector_type: string;
+  nearby_findings?: number;
 }

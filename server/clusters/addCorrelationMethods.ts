@@ -35,4 +35,26 @@ export function addCorrelationMethods(securityAnalytics: any, createAction: any)
     needBody: false,
     method: 'DELETE',
   });
+
+  securityAnalytics[METHOD_NAMES.GET_CORRELATED_FINDINGS] = createAction({
+    url: {
+      fmt: `${API.FINDINGS_BASE}/correlate`,
+      req: {
+        finding: {
+          type: 'string',
+          required: true,
+        },
+        detector_type: {
+          type: 'string',
+          required: true,
+        },
+        nearby_findings: {
+          type: 'number',
+          required: false,
+        },
+      },
+    },
+    needBody: false,
+    method: 'GET',
+  });
 }

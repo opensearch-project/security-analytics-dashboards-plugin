@@ -26,6 +26,7 @@ import { NotificationChannelTypeOptions } from '../../../CreateDetector/componen
 import { FindingItemType } from '../../containers/Findings/Findings';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { RuleSource } from '../../../../../server/models/interfaces';
+import { CorrelationService } from '../../../../../server/services';
 
 interface FindingsTableProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -41,6 +42,7 @@ interface FindingsTableProps extends RouteComponentProps {
   onFindingsFiltered: (findings: FindingItemType[]) => void;
   hasNotificationsPlugin: boolean;
   indexPatternsService: IndexPatternsService;
+  correlationService: CorrelationService;
 }
 
 interface FindingsTableState {
@@ -110,20 +112,37 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
 
   renderFindingDetailsFlyout = (finding: FindingItemType) => {
     if (this.state.flyoutOpen) this.closeFlyout();
-    else
+    else {
+      const { findings, rules } = this.props;
+      const { findingsFiltered, filteredFindings } = this.state;
+
+      const logTypes = new Set<string>();
+      const severities = new Set<string>();
+      filteredFindings.forEach((finding) => {
+        if (finding) {
+          const queryId = finding.queries[0].id;
+          logTypes.add(rules[queryId].category);
+          severities.add(rules[queryId].level);
+        }
+      });
+
       this.setState({
         flyout: (
           <FindingDetailsFlyout
             {...this.props}
             finding={finding}
+            findings={findingsFiltered ? filteredFindings : findings}
             closeFlyout={this.closeFlyout}
+            history={this.props.history}
             allRules={this.props.rules}
             indexPatternsService={this.props.indexPatternsService}
+            correlationService={this.props.correlationService}
           />
         ),
         flyoutOpen: true,
         selectedFinding: finding,
       });
+    }
   };
 
   renderCreateAlertFlyout = (finding: Finding) => {
@@ -219,12 +238,12 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         dataType: 'string',
         render: (ruleSeverity: string) => capitalizeFirstLetter(ruleSeverity) || DEFAULT_EMPTY_DATA,
       },
-      {
+      /*{
         name: 'Correlations',
         render: (item: FindingItemType) => {
-          return `${item.correlations.length}`;
+          return `${item?.correlations?.length}`;
         },
-      },
+      },*/
       {
         name: 'Actions',
         sortable: false,

@@ -20,6 +20,7 @@ export interface SecurityAnalyticsApi {
   readonly CORRELATION_BASE: string;
   readonly SEARCH_DETECTORS: string;
   readonly INDICES_BASE: string;
+  readonly FINDINGS_BASE: string;
   readonly GET_FINDINGS: string;
   readonly DOCUMENT_IDS_QUERY: string;
   readonly TIME_RANGE_QUERY: string;

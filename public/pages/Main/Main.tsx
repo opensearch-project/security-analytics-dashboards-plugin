@@ -312,6 +312,8 @@ export default class Main extends Component<MainProps, MainState> {
                               setDateTimeFilter={this.setDateTimeFilter}
                               dateTimeFilter={this.state.dateTimeFilter}
                               findingsService={services.findingsService}
+                              history={props.history}
+                              correlationService={services?.correlationsService}
                               opensearchService={services.opensearchService}
                               detectorService={services.detectorsService}
                               notificationsService={services.notificationsService}
@@ -499,7 +501,7 @@ export default class Main extends Component<MainProps, MainState> {
                         <Route
                           path={`${ROUTES.CORRELATIONS}`}
                           render={(props: RouteComponentProps<any, any, any>) => (
-                            <Correlations {...props} />
+                            <Correlations {...props} history={props.history} />
                           )}
                         />
                         <Redirect from={'/'} to={landingPage} />
