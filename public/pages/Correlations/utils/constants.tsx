@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import React from 'react';
 import { CorrelationGraphData } from '../../../../types';
 import { DETECTOR_TYPES } from '../../Detectors/utils/constants';
 import { ruleSeverity, ruleTypes } from '../../Rules/utils/constants';
 import { FilterItem } from '../components/FilterGroup';
+import { EuiIcon } from '@elastic/eui';
 
 export const graphRenderOptions = {
   nodes: {
@@ -69,7 +71,11 @@ export const defaultLogTypeFilterItemOptions: FilterItem[] = Object.values(ruleT
 export const defaultSeverityFilterItemOptions: FilterItem[] = Object.values(ruleSeverity).map(
   (sev) => {
     return {
-      name: `${sev.priority} ${sev.name}`,
+      name: (
+        <p>
+          <EuiIcon type={'dot'} color={sev.color} /> {`${sev.priority} ${sev.name}`}
+        </p>
+      ),
       id: sev.value,
       checked: 'on',
     };
@@ -99,17 +105,26 @@ export const sizeBySeverity = {
   Low: 20,
 };
 
-export const colorBySeverity = {
-  Critical: 'red',
-  Medium: 'yellow',
-  Info: 'blue',
-  Low: 'gray',
-};
-
 export const emptyGraphData: CorrelationGraphData = {
   graph: {
     nodes: [],
     edges: [],
   },
   events: {},
+};
+
+export const getAbbrFromLogType = (logType: string) => {
+  return ruleTypes.find((ruleType) => ruleType.value === logType)?.abbr || '-';
+};
+
+export const getLabelFromLogType = (logType: string) => {
+  return ruleTypes.find((ruleType) => ruleType.value === logType)?.label || '-';
+};
+
+export const getSeverityLabel = (sev: string) => {
+  return ruleSeverity.find((severity) => severity.value === sev)?.name || '';
+};
+
+export const getSeverityColor = (sev: string) => {
+  return ruleSeverity.find((severity) => severity.value === sev)?.color;
 };

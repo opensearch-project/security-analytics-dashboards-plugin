@@ -14,6 +14,13 @@ import {
   EuiBadge,
   EuiHorizontalRule,
 } from '@elastic/eui';
+import { rulePriorityBySeverity } from '../../CreateDetector/components/DefineDetector/components/DetectionRules/DetectionRulesTable';
+import {
+  getAbbrFromLogType,
+  getSeverityLabel,
+  getSeverityColor,
+  getLabelFromLogType,
+} from '../utils/constants';
 
 export interface FindingCardProps {
   id: string;
@@ -38,27 +45,25 @@ export const FindingCard: React.FC<FindingCardProps> = ({
     <>
       <EuiFlexGroup justifyContent="spaceBetween">
         <EuiFlexItem grow={false}>
-          <EuiText size="m">{correlationData.score}</EuiText>
+          <EuiText style={{ fontSize: 22, fontWeight: 300 }}>{correlationData.score}</EuiText>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
           <EuiButtonIcon iconType={'inspect'} onClick={() => correlationData.onInspect(id)} />
         </EuiFlexItem>
       </EuiFlexGroup>
-      <EuiText>Correlation score</EuiText>
+      <EuiText size="s">Correlation score</EuiText>
       <EuiSpacer size="m" />
     </>
   ) : null;
 
   const createTextRow = useCallback((label: string, value: string) => {
     return (
-      <EuiFlexGroup justifyContent="spaceBetween" alignItems="center">
+      <EuiFlexGroup justifyContent="spaceBetween" alignItems="center" gutterSize="s">
         <EuiFlexItem grow={false}>
           <EuiText size="s">{label}</EuiText>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiText>
-            <strong>{value}</strong>
-          </EuiText>
+          <EuiText>{value}</EuiText>
         </EuiFlexItem>
       </EuiFlexGroup>
     );
@@ -67,11 +72,41 @@ export const FindingCard: React.FC<FindingCardProps> = ({
   return (
     <EuiPanel>
       {correlationHeader}
-      <EuiFlexGroup justifyContent="flexStart">
-        <EuiFlexItem grow={false}>
-          <EuiBadge>{detectionRule.severity}</EuiBadge>
+      <EuiFlexGroup justifyContent="flexStart" alignItems="center">
+        <EuiFlexItem grow={2} style={{ maxWidth: 120 }}>
+          <div style={{ position: 'relative' }}>
+            <div
+              style={{
+                width: '35px',
+                height: '35px',
+                border: '1px solid',
+                borderRadius: '50%',
+                position: 'relative',
+                fontSize: 10,
+                lineHeight: '35px',
+                textAlign: 'center',
+              }}
+            >
+              {getAbbrFromLogType(logType)}
+            </div>
+            {getSeverityLabel(detectionRule.severity) ? (
+              <EuiBadge
+                style={{
+                  position: 'absolute',
+                  transform: 'translateY(-100%)',
+                  left: '33px',
+                }}
+                color={getSeverityColor(detectionRule.severity)}
+              >
+                {rulePriorityBySeverity[detectionRule.severity]}{' '}
+                {getSeverityLabel(detectionRule.severity)}
+              </EuiBadge>
+            ) : null}
+          </div>
         </EuiFlexItem>
-        <EuiFlexItem grow={false}>{logType}</EuiFlexItem>
+        <EuiFlexItem grow={1}>
+          <strong>{getLabelFromLogType(logType)}</strong>
+        </EuiFlexItem>
       </EuiFlexGroup>
       {correlationHeader ? <EuiHorizontalRule margin="s" /> : null}
       <EuiSpacer size="m" />

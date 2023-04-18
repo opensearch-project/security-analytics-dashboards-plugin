@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-// import { Edge, GraphEvents, Node } from 'react-graph-vis';
+import { Edge, GraphEvents, Node } from 'react-graph-vis';
 import { FilterItem } from '../public/pages/Correlations/components/FilterGroup';
 import { Query } from '@opensearch-project/oui/src/eui_components/search_bar/search_bar';
 import { RuleInfo } from './Rule';
@@ -14,12 +14,11 @@ export enum CorrelationsLevel {
 }
 
 export interface CorrelationGraphData {
-  // level: CorrelationsLevel;
   graph: {
     nodes: (Node & { chosen?: boolean })[];
-    edges: any[];
+    edges: Edge[];
   };
-  events: any;
+  events: GraphEvents;
 }
 
 export type CorrelationGraphUpdateHandler = (newGraphData: CorrelationGraphData) => void;
@@ -29,8 +28,7 @@ export type CorrelationFinding = {
   correlationScore?: number;
   logType: string;
   timestamp: string;
-  detectionRule: { name: string; severity: 'Critical' | 'Medium' | 'Info' | 'Low' };
-  correlationRule?: { name: string };
+  detectionRule: { name: string; severity: string };
 };
 
 export interface CorrelationRuleQuery {
@@ -94,12 +92,19 @@ export type CorrelationRuleTableItem = CorrelationRule & { logTypes: string };
 
 export interface ICorrelationsStore {
   getCorrelationRules(): Promise<CorrelationRuleHit[]>;
-  getCorrelatedFindings(findingId: string): CorrelationFinding[];
-  getAllCorrelationsInWindow(timeWindow?: any): { [id: string]: CorrelationFinding[] };
   createCorrelationRule(correlationRule: CorrelationRule): void;
   deleteCorrelationRule(ruleId: string): Promise<boolean>;
   registerGraphEventHandler(event: string, handler: CorrelationGraphEventHandler): void;
   getAllFindings(): { [id: string]: CorrelationFinding };
+
+  getAllCorrelationsInWindow(
+    timeWindow?: any
+  ): { finding1: CorrelationFinding; finding2: CorrelationFinding }[];
+  getCorrelatedFindings(
+    findingId: string
+  ): { finding: CorrelationFinding; correlatedFindings: CorrelationFinding[] };
+  allFindings: { [id: string]: CorrelationFinding };
+  fetchAllFindings(): { [id: string]: CorrelationFinding };
 }
 
 export type CorrelationLevelInfo =

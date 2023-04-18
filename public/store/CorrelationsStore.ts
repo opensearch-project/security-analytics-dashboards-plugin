@@ -5,46 +5,13 @@
 
 import {
   CorrelationFinding,
-  CorrelationGraphData,
   CorrelationGraphEventHandler,
-  CorrelationGraphUpdateHandler,
-  CorrelationLevelInfo,
   CorrelationRule,
-  CorrelationRuleHit,
-  CorrelationsLevel,
   ICorrelationsStore,
 } from '../../types';
 import { DETECTOR_TYPES } from '../pages/Detectors/utils/constants';
-import { euiPaletteColorBlind } from '@elastic/eui';
-import { FilterItem } from '../pages/Correlations/components/FilterGroup';
 import 'font-awesome/css/font-awesome.min.css';
-import { iconByLogType } from '../pages/Correlations/utils/constants';
-import { DetectorsService } from '../services';
-import CorrelationService from '../services/CorrelationService';
-import { NotificationsStart } from 'opensearch-dashboards/public';
-import { errorNotificationToast } from '../utils/helpers';
-
-class ColorProvider {
-  // private palette = euiPaletteColorBlindBehindText({ sortBy: 'natural' });
-  private palette = euiPaletteColorBlind({ sortBy: 'natural' });
-  private currentPos: number = 0;
-  public colorByLogType: { [logType: string]: string } = {};
-
-  constructor() {
-    Object.values(DETECTOR_TYPES).forEach((type) => {
-      this.colorByLogType[type.id] = this.next();
-    });
-  }
-
-  public getColor(logType: string) {
-    return this.colorByLogType[logType] || this.next();
-  }
-
-  private next() {
-    this.currentPos = (this.currentPos + 1) % this.palette.length;
-    return this.palette[this.currentPos];
-  }
-}
+import { ruleSeverity, ruleTypes } from '../pages/Rules/utils/constants';
 
 class DummyCorrelationDataProvider {
   private generatedPairs: Set<string> = new Set();
@@ -225,26 +192,100 @@ export class CorrelationsStore implements ICorrelationsStore {
     return response.ok;
   }
 
-  public getAllCorrelationsInWindow(timeWindow?: any): { [id: string]: CorrelationFinding[] } {
-    return {};
-  }
-
   public getAllFindings(): { [id: string]: CorrelationFinding } {
     return {};
   }
 
-  public getCorrelatedFindings(findingId: string): CorrelationFinding[] {
-    return [
-      {
+  public getAllCorrelationsInWindow(
+    timeWindow?: any
+  ): { finding1: CorrelationFinding; finding2: CorrelationFinding }[] {
+    const idx = Math.floor(Math.random() * 13);
+    const idx2 = Math.floor(Math.random() * ruleSeverity.length);
+    return Array(30)
+      .fill(undefined)
+      .map((_, index) => {
+        return {
+          finding1: {
+            id: `f1-${index}`,
+            logType: ruleTypes[idx].value,
+            timestamp: 'April 24 2023',
+            detectionRule: {
+              name: 'Sample rule name',
+              severity: ruleSeverity[(idx2 + 1) % ruleSeverity.length].value,
+            },
+            correlationScore: Math.round(Math.random() * 100) / 100,
+          },
+          finding2: {
+            id: `f2-${index}`,
+            logType: ruleTypes[(idx + 1) % 13].value,
+            timestamp: 'April 24 2023',
+            detectionRule: {
+              name: 'Sample rule name',
+              severity: ruleSeverity[idx2].value,
+            },
+            correlationScore: Math.round(Math.random() * 100) / 100,
+          },
+        };
+      });
+
+    // return [
+    //   {
+    //     finding1: {
+    //       id: 'dummy id 1',
+    //       logType: 'dns',
+    //       timestamp: 'April 24 2023',
+    //       detectionRule: {
+    //         name: 'Sample rule name',
+    //         severity: 'critical',
+    //       },
+    //       correlationScore: Math.round(Math.random() * 100) / 100,
+    //     },
+    //     finding2: {
+    //       id: 'dummy id 2',
+    //       logType: 'network',
+    //       timestamp: 'April 24 2023',
+    //       detectionRule: {
+    //         name: 'Sample rule name',
+    //         severity: 'critical',
+    //       },
+    //       correlationScore: Math.round(Math.random() * 100) / 100,
+    //     }
+    //   }
+    // ];
+  }
+
+  public getCorrelatedFindings(
+    findingId: string
+  ): { finding: CorrelationFinding; correlatedFindings: CorrelationFinding[] } {
+    return {
+      finding: {
         id: 'dummy id',
         logType: 'dns',
         timestamp: 'April 24 2023',
         detectionRule: {
           name: 'Sample rule name',
-          severity: 'Critical',
+          severity: 'critical',
         },
         correlationScore: Math.round(Math.random() * 100) / 100,
       },
-    ];
+      correlatedFindings: [
+        {
+          id: 'dummy id',
+          logType: 'dns',
+          timestamp: 'April 24 2023',
+          detectionRule: {
+            name: 'Sample rule name',
+            severity: 'informational',
+          },
+          correlationScore: Math.round(Math.random() * 100) / 100,
+        },
+      ],
+    };
+  }
+
+  public allFindings: { [id: string]: CorrelationFinding } = {};
+
+  public fetchAllFindings(): { [id: string]: CorrelationFinding } {
+    return {};
   }
 }

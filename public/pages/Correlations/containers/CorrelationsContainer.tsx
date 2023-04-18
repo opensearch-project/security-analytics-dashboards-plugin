@@ -2,13 +2,14 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
-import { CorrelationGraphData, DateTimeFilter } from '../../../../types';
+import { CorrelationFinding, CorrelationGraphData, DateTimeFilter } from '../../../../types';
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
   defaultLogTypeFilterItemOptions,
   defaultSeverityFilterItemOptions,
   emptyGraphData,
+  getAbbrFromLogType,
   graphRenderOptions,
 } from '../utils/constants';
 import {
@@ -33,7 +34,12 @@ import { CorrelationGraph } from '../components/CorrelationGraph';
 import { FindingCard } from '../components/FindingCard';
 import { DataStore } from '../../../store/DataStore';
 
-interface CorrelationsProps extends RouteComponentProps {
+interface CorrelationsProps
+  extends RouteComponentProps<
+    any,
+    any,
+    { finding: CorrelationFinding; correlatedFindings: CorrelationFinding[] }
+  > {
   setDateTimeFilter?: Function;
   dateTimeFilter?: DateTimeFilter;
 }
@@ -41,7 +47,10 @@ interface CorrelationsProps extends RouteComponentProps {
 interface CorrelationsState {
   recentlyUsedRanges: any[];
   graphData: CorrelationGraphData;
-  selectedFindingId?: string;
+  specificFindingInfo?: {
+    finding: CorrelationFinding;
+    correlatedFindings: CorrelationFinding[];
+  };
   logTypeFilterOptions: FilterItem[];
   severityFilterOptions: FilterItem[];
 }
@@ -56,13 +65,109 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       graphData: { ...emptyGraphData },
       logTypeFilterOptions: [...defaultLogTypeFilterItemOptions],
       severityFilterOptions: [...defaultSeverityFilterItemOptions],
-      selectedFindingId: 'hello',
+      specificFindingInfo: DataStore.correlationsStore.getCorrelatedFindings(''),
     };
     this.dateTimeFilter = this.props.dateTimeFilter || {
       startTime: DEFAULT_DATE_RANGE.start,
       endTime: DEFAULT_DATE_RANGE.end,
     };
   }
+
+  componentDidMount(): void {
+    if (this.props.location.state) {
+      const specificFindingInfo = this.props.location.state;
+      this.setState({ specificFindingInfo });
+
+      // create graph data here
+      const graphData: CorrelationGraphData = {
+        graph: {
+          nodes: [],
+          edges: [],
+        },
+        events: {
+          click: (params: any) => {
+            console.log(params);
+          },
+        },
+      };
+
+      this.addNode(graphData.graph.nodes, specificFindingInfo.finding);
+      specificFindingInfo.correlatedFindings.forEach((finding) => {
+        this.addNode(graphData.graph.nodes, finding);
+        this.addEdge(graphData.graph.edges, specificFindingInfo.finding, finding);
+      });
+
+      this.setState({ graphData });
+    } else {
+      // get all correlations and display them in the graph
+      const allCorrelations = DataStore.correlationsStore.getAllCorrelationsInWindow();
+      const createdEdges = new Set<string>();
+      const graphData: CorrelationGraphData = {
+        graph: {
+          nodes: [],
+          edges: [],
+        },
+        events: {
+          click: (params: any) => {
+            console.log(params);
+          },
+        },
+      };
+      allCorrelations.forEach((correlation) => {
+        const possibleCombination1 = `${correlation.finding1.id}:${correlation.finding2.id}`;
+        const possibleCombination2 = `${correlation.finding2.id}:${correlation.finding1.id}`;
+
+        if (createdEdges.has(possibleCombination1) || createdEdges.has(possibleCombination2)) {
+          return;
+        }
+
+        this.addNode(graphData.graph.nodes, correlation.finding1);
+        this.addNode(graphData.graph.nodes, correlation.finding2);
+        this.addEdge(graphData.graph.edges, correlation.finding1, correlation.finding2);
+
+        createdEdges.add(`${correlation.finding1.id}:${correlation.finding2.id}`);
+      });
+
+      this.setState({ graphData });
+    }
+  }
+
+  private addNode(nodes: any[], finding: CorrelationFinding) {
+    nodes.push({
+      id: finding.id,
+      label: getAbbrFromLogType(finding.logType),
+      title: this.createNodeTooltip(finding),
+      color: {
+        background: 'white',
+        border: 'black',
+      },
+      size: 35,
+    });
+  }
+
+  private addEdge(edges: any[], f1: CorrelationFinding, f2: CorrelationFinding) {
+    edges.push({
+      from: f1.id,
+      to: f2.id,
+      id: `${f1.id}:${f2.id}`,
+    });
+  }
+
+  private createNodeTooltip = (finding: CorrelationFinding) => {
+    const tooltip = document.createElement('div');
+
+    function createRow(text: string) {
+      const row = document.createElement('p');
+      row.innerText = text;
+      row.style.padding = '5px';
+      return row;
+    }
+
+    tooltip.appendChild(createRow(`Log type: ${finding.logType}`));
+    tooltip.appendChild(createRow(finding.timestamp));
+
+    return tooltip;
+  };
 
   private onTimeChange = ({ start, end }: { start: string; end: string }) => {
     let { recentlyUsedRanges } = this.state;
@@ -95,36 +200,23 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
   };
 
   closeFlyout = () => {
-    this.setState({ selectedFindingId: undefined });
+    this.setState({ specificFindingInfo: undefined });
   };
 
   getFindingCardData(findingId: string) {
-    const allFindings = DataStore.correlationsStore.getAllFindings();
-    const mainFinding = allFindings[findingId] || {
-      id: 'dummy id',
-      logType: 'dns',
-      timestamp: 'April 24 2023',
-      detectionRule: {
-        name: 'Sample rule name',
-        severity: 'Critical',
-      },
-    };
     const correlatedFindings = DataStore.correlationsStore.getCorrelatedFindings(findingId);
 
-    return {
-      finding: mainFinding,
-      correlatedFindings,
-    };
+    return correlatedFindings;
   }
 
   onFindingInspect = (id: string) => {
-    this.setState({ selectedFindingId: id });
+    // get finding data and set the specificFindingInfo
+    const specificFindingInfo = DataStore.correlationsStore.getCorrelatedFindings(id);
+    this.setState({ specificFindingInfo });
   };
 
   render() {
-    const findingCardsData = this.state.selectedFindingId
-      ? this.getFindingCardData(this.state.selectedFindingId)
-      : undefined;
+    const findingCardsData = this.state.specificFindingInfo;
 
     return (
       <>

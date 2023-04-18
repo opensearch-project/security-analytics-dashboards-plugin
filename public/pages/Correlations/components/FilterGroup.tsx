@@ -14,7 +14,7 @@ import {
   FilterChecked,
 } from '@elastic/eui';
 
-export type FilterItem = { name: string; id: string; checked?: FilterChecked };
+export type FilterItem = { name: string | React.ReactNode; id: string; checked?: FilterChecked };
 export interface LogTypeFilterGroupProps {
   groupName: string;
   items: FilterItem[];
@@ -90,7 +90,7 @@ export const FilterGroup: React.FC<LogTypeFilterGroupProps> = ({ groupName, item
               onClick={() => updateItem(index)}
               showIcons={true}
             >
-              <p>{item.name}</p>
+              {item.name}
             </EuiFilterSelectItem>
           ))}
         </div>
