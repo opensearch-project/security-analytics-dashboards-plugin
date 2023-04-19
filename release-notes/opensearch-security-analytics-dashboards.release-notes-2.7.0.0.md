@@ -7,12 +7,15 @@ Compatible with OpenSearch 2.7.0
 
 ### Features
 * Adds field mappings to edit detector pages. ([#490](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/490))
+* Correlation engine UX. ([#536](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/536))
 
 ### Infrastructure
 * Resolving json5 to latest version. ([#478](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/478))
 
 ### Bug Fixes
 * Minor bug fixes. ([#505](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/505))
+* Fixes few minor UX bugs. ([#525](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/525))
+* Pinned babel traverse and core. ([#539](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/539))
 
 ### Refactoring
 * Show required field mappings only for enabled rules. ([#418](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/418))
@@ -25,6 +28,7 @@ Compatible with OpenSearch 2.7.0
 * Refactor and move field mapping to first the page of create detector feature. ([#501](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/501))
 * Create detector refactor alert triggers per mocks. ([#503](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/503))
 * Update detector details component. ([#504](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/504))
+* Deleting detectors should delete all related dashboards (including index patterns and visualisations). ([#515](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/515))
 
 ### Documentation
 * Added 2.7 release notes. ([#523](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/523))
