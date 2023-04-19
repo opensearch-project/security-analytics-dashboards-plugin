@@ -258,6 +258,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                       selectedOptions={
                         query.logType ? [{ value: query.logType, label: query.logType }] : []
                       }
+                      isClearable={true}
                     />
                   </EuiFormRow>
                   <EuiSpacer size="xl" />
