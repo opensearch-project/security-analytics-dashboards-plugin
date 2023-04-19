@@ -5,7 +5,6 @@
 
 import {
   CorrelationFinding,
-  CorrelationGraphEventHandler,
   CorrelationRule,
   CorrelationRuleHit,
   ICorrelationsStore,
@@ -34,8 +33,6 @@ export class CorrelationsStore implements ICorrelationsStore {
    */
   readonly notifications: NotificationsStart;
 
-  private graphEventHandlers: { [event: string]: CorrelationGraphEventHandler[] } = {};
-
   constructor(
     service: CorrelationService,
     detectorsService: DetectorsService,
@@ -47,11 +44,6 @@ export class CorrelationsStore implements ICorrelationsStore {
     this.notifications = notifications;
     this.detectorsService = detectorsService;
     this.findingsService = findingsService;
-  }
-
-  public registerGraphEventHandler(event: string, handler: CorrelationGraphEventHandler): void {
-    this.graphEventHandlers[event] = this.graphEventHandlers[event] || [];
-    this.graphEventHandlers[event].push(handler);
   }
 
   public async createCorrelationRule(correlationRule: CorrelationRule): Promise<boolean> {
@@ -132,11 +124,11 @@ export class CorrelationsStore implements ICorrelationsStore {
 
   public async fetchAllFindings(): Promise<{ [id: string]: CorrelationFinding }> {
     const detectorsRes = await this.detectorsService.getDetectors();
+    const allRules = await this.rulesStore.getAllRules();
+
     if (detectorsRes.ok) {
       const detectors = detectorsRes.response.hits.hits;
       let findings: { [id: string]: CorrelationFinding } = {};
-      const allRules = await this.rulesStore.getAllRules();
-
       for (let detector of detectors) {
         const findingRes = await this.findingsService.getFindings({ detectorId: detector._id });
 
