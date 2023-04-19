@@ -18,7 +18,12 @@ import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components
 import dateMath from '@elastic/datemath';
 import { capitalizeFirstLetter, formatRuleType, renderTime } from '../../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
-import { DetectorsService, OpenSearchService, IndexPatternsService } from '../../../../services';
+import {
+  DetectorsService,
+  OpenSearchService,
+  IndexPatternsService,
+  CorrelationService,
+} from '../../../../services';
 import FindingDetailsFlyout from '../FindingDetailsFlyout';
 import { Finding } from '../../models/interfaces';
 import CreateAlertFlyout from '../CreateAlertFlyout';
@@ -26,7 +31,6 @@ import { NotificationChannelTypeOptions } from '../../../CreateDetector/componen
 import { FindingItemType } from '../../containers/Findings/Findings';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { RuleSource } from '../../../../../server/models/interfaces';
-import { CorrelationService } from '../../../../../server/services';
 
 interface FindingsTableProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -238,12 +242,6 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         dataType: 'string',
         render: (ruleSeverity: string) => capitalizeFirstLetter(ruleSeverity) || DEFAULT_EMPTY_DATA,
       },
-      /*{
-        name: 'Correlations',
-        render: (item: FindingItemType) => {
-          return `${item?.correlations?.length}`;
-        },
-      },*/
       {
         name: 'Actions',
         sortable: false,

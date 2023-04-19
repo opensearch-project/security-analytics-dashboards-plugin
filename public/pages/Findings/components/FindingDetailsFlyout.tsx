@@ -38,14 +38,13 @@ import { DEFAULT_EMPTY_DATA, ROUTES } from '../../../utils/constants';
 import { Query } from '../models/interfaces';
 import { RuleViewerFlyout } from '../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
 import { RuleSource } from '../../../../server/models/interfaces';
-import { OpenSearchService, IndexPatternsService } from '../../../services';
+import { OpenSearchService, IndexPatternsService, CorrelationService } from '../../../services';
 import { getSeverityBadge, RuleTableItem } from '../../Rules/utils/helpers';
 import { CreateIndexPatternForm } from './CreateIndexPatternForm';
 import { FindingItemType } from '../containers/Findings/Findings';
-import { CorrelationRule, CorrelationRuleQuery, RuleItemInfoBase } from '../../../../types';
+import { CorrelationRule, RuleItemInfoBase } from '../../../../types';
 import { FindingFlyoutTabId, FindingFlyoutTabs } from '../utils/constants';
 import { DataStore } from '../../../store/DataStore';
-import CorrelationService from '../../../services/CorrelationService';
 import { RouteComponentProps } from 'react-router-dom';
 import { ruleTypes } from '../../Rules/utils/constants';
 

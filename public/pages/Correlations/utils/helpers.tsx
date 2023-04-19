@@ -48,14 +48,6 @@ export const getCorrelationRulesTableColumns = (
       },
       width: '10%',
     },
-    // {
-    //   name: 'Correlations for last 24 hrs',
-    //   align: 'right',
-    //   sortable: true,
-    //   render: (ruleItem: CorrelationRule) => {
-    //     return <p style={{width: '100%', textAlign: 'right'}}>2</p>
-    //   },
-    // },
     {
       name: 'Actions',
       field: '',
