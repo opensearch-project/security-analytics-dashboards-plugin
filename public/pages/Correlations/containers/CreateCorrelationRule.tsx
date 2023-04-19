@@ -139,22 +139,15 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
   const getLogFields = useCallback(
     async (indexName: string, logType: string) => {
       if (indexName && logType) {
-        const result = await props.fieldMappingService?.getMappingsView(indexName, logType);
+        const result = await props.indexService.getIndexFields(indexName);
         if (result?.ok) {
           let fields: {
             label: string;
             value: string;
-          }[] =
-            result.response?.unmapped_field_aliases?.map((field) => ({
-              label: field,
-              value: field,
-            })) || [];
-          fields = fields?.concat(
-            Object.keys(result.response.properties).map((field) => ({
-              label: field,
-              value: field,
-            }))
-          );
+          }[] = result.response?.map((field) => ({
+            label: field,
+            value: field,
+          }));
 
           setLogFields(fields);
         }
