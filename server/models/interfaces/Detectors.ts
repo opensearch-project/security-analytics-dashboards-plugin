@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Detector } from '../../../models/interfaces';
+import { Detector } from '../../../types';
 
 export interface CreateDetectorParams {
   body: Detector;

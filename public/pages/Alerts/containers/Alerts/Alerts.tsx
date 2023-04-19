@@ -42,8 +42,7 @@ import AlertsService from '../../../../services/AlertsService';
 import DetectorService from '../../../../services/DetectorService';
 import { AlertItem } from '../../../../../server/models/interfaces';
 import { AlertFlyout } from '../../components/AlertFlyout/AlertFlyout';
-import { FindingsService, OpenSearchService } from '../../../../services';
-import { Detector } from '../../../../../models/interfaces';
+import { FindingsService, IndexPatternsService, OpenSearchService } from '../../../../services';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { DISABLE_ACKNOWLEDGED_ALERT_HELP_TEXT } from '../../utils/constants';
 import {
@@ -58,6 +57,7 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { match, RouteComponentProps, withRouter } from 'react-router-dom';
 import { DateTimeFilter } from '../../../Overview/models/interfaces';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
+import { Detector } from '../../../../../types';
 
 export interface AlertsProps extends RouteComponentProps {
   alertService: AlertsService;
@@ -65,6 +65,7 @@ export interface AlertsProps extends RouteComponentProps {
   findingService: FindingsService;
   opensearchService: OpenSearchService;
   notifications: NotificationsStart;
+  indexPatternService: IndexPatternsService;
   match: match;
   dateTimeFilter?: DateTimeFilter;
   setDateTimeFilter?: Function;
@@ -500,6 +501,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
             onClose={this.onFlyoutClose}
             onAcknowledge={this.onAcknowledge}
             findingsService={this.props.findingService}
+            indexPatternService={this.props.indexPatternService}
           />
         )}
         <EuiFlexGroup direction="column">
