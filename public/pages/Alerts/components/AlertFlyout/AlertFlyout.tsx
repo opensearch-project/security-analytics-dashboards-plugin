@@ -183,8 +183,8 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
         finding={{
           ...(findingFlyoutData as Finding),
           detector: { _id: detector.id as string, _index: '', _source: detector },
-          correlations: [],
         }}
+        findings={findingItems}
         closeFlyout={onClose}
         backButton={
           <EuiButtonIcon
