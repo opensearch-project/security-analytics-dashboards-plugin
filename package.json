@@ -47,7 +47,9 @@
     "minimist": "^1.2.6",
     "moment": "^2.29.2",
     "async": "^3.2.3",
-    "json5": "^2.2.3"
+    "json5": "^2.2.3",
+    "@babel/core": "^7.20.12",
+    "@babel/traverse": "^7.20.12"
   },
   "devDependencies": {
     "@elastic/elastic-eslint-config-kibana": "link:../../packages/opensearch-eslint-config-opensearch-dashboards",
@@ -65,7 +67,8 @@
     "jest-cli": "^27.5.1",
     "jest-environment-jsdom": "^27.5.1",
     "lint-staged": "^10.2.0",
-    "ts-loader": "^6.2.1"
+    "ts-loader": "^6.2.1",
+    "@types/vis": "^4.21.21"
   },
   "engines": {
     "yarn": "^1.21.1"

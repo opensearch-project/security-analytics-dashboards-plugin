@@ -16,7 +16,8 @@ export class DataStore {
   public static correlationsStore: ICorrelationsStore;
 
   public static init = (services: BrowserServices, notifications: NotificationsStart) => {
-    DataStore.rules = new RulesStore(services.ruleService, notifications);
+    const rulesStore = new RulesStore(services.ruleService, notifications);
+    DataStore.rules = rulesStore;
 
     DataStore.detectors = new DetectorsStore(
       services.detectorsService,
@@ -28,7 +29,8 @@ export class DataStore {
       services.correlationsService,
       services.detectorsService,
       services.findingsService,
-      notifications
+      notifications,
+      rulesStore
     );
   };
 }
