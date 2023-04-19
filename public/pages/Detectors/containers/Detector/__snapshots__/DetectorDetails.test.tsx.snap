@@ -2324,6 +2324,13 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
         className="euiSpacer euiSpacer--m"
       />
     </EuiSpacer>
+    <EuiSpacer
+      size="m"
+    >
+      <div
+        className="euiSpacer euiSpacer--m"
+      />
+    </EuiSpacer>
     <DetectorRulesView
       detector={
         Object {
