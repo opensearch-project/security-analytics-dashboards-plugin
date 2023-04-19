@@ -108,7 +108,7 @@ export class CorrelationsStore implements ICorrelationsStore {
     const result: { finding1: CorrelationFinding; finding2: CorrelationFinding }[] = [];
 
     if (allCorrelationsRes.ok) {
-      allCorrelationsRes.response.findings.forEach(({ finding1, logType1, finding2, logType2 }) => {
+      allCorrelationsRes.response.findings.forEach(({ finding1, finding2 }) => {
         const f1 = allFindings[finding1];
         const f2 = allFindings[finding2];
         if (f1 && f2)

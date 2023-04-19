@@ -10,9 +10,11 @@ import {
   defaultSeverityFilterItemOptions,
   emptyGraphData,
   getAbbrFromLogType,
+  getSeverityColor,
   graphRenderOptions,
 } from '../utils/constants';
 import {
+  EuiIcon,
   EuiFlexGroup,
   EuiFlexItem,
   EuiTitle,
@@ -42,6 +44,7 @@ import { FindingCard } from '../components/FindingCard';
 import { DataStore } from '../../../store/DataStore';
 import { FindingItemType } from '../../Findings/containers/Findings/Findings';
 import datemath from '@elastic/datemath';
+import { ruleSeverity } from '../../Rules/utils/constants';
 
 interface CorrelationsProps
   extends RouteComponentProps<
@@ -51,6 +54,7 @@ interface CorrelationsProps
   > {
   setDateTimeFilter?: Function;
   dateTimeFilter?: DateTimeFilter;
+  onMount: () => void;
 }
 
 interface SpecificFindingCorrelations {
@@ -97,6 +101,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
   async componentDidMount(): Promise<void> {
     this.context.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.CORRELATIONS]);
     this.updateState();
+    this.props.onMount();
   }
 
   componentDidUpdate(
@@ -121,7 +126,10 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
           id: state.finding.id,
           logType: state.finding.detector._source.detector_type,
           timestamp: new Date(state.finding.timestamp).toLocaleString(),
-          detectionRule: state.finding.queries[0],
+          detectionRule: {
+            name: (state.finding as any).ruleName,
+            severity: (state.finding as any).ruleSeverity,
+          },
         },
         correlatedFindings: state.correlatedFindings.filter((finding) =>
           this.shouldShowFinding(finding)
@@ -184,6 +192,11 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     }
 
     const findingId = params.nodes[0];
+
+    if (this.state.specificFindingInfo?.finding.id === findingId) {
+      return;
+    }
+
     const allFindings = await DataStore.correlationsStore.fetchAllFindings();
     const detectorType = allFindings[findingId].logType;
     const correlations = await DataStore.correlationsStore.getCorrelatedFindings(
@@ -217,13 +230,22 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
   private addNode(nodes: any[], finding: CorrelationFinding) {
     nodes.push({
       id: finding.id,
-      label: getAbbrFromLogType(finding.logType),
+      label: `<b>${getAbbrFromLogType(
+        finding.logType
+      )}</b>\n<code>${finding.detectionRule.severity.slice(0, 4)}</code>`,
       title: this.createNodeTooltip(finding),
       color: {
         background: 'white',
-        border: 'black',
+        border: getSeverityColor(finding.detectionRule.severity),
       },
-      size: 35,
+      widthConstraint: {
+        minimum: 50,
+      },
+      borderWidth: 2,
+      font: {
+        multi: 'html',
+        size: 12,
+      },
     });
   }
 
@@ -292,6 +314,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       logType
     );
     this.setState({ specificFindingInfo });
+    this.updateGraphDataState(specificFindingInfo);
   };
 
   resetFilters = () => {
@@ -419,6 +442,27 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                   />
                 </EuiFlexItem>
               </EuiFlexGroup>
+              <EuiSpacer />
+              <EuiFlexGroup
+                wrap={true}
+                gutterSize="m"
+                justifyContent="flexStart"
+                alignItems="center"
+              >
+                <EuiFlexItem grow={false}>
+                  <EuiText>
+                    <strong>Severity:</strong>
+                  </EuiText>
+                </EuiFlexItem>
+                {ruleSeverity.map((sev, idx) => (
+                  <EuiFlexItem grow={false} key={idx}>
+                    <EuiText>
+                      <EuiIcon type="dot" color={sev.color} /> {sev.value}
+                    </EuiText>
+                  </EuiFlexItem>
+                ))}
+              </EuiFlexGroup>
+
               <EuiSpacer />
               {this.state.graphData.graph.nodes.length > 0 ? (
                 <CorrelationGraph

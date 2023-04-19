@@ -390,13 +390,10 @@ export default class FindingDetailsFlyout extends Component<
         field: 'timestamp',
         name: 'Time',
         sortable: true,
-        truncateText: true,
       },
       {
         field: 'id',
-        name: 'Correlation rule',
-        sortable: true,
-        truncateText: true,
+        name: 'Correlated finding id',
       },
       {
         field: 'logType',
@@ -423,12 +420,15 @@ export default class FindingDetailsFlyout extends Component<
       <>
         <EuiFlexGroup>
           <EuiFlexItem>
-            <EuiTitle>
-              <EuiText>Correlated findings</EuiText>
+            <EuiTitle size="s">
+              <h3>Correlated findings</h3>
             </EuiTitle>
           </EuiFlexItem>
-          <EuiFlexItem>
-            <EuiButton onClick={() => this.goToCorrelationsPage()}>
+          <EuiFlexItem grow={false}>
+            <EuiButton
+              onClick={() => this.goToCorrelationsPage()}
+              disabled={this.state.correlatedFindings.length === 0}
+            >
               View correlations graph
             </EuiButton>
           </EuiFlexItem>
@@ -440,6 +440,7 @@ export default class FindingDetailsFlyout extends Component<
               items={this.state.correlatedFindings}
               pagination={true}
               search={true}
+              sorting={true}
             />
           </EuiFlexItem>
         </EuiFlexGroup>
