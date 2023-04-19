@@ -6,13 +6,13 @@
 import { HttpSetup } from 'opensearch-dashboards/public';
 import { ServerResponse } from '../../server/models/types';
 import { API } from '../../server/utils/constants';
-import { ICorrelationsService } from '../../types/services/ICorrelationService';
 import {
   CreateCorrelationRuleResponse,
   DeleteCorrelationRuleResponse,
   GetAllCorrelationsInTimeRangeResponse,
   GetCorrelationFindingsResponse,
   SearchCorrelationRulesResponse,
+  ICorrelationsService,
 } from '../../types';
 
 export default class CorrelationService implements ICorrelationsService {
