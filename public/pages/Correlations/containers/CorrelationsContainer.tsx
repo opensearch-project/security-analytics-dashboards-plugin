@@ -119,7 +119,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       const specificFindingInfo: SpecificFindingCorrelations = {
         finding: {
           id: state.finding.id,
-          logType: state.finding.detector._source.type,
+          logType: state.finding.detector._source.detector_type,
           timestamp: new Date(state.finding.timestamp).toLocaleString(),
           detectionRule: state.finding.queries[0],
         },
@@ -156,22 +156,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
           edges: [],
         },
         events: {
-          click: async (params: any) => {
-            console.log(params);
-            if (params.nodes.length !== 1) {
-              return;
-            }
-
-            const findingId = params.nodes[0];
-            const allFindings = await DataStore.correlationsStore.fetchAllFindings();
-            const detectorType = allFindings[findingId].logType;
-            const correlations = await DataStore.correlationsStore.getCorrelatedFindings(
-              findingId,
-              detectorType
-            );
-            this.setState({ specificFindingInfo: correlations });
-            this.updateGraphDataState(correlations);
-          },
+          click: this.onNodeClick,
         },
       };
       allCorrelations.forEach((correlation) => {
@@ -193,6 +178,22 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     }
   }
 
+  private onNodeClick = async (params: any) => {
+    if (params.nodes.length !== 1) {
+      return;
+    }
+
+    const findingId = params.nodes[0];
+    const allFindings = await DataStore.correlationsStore.fetchAllFindings();
+    const detectorType = allFindings[findingId].logType;
+    const correlations = await DataStore.correlationsStore.getCorrelatedFindings(
+      findingId,
+      detectorType
+    );
+    this.setState({ specificFindingInfo: correlations });
+    this.updateGraphDataState(correlations);
+  };
+
   private updateGraphDataState(specificFindingInfo: SpecificFindingCorrelations) {
     const graphData: CorrelationGraphData = {
       graph: {
@@ -200,9 +201,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         edges: [],
       },
       events: {
-        click: (params: any) => {
-          console.log(params);
-        },
+        click: this.onNodeClick,
       },
     };
 

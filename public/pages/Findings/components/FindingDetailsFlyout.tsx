@@ -42,7 +42,7 @@ import { OpenSearchService, IndexPatternsService, CorrelationService } from '../
 import { getSeverityBadge, RuleTableItem } from '../../Rules/utils/helpers';
 import { CreateIndexPatternForm } from './CreateIndexPatternForm';
 import { FindingItemType } from '../containers/Findings/Findings';
-import { CorrelationRule, RuleItemInfoBase } from '../../../../types';
+import { CorrelationFinding, RuleItemInfoBase } from '../../../../types';
 import { FindingFlyoutTabId, FindingFlyoutTabs } from '../utils/constants';
 import { DataStore } from '../../../store/DataStore';
 import { RouteComponentProps } from 'react-router-dom';
@@ -65,7 +65,7 @@ interface FindingDetailsFlyoutState {
   indexPatternId?: string;
   isCreateIndexPatternModalVisible: boolean;
   selectedTab: { id: string; content: React.ReactNode | null };
-  correlatedFindings: any[];
+  correlatedFindings: CorrelationFinding[];
 }
 
 export default class FindingDetailsFlyout extends Component<
@@ -385,7 +385,7 @@ export default class FindingDetailsFlyout extends Component<
   };
 
   private createCorrelationsTable() {
-    const columns: EuiBasicTableColumn<CorrelationRule>[] = [
+    const columns: EuiBasicTableColumn<CorrelationFinding>[] = [
       {
         field: 'timestamp',
         name: 'Time',
@@ -407,12 +407,10 @@ export default class FindingDetailsFlyout extends Component<
           ruleTypes.find((ruleType) => ruleType.value === category)?.label || DEFAULT_EMPTY_DATA,
       },
       {
-        field: 'severity',
         name: 'Rule severity',
-        sortable: true,
         truncateText: true,
         align: 'center',
-        render: (severity) => getSeverityBadge(severity),
+        render: (item: CorrelationFinding) => getSeverityBadge(item.detectionRule.severity),
       },
       {
         field: 'correlationScore',

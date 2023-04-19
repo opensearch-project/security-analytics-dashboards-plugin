@@ -259,6 +259,10 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                         query.logType ? [{ value: query.logType, label: query.logType }] : []
                       }
                       isClearable={true}
+                      onCreateOption={(e) => {
+                        props.handleChange(`queries[${queryIdx}].logType`)(e);
+                        getLogFields(query.index, e);
+                      }}
                     />
                   </EuiFormRow>
                   <EuiSpacer size="xl" />
