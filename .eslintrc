@@ -7,3 +7,6 @@ settings:
       rootPackageName: 'opensearch_security_analytics_dashboards'
       pluginPaths:
         - .
+
+rules:
+  'react-native/no-raw-text': 'off'
