@@ -45,6 +45,19 @@ export function setupCorrelationRoutes(services: NodeServices, router: IRouter) 
     correlationService.getCorrelatedFindings
   );
 
+  router.get(
+    {
+      path: `${API.CORRELATIONS}`,
+      validate: {
+        query: schema.object({
+          start_time: schema.string(),
+          end_time: schema.string(),
+        }),
+      },
+    },
+    correlationService.getAllCorrelationsInTimeRange
+  );
+
   router.delete(
     {
       path: `${API.CORRELATION_BASE}/{ruleId}`,

@@ -32,6 +32,7 @@ export interface SecurityAnalyticsApi {
   readonly PLUGINS: string;
   readonly ACKNOWLEDGE_ALERTS: string;
   readonly UPDATE_ALIASES: string;
+  readonly CORRELATIONS: string;
 }
 
 export interface NodeServices {

@@ -14,6 +14,7 @@ import {
 import { API, CLIENT_CORRELATION_METHODS } from '../utils/constants';
 import { ServerResponse } from '../models/types';
 import {
+  GetAllCorrelationsInTimeRangeResponse,
   GetCorrelationFindingsParams,
   GetCorrelationFindingsResponse,
   SearchCorrelationRulesResponse,
@@ -138,7 +139,7 @@ export default class CorrelationService {
       const params: any = { finding, detector_type, nearby_findings };
       const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
       // const getCorrelationFindingsResponse: GetCorrelationFindingsResponse = await callWithRequest(
-      //   `${API.FINDINGS_BASE}/correlate`,
+      //   CLIENT_CORRELATION_METHODS.GET_CORRELATED_FINDINGS,
       //   params
       // );
       const getCorrelationFindingsResponse: GetCorrelationFindingsResponse = {
@@ -160,6 +161,57 @@ export default class CorrelationService {
       });
     } catch (error: any) {
       console.error('Security Analytics - CorrelationService - getCorrelatedFindings:', error);
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: false,
+          error: error.message,
+        },
+      });
+    }
+  };
+
+  getAllCorrelationsInTimeRange = async (
+    _context: RequestHandlerContext,
+    request: OpenSearchDashboardsRequest,
+    response: OpenSearchDashboardsResponseFactory
+  ): Promise<
+    IOpenSearchDashboardsResponse<
+      ServerResponse<GetAllCorrelationsInTimeRangeResponse> | ResponseError
+    >
+  > => {
+    try {
+      const { start_timestamp, end_timestamp } = request.query;
+      console.log(request.query);
+      const params: any = { start_timestamp, end_timestamp };
+      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
+      // const getCorrelationsResponse: GetAllCorrelationsInTimeRangeResponse = await callWithRequest(
+      //   CLIENT_CORRELATION_METHODS.GET_ALL_CORRELATIONS,
+      //   params
+      // );
+      const getCorrelationsResponse: GetAllCorrelationsInTimeRangeResponse = {
+        findings: [
+          {
+            finding1: '2c159094-7759-44ff-9002-07220c45af1f',
+            logType1: 'dns',
+            finding2: '4fb73839-2b5b-48bc-b7ed-ab6c2cb50059',
+            logType2: 'network',
+          },
+        ],
+      };
+
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: true,
+          response: getCorrelationsResponse,
+        },
+      });
+    } catch (error: any) {
+      console.error(
+        'Security Analytics - CorrelationService - getAllCorrelationsInTimeRange:',
+        error
+      );
       return response.custom({
         statusCode: 200,
         body: {

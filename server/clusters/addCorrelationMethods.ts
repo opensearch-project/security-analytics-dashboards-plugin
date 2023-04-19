@@ -57,4 +57,22 @@ export function addCorrelationMethods(securityAnalytics: any, createAction: any)
     needBody: false,
     method: 'GET',
   });
+
+  securityAnalytics[METHOD_NAMES.GET_ALL_CORRELATIONS] = createAction({
+    url: {
+      fmt: `${API.CORRELATIONS}`,
+      req: {
+        start_time: {
+          type: 'string',
+          required: true,
+        },
+        end_time: {
+          type: 'string',
+          required: true,
+        },
+      },
+    },
+    needBody: false,
+    method: 'GET',
+  });
 }

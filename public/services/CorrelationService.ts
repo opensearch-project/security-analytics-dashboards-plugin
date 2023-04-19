@@ -10,6 +10,7 @@ import { ICorrelationsService } from '../../types/services/ICorrelationService';
 import {
   CreateCorrelationRuleResponse,
   DeleteCorrelationRuleResponse,
+  GetAllCorrelationsInTimeRangeResponse,
   GetCorrelationFindingsResponse,
   SearchCorrelationRulesResponse,
 } from '../../types';
@@ -61,5 +62,18 @@ export default class CorrelationService implements ICorrelationsService {
   ): Promise<ServerResponse<DeleteCorrelationRuleResponse>> => {
     const url = `..${API.CORRELATION_BASE}/${ruleId}`;
     return (await this.httpClient.delete(url)) as ServerResponse<DeleteCorrelationRuleResponse>;
+  };
+
+  getAllCorrelationsInTimeWindow = async (
+    start_time: string,
+    end_time: string
+  ): Promise<ServerResponse<GetAllCorrelationsInTimeRangeResponse>> => {
+    const url = `..${API.CORRELATIONS}`;
+    return (await this.httpClient.get(url, {
+      query: {
+        start_time,
+        end_time,
+      },
+    })) as ServerResponse<GetAllCorrelationsInTimeRangeResponse>;
   };
 }

@@ -89,6 +89,15 @@ export interface GetCorrelationFindingsResponse {
   findings: CorrelationFindingHit[];
 }
 
+export interface GetAllCorrelationsInTimeRangeResponse {
+  findings: {
+    finding1: string;
+    logType1: string;
+    finding2: string;
+    logType2: string;
+  }[];
+}
+
 export interface CreateCorrelationRuleResponse {
   rule: CorrelationRuleSource;
   _id: string;
@@ -113,8 +122,9 @@ export interface ICorrelationsStore {
   // getAllFindings(): { [id: string]: CorrelationFinding };
 
   getAllCorrelationsInWindow(
-    timeWindow?: any
-  ): { finding1: CorrelationFinding; finding2: CorrelationFinding }[];
+    start_time: string,
+    end_time: string
+  ): Promise<{ finding1: CorrelationFinding; finding2: CorrelationFinding }[]>;
   //getCorrelatedFindings(
   //  findingId: string
   //): { finding: CorrelationFinding; correlatedFindings: CorrelationFinding[] };

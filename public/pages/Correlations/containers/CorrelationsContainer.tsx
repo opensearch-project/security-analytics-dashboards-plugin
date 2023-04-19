@@ -34,6 +34,7 @@ import { CorrelationGraph } from '../components/CorrelationGraph';
 import { FindingCard } from '../components/FindingCard';
 import { DataStore } from '../../../store/DataStore';
 import { FindingItemType } from '../../Findings/containers/Findings/Findings';
+import datemath from '@elastic/datemath';
 
 interface CorrelationsProps
   extends RouteComponentProps<
@@ -91,28 +92,17 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       this.setState({ specificFindingInfo });
 
       // create graph data here
-      const graphData: CorrelationGraphData = {
-        graph: {
-          nodes: [],
-          edges: [],
-        },
-        events: {
-          click: (params: any) => {
-            console.log(params);
-          },
-        },
-      };
-
-      this.addNode(graphData.graph.nodes, specificFindingInfo.finding);
-      specificFindingInfo.correlatedFindings.forEach((finding) => {
-        this.addNode(graphData.graph.nodes, finding);
-        this.addEdge(graphData.graph.edges, specificFindingInfo.finding, finding);
-      });
-
-      this.setState({ graphData });
+      this.updateGraphDataState(specificFindingInfo);
     } else {
       // get all correlations and display them in the graph
-      const allCorrelations = DataStore.correlationsStore.getAllCorrelationsInWindow();
+      const start = datemath.parse(this.dateTimeFilter.startTime);
+      const end = datemath.parse(this.dateTimeFilter.endTime);
+      const startTime = start?.valueOf() || Date.now();
+      const endTime = end?.valueOf() || Date.now();
+      const allCorrelations = await DataStore.correlationsStore.getAllCorrelationsInWindow(
+        startTime.toString(),
+        endTime.toString()
+      );
       const createdEdges = new Set<string>();
       const graphData: CorrelationGraphData = {
         graph: {
@@ -120,8 +110,21 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
           edges: [],
         },
         events: {
-          click: (params: any) => {
+          click: async (params: any) => {
             console.log(params);
+            if (params.nodes.length !== 1) {
+              return;
+            }
+
+            const findingId = params.nodes[0];
+            const allFindings = await DataStore.correlationsStore.fetchAllFindings();
+            const detectorType = allFindings[findingId].logType;
+            const correlations = await DataStore.correlationsStore.getCorrelatedFindings(
+              findingId,
+              detectorType
+            );
+            this.setState({ specificFindingInfo: correlations });
+            this.updateGraphDataState(correlations);
           },
         },
       };
@@ -143,11 +146,33 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       this.setState({ graphData });
     }
 
-    const specificFindingInfo = await DataStore.correlationsStore.getCorrelatedFindings(
-      '2c159094-7759-44ff-9002-07220c45af1f',
-      ''
-    );
-    this.setState({ specificFindingInfo });
+    // const specificFindingInfo = await DataStore.correlationsStore.getCorrelatedFindings(
+    //   '2c159094-7759-44ff-9002-07220c45af1f',
+    //   ''
+    // );
+    // this.setState({ specificFindingInfo });
+  }
+
+  private updateGraphDataState(specificFindingInfo: SpecificFindingCorrelations) {
+    const graphData: CorrelationGraphData = {
+      graph: {
+        nodes: [],
+        edges: [],
+      },
+      events: {
+        click: (params: any) => {
+          console.log(params);
+        },
+      },
+    };
+
+    this.addNode(graphData.graph.nodes, specificFindingInfo.finding);
+    specificFindingInfo.correlatedFindings.forEach((finding) => {
+      this.addNode(graphData.graph.nodes, finding);
+      this.addEdge(graphData.graph.edges, specificFindingInfo.finding, finding);
+    });
+
+    this.setState({ graphData });
   }
 
   private addNode(nodes: any[], finding: CorrelationFinding) {

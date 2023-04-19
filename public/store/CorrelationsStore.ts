@@ -16,6 +16,8 @@ import { DetectorsService, FindingsService } from '../services';
 import CorrelationService from '../services/CorrelationService';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../utils/helpers';
+import { DataStore } from './DataStore';
+import { DEFAULT_EMPTY_DATA } from '../utils/constants';
 
 class DummyCorrelationDataProvider {
   private generatedPairs: Set<string> = new Set();
@@ -205,9 +207,36 @@ export class CorrelationsStore implements ICorrelationsStore {
     return response.ok;
   }
 
-  public getAllCorrelationsInWindow(
-    timeWindow?: any
-  ): { finding1: CorrelationFinding; finding2: CorrelationFinding }[] {
+  public async getAllCorrelationsInWindow(
+    start_time: string,
+    end_time: string
+  ): Promise<{ finding1: CorrelationFinding; finding2: CorrelationFinding }[]> {
+    const allCorrelationsRes = await this.service.getAllCorrelationsInTimeWindow(
+      start_time,
+      end_time
+    );
+    const allFindings = await this.fetchAllFindings();
+
+    const result: { finding1: CorrelationFinding; finding2: CorrelationFinding }[] = [];
+
+    if (allCorrelationsRes.ok) {
+      allCorrelationsRes.response.findings.forEach(({ finding1, logType1, finding2, logType2 }) => {
+        const f1 = allFindings[finding1];
+        const f2 = allFindings[finding2];
+        if (f1 && f2)
+          result.push({
+            finding1: {
+              ...f1,
+            },
+            finding2: {
+              ...f2,
+            },
+          });
+      });
+
+      return result;
+    }
+
     return [];
   }
 
@@ -218,17 +247,25 @@ export class CorrelationsStore implements ICorrelationsStore {
     if (detectorsRes.ok) {
       const detectors = detectorsRes.response.hits.hits;
       let findings: { [id: string]: CorrelationFinding } = {};
+      const allRules = await DataStore.rules.getAllRules();
 
       for (let detector of detectors) {
         const findingRes = await this.findingsService.getFindings({ detectorId: detector._id });
 
         if (findingRes.ok) {
           findingRes.response.findings.forEach((f) => {
+            const rule = allRules.find((rule) => rule._id === f.queries[0].id);
+
             findings[f.id] = {
               id: f.id,
-              logType: detector._source.type,
-              timestamp: new Date(f.timestamp).toLocaleDateString(),
-              detectionRule: f.queries[0],
+              logType: detector._source.detector_type,
+              timestamp: new Date(f.timestamp).toLocaleString(),
+              detectionRule: rule
+                ? {
+                    name: rule._source.title,
+                    severity: rule._source.level,
+                  }
+                : { name: DEFAULT_EMPTY_DATA, severity: DEFAULT_EMPTY_DATA },
             };
           });
 
@@ -258,7 +295,7 @@ export class CorrelationsStore implements ICorrelationsStore {
       const correlatedFindings = response.response.findings.map((f) => {
         return {
           ...allFindings[f.finding],
-          correlationScore: f.score,
+          correlationScore: Math.round(100 * f.score) / 100,
         };
       });
       return {

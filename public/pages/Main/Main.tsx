@@ -249,7 +249,6 @@ export default class Main extends Component<MainProps, MainState> {
               history.push(ROUTES.CORRELATIONS);
             },
             renderItem: (props) => {
-              console.log(props);
               return (
                 <EuiFlexGroup alignItems="center" gutterSize="xs">
                   <EuiFlexItem grow={false}>
