@@ -10,7 +10,6 @@ import {
   CorrelationRuleHit,
   ICorrelationsStore,
 } from '../../types';
-import 'font-awesome/css/font-awesome.min.css';
 import { DetectorsService, FindingsService } from '../services';
 import CorrelationService from '../services/CorrelationService';
 import { NotificationsStart } from 'opensearch-dashboards/public';

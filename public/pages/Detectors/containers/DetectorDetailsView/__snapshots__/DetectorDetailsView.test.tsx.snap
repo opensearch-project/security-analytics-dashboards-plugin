@@ -1842,23 +1842,33 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                         "name": "Rule Severity",
                         "options": Array [
                           Object {
+                            "color": "#cc5642",
                             "name": "Critical",
+                            "priority": "1",
                             "value": "critical",
                           },
                           Object {
+                            "color": "#e7664c",
                             "name": "High",
+                            "priority": "2",
                             "value": "high",
                           },
                           Object {
+                            "color": "#d6bf57",
                             "name": "Medium",
+                            "priority": "3",
                             "value": "medium",
                           },
                           Object {
+                            "color": "#54b399",
                             "name": "Low",
+                            "priority": "4",
                             "value": "low",
                           },
                           Object {
+                            "color": "#209280",
                             "name": "Informational",
+                            "priority": "5",
                             "value": "informational",
                           },
                         ],
@@ -1979,23 +1989,33 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                           "name": "Rule Severity",
                           "options": Array [
                             Object {
+                              "color": "#cc5642",
                               "name": "Critical",
+                              "priority": "1",
                               "value": "critical",
                             },
                             Object {
+                              "color": "#e7664c",
                               "name": "High",
+                              "priority": "2",
                               "value": "high",
                             },
                             Object {
+                              "color": "#d6bf57",
                               "name": "Medium",
+                              "priority": "3",
                               "value": "medium",
                             },
                             Object {
+                              "color": "#54b399",
                               "name": "Low",
+                              "priority": "4",
                               "value": "low",
                             },
                             Object {
+                              "color": "#209280",
                               "name": "Informational",
+                              "priority": "5",
                               "value": "informational",
                             },
                           ],
@@ -2188,23 +2208,33 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                     "name": "Rule Severity",
                                     "options": Array [
                                       Object {
+                                        "color": "#cc5642",
                                         "name": "Critical",
+                                        "priority": "1",
                                         "value": "critical",
                                       },
                                       Object {
+                                        "color": "#e7664c",
                                         "name": "High",
+                                        "priority": "2",
                                         "value": "high",
                                       },
                                       Object {
+                                        "color": "#d6bf57",
                                         "name": "Medium",
+                                        "priority": "3",
                                         "value": "medium",
                                       },
                                       Object {
+                                        "color": "#54b399",
                                         "name": "Low",
+                                        "priority": "4",
                                         "value": "low",
                                       },
                                       Object {
+                                        "color": "#209280",
                                         "name": "Informational",
+                                        "priority": "5",
                                         "value": "informational",
                                       },
                                     ],
@@ -2441,23 +2471,33 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                         "name": "Rule Severity",
                                         "options": Array [
                                           Object {
+                                            "color": "#cc5642",
                                             "name": "Critical",
+                                            "priority": "1",
                                             "value": "critical",
                                           },
                                           Object {
+                                            "color": "#e7664c",
                                             "name": "High",
+                                            "priority": "2",
                                             "value": "high",
                                           },
                                           Object {
+                                            "color": "#d6bf57",
                                             "name": "Medium",
+                                            "priority": "3",
                                             "value": "medium",
                                           },
                                           Object {
+                                            "color": "#54b399",
                                             "name": "Low",
+                                            "priority": "4",
                                             "value": "low",
                                           },
                                           Object {
+                                            "color": "#209280",
                                             "name": "Informational",
+                                            "priority": "5",
                                             "value": "informational",
                                           },
                                         ],
