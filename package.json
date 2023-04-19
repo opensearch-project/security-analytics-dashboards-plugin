@@ -71,6 +71,7 @@
     "yarn": "^1.21.1"
   },
   "dependencies": {
-    "formik": "^2.2.6"
+    "formik": "^2.2.6",
+    "react-graph-vis": "^1.0.7"
   }
 }

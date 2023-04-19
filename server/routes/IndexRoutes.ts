@@ -21,6 +21,16 @@ export function setupIndexRoutes(services: NodeServices, router: IRouter) {
 
   router.post(
     {
+      path: `${API.INDICES_BASE}`,
+      validate: {
+        body: schema.any(),
+      },
+    },
+    indexService.getIndexFields
+  );
+
+  router.post(
+    {
       path: API.UPDATE_ALIASES,
       validate: {
         body: schema.any(),

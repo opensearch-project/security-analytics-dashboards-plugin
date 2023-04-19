@@ -4,6 +4,7 @@
  */
 
 export * from './DetectorRoutes';
+export * from './CorrelationRoutes';
 export * from './FindingsRoutes';
 export * from './OpenSearchRoutes';
 export * from './FieldMappingRoutes';

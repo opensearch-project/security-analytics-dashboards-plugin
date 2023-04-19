@@ -28,13 +28,13 @@ import {
   formatRuleType,
   renderTime,
 } from '../../../../utils/helpers';
-import { FindingsService, OpenSearchService } from '../../../../services';
+import { FindingsService, IndexPatternsService, OpenSearchService } from '../../../../services';
 import FindingDetailsFlyout from '../../../Findings/components/FindingDetailsFlyout';
-import { Detector } from '../../../../../models/interfaces';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { Finding } from '../../../Findings/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { DataStore } from '../../../../store/DataStore';
+import { Detector } from '../../../../../types';
 
 export interface AlertFlyoutProps {
   alertItem: AlertItem;
@@ -42,6 +42,7 @@ export interface AlertFlyoutProps {
   findingsService: FindingsService;
   notifications: NotificationsStart;
   opensearchService: OpenSearchService;
+  indexPatternService: IndexPatternsService;
   onClose: () => void;
   onAcknowledge: (selectedItems: AlertItem[]) => void;
 }
@@ -180,9 +181,10 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
       <FindingDetailsFlyout
         {...this.props}
         finding={{
-          ...findingFlyoutData,
-          detector: { _id: detector.id, _index: '', _source: detector },
+          ...(findingFlyoutData as Finding),
+          detector: { _id: detector.id as string, _index: '', _source: detector },
         }}
+        findings={findingItems}
         closeFlyout={onClose}
         backButton={
           <EuiButtonIcon
@@ -195,6 +197,7 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
           />
         }
         allRules={rules}
+        indexPatternsService={this.props.indexPatternService}
       />
     ) : (
       <EuiFlyout
