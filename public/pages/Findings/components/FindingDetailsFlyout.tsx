@@ -39,7 +39,7 @@ import { Query } from '../models/interfaces';
 import { RuleViewerFlyout } from '../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
 import { RuleSource } from '../../../../server/models/interfaces';
 import { OpenSearchService, IndexPatternsService } from '../../../services';
-import { RuleTableItem } from '../../Rules/utils/helpers';
+import { getSeverityBadge, RuleTableItem } from '../../Rules/utils/helpers';
 import { CreateIndexPatternForm } from './CreateIndexPatternForm';
 import { FindingItemType } from '../containers/Findings/Findings';
 import { CorrelationRule, CorrelationRuleQuery, RuleItemInfoBase } from '../../../../types';
@@ -47,6 +47,7 @@ import { FindingFlyoutTabId, FindingFlyoutTabs } from '../utils/constants';
 import { DataStore } from '../../../store/DataStore';
 import CorrelationService from '../../../services/CorrelationService';
 import { RouteComponentProps } from 'react-router-dom';
+import { ruleTypes } from '../../Rules/utils/constants';
 
 interface FindingDetailsFlyoutProps extends RouteComponentProps {
   finding: FindingItemType;
@@ -387,34 +388,37 @@ export default class FindingDetailsFlyout extends Component<
   private createCorrelationsTable() {
     const columns: EuiBasicTableColumn<CorrelationRule>[] = [
       {
-        field: 'name',
-        name: 'Name',
+        field: 'timestamp',
+        name: 'Time',
         sortable: true,
         truncateText: true,
       },
       {
-        name: 'Log types',
-        render: (ruleItem: CorrelationRule) => {
-          return 'DNS, S3';
-        },
+        field: 'id',
+        name: 'Correlation rule',
+        sortable: true,
+        truncateText: true,
       },
       {
-        field: 'queries',
-        name: 'Queries',
-        render: (queries: CorrelationRuleQuery, ruleItem: CorrelationRule) => {
-          return 10;
-        },
+        field: 'logType',
+        name: 'Log type',
+        sortable: true,
+        render: (category: string) =>
+          // TODO: This formatting may need some refactoring depending on the response payload
+          ruleTypes.find((ruleType) => ruleType.value === category)?.label || DEFAULT_EMPTY_DATA,
       },
       {
-        name: 'Correlations for last 24 hrs',
-        render: (ruleItem: CorrelationRule) => {
-          return 'hello world';
-        },
+        field: 'severity',
+        name: 'Rule severity',
+        sortable: true,
+        truncateText: true,
+        align: 'center',
+        render: (severity) => getSeverityBadge(severity),
       },
       {
-        name: 'Actions',
-        field: '',
-        actions: [{ render: (ruleItem: CorrelationRule) => <p>hello</p> }],
+        field: 'correlationScore',
+        name: 'Score',
+        sortable: true,
       },
     ];
 
@@ -448,48 +452,11 @@ export default class FindingDetailsFlyout extends Component<
 
   private createFindingDetails() {
     const {
-      finding: {
-        id,
-        detector: {
-          _id,
-          _source: { name },
-        },
-        queries,
-        timestamp,
-      },
+      finding: { queries },
     } = this.props;
 
     return (
       <>
-        <EuiFlexGroup>
-          <EuiFlexItem>
-            <EuiFormRow label={'Finding ID'}>
-              <EuiText data-test-subj={'finding-details-flyout-finding-id'}>
-                {id || DEFAULT_EMPTY_DATA}
-              </EuiText>
-            </EuiFormRow>
-          </EuiFlexItem>
-
-          <EuiFlexItem>
-            <EuiFormRow label={'Finding time'} data-test-subj={'finding-details-flyout-timestamp'}>
-              <EuiText>{renderTime(timestamp) || DEFAULT_EMPTY_DATA}</EuiText>
-            </EuiFormRow>
-          </EuiFlexItem>
-
-          <EuiFlexItem>
-            <EuiFormRow label={'Detector'}>
-              <EuiLink
-                href={`#${ROUTES.DETECTOR_DETAILS}/${_id}`}
-                target={'_blank'}
-                data-test-subj={'finding-details-flyout-detector-link'}
-              >
-                {name || DEFAULT_EMPTY_DATA}
-              </EuiLink>
-            </EuiFormRow>
-          </EuiFlexItem>
-        </EuiFlexGroup>
-
-        <EuiSpacer size={'m'} />
         <EuiTitle size={'s'}>
           <h3>Rule details</h3>
         </EuiTitle>
@@ -503,6 +470,16 @@ export default class FindingDetailsFlyout extends Component<
 
   render() {
     const { closeFlyout, backButton } = this.props;
+    const {
+      finding: {
+        id,
+        detector: {
+          _id,
+          _source: { name },
+        },
+        timestamp,
+      },
+    } = this.props;
     return (
       <EuiFlyout
         onClose={closeFlyout}
@@ -543,6 +520,38 @@ export default class FindingDetailsFlyout extends Component<
           </EuiFlexGroup>
         </EuiFlyoutHeader>
         <EuiFlyoutBody>
+          <EuiFlexGroup>
+            <EuiFlexItem>
+              <EuiFormRow label={'Finding ID'}>
+                <EuiText data-test-subj={'finding-details-flyout-finding-id'}>
+                  {id || DEFAULT_EMPTY_DATA}
+                </EuiText>
+              </EuiFormRow>
+            </EuiFlexItem>
+
+            <EuiFlexItem>
+              <EuiFormRow
+                label={'Finding time'}
+                data-test-subj={'finding-details-flyout-timestamp'}
+              >
+                <EuiText>{renderTime(timestamp) || DEFAULT_EMPTY_DATA}</EuiText>
+              </EuiFormRow>
+            </EuiFlexItem>
+
+            <EuiFlexItem>
+              <EuiFormRow label={'Detector'}>
+                <EuiLink
+                  href={`#${ROUTES.DETECTOR_DETAILS}/${_id}`}
+                  target={'_blank'}
+                  data-test-subj={'finding-details-flyout-detector-link'}
+                >
+                  {name || DEFAULT_EMPTY_DATA}
+                </EuiLink>
+              </EuiFormRow>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+
+          <EuiSpacer size={'m'} />
           <EuiTabs>
             {FindingFlyoutTabs.map((tab) => {
               return (
