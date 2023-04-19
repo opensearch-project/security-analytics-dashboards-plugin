@@ -25,11 +25,18 @@ import {
   EuiFlyoutBody,
   EuiButtonIcon,
   EuiText,
+  EuiEmptyPrompt,
+  EuiButton,
 } from '@elastic/eui';
 import { CorrelationsExperimentalBanner } from '../components/ExperimentalBanner';
 import { FilterItem, FilterGroup } from '../components/FilterGroup';
 import { CoreServicesContext } from '../../../components/core_services';
-import { DEFAULT_DATE_RANGE, MAX_RECENTLY_USED_TIME_RANGES } from '../../../utils/constants';
+import {
+  BREADCRUMBS,
+  DEFAULT_DATE_RANGE,
+  MAX_RECENTLY_USED_TIME_RANGES,
+  ROUTES,
+} from '../../../utils/constants';
 import { CorrelationGraph } from '../components/CorrelationGraph';
 import { FindingCard } from '../components/FindingCard';
 import { DataStore } from '../../../store/DataStore';
@@ -88,6 +95,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
   }
 
   async componentDidMount(): Promise<void> {
+    this.context.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.CORRELATIONS]);
     this.updateState();
   }
 
@@ -413,11 +421,31 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                 </EuiFlexItem>
               </EuiFlexGroup>
               <EuiSpacer />
-              <CorrelationGraph
-                graph={this.state.graphData.graph}
-                options={{ ...graphRenderOptions }}
-                events={this.state.graphData.events}
-              />
+              {this.state.graphData.graph.nodes.length > 0 ? (
+                <CorrelationGraph
+                  graph={this.state.graphData.graph}
+                  options={{ ...graphRenderOptions }}
+                  events={this.state.graphData.events}
+                />
+              ) : (
+                <EuiEmptyPrompt
+                  title={
+                    <EuiTitle>
+                      <h1>No correlations found</h1>
+                    </EuiTitle>
+                  }
+                  body={<p>There are no correlated findings in the system.</p>}
+                  actions={[
+                    <EuiButton
+                      fill={true}
+                      color="primary"
+                      href={`#${ROUTES.CORRELATION_RULE_CREATE}`}
+                    >
+                      Create correlation rule
+                    </EuiButton>,
+                  ]}
+                />
+              )}
             </EuiPanel>
           </EuiFlexItem>
         </EuiFlexGroup>

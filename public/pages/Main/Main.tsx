@@ -494,6 +494,7 @@ export default class Main extends Component<MainProps, MainState> {
                               {...props}
                               indexService={services?.indexService}
                               fieldMappingService={services?.fieldMappingService}
+                              notifications={core?.notifications}
                             />
                           )}
                         />

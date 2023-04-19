@@ -11,7 +11,7 @@ import {
   RequestHandlerContext,
   ILegacyCustomClusterClient,
 } from 'opensearch-dashboards/server';
-import { API, CLIENT_CORRELATION_METHODS } from '../utils/constants';
+import { CLIENT_CORRELATION_METHODS } from '../utils/constants';
 import { ServerResponse } from '../models/types';
 import {
   GetAllCorrelationsInTimeRangeResponse,
@@ -138,19 +138,19 @@ export default class CorrelationService {
       const { finding, detector_type, nearby_findings = 20 } = request.query;
       const params: any = { finding, detector_type, nearby_findings };
       const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      // const getCorrelationFindingsResponse: GetCorrelationFindingsResponse = await callWithRequest(
-      //   CLIENT_CORRELATION_METHODS.GET_CORRELATED_FINDINGS,
-      //   params
-      // );
-      const getCorrelationFindingsResponse: GetCorrelationFindingsResponse = {
-        findings: [
-          {
-            finding: 'bce7680d-cce1-4ce3-9499-18b49ff405f9',
-            detector_type: 'dns',
-            score: 0.00001632626481296029,
-          },
-        ],
-      };
+      const getCorrelationFindingsResponse: GetCorrelationFindingsResponse = await callWithRequest(
+        CLIENT_CORRELATION_METHODS.GET_CORRELATED_FINDINGS,
+        params
+      );
+      // const getCorrelationFindingsResponse: GetCorrelationFindingsResponse = {
+      //   findings: [
+      //     {
+      //       finding: 'bce7680d-cce1-4ce3-9499-18b49ff405f9',
+      //       detector_type: 'dns',
+      //       score: 0.00001632626481296029,
+      //     },
+      //   ],
+      // };
 
       return response.custom({
         statusCode: 200,
@@ -185,20 +185,20 @@ export default class CorrelationService {
       console.log(request.query);
       const params: any = { start_timestamp, end_timestamp };
       const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      // const getCorrelationsResponse: GetAllCorrelationsInTimeRangeResponse = await callWithRequest(
-      //   CLIENT_CORRELATION_METHODS.GET_ALL_CORRELATIONS,
-      //   params
-      // );
-      const getCorrelationsResponse: GetAllCorrelationsInTimeRangeResponse = {
-        findings: [
-          {
-            finding1: 'bce7680d-cce1-4ce3-9499-18b49ff405f9',
-            logType1: 'dns',
-            finding2: '5fe4a9c1-b1ca-4085-9291-85dccd8c8e11',
-            logType2: 'network',
-          },
-        ],
-      };
+      const getCorrelationsResponse: GetAllCorrelationsInTimeRangeResponse = await callWithRequest(
+        CLIENT_CORRELATION_METHODS.GET_ALL_CORRELATIONS,
+        params
+      );
+      // const getCorrelationsResponse: GetAllCorrelationsInTimeRangeResponse = {
+      //   findings: [
+      //     {
+      //       finding1: 'bce7680d-cce1-4ce3-9499-18b49ff405f9',
+      //       logType1: 'dns',
+      //       finding2: '5fe4a9c1-b1ca-4085-9291-85dccd8c8e11',
+      //       logType2: 'network',
+      //     },
+      //   ],
+      // };
 
       return response.custom({
         statusCode: 200,

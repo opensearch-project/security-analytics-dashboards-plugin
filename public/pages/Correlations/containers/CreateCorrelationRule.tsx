@@ -35,12 +35,13 @@ import { RouteComponentProps } from 'react-router-dom';
 import { CorrelationsExperimentalBanner } from '../components/ExperimentalBanner';
 import { validateName } from '../../../utils/validation';
 import { FieldMappingService, IndexService } from '../../../services';
+import { errorNotificationToast } from '../../../utils/helpers';
 
 export interface CreateCorrelationRuleProps {
   indexService: IndexService;
   fieldMappingService: FieldMappingService;
-  history: RouteComponentProps['history'];
-  notifications?: NotificationsStart;
+  history: RouteComponentProps<any, any, { rule: CorrelationRuleModel }>['history'];
+  notifications: NotificationsStart | null;
 }
 
 export interface CorrelationOptions {
@@ -52,9 +53,53 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
   props: CreateCorrelationRuleProps
 ) => {
   const correlationStore = DataStore.correlationsStore;
+  const validateCorrelationRule = useCallback((rule: CorrelationRuleModel) => {
+    if (!rule.name) {
+      return 'Invalid rule name';
+    }
+
+    let error = '';
+    const invalidQuery = rule.queries.some((query, index) => {
+      const invalidIndex = !query.index;
+      if (invalidIndex) {
+        error = `Invalid index for query ${index + 1}`;
+        return true;
+      }
+
+      const invalidlogType = !query.logType;
+      if (invalidlogType) {
+        error = `Invalid log type for query ${index + 1}`;
+        return true;
+      }
+
+      return query.conditions.some((cond) => {
+        const invalid = !cond.name || !cond.value;
+        if (invalid) {
+          error = `Invalid fields for query ${index + 1}`;
+          return true;
+        }
+
+        return false;
+      });
+    });
+
+    if (invalidQuery) {
+      return error;
+    }
+
+    return undefined;
+  }, []);
 
   const submit = async (values: any) => {
+    let error;
+    if ((error = validateCorrelationRule(values))) {
+      errorNotificationToast(props.notifications, 'Create', 'rule', error);
+      return;
+    }
+
     await correlationStore.createCorrelationRule(values);
+
+    props.history.push(ROUTES.CORRELATION_RULES);
   };
 
   const context = useContext(CoreServicesContext);
@@ -239,6 +284,11 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                         selectedOptions={
                           condition.name ? [{ value: condition.name, label: condition.name }] : []
                         }
+                        onCreateOption={(e) => {
+                          props.handleChange(
+                            `queries[${queryIdx}].conditions[${conditionIdx}].name`
+                          )(e);
+                        }}
                         isClearable={true}
                       />
                     );
@@ -471,7 +521,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>
                   <EuiButton
-                    href={`#${ROUTES.CORRELATIONS}`}
                     onClick={() => {
                       props.handleSubmit();
                     }}
