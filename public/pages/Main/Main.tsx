@@ -500,9 +500,15 @@ export default class Main extends Component<MainProps, MainState> {
                         />
                         <Route
                           path={`${ROUTES.CORRELATIONS}`}
-                          render={(props: RouteComponentProps<any, any, any>) => (
-                            <Correlations {...props} history={props.history} />
-                          )}
+                          render={(props: RouteComponentProps<any, any, any>) => {
+                            return (
+                              <Correlations
+                                {...props}
+                                history={props.history}
+                                onMount={() => this.setState({ selectedNavItemIndex: 6 })}
+                              />
+                            );
+                          }}
                         />
                         <Redirect from={'/'} to={landingPage} />
                       </Switch>

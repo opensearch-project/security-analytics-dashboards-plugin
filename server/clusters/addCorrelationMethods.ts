@@ -38,7 +38,7 @@ export function addCorrelationMethods(securityAnalytics: any, createAction: any)
 
   securityAnalytics[METHOD_NAMES.GET_CORRELATED_FINDINGS] = createAction({
     url: {
-      fmt: `${API.FINDINGS_BASE}/correlate`,
+      fmt: `${API.FINDINGS_BASE}/correlate?finding=<%=finding%>&detector_type=<%=detector_type%>&nearby_findings=<%=nearby_findings%>`,
       req: {
         finding: {
           type: 'string',
@@ -60,13 +60,13 @@ export function addCorrelationMethods(securityAnalytics: any, createAction: any)
 
   securityAnalytics[METHOD_NAMES.GET_ALL_CORRELATIONS] = createAction({
     url: {
-      fmt: `${API.CORRELATIONS}`,
+      fmt: `${API.CORRELATIONS}?start_timestamp=<%=start_timestamp%>&end_timestamp=<%=end_timestamp%>`,
       req: {
-        start_time: {
+        start_timestamp: {
           type: 'string',
           required: true,
         },
-        end_time: {
+        end_timestamp: {
           type: 'string',
           required: true,
         },

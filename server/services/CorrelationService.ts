@@ -172,9 +172,8 @@ export default class CorrelationService {
     >
   > => {
     try {
-      const { start_timestamp, end_timestamp } = request.query;
-      console.log(request.query);
-      const params: any = { start_timestamp, end_timestamp };
+      const { start_time, end_time } = request.query as { start_time: string; end_time: string };
+      const params: any = { start_timestamp: start_time, end_timestamp: end_time };
       const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
       const getCorrelationsResponse: GetAllCorrelationsInTimeRangeResponse = await callWithRequest(
         CLIENT_CORRELATION_METHODS.GET_ALL_CORRELATIONS,

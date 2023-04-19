@@ -43,7 +43,6 @@ export const graphRenderOptions = {
     dragView: true,
     dragNodes: false,
     multiselect: true,
-    hover: true,
     tooltipDelay: 50,
   },
 };
@@ -126,5 +125,5 @@ export const getSeverityLabel = (sev: string) => {
 };
 
 export const getSeverityColor = (sev: string) => {
-  return ruleSeverity.find((severity) => severity.value === sev)?.color;
+  return ruleSeverity.find((severity) => severity.value === sev)?.color || 'black';
 };
