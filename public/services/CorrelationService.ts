@@ -33,9 +33,7 @@ export default class CorrelationService implements ICorrelationsService {
     })) as ServerResponse<GetCorrelationFindingsResponse>;
   };
 
-  getCorrelationRules = async (
-    index?: string
-  ): Promise<ServerResponse<SearchCorrelationRulesResponse>> => {
+  getCorrelationRules = async (): Promise<ServerResponse<SearchCorrelationRulesResponse>> => {
     const url = `..${API.CORRELATION_BASE}/_search`;
 
     let query = { match_all: {} };
