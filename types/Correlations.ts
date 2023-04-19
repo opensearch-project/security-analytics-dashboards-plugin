@@ -110,7 +110,7 @@ export interface ICorrelationsStore {
   createCorrelationRule(correlationRule: CorrelationRule): void;
   deleteCorrelationRule(ruleId: string): Promise<boolean>;
   registerGraphEventHandler(event: string, handler: CorrelationGraphEventHandler): void;
-  getAllFindings(): { [id: string]: CorrelationFinding };
+  // getAllFindings(): { [id: string]: CorrelationFinding };
 
   getAllCorrelationsInWindow(
     timeWindow?: any
@@ -119,7 +119,7 @@ export interface ICorrelationsStore {
   //  findingId: string
   //): { finding: CorrelationFinding; correlatedFindings: CorrelationFinding[] };
   allFindings: { [id: string]: CorrelationFinding };
-  fetchAllFindings(): { [id: string]: CorrelationFinding };
+  fetchAllFindings(): Promise<{ [id: string]: CorrelationFinding }>;
 }
 
 export type CorrelationLevelInfo =

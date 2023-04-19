@@ -30,7 +30,7 @@ export interface FindingCardProps {
   correlationData?: {
     // ruleName: string;
     score: number;
-    onInspect: (findingId: string) => void;
+    onInspect: (findingId: string, logType: string) => void;
   };
 }
 
@@ -48,7 +48,10 @@ export const FindingCard: React.FC<FindingCardProps> = ({
           <EuiText style={{ fontSize: 22, fontWeight: 300 }}>{correlationData.score}</EuiText>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButtonIcon iconType={'inspect'} onClick={() => correlationData.onInspect(id)} />
+          <EuiButtonIcon
+            iconType={'inspect'}
+            onClick={() => correlationData.onInspect(id, logType)}
+          />
         </EuiFlexItem>
       </EuiFlexGroup>
       <EuiText size="s">Correlation score</EuiText>

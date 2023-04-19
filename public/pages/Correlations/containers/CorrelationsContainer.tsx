@@ -33,24 +33,27 @@ import { DEFAULT_DATE_RANGE, MAX_RECENTLY_USED_TIME_RANGES } from '../../../util
 import { CorrelationGraph } from '../components/CorrelationGraph';
 import { FindingCard } from '../components/FindingCard';
 import { DataStore } from '../../../store/DataStore';
+import { FindingItemType } from '../../Findings/containers/Findings/Findings';
 
 interface CorrelationsProps
   extends RouteComponentProps<
     any,
     any,
-    { finding: CorrelationFinding; correlatedFindings: CorrelationFinding[] }
+    { finding: FindingItemType; correlatedFindings: CorrelationFinding[] }
   > {
   setDateTimeFilter?: Function;
   dateTimeFilter?: DateTimeFilter;
 }
 
+interface SpecificFindingCorrelations {
+  finding: CorrelationFinding;
+  correlatedFindings: CorrelationFinding[];
+}
+
 interface CorrelationsState {
   recentlyUsedRanges: any[];
   graphData: CorrelationGraphData;
-  specificFindingInfo?: {
-    finding: CorrelationFinding;
-    correlatedFindings: CorrelationFinding[];
-  };
+  specificFindingInfo?: SpecificFindingCorrelations;
   logTypeFilterOptions: FilterItem[];
   severityFilterOptions: FilterItem[];
 }
@@ -65,7 +68,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       graphData: { ...emptyGraphData },
       logTypeFilterOptions: [...defaultLogTypeFilterItemOptions],
       severityFilterOptions: [...defaultSeverityFilterItemOptions],
-      specificFindingInfo: DataStore.correlationsStore.getCorrelatedFindings(''),
+      specificFindingInfo: undefined,
     };
     this.dateTimeFilter = this.props.dateTimeFilter || {
       startTime: DEFAULT_DATE_RANGE.start,
@@ -73,9 +76,18 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     };
   }
 
-  componentDidMount(): void {
+  async componentDidMount(): Promise<void> {
     if (this.props.location.state) {
-      const specificFindingInfo = this.props.location.state;
+      const state = this.props.location.state;
+      const specificFindingInfo: SpecificFindingCorrelations = {
+        finding: {
+          id: state.finding.id,
+          logType: state.finding.detector._source.type,
+          timestamp: new Date(state.finding.timestamp).toLocaleString(),
+          detectionRule: state.finding.queries[0],
+        },
+        correlatedFindings: state.correlatedFindings,
+      };
       this.setState({ specificFindingInfo });
 
       // create graph data here
@@ -130,6 +142,12 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
 
       this.setState({ graphData });
     }
+
+    const specificFindingInfo = await DataStore.correlationsStore.getCorrelatedFindings(
+      '2c159094-7759-44ff-9002-07220c45af1f',
+      ''
+    );
+    this.setState({ specificFindingInfo });
   }
 
   private addNode(nodes: any[], finding: CorrelationFinding) {
@@ -203,15 +221,12 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     this.setState({ specificFindingInfo: undefined });
   };
 
-  getFindingCardData(findingId: string) {
-    const correlatedFindings = DataStore.correlationsStore.getCorrelatedFindings(findingId);
-
-    return correlatedFindings;
-  }
-
-  onFindingInspect = (id: string) => {
+  onFindingInspect = async (id: string, logType: string) => {
     // get finding data and set the specificFindingInfo
-    const specificFindingInfo = DataStore.correlationsStore.getCorrelatedFindings(id);
+    const specificFindingInfo = await DataStore.correlationsStore.getCorrelatedFindings(
+      id,
+      logType
+    );
     this.setState({ specificFindingInfo });
   };
 

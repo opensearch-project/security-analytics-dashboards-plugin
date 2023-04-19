@@ -12,14 +12,10 @@ import {
 } from '../../types';
 import { DETECTOR_TYPES } from '../pages/Detectors/utils/constants';
 import 'font-awesome/css/font-awesome.min.css';
-import { iconByLogType } from '../pages/Correlations/utils/constants';
 import { DetectorsService, FindingsService } from '../services';
-import { ruleSeverity, ruleTypes } from '../pages/Rules/utils/constants';
 import CorrelationService from '../services/CorrelationService';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../utils/helpers';
-import { FindingItemType } from '../pages/Findings/containers/Findings/Findings';
-import { DetectorService } from '../../server/services';
 
 class DummyCorrelationDataProvider {
   private generatedPairs: Set<string> = new Set();
@@ -149,7 +145,7 @@ export class CorrelationsStore implements ICorrelationsStore {
 
   constructor(
     service: CorrelationService,
-    detectorsService: DetectorService,
+    detectorsService: DetectorsService,
     findingsService: FindingsService,
     notifications: NotificationsStart
   ) {
@@ -212,47 +208,46 @@ export class CorrelationsStore implements ICorrelationsStore {
   public getAllCorrelationsInWindow(
     timeWindow?: any
   ): { finding1: CorrelationFinding; finding2: CorrelationFinding }[] {
-    return {};
+    return [];
   }
 
   public allFindings: { [id: string]: CorrelationFinding } = {};
 
-  public async fetchAllFindings(): { [id: string]: CorrelationFinding } {
+  public async fetchAllFindings(): Promise<{ [id: string]: CorrelationFinding }> {
     const detectorsRes = await this.detectorsService.getDetectors();
     if (detectorsRes.ok) {
       const detectors = detectorsRes.response.hits.hits;
-      const ruleIds = new Set<string>();
-      let findings: FindingItemType[] = [];
+      let findings: { [id: string]: CorrelationFinding } = {};
 
       for (let detector of detectors) {
         const findingRes = await this.findingsService.getFindings({ detectorId: detector._id });
 
         if (findingRes.ok) {
-          findingRes.response.findings.map((finding) => {
-            finding.queries.forEach((rule) => ruleIds.add(rule.id));
-            findings = Object.assign(findings, {
-              [finding.id]: {
-                ...finding,
-                detector: detector,
-              },
-            });
+          findingRes.response.findings.forEach((f) => {
+            findings[f.id] = {
+              id: f.id,
+              logType: detector._source.type,
+              timestamp: new Date(f.timestamp).toLocaleDateString(),
+              detectionRule: f.queries[0],
+            };
           });
+
+          this.allFindings = findings;
         } else {
           this.allFindings = {};
         }
       }
-
-      this.allFindings = findings;
     }
 
-    this.allFindings = {};
+    return this.allFindings;
   }
 
   public async getCorrelatedFindings(
     finding: string,
     detector_type: string,
     nearby_findings = 20
-  ): Promise<CorrelationFinding[]> {
+  ): Promise<{ finding: CorrelationFinding; correlatedFindings: CorrelationFinding[] }> {
+    const allFindings = await this.fetchAllFindings();
     const response = await this.service.getCorrelatedFindings(
       finding,
       detector_type,
@@ -260,10 +255,28 @@ export class CorrelationsStore implements ICorrelationsStore {
     );
 
     if (response?.ok) {
-      return response.response.findings;
+      const correlatedFindings = response.response.findings.map((f) => {
+        return {
+          ...allFindings[f.finding],
+          correlationScore: f.score,
+        };
+      });
+      return {
+        finding: allFindings[finding],
+        correlatedFindings,
+      };
     }
 
-    return [];
+    return {
+      finding: {
+        id: finding,
+        logType: detector_type,
+        timestamp: '',
+        detectionRule: { name: '', severity: 'high' },
+      },
+      correlatedFindings: [],
+    };
+  }
   /*
   public getAllFindings(): { [id: string]: CorrelationFinding } {
     return {};
@@ -361,5 +374,5 @@ export class CorrelationsStore implements ICorrelationsStore {
   public fetchAllFindings(): { [id: string]: CorrelationFinding } {
     return {};
   */
-  }
+  // }
 }

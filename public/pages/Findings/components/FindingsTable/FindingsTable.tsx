@@ -137,6 +137,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
             allRules={this.props.rules}
             indexPatternsService={this.props.indexPatternsService}
             correlationService={this.props.correlationService}
+            // {...this.props}
           />
         ),
         flyoutOpen: true,

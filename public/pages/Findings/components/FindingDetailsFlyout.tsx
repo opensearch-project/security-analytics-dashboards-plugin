@@ -46,8 +46,9 @@ import { CorrelationRule, CorrelationRuleQuery, RuleItemInfoBase } from '../../.
 import { FindingFlyoutTabId, FindingFlyoutTabs } from '../utils/constants';
 import { DataStore } from '../../../store/DataStore';
 import CorrelationService from '../../../services/CorrelationService';
+import { RouteComponentProps } from 'react-router-dom';
 
-interface FindingDetailsFlyoutProps {
+interface FindingDetailsFlyoutProps extends RouteComponentProps {
   finding: FindingItemType;
   findings: FindingItemType[];
   backButton?: React.ReactNode;
@@ -64,6 +65,7 @@ interface FindingDetailsFlyoutState {
   indexPatternId?: string;
   isCreateIndexPatternModalVisible: boolean;
   selectedTab: { id: string; content: React.ReactNode | null };
+  correlatedFindings: any[];
 }
 
 export default class FindingDetailsFlyout extends Component<
@@ -77,6 +79,7 @@ export default class FindingDetailsFlyout extends Component<
       ruleViewerFlyoutData: null,
       isCreateIndexPatternModalVisible: false,
       selectedTab: { id: FindingFlyoutTabId.DETAILS, content: null },
+      correlatedFindings: [],
     };
   }
 
@@ -92,12 +95,12 @@ export default class FindingDetailsFlyout extends Component<
     DataStore.correlationsStore
       .getCorrelatedFindings(id, detector._source?.detector_type)
       .then((findings) => {
-        if (findings?.length) {
-          let correlatedFindings = [];
-          findings.map((finding) => {
+        if (findings?.correlatedFindings.length) {
+          let correlatedFindings: any[] = [];
+          findings.correlatedFindings.map((finding) => {
             allFindings.map((item) => {
-              if (finding.finding === item.id) {
-                correlatedFindings.push(item);
+              if (finding.id === item.id) {
+                correlatedFindings.push(finding);
               }
             });
           });
@@ -375,10 +378,8 @@ export default class FindingDetailsFlyout extends Component<
     this.props.history.push({
       pathname: `${ROUTES.CORRELATIONS}`,
       state: {
-        correlation: {
-          finding: finding,
-          correlatedFindings: correlatedFindings,
-        },
+        finding: finding,
+        correlatedFindings: correlatedFindings,
       },
     });
   };

@@ -144,7 +144,7 @@ export default class CorrelationService {
       const getCorrelationFindingsResponse: GetCorrelationFindingsResponse = {
         findings: [
           {
-            finding: '1d18ad20-1559-4a49-938a-b6013c2c3ad3',
+            finding: '2c159094-7759-44ff-9002-07220c45af1f',
             detector_type: 'dns',
             score: 0.00001632626481296029,
           },
