@@ -293,7 +293,9 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       });
   };
 
-  private onRefresh = () => {};
+  private onRefresh = () => {
+    this.updateState();
+  };
 
   onLogTypeFilterChange = (items: FilterItem[]) => {
     this.setState({ logTypeFilterOptions: items });
