@@ -10,14 +10,17 @@ import {
   FieldMappingService,
   DetectorService,
   NotificationsService,
+  CorrelationService,
 } from '../../services';
 import AlertService from '../../services/AlertService';
 import RulesService from '../../services/RuleService';
 
 export interface SecurityAnalyticsApi {
   readonly DETECTORS_BASE: string;
+  readonly CORRELATION_BASE: string;
   readonly SEARCH_DETECTORS: string;
   readonly INDICES_BASE: string;
+  readonly FINDINGS_BASE: string;
   readonly GET_FINDINGS: string;
   readonly DOCUMENT_IDS_QUERY: string;
   readonly TIME_RANGE_QUERY: string;
@@ -29,10 +32,12 @@ export interface SecurityAnalyticsApi {
   readonly PLUGINS: string;
   readonly ACKNOWLEDGE_ALERTS: string;
   readonly UPDATE_ALIASES: string;
+  readonly CORRELATIONS: string;
 }
 
 export interface NodeServices {
   detectorsService: DetectorService;
+  correlationService: CorrelationService;
   indexService: IndexService;
   findingsService: FindingsService;
   opensearchService: OpenSearchService;

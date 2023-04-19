@@ -14,6 +14,9 @@ import {
   EuiTitle,
   EuiSpacer,
   EuiGlobalToastList,
+  EuiBadge,
+  EuiFlexGroup,
+  EuiFlexItem,
 } from '@elastic/eui';
 import { Toast } from '@opensearch-project/oui/src/eui_components/toast/global_toast_list';
 import { CoreStart } from 'opensearch-dashboards/public';
@@ -39,14 +42,19 @@ import { DuplicateRule } from '../Rules/containers/DuplicateRule/DuplicateRule';
 import { DateTimeFilter } from '../Overview/models/interfaces';
 import Callout, { ICalloutProps } from './components/Callout';
 import { DataStore } from '../../store/DataStore';
+import { CreateCorrelationRule } from '../Correlations/containers/CreateCorrelationRule';
+import { CorrelationRules } from '../Correlations/containers/CorrelationRules';
+import { Correlations } from '../Correlations/containers/CorrelationsContainer';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
   Findings = 'Findings',
   Detectors = 'Detectors',
-  Rules = 'Rules',
+  Rules = 'Detection rules',
   Overview = 'Overview',
   Alerts = 'Alerts',
+  Correlations = 'Correlations',
+  CorrelationRules = 'Correlation rules',
 }
 
 /**
@@ -233,6 +241,47 @@ export default class Main extends Component<MainProps, MainState> {
             },
             isSelected: this.state.selectedNavItemIndex === 5,
           },
+          {
+            name: Navigation.Correlations,
+            id: 6,
+            onClick: () => {
+              this.setState({ selectedNavItemIndex: 6 });
+              history.push(ROUTES.CORRELATIONS);
+            },
+            renderItem: (props) => {
+              return (
+                <EuiFlexGroup alignItems="center" gutterSize="xs">
+                  <EuiFlexItem grow={false}>
+                    <span
+                      className={props.className}
+                      onClick={() => {
+                        this.setState({ selectedNavItemIndex: 6 });
+                        history.push(ROUTES.CORRELATIONS);
+                      }}
+                    >
+                      {props.children}
+                    </span>
+                  </EuiFlexItem>
+                  <EuiFlexItem grow={false}>
+                    <EuiBadge>Experimental</EuiBadge>
+                  </EuiFlexItem>
+                </EuiFlexGroup>
+              );
+            },
+            isSelected: this.state.selectedNavItemIndex === 6,
+            forceOpen: true,
+            items: [
+              {
+                name: Navigation.CorrelationRules,
+                id: 7,
+                onClick: () => {
+                  this.setState({ selectedNavItemIndex: 7 });
+                  history.push(ROUTES.CORRELATION_RULES);
+                },
+                isSelected: this.state.selectedNavItemIndex === 7,
+              },
+            ],
+          },
         ],
       },
     ];
@@ -262,6 +311,8 @@ export default class Main extends Component<MainProps, MainState> {
                               setDateTimeFilter={this.setDateTimeFilter}
                               dateTimeFilter={this.state.dateTimeFilter}
                               findingsService={services.findingsService}
+                              history={props.history}
+                              correlationService={services?.correlationsService}
                               opensearchService={services.opensearchService}
                               detectorService={services.detectorsService}
                               notificationsService={services.notificationsService}
@@ -377,6 +428,7 @@ export default class Main extends Component<MainProps, MainState> {
                               findingService={services.findingsService}
                               notifications={core?.notifications}
                               opensearchService={services.opensearchService}
+                              indexPatternService={services.indexPatternsService}
                             />
                           )}
                         />
@@ -429,6 +481,35 @@ export default class Main extends Component<MainProps, MainState> {
                               opensearchService={services.opensearchService}
                             />
                           )}
+                        />
+                        <Route
+                          path={`${ROUTES.CORRELATION_RULES}`}
+                          render={(props: RouteComponentProps<any, any, any>) => (
+                            <CorrelationRules {...props} />
+                          )}
+                        />
+                        <Route
+                          path={`${ROUTES.CORRELATION_RULE_CREATE}`}
+                          render={(props: RouteComponentProps<any, any, any>) => (
+                            <CreateCorrelationRule
+                              {...props}
+                              indexService={services?.indexService}
+                              fieldMappingService={services?.fieldMappingService}
+                              notifications={core?.notifications}
+                            />
+                          )}
+                        />
+                        <Route
+                          path={`${ROUTES.CORRELATIONS}`}
+                          render={(props: RouteComponentProps<any, any, any>) => {
+                            return (
+                              <Correlations
+                                {...props}
+                                history={props.history}
+                                onMount={() => this.setState({ selectedNavItemIndex: 6 })}
+                              />
+                            );
+                          }}
                         />
                         <Redirect from={'/'} to={landingPage} />
                       </Switch>

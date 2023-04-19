@@ -14,10 +14,12 @@ import IndexService from './IndexService';
 import NotificationsService from './NotificationsService';
 import IndexPatternsService from './IndexPatternsService';
 import SavedObjectService from './SavedObjectService';
+import CorrelationService from './CorrelationService';
 
 export {
   ServicesConsumer,
   ServicesContext,
+  CorrelationService,
   DetectorsService,
   FindingsService,
   OpenSearchService,
