@@ -9,14 +9,11 @@ import Graph from 'react-graph-vis';
 import 'vis-network/dist/dist/vis-network.min.css';
 import { loadFontAwesome } from '../utils/loadFonts';
 
-// import { DataView, DataSet } from 'vis-data';
-
 export const CorrelationGraph = ({ graph: { nodes, edges }, options, events }) => {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const makeMeMultiSelect = useCallback((container: JQuery<HTMLElement>, network, nodes) => {
     const NO_CLICK = 0;
     const CLICK = 3;
-    // const RIGHT_CLICK = 3;
 
     // Disable default right-click dropdown menu
     container[0].oncontextmenu = () => false;

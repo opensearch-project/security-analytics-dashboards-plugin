@@ -24,6 +24,7 @@ import {
   NotificationsService,
   OpenSearchService,
   IndexPatternsService,
+  CorrelationService,
 } from '../../../../services';
 import {
   BREADCRUMBS,
@@ -56,7 +57,6 @@ import { DateTimeFilter } from '../../../Overview/models/interfaces';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 import { DataStore } from '../../../../store/DataStore';
 import { CorrelationFinding, Detector } from '../../../../../types';
-import { CorrelationService } from '../../../../../server/services';
 
 interface FindingsProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -69,6 +69,7 @@ interface FindingsProps extends RouteComponentProps {
   match: match;
   dateTimeFilter?: DateTimeFilter;
   setDateTimeFilter?: Function;
+  history: RouteComponentProps['history'];
 }
 
 interface FindingsState {

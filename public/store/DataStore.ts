@@ -17,11 +17,13 @@ export class DataStore {
 
   public static init = (services: BrowserServices, notifications: NotificationsStart) => {
     DataStore.rules = new RulesStore(services.ruleService, notifications);
+
     DataStore.detectors = new DetectorsStore(
       services.detectorsService,
       notifications,
       services.savedObjectsService
     );
+
     DataStore.correlationsStore = new CorrelationsStore(
       services.correlationsService,
       services.detectorsService,

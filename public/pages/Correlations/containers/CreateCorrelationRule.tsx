@@ -332,22 +332,12 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                     const firstFieldRow = (
                       <EuiFlexGroup>
                         <EuiFlexItem grow={false} style={{ minWidth: 200 }}>
-                          <EuiFormRow
-                            label={<EuiText size={'s'}>Field</EuiText>}
-                            // isInvalid={props.touched.from?.conditions && props.touched.from?.conditions[index].name && !!props.errors?.name}
-                            // error={props.errors.name}
-                            // helpText="Rule name must contain 5-50 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, and underscores."
-                          >
+                          <EuiFormRow label={<EuiText size={'s'}>Field</EuiText>}>
                             {fieldNameInput}
                           </EuiFormRow>
                         </EuiFlexItem>
                         <EuiFlexItem grow={false} style={{ minWidth: 200 }}>
-                          <EuiFormRow
-                            label={<EuiText size={'s'}>Field value</EuiText>}
-                            // isInvalid={props.touched.from?.conditions && props.touched.from?.conditions[index].name && !!props.errors?.name}
-                            // error={props.errors.name}
-                            // helpText="Rule name must contain 5-50 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, and underscores."
-                          >
+                          <EuiFormRow label={<EuiText size={'s'}>Field value</EuiText>}>
                             {fieldValueInput}
                           </EuiFormRow>
                         </EuiFlexItem>
