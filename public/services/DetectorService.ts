@@ -12,8 +12,7 @@ import {
   UpdateDetectorResponse,
 } from '../../server/models/interfaces';
 import { API } from '../../server/utils/constants';
-import { Detector } from '../../models/interfaces';
-import { IDetectorService } from '../../types';
+import { Detector, IDetectorService } from '../../types';
 
 export default class DetectorsService implements IDetectorService {
   constructor(private httpClient: HttpSetup) {}

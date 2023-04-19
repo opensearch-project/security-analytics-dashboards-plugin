@@ -27,6 +27,7 @@ import RuleService from './services/RuleService';
 import SavedObjectService from './services/SavedObjectService';
 import { SecurityAnalyticsPluginStartDeps } from './plugin';
 import { DataStore } from './store/DataStore';
+import CorrelationService from './services/CorrelationService';
 
 export function renderApp(
   coreStart: CoreStart,
@@ -37,6 +38,7 @@ export function renderApp(
   const { http, savedObjects } = coreStart;
 
   const detectorsService = new DetectorsService(http);
+  const correlationsService = new CorrelationService(http);
   const indexService = new IndexService(http);
   const findingsService = new FindingsService(http);
   const opensearchService = new OpenSearchService(http, savedObjects.client);
@@ -49,6 +51,7 @@ export function renderApp(
 
   const services: BrowserServices = {
     detectorsService,
+    correlationsService,
     indexService,
     fieldMappingService,
     findingsService,

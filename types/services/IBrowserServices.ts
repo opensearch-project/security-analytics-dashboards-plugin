@@ -11,9 +11,11 @@ import { IOpenSearchService } from './IOpensearchService';
 import { IAlertService } from './IAlertService';
 import { IRuleService } from './IRuleService';
 import { INotificationService } from './INotificationService';
+import { ICorrelationsService } from './ICorrelationService';
 
 export interface IBrowserServices {
   detectorsService: IDetectorService;
+  correlationService: ICorrelationsService;
   findingsService: IFindingService;
   indexService: IIndexService;
   opensearchService: IOpenSearchService;

@@ -24,8 +24,8 @@ import {
   UpdateDetectorResponse,
 } from '../models/interfaces';
 import { CLIENT_DETECTOR_METHODS } from '../utils/constants';
-import { Detector } from '../../models/interfaces';
 import { ServerResponse } from '../models/types';
+import { Detector } from '../../types';
 
 export default class DetectorService {
   osDriver: ILegacyCustomClusterClient;

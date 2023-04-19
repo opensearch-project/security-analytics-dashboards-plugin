@@ -9,6 +9,7 @@ import { createSecurityAnalyticsCluster } from './clusters/createSecurityAnalyti
 import { NodeServices } from './models/interfaces';
 import {
   setupDetectorRoutes,
+  setupCorrelationRoutes,
   setupFindingsRoutes,
   setupOpensearchRoutes,
   setupFieldMappingRoutes,
@@ -26,6 +27,7 @@ import {
   AlertService,
   RulesService,
   NotificationsService,
+  CorrelationService,
 } from './services';
 
 export class SecurityAnalyticsPlugin
@@ -37,6 +39,7 @@ export class SecurityAnalyticsPlugin
     // Initialize services
     const services: NodeServices = {
       detectorsService: new DetectorService(osDriver),
+      correlationService: new CorrelationService(osDriver),
       indexService: new IndexService(osDriver),
       findingsService: new FindingsService(osDriver),
       opensearchService: new OpenSearchService(osDriver),
@@ -51,6 +54,7 @@ export class SecurityAnalyticsPlugin
 
     // setup routes
     setupDetectorRoutes(services, router);
+    setupCorrelationRoutes(services, router);
     setupIndexRoutes(services, router);
     setupFindingsRoutes(services, router);
     setupOpensearchRoutes(services, router);
