@@ -21,8 +21,6 @@ export interface CorrelationGraphData {
   events: GraphEvents;
 }
 
-export type CorrelationGraphUpdateHandler = (newGraphData: CorrelationGraphData) => void;
-export type CorrelationGraphEventHandler = (eventParams: any) => void;
 export type CorrelationFinding = {
   id: string;
   correlationScore?: number;
@@ -115,19 +113,12 @@ export interface ICorrelationsStore {
     detector_type: string,
     nearby_findings?: number
   ): Promise<{ finding: CorrelationFinding; correlatedFindings: CorrelationFinding[] }>;
-  //getAllCorrelationsInWindow(timeWindow?: any): { [id: string]: CorrelationFinding[] };
   createCorrelationRule(correlationRule: CorrelationRule): void;
   deleteCorrelationRule(ruleId: string): Promise<boolean>;
-  registerGraphEventHandler(event: string, handler: CorrelationGraphEventHandler): void;
-  // getAllFindings(): { [id: string]: CorrelationFinding };
-
   getAllCorrelationsInWindow(
     start_time: string,
     end_time: string
   ): Promise<{ finding1: CorrelationFinding; finding2: CorrelationFinding }[]>;
-  //getCorrelatedFindings(
-  //  findingId: string
-  //): { finding: CorrelationFinding; correlatedFindings: CorrelationFinding[] };
   allFindings: { [id: string]: CorrelationFinding };
   fetchAllFindings(): Promise<{ [id: string]: CorrelationFinding }>;
 }

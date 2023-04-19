@@ -5,16 +5,14 @@
 
 import {
   CorrelationFinding,
-  CorrelationGraphEventHandler,
   CorrelationRule,
   CorrelationRuleHit,
   ICorrelationsStore,
+  IRulesStore,
 } from '../../types';
-import { DetectorsService, FindingsService } from '../services';
-import CorrelationService from '../services/CorrelationService';
+import { DetectorsService, FindingsService, CorrelationService } from '../services';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../utils/helpers';
-import { DataStore } from './DataStore';
 import { DEFAULT_EMPTY_DATA } from '../utils/constants';
 
 export class CorrelationsStore implements ICorrelationsStore {
@@ -35,23 +33,17 @@ export class CorrelationsStore implements ICorrelationsStore {
    */
   readonly notifications: NotificationsStart;
 
-  private graphEventHandlers: { [event: string]: CorrelationGraphEventHandler[] } = {};
-
   constructor(
     service: CorrelationService,
     detectorsService: DetectorsService,
     findingsService: FindingsService,
-    notifications: NotificationsStart
+    notifications: NotificationsStart,
+    private rulesStore: IRulesStore
   ) {
     this.service = service;
     this.notifications = notifications;
     this.detectorsService = detectorsService;
     this.findingsService = findingsService;
-  }
-
-  public registerGraphEventHandler(event: string, handler: CorrelationGraphEventHandler): void {
-    this.graphEventHandlers[event] = this.graphEventHandlers[event] || [];
-    this.graphEventHandlers[event].push(handler);
   }
 
   public async createCorrelationRule(correlationRule: CorrelationRule): Promise<boolean> {
@@ -132,11 +124,11 @@ export class CorrelationsStore implements ICorrelationsStore {
 
   public async fetchAllFindings(): Promise<{ [id: string]: CorrelationFinding }> {
     const detectorsRes = await this.detectorsService.getDetectors();
+    const allRules = await this.rulesStore.getAllRules();
+
     if (detectorsRes.ok) {
       const detectors = detectorsRes.response.hits.hits;
       let findings: { [id: string]: CorrelationFinding } = {};
-      const allRules = await DataStore.rules.getAllRules();
-
       for (let detector of detectors) {
         const findingRes = await this.findingsService.getFindings({ detectorId: detector._id });
 
