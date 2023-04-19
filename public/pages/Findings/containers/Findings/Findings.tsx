@@ -24,6 +24,7 @@ import {
   NotificationsService,
   OpenSearchService,
   IndexPatternsService,
+  CorrelationService,
 } from '../../../../services';
 import {
   BREADCRUMBS,
@@ -55,11 +56,12 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { DateTimeFilter } from '../../../Overview/models/interfaces';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 import { DataStore } from '../../../../store/DataStore';
-import { Detector } from '../../../../../types';
+import { CorrelationFinding, Detector } from '../../../../../types';
 
 interface FindingsProps extends RouteComponentProps {
   detectorService: DetectorsService;
   findingsService: FindingsService;
+  correlationService: CorrelationService;
   notificationsService: NotificationsService;
   indexPatternsService: IndexPatternsService;
   opensearchService: OpenSearchService;
@@ -67,6 +69,7 @@ interface FindingsProps extends RouteComponentProps {
   match: match;
   dateTimeFilter?: DateTimeFilter;
   setDateTimeFilter?: Function;
+  history: RouteComponentProps['history'];
 }
 
 interface FindingsState {
@@ -90,7 +93,9 @@ interface FindingVisualizationData {
   ruleSeverity: string;
 }
 
-export type FindingItemType = Finding & { detector: DetectorHit };
+export type FindingItemType = Finding & { detector: DetectorHit } & {
+  correlations: CorrelationFinding[];
+};
 
 type FindingsGroupByType = 'logType' | 'ruleSeverity';
 
@@ -369,6 +374,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
           <ContentPanel title={'Findings'}>
             <FindingsTable
               {...this.props}
+              history={this.props.history}
               findings={findings}
               loading={loading}
               rules={rules}
@@ -379,6 +385,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
               refreshNotificationChannels={this.getNotificationChannels}
               onFindingsFiltered={this.onFindingsFiltered}
               hasNotificationsPlugin={this.state.plugins.includes(OS_NOTIFICATION_PLUGIN)}
+              correlationService={this.props.correlationService}
             />
           </ContentPanel>
         </EuiFlexItem>

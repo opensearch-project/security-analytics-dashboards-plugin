@@ -15,8 +15,10 @@ export const BASE_API_PATH = '/_plugins/_security_analytics';
 
 export const API: SecurityAnalyticsApi = {
   DETECTORS_BASE: `${BASE_API_PATH}/detectors`,
+  CORRELATION_BASE: `${BASE_API_PATH}/correlation/rules`,
   SEARCH_DETECTORS: `${BASE_API_PATH}/detectors/_search`,
   INDICES_BASE: `${BASE_API_PATH}/indices`,
+  FINDINGS_BASE: `${BASE_API_PATH}/findings`,
   GET_FINDINGS: `${BASE_API_PATH}/findings/_search`,
   DOCUMENT_IDS_QUERY: `${BASE_API_PATH}/document_ids_query`,
   TIME_RANGE_QUERY: `${BASE_API_PATH}/time_range_query`,
@@ -28,6 +30,7 @@ export const API: SecurityAnalyticsApi = {
   PLUGINS: `${BASE_API_PATH}/_notifications/plugins`,
   ACKNOWLEDGE_ALERTS: `${BASE_API_PATH}/detectors/{detector_id}/_acknowledge/alerts`,
   UPDATE_ALIASES: `${BASE_API_PATH}/update_aliases`,
+  CORRELATIONS: `${BASE_API_PATH}/correlations`,
 };
 
 /**
@@ -50,6 +53,13 @@ export const METHOD_NAMES = {
   GET_DETECTOR: 'getDetector',
   SEARCH_DETECTORS: 'searchDetectors',
   UPDATE_DETECTOR: 'updateDetector',
+
+  // Correlation methods
+  GET_CORRELATION_RULES: 'getCorrelationRules',
+  CREATE_CORRELATION_RULE: 'createCorrelationRule',
+  DELETE_CORRELATION_RULE: 'deleteCorrelationRule',
+  GET_CORRELATED_FINDINGS: 'getCorrelatedFindings',
+  GET_ALL_CORRELATIONS: 'getAllCorrelations',
 
   // Finding methods
   GET_FINDINGS: 'getFindings',
@@ -88,6 +98,14 @@ export const CLIENT_DETECTOR_METHODS = {
   SEARCH_DETECTORS: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.SEARCH_DETECTORS}`,
   UPDATE_DETECTOR: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.UPDATE_DETECTOR}`,
   GET_FINDINGS: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_FINDINGS}`,
+};
+
+export const CLIENT_CORRELATION_METHODS = {
+  GET_CORRELATION_RULES: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_CORRELATION_RULES}`,
+  CREATE_CORRELATION_RULE: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.CREATE_CORRELATION_RULE}`,
+  DELETE_CORRELATION_RULE: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.DELETE_CORRELATION_RULE}`,
+  GET_CORRELATED_FINDINGS: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_CORRELATED_FINDINGS}`,
+  GET_ALL_CORRELATIONS: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_ALL_CORRELATIONS}`,
 };
 
 export const CLIENT_FIELD_MAPPINGS_METHODS = {
