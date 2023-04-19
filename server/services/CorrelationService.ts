@@ -145,7 +145,7 @@ export default class CorrelationService {
       const getCorrelationFindingsResponse: GetCorrelationFindingsResponse = {
         findings: [
           {
-            finding: '2c159094-7759-44ff-9002-07220c45af1f',
+            finding: 'bce7680d-cce1-4ce3-9499-18b49ff405f9',
             detector_type: 'dns',
             score: 0.00001632626481296029,
           },
@@ -192,9 +192,9 @@ export default class CorrelationService {
       const getCorrelationsResponse: GetAllCorrelationsInTimeRangeResponse = {
         findings: [
           {
-            finding1: '2c159094-7759-44ff-9002-07220c45af1f',
+            finding1: 'bce7680d-cce1-4ce3-9499-18b49ff405f9',
             logType1: 'dns',
-            finding2: '4fb73839-2b5b-48bc-b7ed-ab6c2cb50059',
+            finding2: '5fe4a9c1-b1ca-4085-9291-85dccd8c8e11',
             logType2: 'network',
           },
         ],

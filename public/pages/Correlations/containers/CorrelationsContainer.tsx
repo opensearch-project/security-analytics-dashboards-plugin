@@ -77,7 +77,35 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     };
   }
 
+  private shouldShowFinding(finding: CorrelationFinding) {
+    return (
+      this.state.logTypeFilterOptions.find((option) => option.id === finding.logType)?.checked ===
+        'on' &&
+      this.state.severityFilterOptions.find(
+        (option) => option.id === finding.detectionRule.severity
+      )?.checked === 'on'
+    );
+  }
+
   async componentDidMount(): Promise<void> {
+    this.updateState();
+  }
+
+  componentDidUpdate(
+    prevProps: Readonly<CorrelationsProps>,
+    prevState: Readonly<CorrelationsState>,
+    snapshot?: any
+  ): void {
+    if (
+      prevState.logTypeFilterOptions !== this.state.logTypeFilterOptions ||
+      prevState.severityFilterOptions !== this.state.severityFilterOptions ||
+      prevProps.dateTimeFilter !== this.props.dateTimeFilter
+    ) {
+      this.updateState();
+    }
+  }
+
+  private async updateState() {
     if (this.props.location.state) {
       const state = this.props.location.state;
       const specificFindingInfo: SpecificFindingCorrelations = {
@@ -87,8 +115,15 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
           timestamp: new Date(state.finding.timestamp).toLocaleString(),
           detectionRule: state.finding.queries[0],
         },
-        correlatedFindings: state.correlatedFindings,
+        correlatedFindings: state.correlatedFindings.filter((finding) =>
+          this.shouldShowFinding(finding)
+        ),
       };
+
+      if (!this.shouldShowFinding(specificFindingInfo.finding)) {
+        return;
+      }
+
       this.setState({ specificFindingInfo });
 
       // create graph data here
@@ -99,10 +134,13 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       const end = datemath.parse(this.dateTimeFilter.endTime);
       const startTime = start?.valueOf() || Date.now();
       const endTime = end?.valueOf() || Date.now();
-      const allCorrelations = await DataStore.correlationsStore.getAllCorrelationsInWindow(
+      let allCorrelations = await DataStore.correlationsStore.getAllCorrelationsInWindow(
         startTime.toString(),
         endTime.toString()
       );
+      allCorrelations = allCorrelations.filter((corr) => {
+        return this.shouldShowFinding(corr.finding1) && this.shouldShowFinding(corr.finding2);
+      });
       const createdEdges = new Set<string>();
       const graphData: CorrelationGraphData = {
         graph: {
@@ -145,12 +183,6 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
 
       this.setState({ graphData });
     }
-
-    // const specificFindingInfo = await DataStore.correlationsStore.getCorrelatedFindings(
-    //   '2c159094-7759-44ff-9002-07220c45af1f',
-    //   ''
-    // );
-    // this.setState({ specificFindingInfo });
   }
 
   private updateGraphDataState(specificFindingInfo: SpecificFindingCorrelations) {
@@ -255,6 +287,19 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     this.setState({ specificFindingInfo });
   };
 
+  resetFilters = () => {
+    this.setState({
+      logTypeFilterOptions: this.state.logTypeFilterOptions.map((option) => ({
+        ...option,
+        checked: 'on',
+      })),
+      severityFilterOptions: this.state.severityFilterOptions.map((option) => ({
+        ...option,
+        checked: 'on',
+      })),
+    });
+  };
+
   render() {
     const findingCardsData = this.state.specificFindingInfo;
 
@@ -352,7 +397,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                       />
                     </EuiFlexItem>
                     <EuiFlexItem grow={false}>
-                      <EuiButtonEmpty>Reset filters</EuiButtonEmpty>
+                      <EuiButtonEmpty onClick={this.resetFilters}>Reset filters</EuiButtonEmpty>
                     </EuiFlexItem>
                   </EuiFlexGroup>
                 </EuiFlexItem>
