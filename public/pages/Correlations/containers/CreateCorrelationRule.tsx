@@ -137,8 +137,8 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
   }, [props.indexService]);
 
   const getLogFields = useCallback(
-    async (indexName: string, logType: string) => {
-      if (indexName && logType) {
+    async (indexName: string) => {
+      if (indexName) {
         const result = await props.indexService.getIndexFields(indexName);
         if (result?.ok) {
           let fields: {
@@ -217,7 +217,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                         props.handleChange(`queries[${queryIdx}].index`)(
                           e[0]?.value ? e[0].value : ''
                         );
-                        getLogFields(e[0]?.value ? e[0].value : '', query.logType);
+                        getLogFields(e[0]?.value ? e[0].value : '');
                       }}
                       onBlur={props.handleBlur(`queries[${queryIdx}].index`)}
                       selectedOptions={
@@ -245,7 +245,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                         props.handleChange(`queries[${queryIdx}].logType`)(
                           e[0]?.value ? e[0].value : ''
                         );
-                        getLogFields(query.index, e[0]?.value ? e[0].value : '');
                       }}
                       onBlur={props.handleBlur(`queries[${queryIdx}].logType`)}
                       selectedOptions={
@@ -254,7 +253,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                       isClearable={true}
                       onCreateOption={(e) => {
                         props.handleChange(`queries[${queryIdx}].logType`)(e);
-                        getLogFields(query.index, e);
                       }}
                     />
                   </EuiFormRow>
