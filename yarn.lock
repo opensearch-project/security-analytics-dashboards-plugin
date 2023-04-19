@@ -900,6 +900,13 @@
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-2.0.1.tgz#20f18294f797f2209b5f65c8e3b5c8e8261d127c"
   integrity sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==
 
+"@types/vis@^4.21.21":
+  version "4.21.24"
+  resolved "https://registry.yarnpkg.com/@types/vis/-/vis-4.21.24.tgz#5e02586bb9819ec0395a21b068ea8139c3cc9c57"
+  integrity sha512-TxL/7pT9JQVC3HA/r+Weck+kvcmJ59EGu8CMK92mJOS363+aHCuyo43Pj+t6Gfv6+8DgVuGlNPSUWuEPvypO8A==
+  dependencies:
+    moment ">=2.13.0"
+
 "@types/yargs-parser@*":
   version "21.0.0"
   resolved "https://registry.yarnpkg.com/@types/yargs-parser/-/yargs-parser-21.0.0.tgz#0c60e537fa790f5f9472ed2776c2b71ec117351b"
@@ -4562,7 +4569,7 @@ mkdirp@^0.5.1, mkdirp@^0.5.3, mkdirp@^0.5.4:
   dependencies:
     minimist "^1.2.6"
 
-moment@^2.29.1, moment@^2.29.2:
+moment@>=2.13.0, moment@^2.29.1, moment@^2.29.2:
   version "2.29.4"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
   integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
