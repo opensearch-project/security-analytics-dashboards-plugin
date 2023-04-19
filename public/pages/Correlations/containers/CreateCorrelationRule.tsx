@@ -312,7 +312,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
 
                     const conditionToggleButtons = [
                       { id: 'AND', label: 'AND' },
-                      { id: 'OR', label: 'OR' },
+                      // { id: 'OR', label: 'OR' },
                     ];
                     const conditionButtonGroup = (
                       <EuiButtonGroup
