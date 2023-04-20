@@ -507,6 +507,8 @@ export default class Main extends Component<MainProps, MainState> {
                                 {...props}
                                 history={props.history}
                                 onMount={() => this.setState({ selectedNavItemIndex: 6 })}
+                                dateTimeFilter={this.state.dateTimeFilter}
+                                setDateTimeFilter={this.setDateTimeFilter}
                               />
                             );
                           }}
