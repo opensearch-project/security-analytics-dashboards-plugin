@@ -8,7 +8,7 @@ import React from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { createTextDetailsGroup, parseSchedule } from '../../../../utils/helpers';
 import moment from 'moment';
-import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
+import { DEFAULT_EMPTY_DATA, logTypesWithDashboards } from '../../../../utils/constants';
 import { Detector } from '../../../../../types';
 
 export interface DetectorBasicDetailsViewProps {
@@ -85,8 +85,10 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
               {`${name} summary`}
               <EuiIcon type={'popout'} />
             </EuiLink>
-          ) : (
+          ) : !logTypesWithDashboards.has(detector_type) ? (
             'Not available for this log type'
+          ) : (
+            '-'
           )) as any,
         },
       ])}
