@@ -44,8 +44,10 @@ export const selectComboboxItem = (combo: any, items: string | string[]) => {
     });
 };
 
-export const clearCombobox = (combo: any) =>
+export const clearCombobox = (combo: any) => {
   combo.parentsUntil('.euiComboBox__inputWrap').siblings().find('button').eq(0).click();
+  combo.type('{selectall}{backspace}{backspace}').clear();
+};
 
 export const validateDetailsItem = (label: string, value: string) => {
   getElementByText('.euiFlexItem label', label).parent().siblings().contains(value);
