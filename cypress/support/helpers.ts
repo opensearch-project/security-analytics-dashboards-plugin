@@ -45,8 +45,9 @@ export const selectComboboxItem = (combo: any, items: string | string[]) => {
 };
 
 export const clearCombobox = (combo: any) => {
-  combo.parentsUntil('.euiComboBox__inputWrap').siblings().find('button').eq(0).click();
-  combo.type('{selectall}{backspace}{backspace}').clear();
+  combo.parents('.euiComboBox__inputWrap').within(() => {
+    cy.get('.euiBadge').find('.euiBadge__iconButton').click({ force: true, multiple: true });
+  });
 };
 
 export const validateDetailsItem = (label: string, value: string) => {
