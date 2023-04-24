@@ -12,12 +12,12 @@
   ],
   "tags": [
     {
-      "value": "dns.low"
+      "value": "dns.high"
     }
   ],
   "log_source": "",
   "detection": "selection:\n  dns-question-name:\n    - QuestionName\ncondition: selection",
-  "level": "low",
+  "level": "high",
   "false_positives": [
     {
       "value": ""

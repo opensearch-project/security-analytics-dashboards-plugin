@@ -1,3 +1,11 @@
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import sample_detector from '../fixtures/integration_tests/detector/create_usb_detector_data.json';
+import { OPENSEARCH_DASHBOARDS_URL } from './constants';
+
 export const getElementByText = (locator: string, text: string) =>
   locator
     ? cy.get(locator).filter(`:contains("${text}")`).should('be.visible')
@@ -73,4 +81,76 @@ export const validateTable = (
         }
       }
     });
+};
+
+export const createDetector = (
+  detectorName: string,
+  indexName: string,
+  indexSettings: any,
+  indexMappings: any,
+  ruleSettings: any,
+  indexDoc: any,
+  indexDocsCount: number = 1
+) => {
+  const detectorConfigAlertCondition = `${detectorName} alert condition`;
+  const detectorConfig = {
+    ...sample_detector,
+    name: detectorName,
+    inputs: [
+      {
+        detector_input: {
+          ...sample_detector.inputs[0].detector_input,
+          description: `Description for ${detectorName}`,
+          indices: [indexName],
+        },
+      },
+    ],
+    triggers: [
+      {
+        ...sample_detector.triggers[0],
+        name: detectorConfigAlertCondition,
+      },
+    ],
+  };
+
+  const cySubject = cy
+    .cleanUpTests()
+    // Create test index
+    .then(() => cy.createIndex(indexName, indexSettings))
+
+    // Create field mappings
+    .then(() =>
+      cy.createAliasMappings(indexName, detectorConfig.detector_type, indexMappings, true)
+    )
+
+    // Create test detector
+    .then(() => {
+      cy.createRule(ruleSettings)
+        .then((response) => {
+          detectorConfig.inputs[0].detector_input.custom_rules[0].id = response.body.response._id;
+          detectorConfig.triggers[0].ids.push(response.body.response._id);
+        })
+        .then(() => cy.createDetector(detectorConfig));
+    })
+
+    .then(() => {
+      // Go to the detectors table page
+      cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
+
+      // Filter table to only show the test detector
+      cy.get(`input[type="search"]`).type(`${detectorConfig.name}{enter}`);
+
+      // Confirm detector was created
+      cy.get('tbody > tr').should(($tr) => {
+        expect($tr, 'detector name').to.contain(detectorConfig.name);
+      });
+    });
+
+  // Ingest documents to the test index
+  for (let i = 0; i < indexDocsCount; i++) {
+    cy.insertDocumentToIndex(indexName, '', indexDoc);
+  }
+
+  cySubject.detector = detectorConfig;
+  return cySubject;
 };

@@ -12,12 +12,12 @@
   ],
   "tags": [
     {
-      "value": "dns.low"
+      "value": "dns.high"
     }
   ],
   "log_source": "",
   "detection": "selection:\n  dns-answers-type:\n    - AnswerType\ncondition: selection",
-  "level": "low",
+  "level": "high",
   "false_positives": [
     {
       "value": ""
