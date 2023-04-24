@@ -296,6 +296,7 @@ describe('Detectors', () => {
   });
 
   it('...basic details can be edited', () => {
+    cy.intercept('GET', '/indices').as('getIndices');
     openDetectorDetails(detectorName);
 
     editDetectorDetails(detectorName, 'Detector details');
@@ -304,6 +305,7 @@ describe('Detectors', () => {
       getElementByText('.euiTitle', 'Edit detector details');
     });
 
+    cy.wait('@getIndices');
     getNameField().type('{selectall}{backspace}').type('test detector edited');
     getTextareaByLabel('Description - optional').type('Edited description');
 
@@ -362,6 +364,7 @@ describe('Detectors', () => {
   });
 
   it('...should update field mappings if data source is changed', () => {
+    cy.intercept('GET', '/indices').as('getIndices');
     openDetectorDetails(detectorName);
 
     editDetectorDetails(detectorName, 'Detector details');
@@ -370,6 +373,7 @@ describe('Detectors', () => {
       getElementByText('.euiTitle', 'Edit detector details');
     });
 
+    cy.wait('@getIndices');
     cy.get('.reviewFieldMappings').should('not.exist');
 
     clearCombobox(getDataSourceField());
