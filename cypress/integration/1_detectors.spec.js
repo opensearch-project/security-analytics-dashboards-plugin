@@ -125,11 +125,12 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
   getNextButton().click({ force: true });
 
   // TEST ALERTS PAGE
-  getElementByText('.euiTitle', 'Set up alert triggers');
+  getElementByText('.euiTitle.euiTitle--medium', 'Set up alert triggers');
   getInputByPlaceholder('Enter a name to describe the alert condition').type('test_trigger');
   getElementByTestSubject('alert-tags-combo-box')
     .type(`attack.defense_evasion{enter}`)
     .find('input')
+    .focus()
     .blur();
 
   selectComboboxItem(getInputByLabel('Specify alert severity'), '1 (Highest)');
@@ -192,8 +193,11 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
             getElementByText('button.euiTab', 'Alert triggers').should('be.visible').click();
             validateAlertPanel('test_trigger');
 
+            cy.intercept('GET', '/mappings?indexName').as('getMappingFields');
             getElementByText('button.euiTab', 'Field mappings').should('be.visible').click();
             if (!expectFailure) {
+              cy.wait('@getMappingFields');
+              cy.wait(2000);
               getElementByText('.euiTitle', 'Field mapping')
                 .parentsUntil('.euiPanel')
                 .siblings()
@@ -246,7 +250,7 @@ describe('Detectors', () => {
     getNextButton().should('be.disabled');
 
     getNameField().should('be.empty');
-    getNameField().type('text').blur();
+    getNameField().type('text').focus().blur();
 
     getNameField()
       .parentsUntil('.euiFormRow__fieldWrapper')
@@ -257,6 +261,7 @@ describe('Detectors', () => {
 
     getNameField()
       .type(' and more text')
+      .focus()
       .blur()
       .parentsUntil('.euiFormRow__fieldWrapper')
       .siblings()
@@ -273,6 +278,7 @@ describe('Detectors', () => {
 
     selectComboboxItem(getDataSourceField(), cypressIndexDns);
     getDataSourceField()
+      .focus()
       .blur()
       .parentsUntil('.euiFormRow__fieldWrapper')
       .find('.euiFormErrorText')
@@ -288,7 +294,7 @@ describe('Detectors', () => {
     selectDnsLogType();
 
     selectComboboxItem(getDataSourceField(), cypressIndexWindows);
-    getDataSourceField().blur();
+    getDataSourceField().focus().blur();
 
     cy.get('.euiCallOut')
       .should('be.visible')
