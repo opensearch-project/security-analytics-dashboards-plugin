@@ -24,6 +24,7 @@ import {
   getButtonByText,
   getTextareaByLabel,
 } from '../support/helpers';
+import _ from 'lodash';
 
 const cypressIndexDns = 'cypress-index-dns';
 const cypressIndexWindows = 'cypress-index-windows';
@@ -68,7 +69,7 @@ const editDetectorDetails = (detectorName, panelTitle) => {
   });
 };
 
-const validateEditFieldMappingsPanel = (length, mappings) =>
+const validateAutomaticFieldMappingsPanel = (length, mappings) =>
   cy.get('.editFieldMappings').within(() => {
     cy.get('.euiAccordion__triggerWrapper button').then(($btn) => {
       cy.get($btn).contains(`Automatically mapped fields (${length})`);
@@ -85,6 +86,19 @@ const validateEditFieldMappingsPanel = (length, mappings) =>
       }
     });
   });
+
+const validatePendingFieldMappingsPanel = (mappings) => {
+  cy.get('.editFieldMappings').within(() => {
+    // Pending field mappings
+    getElementByText('.euiTitle', 'Pending field mappings')
+      .parents('.euiPanel')
+      .within(() => {
+        cy.get('.euiBasicTable').then(($table) => {
+          validateTable($table, null, mappings);
+        });
+      });
+  });
+};
 
 const createDetector = (detectorName, dataSource, expectFailure) => {
   getCreateDetectorButton().click({ force: true });
@@ -348,6 +362,7 @@ describe('Detectors', () => {
   });
 
   it('...should update field mappings if data source is changed', () => {
+    cy.intercept('mappings/view').as('getMappingsView');
     cy.intercept('GET', '/indices').as('getIndices');
     openDetectorDetails(detectorName);
 
@@ -364,8 +379,15 @@ describe('Detectors', () => {
     getDataSourceField().should('not.have.value');
     getDataSourceField().type(`${cypressIndexDns}{enter}`);
 
-    cy.get('.reviewFieldMappings').should('be.visible');
-    validateEditFieldMappingsPanel(3, dns_mapping_fields);
+    cy.wait('@getMappingsView').then((interception) => {
+      cy.get('.reviewFieldMappings').should('be.visible');
+      const properties = interception.response.body.response.properties;
+      if (_.isEmpty(properties)) {
+        validatePendingFieldMappingsPanel(dns_mapping_fields);
+      } else {
+        validateAutomaticFieldMappingsPanel(3, dns_mapping_fields);
+      }
+    });
 
     getElementByText('button', 'Save changes').click({ force: true });
   });
@@ -390,9 +412,15 @@ describe('Detectors', () => {
       '[data-test-subj="edit-detector-rules-table"] table thead tr:first th:first button'
     ).click({ force: true });
 
-    cy.wait('@getMappingsView');
-    cy.get('.reviewFieldMappings').should('be.visible');
-    validateEditFieldMappingsPanel(3, dns_mapping_fields);
+    cy.wait('@getMappingsView').then((interception) => {
+      cy.get('.reviewFieldMappings').should('be.visible');
+      const properties = interception.response.body.response.properties;
+      if (_.isEmpty(properties)) {
+        validatePendingFieldMappingsPanel(dns_mapping_fields);
+      } else {
+        validateAutomaticFieldMappingsPanel(3, dns_mapping_fields);
+      }
+    });
   });
 
   it('...can be deleted', () => {

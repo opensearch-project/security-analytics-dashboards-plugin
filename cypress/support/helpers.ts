@@ -50,7 +50,13 @@ export const selectComboboxItem = (combo: any, items: string | string[]) => {
 export const clearCombobox = (combo: any) => {
   combo.parents('.euiComboBox__inputWrap').within(() => {
     cy.get('.euiBadge').within(() => {
-      cy.get('.euiBadge__iconButton').click({ force: true, multiple: true });
+      cy.get('.euiBadge__iconButton').then(($btn) => {
+        if ($btn.length && $btn.length > 1) {
+          cy.get($btn).click({ force: true, multiple: true });
+        } else {
+          cy.get($btn).click({ force: true });
+        }
+      });
     });
   });
 };
@@ -80,14 +86,20 @@ export const validateTable = (
     .should('be.visible')
     .find('table tbody')
     .find('tr')
-    .should('have.length', length)
-    .within(($tr: any) => {
-      if (dataMap) {
-        for (let logField in dataMap) {
-          cy.get($tr).find('td').contains(logField);
-          cy.get($tr).find('td').contains(dataMap[logField]);
-        }
+    .then(($tr) => {
+      const validateLength = length !== null;
+      if (validateLength) {
+        cy.get($tr).should('have.length', length);
       }
+
+      cy.get($tr).within(($tr: any) => {
+        if (dataMap) {
+          for (let logField in dataMap) {
+            cy.get($tr).find('td').contains(logField);
+            validateLength && cy.get($tr).find('td').contains(dataMap[logField]);
+          }
+        }
+      });
     });
 };
 
