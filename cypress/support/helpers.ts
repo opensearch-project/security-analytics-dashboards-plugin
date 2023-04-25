@@ -5,6 +5,7 @@
 
 import sample_detector from '../fixtures/integration_tests/detector/create_usb_detector_data.json';
 import { OPENSEARCH_DASHBOARDS_URL } from './constants';
+import _ from 'lodash';
 
 export const getElementByText = (locator: string, text: string) =>
   locator
@@ -28,7 +29,12 @@ export const getTextareaByLabel = (label: string) => getInputByLabel(label, 'tex
 
 export const getElementByTestSubject = (subject: string) => cy.get(`[data-test-subj="${subject}"]`);
 
-export const getRadioButtonById = (id: string) => cy.get(`input[id="${id}"]`);
+export const getRadioButtonById = (id: string) => {
+  Cypress.log({
+    message: `Find radio button by id: ${id}`,
+  });
+  return cy.get(`input[id="${id}"]`);
+};
 
 export const selectComboboxItem = (combo: any, items: string | string[]) => {
   combo
@@ -48,26 +54,32 @@ export const selectComboboxItem = (combo: any, items: string | string[]) => {
 };
 
 export const clearCombobox = (combo: any) => {
-  combo.parents('.euiComboBox__inputWrap').within(() => {
-    cy.get('.euiBadge').within(() => {
-      cy.get('.euiBadge__iconButton').then(($btn) => {
-        if ($btn.length && $btn.length > 1) {
-          cy.get($btn).click({ force: true, multiple: true });
-        } else {
-          cy.get($btn).click({ force: true });
-        }
+  return combo
+    .parents('.euiComboBox__inputWrap')
+    .find('.euiBadge')
+    .then(($badge) => {
+      let numberOfBadges = $badge.length;
+      Cypress.log({
+        message: `Number of combo badges to clear: ${numberOfBadges}`,
       });
+      combo
+        .parents('.euiComboBox__inputWrap')
+        .find('input')
+        .focus()
+        .then(() => pressBackspaceKey(numberOfBadges));
     });
-  });
 };
 
 export const validateDetailsItem = (label: string, value: string) => {
-  getElementByText('.euiFlexItem label', label).parent().siblings().contains(value);
+  return getElementByText('.euiFlexItem label', label).parent().siblings().contains(value);
 };
 
 export const urlShouldContain = (path: string) => cy.url().should('contain', `#/${path}`);
 
-export const pressEnterKey = () =>
+export const pressEnterKey = () => {
+  Cypress.log({
+    message: 'Enter key pressed',
+  });
   Cypress.automation('remote:debugger:protocol', {
     command: 'Input.dispatchKeyEvent',
     params: {
@@ -76,13 +88,47 @@ export const pressEnterKey = () =>
       text: '\r',
     },
   });
+};
+
+export const pressBackspaceKey = (numberOfPresses: number = 1) => {
+  Cypress.log({
+    message: 'Backspace key pressed',
+  });
+  _.times(numberOfPresses, () => {
+    Cypress.automation('remote:debugger:protocol', {
+      command: 'Input.dispatchKeyEvent',
+      params: {
+        type: 'rawKeyDown',
+        keyCode: 8,
+        code: 'Backspace',
+        key: 'Backspace',
+        windowsVirtualKeyCode: 8,
+      },
+    });
+    cy.wait(10);
+    Cypress.automation('remote:debugger:protocol', {
+      command: 'Input.dispatchKeyEvent',
+      params: {
+        type: 'rawKeyUp',
+        keyCode: 8,
+        code: 'Backspace',
+        key: 'Backspace',
+        windowsVirtualKeyCode: 8,
+      },
+    });
+  });
+};
 
 export const validateTable = (
   container: any, // jqueryElement
   length: number,
   dataMap: { [key: string]: string }
 ) => {
-  cy.get(container)
+  Cypress.log({
+    message: 'Validate table elements',
+  });
+  return cy
+    .get(container)
     .should('be.visible')
     .find('table tbody')
     .find('tr')
@@ -112,6 +158,9 @@ export const createDetector = (
   indexDoc: any,
   indexDocsCount: number = 1
 ) => {
+  Cypress.log({
+    message: `Create new detector ${detectorName}`,
+  });
   const detectorConfigAlertCondition = `${detectorName} alert condition`;
   const detectorConfig = {
     ...sample_detector,
