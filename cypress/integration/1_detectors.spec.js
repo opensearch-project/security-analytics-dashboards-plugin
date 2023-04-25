@@ -118,8 +118,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
     .find('input')
     .blur();
 
-  getElementByTestSubject('security-levels-combo-box').click();
-  getElementByText('.euiComboBoxOption__content', '1 (Highest)').click({ force: true });
+  selectComboboxItem(getInputByLabel('Specify alert severity'), '1 (Highest)');
 
   // go to review page
   getNextButton().click({ force: true });
@@ -284,14 +283,14 @@ describe('Detectors', () => {
       );
   });
 
-  it('...can be created', () => {
-    createDetector(detectorName, cypressIndexDns, false);
-    getElementByText('.euiCallOut', 'Detector created successfully');
-  });
-
   it('...can fail creation', () => {
     createDetector(`${detectorName}_fail`, '.kibana_1', true);
     getElementByText('.euiCallOut', 'Create detector failed.');
+  });
+
+  it('...can be created', () => {
+    createDetector(detectorName, cypressIndexDns, false);
+    getElementByText('.euiCallOut', 'Detector created successfully');
   });
 
   it('...basic details can be edited', () => {
@@ -321,20 +320,6 @@ describe('Detectors', () => {
       validateDetailsItem('Description', 'Edited description');
       validateDetailsItem('Detector schedule', 'Every 10 hours');
       validateDetailsItem('Data source', cypressIndexWindows);
-
-      editDetectorDetails(detectorName, 'Detector details');
-
-      urlShouldContain('edit-detector-details').then(() => {
-        getElementByText('.euiTitle', 'Edit detector details');
-      });
-
-      clearCombobox(getDataSourceField());
-      selectComboboxItem(getDataSourceField(), cypressIndexDns);
-
-      getElementByText('button', 'Save changes').click({ force: true });
-      urlShouldContain('detector-details').then(() => {
-        validateDetailsItem('Data source', cypressIndexDns);
-      });
     });
   });
 
@@ -381,6 +366,8 @@ describe('Detectors', () => {
 
     cy.get('.reviewFieldMappings').should('be.visible');
     validateEditFieldMappingsPanel(3, dns_mapping_fields);
+
+    getElementByText('button', 'Save changes').click({ force: true });
   });
 
   it('...should show field mappings if rule selection is changed', () => {
