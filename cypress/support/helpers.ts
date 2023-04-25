@@ -39,7 +39,10 @@ export const selectComboboxItem = (combo: any, items: string | string[]) => {
         items = [items];
       }
       items.map((item) =>
-        cy.get('.euiComboBoxOptionsList__rowWrap').find('button').contains(item).click()
+        cy.get('.euiComboBoxOptionsList__rowWrap').within(() => {
+          cy.get('button').contains(item).should('be.visible');
+          cy.get('button').contains(item).click();
+        })
       );
     });
 };
