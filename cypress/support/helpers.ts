@@ -49,7 +49,9 @@ export const selectComboboxItem = (combo: any, items: string | string[]) => {
 
 export const clearCombobox = (combo: any) => {
   combo.parents('.euiComboBox__inputWrap').within(() => {
-    cy.get('.euiBadge').find('.euiBadge__iconButton').click({ force: true, multiple: true });
+    cy.get('.euiBadge').within(() => {
+      cy.get('.euiBadge__iconButton').click({ force: true, multiple: true });
+    });
   });
 };
 
