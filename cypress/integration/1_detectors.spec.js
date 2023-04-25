@@ -420,6 +420,7 @@ describe('Detectors', () => {
 
     cy.wait('@getMappingsView').then((interception) => {
       cy.get('.reviewFieldMappings').should('be.visible');
+      cy.wait(5000);
       const properties = interception.response.body.response.properties;
       if (_.isEmpty(properties)) {
         validatePendingFieldMappingsPanel(dns_mapping_fields);
