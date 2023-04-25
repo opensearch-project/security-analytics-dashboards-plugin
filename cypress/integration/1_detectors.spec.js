@@ -60,12 +60,11 @@ const openDetectorDetails = (detectorName) => {
 const editDetectorDetails = (detectorName, panelTitle) => {
   urlShouldContain('detector-details').then(() => {
     getElementByText('.euiTitle', detectorName);
+    getElementByText('.euiPanel .euiTitle', panelTitle);
     getElementByText('.euiPanel .euiTitle', panelTitle)
       .parent()
       .siblings()
-      .find('button')
-      .contains('Edit')
-      .click();
+      .within(() => cy.get('button').contains('Edit').click());
   });
 };
 
