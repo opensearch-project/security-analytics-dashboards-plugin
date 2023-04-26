@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import Graph, { Edge, GraphEvents, Node, Options } from 'react-graph-vis';
+import Graph, { Edge, GraphEvents, Network, Node, Options } from 'react-graph-vis';
 import 'vis-network/dist/dist/vis-network.min.css';
 import { EuiLoadingChart } from '@elastic/eui';
 
@@ -16,6 +16,7 @@ interface CorrelationGraphProps {
   };
   options: Options;
   events: GraphEvents;
+  getNetwork: (network: Network) => void;
 }
 
 export const CorrelationGraph: React.FC<CorrelationGraphProps> = ({
@@ -23,19 +24,21 @@ export const CorrelationGraph: React.FC<CorrelationGraphProps> = ({
   options,
   events,
   loadingData,
+  getNetwork,
 }) => {
   return loadingData ? (
-    <div style={{ padding: '0 47%' }}>
+    <div style={{ margin: '75px 47%' }}>
       <EuiLoadingChart size="xl" className="chart-view-container-loading" />
     </div>
   ) : (
     <Graph
       key={`network`}
-      identifier={`network`}
+      identifier={`sa-correlations-network`}
       graph={{ nodes, edges }}
       options={options}
       events={events}
-      style={{ border: '1px solid' }}
+      style={{ border: '1px solid', backgroundColor: '#ffffff' }}
+      getNetwork={getNetwork}
     />
   );
 };

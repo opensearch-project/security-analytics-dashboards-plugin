@@ -10,7 +10,9 @@ import {
   defaultSeverityFilterItemOptions,
   emptyGraphData,
   getAbbrFromLogType,
+  getLabelFromLogType,
   getSeverityColor,
+  getSeverityLabel,
   graphRenderOptions,
 } from '../utils/constants';
 import {
@@ -29,6 +31,7 @@ import {
   EuiText,
   EuiEmptyPrompt,
   EuiButton,
+  EuiBadge,
 } from '@elastic/eui';
 import { CorrelationsExperimentalBanner } from '../components/ExperimentalBanner';
 import { FilterItem, FilterGroup } from '../components/FilterGroup';
@@ -45,6 +48,8 @@ import { DataStore } from '../../../store/DataStore';
 import { FindingItemType } from '../../Findings/containers/Findings/Findings';
 import datemath from '@elastic/datemath';
 import { ruleSeverity } from '../../Rules/utils/constants';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { Network } from 'react-graph-vis';
 
 interface CorrelationsProps
   extends RouteComponentProps<
@@ -73,6 +78,8 @@ interface CorrelationsState {
 
 export class Correlations extends React.Component<CorrelationsProps, CorrelationsState> {
   static contextType = CoreServicesContext;
+  private correlationGraphNetwork?: Network;
+
   constructor(props: CorrelationsProps) {
     super(props);
     this.state = {
@@ -253,6 +260,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         multi: 'html',
         size: 12,
       },
+      chosen: true,
     });
   }
 
@@ -261,23 +269,34 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       from: f1.id,
       to: f2.id,
       id: `${f1.id}:${f2.id}`,
+      chosen: false,
     });
   }
 
-  private createNodeTooltip = (finding: CorrelationFinding) => {
+  private createNodeTooltip = ({ detectionRule, timestamp, logType }: CorrelationFinding) => {
+    const tooltipContent = (
+      <div style={{ backgroundColor: '#535353', color: '#ffffff', padding: '8px' }}>
+        <EuiFlexGroup alignItems="center">
+          <EuiFlexItem grow={false}>
+            <EuiBadge color={getSeverityColor(detectionRule.severity)}>
+              {getSeverityLabel(detectionRule.severity)}
+            </EuiBadge>
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>
+            <strong>{getLabelFromLogType(logType)}</strong>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+        <EuiSpacer size="s" />
+        <EuiText>{timestamp}</EuiText>
+      </div>
+    );
+
+    const tooltipContentHTML = renderToStaticMarkup(tooltipContent);
+
     const tooltip = document.createElement('div');
+    tooltip.innerHTML = tooltipContentHTML;
 
-    function createRow(text: string) {
-      const row = document.createElement('p');
-      row.innerText = text;
-      row.style.padding = '5px';
-      return row;
-    }
-
-    tooltip.appendChild(createRow(`Log type: ${finding.logType}`));
-    tooltip.appendChild(createRow(finding.timestamp));
-
-    return tooltip;
+    return tooltip.firstElementChild;
   };
 
   private onTimeChange = ({ start, end }: { start: string; end: string }) => {
@@ -324,6 +343,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     );
     this.setState({ specificFindingInfo });
     this.updateGraphDataState(specificFindingInfo);
+    this.correlationGraphNetwork?.selectNodes([id], false);
   };
 
   resetFilters = () => {
@@ -339,6 +359,10 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     });
   };
 
+  setNetwork = (network: Network) => {
+    this.correlationGraphNetwork = network;
+  };
+
   renderCorrelationsGraph(loadingData: boolean) {
     return this.state.graphData.graph.nodes.length > 0 || loadingData ? (
       <CorrelationGraph
@@ -346,6 +370,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         graph={this.state.graphData.graph}
         options={{ ...graphRenderOptions }}
         events={this.state.graphData.events}
+        getNetwork={this.setNetwork}
       />
     ) : (
       <EuiEmptyPrompt
