@@ -83,16 +83,16 @@ export default class FindingDetailsFlyout extends Component<
     };
   }
 
-  componentDidMount(): void {
-    this.getIndexPatternId().then((patternId) => {
-      if (patternId) {
-        this.setState({ indexPatternId: patternId });
-      }
-    });
-
+  getCorrelations = async () => {
     const { id, detector } = this.props.finding;
-    const allFindings = this.props.findings;
-    DataStore.correlationsStore
+    let allFindings = this.props.findings;
+    if (allFindings.length === 1 && allFindings[0].id === id) {
+      // if findings come from the alerts fly-out, then there is only one finding
+      // so, we need to get all the findings to match those with the correlations
+      allFindings = await DataStore.findings.getAllFindings();
+    }
+
+    DataStore.correlations
       .getCorrelatedFindings(id, detector._source?.detector_type)
       .then((findings) => {
         if (findings?.correlatedFindings.length) {
@@ -107,6 +107,16 @@ export default class FindingDetailsFlyout extends Component<
           this.setState({ correlatedFindings });
         }
       });
+  };
+
+  componentDidMount(): void {
+    this.getIndexPatternId().then((patternId) => {
+      if (patternId) {
+        this.setState({ indexPatternId: patternId });
+      }
+    });
+
+    this.getCorrelations();
 
     this.setState({
       selectedTab: {
