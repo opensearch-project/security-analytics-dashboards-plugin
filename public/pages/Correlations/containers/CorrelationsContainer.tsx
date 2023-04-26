@@ -68,6 +68,7 @@ interface CorrelationsState {
   specificFindingInfo?: SpecificFindingCorrelations;
   logTypeFilterOptions: FilterItem[];
   severityFilterOptions: FilterItem[];
+  loadingGraphData: boolean;
 }
 
 export class Correlations extends React.Component<CorrelationsProps, CorrelationsState> {
@@ -80,6 +81,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       logTypeFilterOptions: [...defaultLogTypeFilterItemOptions],
       severityFilterOptions: [...defaultSeverityFilterItemOptions],
       specificFindingInfo: undefined,
+      loadingGraphData: false,
     };
   }
 
@@ -153,10 +155,12 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       const end = datemath.parse(this.endTime);
       const startTime = start?.valueOf() || Date.now();
       const endTime = end?.valueOf() || Date.now();
+      this.setState({ loadingGraphData: true });
       let allCorrelations = await DataStore.correlationsStore.getAllCorrelationsInWindow(
         startTime.toString(),
         endTime.toString()
       );
+      this.setState({ loadingGraphData: false });
       allCorrelations = allCorrelations.filter((corr) => {
         return this.shouldShowFinding(corr.finding1) && this.shouldShowFinding(corr.finding2);
       });
@@ -335,6 +339,31 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     });
   };
 
+  renderCorrelationsGraph(loadingData: boolean) {
+    return this.state.graphData.graph.nodes.length > 0 || loadingData ? (
+      <CorrelationGraph
+        loadingData={loadingData}
+        graph={this.state.graphData.graph}
+        options={{ ...graphRenderOptions }}
+        events={this.state.graphData.events}
+      />
+    ) : (
+      <EuiEmptyPrompt
+        title={
+          <EuiTitle>
+            <h1>No correlations found</h1>
+          </EuiTitle>
+        }
+        body={<p>There are no correlated findings in the system.</p>}
+        actions={[
+          <EuiButton fill={true} color="primary" href={`#${ROUTES.CORRELATION_RULE_CREATE}`}>
+            Create correlation rule
+          </EuiButton>,
+        ]}
+      />
+    );
+  }
+
   render() {
     const findingCardsData = this.state.specificFindingInfo;
 
@@ -469,31 +498,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
               </EuiFlexGroup>
 
               <EuiSpacer />
-              {this.state.graphData.graph.nodes.length > 0 ? (
-                <CorrelationGraph
-                  graph={this.state.graphData.graph}
-                  options={{ ...graphRenderOptions }}
-                  events={this.state.graphData.events}
-                />
-              ) : (
-                <EuiEmptyPrompt
-                  title={
-                    <EuiTitle>
-                      <h1>No correlations found</h1>
-                    </EuiTitle>
-                  }
-                  body={<p>There are no correlated findings in the system.</p>}
-                  actions={[
-                    <EuiButton
-                      fill={true}
-                      color="primary"
-                      href={`#${ROUTES.CORRELATION_RULE_CREATE}`}
-                    >
-                      Create correlation rule
-                    </EuiButton>,
-                  ]}
-                />
-              )}
+              {this.renderCorrelationsGraph(this.state.loadingGraphData)}
             </EuiPanel>
           </EuiFlexItem>
         </EuiFlexGroup>
