@@ -9,21 +9,6 @@ import sample_dns_index_settings from '../fixtures/sample_dns_index_settings.jso
 import dns_name_rule_data from '../fixtures/integration_tests/rule/create_dns_rule_with_name_selection.json';
 import dns_type_rule_data from '../fixtures/integration_tests/rule/create_dns_rule_with_type_selection.json';
 import dns_mapping_fields from '../fixtures/integration_tests/rule/sample_dns_field_mappings.json';
-import {
-  getInputByLabel,
-  getElementByTestSubject,
-  getElementByText,
-  getInputByPlaceholder,
-  getRadioButtonById,
-  selectComboboxItem,
-  validateDetailsItem,
-  urlShouldContain,
-  pressEnterKey,
-  validateTable,
-  clearCombobox,
-  getButtonByText,
-  getTextareaByLabel,
-} from '../support/helpers';
 import _ from 'lodash';
 
 const cypressIndexDns = 'cypress-index-dns';
@@ -32,56 +17,53 @@ const detectorName = 'test detector';
 
 const cypressDNSRule = dns_name_rule_data.title;
 
-const getNameField = () => getInputByPlaceholder('Enter a name for the detector.');
+const getNameField = () => cy.getInputByPlaceholder('Enter a name for the detector.');
 
-const getNextButton = () => getButtonByText('Next');
+const getNextButton = () => cy.getButtonByText('Next');
 
-const getCreateDetectorButton = () => getButtonByText('Create detector');
+const getCreateDetectorButton = () => cy.getButtonByText('Create detector');
 
-const selectDnsLogType = () => getRadioButtonById('dns').click({ force: true });
+const selectDnsLogType = () => cy.getRadioButtonById('dns').click({ force: true });
 
 const validateAlertPanel = (alertName) =>
-  getElementByText('.euiTitle', 'Alert triggers')
+  cy
+    .getElementByText('.euiTitle', 'Alert triggers')
     .parentsUntil('.euiPanel')
     .siblings()
     .eq(2)
-    .within(() => getElementByText('button', alertName));
+    .within(() => cy.getElementByText('button', alertName));
 
 const dataSourceLabel = 'Select or input source indexes or index patterns';
 
-const getDataSourceField = () => getInputByLabel(dataSourceLabel);
+const getDataSourceField = () => cy.getFieldByLabel(dataSourceLabel);
 
 const openDetectorDetails = (detectorName) => {
-  getInputByPlaceholder('Search threat detectors')
-    .type(`${detectorName}`)
-    .then(() => pressEnterKey());
-  getElementByText('.euiTableCellContent button', detectorName).click();
+  cy.getInputByPlaceholder('Search threat detectors').type(`${detectorName}`).pressEnterKey();
+  cy.getElementByText('.euiTableCellContent button', detectorName).click();
 };
 
 const editDetectorDetails = (detectorName, panelTitle) => {
-  urlShouldContain('detector-details').then(() => {
-    getElementByText('.euiTitle', detectorName);
-    getElementByText('.euiPanel .euiTitle', panelTitle);
-    getElementByText('.euiPanel .euiTitle', panelTitle)
+  cy.urlShouldContain('detector-details').then(() => {
+    cy.getElementByText('.euiTitle', detectorName);
+    cy.getElementByText('.euiPanel .euiTitle', panelTitle);
+    cy.getElementByText('.euiPanel .euiTitle', panelTitle)
       .parent()
       .siblings()
       .within(() => cy.get('button').contains('Edit').click());
   });
 };
 
-const validateAutomaticFieldMappingsPanel = (length, mappings) =>
+const validateAutomaticFieldMappingsPanel = (mappings) =>
   cy.get('.editFieldMappings').within(() => {
     cy.get('.euiAccordion__triggerWrapper button').then(($btn) => {
-      cy.get($btn).contains(`Automatically mapped fields (${length})`);
+      cy.get($btn).contains(`Automatically mapped fields (${mappings.length})`);
 
       // first check if the accordion is expanded, if not than expand the accordion
       if ($btn[0].getAttribute('aria-expanded') === 'false') {
         cy.get($btn[0])
           .click()
           .then(() => {
-            cy.get('.euiAccordion__childWrapper .euiBasicTable').then(($table) => {
-              validateTable($table, length, mappings);
-            });
+            cy.get('.euiAccordion__childWrapper .euiBasicTable').validateTable(mappings);
           });
       }
     });
@@ -90,12 +72,10 @@ const validateAutomaticFieldMappingsPanel = (length, mappings) =>
 const validatePendingFieldMappingsPanel = (mappings) => {
   cy.get('.editFieldMappings').within(() => {
     // Pending field mappings
-    getElementByText('.euiTitle', 'Pending field mappings')
+    cy.getElementByText('.euiTitle', 'Pending field mappings')
       .parents('.euiPanel')
       .within(() => {
-        cy.get('.euiBasicTable').then(($table) => {
-          validateTable($table, null, mappings);
-        });
+        cy.get('.euiBasicTable').validateTable(mappings);
       });
   });
 };
@@ -105,15 +85,15 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
 
   // TEST DETAILS PAGE
   getNameField().type(detectorName);
-  selectComboboxItem(getDataSourceField(), dataSource);
+  getDataSourceField().selectComboboxItem(dataSource);
 
   selectDnsLogType();
 
-  getElementByText('.euiAccordion .euiTitle', 'Detection rules (14 selected)')
+  cy.getElementByText('.euiAccordion .euiTitle', 'Detection rules (14 selected)')
     .click({ force: true, timeout: 5000 })
     .then(() => cy.contains('.euiTable .euiTableRow', 'Dns'));
 
-  getElementByText('.euiAccordion .euiTitle', 'Configure field mapping - optional');
+  cy.getElementByText('.euiAccordion .euiTitle', 'Configure field mapping - optional');
   cy.get('[aria-controls="mappedTitleFieldsAccordion"]').then(($btn) => {
     // first check if the accordion is expanded, if not than expand the accordion
     if ($btn && $btn[0] && $btn[0].getAttribute('aria-expanded') === 'false') {
@@ -125,39 +105,39 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
   getNextButton().click({ force: true });
 
   // TEST ALERTS PAGE
-  getElementByText('.euiTitle.euiTitle--medium', 'Set up alert triggers');
-  getInputByPlaceholder('Enter a name to describe the alert condition').type('test_trigger');
-  getElementByTestSubject('alert-tags-combo-box')
+  cy.getElementByText('.euiTitle.euiTitle--medium', 'Set up alert triggers');
+  cy.getInputByPlaceholder('Enter a name to describe the alert condition').type('test_trigger');
+  cy.getElementByTestSubject('alert-tags-combo-box')
     .type(`attack.defense_evasion{enter}`)
     .find('input')
     .focus()
     .blur();
 
-  selectComboboxItem(getInputByLabel('Specify alert severity'), '1 (Highest)');
+  cy.getFieldByLabel('Specify alert severity').selectComboboxItem('1 (Highest)');
 
   // go to review page
   getNextButton().click({ force: true });
 
   // TEST REVIEW AND CREATE PAGE
-  getElementByText('.euiTitle', 'Review and create');
-  getElementByText('.euiTitle', 'Detector details');
-  getElementByText('.euiTitle', 'Field mapping');
-  getElementByText('.euiTitle', 'Alert triggers');
+  cy.getElementByText('.euiTitle', 'Review and create');
+  cy.getElementByText('.euiTitle', 'Detector details');
+  cy.getElementByText('.euiTitle', 'Field mapping');
+  cy.getElementByText('.euiTitle', 'Alert triggers');
 
-  validateDetailsItem('Detector name', detectorName);
-  validateDetailsItem('Description', '-');
-  validateDetailsItem('Detector schedule', 'Every 1 minute');
-  validateDetailsItem('Detection rules', '14');
-  validateDetailsItem('Created at', '-');
-  validateDetailsItem('Last updated time', '-');
-  validateDetailsItem('Detector dashboard', 'Not available for this log type');
+  cy.validateDetailsItem('Detector name', detectorName);
+  cy.validateDetailsItem('Description', '-');
+  cy.validateDetailsItem('Detector schedule', 'Every 1 minute');
+  cy.validateDetailsItem('Detection rules', '14');
+  cy.validateDetailsItem('Created at', '-');
+  cy.validateDetailsItem('Last updated time', '-');
+  cy.validateDetailsItem('Detector dashboard', 'Not available for this log type');
 
   if (!expectFailure) {
-    getElementByText('.euiTitle', 'Field mapping')
+    cy.getElementByText('.euiTitle', 'Field mapping')
       .parentsUntil('.euiPanel')
       .siblings()
       .eq(2)
-      .then(($el) => validateTable($el, 3, dns_mapping_fields));
+      .validateTable(Object.entries(dns_mapping_fields));
   }
 
   validateAlertPanel('test_trigger');
@@ -166,7 +146,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
   cy.intercept('POST', '/detectors').as('createDetectorRequest');
 
   // create the detector
-  getElementByText('button', 'Create').click({ force: true });
+  cy.getElementByText('button', 'Create').click({ force: true });
 
   // TEST DETECTOR DETAILS PAGE
   cy.wait('@createMappingsRequest');
@@ -178,31 +158,31 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
       cy.url()
         .should('contain', detectorId)
         .then(() => {
-          getElementByText('.euiCallOut', `Detector created successfully: ${detectorName}`);
+          cy.getElementByText('.euiCallOut', `Detector created successfully: ${detectorName}`);
 
           // Confirm detector state
-          getElementByText('.euiTitle', detectorName);
-          getElementByText('.euiHealth', 'Active').then(() => {
-            validateDetailsItem('Detector name', detectorName);
-            validateDetailsItem('Description', '-');
-            validateDetailsItem('Detector schedule', 'Every 1 minute');
-            validateDetailsItem('Detection rules', '14');
-            validateDetailsItem('Detector dashboard', 'Not available for this log type');
+          cy.getElementByText('.euiTitle', detectorName);
+          cy.getElementByText('.euiHealth', 'Active').then(() => {
+            cy.validateDetailsItem('Detector name', detectorName);
+            cy.validateDetailsItem('Description', '-');
+            cy.validateDetailsItem('Detector schedule', 'Every 1 minute');
+            cy.validateDetailsItem('Detection rules', '14');
+            cy.validateDetailsItem('Detector dashboard', 'Not available for this log type');
 
             cy.wait(5000); // waiting for the page to be reloaded after pushing detector id into route
-            getElementByText('button.euiTab', 'Alert triggers').should('be.visible').click();
+            cy.getElementByText('button.euiTab', 'Alert triggers').should('be.visible').click();
             validateAlertPanel('test_trigger');
 
             cy.intercept('GET', '/mappings?indexName').as('getMappingFields');
-            getElementByText('button.euiTab', 'Field mappings').should('be.visible').click();
+            cy.getElementByText('button.euiTab', 'Field mappings').should('be.visible').click();
             if (!expectFailure) {
               cy.wait('@getMappingFields');
               cy.wait(2000);
-              getElementByText('.euiTitle', 'Field mapping')
+              cy.getElementByText('.euiTitle', 'Field mapping')
                 .parentsUntil('.euiPanel')
                 .siblings()
                 .eq(2)
-                .then(($el) => validateTable($el, 3, dns_mapping_fields));
+                .validateTable(Object.entries(dns_mapping_fields));
             }
           });
         });
@@ -276,7 +256,7 @@ describe('Detectors', () => {
       .contains('Select an input source');
     getNextButton().should('be.disabled');
 
-    selectComboboxItem(getDataSourceField(), cypressIndexDns);
+    getDataSourceField().selectComboboxItem(cypressIndexDns);
     getDataSourceField()
       .focus()
       .blur()
@@ -289,11 +269,11 @@ describe('Detectors', () => {
   it('...should show mappings warning', () => {
     getCreateDetectorButton().click({ force: true });
 
-    selectComboboxItem(getDataSourceField(), cypressIndexDns);
+    getDataSourceField().selectComboboxItem(cypressIndexDns);
 
     selectDnsLogType();
 
-    selectComboboxItem(getDataSourceField(), cypressIndexWindows);
+    getDataSourceField().selectComboboxItem(cypressIndexWindows);
     getDataSourceField().focus().blur();
 
     cy.get('.euiCallOut')
@@ -305,12 +285,12 @@ describe('Detectors', () => {
 
   it('...can fail creation', () => {
     createDetector(`${detectorName}_fail`, '.kibana_1', true);
-    getElementByText('.euiCallOut', 'Create detector failed.');
+    cy.getElementByText('.euiCallOut', 'Create detector failed.');
   });
 
   it('...can be created', () => {
     createDetector(detectorName, cypressIndexDns, false);
-    getElementByText('.euiCallOut', 'Detector created successfully');
+    cy.getElementByText('.euiCallOut', 'Detector created successfully');
   });
 
   it('...basic details can be edited', () => {
@@ -319,27 +299,27 @@ describe('Detectors', () => {
 
     editDetectorDetails(detectorName, 'Detector details');
 
-    urlShouldContain('edit-detector-details').then(() => {
-      getElementByText('.euiTitle', 'Edit detector details');
+    cy.urlShouldContain('edit-detector-details').then(() => {
+      cy.getElementByText('.euiTitle', 'Edit detector details');
     });
 
     cy.wait('@getIndices');
     getNameField().type('{selectall}{backspace}').type('test detector edited');
-    getTextareaByLabel('Description - optional').type('Edited description');
+    cy.getTextareaByLabel('Description - optional').type('Edited description');
 
-    clearCombobox(getDataSourceField());
-    selectComboboxItem(getDataSourceField(), cypressIndexWindows);
+    getDataSourceField().clearCombobox();
+    getDataSourceField().selectComboboxItem(cypressIndexWindows);
 
-    getInputByLabel('Run every').type('{selectall}{backspace}').type('10');
-    getInputByLabel('Run every', 'select').select('Hours');
+    cy.getFieldByLabel('Run every').type('{selectall}{backspace}').type('10');
+    cy.getFieldByLabel('Run every', 'select').select('Hours');
 
-    getElementByText('button', 'Save changes').click({ force: true });
+    cy.getElementByText('button', 'Save changes').click({ force: true });
 
-    urlShouldContain('detector-details').then(() => {
-      validateDetailsItem('Detector name', 'test detector edited');
-      validateDetailsItem('Description', 'Edited description');
-      validateDetailsItem('Detector schedule', 'Every 10 hours');
-      validateDetailsItem('Data source', cypressIndexWindows);
+    cy.urlShouldContain('detector-details').then(() => {
+      cy.validateDetailsItem('Detector name', 'test detector edited');
+      cy.validateDetailsItem('Description', 'Edited description');
+      cy.validateDetailsItem('Detector schedule', 'Every 10 hours');
+      cy.validateDetailsItem('Data source', cypressIndexWindows);
     });
   });
 
@@ -347,23 +327,21 @@ describe('Detectors', () => {
     openDetectorDetails(detectorName);
 
     editDetectorDetails(detectorName, 'Active rules');
-    getElementByText('.euiTitle', 'Detection rules (14)');
+    cy.getElementByText('.euiTitle', 'Detection rules (14)');
 
-    getInputByPlaceholder('Search...')
-      .type(`${cypressDNSRule}`)
-      .then(() => pressEnterKey());
+    cy.getInputByPlaceholder('Search...').type(`${cypressDNSRule}`).pressEnterKey();
 
-    getElementByText('.euiTableCellContent button', cypressDNSRule)
+    cy.getElementByText('.euiTableCellContent button', cypressDNSRule)
       .parents('td')
       .prev()
       .find('.euiTableCellContent button')
       .click();
 
-    getElementByText('.euiTitle', 'Detection rules (13)');
-    getElementByText('button', 'Save changes').click({ force: true });
-    urlShouldContain('detector-details').then(() => {
-      getElementByText('.euiTitle', detectorName);
-      getElementByText('.euiPanel .euiTitle', 'Active rules (13)');
+    cy.getElementByText('.euiTitle', 'Detection rules (13)');
+    cy.getElementByText('button', 'Save changes').click({ force: true });
+    cy.urlShouldContain('detector-details').then(() => {
+      cy.getElementByText('.euiTitle', detectorName);
+      cy.getElementByText('.euiPanel .euiTitle', 'Active rules (13)');
     });
   });
 
@@ -374,14 +352,14 @@ describe('Detectors', () => {
 
     editDetectorDetails(detectorName, 'Detector details');
 
-    urlShouldContain('edit-detector-details').then(() => {
-      getElementByText('.euiTitle', 'Edit detector details');
+    cy.urlShouldContain('edit-detector-details').then(() => {
+      cy.getElementByText('.euiTitle', 'Edit detector details');
     });
 
     cy.wait('@getIndices');
     cy.get('.reviewFieldMappings').should('not.exist');
 
-    clearCombobox(getDataSourceField());
+    getDataSourceField().clearCombobox();
     getDataSourceField().should('not.have.value');
     getDataSourceField().type(`${cypressIndexDns}{enter}`);
 
@@ -389,13 +367,13 @@ describe('Detectors', () => {
       cy.get('.reviewFieldMappings').should('be.visible');
       const properties = interception.response.body.response.properties;
       if (_.isEmpty(properties)) {
-        validatePendingFieldMappingsPanel(dns_mapping_fields);
+        validatePendingFieldMappingsPanel(Object.entries(dns_mapping_fields));
       } else {
-        validateAutomaticFieldMappingsPanel(3, dns_mapping_fields);
+        validateAutomaticFieldMappingsPanel(Object.entries(dns_mapping_fields));
       }
     });
 
-    getElementByText('button', 'Save changes').click({ force: true });
+    cy.getElementByText('button', 'Save changes').click({ force: true });
   });
 
   it('...should show field mappings if rule selection is changed', () => {
@@ -405,8 +383,8 @@ describe('Detectors', () => {
 
     editDetectorDetails(detectorName, 'Active rules');
 
-    urlShouldContain('edit-detector-rules').then(() => {
-      getElementByText('.euiTitle', 'Edit detector rules');
+    cy.urlShouldContain('edit-detector-rules').then(() => {
+      cy.getElementByText('.euiTitle', 'Edit detector rules');
     });
 
     cy.get('.reviewFieldMappings').should('not.exist');
@@ -423,9 +401,9 @@ describe('Detectors', () => {
       cy.wait(5000);
       const properties = interception.response.body.response.properties;
       if (_.isEmpty(properties)) {
-        validatePendingFieldMappingsPanel(dns_mapping_fields);
+        validatePendingFieldMappingsPanel(Object.entries(dns_mapping_fields));
       } else {
-        validateAutomaticFieldMappingsPanel(3, dns_mapping_fields);
+        validateAutomaticFieldMappingsPanel(Object.entries(dns_mapping_fields));
       }
     });
   });
@@ -443,11 +421,11 @@ describe('Detectors', () => {
     cy.wait('@getCustomRules');
     cy.wait('@getSigmaRules');
 
-    getButtonByText('Actions')
+    cy.getButtonByText('Actions')
       .click({ force: true })
       .then(() => {
         cy.intercept('/detectors').as('detectors');
-        getElementByText('.euiContextMenuItem', 'Delete').click({ force: true });
+        cy.getElementByText('.euiContextMenuItem', 'Delete').click({ force: true });
         cy.wait('@detectors').then(() => {
           cy.contains('There are no existing detectors');
         });
