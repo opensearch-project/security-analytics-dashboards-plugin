@@ -37,6 +37,12 @@ module.exports = {
   ],
   clearMocks: true,
   testPathIgnorePatterns: ['<rootDir>/build/', '<rootDir>/node_modules/'],
+  transformIgnorePatterns: [
+    // ignore all node_modules except those which require babel transforms to
+    // handle newer syntax like `??=` which is not already transformed by the
+    // package and not yet supported in the node version we use.
+    '[/\\\\]node_modules(?![\\/\\\\](vega-lite))[/\\\\].+\\.js$',
+  ],
   modulePathIgnorePatterns: ['securityAnalyticsDashboards'],
   testEnvironment: 'jsdom',
   snapshotSerializers: ['enzyme-to-json/serializer'],
