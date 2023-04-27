@@ -57,6 +57,7 @@ interface FindingDetailsFlyoutProps extends RouteComponentProps {
   indexPatternsService: IndexPatternsService;
   correlationService: CorrelationService;
   closeFlyout: () => void;
+  shouldLoadAllFindings: boolean;
 }
 
 interface FindingDetailsFlyoutState {
@@ -86,9 +87,8 @@ export default class FindingDetailsFlyout extends Component<
   getCorrelations = async () => {
     const { id, detector } = this.props.finding;
     let allFindings = this.props.findings;
-    if (allFindings.length === 1 && allFindings[0].id === id) {
-      // if findings come from the alerts fly-out, then there is only one finding
-      // so, we need to get all the findings to match those with the correlations
+    if (this.props.shouldLoadAllFindings) {
+      // if findings come from the alerts fly-out, we need to get all the findings to match those with the correlations
       allFindings = await DataStore.findings.getAllFindings();
     }
 
