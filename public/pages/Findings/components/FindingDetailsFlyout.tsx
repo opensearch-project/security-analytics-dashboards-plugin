@@ -66,6 +66,8 @@ interface FindingDetailsFlyoutState {
   isCreateIndexPatternModalVisible: boolean;
   selectedTab: { id: string; content: React.ReactNode | null };
   correlatedFindings: CorrelationFinding[];
+  isDocumentLoading: boolean;
+  areCorrelationsLoading: boolean;
 }
 
 export default class FindingDetailsFlyout extends Component<
@@ -80,15 +82,21 @@ export default class FindingDetailsFlyout extends Component<
       isCreateIndexPatternModalVisible: false,
       selectedTab: { id: FindingFlyoutTabId.DETAILS, content: null },
       correlatedFindings: [],
+      isDocumentLoading: true,
+      areCorrelationsLoading: true,
     };
   }
 
   componentDidMount(): void {
-    this.getIndexPatternId().then((patternId) => {
-      if (patternId) {
-        this.setState({ indexPatternId: patternId });
-      }
-    });
+    this.getIndexPatternId()
+      .then((patternId) => {
+        if (patternId) {
+          this.setState({ indexPatternId: patternId });
+        }
+      })
+      .finally(() => {
+        this.setState({ isDocumentLoading: false });
+      });
 
     const { id, detector } = this.props.finding;
     const allFindings = this.props.findings;
@@ -106,6 +114,9 @@ export default class FindingDetailsFlyout extends Component<
           });
           this.setState({ correlatedFindings });
         }
+      })
+      .finally(() => {
+        this.setState({ areCorrelationsLoading: false });
       });
 
     this.setState({
@@ -246,7 +257,7 @@ export default class FindingDetailsFlyout extends Component<
     return patternId;
   };
 
-  renderFindingDocuments() {
+  renderFindingDocuments(isDocumentLoading: boolean) {
     const {
       finding: { index, document_list, related_doc_ids },
     } = this.props;
@@ -266,6 +277,7 @@ export default class FindingDetailsFlyout extends Component<
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
             <EuiButton
+              isLoading={isDocumentLoading}
               data-test-subj={'finding-details-flyout-view-surrounding-documents'}
               onClick={() => {
                 if (indexPatternId) {
@@ -361,13 +373,17 @@ export default class FindingDetailsFlyout extends Component<
     }
   }
 
-  private getTabContent(tabId: FindingFlyoutTabId) {
+  private getTabContent(
+    tabId: FindingFlyoutTabId,
+    isDocumentLoading = false,
+    areCorrelationsLoading = false
+  ) {
     switch (tabId) {
       case FindingFlyoutTabId.CORRELATIONS:
-        return this.createCorrelationsTable();
+        return this.createCorrelationsTable(areCorrelationsLoading);
       case FindingFlyoutTabId.DETAILS:
       default:
-        return this.createFindingDetails();
+        return this.createFindingDetails(isDocumentLoading);
     }
   }
 
@@ -384,7 +400,7 @@ export default class FindingDetailsFlyout extends Component<
     });
   };
 
-  private createCorrelationsTable() {
+  private createCorrelationsTable(areCorrelationsLoading: boolean) {
     const columns: EuiBasicTableColumn<CorrelationFinding>[] = [
       {
         field: 'timestamp',
@@ -441,6 +457,7 @@ export default class FindingDetailsFlyout extends Component<
               pagination={true}
               search={true}
               sorting={true}
+              loading={areCorrelationsLoading}
             />
           </EuiFlexItem>
         </EuiFlexGroup>
@@ -448,7 +465,7 @@ export default class FindingDetailsFlyout extends Component<
     );
   }
 
-  private createFindingDetails() {
+  private createFindingDetails(isDocumentLoading: boolean) {
     const {
       finding: { queries },
     } = this.props;
@@ -461,7 +478,7 @@ export default class FindingDetailsFlyout extends Component<
         <EuiSpacer size={'m'} />
         {this.renderRuleDetails(queries)}
         <EuiSpacer size="l" />
-        {this.renderFindingDocuments()}
+        {this.renderFindingDocuments(isDocumentLoading)}
       </>
     );
   }
@@ -478,6 +495,7 @@ export default class FindingDetailsFlyout extends Component<
         timestamp,
       },
     } = this.props;
+    const { isDocumentLoading, areCorrelationsLoading } = this.state;
     return (
       <EuiFlyout
         onClose={closeFlyout}
@@ -558,7 +576,14 @@ export default class FindingDetailsFlyout extends Component<
                   isSelected={tab.id === this.state.selectedTab.id}
                   onClick={() => {
                     this.setState({
-                      selectedTab: { id: tab.id, content: this.getTabContent(tab.id) },
+                      selectedTab: {
+                        id: tab.id,
+                        content: this.getTabContent(
+                          tab.id,
+                          isDocumentLoading,
+                          areCorrelationsLoading
+                        ),
+                      },
                     });
                   }}
                 >
