@@ -72,7 +72,6 @@ interface CorrelationsState {
 
 export class Correlations extends React.Component<CorrelationsProps, CorrelationsState> {
   static contextType = CoreServicesContext;
-  private dateTimeFilter: DateTimeFilter;
   constructor(props: CorrelationsProps) {
     super(props);
     this.state = {
@@ -82,10 +81,14 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       severityFilterOptions: [...defaultSeverityFilterItemOptions],
       specificFindingInfo: undefined,
     };
-    this.dateTimeFilter = this.props.dateTimeFilter || {
-      startTime: DEFAULT_DATE_RANGE.start,
-      endTime: DEFAULT_DATE_RANGE.end,
-    };
+  }
+
+  private get startTime() {
+    return this.props.dateTimeFilter?.startTime || DEFAULT_DATE_RANGE.start;
+  }
+
+  private get endTime() {
+    return this.props.dateTimeFilter?.endTime || DEFAULT_DATE_RANGE.end;
   }
 
   private shouldShowFinding(finding: CorrelationFinding) {
@@ -146,8 +149,8 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       this.updateGraphDataState(specificFindingInfo);
     } else {
       // get all correlations and display them in the graph
-      const start = datemath.parse(this.dateTimeFilter.startTime);
-      const end = datemath.parse(this.dateTimeFilter.endTime);
+      const start = datemath.parse(this.startTime);
+      const end = datemath.parse(this.endTime);
       const startTime = start?.valueOf() || Date.now();
       const endTime = end?.valueOf() || Date.now();
       let allCorrelations = await DataStore.correlations.getAllCorrelationsInWindow(
@@ -158,6 +161,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         return this.shouldShowFinding(corr.finding1) && this.shouldShowFinding(corr.finding2);
       });
       const createdEdges = new Set<string>();
+      const createdNodes = new Set<string>();
       const graphData: CorrelationGraphData = {
         graph: {
           nodes: [],
@@ -175,8 +179,14 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
           return;
         }
 
-        this.addNode(graphData.graph.nodes, correlation.finding1);
-        this.addNode(graphData.graph.nodes, correlation.finding2);
+        if (!createdNodes.has(correlation.finding1.id)) {
+          this.addNode(graphData.graph.nodes, correlation.finding1);
+          createdNodes.add(correlation.finding1.id);
+        }
+        if (!createdNodes.has(correlation.finding2.id)) {
+          this.addNode(graphData.graph.nodes, correlation.finding2);
+          createdNodes.add(correlation.finding2.id);
+        }
         this.addEdge(graphData.graph.edges, correlation.finding1, correlation.finding2);
 
         createdEdges.add(`${correlation.finding1.id}:${correlation.finding2.id}`);
@@ -432,8 +442,8 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>
                   <EuiSuperDatePicker
-                    start={this.dateTimeFilter.startTime}
-                    end={this.dateTimeFilter.endTime}
+                    start={this.startTime}
+                    end={this.endTime}
                     recentlyUsedRanges={this.state.recentlyUsedRanges}
                     onTimeChange={this.onTimeChange}
                     onRefresh={this.onRefresh}
