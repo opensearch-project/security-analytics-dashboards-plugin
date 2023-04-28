@@ -15,6 +15,10 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../utils/helpers';
 import { DEFAULT_EMPTY_DATA } from '../utils/constants';
 
+export interface ICorrelationsCache {
+  [key: string]: CorrelationRuleHit[];
+}
+
 export class CorrelationsStore implements ICorrelationsStore {
   /**
    * Correlation rules service instance
@@ -33,6 +37,21 @@ export class CorrelationsStore implements ICorrelationsStore {
    */
   readonly notifications: NotificationsStart;
 
+  /**
+   * Keeps rule's data cached
+   *
+   * @property {ICorrelationsCache} cache
+   */
+  private cache: ICorrelationsCache = {};
+
+  /**
+   * Invalidates all rules data
+   */
+  private invalidateCache = () => {
+    this.cache = {};
+    return this;
+  };
+
   constructor(
     service: CorrelationService,
     detectorsService: DetectorsService,
@@ -47,7 +66,7 @@ export class CorrelationsStore implements ICorrelationsStore {
   }
 
   public async createCorrelationRule(correlationRule: CorrelationRule): Promise<boolean> {
-    const response = await this.service.createCorrelationRule({
+    const response = await this.invalidateCache().service.createCorrelationRule({
       name: correlationRule.name,
       correlate: correlationRule.queries?.map((query) => ({
         index: query.index,
@@ -68,17 +87,22 @@ export class CorrelationsStore implements ICorrelationsStore {
   }
 
   public async getCorrelationRules(index?: string): Promise<CorrelationRuleHit[]> {
+    const cacheKey: string = `getCorrelationRules:${JSON.stringify(arguments)}`;
+
+    if (this.cache[cacheKey]) {
+      return this.cache[cacheKey];
+    }
     const response = await this.service.getCorrelationRules(index);
 
     if (response?.ok) {
-      return response.response.hits.hits;
+      return (this.cache[cacheKey] = response.response.hits.hits);
     }
 
     return [];
   }
 
   public async deleteCorrelationRule(ruleId: string): Promise<boolean> {
-    const response = await this.service.deleteCorrelationRule(ruleId);
+    const response = await this.invalidateCache().service.deleteCorrelationRule(ruleId);
 
     if (!response.ok) {
       errorNotificationToast(this.notifications, 'delete', 'correlation rule', response.error);
@@ -139,6 +163,7 @@ export class CorrelationsStore implements ICorrelationsStore {
             findings[f.id] = {
               id: f.id,
               logType: detector._source.detector_type,
+              detectorName: detector._source.name,
               timestamp: new Date(f.timestamp).toLocaleString(),
               detectionRule: rule
                 ? {

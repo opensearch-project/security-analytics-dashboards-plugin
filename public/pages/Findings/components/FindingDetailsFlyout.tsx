@@ -30,8 +30,6 @@ import {
   EuiIcon,
   EuiTabs,
   EuiTab,
-  EuiInMemoryTable,
-  EuiBasicTableColumn,
 } from '@elastic/eui';
 import { capitalizeFirstLetter, renderTime } from '../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA, ROUTES } from '../../../utils/constants';
@@ -39,14 +37,14 @@ import { Query } from '../models/interfaces';
 import { RuleViewerFlyout } from '../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
 import { RuleSource } from '../../../../server/models/interfaces';
 import { OpenSearchService, IndexPatternsService, CorrelationService } from '../../../services';
-import { getSeverityBadge, RuleTableItem } from '../../Rules/utils/helpers';
+import { RuleTableItem } from '../../Rules/utils/helpers';
 import { CreateIndexPatternForm } from './CreateIndexPatternForm';
 import { FindingItemType } from '../containers/Findings/Findings';
 import { CorrelationFinding, RuleItemInfoBase } from '../../../../types';
 import { FindingFlyoutTabId, FindingFlyoutTabs } from '../utils/constants';
 import { DataStore } from '../../../store/DataStore';
 import { RouteComponentProps } from 'react-router-dom';
-import { ruleTypes } from '../../Rules/utils/constants';
+import { CorrelationsTable } from './CorrelationsTable/CorrelationsTable';
 
 interface FindingDetailsFlyoutProps extends RouteComponentProps {
   finding: FindingItemType;
@@ -66,6 +64,7 @@ interface FindingDetailsFlyoutState {
   isCreateIndexPatternModalVisible: boolean;
   selectedTab: { id: string; content: React.ReactNode | null };
   correlatedFindings: CorrelationFinding[];
+  areCorrelationsLoading: boolean;
 }
 
 export default class FindingDetailsFlyout extends Component<
@@ -80,6 +79,7 @@ export default class FindingDetailsFlyout extends Component<
       isCreateIndexPatternModalVisible: false,
       selectedTab: { id: FindingFlyoutTabId.DETAILS, content: null },
       correlatedFindings: [],
+      areCorrelationsLoading: true,
     };
   }
 
@@ -92,21 +92,34 @@ export default class FindingDetailsFlyout extends Component<
 
     const { id, detector } = this.props.finding;
     const allFindings = this.props.findings;
-    DataStore.correlationsStore
-      .getCorrelatedFindings(id, detector._source?.detector_type)
-      .then((findings) => {
-        if (findings?.correlatedFindings.length) {
-          let correlatedFindings: any[] = [];
-          findings.correlatedFindings.map((finding) => {
-            allFindings.map((item) => {
-              if (finding.id === item.id) {
-                correlatedFindings.push(finding);
-              }
+
+    DataStore.correlationsStore.getCorrelationRules().then((correlationRules) => {
+      DataStore.correlationsStore
+        .getCorrelatedFindings(id, detector._source?.detector_type)
+        .then((findings) => {
+          if (findings?.correlatedFindings.length) {
+            let correlatedFindings: any[] = [];
+            findings.correlatedFindings.map((finding: CorrelationFinding) => {
+              allFindings.map((item: FindingItemType) => {
+                if (finding.id === item.id) {
+                  correlatedFindings.push({
+                    ...finding,
+                    correlationRule: correlationRules.find(
+                      (rule) => finding.rules?.indexOf(rule._id) !== -1
+                    ),
+                  });
+                }
+              });
             });
+            this.setState({ correlatedFindings });
+          }
+        })
+        .finally(() => {
+          this.setState({
+            areCorrelationsLoading: false,
           });
-          this.setState({ correlatedFindings });
-        }
-      });
+        });
+    });
 
     this.setState({
       selectedTab: {
@@ -364,88 +377,18 @@ export default class FindingDetailsFlyout extends Component<
   private getTabContent(tabId: FindingFlyoutTabId) {
     switch (tabId) {
       case FindingFlyoutTabId.CORRELATIONS:
-        return this.createCorrelationsTable();
+        return (
+          <CorrelationsTable
+            finding={this.props.finding}
+            correlatedFindings={this.state.correlatedFindings}
+            history={this.props.history}
+            isLoading={this.state.areCorrelationsLoading}
+          />
+        );
       case FindingFlyoutTabId.DETAILS:
       default:
         return this.createFindingDetails();
     }
-  }
-
-  private goToCorrelationsPage = () => {
-    const { correlatedFindings } = this.state;
-    const { finding } = this.props;
-
-    this.props.history.push({
-      pathname: `${ROUTES.CORRELATIONS}`,
-      state: {
-        finding: finding,
-        correlatedFindings: correlatedFindings,
-      },
-    });
-  };
-
-  private createCorrelationsTable() {
-    const columns: EuiBasicTableColumn<CorrelationFinding>[] = [
-      {
-        field: 'timestamp',
-        name: 'Time',
-        sortable: true,
-      },
-      {
-        field: 'id',
-        name: 'Correlated finding id',
-      },
-      {
-        field: 'logType',
-        name: 'Log type',
-        sortable: true,
-        render: (category: string) =>
-          // TODO: This formatting may need some refactoring depending on the response payload
-          ruleTypes.find((ruleType) => ruleType.value === category)?.label || DEFAULT_EMPTY_DATA,
-      },
-      {
-        name: 'Rule severity',
-        truncateText: true,
-        align: 'center',
-        render: (item: CorrelationFinding) => getSeverityBadge(item.detectionRule.severity),
-      },
-      {
-        field: 'correlationScore',
-        name: 'Score',
-        sortable: true,
-      },
-    ];
-
-    return (
-      <>
-        <EuiFlexGroup>
-          <EuiFlexItem>
-            <EuiTitle size="s">
-              <h3>Correlated findings</h3>
-            </EuiTitle>
-          </EuiFlexItem>
-          <EuiFlexItem grow={false}>
-            <EuiButton
-              onClick={() => this.goToCorrelationsPage()}
-              disabled={this.state.correlatedFindings.length === 0}
-            >
-              View correlations graph
-            </EuiButton>
-          </EuiFlexItem>
-        </EuiFlexGroup>
-        <EuiFlexGroup>
-          <EuiFlexItem>
-            <EuiInMemoryTable
-              columns={columns}
-              items={this.state.correlatedFindings}
-              pagination={true}
-              search={true}
-              sorting={true}
-            />
-          </EuiFlexItem>
-        </EuiFlexGroup>
-      </>
-    );
   }
 
   private createFindingDetails() {
@@ -478,6 +421,7 @@ export default class FindingDetailsFlyout extends Component<
         timestamp,
       },
     } = this.props;
+
     return (
       <EuiFlyout
         onClose={closeFlyout}
@@ -558,11 +502,24 @@ export default class FindingDetailsFlyout extends Component<
                   isSelected={tab.id === this.state.selectedTab.id}
                   onClick={() => {
                     this.setState({
-                      selectedTab: { id: tab.id, content: this.getTabContent(tab.id) },
+                      selectedTab: {
+                        id: tab.id,
+                        content: this.getTabContent(tab.id),
+                      },
                     });
                   }}
                 >
-                  {tab.name}
+                  {tab.id === 'Correlations' ? (
+                    <>
+                      {tab.name} (
+                      {this.state.areCorrelationsLoading
+                        ? DEFAULT_EMPTY_DATA
+                        : this.state.correlatedFindings.length}
+                      )
+                    </>
+                  ) : (
+                    tab.name
+                  )}
                 </EuiTab>
               );
             })}
