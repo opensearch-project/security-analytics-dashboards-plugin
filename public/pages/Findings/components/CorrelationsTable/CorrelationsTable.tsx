@@ -52,7 +52,9 @@ export const CorrelationsTable: React.FC<CorrelationsTableProps> = ({
               <EuiText size={'xs'}>Finding ID</EuiText>
             </EuiFlexItem>
             <EuiFlexItem grow={true}>
-              <EuiText size={'xs'}>{item.id}</EuiText>
+              <EuiText size={'xs'} className={'correlations-table-details-row-value'}>
+                {item.id}
+              </EuiText>
             </EuiFlexItem>
           </EuiFlexGroup>
 
@@ -61,7 +63,9 @@ export const CorrelationsTable: React.FC<CorrelationsTableProps> = ({
               <EuiText size={'xs'}>Threat detector</EuiText>
             </EuiFlexItem>
             <EuiFlexItem grow={true}>
-              <EuiText size={'xs'}>{item.detectorName}</EuiText>
+              <EuiText size={'xs'} className={'correlations-table-details-row-value'}>
+                {item.detectorName}
+              </EuiText>
             </EuiFlexItem>
           </EuiFlexGroup>
 
@@ -70,7 +74,9 @@ export const CorrelationsTable: React.FC<CorrelationsTableProps> = ({
               <EuiText size={'xs'}>Detection rule</EuiText>
             </EuiFlexItem>
             <EuiFlexItem grow={true}>
-              <EuiText size={'xs'}>{item.detectionRule?.name || '-'}</EuiText>
+              <EuiText size={'xs'} className={'correlations-table-details-row-value'}>
+                {item.detectionRule?.name || '-'}
+              </EuiText>
             </EuiFlexItem>
           </EuiFlexGroup>
         </EuiPanel>
