@@ -113,7 +113,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
     }
   }
 
-  // Confirm entries user has made
+  // Confirm entries user made
   cy.contains('Detector details');
   cy.contains(detectorName);
   cy.contains('dns');
