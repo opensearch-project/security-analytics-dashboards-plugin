@@ -163,7 +163,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       const startTime = start?.valueOf() || Date.now();
       const endTime = end?.valueOf() || Date.now();
       this.setState({ loadingGraphData: true });
-      let allCorrelations = await DataStore.correlationsStore.getAllCorrelationsInWindow(
+      let allCorrelations = await DataStore.correlations.getAllCorrelationsInWindow(
         startTime.toString(),
         endTime.toString()
       );
@@ -218,9 +218,9 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       return;
     }
 
-    const allFindings = await DataStore.correlationsStore.fetchAllFindings();
+    const allFindings = await DataStore.correlations.fetchAllFindings();
     const detectorType = allFindings[findingId].logType;
-    const correlations = await DataStore.correlationsStore.getCorrelatedFindings(
+    const correlations = await DataStore.correlations.getCorrelatedFindings(
       findingId,
       detectorType
     );
@@ -344,10 +344,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
 
   onFindingInspect = async (id: string, logType: string) => {
     // get finding data and set the specificFindingInfo
-    const specificFindingInfo = await DataStore.correlationsStore.getCorrelatedFindings(
-      id,
-      logType
-    );
+    const specificFindingInfo = await DataStore.correlations.getCorrelatedFindings(id, logType);
     this.setState({ specificFindingInfo });
     this.updateGraphDataState(specificFindingInfo);
     this.correlationGraphNetwork?.selectNodes([id], false);

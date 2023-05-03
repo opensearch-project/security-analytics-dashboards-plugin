@@ -40,7 +40,7 @@ export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComp
 
   const getCorrelationRules = useCallback(
     async (ruleItem?) => {
-      const allCorrelationRules: CorrelationRuleHit[] = await DataStore.correlationsStore.getCorrelationRules();
+      const allCorrelationRules: CorrelationRuleHit[] = await DataStore.correlations.getCorrelationRules();
       const allRuleItems: CorrelationRuleTableItem[] = allCorrelationRules.map(
         (rule: CorrelationRuleHit) => ({
           ...rule,
@@ -58,7 +58,7 @@ export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComp
       setAllRules(allRuleItems);
       setFilteredRules(allRuleItems);
     },
-    [DataStore.correlationsStore.getCorrelationRules]
+    [DataStore.correlations.getCorrelationRules]
   );
 
   useEffect(() => {
@@ -113,7 +113,7 @@ export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComp
 
   const onDeleteRuleConfirmed = async (rule: any) => {
     if (selectedRule) {
-      const response = await DataStore.correlationsStore.deleteCorrelationRule(selectedRule.id);
+      const response = await DataStore.correlations.deleteCorrelationRule(selectedRule.id);
 
       if (response) {
         closeDeleteModal();
