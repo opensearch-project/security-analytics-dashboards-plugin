@@ -22,6 +22,7 @@ import {
   getSeverityColor,
   getLabelFromLogType,
 } from '../utils/constants';
+import { DataStore } from '../../../store/DataStore';
 
 export interface FindingCardProps {
   id: string;
@@ -41,6 +42,8 @@ export const FindingCard: React.FC<FindingCardProps> = ({
   logType,
   timestamp,
   detectionRule,
+  finding,
+  findings,
 }) => {
   const correlationHeader = correlationData ? (
     <>
@@ -54,7 +57,7 @@ export const FindingCard: React.FC<FindingCardProps> = ({
               aria-label={'View finding details'}
               data-test-subj={`view-details-icon`}
               iconType={'expand'}
-              onClick={() => {}}
+              onClick={() => DataStore.findings.openFlyout(finding, findings)}
             />
           </EuiToolTip>
         </EuiFlexItem>
@@ -121,6 +124,18 @@ export const FindingCard: React.FC<FindingCardProps> = ({
         <EuiFlexItem grow={1}>
           <strong>{getLabelFromLogType(logType)}</strong>
         </EuiFlexItem>
+        {!correlationData && (
+          <EuiFlexItem grow={false}>
+            <EuiToolTip content={'View finding details'}>
+              <EuiButtonIcon
+                aria-label={'View finding details'}
+                data-test-subj={`view-details-icon`}
+                iconType={'expand'}
+                onClick={() => DataStore.findings.openFlyout(finding, findings)}
+              />
+            </EuiToolTip>
+          </EuiFlexItem>
+        )}
       </EuiFlexGroup>
       {correlationHeader ? <EuiHorizontalRule margin="s" /> : null}
       <EuiSpacer size="m" />

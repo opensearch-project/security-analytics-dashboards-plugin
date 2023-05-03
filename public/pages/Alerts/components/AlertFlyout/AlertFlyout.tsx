@@ -29,7 +29,6 @@ import {
   renderTime,
 } from '../../../../utils/helpers';
 import { FindingsService, IndexPatternsService, OpenSearchService } from '../../../../services';
-import FindingDetailsFlyout from '../../../Findings/components/FindingDetailsFlyout';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { Finding } from '../../../Findings/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
@@ -49,7 +48,6 @@ export interface AlertFlyoutProps {
 
 export interface AlertFlyoutState {
   acknowledged: boolean;
-  findingFlyoutData?: Finding;
   findingItems: Finding[];
   loading: boolean;
   rules: { [key: string]: RuleSource };
@@ -69,10 +67,6 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
 
   async componentDidMount() {
     this.getFindings();
-  }
-
-  setFindingFlyoutData(finding?: Finding) {
-    this.setState({ findingFlyoutData: finding });
   }
 
   getFindings = async () => {
@@ -126,6 +120,18 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
   createFindingTableColumns(): EuiBasicTableColumn<Finding>[] {
     const { detector } = this.props;
     const { rules } = this.state;
+
+    const backButton = (
+      <EuiButtonIcon
+        iconType="arrowLeft"
+        aria-label="back"
+        onClick={() => DataStore.findings.closeFlyout()}
+        display="base"
+        size="s"
+        data-test-subj={'finding-details-flyout-back-button'}
+      />
+    );
+
     return [
       {
         field: 'timestamp',
@@ -142,7 +148,16 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
         render: (id, finding) =>
           (
             <EuiLink
-              onClick={() => this.setFindingFlyoutData(finding)}
+              onClick={() =>
+                DataStore.findings.openFlyout(
+                  {
+                    ...finding,
+                    detector: { _id: detector.id as string, _index: '', _source: detector },
+                  },
+                  this.state.findingItems,
+                  backButton
+                )
+              }
               data-test-subj={'finding-details-flyout-button'}
             >
               {`${(id as string).slice(0, 7)}...`}
@@ -175,31 +190,9 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
   render() {
     const { onClose, alertItem, detector, onAcknowledge } = this.props;
     const { trigger_name, state, severity, start_time, last_notification_time } = alertItem;
-    const { acknowledged, findingItems, findingFlyoutData, loading, rules } = this.state;
+    const { acknowledged, findingItems, loading } = this.state;
 
-    return !!this.state.findingFlyoutData ? (
-      <FindingDetailsFlyout
-        {...this.props}
-        finding={{
-          ...(findingFlyoutData as Finding),
-          detector: { _id: detector.id as string, _index: '', _source: detector },
-        }}
-        findings={findingItems}
-        closeFlyout={onClose}
-        backButton={
-          <EuiButtonIcon
-            iconType="arrowLeft"
-            aria-label="back"
-            onClick={() => this.setFindingFlyoutData()}
-            display="base"
-            size="s"
-            data-test-subj={'finding-details-flyout-back-button'}
-          />
-        }
-        allRules={rules}
-        indexPatternsService={this.props.indexPatternService}
-      />
-    ) : (
+    return (
       <EuiFlyout
         onClose={onClose}
         hideCloseButton

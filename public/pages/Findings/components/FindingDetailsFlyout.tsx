@@ -32,6 +32,7 @@ import {
   EuiTab,
   EuiInMemoryTable,
   EuiBasicTableColumn,
+  EuiLoadingContent,
 } from '@elastic/eui';
 import { capitalizeFirstLetter, renderTime } from '../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA, ROUTES } from '../../../utils/constants';
@@ -52,11 +53,9 @@ interface FindingDetailsFlyoutProps extends RouteComponentProps {
   finding: FindingItemType;
   findings: FindingItemType[];
   backButton?: React.ReactNode;
-  allRules: { [id: string]: RuleSource };
   opensearchService: OpenSearchService;
   indexPatternsService: IndexPatternsService;
   correlationService: CorrelationService;
-  closeFlyout: () => void;
 }
 
 interface FindingDetailsFlyoutState {
@@ -66,6 +65,7 @@ interface FindingDetailsFlyoutState {
   isCreateIndexPatternModalVisible: boolean;
   selectedTab: { id: string; content: React.ReactNode | null };
   correlatedFindings: CorrelationFinding[];
+  allRules: { [id: string]: RuleSource };
 }
 
 export default class FindingDetailsFlyout extends Component<
@@ -78,8 +78,20 @@ export default class FindingDetailsFlyout extends Component<
       loading: false,
       ruleViewerFlyoutData: null,
       isCreateIndexPatternModalVisible: false,
-      selectedTab: { id: FindingFlyoutTabId.DETAILS, content: null },
+      selectedTab: {
+        id: FindingFlyoutTabId.DETAILS,
+        content: (
+          <>
+            <EuiTitle size={'s'}>
+              <h3>Rule details</h3>
+            </EuiTitle>
+            <EuiSpacer size={'m'} />
+            <EuiLoadingContent lines={4} />
+          </>
+        ),
+      },
       correlatedFindings: [],
+      allRules: {},
     };
   }
 
@@ -108,11 +120,17 @@ export default class FindingDetailsFlyout extends Component<
         }
       });
 
-    this.setState({
-      selectedTab: {
-        id: FindingFlyoutTabId.DETAILS,
-        content: this.getTabContent(FindingFlyoutTabId.DETAILS),
-      },
+    DataStore.rules.getAllRules().then((rules) => {
+      const allRules: { [id: string]: RuleSource } = {};
+      rules.forEach((hit) => (allRules[hit._id] = hit._source));
+      this.setState({ allRules }, () => {
+        this.setState({
+          selectedTab: {
+            id: FindingFlyoutTabId.DETAILS,
+            content: this.getTabContent(FindingFlyoutTabId.DETAILS),
+          },
+        });
+      });
     });
   }
 
@@ -153,7 +171,7 @@ export default class FindingDetailsFlyout extends Component<
   };
 
   renderRuleDetails = (rules: Query[] = []) => {
-    const { allRules } = this.props;
+    const { allRules = {} } = this.state;
     return rules.map((rule, key) => {
       const fullRule = allRules[rule.id];
       const severity = capitalizeFirstLetter(fullRule.level);
@@ -375,6 +393,7 @@ export default class FindingDetailsFlyout extends Component<
     const { correlatedFindings } = this.state;
     const { finding } = this.props;
 
+    DataStore.findings.closeFlyout();
     this.props.history.push({
       pathname: `${ROUTES.CORRELATIONS}`,
       state: {
@@ -467,7 +486,7 @@ export default class FindingDetailsFlyout extends Component<
   }
 
   render() {
-    const { closeFlyout, backButton } = this.props;
+    const { backButton } = this.props;
     const {
       finding: {
         id,
@@ -480,7 +499,7 @@ export default class FindingDetailsFlyout extends Component<
     } = this.props;
     return (
       <EuiFlyout
-        onClose={closeFlyout}
+        onClose={DataStore.findings.closeFlyout}
         ownFocus={true}
         size={'m'}
         hideCloseButton
@@ -511,7 +530,7 @@ export default class FindingDetailsFlyout extends Component<
                 iconType="cross"
                 display="empty"
                 iconSize="m"
-                onClick={closeFlyout}
+                onClick={DataStore.findings.closeFlyout}
                 data-test-subj={`close-finding-details-flyout`}
               />
             </EuiFlexItem>
@@ -558,7 +577,10 @@ export default class FindingDetailsFlyout extends Component<
                   isSelected={tab.id === this.state.selectedTab.id}
                   onClick={() => {
                     this.setState({
-                      selectedTab: { id: tab.id, content: this.getTabContent(tab.id) },
+                      selectedTab: {
+                        id: tab.id,
+                        content: this.getTabContent(tab.id),
+                      },
                     });
                   }}
                 >

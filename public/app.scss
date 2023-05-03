@@ -40,6 +40,10 @@ $euiTextColor: $euiColorDarkestShade !default;
   @return mix($euiColorInk, $color, $percent);
 }
 
+.euiLoadingContent__singleLineBackground {
+  background: linear-gradient(137deg, #d3dae6 45%, #bac0ca 50%, #d3dae6 55%) !important;
+}
+
 .refresh-button {
   min-width: 0;
   .euiButtonContent {

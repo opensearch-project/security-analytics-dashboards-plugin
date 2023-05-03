@@ -137,8 +137,10 @@ export class CorrelationsStore implements ICorrelationsStore {
             const rule = allRules.find((rule) => rule._id === f.queries[0].id);
 
             findings[f.id] = {
+              ...f,
               id: f.id,
               logType: detector._source.detector_type,
+              detector: detector,
               timestamp: new Date(f.timestamp).toLocaleString(),
               detectionRule: rule
                 ? {
@@ -186,6 +188,7 @@ export class CorrelationsStore implements ICorrelationsStore {
 
     return {
       finding: {
+        ...allFindings[finding],
         id: finding,
         logType: detector_type,
         timestamp: '',
