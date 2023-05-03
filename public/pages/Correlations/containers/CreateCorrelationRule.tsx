@@ -52,7 +52,7 @@ export interface CorrelationOptions {
 export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
   props: CreateCorrelationRuleProps
 ) => {
-  const correlationStore = DataStore.correlationsStore;
+  const correlationStore = DataStore.correlations;
   const validateCorrelationRule = useCallback((rule: CorrelationRuleModel) => {
     if (!rule.name) {
       return 'Invalid rule name';
