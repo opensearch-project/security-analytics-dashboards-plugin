@@ -184,13 +184,13 @@ Cypress.Commands.add(
       .find('tbody')
       .find('tr')
       .then(($tr) => {
-        const length = Object.keys(data).length;
+        const length = data.length;
         length && cy.get($tr).should('have.length', length);
 
         cy.get($tr).within(($tr) => {
           data.map((rowData) => {
-            rowData.map((tdData) => {
-              cy.get($tr).find('td').contains(tdData);
+            rowData.forEach((tdData) => {
+              tdData && cy.get($tr).find('td').contains(`${tdData}`);
             });
           });
         });
