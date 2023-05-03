@@ -99,7 +99,7 @@ jobs:
 
       - name: Sleep until OSD server starts - non-windows
         if: ${{ matrix.os != 'windows-latest' }}
-        run: sleep 300
+        run: sleep 400
         shell: bash
 
       - name: Install Cypress
