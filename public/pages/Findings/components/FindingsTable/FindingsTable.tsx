@@ -134,6 +134,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         flyout: (
           <FindingDetailsFlyout
             {...this.props}
+            shouldLoadAllFindings={false}
             finding={finding}
             findings={findingsFiltered ? filteredFindings : findings}
             closeFlyout={this.closeFlyout}
