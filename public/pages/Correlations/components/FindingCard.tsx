@@ -13,6 +13,7 @@ import {
   EuiSpacer,
   EuiBadge,
   EuiHorizontalRule,
+  EuiToolTip,
 } from '@elastic/eui';
 import { rulePriorityBySeverity } from '../../CreateDetector/components/DefineDetector/components/DetectionRules/DetectionRulesTable';
 import {
@@ -43,9 +44,19 @@ export const FindingCard: React.FC<FindingCardProps> = ({
 }) => {
   const correlationHeader = correlationData ? (
     <>
-      <EuiFlexGroup justifyContent="spaceBetween">
-        <EuiFlexItem grow={false}>
+      <EuiFlexGroup className={'finding-card-header'}>
+        <EuiFlexItem grow={true}>
           <EuiText style={{ fontSize: 22, fontWeight: 300 }}>{correlationData.score}</EuiText>
+        </EuiFlexItem>
+        <EuiFlexItem grow={false}>
+          <EuiToolTip content={'View finding details'}>
+            <EuiButtonIcon
+              aria-label={'View finding details'}
+              data-test-subj={`view-details-icon`}
+              iconType={'expand'}
+              onClick={() => {}}
+            />
+          </EuiToolTip>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
           <EuiButtonIcon
