@@ -35,7 +35,6 @@ export default class IndexPatternsService {
   ): Promise<Promise<SavedObject<IndexPatternSavedObjectAttrs>> | Promise<undefined>> => {
     let indexPattern;
     const indexPatterns = await this.getIndexPatterns();
-    console.log('indexPatterns', indexPatterns);
     indexPatterns?.some((indexRef) => {
       if (indexRef.references.findIndex((reference) => reference.id === detectorId) > -1) {
         indexPattern = indexRef;

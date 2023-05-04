@@ -24,13 +24,13 @@ import {
   IndexPatternsService,
   CorrelationService,
 } from '../../../../services';
-import FindingDetailsFlyout from '../FindingDetailsFlyout';
 import { Finding } from '../../models/interfaces';
 import CreateAlertFlyout from '../CreateAlertFlyout';
 import { NotificationChannelTypeOptions } from '../../../CreateDetector/components/ConfigureAlerts/models/interfaces';
 import { FindingItemType } from '../../containers/Findings/Findings';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { RuleSource } from '../../../../../server/models/interfaces';
+import { DataStore } from '../../../../store/DataStore';
 
 interface FindingsTableProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -114,42 +114,6 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
     if (refreshPage) this.props.onRefresh();
   };
 
-  renderFindingDetailsFlyout = (finding: FindingItemType) => {
-    if (this.state.flyoutOpen) this.closeFlyout();
-    else {
-      const { findings, rules } = this.props;
-      const { findingsFiltered, filteredFindings } = this.state;
-
-      const logTypes = new Set<string>();
-      const severities = new Set<string>();
-      filteredFindings.forEach((finding) => {
-        if (finding) {
-          const queryId = finding.queries[0].id;
-          logTypes.add(rules[queryId].category);
-          severities.add(rules[queryId].level);
-        }
-      });
-
-      this.setState({
-        flyout: (
-          <FindingDetailsFlyout
-            {...this.props}
-            shouldLoadAllFindings={false}
-            finding={finding}
-            findings={findingsFiltered ? filteredFindings : findings}
-            closeFlyout={this.closeFlyout}
-            history={this.props.history}
-            allRules={this.props.rules}
-            indexPatternsService={this.props.indexPatternsService}
-            correlationService={this.props.correlationService}
-          />
-        ),
-        flyoutOpen: true,
-        selectedFinding: finding,
-      });
-    }
-  };
-
   renderCreateAlertFlyout = (finding: Finding) => {
     if (this.state.flyoutOpen) this.closeFlyout();
     else {
@@ -207,7 +171,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         render: (id, finding) =>
           (
             <EuiLink
-              onClick={() => this.renderFindingDetailsFlyout(finding)}
+              onClick={() => DataStore.findings.openFlyout(finding, this.state.filteredFindings)}
               data-test-subj={'finding-details-flyout-button'}
             >
               {`${(id as string).slice(0, 7)}...`}
@@ -254,7 +218,9 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
                   aria-label={'View details'}
                   data-test-subj={`view-details-icon`}
                   iconType={'expand'}
-                  onClick={() => this.renderFindingDetailsFlyout(finding)}
+                  onClick={() =>
+                    DataStore.findings.openFlyout(finding, this.state.filteredFindings)
+                  }
                 />
               </EuiToolTip>
             ),
