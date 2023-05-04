@@ -265,18 +265,20 @@ export default class ConfigureFieldMapping extends Component<
               initialIsOpen={false}
             >
               <EuiPanel hasBorder={false} hasShadow={false} paddingSize="s">
-                <FieldMappingsTable<MappingViewType.Edit>
-                  {...this.props}
-                  loading={loading}
-                  ruleFields={mappedRuleFields}
-                  indexFields={indexFieldOptions}
-                  mappingProps={{
-                    type: MappingViewType.Edit,
-                    existingMappings,
-                    invalidMappingFieldNames,
-                    onMappingCreation: this.onMappingCreation,
-                  }}
-                />
+                <div data-test-subj="auto-mapped-fields-table">
+                  <FieldMappingsTable<MappingViewType.Edit>
+                    {...this.props}
+                    loading={loading}
+                    ruleFields={mappedRuleFields}
+                    indexFields={indexFieldOptions}
+                    mappingProps={{
+                      type: MappingViewType.Edit,
+                      existingMappings,
+                      invalidMappingFieldNames,
+                      onMappingCreation: this.onMappingCreation,
+                    }}
+                  />
+                </div>
               </EuiPanel>
             </EuiAccordion>
 
@@ -306,18 +308,20 @@ export default class ConfigureFieldMapping extends Component<
                   <EuiTitle size={'s'}>
                     <h6>Pending field mappings</h6>
                   </EuiTitle>
-                  <FieldMappingsTable<MappingViewType.Edit>
-                    {...this.props}
-                    loading={loading}
-                    ruleFields={unmappedRuleFields}
-                    indexFields={indexFieldOptions}
-                    mappingProps={{
-                      type: MappingViewType.Edit,
-                      existingMappings,
-                      invalidMappingFieldNames,
-                      onMappingCreation: this.onMappingCreation,
-                    }}
-                  />
+                  <div data-test-subj="pending-mapped-fields-table">
+                    <FieldMappingsTable<MappingViewType.Edit>
+                      {...this.props}
+                      loading={loading}
+                      ruleFields={unmappedRuleFields}
+                      indexFields={indexFieldOptions}
+                      mappingProps={{
+                        type: MappingViewType.Edit,
+                        existingMappings,
+                        invalidMappingFieldNames,
+                        onMappingCreation: this.onMappingCreation,
+                      }}
+                    />
+                  </div>
                 </>
               ) : (
                 <>

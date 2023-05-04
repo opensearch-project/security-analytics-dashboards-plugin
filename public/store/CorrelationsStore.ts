@@ -4,9 +4,10 @@
  */
 
 import {
+  CorrelationFieldCondition,
   CorrelationFinding,
   CorrelationRule,
-  CorrelationRuleHit,
+  CorrelationRuleQuery,
   ICorrelationsStore,
   IRulesStore,
 } from '../../types';
@@ -16,7 +17,7 @@ import { errorNotificationToast } from '../utils/helpers';
 import { DEFAULT_EMPTY_DATA } from '../utils/constants';
 
 export interface ICorrelationsCache {
-  [key: string]: CorrelationRuleHit[];
+  [key: string]: CorrelationRule[];
 }
 
 export class CorrelationsStore implements ICorrelationsStore {
@@ -86,7 +87,7 @@ export class CorrelationsStore implements ICorrelationsStore {
     return response.ok;
   }
 
-  public async getCorrelationRules(index?: string): Promise<CorrelationRuleHit[]> {
+  public async getCorrelationRules(index?: string): Promise<CorrelationRule[]> {
     const cacheKey: string = `getCorrelationRules:${JSON.stringify(arguments)}`;
 
     if (this.cache[cacheKey]) {
@@ -95,7 +96,21 @@ export class CorrelationsStore implements ICorrelationsStore {
     const response = await this.service.getCorrelationRules(index);
 
     if (response?.ok) {
-      return (this.cache[cacheKey] = response.response.hits.hits);
+      return response.response.hits.hits.map((hit) => {
+        const queries: CorrelationRuleQuery[] = hit._source.correlate.map((queryData) => {
+          return {
+            index: queryData.index,
+            logType: queryData.category,
+            conditions: this.parseRuleQueryString(queryData.query),
+          };
+        });
+
+        return (this.cache[cacheKey] = {
+          id: hit._id,
+          name: hit._source.name,
+          queries,
+        });
+      });
     }
 
     return [];
@@ -218,5 +233,26 @@ export class CorrelationsStore implements ICorrelationsStore {
       },
       correlatedFindings: [],
     };
+  }
+
+  private parseRuleQueryString(queryString: string): CorrelationFieldCondition[] {
+    const queries: CorrelationFieldCondition[] = [];
+    const orConditions = queryString.trim().split(/ OR /gi);
+
+    orConditions.forEach((cond, conditionIndex) => {
+      cond.split(/ AND /gi).forEach((fieldInfo: string, index: number) => {
+        const s = fieldInfo.match(/(?:\\:|[^:])+/g);
+        if (s) {
+          const [name, value] = s;
+          queries.push({
+            name,
+            value,
+            condition: index === 0 && conditionIndex !== 0 ? 'OR' : 'AND',
+          });
+        }
+      });
+    });
+
+    return queries;
   }
 }

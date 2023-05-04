@@ -13,6 +13,8 @@ export enum CorrelationsLevel {
   Finding = 'Finding',
 }
 
+export type CorrelationRuleAction = 'Create' | 'Edit' | 'Readonly';
+
 export interface CorrelationGraphData {
   graph: {
     nodes: (Node & { chosen?: boolean })[];
@@ -107,10 +109,8 @@ export interface CreateCorrelationRuleResponse {
 
 export interface DeleteCorrelationRuleResponse {}
 
-export type CorrelationRuleTableItem = CorrelationRule & { logTypes: string };
-
 export interface ICorrelationsStore {
-  getCorrelationRules(): Promise<CorrelationRuleHit[]>;
+  getCorrelationRules(): Promise<CorrelationRule[]>;
   getCorrelatedFindings(
     finding: string,
     detector_type: string,
