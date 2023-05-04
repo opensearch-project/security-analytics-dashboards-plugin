@@ -13,6 +13,7 @@ import {
   EuiSpacer,
   EuiBadge,
   EuiHorizontalRule,
+  EuiToolTip,
 } from '@elastic/eui';
 import { rulePriorityBySeverity } from '../../CreateDetector/components/DefineDetector/components/DetectionRules/DetectionRulesTable';
 import {
@@ -21,6 +22,8 @@ import {
   getSeverityColor,
   getLabelFromLogType,
 } from '../utils/constants';
+import { DataStore } from '../../../store/DataStore';
+import { CorrelationFinding } from '../../../../types';
 
 export interface FindingCardProps {
   id: string;
@@ -32,6 +35,8 @@ export interface FindingCardProps {
     score: number;
     onInspect: (findingId: string, logType: string) => void;
   };
+  finding: CorrelationFinding;
+  findings: CorrelationFinding[];
 }
 
 export const FindingCard: React.FC<FindingCardProps> = ({
@@ -40,12 +45,24 @@ export const FindingCard: React.FC<FindingCardProps> = ({
   logType,
   timestamp,
   detectionRule,
+  finding,
+  findings,
 }) => {
   const correlationHeader = correlationData ? (
     <>
-      <EuiFlexGroup justifyContent="spaceBetween">
-        <EuiFlexItem grow={false}>
+      <EuiFlexGroup className={'finding-card-header'}>
+        <EuiFlexItem grow={true}>
           <EuiText style={{ fontSize: 22, fontWeight: 300 }}>{correlationData.score}</EuiText>
+        </EuiFlexItem>
+        <EuiFlexItem grow={false}>
+          <EuiToolTip content={'View finding details'}>
+            <EuiButtonIcon
+              aria-label={'View finding details'}
+              data-test-subj={`view-details-icon`}
+              iconType={'expand'}
+              onClick={() => DataStore.findings.openFlyout(finding, findings, false)}
+            />
+          </EuiToolTip>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
           <EuiButtonIcon
@@ -110,6 +127,18 @@ export const FindingCard: React.FC<FindingCardProps> = ({
         <EuiFlexItem grow={1}>
           <strong>{getLabelFromLogType(logType)}</strong>
         </EuiFlexItem>
+        {!correlationData && (
+          <EuiFlexItem grow={false}>
+            <EuiToolTip content={'View finding details'}>
+              <EuiButtonIcon
+                aria-label={'View finding details'}
+                data-test-subj={`view-details-icon`}
+                iconType={'expand'}
+                onClick={() => DataStore.findings.openFlyout(finding, findings, false)}
+              />
+            </EuiToolTip>
+          </EuiFlexItem>
+        )}
       </EuiFlexGroup>
       {correlationHeader ? <EuiHorizontalRule margin="s" /> : null}
       <EuiSpacer size="m" />

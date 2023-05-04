@@ -30,6 +30,9 @@ import {
   EuiIcon,
   EuiTabs,
   EuiTab,
+  EuiInMemoryTable,
+  EuiBasicTableColumn,
+  EuiLoadingContent,
 } from '@elastic/eui';
 import { capitalizeFirstLetter, renderTime } from '../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA, ROUTES } from '../../../utils/constants';
@@ -43,19 +46,21 @@ import { FindingItemType } from '../containers/Findings/Findings';
 import { CorrelationFinding, RuleItemInfoBase } from '../../../../types';
 import { FindingFlyoutTabId, FindingFlyoutTabs } from '../utils/constants';
 import { DataStore } from '../../../store/DataStore';
-import { RouteComponentProps } from 'react-router-dom';
+import { ruleTypes } from '../../Rules/utils/constants';
 import { CorrelationsTable } from './CorrelationsTable/CorrelationsTable';
 
-interface FindingDetailsFlyoutProps extends RouteComponentProps {
+export interface FindingDetailsFlyoutBaseProps {
   finding: FindingItemType;
   findings: FindingItemType[];
+  shouldLoadAllFindings: boolean;
   backButton?: React.ReactNode;
-  allRules: { [id: string]: RuleSource };
+}
+
+export interface FindingDetailsFlyoutProps extends FindingDetailsFlyoutBaseProps {
   opensearchService: OpenSearchService;
   indexPatternsService: IndexPatternsService;
   correlationService: CorrelationService;
-  closeFlyout: () => void;
-  shouldLoadAllFindings: boolean;
+  history: History;
 }
 
 interface FindingDetailsFlyoutState {
@@ -65,6 +70,7 @@ interface FindingDetailsFlyoutState {
   isCreateIndexPatternModalVisible: boolean;
   selectedTab: { id: string; content: React.ReactNode | null };
   correlatedFindings: CorrelationFinding[];
+  allRules: { [id: string]: RuleSource };
   isDocumentLoading: boolean;
   areCorrelationsLoading: boolean;
 }
@@ -79,10 +85,22 @@ export default class FindingDetailsFlyout extends Component<
       loading: false,
       ruleViewerFlyoutData: null,
       isCreateIndexPatternModalVisible: false,
-      selectedTab: { id: FindingFlyoutTabId.DETAILS, content: null },
+      selectedTab: {
+        id: FindingFlyoutTabId.DETAILS,
+        content: (
+          <>
+            <EuiTitle size={'s'}>
+              <h3>Rule details</h3>
+            </EuiTitle>
+            <EuiSpacer size={'m'} />
+            <EuiLoadingContent lines={4} />
+          </>
+        ),
+      },
       correlatedFindings: [],
       isDocumentLoading: true,
       areCorrelationsLoading: true,
+      allRules: {},
     };
   }
 
@@ -136,11 +154,17 @@ export default class FindingDetailsFlyout extends Component<
 
     this.getCorrelations();
 
-    this.setState({
-      selectedTab: {
-        id: FindingFlyoutTabId.DETAILS,
-        content: this.getTabContent(FindingFlyoutTabId.DETAILS),
-      },
+    DataStore.rules.getAllRules().then((rules) => {
+      const allRules: { [id: string]: RuleSource } = {};
+      rules.forEach((hit) => (allRules[hit._id] = hit._source));
+      this.setState({ allRules }, () => {
+        this.setState({
+          selectedTab: {
+            id: FindingFlyoutTabId.DETAILS,
+            content: this.getTabContent(FindingFlyoutTabId.DETAILS),
+          },
+        });
+      });
     });
   }
 
@@ -181,7 +205,7 @@ export default class FindingDetailsFlyout extends Component<
   };
 
   renderRuleDetails = (rules: Query[] = []) => {
-    const { allRules } = this.props;
+    const { allRules = {} } = this.state;
     return rules.map((rule, key) => {
       const fullRule = allRules[rule.id];
       const severity = capitalizeFirstLetter(fullRule.level);
@@ -426,7 +450,7 @@ export default class FindingDetailsFlyout extends Component<
   }
 
   render() {
-    const { closeFlyout, backButton } = this.props;
+    const { backButton } = this.props;
     const {
       finding: {
         id,
@@ -440,7 +464,7 @@ export default class FindingDetailsFlyout extends Component<
     const { isDocumentLoading } = this.state;
     return (
       <EuiFlyout
-        onClose={closeFlyout}
+        onClose={DataStore.findings.closeFlyout}
         ownFocus={true}
         size={'m'}
         hideCloseButton
@@ -471,7 +495,7 @@ export default class FindingDetailsFlyout extends Component<
                 iconType="cross"
                 display="empty"
                 iconSize="m"
-                onClick={closeFlyout}
+                onClick={DataStore.findings.closeFlyout}
                 data-test-subj={`close-finding-details-flyout`}
               />
             </EuiFlexItem>

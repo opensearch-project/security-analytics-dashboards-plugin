@@ -45,6 +45,9 @@ import { DataStore } from '../../store/DataStore';
 import { CreateCorrelationRule } from '../Correlations/containers/CreateCorrelationRule';
 import { CorrelationRules } from '../Correlations/containers/CorrelationRules';
 import { Correlations } from '../Correlations/containers/CorrelationsContainer';
+import FindingDetailsFlyout, {
+  FindingDetailsFlyoutBaseProps,
+} from '../Findings/components/FindingDetailsFlyout';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -82,6 +85,7 @@ interface MainState {
   dateTimeFilter: DateTimeFilter;
   callout?: ICalloutProps;
   toasts?: Toast[];
+  findingFlyout: FindingDetailsFlyoutBaseProps | null;
 }
 
 const navItemIndexByRoute: { [route: string]: number } = {
@@ -102,10 +106,18 @@ export default class Main extends Component<MainProps, MainState> {
         startTime: DEFAULT_DATE_RANGE.start,
         endTime: DEFAULT_DATE_RANGE.end,
       },
+      findingFlyout: null,
     };
 
     DataStore.detectors.setHandlers(this.showCallout, this.showToast);
+    DataStore.findings.setFlyoutCallback(this.showFindingFlyout);
   }
+
+  showFindingFlyout = (findingFlyout: FindingDetailsFlyoutBaseProps | null) => {
+    this.setState({
+      findingFlyout,
+    });
+  };
 
   showCallout = (callout?: ICalloutProps) => {
     this.setState({
@@ -180,7 +192,7 @@ export default class Main extends Component<MainProps, MainState> {
       history,
     } = this.props;
 
-    const { callout } = this.state;
+    const { callout, findingFlyout } = this.state;
     const sideNav: EuiSideNavItemType<{ style: any }>[] = [
       {
         name: Navigation.SecurityAnalytics,
@@ -302,6 +314,15 @@ export default class Main extends Component<MainProps, MainState> {
                     )}
                     <EuiPageBody>
                       {callout ? <Callout {...callout} /> : null}
+                      {findingFlyout ? (
+                        <FindingDetailsFlyout
+                          {...findingFlyout}
+                          history={history}
+                          indexPatternsService={services.indexPatternsService}
+                          correlationService={services?.correlationsService}
+                          opensearchService={services.opensearchService}
+                        />
+                      ) : null}
                       <Switch>
                         <Route
                           path={`${ROUTES.FINDINGS}/:detectorId?`}
