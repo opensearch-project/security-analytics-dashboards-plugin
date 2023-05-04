@@ -241,18 +241,20 @@ export default class EditFieldMappings extends Component<
             }
           >
             <EuiHorizontalRule margin={'xs'} />
-            <FieldMappingsTable<MappingViewType.Edit>
-              {...this.props}
-              loading={loading}
-              ruleFields={mappedRuleFields}
-              indexFields={logFieldOptions}
-              mappingProps={{
-                type: MappingViewType.Edit,
-                existingMappings,
-                invalidMappingFieldNames,
-                onMappingCreation: this.onMappingCreation,
-              }}
-            />
+            <div data-test-subj="auto-mapped-fields-table">
+              <FieldMappingsTable<MappingViewType.Edit>
+                {...this.props}
+                loading={loading}
+                ruleFields={mappedRuleFields}
+                indexFields={logFieldOptions}
+                mappingProps={{
+                  type: MappingViewType.Edit,
+                  existingMappings,
+                  invalidMappingFieldNames,
+                  onMappingCreation: this.onMappingCreation,
+                }}
+              />
+            </div>
           </EuiAccordion>
         </EuiPanel>
 
@@ -272,18 +274,20 @@ export default class EditFieldMappings extends Component<
 
             <EuiSpacer size={'m'} />
             <ContentPanel title={`Pending field mappings`} titleSize={'m'}>
-              <FieldMappingsTable<MappingViewType.Edit>
-                {...this.props}
-                loading={loading}
-                ruleFields={unmappedRuleFields}
-                indexFields={logFieldOptions}
-                mappingProps={{
-                  type: MappingViewType.Edit,
-                  existingMappings,
-                  invalidMappingFieldNames,
-                  onMappingCreation: this.onMappingCreation,
-                }}
-              />
+              <div data-test-subj="pending-mapped-fields-table">
+                <FieldMappingsTable<MappingViewType.Edit>
+                  {...this.props}
+                  loading={loading}
+                  ruleFields={unmappedRuleFields}
+                  indexFields={logFieldOptions}
+                  mappingProps={{
+                    type: MappingViewType.Edit,
+                    existingMappings,
+                    invalidMappingFieldNames,
+                    onMappingCreation: this.onMappingCreation,
+                  }}
+                />
+              </div>
             </ContentPanel>
           </>
         ) : (
