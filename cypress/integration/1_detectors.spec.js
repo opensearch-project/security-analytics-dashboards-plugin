@@ -77,7 +77,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
   cy.get('button').contains('Next').click({ force: true });
 
   // Check that correct page now showing
-  cy.contains('Set up alert triggers');
+  cy.get('.euiTitle--medium').contains('Set up alert triggers');
 
   // Type name of new trigger
   cy.get(`input[placeholder="Enter a name to describe the alert condition"]`)
