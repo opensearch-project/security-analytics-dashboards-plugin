@@ -100,12 +100,12 @@ jobs:
       # Window is slow so wait longer
       - name: Sleep until OSD server starts - windows
         if: ${{ matrix.os == 'windows-latest' }}
-        run: Start-Sleep -s 400
+        run: Start-Sleep -s 450
         shell: powershell
 
       - name: Sleep until OSD server starts - non-windows
         if: ${{ matrix.os != 'windows-latest' }}
-        run: sleep 400
+        run: sleep 450
         shell: bash
 
       - name: Install Cypress
