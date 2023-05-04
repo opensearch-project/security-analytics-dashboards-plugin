@@ -37,3 +37,25 @@ Cypress.Commands.add(
     return cy.get(subject).wait(10).focus().realType(text);
   }
 );
+
+Cypress.Commands.add(
+  'pressEnterKey',
+  {
+    prevSubject: true,
+  },
+  (subject) => {
+    Cypress.log({
+      message: 'Enter key pressed',
+    });
+    Cypress.automation('remote:debugger:protocol', {
+      command: 'Input.dispatchKeyEvent',
+      params: {
+        type: 'char',
+        unmodifiedText: '\r',
+        text: '\r',
+      },
+    });
+
+    return subject;
+  }
+);

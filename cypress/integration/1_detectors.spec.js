@@ -38,7 +38,8 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
   cy.get(`[data-test-subj="define-detector-select-data-source"]`)
     .find('input')
     .focus()
-    .realType(dataSource);
+    .type(`${dataSource}`)
+    .pressEnterKey();
 
   cy.intercept({
     pathname: '/_plugins/_security_analytics/rules/_search',
