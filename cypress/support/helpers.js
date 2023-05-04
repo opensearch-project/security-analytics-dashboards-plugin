@@ -193,6 +193,7 @@ Cypress.Commands.add(
               if (typeof tdData === 'string') {
                 tdData && cy.get($tr).find('td').contains(`${tdData}`);
               } else {
+                // if rule is an object then use path
                 tdData && cy.get($tr).find('td').contains(`${tdData.path}`);
               }
             });
