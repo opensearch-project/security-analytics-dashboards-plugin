@@ -143,7 +143,6 @@ export class FindingsStore implements IFindingsStore {
       shouldLoadAllFindings,
       backButton,
     } as FindingDetailsFlyoutBaseProps;
-    console.log('FIND DATA', flyout);
     this.openFlyoutCallback(flyout);
   };
 }
