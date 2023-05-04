@@ -46,13 +46,13 @@ export interface CorrelationFieldCondition {
   condition: 'AND' | 'OR';
 }
 
-export interface CorrelationRule extends CorrelationRuleModel {
-  id: string;
-}
-
 export interface CorrelationRuleModel {
   name: string;
   queries: CorrelationRuleQuery[];
+}
+
+export interface CorrelationRule extends CorrelationRuleModel {
+  id: string;
 }
 
 export interface CorrelationRuleSourceQueries {

@@ -93,10 +93,11 @@ export class CorrelationsStore implements ICorrelationsStore {
     if (this.cache[cacheKey]) {
       return this.cache[cacheKey];
     }
+
     const response = await this.service.getCorrelationRules(index);
 
     if (response?.ok) {
-      return response.response.hits.hits.map((hit) => {
+      return (this.cache[cacheKey] = response.response.hits.hits.map((hit) => {
         const queries: CorrelationRuleQuery[] = hit._source.correlate.map((queryData) => {
           return {
             index: queryData.index,
@@ -105,12 +106,12 @@ export class CorrelationsStore implements ICorrelationsStore {
           };
         });
 
-        return (this.cache[cacheKey] = {
+        return {
           id: hit._id,
           name: hit._source.name,
           queries,
-        });
-      });
+        };
+      }));
     }
 
     return [];

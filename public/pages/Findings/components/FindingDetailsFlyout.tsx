@@ -106,7 +106,7 @@ export default class FindingDetailsFlyout extends Component<
                   correlatedFindings.push({
                     ...finding,
                     correlationRule: correlationRules.find(
-                      (rule) => finding.rules?.indexOf(rule._id) !== -1
+                      (rule) => finding.rules?.indexOf(rule.id) !== -1
                     ),
                   });
                 }
@@ -390,11 +390,7 @@ export default class FindingDetailsFlyout extends Component<
     }
   }
 
-  private getTabContent(
-    tabId: FindingFlyoutTabId,
-    isDocumentLoading = false,
-    areCorrelationsLoading = false
-  ) {
+  private getTabContent(tabId: FindingFlyoutTabId, isDocumentLoading = false) {
     switch (tabId) {
       case FindingFlyoutTabId.CORRELATIONS:
         return (
@@ -441,7 +437,7 @@ export default class FindingDetailsFlyout extends Component<
         timestamp,
       },
     } = this.props;
-    const { isDocumentLoading, areCorrelationsLoading } = this.state;
+    const { isDocumentLoading } = this.state;
     return (
       <EuiFlyout
         onClose={closeFlyout}
@@ -524,11 +520,7 @@ export default class FindingDetailsFlyout extends Component<
                     this.setState({
                       selectedTab: {
                         id: tab.id,
-                        content: this.getTabContent(
-                          tab.id,
-                          isDocumentLoading,
-                          areCorrelationsLoading
-                        ),
+                        content: this.getTabContent(tab.id, isDocumentLoading),
                       },
                     });
                   }}

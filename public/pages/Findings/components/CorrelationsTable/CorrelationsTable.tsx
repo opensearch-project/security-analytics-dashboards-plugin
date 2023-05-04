@@ -95,8 +95,7 @@ export const CorrelationsTable: React.FC<CorrelationsTableProps> = ({
     {
       name: 'Correlated rule',
       truncateText: true,
-      render: (item: CorrelationFinding) =>
-        item?.correlationRule?._source?.name || DEFAULT_EMPTY_DATA,
+      render: (item: CorrelationFinding) => item?.correlationRule.name || DEFAULT_EMPTY_DATA,
     },
     {
       field: 'logType',

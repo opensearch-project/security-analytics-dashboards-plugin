@@ -391,17 +391,20 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
               <EuiSpacer />
               {findingCardsData.correlatedFindings.map((finding, index) => {
                 return (
-                  <FindingCard
-                    key={index}
-                    id={finding.id}
-                    logType={finding.logType}
-                    timestamp={finding.timestamp}
-                    detectionRule={finding.detectionRule}
-                    correlationData={{
-                      score: finding.correlationScore || 0,
-                      onInspect: this.onFindingInspect,
-                    }}
-                  />
+                  <>
+                    <FindingCard
+                      key={index}
+                      id={finding.id}
+                      logType={finding.logType}
+                      timestamp={finding.timestamp}
+                      detectionRule={finding.detectionRule}
+                      correlationData={{
+                        score: finding.correlationScore || 0,
+                        onInspect: this.onFindingInspect,
+                      }}
+                    />
+                    <EuiSpacer size="m" />
+                  </>
                 );
               })}
             </EuiFlyoutBody>
