@@ -21,45 +21,23 @@ import {
   getCorrelationRulesTableColumns,
   getCorrelationRulesTableSearchConfig,
 } from '../utils/helpers';
-import {
-  CorrelationRule,
-  CorrelationRuleHit,
-  CorrelationRuleSourceQueries,
-  CorrelationRuleTableItem,
-} from '../../../../types';
+import { CorrelationRule } from '../../../../types';
 import { RouteComponentProps } from 'react-router-dom';
 import { CorrelationsExperimentalBanner } from '../components/ExperimentalBanner';
 import { DeleteCorrelationRuleModal } from '../components/DeleteModal';
 
 export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComponentProps) => {
   const context = useContext(CoreServicesContext);
-  const [allRules, setAllRules] = useState<CorrelationRuleTableItem[]>([]);
-  const [filteredRules, setFilteredRules] = useState<CorrelationRuleTableItem[]>([]);
+  const [allRules, setAllRules] = useState<CorrelationRule[]>([]);
+  const [filteredRules, setFilteredRules] = useState<CorrelationRule[]>([]);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [selectedRule, setSelectedRule] = useState<CorrelationRule | undefined>(undefined);
 
-  const getCorrelationRules = useCallback(
-    async (ruleItem?) => {
-      const allCorrelationRules: CorrelationRuleHit[] = await DataStore.correlations.getCorrelationRules();
-      const allRuleItems: CorrelationRuleTableItem[] = allCorrelationRules.map(
-        (rule: CorrelationRuleHit) => ({
-          ...rule,
-          ...rule._source,
-          id: rule._id,
-          name: rule._source?.name || '-',
-          queries: rule._source?.correlate?.map((correlate: CorrelationRuleSourceQueries) => ({
-            ...correlate,
-            logType: correlate.category,
-          })),
-          logTypes: rule._source?.correlate?.map((correlate) => correlate.category).join(', '),
-        })
-      );
-
-      setAllRules(allRuleItems);
-      setFilteredRules(allRuleItems);
-    },
-    [DataStore.correlations.getCorrelationRules]
-  );
+  const getCorrelationRules = useCallback(async () => {
+    const allRuleItems: CorrelationRule[] = await DataStore.correlations.getCorrelationRules();
+    setAllRules(allRuleItems);
+    setFilteredRules(allRuleItems);
+  }, [DataStore.correlations.getCorrelationRules]);
 
   useEffect(() => {
     context?.chrome.setBreadcrumbs([
@@ -103,7 +81,7 @@ export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComp
   const onRuleNameClick = useCallback((rule: CorrelationRule) => {
     props.history.push({
       pathname: ROUTES.CORRELATION_RULE_CREATE,
-      state: { rule },
+      state: { rule, isReadOnly: true },
     });
   }, []);
 
@@ -111,7 +89,7 @@ export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComp
     setIsDeleteModalVisible(false);
   };
 
-  const onDeleteRuleConfirmed = async (rule: any) => {
+  const onDeleteRuleConfirmed = async () => {
     if (selectedRule) {
       const response = await DataStore.correlations.deleteCorrelationRule(selectedRule.id);
 
@@ -163,7 +141,7 @@ export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComp
           <EuiPanel>
             {allRules.length ? (
               <EuiInMemoryTable
-                columns={getCorrelationRulesTableColumns((rule) => {
+                columns={getCorrelationRulesTableColumns(onRuleNameClick, (rule) => {
                   setIsDeleteModalVisible(true);
                   setSelectedRule(rule);
                 })}

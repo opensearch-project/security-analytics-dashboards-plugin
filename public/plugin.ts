@@ -3,14 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  AppMountParameters,
-  CoreSetup,
-  CoreStart,
-  Plugin,
-  PluginInitializerContext,
-} from '../../../src/core/public';
-import { PLUGIN_NAME, ROUTES } from './utils/constants';
+import { AppMountParameters, CoreSetup, CoreStart, Plugin } from '../../../src/core/public';
+import { PLUGIN_NAME, ROUTES, setDarkMode } from './utils/constants';
 import { SecurityAnalyticsPluginSetup, SecurityAnalyticsPluginStart } from './index';
 import { DataPublicPluginStart, DataPublicPluginSetup } from '../../../src/plugins/data/public';
 
@@ -29,13 +23,9 @@ export class SecurityAnalyticsPlugin
       SecurityAnalyticsPluginSetupDeps,
       SecurityAnalyticsPluginStartDeps
     > {
-  constructor(private readonly initializerContext: PluginInitializerContext) {
-    // can retrieve config from initializerContext
-  }
-
   public setup(
     core: CoreSetup<SecurityAnalyticsPluginStartDeps>,
-    plugins: SecurityAnalyticsPluginSetupDeps
+    _plugins: SecurityAnalyticsPluginSetupDeps
   ): SecurityAnalyticsPluginSetup {
     core.application.register({
       id: PLUGIN_NAME,
@@ -52,10 +42,12 @@ export class SecurityAnalyticsPlugin
         return renderApp(coreStart, params, ROUTES.LANDING_PAGE, depsStart);
       },
     });
+    setDarkMode(core.uiSettings.get('theme:darkMode'));
+
     return {};
   }
 
-  public start(core: CoreStart): SecurityAnalyticsPluginStart {
+  public start(_core: CoreStart): SecurityAnalyticsPluginStart {
     return {};
   }
 }
