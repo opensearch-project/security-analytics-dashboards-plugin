@@ -9,6 +9,111 @@
 declare namespace Cypress {
   interface Chainable<Subject> {
     /**
+     * Returns element by its text
+     * @example
+     * cy.getElementByText('.euiTitle', 'Some title')
+     */
+    getElementByText(locator: string, text: string): Chainable<any>;
+
+    /**
+     * Returns button by its text
+     * @example
+     * cy.getButtonByText('Button text')
+     */
+    getButtonByText(text: string): Chainable<any>;
+
+    /**
+     * Returns input by its placeholder
+     * @example
+     * cy.getInputByPlaceholder('Search rules...')
+     */
+    getInputByPlaceholder(placeholder: string): Chainable<any>;
+
+    /**
+     * Returns combobox input by its placeholder
+     * @example
+     * cy.getComboboxByPlaceholder('Select data input...')
+     */
+    getComboboxByPlaceholder(placeholder: string): Chainable<any>;
+
+    /**
+     * Returns field input by label
+     * @example
+     * cy.getFieldByLabel('Detector name')
+     */
+    getFieldByLabel(label: string, type?: string): Chainable<any>;
+
+    /**
+     * Returns textarea by label
+     * @example
+     * cy.getTextareaByLabel('Detector description')
+     */
+    getTextareaByLabel(label: string): Chainable<any>;
+
+    /**
+     * Returns element by data-test-subj attribute value
+     * @example
+     * cy.getElementByTestSubject('alerts-input-element')
+     */
+    getElementByTestSubject(subject: string): Chainable<any>;
+
+    /**
+     * Returns radio by id
+     * @example
+     * cy.getRadioButtonById('radioId')
+     */
+    getRadioButtonById(id: string): Chainable<any>;
+
+    /**
+     * Selects combobox item(s)
+     * @example
+     * cy.get('combo).selectComboboxItem('some item value')
+     */
+    selectComboboxItem(items: string | string[]): Chainable<any>;
+
+    /**
+     * Clears combobox value(s)
+     * @example
+     * cy.get('combo).clearCombobox()
+     */
+    clearCombobox(): Chainable<any>;
+
+    /**
+     * Triggers enter key event on the focused element
+     * @example
+     * cy.pressEnterKey()
+     */
+    pressEnterKey(): Chainable<any>;
+
+    /**
+     * Triggers backspace key event on the focused element
+     * @example
+     * cy.pressBackspaceKey()
+     */
+    pressBackspaceKey(numberOfPresses?: number): Chainable<any>;
+
+    /**
+     * Validates details panel item
+     * @example
+     * cy.validateDetailsItem('Data source', '.index-name')
+     */
+    validateDetailsItem(label: string, value: string): Chainable<any>;
+
+    /**
+     * Validates url path
+     * @example
+     * cy.urlShouldContain('/detector-details')
+     */
+    urlShouldContain(path: string): Chainable<any>;
+
+    /**
+     * Validates table items
+     * @example
+     * cy.validateTable('/detector-details')
+     */
+    validateTable(data: { [key: string]: string }[]): Chainable<any>;
+
+    /**
      * Removes custom indices, detectors and rules
      * @example
      * cy.cleanUpTests()

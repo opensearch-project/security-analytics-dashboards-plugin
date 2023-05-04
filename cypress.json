@@ -5,6 +5,7 @@
   "requestTimeout": 300000,
   "responseTimeout": 300000,
   "baseUrl": "http://localhost:5601",
+  "retries": 1,
   "env": {
     "opensearch_url": "localhost:9200",
     "opensearch_dashboards": "http://localhost:5601",

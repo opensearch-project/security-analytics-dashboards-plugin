@@ -4,10 +4,10 @@
  */
 
 import { DETECTOR_TRIGGER_TIMEOUT, OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
-import sample_index_settings from '../fixtures/sample_index_settings.json';
+import sample_index_settings from '../fixtures/sample_windows_index_settings.json';
 import sample_dns_settings from '../fixtures/integration_tests/index/create_dns_settings.json';
 import windows_usb_rule_data from '../fixtures/integration_tests/rule/create_windows_usb_rule.json';
-import dns_rule_data from '../fixtures/integration_tests/rule/create_dns_rule.json';
+import dns_rule_data from '../fixtures/integration_tests/rule/create_dns_rule_with_name_selection.json';
 import usb_detector_data from '../fixtures/integration_tests/detector/create_usb_detector_data.json';
 import usb_detector_data_mappings from '../fixtures/integration_tests/detector/create_usb_detector_mappings_data.json';
 import dns_detector_data_mappings from '../fixtures/integration_tests/detector/create_dns_detector_mappings_data.json';
