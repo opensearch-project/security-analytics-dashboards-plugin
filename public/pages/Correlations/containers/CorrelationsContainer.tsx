@@ -406,7 +406,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                       onInspect: this.onFindingInspect,
                     }}
                     finding={finding}
-                    findings={findingCardsData.correlatedFindings}
+                    findings={[...findingCardsData.correlatedFindings, findingCardsData.finding]}
                   />
                 );
               })}

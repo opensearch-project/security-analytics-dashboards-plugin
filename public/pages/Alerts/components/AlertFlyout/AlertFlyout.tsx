@@ -148,16 +148,22 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
         render: (id, finding) =>
           (
             <EuiLink
-              onClick={() =>
+              onClick={() => {
+                const customRules = detector.inputs[0].detector_input.custom_rules[0];
+                const prePackagedRules = detector.inputs[0].detector_input.pre_packaged_rules[0];
+                const rule = rules[customRules?.id] || rules[prePackagedRules?.id] || {};
                 DataStore.findings.openFlyout(
                   {
                     ...finding,
                     detector: { _id: detector.id as string, _index: '', _source: detector },
+                    ruleName: rule.title,
+                    ruleSeverity: rule.level,
                   },
-                  this.state.findingItems,
+                  [...this.state.findingItems, finding],
+                  true,
                   backButton
-                )
-              }
+                );
+              }}
               data-test-subj={'finding-details-flyout-button'}
             >
               {`${(id as string).slice(0, 7)}...`}

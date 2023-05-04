@@ -23,6 +23,7 @@ import {
   getLabelFromLogType,
 } from '../utils/constants';
 import { DataStore } from '../../../store/DataStore';
+import { CorrelationFinding } from '../../../../types';
 
 export interface FindingCardProps {
   id: string;
@@ -34,6 +35,8 @@ export interface FindingCardProps {
     score: number;
     onInspect: (findingId: string, logType: string) => void;
   };
+  finding: CorrelationFinding;
+  findings: CorrelationFinding[];
 }
 
 export const FindingCard: React.FC<FindingCardProps> = ({
@@ -57,7 +60,7 @@ export const FindingCard: React.FC<FindingCardProps> = ({
               aria-label={'View finding details'}
               data-test-subj={`view-details-icon`}
               iconType={'expand'}
-              onClick={() => DataStore.findings.openFlyout(finding, findings)}
+              onClick={() => DataStore.findings.openFlyout(finding, findings, false)}
             />
           </EuiToolTip>
         </EuiFlexItem>
@@ -131,7 +134,7 @@ export const FindingCard: React.FC<FindingCardProps> = ({
                 aria-label={'View finding details'}
                 data-test-subj={`view-details-icon`}
                 iconType={'expand'}
-                onClick={() => DataStore.findings.openFlyout(finding, findings)}
+                onClick={() => DataStore.findings.openFlyout(finding, findings, false)}
               />
             </EuiToolTip>
           </EuiFlexItem>

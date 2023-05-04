@@ -46,17 +46,20 @@ import { FindingItemType } from '../containers/Findings/Findings';
 import { CorrelationFinding, RuleItemInfoBase } from '../../../../types';
 import { FindingFlyoutTabId, FindingFlyoutTabs } from '../utils/constants';
 import { DataStore } from '../../../store/DataStore';
-import { RouteComponentProps } from 'react-router-dom';
 import { ruleTypes } from '../../Rules/utils/constants';
 
-interface FindingDetailsFlyoutProps extends RouteComponentProps {
+export interface FindingDetailsFlyoutBaseProps {
   finding: FindingItemType;
   findings: FindingItemType[];
+  shouldLoadAllFindings: boolean;
   backButton?: React.ReactNode;
+}
+
+export interface FindingDetailsFlyoutProps extends FindingDetailsFlyoutBaseProps {
   opensearchService: OpenSearchService;
   indexPatternsService: IndexPatternsService;
   correlationService: CorrelationService;
-  shouldLoadAllFindings: boolean;
+  history: History;
 }
 
 interface FindingDetailsFlyoutState {

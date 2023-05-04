@@ -45,7 +45,9 @@ import { DataStore } from '../../store/DataStore';
 import { CreateCorrelationRule } from '../Correlations/containers/CreateCorrelationRule';
 import { CorrelationRules } from '../Correlations/containers/CorrelationRules';
 import { Correlations } from '../Correlations/containers/CorrelationsContainer';
-import FindingDetailsFlyout from '../Findings/components/FindingDetailsFlyout';
+import FindingDetailsFlyout, {
+  FindingDetailsFlyoutBaseProps,
+} from '../Findings/components/FindingDetailsFlyout';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -83,7 +85,7 @@ interface MainState {
   dateTimeFilter: DateTimeFilter;
   callout?: ICalloutProps;
   toasts?: Toast[];
-  findingFlyout: JSX.Element | null;
+  findingFlyout: FindingDetailsFlyoutBaseProps | null;
 }
 
 const navItemIndexByRoute: { [route: string]: number } = {
@@ -111,7 +113,7 @@ export default class Main extends Component<MainProps, MainState> {
     DataStore.findings.setFlyoutCallback(this.showFindingFlyout);
   }
 
-  showFindingFlyout = (findingFlyout: Object | null) => {
+  showFindingFlyout = (findingFlyout: FindingDetailsFlyoutBaseProps | null) => {
     this.setState({
       findingFlyout,
     });
