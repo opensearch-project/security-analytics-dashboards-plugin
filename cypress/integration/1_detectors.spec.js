@@ -243,7 +243,7 @@ describe('Detectors', () => {
   beforeEach(() => {
     cy.intercept('/detectors/_search').as('detectorsSearch');
 
-    // Visit Detectors page
+    // Visit Detectors page before any test
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
     cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
   });
