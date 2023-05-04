@@ -10,6 +10,7 @@ import dns_name_rule_data from '../fixtures/integration_tests/rule/create_dns_ru
 import dns_type_rule_data from '../fixtures/integration_tests/rule/create_dns_rule_with_type_selection.json';
 import dns_mapping_fields from '../fixtures/integration_tests/rule/sample_dns_field_mappings.json';
 import _ from 'lodash';
+import { getMappingFields } from '../../public/pages/Detectors/utils/helpers';
 
 const cypressIndexDns = 'cypress-index-dns';
 const cypressIndexWindows = 'cypress-index-windows';
@@ -56,7 +57,9 @@ const validateFieldMappingsTable = () => {
       if (_.isEmpty(properties)) {
         validatePendingFieldMappingsPanel(Object.entries(mappingFields));
       } else {
-        validateAutomaticFieldMappingsPanel(Object.entries(properties));
+        const items = getMappingFields(properties, [], '');
+        items.map((item) => [item.ruleFieldName, item.logFieldName]);
+        validateAutomaticFieldMappingsPanel(items);
       }
     });
   });
