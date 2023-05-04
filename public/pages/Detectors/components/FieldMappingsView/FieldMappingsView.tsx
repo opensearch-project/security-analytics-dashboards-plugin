@@ -12,6 +12,7 @@ import { FieldMapping } from '../../../../../models/interfaces';
 import { errorNotificationToast } from '../../../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { Detector } from '../../../../../types';
+import { getMappingFields } from '../../utils/helpers';
 
 export interface FieldMappingsViewProps {
   detector: Detector;
@@ -60,13 +61,11 @@ export const FieldMappingsView: React.FC<FieldMappingsViewProps> = ({
       if (getMappingRes?.ok) {
         const mappingsData = getMappingRes.response[indexName];
         if (mappingsData) {
-          let items: FieldMappingsTableItem[] = [];
-          Object.entries(mappingsData.mappings.properties).forEach((entry) => {
-            items.push({
-              ruleFieldName: entry[0],
-              logFieldName: entry[1].path,
-            });
-          });
+          let items: FieldMappingsTableItem[] = getMappingFields(
+            mappingsData.mappings.properties,
+            [],
+            ''
+          );
 
           setFieldMappingItems(items);
         }
