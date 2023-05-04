@@ -61,7 +61,7 @@ export const FieldMappingsView: React.FC<FieldMappingsViewProps> = ({
       if (getMappingRes?.ok) {
         const mappingsData = getMappingRes.response[indexName];
         if (mappingsData) {
-          let items: FieldMappingsTableItem[] = getMappingFields(
+          const items: FieldMappingsTableItem[] = getMappingFields(
             mappingsData.mappings.properties,
             [],
             ''
