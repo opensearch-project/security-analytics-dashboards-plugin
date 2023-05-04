@@ -94,12 +94,12 @@ jobs:
       # Window is slow so wait longer
       - name: Sleep until OSD server starts - windows
         if: ${{ matrix.os == 'windows-latest' }}
-        run: Start-Sleep -s 400
+        run: Start-Sleep -s 450
         shell: powershell
 
       - name: Sleep until OSD server starts - non-windows
         if: ${{ matrix.os != 'windows-latest' }}
-        run: sleep 400
+        run: sleep 450
         shell: bash
 
       - name: Install Cypress
@@ -132,6 +132,7 @@ jobs:
           working-directory: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
           command: yarn run cypress run
           wait-on: 'http://localhost:5601'
+          wait-on-timeout: 300
           browser: chrome
         env:
           CYPRESS_CACHE_FOLDER: ${{ matrix.cypress_cache_folder }}

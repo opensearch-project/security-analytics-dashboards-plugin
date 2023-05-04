@@ -133,8 +133,10 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
   private async updateState() {
     if (this.props.location.state) {
       const state = this.props.location.state;
+
       const specificFindingInfo: SpecificFindingCorrelations = {
         finding: {
+          ...state.finding,
           id: state.finding.id,
           logType: state.finding.detector._source.detector_type,
           timestamp: new Date(state.finding.timestamp).toLocaleString(),
@@ -434,6 +436,8 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                 logType={findingCardsData.finding.logType}
                 timestamp={findingCardsData.finding.timestamp}
                 detectionRule={findingCardsData.finding.detectionRule}
+                finding={findingCardsData.finding}
+                findings={findingCardsData.correlatedFindings}
               />
               <EuiSpacer />
               <EuiTitle size="xs">
@@ -456,6 +460,8 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                         score: finding.correlationScore || 0,
                         onInspect: this.onFindingInspect,
                       }}
+                      finding={finding}
+                      findings={[...findingCardsData.correlatedFindings, findingCardsData.finding]}
                     />
                     <EuiSpacer size="m" />
                   </>
