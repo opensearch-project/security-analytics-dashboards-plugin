@@ -4,27 +4,30 @@
  */
 
 import React from 'react';
-import { EuiBasicTableColumn, EuiBadge, EuiToolTip, EuiButtonIcon } from '@elastic/eui';
+import { EuiBasicTableColumn, EuiBadge, EuiToolTip, EuiButtonIcon, EuiLink } from '@elastic/eui';
 import {
   ArgsWithError,
   ArgsWithQuery,
   CorrelationRule,
   CorrelationRuleQuery,
-  CorrelationRuleTableItem,
 } from '../../../../types';
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
 import { ruleTypes } from '../../Rules/utils/constants';
 import { FieldClause } from '@opensearch-project/oui/src/eui_components/search_bar/query/ast';
 
 export const getCorrelationRulesTableColumns = (
+  onRuleNameClick: (rule: CorrelationRule) => void,
   _refreshRules: (ruleItem: CorrelationRule) => void
-): EuiBasicTableColumn<CorrelationRuleTableItem>[] => {
+): EuiBasicTableColumn<CorrelationRule>[] => {
   return [
     {
       field: 'name',
       name: 'Name',
       sortable: true,
       truncateText: true,
+      render: (name: string, ruleItem: CorrelationRule) => (
+        <EuiLink onClick={() => onRuleNameClick(ruleItem)}>{name}</EuiLink>
+      ),
     },
     {
       name: 'Log types',

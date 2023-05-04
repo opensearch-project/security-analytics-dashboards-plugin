@@ -40,13 +40,14 @@ import { Query } from '../models/interfaces';
 import { RuleViewerFlyout } from '../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
 import { RuleSource } from '../../../../server/models/interfaces';
 import { OpenSearchService, IndexPatternsService, CorrelationService } from '../../../services';
-import { getSeverityBadge, RuleTableItem } from '../../Rules/utils/helpers';
+import { RuleTableItem } from '../../Rules/utils/helpers';
 import { CreateIndexPatternForm } from './CreateIndexPatternForm';
 import { FindingItemType } from '../containers/Findings/Findings';
 import { CorrelationFinding, RuleItemInfoBase } from '../../../../types';
 import { FindingFlyoutTabId, FindingFlyoutTabs } from '../utils/constants';
 import { DataStore } from '../../../store/DataStore';
 import { ruleTypes } from '../../Rules/utils/constants';
+import { CorrelationsTable } from './CorrelationsTable/CorrelationsTable';
 
 export interface FindingDetailsFlyoutBaseProps {
   finding: FindingItemType;
@@ -70,6 +71,8 @@ interface FindingDetailsFlyoutState {
   selectedTab: { id: string; content: React.ReactNode | null };
   correlatedFindings: CorrelationFinding[];
   allRules: { [id: string]: RuleSource };
+  isDocumentLoading: boolean;
+  areCorrelationsLoading: boolean;
 }
 
 export default class FindingDetailsFlyout extends Component<
@@ -95,6 +98,8 @@ export default class FindingDetailsFlyout extends Component<
         ),
       },
       correlatedFindings: [],
+      isDocumentLoading: true,
+      areCorrelationsLoading: true,
       allRules: {},
     };
   }
@@ -107,29 +112,45 @@ export default class FindingDetailsFlyout extends Component<
       allFindings = await DataStore.findings.getAllFindings();
     }
 
-    DataStore.correlations
-      .getCorrelatedFindings(id, detector._source?.detector_type)
-      .then((findings) => {
-        if (findings?.correlatedFindings.length) {
-          let correlatedFindings: any[] = [];
-          findings.correlatedFindings.map((finding) => {
-            allFindings.map((item) => {
-              if (finding.id === item.id) {
-                correlatedFindings.push(finding);
-              }
+    DataStore.correlations.getCorrelationRules().then((correlationRules) => {
+      DataStore.correlations
+        .getCorrelatedFindings(id, detector._source?.detector_type)
+        .then((findings) => {
+          if (findings?.correlatedFindings.length) {
+            let correlatedFindings: any[] = [];
+            findings.correlatedFindings.map((finding: CorrelationFinding) => {
+              allFindings.map((item: FindingItemType) => {
+                if (finding.id === item.id) {
+                  correlatedFindings.push({
+                    ...finding,
+                    correlationRule: correlationRules.find(
+                      (rule) => finding.rules?.indexOf(rule.id) !== -1
+                    ),
+                  });
+                }
+              });
             });
+            this.setState({ correlatedFindings });
+          }
+        })
+        .finally(() => {
+          this.setState({
+            areCorrelationsLoading: false,
           });
-          this.setState({ correlatedFindings });
-        }
-      });
+        });
+    });
   };
 
   componentDidMount(): void {
-    this.getIndexPatternId().then((patternId) => {
-      if (patternId) {
-        this.setState({ indexPatternId: patternId });
-      }
-    });
+    this.getIndexPatternId()
+      .then((patternId) => {
+        if (patternId) {
+          this.setState({ indexPatternId: patternId });
+        }
+      })
+      .finally(() => {
+        this.setState({ isDocumentLoading: false });
+      });
 
     this.getCorrelations();
 
@@ -277,7 +298,7 @@ export default class FindingDetailsFlyout extends Component<
     return patternId;
   };
 
-  renderFindingDocuments() {
+  renderFindingDocuments(isDocumentLoading: boolean) {
     const {
       finding: { index, document_list, related_doc_ids },
     } = this.props;
@@ -297,6 +318,7 @@ export default class FindingDetailsFlyout extends Component<
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
             <EuiButton
+              isLoading={isDocumentLoading}
               data-test-subj={'finding-details-flyout-view-surrounding-documents'}
               onClick={() => {
                 if (indexPatternId) {
@@ -392,95 +414,24 @@ export default class FindingDetailsFlyout extends Component<
     }
   }
 
-  private getTabContent(tabId: FindingFlyoutTabId) {
+  private getTabContent(tabId: FindingFlyoutTabId, isDocumentLoading = false) {
     switch (tabId) {
       case FindingFlyoutTabId.CORRELATIONS:
-        return this.createCorrelationsTable();
+        return (
+          <CorrelationsTable
+            finding={this.props.finding}
+            correlatedFindings={this.state.correlatedFindings}
+            history={this.props.history}
+            isLoading={this.state.areCorrelationsLoading}
+          />
+        );
       case FindingFlyoutTabId.DETAILS:
       default:
-        return this.createFindingDetails();
+        return this.createFindingDetails(isDocumentLoading);
     }
   }
 
-  private goToCorrelationsPage = () => {
-    const { correlatedFindings } = this.state;
-    const { finding } = this.props;
-
-    DataStore.findings.closeFlyout();
-    this.props.history.push({
-      pathname: `${ROUTES.CORRELATIONS}`,
-      state: {
-        finding: finding,
-        correlatedFindings: correlatedFindings,
-      },
-    });
-  };
-
-  private createCorrelationsTable() {
-    const columns: EuiBasicTableColumn<CorrelationFinding>[] = [
-      {
-        field: 'timestamp',
-        name: 'Time',
-        sortable: true,
-      },
-      {
-        field: 'id',
-        name: 'Correlated finding id',
-      },
-      {
-        field: 'logType',
-        name: 'Log type',
-        sortable: true,
-        render: (category: string) =>
-          // TODO: This formatting may need some refactoring depending on the response payload
-          ruleTypes.find((ruleType) => ruleType.value === category)?.label || DEFAULT_EMPTY_DATA,
-      },
-      {
-        name: 'Rule severity',
-        truncateText: true,
-        align: 'center',
-        render: (item: CorrelationFinding) => getSeverityBadge(item.detectionRule.severity),
-      },
-      {
-        field: 'correlationScore',
-        name: 'Score',
-        sortable: true,
-      },
-    ];
-
-    return (
-      <>
-        <EuiFlexGroup>
-          <EuiFlexItem>
-            <EuiTitle size="s">
-              <h3>Correlated findings</h3>
-            </EuiTitle>
-          </EuiFlexItem>
-          <EuiFlexItem grow={false}>
-            <EuiButton
-              onClick={() => this.goToCorrelationsPage()}
-              disabled={this.state.correlatedFindings.length === 0}
-            >
-              View correlations graph
-            </EuiButton>
-          </EuiFlexItem>
-        </EuiFlexGroup>
-        <EuiFlexGroup>
-          <EuiFlexItem>
-            <EuiInMemoryTable
-              columns={columns}
-              items={this.state.correlatedFindings}
-              pagination={true}
-              search={true}
-              sorting={true}
-            />
-          </EuiFlexItem>
-        </EuiFlexGroup>
-      </>
-    );
-  }
-
-  private createFindingDetails() {
+  private createFindingDetails(isDocumentLoading: boolean) {
     const {
       finding: { queries },
     } = this.props;
@@ -493,7 +444,7 @@ export default class FindingDetailsFlyout extends Component<
         <EuiSpacer size={'m'} />
         {this.renderRuleDetails(queries)}
         <EuiSpacer size="l" />
-        {this.renderFindingDocuments()}
+        {this.renderFindingDocuments(isDocumentLoading)}
       </>
     );
   }
@@ -510,6 +461,7 @@ export default class FindingDetailsFlyout extends Component<
         timestamp,
       },
     } = this.props;
+    const { isDocumentLoading } = this.state;
     return (
       <EuiFlyout
         onClose={DataStore.findings.closeFlyout}
@@ -592,12 +544,22 @@ export default class FindingDetailsFlyout extends Component<
                     this.setState({
                       selectedTab: {
                         id: tab.id,
-                        content: this.getTabContent(tab.id),
+                        content: this.getTabContent(tab.id, isDocumentLoading),
                       },
                     });
                   }}
                 >
-                  {tab.name}
+                  {tab.id === 'Correlations' ? (
+                    <>
+                      {tab.name} (
+                      {this.state.areCorrelationsLoading
+                        ? DEFAULT_EMPTY_DATA
+                        : this.state.correlatedFindings.length}
+                      )
+                    </>
+                  ) : (
+                    tab.name
+                  )}
                 </EuiTab>
               );
             })}
