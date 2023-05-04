@@ -57,6 +57,7 @@ interface FindingDetailsFlyoutProps extends RouteComponentProps {
   indexPatternsService: IndexPatternsService;
   correlationService: CorrelationService;
   closeFlyout: () => void;
+  shouldLoadAllFindings: boolean;
 }
 
 interface FindingDetailsFlyoutState {
@@ -87,20 +88,15 @@ export default class FindingDetailsFlyout extends Component<
     };
   }
 
-  componentDidMount(): void {
-    this.getIndexPatternId()
-      .then((patternId) => {
-        if (patternId) {
-          this.setState({ indexPatternId: patternId });
-        }
-      })
-      .finally(() => {
-        this.setState({ isDocumentLoading: false });
-      });
-
+  getCorrelations = async () => {
     const { id, detector } = this.props.finding;
-    const allFindings = this.props.findings;
-    DataStore.correlationsStore
+    let allFindings = this.props.findings;
+    if (this.props.shouldLoadAllFindings) {
+      // if findings come from the alerts fly-out, we need to get all the findings to match those with the correlations
+      allFindings = await DataStore.findings.getAllFindings();
+    }
+
+    DataStore.correlations
       .getCorrelatedFindings(id, detector._source?.detector_type)
       .then((findings) => {
         if (findings?.correlatedFindings.length) {
@@ -118,6 +114,20 @@ export default class FindingDetailsFlyout extends Component<
       .finally(() => {
         this.setState({ areCorrelationsLoading: false });
       });
+  };
+
+  componentDidMount(): void {
+    this.getIndexPatternId()
+      .then((patternId) => {
+        if (patternId) {
+          this.setState({ indexPatternId: patternId });
+        }
+      })
+      .finally(() => {
+        this.setState({ isDocumentLoading: false });
+      });
+
+    this.getCorrelations();
 
     this.setState({
       selectedTab: {

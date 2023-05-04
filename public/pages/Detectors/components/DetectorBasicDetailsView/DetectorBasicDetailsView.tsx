@@ -72,7 +72,7 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
           content: (
             <>
               {inputs[0].detector_input.indices.map((ind: string) => (
-                <EuiText>{ind}</EuiText>
+                <EuiText key={ind}>{ind}</EuiText>
               ))}
             </>
           ),

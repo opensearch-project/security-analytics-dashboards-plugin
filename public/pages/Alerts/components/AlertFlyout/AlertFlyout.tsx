@@ -180,6 +180,7 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
     return !!this.state.findingFlyoutData ? (
       <FindingDetailsFlyout
         {...this.props}
+        shouldLoadAllFindings={true}
         finding={{
           ...(findingFlyoutData as Finding),
           detector: { _id: detector.id as string, _index: '', _source: detector },
