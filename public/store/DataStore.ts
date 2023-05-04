@@ -14,7 +14,7 @@ import { FindingsStore, IFindingsStore } from './FindingsStore';
 export class DataStore {
   public static rules: RulesStore;
   public static detectors: DetectorsStore;
-  public static correlationsStore: ICorrelationsStore;
+  public static correlations: ICorrelationsStore;
   public static findings: IFindingsStore;
 
   public static init = (services: BrowserServices, notifications: NotificationsStart) => {
@@ -33,7 +33,7 @@ export class DataStore {
       notifications
     );
 
-    DataStore.correlationsStore = new CorrelationsStore(
+    DataStore.correlations = new CorrelationsStore(
       services.correlationsService,
       services.detectorsService,
       services.findingsService,

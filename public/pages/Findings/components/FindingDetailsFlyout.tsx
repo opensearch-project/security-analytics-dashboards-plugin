@@ -56,6 +56,7 @@ interface FindingDetailsFlyoutProps extends RouteComponentProps {
   opensearchService: OpenSearchService;
   indexPatternsService: IndexPatternsService;
   correlationService: CorrelationService;
+  shouldLoadAllFindings: boolean;
 }
 
 interface FindingDetailsFlyoutState {
@@ -95,16 +96,15 @@ export default class FindingDetailsFlyout extends Component<
     };
   }
 
-  componentDidMount(): void {
-    this.getIndexPatternId().then((patternId) => {
-      if (patternId) {
-        this.setState({ indexPatternId: patternId });
-      }
-    });
-
+  getCorrelations = async () => {
     const { id, detector } = this.props.finding;
-    const allFindings = this.props.findings;
-    DataStore.correlationsStore
+    let allFindings = this.props.findings;
+    if (this.props.shouldLoadAllFindings) {
+      // if findings come from the alerts fly-out, we need to get all the findings to match those with the correlations
+      allFindings = await DataStore.findings.getAllFindings();
+    }
+
+    DataStore.correlations
       .getCorrelatedFindings(id, detector._source?.detector_type)
       .then((findings) => {
         if (findings?.correlatedFindings.length) {
@@ -119,6 +119,16 @@ export default class FindingDetailsFlyout extends Component<
           this.setState({ correlatedFindings });
         }
       });
+  };
+
+  componentDidMount(): void {
+    this.getIndexPatternId().then((patternId) => {
+      if (patternId) {
+        this.setState({ indexPatternId: patternId });
+      }
+    });
+
+    this.getCorrelations();
 
     DataStore.rules.getAllRules().then((rules) => {
       const allRules: { [id: string]: RuleSource } = {};
