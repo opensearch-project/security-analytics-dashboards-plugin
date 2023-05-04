@@ -15,7 +15,8 @@ $euiTextColor: $euiColorDarkestShade !default;
 @import "./pages/Overview/components/Widgets/WidgetContainer.scss";
 @import "./pages/Main/components/Callout.scss";
 @import "./pages/Detectors/components/ReviewFieldMappings/ReviewFieldMappings.scss";
-@import "./pages/Correlations//Correlations.scss";
+@import "./pages/Correlations/Correlations.scss";
+@import "./pages/Findings/components/CorrelationsTable/CorrelationsTable.scss";
 
 .selected-radio-panel {
   background-color: tintOrShade($euiColorPrimary, 90%, 70%);
