@@ -134,7 +134,7 @@ export class FindingsStore implements IFindingsStore {
   public openFlyout = (
     finding: FindingItemType,
     findings: FindingItemType[],
-    shouldLoadAllFindings: boolean,
+    shouldLoadAllFindings: boolean = false,
     backButton?: React.ReactNode
   ) => {
     const flyout = {

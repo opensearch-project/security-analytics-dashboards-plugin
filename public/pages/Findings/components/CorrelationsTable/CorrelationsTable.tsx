@@ -22,6 +22,7 @@ import {
 import { RIGHT_ALIGNMENT } from '@elastic/eui/lib/services';
 import { FindingItemType } from '../../containers/Findings/Findings';
 import { RouteComponentProps } from 'react-router-dom';
+import { DataStore } from '../../../../store/DataStore';
 
 export interface CorrelationsTableProps {
   finding: FindingItemType;
@@ -131,6 +132,7 @@ export const CorrelationsTable: React.FC<CorrelationsTableProps> = ({
   ];
 
   const goToCorrelationsPage = () => {
+    DataStore.findings.closeFlyout();
     history.push({
       pathname: `${ROUTES.CORRELATIONS}`,
       state: {
