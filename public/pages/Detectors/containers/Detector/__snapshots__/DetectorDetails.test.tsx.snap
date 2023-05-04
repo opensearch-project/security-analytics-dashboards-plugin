@@ -1854,7 +1854,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                 onBlur={[Function]}
                                 onFocus={[Function]}
                               >
-                                <EuiText>
+                                <EuiText
+                                  key=".windows"
+                                >
                                   <div
                                     className="euiText euiText--medium"
                                   >
