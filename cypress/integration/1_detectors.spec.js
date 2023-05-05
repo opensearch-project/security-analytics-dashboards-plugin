@@ -10,6 +10,7 @@ import dns_name_rule_data from '../fixtures/integration_tests/rule/create_dns_ru
 import dns_type_rule_data from '../fixtures/integration_tests/rule/create_dns_rule_with_type_selection.json';
 import dns_mapping_fields from '../fixtures/integration_tests/rule/sample_dns_field_mappings.json';
 import _ from 'lodash';
+import { getMappingFields } from '../../public/pages/Detectors/utils/helpers';
 
 const cypressIndexDns = 'cypress-index-dns';
 const cypressIndexWindows = 'cypress-index-windows';
@@ -42,21 +43,24 @@ const openDetectorDetails = (detectorName) => {
   cy.getElementByText('.euiTableCellContent button', detectorName).click();
 };
 
-const validateFieldMappingsTable = () => {
+const validateFieldMappingsTable = (message = '') => {
   cy.wait('@getMappingsView').then((interception) => {
     cy.wait(10000).then(() => {
       cy.get('.reviewFieldMappings').should('be.visible');
       const properties = interception.response.body.response.properties;
-      const unmapped_field_aliases = interception.response.body.response.unmapped_field_aliases;
-      let mappingFields = {};
-      unmapped_field_aliases.map((field) => {
-        mappingFields[field] = undefined;
-      });
+      const unmapped_field_aliases = interception.response.body.response.unmapped_field_aliases.map(
+        (field) => [field]
+      );
 
+      Cypress.log({
+        message: `Validate table data - ${message}`,
+      });
       if (_.isEmpty(properties)) {
-        validatePendingFieldMappingsPanel(Object.entries(mappingFields));
+        validatePendingFieldMappingsPanel(unmapped_field_aliases);
       } else {
-        validateAutomaticFieldMappingsPanel(Object.entries(properties));
+        let items = getMappingFields(properties, [], '');
+        items = items.map((item) => [item.ruleFieldName, item.logFieldName]);
+        validateAutomaticFieldMappingsPanel(items);
       }
     });
   });
@@ -157,11 +161,15 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
   cy.validateDetailsItem('Detector dashboard', 'Not available for this log type');
 
   if (!expectFailure) {
+    let fields = [];
+    for (let field in dns_mapping_fields) {
+      fields.push([field, dns_mapping_fields[field]]);
+    }
     cy.getElementByText('.euiTitle', 'Field mapping')
       .parentsUntil('.euiPanel')
       .siblings()
       .eq(2)
-      .validateTable(Object.entries(dns_mapping_fields));
+      .validateTable(fields);
   }
 
   validateAlertPanel('test_trigger');
@@ -200,13 +208,17 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
             cy.intercept('GET', '/mappings?indexName').as('getMappingFields');
             cy.getElementByText('button.euiTab', 'Field mappings').should('be.visible').click();
             if (!expectFailure) {
+              let fields = [];
+              for (let field in dns_mapping_fields) {
+                fields.push([field, dns_mapping_fields[field]]);
+              }
               cy.wait('@getMappingFields');
               cy.wait(2000);
               cy.getElementByText('.euiTitle', 'Field mapping')
                 .parentsUntil('.euiPanel')
                 .siblings()
                 .eq(2)
-                .validateTable(Object.entries(dns_mapping_fields));
+                .validateTable(fields);
             }
           });
         });
@@ -387,7 +399,7 @@ describe('Detectors', () => {
     getDataSourceField().should('not.have.value');
     getDataSourceField().type(`${cypressIndexDns}{enter}`);
 
-    validateFieldMappingsTable();
+    validateFieldMappingsTable('data source is changed');
 
     cy.getElementByText('button', 'Save changes').click({ force: true });
   });
@@ -412,7 +424,7 @@ describe('Detectors', () => {
       '[data-test-subj="edit-detector-rules-table"] table thead tr:first th:first button'
     ).click({ force: true });
 
-    validateFieldMappingsTable();
+    validateFieldMappingsTable('rules are changed');
   });
 
   it('...can be deleted', () => {

@@ -19,6 +19,8 @@ import { FieldMapping } from '../../../../../models/interfaces';
 import FieldMappingService from '../../../../services/FieldMappingService';
 import { MappingViewType } from '../../../CreateDetector/components/ConfigureFieldMapping/components/RequiredFieldMapping/FieldMappingsTable';
 import { Detector } from '../../../../../types';
+import { FieldMappingsTableItem } from '../../../CreateDetector/models/interfaces';
+import { getMappingFields } from '../../utils/helpers';
 import _ from 'lodash';
 
 export interface ruleFieldToIndexFieldMap {
@@ -117,13 +119,14 @@ export default class EditFieldMappings extends Component<
         const mappingsRes = await this.props.fieldMappingService?.getMappings(indexName);
         if (mappingsRes?.ok) {
           const mappedFieldsInfo = mappingsRes.response[indexName].mappings.properties;
-          let mappedRuleFields = Object.keys(mappedFieldsInfo);
+          const items: FieldMappingsTableItem[] = getMappingFields(mappedFieldsInfo, [], '');
+          let mappedRuleFields = _.map(items, 'ruleFieldName');
           unmappedRuleFields = unmappedRuleFields.filter((ruleField) => {
             return !mappedRuleFields.includes(ruleField);
           });
 
-          mappedRuleFields.forEach((ruleField) => {
-            existingMappings[ruleField] = mappedFieldsInfo[ruleField].path;
+          items.forEach((ruleField) => {
+            existingMappings[ruleField.ruleFieldName] = ruleField.logFieldName;
           });
 
           for (let key in existingMappings) {
