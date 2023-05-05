@@ -53,7 +53,7 @@ export const RecentAlertsWidget: React.FC<RecentAlertsWidgetProps> = ({
     items.sort((a, b) => {
       const timeA = new Date(a.time).getTime();
       const timeB = new Date(b.time).getTime();
-      return timeA - timeB;
+      return timeB - timeA;
     });
     setAlertItems(items.slice(0, 20));
     setwidgetEmptyMessage(
