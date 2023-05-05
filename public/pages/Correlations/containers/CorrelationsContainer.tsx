@@ -10,7 +10,9 @@ import {
   defaultSeverityFilterItemOptions,
   emptyGraphData,
   getAbbrFromLogType,
+  getLabelFromLogType,
   getSeverityColor,
+  getSeverityLabel,
   graphRenderOptions,
 } from '../utils/constants';
 import {
@@ -29,6 +31,7 @@ import {
   EuiText,
   EuiEmptyPrompt,
   EuiButton,
+  EuiBadge,
 } from '@elastic/eui';
 import { CorrelationsExperimentalBanner } from '../components/ExperimentalBanner';
 import { FilterItem, FilterGroup } from '../components/FilterGroup';
@@ -45,6 +48,8 @@ import { DataStore } from '../../../store/DataStore';
 import { FindingItemType } from '../../Findings/containers/Findings/Findings';
 import datemath from '@elastic/datemath';
 import { ruleSeverity } from '../../Rules/utils/constants';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { Network } from 'react-graph-vis';
 
 interface CorrelationsProps
   extends RouteComponentProps<
@@ -68,10 +73,13 @@ interface CorrelationsState {
   specificFindingInfo?: SpecificFindingCorrelations;
   logTypeFilterOptions: FilterItem[];
   severityFilterOptions: FilterItem[];
+  loadingGraphData: boolean;
 }
 
 export class Correlations extends React.Component<CorrelationsProps, CorrelationsState> {
   static contextType = CoreServicesContext;
+  private correlationGraphNetwork?: Network;
+
   constructor(props: CorrelationsProps) {
     super(props);
     this.state = {
@@ -80,6 +88,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       logTypeFilterOptions: [...defaultLogTypeFilterItemOptions],
       severityFilterOptions: [...defaultSeverityFilterItemOptions],
       specificFindingInfo: undefined,
+      loadingGraphData: false,
     };
   }
 
@@ -124,8 +133,10 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
   private async updateState() {
     if (this.props.location.state) {
       const state = this.props.location.state;
+
       const specificFindingInfo: SpecificFindingCorrelations = {
         finding: {
+          ...state.finding,
           id: state.finding.id,
           logType: state.finding.detector._source.detector_type,
           timestamp: new Date(state.finding.timestamp).toLocaleString(),
@@ -153,10 +164,12 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       const end = datemath.parse(this.endTime);
       const startTime = start?.valueOf() || Date.now();
       const endTime = end?.valueOf() || Date.now();
+      this.setState({ loadingGraphData: true });
       let allCorrelations = await DataStore.correlations.getAllCorrelationsInWindow(
         startTime.toString(),
         endTime.toString()
       );
+      this.setState({ loadingGraphData: false });
       allCorrelations = allCorrelations.filter((corr) => {
         return this.shouldShowFinding(corr.finding1) && this.shouldShowFinding(corr.finding2);
       });
@@ -256,6 +269,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         multi: 'html',
         size: 12,
       },
+      chosen: true,
     });
   }
 
@@ -264,23 +278,34 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       from: f1.id,
       to: f2.id,
       id: `${f1.id}:${f2.id}`,
+      chosen: false,
     });
   }
 
-  private createNodeTooltip = (finding: CorrelationFinding) => {
+  private createNodeTooltip = ({ detectionRule, timestamp, logType }: CorrelationFinding) => {
+    const tooltipContent = (
+      <div style={{ backgroundColor: '#535353', color: '#ffffff', padding: '8px' }}>
+        <EuiFlexGroup alignItems="center">
+          <EuiFlexItem grow={false}>
+            <EuiBadge color={getSeverityColor(detectionRule.severity)}>
+              {getSeverityLabel(detectionRule.severity)}
+            </EuiBadge>
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>
+            <strong>{getLabelFromLogType(logType)}</strong>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+        <EuiSpacer size="s" />
+        <EuiText>{timestamp}</EuiText>
+      </div>
+    );
+
+    const tooltipContentHTML = renderToStaticMarkup(tooltipContent);
+
     const tooltip = document.createElement('div');
+    tooltip.innerHTML = tooltipContentHTML;
 
-    function createRow(text: string) {
-      const row = document.createElement('p');
-      row.innerText = text;
-      row.style.padding = '5px';
-      return row;
-    }
-
-    tooltip.appendChild(createRow(`Log type: ${finding.logType}`));
-    tooltip.appendChild(createRow(finding.timestamp));
-
-    return tooltip;
+    return tooltip.firstElementChild;
   };
 
   private onTimeChange = ({ start, end }: { start: string; end: string }) => {
@@ -324,6 +349,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     const specificFindingInfo = await DataStore.correlations.getCorrelatedFindings(id, logType);
     this.setState({ specificFindingInfo });
     this.updateGraphDataState(specificFindingInfo);
+    this.correlationGraphNetwork?.selectNodes([id], false);
   };
 
   resetFilters = () => {
@@ -338,6 +364,36 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       })),
     });
   };
+
+  setNetwork = (network: Network) => {
+    this.correlationGraphNetwork = network;
+  };
+
+  renderCorrelationsGraph(loadingData: boolean) {
+    return this.state.graphData.graph.nodes.length > 0 || loadingData ? (
+      <CorrelationGraph
+        loadingData={loadingData}
+        graph={this.state.graphData.graph}
+        options={{ ...graphRenderOptions }}
+        events={this.state.graphData.events}
+        getNetwork={this.setNetwork}
+      />
+    ) : (
+      <EuiEmptyPrompt
+        title={
+          <EuiTitle>
+            <h1>No correlations found</h1>
+          </EuiTitle>
+        }
+        body={<p>There are no correlated findings in the system.</p>}
+        actions={[
+          <EuiButton fill={true} color="primary" href={`#${ROUTES.CORRELATION_RULE_CREATE}`}>
+            Create correlation rule
+          </EuiButton>,
+        ]}
+      />
+    );
+  }
 
   render() {
     const findingCardsData = this.state.specificFindingInfo;
@@ -380,6 +436,8 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                 logType={findingCardsData.finding.logType}
                 timestamp={findingCardsData.finding.timestamp}
                 detectionRule={findingCardsData.finding.detectionRule}
+                finding={findingCardsData.finding}
+                findings={findingCardsData.correlatedFindings}
               />
               <EuiSpacer />
               <EuiTitle size="xs">
@@ -391,17 +449,22 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
               <EuiSpacer />
               {findingCardsData.correlatedFindings.map((finding, index) => {
                 return (
-                  <FindingCard
-                    key={index}
-                    id={finding.id}
-                    logType={finding.logType}
-                    timestamp={finding.timestamp}
-                    detectionRule={finding.detectionRule}
-                    correlationData={{
-                      score: finding.correlationScore || 0,
-                      onInspect: this.onFindingInspect,
-                    }}
-                  />
+                  <>
+                    <FindingCard
+                      key={index}
+                      id={finding.id}
+                      logType={finding.logType}
+                      timestamp={finding.timestamp}
+                      detectionRule={finding.detectionRule}
+                      correlationData={{
+                        score: finding.correlationScore || 0,
+                        onInspect: this.onFindingInspect,
+                      }}
+                      finding={finding}
+                      findings={[...findingCardsData.correlatedFindings, findingCardsData.finding]}
+                    />
+                    <EuiSpacer size="m" />
+                  </>
                 );
               })}
             </EuiFlyoutBody>
@@ -473,31 +536,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
               </EuiFlexGroup>
 
               <EuiSpacer />
-              {this.state.graphData.graph.nodes.length > 0 ? (
-                <CorrelationGraph
-                  graph={this.state.graphData.graph}
-                  options={{ ...graphRenderOptions }}
-                  events={this.state.graphData.events}
-                />
-              ) : (
-                <EuiEmptyPrompt
-                  title={
-                    <EuiTitle>
-                      <h1>No correlations found</h1>
-                    </EuiTitle>
-                  }
-                  body={<p>There are no correlated findings in the system.</p>}
-                  actions={[
-                    <EuiButton
-                      fill={true}
-                      color="primary"
-                      href={`#${ROUTES.CORRELATION_RULE_CREATE}`}
-                    >
-                      Create correlation rule
-                    </EuiButton>,
-                  ]}
-                />
-              )}
+              {this.renderCorrelationsGraph(this.state.loadingGraphData)}
             </EuiPanel>
           </EuiFlexItem>
         </EuiFlexGroup>

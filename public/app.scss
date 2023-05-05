@@ -15,7 +15,9 @@ $euiTextColor: $euiColorDarkestShade !default;
 @import "./pages/Overview/components/Widgets/WidgetContainer.scss";
 @import "./pages/Main/components/Callout.scss";
 @import "./pages/Detectors/components/ReviewFieldMappings/ReviewFieldMappings.scss";
-@import "./pages/Correlations//Correlations.scss";
+@import "./pages/Correlations/Correlations.scss";
+@import "./pages/Correlations/components/FindingCard.scss";
+@import "./pages/Findings/components/CorrelationsTable/CorrelationsTable.scss";
 
 .selected-radio-panel {
   background-color: tintOrShade($euiColorPrimary, 90%, 70%);
@@ -36,6 +38,10 @@ $euiTextColor: $euiColorDarkestShade !default;
 
 @function shade($color, $percent) {
   @return mix($euiColorInk, $color, $percent);
+}
+
+.euiLoadingContent__singleLineBackground {
+  background: linear-gradient(137deg, #d3dae6 45%, #bac0ca 50%, #d3dae6 55%) !important;
 }
 
 .refresh-button {

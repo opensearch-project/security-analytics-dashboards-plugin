@@ -26,9 +26,12 @@ export interface CorrelationGraphData {
 export type CorrelationFinding = {
   id: string;
   correlationScore?: number;
+  correlationRule?: CorrelationFindingHit;
   logType: string;
   timestamp: string;
   detectionRule: { name: string; severity: string };
+  detectorName?: string;
+  rules?: string[];
 };
 
 export interface CorrelationRuleQuery {
@@ -43,13 +46,13 @@ export interface CorrelationFieldCondition {
   condition: 'AND' | 'OR';
 }
 
-export interface CorrelationRule extends CorrelationRuleModel {
-  id: string;
-}
-
 export interface CorrelationRuleModel {
   name: string;
   queries: CorrelationRuleQuery[];
+}
+
+export interface CorrelationRule extends CorrelationRuleModel {
+  id: string;
 }
 
 export interface CorrelationRuleSourceQueries {

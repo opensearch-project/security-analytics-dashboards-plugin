@@ -3,11 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import React from 'react';
 import { DetectorsService, FindingsService } from '../services';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { RouteComponentProps } from 'react-router-dom';
 import { errorNotificationToast } from '../utils/helpers';
 import { FindingItemType } from '../pages/Findings/containers/Findings/Findings';
+import { FindingDetailsFlyoutBaseProps } from '../pages/Findings/components/FindingDetailsFlyout';
 
 export interface IFindingsStore {
   readonly service: FindingsService;
@@ -19,6 +21,19 @@ export interface IFindingsStore {
   getFindingsPerDetector: (detectorId: string) => Promise<FindingItemType[]>;
 
   getAllFindings: () => Promise<FindingItemType[]>;
+
+  setFlyoutCallback: (
+    flyoutCallback: (findingFlyout: FindingDetailsFlyoutBaseProps | null) => void
+  ) => void;
+
+  openFlyout: (
+    finding: FindingItemType,
+    findings: FindingItemType[],
+    shouldLoadAllFindings: boolean,
+    backButton?: React.ReactNode
+  ) => void;
+
+  closeFlyout: () => void;
 }
 
 export interface IFindingsCache {}
@@ -104,5 +119,30 @@ export class FindingsStore implements IFindingsStore {
     }
 
     return allFindings;
+  };
+
+  public setFlyoutCallback = (
+    flyoutCallback: (findingFlyout: FindingDetailsFlyoutBaseProps | null) => void
+  ): void => {
+    this.openFlyoutCallback = flyoutCallback;
+  };
+
+  public openFlyoutCallback = (findingFlyout: FindingDetailsFlyoutBaseProps | null) => {};
+
+  closeFlyout = () => this.openFlyoutCallback(null);
+
+  public openFlyout = (
+    finding: FindingItemType,
+    findings: FindingItemType[],
+    shouldLoadAllFindings: boolean = false,
+    backButton?: React.ReactNode
+  ) => {
+    const flyout = {
+      finding,
+      findings,
+      shouldLoadAllFindings,
+      backButton,
+    } as FindingDetailsFlyoutBaseProps;
+    this.openFlyoutCallback(flyout);
   };
 }
