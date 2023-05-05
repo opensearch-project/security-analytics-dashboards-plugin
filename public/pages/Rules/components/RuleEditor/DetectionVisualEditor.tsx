@@ -30,10 +30,21 @@ import {
   EuiFilePicker,
   EuiCodeEditor,
 } from '@elastic/eui';
+import _ from 'lodash';
+import {
+  validateCondition,
+  validateDetectionFieldName,
+  validateName,
+} from '../../../../utils/validation';
 
 export interface DetectionVisualEditorProps {
   detectionYml: string;
   onChange: (value: string) => void;
+}
+
+interface Errors {
+  fields: { [key: string]: string };
+  touched: { [key: string]: boolean };
 }
 
 interface DetectionVisualEditorState {
@@ -42,6 +53,7 @@ interface DetectionVisualEditorState {
     selectionIdx: number;
     dataIdx: number;
   };
+  errors: Errors;
 }
 
 interface SelectionData {
@@ -98,6 +110,10 @@ export class DetectionVisualEditor extends React.Component<
     super(props);
     this.state = {
       detectionObj: this.parseDetectionYml(),
+      errors: {
+        fields: {},
+        touched: {},
+      },
     };
   }
 
@@ -179,6 +195,7 @@ export class DetectionVisualEditor extends React.Component<
     dataIdx: number,
     newDatum: Partial<SelectionData>
   ) => {
+    const { errors } = this.state;
     const { condition, selections } = this.state.detectionObj;
     const selection = selections[selectionIdx];
     const datum = selection.data[dataIdx];
@@ -198,17 +215,50 @@ export class DetectionVisualEditor extends React.Component<
       ...selections.slice(selectionIdx + 1),
     ];
 
+    newSelections.map((selection, selIdx) => {
+      selection.data.map((data, idx) => {
+        const fieldName = `field_${selIdx}_${idx}`;
+        delete errors.fields[fieldName];
+        if (!data.field) {
+          errors.fields[fieldName] = 'Key name is required';
+        } else {
+          if (!validateDetectionFieldName(data.field)) {
+            errors.fields[fieldName] = 'Invalid key name.';
+          }
+        }
+        errors.touched[fieldName] = true;
+      });
+    });
+
     this.setState({
       detectionObj: {
         condition,
         selections: newSelections,
       },
+      errors,
     });
   };
 
   private updateSelection = (selectionIdx: number, newSelection: Partial<Selection>) => {
     const { condition, selections } = this.state.detectionObj;
+    const { errors } = this.state;
     const selection = selections[selectionIdx];
+
+    delete errors.fields['name'];
+    if (!selection.name) {
+      errors.fields['name'] = 'Selection name is required';
+    } else {
+      if (!validateName(selection.name)) {
+        errors.fields['name'] = 'Invalid selection name.';
+      } else {
+        selections.map((sel, selIdx) => {
+          if (selIdx !== selectionIdx && sel.name === newSelection.name) {
+            errors.fields['name'] = 'Selection name already exists.';
+          }
+        });
+      }
+    }
+    errors.touched['name'] = true;
 
     this.setState({
       detectionObj: {
@@ -222,7 +272,51 @@ export class DetectionVisualEditor extends React.Component<
           ...selections.slice(selectionIdx + 1),
         ],
       },
+      errors,
     });
+  };
+
+  private updateCondition = (value: string) => {
+    const {
+      errors,
+      detectionObj: { selections },
+    } = this.state;
+    value = value.trim();
+
+    delete errors.fields['condition'];
+    if (!value) {
+      errors.fields['condition'] = 'Condition is required';
+    } else {
+      if (!validateCondition(value)) {
+        errors.fields['condition'] = 'Invalid condition.';
+      } else {
+        const selectionNames = _.map(selections, 'name');
+        const conditions = _.pull(value.split(' '), ...['and', 'or', 'not']);
+        conditions.map((selection) => {
+          if (_.indexOf(selectionNames, selection) === -1) {
+            errors.fields['condition'] = `The selection name "${selection}" doesn't exists.`;
+          }
+        });
+      }
+    }
+    errors.touched['condition'] = true;
+
+    const detectionObj = { ...this.state.detectionObj, condition: value } as DetectionObject;
+    this.setState({
+      detectionObj,
+      errors,
+    });
+  };
+
+  private csvStringToArray = (
+    csvString: string,
+    delimiter: string = ',',
+    numOfColumnsToReturn: number = 1
+  ): string[] => {
+    const rows = csvString.split('\n');
+    return rows
+      .map((row) => (!_.isEmpty(row) ? row.split(delimiter, numOfColumnsToReturn) : []))
+      .flat();
   };
 
   private onFileUpload = (files: any, selectionIdx: number, dataIdx: number) => {
@@ -234,10 +328,13 @@ export class DetectionVisualEditor extends React.Component<
           const textContent = reader.result;
           if (typeof textContent === 'string') {
             this.updateDatumInState(selectionIdx, dataIdx, {
-              values: textContent.split('\n'),
+              values: this.csvStringToArray(textContent),
             });
           }
-        } catch (error: any) {}
+        } catch (error: any) {
+        } finally {
+          this.setState({ fileUploadModalState: undefined });
+        }
       };
     }
   };
@@ -265,6 +362,10 @@ export class DetectionVisualEditor extends React.Component<
     const {
       detectionObj: { condition, selections },
       fileUploadModalState,
+      errors = {
+        touched: {},
+        fields: {},
+      },
     } = this.state;
 
     return (
@@ -305,15 +406,17 @@ export class DetectionVisualEditor extends React.Component<
 
               <EuiSpacer />
 
-              <EuiFormRow label={<EuiText size={'s'}>Name</EuiText>}>
+              <EuiFormRow
+                isInvalid={errors.touched.name && !!errors.fields.name}
+                error={errors.fields.name}
+                label={<EuiText size={'s'}>Name</EuiText>}
+              >
                 <EuiFieldText
-                  // isInvalid={props.touched.name && !!props.errors.name}
+                  isInvalid={errors.touched.name && !!errors.fields.name}
                   placeholder="Enter selection name"
                   data-test-subj={'selection_name'}
-                  onChange={(e) => {
-                    this.updateSelection(selectionIdx, { name: e.target.value });
-                  }}
-                  onBlur={(e) => {}}
+                  onChange={(e) => this.updateSelection(selectionIdx, { name: e.target.value })}
+                  onBlur={(e) => this.updateSelection(selectionIdx, { name: e.target.value })}
                   value={selection.name}
                 />
               </EuiFormRow>
@@ -322,7 +425,7 @@ export class DetectionVisualEditor extends React.Component<
 
               {selection.data.map((datum, idx) => {
                 const radioGroupOptions = this.createRadioGroupOptions(selectionIdx, idx);
-
+                const fieldName = `field_${selectionIdx}_${idx}`;
                 return (
                   <EuiAccordion
                     id={`Map-${idx}`}
@@ -349,17 +452,25 @@ export class DetectionVisualEditor extends React.Component<
 
                     <EuiFlexGroup>
                       <EuiFlexItem grow={false} style={{ minWidth: 200 }}>
-                        <EuiFormRow label={<EuiText size={'s'}>Key</EuiText>}>
+                        <EuiFormRow
+                          isInvalid={errors.touched[fieldName] && !!errors.fields[fieldName]}
+                          error={errors.fields[fieldName]}
+                          label={<EuiText size={'s'}>Key</EuiText>}
+                        >
                           <EuiFieldText
-                            // isInvalid={props.touched.name && !!props.errors.name}
+                            isInvalid={errors.touched[fieldName] && !!errors.fields[fieldName]}
                             placeholder="Enter key name"
                             data-test-subj={'selection_field_key_name'}
-                            onChange={(e) => {
+                            onChange={(e) =>
                               this.updateDatumInState(selectionIdx, idx, {
                                 field: e.target.value,
-                              });
-                            }}
-                            onBlur={(e) => {}}
+                              })
+                            }
+                            onBlur={(e) =>
+                              this.updateDatumInState(selectionIdx, idx, {
+                                field: e.target.value,
+                              })
+                            }
                             value={datum.field}
                           />
                         </EuiFormRow>
@@ -492,34 +603,31 @@ export class DetectionVisualEditor extends React.Component<
 
         <EuiSpacer />
 
-        <EuiTitle size="s">
-          <p>Condition</p>
-        </EuiTitle>
-        <EuiText size="s">
-          <p>
-            Define how each selection should be included in the final query. For more options use
-            YAML editor.
-          </p>
-        </EuiText>
-
-        <EuiSpacer size="m" />
-
-        <EuiCodeEditor
-          mode="yaml"
-          width="600px"
-          height="50px"
-          value={condition}
-          onChange={(value) => {
-            this.setState({
-              detectionObj: {
-                selections,
-                condition: value,
-              },
-            });
-          }}
-          // onBlur={props.handleBlur('detection')}
-          data-test-subj={'rule_detection_field'}
-        />
+        <EuiFormRow
+          isInvalid={errors.touched.condition && !!errors.fields.condition}
+          error={errors.fields.condition}
+          label={
+            <>
+              <EuiTitle size="s">
+                <p>Condition</p>
+              </EuiTitle>
+              <EuiText size="xs">
+                Define how each selection should be included in the final query. For more options
+                use YAML editor.
+              </EuiText>
+            </>
+          }
+        >
+          <EuiCodeEditor
+            mode="yaml"
+            width="600px"
+            height="50px"
+            value={condition}
+            onChange={(value) => this.updateCondition(value)}
+            onBlur={(e) => this.updateCondition(e.target.value)}
+            data-test-subj={'rule_detection_field'}
+          />
+        </EuiFormRow>
 
         {fileUploadModalState && (
           <EuiModal onClose={this.closeFileUploadModal}>
