@@ -58,6 +58,8 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
   title,
 }) => {
   const [selectedEditorType, setSelectedEditorType] = useState('visual');
+  const [isDetectionInvalid, setIsDetectionInvalid] = useState(false);
+
   const onEditorTypeChange = (optionId: string) => {
     setSelectedEditorType(optionId);
   };
@@ -107,6 +109,10 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
         return errors;
       }}
       onSubmit={(values, { setSubmitting }) => {
+        if (isDetectionInvalid) {
+          return;
+        }
+
         setSubmitting(false);
         submit(values);
       }}
@@ -227,6 +233,15 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
                 <DetectionVisualEditor
                   detectionYml={props.values.detection}
+                  setIsDetectionInvalid={(isInvalid: boolean) => {
+                    if (isInvalid) {
+                      props.errors.detection = 'Invalid detection entries';
+                    } else {
+                      delete props.errors.detection;
+                    }
+
+                    setIsDetectionInvalid(isInvalid);
+                  }}
                   onChange={(detection: string) => {
                     props.handleChange('detection')(detection);
                   }}

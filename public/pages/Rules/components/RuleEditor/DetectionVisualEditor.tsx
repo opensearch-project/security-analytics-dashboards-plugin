@@ -40,6 +40,7 @@ import {
 export interface DetectionVisualEditorProps {
   detectionYml: string;
   onChange: (value: string) => void;
+  setIsDetectionInvalid: (isInvalid: boolean) => void;
 }
 
 interface Errors {
@@ -125,6 +126,12 @@ export class DetectionVisualEditor extends React.Component<
     if (prevState.detectionObj !== this.state.detectionObj) {
       this.props.onChange(this.createDetectionYml());
     }
+
+    if (Object.keys(this.state.errors.fields).length) {
+      this.props.setIsDetectionInvalid(true);
+    } else {
+      this.props.setIsDetectionInvalid(false);
+    }
   }
 
   private parseDetectionYml = (): DetectionObject => {
@@ -183,7 +190,6 @@ export class DetectionVisualEditor extends React.Component<
         selectionMaps[key] = datum.values;
       });
 
-      // compiledDetection[`Selection_${idx + 1}`] = selectionMaps;
       compiledDetection[selection.name] = selectionMaps;
     });
 
@@ -216,12 +222,18 @@ export class DetectionVisualEditor extends React.Component<
     ];
 
     newSelections.map((selection, selIdx) => {
+      const fieldNames = new Set<string>();
+
       selection.data.map((data, idx) => {
         const fieldName = `field_${selIdx}_${idx}`;
         delete errors.fields[fieldName];
         if (!data.field) {
           errors.fields[fieldName] = 'Key name is required';
+        } else if (fieldNames.has(data.field)) {
+          errors.fields[fieldName] = 'Key name already used';
         } else {
+          fieldNames.add(data.field);
+
           if (!validateDetectionFieldName(data.field)) {
             errors.fields[fieldName] = 'Invalid key name.';
           }
@@ -607,6 +619,7 @@ export class DetectionVisualEditor extends React.Component<
         <EuiFormRow
           isInvalid={errors.touched.condition && !!errors.fields.condition}
           error={errors.fields.condition}
+          style={{ maxWidth: '100%' }}
           label={
             <>
               <EuiTitle size="s">
