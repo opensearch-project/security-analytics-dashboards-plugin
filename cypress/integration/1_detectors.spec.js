@@ -160,11 +160,15 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
   cy.validateDetailsItem('Detector dashboard', 'Not available for this log type');
 
   if (!expectFailure) {
+    let fields = [];
+    for (let field in dns_mapping_fields) {
+      fields.push([field, dns_mapping_fields[field]]);
+    }
     cy.getElementByText('.euiTitle', 'Field mapping')
       .parentsUntil('.euiPanel')
       .siblings()
       .eq(2)
-      .validateTable(Object.entries(dns_mapping_fields));
+      .validateTable(fields);
   }
 
   validateAlertPanel('test_trigger');
@@ -203,13 +207,17 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
             cy.intercept('GET', '/mappings?indexName').as('getMappingFields');
             cy.getElementByText('button.euiTab', 'Field mappings').should('be.visible').click();
             if (!expectFailure) {
+              let fields = [];
+              for (let field in dns_mapping_fields) {
+                fields.push([field, dns_mapping_fields[field]]);
+              }
               cy.wait('@getMappingFields');
               cy.wait(2000);
               cy.getElementByText('.euiTitle', 'Field mapping')
                 .parentsUntil('.euiPanel')
                 .siblings()
                 .eq(2)
-                .validateTable(Object.entries(dns_mapping_fields));
+                .validateTable(fields);
             }
           });
         });
