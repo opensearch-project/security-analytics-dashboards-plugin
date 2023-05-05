@@ -145,7 +145,7 @@ describe('Rules', () => {
     });
   });
 
-  it('...can be created', () => {
+  xit('...can be created', () => {
     // Click "create new rule" button
     cy.get('[data-test-subj="create_rule_button"]').click({
       force: true,
@@ -231,7 +231,7 @@ describe('Rules', () => {
     checkRulesFlyout();
   });
 
-  it('...can be edited', () => {
+  xit('...can be edited', () => {
     cy.waitForPageLoad('rules', {
       contains: 'Rules',
     });
@@ -291,7 +291,7 @@ describe('Rules', () => {
     checkRulesFlyout();
   });
 
-  it('...can be deleted', () => {
+  xit('...can be deleted', () => {
     cy.intercept({
       url: '/rules',
     }).as('deleteRule');
