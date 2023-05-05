@@ -43,22 +43,23 @@ const openDetectorDetails = (detectorName) => {
   cy.getElementByText('.euiTableCellContent button', detectorName).click();
 };
 
-const validateFieldMappingsTable = () => {
+const validateFieldMappingsTable = (message = '') => {
   cy.wait('@getMappingsView').then((interception) => {
     cy.wait(10000).then(() => {
       cy.get('.reviewFieldMappings').should('be.visible');
       const properties = interception.response.body.response.properties;
-      const unmapped_field_aliases = interception.response.body.response.unmapped_field_aliases;
-      let mappingFields = {};
-      unmapped_field_aliases.map((field) => {
-        mappingFields[field] = undefined;
-      });
+      const unmapped_field_aliases = interception.response.body.response.unmapped_field_aliases.map(
+        (field) => [field]
+      );
 
+      Cypress.log({
+        message: `Validate table data - ${message}`,
+      });
       if (_.isEmpty(properties)) {
-        validatePendingFieldMappingsPanel(Object.entries(mappingFields));
+        validatePendingFieldMappingsPanel(unmapped_field_aliases);
       } else {
-        const items = getMappingFields(properties, [], '');
-        items.map((item) => [item.ruleFieldName, item.logFieldName]);
+        let items = getMappingFields(properties, [], '');
+        items = items.map((item) => [item.ruleFieldName, item.logFieldName]);
         validateAutomaticFieldMappingsPanel(items);
       }
     });
@@ -398,7 +399,7 @@ describe('Detectors', () => {
     getDataSourceField().should('not.have.value');
     getDataSourceField().type(`${cypressIndexDns}{enter}`);
 
-    validateFieldMappingsTable();
+    validateFieldMappingsTable('data source is changed');
 
     cy.getElementByText('button', 'Save changes').click({ force: true });
   });
@@ -423,7 +424,7 @@ describe('Detectors', () => {
       '[data-test-subj="edit-detector-rules-table"] table thead tr:first th:first button'
     ).click({ force: true });
 
-    validateFieldMappingsTable();
+    validateFieldMappingsTable('rules are changed');
   });
 
   it('...can be deleted', () => {
