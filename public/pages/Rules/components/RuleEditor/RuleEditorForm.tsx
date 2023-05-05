@@ -15,7 +15,6 @@ import {
   EuiSpacer,
   EuiTextArea,
   EuiComboBox,
-  EuiCodeEditor,
   EuiButtonGroup,
   EuiText,
 } from '@elastic/eui';
@@ -28,6 +27,7 @@ import { FormSubmissionErrorToastNotification } from './FormSubmitionErrorToastN
 import { YamlRuleEditorComponent } from './components/YamlRuleEditorComponent/YamlRuleEditorComponent';
 import { mapFormToRule, mapRuleToForm } from './mappers';
 import { RuleTagsComboBox } from './components/YamlRuleEditorComponent/RuleTagsComboBox';
+import { DetectionVisualEditor } from './DetectionVisualEditor';
 
 export interface VisualRuleEditorProps {
   initialValue: RuleEditorFormModel;
@@ -58,7 +58,6 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
   title,
 }) => {
   const [selectedEditorType, setSelectedEditorType] = useState('visual');
-
   const onEditorTypeChange = (optionId: string) => {
     setSelectedEditorType(optionId);
   };
@@ -216,30 +215,24 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     value={props.values.description}
                   />
                 </EuiFormRow>
-
                 <EuiSpacer />
 
-                <EuiFormRow
-                  label={
-                    <EuiText size={'s'}>
-                      <strong>Detection</strong>
-                    </EuiText>
-                  }
-                  isInvalid={props.touched.detection && !!props.errors?.detection}
-                  error={props.errors.detection}
-                >
-                  <EuiCodeEditor
-                    mode="yaml"
-                    width="100%"
-                    value={props.values.detection}
-                    onChange={(value) => {
-                      props.handleChange('detection')(value);
-                    }}
-                    onBlur={props.handleBlur('detection')}
-                    data-test-subj={'rule_detection_field'}
-                  />
-                </EuiFormRow>
+                <EuiText size={'s'}>
+                  <strong>Detection</strong>
+                </EuiText>
+                <EuiText size="s">
+                  <p>Define the detection criteria for the rule</p>
+                </EuiText>
                 <EuiSpacer />
+
+                <DetectionVisualEditor
+                  detectionYml={props.values.detection}
+                  onChange={(detection: string) => {
+                    props.handleChange('detection')(detection);
+                  }}
+                />
+
+                <EuiSpacer size="xxl" />
 
                 <EuiFormRow
                   label={
