@@ -16,10 +16,13 @@ export const DEFAULT_DATE_RANGE = { start: 'now-24h', end: 'now' };
 export const PLUGIN_NAME = 'opensearch_security_analytics_dashboards';
 export const OS_NOTIFICATION_PLUGIN = 'opensearch-notifications';
 
-// TODO: Replace with actual documentation link once it's available
-export const DOCUMENTATION_URL = 'https://opensearch.org/docs/latest/';
-
 export const DEFAULT_EMPTY_DATA = '-';
+
+export let isDarkMode: boolean = false;
+
+export function setDarkMode(isDarkModeSetting: boolean) {
+  isDarkMode = isDarkModeSetting;
+}
 
 export const ROUTES = Object.freeze({
   ALERTS: '/alerts',

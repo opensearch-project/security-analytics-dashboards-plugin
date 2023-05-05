@@ -13,6 +13,8 @@ export enum CorrelationsLevel {
   Finding = 'Finding',
 }
 
+export type CorrelationRuleAction = 'Create' | 'Edit' | 'Readonly';
+
 export interface CorrelationGraphData {
   graph: {
     nodes: (Node & { chosen?: boolean })[];
@@ -24,9 +26,12 @@ export interface CorrelationGraphData {
 export type CorrelationFinding = {
   id: string;
   correlationScore?: number;
+  correlationRule?: CorrelationFindingHit;
   logType: string;
   timestamp: string;
   detectionRule: { name: string; severity: string };
+  detectorName?: string;
+  rules?: string[];
 };
 
 export interface CorrelationRuleQuery {
@@ -41,13 +46,13 @@ export interface CorrelationFieldCondition {
   condition: 'AND' | 'OR';
 }
 
-export interface CorrelationRule extends CorrelationRuleModel {
-  id: string;
-}
-
 export interface CorrelationRuleModel {
   name: string;
   queries: CorrelationRuleQuery[];
+}
+
+export interface CorrelationRule extends CorrelationRuleModel {
+  id: string;
 }
 
 export interface CorrelationRuleSourceQueries {
@@ -104,10 +109,8 @@ export interface CreateCorrelationRuleResponse {
 
 export interface DeleteCorrelationRuleResponse {}
 
-export type CorrelationRuleTableItem = CorrelationRule & { logTypes: string };
-
 export interface ICorrelationsStore {
-  getCorrelationRules(): Promise<CorrelationRuleHit[]>;
+  getCorrelationRules(): Promise<CorrelationRule[]>;
   getCorrelatedFindings(
     finding: string,
     detector_type: string,
