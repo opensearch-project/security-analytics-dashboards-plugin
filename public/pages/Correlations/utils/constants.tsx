@@ -43,6 +43,7 @@ export const graphRenderOptions = {
     dragNodes: false,
     multiselect: true,
     tooltipDelay: 50,
+    hover: true,
   },
 };
 
