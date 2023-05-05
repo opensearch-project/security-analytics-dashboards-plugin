@@ -372,7 +372,7 @@ export class DetectionVisualEditor extends React.Component<
       <EuiPanel style={{ maxWidth: 1000 }}>
         {selections.map((selection, selectionIdx) => {
           return (
-            <>
+            <div data-test-subj={`detection-visual-editor-${selectionIdx}`}>
               <EuiFlexGroup alignItems="center">
                 <EuiFlexItem grow={true}>
                   <EuiTitle size="s">
@@ -429,6 +429,7 @@ export class DetectionVisualEditor extends React.Component<
                 return (
                   <EuiAccordion
                     id={`Map-${idx}`}
+                    data-test-subj={`Map-${idx}`}
                     initialIsOpen={true}
                     buttonContent={`Map ${idx + 1}`}
                     extraAction={
@@ -577,7 +578,7 @@ export class DetectionVisualEditor extends React.Component<
               <EuiSpacer />
 
               <EuiHorizontalRule />
-            </>
+            </div>
           );
         })}
 
@@ -622,9 +623,11 @@ export class DetectionVisualEditor extends React.Component<
             mode="yaml"
             width="600px"
             height="50px"
-            value={condition}
+            value={this.state.detectionObj.condition}
             onChange={(value) => this.updateCondition(value)}
-            onBlur={(e) => this.updateCondition(e.target.value)}
+            onBlur={(e) => {
+              this.updateCondition(this.state.detectionObj.condition);
+            }}
             data-test-subj={'rule_detection_field'}
           />
         </EuiFormRow>

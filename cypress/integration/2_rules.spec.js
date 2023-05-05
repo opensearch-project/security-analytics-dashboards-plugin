@@ -11,13 +11,16 @@ const SAMPLE_RULE = {
   logType: 'windows',
   description: 'This is a rule used to test the rule creation workflow.',
   detection:
-    'selection:\n  Provider_Name: Service Control Manager\nEventID: 7045\nServiceName: ZzNetSvc\n{backspace}{backspace}condition: selection',
+    "condition: selection\nselection:\n Provider_Name|contains:\n- Service Control Manager\nEventID|contains:\n- '7045'\nServiceName|contains:\n- ZzNetSvc\n{backspace}{backspace}condition: selection",
   detectionLine: [
-    'selection:',
-    'Provider_Name: Service Control Manager',
-    'EventID: 7045',
-    'ServiceName: ZzNetSvc',
     'condition: selection',
+    'selection:',
+    'Provider_Name|contains:',
+    '- Service Control Manager',
+    'EventID|contains:',
+    "- '7045'",
+    'ServiceName|contains:',
+    '- ZzNetSvc',
   ],
   severity: 'critical',
   tags: ['attack.persistence', 'attack.privilege_escalation', 'attack.t1543.003'],
@@ -180,10 +183,28 @@ describe('Rules', () => {
     // Enter the author
     cy.get('[data-test-subj="rule_author_field"]').type(`${SAMPLE_RULE.author}{enter}`);
 
-    // Enter the detection
-    cy.get('[data-test-subj="rule_detection_field"] textarea').type(SAMPLE_RULE.detection, {
-      force: true,
+    cy.get('[data-test-subj="detection-visual-editor-0"]').within(() => {
+      cy.getFieldByLabel('Name').type('selection');
+      cy.getFieldByLabel('Key').type('Provider_Name');
+      cy.getInputByPlaceholder('Value').type('Service Control Manager');
+
+      cy.getButtonByText('Add map').click();
+      cy.get('[data-test-subj="Map-1"]').within(() => {
+        cy.getFieldByLabel('Key').type('EventID');
+        cy.getInputByPlaceholder('Value').type('7045');
+      });
+
+      cy.getButtonByText('Add map').click();
+      cy.get('[data-test-subj="Map-2"]').within(() => {
+        cy.getFieldByLabel('Key').type('ServiceName');
+        cy.getInputByPlaceholder('Value').type('ZzNetSvc');
+      });
     });
+    cy.get('[data-test-subj="rule_detection_field"] textarea')
+      .type('selection', {
+        force: true,
+      })
+      .blur();
 
     // Switch to YAML editor
     cy.get('[data-test-subj="change-editor-type"] label:nth-child(2)').click({
