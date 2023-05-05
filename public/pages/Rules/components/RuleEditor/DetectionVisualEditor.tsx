@@ -31,11 +31,7 @@ import {
   EuiCodeEditor,
 } from '@elastic/eui';
 import _ from 'lodash';
-import {
-  validateCondition,
-  validateDetectionFieldName,
-  validateName,
-} from '../../../../utils/validation';
+import { validateCondition, validateDetectionFieldName } from '../../../../utils/validation';
 
 export interface DetectionVisualEditorProps {
   detectionYml: string;
@@ -283,7 +279,7 @@ export class DetectionVisualEditor extends React.Component<
     if (!selection.name) {
       errors.fields['name'] = 'Selection name is required';
     } else {
-      if (!validateName(selection.name)) {
+      if (!validateDetectionFieldName(selection.name)) {
         errors.fields['name'] = 'Invalid selection name.';
       } else {
         selections.map((sel, selIdx) => {
