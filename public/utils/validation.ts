@@ -11,7 +11,7 @@ export const MAX_NAME_CHARACTERS = 50;
 export const NAME_REGEX = new RegExp(/^[a-zA-Z0-9 _-]{5,50}$/);
 
 // This regex pattern support MIN to MAX character limit, capital and lowercase letters,
-// numbers 0-9, hyphens, spaces, and underscores.
+// numbers 0-9, hyphens, dot, and underscores.
 export const DETECTION_NAME_REGEX = new RegExp(/^[a-zA-Z0-9_.-]{5,50}$/);
 
 export const CONDITION_REGEX = new RegExp(
