@@ -28,7 +28,7 @@ export const TopRulesWidget: React.FC<TopRulesWidgetProps> = ({ findings, loadin
     if (Object.keys(rulesCount).length > 0) {
       const visualizationData = Object.keys(rulesCount).map((ruleName) => ({
         ruleName,
-        count: 1,
+        count: rulesCount[ruleName],
       }));
       renderVisualization(getTopRulesVisualizationSpec(visualizationData), 'top-rules-view');
     }
