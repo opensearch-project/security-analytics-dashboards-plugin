@@ -18,8 +18,8 @@ import {
 } from '@elastic/eui';
 import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
 import React, { useState } from 'react';
-import { RuleItemInfoBase } from '../../models/types';
 import { RuleContentYamlViewer } from './RuleContentYamlViewer';
+import { RuleItemInfoBase } from '../../../../../types';
 
 export interface RuleContentViewerProps {
   rule: RuleItemInfoBase;
