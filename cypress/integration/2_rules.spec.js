@@ -11,7 +11,7 @@ const SAMPLE_RULE = {
   logType: 'windows',
   description: 'This is a rule used to test the rule creation workflow.',
   detection:
-    "condition: selection\nselection:\n Provider_Name|contains:\n- Service Control Manager\nEventID|contains:\n- '7045'\nServiceName|contains:\n- ZzNetSvc\n{backspace}{backspace}condition: selection",
+    "condition: selection\nselection:\nProvider_Name|contains:\n- Service Control Manager\nEventID|contains:\n- '7045'\nServiceName|contains:\n- ZzNetSvc",
   detectionLine: [
     'condition: selection',
     'selection:',
@@ -145,7 +145,7 @@ describe('Rules', () => {
     });
   });
 
-  xit('...can be created', () => {
+  it('...can be created', () => {
     // Click "create new rule" button
     cy.get('[data-test-subj="create_rule_button"]').click({
       force: true,
@@ -200,11 +200,9 @@ describe('Rules', () => {
         cy.getInputByPlaceholder('Value').type('ZzNetSvc');
       });
     });
-    cy.get('[data-test-subj="rule_detection_field"] textarea')
-      .type('selection', {
-        force: true,
-      })
-      .blur();
+    cy.get('[data-test-subj="rule_detection_field"] textarea').type('selection', {
+      force: true,
+    });
 
     // Switch to YAML editor
     cy.get('[data-test-subj="change-editor-type"] label:nth-child(2)').click({
@@ -231,7 +229,7 @@ describe('Rules', () => {
     checkRulesFlyout();
   });
 
-  xit('...can be edited', () => {
+  it('...can be edited', () => {
     cy.waitForPageLoad('rules', {
       contains: 'Rules',
     });
@@ -291,7 +289,7 @@ describe('Rules', () => {
     checkRulesFlyout();
   });
 
-  xit('...can be deleted', () => {
+  it('...can be deleted', () => {
     cy.intercept({
       url: '/rules',
     }).as('deleteRule');
