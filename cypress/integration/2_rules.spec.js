@@ -141,7 +141,7 @@ describe('Rules', () => {
 
     // Check that correct page is showing
     cy.waitForPageLoad('rules', {
-      contains: 'Rules',
+      contains: 'Detection rules',
     });
   });
 
@@ -223,7 +223,7 @@ describe('Rules', () => {
     cy.wait('@getRules');
 
     cy.waitForPageLoad('rules', {
-      contains: 'Rules',
+      contains: 'Detection rules',
     });
 
     checkRulesFlyout();
@@ -231,7 +231,7 @@ describe('Rules', () => {
 
   it('...can be edited', () => {
     cy.waitForPageLoad('rules', {
-      contains: 'Rules',
+      contains: 'Detection rules',
     });
 
     cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
@@ -281,7 +281,7 @@ describe('Rules', () => {
     });
 
     cy.waitForPageLoad('rules', {
-      contains: 'Rules',
+      contains: 'Detection rules',
     });
 
     cy.wait('@getRules');
