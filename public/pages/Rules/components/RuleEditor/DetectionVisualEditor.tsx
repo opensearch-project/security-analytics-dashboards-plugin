@@ -493,7 +493,7 @@ export class DetectionVisualEditor extends React.Component<
                 return (
                   <div key={`Map-${idx}`} className={'detection-visual-editor-accordion-wrapper'}>
                     <EuiAccordion
-                      className="euiAccordionForm"
+                      className="euiAccordionForm detection-visual-editor-accordion"
                       buttonClassName="euiAccordionForm__button"
                       id={`Map-${idx}`}
                       data-test-subj={`Map-${idx}`}
@@ -563,6 +563,7 @@ export class DetectionVisualEditor extends React.Component<
                           </EuiFormRow>
                         </EuiFlexItem>
                       </EuiFlexGroup>
+
                       <EuiSpacer size="s" />
 
                       <EuiRadioGroup
@@ -663,6 +664,8 @@ export class DetectionVisualEditor extends React.Component<
                           />
                         </EuiFormRow>
                       )}
+
+                      <EuiSpacer size={'m'} />
                     </EuiAccordion>
                   </div>
                 );
@@ -671,6 +674,7 @@ export class DetectionVisualEditor extends React.Component<
               <EuiSpacer size={'m'} />
 
               <EuiButton
+                style={{ width: '70%' }}
                 iconType="plusInCircle"
                 onClick={() => {
                   const newData = [
