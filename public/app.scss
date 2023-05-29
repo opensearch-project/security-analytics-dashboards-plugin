@@ -18,6 +18,7 @@ $euiTextColor: $euiColorDarkestShade !default;
 @import "./pages/Correlations/Correlations.scss";
 @import "./pages/Correlations/components/FindingCard.scss";
 @import "./pages/Findings/components/CorrelationsTable/CorrelationsTable.scss";
+@import "./pages/Rules/components/RuleEditor/components/SelectionExpField.scss";
 
 .selected-radio-panel {
   background-color: tintOrShade($euiColorPrimary, 90%, 70%);

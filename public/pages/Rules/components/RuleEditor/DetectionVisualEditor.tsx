@@ -29,9 +29,11 @@ import {
   EuiModalFooter,
   EuiFilePicker,
   EuiCodeEditor,
+  EuiCallOut,
 } from '@elastic/eui';
 import _ from 'lodash';
 import { validateCondition, validateDetectionFieldName } from '../../../../utils/validation';
+import { SelectionExpField } from './components/SelectionExpField';
 
 export interface DetectionVisualEditorProps {
   detectionYml: string;
@@ -61,7 +63,7 @@ interface SelectionData {
   selectedRadioId?: string;
 }
 
-interface Selection {
+export interface Selection {
   name: string;
   data: SelectionData[];
 }
@@ -88,7 +90,7 @@ const defaultDetectionObj: DetectionObject = {
   condition: '',
   selections: [
     {
-      name: '',
+      name: 'Selection_1',
       data: [
         {
           field: '',
@@ -275,6 +277,10 @@ export class DetectionVisualEditor extends React.Component<
     const { errors } = this.state;
     const selection = selections[selectionIdx];
 
+    if (!selection.name) {
+      selection.name = `Selection_${selectionIdx + 1}`;
+    }
+
     delete errors.fields['name'];
     if (!selection.name) {
       errors.fields['name'] = 'Selection name is required';
@@ -320,7 +326,6 @@ export class DetectionVisualEditor extends React.Component<
       detectionObj: { selections },
     } = this.state;
     value = value.trim();
-
     delete errors.fields['condition'];
     if (!value) {
       errors.fields['condition'] = 'Condition is required';
@@ -415,6 +420,10 @@ export class DetectionVisualEditor extends React.Component<
     ];
   };
 
+  private getTextareaHeight = (rowNo: number = 0) => {
+    return `${rowNo * 25 + 40}px`;
+  };
+
   render() {
     const {
       detectionObj: { condition, selections },
@@ -425,11 +434,15 @@ export class DetectionVisualEditor extends React.Component<
       },
     } = this.state;
 
+    console.log('XXX', detectionYml);
     return (
       <EuiPanel style={{ maxWidth: 1000 }}>
         {selections.map((selection, selectionIdx) => {
           return (
-            <div data-test-subj={`detection-visual-editor-${selectionIdx}`}>
+            <div
+              data-test-subj={`detection-visual-editor-${selectionIdx}`}
+              key={`detection-visual-editor-${selectionIdx}`}
+            >
               <EuiFlexGroup alignItems="center">
                 <EuiFlexItem grow={true}>
                   <EuiTitle size="s">
@@ -490,6 +503,7 @@ export class DetectionVisualEditor extends React.Component<
                 return (
                   <EuiAccordion
                     id={`Map-${idx}`}
+                    key={`Map-${idx}`}
                     data-test-subj={`Map-${idx}`}
                     initialIsOpen={true}
                     buttonContent={`Map ${idx + 1}`}
@@ -592,17 +606,20 @@ export class DetectionVisualEditor extends React.Component<
                           error={errors.fields[valueId]}
                         >
                           <EuiTextArea
-                            style={{ maxWidth: '100%' }}
+                            style={{
+                              maxWidth: '100%',
+                              minHeight: '80px',
+                              maxHeight: '200px',
+                              height: this.getTextareaHeight(datum.values.length),
+                            }}
                             onChange={(e) => {
                               const values = e.target.value.split('\n');
-                              console.log(values);
                               this.updateDatumInState(selectionIdx, idx, {
                                 values,
                               });
                             }}
                             onBlur={(e) => {
                               const values = e.target.value.split('\n');
-                              console.log(values);
                               this.updateDatumInState(selectionIdx, idx, {
                                 values,
                               });
@@ -674,6 +691,7 @@ export class DetectionVisualEditor extends React.Component<
                   ...selections,
                   {
                     ...defaultDetectionObj.selections[0],
+                    name: `Selection_${selections.length + 1}`,
                   },
                 ],
               },
@@ -701,16 +719,11 @@ export class DetectionVisualEditor extends React.Component<
             </>
           }
         >
-          <EuiCodeEditor
-            mode="yaml"
-            width="600px"
-            height="50px"
+          <SelectionExpField
+            selections={this.state.detectionObj.selections}
             value={this.state.detectionObj.condition}
-            onChange={(value) => this.updateCondition(value)}
-            onBlur={(e) => {
-              this.updateCondition(this.state.detectionObj.condition);
-            }}
-            data-test-subj={'rule_detection_field'}
+            onChange={this.updateCondition}
+            dataTestSubj={'rule_detection_field'}
           />
         </EuiFormRow>
 
@@ -721,8 +734,19 @@ export class DetectionVisualEditor extends React.Component<
                 <h1>Upload a file</h1>
               </EuiModalHeaderTitle>
             </EuiModalHeader>
-
             <EuiModalBody>
+              {selections[fileUploadModalState.selectionIdx].data[fileUploadModalState.dataIdx]
+                .values[0] && (
+                <>
+                  <EuiCallOut
+                    title="The list will be overriden with file content"
+                    iconType="iInCircle"
+                    color="warning"
+                    size="s"
+                  />
+                  <EuiSpacer />
+                </>
+              )}
               {this.state.invalidFile && (
                 <EuiText color="danger" size="s">
                   <p>Invalid file.</p>
