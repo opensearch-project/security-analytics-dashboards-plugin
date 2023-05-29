@@ -16,6 +16,7 @@ interface SelectionExpFieldProps {
   dataTestSubj: string;
   onChange: (value: string) => void;
   value: string;
+  mode: string;
 }
 
 interface UsedSelection {
@@ -29,7 +30,9 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
   dataTestSubj,
   onChange,
   value,
+  mode,
 }) => {
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [usedExpressions, setUsedExpressions] = useState<UsedSelection[]>([]);
 
   useEffect(() => {
@@ -67,12 +70,15 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
         },
       ];
     }
+
     setUsedExpressions(expressions);
   }, [value]);
 
   useEffect(() => {
-    console.log('XXX', usedExpressions, getValue());
-    onChange(getValue());
+    if (mode !== 'edit' || isLoaded) {
+      onChange(getValue());
+    }
+    setIsLoaded(true);
   }, [usedExpressions]);
 
   const getValue = () => {
@@ -177,7 +183,10 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
                 description={exp.description}
                 value={exp.name}
                 isActive={exp.isOpen}
-                onClick={() => openPopover(idx)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  openPopover(idx);
+                }}
               />
             }
             isOpen={exp.isOpen}

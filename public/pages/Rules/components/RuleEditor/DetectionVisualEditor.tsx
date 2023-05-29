@@ -28,7 +28,6 @@ import {
   EuiModalBody,
   EuiModalFooter,
   EuiFilePicker,
-  EuiCodeEditor,
   EuiCallOut,
 } from '@elastic/eui';
 import _ from 'lodash';
@@ -39,6 +38,7 @@ export interface DetectionVisualEditorProps {
   detectionYml: string;
   onChange: (value: string) => void;
   setIsDetectionInvalid: (isInvalid: boolean) => void;
+  mode?: string;
 }
 
 interface Errors {
@@ -190,7 +190,7 @@ export class DetectionVisualEditor extends React.Component<
       condition,
     };
 
-    selections.forEach((selection, idx) => {
+    selections.forEach((selection) => {
       const selectionMaps: any = {};
 
       selection.data.forEach((datum) => {
@@ -434,7 +434,6 @@ export class DetectionVisualEditor extends React.Component<
       },
     } = this.state;
 
-    console.log('XXX', detectionYml);
     return (
       <EuiPanel style={{ maxWidth: 1000 }}>
         {selections.map((selection, selectionIdx) => {
@@ -562,7 +561,7 @@ export class DetectionVisualEditor extends React.Component<
                                 modifier: e[0].value,
                               });
                             }}
-                            onBlur={(e) => {}}
+                            onBlur={() => {}}
                             selectedOptions={
                               datum.modifier
                                 ? [{ value: datum.modifier, label: datum.modifier }]
@@ -720,6 +719,7 @@ export class DetectionVisualEditor extends React.Component<
           }
         >
           <SelectionExpField
+            mode={this.props.mode}
             selections={this.state.detectionObj.selections}
             value={this.state.detectionObj.condition}
             onChange={this.updateCondition}

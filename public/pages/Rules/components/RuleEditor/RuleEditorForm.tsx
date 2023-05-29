@@ -232,6 +232,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                 <EuiSpacer />
 
                 <DetectionVisualEditor
+                  mode={mode}
                   detectionYml={props.values.detection}
                   setIsDetectionInvalid={(isInvalid: boolean) => {
                     if (isInvalid) {
