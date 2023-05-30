@@ -172,7 +172,6 @@ describe('Rules', () => {
     );
 
     // Enter the reference
-    cy.contains('Add another URL').click();
     cy.get('[data-test-subj="rule_references_field_0"]').type(SAMPLE_RULE.references);
 
     // Enter the false positive cases

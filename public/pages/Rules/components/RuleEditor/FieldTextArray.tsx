@@ -5,11 +5,13 @@
 
 import {
   EuiButton,
+  EuiButtonIcon,
   EuiFieldText,
   EuiFlexGroup,
   EuiFlexItem,
   EuiFormRow,
   EuiSpacer,
+  EuiToolTip,
 } from '@elastic/eui';
 import React, { ChangeEvent } from 'react';
 
@@ -21,6 +23,7 @@ export interface FieldTextArrayProps {
   onFieldEdit: (value: string, fieldIndex: number) => void;
   onFieldRemove: (fieldIndex: number) => void;
   onFieldAdd: () => void;
+  placeholder?: string;
 }
 
 export const FieldTextArray: React.FC<FieldTextArrayProps> = ({
@@ -31,6 +34,7 @@ export const FieldTextArray: React.FC<FieldTextArrayProps> = ({
   onFieldEdit,
   onFieldRemove,
   onFieldAdd,
+  placeholder = '',
 }) => {
   return (
     <>
@@ -42,6 +46,7 @@ export const FieldTextArray: React.FC<FieldTextArrayProps> = ({
                 <EuiFlexItem style={{ minWidth: '100%' }}>
                   <EuiFieldText
                     value={ref}
+                    placeholder={placeholder}
                     onChange={(e: ChangeEvent<HTMLInputElement>) => {
                       onFieldEdit(e.target.value, index);
                     }}
@@ -51,14 +56,21 @@ export const FieldTextArray: React.FC<FieldTextArrayProps> = ({
                   />
                 </EuiFlexItem>
                 {index > 0 ? (
-                  <EuiFlexItem grow={false}>
-                    <EuiButton onClick={() => onFieldRemove(index)}>Remove</EuiButton>
+                  <EuiFlexItem grow={false} className={'field-text-array-remove'}>
+                    <EuiToolTip title={'Remove'}>
+                      <EuiButtonIcon
+                        aria-label={'Remove'}
+                        iconType={'trash'}
+                        color="danger"
+                        onClick={() => onFieldRemove(index)}
+                      />
+                    </EuiToolTip>
                   </EuiFlexItem>
                 ) : null}
               </EuiFlexGroup>
             );
           })}
-          <EuiSpacer size="s" />
+          <EuiSpacer size="m" />
           <EuiButton
             type="button"
             className="secondary"

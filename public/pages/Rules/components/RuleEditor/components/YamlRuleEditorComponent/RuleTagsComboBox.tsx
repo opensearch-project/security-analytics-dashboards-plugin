@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { EuiFormRow, EuiText, EuiComboBox, EuiComboBoxOptionOption } from '@elastic/eui';
+import { EuiFormRow, EuiText, EuiComboBox, EuiComboBoxOptionOption, EuiSpacer } from '@elastic/eui';
 
 export interface RuleTagsComboBoxProps {
   onCreateOption: (
@@ -39,19 +39,26 @@ export const RuleTagsComboBox: React.FC<RuleTagsComboBoxProps> = ({
     <>
       <EuiFormRow
         label={
-          <EuiText size={'s'}>
-            <strong>Tags </strong>
-            <i>- optional</i>
-          </EuiText>
+          <>
+            <EuiText size={'m'}>
+              <strong>Tags </strong>
+              <i>- optional</i>
+            </EuiText>
+
+            <EuiSpacer size={'m'} />
+
+            <EuiText size={'xs'}>
+              <strong>Tag</strong>
+            </EuiText>
+          </>
         }
         isInvalid={isCurrentlyTypingValueInvalid}
         error={isCurrentlyTypingValueInvalid ? 'Invalid tag' : ''}
-        helpText={`Tags must start with '${STARTS_WITH}'`}
       >
         <EuiComboBox
           noSuggestions
           onSearchChange={onSearchChange}
-          placeholder="Create tags"
+          placeholder="tag"
           onChange={onChange}
           onCreateOption={(searchValue, options) =>
             isValid(searchValue) && onCreateOption(searchValue, options)
