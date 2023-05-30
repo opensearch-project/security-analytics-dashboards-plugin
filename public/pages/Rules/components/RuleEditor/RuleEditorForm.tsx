@@ -400,7 +400,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     selectedOptions={
                       props.values.status
                         ? [{ value: props.values.status, label: props.values.status }]
-                        : []
+                        : [{ value: ruleStatus[0], label: ruleStatus[0] }]
                     }
                   />
                 </EuiFormRow>
