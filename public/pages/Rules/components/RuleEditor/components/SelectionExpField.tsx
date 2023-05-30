@@ -65,6 +65,7 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
     }
 
     setUsedExpressions(expressions);
+    onChange(getValue(expressions));
   }, [value]);
 
   const getValue = (usedExp: UsedSelection[]) => {
@@ -169,7 +170,11 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
         <EuiFlexItem
           grow={false}
           key={`selections_${idx}`}
-          className={'selection-exp-field-item-with-remove'}
+          className={
+            usedExpressions.length > 1
+              ? 'selection-exp-field-item-with-remove'
+              : 'selection-exp-field-item'
+          }
         >
           <EuiPopover
             id={`selections_${idx}`}

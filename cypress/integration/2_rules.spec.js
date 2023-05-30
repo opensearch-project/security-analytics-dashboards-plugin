@@ -10,11 +10,9 @@ const SAMPLE_RULE = {
   name: `Cypress test rule ${uniqueId}`,
   logType: 'windows',
   description: 'This is a rule used to test the rule creation workflow.',
-  detection:
-    "condition: selection\nselection:\nProvider_Name|contains:\n- Service Control Manager\nEventID|contains:\n- '7045'\nServiceName|contains:\n- ZzNetSvc",
   detectionLine: [
-    'condition: selection',
-    'selection:',
+    'condition: Selection_1',
+    'Selection_1:',
     'Provider_Name|contains:',
     '- Service Control Manager',
     'EventID|contains:',
@@ -48,7 +46,7 @@ const YAML_RULE_LINES = [
   `- '${SAMPLE_RULE.references}'`,
   `author: ${SAMPLE_RULE.author}`,
   `detection:`,
-  ...SAMPLE_RULE.detection.replaceAll('  ', '').replaceAll('{backspace}', '').split('\n'),
+  ...SAMPLE_RULE.detectionLine,
 ];
 
 const checkRulesFlyout = () => {
@@ -180,11 +178,8 @@ describe('Rules', () => {
       `${SAMPLE_RULE.falsePositive}{enter}`
     );
 
-    // Enter the author
-    cy.get('[data-test-subj="rule_author_field"]').type(`${SAMPLE_RULE.author}{enter}`);
-
     cy.get('[data-test-subj="detection-visual-editor-0"]').within(() => {
-      cy.getFieldByLabel('Name').type('selection');
+      cy.getFieldByLabel('Name').type('{selectall}{backspace}').type('Selection_1');
       cy.getFieldByLabel('Key').type('Provider_Name');
       cy.getInputByPlaceholder('Value').type('Service Control Manager');
 
@@ -200,9 +195,9 @@ describe('Rules', () => {
         cy.getInputByPlaceholder('Value').type('ZzNetSvc');
       });
     });
-    cy.get('[data-test-subj="rule_detection_field"] textarea').type('selection', {
-      force: true,
-    });
+
+    // Enter the author
+    cy.get('[data-test-subj="rule_author_field"]').type(`${SAMPLE_RULE.author}`);
 
     // Switch to YAML editor
     cy.get('[data-test-subj="change-editor-type"] label:nth-child(2)').click({
