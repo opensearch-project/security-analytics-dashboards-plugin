@@ -16,7 +16,6 @@ interface SelectionExpFieldProps {
   dataTestSubj: string;
   onChange: (value: string) => void;
   value: string;
-  mode: string;
 }
 
 interface UsedSelection {
@@ -30,41 +29,35 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
   dataTestSubj,
   onChange,
   value,
-  mode,
 }) => {
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const DEFAULT_DESCRIPTION = 'CONDITION: ';
+  const OPERATORS = ['and', 'or', 'not'];
   const [usedExpressions, setUsedExpressions] = useState<UsedSelection[]>([]);
 
   useEffect(() => {
     let expressions: UsedSelection[] = [];
     if (value?.length) {
-      const values = value.split(' ');
+      let values = value.split(' ');
+      if (OPERATORS.indexOf(values[0]) === -1) values = ['', ...values];
+
       let counter = 0;
       values.map((val, idx) => {
-        if (idx === 0) {
+        if (idx % 2 === 0) {
           expressions.push({
-            description: 'SELECTION',
+            description: val,
             isOpen: false,
-            name: val,
+            name: '',
           });
+          counter++;
         } else {
-          if (idx % 2 !== 0) {
-            expressions.push({
-              description: val,
-              isOpen: false,
-              name: '',
-            });
-            counter++;
-          } else {
-            const currentIndex = idx - counter;
-            expressions[currentIndex] = { ...expressions[currentIndex], name: val };
-          }
+          const currentIndex = idx - counter;
+          expressions[currentIndex] = { ...expressions[currentIndex], name: val };
         }
       });
     } else {
       expressions = [
         {
-          description: 'SELECTION',
+          description: '',
           isOpen: false,
           name: selections[0]?.name || 'Selection_1',
         },
@@ -74,18 +67,9 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
     setUsedExpressions(expressions);
   }, [value]);
 
-  useEffect(() => {
-    if (mode !== 'edit' || isLoaded) {
-      onChange(getValue());
-    }
-    setIsLoaded(true);
-  }, [usedExpressions]);
-
-  const getValue = () => {
-    const expressions = usedExpressions.map((exp) => [_.toLower(exp.description), exp.name]);
-    let newExpressions = _.flattenDeep(expressions);
-    newExpressions.shift();
-    return newExpressions.join(' ');
+  const getValue = (usedExp: UsedSelection[]) => {
+    const expressions = usedExp.map((exp) => [_.toLower(exp.description), exp.name]);
+    return _.flattenDeep(expressions).join(' ');
   };
 
   const changeExtValue = (
@@ -96,6 +80,7 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
     const usedExp = _.cloneDeep(usedExpressions);
     usedExp[idx] = { ...usedExp[idx], name: event.target.value };
     setUsedExpressions(usedExp);
+    onChange(getValue(usedExp));
   };
 
   const changeExtDescription = (
@@ -106,6 +91,7 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
     const usedExp = _.cloneDeep(usedExpressions);
     usedExp[idx] = { ...usedExp[idx], description: event.target.value };
     setUsedExpressions(usedExp);
+    onChange(getValue(usedExp));
   };
 
   const openPopover = (idx: number) => {
@@ -130,6 +116,7 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
             value={exp.description}
             onChange={(e) => changeExtDescription(e, exp, idx)}
             options={[
+              { value: '', text: '' },
               { value: 'and', text: 'AND' },
               { value: 'or', text: 'OR' },
               { value: 'not', text: 'NOT' },
@@ -169,11 +156,20 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
 
   return (
     <EuiFlexGroup gutterSize="s" data-test-subj={dataTestSubj}>
+      <EuiFlexItem grow={false} key={`selections_default`}>
+        <EuiPopover
+          id={`selections_default`}
+          button={<EuiExpression description={DEFAULT_DESCRIPTION} value={''} isActive={false} />}
+          isOpen={false}
+          panelPaddingSize="s"
+          anchorPosition="rightDown"
+        />
+      </EuiFlexItem>
       {usedExpressions.map((exp, idx) => (
         <EuiFlexItem
           grow={false}
           key={`selections_${idx}`}
-          className={idx > 0 ? 'selection-exp-field-item-with-remove' : 'selection-exp-field-item'}
+          className={'selection-exp-field-item-with-remove'}
         >
           <EuiPopover
             id={`selections_${idx}`}
@@ -183,7 +179,7 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
                 description={exp.description}
                 value={exp.name}
                 isActive={exp.isOpen}
-                onClick={(e) => {
+                onClick={(e: any) => {
                   e.preventDefault();
                   openPopover(idx);
                 }}
@@ -194,15 +190,16 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
             panelPaddingSize="s"
             anchorPosition="rightDown"
           >
-            {exp.description === 'SELECTION' ? renderSelections(exp, idx) : renderOptions(exp, idx)}
+            {renderOptions(exp, idx)}
           </EuiPopover>
-          {idx ? (
+          {usedExpressions.length > 1 ? (
             <EuiButtonIcon
               className={'selection-exp-field-item-remove'}
               onClick={() => {
                 const usedExp = _.cloneDeep(usedExpressions);
                 usedExp.splice(idx, 1);
                 setUsedExpressions([...usedExp]);
+                onChange(getValue(usedExp));
               }}
               color={'danger'}
               iconType="cross"
@@ -217,14 +214,16 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
             onClick={() => {
               const usedExp = _.cloneDeep(usedExpressions);
               const differences = _.differenceBy(selections, usedExp, 'name');
-              setUsedExpressions([
+              const exp = [
                 ...usedExp,
                 {
                   description: 'AND',
                   isOpen: false,
                   name: differences[0]?.name,
                 },
-              ]);
+              ];
+              setUsedExpressions(exp);
+              onChange(getValue(exp));
             }}
             iconType="plusInCircle"
             aria-label={'Add one more condition'}

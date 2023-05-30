@@ -15,7 +15,7 @@ export const NAME_REGEX = new RegExp(/^[a-zA-Z0-9 _-]{5,50}$/);
 export const DETECTION_NAME_REGEX = new RegExp(/^[a-zA-Z0-9_.-]{5,50}$/);
 
 export const CONDITION_REGEX = new RegExp(
-  /^([a-zA-Z0-9_]+)?( (and|or|not) ?([a-zA-Z0-9_]+))*(?<!and|or|not)$/
+  /^((not )?[a-zA-Z0-9_]+)?( (and|or|not) ?([a-zA-Z0-9_]+))*(?<!and|or|not)$/
 );
 
 // This regex pattern support MIN to MAX character limit, capital and lowercase letters,
@@ -25,6 +25,7 @@ export const AUTHOR_REGEX = new RegExp(/^[a-zA-Z0-9 _,-.]{5,50}$/);
 /**
  * Validates a string against NAME_REGEX.
  * @param name: The string to validate.
+ * @param regex
  * @return TRUE if valid; else FALSE.
  */
 export function validateName(name: string, regex: RegExp = NAME_REGEX): boolean {

@@ -719,7 +719,6 @@ export class DetectionVisualEditor extends React.Component<
           }
         >
           <SelectionExpField
-            mode={this.props.mode}
             selections={this.state.detectionObj.selections}
             value={this.state.detectionObj.condition}
             onChange={this.updateCondition}
