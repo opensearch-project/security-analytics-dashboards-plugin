@@ -2971,7 +2971,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         Object {
                           "field": "category",
                           "multiSelect": "or",
-                          "name": "Rule Type",
+                          "name": "Log type",
                           "options": Array [
                             Object {
                               "name": "Network",
@@ -3031,7 +3031,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         Object {
                           "field": "level",
                           "multiSelect": "or",
-                          "name": "Rule Severity",
+                          "name": "Rule severity",
                           "options": Array [
                             Object {
                               "color": "#cc5642",
@@ -3118,7 +3118,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                           Object {
                             "field": "category",
                             "multiSelect": "or",
-                            "name": "Rule Type",
+                            "name": "Log type",
                             "options": Array [
                               Object {
                                 "name": "Network",
@@ -3178,7 +3178,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                           Object {
                             "field": "level",
                             "multiSelect": "or",
-                            "name": "Rule Severity",
+                            "name": "Rule severity",
                             "options": Array [
                               Object {
                                 "color": "#cc5642",
@@ -3337,7 +3337,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                     Object {
                                       "field": "category",
                                       "multiSelect": "or",
-                                      "name": "Rule Type",
+                                      "name": "Log type",
                                       "options": Array [
                                         Object {
                                           "name": "Network",
@@ -3397,7 +3397,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                     Object {
                                       "field": "level",
                                       "multiSelect": "or",
-                                      "name": "Rule Severity",
+                                      "name": "Rule severity",
                                       "options": Array [
                                         Object {
                                           "color": "#cc5642",
@@ -3478,7 +3478,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                         Object {
                                           "field": "category",
                                           "multiSelect": "or",
-                                          "name": "Rule Type",
+                                          "name": "Log type",
                                           "options": Array [
                                             Object {
                                               "name": "Network",
@@ -3568,7 +3568,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                             iconType="arrowDown"
                                             onClick={[Function]}
                                           >
-                                            Rule Type
+                                            Log type
                                           </EuiFilterButton>
                                         }
                                         closePopover={[Function]}
@@ -3640,10 +3640,10 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                                       >
                                                         <span
                                                           className="euiFilterButton__textShift"
-                                                          data-text="Rule Type"
-                                                          title="Rule Type"
+                                                          data-text="Log type"
+                                                          title="Log type"
                                                         >
-                                                          Rule Type
+                                                          Log type
                                                         </span>
                                                       </span>
                                                     </span>
@@ -3660,7 +3660,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                         Object {
                                           "field": "level",
                                           "multiSelect": "or",
-                                          "name": "Rule Severity",
+                                          "name": "Rule severity",
                                           "options": Array [
                                             Object {
                                               "color": "#cc5642",
@@ -3728,7 +3728,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                             iconType="arrowDown"
                                             onClick={[Function]}
                                           >
-                                            Rule Severity
+                                            Rule severity
                                           </EuiFilterButton>
                                         }
                                         closePopover={[Function]}
@@ -3800,10 +3800,10 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                                       >
                                                         <span
                                                           className="euiFilterButton__textShift"
-                                                          data-text="Rule Severity"
-                                                          title="Rule Severity"
+                                                          data-text="Rule severity"
+                                                          title="Rule severity"
                                                         >
-                                                          Rule Severity
+                                                          Rule severity
                                                         </span>
                                                       </span>
                                                     </span>
