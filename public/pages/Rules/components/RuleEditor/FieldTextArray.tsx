@@ -13,7 +13,8 @@ import {
   EuiSpacer,
   EuiToolTip,
 } from '@elastic/eui';
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useState } from 'react';
+import * as _ from 'lodash';
 
 export interface FieldTextArrayProps {
   label: string | React.ReactNode;
@@ -23,7 +24,9 @@ export interface FieldTextArrayProps {
   onFieldEdit: (value: string, fieldIndex: number) => void;
   onFieldRemove: (fieldIndex: number) => void;
   onFieldAdd: () => void;
+  onValidate?: (value: string) => boolean;
   placeholder?: string;
+  errorMessage?: string;
 }
 
 export const FieldTextArray: React.FC<FieldTextArrayProps> = ({
@@ -35,10 +38,14 @@ export const FieldTextArray: React.FC<FieldTextArrayProps> = ({
   onFieldRemove,
   onFieldAdd,
   placeholder = '',
+  errorMessage = '',
+  onValidate = () => true,
 }) => {
+  const [isValid, setIsValid] = useState(true);
+
   return (
     <>
-      <EuiFormRow label={label}>
+      <EuiFormRow label={label} isInvalid={!isValid} error={!isValid ? errorMessage : ''}>
         <>
           {fields.map((ref: string, index: number) => {
             return (
@@ -47,8 +54,12 @@ export const FieldTextArray: React.FC<FieldTextArrayProps> = ({
                   <EuiFieldText
                     value={ref}
                     placeholder={placeholder}
+                    isInvalid={!isValid}
                     onChange={(e: ChangeEvent<HTMLInputElement>) => {
                       onFieldEdit(e.target.value, index);
+                      let fieldsToValidate = _.cloneDeep(fields);
+                      fieldsToValidate[index] = e.target.value;
+                      setIsValid(onValidate(fieldsToValidate));
                     }}
                     data-test-subj={`rule_${name
                       .toLowerCase()

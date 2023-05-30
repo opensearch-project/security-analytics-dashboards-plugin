@@ -18,6 +18,7 @@ import {
   EuiButtonGroup,
   EuiText,
   EuiTitle,
+  EuiPanel,
 } from '@elastic/eui';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { FieldTextArray } from './FieldTextArray';
@@ -27,7 +28,6 @@ import { RuleEditorFormModel } from './RuleEditorFormModel';
 import { FormSubmissionErrorToastNotification } from './FormSubmitionErrorToastNotification';
 import { YamlRuleEditorComponent } from './components/YamlRuleEditorComponent/YamlRuleEditorComponent';
 import { mapFormToRule, mapRuleToForm } from './mappers';
-import { RuleTagsComboBox } from './components/YamlRuleEditorComponent/RuleTagsComboBox';
 import { DetectionVisualEditor } from './DetectionVisualEditor';
 
 export interface VisualRuleEditorProps {
@@ -357,7 +357,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
                 <EuiSpacer />
 
-                <div className={'rule-editor-form-additional-details-panel'}>
+                <EuiPanel style={{ maxWidth: 1000 }}>
                   <EuiAccordion
                     id={'additional-details'}
                     initialIsOpen={true}
@@ -368,19 +368,60 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     }
                   >
                     <div className={'rule-editor-form-additional-details-panel-body'}>
-                      <RuleTagsComboBox
-                        selectedOptions={props.values.tags}
-                        onChange={(value) => {
-                          const tags = value.map((option) => ({ label: option.label }));
-                          props.setFieldValue('tags', tags);
-                        }}
-                        onCreateOption={(newTag) => {
-                          props.setFieldValue('tags', [...props.values.tags, { label: newTag }]);
-                        }}
-                        onBlur={props.handleBlur('tags')}
-                      />
+                      <EuiSpacer />
 
-                      <EuiSpacer size={'xl'} />
+                      <FieldTextArray
+                        name="tags"
+                        placeholder={'tag'}
+                        label={
+                          <>
+                            <EuiText size={'m'}>
+                              <strong>Tags </strong>
+                              <i>- optional</i>
+                            </EuiText>
+
+                            <EuiSpacer size={'m'} />
+
+                            <EuiText size={'xs'}>
+                              <strong>Tag</strong>
+                            </EuiText>
+                          </>
+                        }
+                        addButtonName="Add tag"
+                        fields={props.values.tags}
+                        errorMessage={'Invalid tag'}
+                        onValidate={(fields) => {
+                          const STARTS_WITH = 'attack.';
+                          let isValid = true;
+                          let tag;
+                          for (let i = 0; i < fields.length; i++) {
+                            tag = fields[i];
+                            if (!(tag.startsWith(STARTS_WITH) && tag.length > STARTS_WITH.length)) {
+                              isValid = false;
+                              break;
+                            }
+                          }
+
+                          return isValid;
+                        }}
+                        onFieldAdd={() => {
+                          props.setFieldValue('tags', [...props.values.tags, '']);
+                        }}
+                        onFieldEdit={(value: string, index: number) => {
+                          props.setFieldValue('tags', [
+                            ...props.values.tags.slice(0, index),
+                            value,
+                            ...props.values.tags.slice(index + 1),
+                          ]);
+                        }}
+                        onFieldRemove={(index: number) => {
+                          const newRefs = [...props.values.tags];
+                          newRefs.splice(index, 1);
+
+                          props.setFieldValue('tags', newRefs);
+                        }}
+                        data-test-subj={'rule_tags_field'}
+                      />
 
                       <FieldTextArray
                         name="references"
@@ -388,7 +429,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                         label={
                           <>
                             <EuiText size={'m'}>
-                              <strong>Referencess </strong>
+                              <strong>References </strong>
                               <i>- optional</i>
                             </EuiText>
 
@@ -462,7 +503,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                       />
                     </div>
                   </EuiAccordion>
-                </div>
+                </EuiPanel>
               </>
             )}
           </ContentPanel>

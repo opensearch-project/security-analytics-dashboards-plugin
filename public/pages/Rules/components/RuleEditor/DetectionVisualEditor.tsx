@@ -89,7 +89,7 @@ const defaultDetectionObj: DetectionObject = {
   condition: '',
   selections: [
     {
-      name: '',
+      name: 'Selection_1',
       data: [
         {
           field: '',
