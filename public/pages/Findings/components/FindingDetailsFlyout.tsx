@@ -477,7 +477,7 @@ export default class FindingDetailsFlyout extends Component<
           />
         )}
         {this.createIndexPatternModal()}
-        <EuiFlyoutHeader hasBorder={true}>
+        <EuiFlyoutHeader>
           <EuiFlexGroup justifyContent="flexStart" alignItems="center">
             <EuiFlexItem>
               <EuiFlexGroup alignItems="center">

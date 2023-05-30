@@ -15,7 +15,6 @@ import {
   EuiHorizontalRule,
   EuiToolTip,
 } from '@elastic/eui';
-import { rulePriorityBySeverity } from '../../CreateDetector/components/DefineDetector/components/DetectionRules/DetectionRulesTable';
 import {
   getAbbrFromLogType,
   getSeverityLabel,
@@ -105,6 +104,8 @@ export const FindingCard: React.FC<FindingCardProps> = ({
                 fontSize: 10,
                 lineHeight: '35px',
                 textAlign: 'center',
+                borderColor: '#98A2B3',
+                color: '#98A2B3',
               }}
             >
               {getAbbrFromLogType(logType)}
@@ -118,7 +119,6 @@ export const FindingCard: React.FC<FindingCardProps> = ({
                 }}
                 color={getSeverityColor(detectionRule.severity)}
               >
-                {rulePriorityBySeverity[detectionRule.severity]}{' '}
                 {getSeverityLabel(detectionRule.severity)}
               </EuiBadge>
             ) : null}

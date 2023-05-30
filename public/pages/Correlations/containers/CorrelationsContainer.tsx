@@ -279,6 +279,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       to: f2.id,
       id: `${f1.id}:${f2.id}`,
       chosen: false,
+      color: '#98A2B3', //ouiColorMediumShade
     });
   }
 

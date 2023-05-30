@@ -13,6 +13,7 @@ import {
   EuiLink,
   EuiToolTip,
   EuiEmptyPrompt,
+  EuiBadge,
 } from '@elastic/eui';
 import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
 import dateMath from '@elastic/datemath';
@@ -31,6 +32,7 @@ import { FindingItemType } from '../../containers/Findings/Findings';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { RuleSource } from '../../../../../server/models/interfaces';
 import { DataStore } from '../../../../store/DataStore';
+import { getSeverityColor } from '../../../Correlations/utils/constants';
 
 interface FindingsTableProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -205,7 +207,12 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         name: 'Rule severity',
         sortable: true,
         dataType: 'string',
-        render: (ruleSeverity: string) => capitalizeFirstLetter(ruleSeverity) || DEFAULT_EMPTY_DATA,
+        align: 'left',
+        render: (ruleSeverity: string) => {
+          const severity = capitalizeFirstLetter(ruleSeverity) || DEFAULT_EMPTY_DATA;
+
+          return <EuiBadge color={getSeverityColor(severity)}>{severity}</EuiBadge>;
+        },
       },
       {
         name: 'Actions',
@@ -217,7 +224,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
                 <EuiButtonIcon
                   aria-label={'View details'}
                   data-test-subj={`view-details-icon`}
-                  iconType={'expand'}
+                  iconType={'inspect'}
                   onClick={() =>
                     DataStore.findings.openFlyout(finding, this.state.filteredFindings)
                   }

@@ -92,5 +92,5 @@ export const getSeverityLabel = (sev: string) => {
 };
 
 export const getSeverityColor = (sev: string) => {
-  return ruleSeverity.find((severity) => severity.value === sev)?.color || 'black';
+  return ruleSeverity.find((severity) => severity.value === sev.toLowerCase())?.color || 'black';
 };
