@@ -165,9 +165,11 @@ describe('Rules', () => {
     cy.get('[data-test-subj="rule_severity_dropdown"]').type(SAMPLE_RULE.severity);
 
     // Enter the tags
-    SAMPLE_RULE.tags.forEach((tag) =>
-      cy.get('[data-test-subj="rule_tags_dropdown"]').type(`${tag}{enter}`)
-    );
+    SAMPLE_RULE.tags.forEach((tag, index) => {
+      cy.get(`[data-test-subj="rule_tags_field_${index}"]`).type(`${tag}{enter}`);
+      index < SAMPLE_RULE.tags.length - 1 &&
+        cy.get('.euiButton').contains('Add tag').click({ force: true });
+    });
 
     // Enter the reference
     cy.get('[data-test-subj="rule_references_field_0"]').type(SAMPLE_RULE.references);
