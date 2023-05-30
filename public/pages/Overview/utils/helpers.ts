@@ -464,7 +464,9 @@ export const getDomainRange = (
   if (timeUnit) {
     const timeUnitSize = timeUnit.match(/.*(seconds|minutes|hours|date|month|year)$/);
     if (timeUnitSize && timeUnitSize[1]) {
-      rangeEnd = `now+1${timeUnitSize[1][0]}`;
+      // `||` is the separator which the datemath's parse method will use to split the dates for
+      // the addition.
+      rangeEnd = `${range[1]}||+1${timeUnitSize[1][0]}`;
     }
   }
   const end: number = parseDateString(rangeEnd);
