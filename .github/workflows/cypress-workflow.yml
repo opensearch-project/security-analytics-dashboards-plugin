@@ -45,6 +45,11 @@ jobs:
           repository: opensearch-project/security-analytics
           ref: ${{ env.SECURITY_ANALYTICS_BRANCH }}
 
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: ${{ env.GRADLE_VERSION }}
+
       - name: Run opensearch with plugin
         run: |
           cd security-analytics

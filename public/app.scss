@@ -13,11 +13,12 @@ $euiTextColor: $euiColorDarkestShade !default;
 
 @import "./components/Charts/ChartContainer.scss";
 @import "./pages/Overview/components/Widgets/WidgetContainer.scss";
-@import "./pages/Main/components/Callout.scss";
 @import "./pages/Detectors/components/ReviewFieldMappings/ReviewFieldMappings.scss";
 @import "./pages/Correlations/Correlations.scss";
 @import "./pages/Correlations/components/FindingCard.scss";
 @import "./pages/Findings/components/CorrelationsTable/CorrelationsTable.scss";
+@import "./pages/Rules/components/RuleEditor/DetectionVisualEditor.scss";
+@import "./pages/Main/components/Callout.scss";
 
 .selected-radio-panel {
   background-color: tintOrShade($euiColorPrimary, 90%, 70%);

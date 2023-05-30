@@ -10,11 +10,9 @@ const SAMPLE_RULE = {
   name: `Cypress test rule ${uniqueId}`,
   logType: 'windows',
   description: 'This is a rule used to test the rule creation workflow.',
-  detection:
-    "condition: selection\nselection:\n Provider_Name|contains:\n- Service Control Manager\nEventID|contains:\n- '7045'\nServiceName|contains:\n- ZzNetSvc\n{backspace}{backspace}condition: selection",
   detectionLine: [
-    'condition: selection',
-    'selection:',
+    'condition: Selection_1',
+    'Selection_1:',
     'Provider_Name|contains:',
     '- Service Control Manager',
     'EventID|contains:',
@@ -48,7 +46,7 @@ const YAML_RULE_LINES = [
   `- '${SAMPLE_RULE.references}'`,
   `author: ${SAMPLE_RULE.author}`,
   `detection:`,
-  ...SAMPLE_RULE.detection.replaceAll('  ', '').replaceAll('{backspace}', '').split('\n'),
+  ...SAMPLE_RULE.detectionLine,
 ];
 
 const checkRulesFlyout = () => {
@@ -145,7 +143,7 @@ describe('Rules', () => {
     });
   });
 
-  xit('...can be created', () => {
+  it('...can be created', () => {
     // Click "create new rule" button
     cy.get('[data-test-subj="create_rule_button"]').click({
       force: true,
@@ -184,7 +182,6 @@ describe('Rules', () => {
     cy.get('[data-test-subj="rule_author_field"]').type(`${SAMPLE_RULE.author}{enter}`);
 
     cy.get('[data-test-subj="detection-visual-editor-0"]').within(() => {
-      cy.getFieldByLabel('Name').type('selection');
       cy.getFieldByLabel('Key').type('Provider_Name');
       cy.getInputByPlaceholder('Value').type('Service Control Manager');
 
@@ -200,11 +197,9 @@ describe('Rules', () => {
         cy.getInputByPlaceholder('Value').type('ZzNetSvc');
       });
     });
-    cy.get('[data-test-subj="rule_detection_field"] textarea')
-      .type('selection', {
-        force: true,
-      })
-      .blur();
+    cy.get('[data-test-subj="rule_detection_field"] textarea').type('Selection_1', {
+      force: true,
+    });
 
     // Switch to YAML editor
     cy.get('[data-test-subj="change-editor-type"] label:nth-child(2)').click({
@@ -231,7 +226,7 @@ describe('Rules', () => {
     checkRulesFlyout();
   });
 
-  xit('...can be edited', () => {
+  it('...can be edited', () => {
     cy.waitForPageLoad('rules', {
       contains: 'Rules',
     });
@@ -291,7 +286,7 @@ describe('Rules', () => {
     checkRulesFlyout();
   });
 
-  xit('...can be deleted', () => {
+  it('...can be deleted', () => {
     cy.intercept({
       url: '/rules',
     }).as('deleteRule');
