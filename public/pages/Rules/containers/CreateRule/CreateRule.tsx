@@ -5,7 +5,7 @@
 
 import { BrowserServices } from '../../../../models/interfaces';
 import { RuleEditorContainer } from '../../components/RuleEditor/RuleEditorContainer';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { BREADCRUMBS } from '../../../../utils/constants';
 import { CoreServicesContext } from '../../../../components/core_services';
@@ -21,7 +21,10 @@ export interface CreateRuleProps {
 
 export const CreateRule: React.FC<CreateRuleProps> = ({ history, services, notifications }) => {
   const context = useContext(CoreServicesContext);
-  setBreadCrumb(BREADCRUMBS.RULES_CREATE, context?.chrome.setBreadcrumbs);
+
+  useEffect(() => {
+    setBreadCrumb(BREADCRUMBS.RULES_CREATE, context?.chrome.setBreadcrumbs);
+  });
 
   return (
     <RuleEditorContainer
