@@ -3,17 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiBadge, EuiBasicTableColumn, EuiBreadcrumb, EuiLink } from '@elastic/eui';
+import { EuiBasicTableColumn, EuiBreadcrumb, EuiLink } from '@elastic/eui';
 import React from 'react';
 import { capitalizeFirstLetter, errorNotificationToast } from '../../../utils/helpers';
 import { ruleSeverity, ruleSource, ruleTypes } from './constants';
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
-import { RuleItemInfoBase } from '../models/types';
 import { Rule } from '../../../../models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { AUTHOR_REGEX, validateDescription, validateName } from '../../../utils/validation';
 import { dump, load } from 'js-yaml';
 import { BREADCRUMBS, DEFAULT_EMPTY_DATA } from '../../../utils/constants';
+import { RuleItemInfoBase } from '../../../../types';
 
 export interface RuleTableItem {
   title: string;
@@ -157,8 +157,3 @@ export function setBreadCrumb(
 ) {
   breadCrumbSetter?.([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.RULES, breadCrumb]);
 }
-
-export const getSeverityBadge = (severity) => {
-  const severityLevel = ruleSeverity.find((sev) => sev.value === severity);
-  return <EuiBadge color={severityLevel?.color}>{severity || DEFAULT_EMPTY_DATA}</EuiBadge>;
-};

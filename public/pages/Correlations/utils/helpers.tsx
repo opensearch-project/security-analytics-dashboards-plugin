@@ -78,7 +78,7 @@ export const getCorrelationRulesTableSearchConfig = (
 ): Search => {
   return {
     box: {
-      placeholder: 'Search by rule name, log type?',
+      placeholder: 'Search by rule name, log type',
     },
     onChange: (args: ArgsWithQuery | ArgsWithError) => {
       if (!args.error) {

@@ -25,7 +25,7 @@ export interface CorrelationGraphData {
 
 export type CorrelationFinding = {
   id: string;
-  correlationScore?: number;
+  correlationScore?: string;
   correlationRule?: CorrelationFindingHit;
   logType: string;
   timestamp: string;

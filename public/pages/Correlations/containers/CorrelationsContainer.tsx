@@ -32,6 +32,7 @@ import {
   EuiEmptyPrompt,
   EuiButton,
   EuiBadge,
+  EuiFilterGroup,
 } from '@elastic/eui';
 import { CorrelationsExperimentalBanner } from '../components/ExperimentalBanner';
 import { FilterItem, FilterGroup } from '../components/FilterGroup';
@@ -251,6 +252,8 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
   }
 
   private addNode(nodes: any[], finding: CorrelationFinding) {
+    const borderColor = getSeverityColor(finding.detectionRule.severity).background;
+
     nodes.push({
       id: finding.id,
       label: `<b>${getAbbrFromLogType(
@@ -259,7 +262,15 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       title: this.createNodeTooltip(finding),
       color: {
         background: 'white',
-        border: getSeverityColor(finding.detectionRule.severity),
+        border: borderColor,
+        highlight: {
+          background: '#006bb41a',
+          border: borderColor,
+        },
+        hover: {
+          background: '#006bb41a',
+          border: borderColor,
+        },
       },
       widthConstraint: {
         minimum: 50,
@@ -288,7 +299,10 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       <div style={{ backgroundColor: '#535353', color: '#ffffff', padding: '8px' }}>
         <EuiFlexGroup alignItems="center">
           <EuiFlexItem grow={false}>
-            <EuiBadge color={getSeverityColor(detectionRule.severity)}>
+            <EuiBadge
+              style={{ color: getSeverityColor(detectionRule.severity).text }}
+              color={getSeverityColor(detectionRule.severity).background}
+            >
               {getSeverityLabel(detectionRule.severity)}
             </EuiBadge>
           </EuiFlexItem>
@@ -458,7 +472,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                       timestamp={finding.timestamp}
                       detectionRule={finding.detectionRule}
                       correlationData={{
-                        score: finding.correlationScore || 0,
+                        score: finding.correlationScore || 'N/A',
                         onInspect: this.onFindingInspect,
                       }}
                       finding={finding}
@@ -484,20 +498,20 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
             <EuiPanel>
               <EuiFlexGroup wrap={true} justifyContent="spaceBetween">
                 <EuiFlexItem>
-                  <EuiFlexGroup wrap={true} gutterSize="xs">
+                  <EuiFlexGroup gutterSize="xs" wrap={false}>
                     <EuiFlexItem grow={false}>
-                      <FilterGroup
-                        groupName="Severity"
-                        items={this.state.severityFilterOptions}
-                        setItems={this.onSeverityFilterChange}
-                      />
-                    </EuiFlexItem>
-                    <EuiFlexItem grow={false}>
-                      <FilterGroup
-                        groupName="Log types"
-                        items={this.state.logTypeFilterOptions}
-                        setItems={this.onLogTypeFilterChange}
-                      />
+                      <EuiFilterGroup>
+                        <FilterGroup
+                          groupName="Severity"
+                          items={this.state.severityFilterOptions}
+                          setItems={this.onSeverityFilterChange}
+                        />
+                        <FilterGroup
+                          groupName="Log types"
+                          items={this.state.logTypeFilterOptions}
+                          setItems={this.onLogTypeFilterChange}
+                        />
+                      </EuiFilterGroup>
                     </EuiFlexItem>
                     <EuiFlexItem grow={false}>
                       <EuiButtonEmpty onClick={this.resetFilters}>Reset filters</EuiButtonEmpty>
@@ -530,7 +544,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                 {ruleSeverity.map((sev, idx) => (
                   <EuiFlexItem grow={false} key={idx}>
                     <EuiText>
-                      <EuiIcon type="dot" color={sev.color} /> {sev.value}
+                      <EuiIcon type="dot" color={sev.color.background} /> {sev.value}
                     </EuiText>
                   </EuiFlexItem>
                 ))}

@@ -7,7 +7,6 @@ import React, { useState } from 'react';
 import { CorrelationFinding } from '../../../../../types';
 import { ruleTypes } from '../../../Rules/utils/constants';
 import { DEFAULT_EMPTY_DATA, ROUTES } from '../../../../utils/constants';
-import { getSeverityBadge } from '../../../Rules/utils/helpers';
 import {
   EuiButton,
   EuiButtonIcon,
@@ -19,10 +18,10 @@ import {
   EuiInMemoryTable,
   EuiBasicTableColumn,
 } from '@elastic/eui';
-import { RIGHT_ALIGNMENT } from '@elastic/eui/lib/services';
 import { FindingItemType } from '../../containers/Findings/Findings';
 import { RouteComponentProps } from 'react-router-dom';
 import { DataStore } from '../../../../store/DataStore';
+import { getSeverityBadge } from '../../../../utils/helpers';
 
 export interface CorrelationsTableProps {
   finding: FindingItemType;
@@ -96,7 +95,7 @@ export const CorrelationsTable: React.FC<CorrelationsTableProps> = ({
     {
       name: 'Correlated rule',
       truncateText: true,
-      render: (item: CorrelationFinding) => item?.correlationRule.name || DEFAULT_EMPTY_DATA,
+      render: (item: CorrelationFinding) => item?.correlationRule?.name || DEFAULT_EMPTY_DATA,
     },
     {
       field: 'logType',
@@ -109,7 +108,8 @@ export const CorrelationsTable: React.FC<CorrelationsTableProps> = ({
     {
       name: 'Rule severity',
       truncateText: true,
-      align: 'center',
+      sortable: (item) => item.detectionRule.severity,
+      align: 'left',
       render: (item: CorrelationFinding) => getSeverityBadge(item.detectionRule.severity),
     },
     {
@@ -118,7 +118,7 @@ export const CorrelationsTable: React.FC<CorrelationsTableProps> = ({
       sortable: true,
     },
     {
-      align: RIGHT_ALIGNMENT,
+      align: 'right',
       width: '40px',
       isExpander: true,
       render: (item: any) => (
@@ -170,7 +170,12 @@ export const CorrelationsTable: React.FC<CorrelationsTableProps> = ({
             hasActions={true}
             pagination={true}
             search={true}
-            sorting={true}
+            sorting={{
+              sort: {
+                field: 'timestamp',
+                direction: 'asc',
+              },
+            }}
             loading={isLoading}
           />
         </EuiFlexItem>

@@ -195,7 +195,6 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         render: (name: string) => name || DEFAULT_EMPTY_DATA,
       },
       {
-        // field: 'queries',
         field: 'logType',
         name: 'Log type',
         sortable: true,
@@ -211,7 +210,14 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         render: (ruleSeverity: string) => {
           const severity = capitalizeFirstLetter(ruleSeverity) || DEFAULT_EMPTY_DATA;
 
-          return <EuiBadge color={getSeverityColor(severity)}>{severity}</EuiBadge>;
+          return (
+            <EuiBadge
+              color={getSeverityColor(severity).background}
+              style={{ color: getSeverityColor(severity).text }}
+            >
+              {severity}
+            </EuiBadge>
+          );
         },
       },
       {
