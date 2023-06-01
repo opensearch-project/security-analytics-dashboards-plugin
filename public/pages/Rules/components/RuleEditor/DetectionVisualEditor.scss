@@ -1,0 +1,51 @@
+
+.detection-visual-editor {
+  .euiAccordionForm:nth-of-type(1) {
+    border-top: 1px solid #D3DAE6;
+  }
+
+  .euiAccordionForm {
+    border-top: 0 !important;
+  }
+
+  .detection-visual-editor-accordion-wrapper {
+    width: 100%;
+    .detection-visual-editor-form-row {
+      max-width: 100%;
+      .detection-visual-editor-textarea {
+        max-width: 100%;
+        padding: 0;
+        min-height: 100px;
+      }
+    }
+
+    .detection-visual-editor-textarea-clear-btn {
+      align-items: flex-end;
+    }
+
+    .detection-visual-editor-accordion {
+      .euiAccordion__childWrapper {
+        height: auto !important;
+      }
+    }
+  }
+
+  .detection-visual-editor-name {
+    box-shadow: none;
+    background-color: transparent;
+    padding: 0;
+  }
+
+  .detection-visual-editor-delete-selection {
+    margin-top: 0 !important;
+  }
+
+  .euiButtonIcon--danger {
+    color: $ouiTextSubduedColor !important;
+
+    &:hover {
+      color: $ouiColorDanger !important;
+      background-color: transparent !important;
+    }
+  }
+}

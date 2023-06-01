@@ -139,7 +139,7 @@ describe('Rules', () => {
 
     // Check that correct page is showing
     cy.waitForPageLoad('rules', {
-      contains: 'Rules',
+      contains: 'Detection rules',
     });
   });
 
@@ -178,6 +178,9 @@ describe('Rules', () => {
       `${SAMPLE_RULE.falsePositive}{enter}`
     );
 
+    // Enter the author
+    cy.get('[data-test-subj="rule_author_field"]').type(`${SAMPLE_RULE.author}{enter}`);
+
     cy.get('[data-test-subj="detection-visual-editor-0"]').within(() => {
       cy.getFieldByLabel('Name').type('{selectall}{backspace}').type('Selection_1');
       cy.getFieldByLabel('Key').type('Provider_Name');
@@ -194,6 +197,9 @@ describe('Rules', () => {
         cy.getFieldByLabel('Key').type('ServiceName');
         cy.getInputByPlaceholder('Value').type('ZzNetSvc');
       });
+    });
+    cy.get('[data-test-subj="rule_detection_field"] textarea').type('Selection_1', {
+      force: true,
     });
 
     cy.get('[aria-label="Add one more condition"]').click({ force: true });
@@ -220,7 +226,7 @@ describe('Rules', () => {
     cy.wait('@getRules');
 
     cy.waitForPageLoad('rules', {
-      contains: 'Rules',
+      contains: 'Detection rules',
     });
 
     checkRulesFlyout();
@@ -228,7 +234,7 @@ describe('Rules', () => {
 
   it('...can be edited', () => {
     cy.waitForPageLoad('rules', {
-      contains: 'Rules',
+      contains: 'Detection rules',
     });
 
     cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
@@ -278,7 +284,7 @@ describe('Rules', () => {
     });
 
     cy.waitForPageLoad('rules', {
-      contains: 'Rules',
+      contains: 'Detection rules',
     });
 
     cy.wait('@getRules');

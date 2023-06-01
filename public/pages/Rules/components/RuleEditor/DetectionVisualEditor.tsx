@@ -28,6 +28,8 @@ import {
   EuiModalBody,
   EuiModalFooter,
   EuiFilePicker,
+  EuiCodeEditor,
+  EuiButtonEmpty,
   EuiCallOut,
 } from '@elastic/eui';
 import _ from 'lodash';
@@ -435,7 +437,7 @@ export class DetectionVisualEditor extends React.Component<
     } = this.state;
 
     return (
-      <EuiPanel style={{ maxWidth: 1000 }}>
+      <EuiPanel style={{ maxWidth: 1000 }} className={'detection-visual-editor'}>
         {selections.map((selection, selectionIdx) => {
           return (
             <div
@@ -444,17 +446,29 @@ export class DetectionVisualEditor extends React.Component<
             >
               <EuiFlexGroup alignItems="center">
                 <EuiFlexItem grow={true}>
-                  <EuiTitle size="s">
-                    <p>{selection.name || `Selection_${selectionIdx + 1}`}</p>
-                  </EuiTitle>
+                  <EuiFormRow
+                    isInvalid={errors.touched.name && !!errors.fields.name}
+                    error={errors.fields.name}
+                  >
+                    <EuiFieldText
+                      className={'detection-visual-editor-name euiTitle--small'}
+                      isInvalid={errors.touched.name && !!errors.fields.name}
+                      placeholder="Enter selection name"
+                      data-test-subj={'selection_name'}
+                      onChange={(e) => this.updateSelection(selectionIdx, { name: e.target.value })}
+                      onBlur={(e) => this.updateSelection(selectionIdx, { name: e.target.value })}
+                      value={selection.name || `Selection_${selectionIdx + 1}`}
+                    />
+                  </EuiFormRow>
                   <EuiText size="s">
                     <p>Define the search identifier in your data the rule will be applied to.</p>
                   </EuiText>
                 </EuiFlexItem>
-                <EuiFlexItem grow={false}>
+                <EuiFlexItem grow={false} className={'detection-visual-editor-delete-selection'}>
                   {selections.length > 1 && (
                     <EuiToolTip title={'Delete selection'}>
                       <EuiButtonIcon
+                        aria-label={'Delete selection'}
                         iconType={'trash'}
                         color="danger"
                         onClick={() => {
@@ -478,188 +492,205 @@ export class DetectionVisualEditor extends React.Component<
 
               <EuiSpacer />
 
-              <EuiFormRow
-                isInvalid={errors.touched.name && !!errors.fields.name}
-                error={errors.fields.name}
-                label={<EuiText size={'s'}>Name</EuiText>}
-              >
-                <EuiFieldText
-                  isInvalid={errors.touched.name && !!errors.fields.name}
-                  placeholder="Enter selection name"
-                  data-test-subj={'selection_name'}
-                  onChange={(e) => this.updateSelection(selectionIdx, { name: e.target.value })}
-                  onBlur={(e) => this.updateSelection(selectionIdx, { name: e.target.value })}
-                  value={selection.name}
-                />
-              </EuiFormRow>
-
-              <EuiSpacer />
-
               {selection.data.map((datum, idx) => {
                 const radioGroupOptions = this.createRadioGroupOptions(selectionIdx, idx);
                 const fieldName = `field_${selectionIdx}_${idx}`;
                 const valueId = `value_${selectionIdx}_${idx}`;
                 return (
-                  <EuiAccordion
-                    id={`Map-${idx}`}
-                    key={`Map-${idx}`}
-                    data-test-subj={`Map-${idx}`}
-                    initialIsOpen={true}
-                    buttonContent={`Map ${idx + 1}`}
-                    extraAction={
-                      selection.data.length > 1 ? (
-                        <EuiToolTip title={'Delete map'}>
-                          <EuiButtonIcon
-                            iconType={'trash'}
-                            color="danger"
-                            onClick={() => {
-                              const newData = [...selection.data];
-                              newData.splice(idx, 1);
-                              this.updateSelection(selectionIdx, { data: newData });
-                            }}
-                          />
-                        </EuiToolTip>
-                      ) : null
-                    }
-                    style={{ maxWidth: '500px' }}
-                  >
-                    <EuiSpacer size="m" />
+                  <div key={`Map-${idx}`} className={'detection-visual-editor-accordion-wrapper'}>
+                    <EuiAccordion
+                      className="euiAccordionForm detection-visual-editor-accordion"
+                      buttonClassName="euiAccordionForm__button"
+                      id={`Map-${idx}`}
+                      key={`Map-${idx}`}
+                      data-test-subj={`Map-${idx}`}
+                      initialIsOpen={true}
+                      buttonContent={<EuiText size="m">Map {idx + 1}</EuiText>}
+                      extraAction={
+                        selection.data.length > 1 ? (
+                          <EuiToolTip title={'Delete map'}>
+                            <EuiButtonIcon
+                              aria-label={'Delete map'}
+                              iconType={'trash'}
+                              color="danger"
+                              onClick={() => {
+                                const newData = [...selection.data];
+                                newData.splice(idx, 1);
+                                this.updateSelection(selectionIdx, { data: newData });
+                              }}
+                            />
+                          </EuiToolTip>
+                        ) : null
+                      }
+                      style={{ maxWidth: '500px' }}
+                    >
+                      <EuiSpacer size="m" />
 
-                    <EuiFlexGroup>
-                      <EuiFlexItem grow={false} style={{ minWidth: 200 }}>
-                        <EuiFormRow
-                          isInvalid={errors.touched[fieldName] && !!errors.fields[fieldName]}
-                          error={errors.fields[fieldName]}
-                          label={<EuiText size={'s'}>Key</EuiText>}
-                        >
-                          <EuiFieldText
+                      <EuiFlexGroup>
+                        <EuiFlexItem grow={false} style={{ minWidth: 200 }}>
+                          <EuiFormRow
                             isInvalid={errors.touched[fieldName] && !!errors.fields[fieldName]}
-                            placeholder="Enter key name"
-                            data-test-subj={'selection_field_key_name'}
-                            onChange={(e) =>
-                              this.updateDatumInState(selectionIdx, idx, {
-                                field: e.target.value,
-                              })
-                            }
-                            onBlur={(e) =>
-                              this.updateDatumInState(selectionIdx, idx, {
-                                field: e.target.value,
-                              })
-                            }
-                            value={datum.field}
-                          />
-                        </EuiFormRow>
-                      </EuiFlexItem>
-                      <EuiFlexItem grow={false} style={{ minWidth: 200 }}>
-                        <EuiFormRow label={<EuiText size={'s'}>Modifier</EuiText>}>
-                          <EuiComboBox
-                            data-test-subj={'modifier_dropdown'}
-                            options={detectionModifierOptions}
-                            singleSelection={{ asPlainText: true }}
-                            onChange={(e) => {
-                              this.updateDatumInState(selectionIdx, idx, {
-                                modifier: e[0].value,
-                              });
-                            }}
-                            onBlur={() => {}}
-                            selectedOptions={
-                              datum.modifier
-                                ? [{ value: datum.modifier, label: datum.modifier }]
-                                : [detectionModifierOptions[0]]
-                            }
-                          />
-                        </EuiFormRow>
-                      </EuiFlexItem>
-                    </EuiFlexGroup>
-                    <EuiSpacer size="m" />
+                            error={errors.fields[fieldName]}
+                            label={<EuiText size={'s'}>Key</EuiText>}
+                          >
+                            <EuiFieldText
+                              isInvalid={errors.touched[fieldName] && !!errors.fields[fieldName]}
+                              placeholder="Enter key name"
+                              data-test-subj={'selection_field_key_name'}
+                              onChange={(e) =>
+                                this.updateDatumInState(selectionIdx, idx, {
+                                  field: e.target.value,
+                                })
+                              }
+                              onBlur={(e) =>
+                                this.updateDatumInState(selectionIdx, idx, {
+                                  field: e.target.value,
+                                })
+                              }
+                              value={datum.field}
+                            />
+                          </EuiFormRow>
+                        </EuiFlexItem>
+                        <EuiFlexItem grow={false} style={{ minWidth: 200 }}>
+                          <EuiFormRow label={<EuiText size={'s'}>Modifier</EuiText>}>
+                            <EuiComboBox
+                              data-test-subj={'modifier_dropdown'}
+                              options={detectionModifierOptions}
+                              singleSelection={{ asPlainText: true }}
+                              onChange={(e) => {
+                                this.updateDatumInState(selectionIdx, idx, {
+                                  modifier: e[0].value,
+                                });
+                              }}
+                              onBlur={(e) => {}}
+                              selectedOptions={
+                                datum.modifier
+                                  ? [{ value: datum.modifier, label: datum.modifier }]
+                                  : [detectionModifierOptions[0]]
+                              }
+                            />
+                          </EuiFormRow>
+                        </EuiFlexItem>
+                      </EuiFlexGroup>
 
-                    <EuiRadioGroup
-                      options={radioGroupOptions}
-                      idSelected={datum.selectedRadioId || radioGroupOptions[0].id}
-                      onChange={(id) => {
-                        this.updateDatumInState(selectionIdx, idx, {
-                          selectedRadioId: id as SelectionMapValueRadioId,
-                        });
-                      }}
-                    />
-                    <EuiSpacer size="m" />
+                      <EuiSpacer size="m" />
 
-                    {datum.selectedRadioId?.includes('list') ? (
-                      <>
-                        <EuiButton
-                          iconType="download"
-                          onClick={() => {
-                            this.setState({
-                              fileUploadModalState: {
-                                selectionIdx,
-                                dataIdx: idx,
-                              },
-                            });
-                          }}
-                        >
-                          Upload file
-                        </EuiButton>
-                        <EuiSpacer />
+                      <EuiRadioGroup
+                        options={radioGroupOptions}
+                        idSelected={datum.selectedRadioId || radioGroupOptions[0].id}
+                        onChange={(id) => {
+                          this.updateDatumInState(selectionIdx, idx, {
+                            selectedRadioId: id as SelectionMapValueRadioId,
+                          });
+                        }}
+                      />
+
+                      <EuiSpacer size="m" />
+
+                      {datum.selectedRadioId?.includes('list') ? (
+                        <>
+                          <EuiFlexGroup>
+                            <EuiFlexItem grow={false}>
+                              <EuiButton
+                                iconType="download"
+                                onClick={() => {
+                                  this.setState({
+                                    fileUploadModalState: {
+                                      selectionIdx,
+                                      dataIdx: idx,
+                                    },
+                                  });
+                                }}
+                              >
+                                Upload file
+                              </EuiButton>
+                              <EuiSpacer />
+                            </EuiFlexItem>
+
+                            <EuiFlexItem
+                              grow={true}
+                              className={'detection-visual-editor-textarea-clear-btn'}
+                            >
+                              <EuiButtonEmpty
+                                isDisabled={!datum.values[0]}
+                                color={datum.values[0] ? 'primary' : 'ghost'}
+                                iconType={'cross'}
+                                onClick={() => {
+                                  this.updateDatumInState(selectionIdx, idx, {
+                                    values: [],
+                                  });
+                                }}
+                              >
+                                Clear list
+                              </EuiButtonEmpty>
+                            </EuiFlexItem>
+                          </EuiFlexGroup>
+                          <EuiSpacer />
+                          <EuiFormRow
+                            isInvalid={errors.touched[valueId] && !!errors.fields[valueId]}
+                            error={errors.fields[valueId]}
+                            className={'detection-visual-editor-form-row'}
+                          >
+                            <EuiTextArea
+                              style={{
+                                maxWidth: '100%',
+                                minHeight: '80px',
+                                maxHeight: '200px',
+                                height: this.getTextareaHeight(datum.values.length),
+                              }}
+                              className={'detection-visual-editor-textarea'}
+                              onChange={(e) => {
+                                const values = e.target.value.split('\n');
+                                this.updateDatumInState(selectionIdx, idx, {
+                                  values,
+                                });
+                              }}
+                              onBlur={(e) => {
+                                const values = e.target.value.split('\n');
+                                this.updateDatumInState(selectionIdx, idx, {
+                                  values,
+                                });
+                              }}
+                              value={datum.values.join('\n')}
+                              compressed={true}
+                              isInvalid={errors.touched[valueId] && !!errors.fields[valueId]}
+                            />
+                          </EuiFormRow>
+                        </>
+                      ) : (
                         <EuiFormRow
                           isInvalid={errors.touched[valueId] && !!errors.fields[valueId]}
                           error={errors.fields[valueId]}
                         >
-                          <EuiTextArea
-                            style={{
-                              maxWidth: '100%',
-                              minHeight: '80px',
-                              maxHeight: '200px',
-                              height: this.getTextareaHeight(datum.values.length),
-                            }}
+                          <EuiFieldText
+                            isInvalid={errors.touched[valueId] && !!errors.fields[valueId]}
+                            placeholder="Value"
+                            data-test-subj={'selection_field_value'}
                             onChange={(e) => {
-                              const values = e.target.value.split('\n');
                               this.updateDatumInState(selectionIdx, idx, {
-                                values,
+                                values: [e.target.value, ...datum.values.slice(1)],
                               });
                             }}
                             onBlur={(e) => {
-                              const values = e.target.value.split('\n');
                               this.updateDatumInState(selectionIdx, idx, {
-                                values,
+                                values: [e.target.value, ...datum.values.slice(1)],
                               });
                             }}
-                            value={datum.values.join('\n')}
-                            compressed={true}
-                            isInvalid={errors.touched[valueId] && !!errors.fields[valueId]}
+                            value={datum.values[0]}
                           />
                         </EuiFormRow>
-                      </>
-                    ) : (
-                      <EuiFormRow
-                        isInvalid={errors.touched[valueId] && !!errors.fields[valueId]}
-                        error={errors.fields[valueId]}
-                      >
-                        <EuiFieldText
-                          isInvalid={errors.touched[valueId] && !!errors.fields[valueId]}
-                          placeholder="Value"
-                          data-test-subj={'selection_field_value'}
-                          onChange={(e) => {
-                            this.updateDatumInState(selectionIdx, idx, {
-                              values: [e.target.value, ...datum.values.slice(1)],
-                            });
-                          }}
-                          onBlur={(e) => {
-                            this.updateDatumInState(selectionIdx, idx, {
-                              values: [e.target.value, ...datum.values.slice(1)],
-                            });
-                          }}
-                          value={datum.values[0]}
-                        />
-                      </EuiFormRow>
-                    )}
+                      )}
 
-                    <EuiHorizontalRule margin="s" />
-                    <EuiSpacer size="m" />
-                  </EuiAccordion>
+                      <EuiSpacer size={'m'} />
+                    </EuiAccordion>
+                  </div>
                 );
               })}
 
+              <EuiSpacer size={'m'} />
+
               <EuiButton
+                style={{ width: '70%' }}
                 iconType="plusInCircle"
                 onClick={() => {
                   const newData = [
