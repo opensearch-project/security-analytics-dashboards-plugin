@@ -296,7 +296,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
     const sorting: any = {
       sort: {
         field: 'timestamp',
-        direction: 'asc',
+        direction: 'desc',
       },
     };
 

@@ -264,11 +264,11 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         background: 'white',
         border: borderColor,
         highlight: {
-          background: '#006bb41a',
+          background: '#e7f5ff',
           border: borderColor,
         },
         hover: {
-          background: '#006bb41a',
+          background: '#e7f5ff',
           border: borderColor,
         },
       },
@@ -290,7 +290,8 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       to: f2.id,
       id: `${f1.id}:${f2.id}`,
       chosen: false,
-      color: '#98A2B3', //ouiColorMediumShade
+      color: '#98A2B3', //ouiColorMediumShade,
+      label: f1.correlationScore || f2.correlationScore || '',
     });
   }
 

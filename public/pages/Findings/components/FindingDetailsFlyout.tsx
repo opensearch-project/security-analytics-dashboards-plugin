@@ -30,8 +30,6 @@ import {
   EuiIcon,
   EuiTabs,
   EuiTab,
-  EuiInMemoryTable,
-  EuiBasicTableColumn,
   EuiLoadingContent,
 } from '@elastic/eui';
 import { capitalizeFirstLetter, renderTime } from '../../../utils/helpers';
@@ -46,7 +44,6 @@ import { FindingItemType } from '../containers/Findings/Findings';
 import { CorrelationFinding, RuleItemInfoBase } from '../../../../types';
 import { FindingFlyoutTabId, FindingFlyoutTabs } from '../utils/constants';
 import { DataStore } from '../../../store/DataStore';
-import { ruleTypes } from '../../Rules/utils/constants';
 import { CorrelationsTable } from './CorrelationsTable/CorrelationsTable';
 
 export interface FindingDetailsFlyoutBaseProps {
@@ -417,12 +414,23 @@ export default class FindingDetailsFlyout extends Component<
   private getTabContent(tabId: FindingFlyoutTabId, isDocumentLoading = false) {
     switch (tabId) {
       case FindingFlyoutTabId.CORRELATIONS:
+        const logTypes = new Set<string>();
+        const ruleSeverity = new Set<string>();
+        Object.values(this.state.allRules).forEach((rule) => {
+          logTypes.add(rule.category);
+          ruleSeverity.add(rule.level);
+        });
+
         return (
           <CorrelationsTable
             finding={this.props.finding}
             correlatedFindings={this.state.correlatedFindings}
             history={this.props.history}
             isLoading={this.state.areCorrelationsLoading}
+            filterOptions={{
+              logTypes,
+              ruleSeverity,
+            }}
           />
         );
       case FindingFlyoutTabId.DETAILS:

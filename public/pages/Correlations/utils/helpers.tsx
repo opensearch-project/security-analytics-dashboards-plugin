@@ -14,6 +14,7 @@ import {
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
 import { ruleTypes } from '../../Rules/utils/constants';
 import { FieldClause } from '@opensearch-project/oui/src/eui_components/search_bar/query/ast';
+import { formatRuleType } from '../../../utils/helpers';
 
 export const getCorrelationRulesTableColumns = (
   onRuleNameClick: (rule: CorrelationRule) => void,
@@ -32,7 +33,9 @@ export const getCorrelationRulesTableColumns = (
     {
       name: 'Log types',
       render: (ruleItem: CorrelationRule) => {
-        const badges = [...new Set(ruleItem.queries?.map((query) => query.logType))];
+        const badges = [
+          ...new Set(ruleItem.queries?.map((query) => formatRuleType(query.logType))),
+        ];
         return (
           <>
             {badges.map((badge) => (
