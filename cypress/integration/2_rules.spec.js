@@ -196,6 +196,8 @@ describe('Rules', () => {
       });
     });
 
+    cy.get('[aria-label="Add one more condition"]').click({ force: true });
+
     // Enter the author
     cy.get('[data-test-subj="rule_author_field"]').type(`${SAMPLE_RULE.author}`);
 
