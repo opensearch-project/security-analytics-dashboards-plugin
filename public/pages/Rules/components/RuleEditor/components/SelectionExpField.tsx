@@ -30,7 +30,7 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
   onChange,
   value,
 }) => {
-  const DEFAULT_DESCRIPTION = 'CONDITION: ';
+  const DEFAULT_DESCRIPTION = 'Select';
   const OPERATORS = ['and', 'or', 'not'];
   const [usedExpressions, setUsedExpressions] = useState<UsedSelection[]>([]);
 
@@ -55,13 +55,7 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
         }
       });
     } else {
-      expressions = [
-        {
-          description: '',
-          isOpen: false,
-          name: selections[0]?.name || 'Selection_1',
-        },
-      ];
+      expressions = [];
     }
 
     setUsedExpressions(expressions);
@@ -157,15 +151,24 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
 
   return (
     <EuiFlexGroup gutterSize="s" data-test-subj={dataTestSubj}>
-      <EuiFlexItem grow={false} key={`selections_default`}>
-        <EuiPopover
-          id={`selections_default`}
-          button={<EuiExpression description={DEFAULT_DESCRIPTION} value={''} isActive={false} />}
-          isOpen={false}
-          panelPaddingSize="s"
-          anchorPosition="rightDown"
-        />
-      </EuiFlexItem>
+      {!usedExpressions.length && (
+        <EuiFlexItem grow={false} key={`selections_default`}>
+          <EuiPopover
+            id={`selections_default`}
+            button={
+              <EuiExpression
+                description={DEFAULT_DESCRIPTION}
+                value={''}
+                isActive={false}
+                uppercase={false}
+              />
+            }
+            isOpen={false}
+            panelPaddingSize="s"
+            anchorPosition="rightDown"
+          />
+        </EuiFlexItem>
+      )}
       {usedExpressions.map((exp, idx) => (
         <EuiFlexItem
           grow={false}
@@ -203,6 +206,7 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
               onClick={() => {
                 const usedExp = _.cloneDeep(usedExpressions);
                 usedExp.splice(idx, 1);
+                usedExp[0].description = '';
                 setUsedExpressions([...usedExp]);
                 onChange(getValue(usedExp));
               }}
@@ -222,7 +226,7 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
               const exp = [
                 ...usedExp,
                 {
-                  description: 'AND',
+                  description: usedExpressions.length ? 'AND' : '',
                   isOpen: false,
                   name: differences[0]?.name,
                 },
@@ -230,7 +234,8 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
               setUsedExpressions(exp);
               onChange(getValue(exp));
             }}
-            iconType="plusInCircle"
+            color={'primary'}
+            iconType="plusInCircleFilled"
             aria-label={'Add one more condition'}
           />
         </EuiFlexItem>
