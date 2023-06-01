@@ -183,7 +183,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                   }
                   isInvalid={props.touched.name && !!props.errors?.name}
                   error={props.errors.name}
-                  helpText="Rule name must contain 5-50 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, and underscores."
+                  helpText="Rule name must contain 5-50 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, and underscores"
                 >
                   <EuiFieldText
                     isInvalid={props.touched.name && !!props.errors.name}
