@@ -38,6 +38,7 @@ export interface DetectionVisualEditorProps {
   detectionYml: string;
   onChange: (value: string) => void;
   setIsDetectionInvalid: (isInvalid: boolean) => void;
+  isInvalid?: boolean;
 }
 
 interface Errors {
@@ -128,10 +129,12 @@ export class DetectionVisualEditor extends React.Component<
       this.props.onChange(this.createDetectionYml());
     }
 
-    if (Object.keys(this.state.errors.fields).length || !this.validateValuesExist()) {
-      this.props.setIsDetectionInvalid(true);
-    } else {
-      this.props.setIsDetectionInvalid(false);
+    const isValid = !!Object.keys(this.state.errors.fields).length || !this.validateValuesExist();
+    this.props.setIsDetectionInvalid(isValid);
+
+    if (this.props.isInvalid != prevProps.isInvalid) {
+      this.validateCondition(this.state.detectionObj.condition);
+      this.validateDatum(this.state.detectionObj.selections);
     }
   }
 
@@ -189,7 +192,7 @@ export class DetectionVisualEditor extends React.Component<
       condition,
     };
 
-    selections.forEach((selection, idx) => {
+    selections.forEach((selection) => {
       const selectionMaps: any = {};
 
       selection.data.forEach((datum) => {
@@ -203,12 +206,53 @@ export class DetectionVisualEditor extends React.Component<
     return dump(compiledDetection);
   };
 
+  private validateDatum = (selections: Selection[]) => {
+    const { errors } = this.state;
+
+    selections.map((selection, selIdx) => {
+      const fieldNames = new Set<string>();
+
+      selection.data.map((data, idx) => {
+        if ('field' in data) {
+          const fieldName = `field_${selIdx}_${idx}`;
+          delete errors.fields[fieldName];
+
+          if (!data.field) {
+            errors.fields[fieldName] = 'Key name is required';
+          } else if (fieldNames.has(data.field)) {
+            errors.fields[fieldName] = 'Key name already used';
+          } else {
+            fieldNames.add(data.field);
+
+            if (!validateDetectionFieldName(data.field)) {
+              errors.fields[fieldName] = 'Invalid key name.';
+            }
+          }
+          errors.touched[fieldName] = true;
+        }
+
+        if ('values' in data) {
+          const valueId = `value_${selIdx}_${idx}`;
+          delete errors.fields[valueId];
+          if (data.values.length === 1 && !data.values[0]) {
+            errors.fields[valueId] = 'Value is required';
+          }
+
+          errors.touched[valueId] = true;
+        }
+      });
+    });
+
+    this.setState({
+      errors,
+    });
+  };
+
   private updateDatumInState = (
     selectionIdx: number,
     dataIdx: number,
     newDatum: Partial<SelectionData>
   ) => {
-    const { errors } = this.state;
     const { condition, selections } = this.state.detectionObj;
     const selection = selections[selectionIdx];
     const datum = selection.data[dataIdx];
@@ -228,57 +272,23 @@ export class DetectionVisualEditor extends React.Component<
       ...selections.slice(selectionIdx + 1),
     ];
 
-    newSelections.map((selection, selIdx) => {
-      const fieldNames = new Set<string>();
-
-      selection.data.map((data, idx) => {
-        if ('field' in newDatum) {
-          const fieldName = `field_${selIdx}_${idx}`;
-          delete errors.fields[fieldName];
-
-          if (!data.field) {
-            errors.fields[fieldName] = 'Key name is required';
-          } else if (fieldNames.has(data.field)) {
-            errors.fields[fieldName] = 'Key name already used';
-          } else {
-            fieldNames.add(data.field);
-
-            if (!validateDetectionFieldName(data.field)) {
-              errors.fields[fieldName] = 'Invalid key name.';
-            }
-          }
-          errors.touched[fieldName] = true;
-        }
-
-        if ('values' in newDatum) {
-          const valueId = `value_${selIdx}_${idx}`;
-          delete errors.fields[valueId];
-          if (data.values.length === 1 && !data.values[0]) {
-            errors.fields[valueId] = 'Value is required';
-          }
-
-          errors.touched[valueId] = true;
-        }
-      });
-    });
-
-    this.setState({
-      detectionObj: {
-        condition,
-        selections: newSelections,
+    this.setState(
+      {
+        detectionObj: {
+          condition,
+          selections: newSelections,
+        },
       },
-      errors,
-    });
+      () => {
+        this.validateDatum(newSelections);
+      }
+    );
   };
 
   private updateSelection = (selectionIdx: number, newSelection: Partial<Selection>) => {
     const { condition, selections } = this.state.detectionObj;
     const { errors } = this.state;
     const selection = selections[selectionIdx];
-
-    if (!selection.name) {
-      selection.name = `Selection_${selectionIdx + 1}`;
-    }
 
     delete errors.fields['name'];
     if (!selection.name) {
@@ -319,7 +329,7 @@ export class DetectionVisualEditor extends React.Component<
     );
   };
 
-  private updateCondition = (value: string) => {
+  private validateCondition = (value: string) => {
     const {
       errors,
       detectionObj: { selections },
@@ -348,11 +358,23 @@ export class DetectionVisualEditor extends React.Component<
     }
     errors.touched['condition'] = true;
 
-    const detectionObj = { ...this.state.detectionObj, condition: value } as DetectionObject;
     this.setState({
-      detectionObj,
       errors,
     });
+  };
+
+  private updateCondition = (value: string) => {
+    value = value.trim();
+
+    const detectionObj = { ...this.state.detectionObj, condition: value } as DetectionObject;
+    this.setState(
+      {
+        detectionObj,
+      },
+      () => {
+        this.validateCondition(value);
+      }
+    );
   };
 
   private csvStringToArray = (
@@ -451,7 +473,7 @@ export class DetectionVisualEditor extends React.Component<
                       data-test-subj={'selection_name'}
                       onChange={(e) => this.updateSelection(selectionIdx, { name: e.target.value })}
                       onBlur={(e) => this.updateSelection(selectionIdx, { name: e.target.value })}
-                      value={selection.name || `Selection_${selectionIdx + 1}`}
+                      value={selection.name}
                     />
                   </EuiFormRow>
                   <EuiText size="s">
@@ -553,7 +575,7 @@ export class DetectionVisualEditor extends React.Component<
                                   modifier: e[0].value,
                                 });
                               }}
-                              onBlur={(e) => {}}
+                              onBlur={() => {}}
                               selectedOptions={
                                 datum.modifier
                                   ? [{ value: datum.modifier, label: datum.modifier }]
@@ -739,7 +761,7 @@ export class DetectionVisualEditor extends React.Component<
             height="50px"
             value={this.state.detectionObj.condition}
             onChange={(value) => this.updateCondition(value)}
-            onBlur={(e) => {
+            onBlur={() => {
               this.updateCondition(this.state.detectionObj.condition);
             }}
             data-test-subj={'rule_detection_field'}

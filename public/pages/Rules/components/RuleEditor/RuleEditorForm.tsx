@@ -50,6 +50,8 @@ const editorTypes = [
   },
 ];
 
+export const TAGS_PREFIX = 'attack.';
+
 export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
   initialValue,
   notifications,
@@ -63,6 +65,20 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
   const onEditorTypeChange = (optionId: string) => {
     setSelectedEditorType(optionId);
+  };
+
+  const validateTags = (fields: string[]) => {
+    let isValid = true;
+    let tag;
+    for (let i = 0; i < fields.length; i++) {
+      tag = fields[i];
+      if (tag.length && !(tag.startsWith(TAGS_PREFIX) && tag.length > TAGS_PREFIX.length)) {
+        isValid = false;
+        break;
+      }
+    }
+
+    return isValid;
   };
 
   return (
@@ -105,6 +121,10 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
         if (!values.status) {
           errors.status = 'Rule status is required';
+        }
+
+        if (!validateTags(values.tags)) {
+          errors.tags = `Tags must start with '${TAGS_PREFIX}'`;
         }
 
         return errors;
@@ -340,6 +360,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                 <EuiSpacer />
 
                 <DetectionVisualEditor
+                  isInvalid={props.touched.detection && isDetectionInvalid}
                   detectionYml={props.values.detection}
                   setIsDetectionInvalid={(isInvalid: boolean) => {
                     if (isInvalid) {
@@ -389,36 +410,11 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                         }
                         addButtonName="Add tag"
                         fields={props.values.tags}
-                        errorMessage={'Invalid tag'}
-                        onValidate={(fields) => {
-                          const STARTS_WITH = 'attack.';
-                          let isValid = true;
-                          let tag;
-                          for (let i = 0; i < fields.length; i++) {
-                            tag = fields[i];
-                            if (!(tag.startsWith(STARTS_WITH) && tag.length > STARTS_WITH.length)) {
-                              isValid = false;
-                              break;
-                            }
-                          }
-
-                          return isValid;
-                        }}
-                        onFieldAdd={() => {
-                          props.setFieldValue('tags', [...props.values.tags, '']);
-                        }}
-                        onFieldEdit={(value: string, index: number) => {
-                          props.setFieldValue('tags', [
-                            ...props.values.tags.slice(0, index),
-                            value,
-                            ...props.values.tags.slice(index + 1),
-                          ]);
-                        }}
-                        onFieldRemove={(index: number) => {
-                          const newRefs = [...props.values.tags];
-                          newRefs.splice(index, 1);
-
-                          props.setFieldValue('tags', newRefs);
+                        error={props.errors.tags}
+                        isInvalid={props.touched.tags && !!props.errors.tags}
+                        onChange={(tags) => {
+                          props.touched.tags = true;
+                          props.setFieldValue('tags', tags);
                         }}
                         data-test-subj={'rule_tags_field'}
                       />
@@ -442,21 +438,11 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                         }
                         addButtonName="Add URL"
                         fields={props.values.references}
-                        onFieldAdd={() => {
-                          props.setFieldValue('references', [...props.values.references, '']);
-                        }}
-                        onFieldEdit={(value: string, index: number) => {
-                          props.setFieldValue('references', [
-                            ...props.values.references.slice(0, index),
-                            value,
-                            ...props.values.references.slice(index + 1),
-                          ]);
-                        }}
-                        onFieldRemove={(index: number) => {
-                          const newRefs = [...props.values.references];
-                          newRefs.splice(index, 1);
-
-                          props.setFieldValue('references', newRefs);
+                        error={props.errors.references}
+                        isInvalid={props.touched.references && !!props.errors.references}
+                        onChange={(references) => {
+                          props.touched.references = true;
+                          props.setFieldValue('references', references);
                         }}
                         data-test-subj={'rule_references_field'}
                       />
@@ -480,24 +466,11 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                         }
                         addButtonName="Add false positive"
                         fields={props.values.falsePositives}
-                        onFieldAdd={() => {
-                          props.setFieldValue('falsePositives', [
-                            ...props.values.falsePositives,
-                            '',
-                          ]);
-                        }}
-                        onFieldEdit={(value: string, index: number) => {
-                          props.setFieldValue('falsePositives', [
-                            ...props.values.falsePositives.slice(0, index),
-                            value,
-                            ...props.values.falsePositives.slice(index + 1),
-                          ]);
-                        }}
-                        onFieldRemove={(index: number) => {
-                          const newCases = [...props.values.falsePositives];
-                          newCases.splice(index, 1);
-
-                          props.setFieldValue('falsePositives', newCases);
+                        error={props.errors.falsePositives}
+                        isInvalid={props.touched.falsePositives && !!props.errors.falsePositives}
+                        onChange={(falsePositives) => {
+                          props.touched.falsePositives = true;
+                          props.setFieldValue('falsePositives', falsePositives);
                         }}
                         data-test-subj={'rule_falsePositives_field'}
                       />

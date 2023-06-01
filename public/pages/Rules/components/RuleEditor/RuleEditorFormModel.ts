@@ -28,9 +28,9 @@ export const ruleEditorStateDefaultValue: RuleEditorFormModel = {
   description: '',
   status: ruleStatus[0],
   author: '',
-  references: [''],
-  tags: [''],
+  references: [],
+  tags: [],
   detection: '',
   level: '',
-  falsePositives: [''],
+  falsePositives: [],
 };

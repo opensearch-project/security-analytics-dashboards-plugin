@@ -13,20 +13,17 @@ import {
   EuiSpacer,
   EuiToolTip,
 } from '@elastic/eui';
-import React, { ChangeEvent, useState } from 'react';
-import * as _ from 'lodash';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 
 export interface FieldTextArrayProps {
   label: string | React.ReactNode;
   name: string;
   fields: string[];
   addButtonName: string;
-  onFieldEdit: (value: string, fieldIndex: number) => void;
-  onFieldRemove: (fieldIndex: number) => void;
-  onFieldAdd: () => void;
-  onValidate?: (value: string) => boolean;
+  onChange: (values: string[]) => void;
+  isInvalid?: boolean;
   placeholder?: string;
-  errorMessage?: string;
+  error?: string | string[];
 }
 
 export const FieldTextArray: React.FC<FieldTextArrayProps> = ({
@@ -34,46 +31,60 @@ export const FieldTextArray: React.FC<FieldTextArrayProps> = ({
   label,
   name,
   fields,
-  onFieldEdit,
-  onFieldRemove,
-  onFieldAdd,
+  onChange,
   placeholder = '',
-  errorMessage = '',
-  onValidate = () => true,
+  error = '',
+  isInvalid,
 }) => {
-  const [isValid, setIsValid] = useState(true);
+  const [values, setValues] = useState<string[]>([]);
+
+  useEffect(() => {
+    let newValues = fields.length ? [...fields] : [''];
+    setValues(newValues);
+  }, []);
+
+  const updateValues = (values: string[]) => {
+    setValues(values);
+
+    let eventValue = values.filter((val: string) => val);
+    onChange(eventValue);
+  };
 
   return (
     <>
-      <EuiFormRow label={label} isInvalid={!isValid} error={!isValid ? errorMessage : ''}>
+      <EuiFormRow label={label} isInvalid={isInvalid} error={error}>
         <>
-          {fields.map((ref: string, index: number) => {
+          {values.map((ref: string, index: number) => {
             return (
               <EuiFlexGroup key={index}>
                 <EuiFlexItem style={{ minWidth: '100%' }}>
                   <EuiFieldText
+                    name={name}
                     value={ref}
                     placeholder={placeholder}
-                    isInvalid={!isValid}
+                    isInvalid={isInvalid}
                     onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                      onFieldEdit(e.target.value, index);
-                      let fieldsToValidate = _.cloneDeep(fields);
-                      fieldsToValidate[index] = e.target.value;
-                      setIsValid(onValidate(fieldsToValidate));
+                      let newValues = [...values];
+                      newValues[index] = e.target.value;
+                      updateValues(newValues);
                     }}
                     data-test-subj={`rule_${name
                       .toLowerCase()
                       .replaceAll(' ', '_')}_field_${index}`}
                   />
                 </EuiFlexItem>
-                {index > 0 ? (
+                {values.length > 1 ? (
                   <EuiFlexItem grow={false} className={'field-text-array-remove'}>
                     <EuiToolTip title={'Remove'}>
                       <EuiButtonIcon
                         aria-label={'Remove'}
                         iconType={'trash'}
                         color="danger"
-                        onClick={() => onFieldRemove(index)}
+                        onClick={() => {
+                          let newValues = [...values];
+                          newValues.splice(index, 1);
+                          updateValues(newValues);
+                        }}
                       />
                     </EuiToolTip>
                   </EuiFlexItem>
@@ -86,7 +97,7 @@ export const FieldTextArray: React.FC<FieldTextArrayProps> = ({
             type="button"
             className="secondary"
             onClick={() => {
-              onFieldAdd();
+              setValues([...values, '']);
             }}
           >
             {addButtonName}
