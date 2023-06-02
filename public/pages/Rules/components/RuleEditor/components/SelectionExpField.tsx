@@ -59,7 +59,7 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
     }
 
     setUsedExpressions(expressions);
-    onChange(getValue(expressions));
+    expressions.length && onChange(getValue(expressions));
   }, [value]);
 
   const getValue = (usedExp: UsedSelection[]) => {
@@ -166,6 +166,7 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
             isOpen={false}
             panelPaddingSize="s"
             anchorPosition="rightDown"
+            closePopover={() => {}}
           />
         </EuiFlexItem>
       )}
