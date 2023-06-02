@@ -3034,31 +3034,46 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                           "name": "Rule Severity",
                           "options": Array [
                             Object {
-                              "color": "#cc5642",
+                              "color": Object {
+                                "background": "#cc5642",
+                                "text": "white",
+                              },
                               "name": "Critical",
                               "priority": "1",
                               "value": "critical",
                             },
                             Object {
-                              "color": "#e7664c",
+                              "color": Object {
+                                "background": "#e7664c",
+                                "text": "black",
+                              },
                               "name": "High",
                               "priority": "2",
                               "value": "high",
                             },
                             Object {
-                              "color": "#d6bf57",
+                              "color": Object {
+                                "background": "#d6bf57",
+                                "text": "black",
+                              },
                               "name": "Medium",
                               "priority": "3",
                               "value": "medium",
                             },
                             Object {
-                              "color": "#54b399",
+                              "color": Object {
+                                "background": "#54b399",
+                                "text": "black",
+                              },
                               "name": "Low",
                               "priority": "4",
                               "value": "low",
                             },
                             Object {
-                              "color": "#209280",
+                              "color": Object {
+                                "background": "#209280",
+                                "text": "white",
+                              },
                               "name": "Informational",
                               "priority": "5",
                               "value": "informational",
@@ -3181,31 +3196,46 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             "name": "Rule Severity",
                             "options": Array [
                               Object {
-                                "color": "#cc5642",
+                                "color": Object {
+                                  "background": "#cc5642",
+                                  "text": "white",
+                                },
                                 "name": "Critical",
                                 "priority": "1",
                                 "value": "critical",
                               },
                               Object {
-                                "color": "#e7664c",
+                                "color": Object {
+                                  "background": "#e7664c",
+                                  "text": "black",
+                                },
                                 "name": "High",
                                 "priority": "2",
                                 "value": "high",
                               },
                               Object {
-                                "color": "#d6bf57",
+                                "color": Object {
+                                  "background": "#d6bf57",
+                                  "text": "black",
+                                },
                                 "name": "Medium",
                                 "priority": "3",
                                 "value": "medium",
                               },
                               Object {
-                                "color": "#54b399",
+                                "color": Object {
+                                  "background": "#54b399",
+                                  "text": "black",
+                                },
                                 "name": "Low",
                                 "priority": "4",
                                 "value": "low",
                               },
                               Object {
-                                "color": "#209280",
+                                "color": Object {
+                                  "background": "#209280",
+                                  "text": "white",
+                                },
                                 "name": "Informational",
                                 "priority": "5",
                                 "value": "informational",
@@ -3400,31 +3430,46 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                       "name": "Rule Severity",
                                       "options": Array [
                                         Object {
-                                          "color": "#cc5642",
+                                          "color": Object {
+                                            "background": "#cc5642",
+                                            "text": "white",
+                                          },
                                           "name": "Critical",
                                           "priority": "1",
                                           "value": "critical",
                                         },
                                         Object {
-                                          "color": "#e7664c",
+                                          "color": Object {
+                                            "background": "#e7664c",
+                                            "text": "black",
+                                          },
                                           "name": "High",
                                           "priority": "2",
                                           "value": "high",
                                         },
                                         Object {
-                                          "color": "#d6bf57",
+                                          "color": Object {
+                                            "background": "#d6bf57",
+                                            "text": "black",
+                                          },
                                           "name": "Medium",
                                           "priority": "3",
                                           "value": "medium",
                                         },
                                         Object {
-                                          "color": "#54b399",
+                                          "color": Object {
+                                            "background": "#54b399",
+                                            "text": "black",
+                                          },
                                           "name": "Low",
                                           "priority": "4",
                                           "value": "low",
                                         },
                                         Object {
-                                          "color": "#209280",
+                                          "color": Object {
+                                            "background": "#209280",
+                                            "text": "white",
+                                          },
                                           "name": "Informational",
                                           "priority": "5",
                                           "value": "informational",
@@ -3663,31 +3708,46 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                           "name": "Rule Severity",
                                           "options": Array [
                                             Object {
-                                              "color": "#cc5642",
+                                              "color": Object {
+                                                "background": "#cc5642",
+                                                "text": "white",
+                                              },
                                               "name": "Critical",
                                               "priority": "1",
                                               "value": "critical",
                                             },
                                             Object {
-                                              "color": "#e7664c",
+                                              "color": Object {
+                                                "background": "#e7664c",
+                                                "text": "black",
+                                              },
                                               "name": "High",
                                               "priority": "2",
                                               "value": "high",
                                             },
                                             Object {
-                                              "color": "#d6bf57",
+                                              "color": Object {
+                                                "background": "#d6bf57",
+                                                "text": "black",
+                                              },
                                               "name": "Medium",
                                               "priority": "3",
                                               "value": "medium",
                                             },
                                             Object {
-                                              "color": "#54b399",
+                                              "color": Object {
+                                                "background": "#54b399",
+                                                "text": "black",
+                                              },
                                               "name": "Low",
                                               "priority": "4",
                                               "value": "low",
                                             },
                                             Object {
-                                              "color": "#209280",
+                                              "color": Object {
+                                                "background": "#209280",
+                                                "text": "white",
+                                              },
                                               "name": "Informational",
                                               "priority": "5",
                                               "value": "informational",
