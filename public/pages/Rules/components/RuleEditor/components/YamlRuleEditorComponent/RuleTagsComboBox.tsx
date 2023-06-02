@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { EuiFormRow, EuiText, EuiComboBox, EuiComboBoxOptionOption } from '@elastic/eui';
 
 export interface RuleTagsComboBoxProps {
