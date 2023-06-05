@@ -183,6 +183,7 @@ describe('Rules', () => {
     cy.get('[data-test-subj="rule_author_field"]').type(`${SAMPLE_RULE.author}{enter}`);
 
     cy.get('[data-test-subj="detection-visual-editor-0"]').within(() => {
+      cy.getFieldByLabel('Name').type('{selectall}{backspace}').type('Selection_1');
       cy.getFieldByLabel('Key').type('Provider_Name');
       cy.getInputByPlaceholder('Value').type('Service Control Manager');
 
@@ -201,6 +202,11 @@ describe('Rules', () => {
     cy.get('[data-test-subj="rule_detection_field"] textarea').type('Selection_1', {
       force: true,
     });
+
+    cy.get('[aria-label="Add one more condition"]').click({ force: true });
+
+    // Enter the author
+    cy.get('[data-test-subj="rule_author_field"]').type(`${SAMPLE_RULE.author}`);
 
     // Switch to YAML editor
     cy.get('[data-test-subj="change-editor-type"] label:nth-child(2)').click({
