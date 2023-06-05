@@ -79,7 +79,7 @@ export function validateDescription(name: string): boolean {
 }
 
 export const descriptionErrorString = `Description should only consist of upper and lowercase letters, numbers 0-9,
- commas, hyphens, periods, spaces, and underscores. Max limit of ${MAX_DESCRIPTION_CHARACTERS} characters,`;
+ commas, hyphens, periods, spaces, and underscores. Max limit of ${MAX_DESCRIPTION_CHARACTERS} characters.`;
 
 export function getDescriptionErrorMessage(
   _description: string,

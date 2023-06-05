@@ -238,6 +238,7 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
             color={'primary'}
             iconType="plusInCircleFilled"
             aria-label={'Add one more condition'}
+            data-test-subj={'condition-add-selection-btn'}
           />
         </EuiFlexItem>
       )}

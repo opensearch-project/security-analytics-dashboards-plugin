@@ -540,7 +540,7 @@ export class DetectionVisualEditor extends React.Component<
                             </EuiToolTip>
                           ) : null
                         }
-                        style={{ maxWidth: '500px' }}
+                        style={{ maxWidth: '70%' }}
                       >
                         <EuiSpacer size="m" />
 
@@ -622,7 +622,7 @@ export class DetectionVisualEditor extends React.Component<
                                 >
                                   Upload file
                                 </EuiButton>
-                                <EuiSpacer />
+                                <EuiSpacer size={'s'} />
                               </EuiFlexItem>
 
                               <EuiFlexItem
@@ -641,9 +641,9 @@ export class DetectionVisualEditor extends React.Component<
                                 >
                                   Clear list
                                 </EuiButtonEmpty>
+                                <EuiSpacer size={'s'} />
                               </EuiFlexItem>
                             </EuiFlexGroup>
-                            <EuiSpacer />
                             <EuiFormRow
                               isInvalid={errors.touched[valueId] && !!errors.fields[valueId]}
                               error={errors.fields[valueId]}
@@ -656,6 +656,7 @@ export class DetectionVisualEditor extends React.Component<
                                   maxHeight: '200px',
                                   height: this.getTextareaHeight(datum.values.length),
                                 }}
+                                data-test-subj={'selection_field_list'}
                                 className={'detection-visual-editor-textarea'}
                                 onChange={(e) => {
                                   const values = e.target.value.split('\n');

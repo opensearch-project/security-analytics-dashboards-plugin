@@ -62,17 +62,7 @@ Cypress.Commands.add(
       items = [items];
     }
     Cypress.log({ message: `Select combobox items: ${items.join(' | ')}` });
-    cy.wrap(subject)
-      .focus()
-      .click({ force: true })
-      .then(() => {
-        items.map((item) =>
-          cy.get('.euiComboBoxOptionsList__rowWrap').within(() => {
-            cy.get('button').contains(item).should('be.visible');
-            cy.get('button').contains(item).click();
-          })
-        );
-      });
+    items.map((item) => cy.wrap(subject).type(item).type('{enter}'));
   }
 );
 
@@ -93,11 +83,7 @@ Cypress.Commands.add(
           message: `Number of combo badges to clear: ${numberOfBadges}`,
         });
 
-        cy.wrap(subject)
-          .parents('.euiComboBox__inputWrap')
-          .find('input')
-          .focus()
-          .pressBackspaceKey(numberOfBadges);
+        _.times(cy.wrap(subject).type('{backspace}'), numberOfBadges);
       });
   }
 );

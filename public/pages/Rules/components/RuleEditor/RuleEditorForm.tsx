@@ -96,7 +96,8 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
         }
 
         if (values.description && !validateDescription(values.description)) {
-          errors.description = 'Invalid description.';
+          errors.description =
+            'Description should only consist of upper and lowercase letters, numbers 0-9, commas, hyphens, periods, spaces, and underscores. Max limit of 500 characters.';
         }
 
         if (!values.logType) {
@@ -228,7 +229,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                       <strong>Author</strong>
                     </EuiText>
                   }
-                  helpText="Combine miltiple authors separated with a comma"
+                  helpText="Combine multiple authors separated with a comma"
                   isInvalid={props.touched.author && !!props.errors?.author}
                   error={props.errors.author}
                 >
@@ -282,56 +283,6 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                 </EuiFormRow>
 
                 <EuiSpacer />
-
-                <EuiFormRow
-                  label={
-                    <EuiText size={'s'}>
-                      <strong>Description </strong>
-                      <i>- optional</i>
-                    </EuiText>
-                  }
-                  helpText="Description must contain 5-500 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, dots, commas, and underscores."
-                  isInvalid={!!props.errors?.description}
-                  error={props.errors.description}
-                >
-                  <EuiTextArea
-                    data-test-subj={'rule_description_field'}
-                    onChange={(e) => {
-                      props.handleChange('description')(e.target.value);
-                    }}
-                    onBlur={props.handleBlur('description')}
-                    value={props.values.description}
-                  />
-                </EuiFormRow>
-                <EuiSpacer />
-
-                <EuiText size={'s'}>
-                  <strong>Detection</strong>
-                </EuiText>
-                <EuiText size="s">
-                  <p>Define the detection criteria for the rule</p>
-                </EuiText>
-                <EuiSpacer />
-
-                <DetectionVisualEditor
-                  isInvalid={props.touched.detection && isDetectionInvalid}
-                  mode={mode}
-                  detectionYml={props.values.detection}
-                  setIsDetectionInvalid={(isInvalid: boolean) => {
-                    if (isInvalid) {
-                      props.errors.detection = 'Invalid detection entries';
-                    } else {
-                      delete props.errors.detection;
-                    }
-
-                    setIsDetectionInvalid(isInvalid);
-                  }}
-                  onChange={(detection: string) => {
-                    props.handleChange('detection')(detection);
-                  }}
-                />
-
-                <EuiSpacer size="xxl" />
 
                 <EuiFormRow
                   label={
@@ -394,9 +345,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                   />
                 </EuiFormRow>
 
-                <EuiSpacer />
-
-                <EuiSpacer size={'xl'} />
+                <EuiSpacer size={'xxl'} />
 
                 <EuiTitle>
                   <EuiText>
@@ -426,7 +375,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                   }}
                 />
 
-                <EuiSpacer />
+                <EuiSpacer size={'xl'} />
 
                 <EuiPanel style={{ maxWidth: 1000 }}>
                   <EuiAccordion
