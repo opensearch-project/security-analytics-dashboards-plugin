@@ -1,0 +1,938 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<SelectionExpField /> spec renders the component 1`] = `
+Object {
+  "asFragment": [Function],
+  "baseElement": <body>
+    <div>
+      <div
+        class="detection-visual-editor"
+        style="max-width: 1000px;"
+      >
+        <div>
+          <div
+            class="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow detection-visual-editor-selection"
+            data-test-subj="detection-visual-editor-0"
+          >
+            <div
+              class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow euiFlexGroup--responsive"
+            >
+              <div
+                class="euiFlexItem"
+              >
+                <div
+                  class="euiFormRow"
+                  id="some_html_id-row"
+                >
+                  <div
+                    class="euiFormRow__fieldWrapper"
+                  >
+                    <div
+                      class="euiFormControlLayout"
+                    >
+                      <div
+                        class="euiFormControlLayout__childrenWrapper"
+                      >
+                        <input
+                          class="euiFieldText detection-visual-editor-name euiTitle--small"
+                          data-test-subj="selection_name"
+                          id="some_html_id"
+                          placeholder="Enter selection name"
+                          type="text"
+                          value="Selection_1"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="euiText euiText--small"
+                >
+                  <p>
+                    Define the search identifier in your data the rule will be applied to.
+                  </p>
+                </div>
+              </div>
+              <div
+                class="euiFlexItem euiFlexItem--flexGrowZero detection-visual-editor-delete-selection"
+              />
+            </div>
+            <div
+              class="euiSpacer euiSpacer--l"
+            />
+            <div
+              class="detection-visual-editor-accordion-wrapper"
+            >
+              <div
+                class="euiAccordion euiAccordion-isOpen euiAccordionForm detection-visual-editor-accordion"
+                data-test-subj="Map-0"
+                style="max-width: 70%;"
+              >
+                <div
+                  class="euiAccordion__triggerWrapper"
+                >
+                  <button
+                    aria-controls="Map-0"
+                    aria-expanded="true"
+                    class="euiAccordion__button euiAccordionForm__button"
+                    id="some_html_id"
+                    type="button"
+                  >
+                    <span
+                      class="euiAccordion__iconWrapper"
+                    >
+                      EuiIconMock
+                    </span>
+                    <span
+                      class="euiIEFlexWrapFix"
+                    >
+                      <div
+                        class="euiText euiText--medium"
+                      >
+                        Map 
+                        1
+                      </div>
+                    </span>
+                  </button>
+                </div>
+                <div
+                  aria-labelledby="some_html_id"
+                  class="euiAccordion__childWrapper"
+                  id="Map-0"
+                  role="region"
+                  tabindex="-1"
+                >
+                  <div>
+                    <div
+                      class=""
+                    >
+                      <div
+                        class="euiSpacer euiSpacer--m"
+                      />
+                      <div
+                        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+                      >
+                        <div
+                          class="euiFlexItem euiFlexItem--flexGrowZero"
+                          style="min-width: 200px;"
+                        >
+                          <div
+                            class="euiFormRow"
+                            id="some_html_id-row"
+                          >
+                            <div
+                              class="euiFormRow__labelWrapper"
+                            >
+                              <label
+                                class="euiFormLabel euiFormRow__label"
+                                for="some_html_id"
+                              >
+                                <div
+                                  class="euiText euiText--small"
+                                >
+                                  Key
+                                </div>
+                              </label>
+                            </div>
+                            <div
+                              class="euiFormRow__fieldWrapper"
+                            >
+                              <div
+                                class="euiFormControlLayout"
+                              >
+                                <div
+                                  class="euiFormControlLayout__childrenWrapper"
+                                >
+                                  <input
+                                    class="euiFieldText"
+                                    data-test-subj="selection_field_key_name"
+                                    id="some_html_id"
+                                    placeholder="Enter key name"
+                                    type="text"
+                                    value=""
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="euiFlexItem euiFlexItem--flexGrowZero"
+                          style="min-width: 200px;"
+                        >
+                          <div
+                            class="euiFormRow"
+                            id="some_html_id-row"
+                          >
+                            <div
+                              class="euiFormRow__labelWrapper"
+                            >
+                              <label
+                                class="euiFormLabel euiFormRow__label"
+                                for="some_html_id"
+                              >
+                                <div
+                                  class="euiText euiText--small"
+                                >
+                                  Modifier
+                                </div>
+                              </label>
+                            </div>
+                            <div
+                              class="euiFormRow__fieldWrapper"
+                            >
+                              <div
+                                aria-expanded="false"
+                                aria-haspopup="listbox"
+                                class="euiComboBox"
+                                data-test-subj="modifier_dropdown"
+                                role="combobox"
+                              >
+                                <div
+                                  class="euiFormControlLayout"
+                                >
+                                  <div
+                                    class="euiFormControlLayout__childrenWrapper"
+                                  >
+                                    <div
+                                      class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isClearable"
+                                      data-test-subj="comboBoxInput"
+                                      tabindex="-1"
+                                    >
+                                      <span
+                                        class="euiComboBoxPill euiComboBoxPill--plainText"
+                                        value="contains"
+                                      >
+                                        contains
+                                      </span>
+                                      <div
+                                        class="euiComboBox__input"
+                                        style="font-size: 14px; display: inline-block;"
+                                      >
+                                        <input
+                                          aria-controls=""
+                                          data-test-subj="comboBoxSearchInput"
+                                          id="some_html_id"
+                                          role="textbox"
+                                          style="box-sizing: content-box; width: 2px;"
+                                          value=""
+                                        />
+                                        <div
+                                          style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
+                                        />
+                                      </div>
+                                    </div>
+                                    <div
+                                      class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
+                                    >
+                                      <button
+                                        aria-label="Clear input"
+                                        class="euiFormControlLayoutClearButton"
+                                        data-test-subj="comboBoxClearButton"
+                                        type="button"
+                                      >
+                                        EuiIconMock
+                                      </button>
+                                      <button
+                                        aria-label="Open list of options"
+                                        class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
+                                        data-test-subj="comboBoxToggleListButton"
+                                        type="button"
+                                      >
+                                        EuiIconMock
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="euiSpacer euiSpacer--m"
+                      />
+                      <div>
+                        <div
+                          class="euiRadio euiRadioGroup__item"
+                        >
+                          <input
+                            checked=""
+                            class="euiRadio__input"
+                            id="selection-map-value-0-0"
+                            type="radio"
+                            value=""
+                          />
+                          <div
+                            class="euiRadio__circle"
+                          />
+                          <label
+                            class="euiRadio__label"
+                            for="selection-map-value-0-0"
+                          >
+                            Value
+                          </label>
+                        </div>
+                        <div
+                          class="euiRadio euiRadioGroup__item"
+                        >
+                          <input
+                            class="euiRadio__input"
+                            id="selection-map-list-0-0"
+                            type="radio"
+                            value=""
+                          />
+                          <div
+                            class="euiRadio__circle"
+                          />
+                          <label
+                            class="euiRadio__label"
+                            for="selection-map-list-0-0"
+                          >
+                            List
+                          </label>
+                        </div>
+                      </div>
+                      <div
+                        class="euiSpacer euiSpacer--m"
+                      />
+                      <div
+                        class="euiFormRow"
+                        id="some_html_id-row"
+                      >
+                        <div
+                          class="euiFormRow__fieldWrapper"
+                        >
+                          <div
+                            class="euiFormControlLayout"
+                          >
+                            <div
+                              class="euiFormControlLayout__childrenWrapper"
+                            >
+                              <input
+                                class="euiFieldText"
+                                data-test-subj="selection_field_value"
+                                id="some_html_id"
+                                placeholder="Value"
+                                type="text"
+                                value=""
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="euiSpacer euiSpacer--m"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="euiSpacer euiSpacer--m"
+            />
+            <button
+              class="euiButton euiButton--primary"
+              style="width: 70%;"
+              type="button"
+            >
+              <span
+                class="euiButtonContent euiButton__content"
+              >
+                EuiIconMock
+                <span
+                  class="euiButton__text"
+                >
+                  Add map
+                </span>
+              </span>
+            </button>
+          </div>
+        </div>
+        <div
+          class="euiSpacer euiSpacer--m"
+        />
+        <button
+          class="euiButton euiButton--primary euiButton--fullWidth"
+          type="button"
+        >
+          <span
+            class="euiButtonContent euiButton__content"
+          >
+            EuiIconMock
+            <span
+              class="euiButton__text"
+            >
+              Add selection
+            </span>
+          </span>
+        </button>
+        <div
+          class="euiSpacer euiSpacer--l"
+        />
+        <div
+          class="euiFormRow"
+          id="some_html_id-row"
+          style="max-width: 100%;"
+        >
+          <div
+            class="euiFormRow__labelWrapper"
+          >
+            <label
+              class="euiFormLabel euiFormRow__label"
+              for="some_html_id"
+            >
+              <p
+                class="euiTitle euiTitle--small"
+              >
+                Condition
+              </p>
+              <div
+                class="euiText euiText--extraSmall"
+              >
+                Define how each selection should be included in the final query. For more options use YAML editor.
+              </div>
+            </label>
+          </div>
+          <div
+            class="euiFormRow__fieldWrapper"
+          >
+            <div
+              class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--directionRow euiFlexGroup--responsive"
+              data-test-subj="rule_detection_field"
+            >
+              <div
+                class="euiFlexItem euiFlexItem--flexGrowZero"
+              >
+                <div
+                  class="euiPopover euiPopover--anchorRightDown"
+                  id="selections_default"
+                >
+                  <div
+                    class="euiPopover__anchor"
+                  >
+                    <span
+                      class="euiExpression euiExpression--success"
+                    >
+                      <span
+                        class="euiExpression__description"
+                      >
+                        Select
+                      </span>
+                       
+                      
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="euiFlexItem euiFlexItem--flexGrowZero"
+              >
+                <button
+                  aria-label="Add one more condition"
+                  class="euiButtonIcon euiButtonIcon--primary euiButtonIcon--empty euiButtonIcon--xSmall"
+                  data-test-subj="condition-add-selection-btn"
+                  type="button"
+                >
+                  EuiIconMock
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>,
+  "container": <div>
+    <div
+      class="detection-visual-editor"
+      style="max-width: 1000px;"
+    >
+      <div>
+        <div
+          class="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow detection-visual-editor-selection"
+          data-test-subj="detection-visual-editor-0"
+        >
+          <div
+            class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow euiFlexGroup--responsive"
+          >
+            <div
+              class="euiFlexItem"
+            >
+              <div
+                class="euiFormRow"
+                id="some_html_id-row"
+              >
+                <div
+                  class="euiFormRow__fieldWrapper"
+                >
+                  <div
+                    class="euiFormControlLayout"
+                  >
+                    <div
+                      class="euiFormControlLayout__childrenWrapper"
+                    >
+                      <input
+                        class="euiFieldText detection-visual-editor-name euiTitle--small"
+                        data-test-subj="selection_name"
+                        id="some_html_id"
+                        placeholder="Enter selection name"
+                        type="text"
+                        value="Selection_1"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="euiText euiText--small"
+              >
+                <p>
+                  Define the search identifier in your data the rule will be applied to.
+                </p>
+              </div>
+            </div>
+            <div
+              class="euiFlexItem euiFlexItem--flexGrowZero detection-visual-editor-delete-selection"
+            />
+          </div>
+          <div
+            class="euiSpacer euiSpacer--l"
+          />
+          <div
+            class="detection-visual-editor-accordion-wrapper"
+          >
+            <div
+              class="euiAccordion euiAccordion-isOpen euiAccordionForm detection-visual-editor-accordion"
+              data-test-subj="Map-0"
+              style="max-width: 70%;"
+            >
+              <div
+                class="euiAccordion__triggerWrapper"
+              >
+                <button
+                  aria-controls="Map-0"
+                  aria-expanded="true"
+                  class="euiAccordion__button euiAccordionForm__button"
+                  id="some_html_id"
+                  type="button"
+                >
+                  <span
+                    class="euiAccordion__iconWrapper"
+                  >
+                    EuiIconMock
+                  </span>
+                  <span
+                    class="euiIEFlexWrapFix"
+                  >
+                    <div
+                      class="euiText euiText--medium"
+                    >
+                      Map 
+                      1
+                    </div>
+                  </span>
+                </button>
+              </div>
+              <div
+                aria-labelledby="some_html_id"
+                class="euiAccordion__childWrapper"
+                id="Map-0"
+                role="region"
+                tabindex="-1"
+              >
+                <div>
+                  <div
+                    class=""
+                  >
+                    <div
+                      class="euiSpacer euiSpacer--m"
+                    />
+                    <div
+                      class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+                    >
+                      <div
+                        class="euiFlexItem euiFlexItem--flexGrowZero"
+                        style="min-width: 200px;"
+                      >
+                        <div
+                          class="euiFormRow"
+                          id="some_html_id-row"
+                        >
+                          <div
+                            class="euiFormRow__labelWrapper"
+                          >
+                            <label
+                              class="euiFormLabel euiFormRow__label"
+                              for="some_html_id"
+                            >
+                              <div
+                                class="euiText euiText--small"
+                              >
+                                Key
+                              </div>
+                            </label>
+                          </div>
+                          <div
+                            class="euiFormRow__fieldWrapper"
+                          >
+                            <div
+                              class="euiFormControlLayout"
+                            >
+                              <div
+                                class="euiFormControlLayout__childrenWrapper"
+                              >
+                                <input
+                                  class="euiFieldText"
+                                  data-test-subj="selection_field_key_name"
+                                  id="some_html_id"
+                                  placeholder="Enter key name"
+                                  type="text"
+                                  value=""
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="euiFlexItem euiFlexItem--flexGrowZero"
+                        style="min-width: 200px;"
+                      >
+                        <div
+                          class="euiFormRow"
+                          id="some_html_id-row"
+                        >
+                          <div
+                            class="euiFormRow__labelWrapper"
+                          >
+                            <label
+                              class="euiFormLabel euiFormRow__label"
+                              for="some_html_id"
+                            >
+                              <div
+                                class="euiText euiText--small"
+                              >
+                                Modifier
+                              </div>
+                            </label>
+                          </div>
+                          <div
+                            class="euiFormRow__fieldWrapper"
+                          >
+                            <div
+                              aria-expanded="false"
+                              aria-haspopup="listbox"
+                              class="euiComboBox"
+                              data-test-subj="modifier_dropdown"
+                              role="combobox"
+                            >
+                              <div
+                                class="euiFormControlLayout"
+                              >
+                                <div
+                                  class="euiFormControlLayout__childrenWrapper"
+                                >
+                                  <div
+                                    class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isClearable"
+                                    data-test-subj="comboBoxInput"
+                                    tabindex="-1"
+                                  >
+                                    <span
+                                      class="euiComboBoxPill euiComboBoxPill--plainText"
+                                      value="contains"
+                                    >
+                                      contains
+                                    </span>
+                                    <div
+                                      class="euiComboBox__input"
+                                      style="font-size: 14px; display: inline-block;"
+                                    >
+                                      <input
+                                        aria-controls=""
+                                        data-test-subj="comboBoxSearchInput"
+                                        id="some_html_id"
+                                        role="textbox"
+                                        style="box-sizing: content-box; width: 2px;"
+                                        value=""
+                                      />
+                                      <div
+                                        style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
+                                      />
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
+                                  >
+                                    <button
+                                      aria-label="Clear input"
+                                      class="euiFormControlLayoutClearButton"
+                                      data-test-subj="comboBoxClearButton"
+                                      type="button"
+                                    >
+                                      EuiIconMock
+                                    </button>
+                                    <button
+                                      aria-label="Open list of options"
+                                      class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
+                                      data-test-subj="comboBoxToggleListButton"
+                                      type="button"
+                                    >
+                                      EuiIconMock
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="euiSpacer euiSpacer--m"
+                    />
+                    <div>
+                      <div
+                        class="euiRadio euiRadioGroup__item"
+                      >
+                        <input
+                          checked=""
+                          class="euiRadio__input"
+                          id="selection-map-value-0-0"
+                          type="radio"
+                          value=""
+                        />
+                        <div
+                          class="euiRadio__circle"
+                        />
+                        <label
+                          class="euiRadio__label"
+                          for="selection-map-value-0-0"
+                        >
+                          Value
+                        </label>
+                      </div>
+                      <div
+                        class="euiRadio euiRadioGroup__item"
+                      >
+                        <input
+                          class="euiRadio__input"
+                          id="selection-map-list-0-0"
+                          type="radio"
+                          value=""
+                        />
+                        <div
+                          class="euiRadio__circle"
+                        />
+                        <label
+                          class="euiRadio__label"
+                          for="selection-map-list-0-0"
+                        >
+                          List
+                        </label>
+                      </div>
+                    </div>
+                    <div
+                      class="euiSpacer euiSpacer--m"
+                    />
+                    <div
+                      class="euiFormRow"
+                      id="some_html_id-row"
+                    >
+                      <div
+                        class="euiFormRow__fieldWrapper"
+                      >
+                        <div
+                          class="euiFormControlLayout"
+                        >
+                          <div
+                            class="euiFormControlLayout__childrenWrapper"
+                          >
+                            <input
+                              class="euiFieldText"
+                              data-test-subj="selection_field_value"
+                              id="some_html_id"
+                              placeholder="Value"
+                              type="text"
+                              value=""
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="euiSpacer euiSpacer--m"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="euiSpacer euiSpacer--m"
+          />
+          <button
+            class="euiButton euiButton--primary"
+            style="width: 70%;"
+            type="button"
+          >
+            <span
+              class="euiButtonContent euiButton__content"
+            >
+              EuiIconMock
+              <span
+                class="euiButton__text"
+              >
+                Add map
+              </span>
+            </span>
+          </button>
+        </div>
+      </div>
+      <div
+        class="euiSpacer euiSpacer--m"
+      />
+      <button
+        class="euiButton euiButton--primary euiButton--fullWidth"
+        type="button"
+      >
+        <span
+          class="euiButtonContent euiButton__content"
+        >
+          EuiIconMock
+          <span
+            class="euiButton__text"
+          >
+            Add selection
+          </span>
+        </span>
+      </button>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <div
+        class="euiFormRow"
+        id="some_html_id-row"
+        style="max-width: 100%;"
+      >
+        <div
+          class="euiFormRow__labelWrapper"
+        >
+          <label
+            class="euiFormLabel euiFormRow__label"
+            for="some_html_id"
+          >
+            <p
+              class="euiTitle euiTitle--small"
+            >
+              Condition
+            </p>
+            <div
+              class="euiText euiText--extraSmall"
+            >
+              Define how each selection should be included in the final query. For more options use YAML editor.
+            </div>
+          </label>
+        </div>
+        <div
+          class="euiFormRow__fieldWrapper"
+        >
+          <div
+            class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--directionRow euiFlexGroup--responsive"
+            data-test-subj="rule_detection_field"
+          >
+            <div
+              class="euiFlexItem euiFlexItem--flexGrowZero"
+            >
+              <div
+                class="euiPopover euiPopover--anchorRightDown"
+                id="selections_default"
+              >
+                <div
+                  class="euiPopover__anchor"
+                >
+                  <span
+                    class="euiExpression euiExpression--success"
+                  >
+                    <span
+                      class="euiExpression__description"
+                    >
+                      Select
+                    </span>
+                     
+                    
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="euiFlexItem euiFlexItem--flexGrowZero"
+            >
+              <button
+                aria-label="Add one more condition"
+                class="euiButtonIcon euiButtonIcon--primary euiButtonIcon--empty euiButtonIcon--xSmall"
+                data-test-subj="condition-add-selection-btn"
+                type="button"
+              >
+                EuiIconMock
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>,
+  "debug": [Function],
+  "findAllByAltText": [Function],
+  "findAllByDisplayValue": [Function],
+  "findAllByLabelText": [Function],
+  "findAllByPlaceholderText": [Function],
+  "findAllByRole": [Function],
+  "findAllByTestId": [Function],
+  "findAllByText": [Function],
+  "findAllByTitle": [Function],
+  "findByAltText": [Function],
+  "findByDisplayValue": [Function],
+  "findByLabelText": [Function],
+  "findByPlaceholderText": [Function],
+  "findByRole": [Function],
+  "findByTestId": [Function],
+  "findByText": [Function],
+  "findByTitle": [Function],
+  "getAllByAltText": [Function],
+  "getAllByDisplayValue": [Function],
+  "getAllByLabelText": [Function],
+  "getAllByPlaceholderText": [Function],
+  "getAllByRole": [Function],
+  "getAllByTestId": [Function],
+  "getAllByText": [Function],
+  "getAllByTitle": [Function],
+  "getByAltText": [Function],
+  "getByDisplayValue": [Function],
+  "getByLabelText": [Function],
+  "getByPlaceholderText": [Function],
+  "getByRole": [Function],
+  "getByTestId": [Function],
+  "getByText": [Function],
+  "getByTitle": [Function],
+  "queryAllByAltText": [Function],
+  "queryAllByDisplayValue": [Function],
+  "queryAllByLabelText": [Function],
+  "queryAllByPlaceholderText": [Function],
+  "queryAllByRole": [Function],
+  "queryAllByTestId": [Function],
+  "queryAllByText": [Function],
+  "queryAllByTitle": [Function],
+  "queryByAltText": [Function],
+  "queryByDisplayValue": [Function],
+  "queryByLabelText": [Function],
+  "queryByPlaceholderText": [Function],
+  "queryByRole": [Function],
+  "queryByTestId": [Function],
+  "queryByText": [Function],
+  "queryByTitle": [Function],
+  "rerender": [Function],
+  "unmount": [Function],
+}
+`;
