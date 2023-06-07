@@ -340,7 +340,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     selectedOptions={
                       props.values.status
                         ? [{ value: props.values.status, label: props.values.status }]
-                        : [{ value: ruleStatus[0], label: ruleStatus[0] }]
+                        : []
                     }
                   />
                 </EuiFormRow>
@@ -492,7 +492,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                 data-test-subj={'submit_rule_form_button'}
                 fill
               >
-                {mode === 'create' ? 'Create' : 'Save changes'}
+                {mode === 'create' ? 'Create detection rule' : 'Save changes'}
               </EuiButton>
             </EuiFlexItem>
           </EuiFlexGroup>

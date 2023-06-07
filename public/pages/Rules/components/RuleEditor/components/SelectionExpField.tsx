@@ -174,11 +174,7 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
         <EuiFlexItem
           grow={false}
           key={`selections_${idx}`}
-          className={
-            usedExpressions.length > 1
-              ? 'selection-exp-field-item-with-remove'
-              : 'selection-exp-field-item'
-          }
+          className={'selection-exp-field-item-with-remove'}
         >
           <EuiPopover
             id={`selections_${idx}`}
@@ -201,21 +197,20 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
           >
             {renderOptions(exp, idx)}
           </EuiPopover>
-          {usedExpressions.length > 1 ? (
-            <EuiButtonIcon
-              className={'selection-exp-field-item-remove'}
-              onClick={() => {
-                const usedExp = _.cloneDeep(usedExpressions);
-                usedExp.splice(idx, 1);
-                usedExp[0].description = '';
-                setUsedExpressions([...usedExp]);
-                onChange(getValue(usedExp));
-              }}
-              color={'danger'}
-              iconType="cross"
-              aria-label={'Remove condition'}
-            />
-          ) : null}
+          <EuiButtonIcon
+            data-test-subj={`selection-exp-field-item-remove-${idx}`}
+            className={'selection-exp-field-item-remove'}
+            onClick={() => {
+              const usedExp = _.cloneDeep(usedExpressions);
+              usedExp.splice(idx, 1);
+              usedExp.length && (usedExp[0].description = '');
+              setUsedExpressions([...usedExp]);
+              onChange(getValue(usedExp));
+            }}
+            color={'danger'}
+            iconType="cross"
+            aria-label={'Remove condition'}
+          />
         </EuiFlexItem>
       ))}
       {selections.length > usedExpressions.length && (

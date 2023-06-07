@@ -10,16 +10,7 @@ const SAMPLE_RULE = {
   name: `Cypress test rule ${uniqueId}`,
   logType: 'windows',
   description: 'This is a rule used to test the rule creation workflow.',
-  detectionLine: [
-    'condition: Selection_1',
-    'Selection_1:',
-    'Provider_Name|contains:',
-    '- Service Control Manager',
-    'EventID|contains:',
-    "- '7045'",
-    'ServiceName|contains:',
-    '- ZzNetSvc',
-  ],
+  detectionLine: ['condition: Selection_1', 'Selection_1:', 'FieldKey|contains:', '- FieldValue'],
   severity: 'critical',
   tags: ['attack.persistence', 'attack.privilege_escalation', 'attack.t1543.003'],
   references: 'https://nohello.com',
@@ -131,6 +122,7 @@ const checkRulesFlyout = () => {
 
 const getCreateButton = () => cy.get('[data-test-subj="create_rule_button"]');
 const getNameField = () => cy.getFieldByLabel('Rule name');
+const getRuleStatusField = () => cy.getFieldByLabel('Rule Status');
 const getDescriptionField = () => cy.getFieldByLabel('Description - optional');
 const getAuthorField = () => cy.getFieldByLabel('Author');
 const getLogTypeField = () => cy.getFieldByLabel('Log type');
@@ -142,15 +134,59 @@ const getMapKeyField = () => cy.get('[data-test-subj="selection_field_key_name"]
 const getMapValueField = () => cy.get('[data-test-subj="selection_field_value"]');
 const getMapListField = () => cy.get('[data-test-subj="selection_field_list"]');
 const getListRadioField = () => cy.get('[for="selection-map-list-0-0"]');
+const getTextRadioField = () => cy.get('[for="selection-map-value-0-0"]');
 const getConditionField = () => cy.get('[data-test-subj="rule_detection_field"]');
 const getConditionAddButton = () => cy.get('[data-test-subj="condition-add-selection-btn"]');
+const getConditionRemoveButton = (index) =>
+  cy.get(`[data-test-subj="selection-exp-field-item-remove-${index}"]`);
 const getRuleSubmitButton = () => cy.get('[data-test-subj="submit_rule_form_button"]');
-const getTagField = () => cy.getFieldByLabel('Tag');
+const getTagField = (index) => cy.get(`[data-test-subj="rule_tags_field_${index}"]`);
+const getReferenceFieldByIndex = (index) =>
+  cy.get(`[data-test-subj="rule_references_field_${index}"]`);
+const getFalsePositiveFieldByIndex = (index) =>
+  cy.get(`[data-test-subj="rule_false_positives_field_${index}"]`);
+
+const toastShouldExist = () => {
+  submitRule();
+  cy.get('.euiToast').contains('Failed to create rule:');
+};
+
+const submitRule = () => getRuleSubmitButton().click({ force: true });
+const fillCreateForm = () => {
+  // rule overview
+  getNameField().type(SAMPLE_RULE.name);
+  getDescriptionField().type(SAMPLE_RULE.description);
+  getAuthorField().type(`${SAMPLE_RULE.author}`);
+
+  // rule details
+  getLogTypeField().type(SAMPLE_RULE.logType);
+  getRuleLevelField().selectComboboxItem(SAMPLE_RULE.severity);
+
+  // rule detection
+  getSelectionPanelByIndex(0).within(() => {
+    getSelectionNameField().should('have.value', 'Selection_1');
+    getMapKeyField().type('FieldKey');
+
+    getTextRadioField().click({ force: true });
+    getMapValueField().type('FieldValue');
+  });
+
+  getConditionAddButton().click({ force: true });
+
+  // rule additional details
+  SAMPLE_RULE.tags.forEach((tag, idx) => {
+    getTagField(idx).type(tag);
+    idx < SAMPLE_RULE.tags.length - 1 && cy.getButtonByText('Add tag').click({ force: true });
+  });
+
+  getReferenceFieldByIndex(0).type(SAMPLE_RULE.references);
+  getFalsePositiveFieldByIndex(0).type(SAMPLE_RULE.falsePositive);
+};
 
 describe('Rules', () => {
   before(() => cy.cleanUpTests());
 
-  describe('...should validate rules form', () => {
+  describe('...should validate rules form fields', () => {
     beforeEach(() => {
       cy.intercept('/rules/_search').as('rulesSearch');
       // Visit Rules page
@@ -165,34 +201,19 @@ describe('Rules', () => {
       getCreateButton().click({ force: true });
     });
 
-    xit('...should validate rule name', () => {
-      getNameField()
-        .parents('.euiFormRow__fieldWrapper')
-        .find('.euiFormHelpText')
-        .contains(
-          'Rule name must contain 5-50 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, and underscores'
-        );
+    it('...should validate rule name', () => {
+      getNameField().containsHelperText(
+        'Rule name must contain 5-50 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, and underscores'
+      );
 
       getNameField().should('be.empty');
       getNameField().focus().blur();
-      getNameField()
-        .parentsUntil('.euiFormRow__fieldWrapper')
-        .siblings()
-        .contains('Rule name is required');
-
+      getNameField().containsError('Rule name is required');
       getNameField().type('text').focus().blur();
-
-      getNameField()
-        .parents('.euiFormRow__fieldWrapper')
-        .find('.euiFormErrorText')
-        .contains('Invalid rule name.');
+      getNameField().containsError('Invalid rule name.');
 
       getNameField().type('{selectall}').type('{backspace}').type('tex&').focus().blur();
-
-      getNameField()
-        .parents('.euiFormRow__fieldWrapper')
-        .find('.euiFormErrorText')
-        .contains('Invalid rule name.');
+      getNameField().containsError('Invalid rule name.');
 
       getNameField()
         .type('{selectall}')
@@ -200,17 +221,14 @@ describe('Rules', () => {
         .type('Rule name')
         .focus()
         .blur()
-        .parents('.euiFormRow__fieldWrapper')
-        .find('.euiFormErrorText')
-        .should('not.exist');
+        .shouldNotHaveError();
     });
 
-    xit('...should validate rule description field', () => {
+    it('...should validate rule description field', () => {
       const longDescriptionText =
         'This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text.';
 
       getDescriptionField().should('be.empty');
-
       getDescriptionField().type(longDescriptionText).focus().blur();
 
       getDescriptionField()
@@ -238,32 +256,17 @@ describe('Rules', () => {
         .should('not.exist');
     });
 
-    xit('...should validate author', () => {
-      getAuthorField()
-        .parents('.euiFormRow__fieldWrapper')
-        .find('.euiFormHelpText')
-        .contains('Combine multiple authors separated with a comma');
+    it('...should validate author', () => {
+      getAuthorField().containsHelperText('Combine multiple authors separated with a comma');
 
       getAuthorField().should('be.empty');
       getAuthorField().focus().blur();
-      getAuthorField()
-        .parentsUntil('.euiFormRow__fieldWrapper')
-        .siblings()
-        .contains('Author name is required');
-
+      getAuthorField().containsError('Author name is required');
       getAuthorField().type('text').focus().blur();
-
-      getAuthorField()
-        .parents('.euiFormRow__fieldWrapper')
-        .find('.euiFormErrorText')
-        .contains('Invalid author.');
+      getAuthorField().containsError('Invalid author.');
 
       getAuthorField().type('{selectall}').type('{backspace}').type('tex&').focus().blur();
-
-      getAuthorField()
-        .parents('.euiFormRow__fieldWrapper')
-        .find('.euiFormErrorText')
-        .contains('Invalid author.');
+      getAuthorField().containsError('Invalid author.');
 
       getAuthorField()
         .type('{selectall}')
@@ -271,58 +274,47 @@ describe('Rules', () => {
         .type('Rule name')
         .focus()
         .blur()
-        .parents('.euiFormRow__fieldWrapper')
-        .find('.euiFormErrorText')
-        .should('not.exist');
+        .shouldNotHaveError();
     });
 
-    xit('...should validate log type field', () => {
+    it('...should validate log type field', () => {
       getLogTypeField().should('be.empty');
       getLogTypeField().focus().blur();
-      getLogTypeField()
-        .parentsUntil('.euiFormRow__fieldWrapper')
-        .siblings()
-        .contains('Log type is required');
+      getLogTypeField().containsError('Log type is required');
 
       getLogTypeField().selectComboboxItem(SAMPLE_RULE.logType);
-
-      getLogTypeField()
-        .focus()
-        .blur()
-        .parents('.euiFormRow__fieldWrapper')
-        .find('.euiFormErrorText')
-        .should('not.exist');
+      getLogTypeField().focus().blur().shouldNotHaveError();
     });
 
-    xit('...should validate rule level field', () => {
+    it('...should validate rule level field', () => {
       getRuleLevelField().should('be.empty');
       getRuleLevelField().focus().blur();
-      getRuleLevelField()
-        .parentsUntil('.euiFormRow__fieldWrapper')
-        .siblings()
-        .contains('Rule level is required');
+      getRuleLevelField().containsError('Rule level is required');
 
       getRuleLevelField().selectComboboxItem(SAMPLE_RULE.severity);
-
-      getRuleLevelField()
-        .focus()
-        .blur()
-        .parents('.euiFormRow__fieldWrapper')
-        .find('.euiFormErrorText')
-        .should('not.exist');
+      getRuleLevelField().focus().blur().shouldNotHaveError();
     });
 
-    xit('...should validate selection', () => {
-      getSelectionPanelByIndex(0).within((selectionPanel) => {
+    it('...should validate rule status field', () => {
+      getRuleStatusField().containsValue(SAMPLE_RULE.status);
+      getRuleStatusField().focus().blur().shouldNotHaveError();
+
+      getRuleStatusField().clearCombobox();
+      getRuleStatusField().focus().blur();
+      getRuleStatusField().containsError('Rule status is required');
+    });
+
+    it('...should validate selection', () => {
+      getSelectionPanelByIndex(0).within(() => {
         getSelectionNameField().should('have.value', 'Selection_1');
-        getSelectionNameField().type('{selectall}').type('{backspace}');
+        getSelectionNameField().clearValue();
         getSelectionNameField().focus().blur();
         getSelectionNameField()
           .parentsUntil('.euiFormRow__fieldWrapper')
           .siblings()
           .contains('Selection name is required');
 
-        getSelectionNameField().type('Selection');
+        getSelectionNameField().type('Selection_1');
         getSelectionNameField()
           .focus()
           .blur()
@@ -332,8 +324,8 @@ describe('Rules', () => {
       });
     });
 
-    xit('...should validate selection map key field', () => {
-      getSelectionPanelByIndex(0).within((selectionPanel) => {
+    it('...should validate selection map key field', () => {
+      getSelectionPanelByIndex(0).within(() => {
         getMapKeyField().should('be.empty');
         getMapKeyField().focus().blur();
         getMapKeyField()
@@ -351,8 +343,8 @@ describe('Rules', () => {
       });
     });
 
-    xit('...should validate selection map value field', () => {
-      getSelectionPanelByIndex(0).within((selectionPanel) => {
+    it('...should validate selection map value field', () => {
+      getSelectionPanelByIndex(0).within(() => {
         getMapValueField().should('be.empty');
         getMapValueField().focus().blur();
         getMapValueField()
@@ -370,8 +362,8 @@ describe('Rules', () => {
       });
     });
 
-    xit('...should validate selection map list field', () => {
-      getSelectionPanelByIndex(0).within((selectionPanel) => {
+    it('...should validate selection map list field', () => {
+      getSelectionPanelByIndex(0).within(() => {
         getListRadioField().click({ force: true });
         getMapListField().should('be.empty');
         getMapListField().focus().blur();
@@ -387,7 +379,7 @@ describe('Rules', () => {
       });
     });
 
-    xit('...should validate condition field', () => {
+    it('...should validate condition field', () => {
       getConditionField().scrollIntoView();
       getConditionField().find('.euiFormErrorText').should('not.exist');
       getRuleSubmitButton().click({ force: true });
@@ -395,24 +387,99 @@ describe('Rules', () => {
 
       getConditionAddButton().click({ force: true });
       getConditionField().find('.euiFormErrorText').should('not.exist');
+
+      getConditionRemoveButton(0).click({ force: true });
+      getConditionField().parents('.euiFormRow__fieldWrapper').contains('Condition is required');
     });
 
-    xit('...should validate tag field', () => {
-      getTagField().should('be.empty');
-      getTagField().type('wrong.tag').focus().blur();
-      getTagField().parents('.euiFormRow__fieldWrapper').contains("Tags must start with 'attack.'");
+    it('...should validate tag field', () => {
+      getTagField(0).should('be.empty');
+      getTagField(0).type('wrong.tag').focus().blur();
+      getTagField(0)
+        .parents('.euiFormRow__fieldWrapper')
+        .contains("Tags must start with 'attack.'");
 
-      getTagField().type('{selectall}').type('{backspace}').type('attack.tag');
-      getTagField()
+      getTagField(0).clearValue().type('attack.tag');
+      getTagField(0)
         .parents('.euiFormRow__fieldWrapper')
         .find('.euiFormErrorText')
         .should('not.exist');
     });
 
-    it('...should validate create button', () => {});
+    it('...should validate form', () => {
+      toastShouldExist();
+      fillCreateForm();
+
+      // rule name field
+      getNameField().clearValue();
+      toastShouldExist();
+      getNameField().type('Rule name');
+
+      // author field
+      getAuthorField().clearValue();
+      toastShouldExist();
+      getAuthorField().type('John Doe');
+
+      // log field
+      getLogTypeField().clearCombobox();
+      toastShouldExist();
+      getLogTypeField().selectComboboxItem(SAMPLE_RULE.logType);
+
+      // severity field
+      getRuleLevelField().clearCombobox();
+      toastShouldExist();
+      getRuleLevelField().selectComboboxItem(SAMPLE_RULE.severity);
+
+      // status field
+      getRuleStatusField().clearCombobox();
+      toastShouldExist();
+      getRuleStatusField().selectComboboxItem(SAMPLE_RULE.status);
+
+      // selection name field
+      getSelectionPanelByIndex(0).within(() =>
+        getSelectionNameField().type('{selectall}').type('{backspace}')
+      );
+      toastShouldExist();
+      getSelectionPanelByIndex(0).within(() => getSelectionNameField().type('Selection_1'));
+
+      // selection map key field
+      getSelectionPanelByIndex(0).within(() =>
+        getMapKeyField().type('{selectall}').type('{backspace}')
+      );
+      toastShouldExist();
+      getSelectionPanelByIndex(0).within(() => getMapKeyField().type('FieldKey'));
+
+      // selection map value field
+      getSelectionPanelByIndex(0).within(() =>
+        getMapValueField().type('{selectall}').type('{backspace}')
+      );
+      toastShouldExist();
+      getSelectionPanelByIndex(0).within(() => getMapValueField().type('FieldValue'));
+
+      // selection map list field
+      getSelectionPanelByIndex(0).within(() => {
+        getListRadioField().click({ force: true });
+        getMapListField().clearValue();
+      });
+      toastShouldExist();
+      getSelectionPanelByIndex(0).within(() => {
+        getListRadioField().click({ force: true });
+        getMapListField().type('FieldValue');
+      });
+
+      // condition field
+      getConditionRemoveButton(0).click({ force: true });
+      toastShouldExist();
+      getConditionAddButton().click({ force: true });
+
+      // tags field
+      getTagField(0).clearValue().type('wrong.tag');
+      toastShouldExist();
+      getTagField(0).clearValue().type('attack.tag');
+    });
   });
 
-  xdescribe('...should validate rules create', () => {
+  describe('...should validate rules create flow', () => {
     beforeEach(() => {
       cy.intercept('/rules/_search').as('rulesSearch');
       // Visit Rules page
@@ -426,69 +493,9 @@ describe('Rules', () => {
     });
 
     it('...can be created', () => {
-      // Click "create new rule" button
-      cy.get('[data-test-subj="create_rule_button"]').click({
-        force: true,
-      });
+      getCreateButton().click({ force: true });
 
-      // Enter the log type
-      cy.get('[data-test-subj="rule_status_dropdown"]').type(SAMPLE_RULE.status);
-
-      // Enter the name
-      cy.get('[data-test-subj="rule_name_field"]').type(SAMPLE_RULE.name);
-
-      // Enter the log type
-      cy.get('[data-test-subj="rule_type_dropdown"]').type(SAMPLE_RULE.logType);
-
-      // Enter the description
-      cy.get('[data-test-subj="rule_description_field"]').type(SAMPLE_RULE.description);
-
-      // Enter the severity
-      cy.get('[data-test-subj="rule_severity_dropdown"]').type(SAMPLE_RULE.severity);
-
-      // Enter the tags
-      SAMPLE_RULE.tags.forEach((tag, index) => {
-        cy.get(`[data-test-subj="rule_tags_field_${index}"]`).type(`${tag}{enter}`);
-        index < SAMPLE_RULE.tags.length - 1 &&
-          cy.get('.euiButton').contains('Add tag').click({ force: true });
-      });
-
-      // Enter the reference
-      cy.get('[data-test-subj="rule_references_field_0"]').type(SAMPLE_RULE.references);
-
-      // Enter the false positive cases
-      cy.get('[data-test-subj="rule_false_positives_field_0"]').type(
-        `${SAMPLE_RULE.falsePositive}{enter}`
-      );
-
-      // Enter the author
-      cy.get('[data-test-subj="rule_author_field"]').type(`${SAMPLE_RULE.author}{enter}`);
-
-      cy.get('[data-test-subj="detection-visual-editor-0"]').within(() => {
-        cy.getFieldByLabel('Name').type('{selectall}{backspace}').type('Selection_1');
-        cy.getFieldByLabel('Key').type('Provider_Name');
-        cy.getInputByPlaceholder('Value').type('Service Control Manager');
-
-        cy.getButtonByText('Add map').click();
-        cy.get('[data-test-subj="Map-1"]').within(() => {
-          cy.getFieldByLabel('Key').type('EventID');
-          cy.getInputByPlaceholder('Value').type('7045');
-        });
-
-        cy.getButtonByText('Add map').click();
-        cy.get('[data-test-subj="Map-2"]').within(() => {
-          cy.getFieldByLabel('Key').type('ServiceName');
-          cy.getInputByPlaceholder('Value').type('ZzNetSvc');
-        });
-      });
-      cy.get('[data-test-subj="rule_detection_field"] textarea').type('Selection_1', {
-        force: true,
-      });
-
-      cy.get('[aria-label="Add one more condition"]').click({ force: true });
-
-      // Enter the author
-      cy.get('[data-test-subj="rule_author_field"]').type(`${SAMPLE_RULE.author}`);
+      fillCreateForm();
 
       // Switch to YAML editor
       cy.get('[data-test-subj="change-editor-type"] label:nth-child(2)').click({
@@ -503,10 +510,7 @@ describe('Rules', () => {
         url: '/rules',
       }).as('getRules');
 
-      // Click "create" button
-      cy.get('[data-test-subj="submit_rule_form_button"]').click({
-        force: true,
-      });
+      submitRule();
 
       cy.wait('@getRules');
 
@@ -534,39 +538,30 @@ describe('Rules', () => {
           cy.get('.euiPopover__panel').find('button').contains('Edit').click();
         });
 
-      const ruleNameSelector = '[data-test-subj="rule_name_field"]';
-      cy.get(ruleNameSelector).clear();
+      getNameField().clear();
 
       SAMPLE_RULE.name += ' edited';
-      cy.get(ruleNameSelector).type(SAMPLE_RULE.name);
-      cy.get(ruleNameSelector).should('have.value', SAMPLE_RULE.name);
+      getNameField().type(SAMPLE_RULE.name);
+      getNameField().should('have.value', SAMPLE_RULE.name);
 
-      // Enter the log type
-      const logSelector = '[data-test-subj="rule_type_dropdown"]';
-      cy.get(logSelector).within(() => cy.get('.euiFormControlLayoutClearButton').click());
+      getLogTypeField().clearCombobox();
       SAMPLE_RULE.logType = 'dns';
       YAML_RULE_LINES[2] = `product: ${SAMPLE_RULE.logType}`;
       YAML_RULE_LINES[3] = `title: ${SAMPLE_RULE.name}`;
-      cy.get(logSelector).type(SAMPLE_RULE.logType).type('{enter}');
-      cy.get(logSelector).contains(SAMPLE_RULE.logType, {
-        matchCase: false,
-      });
+      getLogTypeField().type(SAMPLE_RULE.logType).type('{enter}');
+      getLogTypeField().containsValue(SAMPLE_RULE.logType).contains(SAMPLE_RULE.logType);
 
-      const ruleDescriptionSelector = '[data-test-subj="rule_description_field"]';
       SAMPLE_RULE.description += ' edited';
       YAML_RULE_LINES[4] = `description: ${SAMPLE_RULE.description}`;
-      cy.get(ruleDescriptionSelector).clear();
-      cy.get(ruleDescriptionSelector).type(SAMPLE_RULE.description);
-      cy.get(ruleDescriptionSelector).should('have.value', SAMPLE_RULE.description);
+      getDescriptionField().clear();
+      getDescriptionField().type(SAMPLE_RULE.description);
+      getDescriptionField().should('have.value', SAMPLE_RULE.description);
 
       cy.intercept({
         url: '/rules',
       }).as('getRules');
 
-      // Click "create" button
-      cy.get('[data-test-subj="submit_rule_form_button"]').click({
-        force: true,
-      });
+      submitRule();
 
       cy.waitForPageLoad('rules', {
         contains: 'Detection rules',
