@@ -5,8 +5,10 @@
 
 import RuleOptions from './RuleOptions.mock';
 import RulePage from './RulePage.mock';
+import SelectionExpField from './components/RuleEditor/components/SelectionExpField.mock';
 
 export default {
   RuleOptions,
   RulePage,
+  SelectionExpField,
 };

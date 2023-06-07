@@ -11,7 +11,7 @@ import {
 import * as _ from 'lodash';
 import { Selection } from '../DetectionVisualEditor';
 
-interface SelectionExpFieldProps {
+export interface SelectionExpFieldProps {
   selections: Selection[];
   dataTestSubj: string;
   onChange: (value: string) => void;
