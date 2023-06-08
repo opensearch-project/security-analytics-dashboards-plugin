@@ -55,7 +55,7 @@ export const RecentFindingsWidget: React.FC<RecentFindingsWidgetProps> = ({
 
   useEffect(() => {
     items.sort((a, b) => {
-      return a.time - b.time;
+      return b.time - a.time;
     });
     setFindingItems(items.slice(0, 20));
   }, [items]);

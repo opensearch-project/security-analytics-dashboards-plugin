@@ -17,6 +17,7 @@ import {
   EuiSuperDatePicker,
   EuiTitle,
   EuiToolTip,
+  EuiEmptyPrompt,
 } from '@elastic/eui';
 import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
 import dateMath from '@elastic/datemath';
@@ -82,6 +83,7 @@ export interface AlertsState {
   loading: boolean;
   timeUnit: TimeUnit;
   dateFormat: string;
+  widgetEmptyMessage: React.ReactNode | undefined;
 }
 
 const groupByOptions = [
@@ -113,6 +115,7 @@ class Alerts extends Component<AlertsProps, AlertsState> {
       detectors: {},
       timeUnit: timeUnits.timeUnit,
       dateFormat: timeUnits.dateFormat,
+      widgetEmptyMessage: undefined,
     };
   }
 
@@ -149,7 +152,20 @@ class Alerts extends Component<AlertsProps, AlertsState> {
     const filteredAlerts = alerts.filter((alert) =>
       moment(alert.last_notification_time).isBetween(moment(startMoment), moment(endMoment))
     );
-    this.setState({ alertsFiltered: true, filteredAlerts: filteredAlerts });
+    this.setState({
+      alertsFiltered: true,
+      filteredAlerts: filteredAlerts,
+      widgetEmptyMessage: filteredAlerts.length ? undefined : (
+        <EuiEmptyPrompt
+          body={
+            <p>
+              <span style={{ display: 'block' }}>No alerts.</span>Adjust the time range to see more
+              results.
+            </p>
+          }
+        />
+      ),
+    });
     renderVisualization(this.generateVisualizationSpec(filteredAlerts), 'alerts-view');
   };
 
@@ -415,6 +431,7 @@ class Alerts extends Component<AlertsProps, AlertsState> {
       flyoutData,
       loading,
       recentlyUsedRanges,
+      widgetEmptyMessage,
     } = this.state;
 
     const {
@@ -508,7 +525,7 @@ class Alerts extends Component<AlertsProps, AlertsState> {
                 />
               </EuiFlexItem>
             </EuiFlexGroup>
-            <EuiSpacer size="xxl" />
+            <EuiSpacer size={'m'} />
           </EuiFlexItem>
           <EuiFlexItem>
             <EuiPanel>
@@ -517,7 +534,20 @@ class Alerts extends Component<AlertsProps, AlertsState> {
                   {this.createGroupByControl()}
                 </EuiFlexItem>
                 <EuiFlexItem>
-                  <ChartContainer chartViewId={'alerts-view'} loading={loading} />
+                  {!alerts || alerts.length === 0 ? (
+                    <EuiEmptyPrompt
+                      title={<h2>No alerts</h2>}
+                      body={
+                        <p>
+                          Adjust the time range to see more results or create alert triggers in your{' '}
+                          <EuiLink href={`${location.pathname}#/detectors`}>detectors</EuiLink> to
+                          generate alerts.
+                        </p>
+                      }
+                    />
+                  ) : (
+                    <ChartContainer chartViewId={'alerts-view'} loading={loading} />
+                  )}
                 </EuiFlexItem>
               </EuiFlexGroup>
             </EuiPanel>
@@ -535,6 +565,7 @@ class Alerts extends Component<AlertsProps, AlertsState> {
                 sorting={sorting}
                 selection={selection}
                 loading={loading}
+                message={widgetEmptyMessage}
               />
             </ContentPanel>
           </EuiFlexItem>

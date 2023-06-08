@@ -14,6 +14,8 @@ import {
   EuiSpacer,
   EuiSuperDatePicker,
   EuiTitle,
+  EuiEmptyPrompt,
+  EuiLink,
 } from '@elastic/eui';
 import FindingsTable from '../../components/FindingsTable';
 import FindingsService from '../../../../services/FindingsService';
@@ -38,7 +40,6 @@ import {
 } from '../../../Overview/utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { Finding } from '../../models/interfaces';
-import { Detector } from '../../../../../models/interfaces';
 import { FeatureChannelList } from '../../../../../server/models/interfaces';
 import {
   getNotificationChannels,
@@ -55,6 +56,7 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { DateTimeFilter } from '../../../Overview/models/interfaces';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 import { RulesViewModelActor } from '../../../Rules/models/RulesViewModelActor';
+import { Detector } from '../../../../../types';
 
 interface FindingsProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -344,7 +346,22 @@ class Findings extends Component<FindingsProps, FindingsState> {
                 {this.createGroupByControl()}
               </EuiFlexItem>
               <EuiFlexItem>
-                <ChartContainer chartViewId={'findings-view'} loading={loading} />
+                {!findings || findings.length === 0 ? (
+                  <EuiEmptyPrompt
+                    title={<h2>No findings</h2>}
+                    body={
+                      <p>
+                        Adjust the time range to see more results or{' '}
+                        <EuiLink href={`${location.pathname}#/create-detector`}>
+                          create a detector
+                        </EuiLink>{' '}
+                        to generate findings.
+                      </p>
+                    }
+                  />
+                ) : (
+                  <ChartContainer chartViewId={'findings-view'} loading={loading} />
+                )}
               </EuiFlexItem>
             </EuiFlexGroup>
           </EuiPanel>

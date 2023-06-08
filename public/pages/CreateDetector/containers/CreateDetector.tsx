@@ -324,6 +324,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             loading={false}
             filedMappingService={services.fieldMappingService}
             fieldMappings={this.state.fieldMappings}
+            enabledRules={this.state.rulesState.allRules.filter((rule) => rule.enabled)}
             replaceFieldMappings={this.replaceFieldMappings}
             updateDataValidState={this.updateDataValidState}
           />

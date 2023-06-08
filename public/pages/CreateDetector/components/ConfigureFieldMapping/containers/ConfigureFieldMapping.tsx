@@ -23,6 +23,7 @@ import { DetectorCreationStep } from '../../../models/types';
 import { GetFieldMappingViewResponse } from '../../../../../../server/models/interfaces';
 import FieldMappingService from '../../../../../services/FieldMappingService';
 import { MappingViewType } from '../components/RequiredFieldMapping/FieldMappingsTable';
+import { CreateDetectorRulesState } from '../../DefineDetector/components/DetectionRules/DetectionRules';
 
 export interface ruleFieldToIndexFieldMap {
   [fieldName: string]: string;
@@ -32,10 +33,11 @@ interface ConfigureFieldMappingProps extends RouteComponentProps {
   isEdit: boolean;
   detector: Detector;
   filedMappingService: FieldMappingService;
-  replaceFieldMappings: (mappings: FieldMapping[]) => void;
   fieldMappings: FieldMapping[];
-  updateDataValidState: (step: DetectorCreationStep, isValid: boolean) => void;
   loading: boolean;
+  enabledRules: CreateDetectorRulesState['allRules'];
+  updateDataValidState: (step: DetectorCreationStep, isValid: boolean) => void;
+  replaceFieldMappings: (mappings: FieldMapping[]) => void;
 }
 
 interface ConfigureFieldMappingState {
@@ -67,6 +69,17 @@ export default class ConfigureFieldMapping extends Component<
     this.getAllMappings();
   };
 
+  private getRuleFieldsForEnabledRules(): Set<string> {
+    const ruleFieldsForEnabledRules = new Set<string>();
+    this.props.enabledRules.forEach((rule) => {
+      rule._source.query_field_names.forEach((fieldname) => {
+        ruleFieldsForEnabledRules.add(fieldname.value);
+      });
+    });
+
+    return ruleFieldsForEnabledRules;
+  }
+
   getAllMappings = async () => {
     this.setState({ loading: true });
     const mappingsView = await this.props.filedMappingService.getMappingsView(
@@ -75,14 +88,31 @@ export default class ConfigureFieldMapping extends Component<
     );
     if (mappingsView.ok) {
       const existingMappings = { ...this.state.createdMappings };
+      const ruleFieldsForEnabledRules = this.getRuleFieldsForEnabledRules();
+      const unmappedRuleFields = new Set(mappingsView.response.unmapped_field_aliases);
+
       Object.keys(mappingsView.response.properties).forEach((ruleFieldName) => {
+        // Filter the mappings view to include only the rule fields for the enabled rules
+        if (!ruleFieldsForEnabledRules.has(ruleFieldName)) {
+          delete mappingsView.response.properties[ruleFieldName];
+          return;
+        }
+
         existingMappings[ruleFieldName] =
           this.state.createdMappings[ruleFieldName] ||
           mappingsView.response.properties[ruleFieldName].path;
       });
+      mappingsView.response.unmapped_field_aliases?.forEach((ruleFieldName) => {
+        if (!ruleFieldsForEnabledRules.has(ruleFieldName)) {
+          unmappedRuleFields.delete(ruleFieldName);
+        }
+      });
       this.setState({
         createdMappings: existingMappings,
-        mappingsData: mappingsView.response,
+        mappingsData: {
+          ...mappingsView.response,
+          unmapped_field_aliases: Array.from(unmappedRuleFields),
+        },
       });
       this.updateMappingSharedState(existingMappings);
     }
