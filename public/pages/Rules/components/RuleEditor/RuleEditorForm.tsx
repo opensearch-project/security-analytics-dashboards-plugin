@@ -21,7 +21,7 @@ import {
   EuiPanel,
 } from '@elastic/eui';
 import { ContentPanel } from '../../../../components/ContentPanel';
-import { FieldTextArray } from './FieldTextArray';
+import { FieldTextArray } from './components/FieldTextArray';
 import { ruleStatus, ruleTypes } from '../../utils/constants';
 import { AUTHOR_REGEX, validateDescription, validateName } from '../../../../utils/validation';
 import { RuleEditorFormModel } from './RuleEditorFormModel';
