@@ -391,7 +391,8 @@ Object {
               <div
                 class="euiText euiText--extraSmall"
               >
-                Define how each selection should be included in the final query. For more options use 
+                Define how each selection should be included in the final query. For more options use
+                 
                 <button
                   class="euiButtonEmpty euiButtonEmpty--primary empty-text-button"
                   type="button"
@@ -850,7 +851,8 @@ Object {
             <div
               class="euiText euiText--extraSmall"
             >
-              Define how each selection should be included in the final query. For more options use 
+              Define how each selection should be included in the final query. For more options use
+               
               <button
                 class="euiButtonEmpty euiButtonEmpty--primary empty-text-button"
                 type="button"
