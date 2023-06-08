@@ -361,6 +361,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                 <DetectionVisualEditor
                   isInvalid={props.touched.detection && isDetectionInvalid}
                   detectionYml={props.values.detection}
+                  goToYamlEditor={setSelectedEditorType}
                   setIsDetectionInvalid={(isInvalid: boolean) => {
                     if (isInvalid) {
                       props.errors.detection = 'Invalid detection entries';

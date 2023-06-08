@@ -37,6 +37,7 @@ import { SelectionExpField } from './components/SelectionExpField';
 export interface DetectionVisualEditorProps {
   detectionYml: string;
   onChange: (value: string) => void;
+  goToYamlEditor: (value: string) => void;
   setIsDetectionInvalid: (isInvalid: boolean) => void;
   mode?: string;
   isInvalid?: boolean;
@@ -766,7 +767,14 @@ export class DetectionVisualEditor extends React.Component<
               </EuiTitle>
               <EuiText size="xs">
                 Define how each selection should be included in the final query. For more options
-                use YAML editor.
+                use{' '}
+                <EuiButtonEmpty
+                  className={'empty-text-button'}
+                  onClick={() => this.props.goToYamlEditor('yaml')}
+                >
+                  <EuiText size="s">YAML editor</EuiText>
+                </EuiButtonEmpty>
+                .
               </EuiText>
             </>
           }

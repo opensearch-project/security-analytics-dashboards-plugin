@@ -4,10 +4,8 @@
  */
 
 import { EuiButton, EuiFlexGroup, EuiFlexItem, EuiPanel, EuiSpacer, EuiTitle } from '@elastic/eui';
-import { ServicesContext } from '../../../../services';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { BrowserServices } from '../../../../models/interfaces';
 import { RulesTable } from '../../components/RulesTable/RulesTable';
 import { RuleTableItem } from '../../utils/helpers';
 import { RuleViewerFlyout } from '../../components/RuleViewerFlyout/RuleViewerFlyout';
@@ -22,7 +20,6 @@ export interface RulesProps extends RouteComponentProps {
 }
 
 export const Rules: React.FC<RulesProps> = (props) => {
-  const services = useContext(ServicesContext) as BrowserServices;
   const context = useContext(CoreServicesContext);
 
   const [allRules, setAllRules] = useState<RuleItemInfoBase[]>([]);
@@ -64,7 +61,7 @@ export const Rules: React.FC<RulesProps> = (props) => {
   const headerActions = useMemo(
     () => [
       <EuiButton onClick={openImportPage} data-test-subj={'import_rule_button'}>
-        Import rule
+        Import detection rule
       </EuiButton>,
       <EuiButton onClick={openCreatePage} data-test-subj={'create_rule_button'} fill={true}>
         Create detection rule

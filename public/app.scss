@@ -136,3 +136,11 @@ $euiTextColor: $euiColorDarkestShade !default;
 .detailsFormRow {
   width: auto !important;
 }
+
+.empty-text-button {
+  vertical-align: baseline;
+
+  .euiButtonEmpty__content {
+    padding: 0 !important;
+  }
+}

@@ -402,7 +402,7 @@ describe('Detectors', () => {
     });
   });
 
-  describe('...validate create detector', () => {
+  describe('...validate create detector flow', () => {
     beforeEach(() => {
       cy.intercept('/detectors/_search').as('detectorsSearch');
 

@@ -186,7 +186,7 @@ const fillCreateForm = () => {
 describe('Rules', () => {
   before(() => cy.cleanUpTests());
 
-  describe('...should validate rules form fields', () => {
+  describe('...should validate form fields', () => {
     beforeEach(() => {
       cy.intercept('/rules/_search').as('rulesSearch');
       // Visit Rules page
@@ -479,7 +479,7 @@ describe('Rules', () => {
     });
   });
 
-  describe('...should validate rules create flow', () => {
+  describe('...should validate create rule flow', () => {
     beforeEach(() => {
       cy.intercept('/rules/_search').as('rulesSearch');
       // Visit Rules page

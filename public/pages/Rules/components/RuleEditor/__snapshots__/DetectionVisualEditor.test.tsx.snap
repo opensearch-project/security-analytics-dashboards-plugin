@@ -391,7 +391,26 @@ Object {
               <div
                 class="euiText euiText--extraSmall"
               >
-                Define how each selection should be included in the final query. For more options use YAML editor.
+                Define how each selection should be included in the final query. For more options use 
+                <button
+                  class="euiButtonEmpty euiButtonEmpty--primary empty-text-button"
+                  type="button"
+                >
+                  <span
+                    class="euiButtonContent euiButtonEmpty__content"
+                  >
+                    <span
+                      class="euiButtonEmpty__text"
+                    >
+                      <div
+                        class="euiText euiText--small"
+                      >
+                        YAML editor
+                      </div>
+                    </span>
+                  </span>
+                </button>
+                .
               </div>
             </label>
           </div>
@@ -831,7 +850,26 @@ Object {
             <div
               class="euiText euiText--extraSmall"
             >
-              Define how each selection should be included in the final query. For more options use YAML editor.
+              Define how each selection should be included in the final query. For more options use 
+              <button
+                class="euiButtonEmpty euiButtonEmpty--primary empty-text-button"
+                type="button"
+              >
+                <span
+                  class="euiButtonContent euiButtonEmpty__content"
+                >
+                  <span
+                    class="euiButtonEmpty__text"
+                  >
+                    <div
+                      class="euiText euiText--small"
+                    >
+                      YAML editor
+                    </div>
+                  </span>
+                </span>
+              </button>
+              .
             </div>
           </label>
         </div>
