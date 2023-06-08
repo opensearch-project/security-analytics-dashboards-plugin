@@ -72,7 +72,6 @@ export const DetectionRulesTable: React.FC<DetectionRulesTableProps> = ({
     onTableChange && onTableChange(pagination);
   };
 
-  console.log('AAA', ruleItems);
   return (
     <div style={{ padding: 10 }}>
       <EuiInMemoryTable
