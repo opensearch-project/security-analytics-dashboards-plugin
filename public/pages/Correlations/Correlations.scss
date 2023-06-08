@@ -1,0 +1,37 @@
+/*
+* Copyright OpenSearch Contributors
+* SPDX-License-Identifier: Apache-2.0
+*/
+
+.correlation_rule_field_condition .euiButtonGroup__buttons {
+  box-shadow: none;
+}
+
+#sa-correlations-network .vis-tooltip {
+  background-color: #535353;
+  padding: 0px;
+}
+
+.readonly-text-color-light-mode {
+  &.euiFieldText {
+    color: #535353;
+    -webkit-text-fill-color: #535353;
+  }
+
+  .euiComboBoxPill.euiComboBoxPill--plainText {
+    color: #535353;
+    -webkit-text-fill-color: #535353;
+  }
+}
+
+.readonly-text-color-dark-mode {
+  &.euiFieldText {
+    color: #DFE5EF;
+    -webkit-text-fill-color: #DFE5EF;
+  }
+
+  .euiComboBoxPill.euiComboBoxPill--plainText {
+    color: #DFE5EF;
+    -webkit-text-fill-color: #DFE5EF;
+  }
+}

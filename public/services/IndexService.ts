@@ -16,6 +16,15 @@ export default class IndexService implements IIndexService {
     this.httpClient = httpClient;
   }
 
+  getIndexFields = async (indexName: string) => {
+    const url = `..${API.INDICES_BASE}`;
+    return (await this.httpClient.post(url, {
+      body: JSON.stringify({
+        index: indexName,
+      }),
+    })) as ServerResponse<string[]>;
+  };
+
   getIndices = async (): Promise<ServerResponse<GetIndicesResponse>> => {
     const url = `..${API.INDICES_BASE}`;
     const response = (await this.httpClient.get(url)) as ServerResponse<GetIndicesResponse>;

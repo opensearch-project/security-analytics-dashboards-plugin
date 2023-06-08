@@ -1,25 +1,31 @@
 {
   "mappings": {
     "properties": {
-      "CommandLine": {
+      "name": {
         "type": "text"
       },
-      "EventID": {
+      "path": {
+        "type": "text"
+      },
+      "keywords": {
+        "type": "text"
+      },
+      "operation": {
+        "type": "text"
+      },
+      "action": {
+        "type": "text"
+      },
+      "dst_port": {
         "type": "integer"
       },
-      "HostName": {
+      "timeframe": {
         "type": "text"
       },
-      "Message": {
+      "user_agent": {
         "type": "text"
       },
-      "Provider_Name": {
-        "type": "text"
-      },
-      "ServiceName": {
-        "type": "text"
-      },
-      "DnsQuestionName": {
+      "method": {
         "type": "text"
       }
     }

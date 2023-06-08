@@ -18,14 +18,19 @@ import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components
 import dateMath from '@elastic/datemath';
 import { capitalizeFirstLetter, formatRuleType, renderTime } from '../../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
-import { DetectorsService, OpenSearchService, IndexPatternsService } from '../../../../services';
-import FindingDetailsFlyout from '../FindingDetailsFlyout';
+import {
+  DetectorsService,
+  OpenSearchService,
+  IndexPatternsService,
+  CorrelationService,
+} from '../../../../services';
 import { Finding } from '../../models/interfaces';
 import CreateAlertFlyout from '../CreateAlertFlyout';
 import { NotificationChannelTypeOptions } from '../../../CreateDetector/components/ConfigureAlerts/models/interfaces';
 import { FindingItemType } from '../../containers/Findings/Findings';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { RuleSource } from '../../../../../server/models/interfaces';
+import { DataStore } from '../../../../store/DataStore';
 
 interface FindingsTableProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -41,11 +46,12 @@ interface FindingsTableProps extends RouteComponentProps {
   onFindingsFiltered: (findings: FindingItemType[]) => void;
   hasNotificationsPlugin: boolean;
   indexPatternsService: IndexPatternsService;
+  correlationService: CorrelationService;
 }
 
 interface FindingsTableState {
   findingsFiltered: boolean;
-  filteredFindings: Finding[];
+  filteredFindings: FindingItemType[];
   flyout: object | undefined;
   flyoutOpen: boolean;
   selectedFinding?: Finding;
@@ -108,24 +114,6 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
     if (refreshPage) this.props.onRefresh();
   };
 
-  renderFindingDetailsFlyout = (finding: Finding) => {
-    if (this.state.flyoutOpen) this.closeFlyout();
-    else
-      this.setState({
-        flyout: (
-          <FindingDetailsFlyout
-            {...this.props}
-            finding={finding}
-            closeFlyout={this.closeFlyout}
-            allRules={this.props.rules}
-            indexPatternsService={this.props.indexPatternsService}
-          />
-        ),
-        flyoutOpen: true,
-        selectedFinding: finding,
-      });
-  };
-
   renderCreateAlertFlyout = (finding: Finding) => {
     if (this.state.flyoutOpen) this.closeFlyout();
     else {
@@ -167,7 +155,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
       widgetEmptyMessage,
     } = this.state;
 
-    const columns: EuiBasicTableColumn<Finding>[] = [
+    const columns: EuiBasicTableColumn<FindingItemType>[] = [
       {
         field: 'timestamp',
         name: 'Time',
@@ -183,7 +171,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         render: (id, finding) =>
           (
             <EuiLink
-              onClick={() => this.renderFindingDetailsFlyout(finding)}
+              onClick={() => DataStore.findings.openFlyout(finding, this.state.filteredFindings)}
               data-test-subj={'finding-details-flyout-button'}
             >
               {`${(id as string).slice(0, 7)}...`}
@@ -195,14 +183,14 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         name: 'Rule name',
         sortable: true,
         dataType: 'string',
-        render: (ruleName) => ruleName || DEFAULT_EMPTY_DATA,
+        render: (ruleName: string) => ruleName || DEFAULT_EMPTY_DATA,
       },
       {
         field: 'detectorName',
         name: 'Threat detector',
         sortable: true,
         dataType: 'string',
-        render: (name) => name || DEFAULT_EMPTY_DATA,
+        render: (name: string) => name || DEFAULT_EMPTY_DATA,
       },
       {
         // field: 'queries',
@@ -217,7 +205,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         name: 'Rule severity',
         sortable: true,
         dataType: 'string',
-        render: (ruleSeverity) => capitalizeFirstLetter(ruleSeverity) || DEFAULT_EMPTY_DATA,
+        render: (ruleSeverity: string) => capitalizeFirstLetter(ruleSeverity) || DEFAULT_EMPTY_DATA,
       },
       {
         name: 'Actions',
@@ -230,7 +218,9 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
                   aria-label={'View details'}
                   data-test-subj={`view-details-icon`}
                   iconType={'expand'}
-                  onClick={() => this.renderFindingDetailsFlyout(finding)}
+                  onClick={() =>
+                    DataStore.findings.openFlyout(finding, this.state.filteredFindings)
+                  }
                 />
               </EuiToolTip>
             ),
@@ -250,8 +240,8 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
       },
     ];
 
-    const logTypes = new Set();
-    const severities = new Set();
+    const logTypes = new Set<string>();
+    const severities = new Set<string>();
     filteredFindings.forEach((finding) => {
       if (finding) {
         const queryId = finding.queries[0].id;

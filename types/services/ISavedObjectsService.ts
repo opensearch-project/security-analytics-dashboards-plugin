@@ -16,4 +16,9 @@ export interface ISavedObjectsService {
   getDashboards(): Promise<
     SimpleSavedObject<{ references: SavedObjectReference[]; id?: string }>[]
   >;
+  getDashboard(
+    detectorId: string
+  ): Promise<Promise<SimpleSavedObject<SavedObjectReference>> | Promise<undefined>>;
+  deleteDashboard(detectorId: string): Promise<any>;
+  deleteVisualization(detectorId: string): Promise<any>;
 }

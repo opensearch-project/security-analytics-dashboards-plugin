@@ -10,14 +10,15 @@ const SAMPLE_RULE = {
   name: `Cypress test rule ${uniqueId}`,
   logType: 'windows',
   description: 'This is a rule used to test the rule creation workflow.',
-  detection:
-    'selection:\n  Provider_Name: Service Control Manager\nEventID: 7045\nServiceName: ZzNetSvc\n{backspace}{backspace}condition: selection',
   detectionLine: [
-    'selection:',
-    'Provider_Name: Service Control Manager',
-    'EventID: 7045',
-    'ServiceName: ZzNetSvc',
-    'condition: selection',
+    'condition: Selection_1',
+    'Selection_1:',
+    'Provider_Name|contains:',
+    '- Service Control Manager',
+    'EventID|contains:',
+    "- '7045'",
+    'ServiceName|contains:',
+    '- ZzNetSvc',
   ],
   severity: 'critical',
   tags: ['attack.persistence', 'attack.privilege_escalation', 'attack.t1543.003'],
@@ -45,7 +46,7 @@ const YAML_RULE_LINES = [
   `- '${SAMPLE_RULE.references}'`,
   `author: ${SAMPLE_RULE.author}`,
   `detection:`,
-  ...SAMPLE_RULE.detection.replaceAll('  ', '').replaceAll('{backspace}', '').split('\n'),
+  ...SAMPLE_RULE.detectionLine,
 ];
 
 const checkRulesFlyout = () => {
@@ -138,7 +139,7 @@ describe('Rules', () => {
 
     // Check that correct page is showing
     cy.waitForPageLoad('rules', {
-      contains: 'Rules',
+      contains: 'Detection rules',
     });
   });
 
@@ -169,6 +170,7 @@ describe('Rules', () => {
     );
 
     // Enter the reference
+    cy.contains('Add another URL').click();
     cy.get('[data-test-subj="rule_references_field_0"]').type(SAMPLE_RULE.references);
 
     // Enter the false positive cases
@@ -179,8 +181,23 @@ describe('Rules', () => {
     // Enter the author
     cy.get('[data-test-subj="rule_author_field"]').type(`${SAMPLE_RULE.author}{enter}`);
 
-    // Enter the detection
-    cy.get('[data-test-subj="rule_detection_field"] textarea').type(SAMPLE_RULE.detection, {
+    cy.get('[data-test-subj="detection-visual-editor-0"]').within(() => {
+      cy.getFieldByLabel('Key').type('Provider_Name');
+      cy.getInputByPlaceholder('Value').type('Service Control Manager');
+
+      cy.getButtonByText('Add map').click();
+      cy.get('[data-test-subj="Map-1"]').within(() => {
+        cy.getFieldByLabel('Key').type('EventID');
+        cy.getInputByPlaceholder('Value').type('7045');
+      });
+
+      cy.getButtonByText('Add map').click();
+      cy.get('[data-test-subj="Map-2"]').within(() => {
+        cy.getFieldByLabel('Key').type('ServiceName');
+        cy.getInputByPlaceholder('Value').type('ZzNetSvc');
+      });
+    });
+    cy.get('[data-test-subj="rule_detection_field"] textarea').type('Selection_1', {
       force: true,
     });
 
@@ -203,7 +220,7 @@ describe('Rules', () => {
     cy.wait('@getRules');
 
     cy.waitForPageLoad('rules', {
-      contains: 'Rules',
+      contains: 'Detection rules',
     });
 
     checkRulesFlyout();
@@ -211,7 +228,7 @@ describe('Rules', () => {
 
   it('...can be edited', () => {
     cy.waitForPageLoad('rules', {
-      contains: 'Rules',
+      contains: 'Detection rules',
     });
 
     cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
@@ -261,7 +278,7 @@ describe('Rules', () => {
     });
 
     cy.waitForPageLoad('rules', {
-      contains: 'Rules',
+      contains: 'Detection rules',
     });
 
     cy.wait('@getRules');

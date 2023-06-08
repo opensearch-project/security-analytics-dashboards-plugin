@@ -897,7 +897,9 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                               onBlur={[Function]}
                               onFocus={[Function]}
                             >
-                              <EuiText>
+                              <EuiText
+                                key=".windows"
+                              >
                                 <div
                                   className="euiText euiText--medium"
                                 >
@@ -1360,6 +1362,20 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
       </EuiPanel>
     </ContentPanel>
   </DetectorBasicDetailsView>
+  <EuiSpacer
+    size="m"
+  >
+    <div
+      className="euiSpacer euiSpacer--m"
+    />
+  </EuiSpacer>
+  <EuiSpacer
+    size="m"
+  >
+    <div
+      className="euiSpacer euiSpacer--m"
+    />
+  </EuiSpacer>
   <DetectorRulesView
     detector={
       Object {
@@ -1779,7 +1795,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                       Object {
                         "field": "category",
                         "multiSelect": "or",
-                        "name": "Rule Type",
+                        "name": "Log type",
                         "options": Array [
                           Object {
                             "name": "Network",
@@ -1839,26 +1855,36 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                       Object {
                         "field": "level",
                         "multiSelect": "or",
-                        "name": "Rule Severity",
+                        "name": "Rule severity",
                         "options": Array [
                           Object {
+                            "color": "#cc5642",
                             "name": "Critical",
+                            "priority": "1",
                             "value": "critical",
                           },
                           Object {
+                            "color": "#e7664c",
                             "name": "High",
+                            "priority": "2",
                             "value": "high",
                           },
                           Object {
+                            "color": "#d6bf57",
                             "name": "Medium",
+                            "priority": "3",
                             "value": "medium",
                           },
                           Object {
+                            "color": "#54b399",
                             "name": "Low",
+                            "priority": "4",
                             "value": "low",
                           },
                           Object {
+                            "color": "#209280",
                             "name": "Informational",
+                            "priority": "5",
                             "value": "informational",
                           },
                         ],
@@ -1916,7 +1942,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                         Object {
                           "field": "category",
                           "multiSelect": "or",
-                          "name": "Rule Type",
+                          "name": "Log type",
                           "options": Array [
                             Object {
                               "name": "Network",
@@ -1976,26 +2002,36 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                         Object {
                           "field": "level",
                           "multiSelect": "or",
-                          "name": "Rule Severity",
+                          "name": "Rule severity",
                           "options": Array [
                             Object {
+                              "color": "#cc5642",
                               "name": "Critical",
+                              "priority": "1",
                               "value": "critical",
                             },
                             Object {
+                              "color": "#e7664c",
                               "name": "High",
+                              "priority": "2",
                               "value": "high",
                             },
                             Object {
+                              "color": "#d6bf57",
                               "name": "Medium",
+                              "priority": "3",
                               "value": "medium",
                             },
                             Object {
+                              "color": "#54b399",
                               "name": "Low",
+                              "priority": "4",
                               "value": "low",
                             },
                             Object {
+                              "color": "#209280",
                               "name": "Informational",
+                              "priority": "5",
                               "value": "informational",
                             },
                           ],
@@ -2125,7 +2161,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                   Object {
                                     "field": "category",
                                     "multiSelect": "or",
-                                    "name": "Rule Type",
+                                    "name": "Log type",
                                     "options": Array [
                                       Object {
                                         "name": "Network",
@@ -2185,26 +2221,36 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                   Object {
                                     "field": "level",
                                     "multiSelect": "or",
-                                    "name": "Rule Severity",
+                                    "name": "Rule severity",
                                     "options": Array [
                                       Object {
+                                        "color": "#cc5642",
                                         "name": "Critical",
+                                        "priority": "1",
                                         "value": "critical",
                                       },
                                       Object {
+                                        "color": "#e7664c",
                                         "name": "High",
+                                        "priority": "2",
                                         "value": "high",
                                       },
                                       Object {
+                                        "color": "#d6bf57",
                                         "name": "Medium",
+                                        "priority": "3",
                                         "value": "medium",
                                       },
                                       Object {
+                                        "color": "#54b399",
                                         "name": "Low",
+                                        "priority": "4",
                                         "value": "low",
                                       },
                                       Object {
+                                        "color": "#209280",
                                         "name": "Informational",
+                                        "priority": "5",
                                         "value": "informational",
                                       },
                                     ],
@@ -2256,7 +2302,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                       Object {
                                         "field": "category",
                                         "multiSelect": "or",
-                                        "name": "Rule Type",
+                                        "name": "Log type",
                                         "options": Array [
                                           Object {
                                             "name": "Network",
@@ -2346,7 +2392,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                           iconType="arrowDown"
                                           onClick={[Function]}
                                         >
-                                          Rule Type
+                                          Log type
                                         </EuiFilterButton>
                                       }
                                       closePopover={[Function]}
@@ -2418,10 +2464,10 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                                     >
                                                       <span
                                                         className="euiFilterButton__textShift"
-                                                        data-text="Rule Type"
-                                                        title="Rule Type"
+                                                        data-text="Log type"
+                                                        title="Log type"
                                                       >
-                                                        Rule Type
+                                                        Log type
                                                       </span>
                                                     </span>
                                                   </span>
@@ -2438,26 +2484,36 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                       Object {
                                         "field": "level",
                                         "multiSelect": "or",
-                                        "name": "Rule Severity",
+                                        "name": "Rule severity",
                                         "options": Array [
                                           Object {
+                                            "color": "#cc5642",
                                             "name": "Critical",
+                                            "priority": "1",
                                             "value": "critical",
                                           },
                                           Object {
+                                            "color": "#e7664c",
                                             "name": "High",
+                                            "priority": "2",
                                             "value": "high",
                                           },
                                           Object {
+                                            "color": "#d6bf57",
                                             "name": "Medium",
+                                            "priority": "3",
                                             "value": "medium",
                                           },
                                           Object {
+                                            "color": "#54b399",
                                             "name": "Low",
+                                            "priority": "4",
                                             "value": "low",
                                           },
                                           Object {
+                                            "color": "#209280",
                                             "name": "Informational",
+                                            "priority": "5",
                                             "value": "informational",
                                           },
                                         ],
@@ -2496,7 +2552,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                           iconType="arrowDown"
                                           onClick={[Function]}
                                         >
-                                          Rule Severity
+                                          Rule severity
                                         </EuiFilterButton>
                                       }
                                       closePopover={[Function]}
@@ -2568,10 +2624,10 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                                     >
                                                       <span
                                                         className="euiFilterButton__textShift"
-                                                        data-text="Rule Severity"
-                                                        title="Rule Severity"
+                                                        data-text="Rule severity"
+                                                        title="Rule severity"
                                                       >
-                                                        Rule Severity
+                                                        Rule severity
                                                       </span>
                                                     </span>
                                                   </span>

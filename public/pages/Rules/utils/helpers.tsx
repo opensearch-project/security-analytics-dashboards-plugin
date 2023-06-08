@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiBasicTableColumn, EuiBreadcrumb, EuiLink } from '@elastic/eui';
+import { EuiBadge, EuiBasicTableColumn, EuiBreadcrumb, EuiLink } from '@elastic/eui';
 import React from 'react';
 import { capitalizeFirstLetter, errorNotificationToast } from '../../../utils/helpers';
 import { ruleSeverity, ruleSource, ruleTypes } from './constants';
@@ -84,7 +84,7 @@ export const getRulesTableSearchConfig = (): Search => {
       {
         type: 'field_value_selection',
         field: 'category',
-        name: 'Rule Type',
+        name: 'Log type',
         multiSelect: 'or',
         options: ruleTypes.map(({ value, label }) => ({
           value,
@@ -94,7 +94,7 @@ export const getRulesTableSearchConfig = (): Search => {
       {
         type: 'field_value_selection',
         field: 'level',
-        name: 'Rule Severity',
+        name: 'Rule severity',
         multiSelect: 'or',
         options: ruleSeverity,
       },
@@ -157,3 +157,8 @@ export function setBreadCrumb(
 ) {
   breadCrumbSetter?.([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.RULES, breadCrumb]);
 }
+
+export const getSeverityBadge = (severity) => {
+  const severityLevel = ruleSeverity.find((sev) => sev.value === severity);
+  return <EuiBadge color={severityLevel?.color}>{severity || DEFAULT_EMPTY_DATA}</EuiBadge>;
+};

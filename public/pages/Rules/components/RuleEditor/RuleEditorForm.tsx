@@ -15,7 +15,6 @@ import {
   EuiSpacer,
   EuiTextArea,
   EuiComboBox,
-  EuiCodeEditor,
   EuiButtonGroup,
   EuiText,
 } from '@elastic/eui';
@@ -28,6 +27,7 @@ import { FormSubmissionErrorToastNotification } from './FormSubmitionErrorToastN
 import { YamlRuleEditorComponent } from './components/YamlRuleEditorComponent/YamlRuleEditorComponent';
 import { mapFormToRule, mapRuleToForm } from './mappers';
 import { RuleTagsComboBox } from './components/YamlRuleEditorComponent/RuleTagsComboBox';
+import { DetectionVisualEditor } from './DetectionVisualEditor';
 
 export interface VisualRuleEditorProps {
   initialValue: RuleEditorFormModel;
@@ -35,7 +35,7 @@ export interface VisualRuleEditorProps {
   submit: (values: RuleEditorFormModel) => void;
   cancel: () => void;
   mode: 'create' | 'edit';
-  title: string;
+  title: string | JSX.Element;
 }
 
 const editorTypes = [
@@ -58,6 +58,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
   title,
 }) => {
   const [selectedEditorType, setSelectedEditorType] = useState('visual');
+  const [isDetectionInvalid, setIsDetectionInvalid] = useState(false);
 
   const onEditorTypeChange = (optionId: string) => {
     setSelectedEditorType(optionId);
@@ -108,13 +109,17 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
         return errors;
       }}
       onSubmit={(values, { setSubmitting }) => {
+        if (isDetectionInvalid) {
+          return;
+        }
+
         setSubmitting(false);
         submit(values);
       }}
     >
       {(props) => (
         <Form>
-          <ContentPanel title={title}>
+          <ContentPanel title={title} className={'rule-editor-form'}>
             <EuiButtonGroup
               data-test-subj="change-editor-type"
               legend="This is editor type selector"
@@ -216,30 +221,33 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     value={props.values.description}
                   />
                 </EuiFormRow>
-
                 <EuiSpacer />
 
-                <EuiFormRow
-                  label={
-                    <EuiText size={'s'}>
-                      <strong>Detection</strong>
-                    </EuiText>
-                  }
-                  isInvalid={props.touched.detection && !!props.errors?.detection}
-                  error={props.errors.detection}
-                >
-                  <EuiCodeEditor
-                    mode="yaml"
-                    width="100%"
-                    value={props.values.detection}
-                    onChange={(value) => {
-                      props.handleChange('detection')(value);
-                    }}
-                    onBlur={props.handleBlur('detection')}
-                    data-test-subj={'rule_detection_field'}
-                  />
-                </EuiFormRow>
+                <EuiText size={'s'}>
+                  <strong>Detection</strong>
+                </EuiText>
+                <EuiText size="s">
+                  <p>Define the detection criteria for the rule</p>
+                </EuiText>
                 <EuiSpacer />
+
+                <DetectionVisualEditor
+                  detectionYml={props.values.detection}
+                  setIsDetectionInvalid={(isInvalid: boolean) => {
+                    if (isInvalid) {
+                      props.errors.detection = 'Invalid detection entries';
+                    } else {
+                      delete props.errors.detection;
+                    }
+
+                    setIsDetectionInvalid(isInvalid);
+                  }}
+                  onChange={(detection: string) => {
+                    props.handleChange('detection')(detection);
+                  }}
+                />
+
+                <EuiSpacer size="xxl" />
 
                 <EuiFormRow
                   label={
@@ -392,7 +400,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     selectedOptions={
                       props.values.status
                         ? [{ value: props.values.status, label: props.values.status }]
-                        : []
+                        : [{ value: ruleStatus[0], label: ruleStatus[0] }]
                     }
                   />
                 </EuiFormRow>

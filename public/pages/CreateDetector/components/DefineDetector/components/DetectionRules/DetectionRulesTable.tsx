@@ -20,7 +20,7 @@ export interface DetectionRulesTableProps {
   onRuleDetails?: (ruleItem: RuleItem) => void;
 }
 
-const rulePriorityBySeverity: { [severity: string]: number } = {
+export const rulePriorityBySeverity: { [severity: string]: number } = {
   critical: 1,
   high: 2,
   medium: 3,

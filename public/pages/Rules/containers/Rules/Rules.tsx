@@ -67,7 +67,7 @@ export const Rules: React.FC<RulesProps> = (props) => {
         Import rule
       </EuiButton>,
       <EuiButton onClick={openCreatePage} data-test-subj={'create_rule_button'} fill={true}>
-        Create new rule
+        Create detection rule
       </EuiButton>,
     ],
     []
@@ -99,7 +99,7 @@ export const Rules: React.FC<RulesProps> = (props) => {
           <EuiFlexGroup gutterSize={'s'} justifyContent={'spaceBetween'}>
             <EuiFlexItem>
               <EuiTitle size="m">
-                <h1>Rules</h1>
+                <h1>Detection rules</h1>
               </EuiTitle>
             </EuiFlexItem>
             <EuiFlexItem>

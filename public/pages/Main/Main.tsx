@@ -14,6 +14,9 @@ import {
   EuiTitle,
   EuiSpacer,
   EuiGlobalToastList,
+  EuiBadge,
+  EuiFlexGroup,
+  EuiFlexItem,
 } from '@elastic/eui';
 import { Toast } from '@opensearch-project/oui/src/eui_components/toast/global_toast_list';
 import { CoreStart } from 'opensearch-dashboards/public';
@@ -39,14 +42,22 @@ import { DuplicateRule } from '../Rules/containers/DuplicateRule/DuplicateRule';
 import { DateTimeFilter } from '../Overview/models/interfaces';
 import Callout, { ICalloutProps } from './components/Callout';
 import { DataStore } from '../../store/DataStore';
+import { CreateCorrelationRule } from '../Correlations/containers/CreateCorrelationRule';
+import { CorrelationRules } from '../Correlations/containers/CorrelationRules';
+import { Correlations } from '../Correlations/containers/CorrelationsContainer';
+import FindingDetailsFlyout, {
+  FindingDetailsFlyoutBaseProps,
+} from '../Findings/components/FindingDetailsFlyout';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
   Findings = 'Findings',
   Detectors = 'Detectors',
-  Rules = 'Rules',
+  Rules = 'Detection rules',
   Overview = 'Overview',
   Alerts = 'Alerts',
+  Correlations = 'Correlations',
+  CorrelationRules = 'Correlation rules',
 }
 
 /**
@@ -74,6 +85,7 @@ interface MainState {
   dateTimeFilter: DateTimeFilter;
   callout?: ICalloutProps;
   toasts?: Toast[];
+  findingFlyout: FindingDetailsFlyoutBaseProps | null;
 }
 
 const navItemIndexByRoute: { [route: string]: number } = {
@@ -94,10 +106,18 @@ export default class Main extends Component<MainProps, MainState> {
         startTime: DEFAULT_DATE_RANGE.start,
         endTime: DEFAULT_DATE_RANGE.end,
       },
+      findingFlyout: null,
     };
 
     DataStore.detectors.setHandlers(this.showCallout, this.showToast);
+    DataStore.findings.setFlyoutCallback(this.showFindingFlyout);
   }
+
+  showFindingFlyout = (findingFlyout: FindingDetailsFlyoutBaseProps | null) => {
+    this.setState({
+      findingFlyout,
+    });
+  };
 
   showCallout = (callout?: ICalloutProps) => {
     this.setState({
@@ -172,7 +192,7 @@ export default class Main extends Component<MainProps, MainState> {
       history,
     } = this.props;
 
-    const { callout } = this.state;
+    const { callout, findingFlyout } = this.state;
     const sideNav: EuiSideNavItemType<{ style: any }>[] = [
       {
         name: Navigation.SecurityAnalytics,
@@ -233,6 +253,47 @@ export default class Main extends Component<MainProps, MainState> {
             },
             isSelected: this.state.selectedNavItemIndex === 5,
           },
+          {
+            name: Navigation.Correlations,
+            id: 6,
+            onClick: () => {
+              this.setState({ selectedNavItemIndex: 6 });
+              history.push(ROUTES.CORRELATIONS);
+            },
+            renderItem: (props) => {
+              return (
+                <EuiFlexGroup alignItems="center" gutterSize="xs">
+                  <EuiFlexItem grow={false}>
+                    <span
+                      className={props.className}
+                      onClick={() => {
+                        this.setState({ selectedNavItemIndex: 6 });
+                        history.push(ROUTES.CORRELATIONS);
+                      }}
+                    >
+                      {props.children}
+                    </span>
+                  </EuiFlexItem>
+                  <EuiFlexItem grow={false}>
+                    <EuiBadge>Experimental</EuiBadge>
+                  </EuiFlexItem>
+                </EuiFlexGroup>
+              );
+            },
+            isSelected: this.state.selectedNavItemIndex === 6,
+            forceOpen: true,
+            items: [
+              {
+                name: Navigation.CorrelationRules,
+                id: 7,
+                onClick: () => {
+                  this.setState({ selectedNavItemIndex: 7 });
+                  history.push(ROUTES.CORRELATION_RULES);
+                },
+                isSelected: this.state.selectedNavItemIndex === 7,
+              },
+            ],
+          },
         ],
       },
     ];
@@ -253,6 +314,15 @@ export default class Main extends Component<MainProps, MainState> {
                     )}
                     <EuiPageBody>
                       {callout ? <Callout {...callout} /> : null}
+                      {findingFlyout ? (
+                        <FindingDetailsFlyout
+                          {...findingFlyout}
+                          history={history}
+                          indexPatternsService={services.indexPatternsService}
+                          correlationService={services?.correlationsService}
+                          opensearchService={services.opensearchService}
+                        />
+                      ) : null}
                       <Switch>
                         <Route
                           path={`${ROUTES.FINDINGS}/:detectorId?`}
@@ -262,6 +332,8 @@ export default class Main extends Component<MainProps, MainState> {
                               setDateTimeFilter={this.setDateTimeFilter}
                               dateTimeFilter={this.state.dateTimeFilter}
                               findingsService={services.findingsService}
+                              history={props.history}
+                              correlationService={services?.correlationsService}
                               opensearchService={services.opensearchService}
                               detectorService={services.detectorsService}
                               notificationsService={services.notificationsService}
@@ -377,6 +449,7 @@ export default class Main extends Component<MainProps, MainState> {
                               findingService={services.findingsService}
                               notifications={core?.notifications}
                               opensearchService={services.opensearchService}
+                              indexPatternService={services.indexPatternsService}
                             />
                           )}
                         />
@@ -386,6 +459,7 @@ export default class Main extends Component<MainProps, MainState> {
                             <DetectorDetails
                               detectorService={services.detectorsService}
                               savedObjectsService={services.savedObjectsService}
+                              indexPatternsService={services.indexPatternsService}
                               {...props}
                               notifications={core?.notifications}
                             />
@@ -428,6 +502,37 @@ export default class Main extends Component<MainProps, MainState> {
                               opensearchService={services.opensearchService}
                             />
                           )}
+                        />
+                        <Route
+                          path={`${ROUTES.CORRELATION_RULES}`}
+                          render={(props: RouteComponentProps<any, any, any>) => (
+                            <CorrelationRules {...props} />
+                          )}
+                        />
+                        <Route
+                          path={`${ROUTES.CORRELATION_RULE_CREATE}`}
+                          render={(props: RouteComponentProps<any, any, any>) => (
+                            <CreateCorrelationRule
+                              {...props}
+                              indexService={services?.indexService}
+                              fieldMappingService={services?.fieldMappingService}
+                              notifications={core?.notifications}
+                            />
+                          )}
+                        />
+                        <Route
+                          path={`${ROUTES.CORRELATIONS}`}
+                          render={(props: RouteComponentProps<any, any, any>) => {
+                            return (
+                              <Correlations
+                                {...props}
+                                history={props.history}
+                                onMount={() => this.setState({ selectedNavItemIndex: 6 })}
+                                dateTimeFilter={this.state.dateTimeFilter}
+                                setDateTimeFilter={this.setDateTimeFilter}
+                              />
+                            );
+                          }}
                         />
                         <Redirect from={'/'} to={landingPage} />
                       </Switch>

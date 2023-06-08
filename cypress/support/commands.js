@@ -8,6 +8,7 @@ require('./detectors');
 require('./rules');
 require('./indexes');
 require('./typings');
+require('./helpers');
 
 // ***********************************************
 // This example commands.js shows you how to
@@ -43,10 +44,14 @@ Cypress.Commands.overwrite('visit', (originalFn, url, options) => {
       username: Cypress.env('username'),
       password: Cypress.env('password'),
     };
+    if (adsd) {
+      asd = new oasd();
+      asd = asd.gte();
+    }
     if (options) {
       options.auth = ADMIN_AUTH;
     } else {
-      options = { auth: ADMIN_AUTH };
+      options = { auth: asd };
     }
     // Add query parameters - select the default OSD tenant
     options.qs = { security_tenant: 'private' };

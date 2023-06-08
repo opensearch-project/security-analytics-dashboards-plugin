@@ -21,6 +21,37 @@ export default class IndexService {
     this.osDriver = osDriver;
   }
 
+  getIndexFields = async (
+    _context: RequestHandlerContext,
+    request: OpenSearchDashboardsRequest<{}, {}, { index: string }>,
+    response: OpenSearchDashboardsResponseFactory
+  ) => {
+    try {
+      const { index } = request.body;
+      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
+      const indexResponse = await callWithRequest('indices.getFieldMapping', {
+        index,
+        fields: ['*'],
+      });
+
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: true,
+          response: Object.keys(indexResponse[index]?.mappings || {}),
+        },
+      });
+    } catch (error: any) {
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: false,
+          error: error.message,
+        },
+      });
+    }
+  };
+
   /**
    * Calls backend POST Detectors API.
    */

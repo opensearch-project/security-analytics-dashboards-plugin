@@ -4,6 +4,7 @@
  */
 
 import DetectorService from './DetectorService';
+import CorrelationService from './CorrelationService';
 import FindingsService from './FindingsService';
 import OpenSearchService from './OpenSearchService';
 import IndexService from './IndexService';
@@ -14,6 +15,7 @@ import NotificationsService from './NotificationsService';
 
 export {
   DetectorService,
+  CorrelationService,
   FieldMappingService,
   FindingsService,
   IndexService,
