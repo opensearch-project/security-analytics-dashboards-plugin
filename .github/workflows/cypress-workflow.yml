@@ -77,6 +77,19 @@ jobs:
         with:
           path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
 
+      # This job adjusts the 'version' and 'opensearchDashboardsVersion' attributes in the package.json and
+      # opensearch_dashboards.json file to the provided versions (e.g., "2.8.0.0", and "2.8.0" respectively)
+      # if those env variables are not empty.
+      # This is most useful on the 'main' branch as it will enable us to specify which version to use for the build when
+      # one of this package's dependencies is not building reliably without having to adjust the actual version of this package.
+      - name: Override Package Versions
+        if: ${{ env.OVERRIDE_PACKAGE_VERSION != '' && env.OVERRIDE_OPENSEARCH_DASHBOARDS_VERSION != '' }}
+        run: |
+          cd OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
+          sed -i 's/"version": "[^"]*"/"version": "${{ env.OVERRIDE_PACKAGE_VERSION }}"/' opensearch_dashboards.json
+          sed -i 's/"opensearchDashboardsVersion": "[^"]*"/"opensearchDashboardsVersion": "${{ env.OVERRIDE_OPENSEARCH_DASHBOARDS_VERSION }}"/' opensearch_dashboards.json
+          sed -i 's/"version": "[^"]*"/"version": "${{ env.OVERRIDE_PACKAGE_VERSION }}"/' package.json
+
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
@@ -92,19 +105,6 @@ jobs:
           npm i -g yarn@$YARN_VERSION
       - run: node -v
       - run: yarn -v
-
-      # This job adjusts the 'version' and 'opensearchDashboardsVersion' attributes in the package.json and
-      # opensearch_dashboards.json file to the provided versions (e.g., "2.8.0.0", and "2.8.0" respectively)
-      # if those env variables are not empty.
-      # This is most useful on the 'main' branch as it will enable us to specify which version to use for the build when
-      # one of this package's dependencies is not building reliably without having to adjust the actual version of this package.
-      - name: Override Package Versions
-        if: ${{ env.OVERRIDE_PACKAGE_VERSION != '' && env.OVERRIDE_OPENSEARCH_DASHBOARDS_VERSION != '' }}
-        run: |
-          cd OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
-          sed -i 's/"version": "[^"]*"/"version": "${{ env.OVERRIDE_PACKAGE_VERSION }}"/' opensearch_dashboards.json
-          sed -i 's/"opensearchDashboardsVersion": "[^"]*"/"opensearchDashboardsVersion": "${{ env.OVERRIDE_OPENSEARCH_DASHBOARDS_VERSION }}"/' opensearch_dashboards.json
-          sed -i 's/"version": "[^"]*"/"version": "${{ env.OVERRIDE_PACKAGE_VERSION }}"/' package.json
 
       - name: Bootstrap plugin/OpenSearch-Dashboards
         run: |
