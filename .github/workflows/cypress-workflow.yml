@@ -7,17 +7,17 @@ on:
     branches:
       - "*"
 env:
-  OPENSEARCH_DASHBOARDS_VERSION: 'main'
-  OPENSEARCH_VERSION: '3.0.0-SNAPSHOT'
-  SECURITY_ANALYTICS_BRANCH: 'main'
+  OPENSEARCH_DASHBOARDS_VERSION: '2.8.0'
+  OPENSEARCH_VERSION: '2.8.0-SNAPSHOT'
+  SECURITY_ANALYTICS_BRANCH: '2.x'
   GRADLE_VERSION: '7.6.1'
 
   # The 'Override Package Versions' job adjusts the 'version' attribute in the package.json and
   # opensearch_dashboards.json files to the provided version (e.g., "2.8.0.0") if this variable is not empty.
-  OVERRIDE_PACKAGE_VERSION: ''
+  OVERRIDE_PACKAGE_VERSION: '2.8.0.0'
   # The 'Override Package Versions' job adjusts the 'opensearchDashboardsVersion' attribute in the
   # opensearch_dashboards.json file to the provided version (e.g., "2.8.0") if this variable is not empty.
-  OVERRIDE_OPENSEARCH_DASHBOARDS_VERSION: ''
+  OVERRIDE_OPENSEARCH_DASHBOARDS_VERSION: '2.8.0'
 jobs:
   tests:
     name: Run Cypress E2E tests
@@ -97,7 +97,7 @@ jobs:
       # opensearch_dashboards.json file to the provided versions (e.g., "2.8.0.0", and "2.8.0" respectively)
       # if those env variables are not empty.
       # This is most useful on the 'main' branch as it will enable us to specify which version to use for the build when
-      # one of this package's dependencies is not building reliably.
+      # one of this package's dependencies is not building reliably without having to adjust the actual version of this package.
       - name: Override Package Versions
         if: ${{ env.OVERRIDE_PACKAGE_VERSION != '' && env.OVERRIDE_OPENSEARCH_DASHBOARDS_VERSION != '' }}
         run: |
