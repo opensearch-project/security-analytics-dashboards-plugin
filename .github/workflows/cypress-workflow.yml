@@ -54,6 +54,8 @@ jobs:
           ref: ${{ env.SECURITY_ANALYTICS_BRANCH }}
 
       - name: Set up Gradle
+        # Currently, we only want to set up gradle when executing the tests on v3.0.
+        if: ${{ env.OVERRIDE_PACKAGE_VERSION != '' && env.OVERRIDE_OPENSEARCH_DASHBOARDS_VERSION != '' }}
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
