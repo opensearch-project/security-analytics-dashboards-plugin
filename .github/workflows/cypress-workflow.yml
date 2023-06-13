@@ -101,6 +101,7 @@ jobs:
       - name: Override Package Versions
         if: ${{ env.OVERRIDE_PACKAGE_VERSION != '' && env.OVERRIDE_OPENSEARCH_DASHBOARDS_VERSION != '' }}
         run: |
+          cd OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
           sed -i 's/"version": "[^"]*"/"version": "${{ env.OVERRIDE_PACKAGE_VERSION }}"/' opensearch_dashboards.json
           sed -i 's/"opensearchDashboardsVersion": "[^"]*"/"opensearchDashboardsVersion": "${{ env.OVERRIDE_OPENSEARCH_DASHBOARDS_VERSION }}"/' opensearch_dashboards.json
           sed -i 's/"version": "[^"]*"/"version": "${{ env.OVERRIDE_PACKAGE_VERSION }}"/' package.json
