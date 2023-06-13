@@ -82,6 +82,7 @@ jobs:
         if: ${{ env.OVERRIDE_REFERENCE != '' }}
         run: |
           cd OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
+          git fetch --all
           git checkout ${{ env.OVERRIDE_REFERENCE }} opensearch_dashboards.json
           git checkout ${{ env.OVERRIDE_REFERENCE }} package.json
           git checkout ${{ env.OVERRIDE_REFERENCE }} yarn.lock
