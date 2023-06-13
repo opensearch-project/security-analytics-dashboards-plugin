@@ -12,12 +12,9 @@ env:
   SECURITY_ANALYTICS_BRANCH: '2.x'
   GRADLE_VERSION: '7.6.1'
 
-  # The 'Override Package Versions' job adjusts the 'version' attribute in the package.json and
-  # opensearch_dashboards.json files to the provided version (e.g., "2.8.0.0") if this variable is not empty.
-  OVERRIDE_PACKAGE_VERSION: '2.8.0.0'
-  # The 'Override Package Versions' job adjusts the 'opensearchDashboardsVersion' attribute in the
-  # opensearch_dashboards.json file to the provided version (e.g., "2.8.0") if this variable is not empty.
-  OVERRIDE_OPENSEARCH_DASHBOARDS_VERSION: '2.8.0'
+  # If this variable is not empty, the package.json, opensearch_dashboards.json, and yarn.lock files will be replaced
+  # with those files from the 'opensearch-project/security-analytics-dashboards-plugin' branch or commit specified.
+  OVERRIDE_BRANCH: ''
 jobs:
   tests:
     name: Run Cypress E2E tests
@@ -54,8 +51,6 @@ jobs:
           ref: ${{ env.SECURITY_ANALYTICS_BRANCH }}
 
       - name: Set up Gradle
-        # Currently, we only want to set up gradle when executing the tests on v3.0.
-        if: ${{ env.OVERRIDE_PACKAGE_VERSION != '' && env.OVERRIDE_OPENSEARCH_DASHBOARDS_VERSION != '' }}
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
@@ -79,18 +74,17 @@ jobs:
         with:
           path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
 
-      # This job adjusts the 'version' and 'opensearchDashboardsVersion' attributes in the package.json and
-      # opensearch_dashboards.json file to the provided versions (e.g., "2.8.0.0", and "2.8.0" respectively)
-      # if those env variables are not empty.
+      # This job replaces the package.json, opensearch_dashboards.json, and yarn.lock files from the
+      # 'opensearch-project/security-analytics-dashboards-plugin' branch or commit specified in env variable.
       # This is most useful on the 'main' branch as it will enable us to specify which version to use for the build when
       # one of this package's dependencies is not building reliably without having to adjust the actual version of this package.
-      - name: Override Package Versions
-        if: ${{ env.OVERRIDE_PACKAGE_VERSION != '' && env.OVERRIDE_OPENSEARCH_DASHBOARDS_VERSION != '' }}
+      - name: Override Package Version
+        if: ${{ env.OVERRIDE_BRANCH != '' }}
         run: |
           cd OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
-          sed -i 's/"version": "[^"]*"/"version": "${{ env.OVERRIDE_PACKAGE_VERSION }}"/' opensearch_dashboards.json
-          sed -i 's/"opensearchDashboardsVersion": "[^"]*"/"opensearchDashboardsVersion": "${{ env.OVERRIDE_OPENSEARCH_DASHBOARDS_VERSION }}"/' opensearch_dashboards.json
-          sed -i 's/"version": "[^"]*"/"version": "${{ env.OVERRIDE_PACKAGE_VERSION }}"/' package.json
+          git checkout ${{ env.OVERRIDE_BRANCH != '' }} opensearch_dashboards.json
+          git checkout ${{ env.OVERRIDE_BRANCH != '' }} package.json
+          git checkout ${{ env.OVERRIDE_BRANCH != '' }} yarn.lock
 
       - name: Setup Node
         uses: actions/setup-node@v3
