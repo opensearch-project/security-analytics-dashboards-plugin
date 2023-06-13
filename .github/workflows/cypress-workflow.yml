@@ -14,7 +14,7 @@ env:
 
   # If this variable is not empty, the package.json, opensearch_dashboards.json, and yarn.lock files will be replaced
   # with those files from the 'opensearch-project/security-analytics-dashboards-plugin' branch or commit specified.
-  OVERRIDE_BRANCH: ''
+  OVERRIDE_REFERENCE: '2.8'
 jobs:
   tests:
     name: Run Cypress E2E tests
@@ -79,12 +79,12 @@ jobs:
       # This is most useful on the 'main' branch as it will enable us to specify which version to use for the build when
       # one of this package's dependencies is not building reliably without having to adjust the actual version of this package.
       - name: Override Package Version
-        if: ${{ env.OVERRIDE_BRANCH != '' }}
+        if: ${{ env.OVERRIDE_REFERENCE != '' }}
         run: |
           cd OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
-          git checkout ${{ env.OVERRIDE_BRANCH != '' }} opensearch_dashboards.json
-          git checkout ${{ env.OVERRIDE_BRANCH != '' }} package.json
-          git checkout ${{ env.OVERRIDE_BRANCH != '' }} yarn.lock
+          git checkout ${{ env.OVERRIDE_REFERENCE != '' }} opensearch_dashboards.json
+          git checkout ${{ env.OVERRIDE_REFERENCE != '' }} package.json
+          git checkout ${{ env.OVERRIDE_REFERENCE != '' }} yarn.lock
 
       - name: Setup Node
         uses: actions/setup-node@v3
