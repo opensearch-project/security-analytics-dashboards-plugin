@@ -82,7 +82,7 @@ export const DetectionRulesTable: React.FC<DetectionRulesTableProps> = ({
           onRuleDetails
         )}
         items={ruleItems}
-        itemId={(item: RuleItem) => `${item.name}`}
+        itemId={(item: RuleItem) => `${item.id}`}
         search={search}
         pagination={pagination}
         onTableChange={onTableChangeHandler}
