@@ -35,7 +35,7 @@ export interface VisualRuleEditorProps {
   submit: (values: RuleEditorFormModel) => void;
   cancel: () => void;
   mode: 'create' | 'edit';
-  title: string;
+  title: string | JSX.Element;
 }
 
 const editorTypes = [
@@ -119,7 +119,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
     >
       {(props) => (
         <Form>
-          <ContentPanel title={title}>
+          <ContentPanel title={title} className={'rule-editor-form'}>
             <EuiButtonGroup
               data-test-subj="change-editor-type"
               legend="This is editor type selector"
@@ -400,7 +400,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     selectedOptions={
                       props.values.status
                         ? [{ value: props.values.status, label: props.values.status }]
-                        : []
+                        : [{ value: ruleStatus[0], label: ruleStatus[0] }]
                     }
                   />
                 </EuiFormRow>
