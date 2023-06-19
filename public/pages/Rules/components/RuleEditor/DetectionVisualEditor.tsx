@@ -110,6 +110,18 @@ export class DetectionVisualEditor extends React.Component<
   DetectionVisualEditorProps,
   DetectionVisualEditorState
 > {
+  /**
+   * Text area editor row height
+   * @private
+   */
+  private textareaRowHeight = 25;
+
+  /**
+   * Text area editor empty space to occupy before filling in the editor
+   * @private
+   */
+  private textareaEmptySpace = 40;
+
   constructor(props: DetectionVisualEditorProps) {
     super(props);
     this.state = {
@@ -136,7 +148,7 @@ export class DetectionVisualEditor extends React.Component<
 
     if (this.props.isInvalid != prevProps.isInvalid) {
       this.validateCondition(this.state.detectionObj.condition);
-      this.validateDatum(this.state.detectionObj.selections);
+      this.validateData(this.state.detectionObj.selections);
     }
   }
 
@@ -208,7 +220,7 @@ export class DetectionVisualEditor extends React.Component<
     return dump(compiledDetection);
   };
 
-  private validateDatum = (selections: Selection[]) => {
+  private validateData = (selections: Selection[]) => {
     const { errors } = this.state;
     selections.map((selection, selIdx) => {
       const fieldNames = new Set<string>();
@@ -276,7 +288,7 @@ export class DetectionVisualEditor extends React.Component<
         },
       },
       () => {
-        this.validateDatum(newSelections);
+        this.validateData(newSelections);
       }
     );
   };
@@ -361,7 +373,7 @@ export class DetectionVisualEditor extends React.Component<
   private updateCondition = (value: string) => {
     value = value.trim();
 
-    const detectionObj = { ...this.state.detectionObj, condition: value } as DetectionObject;
+    const detectionObj: DetectionObject = { ...this.state.detectionObj, condition: value };
     this.setState(
       {
         detectionObj,
@@ -438,7 +450,7 @@ export class DetectionVisualEditor extends React.Component<
   };
 
   private getTextareaHeight = (rowNo: number = 0) => {
-    return `${rowNo * 25 + 40}px`;
+    return `${rowNo * this.textareaRowHeight + this.textareaEmptySpace}px`;
   };
 
   render() {

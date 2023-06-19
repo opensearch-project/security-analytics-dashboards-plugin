@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   EuiPopoverTitle,
   EuiFlexItem,
@@ -149,6 +149,34 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
     </div>
   );
 
+  const onSelectionPopup = (e: Event, idx: number) => {
+    e.preventDefault();
+    openPopover(idx);
+  };
+
+  const onRemoveSelection = (idx: number) => {
+    const usedExp = _.cloneDeep(usedExpressions);
+    usedExp.splice(idx, 1);
+    usedExp.length && (usedExp[0].description = '');
+    setUsedExpressions([...usedExp]);
+    onChange(getValue(usedExp));
+  };
+
+  const onAddSelection = useCallback(() => {
+    const usedExp = _.cloneDeep(usedExpressions);
+    const differences = _.differenceBy(selections, usedExp, 'name');
+    const exp = [
+      ...usedExp,
+      {
+        description: usedExpressions.length ? 'AND' : '',
+        isOpen: false,
+        name: differences[0]?.name,
+      },
+    ];
+    setUsedExpressions(exp);
+    onChange(getValue(exp));
+  }, [usedExpressions, selections]);
+
   return (
     <EuiFlexGroup gutterSize="s" data-test-subj={dataTestSubj}>
       {!usedExpressions.length && (
@@ -184,10 +212,7 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
                 description={exp.description}
                 value={exp.name}
                 isActive={exp.isOpen}
-                onClick={(e: any) => {
-                  e.preventDefault();
-                  openPopover(idx);
-                }}
+                onClick={(e) => onSelectionPopup(e, idx)}
               />
             }
             isOpen={exp.isOpen}
@@ -200,36 +225,18 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
           <EuiButtonIcon
             data-test-subj={`selection-exp-field-item-remove-${idx}`}
             className={'selection-exp-field-item-remove'}
-            onClick={() => {
-              const usedExp = _.cloneDeep(usedExpressions);
-              usedExp.splice(idx, 1);
-              usedExp.length && (usedExp[0].description = '');
-              setUsedExpressions([...usedExp]);
-              onChange(getValue(usedExp));
-            }}
+            onClick={() => onRemoveSelection(idx)}
             color={'danger'}
             iconType="cross"
             aria-label={'Remove condition'}
+            key={idx}
           />
         </EuiFlexItem>
       ))}
       {selections.length > usedExpressions.length && (
         <EuiFlexItem grow={false} key={`selections_add`}>
           <EuiButtonIcon
-            onClick={() => {
-              const usedExp = _.cloneDeep(usedExpressions);
-              const differences = _.differenceBy(selections, usedExp, 'name');
-              const exp = [
-                ...usedExp,
-                {
-                  description: usedExpressions.length ? 'AND' : '',
-                  isOpen: false,
-                  name: differences[0]?.name,
-                },
-              ];
-              setUsedExpressions(exp);
-              onChange(getValue(exp));
-            }}
+            onClick={onAddSelection}
             color={'primary'}
             iconType="plusInCircleFilled"
             aria-label={'Add one more condition'}

@@ -14,7 +14,7 @@ export const NAME_REGEX = new RegExp(/^[a-zA-Z0-9 _-]{5,50}$/);
 // numbers 0-9, hyphens, dot, and underscores.
 export const DETECTION_NAME_REGEX = new RegExp(/^[a-zA-Z0-9_.-]{5,50}$/);
 
-export const CONDITION_REGEX = new RegExp(
+export const DETECTION_CONDITION_REGEX = new RegExp(
   /^((not )?[a-zA-Z0-9_]+)?( (and|or|not) ?([a-zA-Z0-9_]+))*(?<!and|or|not)$/
 );
 
@@ -39,7 +39,10 @@ export function validateDetectionFieldName(
   return name.trim().match(regex) !== null;
 }
 
-export function validateCondition(name: string, regex: RegExp = CONDITION_REGEX): boolean {
+export function validateCondition(
+  name: string,
+  regex: RegExp = DETECTION_CONDITION_REGEX
+): boolean {
   return name.trim().match(regex) !== null;
 }
 
