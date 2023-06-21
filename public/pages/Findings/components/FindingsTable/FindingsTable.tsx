@@ -209,12 +209,10 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         align: 'left',
         render: (ruleSeverity: string) => {
           const severity = capitalizeFirstLetter(ruleSeverity) || DEFAULT_EMPTY_DATA;
+          const { background, text } = getSeverityColor(severity);
 
           return (
-            <EuiBadge
-              color={getSeverityColor(severity).background}
-              style={{ color: getSeverityColor(severity).text }}
-            >
+            <EuiBadge color={background} style={{ color: text }}>
               {severity}
             </EuiBadge>
           );
