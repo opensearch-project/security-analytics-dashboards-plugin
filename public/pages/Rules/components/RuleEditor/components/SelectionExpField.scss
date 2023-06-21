@@ -1,0 +1,25 @@
+.selection-exp-field-item {
+  position: relative;
+
+  .euiExpression__value {
+    padding: 2px;
+    border: 1px solid;
+    border-radius: 4px;
+  }
+}
+
+.selection-exp-field-item-with-remove {
+  position: relative;
+
+  .euiExpression__value {
+    padding: 2px 25px 2px 2px;
+    border: 1px solid;
+    border-radius: 4px;
+  }
+
+  .selection-exp-field-item-remove {
+    position: absolute;
+    right: 0;
+    top: 1px;
+  }
+}

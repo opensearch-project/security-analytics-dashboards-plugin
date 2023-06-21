@@ -4,7 +4,7 @@
  */
 
 import sample_detector from '../fixtures/integration_tests/detector/create_usb_detector_data.json';
-import { NODE_API, OPENSEARCH_DASHBOARDS_URL } from './constants';
+import { OPENSEARCH_DASHBOARDS_URL } from './constants';
 import _ from 'lodash';
 
 Cypress.Commands.add('getElementByText', (locator, text) => {
@@ -62,17 +62,7 @@ Cypress.Commands.add(
       items = [items];
     }
     Cypress.log({ message: `Select combobox items: ${items.join(' | ')}` });
-    cy.wrap(subject)
-      .focus()
-      .click({ force: true })
-      .then(() => {
-        items.map((item) =>
-          cy.get('.euiComboBoxOptionsList__rowWrap').within(() => {
-            cy.get('button').contains(item).should('be.visible');
-            cy.get('button').contains(item).click();
-          })
-        );
-      });
+    items.map((item) => cy.wrap(subject).type(item).type('{enter}'));
   }
 );
 
@@ -85,21 +75,68 @@ Cypress.Commands.add(
     Cypress.log({ message: `Clear combobox` });
     return cy
       .wrap(subject)
-      .parents('.euiComboBox__inputWrap')
-      .find('.euiBadge')
-      .then(($badge) => {
-        let numberOfBadges = $badge.length;
-        Cypress.log({
-          message: `Number of combo badges to clear: ${numberOfBadges}`,
-        });
-
-        cy.wrap(subject)
-          .parents('.euiComboBox__inputWrap')
-          .find('input')
-          .focus()
-          .pressBackspaceKey(numberOfBadges);
-      });
+      .parents('.euiFormRow__fieldWrapper')
+      .find('[data-test-subj="comboBoxClearButton"]')
+      .click({ force: true });
   }
+);
+
+Cypress.Commands.add(
+  'containsValue',
+  {
+    prevSubject: true,
+  },
+  (subject, value) =>
+    cy.wrap(subject).parents('.euiFormRow__fieldWrapper').contains(value, {
+      matchCase: false,
+    })
+);
+
+Cypress.Commands.add(
+  'clearValue',
+  {
+    prevSubject: true,
+  },
+  (subject) => cy.wrap(subject).type('{selectall}').type('{backspace}')
+);
+
+Cypress.Commands.add(
+  'containsError',
+  {
+    prevSubject: true,
+  },
+  (subject, errorText) =>
+    cy
+      .wrap(subject)
+      .parents('.euiFormRow__fieldWrapper')
+      .find('.euiFormErrorText')
+      .contains(errorText)
+);
+
+Cypress.Commands.add(
+  'containsHelperText',
+  {
+    prevSubject: true,
+  },
+  (subject, helperText) =>
+    cy
+      .wrap(subject)
+      .parents('.euiFormRow__fieldWrapper')
+      .find('.euiFormHelpText')
+      .contains(helperText)
+);
+
+Cypress.Commands.add(
+  'shouldNotHaveError',
+  {
+    prevSubject: true,
+  },
+  (subject) =>
+    cy
+      .wrap(subject)
+      .parents('.euiFormRow__fieldWrapper')
+      .find('.euiFormErrorText')
+      .should('not.exist')
 );
 
 Cypress.Commands.add('validateDetailsItem', (label, value) => {

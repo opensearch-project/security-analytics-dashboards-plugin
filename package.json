@@ -69,7 +69,8 @@
     "jest-environment-jsdom": "^27.5.1",
     "lint-staged": "^10.2.0",
     "ts-loader": "^6.2.1",
-    "@types/vis": "^4.21.21"
+    "@types/vis": "^4.21.21",
+    "string.prototype.replaceall": "1.0.7"
   },
   "engines": {
     "yarn": "^1.21.1"
