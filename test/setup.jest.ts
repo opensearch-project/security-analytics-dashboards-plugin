@@ -13,6 +13,8 @@ import { contextServicesMock as mockContextServices } from './mocks/useContext.m
 import { DataStore } from '../public/store/DataStore';
 import services from './mocks/services';
 import notificationsStartMock from './mocks/services/notifications/NotificationsStart.mock';
+import replaceAllInserter from 'string.prototype.replaceall';
+replaceAllInserter.shim();
 
 Enzyme.configure({ adapter: new Adapter() });
 
