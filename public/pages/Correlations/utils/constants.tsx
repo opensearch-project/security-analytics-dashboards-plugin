@@ -62,7 +62,7 @@ export const defaultSeverityFilterItemOptions: FilterItem[] = Object.values(rule
     return {
       name: (
         <p>
-          <EuiIcon type={'dot'} color={sev.color} /> {`${sev.priority} ${sev.name}`}
+          <EuiIcon type={'dot'} color={sev.color.background} /> {`${sev.name}`}
         </p>
       ),
       id: sev.value,
@@ -92,5 +92,10 @@ export const getSeverityLabel = (sev: string) => {
 };
 
 export const getSeverityColor = (sev: string) => {
-  return ruleSeverity.find((severity) => severity.value === sev)?.color || 'black';
+  return (
+    ruleSeverity.find((severity) => severity.value === sev.toLowerCase())?.color || {
+      background: 'white',
+      text: 'black',
+    }
+  );
 };

@@ -12,6 +12,7 @@ import {
   EuiSelectOption,
   EuiSpacer,
   EuiText,
+  EuiBadge,
 } from '@elastic/eui';
 import moment from 'moment';
 import { PeriodSchedule } from '../../models/interfaces';
@@ -27,7 +28,7 @@ import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpr
 import { RuleInfo } from '../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { OpenSearchService } from '../services';
-import { ruleTypes } from '../pages/Rules/utils/constants';
+import { ruleSeverity, ruleTypes } from '../pages/Rules/utils/constants';
 import { Handler } from 'vega-tooltip';
 import _ from 'lodash';
 
@@ -297,5 +298,14 @@ export const formatRuleType = (matchingRuleType: string) => {
   return (
     ruleTypes.find((ruleType) => ruleType.value === matchingRuleType.toLowerCase())?.label ||
     DEFAULT_EMPTY_DATA
+  );
+};
+
+export const getSeverityBadge = (severity: string) => {
+  const severityLevel = ruleSeverity.find((sev) => sev.value === severity);
+  return (
+    <EuiBadge color={severityLevel?.color.background} style={{ color: severityLevel?.color.text }}>
+      {severity || DEFAULT_EMPTY_DATA}
+    </EuiBadge>
   );
 };
