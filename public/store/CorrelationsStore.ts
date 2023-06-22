@@ -175,7 +175,9 @@ export class CorrelationsStore implements ICorrelationsStore {
         if (findingRes.ok) {
           findingRes.response.findings.forEach((f) => {
             const rule = allRules.find((rule) => rule._id === f.queries[0].id);
-
+            if (!rule) {
+              console.log(f.queries[0].id);
+            }
             findings[f.id] = {
               ...f,
               id: f.id,
@@ -218,7 +220,7 @@ export class CorrelationsStore implements ICorrelationsStore {
       const correlatedFindings = response.response.findings.map((f) => {
         return {
           ...allFindings[f.finding],
-          correlationScore: Math.round(100 * f.score) / 100,
+          correlationScore: f.score.toExponential(2),
         };
       });
       return {
