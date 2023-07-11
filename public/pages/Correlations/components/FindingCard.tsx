@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useCallback } from 'react';
+import React from 'react';
 import {
   EuiPanel,
   EuiFlexGroup,
@@ -14,8 +14,8 @@ import {
   EuiBadge,
   EuiHorizontalRule,
   EuiToolTip,
+  EuiDescriptionList,
 } from '@elastic/eui';
-import { rulePriorityBySeverity } from '../../CreateDetector/components/DefineDetector/components/DetectionRules/DetectionRulesTable';
 import {
   getAbbrFromLogType,
   getSeverityLabel,
@@ -32,7 +32,7 @@ export interface FindingCardProps {
   detectionRule: { name: string; severity: string };
   correlationData?: {
     // ruleName: string;
-    score: number;
+    score: string;
     onInspect: (findingId: string, logType: string) => void;
   };
   finding: CorrelationFinding;
@@ -76,24 +76,22 @@ export const FindingCard: React.FC<FindingCardProps> = ({
     </>
   ) : null;
 
-  const createTextRow = useCallback((label: string, value: string) => {
-    return (
-      <EuiFlexGroup justifyContent="spaceBetween" alignItems="center" gutterSize="s">
-        <EuiFlexItem grow={false}>
-          <EuiText size="s">{label}</EuiText>
-        </EuiFlexItem>
-        <EuiFlexItem grow={false}>
-          <EuiText>{value}</EuiText>
-        </EuiFlexItem>
-      </EuiFlexGroup>
-    );
-  }, []);
+  const list = [
+    {
+      title: 'Generated',
+      description: timestamp,
+    },
+    {
+      title: 'Detection rule',
+      description: detectionRule.name,
+    },
+  ];
 
   return (
     <EuiPanel>
       {correlationHeader}
       <EuiFlexGroup justifyContent="flexStart" alignItems="center">
-        <EuiFlexItem grow={2} style={{ maxWidth: 120 }}>
+        <EuiFlexItem grow={1} style={{ maxWidth: 120 }}>
           <div style={{ position: 'relative' }}>
             <div
               style={{
@@ -105,6 +103,8 @@ export const FindingCard: React.FC<FindingCardProps> = ({
                 fontSize: 10,
                 lineHeight: '35px',
                 textAlign: 'center',
+                borderColor: '#98A2B3',
+                color: '#98A2B3',
               }}
             >
               {getAbbrFromLogType(logType)}
@@ -115,10 +115,10 @@ export const FindingCard: React.FC<FindingCardProps> = ({
                   position: 'absolute',
                   transform: 'translateY(-100%)',
                   left: '33px',
+                  color: getSeverityColor(detectionRule.severity).text,
                 }}
-                color={getSeverityColor(detectionRule.severity)}
+                color={getSeverityColor(detectionRule.severity).background}
               >
-                {rulePriorityBySeverity[detectionRule.severity]}{' '}
                 {getSeverityLabel(detectionRule.severity)}
               </EuiBadge>
             ) : null}
@@ -142,8 +142,7 @@ export const FindingCard: React.FC<FindingCardProps> = ({
       </EuiFlexGroup>
       {correlationHeader ? <EuiHorizontalRule margin="s" /> : null}
       <EuiSpacer size="m" />
-      {createTextRow('Generated', timestamp)}
-      {createTextRow('Detection rule', detectionRule.name)}
+      <EuiDescriptionList type="column" textStyle="reverse" listItems={list} />
     </EuiPanel>
   );
 };

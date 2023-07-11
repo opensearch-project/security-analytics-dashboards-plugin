@@ -14,15 +14,16 @@ export const CorrelationsExperimentalBanner = () => {
           The feature is experimental and should not be used in a production environment. While we
           are working on the finishing touches, share your ideas and feedback on&nbsp;
           <EuiLink target="_blank" href="https://forum.opensearch.org/">
-            forum.opensearch.org.
+            forum.opensearch.org
           </EuiLink>
-          For more information see &nbsp;
+          . For more information see &nbsp;
           <EuiLink
             href="https://opensearch.org/docs/latest/security-analytics/index/"
             target="_blank"
           >
-            Security Analytics Documentation.
+            Security Analytics Documentation
           </EuiLink>
+          .
         </p>
       </EuiCallOut>
       <EuiSpacer />
