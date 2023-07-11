@@ -23,6 +23,7 @@ export interface LogTypeFilterGroupProps {
 
 export const FilterGroup: React.FC<LogTypeFilterGroupProps> = ({ groupName, items, setItems }) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [showActiveFilters, setShowActiveFilters] = useState(false);
 
   const onButtonClick = () => {
     setIsPopoverOpen(!isPopoverOpen);
@@ -55,6 +56,7 @@ export const FilterGroup: React.FC<LogTypeFilterGroupProps> = ({ groupName, item
     }
 
     setItems(newItems);
+    setShowActiveFilters(true);
   }
 
   const button = (
@@ -62,9 +64,10 @@ export const FilterGroup: React.FC<LogTypeFilterGroupProps> = ({ groupName, item
       iconType="arrowDown"
       onClick={onButtonClick}
       isSelected={isPopoverOpen}
-      numFilters={items.length}
-      hasActiveFilters={!!items.find((item) => item.checked === 'on')}
-      numActiveFilters={items.filter((item) => item.checked === 'on').length}
+      hasActiveFilters={showActiveFilters && !!items.find((item) => item.checked === 'on')}
+      numActiveFilters={
+        showActiveFilters ? items.filter((item) => item.checked === 'on').length : undefined
+      }
     >
       {groupName}
     </EuiFilterButton>
