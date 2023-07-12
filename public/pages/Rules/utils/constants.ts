@@ -19,6 +19,7 @@ export const ruleTypes: { label: string; value: string; abbr: string }[] = [
   { abbr: 'MSO', label: 'Microsoft 365', value: 'm365' },
   { abbr: 'OKT', label: 'Okta', value: 'okta' },
   { abbr: 'AZR', label: 'Azure', value: 'azure' },
+  { abbr: 'VPC', label: 'VPC Flow', value: 'vpcflow' },
 ];
 
 const paletteColors = euiPaletteForStatus(5);
