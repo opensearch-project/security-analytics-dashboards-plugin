@@ -14,7 +14,6 @@ import {
   EuiTitle,
   EuiSpacer,
   EuiGlobalToastList,
-  EuiBadge,
   EuiFlexGroup,
   EuiFlexItem,
 } from '@elastic/eui';
@@ -273,9 +272,6 @@ export default class Main extends Component<MainProps, MainState> {
                     >
                       {props.children}
                     </span>
-                  </EuiFlexItem>
-                  <EuiFlexItem grow={false}>
-                    <EuiBadge>Experimental</EuiBadge>
                   </EuiFlexItem>
                 </EuiFlexGroup>
               );
