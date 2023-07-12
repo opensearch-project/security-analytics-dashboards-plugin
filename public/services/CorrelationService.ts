@@ -13,6 +13,7 @@ import {
   GetCorrelationFindingsResponse,
   SearchCorrelationRulesResponse,
   ICorrelationsService,
+  UpdateCorrelationRuleResponse,
 } from '../../types';
 
 export default class CorrelationService implements ICorrelationsService {
@@ -34,15 +35,14 @@ export default class CorrelationService implements ICorrelationsService {
   };
 
   getCorrelationRules = async (
-    index?: string
+    index?: string,
+    query?: object
   ): Promise<ServerResponse<SearchCorrelationRulesResponse>> => {
     const url = `..${API.CORRELATION_BASE}/_search`;
 
-    let query = { match_all: {} };
-
     return (await this.httpClient.post(url, {
       body: JSON.stringify({
-        query,
+        query: query ?? { match_all: {} },
       }),
     })) as ServerResponse<SearchCorrelationRulesResponse>;
   };
@@ -55,6 +55,17 @@ export default class CorrelationService implements ICorrelationsService {
     return (await this.httpClient.post(url, {
       body: JSON.stringify(body),
     })) as ServerResponse<CreateCorrelationRuleResponse>;
+  };
+
+  updateCorrelationRule = async (
+    id: string,
+    body: any
+  ): Promise<ServerResponse<UpdateCorrelationRuleResponse>> => {
+    const url = `..${API.CORRELATION_BASE}/${id}`;
+
+    return (await this.httpClient.put(url, {
+      body: JSON.stringify(body),
+    })) as ServerResponse<UpdateCorrelationRuleResponse>;
   };
 
   deleteCorrelationRule = async (

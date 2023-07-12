@@ -107,6 +107,8 @@ export interface CreateCorrelationRuleResponse {
   _version: number;
 }
 
+export interface UpdateCorrelationRuleResponse extends CreateCorrelationRuleResponse {}
+
 export interface DeleteCorrelationRuleResponse {}
 
 export interface ICorrelationsStore {
@@ -117,6 +119,7 @@ export interface ICorrelationsStore {
     nearby_findings?: number
   ): Promise<{ finding: CorrelationFinding; correlatedFindings: CorrelationFinding[] }>;
   createCorrelationRule(correlationRule: CorrelationRule): void;
+  updateCorrelationRule(correlationRule: CorrelationRule): void;
   deleteCorrelationRule(ruleId: string): Promise<boolean>;
   getAllCorrelationsInWindow(
     start_time: string,
