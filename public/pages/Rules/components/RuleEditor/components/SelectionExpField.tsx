@@ -8,7 +8,7 @@ import {
   EuiButtonIcon,
   EuiExpression,
 } from '@elastic/eui';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { Selection } from '../DetectionVisualEditor';
 
 export interface SelectionExpFieldProps {
@@ -24,6 +24,19 @@ interface UsedSelection {
   description: string;
 }
 
+const operationOptionsFirstExpression = [
+  { value: '', text: '' },
+  { value: 'not', text: 'NOT' },
+];
+
+const operatorOptions = [
+  { value: '', text: '' },
+  { value: 'and', text: 'AND' },
+  { value: 'or', text: 'OR' },
+  { value: 'and not', text: 'AND NOT' },
+  { value: 'or not', text: 'OR NOT' },
+];
+
 export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
   selections,
   dataTestSubj,
@@ -31,13 +44,26 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
   value,
 }) => {
   const DEFAULT_DESCRIPTION = 'Select';
-  const OPERATORS = ['and', 'or', 'not'];
+  const OPERATORS = ['and', 'or', 'and not', 'or not', 'not'];
   const [usedExpressions, setUsedExpressions] = useState<UsedSelection[]>([]);
 
   useEffect(() => {
     let expressions: UsedSelection[] = [];
     if (value?.length) {
-      let values = value.split(' ');
+      const temp = value.split('and not');
+      let values = temp
+        .map((_) => {
+          return _.trim()
+            .split('or not')
+            .map((leaf) => leaf.split(' '))
+            .reduce((prev, curr) => {
+              return [...prev, 'or not', ...curr];
+            });
+        })
+        .reduce((prev, curr) => {
+          return [...prev, 'and not', ...curr];
+        });
+
       if (OPERATORS.indexOf(values[0]) === -1) values = ['', ...values];
 
       let counter = 0;
@@ -110,12 +136,7 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
             compressed
             value={exp.description}
             onChange={(e) => changeExtDescription(e, exp, idx)}
-            options={[
-              { value: '', text: '' },
-              { value: 'and', text: 'AND' },
-              { value: 'or', text: 'OR' },
-              { value: 'not', text: 'NOT' },
-            ]}
+            options={idx === 0 ? operationOptionsFirstExpression : operatorOptions}
           />
         </EuiFlexItem>
         {selections.length > usedExpressions.length && (
@@ -212,7 +233,7 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
                 description={exp.description}
                 value={exp.name}
                 isActive={exp.isOpen}
-                onClick={(e) => onSelectionPopup(e, idx)}
+                onClick={(e: any) => onSelectionPopup(e, idx)}
               />
             }
             isOpen={exp.isOpen}
