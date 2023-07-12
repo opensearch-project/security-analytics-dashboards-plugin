@@ -31,7 +31,7 @@ export function setupCorrelationRoutes(services: NodeServices, router: IRouter) 
     correlationService.createCorrelationRule
   );
 
-  router.post(
+  router.put(
     {
       path: `${API.CORRELATION_BASE}/{ruleId}`,
       validate: {

@@ -211,9 +211,17 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                     </EuiTitle>
                   }
                   extraAction={
-                    queryIdx > 1 ? (
+                    correlationQueries.length > 2 ? (
                       <EuiToolTip title={'Delete query'}>
-                        <EuiButtonIcon iconType={'trash'} color="danger" />
+                        <EuiButtonIcon
+                          iconType={'trash'}
+                          color="danger"
+                          onClick={() => {
+                            const newQueries = [...correlationQueries];
+                            newQueries.splice(queryIdx, 1);
+                            props.setFieldValue('queries', newQueries);
+                          }}
+                        />
                       </EuiToolTip>
                     ) : null
                   }

@@ -33,7 +33,7 @@ export function addCorrelationMethods(securityAnalytics: any, createAction: any)
       },
     },
     needBody: true,
-    method: 'POST',
+    method: 'PUT',
   });
 
   securityAnalytics[METHOD_NAMES.DELETE_CORRELATION_RULE] = createAction({

@@ -63,7 +63,7 @@ export default class CorrelationService implements ICorrelationsService {
   ): Promise<ServerResponse<UpdateCorrelationRuleResponse>> => {
     const url = `..${API.CORRELATION_BASE}/${id}`;
 
-    return (await this.httpClient.post(url, {
+    return (await this.httpClient.put(url, {
       body: JSON.stringify(body),
     })) as ServerResponse<UpdateCorrelationRuleResponse>;
   };
