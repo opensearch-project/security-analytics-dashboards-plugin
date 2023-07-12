@@ -37,7 +37,7 @@ export const CorrelationGraph: React.FC<CorrelationGraphProps> = ({
       graph={{ nodes, edges }}
       options={options}
       events={events}
-      style={{ border: '1px solid', backgroundColor: '#ffffff' }}
+      style={{ backgroundColor: '#ffffff' }}
       getNetwork={getNetwork}
     />
   );
