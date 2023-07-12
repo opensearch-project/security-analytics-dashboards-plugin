@@ -22,6 +22,20 @@ export function addCorrelationMethods(securityAnalytics: any, createAction: any)
     method: 'POST',
   });
 
+  securityAnalytics[METHOD_NAMES.UPDATE_CORRELATION_RULE] = createAction({
+    url: {
+      fmt: `${API.CORRELATION_BASE}/<%=ruleId%>`,
+      req: {
+        ruleId: {
+          type: 'string',
+          required: true,
+        },
+      },
+    },
+    needBody: true,
+    method: 'POST',
+  });
+
   securityAnalytics[METHOD_NAMES.DELETE_CORRELATION_RULE] = createAction({
     url: {
       fmt: `${API.CORRELATION_BASE}/<%=ruleId%>`,

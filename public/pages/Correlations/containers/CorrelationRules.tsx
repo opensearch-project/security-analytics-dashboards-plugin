@@ -80,8 +80,8 @@ export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComp
 
   const onRuleNameClick = useCallback((rule: CorrelationRule) => {
     props.history.push({
-      pathname: ROUTES.CORRELATION_RULE_CREATE,
-      state: { rule, isReadOnly: true },
+      pathname: `${ROUTES.CORRELATION_RULE_EDIT}/${rule.id}`,
+      state: { rule, isReadOnly: false },
     });
   }, []);
 

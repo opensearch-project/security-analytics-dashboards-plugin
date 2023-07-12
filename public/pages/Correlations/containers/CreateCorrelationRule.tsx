@@ -33,9 +33,9 @@ import {
   CorrelationRuleModel,
   CorrelationRuleQuery,
 } from '../../../../types';
-import { BREADCRUMBS, ROUTES, isDarkMode } from '../../../utils/constants';
+import { BREADCRUMBS, ROUTES } from '../../../utils/constants';
 import { CoreServicesContext } from '../../../components/core_services';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, useParams } from 'react-router-dom';
 import { CorrelationsExperimentalBanner } from '../components/ExperimentalBanner';
 import { validateName } from '../../../utils/validation';
 import { FieldMappingService, IndexService } from '../../../services';
@@ -99,41 +99,46 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
 
     return undefined;
   }, []);
+  const params = useParams<{ ruleId: string }>();
+  const [initialValues, setInitialValues] = useState({
+    ...correlationRuleStateDefaultValue,
+  });
+  const [action, setAction] = useState<CorrelationRuleAction>('Create');
+
+  useEffect(() => {
+    if (props.history.location.state?.rule) {
+      setAction('Edit');
+      setInitialValues(props.history.location.state?.rule);
+    } else if (params.ruleId) {
+      const setInitialRuleValues = async () => {
+        const ruleRes = await correlationStore.getCorrelationRule(params.ruleId);
+        if (ruleRes) {
+          setInitialValues(ruleRes);
+        }
+      };
+
+      setAction('Edit');
+      setInitialRuleValues();
+    }
+  }, []);
 
   const submit = async (values: any) => {
     let error;
     if ((error = validateCorrelationRule(values))) {
-      errorNotificationToast(props.notifications, 'Create', 'rule', error);
+      errorNotificationToast(props.notifications, action, 'rule', error);
       return;
     }
 
-    await correlationStore.createCorrelationRule(values);
+    if (action === 'Edit') {
+      await correlationStore.updateCorrelationRule(values);
+    } else {
+      await correlationStore.createCorrelationRule(values);
+    }
 
     props.history.push(ROUTES.CORRELATION_RULES);
   };
 
   const context = useContext(CoreServicesContext);
-  let action: CorrelationRuleAction = 'Create';
-  let initialValues = {
-    ...correlationRuleStateDefaultValue,
-  };
-
-  if (props.history.location.state?.rule) {
-    action = 'Edit';
-    initialValues = props.history.location.state?.rule;
-
-    if (props.history.location.state.isReadOnly) {
-      action = 'Readonly';
-    }
-  }
-
-  const disableForm = action === 'Readonly';
-  const textClassName = disableForm
-    ? isDarkMode
-      ? 'readonly-text-color-dark-mode'
-      : 'readonly-text-color-light-mode'
-    : undefined;
-
   const parseOptions = (indices: string[]) => {
     return indices.map(
       (index: string): CorrelationOptions => ({
@@ -247,8 +252,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                         query.index ? [{ value: query.index, label: query.index }] : []
                       }
                       isClearable={true}
-                      isDisabled={disableForm}
-                      className={textClassName}
                     />
                   </EuiFormRow>
                   <EuiSpacer size="m" />
@@ -279,8 +282,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                       onCreateOption={(e) => {
                         props.handleChange(`queries[${queryIdx}].logType`)(e);
                       }}
-                      isDisabled={disableForm}
-                      className={textClassName}
                     />
                   </EuiFormRow>
                   <EuiSpacer size="xl" />
@@ -313,8 +314,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                           )(e);
                         }}
                         isClearable={true}
-                        isDisabled={disableForm}
-                        className={textClassName}
                       />
                     );
 
@@ -332,8 +331,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                           `queries[${queryIdx}].conditions[${conditionIdx}].value`
                         )}
                         value={condition.value}
-                        disabled={disableForm}
-                        className={textClassName}
                       />
                     );
 
@@ -352,7 +349,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                           )(e);
                         }}
                         className={'correlation_rule_field_condition'}
-                        isDisabled={disableForm}
                       />
                     );
 
@@ -387,7 +383,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                           initialIsOpen={true}
                           buttonContent={`Field ${conditionIdx + 1}`}
                           extraAction={
-                            query.conditions.length > 1 && !disableForm ? (
+                            query.conditions.length > 1 ? (
                               <EuiToolTip title={'Delete field'}>
                                 <EuiButtonIcon
                                   iconType={'trash'}
@@ -400,7 +396,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                                       newCases
                                     );
                                   }}
-                                  disabled={disableForm}
                                 />
                               </EuiToolTip>
                             ) : null
@@ -415,21 +410,18 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                       </>
                     );
                   })}
-                  {disableForm ? null : (
-                    <EuiButton
-                      style={{ width: 125 }}
-                      onClick={() => {
-                        props.setFieldValue(`queries[${queryIdx}].conditions`, [
-                          ...query.conditions,
-                          ...correlationRuleStateDefaultValue.queries[0].conditions,
-                        ]);
-                      }}
-                      iconType={'plusInCircle'}
-                      disabled={disableForm}
-                    >
-                      Add field
-                    </EuiButton>
-                  )}
+                  <EuiButton
+                    style={{ width: 125 }}
+                    onClick={() => {
+                      props.setFieldValue(`queries[${queryIdx}].conditions`, [
+                        ...query.conditions,
+                        ...correlationRuleStateDefaultValue.queries[0].conditions,
+                      ]);
+                    }}
+                    iconType={'plusInCircle'}
+                  >
+                    Add field
+                  </EuiButton>
                 </EuiAccordion>
               </EuiPanel>
               <EuiSpacer />
@@ -437,21 +429,18 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
           );
         })}
         <EuiSpacer />
-        {disableForm ? null : (
-          <EuiButton
-            onClick={() => {
-              props.setFieldValue('queries', [
-                ...correlationQueries,
-                { ...correlationRuleStateDefaultValue.queries[0] },
-              ]);
-            }}
-            iconType={'plusInCircle'}
-            fullWidth={true}
-            disabled={disableForm}
-          >
-            Add query
-          </EuiButton>
-        )}
+        <EuiButton
+          onClick={() => {
+            props.setFieldValue('queries', [
+              ...correlationQueries,
+              { ...correlationRuleStateDefaultValue.queries[0] },
+            ]);
+          }}
+          iconType={'plusInCircle'}
+          fullWidth={true}
+        >
+          Add query
+        </EuiButton>
       </>
     );
   };
@@ -469,14 +458,12 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
     <>
       <CorrelationsExperimentalBanner />
       <EuiTitle>
-        <h1>{action === 'Readonly' ? 'C' : `${action} c`}orrelation rule</h1>
+        <h1>{`${action} correlation rule`}</h1>
       </EuiTitle>
-      {action === 'Readonly' ? null : (
-        <EuiText size="s" color="subdued">
-          {action === 'Create' ? 'Create a' : 'Edit'} correlation rule to define threat scenarios of
-          interest between different log sources.
-        </EuiText>
-      )}
+      <EuiText size="s" color="subdued">
+        {action === 'Create' ? 'Create a' : 'Edit'} correlation rule to define threat scenarios of
+        interest between different log sources.
+      </EuiText>
       <EuiSpacer size="l" />
       <Formik
         initialValues={initialValues}
@@ -497,6 +484,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
           setSubmitting(false);
           submit(values);
         }}
+        enableReinitialize={true}
       >
         {({ values: { name, queries }, touched, errors, ...props }) => {
           return (
@@ -514,9 +502,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                   isInvalid={touched.name && !!errors?.name}
                   error={errors.name}
                   helpText={
-                    disableForm
-                      ? undefined
-                      : 'Rule name must contain 5-50 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, and underscores.'
+                    'Rule name must contain 5-50 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, and underscores.'
                   }
                 >
                   <EuiFieldText
@@ -528,8 +514,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                     }}
                     onBlur={props.handleBlur('name')}
                     value={name}
-                    className={textClassName}
-                    disabled={disableForm}
                   />
                 </EuiFormRow>
                 <EuiSpacer />
@@ -538,9 +522,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
               <ContentPanel
                 title="Correlation queries"
                 subTitleText={
-                  disableForm
-                    ? 'Conditions used to match correlated findings.'
-                    : 'Configure two or more queries to set the conditions for correlating findings.'
+                  'Configure two or more queries to set the conditions for correlating findings.'
                 }
                 panelStyles={{ paddingLeft: 10, paddingRight: 10 }}
               >
