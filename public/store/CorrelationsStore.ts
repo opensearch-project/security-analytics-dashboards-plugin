@@ -87,6 +87,57 @@ export class CorrelationsStore implements ICorrelationsStore {
     return response.ok;
   }
 
+  public async updateCorrelationRule(correlationRule: CorrelationRule): Promise<boolean> {
+    const response = await this.invalidateCache().service.updateCorrelationRule(
+      correlationRule.id,
+      {
+        name: correlationRule.name,
+        correlate: correlationRule.queries?.map((query) => ({
+          index: query.index,
+          category: query.logType,
+          query: query.conditions
+            .map((condition) => `${condition.name}:${condition.value}`)
+            .join(' AND '),
+        })),
+      }
+    );
+
+    if (!response.ok) {
+      errorNotificationToast(this.notifications, 'update', 'correlation rule', response.error);
+      return false;
+    }
+
+    return response.ok;
+  }
+
+  public async getCorrelationRule(id: string): Promise<CorrelationRule | undefined> {
+    const response = await this.service.getCorrelationRules(undefined, {
+      terms: {
+        _id: [id],
+      },
+    });
+
+    if (response?.ok && response.response.hits.hits[0]) {
+      const hit = response.response.hits.hits[0];
+
+      const queries: CorrelationRuleQuery[] = hit._source.correlate.map((queryData) => {
+        return {
+          index: queryData.index,
+          logType: queryData.category,
+          conditions: this.parseRuleQueryString(queryData.query),
+        };
+      });
+
+      return {
+        id: hit._id,
+        name: hit._source.name,
+        queries,
+      };
+    }
+
+    return undefined;
+  }
+
   public async getCorrelationRules(index?: string): Promise<CorrelationRule[]> {
     const cacheKey: string = `getCorrelationRules:${JSON.stringify(arguments)}`;
 

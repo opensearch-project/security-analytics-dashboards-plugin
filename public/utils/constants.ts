@@ -43,6 +43,7 @@ export const ROUTES = Object.freeze({
   CORRELATIONS: '/correlations',
   CORRELATION_RULES: '/correlations/rules',
   CORRELATION_RULE_CREATE: '/correlations/create-rule',
+  CORRELATION_RULE_EDIT: '/correlations/rule',
 
   get LANDING_PAGE(): string {
     return this.OVERVIEW;

@@ -15,7 +15,7 @@ export const NAME_REGEX = new RegExp(/^[a-zA-Z0-9 _-]{5,50}$/);
 export const DETECTION_NAME_REGEX = new RegExp(/^[a-zA-Z0-9_.-]{5,50}$/);
 
 export const DETECTION_CONDITION_REGEX = new RegExp(
-  /^((not )?[a-zA-Z0-9_]+)?( (and|or|not) ?([a-zA-Z0-9_]+))*(?<!and|or|not)$/
+  /^((not )?[a-zA-Z0-9_]+)?( (and|or|and not|or not|not) ?([a-zA-Z0-9_]+))*(?<!and|or|not)$/
 );
 
 // This regex pattern support MIN to MAX character limit, capital and lowercase letters,
