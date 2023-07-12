@@ -14,8 +14,8 @@ export const NAME_REGEX = new RegExp(/^[a-zA-Z0-9 _-]{5,50}$/);
 // numbers 0-9, hyphens, dot, and underscores.
 export const DETECTION_NAME_REGEX = new RegExp(/^[a-zA-Z0-9_.-]{5,50}$/);
 
-export const CONDITION_REGEX = new RegExp(
-  /^([a-zA-Z0-9_]+)?( (and|or|not) ?([a-zA-Z0-9_]+))*(?<!and|or|not)$/
+export const DETECTION_CONDITION_REGEX = new RegExp(
+  /^((not )?[a-zA-Z0-9_]+)?( (and|or|not) ?([a-zA-Z0-9_]+))*(?<!and|or|not)$/
 );
 
 // This regex pattern support MIN to MAX character limit, capital and lowercase letters,
@@ -25,6 +25,7 @@ export const AUTHOR_REGEX = new RegExp(/^[a-zA-Z0-9 _,-.]{5,50}$/);
 /**
  * Validates a string against NAME_REGEX.
  * @param name: The string to validate.
+ * @param regex
  * @return TRUE if valid; else FALSE.
  */
 export function validateName(name: string, regex: RegExp = NAME_REGEX): boolean {
@@ -38,7 +39,10 @@ export function validateDetectionFieldName(
   return name.trim().match(regex) !== null;
 }
 
-export function validateCondition(name: string, regex: RegExp = CONDITION_REGEX): boolean {
+export function validateCondition(
+  name: string,
+  regex: RegExp = DETECTION_CONDITION_REGEX
+): boolean {
   return name.trim().match(regex) !== null;
 }
 
@@ -78,7 +82,7 @@ export function validateDescription(name: string): boolean {
 }
 
 export const descriptionErrorString = `Description should only consist of upper and lowercase letters, numbers 0-9,
- commas, hyphens, periods, spaces, and underscores. Max limit of ${MAX_DESCRIPTION_CHARACTERS} characters,`;
+ commas, hyphens, periods, spaces, and underscores. Max limit of ${MAX_DESCRIPTION_CHARACTERS} characters.`;
 
 export function getDescriptionErrorMessage(
   _description: string,

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiComboBoxOptionOption } from '@elastic/eui';
+import { ruleStatus } from '../../utils/constants';
 
 export interface RuleEditorFormModel {
   id: string;
@@ -14,7 +14,7 @@ export interface RuleEditorFormModel {
   status: string;
   author: string;
   references: string[];
-  tags: EuiComboBoxOptionOption<string>[];
+  tags: string[];
   detection: string;
   level: string;
   falsePositives: string[];
@@ -26,11 +26,11 @@ export const ruleEditorStateDefaultValue: RuleEditorFormModel = {
   logType: '',
   name: '',
   description: '',
-  status: '',
+  status: ruleStatus[0],
   author: '',
   references: [],
   tags: [],
   detection: '',
   level: '',
-  falsePositives: [''],
+  falsePositives: [],
 };

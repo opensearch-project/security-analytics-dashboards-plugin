@@ -100,6 +100,42 @@ declare namespace Cypress {
     validateDetailsItem(label: string, value: string): Chainable<any>;
 
     /**
+     * Should clear a field value (use with text and textarea fields)
+     * @example
+     * cy.getFieldByLabel('Rule name').clearValue()
+     */
+    clearValue(): Chainable<any>;
+
+    /**
+     * Validates that field contains value
+     * Should be used with combobox or other fields that don't print its value in inputs
+     * @example
+     * cy.getFieldByLabel('Rule name').containsValue('Name')
+     */
+    containsValue(value: string): Chainable<any>;
+
+    /**
+     * Validates that field has error text
+     * @example
+     * cy.getFieldByLabel('Rule name').containsError('This fields is invalid')
+     */
+    containsError(errorText: string): Chainable<any>;
+
+    /**
+     * Validates that field has helper text
+     * @example
+     * cy.getFieldByLabel('Rule name').containsHelperText('Use this field for...')
+     */
+    containsHelperText(helperText: string): Chainable<any>;
+
+    /**
+     * Should not have error text
+     * @example
+     * cy.getFieldByLabel('Rule name').shouldNotHaveError()
+     */
+    shouldNotHaveError(): Chainable<any>;
+
+    /**
      * Validates url path
      * @example
      * cy.urlShouldContain('/detector-details')
