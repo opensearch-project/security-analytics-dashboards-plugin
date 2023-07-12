@@ -58,6 +58,38 @@ export default class CorrelationService {
     }
   };
 
+  updateCorrelationRule = async (
+    _context: RequestHandlerContext,
+    request: OpenSearchDashboardsRequest,
+    response: OpenSearchDashboardsResponseFactory
+  ) => {
+    try {
+      const { ruleId } = request.params as { ruleId: string };
+      const params: any = { body: request.body, ruleId };
+      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
+      const createRulesResponse = await callWithRequest(
+        CLIENT_CORRELATION_METHODS.UPDATE_CORRELATION_RULE,
+        params
+      );
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: true,
+          response: createRulesResponse,
+        },
+      });
+    } catch (error: any) {
+      console.error('Security Analytics - CorrelationService - updateCorrelationRule:', error);
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: false,
+          error: error.message,
+        },
+      });
+    }
+  };
+
   /**
    * Calls backend GET correlation rules API.
    * URL /correlation/rules/_search
