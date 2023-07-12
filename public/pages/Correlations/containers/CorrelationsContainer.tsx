@@ -34,7 +34,6 @@ import {
   EuiBadge,
   EuiFilterGroup,
 } from '@elastic/eui';
-import { CorrelationsExperimentalBanner } from '../components/ExperimentalBanner';
 import { FilterItem, FilterGroup } from '../components/FilterGroup';
 import { CoreServicesContext } from '../../../components/core_services';
 import {
@@ -489,9 +488,6 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
             <EuiTitle size="m">
               <h1>Correlations</h1>
             </EuiTitle>
-          </EuiFlexItem>
-          <EuiFlexItem>
-            <CorrelationsExperimentalBanner />
           </EuiFlexItem>
           <EuiFlexItem>
             <EuiPanel>
