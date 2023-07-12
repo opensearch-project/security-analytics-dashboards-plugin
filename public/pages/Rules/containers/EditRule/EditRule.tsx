@@ -5,7 +5,7 @@
 
 import { BrowserServices } from '../../../../models/interfaces';
 import { RuleEditorContainer } from '../../components/RuleEditor/RuleEditorContainer';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 import { RouteComponentProps } from 'react-router-dom';
 import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
@@ -29,7 +29,10 @@ export const EditRule: React.FC<EditRuleProps> = ({
   notifications,
 }) => {
   const context = useContext(CoreServicesContext);
-  setBreadCrumb(BREADCRUMBS.RULES_EDIT, context?.chrome.setBreadcrumbs);
+
+  useEffect(() => {
+    setBreadCrumb(BREADCRUMBS.RULES_EDIT, context?.chrome.setBreadcrumbs);
+  });
 
   return (
     <RuleEditorContainer

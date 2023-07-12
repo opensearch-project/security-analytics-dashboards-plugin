@@ -16,7 +16,7 @@ import { ROUTES } from '../../../../utils/constants';
 import React, { useMemo, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { RuleTableItem } from '../../utils/helpers';
-import { DeleteRuleModal } from '../DeleteModal/DeleteModal';
+import { DeleteRuleModal } from '../DeleteModal/DeleteRuleModal';
 import { RuleContentViewer } from '../RuleContentViewer/RuleContentViewer';
 import { RuleViewerFlyoutHeaderActions } from './RuleViewFlyoutHeaderActions';
 import { NotificationsStart } from 'opensearch-dashboards/public';
@@ -33,7 +33,6 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
   history,
   hideFlyout,
   ruleTableItem,
-  notifications,
 }) => {
   const [actionsPopoverOpen, setActionsPopoverOpen] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);

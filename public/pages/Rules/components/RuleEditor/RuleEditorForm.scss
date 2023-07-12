@@ -1,6 +1,40 @@
 .rule-editor-form {
+  padding-left: 5px !important;
+
+
+  .field-text-array-remove {
+    padding-top: 10px;
+    margin-left: 0;
+  }
+
   .euiFlexGroup--gutterLarge + hr {
     height: 0;
     margin-bottom: 25px;
+  }
+
+  .euiButtonIcon--danger {
+    color: $ouiTextSubduedColor !important;
+
+    &:hover {
+      color: $ouiColorDanger !important;
+      background-color: transparent !important;
+    }
+
+  }
+
+  .rule-editor-form-additional-details-panel {
+    padding: 10px;
+    border: 1px solid gray;
+    border-radius: 5px;
+
+    .rule-editor-form-additional-details-panel-body {
+      padding: 20px 5px;
+    }
+  }
+
+  .euiAccordion__childWrapper {
+    .euiFlexGroup div:first-child {
+      margin-right: 0;
+    }
   }
 }

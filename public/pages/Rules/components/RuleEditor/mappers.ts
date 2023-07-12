@@ -14,7 +14,7 @@ export const mapFormToRule = (formState: RuleEditorFormModel): Rule => {
     status: formState.status,
     author: formState.author,
     references: formState.references.map((ref) => ({ value: ref })),
-    tags: formState.tags.map((tag) => ({ value: tag.label })),
+    tags: formState.tags.map((tag) => ({ value: tag })),
     log_source: formState.log_source,
     detection: formState.detection,
     level: formState.level,
@@ -36,9 +36,7 @@ export const mapRuleToForm = (rule: Rule): RuleEditorFormModel => {
     references: rule.references
       ? rule.references.map((ref) => ref.value)
       : ruleEditorStateDefaultValue.references,
-    tags: rule.tags
-      ? rule.tags.map((tag) => ({ label: tag.value }))
-      : ruleEditorStateDefaultValue.tags,
+    tags: rule.tags ? rule.tags.map((tag) => tag.value) : ruleEditorStateDefaultValue.tags,
     detection: rule.detection,
     level: rule.level,
     falsePositives: rule.false_positives
