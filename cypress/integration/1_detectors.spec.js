@@ -108,14 +108,16 @@ const validatePendingFieldMappingsPanel = (mappings) => {
   });
 };
 
+const fillDetailsForm = (detectorName, dataSource) => {
+  getNameField().type(detectorName);
+  getDataSourceField().selectComboboxItem(dataSource);
+  selectDnsLogType();
+};
+
 const createDetector = (detectorName, dataSource, expectFailure) => {
   getCreateDetectorButton().click({ force: true });
 
-  // TEST DETAILS PAGE
-  getNameField().type(detectorName);
-  getDataSourceField().selectComboboxItem(dataSource);
-
-  selectDnsLogType();
+  fillDetailsForm(detectorName, dataSource);
 
   cy.getElementByText('.euiAccordion .euiTitle', 'Detection rules (14 selected)')
     .click({ force: true, timeout: 5000 })
@@ -226,6 +228,11 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
   }
 };
 
+const openCreateForm = () => getCreateDetectorButton().click({ force: true });
+
+const getDescriptionField = () => cy.getTextareaByLabel('Description - optional');
+const getTriggerNameField = () => cy.getFieldByLabel('Trigger name');
+
 describe('Detectors', () => {
   before(() => {
     cy.cleanUpTests();
@@ -252,203 +259,289 @@ describe('Detectors', () => {
     cy.createRule(dns_type_rule_data);
   });
 
-  beforeEach(() => {
-    cy.intercept('/detectors/_search').as('detectorsSearch');
+  describe('...should validate form fields', () => {
+    beforeEach(() => {
+      cy.intercept('/detectors/_search').as('detectorsSearch');
 
-    // Visit Detectors page before any test
-    cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
-    cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
-  });
+      // Visit Detectors page before any test
+      cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
+      cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
 
-  it('...should validate form', () => {
-    getCreateDetectorButton().click({ force: true });
-
-    getNextButton().should('be.disabled');
-
-    getNameField().should('be.empty');
-    getNameField().type('text').focus().blur();
-
-    getNameField()
-      .parentsUntil('.euiFormRow__fieldWrapper')
-      .siblings()
-      .contains(
-        'Name should only consist of upper and lowercase letters, numbers 0-9, hyphens, spaces, and underscores. Use between 5 and 50 characters.'
-      );
-
-    getNameField()
-      .type(' and more text')
-      .focus()
-      .blur()
-      .parentsUntil('.euiFormRow__fieldWrapper')
-      .siblings()
-      .should('not.exist');
-    getNextButton().should('be.disabled');
-
-    getDataSourceField()
-      .focus()
-      .blur()
-      .parentsUntil('.euiFormRow__fieldWrapper')
-      .siblings()
-      .contains('Select an input source');
-    getNextButton().should('be.disabled');
-
-    getDataSourceField().selectComboboxItem(cypressIndexDns);
-    getDataSourceField()
-      .focus()
-      .blur()
-      .parentsUntil('.euiFormRow__fieldWrapper')
-      .find('.euiFormErrorText')
-      .should('not.exist');
-    getNextButton().should('not.be.disabled');
-  });
-
-  it('...should show mappings warning', () => {
-    getCreateDetectorButton().click({ force: true });
-
-    getDataSourceField().selectComboboxItem(cypressIndexDns);
-
-    selectDnsLogType();
-
-    getDataSourceField().selectComboboxItem(cypressIndexWindows);
-    getDataSourceField().focus().blur();
-
-    cy.get('.euiCallOut')
-      .should('be.visible')
-      .contains(
-        'To avoid issues with field mappings, we recommend creating separate detectors for different log types.'
-      );
-  });
-
-  it('...can fail creation', () => {
-    createDetector(`${detectorName}_fail`, '.kibana_1', true);
-    cy.getElementByText('.euiCallOut', 'Create detector failed.');
-  });
-
-  it('...can be created', () => {
-    createDetector(detectorName, cypressIndexDns, false);
-    cy.getElementByText('.euiCallOut', 'Detector created successfully');
-  });
-
-  it('...basic details can be edited', () => {
-    cy.intercept('GET', '/indices').as('getIndices');
-    openDetectorDetails(detectorName);
-
-    editDetectorDetails(detectorName, 'Detector details');
-
-    cy.urlShouldContain('edit-detector-details').then(() => {
-      cy.getElementByText('.euiTitle', 'Edit detector details');
+      openCreateForm();
     });
 
-    cy.wait('@getIndices');
-    getNameField().type('{selectall}{backspace}').type('test detector edited');
-    cy.getTextareaByLabel('Description - optional').type('Edited description');
+    it('...should validate name field', () => {
+      getNameField().should('be.empty');
+      getNameField().focus().blur();
+      getNameField().parentsUntil('.euiFormRow__fieldWrapper').siblings().contains('Enter a name.');
 
-    getDataSourceField().clearCombobox();
-    getDataSourceField().selectComboboxItem(cypressIndexWindows);
+      getNameField().type('text').focus().blur();
 
-    cy.getFieldByLabel('Run every').type('{selectall}{backspace}').type('10');
-    cy.getFieldByLabel('Run every', 'select').select('Hours');
+      getNameField()
+        .parents('.euiFormRow__fieldWrapper')
+        .find('.euiFormErrorText')
+        .contains(
+          'Name should only consist of upper and lowercase letters, numbers 0-9, hyphens, spaces, and underscores. Use between 5 and 50 characters.'
+        );
 
-    cy.getElementByText('button', 'Save changes').click({ force: true });
+      getNameField().type('{selectall}').type('{backspace}').type('tex&').focus().blur();
 
-    cy.urlShouldContain('detector-details').then(() => {
-      cy.validateDetailsItem('Detector name', 'test detector edited');
-      cy.validateDetailsItem('Description', 'Edited description');
-      cy.validateDetailsItem('Detector schedule', 'Every 10 hours');
-      cy.validateDetailsItem('Data source', cypressIndexWindows);
+      getNameField()
+        .parents('.euiFormRow__fieldWrapper')
+        .find('.euiFormErrorText')
+        .contains(
+          'Name should only consist of upper and lowercase letters, numbers 0-9, hyphens, spaces, and underscores. Use between 5 and 50 characters.'
+        );
+
+      getNameField()
+        .type('{selectall}')
+        .type('{backspace}')
+        .type('Detector name')
+        .focus()
+        .blur()
+        .parents('.euiFormRow__fieldWrapper')
+        .find('.euiFormErrorText')
+        .should('not.exist');
+    });
+
+    it('...should validate description field', () => {
+      const longDescriptionText =
+        'This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text.';
+
+      getDescriptionField().should('be.empty');
+
+      getDescriptionField().type(longDescriptionText).focus().blur();
+
+      getDescriptionField()
+        .parents('.euiFormRow__fieldWrapper')
+        .find('.euiFormErrorText')
+        .contains(
+          'Description should only consist of upper and lowercase letters, numbers 0-9, commas, hyphens, periods, spaces, and underscores. Max limit of 500 characters.'
+        );
+
+      getDescriptionField()
+        .type('{selectall}')
+        .type('{backspace}')
+        .type('Detector description...')
+        .focus()
+        .blur();
+
+      getDescriptionField()
+        .type('{selectall}')
+        .type('{backspace}')
+        .type('Detector name')
+        .focus()
+        .blur()
+        .parents('.euiFormRow__fieldWrapper')
+        .find('.euiFormErrorText')
+        .should('not.exist');
+    });
+
+    it('...should validate data source field', () => {
+      getDataSourceField()
+        .focus()
+        .blur()
+        .parentsUntil('.euiFormRow__fieldWrapper')
+        .siblings()
+        .contains('Select an input source.');
+
+      getDataSourceField().selectComboboxItem(cypressIndexDns);
+      getDataSourceField()
+        .focus()
+        .blur()
+        .parentsUntil('.euiFormRow__fieldWrapper')
+        .find('.euiFormErrorText')
+        .should('not.exist');
+    });
+
+    it('...should validate next button', () => {
+      getNextButton().should('be.disabled');
+
+      fillDetailsForm(detectorName, cypressIndexDns);
+      getNextButton().should('be.enabled');
+    });
+
+    it('...should validate alerts page', () => {
+      fillDetailsForm(detectorName, cypressIndexDns);
+      getNextButton().click({ force: true });
+      getTriggerNameField().should('be.empty');
+
+      getTriggerNameField().focus().blur();
+      getTriggerNameField()
+        .parents('.euiFormRow__fieldWrapper')
+        .find('.euiFormErrorText')
+        .contains('Enter a name.');
+
+      getTriggerNameField().type('Trigger name').focus().blur();
+
+      getTriggerNameField()
+        .parents('.euiFormRow__fieldWrapper')
+        .find('.euiFormErrorText')
+        .should('not.exist');
+
+      getNextButton().should('be.enabled');
+
+      getTriggerNameField().type('{selectall}').type('{backspace}').focus().blur();
+      getNextButton().should('be.disabled');
+
+      cy.getButtonByText('Remove').click({ force: true });
+      getNextButton().should('be.enabled');
+    });
+
+    it('...should show mappings warning', () => {
+      fillDetailsForm(detectorName, cypressIndexDns);
+
+      getDataSourceField().selectComboboxItem(cypressIndexWindows);
+      getDataSourceField().focus().blur();
+
+      cy.get('.euiCallOut')
+        .should('be.visible')
+        .contains(
+          'To avoid issues with field mappings, we recommend creating separate detectors for different log types.'
+        );
     });
   });
 
-  it('...rules can be edited', () => {
-    openDetectorDetails(detectorName);
+  describe('...validate create detector flow', () => {
+    beforeEach(() => {
+      cy.intercept('/detectors/_search').as('detectorsSearch');
 
-    editDetectorDetails(detectorName, 'Active rules');
-    cy.getElementByText('.euiTitle', 'Detection rules (14)');
-
-    cy.getInputByPlaceholder('Search...').type(`${cypressDNSRule}`).pressEnterKey();
-
-    cy.getElementByText('.euiTableCellContent button', cypressDNSRule)
-      .parents('td')
-      .prev()
-      .find('.euiTableCellContent button')
-      .click();
-
-    cy.getElementByText('.euiTitle', 'Detection rules (13)');
-    cy.getElementByText('button', 'Save changes').click({ force: true });
-    cy.urlShouldContain('detector-details').then(() => {
-      cy.getElementByText('.euiTitle', detectorName);
-      cy.getElementByText('.euiPanel .euiTitle', 'Active rules (13)');
-    });
-  });
-
-  it('...should update field mappings if data source is changed', () => {
-    cy.intercept('mappings/view').as('getMappingsView');
-    cy.intercept('GET', '/indices').as('getIndices');
-    openDetectorDetails(detectorName);
-
-    editDetectorDetails(detectorName, 'Detector details');
-
-    cy.urlShouldContain('edit-detector-details').then(() => {
-      cy.getElementByText('.euiTitle', 'Edit detector details');
+      // Visit Detectors page before any test
+      cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
+      cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
     });
 
-    cy.wait('@getIndices');
-    cy.get('.reviewFieldMappings').should('not.exist');
-
-    getDataSourceField().clearCombobox();
-    getDataSourceField().should('not.have.value');
-    getDataSourceField().type(`${cypressIndexDns}{enter}`);
-
-    validateFieldMappingsTable('data source is changed');
-
-    cy.getElementByText('button', 'Save changes').click({ force: true });
-  });
-
-  it('...should show field mappings if rule selection is changed', () => {
-    cy.intercept('mappings/view').as('getMappingsView');
-
-    openDetectorDetails(detectorName);
-
-    editDetectorDetails(detectorName, 'Active rules');
-
-    cy.urlShouldContain('edit-detector-rules').then(() => {
-      cy.getElementByText('.euiTitle', 'Edit detector rules');
+    it('...can fail creation', () => {
+      createDetector(`${detectorName}_fail`, '.kibana_1', true);
+      cy.getElementByText('.euiCallOut', 'Create detector failed.');
     });
 
-    cy.get('.reviewFieldMappings').should('not.exist');
+    it('...can be created', () => {
+      createDetector(detectorName, cypressIndexDns, false);
+      cy.getElementByText('.euiCallOut', 'Detector created successfully');
+    });
 
-    cy.wait('@detectorsSearch');
+    it('...basic details can be edited', () => {
+      cy.intercept('GET', '/indices').as('getIndices');
+      openDetectorDetails(detectorName);
 
-    // Toggle single search result to unchecked
-    cy.get(
-      '[data-test-subj="edit-detector-rules-table"] table thead tr:first th:first button'
-    ).click({ force: true });
+      editDetectorDetails(detectorName, 'Detector details');
 
-    validateFieldMappingsTable('rules are changed');
-  });
-
-  it('...can be deleted', () => {
-    cy.intercept('/_plugins/_security_analytics/rules/_search?prePackaged=true').as(
-      'getSigmaRules'
-    );
-    cy.intercept('/_plugins/_security_analytics/rules/_search?prePackaged=false').as(
-      'getCustomRules'
-    );
-    openDetectorDetails(detectorName);
-
-    cy.wait('@detectorsSearch');
-    cy.wait('@getCustomRules');
-    cy.wait('@getSigmaRules');
-
-    cy.getButtonByText('Actions')
-      .click({ force: true })
-      .then(() => {
-        cy.intercept('/detectors').as('detectors');
-        cy.getElementByText('.euiContextMenuItem', 'Delete').click({ force: true });
-        cy.wait('@detectors').then(() => {
-          cy.contains('There are no existing detectors');
-        });
+      cy.urlShouldContain('edit-detector-details').then(() => {
+        cy.getElementByText('.euiTitle', 'Edit detector details');
       });
+
+      cy.wait('@getIndices');
+      getNameField().type('{selectall}{backspace}').type('test detector edited');
+      cy.getTextareaByLabel('Description - optional').type('Edited description');
+
+      getDataSourceField().clearCombobox();
+      getDataSourceField().selectComboboxItem(cypressIndexWindows);
+
+      cy.getFieldByLabel('Run every').type('{selectall}{backspace}').type('10');
+      cy.getFieldByLabel('Run every', 'select').select('Hours');
+
+      cy.getElementByText('button', 'Save changes').click({ force: true });
+
+      cy.urlShouldContain('detector-details').then(() => {
+        cy.validateDetailsItem('Detector name', 'test detector edited');
+        cy.validateDetailsItem('Description', 'Edited description');
+        cy.validateDetailsItem('Detector schedule', 'Every 10 hours');
+        cy.validateDetailsItem('Data source', cypressIndexWindows);
+      });
+    });
+
+    it('...rules can be edited', () => {
+      openDetectorDetails(detectorName);
+
+      editDetectorDetails(detectorName, 'Active rules');
+      cy.getElementByText('.euiTitle', 'Detection rules (14)');
+
+      cy.getInputByPlaceholder('Search...').type(`${cypressDNSRule}`).pressEnterKey();
+
+      cy.getElementByText('.euiTableCellContent button', cypressDNSRule)
+        .parents('td')
+        .prev()
+        .find('.euiTableCellContent button')
+        .click();
+
+      cy.getElementByText('.euiTitle', 'Detection rules (13)');
+      cy.getElementByText('button', 'Save changes').click({ force: true });
+      cy.urlShouldContain('detector-details').then(() => {
+        cy.getElementByText('.euiTitle', detectorName);
+        cy.getElementByText('.euiPanel .euiTitle', 'Active rules (13)');
+      });
+    });
+
+    it('...should update field mappings if data source is changed', () => {
+      cy.intercept('mappings/view').as('getMappingsView');
+      cy.intercept('GET', '/indices').as('getIndices');
+      openDetectorDetails(detectorName);
+
+      editDetectorDetails(detectorName, 'Detector details');
+
+      cy.urlShouldContain('edit-detector-details').then(() => {
+        cy.getElementByText('.euiTitle', 'Edit detector details');
+      });
+
+      cy.wait('@getIndices');
+      cy.get('.reviewFieldMappings').should('not.exist');
+
+      getDataSourceField().clearCombobox();
+      getDataSourceField().should('not.have.value');
+      getDataSourceField().type(`${cypressIndexDns}{enter}`);
+
+      validateFieldMappingsTable('data source is changed');
+
+      cy.getElementByText('button', 'Save changes').click({ force: true });
+    });
+
+    it('...should show field mappings if rule selection is changed', () => {
+      cy.intercept('mappings/view').as('getMappingsView');
+
+      openDetectorDetails(detectorName);
+
+      editDetectorDetails(detectorName, 'Active rules');
+
+      cy.urlShouldContain('edit-detector-rules').then(() => {
+        cy.getElementByText('.euiTitle', 'Edit detector rules');
+      });
+
+      cy.get('.reviewFieldMappings').should('not.exist');
+
+      cy.wait('@detectorsSearch');
+
+      // Toggle single search result to unchecked
+      cy.get(
+        '[data-test-subj="edit-detector-rules-table"] table thead tr:first th:first button'
+      ).click({ force: true });
+
+      validateFieldMappingsTable('rules are changed');
+    });
+
+    it('...can be deleted', () => {
+      cy.intercept('/_plugins/_security_analytics/rules/_search?prePackaged=true').as(
+        'getSigmaRules'
+      );
+      cy.intercept('/_plugins/_security_analytics/rules/_search?prePackaged=false').as(
+        'getCustomRules'
+      );
+      openDetectorDetails(detectorName);
+
+      cy.wait('@detectorsSearch');
+      cy.wait('@getCustomRules');
+      cy.wait('@getSigmaRules');
+
+      cy.getButtonByText('Actions')
+        .click({ force: true })
+        .then(() => {
+          cy.intercept('/detectors').as('detectors');
+          cy.getElementByText('.euiContextMenuItem', 'Delete').click({ force: true });
+          cy.wait('@detectors').then(() => {
+            cy.contains('There are no existing detectors');
+          });
+        });
+    });
   });
 
   after(() => cy.cleanUpTests());

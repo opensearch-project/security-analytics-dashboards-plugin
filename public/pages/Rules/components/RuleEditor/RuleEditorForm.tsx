@@ -13,20 +13,21 @@ import {
   EuiFieldText,
   EuiButton,
   EuiSpacer,
-  EuiTextArea,
+  EuiAccordion,
   EuiComboBox,
   EuiButtonGroup,
   EuiText,
+  EuiTitle,
+  EuiPanel,
 } from '@elastic/eui';
 import { ContentPanel } from '../../../../components/ContentPanel';
-import { FieldTextArray } from './FieldTextArray';
+import { FieldTextArray } from './components/FieldTextArray';
 import { ruleStatus, ruleTypes } from '../../utils/constants';
 import { AUTHOR_REGEX, validateDescription, validateName } from '../../../../utils/validation';
 import { RuleEditorFormModel } from './RuleEditorFormModel';
 import { FormSubmissionErrorToastNotification } from './FormSubmitionErrorToastNotification';
 import { YamlRuleEditorComponent } from './components/YamlRuleEditorComponent/YamlRuleEditorComponent';
 import { mapFormToRule, mapRuleToForm } from './mappers';
-import { RuleTagsComboBox } from './components/YamlRuleEditorComponent/RuleTagsComboBox';
 import { DetectionVisualEditor } from './DetectionVisualEditor';
 
 export interface VisualRuleEditorProps {
@@ -49,6 +50,8 @@ const editorTypes = [
   },
 ];
 
+export const TAGS_PREFIX = 'attack.';
+
 export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
   initialValue,
   notifications,
@@ -62,6 +65,20 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
   const onEditorTypeChange = (optionId: string) => {
     setSelectedEditorType(optionId);
+  };
+
+  const validateTags = (fields: string[]) => {
+    let isValid = true;
+    let tag;
+    for (let i = 0; i < fields.length; i++) {
+      tag = fields[i];
+      if (tag.length && !(tag.startsWith(TAGS_PREFIX) && tag.length > TAGS_PREFIX.length)) {
+        isValid = false;
+        break;
+      }
+    }
+
+    return isValid;
   };
 
   return (
@@ -79,7 +96,8 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
         }
 
         if (values.description && !validateDescription(values.description)) {
-          errors.description = 'Invalid description.';
+          errors.description =
+            'Description should only consist of upper and lowercase letters, numbers 0-9, commas, hyphens, periods, spaces, and underscores. Max limit of 500 characters.';
         }
 
         if (!values.logType) {
@@ -106,6 +124,10 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
           errors.status = 'Rule status is required';
         }
 
+        if (!validateTags(values.tags)) {
+          errors.tags = `Tags must start with '${TAGS_PREFIX}'`;
+        }
+
         return errors;
       }}
       onSubmit={(values, { setSubmitting }) => {
@@ -127,6 +149,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
               idSelected={selectedEditorType}
               onChange={(id) => onEditorTypeChange(id)}
             />
+
             <EuiSpacer size="xl" />
 
             {selectedEditorType === 'yaml' && (
@@ -145,61 +168,37 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
             <FormSubmissionErrorToastNotification notifications={notifications} />
             {selectedEditorType === 'visual' && (
               <>
-                <EuiFlexGroup component="span">
-                  <EuiFlexItem grow={false} style={{ minWidth: 400 }}>
-                    <EuiFormRow
-                      label={
-                        <EuiText size={'s'}>
-                          <strong>Rule name</strong>
-                        </EuiText>
-                      }
-                      isInvalid={props.touched.name && !!props.errors?.name}
-                      error={props.errors.name}
-                      helpText="Rule name must contain 5-50 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, and underscores."
-                    >
-                      <EuiFieldText
-                        isInvalid={props.touched.name && !!props.errors.name}
-                        placeholder="Enter rule name"
-                        data-test-subj={'rule_name_field'}
-                        onChange={(e) => {
-                          props.handleChange('name')(e);
-                        }}
-                        onBlur={props.handleBlur('name')}
-                        value={props.values.name}
-                      />
-                    </EuiFormRow>
-                  </EuiFlexItem>
-                  <EuiFlexItem>
-                    <EuiFormRow
-                      label={
-                        <EuiText size={'s'}>
-                          <strong>Log type</strong>
-                        </EuiText>
-                      }
-                      isInvalid={props.touched.logType && !!props.errors?.logType}
-                      error={props.errors.logType}
-                    >
-                      <EuiComboBox
-                        isInvalid={props.touched.logType && !!props.errors.logType}
-                        placeholder="Select a log type"
-                        data-test-subj={'rule_type_dropdown'}
-                        options={ruleTypes.map(({ value, label }) => ({ value, label }))}
-                        singleSelection={{ asPlainText: true }}
-                        onChange={(e) => {
-                          props.handleChange('logType')(e[0]?.value ? e[0].value : '');
-                        }}
-                        onBlur={props.handleBlur('logType')}
-                        selectedOptions={
-                          props.values.logType
-                            ? [{ value: props.values.logType, label: props.values.logType }]
-                            : []
-                        }
-                      />
-                    </EuiFormRow>
-                  </EuiFlexItem>
-                </EuiFlexGroup>
+                <EuiTitle>
+                  <EuiText>
+                    <h2>Rule overview</h2>
+                  </EuiText>
+                </EuiTitle>
 
                 <EuiSpacer />
+
+                <EuiFormRow
+                  label={
+                    <EuiText size={'s'}>
+                      <strong>Rule name</strong>
+                    </EuiText>
+                  }
+                  isInvalid={props.touched.name && !!props.errors?.name}
+                  error={props.errors.name}
+                  helpText="Rule name must contain 5-50 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, and underscores"
+                >
+                  <EuiFieldText
+                    isInvalid={props.touched.name && !!props.errors.name}
+                    placeholder="My custom rule"
+                    data-test-subj={'rule_name_field'}
+                    onChange={(e) => {
+                      props.handleChange('name')(e);
+                    }}
+                    onBlur={props.handleBlur('name')}
+                    value={props.values.name}
+                  />
+                </EuiFormRow>
+
+                <EuiSpacer size={'m'} />
 
                 <EuiFormRow
                   label={
@@ -208,51 +207,87 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                       <i>- optional</i>
                     </EuiText>
                   }
-                  helpText="Description must contain 5-500 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, dots, commas, and underscores."
                   isInvalid={!!props.errors?.description}
                   error={props.errors.description}
                 >
-                  <EuiTextArea
+                  <EuiFieldText
                     data-test-subj={'rule_description_field'}
                     onChange={(e) => {
                       props.handleChange('description')(e.target.value);
                     }}
                     onBlur={props.handleBlur('description')}
                     value={props.values.description}
+                    placeholder={'Detects ...'}
                   />
                 </EuiFormRow>
-                <EuiSpacer />
 
-                <EuiText size={'s'}>
-                  <strong>Detection</strong>
-                </EuiText>
-                <EuiText size="s">
-                  <p>Define the detection criteria for the rule</p>
-                </EuiText>
-                <EuiSpacer />
-
-                <DetectionVisualEditor
-                  detectionYml={props.values.detection}
-                  setIsDetectionInvalid={(isInvalid: boolean) => {
-                    if (isInvalid) {
-                      props.errors.detection = 'Invalid detection entries';
-                    } else {
-                      delete props.errors.detection;
-                    }
-
-                    setIsDetectionInvalid(isInvalid);
-                  }}
-                  onChange={(detection: string) => {
-                    props.handleChange('detection')(detection);
-                  }}
-                />
-
-                <EuiSpacer size="xxl" />
+                <EuiSpacer size={'m'} />
 
                 <EuiFormRow
                   label={
                     <EuiText size={'s'}>
-                      <strong>Rule level</strong>
+                      <strong>Author</strong>
+                    </EuiText>
+                  }
+                  helpText="Combine multiple authors separated with a comma"
+                  isInvalid={props.touched.author && !!props.errors?.author}
+                  error={props.errors.author}
+                >
+                  <EuiFieldText
+                    isInvalid={props.touched.author && !!props.errors.author}
+                    placeholder="Enter author name"
+                    data-test-subj={'rule_author_field'}
+                    onChange={(e) => {
+                      props.handleChange('author')(e);
+                    }}
+                    onBlur={props.handleBlur('author')}
+                    value={props.values.author}
+                  />
+                </EuiFormRow>
+
+                <EuiSpacer size={'xl'} />
+
+                <EuiTitle>
+                  <EuiText>
+                    <h2>Details</h2>
+                  </EuiText>
+                </EuiTitle>
+
+                <EuiSpacer />
+
+                <EuiFormRow
+                  label={
+                    <EuiText size={'s'}>
+                      <strong>Log type</strong>
+                    </EuiText>
+                  }
+                  isInvalid={props.touched.logType && !!props.errors?.logType}
+                  error={props.errors.logType}
+                >
+                  <EuiComboBox
+                    isInvalid={props.touched.logType && !!props.errors.logType}
+                    placeholder="Select a log type"
+                    data-test-subj={'rule_type_dropdown'}
+                    options={ruleTypes.map(({ value, label }) => ({ value, label }))}
+                    singleSelection={{ asPlainText: true }}
+                    onChange={(e) => {
+                      props.handleChange('logType')(e[0]?.value ? e[0].value : '');
+                    }}
+                    onBlur={props.handleBlur('logType')}
+                    selectedOptions={
+                      props.values.logType
+                        ? [{ value: props.values.logType, label: props.values.logType }]
+                        : []
+                    }
+                  />
+                </EuiFormRow>
+
+                <EuiSpacer />
+
+                <EuiFormRow
+                  label={
+                    <EuiText size={'s'}>
+                      <strong>Rule level (severity)</strong>
                     </EuiText>
                   }
                   isInvalid={props.touched.level && !!props.errors?.level}
@@ -283,101 +318,6 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
                 <EuiSpacer />
 
-                <RuleTagsComboBox
-                  selectedOptions={props.values.tags}
-                  onChange={(value) => {
-                    const tags = value.map((option) => ({ label: option.label }));
-                    props.setFieldValue('tags', tags);
-                  }}
-                  onCreateOption={(newTag) => {
-                    props.setFieldValue('tags', [...props.values.tags, { label: newTag }]);
-                  }}
-                  onBlur={props.handleBlur('tags')}
-                />
-
-                <EuiSpacer />
-                <FieldTextArray
-                  name="references"
-                  label={
-                    <EuiText size={'s'}>
-                      <strong>References </strong>
-                      <i>- optional</i>
-                    </EuiText>
-                  }
-                  addButtonName="Add another URL"
-                  fields={props.values.references}
-                  onFieldAdd={() => {
-                    props.setFieldValue('references', [...props.values.references, '']);
-                  }}
-                  onFieldEdit={(value: string, index: number) => {
-                    props.setFieldValue('references', [
-                      ...props.values.references.slice(0, index),
-                      value,
-                      ...props.values.references.slice(index + 1),
-                    ]);
-                  }}
-                  onFieldRemove={(index: number) => {
-                    const newRefs = [...props.values.references];
-                    newRefs.splice(index, 1);
-
-                    props.setFieldValue('references', newRefs);
-                  }}
-                  data-test-subj={'rule_references_field'}
-                />
-
-                <FieldTextArray
-                  name="false_positives"
-                  label={
-                    <EuiText size={'s'}>
-                      <strong>False positive cases </strong>
-                      <i>- optional</i>
-                    </EuiText>
-                  }
-                  addButtonName="Add another case"
-                  fields={props.values.falsePositives}
-                  onFieldAdd={() => {
-                    props.setFieldValue('falsePositives', [...props.values.falsePositives, '']);
-                  }}
-                  onFieldEdit={(value: string, index: number) => {
-                    props.setFieldValue('falsePositives', [
-                      ...props.values.falsePositives.slice(0, index),
-                      value,
-                      ...props.values.falsePositives.slice(index + 1),
-                    ]);
-                  }}
-                  onFieldRemove={(index: number) => {
-                    const newCases = [...props.values.falsePositives];
-                    newCases.splice(index, 1);
-
-                    props.setFieldValue('falsePositives', newCases);
-                  }}
-                  data-test-subj={'rule_falsePositives_field'}
-                />
-
-                <EuiFormRow
-                  label={
-                    <EuiText size={'s'}>
-                      <strong>Author</strong>
-                    </EuiText>
-                  }
-                  helpText="Author must contain 5-50 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, commas, and underscores."
-                  isInvalid={props.touched.author && !!props.errors?.author}
-                  error={props.errors.author}
-                >
-                  <EuiFieldText
-                    isInvalid={props.touched.author && !!props.errors.author}
-                    placeholder="Enter author name"
-                    data-test-subj={'rule_author_field'}
-                    onChange={(e) => {
-                      props.handleChange('author')(e);
-                    }}
-                    onBlur={props.handleBlur('author')}
-                    value={props.values.author}
-                  />
-                </EuiFormRow>
-
-                <EuiSpacer />
-
                 <EuiFormRow
                   label={
                     <EuiText size={'s'}>
@@ -400,10 +340,143 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     selectedOptions={
                       props.values.status
                         ? [{ value: props.values.status, label: props.values.status }]
-                        : [{ value: ruleStatus[0], label: ruleStatus[0] }]
+                        : []
                     }
                   />
                 </EuiFormRow>
+
+                <EuiSpacer size={'xxl'} />
+
+                <EuiTitle>
+                  <EuiText>
+                    <h2>Detection</h2>
+                  </EuiText>
+                </EuiTitle>
+                <EuiText size="s">
+                  <p>Define the detection criteria for the rule</p>
+                </EuiText>
+
+                <EuiSpacer />
+
+                <DetectionVisualEditor
+                  isInvalid={props.touched.detection && isDetectionInvalid}
+                  detectionYml={props.values.detection}
+                  goToYamlEditor={setSelectedEditorType}
+                  setIsDetectionInvalid={(isInvalid: boolean) => {
+                    if (isInvalid) {
+                      props.errors.detection = 'Invalid detection entries';
+                    } else {
+                      delete props.errors.detection;
+                    }
+
+                    setIsDetectionInvalid(isInvalid);
+                  }}
+                  onChange={(detection: string) => {
+                    props.handleChange('detection')(detection);
+                  }}
+                />
+
+                <EuiSpacer size={'xl'} />
+
+                <EuiPanel style={{ maxWidth: 1000 }}>
+                  <EuiAccordion
+                    id={'additional-details'}
+                    initialIsOpen={true}
+                    buttonContent={
+                      <>
+                        Additional details <i>- optional</i>
+                      </>
+                    }
+                  >
+                    <div className={'rule-editor-form-additional-details-panel-body'}>
+                      <EuiSpacer />
+
+                      <FieldTextArray
+                        name="tags"
+                        placeholder={'tag'}
+                        label={
+                          <>
+                            <EuiText size={'m'}>
+                              <strong>Tags </strong>
+                              <i>- optional</i>
+                            </EuiText>
+
+                            <EuiSpacer size={'m'} />
+
+                            <EuiText size={'xs'}>
+                              <strong>Tag</strong>
+                            </EuiText>
+                          </>
+                        }
+                        addButtonName="Add tag"
+                        fields={props.values.tags}
+                        error={props.errors.tags}
+                        isInvalid={props.touched.tags && !!props.errors.tags}
+                        onChange={(tags) => {
+                          props.touched.tags = true;
+                          props.setFieldValue('tags', tags);
+                        }}
+                        data-test-subj={'rule_tags_field'}
+                      />
+
+                      <FieldTextArray
+                        name="references"
+                        placeholder={'http://'}
+                        label={
+                          <>
+                            <EuiText size={'m'}>
+                              <strong>References </strong>
+                              <i>- optional</i>
+                            </EuiText>
+
+                            <EuiSpacer size={'m'} />
+
+                            <EuiText size={'xs'}>
+                              <strong>URL</strong>
+                            </EuiText>
+                          </>
+                        }
+                        addButtonName="Add URL"
+                        fields={props.values.references}
+                        error={props.errors.references}
+                        isInvalid={props.touched.references && !!props.errors.references}
+                        onChange={(references) => {
+                          props.touched.references = true;
+                          props.setFieldValue('references', references);
+                        }}
+                        data-test-subj={'rule_references_field'}
+                      />
+
+                      <FieldTextArray
+                        name="false_positives"
+                        placeholder={'format?'}
+                        label={
+                          <>
+                            <EuiText size={'m'}>
+                              <strong>False positive cases </strong>
+                              <i>- optional</i>
+                            </EuiText>
+
+                            <EuiSpacer size={'m'} />
+
+                            <EuiText size={'xs'}>
+                              <strong>Description</strong>
+                            </EuiText>
+                          </>
+                        }
+                        addButtonName="Add false positive"
+                        fields={props.values.falsePositives}
+                        error={props.errors.falsePositives}
+                        isInvalid={props.touched.falsePositives && !!props.errors.falsePositives}
+                        onChange={(falsePositives) => {
+                          props.touched.falsePositives = true;
+                          props.setFieldValue('falsePositives', falsePositives);
+                        }}
+                        data-test-subj={'rule_falsePositives_field'}
+                      />
+                    </div>
+                  </EuiAccordion>
+                </EuiPanel>
               </>
             )}
           </ContentPanel>
@@ -420,7 +493,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                 data-test-subj={'submit_rule_form_button'}
                 fill
               >
-                {mode === 'create' ? 'Create' : 'Save changes'}
+                {mode === 'create' ? 'Create detection rule' : 'Save changes'}
               </EuiButton>
             </EuiFlexItem>
           </EuiFlexGroup>

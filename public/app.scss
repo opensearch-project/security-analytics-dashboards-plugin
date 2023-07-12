@@ -20,6 +20,7 @@ $euiTextColor: $euiColorDarkestShade !default;
 @import "./pages/Findings/components/CorrelationsTable/CorrelationsTable.scss";
 @import "./pages/Rules/components/RuleEditor/RuleEditorForm.scss";
 @import "./pages/Rules/components/RuleEditor/DetectionVisualEditor.scss";
+@import "./pages/Rules/components/RuleEditor/components/SelectionExpField.scss";
 
 .selected-radio-panel {
   background-color: tintOrShade($euiColorPrimary, 90%, 70%);
@@ -134,4 +135,12 @@ $euiTextColor: $euiColorDarkestShade !default;
 
 .detailsFormRow {
   width: auto !important;
+}
+
+.empty-text-button {
+  vertical-align: baseline;
+
+  .euiButtonEmpty__content {
+    padding: 0 !important;
+  }
 }
