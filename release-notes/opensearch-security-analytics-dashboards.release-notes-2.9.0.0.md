@@ -18,4 +18,4 @@ Compatible with OpenSearch Dashboards 2.9.0
 * Change the order of the sections. ([#622](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/622))
 
 ### Documentation
-* Added 2.9 release notes. ([#]())
+* Added 2.9 release notes. ([#650](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/650))
