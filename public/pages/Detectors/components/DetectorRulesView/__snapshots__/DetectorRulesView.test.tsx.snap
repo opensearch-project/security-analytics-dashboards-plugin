@@ -470,6 +470,10 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                           "name": "Azure",
                           "value": "azure",
                         },
+                        Object {
+                          "name": "VPC Flow",
+                          "value": "vpcflow",
+                        },
                       ],
                       "type": "field_value_selection",
                     },
@@ -631,6 +635,10 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                           Object {
                             "name": "Azure",
                             "value": "azure",
+                          },
+                          Object {
+                            "name": "VPC Flow",
+                            "value": "vpcflow",
                           },
                         ],
                         "type": "field_value_selection",
@@ -866,6 +874,10 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                       "name": "Azure",
                                       "value": "azure",
                                     },
+                                    Object {
+                                      "name": "VPC Flow",
+                                      "value": "vpcflow",
+                                    },
                                   ],
                                   "type": "field_value_selection",
                                 },
@@ -1021,6 +1033,10 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                         Object {
                                           "name": "Azure",
                                           "value": "azure",
+                                        },
+                                        Object {
+                                          "name": "VPC Flow",
+                                          "value": "vpcflow",
                                         },
                                       ],
                                       "type": "field_value_selection",
