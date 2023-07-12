@@ -40,4 +40,5 @@ export const DETECTOR_TYPES = {
   M365: { id: 'm365', label: 'Microsoft 365 logs', abbr: 'MSO' },
   OKTA: { id: 'okta', label: 'Okta events', abbr: 'OKT' },
   AZURE: { id: 'azure', label: 'Azure logs', abbr: 'AZR' },
+  VPC_FLOW: { id: 'vpcflow', label: 'VPC Flow logs', abbr: 'VPC' },
 };
