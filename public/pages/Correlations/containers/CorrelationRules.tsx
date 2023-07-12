@@ -23,7 +23,6 @@ import {
 } from '../utils/helpers';
 import { CorrelationRule } from '../../../../types';
 import { RouteComponentProps } from 'react-router-dom';
-import { CorrelationsExperimentalBanner } from '../components/ExperimentalBanner';
 import { DeleteCorrelationRuleModal } from '../components/DeleteModal';
 
 export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComponentProps) => {
@@ -116,7 +115,6 @@ export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComp
   return (
     <>
       {isDeleteModalVisible && deleteModal ? deleteModal : null}
-      <CorrelationsExperimentalBanner />
       <EuiFlexGroup direction="column">
         <EuiFlexItem>
           <EuiFlexGroup gutterSize={'s'} justifyContent={'spaceBetween'}>
