@@ -36,7 +36,6 @@ import {
 import { BREADCRUMBS, ROUTES } from '../../../utils/constants';
 import { CoreServicesContext } from '../../../components/core_services';
 import { RouteComponentProps, useParams } from 'react-router-dom';
-import { CorrelationsExperimentalBanner } from '../components/ExperimentalBanner';
 import { validateName } from '../../../utils/validation';
 import { FieldMappingService, IndexService } from '../../../services';
 import { errorNotificationToast } from '../../../utils/helpers';
@@ -464,7 +463,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
 
   return (
     <>
-      <CorrelationsExperimentalBanner />
       <EuiTitle>
         <h1>{`${action} correlation rule`}</h1>
       </EuiTitle>
