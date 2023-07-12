@@ -64,8 +64,6 @@ export default class CorrelationService {
     response: OpenSearchDashboardsResponseFactory
   ) => {
     try {
-      console.log('UPDATE CORRELATION RULE');
-      console.log(JSON.stringify(request.params));
       const { ruleId } = request.params as { ruleId: string };
       const params: any = { body: request.body, ruleId };
       const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
