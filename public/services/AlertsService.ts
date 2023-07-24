@@ -23,14 +23,19 @@ export default class AlertsService {
     detectorParams: GetAlertsParams
   ): Promise<ServerResponse<GetAlertsResponse>> => {
     const { detectorType, detector_id } = detectorParams;
-    let query: GetAlertsParams | {} = {};
+    let query: GetAlertsParams | {} = {
+      sortOrder: 'desc',
+      size: 10000,
+    };
 
     if (detector_id) {
       query = {
+        ...query,
         detector_id,
       };
     } else if (detectorType) {
       query = {
+        ...query,
         detectorType,
       };
     }
