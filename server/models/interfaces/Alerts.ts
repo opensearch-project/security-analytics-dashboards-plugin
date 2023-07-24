@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export type GetAlertsParams =
+export type GetAlertsParams = {
+  sortOrder?: string;
+  size?: number;
+} & (
   | {
       detector_id: string;
       detectorType?: string;
@@ -11,7 +14,8 @@ export type GetAlertsParams =
   | {
       detectorType: string;
       detector_id?: string;
-    };
+    }
+);
 
 export interface GetAlertsResponse {
   alerts: AlertResponse[];

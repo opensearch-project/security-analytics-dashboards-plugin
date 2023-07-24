@@ -33,15 +33,21 @@ export default class FindingsService {
     IOpenSearchDashboardsResponse<ServerResponse<GetFindingsResponse> | ResponseError>
   > => {
     try {
-      const { detectorType, detectorId } = request.query;
+      const { detectorType, detectorId, sortOrder, size } = request.query;
+      const defaultParams = {
+        sortOrder,
+        size,
+      };
       let params: GetFindingsParams;
 
       if (detectorId) {
         params = {
+          ...defaultParams,
           detectorId,
         };
       } else if (detectorType) {
         params = {
+          ...defaultParams,
           detectorType,
         };
       } else {
