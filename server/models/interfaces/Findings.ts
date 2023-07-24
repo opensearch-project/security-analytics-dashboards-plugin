@@ -5,7 +5,10 @@
 
 import { Finding } from '../../../public/pages/Findings/models/interfaces';
 
-export type GetFindingsParams =
+export type GetFindingsParams = {
+  sortOrder?: string;
+  size?: number;
+} & (
   | {
       detectorId: string;
       detectorType?: string;
@@ -13,7 +16,8 @@ export type GetFindingsParams =
   | {
       detectorType: string;
       detectorId?: string;
-    };
+    }
+);
 
 export interface GetFindingsResponse {
   total_findings: number;
