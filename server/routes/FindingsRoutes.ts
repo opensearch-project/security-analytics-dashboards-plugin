@@ -18,6 +18,8 @@ export function setupFindingsRoutes(services: NodeServices, router: IRouter) {
         query: schema.object({
           detectorType: schema.maybe(schema.string()),
           detectorId: schema.maybe(schema.string()),
+          sortOrder: schema.maybe(schema.string()),
+          size: schema.maybe(schema.number()),
         }),
       },
     },

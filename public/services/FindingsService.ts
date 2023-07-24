@@ -19,14 +19,19 @@ export default class FindingsService {
     detectorParams: GetFindingsParams
   ): Promise<ServerResponse<GetFindingsResponse>> => {
     const { detectorType, detectorId } = detectorParams;
-    let query: GetFindingsParams | {} = {};
+    let query: GetFindingsParams | {} = {
+      sortOrder: 'desc',
+      size: 10000,
+    };
 
     if (detectorId) {
       query = {
+        ...query,
         detectorId,
       };
     } else if (detectorType) {
       query = {
+        ...query,
         detectorType,
       };
     }
