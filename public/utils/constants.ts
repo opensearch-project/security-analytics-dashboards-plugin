@@ -44,6 +44,8 @@ export const ROUTES = Object.freeze({
   CORRELATION_RULES: '/correlations/rules',
   CORRELATION_RULE_CREATE: '/correlations/create-rule',
   CORRELATION_RULE_EDIT: '/correlations/rule',
+  LOG_TYPES: '/log-types',
+  LOG_TYPES_CREATE: '/create-log-type',
 
   get LANDING_PAGE(): string {
     return this.OVERVIEW;
@@ -80,6 +82,8 @@ export const BREADCRUMBS = Object.freeze({
     text: 'Create correlation rule',
     href: `#${ROUTES.CORRELATION_RULE_CREATE}`,
   },
+  LOG_TYPES: { text: 'Log types', href: `#${ROUTES.LOG_TYPES}` },
+  LOG_TYPE_CREATE: { text: 'Create log type', href: `#${ROUTES.LOG_TYPES_CREATE}` },
 });
 
 export enum SortDirection {

@@ -37,8 +37,6 @@ export interface IDetectorsStore {
   ) => void;
 }
 
-export interface IDetectorsCache {}
-
 export interface IDetectorsState {
   pendingRequests: Promise<any>[];
   detectorInput: CreateDetectorState;
@@ -84,13 +82,6 @@ export class DetectorsStore implements IDetectorsStore {
   history: RouteComponentProps['history'] | undefined = undefined;
 
   /**
-   * Keeps detector's data cached
-   *
-   * @property {IDetectorsCache} cache
-   */
-  private cache: IDetectorsCache = {};
-
-  /**
    * Store state
    * @private {IDetectorsState}
    */
@@ -111,14 +102,6 @@ export class DetectorsStore implements IDetectorsStore {
     this.notifications = notifications;
     this.savedObjectsService = savedObjectsService;
   }
-
-  /**
-   * Invalidates all detectors data
-   */
-  private invalidateCache = (): DetectorsStore => {
-    this.cache = {};
-    return this;
-  };
 
   public setState = (state: IDetectorsState, history: RouteComponentProps['history']): void => {
     this.state = state;

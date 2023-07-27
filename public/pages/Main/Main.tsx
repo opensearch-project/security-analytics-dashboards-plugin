@@ -47,6 +47,8 @@ import { Correlations } from '../Correlations/containers/CorrelationsContainer';
 import FindingDetailsFlyout, {
   FindingDetailsFlyoutBaseProps,
 } from '../Findings/components/FindingDetailsFlyout';
+import { LogTypes } from '../LogTypes/containers/LogTypes';
+import { LogTypeDetails } from '../LogTypes/containers/LogTypeDetails';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -57,6 +59,7 @@ enum Navigation {
   Alerts = 'Alerts',
   Correlations = 'Correlations',
   CorrelationRules = 'Correlation rules',
+  LogTypes = 'Log types',
 }
 
 /**
@@ -72,6 +75,7 @@ const HIDDEN_NAV_ROUTES: string[] = [
   ROUTES.EDIT_DETECTOR_RULES,
   ROUTES.EDIT_FIELD_MAPPINGS,
   ROUTES.EDIT_DETECTOR_ALERT_TRIGGERS,
+  `${ROUTES.LOG_TYPES}/.+`,
 ];
 
 interface MainProps extends RouteComponentProps {
@@ -80,7 +84,7 @@ interface MainProps extends RouteComponentProps {
 
 interface MainState {
   getStartedDismissedOnce: boolean;
-  selectedNavItemIndex: number;
+  selectedNavItemId: number;
   dateTimeFilter: DateTimeFilter;
   callout?: ICalloutProps;
   toasts?: Toast[];
@@ -100,7 +104,7 @@ export default class Main extends Component<MainProps, MainState> {
     super(props);
     this.state = {
       getStartedDismissedOnce: false,
-      selectedNavItemIndex: 1,
+      selectedNavItemId: 1,
       dateTimeFilter: {
         startTime: DEFAULT_DATE_RANGE.start,
         endTime: DEFAULT_DATE_RANGE.end,
@@ -172,11 +176,11 @@ export default class Main extends Component<MainProps, MainState> {
   updateSelectedNavItem() {
     const routeIndex = this.getCurrentRouteIndex();
     if (routeIndex) {
-      this.setState({ selectedNavItemIndex: routeIndex });
+      this.setState({ selectedNavItemId: routeIndex });
     }
 
     if (this.props.location.pathname.includes('detector-details')) {
-      this.setState({ selectedNavItemIndex: navItemIndexByRoute[ROUTES.DETECTORS] });
+      this.setState({ selectedNavItemId: navItemIndexByRoute[ROUTES.DETECTORS] });
     }
   }
 
@@ -191,7 +195,7 @@ export default class Main extends Component<MainProps, MainState> {
       history,
     } = this.props;
 
-    const { callout, findingFlyout } = this.state;
+    const { callout, findingFlyout, selectedNavItemId: selectedNavItemIndex } = this.state;
     const sideNav: EuiSideNavItemType<{ style: any }>[] = [
       {
         name: Navigation.SecurityAnalytics,
@@ -211,52 +215,64 @@ export default class Main extends Component<MainProps, MainState> {
             name: Navigation.Overview,
             id: 1,
             onClick: () => {
-              this.setState({ selectedNavItemIndex: 1 });
+              this.setState({ selectedNavItemId: 1 });
               history.push(ROUTES.OVERVIEW);
             },
-            isSelected: this.state.selectedNavItemIndex === 1,
+            isSelected: selectedNavItemIndex === 1,
           },
           {
             name: Navigation.Findings,
             id: 2,
             onClick: () => {
-              this.setState({ selectedNavItemIndex: 2 });
+              this.setState({ selectedNavItemId: 2 });
               history.push(ROUTES.FINDINGS);
             },
-            isSelected: this.state.selectedNavItemIndex === 2,
+            isSelected: selectedNavItemIndex === 2,
           },
           {
             name: Navigation.Alerts,
             id: 3,
             onClick: () => {
-              this.setState({ selectedNavItemIndex: 3 });
+              this.setState({ selectedNavItemId: 3 });
               history.push(ROUTES.ALERTS);
             },
-            isSelected: this.state.selectedNavItemIndex === 3,
+            isSelected: selectedNavItemIndex === 3,
           },
           {
             name: Navigation.Detectors,
             id: 4,
             onClick: () => {
-              this.setState({ selectedNavItemIndex: 4 });
+              this.setState({ selectedNavItemId: 4 });
               history.push(ROUTES.DETECTORS);
             },
-            isSelected: this.state.selectedNavItemIndex === 4,
+            forceOpen: true,
+            isSelected: selectedNavItemIndex === 4,
+            items: [
+              {
+                name: Navigation.LogTypes,
+                id: 8,
+                onClick: () => {
+                  this.setState({ selectedNavItemId: 8 });
+                  history.push(ROUTES.LOG_TYPES);
+                },
+                isSelected: selectedNavItemIndex === 8,
+              },
+            ],
           },
           {
             name: Navigation.Rules,
             id: 5,
             onClick: () => {
-              this.setState({ selectedNavItemIndex: 5 });
+              this.setState({ selectedNavItemId: 5 });
               history.push(ROUTES.RULES);
             },
-            isSelected: this.state.selectedNavItemIndex === 5,
+            isSelected: selectedNavItemIndex === 5,
           },
           {
             name: Navigation.Correlations,
             id: 6,
             onClick: () => {
-              this.setState({ selectedNavItemIndex: 6 });
+              this.setState({ selectedNavItemId: 6 });
               history.push(ROUTES.CORRELATIONS);
             },
             renderItem: (props) => {
@@ -266,7 +282,7 @@ export default class Main extends Component<MainProps, MainState> {
                     <span
                       className={props.className}
                       onClick={() => {
-                        this.setState({ selectedNavItemIndex: 6 });
+                        this.setState({ selectedNavItemId: 6 });
                         history.push(ROUTES.CORRELATIONS);
                       }}
                     >
@@ -276,17 +292,17 @@ export default class Main extends Component<MainProps, MainState> {
                 </EuiFlexGroup>
               );
             },
-            isSelected: this.state.selectedNavItemIndex === 6,
+            isSelected: selectedNavItemIndex === 6,
             forceOpen: true,
             items: [
               {
                 name: Navigation.CorrelationRules,
                 id: 7,
                 onClick: () => {
-                  this.setState({ selectedNavItemIndex: 7 });
+                  this.setState({ selectedNavItemId: 7 });
                   history.push(ROUTES.CORRELATION_RULES);
                 },
-                isSelected: this.state.selectedNavItemIndex === 7,
+                isSelected: selectedNavItemIndex === 7,
               },
             ],
           },
@@ -534,11 +550,21 @@ export default class Main extends Component<MainProps, MainState> {
                               <Correlations
                                 {...props}
                                 history={props.history}
-                                onMount={() => this.setState({ selectedNavItemIndex: 6 })}
+                                onMount={() => this.setState({ selectedNavItemId: 6 })}
                                 dateTimeFilter={this.state.dateTimeFilter}
                                 setDateTimeFilter={this.setDateTimeFilter}
                               />
                             );
+                          }}
+                        />
+                        <Route
+                          path={`${ROUTES.LOG_TYPES}/:logTypeId`}
+                          render={() => <LogTypeDetails />}
+                        />
+                        <Route
+                          path={`${ROUTES.LOG_TYPES}`}
+                          render={(props: RouteComponentProps<any, any, any>) => {
+                            return <LogTypes {...props} />;
                           }}
                         />
                         <Redirect from={'/'} to={landingPage} />
