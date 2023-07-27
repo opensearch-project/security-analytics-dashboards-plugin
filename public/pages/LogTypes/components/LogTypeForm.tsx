@@ -16,11 +16,15 @@ import {
 } from '@elastic/eui';
 import { LogTypeItem } from '../../../../types';
 import React from 'react';
+import { validateName } from '../../../utils/validation';
+import { NotificationsStart } from 'opensearch-dashboards/public';
+import { useState } from 'react';
 
 export interface LogTypeFormProps {
   logTypeDetails: LogTypeItem;
   isEditMode: boolean;
   confirmButtonText: string;
+  notifications: NotificationsStart;
   setLogTypeDetails: (logType: LogTypeItem) => void;
   onCancel: () => void;
   onConfirm: () => void;
@@ -30,21 +34,55 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
   logTypeDetails,
   isEditMode,
   confirmButtonText,
+  notifications,
   setLogTypeDetails,
   onCancel,
   onConfirm,
 }) => {
+  const [nameError, setNameError] = useState('');
+
+  const updateErrors = (details = logTypeDetails) => {
+    const nameInvalid = !validateName(details.name);
+    setNameError(nameInvalid ? 'Invalid name' : '');
+
+    return { nameInvalid };
+  };
+  const onConfirmClicked = () => {
+    const { nameInvalid } = updateErrors();
+
+    if (nameInvalid) {
+      notifications?.toasts.addDanger({
+        title: `Failed to ${confirmButtonText.toLowerCase()}`,
+        text: `Fix the marked errors.`,
+        toastLifeTimeMs: 3000,
+      });
+
+      return;
+    }
+    onConfirm();
+  };
+
   return (
     <>
-      <EuiFormRow label="Name">
+      <EuiFormRow
+        label="Name"
+        helpText={
+          isEditMode &&
+          'Must contain 5-50 characters. Valid characters are a-z, A-Zm 0-9, hyphens, spaces, and underscores'
+        }
+        isInvalid={!!nameError}
+        error={nameError}
+      >
         <EuiFieldText
           value={logTypeDetails?.name}
-          onChange={(e) =>
-            setLogTypeDetails({
+          onChange={(e) => {
+            const newLogType = {
               ...logTypeDetails!,
               name: e.target.value,
-            })
-          }
+            };
+            setLogTypeDetails(newLogType);
+            updateErrors(newLogType);
+          }}
           placeholder="Enter name for log type"
           disabled={!isEditMode || !!logTypeDetails.detectionRules}
         />
@@ -53,12 +91,14 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
       <EuiFormRow label="Description">
         <EuiTextArea
           value={logTypeDetails?.description}
-          onChange={(e) =>
-            setLogTypeDetails({
+          onChange={(e) => {
+            const newLogType = {
               ...logTypeDetails!,
               description: e.target.value,
-            })
-          }
+            };
+            setLogTypeDetails(newLogType);
+            updateErrors(newLogType);
+          }}
           placeholder="Description of the log type"
           disabled={!isEditMode}
         />
@@ -72,7 +112,7 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
               </EuiButtonEmpty>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
-              <EuiButton color="primary" fill iconType="check" size="s" onClick={onConfirm}>
+              <EuiButton color="primary" fill iconType="check" size="s" onClick={onConfirmClicked}>
                 {confirmButtonText}
               </EuiButton>
             </EuiFlexItem>

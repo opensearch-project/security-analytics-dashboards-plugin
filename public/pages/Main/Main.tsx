@@ -48,7 +48,7 @@ import FindingDetailsFlyout, {
   FindingDetailsFlyoutBaseProps,
 } from '../Findings/components/FindingDetailsFlyout';
 import { LogTypes } from '../LogTypes/containers/LogTypes';
-import { LogTypeDetails } from '../LogTypes/containers/LogTypeDetails';
+import { LogType } from '../LogTypes/containers/LogType';
 import { CreateLogType } from '../LogTypes/containers/CreateLogType';
 
 enum Navigation {
@@ -561,7 +561,9 @@ export default class Main extends Component<MainProps, MainState> {
                         />
                         <Route
                           path={`${ROUTES.LOG_TYPES}/:logTypeId`}
-                          render={() => <LogTypeDetails />}
+                          render={(props: RouteComponentProps<any, any, any>) => (
+                            <LogType notifications={core?.notifications} {...props} />
+                          )}
                         />
                         <Route
                           path={`${ROUTES.LOG_TYPES}`}

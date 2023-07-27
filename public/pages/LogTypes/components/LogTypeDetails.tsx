@@ -9,19 +9,22 @@ import React from 'react';
 import { LogTypeItem } from '../../../../types';
 import { DataStore } from '../../../store/DataStore';
 import { LogTypeForm } from './LogTypeForm';
+import { NotificationsStart } from 'opensearch-dashboards/public';
 
-export interface LogTypeDetailsTabProps {
+export interface LogTypeDetailsProps {
   initialLogTypeDetails: LogTypeItem;
   logTypeDetails: LogTypeItem;
   isEditMode: boolean;
+  notifications: NotificationsStart;
   setIsEditMode: (isEdit: boolean) => void;
   setLogTypeDetails: (logType: LogTypeItem) => void;
 }
 
-export const LogTypeDetailsTab: React.FC<LogTypeDetailsTabProps> = ({
+export const LogTypeDetails: React.FC<LogTypeDetailsProps> = ({
   initialLogTypeDetails,
   logTypeDetails,
   isEditMode,
+  notifications,
   setIsEditMode,
   setLogTypeDetails,
 }) => {
@@ -35,7 +38,12 @@ export const LogTypeDetailsTab: React.FC<LogTypeDetailsTabProps> = ({
   return (
     <ContentPanel
       title="Details"
-      actions={!isEditMode && [<EuiButton onClick={() => setIsEditMode(true)}>Edit</EuiButton>]}
+      actions={
+        !isEditMode &&
+        logTypeDetails.source.toLocaleLowerCase() !== 'sigma' && [
+          <EuiButton onClick={() => setIsEditMode(true)}>Edit</EuiButton>,
+        ]
+      }
     >
       <EuiDescriptionList
         type="column"
@@ -47,6 +55,7 @@ export const LogTypeDetailsTab: React.FC<LogTypeDetailsTabProps> = ({
                 logTypeDetails={logTypeDetails}
                 isEditMode={isEditMode}
                 confirmButtonText={'Update'}
+                notifications={notifications}
                 setLogTypeDetails={setLogTypeDetails}
                 onCancel={() => {
                   setLogTypeDetails(initialLogTypeDetails);

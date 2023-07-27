@@ -51,6 +51,7 @@ export const CreateLogType: React.FC<CreateLogTypeProps> = ({ history, notificat
         logTypeDetails={{ ...logTypeDetails, id: '', detectionRules: 0 }}
         isEditMode={true}
         confirmButtonText={'Create rule category'}
+        notifications={notifications}
         setLogTypeDetails={setLogTypeDetails}
         onCancel={() => history.push(ROUTES.LOG_TYPES)}
         onConfirm={async () => {

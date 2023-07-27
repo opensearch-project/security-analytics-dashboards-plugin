@@ -65,6 +65,7 @@ export class RulesStore implements IRulesStore {
    * @returns {Promise<RuleItemInfoBase[]>}
    */
   public async getAllRules(terms?: { [key: string]: string[] }): Promise<RuleItemInfoBase[]> {
+    this.invalidateCache();
     let customRules = await this.getCustomRules(terms);
     let prePackagedRules = await this.getPrePackagedRules(terms);
 
