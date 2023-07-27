@@ -67,4 +67,13 @@ export class LogTypeStore {
 
     return updateRes.ok;
   }
+
+  public async deleteLogType(id: string) {
+    const deleteRes = await this.service.deleteLogType(id);
+    if (!deleteRes.ok) {
+      errorNotificationToast(this.notifications, 'delete', 'log type', deleteRes.error);
+    }
+
+    return deleteRes.ok;
+  }
 }

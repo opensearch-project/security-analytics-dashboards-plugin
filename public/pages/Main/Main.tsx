@@ -49,6 +49,7 @@ import FindingDetailsFlyout, {
 } from '../Findings/components/FindingDetailsFlyout';
 import { LogTypes } from '../LogTypes/containers/LogTypes';
 import { LogTypeDetails } from '../LogTypes/containers/LogTypeDetails';
+import { CreateLogType } from '../LogTypes/containers/CreateLogType';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -76,6 +77,7 @@ const HIDDEN_NAV_ROUTES: string[] = [
   ROUTES.EDIT_FIELD_MAPPINGS,
   ROUTES.EDIT_DETECTOR_ALERT_TRIGGERS,
   `${ROUTES.LOG_TYPES}/.+`,
+  ROUTES.LOG_TYPES_CREATE,
 ];
 
 interface MainProps extends RouteComponentProps {
@@ -564,7 +566,13 @@ export default class Main extends Component<MainProps, MainState> {
                         <Route
                           path={`${ROUTES.LOG_TYPES}`}
                           render={(props: RouteComponentProps<any, any, any>) => {
-                            return <LogTypes {...props} />;
+                            return <LogTypes notifications={core?.notifications} {...props} />;
+                          }}
+                        />
+                        <Route
+                          path={ROUTES.LOG_TYPES_CREATE}
+                          render={(props: RouteComponentProps<any, any, any>) => {
+                            return <CreateLogType notifications={core?.notifications} {...props} />;
                           }}
                         />
                         <Redirect from={'/'} to={landingPage} />
