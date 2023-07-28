@@ -11,6 +11,7 @@ import {
   EuiPanel,
   EuiTitle,
   EuiText,
+  EuiSpacer,
 } from '@elastic/eui';
 
 interface ContentPanelProps {
@@ -19,9 +20,9 @@ interface ContentPanelProps {
   subTitleText?: string | JSX.Element;
   bodyStyles?: object;
   panelStyles?: object;
-  horizontalRuleClassName?: string;
   actions?: React.ReactNode | React.ReactNode[];
   children: React.ReactNode | React.ReactNode[];
+  hideHeaderBorder?: boolean;
   className?: string;
 }
 
@@ -43,9 +44,9 @@ const ContentPanel: React.SFC<ContentPanelProps> = ({
   subTitleText = '',
   bodyStyles = {},
   panelStyles = {},
-  horizontalRuleClassName = '',
   actions,
   children,
+  hideHeaderBorder = false,
   className = '',
 }) => (
   <EuiPanel
@@ -80,7 +81,7 @@ const ContentPanel: React.SFC<ContentPanelProps> = ({
       ) : null}
     </EuiFlexGroup>
 
-    <EuiHorizontalRule margin="xs" className={horizontalRuleClassName} />
+    {hideHeaderBorder ? <EuiSpacer /> : <EuiHorizontalRule margin="xs" />}
 
     <div style={{ padding: '0px 10px', ...bodyStyles }}>{children}</div>
   </EuiPanel>

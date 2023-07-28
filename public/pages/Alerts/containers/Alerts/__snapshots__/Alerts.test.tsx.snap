@@ -1109,7 +1109,6 @@ exports[`<Alerts /> spec renders the component 1`] = `
                     </div>
                   </EuiFlexGroup>
                   <EuiHorizontalRule
-                    className=""
                     margin="xs"
                   >
                     <hr
