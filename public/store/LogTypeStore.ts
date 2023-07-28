@@ -7,6 +7,7 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { LogType, LogTypeBase, LogTypeItem } from '../../types';
 import LogTypeService from '../services/LogTypeService';
 import { errorNotificationToast } from '../utils/helpers';
+import { DataStore } from './DataStore';
 
 export class LogTypeStore {
   constructor(private service: LogTypeService, private notifications: NotificationsStart) {}
@@ -21,7 +22,11 @@ export class LogTypeStore {
         };
       });
 
-      return { ...logTypes[0], detectionRules: 10 };
+      const rulesRes = await DataStore.rules.getAllRules({
+        'rule.category': [id],
+      });
+
+      return { ...logTypes[0], detectionRules: rulesRes.length };
     }
 
     return undefined;

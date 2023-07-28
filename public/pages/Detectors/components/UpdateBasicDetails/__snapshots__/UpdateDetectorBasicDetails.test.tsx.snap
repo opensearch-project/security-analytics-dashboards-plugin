@@ -665,7 +665,6 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
               </div>
             </EuiFlexGroup>
             <EuiHorizontalRule
-              className=""
               margin="xs"
             >
               <hr
@@ -1165,7 +1164,6 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
               </div>
             </EuiFlexGroup>
             <EuiHorizontalRule
-              className=""
               margin="xs"
             >
               <hr
