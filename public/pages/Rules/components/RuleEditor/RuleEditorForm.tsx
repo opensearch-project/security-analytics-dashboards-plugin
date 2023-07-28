@@ -30,6 +30,8 @@ import { FormSubmissionErrorToastNotification } from './FormSubmitionErrorToastN
 import { YamlRuleEditorComponent } from './components/YamlRuleEditorComponent/YamlRuleEditorComponent';
 import { mapFormToRule, mapRuleToForm } from './mappers';
 import { DetectionVisualEditor } from './DetectionVisualEditor';
+import { useCallback } from 'react';
+import { DataStore } from '../../../../store/DataStore';
 
 export interface VisualRuleEditorProps {
   initialValue: RuleEditorFormModel;
@@ -63,10 +65,18 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 }) => {
   const [selectedEditorType, setSelectedEditorType] = useState('visual');
   const [isDetectionInvalid, setIsDetectionInvalid] = useState(false);
+  const [logTypeOptions, setLogTypeOptions] = useState(
+    ruleTypes.map(({ value, label }) => ({ value, label }))
+  );
 
   const onEditorTypeChange = (optionId: string) => {
     setSelectedEditorType(optionId);
   };
+
+  const refreshLogTypeOptions = useCallback(async () => {
+    const logTypes = await DataStore.logTypes.getLogTypes();
+    setLogTypeOptions(logTypes.map(({ id, name }) => ({ value: id, label: name })));
+  }, []);
 
   const validateTags = (fields: string[]) => {
     let isValid = true;
@@ -271,11 +281,12 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                         isInvalid={props.touched.logType && !!props.errors.logType}
                         placeholder="Select a log type"
                         data-test-subj={'rule_type_dropdown'}
-                        options={ruleTypes.map(({ value, label }) => ({ value, label }))}
+                        options={logTypeOptions}
                         singleSelection={{ asPlainText: true }}
                         onChange={(e) => {
                           props.handleChange('logType')(e[0]?.value ? e[0].value : '');
                         }}
+                        onFocus={refreshLogTypeOptions}
                         onBlur={props.handleBlur('logType')}
                         selectedOptions={
                           props.values.logType

@@ -8,6 +8,7 @@ import { LogType, LogTypeBase, LogTypeItem } from '../../types';
 import LogTypeService from '../services/LogTypeService';
 import { errorNotificationToast } from '../utils/helpers';
 import { DataStore } from './DataStore';
+import { ruleTypes } from '../pages/Rules/utils/constants';
 
 export class LogTypeStore {
   constructor(private service: LogTypeService, private notifications: NotificationsStart) {}
@@ -41,6 +42,16 @@ export class LogTypeStore {
           ...hit._source,
         };
       });
+
+      ruleTypes.splice(
+        0,
+        ruleTypes.length,
+        ...logTypes.map((logType) => ({
+          label: logType.name,
+          value: logType.id,
+          abbr: '',
+        }))
+      );
 
       return logTypes;
     }
