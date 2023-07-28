@@ -7,10 +7,10 @@ import React, { Component } from 'react';
 import { ContentPanel } from '../../../../../../components/ContentPanel';
 import { EuiFormRow, EuiFlexGrid, EuiFlexItem, EuiRadio, EuiSpacer } from '@elastic/eui';
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
-import { DETECTOR_TYPES } from '../../../../../Detectors/utils/constants';
 import { DetectorTypeOption } from '../../../../../Detectors/models/interfaces';
 import { CreateDetectorRulesState, DetectionRules } from '../DetectionRules/DetectionRules';
 import { RuleItem } from '../DetectionRules/types/interfaces';
+import { ruleTypes } from '../../../../../Rules/utils/constants';
 
 interface DetectorTypeProps {
   detectorType: string;
@@ -32,7 +32,10 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
   constructor(props: DetectorTypeProps) {
     super(props);
 
-    const detectorTypeOptions = Object.values(DETECTOR_TYPES);
+    const detectorTypeOptions: DetectorTypeOption[] = ruleTypes.map(({ label, value }) => ({
+      id: value,
+      label: label,
+    }));
     const detectorTypeIds = detectorTypeOptions.map((option) => option.id);
     this.state = {
       fieldTouched: false,
