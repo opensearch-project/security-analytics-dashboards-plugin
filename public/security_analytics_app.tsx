@@ -12,6 +12,7 @@ import {
   NotificationsService,
   ServicesContext,
   IndexPatternsService,
+  LogTypeService,
 } from './services';
 import { DarkModeContext } from './components/DarkMode';
 import Main from './pages/Main';
@@ -48,6 +49,7 @@ export function renderApp(
   const notificationsService = new NotificationsService(http);
   const savedObjectsService = new SavedObjectService(savedObjects.client, indexService);
   const indexPatternsService = new IndexPatternsService(depsStart.data.indexPatterns);
+  const logTypeService = new LogTypeService(http);
 
   const services: BrowserServices = {
     detectorsService,
@@ -61,6 +63,7 @@ export function renderApp(
     notificationsService,
     savedObjectsService,
     indexPatternsService,
+    logTypeService,
   };
 
   const isDarkMode = coreStart.uiSettings.get('theme:darkMode') || false;

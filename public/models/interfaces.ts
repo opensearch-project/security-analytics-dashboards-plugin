@@ -14,6 +14,7 @@ import {
   RuleService,
   NotificationsService,
   IndexPatternsService,
+  LogTypeService,
 } from '../services';
 import CorrelationService from '../services/CorrelationService';
 
@@ -29,6 +30,7 @@ export interface BrowserServices {
   notificationsService: NotificationsService;
   savedObjectsService: ISavedObjectsService;
   indexPatternsService: IndexPatternsService;
+  logTypeService: LogTypeService;
 }
 
 export interface RuleOptions {
