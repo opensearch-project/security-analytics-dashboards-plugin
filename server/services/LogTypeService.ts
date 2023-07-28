@@ -114,7 +114,6 @@ export class LogTypeService {
       const { logTypeId } = request.params;
       const params: UpdateLogTypeParams = { body: logType, logTypeId };
       const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      console.log(JSON.stringify(params));
       const updateLogTypeResponse: UpdateLogTypeResponse = await callWithRequest(
         CLIENT_LOGTYPE_METHODS.UPDATE_LOGTYPE,
         params
