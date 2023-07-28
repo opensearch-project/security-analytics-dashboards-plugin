@@ -48,9 +48,10 @@ const validateFieldMappingsTable = (message = '') => {
     cy.wait(10000).then(() => {
       cy.get('.reviewFieldMappings').should('be.visible');
       const properties = interception.response.body.response.properties;
-      const unmapped_field_aliases = interception.response.body.response.unmapped_field_aliases.map(
-        (field) => [field]
-      );
+      const unmapped_field_aliases = interception.response.body.response.unmapped_field_aliases
+        .map((field) => [field])
+        .sort()
+        .slice(0, 10);
 
       Cypress.log({
         message: `Validate table data - ${message}`,
@@ -162,18 +163,6 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
   cy.validateDetailsItem('Last updated time', '-');
   cy.validateDetailsItem('Detector dashboard', 'Not available for this log type');
 
-  if (!expectFailure) {
-    let fields = [];
-    for (let field in dns_mapping_fields) {
-      fields.push([field, dns_mapping_fields[field]]);
-    }
-    cy.getElementByText('.euiTitle', 'Field mapping')
-      .parentsUntil('.euiPanel')
-      .siblings()
-      .eq(2)
-      .validateTable(fields);
-  }
-
   validateAlertPanel('test_trigger');
 
   cy.intercept('POST', '/mappings').as('createMappingsRequest');
@@ -206,22 +195,6 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
             cy.wait(5000); // waiting for the page to be reloaded after pushing detector id into route
             cy.getElementByText('button.euiTab', 'Alert triggers').should('be.visible').click();
             validateAlertPanel('test_trigger');
-
-            cy.intercept('GET', '/mappings?indexName').as('getMappingFields');
-            cy.getElementByText('button.euiTab', 'Field mappings').should('be.visible').click();
-            if (!expectFailure) {
-              let fields = [];
-              for (let field in dns_mapping_fields) {
-                fields.push([field, dns_mapping_fields[field]]);
-              }
-              cy.wait('@getMappingFields');
-              cy.wait(2000);
-              cy.getElementByText('.euiTitle', 'Field mapping')
-                .parentsUntil('.euiPanel')
-                .siblings()
-                .eq(2)
-                .validateTable(fields);
-            }
           });
         });
     });

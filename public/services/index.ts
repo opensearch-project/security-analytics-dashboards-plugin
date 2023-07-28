@@ -15,6 +15,7 @@ import NotificationsService from './NotificationsService';
 import IndexPatternsService from './IndexPatternsService';
 import SavedObjectService from './SavedObjectService';
 import CorrelationService from './CorrelationService';
+import LogTypeService from './LogTypeService';
 
 export {
   ServicesConsumer,
@@ -30,4 +31,5 @@ export {
   NotificationsService,
   IndexPatternsService,
   SavedObjectService,
+  LogTypeService,
 };
