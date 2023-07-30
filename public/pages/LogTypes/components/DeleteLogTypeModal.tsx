@@ -66,7 +66,9 @@ export const DeleteLogTypeModal: React.FC<DeleteLogTypeModalProps> = ({
           <EuiModalBody>
             <EuiCallOut
               size="s"
-              title={`This log type is associated with ${detectionRulesCount} detection rules.`}
+              title={`This log type is associated with ${detectionRulesCount} detection ${
+                detectionRulesCount > 1 ? 'rules' : 'rule'
+              }.`}
               iconType={'iInCircle'}
               color="warning"
             />
