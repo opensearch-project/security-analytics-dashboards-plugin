@@ -40,7 +40,7 @@ export const CreateLogType: React.FC<CreateLogTypeProps> = ({ history, notificat
       subTitleText={
         <p>
           Create log type to categorize and identify detection rules for your data sources. &nbsp;{' '}
-          <EuiLink href={'www.bing.com'} target="_blank">
+          <EuiLink href={'#'} target="_blank">
             Learn more
           </EuiLink>
         </p>
