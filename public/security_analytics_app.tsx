@@ -30,7 +30,6 @@ import { SecurityAnalyticsPluginStartDeps } from './plugin';
 import { DataStore } from './store/DataStore';
 import CorrelationService from './services/CorrelationService';
 import { LogType } from '../types';
-import { ruleTypes } from './pages/Rules/utils/constants';
 
 export function renderApp(
   coreStart: CoreStart,
@@ -71,16 +70,6 @@ export function renderApp(
   const isDarkMode = coreStart.uiSettings.get('theme:darkMode') || false;
   DataStore.init(services, coreStart.notifications);
   DataStore.logTypes.getLogTypes().then((logTypes: LogType[]) => {
-    ruleTypes.splice(
-      0,
-      0,
-      ...logTypes.map((logType) => ({
-        label: logType.name,
-        value: logType.id,
-        abbr: '',
-      }))
-    );
-
     ReactDOM.render(
       <Router>
         <Route

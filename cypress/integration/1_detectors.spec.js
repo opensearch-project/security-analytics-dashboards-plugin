@@ -15,6 +15,7 @@ import { getMappingFields } from '../../public/pages/Detectors/utils/helpers';
 const cypressIndexDns = 'cypress-index-dns';
 const cypressIndexWindows = 'cypress-index-windows';
 const detectorName = 'test detector';
+const cypressLogTypeDns = 'dns';
 
 const cypressDNSRule = dns_name_rule_data.title;
 
@@ -23,8 +24,6 @@ const getNameField = () => cy.getInputByPlaceholder('Enter a name for the detect
 const getNextButton = () => cy.getButtonByText('Next');
 
 const getCreateDetectorButton = () => cy.getButtonByText('Create detector');
-
-const selectDnsLogType = () => cy.getRadioButtonById('dns').click({ force: true });
 
 const validateAlertPanel = (alertName) =>
   cy
@@ -37,6 +36,10 @@ const validateAlertPanel = (alertName) =>
 const dataSourceLabel = 'Select or input source indexes or index patterns';
 
 const getDataSourceField = () => cy.getFieldByLabel(dataSourceLabel);
+
+const logTypeLabel = 'Select a log type you would like to detect';
+
+const getLogTypeField = () => cy.getFieldByLabel(logTypeLabel);
 
 const openDetectorDetails = (detectorName) => {
   cy.getInputByPlaceholder('Search threat detectors').type(`${detectorName}`).pressEnterKey();
@@ -112,7 +115,9 @@ const validatePendingFieldMappingsPanel = (mappings) => {
 const fillDetailsForm = (detectorName, dataSource) => {
   getNameField().type(detectorName);
   getDataSourceField().selectComboboxItem(dataSource);
-  selectDnsLogType();
+  getLogTypeField().selectComboboxItem(cypressLogTypeDns);
+  getLogTypeField().blur();
+  // selectDnsLogType();
 };
 
 const createDetector = (detectorName, dataSource, expectFailure) => {

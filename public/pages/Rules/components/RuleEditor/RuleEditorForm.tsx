@@ -284,7 +284,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                         options={logTypeOptions}
                         singleSelection={{ asPlainText: true }}
                         onChange={(e) => {
-                          props.handleChange('logType')(e[0]?.value ? e[0].value : '');
+                          props.handleChange('logType')(e[0]?.label ? e[0].label : '');
                         }}
                         onFocus={refreshLogTypeOptions}
                         onBlur={props.handleBlur('logType')}
