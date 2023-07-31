@@ -31,6 +31,7 @@ export const API: SecurityAnalyticsApi = {
   ACKNOWLEDGE_ALERTS: `${BASE_API_PATH}/detectors/{detector_id}/_acknowledge/alerts`,
   UPDATE_ALIASES: `${BASE_API_PATH}/update_aliases`,
   CORRELATIONS: `${BASE_API_PATH}/correlations`,
+  LOGTYPE_BASE: `${BASE_API_PATH}/logtype`,
 };
 
 /**
@@ -77,6 +78,12 @@ export const METHOD_NAMES = {
   // Notifications methods
   GET_CHANNEl: 'getChannel',
   GET_CHANNElS: 'getChannels',
+
+  // LogType methods
+  SEARCH_LOGTYPES: 'searchLogTypes',
+  CREATE_LOGTYPE: 'createLogType',
+  UPDATE_LOGTYPE: 'updateLogType',
+  DELETE_LOGTYPE: 'deleteLogType',
 };
 
 /**
@@ -124,4 +131,11 @@ export const CLIENT_ALERTS_METHODS = {
 export const CLIENT_NOTIFICATIONS_METHODS = {
   GET_CHANNEL: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_CHANNEl}`,
   GET_CHANNELS: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_CHANNElS}`,
+};
+
+export const CLIENT_LOGTYPE_METHODS = {
+  SEARCH_LOGTYPES: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.SEARCH_LOGTYPES}`,
+  CREATE_LOGTYPE: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.CREATE_LOGTYPE}`,
+  UPDATE_LOGTYPE: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.UPDATE_LOGTYPE}`,
+  DELETE_LOGTYPE: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.DELETE_LOGTYPE}`,
 };

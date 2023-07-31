@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { RouteComponentProps } from 'react-router-dom';
+
 export default ({
   replace: jest.fn(),
   listen: jest.fn(),
@@ -10,4 +12,4 @@ export default ({
     pathname: '',
   },
   push: jest.fn(),
-} as unknown) as History;
+} as unknown) as RouteComponentProps['history'];
