@@ -7,7 +7,6 @@ import { SimpleSavedObject } from 'opensearch-dashboards/public';
 import { Detector, ServerResponse } from '../../types';
 import { DetectorInput, PeriodSchedule } from '../../models/interfaces';
 import { DetectorHit } from '../../server/models/interfaces';
-import { DETECTOR_TYPES } from '../pages/Detectors/utils/constants';
 
 export const DATE_MATH_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
 export const MAX_RECENTLY_USED_TIME_RANGES = 5;
@@ -142,7 +141,7 @@ export const EMPTY_DEFAULT_DETECTOR_INPUT: DetectorInput = {
 
 export const EMPTY_DEFAULT_DETECTOR: Detector = {
   type: 'detector',
-  detector_type: DETECTOR_TYPES.NETWORK.id,
+  detector_type: 'network',
   name: '',
   enabled: true,
   createdBy: '',

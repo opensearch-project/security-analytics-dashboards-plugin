@@ -296,8 +296,8 @@ export const getPlugins = async (opensearchService: OpenSearchService) => {
 
 export const formatRuleType = (matchingRuleType: string) => {
   return (
-    ruleTypes.find((ruleType) => ruleType.value === matchingRuleType.toLowerCase())?.label ||
-    DEFAULT_EMPTY_DATA
+    ruleTypes.find((ruleType) => ruleType.label.toLowerCase() === matchingRuleType.toLowerCase())
+      ?.label || DEFAULT_EMPTY_DATA
   );
 };
 

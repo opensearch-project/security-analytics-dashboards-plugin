@@ -59,7 +59,7 @@ export const LogType: React.FC<LogTypeProps> = ({ notifications, history }) => {
 
   const updateRules = useCallback(async (details: LogTypeItem, intialDetails: LogTypeItem) => {
     const rulesRes = await DataStore.rules.getAllRules({
-      'rule.category': [logTypeId],
+      'rule.category': [details.name.toLowerCase()],
     });
     const ruleItems = rulesRes.map((rule) => ({
       title: rule._source.title,
@@ -74,22 +74,15 @@ export const LogType: React.FC<LogTypeProps> = ({ notifications, history }) => {
     setLoadingRules(false);
     setLogTypeDetails({
       ...details,
-      detectionRules: ruleItems.length,
+      detectionRulesCount: ruleItems.length,
     });
     setInitialLogTypeDetails({
       ...intialDetails,
-      detectionRules: ruleItems.length,
+      detectionRulesCount: ruleItems.length,
     });
   }, []);
 
   useEffect(() => {
-    context?.chrome.setBreadcrumbs([
-      BREADCRUMBS.SECURITY_ANALYTICS,
-      BREADCRUMBS.DETECTORS,
-      BREADCRUMBS.LOG_TYPES,
-      { text: logTypeId },
-    ]);
-
     const getLogTypeDetails = async () => {
       const details = await DataStore.logTypes.getLogType(logTypeId);
 
@@ -98,7 +91,14 @@ export const LogType: React.FC<LogTypeProps> = ({ notifications, history }) => {
         return;
       }
 
-      updateRules(details, details);
+      context?.chrome.setBreadcrumbs([
+        BREADCRUMBS.SECURITY_ANALYTICS,
+        BREADCRUMBS.DETECTORS,
+        BREADCRUMBS.LOG_TYPES,
+        { text: details.name },
+      ]);
+      const logTypeItem = { ...details, detectionRulesCount: details.detectionRules.length };
+      updateRules(logTypeItem, logTypeItem);
     };
 
     getLogTypeDetails();
@@ -152,7 +152,7 @@ export const LogType: React.FC<LogTypeProps> = ({ notifications, history }) => {
       {showDeleteModal && (
         <DeleteLogTypeModal
           logTypeName={logTypeDetails.name}
-          detectionRulesCount={logTypeDetails.detectionRules}
+          detectionRulesCount={logTypeDetails.detectionRulesCount}
           closeModal={() => setShowDeleteModal(false)}
           onConfirm={deleteLogType}
         />
@@ -186,7 +186,9 @@ export const LogType: React.FC<LogTypeProps> = ({ notifications, history }) => {
           </EuiFlexItem>
           <EuiFlexItem>
             <EuiDescriptionList
-              listItems={[{ title: 'Detection rules', description: logTypeDetails.detectionRules }]}
+              listItems={[
+                { title: 'Detection rules', description: logTypeDetails.detectionRulesCount },
+              ]}
             />
           </EuiFlexItem>
           <EuiFlexItem>

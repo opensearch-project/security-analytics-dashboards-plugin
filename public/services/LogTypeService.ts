@@ -28,8 +28,22 @@ export default class LogTypeService {
 
   searchLogTypes = async (id?: string): Promise<ServerResponse<SearchLogTypesResponse>> => {
     const url = `..${API.LOGTYPE_BASE}/_search`;
-    const query = id ? JSON.stringify({ terms: { _id: [id] } }) : undefined;
-    return (await this.httpClient.post(url, { body: query })) as ServerResponse<
+    const query = id
+      ? {
+          terms: { _id: [id] },
+        }
+      : {
+          bool: {
+            must: {
+              query_string: {
+                query:
+                  '(source: Sigma and !(name: others*) and !(name: test*)) or (source: Custom)',
+              },
+            },
+          },
+        };
+    const queryString = JSON.stringify(query);
+    return (await this.httpClient.post(url, { body: queryString })) as ServerResponse<
       SearchLogTypesResponse
     >;
   };

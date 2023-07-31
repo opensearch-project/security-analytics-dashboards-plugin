@@ -416,64 +416,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                       "field": "category",
                       "multiSelect": "or",
                       "name": "Log type",
-                      "options": Array [
-                        Object {
-                          "name": "Network",
-                          "value": "network",
-                        },
-                        Object {
-                          "name": "DNS",
-                          "value": "dns",
-                        },
-                        Object {
-                          "name": "Apache Access",
-                          "value": "apache_access",
-                        },
-                        Object {
-                          "name": "Windows",
-                          "value": "windows",
-                        },
-                        Object {
-                          "name": "AD/LDAP",
-                          "value": "ad_ldap",
-                        },
-                        Object {
-                          "name": "Linux",
-                          "value": "linux",
-                        },
-                        Object {
-                          "name": "Cloudtrail",
-                          "value": "cloudtrail",
-                        },
-                        Object {
-                          "name": "S3",
-                          "value": "s3",
-                        },
-                        Object {
-                          "name": "Google Workspace",
-                          "value": "gworkspace",
-                        },
-                        Object {
-                          "name": "Github actions",
-                          "value": "github",
-                        },
-                        Object {
-                          "name": "Microsoft 365",
-                          "value": "m365",
-                        },
-                        Object {
-                          "name": "Okta",
-                          "value": "okta",
-                        },
-                        Object {
-                          "name": "Azure",
-                          "value": "azure",
-                        },
-                        Object {
-                          "name": "VPC Flow",
-                          "value": "vpcflow",
-                        },
-                      ],
+                      "options": Array [],
                       "type": "field_value_selection",
                     },
                     Object {
@@ -582,64 +525,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                         "field": "category",
                         "multiSelect": "or",
                         "name": "Log type",
-                        "options": Array [
-                          Object {
-                            "name": "Network",
-                            "value": "network",
-                          },
-                          Object {
-                            "name": "DNS",
-                            "value": "dns",
-                          },
-                          Object {
-                            "name": "Apache Access",
-                            "value": "apache_access",
-                          },
-                          Object {
-                            "name": "Windows",
-                            "value": "windows",
-                          },
-                          Object {
-                            "name": "AD/LDAP",
-                            "value": "ad_ldap",
-                          },
-                          Object {
-                            "name": "Linux",
-                            "value": "linux",
-                          },
-                          Object {
-                            "name": "Cloudtrail",
-                            "value": "cloudtrail",
-                          },
-                          Object {
-                            "name": "S3",
-                            "value": "s3",
-                          },
-                          Object {
-                            "name": "Google Workspace",
-                            "value": "gworkspace",
-                          },
-                          Object {
-                            "name": "Github actions",
-                            "value": "github",
-                          },
-                          Object {
-                            "name": "Microsoft 365",
-                            "value": "m365",
-                          },
-                          Object {
-                            "name": "Okta",
-                            "value": "okta",
-                          },
-                          Object {
-                            "name": "Azure",
-                            "value": "azure",
-                          },
-                          Object {
-                            "name": "VPC Flow",
-                            "value": "vpcflow",
-                          },
-                        ],
+                        "options": Array [],
                         "type": "field_value_selection",
                       },
                       Object {
@@ -820,64 +706,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                   "field": "category",
                                   "multiSelect": "or",
                                   "name": "Log type",
-                                  "options": Array [
-                                    Object {
-                                      "name": "Network",
-                                      "value": "network",
-                                    },
-                                    Object {
-                                      "name": "DNS",
-                                      "value": "dns",
-                                    },
-                                    Object {
-                                      "name": "Apache Access",
-                                      "value": "apache_access",
-                                    },
-                                    Object {
-                                      "name": "Windows",
-                                      "value": "windows",
-                                    },
-                                    Object {
-                                      "name": "AD/LDAP",
-                                      "value": "ad_ldap",
-                                    },
-                                    Object {
-                                      "name": "Linux",
-                                      "value": "linux",
-                                    },
-                                    Object {
-                                      "name": "Cloudtrail",
-                                      "value": "cloudtrail",
-                                    },
-                                    Object {
-                                      "name": "S3",
-                                      "value": "s3",
-                                    },
-                                    Object {
-                                      "name": "Google Workspace",
-                                      "value": "gworkspace",
-                                    },
-                                    Object {
-                                      "name": "Github actions",
-                                      "value": "github",
-                                    },
-                                    Object {
-                                      "name": "Microsoft 365",
-                                      "value": "m365",
-                                    },
-                                    Object {
-                                      "name": "Okta",
-                                      "value": "okta",
-                                    },
-                                    Object {
-                                      "name": "Azure",
-                                      "value": "azure",
-                                    },
-                                    Object {
-                                      "name": "VPC Flow",
-                                      "value": "vpcflow",
-                                    },
-                                  ],
+                                  "options": Array [],
                                   "type": "field_value_selection",
                                 },
                                 Object {
@@ -980,64 +809,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                       "field": "category",
                                       "multiSelect": "or",
                                       "name": "Log type",
-                                      "options": Array [
-                                        Object {
-                                          "name": "Network",
-                                          "value": "network",
-                                        },
-                                        Object {
-                                          "name": "DNS",
-                                          "value": "dns",
-                                        },
-                                        Object {
-                                          "name": "Apache Access",
-                                          "value": "apache_access",
-                                        },
-                                        Object {
-                                          "name": "Windows",
-                                          "value": "windows",
-                                        },
-                                        Object {
-                                          "name": "AD/LDAP",
-                                          "value": "ad_ldap",
-                                        },
-                                        Object {
-                                          "name": "Linux",
-                                          "value": "linux",
-                                        },
-                                        Object {
-                                          "name": "Cloudtrail",
-                                          "value": "cloudtrail",
-                                        },
-                                        Object {
-                                          "name": "S3",
-                                          "value": "s3",
-                                        },
-                                        Object {
-                                          "name": "Google Workspace",
-                                          "value": "gworkspace",
-                                        },
-                                        Object {
-                                          "name": "Github actions",
-                                          "value": "github",
-                                        },
-                                        Object {
-                                          "name": "Microsoft 365",
-                                          "value": "m365",
-                                        },
-                                        Object {
-                                          "name": "Okta",
-                                          "value": "okta",
-                                        },
-                                        Object {
-                                          "name": "Azure",
-                                          "value": "azure",
-                                        },
-                                        Object {
-                                          "name": "VPC Flow",
-                                          "value": "vpcflow",
-                                        },
-                                      ],
+                                      "options": Array [],
                                       "type": "field_value_selection",
                                     }
                                   }

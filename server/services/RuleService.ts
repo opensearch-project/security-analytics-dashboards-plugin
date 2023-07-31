@@ -84,7 +84,10 @@ export default class RulesService {
       const ruleYamlPayload = safeDump(jsonPayload);
       console.log(ruleYamlPayload);
 
-      const params: CreateRuleParams = { body: ruleYamlPayload, category };
+      const params: CreateRuleParams = {
+        body: ruleYamlPayload,
+        category: encodeURIComponent(category),
+      };
       const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
       const createRuleResponse: CreateRuleResponse = await callWithRequest(
         CLIENT_RULE_METHODS.CREATE_RULE,
