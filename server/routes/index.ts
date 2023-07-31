@@ -11,3 +11,5 @@ export * from './FieldMappingRoutes';
 export * from './IndexRoutes';
 export * from './AlertRoutes';
 export * from './NotificationsRoutes';
+export * from './LogTypeRoutes';
+export * from './RuleRoutes';
