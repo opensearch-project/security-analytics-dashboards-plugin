@@ -47,15 +47,12 @@ export const graphRenderOptions = {
   },
 };
 
-export const defaultLogTypeFilterItemOptions: FilterItem[] = Object.values(ruleTypes).map(
-  (type) => {
-    return {
-      name: `${type.abbr}: ${type.label}`,
-      id: type.value,
-      checked: 'on',
-    };
-  }
-);
+export const getDefaultLogTypeFilterItemOptions: () => FilterItem[] = () =>
+  Object.values(ruleTypes).map((type) => ({
+    name: `${type.label}`,
+    id: type.label.toLowerCase(),
+    checked: 'on',
+  }));
 
 export const defaultSeverityFilterItemOptions: FilterItem[] = Object.values(ruleSeverity).map(
   (sev) => {

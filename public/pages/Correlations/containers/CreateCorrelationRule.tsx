@@ -274,7 +274,10 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                       isInvalid={isInvalidInputForQuery('logType')}
                       placeholder="Select a log type"
                       data-test-subj={'rule_type_dropdown'}
-                      options={ruleTypes.map(({ value, label }) => ({ value, label }))}
+                      options={ruleTypes.map(({ label }) => ({
+                        value: label.toLowerCase(),
+                        label,
+                      }))}
                       singleSelection={{ asPlainText: true }}
                       onChange={(e) => {
                         props.handleChange(`queries[${queryIdx}].logType`)(
@@ -283,7 +286,18 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                       }}
                       onBlur={props.handleBlur(`queries[${queryIdx}].logType`)}
                       selectedOptions={
-                        query.logType ? [{ value: query.logType, label: query.logType }] : []
+                        query.logType
+                          ? [
+                              {
+                                value: query.logType,
+                                label:
+                                  ruleTypes.find(
+                                    (logType) =>
+                                      logType.label.toLowerCase() === query.logType.toLowerCase()
+                                  )?.label || query.logType,
+                              },
+                            ]
+                          : []
                       }
                       isClearable={true}
                       onCreateOption={(e) => {

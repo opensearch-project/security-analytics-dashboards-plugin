@@ -6,7 +6,7 @@ import { CorrelationFinding, CorrelationGraphData, DateTimeFilter } from '../../
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
-  defaultLogTypeFilterItemOptions,
+  getDefaultLogTypeFilterItemOptions,
   defaultSeverityFilterItemOptions,
   emptyGraphData,
   getAbbrFromLogType,
@@ -85,7 +85,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     this.state = {
       recentlyUsedRanges: [DEFAULT_DATE_RANGE],
       graphData: { ...emptyGraphData },
-      logTypeFilterOptions: [...defaultLogTypeFilterItemOptions],
+      logTypeFilterOptions: [...getDefaultLogTypeFilterItemOptions()],
       severityFilterOptions: [...defaultSeverityFilterItemOptions],
       specificFindingInfo: undefined,
       loadingGraphData: false,

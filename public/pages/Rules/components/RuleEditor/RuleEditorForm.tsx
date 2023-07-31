@@ -19,6 +19,7 @@ import {
   EuiText,
   EuiTitle,
   EuiPanel,
+  EuiIcon,
 } from '@elastic/eui';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { FieldTextArray } from './components/FieldTextArray';
@@ -29,6 +30,8 @@ import { FormSubmissionErrorToastNotification } from './FormSubmitionErrorToastN
 import { YamlRuleEditorComponent } from './components/YamlRuleEditorComponent/YamlRuleEditorComponent';
 import { mapFormToRule, mapRuleToForm } from './mappers';
 import { DetectionVisualEditor } from './DetectionVisualEditor';
+import { useCallback } from 'react';
+import { DataStore } from '../../../../store/DataStore';
 
 export interface VisualRuleEditorProps {
   initialValue: RuleEditorFormModel;
@@ -62,10 +65,18 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 }) => {
   const [selectedEditorType, setSelectedEditorType] = useState('visual');
   const [isDetectionInvalid, setIsDetectionInvalid] = useState(false);
+  const [logTypeOptions, setLogTypeOptions] = useState(
+    ruleTypes.map(({ value, label }) => ({ value, label }))
+  );
 
   const onEditorTypeChange = (optionId: string) => {
     setSelectedEditorType(optionId);
   };
+
+  const refreshLogTypeOptions = useCallback(async () => {
+    const logTypes = await DataStore.logTypes.getLogTypes();
+    setLogTypeOptions(logTypes.map(({ id, name }) => ({ value: id, label: name })));
+  }, []);
 
   const validateTags = (fields: string[]) => {
     let isValid = true;
@@ -255,32 +266,45 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
                 <EuiSpacer />
 
-                <EuiFormRow
-                  label={
-                    <EuiText size={'s'}>
-                      <strong>Log type</strong>
-                    </EuiText>
-                  }
-                  isInvalid={props.touched.logType && !!props.errors?.logType}
-                  error={props.errors.logType}
-                >
-                  <EuiComboBox
-                    isInvalid={props.touched.logType && !!props.errors.logType}
-                    placeholder="Select a log type"
-                    data-test-subj={'rule_type_dropdown'}
-                    options={ruleTypes.map(({ value, label }) => ({ value, label }))}
-                    singleSelection={{ asPlainText: true }}
-                    onChange={(e) => {
-                      props.handleChange('logType')(e[0]?.value ? e[0].value : '');
-                    }}
-                    onBlur={props.handleBlur('logType')}
-                    selectedOptions={
-                      props.values.logType
-                        ? [{ value: props.values.logType, label: props.values.logType }]
-                        : []
-                    }
-                  />
-                </EuiFormRow>
+                <EuiFlexGroup alignItems="flexStart">
+                  <EuiFlexItem style={{ maxWidth: 400 }}>
+                    <EuiFormRow
+                      label={
+                        <EuiText size={'s'}>
+                          <strong>Log type</strong>
+                        </EuiText>
+                      }
+                      isInvalid={props.touched.logType && !!props.errors?.logType}
+                      error={props.errors.logType}
+                    >
+                      <EuiComboBox
+                        isInvalid={props.touched.logType && !!props.errors.logType}
+                        placeholder="Select a log type"
+                        data-test-subj={'rule_type_dropdown'}
+                        options={logTypeOptions}
+                        singleSelection={{ asPlainText: true }}
+                        onChange={(e) => {
+                          props.handleChange('logType')(e[0]?.label ? e[0].label : '');
+                        }}
+                        onFocus={refreshLogTypeOptions}
+                        onBlur={props.handleBlur('logType')}
+                        selectedOptions={
+                          props.values.logType
+                            ? [{ value: props.values.logType, label: props.values.logType }]
+                            : []
+                        }
+                      />
+                    </EuiFormRow>
+                  </EuiFlexItem>
+                  <EuiFlexItem grow={false} style={{ marginTop: 36 }}>
+                    <EuiButton
+                      href={'opensearch_security_analytics_dashboards#/log-types'}
+                      target="_blank"
+                    >
+                      Manage <EuiIcon type={'popout'} />
+                    </EuiButton>
+                  </EuiFlexItem>
+                </EuiFlexGroup>
 
                 <EuiSpacer />
 

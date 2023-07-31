@@ -3,8 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { RuleItemInfoBase } from './Rule';
+
+export interface LogTypeWithRules extends LogType {
+  detectionRules: RuleItemInfoBase[];
+}
+
 export interface LogTypeItem extends LogType {
-  detectionRules: number;
+  detectionRulesCount: number;
 }
 
 export interface LogType extends LogTypeBase {

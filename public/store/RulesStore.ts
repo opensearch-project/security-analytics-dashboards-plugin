@@ -112,8 +112,10 @@ export class RulesStore implements IRulesStore {
 
     if (!terms) {
       terms = {
-        'rule.category': _.map(ruleTypes, 'value'),
+        'rule.category': ruleTypes.map(({ label }) => label.toLowerCase()),
       };
+    } else if (terms['rule.category']) {
+      terms['rule.category'] = terms['rule.category'].map((category) => category.toLowerCase());
     }
 
     const body = {

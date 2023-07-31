@@ -5,12 +5,11 @@
 
 import React, { Component } from 'react';
 import { ContentPanel } from '../../../../../../components/ContentPanel';
-import { EuiFormRow, EuiFlexGrid, EuiFlexItem, EuiRadio, EuiSpacer } from '@elastic/eui';
+import { EuiFormRow, EuiSpacer, EuiComboBox } from '@elastic/eui';
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
-import { DETECTOR_TYPES } from '../../../../../Detectors/utils/constants';
-import { DetectorTypeOption } from '../../../../../Detectors/models/interfaces';
 import { CreateDetectorRulesState, DetectionRules } from '../DetectionRules/DetectionRules';
 import { RuleItem } from '../DetectionRules/types/interfaces';
+import { ruleTypes } from '../../../../../Rules/utils/constants';
 
 interface DetectorTypeProps {
   detectorType: string;
@@ -24,19 +23,18 @@ interface DetectorTypeProps {
 
 interface DetectorTypeState {
   fieldTouched: boolean;
-  detectorTypeOptions: DetectorTypeOption[];
   detectorTypeIds: string[];
 }
 
 export default class DetectorType extends Component<DetectorTypeProps, DetectorTypeState> {
+  private detectorTypeOptions: { value: string; label: string }[];
   constructor(props: DetectorTypeProps) {
     super(props);
 
-    const detectorTypeOptions = Object.values(DETECTOR_TYPES);
-    const detectorTypeIds = detectorTypeOptions.map((option) => option.id);
+    this.detectorTypeOptions = ruleTypes.map(({ label }) => ({ value: label, label }));
+    const detectorTypeIds = this.detectorTypeOptions.map((option) => option.value);
     this.state = {
       fieldTouched: false,
-      detectorTypeOptions,
       detectorTypeIds,
     };
   }
@@ -63,17 +61,6 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
 
   render() {
     const { detectorType } = this.props;
-    const { detectorTypeOptions } = this.state;
-    const radioButtons = detectorTypeOptions.map((type) => (
-      <EuiFlexItem key={type.id}>
-        <EuiRadio
-          id={type.id}
-          label={type.label}
-          checked={type.id === detectorType}
-          onChange={() => this.onChange(type.id)}
-        />
-      </EuiFlexItem>
-    ));
 
     return (
       <ContentPanel
@@ -84,7 +71,7 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
         <EuiFormRow
           label={
             <div>
-              <FormFieldHeader headerTitle={'Select a category type you would like to detect'} />
+              <FormFieldHeader headerTitle={'Select a log type you would like to detect'} />
               <EuiSpacer size={'s'} />
             </div>
           }
@@ -92,7 +79,17 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
           isInvalid={this.isInvalid()}
           error={this.getErrorMessage()}
         >
-          <EuiFlexGrid columns={4}>{radioButtons}</EuiFlexGrid>
+          <EuiComboBox
+            isInvalid={this.isInvalid()}
+            placeholder="Select log type"
+            data-test-subj={'log_type_dropdown'}
+            options={this.detectorTypeOptions}
+            singleSelection={{ asPlainText: true }}
+            onChange={(e) => {
+              this.onChange(e[0]?.label || '');
+            }}
+            selectedOptions={detectorType ? [{ value: detectorType, label: detectorType }] : []}
+          />
         </EuiFormRow>
 
         <EuiFormRow fullWidth={true}>
