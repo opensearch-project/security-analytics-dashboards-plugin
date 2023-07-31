@@ -10,7 +10,7 @@ import { capitalize } from 'lodash';
 
 export const getLogTypesTableColumns = (
   showDetails: (id: string) => void,
-  deleteLogType: (logTypeId: string) => void
+  deleteLogType: (logType: LogType) => void
 ) => [
   {
     field: 'name',
@@ -41,7 +41,7 @@ export const getLogTypesTableColumns = (
                 aria-label={'Delete log type'}
                 iconType={'trash'}
                 color="danger"
-                onClick={() => deleteLogType(item.id)}
+                onClick={() => deleteLogType(item)}
               />
             </EuiToolTip>
           );
