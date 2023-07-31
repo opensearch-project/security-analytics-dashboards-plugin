@@ -117,7 +117,6 @@ const fillDetailsForm = (detectorName, dataSource) => {
   getDataSourceField().selectComboboxItem(dataSource);
   getLogTypeField().selectComboboxItem(cypressLogTypeDns);
   getLogTypeField().blur();
-  // selectDnsLogType();
 };
 
 const createDetector = (detectorName, dataSource, expectFailure) => {

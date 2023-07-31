@@ -4,7 +4,7 @@
  */
 
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { LogType, LogTypeBase, LogTypeItem } from '../../types';
+import { LogType, LogTypeBase, LogTypeWithRules, RuleItemInfoBase } from '../../types';
 import LogTypeService from '../services/LogTypeService';
 import { errorNotificationToast } from '../utils/helpers';
 import { DataStore } from './DataStore';
@@ -13,7 +13,7 @@ import { ruleTypes } from '../pages/Rules/utils/constants';
 export class LogTypeStore {
   constructor(private service: LogTypeService, private notifications: NotificationsStart) {}
 
-  public async getLogType(id: string): Promise<LogTypeItem | undefined> {
+  public async getLogType(id: string): Promise<LogTypeWithRules | undefined> {
     const logTypesRes = await this.service.searchLogTypes(id);
     if (logTypesRes.ok) {
       const logTypes: LogType[] = logTypesRes.response.hits.hits.map((hit) => {
@@ -23,11 +23,16 @@ export class LogTypeStore {
         };
       });
 
-      const rulesRes = await DataStore.rules.getAllRules({
-        'rule.category': [id],
-      });
+      let detectionRules: RuleItemInfoBase[] = [];
 
-      return { ...logTypes[0], detectionRules: rulesRes.length };
+      if (logTypes[0]) {
+        const logTypeName = logTypes[0].name.toLowerCase();
+        detectionRules = await DataStore.rules.getAllRules({
+          'rule.category': [logTypeName],
+        });
+      }
+
+      return { ...logTypes[0], detectionRules };
     }
 
     return undefined;

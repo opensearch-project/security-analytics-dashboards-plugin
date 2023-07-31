@@ -48,7 +48,7 @@ export const CreateLogType: React.FC<CreateLogTypeProps> = ({ history, notificat
       hideHeaderBorder={true}
     >
       <LogTypeForm
-        logTypeDetails={{ ...logTypeDetails, id: '', detectionRules: 0 }}
+        logTypeDetails={{ ...logTypeDetails, id: '', detectionRulesCount: 0 }}
         isEditMode={true}
         confirmButtonText={'Create rule category'}
         notifications={notifications}
