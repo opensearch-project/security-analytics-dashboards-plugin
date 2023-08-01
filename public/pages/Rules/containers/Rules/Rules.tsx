@@ -13,7 +13,6 @@ import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { DataStore } from '../../../../store/DataStore';
-import { RuleItemInfoBase } from '../../../../../types';
 
 export interface RulesProps extends RouteComponentProps {
   notifications?: NotificationsStart;
@@ -22,7 +21,7 @@ export interface RulesProps extends RouteComponentProps {
 export const Rules: React.FC<RulesProps> = (props) => {
   const context = useContext(CoreServicesContext);
 
-  const [allRules, setAllRules] = useState<RuleItemInfoBase[]>([]);
+  const [allRules, setAllRules] = useState<RuleTableItem[]>([]);
   const [flyoutData, setFlyoutData] = useState<RuleTableItem | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
 
