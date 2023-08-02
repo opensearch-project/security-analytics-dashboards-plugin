@@ -76,12 +76,8 @@ export const emptyGraphData: CorrelationGraphData = {
   events: {},
 };
 
-export const getAbbrFromLogType = (logType: string) => {
-  return ruleTypes.find((ruleType) => ruleType.value === logType)?.abbr || '-';
-};
-
 export const getLabelFromLogType = (logType: string) => {
-  return ruleTypes.find((ruleType) => ruleType.value === logType)?.label || '-';
+  return ruleTypes.find((ruleType) => ruleType.value === logType)?.label || logType;
 };
 
 export const getSeverityLabel = (sev: string) => {
