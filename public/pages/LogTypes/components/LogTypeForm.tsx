@@ -16,7 +16,7 @@ import {
 } from '@elastic/eui';
 import { LogTypeItem } from '../../../../types';
 import React from 'react';
-import { validateName } from '../../../utils/validation';
+import { LOG_TYPE_NAME_REGEX, validateName } from '../../../utils/validation';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { useState } from 'react';
 
@@ -42,7 +42,7 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
   const [nameError, setNameError] = useState('');
 
   const updateErrors = (details = logTypeDetails) => {
-    const nameInvalid = !validateName(details.name);
+    const nameInvalid = !validateName(details.name, LOG_TYPE_NAME_REGEX, false /* shouldTrim */);
     setNameError(nameInvalid ? 'Invalid name' : '');
 
     return { nameInvalid };
@@ -68,7 +68,7 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
         label="Name"
         helpText={
           isEditMode &&
-          'Must contain 5-50 characters. Valid characters are a-z, A-Zm 0-9, hyphens, spaces, and underscores'
+          'Must contain 2-50 characters. Valid characters are a-z, 0-9, hyphens, and underscores'
         }
         isInvalid={!!nameError}
         error={nameError}
