@@ -42,7 +42,7 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
   const [nameError, setNameError] = useState('');
 
   const updateErrors = (details = logTypeDetails) => {
-    const nameInvalid = !validateName(details.name, LOG_TYPE_NAME_REGEX);
+    const nameInvalid = !validateName(details.name, LOG_TYPE_NAME_REGEX, false /* shouldTrim */);
     setNameError(nameInvalid ? 'Invalid name' : '');
 
     return { nameInvalid };

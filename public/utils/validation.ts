@@ -30,8 +30,13 @@ export const AUTHOR_REGEX = new RegExp(/^[a-zA-Z0-9 _,-.]{5,50}$/);
  * @param regex
  * @return TRUE if valid; else FALSE.
  */
-export function validateName(name: string, regex: RegExp = NAME_REGEX): boolean {
-  return name.trim().match(regex) !== null;
+export function validateName(
+  name: string,
+  regex: RegExp = NAME_REGEX,
+  shouldTrimName: boolean = true
+): boolean {
+  const toValidate = shouldTrimName ? name.trim() : name;
+  return toValidate.match(regex) !== null;
 }
 
 export function validateDetectionFieldName(
