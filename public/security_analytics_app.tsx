@@ -29,6 +29,7 @@ import SavedObjectService from './services/SavedObjectService';
 import { SecurityAnalyticsPluginStartDeps } from './plugin';
 import { DataStore } from './store/DataStore';
 import CorrelationService from './services/CorrelationService';
+import { LogType } from '../types';
 
 export function renderApp(
   coreStart: CoreStart,
@@ -68,22 +69,24 @@ export function renderApp(
 
   const isDarkMode = coreStart.uiSettings.get('theme:darkMode') || false;
   DataStore.init(services, coreStart.notifications);
+  DataStore.logTypes.getLogTypes().then((logTypes: LogType[]) => {
+    ReactDOM.render(
+      <Router>
+        <Route
+          render={(props) => (
+            <DarkModeContext.Provider value={isDarkMode}>
+              <ServicesContext.Provider value={services}>
+                <CoreServicesContext.Provider value={coreStart}>
+                  <Main {...props} landingPage={landingPage} />
+                </CoreServicesContext.Provider>
+              </ServicesContext.Provider>
+            </DarkModeContext.Provider>
+          )}
+        />
+      </Router>,
+      params.element
+    );
+  });
 
-  ReactDOM.render(
-    <Router>
-      <Route
-        render={(props) => (
-          <DarkModeContext.Provider value={isDarkMode}>
-            <ServicesContext.Provider value={services}>
-              <CoreServicesContext.Provider value={coreStart}>
-                <Main {...props} landingPage={landingPage} />
-              </CoreServicesContext.Provider>
-            </ServicesContext.Provider>
-          </DarkModeContext.Provider>
-        )}
-      />
-    </Router>,
-    params.element
-  );
   return () => ReactDOM.unmountComponentAtNode(params.element);
 }

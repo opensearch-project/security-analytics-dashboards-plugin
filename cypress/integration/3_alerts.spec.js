@@ -118,7 +118,7 @@ describe('Alerts', () => {
         expect($tr, `timestamp`).to.contain(date);
         expect($tr, `rule name`).to.contain('Cypress USB Rule');
         expect($tr, `detector name`).to.contain(testDetector.name);
-        expect($tr, `log type`).to.contain('Windows');
+        expect($tr, `log type`).to.contain('windows');
       });
 
       // Close the flyout

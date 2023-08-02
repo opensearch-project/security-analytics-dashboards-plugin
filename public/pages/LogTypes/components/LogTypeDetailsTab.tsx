@@ -64,7 +64,7 @@ export const LogTypeDetailsTab: React.FC<LogTypeDetailsTabProps> = ({
                       })
                     }
                     placeholder="Enter name for log type"
-                    disabled={!isEditMode || !!logTypeDetails.detectionRules}
+                    disabled={!isEditMode || !!logTypeDetails.detectionRulesCount}
                   />
                 </EuiFormRow>
                 <EuiSpacer />

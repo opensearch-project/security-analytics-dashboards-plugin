@@ -84,7 +84,8 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
             updateErrors(newLogType);
           }}
           placeholder="Enter name for the log type"
-          disabled={!isEditMode || !!logTypeDetails.detectionRules}
+          readOnly={!isEditMode}
+          disabled={isEditMode && !!logTypeDetails.detectionRulesCount}
         />
       </EuiFormRow>
       <EuiSpacer />
@@ -100,7 +101,7 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
             updateErrors(newLogType);
           }}
           placeholder="Description of the log type"
-          disabled={!isEditMode}
+          readOnly={!isEditMode}
         />
       </EuiFormRow>
       {isEditMode ? (
