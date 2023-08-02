@@ -53,8 +53,8 @@ export class LogTypeStore {
         ruleTypes.length,
         ...logTypes.map((logType) => ({
           label: logType.name,
-          value: logType.id,
-          abbr: '',
+          value: logType.name,
+          id: logType.id,
         }))
       );
 

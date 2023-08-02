@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiLink } from '@elastic/eui';
 import { ContentPanel } from '../../../components/ContentPanel';
 import React, { useContext, useState } from 'react';
 import { LogTypeForm } from '../components/LogTypeForm';
@@ -38,12 +37,7 @@ export const CreateLogType: React.FC<CreateLogTypeProps> = ({ history, notificat
     <ContentPanel
       title={'Create log type'}
       subTitleText={
-        <p>
-          Create log type to categorize and identify detection rules for your data sources. &nbsp;{' '}
-          <EuiLink href={'#'} target="_blank">
-            Learn more
-          </EuiLink>
-        </p>
+        <p>Create log type to categorize and identify detection rules for your data sources.</p>
       }
       hideHeaderBorder={true}
     >
