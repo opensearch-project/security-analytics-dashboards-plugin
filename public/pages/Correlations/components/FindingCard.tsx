@@ -16,12 +16,7 @@ import {
   EuiToolTip,
   EuiDescriptionList,
 } from '@elastic/eui';
-import {
-  getAbbrFromLogType,
-  getSeverityLabel,
-  getSeverityColor,
-  getLabelFromLogType,
-} from '../utils/constants';
+import { getSeverityLabel, getSeverityColor, getLabelFromLogType } from '../utils/constants';
 import { DataStore } from '../../../store/DataStore';
 import { CorrelationFinding } from '../../../../types';
 
@@ -31,7 +26,6 @@ export interface FindingCardProps {
   timestamp: string;
   detectionRule: { name: string; severity: string };
   correlationData?: {
-    // ruleName: string;
     score: string;
     onInspect: (findingId: string, logType: string) => void;
   };
@@ -90,42 +84,19 @@ export const FindingCard: React.FC<FindingCardProps> = ({
   return (
     <EuiPanel>
       {correlationHeader}
-      <EuiFlexGroup justifyContent="flexStart" alignItems="center">
-        <EuiFlexItem grow={1} style={{ maxWidth: 120 }}>
-          <div style={{ position: 'relative' }}>
-            <div
-              style={{
-                width: '35px',
-                height: '35px',
-                border: '1px solid',
-                borderRadius: '50%',
-                position: 'relative',
-                fontSize: 10,
-                lineHeight: '35px',
-                textAlign: 'center',
-                borderColor: '#98A2B3',
-                color: '#98A2B3',
-              }}
+      <EuiFlexGroup justifyContent="spaceBetween" alignItems="center" gutterSize="s">
+        <EuiFlexItem grow={false}>
+          <div>
+            <EuiBadge
+              color={getSeverityColor(detectionRule.severity).background}
+              style={{ padding: '3px 10px' }}
             >
-              {getAbbrFromLogType(logType)}
-            </div>
-            {getSeverityLabel(detectionRule.severity) ? (
-              <EuiBadge
-                style={{
-                  position: 'absolute',
-                  transform: 'translateY(-100%)',
-                  left: '33px',
-                  color: getSeverityColor(detectionRule.severity).text,
-                }}
-                color={getSeverityColor(detectionRule.severity).background}
-              >
-                {getSeverityLabel(detectionRule.severity)}
-              </EuiBadge>
-            ) : null}
+              {getSeverityLabel(detectionRule.severity)}
+            </EuiBadge>
+            <EuiBadge color="hollow" style={{ padding: '3px 10px' }}>
+              {getLabelFromLogType(logType)}
+            </EuiBadge>
           </div>
-        </EuiFlexItem>
-        <EuiFlexItem grow={1}>
-          <strong>{getLabelFromLogType(logType)}</strong>
         </EuiFlexItem>
         {!correlationData && (
           <EuiFlexItem grow={false}>

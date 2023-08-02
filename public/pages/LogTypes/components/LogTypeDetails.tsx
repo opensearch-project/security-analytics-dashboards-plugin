@@ -10,6 +10,7 @@ import { LogTypeItem } from '../../../../types';
 import { DataStore } from '../../../store/DataStore';
 import { LogTypeForm } from './LogTypeForm';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { successNotificationToast } from '../../../utils/helpers';
 
 export interface LogTypeDetailsProps {
   initialLogTypeDetails: LogTypeItem;
@@ -31,6 +32,7 @@ export const LogTypeDetails: React.FC<LogTypeDetailsProps> = ({
   const onUpdateLogType = async () => {
     const success = await DataStore.logTypes.updateLogType(logTypeDetails);
     if (success) {
+      successNotificationToast(notifications, 'updated', `log type ${logTypeDetails.name}`);
       setIsEditMode(false);
     }
   };
