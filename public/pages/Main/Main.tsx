@@ -251,6 +251,15 @@ export default class Main extends Component<MainProps, MainState> {
             isSelected: selectedNavItemIndex === 4,
             items: [
               {
+                name: Navigation.Rules,
+                id: 5,
+                onClick: () => {
+                  this.setState({ selectedNavItemId: 5 });
+                  history.push(ROUTES.RULES);
+                },
+                isSelected: selectedNavItemIndex === 5,
+              },
+              {
                 name: Navigation.LogTypes,
                 id: 8,
                 onClick: () => {
@@ -260,15 +269,6 @@ export default class Main extends Component<MainProps, MainState> {
                 isSelected: selectedNavItemIndex === 8,
               },
             ],
-          },
-          {
-            name: Navigation.Rules,
-            id: 5,
-            onClick: () => {
-              this.setState({ selectedNavItemId: 5 });
-              history.push(ROUTES.RULES);
-            },
-            isSelected: selectedNavItemIndex === 5,
           },
           {
             name: Navigation.Correlations,
