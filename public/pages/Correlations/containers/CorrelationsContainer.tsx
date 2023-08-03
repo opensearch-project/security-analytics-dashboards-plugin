@@ -9,7 +9,6 @@ import {
   getDefaultLogTypeFilterItemOptions,
   defaultSeverityFilterItemOptions,
   emptyGraphData,
-  getAbbrFromLogType,
   getLabelFromLogType,
   getSeverityColor,
   getSeverityLabel,
@@ -255,12 +254,9 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
 
     nodes.push({
       id: finding.id,
-      label: `<b>${getAbbrFromLogType(
-        finding.logType
-      )}</b>\n<code>${finding.detectionRule.severity.slice(0, 4)}</code>`,
       title: this.createNodeTooltip(finding),
       color: {
-        background: 'white',
+        background: borderColor,
         border: borderColor,
         highlight: {
           background: '#e7f5ff',
@@ -272,7 +268,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         },
       },
       widthConstraint: {
-        minimum: 50,
+        minimum: 40,
       },
       borderWidth: 2,
       font: {
@@ -291,6 +287,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       chosen: false,
       color: '#98A2B3', //ouiColorMediumShade,
       label: f1.correlationScore || f2.correlationScore || '',
+      width: 2,
     });
   }
 
