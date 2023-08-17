@@ -13,6 +13,7 @@ import {
   getSeverityColor,
   getSeverityLabel,
   graphRenderOptions,
+  getNodeSize,
 } from '../utils/constants';
 import {
   EuiIcon,
@@ -200,8 +201,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
           createdNodes.add(correlation.finding2.id);
         }
         this.addEdge(graphData.graph.edges, correlation.finding1, correlation.finding2);
-
-        createdEdges.add(`${correlation.finding1.id}:${correlation.finding2.id}`);
+        createdEdges.add(possibleCombination1);
       });
 
       this.setState({ graphData });
@@ -241,9 +241,21 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     };
 
     this.addNode(graphData.graph.nodes, specificFindingInfo.finding);
+    const addedEdges = new Set();
+    const nodeIds = new Set();
     specificFindingInfo.correlatedFindings.forEach((finding) => {
-      this.addNode(graphData.graph.nodes, finding);
+      if (!nodeIds.has(finding.id)) {
+        this.addNode(graphData.graph.nodes, finding);
+        nodeIds.add(finding.id);
+      }
+
+      const possibleCombination1 = `${specificFindingInfo.finding.id}:${finding.id}`;
+      const possibleCombination2 = `${finding.id}:${specificFindingInfo.finding.id}`;
+      if (addedEdges.has(possibleCombination1) || addedEdges.has(possibleCombination2)) {
+        return;
+      }
       this.addEdge(graphData.graph.edges, specificFindingInfo.finding, finding);
+      addedEdges.add(possibleCombination1);
     });
 
     this.setState({ graphData });
@@ -268,7 +280,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         },
       },
       widthConstraint: {
-        minimum: 40,
+        minimum: getNodeSize(finding.detectionRule.severity),
       },
       borderWidth: 2,
       font: {
@@ -377,6 +389,12 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
 
   setNetwork = (network: Network) => {
     this.correlationGraphNetwork = network;
+    network.on('hoverNode', function (params) {
+      network.canvas.body.container.style.cursor = 'pointer';
+    });
+    network.on('blurNode', function (params) {
+      network.canvas.body.container.style.cursor = 'default';
+    });
   };
 
   renderCorrelationsGraph(loadingData: boolean) {
