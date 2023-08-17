@@ -92,3 +92,19 @@ export const getSeverityColor = (sev: string) => {
     }
   );
 };
+
+export function getNodeSize(severity: string) {
+  switch (severity) {
+    case 'critical':
+      return 40;
+    case 'high':
+      return 32;
+    case 'medium':
+      return 24;
+    case 'low':
+      return 17;
+    case 'informational':
+    default:
+      return 10;
+  }
+}
