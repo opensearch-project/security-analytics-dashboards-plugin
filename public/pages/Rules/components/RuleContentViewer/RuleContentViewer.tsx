@@ -95,7 +95,7 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
           <EuiFlexGroup justifyContent="flexEnd">
             <EuiFlexItem data-test-subj={'rule_flyout_rule_source'}>
               <EuiFormLabel>Source</EuiFormLabel>
-              {prePackaged ? 'Sigma' : 'Custom'}
+              {prePackaged ? 'Standard' : 'Custom'}
             </EuiFlexItem>
             {prePackaged ? (
               <EuiFlexItem>

@@ -25,7 +25,7 @@ export const RuleViewerFlyoutHeaderActions: React.FC<RuleViewerFlyoutHeaderActio
   editRule,
   toggleActionsPopover,
 }) => {
-  return ruleSource === 'Sigma' ? (
+  return ruleSource === 'Standard' ? (
     <EuiButton onClick={duplicateRule}>Duplicate</EuiButton>
   ) : (
     <EuiPopover

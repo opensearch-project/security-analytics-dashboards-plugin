@@ -63,7 +63,10 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
 
     this.state = {
       currentStep: DetectorCreationStep.DEFINE_DETECTOR,
-      detector: EMPTY_DEFAULT_DETECTOR,
+      detector: {
+        ...EMPTY_DEFAULT_DETECTOR,
+        detector_type: '',
+      },
       fieldMappings: [],
       stepDataValid: {
         [DetectorCreationStep.DEFINE_DETECTOR]: false,
