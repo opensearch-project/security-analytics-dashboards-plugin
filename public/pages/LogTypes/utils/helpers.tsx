@@ -7,6 +7,8 @@ import React from 'react';
 import { EuiButtonIcon, EuiLink, EuiToolTip } from '@elastic/eui';
 import { LogType } from '../../../../types';
 import { capitalize } from 'lodash';
+import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
+import { ruleSource } from '../../Rules/utils/constants';
 
 export const getLogTypesTableColumns = (
   showDetails: (id: string) => void,
@@ -50,3 +52,23 @@ export const getLogTypesTableColumns = (
     ],
   },
 ];
+
+export const getLogTypesTableSearchConfig = (): Search => {
+  return {
+    box: {
+      placeholder: 'Search log types',
+      schema: true,
+    },
+    filters: [
+      {
+        type: 'field_value_selection',
+        field: 'source',
+        name: 'Source',
+        multiSelect: 'or',
+        options: ruleSource.map((source: string) => ({
+          value: source,
+        })),
+      },
+    ],
+  };
+};

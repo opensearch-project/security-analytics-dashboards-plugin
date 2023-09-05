@@ -1856,7 +1856,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                         "name": "Source",
                         "options": Array [
                           Object {
-                            "value": "Sigma",
+                            "value": "Standard",
                           },
                           Object {
                             "value": "Custom",
@@ -1965,7 +1965,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                           "name": "Source",
                           "options": Array [
                             Object {
-                              "value": "Sigma",
+                              "value": "Standard",
                             },
                             Object {
                               "value": "Custom",
@@ -2146,7 +2146,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                     "name": "Source",
                                     "options": Array [
                                       Object {
-                                        "value": "Sigma",
+                                        "value": "Standard",
                                       },
                                       Object {
                                         "value": "Custom",
@@ -2493,7 +2493,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                         "name": "Source",
                                         "options": Array [
                                           Object {
-                                            "value": "Sigma",
+                                            "value": "Standard",
                                           },
                                           Object {
                                             "value": "Custom",

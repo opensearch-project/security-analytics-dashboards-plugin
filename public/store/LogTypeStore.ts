@@ -45,17 +45,22 @@ export class LogTypeStore {
         return {
           id: hit._id,
           ...hit._source,
+          source: hit._source.source.toLowerCase() === 'sigma' ? 'Standard' : hit._source.source,
         };
       });
 
       ruleTypes.splice(
         0,
         ruleTypes.length,
-        ...logTypes.map((logType) => ({
-          label: logType.name,
-          value: logType.name,
-          id: logType.id,
-        }))
+        ...logTypes
+          .map((logType) => ({
+            label: logType.name,
+            value: logType.name,
+            id: logType.id,
+          }))
+          .sort((a, b) => {
+            return a.label < b.label ? -1 : a.label > b.label ? 1 : 0;
+          })
       );
 
       return logTypes;

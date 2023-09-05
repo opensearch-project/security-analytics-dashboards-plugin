@@ -34,7 +34,7 @@ export const Rules: React.FC<RulesProps> = (props) => {
       level: rule._source.level,
       category: rule._source.category,
       description: rule._source.description,
-      source: rule.prePackaged ? 'Sigma' : 'Custom',
+      source: rule.prePackaged ? 'Standard' : 'Custom',
       ruleInfo: rule,
       ruleId: rule._id,
     }));
