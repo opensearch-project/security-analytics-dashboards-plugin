@@ -129,11 +129,29 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
               gutterSize="s"
               data-test-subj={'rule_flyout_rule_tags'}
             >
-              {ruleData.tags.map((tag: any, i: number) => (
-                <EuiFlexItem grow={false} key={i}>
-                  <EuiBadge color={'#DDD'}>{tag.value}</EuiBadge>
-                </EuiFlexItem>
-              ))}
+              {ruleData.tags.map((tag: { value: string }, i: number) => {
+                const isLinkable = !!tag.value.match(/attack\.t[0-9]+/);
+                let tagComponent: React.ReactNode = tag.value;
+
+                if (isLinkable) {
+                  const link = `https://attack.mitre.org/techniques/${tag.value
+                    .split('.')
+                    .slice(1)
+                    .join('/')
+                    .toUpperCase()}`;
+                  tagComponent = (
+                    <EuiLink href={link} target="_blank">
+                      {tag.value}
+                    </EuiLink>
+                  );
+                }
+
+                return (
+                  <EuiFlexItem grow={false} key={i}>
+                    <EuiBadge color={'#DDD'}>{tagComponent}</EuiBadge>
+                  </EuiFlexItem>
+                );
+              })}
             </EuiFlexGroup>
           ) : (
             <div>{DEFAULT_EMPTY_DATA}</div>
