@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiBasicTableColumn, EuiBreadcrumb, EuiLink } from '@elastic/eui';
+import { EuiBasicTableColumn, EuiBreadcrumb, EuiLink, EuiBadge } from '@elastic/eui';
 import React from 'react';
-import { capitalizeFirstLetter, errorNotificationToast } from '../../../utils/helpers';
+import { errorNotificationToast } from '../../../utils/helpers';
 import { ruleSeverity, ruleSource, ruleTypes } from './constants';
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
 import { Rule } from '../../../../models/interfaces';
@@ -14,6 +14,7 @@ import { AUTHOR_REGEX, validateDescription, validateName } from '../../../utils/
 import { dump, load } from 'js-yaml';
 import { BREADCRUMBS, DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 import { RuleItemInfoBase, RulesTableColumnFields } from '../../../../types';
+import { getSeverityColor, getSeverityLabel } from '../../Correlations/utils/constants';
 
 export interface RuleTableItem {
   title: string;
@@ -49,7 +50,14 @@ export const getRulesTableColumns = (
       sortable: true,
       width: '10%',
       truncateText: true,
-      render: (level: string) => capitalizeFirstLetter(level),
+      render: (level: string) => {
+        const { text, background } = getSeverityColor(level);
+        return (
+          <EuiBadge style={{ color: text }} color={background}>
+            {getSeverityLabel(level)}
+          </EuiBadge>
+        );
+      },
     },
     category: {
       field: 'category',
