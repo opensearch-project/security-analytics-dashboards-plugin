@@ -86,6 +86,7 @@ const detectionModifierOptions = [
   { value: 'base64', label: 'base64' },
   { value: 'endswith', label: 'endswith' },
   { value: 'startswith', label: 'startswith' },
+  { value: 'cidr', label: 'cidr' },
 ];
 
 const defaultDetectionObj: DetectionObject = {
@@ -177,24 +178,28 @@ export class DetectionVisualEditor extends React.Component<
       const selectionMapJSON = detectionJSON[selectionKey];
       const selectionDataEntries: SelectionData[] = [];
 
-      Object.keys(selectionMapJSON).forEach((fieldKey, dataIdx) => {
-        const [field, modifier] = fieldKey.split('|');
-        const val = selectionMapJSON[fieldKey];
-        const values: any[] = typeof val === 'string' ? [val] : val;
-        selectionDataEntries.push({
-          field,
-          modifier,
-          values,
-          selectedRadioId: `${
-            values.length <= 1 ? SelectionMapValueRadioId.VALUE : SelectionMapValueRadioId.LIST
-          }-${selectionIdx}-${dataIdx}`,
+      if (typeof selectionMapJSON === 'object') {
+        Object.keys(selectionMapJSON).forEach((fieldKey, dataIdx) => {
+          const [field, modifier] = fieldKey.split('|');
+          const val = selectionMapJSON[fieldKey];
+          const values: any[] = Array.isArray(val) ? val : [val];
+          selectionDataEntries.push({
+            field,
+            modifier,
+            values,
+            selectedRadioId: `${
+              values.length <= 1 ? SelectionMapValueRadioId.VALUE : SelectionMapValueRadioId.LIST
+            }-${selectionIdx}-${dataIdx}`,
+          });
         });
-      });
+      }
 
-      detectionObj.selections.push({
-        name: selectionKey,
-        data: selectionDataEntries,
-      });
+      if (selectionDataEntries.length) {
+        detectionObj.selections.push({
+          name: selectionKey,
+          data: selectionDataEntries,
+        });
+      }
     });
 
     return detectionObj;
