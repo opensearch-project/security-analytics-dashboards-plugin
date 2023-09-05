@@ -9,7 +9,7 @@ on:
 env:
   OPENSEARCH_DASHBOARDS_VERSION: '2.9.0'
   OPENSEARCH_VERSION: '2.9.0-SNAPSHOT'
-  SECURITY_ANALYTICS_BRANCH: '2.x'
+  SECURITY_ANALYTICS_BRANCH: '2.9'
   GRADLE_VERSION: '7.6.1'
 
   # If this variable is not empty, the package.json, opensearch_dashboards.json, and yarn.lock files will be replaced
