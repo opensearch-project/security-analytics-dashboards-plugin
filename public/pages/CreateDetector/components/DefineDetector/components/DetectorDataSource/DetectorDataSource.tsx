@@ -177,6 +177,7 @@ export default class DetectorDataSource extends Component<
             <EuiCallOut
               title="The selected log sources contain different log types"
               color="warning"
+              data-test-subj={'define-detector-diff-log-types-warning'}
             >
               <EuiTextColor color={'default'}>
                 To avoid issues with field mappings, we recommend creating separate detectors for
