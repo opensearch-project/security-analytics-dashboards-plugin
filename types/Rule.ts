@@ -123,3 +123,5 @@ export interface IRulesStore {
 
   getCustomRules: (terms?: { [key: string]: string[] }) => Promise<RuleItemInfoBase[]>;
 }
+
+export type RulesTableColumnFields = 'title' | 'level' | 'category' | 'source' | 'description';

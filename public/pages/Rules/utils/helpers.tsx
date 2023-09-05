@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiBasicTableColumn, EuiBreadcrumb, EuiLink } from '@elastic/eui';
+import { EuiBasicTableColumn, EuiBreadcrumb, EuiLink, EuiBadge } from '@elastic/eui';
 import React from 'react';
-import { capitalizeFirstLetter, errorNotificationToast } from '../../../utils/helpers';
+import { errorNotificationToast } from '../../../utils/helpers';
 import { ruleSeverity, ruleSource, ruleTypes } from './constants';
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
 import { Rule } from '../../../../models/interfaces';
@@ -13,7 +13,8 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { AUTHOR_REGEX, validateDescription, validateName } from '../../../utils/validation';
 import { dump, load } from 'js-yaml';
 import { BREADCRUMBS, DEFAULT_EMPTY_DATA } from '../../../utils/constants';
-import { RuleItemInfoBase } from '../../../../types';
+import { RuleItemInfoBase, RulesTableColumnFields } from '../../../../types';
+import { getSeverityColor, getSeverityLabel } from '../../Correlations/utils/constants';
 
 export interface RuleTableItem {
   title: string;
@@ -26,10 +27,12 @@ export interface RuleTableItem {
 }
 
 export const getRulesTableColumns = (
-  showRuleDetails: (rule: RuleTableItem) => void
+  showRuleDetails: (rule: RuleTableItem) => void,
+  columnsToHide: RulesTableColumnFields[] = []
 ): EuiBasicTableColumn<RuleTableItem>[] => {
-  return [
-    {
+  const fields: RulesTableColumnFields[] = ['title', 'level', 'category', 'source', 'description'];
+  const tableColumnByField: { [field: string]: EuiBasicTableColumn<RuleTableItem> } = {
+    title: {
       field: 'title',
       name: 'Rule name',
       sortable: true,
@@ -41,15 +44,22 @@ export const getRulesTableColumns = (
         </EuiLink>
       ),
     },
-    {
+    level: {
       field: 'level',
       name: 'Rule Severity',
       sortable: true,
       width: '10%',
       truncateText: true,
-      render: (level: string) => capitalizeFirstLetter(level),
+      render: (level: string) => {
+        const { text, background } = getSeverityColor(level);
+        return (
+          <EuiBadge style={{ color: text }} color={background}>
+            {getSeverityLabel(level)}
+          </EuiBadge>
+        );
+      },
     },
-    {
+    category: {
       field: 'category',
       name: 'Log type',
       sortable: true,
@@ -59,20 +69,30 @@ export const getRulesTableColumns = (
         ruleTypes.find((ruleType) => ruleType.label.toLowerCase() === category)?.label ||
         DEFAULT_EMPTY_DATA,
     },
-    {
+    source: {
       field: 'source',
       name: 'Source',
       sortable: true,
       width: '10%',
       truncateText: true,
     },
-    {
+    description: {
       field: 'description',
       name: 'Description',
       sortable: false,
       truncateText: true,
     },
-  ];
+  };
+
+  const columns: EuiBasicTableColumn<RuleTableItem>[] = [];
+
+  fields.forEach((field) => {
+    if (!columnsToHide.includes(field)) {
+      columns.push(tableColumnByField[field]);
+    }
+  });
+
+  return columns;
 };
 
 export const getRulesTableSearchConfig = (): Search => {

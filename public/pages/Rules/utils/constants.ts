@@ -47,6 +47,6 @@ export const ruleSeverity: {
   },
 ];
 
-export const ruleSource: string[] = ['Sigma', 'Custom'];
+export const ruleSource: string[] = ['Standard', 'Custom'];
 
 export const ruleStatus: string[] = ['experimental', 'test', 'stable'];

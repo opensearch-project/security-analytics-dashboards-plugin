@@ -89,7 +89,14 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
         />
       </EuiFormRow>
       <EuiSpacer />
-      <EuiFormRow label="Description">
+      <EuiFormRow
+        label={
+          <>
+            {'Description - '}
+            <em>optional</em>
+          </>
+        }
+      >
         <EuiTextArea
           value={logTypeDetails?.description}
           onChange={(e) => {

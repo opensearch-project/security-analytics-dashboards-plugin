@@ -115,6 +115,7 @@ const validatePendingFieldMappingsPanel = (mappings) => {
 const fillDetailsForm = (detectorName, dataSource) => {
   getNameField().type(detectorName);
   getDataSourceField().selectComboboxItem(dataSource);
+  getDataSourceField().blur();
   getLogTypeField().selectComboboxItem(cypressLogTypeDns);
   getLogTypeField().blur();
 };
@@ -371,7 +372,7 @@ describe('Detectors', () => {
       getDataSourceField().selectComboboxItem(cypressIndexWindows);
       getDataSourceField().focus().blur();
 
-      cy.get('.euiCallOut')
+      cy.get('[data-test-subj="define-detector-diff-log-types-warning"]')
         .should('be.visible')
         .contains(
           'To avoid issues with field mappings, we recommend creating separate detectors for different log types.'
