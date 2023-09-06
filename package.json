@@ -53,7 +53,8 @@
     "semver": "^7.5.2",
     "@babel/core": "^7.20.12",
     "@babel/traverse": "^7.20.12",
-    "word-wrap": "^1.2.4"
+    "word-wrap": "^1.2.4",
+    "@cypress/request": "^3.0.0"
   },
   "devDependencies": {
     "@elastic/elastic-eslint-config-kibana": "link:../../packages/opensearch-eslint-config-opensearch-dashboards",
