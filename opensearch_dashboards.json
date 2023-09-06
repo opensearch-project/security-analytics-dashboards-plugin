@@ -1,13 +1,9 @@
 {
   "id": "securityAnalyticsDashboards",
-  "version": "2.9.0.0",
-  "opensearchDashboardsVersion": "2.9.0",
-  "configPath": [
-    "opensearch_security_analytics"
-  ],
-  "requiredPlugins": [
-    "data"
-  ],
+  "version": "2.10.0.0",
+  "opensearchDashboardsVersion": "2.10.0",
+  "configPath": ["opensearch_security_analytics"],
+  "requiredPlugins": ["data"],
   "server": true,
   "ui": true
 }
