@@ -40,9 +40,10 @@ export const LogTypeDetails: React.FC<LogTypeDetailsProps> = ({
   return (
     <ContentPanel
       title="Details"
+      titleSize="l"
       actions={
         !isEditMode &&
-        logTypeDetails.source.toLocaleLowerCase() !== 'sigma' && [
+        logTypeDetails.source.toLocaleLowerCase() !== 'standard' && [
           <EuiButton onClick={() => setIsEditMode(true)}>Edit</EuiButton>,
         ]
       }

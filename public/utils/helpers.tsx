@@ -119,7 +119,7 @@ export function ruleItemInfosToItems(
       id: itemInfo._id,
       active: itemInfo.enabled,
       description: itemInfo._source.description,
-      library: itemInfo.prePackaged ? 'Sigma' : 'Custom',
+      library: itemInfo.prePackaged ? 'Standard' : 'Custom',
       logType: detectorType.toLowerCase(),
       name: itemInfo._source.title,
       severity: itemInfo._source.level,

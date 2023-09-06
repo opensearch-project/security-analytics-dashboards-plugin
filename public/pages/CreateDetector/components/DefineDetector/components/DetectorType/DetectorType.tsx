@@ -94,6 +94,7 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
 
         <EuiFormRow fullWidth={true}>
           <DetectionRules
+            detectorType={detectorType}
             rulesState={this.props.rulesState}
             loading={this.props.loadingRules}
             onPageChange={this.props.onPageChange}

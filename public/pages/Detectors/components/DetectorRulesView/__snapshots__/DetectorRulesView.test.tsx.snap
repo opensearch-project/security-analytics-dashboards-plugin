@@ -478,7 +478,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                       "name": "Source",
                       "options": Array [
                         Object {
-                          "value": "Sigma",
+                          "value": "Standard",
                         },
                         Object {
                           "value": "Custom",
@@ -587,7 +587,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                         "name": "Source",
                         "options": Array [
                           Object {
-                            "value": "Sigma",
+                            "value": "Standard",
                           },
                           Object {
                             "value": "Custom",
@@ -768,7 +768,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                   "name": "Source",
                                   "options": Array [
                                     Object {
-                                      "value": "Sigma",
+                                      "value": "Standard",
                                     },
                                     Object {
                                       "value": "Custom",
@@ -1115,7 +1115,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                       "name": "Source",
                                       "options": Array [
                                         Object {
-                                          "value": "Sigma",
+                                          "value": "Standard",
                                         },
                                         Object {
                                           "value": "Custom",

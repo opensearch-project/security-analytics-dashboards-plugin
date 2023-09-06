@@ -66,7 +66,7 @@ export const LogType: React.FC<LogTypeProps> = ({ notifications, history }) => {
       level: rule._source.level,
       category: rule._source.category,
       description: rule._source.description,
-      source: rule.prePackaged ? 'Sigma' : 'Custom',
+      source: rule.prePackaged ? 'Standard' : 'Custom',
       ruleInfo: rule,
       ruleId: rule._id,
     }));
@@ -193,7 +193,13 @@ export const LogType: React.FC<LogTypeProps> = ({ notifications, history }) => {
           </EuiFlexItem>
           <EuiFlexItem>
             <EuiDescriptionList
-              listItems={[{ title: 'Source', description: logTypeDetails.source }]}
+              listItems={[
+                {
+                  title: 'Source',
+                  description:
+                    logTypeDetails.source === 'Sigma' ? 'Standard' : logTypeDetails.source,
+                },
+              ]}
             />
           </EuiFlexItem>
         </EuiFlexGroup>
@@ -214,6 +220,7 @@ export const LogType: React.FC<LogTypeProps> = ({ notifications, history }) => {
           );
         })}
       </EuiTabs>
+      <EuiSpacer size="m" />
       {renderTabContent()}
     </>
   );

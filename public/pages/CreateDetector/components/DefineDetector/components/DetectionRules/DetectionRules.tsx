@@ -9,6 +9,9 @@ import {
   EuiHorizontalRule,
   CriteriaWithPagination,
   EuiText,
+  EuiEmptyPrompt,
+  EuiButton,
+  EuiIcon,
 } from '@elastic/eui';
 
 import React, { useMemo, useState } from 'react';
@@ -17,6 +20,7 @@ import { RuleItem, RuleItemInfo } from './types/interfaces';
 import { RuleViewerFlyout } from '../../../../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
 import { RuleTableItem } from '../../../../../Rules/utils/helpers';
 import { RuleItemInfoBase } from '../../../../../../../types';
+import { ROUTES } from '../../../../../../utils/constants';
 
 export interface CreateDetectorRulesState {
   allRules: RuleItemInfo[];
@@ -26,6 +30,7 @@ export interface CreateDetectorRulesState {
 }
 
 export interface DetectionRulesProps {
+  detectorType: string;
   rulesState: CreateDetectorRulesState;
   loading?: boolean;
   onRuleToggle: (changedItem: RuleItem, isActive: boolean) => void;
@@ -34,6 +39,7 @@ export interface DetectionRulesProps {
 }
 
 export const DetectionRules: React.FC<DetectionRulesProps> = ({
+  detectorType,
   rulesState,
   loading,
   onPageChange,
@@ -55,7 +61,7 @@ export const DetectionRules: React.FC<DetectionRulesProps> = ({
         id: rule._id,
         active: rule.enabled,
         description: rule._source.description,
-        library: rule.prePackaged ? 'Sigma' : 'Custom',
+        library: rule.prePackaged ? 'Standard' : 'Custom',
         logType: rule._source.category,
         name: rule._source.title,
         severity: rule._source.level,
@@ -106,14 +112,42 @@ export const DetectionRules: React.FC<DetectionRulesProps> = ({
         isLoading={loading}
       >
         <EuiHorizontalRule margin={'xs'} />
-        <DetectionRulesTable
-          pageIndex={rulesState.page.index}
-          ruleItems={ruleItems}
-          onAllRulesToggled={onAllRulesToggle}
-          onRuleActivationToggle={onRuleToggle}
-          onTableChange={onTableChange}
-          onRuleDetails={onRuleDetails}
-        />
+
+        {ruleItems.length ? (
+          <DetectionRulesTable
+            pageIndex={rulesState.page.index}
+            ruleItems={ruleItems}
+            onAllRulesToggled={onAllRulesToggle}
+            onRuleActivationToggle={onRuleToggle}
+            onTableChange={onTableChange}
+            onRuleDetails={onRuleDetails}
+          />
+        ) : (
+          <EuiEmptyPrompt
+            title={
+              <EuiTitle>
+                <h1>No detection rules {detectorType ? 'to display' : 'selected'}</h1>
+              </EuiTitle>
+            }
+            body={
+              <p>
+                {detectorType
+                  ? 'There are no applicable detection rules for the selected log type. Consider creating new detection rules.'
+                  : 'Select a log type to be able to select detection rules.'}
+              </p>
+            }
+            actions={
+              detectorType
+                ? [
+                    <EuiButton href={`#${ROUTES.RULES}`} target="_blank">
+                      Manage&nbsp;
+                      <EuiIcon type={'popout'} />
+                    </EuiButton>,
+                  ]
+                : undefined
+            }
+          />
+        )}
       </EuiAccordion>
     </>
   );

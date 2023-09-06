@@ -97,7 +97,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
         id: rule._id,
         severity: rule._source.level,
         logType: rule._source.category,
-        library: 'Sigma',
+        library: 'Standard',
         description: rule._source.description,
         active: enabledRuleIds.includes(rule._id),
         ruleInfo: rule,
@@ -140,7 +140,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
           .filter((rule) => rule.active);
         await getRuleFieldsForEnabledRules(withCustomRulesUpdated);
         break;
-      case 'Sigma':
+      case 'Standard':
         const updatedPrePackgedRules: RuleItem[] = prePackagedRuleItems.map((rule) =>
           rule.id === changedItem.id ? { ...rule, active: isActive } : rule
         );

@@ -10,7 +10,7 @@ import { CoreServicesContext } from '../../../components/core_services';
 import { BREADCRUMBS, ROUTES } from '../../../utils/constants';
 import { LogType } from '../../../../types';
 import { DataStore } from '../../../store/DataStore';
-import { getLogTypesTableColumns } from '../utils/helpers';
+import { getLogTypesTableColumns, getLogTypesTableSearchConfig } from '../utils/helpers';
 import { RouteComponentProps } from 'react-router-dom';
 import { useCallback } from 'react';
 import { NotificationsStart } from 'opensearch-dashboards/public';
@@ -92,6 +92,7 @@ export const LogTypes: React.FC<LogTypesProps> = ({ history, notifications }) =>
           pagination={{
             initialPageSize: 25,
           }}
+          search={getLogTypesTableSearchConfig()}
           sorting={true}
         />
       </ContentPanel>
