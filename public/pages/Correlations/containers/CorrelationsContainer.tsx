@@ -219,13 +219,14 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       return;
     }
 
+    this.setState({ loadingGraphData: true });
     const allFindings = await DataStore.correlations.fetchAllFindings();
     const detectorType = allFindings[findingId].logType;
     const correlations = await DataStore.correlations.getCorrelatedFindings(
       findingId,
       detectorType
     );
-    this.setState({ specificFindingInfo: correlations });
+    this.setState({ specificFindingInfo: correlations, loadingGraphData: false });
     this.updateGraphDataState(correlations);
   };
 
@@ -469,7 +470,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
               />
               <EuiSpacer />
               <EuiTitle size="xs">
-                <p>Correlated Findings()</p>
+                <p>Correlated Findings ({findingCardsData.correlatedFindings.length})</p>
               </EuiTitle>
               <EuiText color="subdued" size="xs">
                 Higher correlation score indicated stronger correlation.
