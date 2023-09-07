@@ -271,7 +271,7 @@ export class CorrelationsStore implements ICorrelationsStore {
       const correlatedFindings = response.response.findings.map((f) => {
         return {
           ...allFindings[f.finding],
-          correlationScore: f.score.toExponential(2),
+          correlationScore: f.score < 0.01 ? '0.01' : f.score.toFixed(2),
         };
       });
       return {
