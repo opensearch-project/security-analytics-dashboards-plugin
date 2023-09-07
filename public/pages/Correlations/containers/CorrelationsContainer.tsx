@@ -219,13 +219,14 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       return;
     }
 
+    this.setState({ loadingGraphData: true });
     const allFindings = await DataStore.correlations.fetchAllFindings();
     const detectorType = allFindings[findingId].logType;
     const correlations = await DataStore.correlations.getCorrelatedFindings(
       findingId,
       detectorType
     );
-    this.setState({ specificFindingInfo: correlations });
+    this.setState({ specificFindingInfo: correlations, loadingGraphData: false });
     this.updateGraphDataState(correlations);
   };
 
