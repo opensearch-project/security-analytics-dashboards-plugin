@@ -469,7 +469,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
               />
               <EuiSpacer />
               <EuiTitle size="xs">
-                <p>Correlated Findings()</p>
+                <p>Correlated Findings ({findingCardsData.correlatedFindings.length})</p>
               </EuiTitle>
               <EuiText color="subdued" size="xs">
                 Higher correlation score indicated stronger correlation.
