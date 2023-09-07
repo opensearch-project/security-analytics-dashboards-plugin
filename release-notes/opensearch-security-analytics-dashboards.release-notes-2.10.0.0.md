@@ -9,6 +9,7 @@ Compatible with OpenSearch Dashboards 2.10.0
 
 ## Bug Fixes
 * Pass sortOrder and size params when getting findings and alerts. ([#665](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/665))
+* Added check for empty action. ([#709](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/709))
 
 
 ### Features
@@ -23,3 +24,5 @@ Compatible with OpenSearch Dashboards 2.10.0
 * UI polish for correlations and custom log types. ([#683](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/683))
 * [Correlations] Update node size and cursor in correlations graph ([#687](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/687))
 * Updates to log types related UX. ([#694](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/694))
+* Minor UI updates for correlations page ([#712](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/712))
+
