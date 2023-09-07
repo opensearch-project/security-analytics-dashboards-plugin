@@ -37,9 +37,9 @@ export const AlertTriggerView: React.FC<AlertTriggerViewProps> = ({
   const { name, sev_levels, types, tags, ids, severity, actions } = alertTrigger;
   const alertSeverity = parseAlertSeverityToOption(severity)?.label || DEFAULT_EMPTY_DATA;
   const action = actions[0];
-  const notificationChannelId = detector.triggers[orderPosition].actions[0].destination_id;
+  const notificationChannelId = detector.triggers[orderPosition]?.actions[0]?.destination_id;
   const notificationChannel = notificationChannels.find(
-    (channel) => channel.config_id === notificationChannelId
+    (channel) => !!notificationChannelId && channel.config_id === notificationChannelId
   );
   const conditionRuleNames = ids.map((ruleId) => rules[ruleId]?._source.title);
   return (
