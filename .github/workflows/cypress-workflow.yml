@@ -132,7 +132,7 @@ jobs:
           command: yarn run cypress run
           wait-on: 'http://localhost:5601'
           wait-on-timeout: 300
-          browser: chrome
+          # browser: chrome
         # env:
         #   CYPRESS_CACHE_FOLDER: ${{ matrix.cypress_cache_folder }}
 
