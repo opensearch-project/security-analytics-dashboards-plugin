@@ -27,7 +27,7 @@ export const CorrelationGraph: React.FC<CorrelationGraphProps> = ({
   getNetwork,
 }) => {
   return loadingData ? (
-    <div style={{ margin: '75px 47%' }}>
+    <div style={{ margin: '0px 47%', height: 800, paddingTop: 384 }}>
       <EuiLoadingChart size="xl" className="chart-view-container-loading" />
     </div>
   ) : (
