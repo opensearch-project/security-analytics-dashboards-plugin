@@ -8,7 +8,7 @@ on:
       - "*"
 env:
   OPENSEARCH_DASHBOARDS_VERSION: '2.x'
-  SECURITY_ANALYTICS_BRANCH: '2.x'
+  SECURITY_ANALYTICS_BRANCH: '2.11'
 jobs:
   tests:
     name: Run Cypress E2E tests
