@@ -33,6 +33,7 @@ import {
   EuiButton,
   EuiBadge,
   EuiFilterGroup,
+  EuiHorizontalRule,
 } from '@elastic/eui';
 import { FilterItem, FilterGroup } from '../components/FilterGroup';
 import { CoreServicesContext } from '../../../components/core_services';
@@ -112,7 +113,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
 
   async componentDidMount(): Promise<void> {
     this.context.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.CORRELATIONS]);
-    this.updateState();
+    this.updateState(true /* onMount */);
     this.props.onMount();
   }
 
@@ -130,8 +131,8 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     }
   }
 
-  private async updateState() {
-    if (this.props.location.state) {
+  private async updateState(onMount: boolean = false) {
+    if (onMount && this.props.location.state) {
       const state = this.props.location.state;
 
       const specificFindingInfo: SpecificFindingCorrelations = {
@@ -204,7 +205,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         createdEdges.add(possibleCombination1);
       });
 
-      this.setState({ graphData });
+      this.setState({ graphData, specificFindingInfo: undefined });
     }
   }
 
@@ -307,19 +308,23 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
   private createNodeTooltip = ({ detectionRule, timestamp, logType }: CorrelationFinding) => {
     const { text, background } = getSeverityColor(detectionRule.severity);
     const tooltipContent = (
-      <div style={{ backgroundColor: '#535353', color: '#ffffff', padding: '8px' }}>
-        <EuiFlexGroup alignItems="center">
+      <div style={{ backgroundColor: '#535353', color: '#ffffff', padding: '15px' }}>
+        <EuiFlexGroup alignItems="center" justifyContent="flexStart" gutterSize="s">
           <EuiFlexItem grow={false}>
             <EuiBadge style={{ color: text }} color={background}>
               {getSeverityLabel(detectionRule.severity)}
             </EuiBadge>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <strong>{getLabelFromLogType(logType)}</strong>
+            <EuiBadge>{getLabelFromLogType(logType)}</EuiBadge>
           </EuiFlexItem>
         </EuiFlexGroup>
         <EuiSpacer size="s" />
         <EuiText>{timestamp}</EuiText>
+        <EuiHorizontalRule margin="xs" />
+        <strong>Detection rule</strong>
+        <EuiSpacer size="s" />
+        <p>{detectionRule.name}</p>
       </div>
     );
 
@@ -385,6 +390,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         ...option,
         checked: 'on',
       })),
+      specificFindingInfo: undefined,
     });
   };
 
@@ -435,7 +441,8 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
             onClose={this.closeFlyout}
             ownFocus={true}
             type="push"
-            maxWidth="300px"
+            maxWidth="400px"
+            key={findingCardsData.finding.id}
           >
             <EuiFlyoutHeader hasBorder>
               <EuiFlexGroup>
