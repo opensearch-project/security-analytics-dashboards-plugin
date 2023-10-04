@@ -7,14 +7,14 @@ on:
     branches:
       - "*"
 env:
-  OPENSEARCH_DASHBOARDS_VERSION: '2.10.0'
-  OPENSEARCH_VERSION: '2.10.0-SNAPSHOT'
-  SECURITY_ANALYTICS_BRANCH: '2.10'
+  OPENSEARCH_DASHBOARDS_VERSION: '2.9.0'
+  OPENSEARCH_VERSION: '2.9.0-SNAPSHOT'
+  SECURITY_ANALYTICS_BRANCH: '2.9'
   GRADLE_VERSION: '7.6.1'
 
   # If this variable is not empty, the package.json, opensearch_dashboards.json, and yarn.lock files will be replaced
   # with those files from the 'opensearch-project/security-analytics-dashboards-plugin' branch or commit specified.
-  OVERRIDE_REFERENCE: '2.10'
+  OVERRIDE_REFERENCE: '2.9'
 jobs:
   tests:
     name: Run Cypress E2E tests
