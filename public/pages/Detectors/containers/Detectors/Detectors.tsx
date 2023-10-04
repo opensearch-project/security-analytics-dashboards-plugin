@@ -35,6 +35,7 @@ import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components
 import { DetectorsService } from '../../../../services';
 import { DetectorHit } from '../../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { Direction } from '@opensearch-project/oui/src/services/sort/sort_direction';
 
 export interface DetectorsProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -91,7 +92,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
       } else if (!res.error.includes('no such index')) {
         errorNotificationToast(notifications, 'retrieve', 'detectors', res.error);
       }
-    } catch (e) {
+    } catch (e: any) {
       errorNotificationToast(notifications, 'retrieve', 'detectors', e);
     }
     this.setState({ loadingDetectors: false });
@@ -117,7 +118,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
       if (!updateRes.ok) {
         errorNotificationToast(notifications, 'update', 'detector', updateRes.error);
       }
-    } catch (e) {
+    } catch (e: any) {
       errorNotificationToast(notifications, 'update', 'detector', e);
     }
     this.getDetectors();
@@ -143,7 +144,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
       if (!deleteRes.ok) {
         errorNotificationToast(notifications, 'delete', 'detector', deleteRes.error);
       }
-    } catch (e) {
+    } catch (e: any) {
       errorNotificationToast(notifications, 'delete', 'detector', e);
     }
   };
@@ -281,14 +282,14 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
         sortable: true,
         dataType: 'number',
         align: 'left',
-        render: (count) => count || DEFAULT_EMPTY_DATA,
+        render: (count: number) => count || DEFAULT_EMPTY_DATA,
       },
       {
         field: 'lastUpdatedTime',
         name: 'Last updated time',
         sortable: true,
         dataType: 'date',
-        render: (last_update_time) => renderTime(last_update_time) || DEFAULT_EMPTY_DATA,
+        render: (last_update_time: number) => renderTime(last_update_time) || DEFAULT_EMPTY_DATA,
       },
     ];
 
@@ -327,7 +328,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
       ],
     };
 
-    const sorting = {
+    const sorting: { sort: { field: string; direction: Direction } } = {
       sort: {
         field: 'name',
         direction: 'asc',

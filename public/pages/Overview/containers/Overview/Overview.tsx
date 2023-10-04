@@ -12,12 +12,15 @@ import {
   EuiSuperDatePicker,
   EuiTitle,
   EuiSpacer,
+  EuiButton,
 } from '@elastic/eui';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import {
   BREADCRUMBS,
   DEFAULT_DATE_RANGE,
   MAX_RECENTLY_USED_TIME_RANGES,
+  PLUGIN_NAME,
+  ROUTES,
 } from '../../../../utils/constants';
 import { OverviewProps, OverviewState } from '../../models/interfaces';
 import { CoreServicesContext } from '../../../../../public/components/core_services';
@@ -68,7 +71,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
   };
 
   const overviewViewModelActor = useMemo(
-    () => new OverviewViewModelActor(services, context.notifications),
+    () => new OverviewViewModelActor(services, context?.notifications!),
     [services, context]
   );
 
@@ -139,7 +142,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
   return (
     <EuiFlexGroup direction="column">
       <EuiFlexItem>
-        <EuiFlexGroup justifyContent="spaceBetween">
+        <EuiFlexGroup justifyContent="spaceBetween" gutterSize="s">
           <EuiFlexItem grow={false}>
             <EuiTitle size="m">
               <h1>Overview</h1>
@@ -165,6 +168,15 @@ export const Overview: React.FC<OverviewProps> = (props) => {
               onRefresh={onRefresh}
               updateButtonProps={{ fill: false }}
             />
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>
+            <EuiButton
+              href={`${PLUGIN_NAME}#${ROUTES.DETECTORS_CREATE}`}
+              fill={true}
+              data-test-subj={'detectorsCreateButton'}
+            >
+              Create detector
+            </EuiButton>
           </EuiFlexItem>
         </EuiFlexGroup>
         <EuiSpacer size={'m'} />

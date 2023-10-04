@@ -9,9 +9,6 @@ import {
   EuiAccordion,
   EuiButton,
   EuiCallOut,
-  EuiFlexGroup,
-  EuiFlexItem,
-  EuiHorizontalRule,
   EuiPanel,
   EuiSpacer,
   EuiText,
@@ -19,7 +16,6 @@ import {
 } from '@elastic/eui';
 import { MAX_ALERT_CONDITIONS } from '../utils/constants';
 import AlertConditionPanel from '../components/AlertCondition';
-import { DetectorCreationStep } from '../../../models/types';
 import { CreateDetectorRulesOptions } from '../../../../../models/types';
 import { NotificationChannelTypeOptions } from '../models/interfaces';
 import {
@@ -31,7 +27,7 @@ import { NotificationsService } from '../../../../../services';
 import { validateName } from '../../../../../utils/validation';
 import { CoreServicesContext } from '../../../../../components/core_services';
 import { BREADCRUMBS } from '../../../../../utils/constants';
-import { Detector } from '../../../../../../types';
+import { Detector, DetectorCreationStep } from '../../../../../../types';
 
 interface ConfigureAlertsProps extends RouteComponentProps {
   detector: Detector;
@@ -41,7 +37,7 @@ interface ConfigureAlertsProps extends RouteComponentProps {
   updateDataValidState: (step: DetectorCreationStep, isValid: boolean) => void;
   notificationsService: NotificationsService;
   hasNotificationPlugin: boolean;
-  skipAndConfigureHandler: () => void;
+  getTriggerName: () => string;
 }
 
 interface ConfigureAlertsState {
@@ -109,8 +105,9 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
       changeDetector,
       detector,
       detector: { triggers },
+      getTriggerName,
     } = this.props;
-    triggers.push(getEmptyAlertCondition());
+    triggers.push(getEmptyAlertCondition(getTriggerName()));
     changeDetector({ ...detector, triggers });
   };
 
@@ -138,7 +135,6 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
     const {
       isEdit,
       detector: { triggers },
-      skipAndConfigureHandler,
     } = this.props;
 
     let getPageTitle = (): string | JSX.Element => {
@@ -147,29 +143,14 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
       }
 
       return (
-        <EuiFlexGroup alignItems={'center'}>
-          <EuiFlexItem grow={true}>
-            <EuiTitle size={'m'}>
-              <h3>Set up alert triggers</h3>
-            </EuiTitle>
-            <EuiText size="s" color="subdued">
-              Get notified when specific rule conditions are found by the detector.
-            </EuiText>
-          </EuiFlexItem>
-          {triggers?.length && (
-            <EuiFlexItem grow={false}>
-              <EuiButton
-                onClick={() => {
-                  const { changeDetector, detector } = this.props;
-                  changeDetector({ ...detector, triggers: [] });
-                  skipAndConfigureHandler();
-                }}
-              >
-                Skip and configure later
-              </EuiButton>
-            </EuiFlexItem>
-          )}
-        </EuiFlexGroup>
+        <>
+          <EuiTitle size={'m'}>
+            <h3>Set up alert triggers</h3>
+          </EuiTitle>
+          <EuiText size="s" color="subdued">
+            Get notified when specific rule conditions are found by the detector.
+          </EuiText>
+        </>
       );
     };
 
@@ -188,7 +169,7 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
                 id={`alert-condition-${index}`}
                 buttonContent={
                   <EuiTitle>
-                    <h4>{isEdit ? alertCondition.name : 'Alert trigger'}</h4>
+                    <h4>{alertCondition.name}</h4>
                   </EuiTitle>
                 }
                 paddingSize={'none'}
@@ -199,7 +180,6 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
                   </EuiButton>
                 }
               >
-                <EuiHorizontalRule margin={'xs'} />
                 <EuiSpacer size={'m'} />
                 <AlertConditionPanel
                   {...this.props}

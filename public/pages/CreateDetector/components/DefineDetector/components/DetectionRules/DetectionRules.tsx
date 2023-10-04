@@ -6,7 +6,6 @@
 import {
   EuiAccordion,
   EuiTitle,
-  EuiHorizontalRule,
   CriteriaWithPagination,
   EuiText,
   EuiEmptyPrompt,
@@ -111,8 +110,6 @@ export const DetectionRules: React.FC<DetectionRulesProps> = ({
         initialIsOpen={false}
         isLoading={loading}
       >
-        <EuiHorizontalRule margin={'xs'} />
-
         {ruleItems.length ? (
           <DetectionRulesTable
             pageIndex={rulesState.page.index}

@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { DetectorCreationStep } from '../../../../types';
 import { DetectorCreationStepInfo } from '../models/interfaces';
-import { DetectorCreationStep } from '../models/types';
 
 export const createDetectorSteps: Record<DetectorCreationStep, DetectorCreationStepInfo> = {
   [DetectorCreationStep.DEFINE_DETECTOR]: {
@@ -14,10 +14,6 @@ export const createDetectorSteps: Record<DetectorCreationStep, DetectorCreationS
   [DetectorCreationStep.CONFIGURE_ALERTS]: {
     title: 'Set up alert triggers',
     step: 2,
-  },
-  [DetectorCreationStep.REVIEW_CREATE]: {
-    title: 'Review and create',
-    step: 3,
   },
 };
 
