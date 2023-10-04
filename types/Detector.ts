@@ -56,9 +56,7 @@ export interface SourceIndexOption {
 
 export enum DetectorCreationStep {
   DEFINE_DETECTOR = 1,
-  CONFIGURE_FIELD_MAPPING = 2,
-  CONFIGURE_ALERTS = 3,
-  REVIEW_CREATE = 4,
+  CONFIGURE_ALERTS = 2,
 }
 
 export interface DetectorHit {

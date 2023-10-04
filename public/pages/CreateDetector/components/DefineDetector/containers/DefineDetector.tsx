@@ -13,14 +13,13 @@ import DetectorType from '../components/DetectorType';
 import { EuiComboBoxOptionOption } from '@opensearch-project/oui';
 import { FieldMappingService, IndexService } from '../../../../../services';
 import { MIN_NUM_DATA_SOURCES } from '../../../../Detectors/utils/constants';
-import { DetectorCreationStep } from '../../../models/types';
 import { DetectorSchedule } from '../components/DetectorSchedule/DetectorSchedule';
 import { RuleItem } from '../components/DetectionRules/types/interfaces';
 import { CreateDetectorRulesState } from '../components/DetectionRules/DetectionRules';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { logTypesWithDashboards } from '../../../../../utils/constants';
 import ConfigureFieldMapping from '../../ConfigureFieldMapping';
-import { Detector, FieldMapping } from '../../../../../../types';
+import { Detector, DetectorCreationStep, FieldMapping } from '../../../../../../types';
 
 interface DefineDetectorProps extends RouteComponentProps {
   detector: Detector;

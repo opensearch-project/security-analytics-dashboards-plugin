@@ -18,7 +18,6 @@ import {
   EuiText,
   EuiTextArea,
 } from '@elastic/eui';
-import { Detector } from '../../../../../../../models/interfaces';
 import { AlertCondition } from '../../../../../../../models/interfaces';
 import {
   createSelectedOptions,
@@ -31,6 +30,7 @@ import { NotificationChannelOption, NotificationChannelTypeOptions } from '../..
 import { NOTIFICATIONS_HREF } from '../../../../../../utils/constants';
 import { getNameErrorMessage, validateName } from '../../../../../../utils/validation';
 import { NotificationsCallOut } from '../../../../../../components/NotificationsCallOut';
+import { Detector } from '../../../../../../../types';
 
 interface AlertConditionPanelProps extends RouteComponentProps {
   alertCondition: AlertCondition;
@@ -301,170 +301,197 @@ export default class AlertConditionPanel extends Component<
 
     return (
       <div>
-        <EuiFormRow
-          label={
-            <EuiText size="s">
-              <p>Trigger name</p>
-            </EuiText>
-          }
-          isInvalid={nameFieldTouched && nameIsInvalid}
-          error={getNameErrorMessage(name, nameIsInvalid, nameFieldTouched)}
-        >
-          <EuiFieldText
-            placeholder={'Enter a name to describe the alert condition'}
-            readOnly={false}
-            value={name}
-            onBlur={this.onNameBlur}
-            onChange={this.onNameChange}
-            required={nameFieldTouched}
-            data-test-subj={`alert-condition-name-${indexNum}`}
-          />
-        </EuiFormRow>
-
-        <EuiSpacer size={'xxl'} />
-        <EuiText size="m" style={{ fontSize: 20 }}>
-          <p>If a detection rule matches</p>
-        </EuiText>
-        <EuiSpacer size={'m'} />
-
-        <EuiFormRow
-          label={
-            <EuiText size="s">
-              <p>Rule names</p>
-            </EuiText>
+        <EuiAccordion
+          id={`trigger-details-${indexNum}`}
+          paddingSize="l"
+          initialIsOpen={this.props.isEdit}
+          buttonContent={
+            <div data-test-subj="detection-rules-btn">
+              <EuiText size={'s'}>Trigger details and condition</EuiText>
+              <EuiText size="s" color="subdued">
+                {`All rules, All tags, All tags`}
+              </EuiText>
+            </div>
           }
         >
-          <EuiComboBox
-            placeholder={'Any rules'}
-            options={namesOptions}
-            onChange={this.onRuleNamesChange}
-            selectedOptions={selectedNames}
-            data-test-subj={`alert-rulename-combo-box`}
-          />
-        </EuiFormRow>
-        <EuiSpacer size={'m'} />
-
-        <EuiFormRow
-          label={
-            <EuiText size="s">
-              <p>Rule Severities</p>
-            </EuiText>
-          }
-        >
-          <EuiComboBox
-            placeholder={'Any severities'}
-            options={ruleSeverityOptions}
-            onChange={this.onRuleSeverityChange}
-            noSuggestions={false}
-            selectedOptions={createSelectedOptions(ruleSeverityLevels)}
-            data-test-subj={`alert-severity-combo-box`}
-          />
-        </EuiFormRow>
-        <EuiSpacer size={'m'} />
-
-        <EuiFormRow
-          label={
-            <EuiText size="s">
-              <p>Tags</p>
-            </EuiText>
-          }
-        >
-          <EuiComboBox
-            placeholder={'Any tags'}
-            options={tagsOptions}
-            onChange={this.onTagsChange}
-            onCreateOption={this.onCreateTag}
-            selectedOptions={createSelectedOptions(tags)}
-            data-test-subj={'alert-tags-combo-box'}
-          />
-        </EuiFormRow>
-
-        <EuiSpacer size={'xxl'} />
-
-        <EuiText size="m" style={{ fontSize: 20 }}>
-          <p>Alert and notify</p>
-        </EuiText>
-        <EuiSpacer size={'m'} />
-
-        <EuiFormRow
-          label={
-            <EuiText size="s">
-              <p>Specify alert severity</p>
-            </EuiText>
-          }
-        >
-          <EuiComboBox
-            placeholder={'Select applicable severity levels.'}
-            async={true}
-            options={Object.values(ALERT_SEVERITY_OPTIONS)}
-            selectedOptions={
-              severity ? [parseAlertSeverityToOption(severity)] : [ALERT_SEVERITY_OPTIONS.HIGHEST]
+          <EuiFormRow
+            label={
+              <EuiText size="s">
+                <p>Trigger name</p>
+              </EuiText>
             }
-            onChange={this.onAlertSeverityChange}
-            singleSelection={{ asPlainText: true }}
-            isClearable={false}
-            data-test-subj={'security-levels-combo-box'}
-          />
-        </EuiFormRow>
+            isInvalid={nameFieldTouched && nameIsInvalid}
+            error={getNameErrorMessage(name, nameIsInvalid, nameFieldTouched)}
+          >
+            <EuiFieldText
+              placeholder={'Enter a name to describe the alert condition'}
+              readOnly={false}
+              value={name}
+              onBlur={this.onNameBlur}
+              onChange={this.onNameChange}
+              required={nameFieldTouched}
+              data-test-subj={`alert-condition-name-${indexNum}`}
+            />
+          </EuiFormRow>
+
+          <EuiSpacer size={'xxl'} />
+          <EuiText size="m" style={{ fontSize: 20 }}>
+            <p>If a detection rule matches</p>
+          </EuiText>
+          <EuiSpacer size={'m'} />
+
+          <EuiFormRow
+            label={
+              <EuiText size="s">
+                <p>Rule names</p>
+              </EuiText>
+            }
+          >
+            <EuiComboBox
+              placeholder={'Any rules'}
+              options={namesOptions}
+              onChange={this.onRuleNamesChange}
+              selectedOptions={selectedNames}
+              data-test-subj={`alert-rulename-combo-box`}
+            />
+          </EuiFormRow>
+          <EuiSpacer size={'m'} />
+
+          <EuiFormRow
+            label={
+              <EuiText size="s">
+                <p>Rule Severities</p>
+              </EuiText>
+            }
+          >
+            <EuiComboBox
+              placeholder={'Any severities'}
+              options={ruleSeverityOptions}
+              onChange={this.onRuleSeverityChange}
+              noSuggestions={false}
+              selectedOptions={createSelectedOptions(ruleSeverityLevels)}
+              data-test-subj={`alert-severity-combo-box`}
+            />
+          </EuiFormRow>
+          <EuiSpacer size={'m'} />
+
+          <EuiFormRow
+            label={
+              <EuiText size="s">
+                <p>Tags</p>
+              </EuiText>
+            }
+          >
+            <EuiComboBox
+              placeholder={'Any tags'}
+              options={tagsOptions}
+              onChange={this.onTagsChange}
+              onCreateOption={this.onCreateTag}
+              selectedOptions={createSelectedOptions(tags)}
+              data-test-subj={'alert-tags-combo-box'}
+            />
+          </EuiFormRow>
+        </EuiAccordion>
 
         <EuiSpacer size={'l'} />
 
-        <EuiFlexGroup alignItems="flexEnd">
-          <EuiFlexItem style={{ maxWidth: 400 }}>
-            <EuiFormRow
-              label={
-                <EuiText size="m">
-                  <p>Select channel to notify</p>
-                </EuiText>
+        <EuiText size="m" style={{ fontSize: 20 }}>
+          <p>Notification</p>
+        </EuiText>
+        <EuiSpacer size={'m'} />
+
+        <EuiAccordion
+          id={`notification-details-${indexNum}`}
+          initialIsOpen={true}
+          paddingSize="l"
+          buttonContent={
+            <div data-test-subj="detection-rules-btn">
+              <EuiText size={'m'}>Notification</EuiText>
+              <EuiText size="s" color="subdued">
+                {`Configure notification to receive alerts when the trigger condition is met.`}
+              </EuiText>
+            </div>
+          }
+        >
+          <EuiFormRow
+            label={
+              <EuiText size="s">
+                <p>Specify alert severity</p>
+              </EuiText>
+            }
+          >
+            <EuiComboBox
+              placeholder={'Select applicable severity levels.'}
+              async={true}
+              options={Object.values(ALERT_SEVERITY_OPTIONS)}
+              selectedOptions={
+                severity ? [parseAlertSeverityToOption(severity)] : [ALERT_SEVERITY_OPTIONS.HIGHEST]
               }
-            >
-              <EuiComboBox
-                placeholder={'Select notification channel.'}
-                async={true}
-                isLoading={loadingNotifications}
-                options={allNotificationChannels as EuiComboBoxOptionOption<string>[]}
-                selectedOptions={
-                  selectedNotificationChannelOption as EuiComboBoxOptionOption<string>[]
+              onChange={this.onAlertSeverityChange}
+              singleSelection={{ asPlainText: true }}
+              isClearable={false}
+              data-test-subj={'security-levels-combo-box'}
+            />
+          </EuiFormRow>
+
+          <EuiSpacer size={'l'} />
+
+          <EuiFlexGroup alignItems="flexEnd">
+            <EuiFlexItem style={{ maxWidth: 400 }}>
+              <EuiFormRow
+                label={
+                  <EuiText size="m">
+                    <p>Select channel to notify</p>
+                  </EuiText>
                 }
-                onChange={this.onNotificationChannelsChange}
-                singleSelection={{ asPlainText: true }}
-                onBlur={refreshNotificationChannels}
+              >
+                <EuiComboBox
+                  placeholder={'Select notification channel.'}
+                  async={true}
+                  isLoading={loadingNotifications}
+                  options={allNotificationChannels as EuiComboBoxOptionOption<string>[]}
+                  selectedOptions={
+                    selectedNotificationChannelOption as EuiComboBoxOptionOption<string>[]
+                  }
+                  onChange={this.onNotificationChannelsChange}
+                  singleSelection={{ asPlainText: true }}
+                  onBlur={refreshNotificationChannels}
+                  isDisabled={!hasNotificationPlugin}
+                />
+              </EuiFormRow>
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <EuiButton
+                href={NOTIFICATIONS_HREF}
+                iconType={'popout'}
+                target={'_blank'}
                 isDisabled={!hasNotificationPlugin}
-              />
-            </EuiFormRow>
-          </EuiFlexItem>
-          <EuiFlexItem grow={false}>
-            <EuiButton
-              href={NOTIFICATIONS_HREF}
-              iconType={'popout'}
-              target={'_blank'}
-              isDisabled={!hasNotificationPlugin}
-            >
-              Manage channels
-            </EuiButton>
-          </EuiFlexItem>
-        </EuiFlexGroup>
+              >
+                Manage channels
+              </EuiButton>
+            </EuiFlexItem>
+          </EuiFlexGroup>
 
-        {!hasNotificationPlugin && (
-          <>
-            <EuiSpacer size="m" />
-            <NotificationsCallOut />
-          </>
-        )}
+          {!hasNotificationPlugin && (
+            <>
+              <EuiSpacer size="m" />
+              <NotificationsCallOut />
+            </>
+          )}
+        </EuiAccordion>
 
-        <EuiSpacer size={'xxl'} />
+        <EuiSpacer size={'l'} />
 
         <EuiAccordion
           id={`alert-condition-notify-msg-${indexNum}`}
           buttonContent={
             <EuiText size="m">
-              <p>Show notify message</p>
+              <p>Notification message</p>
             </EuiText>
           }
-          paddingSize={'none'}
+          paddingSize={'l'}
           initialIsOpen={false}
         >
-          <EuiSpacer size={'m'} />
           <EuiFlexGroup direction={'column'} style={{ width: '75%' }}>
             <EuiFlexItem>
               <EuiFormRow
