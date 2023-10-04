@@ -5,7 +5,15 @@
 
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { EuiTitle, EuiText, EuiAccordion, EuiTabs, EuiTab, EuiEmptyPrompt } from '@elastic/eui';
+import {
+  EuiTitle,
+  EuiText,
+  EuiAccordion,
+  EuiTabs,
+  EuiTab,
+  EuiEmptyPrompt,
+  EuiCallOut,
+} from '@elastic/eui';
 import FieldMappingsTable from '../components/RequiredFieldMapping';
 import { FieldMapping } from '../../../../../../models/interfaces';
 import { EMPTY_FIELD_MAPPINGS_VIEW } from '../utils/constants';
@@ -170,6 +178,13 @@ export default class ConfigureFieldMapping extends Component<
                 your data source to the detection rules fields.
               </p>
             </EuiText>
+            {pendingCount > 0 && (
+              <EuiCallOut
+                size="s"
+                title={`${pendingCount} additional rule fields are available for log field mapping`}
+                iconType={'iInCircle'}
+              />
+            )}
             <FieldMappingsTable<MappingViewType.Edit>
               {...this.props}
               loading={loading}

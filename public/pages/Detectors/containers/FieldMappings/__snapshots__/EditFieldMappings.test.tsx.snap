@@ -501,14 +501,14 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                               Object {
                                 "dataType": "string",
                                 "field": "ruleFieldName",
-                                "name": "Detector field name",
+                                "name": "Detection rule field",
                                 "render": [Function],
                                 "width": "25%",
                               },
                               Object {
                                 "dataType": "string",
                                 "field": "logFieldName",
-                                "name": "Log source field name",
+                                "name": "Data source field",
                                 "render": [Function],
                                 "width": "45%",
                               },
@@ -565,14 +565,14 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                                 Object {
                                   "dataType": "string",
                                   "field": "ruleFieldName",
-                                  "name": "Detector field name",
+                                  "name": "Detection rule field",
                                   "render": [Function],
                                   "width": "25%",
                                 },
                                 Object {
                                   "dataType": "string",
                                   "field": "logFieldName",
-                                  "name": "Log source field name",
+                                  "name": "Data source field",
                                   "render": [Function],
                                   "width": "45%",
                                 },
@@ -626,7 +626,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                                 "allowNeutralSort": true,
                                 "sort": Object {
                                   "direction": "asc",
-                                  "field": "Detector field name",
+                                  "field": "Detection rule field",
                                 },
                               }
                             }
@@ -819,15 +819,15 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                                                       values={
                                                         Object {
                                                           "description": undefined,
-                                                          "innerText": "Detector field name",
+                                                          "innerText": "Detection rule field",
                                                         }
                                                       }
                                                     >
                                                       <span
                                                         className="euiTableCellContent__text"
-                                                        title="Detector field name"
+                                                        title="Detection rule field"
                                                       >
-                                                        Detector field name
+                                                        Detection rule field
                                                       </span>
                                                     </EuiI18n>
                                                   </EuiInnerText>
@@ -866,15 +866,15 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                                                       values={
                                                         Object {
                                                           "description": undefined,
-                                                          "innerText": "Log source field name",
+                                                          "innerText": "Data source field",
                                                         }
                                                       }
                                                     >
                                                       <span
                                                         className="euiTableCellContent__text"
-                                                        title="Log source field name"
+                                                        title="Data source field"
                                                       >
-                                                        Log source field name
+                                                        Data source field
                                                       </span>
                                                     </EuiI18n>
                                                   </EuiInnerText>

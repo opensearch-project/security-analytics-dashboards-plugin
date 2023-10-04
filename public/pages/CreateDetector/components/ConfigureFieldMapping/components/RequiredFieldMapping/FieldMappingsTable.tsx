@@ -86,14 +86,14 @@ export default class FieldMappingsTable<T extends MappingViewType> extends Compo
     const columns: EuiBasicTableColumn<FieldMappingsTableItem>[] = [
       {
         field: 'ruleFieldName',
-        name: 'Detector field name',
+        name: 'Detection rule field',
         dataType: 'string',
         width: '25%',
         render: (ruleFieldName: string) => ruleFieldName || DEFAULT_EMPTY_DATA,
       },
       {
         field: 'logFieldName',
-        name: 'Log source field name',
+        name: 'Data source field',
         dataType: 'string',
         width: '45%',
         render: (logFieldName: string, entry: FieldMappingsTableItem) => {
