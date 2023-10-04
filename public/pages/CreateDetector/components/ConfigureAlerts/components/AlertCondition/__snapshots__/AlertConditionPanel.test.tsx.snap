@@ -41,7 +41,11 @@ Object {
                     <div
                       class="euiTextColor euiTextColor--subdued"
                     >
-                      All rules, All tags, All tags
+                      
+      All rules,
+      1 severity,
+      1 tag
+    
                     </div>
                   </div>
                 </div>
@@ -891,7 +895,11 @@ Object {
                   <div
                     class="euiTextColor euiTextColor--subdued"
                   >
-                    All rules, All tags, All tags
+                    
+      All rules,
+      1 severity,
+      1 tag
+    
                   </div>
                 </div>
               </div>

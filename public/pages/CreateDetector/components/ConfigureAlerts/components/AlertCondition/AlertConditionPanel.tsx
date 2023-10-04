@@ -299,6 +299,20 @@ export default class AlertConditionPanel extends Component<
       });
     }
 
+    const triggerDetailsSubheading = `
+      ${
+        selectedNames.length === 1
+          ? '1 rule'
+          : `${!selectedNames.length ? 'All' : selectedNames.length} rules`
+      },
+      ${
+        ruleSeverityLevels.length === 1
+          ? '1 severity'
+          : `${!ruleSeverityLevels.length ? 'All' : ruleSeverityLevels.length} severities`
+      },
+      ${tags.length === 1 ? '1 tag' : `${!tags.length ? 'All' : tags.length} tags`}
+    `;
+
     return (
       <div>
         <EuiAccordion
@@ -309,7 +323,7 @@ export default class AlertConditionPanel extends Component<
             <div data-test-subj="trigger-details-btn">
               <EuiText size={'s'}>Trigger details and condition</EuiText>
               <EuiText size="s" color="subdued">
-                {`All rules, All tags, All tags`}
+                {triggerDetailsSubheading}
               </EuiText>
             </div>
           }
