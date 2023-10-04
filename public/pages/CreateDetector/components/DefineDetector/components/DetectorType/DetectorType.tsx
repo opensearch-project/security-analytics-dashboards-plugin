@@ -10,12 +10,15 @@ import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/Fo
 import { CreateDetectorRulesState, DetectionRules } from '../DetectionRules/DetectionRules';
 import { RuleItem } from '../DetectionRules/types/interfaces';
 import { ruleTypes } from '../../../../../Rules/utils/constants';
+import ConfigureFieldMapping from '../../../ConfigureFieldMapping';
+import { ConfigureFieldMappingProps } from '../../../ConfigureFieldMapping/containers/ConfigureFieldMapping';
 
 interface DetectorTypeProps {
   detectorType: string;
-  onDetectorTypeChange: (detectorType: string) => void;
   rulesState: CreateDetectorRulesState;
+  configureFieldMappingProps: ConfigureFieldMappingProps;
   loadingRules?: boolean;
+  onDetectorTypeChange: (detectorType: string) => void;
   onPageChange: (page: { index: number; size: number }) => void;
   onRuleToggle: (changedItem: RuleItem, isActive: boolean) => void;
   onAllRulesToggle: (enabled: boolean) => void;
@@ -63,11 +66,7 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
     const { detectorType } = this.props;
 
     return (
-      <ContentPanel
-        title={'Log types and rules'}
-        titleSize={'m'}
-        subTitleText="Choose the log types that correspond to your data source. Detection rules are automatically added based on your chosen log types."
-      >
+      <ContentPanel title={'Detection'} titleSize={'m'}>
         <EuiFormRow
           label={
             <div>
@@ -101,6 +100,10 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
             onRuleToggle={this.props.onRuleToggle}
             onAllRulesToggle={this.props.onAllRulesToggle}
           />
+        </EuiFormRow>
+
+        <EuiFormRow fullWidth={true}>
+          <ConfigureFieldMapping {...this.props.configureFieldMappingProps} />
         </EuiFormRow>
       </ContentPanel>
     );

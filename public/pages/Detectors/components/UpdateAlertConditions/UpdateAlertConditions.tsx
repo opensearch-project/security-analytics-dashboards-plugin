@@ -11,7 +11,6 @@ import {
   RuleSource,
   SearchDetectorsResponse,
 } from '../../../../../server/models/interfaces';
-import { Detector } from '../../../../../models/interfaces';
 import ConfigureAlerts from '../../../CreateDetector/components/ConfigureAlerts';
 import { DetectorsService, NotificationsService, OpenSearchService } from '../../../../services';
 import { RuleOptions } from '../../../../models/interfaces';
@@ -26,9 +25,9 @@ import {
   getPlugins,
   successNotificationToast,
 } from '../../../../utils/helpers';
-import { DetectorCreationStep } from '../../../CreateDetector/models/types';
 import { ServerResponse } from '../../../../../server/models/types';
 import { DataStore } from '../../../../store/DataStore';
+import { Detector, DetectorCreationStep } from '../../../../../types';
 
 export interface UpdateAlertConditionsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
@@ -210,6 +209,7 @@ export default class UpdateAlertConditions extends Component<
           changeDetector={this.changeDetector}
           updateDataValidState={this.updateDataValidState}
           hasNotificationPlugin={this.state.plugins.includes(OS_NOTIFICATION_PLUGIN)}
+          getTriggerName={() => ''}
         />
 
         <EuiFlexGroup justifyContent={'flexEnd'}>

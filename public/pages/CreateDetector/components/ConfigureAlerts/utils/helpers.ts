@@ -50,7 +50,7 @@ export function parseNotificationChannelsToOptions(
   }));
 }
 
-export function getEmptyAlertCondition(): AlertCondition {
+export function getEmptyAlertCondition(conditionName: string = ''): AlertCondition {
   const emptyTriggerAction: TriggerAction = {
     id: '',
     name: '',
@@ -71,7 +71,7 @@ export function getEmptyAlertCondition(): AlertCondition {
   };
 
   return {
-    name: '',
+    name: conditionName,
     sev_levels: [],
     tags: [],
     actions: [emptyTriggerAction],
