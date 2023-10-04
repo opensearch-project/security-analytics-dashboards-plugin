@@ -4,6 +4,7 @@
  */
 
 import {
+  EuiButton,
   EuiEmptyPrompt,
   EuiFlexGroup,
   EuiFlexItem,
@@ -23,7 +24,7 @@ import {
 } from '../../utils/helpers';
 import { AlertItem, FindingItem } from '../../models/interfaces';
 import { createSelectComponent, renderVisualization } from '../../../../utils/helpers';
-import { ROUTES } from '../../../../utils/constants';
+import { PLUGIN_NAME, ROUTES } from '../../../../utils/constants';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 
 export interface SummaryProps {
@@ -146,29 +147,39 @@ export const Summary: React.FC<SummaryProps> = ({
     <WidgetContainer title="Findings and alert count" actions={createVisualizationActions(groupBy)}>
       <EuiFlexGroup gutterSize="s" direction="column">
         <EuiFlexItem>
-          <EuiFlexGroup gutterSize="xl">
-            {createStatComponent(
-              'Total active alerts',
-              { url: ROUTES.ALERTS, color: 'danger' },
-              activeAlerts
-            )}
-            {createStatComponent(
-              'Total findings',
-              { url: ROUTES.FINDINGS, color: 'primary' },
-              totalFindings
-            )}
-          </EuiFlexGroup>
+          {activeAlerts === 0 && totalFindings === 0 ? null : (
+            <EuiFlexGroup gutterSize="xl">
+              {createStatComponent(
+                'Total active alerts',
+                { url: ROUTES.ALERTS, color: 'danger' },
+                activeAlerts
+              )}
+              {createStatComponent(
+                'Total findings',
+                { url: ROUTES.FINDINGS, color: 'primary' },
+                totalFindings
+              )}
+            </EuiFlexGroup>
+          )}
         </EuiFlexItem>
         <EuiFlexItem>
           {activeAlerts === 0 && totalFindings === 0 ? (
             <EuiEmptyPrompt
               title={<h2>No alerts and findings found</h2>}
               body={
-                <p>
-                  Adjust the time range to see more results or{' '}
-                  <EuiLink href={`#${ROUTES.DETECTORS_CREATE}`}>create a detector</EuiLink> to
-                  generate findings.{' '}
-                </p>
+                <>
+                  <p>
+                    Adjust the time range to see more results or create a <br />
+                    detector to generate findings.
+                  </p>
+                  <EuiButton
+                    href={`${PLUGIN_NAME}#${ROUTES.DETECTORS_CREATE}`}
+                    fill={true}
+                    data-test-subj={'detectorsCreateButton'}
+                  >
+                    Create a detector
+                  </EuiButton>
+                </>
               }
             />
           ) : (

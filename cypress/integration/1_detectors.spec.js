@@ -129,7 +129,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
     .click({ force: true, timeout: 5000 })
     .then(() => cy.contains('.euiTable .euiTableRow', 'Dns'));
 
-  cy.getElementByText('.euiAccordion .euiTitle', 'Configure field mapping - optional');
+  cy.getElementByText('.euiAccordion .euiTitle', 'Field mapping - optional');
   cy.get('[aria-controls="mappedTitleFieldsAccordion"]').then(($btn) => {
     // first check if the accordion is expanded, if not than expand the accordion
     if ($btn && $btn[0] && $btn[0].getAttribute('aria-expanded') === 'false') {
@@ -152,8 +152,8 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
 
   cy.getFieldByLabel('Specify alert severity').selectComboboxItem('1 (Highest)');
 
-  cy.intercept('POST', '/mappings').as('createMappingsRequest');
-  cy.intercept('POST', '/detectors').as('createDetectorRequest');
+  cy.intercept('POST', '/_plugins/_security_analytics/mappings').as('createMappingsRequest');
+  cy.intercept('POST', '/_plugins/_security_analytics/detectors').as('createDetectorRequest');
 
   // create the detector
   cy.getElementByText('button', 'Create').click({ force: true });
@@ -221,7 +221,7 @@ describe('Detectors', () => {
 
   describe('...should validate form fields', () => {
     beforeEach(() => {
-      cy.intercept('/detectors/_search').as('detectorsSearch');
+      cy.intercept('/_plugins/_security_analytics/detectors/_search').as('detectorsSearch');
 
       // Visit Detectors page before any test
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
@@ -357,7 +357,7 @@ describe('Detectors', () => {
 
   describe('...validate create detector flow', () => {
     beforeEach(() => {
-      cy.intercept('/detectors/_search').as('detectorsSearch');
+      cy.intercept('/_plugins/_security_analytics/detectors/_search').as('detectorsSearch');
 
       // Visit Detectors page before any test
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
@@ -375,7 +375,7 @@ describe('Detectors', () => {
     });
 
     it('...basic details can be edited', () => {
-      cy.intercept('GET', '/indices').as('getIndices');
+      cy.intercept('GET', '/_plugins/_security_analytics/indices').as('getIndices');
       openDetectorDetails(detectorName);
 
       editDetectorDetails(detectorName, 'Detector details');

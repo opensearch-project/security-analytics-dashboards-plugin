@@ -92,13 +92,6 @@ export default class FieldMappingsTable<T extends MappingViewType> extends Compo
         render: (ruleFieldName: string) => ruleFieldName || DEFAULT_EMPTY_DATA,
       },
       {
-        field: '',
-        name: 'Maps to',
-        align: 'center',
-        width: '15%',
-        render: () => <EuiIcon type={'sortRight'} />,
-      },
-      {
         field: 'logFieldName',
         name: 'Log source field name',
         dataType: 'string',

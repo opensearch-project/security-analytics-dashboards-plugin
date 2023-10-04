@@ -18,8 +18,8 @@ import { RuleItem } from '../components/DetectionRules/types/interfaces';
 import { CreateDetectorRulesState } from '../components/DetectionRules/DetectionRules';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { logTypesWithDashboards } from '../../../../../utils/constants';
-import ConfigureFieldMapping from '../../ConfigureFieldMapping';
 import { Detector, DetectorCreationStep, FieldMapping } from '../../../../../../types';
+import { ConfigureFieldMappingProps } from '../../ConfigureFieldMapping/containers/ConfigureFieldMapping';
 
 interface DefineDetectorProps extends RouteComponentProps {
   detector: Detector;
@@ -178,10 +178,26 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
   };
 
   render() {
-    const { isEdit, fieldMappingService } = this.props;
+    const {
+      isEdit,
+      fieldMappings,
+      fieldMappingService,
+      rulesState,
+      replaceFieldMappings,
+    } = this.props;
     const { detector } = this.state;
     const { name, inputs, detector_type } = this.props.detector;
     const { description, indices } = inputs[0].detector_input;
+    const configureFieldMappingProps: ConfigureFieldMappingProps = {
+      ...this.props,
+      detector,
+      loading: false,
+      isEdit,
+      fieldMappingService: fieldMappingService,
+      fieldMappings: fieldMappings,
+      enabledRules: rulesState.allRules.filter((rule) => rule.enabled),
+      replaceFieldMappings: replaceFieldMappings,
+    };
 
     return (
       <div>
@@ -218,9 +234,10 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
 
         <DetectorType
           detectorType={detector_type}
-          onDetectorTypeChange={this.onDetectorTypeChange}
           rulesState={this.props.rulesState}
           loadingRules={this.props.loadingRules}
+          configureFieldMappingProps={configureFieldMappingProps}
+          onDetectorTypeChange={this.onDetectorTypeChange}
           onAllRulesToggle={this.props.onAllRulesToggle}
           onPageChange={this.props.onPageChange}
           onRuleToggle={this.props.onRuleToggle}
@@ -242,16 +259,6 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
             <EuiSpacer size={'m'} />
           </>
         ) : null}
-
-        <ConfigureFieldMapping
-          {...this.props}
-          detector={detector}
-          loading={false}
-          fieldMappingService={this.props.fieldMappingService}
-          fieldMappings={this.props.fieldMappings}
-          enabledRules={this.props.rulesState.allRules.filter((rule) => rule.enabled)}
-          replaceFieldMappings={this.props.replaceFieldMappings}
-        />
 
         <EuiSpacer size={'m'} />
 

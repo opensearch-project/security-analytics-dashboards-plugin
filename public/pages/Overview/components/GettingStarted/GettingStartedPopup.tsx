@@ -53,13 +53,6 @@ export const GettingStartedPopup: React.FC<GettingStartedPopupProps> = ({
             }
             buttons={[
               {
-                text: 'Overview',
-                onClick: () => dismissPopup(),
-                opts: {
-                  fill: true,
-                },
-              },
-              {
                 text: 'View findings',
                 onClick: () => {
                   dismissPopup();
@@ -82,9 +75,6 @@ export const GettingStartedPopup: React.FC<GettingStartedPopupProps> = ({
                   dismissPopup();
                   history.push(ROUTES.ALERTS);
                 },
-                opts: {
-                  fill: true,
-                },
               },
             ]}
           />
@@ -96,16 +86,6 @@ export const GettingStartedPopup: React.FC<GettingStartedPopupProps> = ({
           <GetStartedStep
             title={'Create rule or fine tune existing rules that can be added to detectors.'}
             buttons={[
-              {
-                text: 'Create rule',
-                onClick: () => {
-                  dismissPopup();
-                  history.push(ROUTES.RULES_CREATE);
-                },
-                opts: {
-                  fill: true,
-                },
-              },
               {
                 text: 'Manage rules',
                 onClick: () => {
