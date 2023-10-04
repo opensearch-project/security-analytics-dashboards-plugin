@@ -7,450 +7,410 @@ Object {
     <div>
       <div>
         <div
-          class="euiFormRow"
-          id="some_html_id-row"
+          class="euiAccordion"
         >
           <div
-            class="euiFormRow__labelWrapper"
+            class="euiAccordion__triggerWrapper"
           >
-            <label
-              aria-invalid="false"
-              class="euiFormLabel euiFormRow__label"
-              for="some_html_id"
+            <button
+              aria-controls="trigger-details-0"
+              aria-expanded="false"
+              class="euiAccordion__button"
+              id="some_html_id"
+              type="button"
             >
-              <div
-                class="euiText euiText--small"
+              <span
+                class="euiAccordion__iconWrapper"
               >
-                <p>
-                  Trigger name
-                </p>
-              </div>
-            </label>
+                EuiIconMock
+              </span>
+              <span
+                class="euiIEFlexWrapFix"
+              >
+                <div
+                  data-test-subj="trigger-details-btn"
+                >
+                  <div
+                    class="euiText euiText--small"
+                  >
+                    Trigger details and condition
+                  </div>
+                  <div
+                    class="euiText euiText--small"
+                  >
+                    <div
+                      class="euiTextColor euiTextColor--subdued"
+                    >
+                      All rules, All tags, All tags
+                    </div>
+                  </div>
+                </div>
+              </span>
+            </button>
           </div>
           <div
-            class="euiFormRow__fieldWrapper"
+            aria-labelledby="some_html_id"
+            class="euiAccordion__childWrapper"
+            id="trigger-details-0"
+            role="region"
+            tabindex="-1"
           >
-            <div
-              class="euiFormControlLayout"
-            >
+            <div>
               <div
-                class="euiFormControlLayout__childrenWrapper"
+                class="euiAccordion__padding--l"
               >
-                <input
-                  class="euiFieldText"
-                  data-test-subj="alert-condition-name-0"
-                  id="some_html_id"
-                  placeholder="Enter a name to describe the alert condition"
-                  type="text"
-                  value="alert_name"
+                <div
+                  class="euiFormRow"
+                  id="some_html_id-row"
+                >
+                  <div
+                    class="euiFormRow__labelWrapper"
+                  >
+                    <label
+                      aria-invalid="false"
+                      class="euiFormLabel euiFormRow__label"
+                      for="some_html_id"
+                    >
+                      <div
+                        class="euiText euiText--small"
+                      >
+                        <p>
+                          Trigger name
+                        </p>
+                      </div>
+                    </label>
+                  </div>
+                  <div
+                    class="euiFormRow__fieldWrapper"
+                  >
+                    <div
+                      class="euiFormControlLayout"
+                    >
+                      <div
+                        class="euiFormControlLayout__childrenWrapper"
+                      >
+                        <input
+                          class="euiFieldText"
+                          data-test-subj="alert-condition-name-0"
+                          id="some_html_id"
+                          placeholder="Enter a name to describe the alert condition"
+                          type="text"
+                          value="alert_name"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="euiSpacer euiSpacer--xxl"
                 />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="euiSpacer euiSpacer--xxl"
-        />
-        <div
-          class="euiText euiText--medium"
-          style="font-size: 20px;"
-        >
-          <p>
-            If a detection rule matches
-          </p>
-        </div>
-        <div
-          class="euiSpacer euiSpacer--m"
-        />
-        <div
-          class="euiFormRow"
-          id="some_html_id-row"
-        >
-          <div
-            class="euiFormRow__labelWrapper"
-          >
-            <label
-              class="euiFormLabel euiFormRow__label"
-              for="some_html_id"
-            >
-              <div
-                class="euiText euiText--small"
-              >
-                <p>
-                  Rule names
-                </p>
-              </div>
-            </label>
-          </div>
-          <div
-            class="euiFormRow__fieldWrapper"
-          >
-            <div
-              aria-expanded="false"
-              aria-haspopup="listbox"
-              class="euiComboBox"
-              data-test-subj="alert-rulename-combo-box"
-              role="combobox"
-            >
-              <div
-                class="euiFormControlLayout"
-              >
                 <div
-                  class="euiFormControlLayout__childrenWrapper"
+                  class="euiText euiText--medium"
+                  style="font-size: 20px;"
                 >
-                  <div
-                    class="euiComboBox__inputWrap euiComboBox__inputWrap-isClearable"
-                    data-test-subj="comboBoxInput"
-                    tabindex="-1"
-                  >
-                    <p
-                      class="euiComboBoxPlaceholder"
-                    >
-                      Any rules
-                    </p>
-                    <div
-                      class="euiComboBox__input"
-                      style="font-size: 14px; display: inline-block;"
-                    >
-                      <input
-                        aria-controls=""
-                        data-test-subj="comboBoxSearchInput"
-                        id="some_html_id"
-                        role="textbox"
-                        style="box-sizing: content-box; width: 2px;"
-                        value=""
-                      />
-                      <div
-                        style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
-                      />
-                    </div>
-                  </div>
-                  <div
-                    class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
-                  >
-                    <button
-                      aria-label="Open list of options"
-                      class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
-                      data-test-subj="comboBoxToggleListButton"
-                      type="button"
-                    >
-                      EuiIconMock
-                    </button>
-                  </div>
+                  <p>
+                    If a detection rule matches
+                  </p>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="euiSpacer euiSpacer--m"
-        />
-        <div
-          class="euiFormRow"
-          id="some_html_id-row"
-        >
-          <div
-            class="euiFormRow__labelWrapper"
-          >
-            <label
-              class="euiFormLabel euiFormRow__label"
-              for="some_html_id"
-            >
-              <div
-                class="euiText euiText--small"
-              >
-                <p>
-                  Rule Severities
-                </p>
-              </div>
-            </label>
-          </div>
-          <div
-            class="euiFormRow__fieldWrapper"
-          >
-            <div
-              aria-expanded="false"
-              aria-haspopup="listbox"
-              class="euiComboBox"
-              data-test-subj="alert-severity-combo-box"
-              role="combobox"
-            >
-              <div
-                class="euiFormControlLayout"
-              >
                 <div
-                  class="euiFormControlLayout__childrenWrapper"
+                  class="euiSpacer euiSpacer--m"
+                />
+                <div
+                  class="euiFormRow"
+                  id="some_html_id-row"
                 >
                   <div
-                    class="euiComboBox__inputWrap euiComboBox__inputWrap-isClearable"
-                    data-test-subj="comboBoxInput"
-                    tabindex="-1"
+                    class="euiFormRow__labelWrapper"
                   >
-                    <span
-                      class="euiBadge euiBadge--hollow euiBadge--iconRight euiComboBoxPill"
-                      id="severity_level_low"
-                      title="severity_level_low"
+                    <label
+                      class="euiFormLabel euiFormRow__label"
+                      for="some_html_id"
                     >
-                      <span
-                        class="euiBadge__content"
+                      <div
+                        class="euiText euiText--small"
                       >
-                        <span
-                          class="euiBadge__text"
-                        >
-                          severity_level_low
-                        </span>
-                        <button
-                          aria-label="Remove severity_level_low from selection in this group"
-                          class="euiBadge__iconButton"
-                          title="Remove severity_level_low from selection in this group"
-                          type="button"
-                        >
-                          EuiIconMock
-                        </button>
-                      </span>
-                    </span>
+                        <p>
+                          Rule names
+                        </p>
+                      </div>
+                    </label>
+                  </div>
+                  <div
+                    class="euiFormRow__fieldWrapper"
+                  >
                     <div
-                      class="euiComboBox__input"
-                      style="font-size: 14px; display: inline-block;"
+                      aria-expanded="false"
+                      aria-haspopup="listbox"
+                      class="euiComboBox"
+                      data-test-subj="alert-rulename-combo-box"
+                      role="combobox"
                     >
-                      <input
-                        aria-controls=""
-                        data-test-subj="comboBoxSearchInput"
-                        id="some_html_id"
-                        role="textbox"
-                        style="box-sizing: content-box; width: 2px;"
-                        value=""
-                      />
                       <div
-                        style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
-                      />
-                    </div>
-                  </div>
-                  <div
-                    class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
-                  >
-                    <button
-                      aria-label="Clear input"
-                      class="euiFormControlLayoutClearButton"
-                      data-test-subj="comboBoxClearButton"
-                      type="button"
-                    >
-                      EuiIconMock
-                    </button>
-                    <button
-                      aria-label="Open list of options"
-                      class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
-                      data-test-subj="comboBoxToggleListButton"
-                      type="button"
-                    >
-                      EuiIconMock
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="euiSpacer euiSpacer--m"
-        />
-        <div
-          class="euiFormRow"
-          id="some_html_id-row"
-        >
-          <div
-            class="euiFormRow__labelWrapper"
-          >
-            <label
-              class="euiFormLabel euiFormRow__label"
-              for="some_html_id"
-            >
-              <div
-                class="euiText euiText--small"
-              >
-                <p>
-                  Tags
-                </p>
-              </div>
-            </label>
-          </div>
-          <div
-            class="euiFormRow__fieldWrapper"
-          >
-            <div
-              aria-expanded="false"
-              aria-haspopup="listbox"
-              class="euiComboBox"
-              data-test-subj="alert-tags-combo-box"
-              role="combobox"
-            >
-              <div
-                class="euiFormControlLayout"
-              >
-                <div
-                  class="euiFormControlLayout__childrenWrapper"
-                >
-                  <div
-                    class="euiComboBox__inputWrap euiComboBox__inputWrap-isClearable"
-                    data-test-subj="comboBoxInput"
-                    tabindex="-1"
-                  >
-                    <span
-                      class="euiBadge euiBadge--hollow euiBadge--iconRight euiComboBoxPill"
-                      id="any.tag"
-                      title="any.tag"
-                    >
-                      <span
-                        class="euiBadge__content"
+                        class="euiFormControlLayout"
                       >
-                        <span
-                          class="euiBadge__text"
+                        <div
+                          class="euiFormControlLayout__childrenWrapper"
                         >
-                          any.tag
-                        </span>
-                        <button
-                          aria-label="Remove any.tag from selection in this group"
-                          class="euiBadge__iconButton"
-                          title="Remove any.tag from selection in this group"
-                          type="button"
-                        >
-                          EuiIconMock
-                        </button>
-                      </span>
-                    </span>
-                    <div
-                      class="euiComboBox__input"
-                      style="font-size: 14px; display: inline-block;"
-                    >
-                      <input
-                        aria-controls=""
-                        data-test-subj="comboBoxSearchInput"
-                        id="some_html_id"
-                        role="textbox"
-                        style="box-sizing: content-box; width: 2px;"
-                        value=""
-                      />
-                      <div
-                        style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
-                      />
+                          <div
+                            class="euiComboBox__inputWrap euiComboBox__inputWrap-isClearable"
+                            data-test-subj="comboBoxInput"
+                            tabindex="-1"
+                          >
+                            <p
+                              class="euiComboBoxPlaceholder"
+                            >
+                              Any rules
+                            </p>
+                            <div
+                              class="euiComboBox__input"
+                              style="font-size: 14px; display: inline-block;"
+                            >
+                              <input
+                                aria-controls=""
+                                data-test-subj="comboBoxSearchInput"
+                                id="some_html_id"
+                                role="textbox"
+                                style="box-sizing: content-box; width: 2px;"
+                                value=""
+                              />
+                              <div
+                                style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
+                              />
+                            </div>
+                          </div>
+                          <div
+                            class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
+                          >
+                            <button
+                              aria-label="Open list of options"
+                              class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
+                              data-test-subj="comboBoxToggleListButton"
+                              type="button"
+                            >
+                              EuiIconMock
+                            </button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div
-                    class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
-                  >
-                    <button
-                      aria-label="Clear input"
-                      class="euiFormControlLayoutClearButton"
-                      data-test-subj="comboBoxClearButton"
-                      type="button"
-                    >
-                      EuiIconMock
-                    </button>
-                    <button
-                      aria-label="Open list of options"
-                      class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
-                      data-test-subj="comboBoxToggleListButton"
-                      type="button"
-                    >
-                      EuiIconMock
-                    </button>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="euiSpacer euiSpacer--xxl"
-        />
-        <div
-          class="euiText euiText--medium"
-          style="font-size: 20px;"
-        >
-          <p>
-            Alert and notify
-          </p>
-        </div>
-        <div
-          class="euiSpacer euiSpacer--m"
-        />
-        <div
-          class="euiFormRow"
-          id="some_html_id-row"
-        >
-          <div
-            class="euiFormRow__labelWrapper"
-          >
-            <label
-              class="euiFormLabel euiFormRow__label"
-              for="some_html_id"
-            >
-              <div
-                class="euiText euiText--small"
-              >
-                <p>
-                  Specify alert severity
-                </p>
-              </div>
-            </label>
-          </div>
-          <div
-            class="euiFormRow__fieldWrapper"
-          >
-            <div
-              aria-expanded="false"
-              aria-haspopup="listbox"
-              class="euiComboBox"
-              data-test-subj="security-levels-combo-box"
-              role="combobox"
-            >
-              <div
-                class="euiFormControlLayout"
-              >
                 <div
-                  class="euiFormControlLayout__childrenWrapper"
+                  class="euiSpacer euiSpacer--m"
+                />
+                <div
+                  class="euiFormRow"
+                  id="some_html_id-row"
                 >
                   <div
-                    class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap"
-                    data-test-subj="comboBoxInput"
-                    tabindex="-1"
+                    class="euiFormRow__labelWrapper"
                   >
-                    <span
-                      class="euiComboBoxPill euiComboBoxPill--plainText"
-                      id="1"
-                      text="1 (Highest)"
-                      value="1"
+                    <label
+                      class="euiFormLabel euiFormRow__label"
+                      for="some_html_id"
                     >
-                      1 (Highest)
-                    </span>
-                    <div
-                      class="euiComboBox__input"
-                      style="font-size: 14px; display: inline-block;"
-                    >
-                      <input
-                        aria-controls=""
-                        data-test-subj="comboBoxSearchInput"
-                        id="some_html_id"
-                        role="textbox"
-                        style="box-sizing: content-box; width: 2px;"
-                        value=""
-                      />
                       <div
-                        style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
-                      />
-                    </div>
+                        class="euiText euiText--small"
+                      >
+                        <p>
+                          Rule Severities
+                        </p>
+                      </div>
+                    </label>
                   </div>
                   <div
-                    class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
+                    class="euiFormRow__fieldWrapper"
                   >
-                    <button
-                      aria-label="Open list of options"
-                      class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
-                      data-test-subj="comboBoxToggleListButton"
-                      type="button"
+                    <div
+                      aria-expanded="false"
+                      aria-haspopup="listbox"
+                      class="euiComboBox"
+                      data-test-subj="alert-severity-combo-box"
+                      role="combobox"
                     >
-                      EuiIconMock
-                    </button>
+                      <div
+                        class="euiFormControlLayout"
+                      >
+                        <div
+                          class="euiFormControlLayout__childrenWrapper"
+                        >
+                          <div
+                            class="euiComboBox__inputWrap euiComboBox__inputWrap-isClearable"
+                            data-test-subj="comboBoxInput"
+                            tabindex="-1"
+                          >
+                            <span
+                              class="euiBadge euiBadge--hollow euiBadge--iconRight euiComboBoxPill"
+                              id="severity_level_low"
+                              title="severity_level_low"
+                            >
+                              <span
+                                class="euiBadge__content"
+                              >
+                                <span
+                                  class="euiBadge__text"
+                                >
+                                  severity_level_low
+                                </span>
+                                <button
+                                  aria-label="Remove severity_level_low from selection in this group"
+                                  class="euiBadge__iconButton"
+                                  title="Remove severity_level_low from selection in this group"
+                                  type="button"
+                                >
+                                  EuiIconMock
+                                </button>
+                              </span>
+                            </span>
+                            <div
+                              class="euiComboBox__input"
+                              style="font-size: 14px; display: inline-block;"
+                            >
+                              <input
+                                aria-controls=""
+                                data-test-subj="comboBoxSearchInput"
+                                id="some_html_id"
+                                role="textbox"
+                                style="box-sizing: content-box; width: 2px;"
+                                value=""
+                              />
+                              <div
+                                style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
+                              />
+                            </div>
+                          </div>
+                          <div
+                            class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
+                          >
+                            <button
+                              aria-label="Clear input"
+                              class="euiFormControlLayoutClearButton"
+                              data-test-subj="comboBoxClearButton"
+                              type="button"
+                            >
+                              EuiIconMock
+                            </button>
+                            <button
+                              aria-label="Open list of options"
+                              class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
+                              data-test-subj="comboBoxToggleListButton"
+                              type="button"
+                            >
+                              EuiIconMock
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="euiSpacer euiSpacer--m"
+                />
+                <div
+                  class="euiFormRow"
+                  id="some_html_id-row"
+                >
+                  <div
+                    class="euiFormRow__labelWrapper"
+                  >
+                    <label
+                      class="euiFormLabel euiFormRow__label"
+                      for="some_html_id"
+                    >
+                      <div
+                        class="euiText euiText--small"
+                      >
+                        <p>
+                          Tags
+                        </p>
+                      </div>
+                    </label>
+                  </div>
+                  <div
+                    class="euiFormRow__fieldWrapper"
+                  >
+                    <div
+                      aria-expanded="false"
+                      aria-haspopup="listbox"
+                      class="euiComboBox"
+                      data-test-subj="alert-tags-combo-box"
+                      role="combobox"
+                    >
+                      <div
+                        class="euiFormControlLayout"
+                      >
+                        <div
+                          class="euiFormControlLayout__childrenWrapper"
+                        >
+                          <div
+                            class="euiComboBox__inputWrap euiComboBox__inputWrap-isClearable"
+                            data-test-subj="comboBoxInput"
+                            tabindex="-1"
+                          >
+                            <span
+                              class="euiBadge euiBadge--hollow euiBadge--iconRight euiComboBoxPill"
+                              id="any.tag"
+                              title="any.tag"
+                            >
+                              <span
+                                class="euiBadge__content"
+                              >
+                                <span
+                                  class="euiBadge__text"
+                                >
+                                  any.tag
+                                </span>
+                                <button
+                                  aria-label="Remove any.tag from selection in this group"
+                                  class="euiBadge__iconButton"
+                                  title="Remove any.tag from selection in this group"
+                                  type="button"
+                                >
+                                  EuiIconMock
+                                </button>
+                              </span>
+                            </span>
+                            <div
+                              class="euiComboBox__input"
+                              style="font-size: 14px; display: inline-block;"
+                            >
+                              <input
+                                aria-controls=""
+                                data-test-subj="comboBoxSearchInput"
+                                id="some_html_id"
+                                role="textbox"
+                                style="box-sizing: content-box; width: 2px;"
+                                value=""
+                              />
+                              <div
+                                style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
+                              />
+                            </div>
+                          </div>
+                          <div
+                            class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
+                          >
+                            <button
+                              aria-label="Clear input"
+                              class="euiFormControlLayoutClearButton"
+                              data-test-subj="comboBoxClearButton"
+                              type="button"
+                            >
+                              EuiIconMock
+                            </button>
+                            <button
+                              aria-label="Open list of options"
+                              class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
+                              data-test-subj="comboBoxToggleListButton"
+                              type="button"
+                            >
+                              EuiIconMock
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -461,116 +421,270 @@ Object {
           class="euiSpacer euiSpacer--l"
         />
         <div
-          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
+          class="euiText euiText--medium"
+          style="font-size: 20px;"
+        >
+          <p>
+            Notification
+          </p>
+        </div>
+        <div
+          class="euiSpacer euiSpacer--m"
+        />
+        <div
+          class="euiAccordion euiAccordion-isOpen"
         >
           <div
-            class="euiFlexItem"
-            style="max-width: 400px;"
+            class="euiAccordion__triggerWrapper"
           >
-            <div
-              class="euiFormRow"
-              id="some_html_id-row"
+            <button
+              aria-controls="notification-details-0"
+              aria-expanded="true"
+              class="euiAccordion__button"
+              id="some_html_id"
+              type="button"
             >
-              <div
-                class="euiFormRow__labelWrapper"
+              <span
+                class="euiAccordion__iconWrapper"
               >
-                <label
-                  class="euiFormLabel euiFormRow__label"
-                  for="some_html_id"
+                EuiIconMock
+              </span>
+              <span
+                class="euiIEFlexWrapFix"
+              >
+                <div
+                  data-test-subj="detection-rules-btn"
                 >
                   <div
                     class="euiText euiText--medium"
                   >
-                    <p>
-                      Select channel to notify
-                    </p>
+                    Notification
                   </div>
-                </label>
-              </div>
-              <div
-                class="euiFormRow__fieldWrapper"
-              >
-                <div
-                  aria-expanded="false"
-                  aria-haspopup="listbox"
-                  class="euiComboBox"
-                  role="combobox"
-                >
                   <div
-                    class="euiFormControlLayout"
+                    class="euiText euiText--small"
                   >
                     <div
-                      class="euiFormControlLayout__childrenWrapper"
+                      class="euiTextColor euiTextColor--subdued"
+                    >
+                      Configure notification to receive alerts when the trigger condition is met.
+                    </div>
+                  </div>
+                </div>
+              </span>
+            </button>
+          </div>
+          <div
+            aria-labelledby="some_html_id"
+            class="euiAccordion__childWrapper"
+            id="notification-details-0"
+            role="region"
+            tabindex="-1"
+          >
+            <div>
+              <div
+                class="euiAccordion__padding--l"
+              >
+                <div
+                  class="euiFormRow"
+                  id="some_html_id-row"
+                >
+                  <div
+                    class="euiFormRow__labelWrapper"
+                  >
+                    <label
+                      class="euiFormLabel euiFormRow__label"
+                      for="some_html_id"
                     >
                       <div
-                        class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isClearable"
-                        data-test-subj="comboBoxInput"
-                        tabindex="-1"
+                        class="euiText euiText--small"
                       >
-                        <p
-                          class="euiComboBoxPlaceholder"
-                        >
-                          Select notification channel.
+                        <p>
+                          Specify alert severity
                         </p>
+                      </div>
+                    </label>
+                  </div>
+                  <div
+                    class="euiFormRow__fieldWrapper"
+                  >
+                    <div
+                      aria-expanded="false"
+                      aria-haspopup="listbox"
+                      class="euiComboBox"
+                      data-test-subj="security-levels-combo-box"
+                      role="combobox"
+                    >
+                      <div
+                        class="euiFormControlLayout"
+                      >
                         <div
-                          class="euiComboBox__input"
-                          style="font-size: 14px; display: inline-block;"
+                          class="euiFormControlLayout__childrenWrapper"
                         >
-                          <input
-                            aria-controls=""
-                            data-test-subj="comboBoxSearchInput"
-                            id="some_html_id"
-                            role="textbox"
-                            style="box-sizing: content-box; width: 2px;"
-                            value=""
-                          />
                           <div
-                            style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
-                          />
+                            class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap"
+                            data-test-subj="comboBoxInput"
+                            tabindex="-1"
+                          >
+                            <span
+                              class="euiComboBoxPill euiComboBoxPill--plainText"
+                              id="1"
+                              text="1 (Highest)"
+                              value="1"
+                            >
+                              1 (Highest)
+                            </span>
+                            <div
+                              class="euiComboBox__input"
+                              style="font-size: 14px; display: inline-block;"
+                            >
+                              <input
+                                aria-controls=""
+                                data-test-subj="comboBoxSearchInput"
+                                id="some_html_id"
+                                role="textbox"
+                                style="box-sizing: content-box; width: 2px;"
+                                value=""
+                              />
+                              <div
+                                style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
+                              />
+                            </div>
+                          </div>
+                          <div
+                            class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
+                          >
+                            <button
+                              aria-label="Open list of options"
+                              class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
+                              data-test-subj="comboBoxToggleListButton"
+                              type="button"
+                            >
+                              EuiIconMock
+                            </button>
+                          </div>
                         </div>
                       </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="euiSpacer euiSpacer--l"
+                />
+                <div
+                  class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
+                >
+                  <div
+                    class="euiFlexItem"
+                    style="max-width: 400px;"
+                  >
+                    <div
+                      class="euiFormRow"
+                      id="some_html_id-row"
+                    >
                       <div
-                        class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
+                        class="euiFormRow__labelWrapper"
                       >
-                        <button
-                          aria-label="Open list of options"
-                          class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
-                          data-test-subj="comboBoxToggleListButton"
-                          type="button"
+                        <label
+                          class="euiFormLabel euiFormRow__label"
+                          for="some_html_id"
                         >
-                          EuiIconMock
-                        </button>
+                          <div
+                            class="euiText euiText--medium"
+                          >
+                            <p>
+                              Select channel to notify
+                            </p>
+                          </div>
+                        </label>
+                      </div>
+                      <div
+                        class="euiFormRow__fieldWrapper"
+                      >
+                        <div
+                          aria-expanded="false"
+                          aria-haspopup="listbox"
+                          class="euiComboBox"
+                          role="combobox"
+                        >
+                          <div
+                            class="euiFormControlLayout"
+                          >
+                            <div
+                              class="euiFormControlLayout__childrenWrapper"
+                            >
+                              <div
+                                class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isClearable"
+                                data-test-subj="comboBoxInput"
+                                tabindex="-1"
+                              >
+                                <p
+                                  class="euiComboBoxPlaceholder"
+                                >
+                                  Select notification channel.
+                                </p>
+                                <div
+                                  class="euiComboBox__input"
+                                  style="font-size: 14px; display: inline-block;"
+                                >
+                                  <input
+                                    aria-controls=""
+                                    data-test-subj="comboBoxSearchInput"
+                                    id="some_html_id"
+                                    role="textbox"
+                                    style="box-sizing: content-box; width: 2px;"
+                                    value=""
+                                  />
+                                  <div
+                                    style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
+                                  />
+                                </div>
+                              </div>
+                              <div
+                                class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
+                              >
+                                <button
+                                  aria-label="Open list of options"
+                                  class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
+                                  data-test-subj="comboBoxToggleListButton"
+                                  type="button"
+                                >
+                                  EuiIconMock
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
+                  </div>
+                  <div
+                    class="euiFlexItem euiFlexItem--flexGrowZero"
+                  >
+                    <a
+                      class="euiButton euiButton--primary"
+                      href="notifications-dashboards#/channels"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      <span
+                        class="euiButtonContent euiButton__content"
+                      >
+                        EuiIconMock
+                        <span
+                          class="euiButton__text"
+                        >
+                          Manage channels
+                        </span>
+                      </span>
+                    </a>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div
-            class="euiFlexItem euiFlexItem--flexGrowZero"
-          >
-            <a
-              class="euiButton euiButton--primary"
-              href="notifications-dashboards#/channels"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              <span
-                class="euiButtonContent euiButton__content"
-              >
-                EuiIconMock
-                <span
-                  class="euiButton__text"
-                >
-                  Manage channels
-                </span>
-              </span>
-            </a>
-          </div>
         </div>
         <div
-          class="euiSpacer euiSpacer--xxl"
+          class="euiSpacer euiSpacer--l"
         />
         <div
           class="euiAccordion"
@@ -597,7 +711,7 @@ Object {
                   class="euiText euiText--medium"
                 >
                   <p>
-                    Show notify message
+                    Notification message
                   </p>
                 </div>
               </span>
@@ -612,11 +726,8 @@ Object {
           >
             <div>
               <div
-                class=""
+                class="euiAccordion__padding--l"
               >
-                <div
-                  class="euiSpacer euiSpacer--m"
-                />
                 <div
                   class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionColumn euiFlexGroup--responsive"
                   style="width: 75%;"
@@ -746,450 +857,410 @@ Object {
   "container": <div>
     <div>
       <div
-        class="euiFormRow"
-        id="some_html_id-row"
+        class="euiAccordion"
       >
         <div
-          class="euiFormRow__labelWrapper"
+          class="euiAccordion__triggerWrapper"
         >
-          <label
-            aria-invalid="false"
-            class="euiFormLabel euiFormRow__label"
-            for="some_html_id"
+          <button
+            aria-controls="trigger-details-0"
+            aria-expanded="false"
+            class="euiAccordion__button"
+            id="some_html_id"
+            type="button"
           >
-            <div
-              class="euiText euiText--small"
+            <span
+              class="euiAccordion__iconWrapper"
             >
-              <p>
-                Trigger name
-              </p>
-            </div>
-          </label>
+              EuiIconMock
+            </span>
+            <span
+              class="euiIEFlexWrapFix"
+            >
+              <div
+                data-test-subj="trigger-details-btn"
+              >
+                <div
+                  class="euiText euiText--small"
+                >
+                  Trigger details and condition
+                </div>
+                <div
+                  class="euiText euiText--small"
+                >
+                  <div
+                    class="euiTextColor euiTextColor--subdued"
+                  >
+                    All rules, All tags, All tags
+                  </div>
+                </div>
+              </div>
+            </span>
+          </button>
         </div>
         <div
-          class="euiFormRow__fieldWrapper"
+          aria-labelledby="some_html_id"
+          class="euiAccordion__childWrapper"
+          id="trigger-details-0"
+          role="region"
+          tabindex="-1"
         >
-          <div
-            class="euiFormControlLayout"
-          >
+          <div>
             <div
-              class="euiFormControlLayout__childrenWrapper"
+              class="euiAccordion__padding--l"
             >
-              <input
-                class="euiFieldText"
-                data-test-subj="alert-condition-name-0"
-                id="some_html_id"
-                placeholder="Enter a name to describe the alert condition"
-                type="text"
-                value="alert_name"
+              <div
+                class="euiFormRow"
+                id="some_html_id-row"
+              >
+                <div
+                  class="euiFormRow__labelWrapper"
+                >
+                  <label
+                    aria-invalid="false"
+                    class="euiFormLabel euiFormRow__label"
+                    for="some_html_id"
+                  >
+                    <div
+                      class="euiText euiText--small"
+                    >
+                      <p>
+                        Trigger name
+                      </p>
+                    </div>
+                  </label>
+                </div>
+                <div
+                  class="euiFormRow__fieldWrapper"
+                >
+                  <div
+                    class="euiFormControlLayout"
+                  >
+                    <div
+                      class="euiFormControlLayout__childrenWrapper"
+                    >
+                      <input
+                        class="euiFieldText"
+                        data-test-subj="alert-condition-name-0"
+                        id="some_html_id"
+                        placeholder="Enter a name to describe the alert condition"
+                        type="text"
+                        value="alert_name"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="euiSpacer euiSpacer--xxl"
               />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="euiSpacer euiSpacer--xxl"
-      />
-      <div
-        class="euiText euiText--medium"
-        style="font-size: 20px;"
-      >
-        <p>
-          If a detection rule matches
-        </p>
-      </div>
-      <div
-        class="euiSpacer euiSpacer--m"
-      />
-      <div
-        class="euiFormRow"
-        id="some_html_id-row"
-      >
-        <div
-          class="euiFormRow__labelWrapper"
-        >
-          <label
-            class="euiFormLabel euiFormRow__label"
-            for="some_html_id"
-          >
-            <div
-              class="euiText euiText--small"
-            >
-              <p>
-                Rule names
-              </p>
-            </div>
-          </label>
-        </div>
-        <div
-          class="euiFormRow__fieldWrapper"
-        >
-          <div
-            aria-expanded="false"
-            aria-haspopup="listbox"
-            class="euiComboBox"
-            data-test-subj="alert-rulename-combo-box"
-            role="combobox"
-          >
-            <div
-              class="euiFormControlLayout"
-            >
               <div
-                class="euiFormControlLayout__childrenWrapper"
+                class="euiText euiText--medium"
+                style="font-size: 20px;"
               >
-                <div
-                  class="euiComboBox__inputWrap euiComboBox__inputWrap-isClearable"
-                  data-test-subj="comboBoxInput"
-                  tabindex="-1"
-                >
-                  <p
-                    class="euiComboBoxPlaceholder"
-                  >
-                    Any rules
-                  </p>
-                  <div
-                    class="euiComboBox__input"
-                    style="font-size: 14px; display: inline-block;"
-                  >
-                    <input
-                      aria-controls=""
-                      data-test-subj="comboBoxSearchInput"
-                      id="some_html_id"
-                      role="textbox"
-                      style="box-sizing: content-box; width: 2px;"
-                      value=""
-                    />
-                    <div
-                      style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
-                    />
-                  </div>
-                </div>
-                <div
-                  class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
-                >
-                  <button
-                    aria-label="Open list of options"
-                    class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
-                    data-test-subj="comboBoxToggleListButton"
-                    type="button"
-                  >
-                    EuiIconMock
-                  </button>
-                </div>
+                <p>
+                  If a detection rule matches
+                </p>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="euiSpacer euiSpacer--m"
-      />
-      <div
-        class="euiFormRow"
-        id="some_html_id-row"
-      >
-        <div
-          class="euiFormRow__labelWrapper"
-        >
-          <label
-            class="euiFormLabel euiFormRow__label"
-            for="some_html_id"
-          >
-            <div
-              class="euiText euiText--small"
-            >
-              <p>
-                Rule Severities
-              </p>
-            </div>
-          </label>
-        </div>
-        <div
-          class="euiFormRow__fieldWrapper"
-        >
-          <div
-            aria-expanded="false"
-            aria-haspopup="listbox"
-            class="euiComboBox"
-            data-test-subj="alert-severity-combo-box"
-            role="combobox"
-          >
-            <div
-              class="euiFormControlLayout"
-            >
               <div
-                class="euiFormControlLayout__childrenWrapper"
+                class="euiSpacer euiSpacer--m"
+              />
+              <div
+                class="euiFormRow"
+                id="some_html_id-row"
               >
                 <div
-                  class="euiComboBox__inputWrap euiComboBox__inputWrap-isClearable"
-                  data-test-subj="comboBoxInput"
-                  tabindex="-1"
+                  class="euiFormRow__labelWrapper"
                 >
-                  <span
-                    class="euiBadge euiBadge--hollow euiBadge--iconRight euiComboBoxPill"
-                    id="severity_level_low"
-                    title="severity_level_low"
+                  <label
+                    class="euiFormLabel euiFormRow__label"
+                    for="some_html_id"
                   >
-                    <span
-                      class="euiBadge__content"
+                    <div
+                      class="euiText euiText--small"
                     >
-                      <span
-                        class="euiBadge__text"
-                      >
-                        severity_level_low
-                      </span>
-                      <button
-                        aria-label="Remove severity_level_low from selection in this group"
-                        class="euiBadge__iconButton"
-                        title="Remove severity_level_low from selection in this group"
-                        type="button"
-                      >
-                        EuiIconMock
-                      </button>
-                    </span>
-                  </span>
+                      <p>
+                        Rule names
+                      </p>
+                    </div>
+                  </label>
+                </div>
+                <div
+                  class="euiFormRow__fieldWrapper"
+                >
                   <div
-                    class="euiComboBox__input"
-                    style="font-size: 14px; display: inline-block;"
+                    aria-expanded="false"
+                    aria-haspopup="listbox"
+                    class="euiComboBox"
+                    data-test-subj="alert-rulename-combo-box"
+                    role="combobox"
                   >
-                    <input
-                      aria-controls=""
-                      data-test-subj="comboBoxSearchInput"
-                      id="some_html_id"
-                      role="textbox"
-                      style="box-sizing: content-box; width: 2px;"
-                      value=""
-                    />
                     <div
-                      style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
-                    />
-                  </div>
-                </div>
-                <div
-                  class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
-                >
-                  <button
-                    aria-label="Clear input"
-                    class="euiFormControlLayoutClearButton"
-                    data-test-subj="comboBoxClearButton"
-                    type="button"
-                  >
-                    EuiIconMock
-                  </button>
-                  <button
-                    aria-label="Open list of options"
-                    class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
-                    data-test-subj="comboBoxToggleListButton"
-                    type="button"
-                  >
-                    EuiIconMock
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="euiSpacer euiSpacer--m"
-      />
-      <div
-        class="euiFormRow"
-        id="some_html_id-row"
-      >
-        <div
-          class="euiFormRow__labelWrapper"
-        >
-          <label
-            class="euiFormLabel euiFormRow__label"
-            for="some_html_id"
-          >
-            <div
-              class="euiText euiText--small"
-            >
-              <p>
-                Tags
-              </p>
-            </div>
-          </label>
-        </div>
-        <div
-          class="euiFormRow__fieldWrapper"
-        >
-          <div
-            aria-expanded="false"
-            aria-haspopup="listbox"
-            class="euiComboBox"
-            data-test-subj="alert-tags-combo-box"
-            role="combobox"
-          >
-            <div
-              class="euiFormControlLayout"
-            >
-              <div
-                class="euiFormControlLayout__childrenWrapper"
-              >
-                <div
-                  class="euiComboBox__inputWrap euiComboBox__inputWrap-isClearable"
-                  data-test-subj="comboBoxInput"
-                  tabindex="-1"
-                >
-                  <span
-                    class="euiBadge euiBadge--hollow euiBadge--iconRight euiComboBoxPill"
-                    id="any.tag"
-                    title="any.tag"
-                  >
-                    <span
-                      class="euiBadge__content"
+                      class="euiFormControlLayout"
                     >
-                      <span
-                        class="euiBadge__text"
+                      <div
+                        class="euiFormControlLayout__childrenWrapper"
                       >
-                        any.tag
-                      </span>
-                      <button
-                        aria-label="Remove any.tag from selection in this group"
-                        class="euiBadge__iconButton"
-                        title="Remove any.tag from selection in this group"
-                        type="button"
-                      >
-                        EuiIconMock
-                      </button>
-                    </span>
-                  </span>
-                  <div
-                    class="euiComboBox__input"
-                    style="font-size: 14px; display: inline-block;"
-                  >
-                    <input
-                      aria-controls=""
-                      data-test-subj="comboBoxSearchInput"
-                      id="some_html_id"
-                      role="textbox"
-                      style="box-sizing: content-box; width: 2px;"
-                      value=""
-                    />
-                    <div
-                      style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
-                    />
+                        <div
+                          class="euiComboBox__inputWrap euiComboBox__inputWrap-isClearable"
+                          data-test-subj="comboBoxInput"
+                          tabindex="-1"
+                        >
+                          <p
+                            class="euiComboBoxPlaceholder"
+                          >
+                            Any rules
+                          </p>
+                          <div
+                            class="euiComboBox__input"
+                            style="font-size: 14px; display: inline-block;"
+                          >
+                            <input
+                              aria-controls=""
+                              data-test-subj="comboBoxSearchInput"
+                              id="some_html_id"
+                              role="textbox"
+                              style="box-sizing: content-box; width: 2px;"
+                              value=""
+                            />
+                            <div
+                              style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
+                            />
+                          </div>
+                        </div>
+                        <div
+                          class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
+                        >
+                          <button
+                            aria-label="Open list of options"
+                            class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
+                            data-test-subj="comboBoxToggleListButton"
+                            type="button"
+                          >
+                            EuiIconMock
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div
-                  class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
-                >
-                  <button
-                    aria-label="Clear input"
-                    class="euiFormControlLayoutClearButton"
-                    data-test-subj="comboBoxClearButton"
-                    type="button"
-                  >
-                    EuiIconMock
-                  </button>
-                  <button
-                    aria-label="Open list of options"
-                    class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
-                    data-test-subj="comboBoxToggleListButton"
-                    type="button"
-                  >
-                    EuiIconMock
-                  </button>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="euiSpacer euiSpacer--xxl"
-      />
-      <div
-        class="euiText euiText--medium"
-        style="font-size: 20px;"
-      >
-        <p>
-          Alert and notify
-        </p>
-      </div>
-      <div
-        class="euiSpacer euiSpacer--m"
-      />
-      <div
-        class="euiFormRow"
-        id="some_html_id-row"
-      >
-        <div
-          class="euiFormRow__labelWrapper"
-        >
-          <label
-            class="euiFormLabel euiFormRow__label"
-            for="some_html_id"
-          >
-            <div
-              class="euiText euiText--small"
-            >
-              <p>
-                Specify alert severity
-              </p>
-            </div>
-          </label>
-        </div>
-        <div
-          class="euiFormRow__fieldWrapper"
-        >
-          <div
-            aria-expanded="false"
-            aria-haspopup="listbox"
-            class="euiComboBox"
-            data-test-subj="security-levels-combo-box"
-            role="combobox"
-          >
-            <div
-              class="euiFormControlLayout"
-            >
               <div
-                class="euiFormControlLayout__childrenWrapper"
+                class="euiSpacer euiSpacer--m"
+              />
+              <div
+                class="euiFormRow"
+                id="some_html_id-row"
               >
                 <div
-                  class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap"
-                  data-test-subj="comboBoxInput"
-                  tabindex="-1"
+                  class="euiFormRow__labelWrapper"
                 >
-                  <span
-                    class="euiComboBoxPill euiComboBoxPill--plainText"
-                    id="1"
-                    text="1 (Highest)"
-                    value="1"
+                  <label
+                    class="euiFormLabel euiFormRow__label"
+                    for="some_html_id"
                   >
-                    1 (Highest)
-                  </span>
-                  <div
-                    class="euiComboBox__input"
-                    style="font-size: 14px; display: inline-block;"
-                  >
-                    <input
-                      aria-controls=""
-                      data-test-subj="comboBoxSearchInput"
-                      id="some_html_id"
-                      role="textbox"
-                      style="box-sizing: content-box; width: 2px;"
-                      value=""
-                    />
                     <div
-                      style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
-                    />
-                  </div>
+                      class="euiText euiText--small"
+                    >
+                      <p>
+                        Rule Severities
+                      </p>
+                    </div>
+                  </label>
                 </div>
                 <div
-                  class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
+                  class="euiFormRow__fieldWrapper"
                 >
-                  <button
-                    aria-label="Open list of options"
-                    class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
-                    data-test-subj="comboBoxToggleListButton"
-                    type="button"
+                  <div
+                    aria-expanded="false"
+                    aria-haspopup="listbox"
+                    class="euiComboBox"
+                    data-test-subj="alert-severity-combo-box"
+                    role="combobox"
                   >
-                    EuiIconMock
-                  </button>
+                    <div
+                      class="euiFormControlLayout"
+                    >
+                      <div
+                        class="euiFormControlLayout__childrenWrapper"
+                      >
+                        <div
+                          class="euiComboBox__inputWrap euiComboBox__inputWrap-isClearable"
+                          data-test-subj="comboBoxInput"
+                          tabindex="-1"
+                        >
+                          <span
+                            class="euiBadge euiBadge--hollow euiBadge--iconRight euiComboBoxPill"
+                            id="severity_level_low"
+                            title="severity_level_low"
+                          >
+                            <span
+                              class="euiBadge__content"
+                            >
+                              <span
+                                class="euiBadge__text"
+                              >
+                                severity_level_low
+                              </span>
+                              <button
+                                aria-label="Remove severity_level_low from selection in this group"
+                                class="euiBadge__iconButton"
+                                title="Remove severity_level_low from selection in this group"
+                                type="button"
+                              >
+                                EuiIconMock
+                              </button>
+                            </span>
+                          </span>
+                          <div
+                            class="euiComboBox__input"
+                            style="font-size: 14px; display: inline-block;"
+                          >
+                            <input
+                              aria-controls=""
+                              data-test-subj="comboBoxSearchInput"
+                              id="some_html_id"
+                              role="textbox"
+                              style="box-sizing: content-box; width: 2px;"
+                              value=""
+                            />
+                            <div
+                              style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
+                            />
+                          </div>
+                        </div>
+                        <div
+                          class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
+                        >
+                          <button
+                            aria-label="Clear input"
+                            class="euiFormControlLayoutClearButton"
+                            data-test-subj="comboBoxClearButton"
+                            type="button"
+                          >
+                            EuiIconMock
+                          </button>
+                          <button
+                            aria-label="Open list of options"
+                            class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
+                            data-test-subj="comboBoxToggleListButton"
+                            type="button"
+                          >
+                            EuiIconMock
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="euiSpacer euiSpacer--m"
+              />
+              <div
+                class="euiFormRow"
+                id="some_html_id-row"
+              >
+                <div
+                  class="euiFormRow__labelWrapper"
+                >
+                  <label
+                    class="euiFormLabel euiFormRow__label"
+                    for="some_html_id"
+                  >
+                    <div
+                      class="euiText euiText--small"
+                    >
+                      <p>
+                        Tags
+                      </p>
+                    </div>
+                  </label>
+                </div>
+                <div
+                  class="euiFormRow__fieldWrapper"
+                >
+                  <div
+                    aria-expanded="false"
+                    aria-haspopup="listbox"
+                    class="euiComboBox"
+                    data-test-subj="alert-tags-combo-box"
+                    role="combobox"
+                  >
+                    <div
+                      class="euiFormControlLayout"
+                    >
+                      <div
+                        class="euiFormControlLayout__childrenWrapper"
+                      >
+                        <div
+                          class="euiComboBox__inputWrap euiComboBox__inputWrap-isClearable"
+                          data-test-subj="comboBoxInput"
+                          tabindex="-1"
+                        >
+                          <span
+                            class="euiBadge euiBadge--hollow euiBadge--iconRight euiComboBoxPill"
+                            id="any.tag"
+                            title="any.tag"
+                          >
+                            <span
+                              class="euiBadge__content"
+                            >
+                              <span
+                                class="euiBadge__text"
+                              >
+                                any.tag
+                              </span>
+                              <button
+                                aria-label="Remove any.tag from selection in this group"
+                                class="euiBadge__iconButton"
+                                title="Remove any.tag from selection in this group"
+                                type="button"
+                              >
+                                EuiIconMock
+                              </button>
+                            </span>
+                          </span>
+                          <div
+                            class="euiComboBox__input"
+                            style="font-size: 14px; display: inline-block;"
+                          >
+                            <input
+                              aria-controls=""
+                              data-test-subj="comboBoxSearchInput"
+                              id="some_html_id"
+                              role="textbox"
+                              style="box-sizing: content-box; width: 2px;"
+                              value=""
+                            />
+                            <div
+                              style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
+                            />
+                          </div>
+                        </div>
+                        <div
+                          class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
+                        >
+                          <button
+                            aria-label="Clear input"
+                            class="euiFormControlLayoutClearButton"
+                            data-test-subj="comboBoxClearButton"
+                            type="button"
+                          >
+                            EuiIconMock
+                          </button>
+                          <button
+                            aria-label="Open list of options"
+                            class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
+                            data-test-subj="comboBoxToggleListButton"
+                            type="button"
+                          >
+                            EuiIconMock
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1200,116 +1271,270 @@ Object {
         class="euiSpacer euiSpacer--l"
       />
       <div
-        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
+        class="euiText euiText--medium"
+        style="font-size: 20px;"
+      >
+        <p>
+          Notification
+        </p>
+      </div>
+      <div
+        class="euiSpacer euiSpacer--m"
+      />
+      <div
+        class="euiAccordion euiAccordion-isOpen"
       >
         <div
-          class="euiFlexItem"
-          style="max-width: 400px;"
+          class="euiAccordion__triggerWrapper"
         >
-          <div
-            class="euiFormRow"
-            id="some_html_id-row"
+          <button
+            aria-controls="notification-details-0"
+            aria-expanded="true"
+            class="euiAccordion__button"
+            id="some_html_id"
+            type="button"
           >
-            <div
-              class="euiFormRow__labelWrapper"
+            <span
+              class="euiAccordion__iconWrapper"
             >
-              <label
-                class="euiFormLabel euiFormRow__label"
-                for="some_html_id"
+              EuiIconMock
+            </span>
+            <span
+              class="euiIEFlexWrapFix"
+            >
+              <div
+                data-test-subj="detection-rules-btn"
               >
                 <div
                   class="euiText euiText--medium"
                 >
-                  <p>
-                    Select channel to notify
-                  </p>
+                  Notification
                 </div>
-              </label>
-            </div>
-            <div
-              class="euiFormRow__fieldWrapper"
-            >
-              <div
-                aria-expanded="false"
-                aria-haspopup="listbox"
-                class="euiComboBox"
-                role="combobox"
-              >
                 <div
-                  class="euiFormControlLayout"
+                  class="euiText euiText--small"
                 >
                   <div
-                    class="euiFormControlLayout__childrenWrapper"
+                    class="euiTextColor euiTextColor--subdued"
+                  >
+                    Configure notification to receive alerts when the trigger condition is met.
+                  </div>
+                </div>
+              </div>
+            </span>
+          </button>
+        </div>
+        <div
+          aria-labelledby="some_html_id"
+          class="euiAccordion__childWrapper"
+          id="notification-details-0"
+          role="region"
+          tabindex="-1"
+        >
+          <div>
+            <div
+              class="euiAccordion__padding--l"
+            >
+              <div
+                class="euiFormRow"
+                id="some_html_id-row"
+              >
+                <div
+                  class="euiFormRow__labelWrapper"
+                >
+                  <label
+                    class="euiFormLabel euiFormRow__label"
+                    for="some_html_id"
                   >
                     <div
-                      class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isClearable"
-                      data-test-subj="comboBoxInput"
-                      tabindex="-1"
+                      class="euiText euiText--small"
                     >
-                      <p
-                        class="euiComboBoxPlaceholder"
-                      >
-                        Select notification channel.
+                      <p>
+                        Specify alert severity
                       </p>
+                    </div>
+                  </label>
+                </div>
+                <div
+                  class="euiFormRow__fieldWrapper"
+                >
+                  <div
+                    aria-expanded="false"
+                    aria-haspopup="listbox"
+                    class="euiComboBox"
+                    data-test-subj="security-levels-combo-box"
+                    role="combobox"
+                  >
+                    <div
+                      class="euiFormControlLayout"
+                    >
                       <div
-                        class="euiComboBox__input"
-                        style="font-size: 14px; display: inline-block;"
+                        class="euiFormControlLayout__childrenWrapper"
                       >
-                        <input
-                          aria-controls=""
-                          data-test-subj="comboBoxSearchInput"
-                          id="some_html_id"
-                          role="textbox"
-                          style="box-sizing: content-box; width: 2px;"
-                          value=""
-                        />
                         <div
-                          style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
-                        />
+                          class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap"
+                          data-test-subj="comboBoxInput"
+                          tabindex="-1"
+                        >
+                          <span
+                            class="euiComboBoxPill euiComboBoxPill--plainText"
+                            id="1"
+                            text="1 (Highest)"
+                            value="1"
+                          >
+                            1 (Highest)
+                          </span>
+                          <div
+                            class="euiComboBox__input"
+                            style="font-size: 14px; display: inline-block;"
+                          >
+                            <input
+                              aria-controls=""
+                              data-test-subj="comboBoxSearchInput"
+                              id="some_html_id"
+                              role="textbox"
+                              style="box-sizing: content-box; width: 2px;"
+                              value=""
+                            />
+                            <div
+                              style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
+                            />
+                          </div>
+                        </div>
+                        <div
+                          class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
+                        >
+                          <button
+                            aria-label="Open list of options"
+                            class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
+                            data-test-subj="comboBoxToggleListButton"
+                            type="button"
+                          >
+                            EuiIconMock
+                          </button>
+                        </div>
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="euiSpacer euiSpacer--l"
+              />
+              <div
+                class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
+              >
+                <div
+                  class="euiFlexItem"
+                  style="max-width: 400px;"
+                >
+                  <div
+                    class="euiFormRow"
+                    id="some_html_id-row"
+                  >
                     <div
-                      class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
+                      class="euiFormRow__labelWrapper"
                     >
-                      <button
-                        aria-label="Open list of options"
-                        class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
-                        data-test-subj="comboBoxToggleListButton"
-                        type="button"
+                      <label
+                        class="euiFormLabel euiFormRow__label"
+                        for="some_html_id"
                       >
-                        EuiIconMock
-                      </button>
+                        <div
+                          class="euiText euiText--medium"
+                        >
+                          <p>
+                            Select channel to notify
+                          </p>
+                        </div>
+                      </label>
+                    </div>
+                    <div
+                      class="euiFormRow__fieldWrapper"
+                    >
+                      <div
+                        aria-expanded="false"
+                        aria-haspopup="listbox"
+                        class="euiComboBox"
+                        role="combobox"
+                      >
+                        <div
+                          class="euiFormControlLayout"
+                        >
+                          <div
+                            class="euiFormControlLayout__childrenWrapper"
+                          >
+                            <div
+                              class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isClearable"
+                              data-test-subj="comboBoxInput"
+                              tabindex="-1"
+                            >
+                              <p
+                                class="euiComboBoxPlaceholder"
+                              >
+                                Select notification channel.
+                              </p>
+                              <div
+                                class="euiComboBox__input"
+                                style="font-size: 14px; display: inline-block;"
+                              >
+                                <input
+                                  aria-controls=""
+                                  data-test-subj="comboBoxSearchInput"
+                                  id="some_html_id"
+                                  role="textbox"
+                                  style="box-sizing: content-box; width: 2px;"
+                                  value=""
+                                />
+                                <div
+                                  style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
+                                />
+                              </div>
+                            </div>
+                            <div
+                              class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
+                            >
+                              <button
+                                aria-label="Open list of options"
+                                class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
+                                data-test-subj="comboBoxToggleListButton"
+                                type="button"
+                              >
+                                EuiIconMock
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
+                </div>
+                <div
+                  class="euiFlexItem euiFlexItem--flexGrowZero"
+                >
+                  <a
+                    class="euiButton euiButton--primary"
+                    href="notifications-dashboards#/channels"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    <span
+                      class="euiButtonContent euiButton__content"
+                    >
+                      EuiIconMock
+                      <span
+                        class="euiButton__text"
+                      >
+                        Manage channels
+                      </span>
+                    </span>
+                  </a>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div
-          class="euiFlexItem euiFlexItem--flexGrowZero"
-        >
-          <a
-            class="euiButton euiButton--primary"
-            href="notifications-dashboards#/channels"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            <span
-              class="euiButtonContent euiButton__content"
-            >
-              EuiIconMock
-              <span
-                class="euiButton__text"
-              >
-                Manage channels
-              </span>
-            </span>
-          </a>
-        </div>
       </div>
       <div
-        class="euiSpacer euiSpacer--xxl"
+        class="euiSpacer euiSpacer--l"
       />
       <div
         class="euiAccordion"
@@ -1336,7 +1561,7 @@ Object {
                 class="euiText euiText--medium"
               >
                 <p>
-                  Show notify message
+                  Notification message
                 </p>
               </div>
             </span>
@@ -1351,11 +1576,8 @@ Object {
         >
           <div>
             <div
-              class=""
+              class="euiAccordion__padding--l"
             >
-              <div
-                class="euiSpacer euiSpacer--m"
-              />
               <div
                 class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionColumn euiFlexGroup--responsive"
                 style="width: 75%;"

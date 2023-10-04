@@ -306,7 +306,7 @@ export default class AlertConditionPanel extends Component<
           paddingSize="l"
           initialIsOpen={this.props.isEdit}
           buttonContent={
-            <div data-test-subj="detection-rules-btn">
+            <div data-test-subj="trigger-details-btn">
               <EuiText size={'s'}>Trigger details and condition</EuiText>
               <EuiText size="s" color="subdued">
                 {`All rules, All tags, All tags`}

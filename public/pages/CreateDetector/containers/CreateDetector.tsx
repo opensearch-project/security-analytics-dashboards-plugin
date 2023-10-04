@@ -377,7 +377,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
           {currentStep === DetectorCreationStep.CONFIGURE_ALERTS && (
             <EuiFlexItem grow={false}>
               <EuiButton
-                disabled={creatingDetector}
+                disabled={creatingDetector || !stepDataValid[currentStep]}
                 isLoading={creatingDetector}
                 fill={true}
                 onClick={this.onCreateClick}
