@@ -501,21 +501,14 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                               Object {
                                 "dataType": "string",
                                 "field": "ruleFieldName",
-                                "name": "Detector field name",
+                                "name": "Detection rule field",
                                 "render": [Function],
                                 "width": "25%",
                               },
                               Object {
-                                "align": "center",
-                                "field": "",
-                                "name": "Maps to",
-                                "render": [Function],
-                                "width": "15%",
-                              },
-                              Object {
                                 "dataType": "string",
                                 "field": "logFieldName",
-                                "name": "Log source field name",
+                                "name": "Data source field",
                                 "render": [Function],
                                 "width": "45%",
                               },
@@ -572,21 +565,14 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                                 Object {
                                   "dataType": "string",
                                   "field": "ruleFieldName",
-                                  "name": "Detector field name",
+                                  "name": "Detection rule field",
                                   "render": [Function],
                                   "width": "25%",
                                 },
                                 Object {
-                                  "align": "center",
-                                  "field": "",
-                                  "name": "Maps to",
-                                  "render": [Function],
-                                  "width": "15%",
-                                },
-                                Object {
                                   "dataType": "string",
                                   "field": "logFieldName",
-                                  "name": "Log source field name",
+                                  "name": "Data source field",
                                   "render": [Function],
                                   "width": "45%",
                                 },
@@ -640,7 +626,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                                 "allowNeutralSort": true,
                                 "sort": Object {
                                   "direction": "asc",
-                                  "field": "Detector field name",
+                                  "field": "Detection rule field",
                                 },
                               }
                             }
@@ -681,7 +667,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                                                   Object {
                                                     "isSortAscending": undefined,
                                                     "isSorted": false,
-                                                    "key": "_data_s_status_3",
+                                                    "key": "_data_s_status_2",
                                                     "name": "Status",
                                                     "onSort": [Function],
                                                   },
@@ -833,62 +819,15 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                                                       values={
                                                         Object {
                                                           "description": undefined,
-                                                          "innerText": "Detector field name",
+                                                          "innerText": "Detection rule field",
                                                         }
                                                       }
                                                     >
                                                       <span
                                                         className="euiTableCellContent__text"
-                                                        title="Detector field name"
+                                                        title="Detection rule field"
                                                       >
-                                                        Detector field name
-                                                      </span>
-                                                    </EuiI18n>
-                                                  </EuiInnerText>
-                                                </span>
-                                              </CellContents>
-                                            </th>
-                                          </EuiTableHeaderCell>
-                                          <EuiTableHeaderCell
-                                            align="center"
-                                            data-test-subj="tableHeaderCell_Maps to_1"
-                                            key="_computed_column_h_1"
-                                            width="15%"
-                                          >
-                                            <th
-                                              className="euiTableHeaderCell"
-                                              data-test-subj="tableHeaderCell_Maps to_1"
-                                              role="columnheader"
-                                              scope="col"
-                                              style={
-                                                Object {
-                                                  "width": "15%",
-                                                }
-                                              }
-                                            >
-                                              <CellContents
-                                                className="euiTableCellContent euiTableCellContent--alignCenter"
-                                                showSortMsg={false}
-                                              >
-                                                <span
-                                                  className="euiTableCellContent euiTableCellContent--alignCenter"
-                                                >
-                                                  <EuiInnerText>
-                                                    <EuiI18n
-                                                      default="{innerText}; {description}"
-                                                      token="euiTableHeaderCell.titleTextWithDesc"
-                                                      values={
-                                                        Object {
-                                                          "description": undefined,
-                                                          "innerText": "Maps to",
-                                                        }
-                                                      }
-                                                    >
-                                                      <span
-                                                        className="euiTableCellContent__text"
-                                                        title="Maps to"
-                                                      >
-                                                        Maps to
+                                                        Detection rule field
                                                       </span>
                                                     </EuiI18n>
                                                   </EuiInnerText>
@@ -898,13 +837,13 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                                           </EuiTableHeaderCell>
                                           <EuiTableHeaderCell
                                             align="left"
-                                            data-test-subj="tableHeaderCell_logFieldName_2"
-                                            key="_data_h_logFieldName_2"
+                                            data-test-subj="tableHeaderCell_logFieldName_1"
+                                            key="_data_h_logFieldName_1"
                                             width="45%"
                                           >
                                             <th
                                               className="euiTableHeaderCell"
-                                              data-test-subj="tableHeaderCell_logFieldName_2"
+                                              data-test-subj="tableHeaderCell_logFieldName_1"
                                               role="columnheader"
                                               scope="col"
                                               style={
@@ -927,15 +866,15 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                                                       values={
                                                         Object {
                                                           "description": undefined,
-                                                          "innerText": "Log source field name",
+                                                          "innerText": "Data source field",
                                                         }
                                                       }
                                                     >
                                                       <span
                                                         className="euiTableCellContent__text"
-                                                        title="Log source field name"
+                                                        title="Data source field"
                                                       >
-                                                        Log source field name
+                                                        Data source field
                                                       </span>
                                                     </EuiI18n>
                                                   </EuiInnerText>
@@ -945,9 +884,9 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                                           </EuiTableHeaderCell>
                                           <EuiTableHeaderCell
                                             align="center"
-                                            data-test-subj="tableHeaderCell_status_3"
+                                            data-test-subj="tableHeaderCell_status_2"
                                             isSorted={false}
-                                            key="_data_h_status_3"
+                                            key="_data_h_status_2"
                                             onSort={[Function]}
                                             width="15%"
                                           >
@@ -955,7 +894,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                                               aria-live="polite"
                                               aria-sort="none"
                                               className="euiTableHeaderCell"
-                                              data-test-subj="tableHeaderCell_status_3"
+                                              data-test-subj="tableHeaderCell_status_2"
                                               role="columnheader"
                                               scope="col"
                                               style={
@@ -1013,12 +952,12 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                                           >
                                             <EuiTableRowCell
                                               align="center"
-                                              colSpan={4}
+                                              colSpan={3}
                                               isMobileFullWidth={true}
                                             >
                                               <td
                                                 className="euiTableRowCell euiTableRowCell--isMobileFullWidth"
-                                                colSpan={4}
+                                                colSpan={3}
                                                 style={
                                                   Object {
                                                     "width": undefined,

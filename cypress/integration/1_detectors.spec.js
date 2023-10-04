@@ -128,7 +128,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
     .click({ force: true, timeout: 5000 })
     .then(() => cy.contains('.euiTable .euiTableRow', 'Dns'));
 
-  cy.getElementByText('.euiAccordion .euiTitle', 'Configure field mapping - optional');
+  cy.getElementByText('.euiAccordion .euiTitle', 'Field mapping - optional');
   cy.get('[aria-controls="mappedTitleFieldsAccordion"]').then(($btn) => {
     // first check if the accordion is expanded, if not than expand the accordion
     if ($btn && $btn[0] && $btn[0].getAttribute('aria-expanded') === 'false') {
@@ -140,8 +140,9 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
   getNextButton().click({ force: true });
 
   // TEST ALERTS PAGE
+  // Open the trigger details accordion
+  cy.get('[data-test-subj="trigger-details-btn"]').click({ force: true });
   cy.getElementByText('.euiTitle.euiTitle--medium', 'Set up alert triggers');
-  cy.getInputByPlaceholder('Enter a name to describe the alert condition').type('test_trigger');
   cy.getElementByTestSubject('alert-tags-combo-box')
     .type(`attack.defense_evasion{enter}`)
     .find('input')
@@ -150,27 +151,8 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
 
   cy.getFieldByLabel('Specify alert severity').selectComboboxItem('1 (Highest)');
 
-  // go to review page
-  getNextButton().click({ force: true });
-
-  // TEST REVIEW AND CREATE PAGE
-  cy.getElementByText('.euiTitle', 'Review and create');
-  cy.getElementByText('.euiTitle', 'Detector details');
-  cy.getElementByText('.euiTitle', 'Field mapping');
-  cy.getElementByText('.euiTitle', 'Alert triggers');
-
-  cy.validateDetailsItem('Detector name', detectorName);
-  cy.validateDetailsItem('Description', '-');
-  cy.validateDetailsItem('Detector schedule', 'Every 1 minute');
-  cy.validateDetailsItem('Detection rules', '14');
-  cy.validateDetailsItem('Created at', '-');
-  cy.validateDetailsItem('Last updated time', '-');
-  cy.validateDetailsItem('Detector dashboard', 'Not available for this log type');
-
-  validateAlertPanel('test_trigger');
-
-  cy.intercept('POST', '/mappings').as('createMappingsRequest');
-  cy.intercept('POST', '/detectors').as('createDetectorRequest');
+  cy.intercept('POST', '/_plugins/_security_analytics/mappings').as('createMappingsRequest');
+  cy.intercept('POST', '/_plugins/_security_analytics/detectors').as('createDetectorRequest');
 
   // create the detector
   cy.getElementByText('button', 'Create').click({ force: true });
@@ -198,7 +180,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
 
             cy.wait(5000); // waiting for the page to be reloaded after pushing detector id into route
             cy.getElementByText('button.euiTab', 'Alert triggers').should('be.visible').click();
-            validateAlertPanel('test_trigger');
+            validateAlertPanel('Trigger 1');
           });
         });
     });
@@ -238,7 +220,7 @@ describe('Detectors', () => {
 
   describe('...should validate form fields', () => {
     beforeEach(() => {
-      cy.intercept('/detectors/_search').as('detectorsSearch');
+      cy.intercept('/_plugins/_security_analytics/detectors/_search').as('detectorsSearch');
 
       // Visit Detectors page before any test
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
@@ -341,28 +323,21 @@ describe('Detectors', () => {
     it('...should validate alerts page', () => {
       fillDetailsForm(detectorName, cypressIndexDns);
       getNextButton().click({ force: true });
-      getTriggerNameField().should('be.empty');
-
-      getTriggerNameField().focus().blur();
-      getTriggerNameField()
-        .parents('.euiFormRow__fieldWrapper')
-        .find('.euiFormErrorText')
-        .contains('Enter a name.');
-
-      getTriggerNameField().type('Trigger name').focus().blur();
-
+      // Open the trigger details accordion
+      cy.get('[data-test-subj="trigger-details-btn"]').click({ force: true });
+      getTriggerNameField().should('have.value', 'Trigger 1');
       getTriggerNameField()
         .parents('.euiFormRow__fieldWrapper')
         .find('.euiFormErrorText')
         .should('not.exist');
 
-      getNextButton().should('be.enabled');
+      getCreateDetectorButton().should('be.enabled');
 
       getTriggerNameField().type('{selectall}').type('{backspace}').focus().blur();
-      getNextButton().should('be.disabled');
+      getCreateDetectorButton().should('be.disabled');
 
       cy.getButtonByText('Remove').click({ force: true });
-      getNextButton().should('be.enabled');
+      getCreateDetectorButton().should('be.enabled');
     });
 
     it('...should show mappings warning', () => {
@@ -381,7 +356,7 @@ describe('Detectors', () => {
 
   describe('...validate create detector flow', () => {
     beforeEach(() => {
-      cy.intercept('/detectors/_search').as('detectorsSearch');
+      cy.intercept('/_plugins/_security_analytics/detectors/_search').as('detectorsSearch');
 
       // Visit Detectors page before any test
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
@@ -399,7 +374,7 @@ describe('Detectors', () => {
     });
 
     it('...basic details can be edited', () => {
-      cy.intercept('GET', '/indices').as('getIndices');
+      cy.intercept('GET', '/_plugins/_security_analytics/indices').as('getIndices');
       openDetectorDetails(detectorName);
 
       editDetectorDetails(detectorName, 'Detector details');

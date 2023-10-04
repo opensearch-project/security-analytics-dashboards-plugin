@@ -19,9 +19,7 @@ import ConfigureAlerts from '../components/ConfigureAlerts';
 import { FieldMapping } from '../../../../models/interfaces';
 import { EuiContainedStepProps } from '@elastic/eui/src/components/steps/steps';
 import { CoreServicesContext } from '../../../components/core_services';
-import { DetectorCreationStep } from '../models/types';
 import { BrowserServices } from '../../../models/interfaces';
-import { ReviewAndCreate } from '../components/ReviewAndCreate/containers/ReviewAndCreate';
 import { CreateDetectorRulesOptions } from '../../../models/types';
 import { CreateDetectorRulesState } from '../components/DefineDetector/components/DetectionRules/DetectionRules';
 import {
@@ -30,7 +28,7 @@ import {
 } from '../components/DefineDetector/components/DetectionRules/types/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { getPlugins } from '../../../utils/helpers';
-import { Detector } from '../../../../types';
+import { Detector, DetectorCreationStep } from '../../../../types';
 import { DataStore } from '../../../store/DataStore';
 
 interface CreateDetectorProps extends RouteComponentProps {
@@ -53,6 +51,7 @@ export interface CreateDetectorState {
 
 export default class CreateDetector extends Component<CreateDetectorProps, CreateDetectorState> {
   static contextType = CoreServicesContext;
+  private triggerCounter = 1;
 
   constructor(props: CreateDetectorProps) {
     super(props);
@@ -71,7 +70,6 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
       stepDataValid: {
         [DetectorCreationStep.DEFINE_DETECTOR]: false,
         [DetectorCreationStep.CONFIGURE_ALERTS]: false,
-        [DetectorCreationStep.REVIEW_CREATE]: false,
       },
       creatingDetector: false,
       rulesState: { page: { index: 0 }, allRules: [] },
@@ -226,6 +224,10 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     });
   };
 
+  getNextTriggerName = () => {
+    return `Trigger ${this.triggerCounter++}`;
+  };
+
   getDetectorWithUpdatedRules(newRules: RuleItemInfo[]) {
     return {
       ...this.state.detector,
@@ -315,16 +317,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             updateDataValidState={this.updateDataValidState}
             notificationsService={services.notificationsService}
             hasNotificationPlugin={this.state.plugins.includes(OS_NOTIFICATION_PLUGIN)}
-            skipAndConfigureHandler={this.onNextClick}
-          />
-        );
-      case DetectorCreationStep.REVIEW_CREATE:
-        return (
-          <ReviewAndCreate
-            {...this.props}
-            detector={this.state.detector}
-            existingMappings={this.state.fieldMappings}
-            setDetectorCreationStep={this.setCurrentStep}
+            getTriggerName={this.getNextTriggerName}
           />
         );
     }
@@ -333,7 +326,12 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
   createStepsMetadata(currentStep: number): EuiContainedStepProps[] {
     return Object.values(createDetectorSteps).map((stepData) => ({
       title: stepData.title,
-      status: currentStep < stepData.step ? 'disabled' : undefined,
+      status:
+        currentStep > stepData.step
+          ? 'complete'
+          : currentStep < stepData.step
+          ? 'disabled'
+          : undefined,
       children: <></>,
     }));
   }
@@ -364,7 +362,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             </EuiFlexItem>
           )}
 
-          {currentStep < DetectorCreationStep.REVIEW_CREATE && (
+          {currentStep < DetectorCreationStep.CONFIGURE_ALERTS && (
             <EuiFlexItem grow={false}>
               <EuiButton
                 fill={true}
@@ -376,10 +374,10 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             </EuiFlexItem>
           )}
 
-          {currentStep === DetectorCreationStep.REVIEW_CREATE && (
+          {currentStep === DetectorCreationStep.CONFIGURE_ALERTS && (
             <EuiFlexItem grow={false}>
               <EuiButton
-                disabled={creatingDetector}
+                disabled={creatingDetector || !stepDataValid[currentStep]}
                 isLoading={creatingDetector}
                 fill={true}
                 onClick={this.onCreateClick}
