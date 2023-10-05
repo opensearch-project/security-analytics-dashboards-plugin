@@ -84,11 +84,19 @@ jobs:
           cd OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
           yarn osd bootstrap
 
+      - name: Hurneyt Ping Backend 1
+        run : curl -XGET localhost:9200
+        shell: bash
+
       - name: Run OpenSearch-Dashboards server
         run: |
           cd OpenSearch-Dashboards
           yarn start --no-base-path --no-watch &
           sleep 300
+        shell: bash
+
+      - name: Hurneyt Ping Backend 2
+        run: curl -XGET localhost:9200
         shell: bash
 
       # Window is slow so wait longer
@@ -100,6 +108,10 @@ jobs:
       - name: Sleep until OSD server starts - non-windows
         if: ${{ matrix.os != 'windows-latest' }}
         run: sleep 450
+        shell: bash
+
+      - name: Hurneyt Ping Backend 3
+        run: curl -XGET localhost:9200
         shell: bash
 
       - name: Install Cypress
@@ -124,6 +136,10 @@ jobs:
           key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
           restore-keys: |
             cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
+
+      - name: Hurneyt Ping Backend 4
+        run: curl -XGET localhost:9200
+        shell: bash
 
       # for now just chrome, use matrix to do all browsers later
       - name: Cypress tests
