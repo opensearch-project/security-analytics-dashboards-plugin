@@ -11,7 +11,7 @@ const SAMPLE_RULE = {
   logType: 'windows',
   description: 'This is a rule used to test the rule creation workflow.',
   detectionLine: ['condition: Selection_1', 'Selection_1:', 'FieldKey|contains:', '- FieldValue'],
-  severity: 'critical',
+  severity: 'Critical',
   tags: ['attack.persistence', 'attack.privilege_escalation', 'attack.t1543.003'],
   references: 'https://nohello.com',
   falsePositive: 'unknown',
@@ -31,7 +31,7 @@ const YAML_RULE_LINES = [
   `- ${SAMPLE_RULE.tags[2]}`,
   `falsepositives:`,
   `- ${SAMPLE_RULE.falsePositive}`,
-  `level: ${SAMPLE_RULE.severity}`,
+  `level: ${SAMPLE_RULE.severity.toLowerCase()}`,
   `status: ${SAMPLE_RULE.status}`,
   `references:`,
   `- '${SAMPLE_RULE.references}'`,
@@ -67,7 +67,9 @@ const checkRulesFlyout = () => {
       cy.get('[data-test-subj="rule_flyout_rule_source"]').contains('Custom');
 
       // Validate severity
-      cy.get('[data-test-subj="rule_flyout_rule_severity"]').contains(SAMPLE_RULE.severity);
+      cy.get('[data-test-subj="rule_flyout_rule_severity"]').contains(
+        SAMPLE_RULE.severity.toLowerCase()
+      );
 
       // Validate tags
       SAMPLE_RULE.tags.forEach((tag) =>
@@ -159,7 +161,7 @@ const fillCreateForm = () => {
   getAuthorField().type(`${SAMPLE_RULE.author}`);
 
   // rule details
-  getLogTypeField().type(SAMPLE_RULE.logType);
+  getLogTypeField().selectComboboxItem(SAMPLE_RULE.logType);
   getRuleLevelField().selectComboboxItem(SAMPLE_RULE.severity);
 
   // rule detection
@@ -548,7 +550,7 @@ describe('Rules', () => {
       SAMPLE_RULE.logType = 'dns';
       YAML_RULE_LINES[2] = `product: ${SAMPLE_RULE.logType}`;
       YAML_RULE_LINES[3] = `title: ${SAMPLE_RULE.name}`;
-      getLogTypeField().type(SAMPLE_RULE.logType).type('{enter}');
+      getLogTypeField().selectComboboxItem(SAMPLE_RULE.logType);
       getLogTypeField().containsValue(SAMPLE_RULE.logType).contains(SAMPLE_RULE.logType);
 
       SAMPLE_RULE.description += ' edited';

@@ -9,6 +9,7 @@ import { LogType } from '../../../../types';
 import { capitalize } from 'lodash';
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
 import { ruleSource } from '../../Rules/utils/constants';
+import { logTypesByCategories } from '../../../utils/constants';
 
 export const getLogTypesTableColumns = (
   showDetails: (id: string) => void,
@@ -25,6 +26,11 @@ export const getLogTypesTableColumns = (
   {
     field: 'description',
     name: 'Description',
+    truncateText: false,
+  },
+  {
+    field: 'category',
+    name: 'Category',
     truncateText: false,
   },
   {
@@ -60,6 +66,17 @@ export const getLogTypesTableSearchConfig = (): Search => {
       schema: true,
     },
     filters: [
+      {
+        type: 'field_value_selection',
+        field: 'category',
+        name: 'Category',
+        multiSelect: 'or',
+        options: Object.keys(logTypesByCategories)
+          .map((category) => ({
+            value: category,
+          }))
+          .sort((a, b) => (a.value < b.value ? -1 : a.value > b.value ? 1 : 0)),
+      },
       {
         type: 'field_value_selection',
         field: 'source',

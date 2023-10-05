@@ -23,7 +23,7 @@ import {
 } from '@elastic/eui';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { FieldTextArray } from './components/FieldTextArray';
-import { ruleStatus, ruleTypes } from '../../utils/constants';
+import { ruleStatus } from '../../utils/constants';
 import { AUTHOR_REGEX, validateDescription, validateName } from '../../../../utils/validation';
 import { RuleEditorFormModel } from './RuleEditorFormModel';
 import { FormSubmissionErrorToastNotification } from './FormSubmitionErrorToastNotification';
@@ -31,7 +31,7 @@ import { YamlRuleEditorComponent } from './components/YamlRuleEditorComponent/Ya
 import { mapFormToRule, mapRuleToForm } from './mappers';
 import { DetectionVisualEditor } from './DetectionVisualEditor';
 import { useCallback } from 'react';
-import { DataStore } from '../../../../store/DataStore';
+import { getLogTypeOptions } from '../../../../utils/helpers';
 
 export interface VisualRuleEditorProps {
   initialValue: RuleEditorFormModel;
@@ -65,17 +65,15 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 }) => {
   const [selectedEditorType, setSelectedEditorType] = useState('visual');
   const [isDetectionInvalid, setIsDetectionInvalid] = useState(false);
-  const [logTypeOptions, setLogTypeOptions] = useState(
-    ruleTypes.map(({ value, label }) => ({ value, label }))
-  );
+  const [logTypeOptions, setLogTypeOptions] = useState<any[]>([]);
 
   const onEditorTypeChange = (optionId: string) => {
     setSelectedEditorType(optionId);
   };
 
   const refreshLogTypeOptions = useCallback(async () => {
-    const logTypes = await DataStore.logTypes.getLogTypes();
-    setLogTypeOptions(logTypes.map(({ id, name }) => ({ value: id, label: name })));
+    const logTypeOptions = await getLogTypeOptions();
+    setLogTypeOptions(logTypeOptions);
   }, []);
 
   const validateTags = (fields: string[]) => {

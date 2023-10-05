@@ -28,6 +28,7 @@ import {
   capitalizeFirstLetter,
   errorNotificationToast,
   formatRuleType,
+  getLogTypeFilterOptions,
   renderTime,
 } from '../../../../utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
@@ -298,11 +299,11 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
         detectorHits.map((detector) => (detector._source.enabled ? 'Active' : 'Inactive'))
       ),
     ];
-    const logType = [...new Set(detectorHits.map((detector) => detector._source.detector_type))];
     const search = {
       box: {
         placeholder: 'Search threat detectors',
         schema: true,
+        incremental: true,
       },
       filters: [
         {
@@ -319,10 +320,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
           type: 'field_value_selection',
           field: 'logType',
           name: 'Log type',
-          options: logType.map((logType) => ({
-            value: logType,
-            name: formatRuleType(logType),
-          })),
+          options: getLogTypeFilterOptions(),
           multiSelect: 'or',
         } as FieldValueSelectionFilterConfigType,
       ],
