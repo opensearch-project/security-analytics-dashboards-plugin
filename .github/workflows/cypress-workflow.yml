@@ -88,6 +88,7 @@ jobs:
         run: |
           cd OpenSearch-Dashboards
           yarn start --no-base-path --no-watch &
+          sleep 300
         shell: bash
 
       # Window is slow so wait longer
