@@ -578,6 +578,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                 search={
                   Object {
                     "box": Object {
+                      "incremental": true,
                       "placeholder": "Search threat detectors",
                       "schema": true,
                     },
@@ -598,12 +599,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                         "field": "logType",
                         "multiSelect": "or",
                         "name": "Log type",
-                        "options": Array [
-                          Object {
-                            "name": "-",
-                            "value": "detector_type",
-                          },
-                        ],
+                        "options": Array [],
                         "type": "field_value_selection",
                       },
                     ],
@@ -628,6 +624,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                   <EuiSearchBar
                     box={
                       Object {
+                        "incremental": true,
                         "placeholder": "Search threat detectors",
                         "schema": Object {
                           "fields": Object {
@@ -669,12 +666,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                           "field": "logType",
                           "multiSelect": "or",
                           "name": "Log type",
-                          "options": Array [
-                            Object {
-                              "name": "-",
-                              "value": "detector_type",
-                            },
-                          ],
+                          "options": Array [],
                           "type": "field_value_selection",
                         },
                       ]
@@ -697,18 +689,18 @@ exports[`<Detectors /> spec renders the component 1`] = `
                             className="euiFlexItem euiSearchBar__searchHolder"
                           >
                             <EuiSearchBox
-                              incremental={false}
+                              incremental={true}
                               isInvalid={false}
                               onSearch={[Function]}
                               placeholder="Search threat detectors"
                               query=""
                             >
                               <EuiFieldSearch
-                                aria-label="This is a search bar. After typing your query, hit enter to filter the results lower in the page."
+                                aria-label="This is a search bar. As you type, the results lower in the page will automatically filter."
                                 compressed={false}
                                 defaultValue=""
                                 fullWidth={true}
-                                incremental={false}
+                                incremental={true}
                                 inputRef={[Function]}
                                 isClearable={true}
                                 isInvalid={false}
@@ -732,7 +724,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                         isInvalid={false}
                                       >
                                         <input
-                                          aria-label="This is a search bar. After typing your query, hit enter to filter the results lower in the page."
+                                          aria-label="This is a search bar. As you type, the results lower in the page will automatically filter."
                                           className="euiFieldSearch euiFieldSearch--fullWidth"
                                           defaultValue=""
                                           onKeyUp={[Function]}
@@ -800,12 +792,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                     "field": "logType",
                                     "multiSelect": "or",
                                     "name": "Log type",
-                                    "options": Array [
-                                      Object {
-                                        "name": "-",
-                                        "value": "detector_type",
-                                      },
-                                    ],
+                                    "options": Array [],
                                     "type": "field_value_selection",
                                   },
                                 ]
@@ -975,12 +962,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                         "field": "logType",
                                         "multiSelect": "or",
                                         "name": "Log type",
-                                        "options": Array [
-                                          Object {
-                                            "name": "-",
-                                            "value": "detector_type",
-                                          },
-                                        ],
+                                        "options": Array [],
                                         "type": "field_value_selection",
                                       }
                                     }

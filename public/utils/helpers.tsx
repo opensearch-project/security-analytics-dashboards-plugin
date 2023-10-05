@@ -17,7 +17,7 @@ import {
 import moment from 'moment';
 import { PeriodSchedule } from '../../models/interfaces';
 import React from 'react';
-import { DEFAULT_EMPTY_DATA, scheduleUnitText } from './constants';
+import { DEFAULT_EMPTY_DATA, logTypesByCategories, scheduleUnitText } from './constants';
 import {
   RuleItem,
   RuleItemInfo,
@@ -31,6 +31,9 @@ import { OpenSearchService } from '../services';
 import { ruleSeverity, ruleTypes } from '../pages/Rules/utils/constants';
 import { Handler } from 'vega-tooltip';
 import _ from 'lodash';
+import { LogType } from '../../types';
+import { DataStore } from '../store/DataStore';
+import { LogCategoryOptionView } from '../components/Utility/LogCategoryOption';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
@@ -295,10 +298,15 @@ export const getPlugins = async (opensearchService: OpenSearchService) => {
 };
 
 export const formatRuleType = (matchingRuleType: string) => {
-  return (
-    ruleTypes.find((ruleType) => ruleType.label.toLowerCase() === matchingRuleType.toLowerCase())
-      ?.label || DEFAULT_EMPTY_DATA
+  const logType = ruleTypes.find(
+    (ruleType) => ruleType.label.toLowerCase() === matchingRuleType.toLowerCase()
   );
+
+  if (logType) {
+    return `${logType.category}: ${_.capitalize(logType.label)}`;
+  }
+
+  return DEFAULT_EMPTY_DATA;
 };
 
 export const getSeverityBadge = (severity: string) => {
@@ -309,3 +317,61 @@ export const getSeverityBadge = (severity: string) => {
     </EuiBadge>
   );
 };
+
+export function formatToLogTypeOptions(logTypesByCategories: { [category: string]: LogType[] }) {
+  return Object.entries(logTypesByCategories)
+    .map(([category, logTypes]) => {
+      return {
+        label: category,
+        value: category,
+        options: logTypes
+          .map(({ name }) => ({
+            label: name,
+            value: name.toLowerCase(),
+          }))
+          .sort((a, b) => (a.label < b.label ? -1 : a.label > b.label ? 1 : 0)),
+      };
+    })
+    .sort((a, b) => {
+      if (a.label === 'Other') {
+        return 1;
+      } else if (b.label === 'Other') {
+        return -1;
+      } else {
+        return a.label < b.label ? -1 : a.label > b.label ? 1 : 0;
+      }
+    });
+}
+
+export async function getLogTypeOptions() {
+  await DataStore.logTypes.getLogTypes();
+  return formatToLogTypeOptions(logTypesByCategories);
+}
+
+export function getLogTypeFilterOptions() {
+  const options: any[] = [];
+  formatToLogTypeOptions(logTypesByCategories).forEach((categoryData) => {
+    const categoryName = categoryData.label;
+    const logTypes = categoryData.options;
+
+    for (let i = 0; i < logTypes.length; i++) {
+      if (i === 0) {
+        options.push({
+          value: logTypes.map((logType) => logType.value).join(' or '),
+          view: <LogCategoryOptionView categoryName={categoryName} />,
+        });
+      }
+
+      options.push({
+        value: logTypes[i].value,
+        view: (
+          <span className="euiFlexItem euiFilterSelectItem__content" style={{ paddingLeft: 20 }}>
+            {_.capitalize(logTypes[i].label)}
+          </span>
+        ),
+      });
+    }
+  });
+
+  return options;
+}

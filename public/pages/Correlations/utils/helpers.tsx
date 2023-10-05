@@ -12,9 +12,8 @@ import {
   CorrelationRuleQuery,
 } from '../../../../types';
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
-import { ruleTypes } from '../../Rules/utils/constants';
 import { FieldClause } from '@opensearch-project/oui/src/eui_components/search_bar/query/ast';
-import { formatRuleType } from '../../../utils/helpers';
+import { formatRuleType, getLogTypeFilterOptions } from '../../../utils/helpers';
 
 export const getCorrelationRulesTableColumns = (
   onRuleNameClick: (rule: CorrelationRule) => void,
@@ -110,10 +109,7 @@ export const getCorrelationRulesTableSearchConfig = (
         field: 'logTypes',
         name: 'Log Types',
         multiSelect: 'or',
-        options: ruleTypes.map(({ value, label }) => ({
-          value,
-          name: label,
-        })),
+        options: getLogTypeFilterOptions(),
       },
     ],
   };
