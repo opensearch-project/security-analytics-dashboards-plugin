@@ -3,10 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import React from 'react';
 import { SimpleSavedObject } from 'opensearch-dashboards/public';
-import { Detector, ServerResponse } from '../../types';
+import { Detector, LogType, ServerResponse } from '../../types';
 import { DetectorInput, PeriodSchedule } from '../../models/interfaces';
 import { DetectorHit } from '../../server/models/interfaces';
+import { EuiText } from '@elastic/eui';
+import _ from 'lodash';
 
 export const DATE_MATH_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
 export const MAX_RECENTLY_USED_TIME_RANGES = 5;
@@ -173,3 +176,27 @@ export const logTypesWithDashboards = new Set(['network', 'cloudtrail', 's3']);
 export const pendingDashboardCreations: {
   [detectorId: string]: undefined | Promise<void | ServerResponse<SimpleSavedObject<unknown>>>;
 } = {};
+
+const logTypeCategoryInfo = [
+  { name: 'Access Management', description: 'User access, authentication, group management' },
+  { name: 'Applications', description: 'Application lifecycle, API, and web resources activities' },
+  { name: 'Cloud Services', description: 'Services managed by cloud providers' },
+  { name: 'Network Activity', description: 'DNS, HTTP, Email, SSH, FTP, DHCP, RDP' },
+  { name: 'System Activity', description: 'System monitoring logs' },
+  { name: 'Other', description: 'Logs not covered in other categories' },
+];
+
+export const logTypeCategoryOptions: any[] = logTypeCategoryInfo.map(({ name, description }) => ({
+  value: name,
+  inputDisplay: name,
+  dropdownDisplay: (
+    <>
+      <strong>{name}</strong>
+      <EuiText size="s" color="subdued">
+        <p className="ouiTextColor--subdued">{description}</p>
+      </EuiText>
+    </>
+  ),
+}));
+
+export const logTypesByCategories: { [category: string]: LogType[] } = {};

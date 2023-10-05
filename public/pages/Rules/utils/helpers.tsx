@@ -5,14 +5,18 @@
 
 import { EuiBasicTableColumn, EuiBreadcrumb, EuiLink, EuiBadge } from '@elastic/eui';
 import React from 'react';
-import { errorNotificationToast } from '../../../utils/helpers';
-import { ruleSeverity, ruleSource, ruleTypes } from './constants';
+import {
+  errorNotificationToast,
+  formatRuleType,
+  getLogTypeFilterOptions,
+} from '../../../utils/helpers';
+import { ruleSeverity, ruleSource } from './constants';
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
 import { Rule } from '../../../../models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { AUTHOR_REGEX, validateDescription, validateName } from '../../../utils/validation';
 import { dump, load } from 'js-yaml';
-import { BREADCRUMBS, DEFAULT_EMPTY_DATA } from '../../../utils/constants';
+import { BREADCRUMBS } from '../../../utils/constants';
 import { RuleItemInfoBase, RulesTableColumnFields } from '../../../../types';
 import { getSeverityColor, getSeverityLabel } from '../../Correlations/utils/constants';
 
@@ -65,9 +69,7 @@ export const getRulesTableColumns = (
       sortable: true,
       width: '10%',
       truncateText: true,
-      render: (category: string) =>
-        ruleTypes.find((ruleType) => ruleType.label.toLowerCase() === category)?.label ||
-        DEFAULT_EMPTY_DATA,
+      render: (category: string) => formatRuleType(category),
     },
     source: {
       field: 'source',
@@ -107,10 +109,7 @@ export const getRulesTableSearchConfig = (): Search => {
         field: 'category',
         name: 'Log type',
         multiSelect: 'or',
-        options: ruleTypes.map(({ value, label }) => ({
-          value,
-          name: label,
-        })),
+        options: getLogTypeFilterOptions(),
       },
       {
         type: 'field_value_selection',

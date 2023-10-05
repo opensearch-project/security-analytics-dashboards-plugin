@@ -12,6 +12,7 @@ import { RuleItem } from '../DetectionRules/types/interfaces';
 import { ruleTypes } from '../../../../../Rules/utils/constants';
 import ConfigureFieldMapping from '../../../ConfigureFieldMapping';
 import { ConfigureFieldMappingProps } from '../../../ConfigureFieldMapping/containers/ConfigureFieldMapping';
+import { getLogTypeOptions } from '../../../../../../utils/helpers';
 
 interface DetectorTypeProps {
   detectorType: string;
@@ -30,16 +31,21 @@ interface DetectorTypeState {
 }
 
 export default class DetectorType extends Component<DetectorTypeProps, DetectorTypeState> {
-  private detectorTypeOptions: { value: string; label: string }[];
+  private detectorTypeOptions: { value: string; label: string }[] = [];
   constructor(props: DetectorTypeProps) {
     super(props);
 
-    this.detectorTypeOptions = ruleTypes.map(({ label }) => ({ value: label, label }));
-    const detectorTypeIds = this.detectorTypeOptions.map((option) => option.value);
     this.state = {
       fieldTouched: false,
-      detectorTypeIds,
+      detectorTypeIds: [],
     };
+  }
+
+  async componentDidMount(): Promise<void> {
+    this.detectorTypeOptions = await getLogTypeOptions();
+    this.setState({
+      detectorTypeIds: ruleTypes.map((option) => option.value),
+    });
   }
 
   onChange = (detectorType: string) => {
@@ -66,7 +72,13 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
     const { detectorType } = this.props;
 
     return (
-      <ContentPanel title={'Detection'} titleSize={'m'}>
+      <ContentPanel
+        title={'Detection'}
+        subTitleText={
+          'The available detection rules are automatically populated based on your selected log type. Use the toggles to select detection rules for this detector'
+        }
+        titleSize={'m'}
+      >
         <EuiFormRow
           label={
             <div>
