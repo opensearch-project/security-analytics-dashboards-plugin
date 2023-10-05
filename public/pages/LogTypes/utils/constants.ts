@@ -21,4 +21,5 @@ export const defaultLogType: LogTypeBase = {
   description: '',
   source: 'Custom',
   tags: null,
+  category: '',
 };
