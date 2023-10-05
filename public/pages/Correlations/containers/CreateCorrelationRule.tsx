@@ -38,7 +38,7 @@ import { CoreServicesContext } from '../../../components/core_services';
 import { RouteComponentProps, useParams } from 'react-router-dom';
 import { validateName } from '../../../utils/validation';
 import { FieldMappingService, IndexService } from '../../../services';
-import { errorNotificationToast } from '../../../utils/helpers';
+import { errorNotificationToast, getLogTypeOptions } from '../../../utils/helpers';
 
 export interface CreateCorrelationRuleProps {
   indexService: IndexService;
@@ -103,6 +103,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
     ...correlationRuleStateDefaultValue,
   });
   const [action, setAction] = useState<CorrelationRuleAction>('Create');
+  const [logTypeOptions, setLogTypeOptions] = useState<any[]>([]);
 
   useEffect(() => {
     if (props.history.location.state?.rule) {
@@ -119,6 +120,12 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
       setAction('Edit');
       setInitialRuleValues();
     }
+
+    const setupLogTypeOptions = async () => {
+      const options = await getLogTypeOptions();
+      setLogTypeOptions(options);
+    };
+    setupLogTypeOptions();
   }, []);
 
   const submit = async (values: any) => {
@@ -274,10 +281,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                       isInvalid={isInvalidInputForQuery('logType')}
                       placeholder="Select a log type"
                       data-test-subj={'rule_type_dropdown'}
-                      options={ruleTypes.map(({ label }) => ({
-                        value: label.toLowerCase(),
-                        label,
-                      }))}
+                      options={logTypeOptions}
                       singleSelection={{ asPlainText: true }}
                       onChange={(e) => {
                         props.handleChange(`queries[${queryIdx}].logType`)(

@@ -9,6 +9,7 @@ import LogTypeService from '../services/LogTypeService';
 import { errorNotificationToast } from '../utils/helpers';
 import { DataStore } from './DataStore';
 import { ruleTypes } from '../pages/Rules/utils/constants';
+import { logTypesByCategories } from '../utils/constants';
 
 export class LogTypeStore {
   constructor(private service: LogTypeService, private notifications: NotificationsStart) {}
@@ -53,16 +54,25 @@ export class LogTypeStore {
         0,
         ruleTypes.length,
         ...logTypes
-          .map((logType) => ({
-            label: logType.name,
-            value: logType.name,
-            id: logType.id,
+          .map(({ category, id, name }) => ({
+            label: name,
+            value: name,
+            id,
+            category,
           }))
           .sort((a, b) => {
             return a.label < b.label ? -1 : a.label > b.label ? 1 : 0;
           })
       );
 
+      // Set log category types
+      for (const key in logTypesByCategories) {
+        delete logTypesByCategories[key];
+      }
+      logTypes.forEach((logType) => {
+        logTypesByCategories[logType.category] = logTypesByCategories[logType.category] || [];
+        logTypesByCategories[logType.category].push(logType);
+      });
       return logTypes;
     }
 
@@ -79,12 +89,20 @@ export class LogTypeStore {
     return createRes.ok;
   }
 
-  public async updateLogType({ id, name, description, source, tags }: LogType): Promise<boolean> {
+  public async updateLogType({
+    category,
+    id,
+    name,
+    description,
+    source,
+    tags,
+  }: LogType): Promise<boolean> {
     const updateRes = await this.service.updateLogType(id, {
       name,
       description,
       source,
       tags,
+      category,
     });
 
     if (!updateRes.ok) {
