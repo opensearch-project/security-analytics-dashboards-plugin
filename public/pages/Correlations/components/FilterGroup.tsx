@@ -70,10 +70,10 @@ export const FilterGroup: React.FC<LogTypeFilterGroupProps> = ({
           checked: 'on',
         };
     }
-    const chilIds = newItems[index].childOptionIds;
-    if (chilIds) {
+    const childIds = newItems[index].childOptionIds;
+    if (childIds) {
       newItems.forEach((item) => {
-        if (chilIds.has(item.id)) {
+        if (childIds.has(item.id)) {
           item.checked = newItems[index].checked;
         }
       });
