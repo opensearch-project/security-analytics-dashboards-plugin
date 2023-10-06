@@ -141,6 +141,10 @@ jobs:
         run: curl -XGET localhost:9200
         shell: bash
 
+      - name: Hurneyt Ping Frontend 1
+        run: curl -XGET localhost:5601/status
+        shell: bash
+
       # for now just chrome, use matrix to do all browsers later
       - name: Cypress tests
         uses: cypress-io/github-action@v5
