@@ -152,9 +152,14 @@ jobs:
           working-directory: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
           command: yarn run cypress run
           wait-on: 'http://localhost:5601'
+          wait-on-timeout: 600
           browser: chrome
         env:
           CYPRESS_CACHE_FOLDER: ${{ matrix.cypress_cache_folder }}
+
+      - name: Hurneyt Ping Frontend 2
+        run: curl -XGET localhost:5601/status
+        shell: bash
 
       # Screenshots are only captured on failure, will change this once we do visual regression tests
       - uses: actions/upload-artifact@v1
