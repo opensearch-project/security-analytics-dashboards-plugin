@@ -80,9 +80,7 @@ export default class RulesService {
       if (false_positives.length > 0) {
         jsonPayload['falsepositives'] = false_positives.map((falsePos) => falsePos.value);
       }
-      console.log(jsonPayload);
       const ruleYamlPayload = safeDump(jsonPayload);
-      console.log(ruleYamlPayload);
 
       const params: CreateRuleParams = {
         body: ruleYamlPayload,
@@ -226,12 +224,8 @@ export default class RulesService {
       if (false_positives.length > 0) {
         jsonPayload['falsepositives'] = false_positives.map((falsePos) => falsePos.value);
       }
-      console.log(jsonPayload);
 
       const ruleYamlPayload = safeDump(jsonPayload);
-
-      console.log(ruleYamlPayload);
-
       const params: UpdateRuleParams = { body: ruleYamlPayload, category, ruleId };
       const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
       const createRuleResponse: UpdateRuleResponse = await callWithRequest(
