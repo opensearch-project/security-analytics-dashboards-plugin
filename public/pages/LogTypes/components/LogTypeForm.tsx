@@ -12,6 +12,7 @@ import {
   EuiFlexItem,
   EuiFormRow,
   EuiSpacer,
+  EuiSuperSelect,
   EuiTextArea,
 } from '@elastic/eui';
 import { LogTypeItem } from '../../../../types';
@@ -19,6 +20,7 @@ import React from 'react';
 import { LOG_TYPE_NAME_REGEX, validateName } from '../../../utils/validation';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { useState } from 'react';
+import { logTypeCategoryOptions } from '../../../utils/constants';
 
 export interface LogTypeFormProps {
   logTypeDetails: LogTypeItem;
@@ -40,17 +42,21 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
   onConfirm,
 }) => {
   const [nameError, setNameError] = useState('');
+  const [categoryError, setCategoryError] = useState('');
+  const [categoryTouched, setCategoryTouched] = useState(false);
 
-  const updateErrors = (details = logTypeDetails) => {
+  const updateErrors = (details: LogTypeItem, onSubmit = false) => {
     const nameInvalid = !validateName(details.name, LOG_TYPE_NAME_REGEX, false /* shouldTrim */);
+    const categoryInvalid = (categoryTouched || onSubmit) && !details.category;
     setNameError(nameInvalid ? 'Invalid name' : '');
+    setCategoryError(categoryInvalid ? 'Select category to assign' : '');
 
-    return { nameInvalid };
+    return { nameInvalid, categoryInvalid };
   };
   const onConfirmClicked = () => {
-    const { nameInvalid } = updateErrors();
+    const { nameInvalid, categoryInvalid } = updateErrors(logTypeDetails, true);
 
-    if (nameInvalid) {
+    if (nameInvalid || categoryInvalid) {
       notifications?.toasts.addDanger({
         title: `Failed to ${confirmButtonText.toLowerCase()}`,
         text: `Fix the marked errors.`,
@@ -83,7 +89,6 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
             setLogTypeDetails(newLogType);
             updateErrors(newLogType);
           }}
-          placeholder="Enter name for the log type"
           readOnly={!isEditMode}
           disabled={isEditMode && !!logTypeDetails.detectionRulesCount}
         />
@@ -110,6 +115,27 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
           placeholder="Description of the log type"
           readOnly={!isEditMode}
         />
+      </EuiFormRow>
+      <EuiSpacer />
+      <EuiFormRow label="Category" isInvalid={!!categoryError} error={categoryError}>
+        <EuiSuperSelect
+          options={logTypeCategoryOptions.map((option) => ({
+            ...option,
+            disabled: !isEditMode || (isEditMode && !!logTypeDetails.detectionRulesCount),
+          }))}
+          valueOfSelected={logTypeDetails?.category}
+          onChange={(value) => {
+            const newLogType = {
+              ...logTypeDetails,
+              category: value,
+            };
+            setCategoryTouched(true);
+            setLogTypeDetails(newLogType);
+            updateErrors(newLogType);
+          }}
+          hasDividers
+          itemLayoutAlign="top"
+        ></EuiSuperSelect>
       </EuiFormRow>
       {isEditMode ? (
         <EuiBottomBar>

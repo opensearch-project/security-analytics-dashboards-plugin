@@ -21,6 +21,7 @@ export interface LogTypeBase {
   name: string;
   description: string;
   source: string;
+  category: string;
   tags: {
     correlation_id: number;
   } | null;
