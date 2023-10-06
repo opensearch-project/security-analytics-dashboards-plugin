@@ -3,12 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
 import { SimpleSavedObject } from 'opensearch-dashboards/public';
 import { Detector, LogType, ServerResponse } from '../../types';
 import { DetectorInput, PeriodSchedule } from '../../models/interfaces';
 import { DetectorHit } from '../../server/models/interfaces';
-import { EuiText } from '@elastic/eui';
 import _ from 'lodash';
 
 export const DATE_MATH_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
@@ -177,7 +175,7 @@ export const pendingDashboardCreations: {
   [detectorId: string]: undefined | Promise<void | ServerResponse<SimpleSavedObject<unknown>>>;
 } = {};
 
-const logTypeCategoryInfo = [
+export const logTypeCategoryDescription: { name: string; description: string }[] = [
   { name: 'Access Management', description: 'User access, authentication, group management' },
   { name: 'Applications', description: 'Application lifecycle, API, and web resources activities' },
   { name: 'Cloud Services', description: 'Services managed by cloud providers' },
@@ -186,17 +184,5 @@ const logTypeCategoryInfo = [
   { name: 'Other', description: 'Logs not covered in other categories' },
 ];
 
-export const logTypeCategoryOptions: any[] = logTypeCategoryInfo.map(({ name, description }) => ({
-  value: name,
-  inputDisplay: name,
-  dropdownDisplay: (
-    <>
-      <strong>{name}</strong>
-      <EuiText size="s" color="subdued">
-        <p className="ouiTextColor--subdued">{description}</p>
-      </EuiText>
-    </>
-  ),
-}));
-
+export const logTypeCategories: string[] = [];
 export const logTypesByCategories: { [category: string]: LogType[] } = {};

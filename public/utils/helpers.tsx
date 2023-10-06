@@ -17,7 +17,13 @@ import {
 import moment from 'moment';
 import { PeriodSchedule } from '../../models/interfaces';
 import React from 'react';
-import { DEFAULT_EMPTY_DATA, logTypesByCategories, scheduleUnitText } from './constants';
+import {
+  DEFAULT_EMPTY_DATA,
+  logTypeCategories,
+  logTypeCategoryDescription,
+  logTypesByCategories,
+  scheduleUnitText,
+} from './constants';
 import {
   RuleItem,
   RuleItemInfo,
@@ -164,7 +170,7 @@ export function renderVisualization(spec: TopLevelSpec, containerId: string) {
       console.error(err)
     );
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 
   function renderVegaSpec(spec: {}) {
@@ -319,28 +325,19 @@ export const getSeverityBadge = (severity: string) => {
 };
 
 export function formatToLogTypeOptions(logTypesByCategories: { [category: string]: LogType[] }) {
-  return Object.entries(logTypesByCategories)
-    .map(([category, logTypes]) => {
-      return {
-        label: category,
-        value: category,
-        options: logTypes
-          .map(({ name }) => ({
-            label: name,
-            value: name.toLowerCase(),
-          }))
-          .sort((a, b) => (a.label < b.label ? -1 : a.label > b.label ? 1 : 0)),
-      };
-    })
-    .sort((a, b) => {
-      if (a.label === 'Other') {
-        return 1;
-      } else if (b.label === 'Other') {
-        return -1;
-      } else {
-        return a.label < b.label ? -1 : a.label > b.label ? 1 : 0;
-      }
-    });
+  return logTypeCategories.map((category) => {
+    const logTypes = logTypesByCategories[category];
+    return {
+      label: category,
+      value: category,
+      options: logTypes
+        .map(({ name }) => ({
+          label: name,
+          value: name.toLowerCase(),
+        }))
+        .sort((a, b) => (a.label < b.label ? -1 : a.label > b.label ? 1 : 0)),
+    };
+  });
 }
 
 export async function getLogTypeOptions() {
@@ -374,4 +371,19 @@ export function getLogTypeFilterOptions() {
   });
 
   return options;
+}
+
+export function getLogTypeCategoryOptions(): any[] {
+  return logTypeCategoryDescription.map(({ name, description }) => ({
+    value: name,
+    inputDisplay: name,
+    dropdownDisplay: (
+      <>
+        <strong>{name}</strong>
+        <EuiText size="s" color="subdued">
+          <p className="ouiTextColor--subdued">{description}</p>
+        </EuiText>
+      </>
+    ),
+  }));
 }

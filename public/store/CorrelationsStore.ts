@@ -226,9 +226,6 @@ export class CorrelationsStore implements ICorrelationsStore {
         if (findingRes.ok) {
           findingRes.response.findings.forEach((f) => {
             const rule = allRules.find((rule) => rule._id === f.queries[0].id);
-            if (!rule) {
-              console.log(f.queries[0].id);
-            }
             findings[f.id] = {
               ...f,
               id: f.id,

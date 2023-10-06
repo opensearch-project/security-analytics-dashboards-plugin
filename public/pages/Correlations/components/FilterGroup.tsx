@@ -12,16 +12,32 @@ import {
   EuiPopoverTitle,
   EuiFieldSearch,
   FilterChecked,
+  EuiPopoverFooter,
+  EuiButtonEmpty,
 } from '@elastic/eui';
 
-export type FilterItem = { name: string | React.ReactNode; id: string; checked?: FilterChecked };
+export type FilterItem = {
+  name: string | React.ReactNode;
+  id: string;
+  visible: boolean;
+  childOptionIds?: Set<string>;
+  checked?: FilterChecked;
+};
 export interface LogTypeFilterGroupProps {
   groupName: string;
   items: FilterItem[];
+  hasGroupOptions?: boolean;
+  hasFooter?: boolean;
   setItems: (items: FilterItem[]) => void;
 }
 
-export const FilterGroup: React.FC<LogTypeFilterGroupProps> = ({ groupName, items, setItems }) => {
+export const FilterGroup: React.FC<LogTypeFilterGroupProps> = ({
+  groupName,
+  items,
+  hasGroupOptions,
+  hasFooter,
+  setItems,
+}) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [showActiveFilters, setShowActiveFilters] = useState(false);
 
@@ -33,7 +49,7 @@ export const FilterGroup: React.FC<LogTypeFilterGroupProps> = ({ groupName, item
     setIsPopoverOpen(false);
   };
 
-  function updateItem(index: number) {
+  function toggleItem(index: number) {
     if (!items[index]) {
       return;
     }
@@ -54,7 +70,35 @@ export const FilterGroup: React.FC<LogTypeFilterGroupProps> = ({ groupName, item
           checked: 'on',
         };
     }
+    const childIds = newItems[index].childOptionIds;
+    if (childIds) {
+      newItems.forEach((item) => {
+        if (childIds.has(item.id)) {
+          item.checked = newItems[index].checked;
+        }
+      });
+    }
 
+    setItems(newItems);
+    setShowActiveFilters(true);
+  }
+
+  function toggleAll(state: 'on' | undefined) {
+    const newItems = items.map((item) => ({
+      ...item,
+      checked: state,
+    }));
+
+    setItems(newItems);
+    setShowActiveFilters(!!state);
+  }
+
+  function search(term: string) {
+    const newItems = [...items];
+    term = term.toLowerCase();
+    items.forEach((item) => {
+      item.visible = item.id.toLowerCase().includes(term);
+    });
     setItems(newItems);
     setShowActiveFilters(true);
   }
@@ -83,20 +127,39 @@ export const FilterGroup: React.FC<LogTypeFilterGroupProps> = ({ groupName, item
         panelPaddingSize="none"
       >
         <EuiPopoverTitle paddingSize="s">
-          <EuiFieldSearch compressed />
+          <EuiFieldSearch compressed onSearch={search} />
         </EuiPopoverTitle>
-        <div className="ouiFilterSelect__items">
-          {items.map((item, index) => (
-            <EuiFilterSelectItem
-              checked={item.checked}
-              key={index}
-              onClick={() => updateItem(index)}
-              showIcons={true}
-            >
-              {item.name}
-            </EuiFilterSelectItem>
-          ))}
+        <div
+          className="ouiFilterSelect__items"
+          style={hasFooter ? { maxHeight: 400, overflow: 'scroll' } : undefined}
+        >
+          {items.map((item, index) => {
+            const itemStyle: any = {};
+            itemStyle['paddingLeft'] =
+              hasGroupOptions && !item.childOptionIds ? 20 : itemStyle['paddingLeft'];
+            itemStyle['display'] = !item.visible ? 'none' : itemStyle['display'];
+
+            return (
+              <EuiFilterSelectItem
+                checked={item.checked}
+                key={index}
+                onClick={() => toggleItem(index)}
+                showIcons={true}
+                style={itemStyle}
+              >
+                {item.name}
+              </EuiFilterSelectItem>
+            );
+          })}
         </div>
+        {hasFooter && (
+          <EuiPopoverFooter>
+            <div>
+              <EuiButtonEmpty onClick={() => toggleAll('on')}>Select all</EuiButtonEmpty>
+              <EuiButtonEmpty onClick={() => toggleAll(undefined)}>Deselect all</EuiButtonEmpty>
+            </div>
+          </EuiPopoverFooter>
+        )}
       </EuiPopover>
     </EuiFilterGroup>
   );

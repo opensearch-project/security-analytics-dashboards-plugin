@@ -7,7 +7,9 @@ import React from 'react';
 import { CorrelationGraphData } from '../../../../types';
 import { ruleSeverity, ruleTypes } from '../../Rules/utils/constants';
 import { FilterItem } from '../components/FilterGroup';
-import { EuiIcon } from '@elastic/eui';
+import { EuiIcon, EuiTitle } from '@elastic/eui';
+import { logTypeCategories, logTypesByCategories } from '../../../utils/constants';
+import _ from 'lodash';
 
 export const graphRenderOptions = {
   nodes: {
@@ -47,12 +49,34 @@ export const graphRenderOptions = {
   },
 };
 
-export const getDefaultLogTypeFilterItemOptions: () => FilterItem[] = () =>
-  Object.values(ruleTypes).map((type) => ({
-    name: `${type.label}`,
-    id: type.label.toLowerCase(),
-    checked: 'on',
-  }));
+export const getDefaultLogTypeFilterItemOptions: () => FilterItem[] = () => {
+  const options: FilterItem[] = [];
+  logTypeCategories.forEach((category) => {
+    const logTypes = logTypesByCategories[category];
+    options.push({
+      name: (
+        <EuiTitle size="xxs">
+          <h4>{category}</h4>
+        </EuiTitle>
+      ),
+      id: category,
+      checked: 'on',
+      childOptionIds: new Set(logTypes.map(({ name }) => name)),
+      visible: true,
+    });
+
+    logTypes.forEach(({ name }) => {
+      options.push({
+        name: _.capitalize(name),
+        id: name,
+        checked: 'on',
+        visible: true,
+      });
+    });
+  });
+
+  return options;
+};
 
 export const defaultSeverityFilterItemOptions: FilterItem[] = Object.values(ruleSeverity).map(
   (sev) => {
@@ -64,6 +88,7 @@ export const defaultSeverityFilterItemOptions: FilterItem[] = Object.values(rule
       ),
       id: sev.value,
       checked: 'on',
+      visible: true,
     };
   }
 );
