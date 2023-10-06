@@ -527,6 +527,8 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                         <FilterGroup
                           groupName="Log types"
                           items={this.state.logTypeFilterOptions}
+                          hasGroupOptions={true}
+                          hasFooter={true}
                           setItems={this.onLogTypeFilterChange}
                         />
                       </EuiFilterGroup>

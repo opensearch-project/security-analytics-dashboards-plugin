@@ -20,7 +20,7 @@ import React from 'react';
 import { LOG_TYPE_NAME_REGEX, validateName } from '../../../utils/validation';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { useState } from 'react';
-import { logTypeCategoryOptions } from '../../../utils/constants';
+import { getLogTypeCategoryOptions } from '../../../utils/helpers';
 
 export interface LogTypeFormProps {
   logTypeDetails: LogTypeItem;
@@ -119,7 +119,7 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
       <EuiSpacer />
       <EuiFormRow label="Category" isInvalid={!!categoryError} error={categoryError}>
         <EuiSuperSelect
-          options={logTypeCategoryOptions.map((option) => ({
+          options={getLogTypeCategoryOptions().map((option) => ({
             ...option,
             disabled: !isEditMode || (isEditMode && !!logTypeDetails.detectionRulesCount),
           }))}
