@@ -9,7 +9,7 @@ import LogTypeService from '../services/LogTypeService';
 import { errorNotificationToast } from '../utils/helpers';
 import { DataStore } from './DataStore';
 import { ruleTypes } from '../pages/Rules/utils/constants';
-import { logTypesByCategories } from '../utils/constants';
+import { logTypeCategories, logTypesByCategories } from '../utils/constants';
 
 export class LogTypeStore {
   constructor(private service: LogTypeService, private notifications: NotificationsStart) {}
@@ -73,6 +73,20 @@ export class LogTypeStore {
         logTypesByCategories[logType.category] = logTypesByCategories[logType.category] || [];
         logTypesByCategories[logType.category].push(logType);
       });
+      logTypeCategories.splice(
+        0,
+        logTypeCategories.length,
+        ...Object.keys(logTypesByCategories).sort((a, b) => {
+          if (a === 'Other') {
+            return 1;
+          } else if (b === 'Other') {
+            return -1;
+          } else {
+            return a < b ? -1 : a > b ? 1 : 0;
+          }
+        })
+      );
+
       return logTypes;
     }
 
