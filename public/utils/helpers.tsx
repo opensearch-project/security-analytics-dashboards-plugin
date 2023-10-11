@@ -31,6 +31,7 @@ import { OpenSearchService } from '../services';
 import { ruleSeverity, ruleTypes } from '../pages/Rules/utils/constants';
 import { Handler } from 'vega-tooltip';
 import _ from 'lodash';
+import { getLogTypeLabel } from '../pages/LogTypes/utils/helpers';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
@@ -295,10 +296,10 @@ export const getPlugins = async (opensearchService: OpenSearchService) => {
 };
 
 export const formatRuleType = (matchingRuleType: string) => {
-  return (
-    ruleTypes.find((ruleType) => ruleType.label.toLowerCase() === matchingRuleType.toLowerCase())
-      ?.label || DEFAULT_EMPTY_DATA
-  );
+  const type = ruleTypes.find(
+    (ruleType) => ruleType.label.toLowerCase() === matchingRuleType.toLowerCase()
+  )?.label;
+  return type === undefined ? DEFAULT_EMPTY_DATA : getLogTypeLabel(type);
 };
 
 export const getSeverityBadge = (severity: string) => {
