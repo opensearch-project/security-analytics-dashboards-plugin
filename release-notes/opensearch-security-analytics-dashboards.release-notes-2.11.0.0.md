@@ -12,4 +12,4 @@ Compatible with OpenSearch Dashboards 2.11.0
 * Enhance log type filters correlations. ([#745](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/745))
 
 ### Documentation
-* Added 2.11.0 release notes. ([#]())
+* Added 2.11.0 release notes. ([#756](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/756))
