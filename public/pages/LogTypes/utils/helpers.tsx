@@ -4,12 +4,14 @@
  */
 
 import React from 'react';
+import _ from 'lodash';
 import { EuiButtonIcon, EuiLink, EuiToolTip } from '@elastic/eui';
 import { LogType } from '../../../../types';
 import { capitalize } from 'lodash';
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
 import { ruleSource } from '../../Rules/utils/constants';
 import { logTypeCategories } from '../../../utils/constants';
+import { logTypeLabels } from './constants';
 
 export const getLogTypesTableColumns = (
   showDetails: (id: string) => void,
@@ -20,7 +22,7 @@ export const getLogTypesTableColumns = (
     name: 'Name',
     sortable: true,
     render: (name: string, item: LogType) => {
-      return <EuiLink onClick={() => showDetails(item.id)}>{name}</EuiLink>;
+      return <EuiLink onClick={() => showDetails(item.id)}>{getLogTypeLabel(name)}</EuiLink>;
     },
   },
   {
@@ -86,4 +88,8 @@ export const getLogTypesTableSearchConfig = (): Search => {
       },
     ],
   };
+};
+
+export const getLogTypeLabel = (name: String) => {
+  return logTypeLabels[name] || _.startCase(name);
 };
