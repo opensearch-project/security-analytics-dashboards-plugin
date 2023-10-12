@@ -95,8 +95,6 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
     return isValid;
   };
 
-  console.info(`hurneyt logTypeOptions = ${JSON.stringify(logTypeOptions, null, 4)}`);
-
   return (
     <Formik
       initialValues={initialValue}
