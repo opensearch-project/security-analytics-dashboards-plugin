@@ -52,7 +52,7 @@ describe('Findings', () => {
     cy.contains('No items found').should('not.exist');
 
     // Check for expected findings
-    cy.contains('windows');
+    cy.contains('Windows');
     cy.contains('High');
   });
 
