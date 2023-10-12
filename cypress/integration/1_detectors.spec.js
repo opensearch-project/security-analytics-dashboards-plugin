@@ -8,9 +8,9 @@ import sample_windows_index_settings from '../fixtures/sample_windows_index_sett
 import sample_dns_index_settings from '../fixtures/sample_dns_index_settings.json';
 import dns_name_rule_data from '../fixtures/integration_tests/rule/create_dns_rule_with_name_selection.json';
 import dns_type_rule_data from '../fixtures/integration_tests/rule/create_dns_rule_with_type_selection.json';
-import dns_mapping_fields from '../fixtures/integration_tests/rule/sample_dns_field_mappings.json';
 import _ from 'lodash';
 import { getMappingFields } from '../../public/pages/Detectors/utils/helpers';
+import { getLogTypeLabel } from '../../public/pages/LogTypes/utils/helpers';
 
 const cypressIndexDns = 'cypress-index-dns';
 const cypressIndexWindows = 'cypress-index-windows';
@@ -115,9 +115,9 @@ const validatePendingFieldMappingsPanel = (mappings) => {
 const fillDetailsForm = (detectorName, dataSource) => {
   getNameField().type(detectorName);
   getDataSourceField().selectComboboxItem(dataSource);
-  getDataSourceField().blur();
-  getLogTypeField().selectComboboxItem(cypressLogTypeDns);
-  getLogTypeField().blur();
+  getDataSourceField().focus().blur();
+  getLogTypeField().selectComboboxItem(getLogTypeLabel(cypressLogTypeDns));
+  getLogTypeField().focus().blur();
 };
 
 const createDetector = (detectorName, dataSource, expectFailure) => {
