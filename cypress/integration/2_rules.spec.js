@@ -553,7 +553,7 @@ describe('Rules', () => {
       SAMPLE_RULE.logType = 'dns';
       YAML_RULE_LINES[2] = `product: ${SAMPLE_RULE.logType}`;
       YAML_RULE_LINES[3] = `title: ${SAMPLE_RULE.name}`;
-      getLogTypeField().selectComboboxItem(SAMPLE_RULE.logType);
+      getLogTypeField().selectComboboxItem(getLogTypeLabel(SAMPLE_RULE.logType));
       getLogTypeField()
         .containsValue(SAMPLE_RULE.logType)
         .contains(getLogTypeLabel(SAMPLE_RULE.logType));
