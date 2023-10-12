@@ -103,7 +103,7 @@ exports[`<RuleContentViewer /> spec renders the component 1`] = `
           class="euiText euiText--medium"
           data-test-subj="rule_flyout_rule_log_type"
         >
-          dns
+          DNS
         </div>
       </div>
     </div>
@@ -283,13 +283,13 @@ exports[`<RuleContentViewer /> spec renders the component 1`] = `
                 >
                   :
                 </span>
-                
+
 
               </span>
               <span
                 class="euiCodeBlock__line"
               >
-                  
+
                 <span
                   class="token key atrule"
                 >
@@ -300,19 +300,19 @@ exports[`<RuleContentViewer /> spec renders the component 1`] = `
                 >
                   :
                 </span>
-                 
+
                 <span
                   class="token number"
                 >
                   4800
                 </span>
-                
+
 
               </span>
               <span
                 class="euiCodeBlock__line"
               >
-                
+
                 <span
                   class="token key atrule"
                 >
@@ -329,7 +329,7 @@ exports[`<RuleContentViewer /> spec renders the component 1`] = `
               <span
                 class="euiCodeBlock__line"
               >
-                
+
               </span>
             </code>
           </pre>
