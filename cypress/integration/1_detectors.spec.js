@@ -126,7 +126,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
 
   cy.getElementByText('.euiAccordion .euiTitle', 'Detection rules (14 selected)')
     .click({ force: true, timeout: 5000 })
-    .then(() => cy.contains('.euiTable .euiTableRow', 'Dns'));
+    .then(() => cy.contains('.euiTable .euiTableRow', 'DNS'));
 
   cy.getElementByText('.euiAccordion .euiTitle', 'Configure field mapping - optional');
   cy.get('[aria-controls="mappedTitleFieldsAccordion"]').then(($btn) => {
