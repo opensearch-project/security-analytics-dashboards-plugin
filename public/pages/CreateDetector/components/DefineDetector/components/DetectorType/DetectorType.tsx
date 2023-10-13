@@ -32,7 +32,7 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
   constructor(props: DetectorTypeProps) {
     super(props);
 
-    this.detectorTypeOptions = ruleTypes.map(({ label }) => ({ value: label, label }));
+    this.detectorTypeOptions = ruleTypes.map(({ value, label }) => ({ value, label }));
     const detectorTypeIds = this.detectorTypeOptions.map((option) => option.value);
     this.state = {
       fieldTouched: false,

@@ -296,10 +296,7 @@ export const getPlugins = async (opensearchService: OpenSearchService) => {
 };
 
 export const formatRuleType = (matchingRuleType: string) => {
-  const type = ruleTypes.find(
-    (ruleType) => ruleType.label.toLowerCase() === matchingRuleType.toLowerCase()
-  )?.label;
-  return type === undefined ? DEFAULT_EMPTY_DATA : getLogTypeLabel(type);
+  return getLogTypeLabel(matchingRuleType);
 };
 
 export const getSeverityBadge = (severity: string) => {

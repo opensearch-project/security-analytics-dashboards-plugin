@@ -8,6 +8,7 @@ import { EuiButtonIcon, EuiLink, EuiToolTip } from '@elastic/eui';
 import { LogType } from '../../../../types';
 import { capitalize, startCase } from 'lodash';
 import { logTypeLabels } from './constants';
+import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 
 export const getLogTypesTableColumns = (
   showDetails: (id: string) => void,
@@ -52,6 +53,6 @@ export const getLogTypesTableColumns = (
   },
 ];
 
-export const getLogTypeLabel = (name: String) => {
-  return logTypeLabels[name] || startCase(name);
+export const getLogTypeLabel = (name: string) => {
+  return !name ? DEFAULT_EMPTY_DATA : logTypeLabels[name.toLowerCase()] || startCase(name);
 };

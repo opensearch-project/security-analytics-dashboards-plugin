@@ -297,7 +297,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
         detectorHits.map((detector) => (detector._source.enabled ? 'Active' : 'Inactive'))
       ),
     ];
-    const logType = [...new Set(detectorHits.map((detector) => detector._source.detector_type))];
+    const logTypes = [...new Set(detectorHits.map((detector) => detector._source.detector_type))];
     const search = {
       box: {
         placeholder: 'Search threat detectors',
@@ -318,7 +318,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
           type: 'field_value_selection',
           field: 'logType',
           name: 'Log type',
-          options: logType.map((logType) => ({
+          options: logTypes.map((logType) => ({
             value: logType,
             name: formatRuleType(logType),
           })),

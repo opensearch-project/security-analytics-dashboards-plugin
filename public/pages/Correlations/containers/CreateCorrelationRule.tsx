@@ -189,6 +189,11 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
     formikErrors: FormikErrors<CorrelationRuleModel>,
     props: any
   ) => {
+    const logTypeOptions = ruleTypes.map(({ value, label }) => ({
+      value,
+      label,
+    }));
+
     return (
       <>
         {correlationQueries.map((query, queryIdx) => {
@@ -274,10 +279,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                       isInvalid={isInvalidInputForQuery('logType')}
                       placeholder="Select a log type"
                       data-test-subj={'rule_type_dropdown'}
-                      options={ruleTypes.map(({ label }) => ({
-                        value: label.toLowerCase(),
-                        label,
-                      }))}
+                      options={logTypeOptions}
                       singleSelection={{ asPlainText: true }}
                       onChange={(e) => {
                         props.handleChange(`queries[${queryIdx}].logType`)(
@@ -293,7 +295,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                                 label:
                                   ruleTypes.find(
                                     (logType) =>
-                                      logType.label.toLowerCase() === query.logType.toLowerCase()
+                                      logType.value.toLowerCase() === query.logType.toLowerCase()
                                   )?.label || query.logType,
                               },
                             ]

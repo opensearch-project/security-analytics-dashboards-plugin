@@ -25,6 +25,7 @@ import { AlertItem, FindingItem } from '../../models/interfaces';
 import { createSelectComponent, renderVisualization } from '../../../../utils/helpers';
 import { ROUTES } from '../../../../utils/constants';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
+import { getLogTypeLabel } from '../../../LogTypes/utils/helpers';
 
 export interface SummaryProps {
   findings: FindingItem[];
@@ -96,7 +97,7 @@ export const Summary: React.FC<SummaryProps> = ({
         time: getTimeWithMinPrecision(alert.time),
         alert: 1,
         finding: 0,
-        logType: alert.logType,
+        logType: getLogTypeLabel(alert.logType),
       });
     });
 
@@ -105,7 +106,7 @@ export const Summary: React.FC<SummaryProps> = ({
         time: getTimeWithMinPrecision(finding.time),
         alert: 0,
         finding: 1,
-        logType: finding.logType,
+        logType: getLogTypeLabel(finding.logType),
       });
     });
 

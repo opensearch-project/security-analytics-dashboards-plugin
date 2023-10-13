@@ -23,7 +23,7 @@ export const defaultLogType: LogTypeBase = {
   tags: null,
 };
 
-export const logTypeLabels = {
+export const logTypeLabels: { [value: string]: string } = {
   cloudtrail: 'AWS Cloudtrail',
   dns: 'DNS',
   vpcflow: 'VPC Flow',
