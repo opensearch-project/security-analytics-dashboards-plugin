@@ -6,7 +6,9 @@
 import React from 'react';
 import { EuiButtonIcon, EuiLink, EuiToolTip } from '@elastic/eui';
 import { LogType } from '../../../../types';
-import { capitalize } from 'lodash';
+import { capitalize, startCase } from 'lodash';
+import { logTypeLabels } from './constants';
+import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 
 export const getLogTypesTableColumns = (
   showDetails: (id: string) => void,
@@ -17,7 +19,7 @@ export const getLogTypesTableColumns = (
     name: 'Name',
     sortable: true,
     render: (name: string, item: LogType) => {
-      return <EuiLink onClick={() => showDetails(item.id)}>{name}</EuiLink>;
+      return <EuiLink onClick={() => showDetails(item.id)}>{getLogTypeLabel(name)}</EuiLink>;
     },
   },
   {
@@ -50,3 +52,7 @@ export const getLogTypesTableColumns = (
     ],
   },
 ];
+
+export const getLogTypeLabel = (name: string) => {
+  return !name ? DEFAULT_EMPTY_DATA : logTypeLabels[name.toLowerCase()] || startCase(name);
+};

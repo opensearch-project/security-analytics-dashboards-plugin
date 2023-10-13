@@ -8,6 +8,7 @@ import { CorrelationGraphData } from '../../../../types';
 import { ruleSeverity, ruleTypes } from '../../Rules/utils/constants';
 import { FilterItem } from '../components/FilterGroup';
 import { EuiIcon } from '@elastic/eui';
+import { getLogTypeLabel } from '../../LogTypes/utils/helpers';
 
 export const graphRenderOptions = {
   nodes: {
@@ -49,8 +50,8 @@ export const graphRenderOptions = {
 
 export const getDefaultLogTypeFilterItemOptions: () => FilterItem[] = () =>
   Object.values(ruleTypes).map((type) => ({
-    name: `${type.label}`,
-    id: type.label.toLowerCase(),
+    name: getLogTypeLabel(type.label),
+    id: type.value.toLowerCase(),
     checked: 'on',
   }));
 

@@ -22,3 +22,21 @@ export const defaultLogType: LogTypeBase = {
   source: 'Custom',
   tags: null,
 };
+
+export const logTypeLabels: { [value: string]: string } = {
+  cloudtrail: 'AWS Cloudtrail',
+  dns: 'DNS',
+  vpcflow: 'VPC Flow',
+  ad_ldap: 'AD/LDAP',
+  apache_access: 'Apache Access',
+  m365: 'Microsoft 365',
+  okta: 'Okta',
+  waf: 'WAF',
+  s3: 'AWS S3',
+  github: 'Github',
+  gworkspace: 'Google Workspace',
+  windows: 'Microsoft Windows',
+  network: 'Network',
+  linux: 'Linux System Logs',
+  azure: 'Microsoft Azure',
+};

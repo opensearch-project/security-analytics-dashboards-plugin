@@ -600,7 +600,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                         "name": "Log type",
                         "options": Array [
                           Object {
-                            "name": "-",
+                            "name": "Detector Type",
                             "value": "detector_type",
                           },
                         ],
@@ -671,7 +671,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                           "name": "Log type",
                           "options": Array [
                             Object {
-                              "name": "-",
+                              "name": "Detector Type",
                               "value": "detector_type",
                             },
                           ],
@@ -802,7 +802,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                     "name": "Log type",
                                     "options": Array [
                                       Object {
-                                        "name": "-",
+                                        "name": "Detector Type",
                                         "value": "detector_type",
                                       },
                                     ],
@@ -977,7 +977,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                         "name": "Log type",
                                         "options": Array [
                                           Object {
-                                            "name": "-",
+                                            "name": "Detector Type",
                                             "value": "detector_type",
                                           },
                                         ],
@@ -2136,7 +2136,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                         <div
                                           className="euiTableCellContent euiTableCellContent--overflowingContent"
                                         >
-                                          -
+                                          Detector Type
                                         </div>
                                       </td>
                                     </EuiTableRowCell>

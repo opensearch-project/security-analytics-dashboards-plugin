@@ -32,6 +32,7 @@ import { mapFormToRule, mapRuleToForm } from './mappers';
 import { DetectionVisualEditor } from './DetectionVisualEditor';
 import { useCallback } from 'react';
 import { DataStore } from '../../../../store/DataStore';
+import { getLogTypeLabel } from '../../../LogTypes/utils/helpers';
 
 export interface VisualRuleEditorProps {
   initialValue: RuleEditorFormModel;
@@ -75,7 +76,9 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
   const refreshLogTypeOptions = useCallback(async () => {
     const logTypes = await DataStore.logTypes.getLogTypes();
-    setLogTypeOptions(logTypes.map(({ id, name }) => ({ value: id, label: name })));
+    setLogTypeOptions(
+      logTypes.map(({ id, name }) => ({ value: id, label: getLogTypeLabel(name) }))
+    );
   }, []);
 
   const validateTags = (fields: string[]) => {
@@ -284,13 +287,18 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                         options={logTypeOptions}
                         singleSelection={{ asPlainText: true }}
                         onChange={(e) => {
-                          props.handleChange('logType')(e[0]?.label ? e[0].label : '');
+                          props.handleChange('logType')(e[0]?.value ? e[0].value : '');
                         }}
                         onFocus={refreshLogTypeOptions}
                         onBlur={props.handleBlur('logType')}
                         selectedOptions={
                           props.values.logType
-                            ? [{ value: props.values.logType, label: props.values.logType }]
+                            ? [
+                                {
+                                  value: props.values.logType,
+                                  label: getLogTypeLabel(props.values.logType),
+                                },
+                              ]
                             : []
                         }
                       />

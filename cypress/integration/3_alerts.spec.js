@@ -118,7 +118,7 @@ describe('Alerts', () => {
         expect($tr, `timestamp`).to.contain(date);
         expect($tr, `rule name`).to.contain('Cypress USB Rule');
         expect($tr, `detector name`).to.contain(testDetector.name);
-        expect($tr, `log type`).to.contain('windows');
+        expect($tr, `log type`).to.contain('Windows');
       });
 
       // Close the flyout
@@ -189,7 +189,9 @@ describe('Alerts', () => {
         cy.get('[data-test-subj="finding-details-flyout-rule-severity"]').contains('High');
 
         // Confirm the rule category
-        cy.get('[data-test-subj="finding-details-flyout-rule-category"]').contains('Windows');
+        cy.get('[data-test-subj="finding-details-flyout-rule-category"]').contains(
+          'Microsoft Windows'
+        );
 
         // Confirm the rule description
         cy.get('[data-test-subj="finding-details-flyout-rule-description"]').contains(
