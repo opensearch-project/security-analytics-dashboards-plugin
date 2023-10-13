@@ -189,7 +189,9 @@ describe('Alerts', () => {
         cy.get('[data-test-subj="finding-details-flyout-rule-severity"]').contains('High');
 
         // Confirm the rule category
-        cy.get('[data-test-subj="finding-details-flyout-rule-category"]').contains('Windows');
+        cy.get('[data-test-subj="finding-details-flyout-rule-category"]').contains(
+          'Microsoft Windows'
+        );
 
         // Confirm the rule description
         cy.get('[data-test-subj="finding-details-flyout-rule-description"]').contains(
