@@ -306,11 +306,11 @@ export const getPlugins = async (opensearchService: OpenSearchService) => {
 
 export const formatRuleType = (matchingRuleType: string) => {
   const logType = ruleTypes.find(
-    (ruleType) => ruleType.label.toLowerCase() === matchingRuleType.toLowerCase()
+    (ruleType) => ruleType.value.toLowerCase() === matchingRuleType.toLowerCase()
   );
 
   if (logType) {
-    return `${logType.category}: ${_.capitalize(logType.label)}`;
+    return `${logType.category}: ${getLogTypeLabel(logType.value)}`;
   }
 
   return DEFAULT_EMPTY_DATA;
@@ -364,7 +364,7 @@ export function getLogTypeFilterOptions() {
         value: logTypes[i].value,
         view: (
           <span className="euiFlexItem euiFilterSelectItem__content" style={{ paddingLeft: 20 }}>
-            {_.capitalize(logTypes[i].label)}
+            {getLogTypeLabel(logTypes[i].label)}
           </span>
         ),
       });
