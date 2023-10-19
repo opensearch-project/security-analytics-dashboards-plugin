@@ -7,6 +7,81 @@ Object {
     <div>
       <div>
         <div
+          class="euiFormRow"
+          id="some_html_id-row"
+        >
+          <div
+            class="euiFormRow__labelWrapper"
+          >
+            <label
+              aria-invalid="false"
+              class="euiFormLabel euiFormRow__label"
+              for="some_html_id"
+            >
+              <div
+                class="euiText euiText--small"
+              >
+                <p>
+                  Trigger name
+                </p>
+              </div>
+            </label>
+          </div>
+          <div
+            class="euiFormRow__fieldWrapper"
+          >
+            <div
+              class="euiFormControlLayout"
+            >
+              <div
+                class="euiFormControlLayout__childrenWrapper"
+              >
+                <input
+                  class="euiFieldText"
+                  data-test-subj="alert-condition-name-0"
+                  id="some_html_id"
+                  placeholder="Enter a name to describe the alert condition"
+                  type="text"
+                  value="alert_name"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="euiSpacer euiSpacer--l"
+        />
+        <div
+          class="euiFormRow"
+          id="some_html_id-row"
+        >
+          <div
+            class="euiFormRow__labelWrapper"
+          >
+            <label
+              class="euiFormLabel euiFormRow__label"
+              for="some_html_id"
+            >
+              Detection type
+            </label>
+          </div>
+          <div
+            class="euiFormRow__fieldWrapper"
+          >
+            <div
+              class="euiText euiText--medium"
+              id="some_html_id"
+            >
+              <p>
+                Detection rules
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="euiSpacer euiSpacer--l"
+        />
+        <div
           class="euiAccordion"
         >
           <div
@@ -33,7 +108,7 @@ Object {
                   <div
                     class="euiText euiText--small"
                   >
-                    Trigger details and condition
+                    Trigger condition
                   </div>
                   <div
                     class="euiText euiText--small"
@@ -63,62 +138,6 @@ Object {
               <div
                 class="euiAccordion__padding--l"
               >
-                <div
-                  class="euiFormRow"
-                  id="some_html_id-row"
-                >
-                  <div
-                    class="euiFormRow__labelWrapper"
-                  >
-                    <label
-                      aria-invalid="false"
-                      class="euiFormLabel euiFormRow__label"
-                      for="some_html_id"
-                    >
-                      <div
-                        class="euiText euiText--small"
-                      >
-                        <p>
-                          Trigger name
-                        </p>
-                      </div>
-                    </label>
-                  </div>
-                  <div
-                    class="euiFormRow__fieldWrapper"
-                  >
-                    <div
-                      class="euiFormControlLayout"
-                    >
-                      <div
-                        class="euiFormControlLayout__childrenWrapper"
-                      >
-                        <input
-                          class="euiFieldText"
-                          data-test-subj="alert-condition-name-0"
-                          id="some_html_id"
-                          placeholder="Enter a name to describe the alert condition"
-                          type="text"
-                          value="alert_name"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="euiSpacer euiSpacer--xxl"
-                />
-                <div
-                  class="euiText euiText--medium"
-                  style="font-size: 20px;"
-                >
-                  <p>
-                    If a detection rule matches
-                  </p>
-                </div>
-                <div
-                  class="euiSpacer euiSpacer--m"
-                />
                 <div
                   class="euiFormRow"
                   id="some_html_id-row"
@@ -861,6 +880,81 @@ Object {
   "container": <div>
     <div>
       <div
+        class="euiFormRow"
+        id="some_html_id-row"
+      >
+        <div
+          class="euiFormRow__labelWrapper"
+        >
+          <label
+            aria-invalid="false"
+            class="euiFormLabel euiFormRow__label"
+            for="some_html_id"
+          >
+            <div
+              class="euiText euiText--small"
+            >
+              <p>
+                Trigger name
+              </p>
+            </div>
+          </label>
+        </div>
+        <div
+          class="euiFormRow__fieldWrapper"
+        >
+          <div
+            class="euiFormControlLayout"
+          >
+            <div
+              class="euiFormControlLayout__childrenWrapper"
+            >
+              <input
+                class="euiFieldText"
+                data-test-subj="alert-condition-name-0"
+                id="some_html_id"
+                placeholder="Enter a name to describe the alert condition"
+                type="text"
+                value="alert_name"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <div
+        class="euiFormRow"
+        id="some_html_id-row"
+      >
+        <div
+          class="euiFormRow__labelWrapper"
+        >
+          <label
+            class="euiFormLabel euiFormRow__label"
+            for="some_html_id"
+          >
+            Detection type
+          </label>
+        </div>
+        <div
+          class="euiFormRow__fieldWrapper"
+        >
+          <div
+            class="euiText euiText--medium"
+            id="some_html_id"
+          >
+            <p>
+              Detection rules
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <div
         class="euiAccordion"
       >
         <div
@@ -887,7 +981,7 @@ Object {
                 <div
                   class="euiText euiText--small"
                 >
-                  Trigger details and condition
+                  Trigger condition
                 </div>
                 <div
                   class="euiText euiText--small"
@@ -917,62 +1011,6 @@ Object {
             <div
               class="euiAccordion__padding--l"
             >
-              <div
-                class="euiFormRow"
-                id="some_html_id-row"
-              >
-                <div
-                  class="euiFormRow__labelWrapper"
-                >
-                  <label
-                    aria-invalid="false"
-                    class="euiFormLabel euiFormRow__label"
-                    for="some_html_id"
-                  >
-                    <div
-                      class="euiText euiText--small"
-                    >
-                      <p>
-                        Trigger name
-                      </p>
-                    </div>
-                  </label>
-                </div>
-                <div
-                  class="euiFormRow__fieldWrapper"
-                >
-                  <div
-                    class="euiFormControlLayout"
-                  >
-                    <div
-                      class="euiFormControlLayout__childrenWrapper"
-                    >
-                      <input
-                        class="euiFieldText"
-                        data-test-subj="alert-condition-name-0"
-                        id="some_html_id"
-                        placeholder="Enter a name to describe the alert condition"
-                        type="text"
-                        value="alert_name"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="euiSpacer euiSpacer--xxl"
-              />
-              <div
-                class="euiText euiText--medium"
-                style="font-size: 20px;"
-              >
-                <p>
-                  If a detection rule matches
-                </p>
-              </div>
-              <div
-                class="euiSpacer euiSpacer--m"
-              />
               <div
                 class="euiFormRow"
                 id="some_html_id-row"

@@ -4,8 +4,7 @@
  */
 
 import React, { Component } from 'react';
-import { ContentPanel } from '../../../../../../components/ContentPanel';
-import { EuiFormRow, EuiSpacer, EuiComboBox } from '@elastic/eui';
+import { EuiFormRow, EuiSpacer, EuiComboBox, EuiTitle, EuiText } from '@elastic/eui';
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
 import { CreateDetectorRulesState, DetectionRules } from '../DetectionRules/DetectionRules';
 import { RuleItem } from '../DetectionRules/types/interfaces';
@@ -72,17 +71,21 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
     const { detectorType } = this.props;
 
     return (
-      <ContentPanel
-        title={'Detection'}
-        subTitleText={
-          'The available detection rules are automatically populated based on your selected log type. Use the toggles to select detection rules for this detector'
-        }
-        titleSize={'m'}
-      >
+      <>
+        <EuiTitle size="m">
+          <h3>Detection rules</h3>
+        </EuiTitle>
+        <EuiText>
+          <p>
+            The detection rules are automatically populated based on your selected log type. Threat
+            intelligence based detection can be enabled for standard log types.{' '}
+          </p>
+        </EuiText>
+        <EuiSpacer />
         <EuiFormRow
           label={
             <div>
-              <FormFieldHeader headerTitle={'Select a log type you would like to detect'} />
+              <FormFieldHeader headerTitle={'Log type'} />
               <EuiSpacer size={'s'} />
             </div>
           }
@@ -117,7 +120,7 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
         <EuiFormRow fullWidth={true}>
           <ConfigureFieldMapping {...this.props.configureFieldMappingProps} />
         </EuiFormRow>
-      </ContentPanel>
+      </>
     );
   }
 }

@@ -82,6 +82,14 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
 
     if (triggers.length === 0) {
       this.addCondition();
+      this.props.updateDataValidState(DetectorCreationStep.CONFIGURE_ALERTS, true);
+    } else {
+      const isTriggerDataValid =
+        !!triggers.length ||
+        triggers.every((trigger) => {
+          return !!trigger.name && validateName(trigger.name) && trigger.severity;
+        });
+      this.props.updateDataValidState(DetectorCreationStep.CONFIGURE_ALERTS, isTriggerDataValid);
     }
   };
 
@@ -139,7 +147,7 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
 
     let getPageTitle = (): string | JSX.Element => {
       if (isEdit) {
-        return <>Alert triggers (${triggers.length})</>;
+        return <>{`Alert triggers (${triggers.length})`}</>;
       }
 
       return (
@@ -155,8 +163,8 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
     };
 
     const { loading, notificationChannels } = this.state;
-    return (
-      <div>
+    const content = (
+      <>
         {getPageTitle()}
 
         <EuiSpacer size={'m'} />
@@ -216,7 +224,9 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
         <EuiButton disabled={triggers.length >= MAX_ALERT_CONDITIONS} onClick={this.addCondition}>
           {triggers.length > 0 ? 'Add another alert trigger' : 'Add alert triggers'}
         </EuiButton>
-      </div>
+      </>
     );
+
+    return isEdit ? <div>{content}</div> : <EuiPanel>{content}</EuiPanel>;
   }
 }

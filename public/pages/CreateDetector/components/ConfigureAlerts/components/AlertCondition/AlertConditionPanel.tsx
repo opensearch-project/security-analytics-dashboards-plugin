@@ -8,6 +8,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import {
   EuiAccordion,
   EuiButton,
+  EuiButtonGroup,
   EuiComboBox,
   EuiComboBoxOptionOption,
   EuiFieldText,
@@ -17,6 +18,7 @@ import {
   EuiSpacer,
   EuiText,
   EuiTextArea,
+  EuiTitle,
 } from '@elastic/eui';
 import { AlertCondition } from '../../../../../../../models/interfaces';
 import {
@@ -50,12 +52,24 @@ interface AlertConditionPanelState {
   nameIsInvalid: boolean;
   previewToggle: boolean;
   selectedNames: EuiComboBoxOptionOption<string>[];
+  selectedDetectionTypeId: string;
 }
 
 export default class AlertConditionPanel extends Component<
   AlertConditionPanelProps,
   AlertConditionPanelState
 > {
+  private detectionTypeGroupBtns = [
+    {
+      id: 'detection-rules',
+      label: 'Detection rules',
+    },
+    {
+      id: 'threat-intelligence',
+      label: 'Threat intelligence',
+    },
+  ];
+
   constructor(props: AlertConditionPanelProps) {
     super(props);
     this.state = {
@@ -63,6 +77,7 @@ export default class AlertConditionPanel extends Component<
       nameIsInvalid: false,
       previewToggle: false,
       selectedNames: [],
+      selectedDetectionTypeId: this.detectionTypeGroupBtns[0].id,
     };
   }
 
@@ -253,6 +268,7 @@ export default class AlertConditionPanel extends Component<
     const {
       alertCondition = getEmptyAlertCondition(),
       allNotificationChannels,
+      detector: { threat_intel_enabled },
       indexNum,
       loadingNotifications,
       refreshNotificationChannels,
@@ -315,97 +331,123 @@ export default class AlertConditionPanel extends Component<
 
     return (
       <div>
-        <EuiAccordion
-          id={`trigger-details-${indexNum}`}
-          paddingSize="l"
-          initialIsOpen={this.props.isEdit}
-          buttonContent={
-            <div data-test-subj="trigger-details-btn">
-              <EuiText size={'s'}>Trigger details and condition</EuiText>
-              <EuiText size="s" color="subdued">
-                {triggerDetailsSubheading}
-              </EuiText>
-            </div>
+        <EuiFormRow
+          label={
+            <EuiText size="s">
+              <p>Trigger name</p>
+            </EuiText>
           }
+          isInvalid={nameFieldTouched && nameIsInvalid}
+          error={getNameErrorMessage(name, nameIsInvalid, nameFieldTouched)}
         >
-          <EuiFormRow
-            label={
-              <EuiText size="s">
-                <p>Trigger name</p>
-              </EuiText>
-            }
-            isInvalid={nameFieldTouched && nameIsInvalid}
-            error={getNameErrorMessage(name, nameIsInvalid, nameFieldTouched)}
-          >
-            <EuiFieldText
-              placeholder={'Enter a name to describe the alert condition'}
-              readOnly={false}
-              value={name}
-              onBlur={this.onNameBlur}
-              onChange={this.onNameChange}
-              required={nameFieldTouched}
-              data-test-subj={`alert-condition-name-${indexNum}`}
+          <EuiFieldText
+            placeholder={'Enter a name to describe the alert condition'}
+            readOnly={false}
+            value={name}
+            onBlur={this.onNameBlur}
+            onChange={this.onNameChange}
+            required={nameFieldTouched}
+            data-test-subj={`alert-condition-name-${indexNum}`}
+          />
+        </EuiFormRow>
+        <EuiSpacer size={'l'} />
+
+        <EuiFormRow label="Detection type">
+          {threat_intel_enabled ? (
+            <EuiButtonGroup
+              legend="Detection type button group"
+              options={this.detectionTypeGroupBtns}
+              idSelected={this.state.selectedDetectionTypeId}
+              onChange={(id: string) => {
+                this.setState({ selectedDetectionTypeId: id });
+              }}
+              isFullWidth
             />
-          </EuiFormRow>
-
-          <EuiSpacer size={'xxl'} />
-          <EuiText size="m" style={{ fontSize: 20 }}>
-            <p>If a detection rule matches</p>
-          </EuiText>
-          <EuiSpacer size={'m'} />
-
-          <EuiFormRow
-            label={
-              <EuiText size="s">
-                <p>Rule names</p>
-              </EuiText>
-            }
-          >
-            <EuiComboBox
-              placeholder={'Any rules'}
-              options={namesOptions}
-              onChange={this.onRuleNamesChange}
-              selectedOptions={selectedNames}
-              data-test-subj={`alert-rulename-combo-box`}
-            />
-          </EuiFormRow>
-          <EuiSpacer size={'m'} />
-
-          <EuiFormRow
-            label={
-              <EuiText size="s">
-                <p>Rule Severities</p>
-              </EuiText>
-            }
-          >
-            <EuiComboBox
-              placeholder={'Any severities'}
-              options={ruleSeverityOptions}
-              onChange={this.onRuleSeverityChange}
-              noSuggestions={false}
-              selectedOptions={createSelectedOptions(ruleSeverityLevels)}
-              data-test-subj={`alert-severity-combo-box`}
-            />
-          </EuiFormRow>
-          <EuiSpacer size={'m'} />
-
-          <EuiFormRow
-            label={
-              <EuiText size="s">
-                <p>Tags</p>
-              </EuiText>
+          ) : (
+            <EuiText>
+              <p>Detection rules</p>
+            </EuiText>
+          )}
+        </EuiFormRow>
+        <EuiSpacer size={'l'} />
+        {threat_intel_enabled && this.state.selectedDetectionTypeId === 'threat-intelligence' ? (
+          <>
+            <EuiTitle size="xs">
+              <h4>Trigger condition</h4>
+            </EuiTitle>
+            <EuiText>
+              <p>
+                An alert will be generated when any match is found by the threat intelligence feed.
+              </p>
+            </EuiText>
+          </>
+        ) : (
+          <EuiAccordion
+            id={`trigger-details-${indexNum}`}
+            paddingSize="l"
+            initialIsOpen={this.props.isEdit}
+            buttonContent={
+              <div data-test-subj="trigger-details-btn">
+                <EuiText size={'s'}>Trigger condition</EuiText>
+                <EuiText size="s" color="subdued">
+                  {triggerDetailsSubheading}
+                </EuiText>
+              </div>
             }
           >
-            <EuiComboBox
-              placeholder={'Any tags'}
-              options={tagsOptions}
-              onChange={this.onTagsChange}
-              onCreateOption={this.onCreateTag}
-              selectedOptions={createSelectedOptions(tags)}
-              data-test-subj={'alert-tags-combo-box'}
-            />
-          </EuiFormRow>
-        </EuiAccordion>
+            <EuiFormRow
+              label={
+                <EuiText size="s">
+                  <p>Rule names</p>
+                </EuiText>
+              }
+            >
+              <EuiComboBox
+                placeholder={'Any rules'}
+                options={namesOptions}
+                onChange={this.onRuleNamesChange}
+                selectedOptions={selectedNames}
+                data-test-subj={`alert-rulename-combo-box`}
+              />
+            </EuiFormRow>
+            <EuiSpacer size={'m'} />
+
+            <EuiFormRow
+              label={
+                <EuiText size="s">
+                  <p>Rule Severities</p>
+                </EuiText>
+              }
+            >
+              <EuiComboBox
+                placeholder={'Any severities'}
+                options={ruleSeverityOptions}
+                onChange={this.onRuleSeverityChange}
+                noSuggestions={false}
+                selectedOptions={createSelectedOptions(ruleSeverityLevels)}
+                data-test-subj={`alert-severity-combo-box`}
+              />
+            </EuiFormRow>
+            <EuiSpacer size={'m'} />
+
+            <EuiFormRow
+              label={
+                <EuiText size="s">
+                  <p>Tags</p>
+                </EuiText>
+              }
+            >
+              <EuiComboBox
+                placeholder={'Any tags'}
+                options={tagsOptions}
+                onChange={this.onTagsChange}
+                onCreateOption={this.onCreateTag}
+                selectedOptions={createSelectedOptions(tags)}
+                data-test-subj={'alert-tags-combo-box'}
+              />
+            </EuiFormRow>
+          </EuiAccordion>
+        )}
 
         <EuiSpacer size={'l'} />
 

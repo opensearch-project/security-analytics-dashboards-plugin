@@ -5,7 +5,7 @@
 
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { EuiSpacer, EuiTitle, EuiText, EuiCallOut } from '@elastic/eui';
+import { EuiSpacer, EuiCallOut } from '@elastic/eui';
 import { PeriodSchedule } from '../../../../../../models/interfaces';
 import DetectorBasicDetailsForm from '../components/DetectorDetails';
 import DetectorDataSource from '../components/DetectorDataSource';
@@ -20,6 +20,9 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { logTypesWithDashboards } from '../../../../../utils/constants';
 import { Detector, DetectorCreationStep, FieldMapping } from '../../../../../../types';
 import { ConfigureFieldMappingProps } from '../../ConfigureFieldMapping/containers/ConfigureFieldMapping';
+import { ContentPanel } from '../../../../../components/ContentPanel';
+import { ruleTypes } from '../../../../Rules/utils/constants';
+import { ThreatIntelligence } from '../components/ThreatIntelligence/ThreatIntelligence';
 
 interface DefineDetectorProps extends RouteComponentProps {
   detector: Detector;
@@ -43,6 +46,10 @@ interface DefineDetectorState {
 }
 
 export default class DefineDetector extends Component<DefineDetectorProps, DefineDetectorState> {
+  private standardLogTypes = new Set(
+    ruleTypes.filter((ruleType) => ruleType.isStandard).map(({ value }) => value)
+  );
+
   constructor(props: DefineDetectorProps) {
     super(props);
     this.state = {
@@ -123,6 +130,16 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
     const newDetector: Detector = {
       ...this.state.detector,
       detector_type: detectorType,
+      threat_intel_enabled: this.standardLogTypes.has(detectorType),
+    };
+
+    this.updateDetectorCreationState(newDetector);
+  };
+
+  onThreatIntelligenceChanged = (checked: boolean) => {
+    const newDetector: Detector = {
+      ...this.state.detector,
+      threat_intel_enabled: checked,
     };
 
     this.updateDetectorCreationState(newDetector);
@@ -186,7 +203,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
       replaceFieldMappings,
     } = this.props;
     const { detector } = this.state;
-    const { name, inputs, detector_type } = this.props.detector;
+    const { name, inputs, detector_type, threat_intel_enabled } = this.props.detector;
     const { description, indices } = inputs[0].detector_input;
     const configureFieldMappingProps: ConfigureFieldMappingProps = {
       ...this.props,
@@ -200,16 +217,12 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
     };
 
     return (
-      <div>
-        <EuiTitle size={'m'}>
-          <h3>{`${isEdit ? 'Edit' : 'Define'} detector`}</h3>
-        </EuiTitle>
-
-        <EuiText size="s" color="subdued">
-          Configure your detector to identify relevant security findings and potential threats from
-          your log data.
-        </EuiText>
-
+      <ContentPanel
+        title={`${isEdit ? 'Edit' : 'Define'} detector`}
+        subTitleText={
+          'Configure your detector to identify relevant security findings and potential threats from your log data.'
+        }
+      >
         <EuiSpacer size={'m'} />
 
         <DetectorBasicDetailsForm
@@ -230,7 +243,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
           onDetectorInputIndicesChange={this.onDetectorInputIndicesChange}
         />
 
-        <EuiSpacer size={'m'} />
+        <EuiSpacer size={'l'} />
 
         <DetectorType
           detectorType={detector_type}
@@ -244,6 +257,13 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
         />
 
         <EuiSpacer size={'m'} />
+
+        {this.standardLogTypes.has(detector_type) && (
+          <ThreatIntelligence
+            threatIntelChecked={threat_intel_enabled}
+            onThreatIntelChange={this.onThreatIntelligenceChanged}
+          />
+        )}
 
         {logTypesWithDashboards.has(detector_type) ? (
           <>
@@ -266,7 +286,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
           detector={detector}
           onDetectorScheduleChange={this.onDetectorScheduleChange}
         />
-      </div>
+      </ContentPanel>
     );
   }
 }

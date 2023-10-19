@@ -37,7 +37,7 @@ const dataSourceLabel = 'Select or input source indexes or index patterns';
 
 const getDataSourceField = () => cy.getFieldByLabel(dataSourceLabel);
 
-const logTypeLabel = 'Select a log type you would like to detect';
+const logTypeLabel = 'Log type';
 
 const getLogTypeField = () => cy.getFieldByLabel(logTypeLabel);
 

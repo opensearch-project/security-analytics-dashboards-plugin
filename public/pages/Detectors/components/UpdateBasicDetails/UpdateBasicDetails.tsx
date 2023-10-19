@@ -8,6 +8,7 @@ import {
   EuiComboBoxOptionOption,
   EuiFlexGroup,
   EuiFlexItem,
+  EuiPanel,
   EuiSpacer,
   EuiTitle,
 } from '@elastic/eui';
@@ -244,46 +245,50 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
   }, [detector, fieldMappings]);
 
   return (
-    <div>
+    <>
       <EuiTitle size={'m'}>
         <h3>Edit detector details</h3>
       </EuiTitle>
       <EuiSpacer size="xxl" />
 
-      <DetectorBasicDetailsForm
-        isEdit={true}
-        detectorName={name}
-        detectorDescription={description}
-        onDetectorNameChange={onDetectorNameChange}
-        onDetectorInputDescriptionChange={onDetectorInputDescriptionChange}
-      />
-      <EuiSpacer size="xl" />
+      <EuiPanel>
+        <DetectorBasicDetailsForm
+          isEdit={true}
+          detectorName={name}
+          detectorDescription={description}
+          onDetectorNameChange={onDetectorNameChange}
+          onDetectorInputDescriptionChange={onDetectorInputDescriptionChange}
+        />
+        <EuiSpacer size="xl" />
 
-      <DetectorDataSource
-        isEdit={true}
-        detector_type={detector.detector_type}
-        notifications={props.notifications}
-        indexService={services?.indexService as IndexService}
-        detectorIndices={inputs[0].detector_input.indices}
-        fieldMappingService={services?.fieldMappingService as FieldMappingService}
-        onDetectorInputIndicesChange={onDetectorInputIndicesChange}
-      />
-      <EuiSpacer size={'xl'} />
+        <DetectorDataSource
+          isEdit={true}
+          detector_type={detector.detector_type}
+          notifications={props.notifications}
+          indexService={services?.indexService as IndexService}
+          detectorIndices={inputs[0].detector_input.indices}
+          fieldMappingService={services?.fieldMappingService as FieldMappingService}
+          onDetectorInputIndicesChange={onDetectorInputIndicesChange}
+        />
+        <EuiSpacer size={'xl'} />
 
-      <DetectorSchedule detector={detector} onDetectorScheduleChange={onDetectorScheduleChange} />
-      <EuiSpacer size="xl" />
+        <DetectorSchedule detector={detector} onDetectorScheduleChange={onDetectorScheduleChange} />
+        <EuiSpacer size="xl" />
 
-      {fieldMappingsIsVisible ? (
-        <>
-          <ReviewFieldMappings
-            {...props}
-            detector={detector}
-            fieldMappingService={services?.fieldMappingService}
-            onFieldMappingChange={onFieldMappingChange}
-          />
-          <EuiSpacer size="xl" />
-        </>
-      ) : null}
+        {fieldMappingsIsVisible ? (
+          <>
+            <ReviewFieldMappings
+              {...props}
+              detector={detector}
+              fieldMappingService={services?.fieldMappingService}
+              onFieldMappingChange={onFieldMappingChange}
+            />
+            <EuiSpacer size="xl" />
+          </>
+        ) : null}
+      </EuiPanel>
+
+      <EuiSpacer />
 
       <EuiFlexGroup justifyContent="flexEnd">
         <EuiFlexItem grow={false}>
@@ -303,6 +308,6 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
           </EuiButton>
         </EuiFlexItem>
       </EuiFlexGroup>
-    </div>
+    </>
   );
 };
