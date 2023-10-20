@@ -78,5 +78,6 @@ export function getEmptyAlertCondition(conditionName: string = ''): AlertConditi
     types: [],
     severity: '1',
     ids: [],
+    threat_intel_enabled: true,
   };
 }

@@ -145,7 +145,7 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
         name: 'Finding ID',
         sortable: true,
         dataType: 'string',
-        render: (id, finding) =>
+        render: (id, finding: any) =>
           (
             <EuiLink
               onClick={() => {
@@ -157,7 +157,10 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
                     ...finding,
                     detector: { _id: detector.id as string, _index: '', _source: detector },
                     ruleName: rule.title,
-                    ruleSeverity: rule.level,
+                    ruleSeverity:
+                      rule.level === 'critical'
+                        ? rule.level
+                        : finding['ruleSeverity'] || rule.level,
                   },
                   [...this.state.findingItems, finding],
                   true,

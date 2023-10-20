@@ -40,7 +40,7 @@ export class OverviewViewModelActor {
     if (res?.ok) {
       this.overviewViewModel.detectors = res.response.hits.hits;
     } else if (!res?.error.includes('no such index')) {
-      errorNotificationToast(this.notifications, 'retrieve', 'detectors', res.error);
+      errorNotificationToast(this.notifications, 'retrieve', 'detectors', res?.error);
     }
   }
 
@@ -83,7 +83,7 @@ export class OverviewViewModelActor {
         if (findingRes?.ok) {
           const logType = detectorInfo.get(id)?.logType;
           const detectorName = detectorInfo.get(id)?.name || '';
-          const detectorFindings: FindingItem[] = findingRes.response.findings.map((finding) => {
+          const detectorFindings: any[] = findingRes.response.findings.map((finding) => {
             const ids = finding.queries.map((query) => query.id);
             ids.forEach((id) => ruleIds.add(id));
 
@@ -103,19 +103,24 @@ export class OverviewViewModelActor {
           });
           findingItems = findingItems.concat(detectorFindings);
         } else {
-          errorNotificationToast(this.notifications, 'retrieve', 'findings', findingRes.error);
+          errorNotificationToast(this.notifications, 'retrieve', 'findings', findingRes?.error);
         }
       }
-    } catch (e) {
+    } catch (e: any) {
       errorNotificationToast(this.notifications, 'retrieve', 'findings', e);
     }
 
     const rulesRes = await this.getRules([...ruleIds]);
-    findingItems = findingItems.map((item) => ({
-      ...item,
-      ruleName: rulesRes[item.ruleId]?.title || DEFAULT_EMPTY_DATA,
-      ruleSeverity: rulesRes[item.ruleId]?.level || DEFAULT_EMPTY_DATA,
-    }));
+    findingItems = findingItems.map((item) => {
+      const level = rulesRes[item.ruleId]?.level;
+      const severity = level === 'critical' ? level : item['ruleSeverity'] || level;
+
+      return {
+        ...item,
+        ruleName: rulesRes[item.ruleId]?.title || DEFAULT_EMPTY_DATA,
+        ruleSeverity: severity || DEFAULT_EMPTY_DATA,
+      };
+    });
 
     this.overviewViewModel.findings = this.filterChartDataByTime(findingItems);
   }
@@ -144,10 +149,10 @@ export class OverviewViewModelActor {
           }));
           alertItems = alertItems.concat(detectorAlertItems);
         } else {
-          errorNotificationToast(this.notifications, 'retrieve', 'alerts', alertsRes.error);
+          errorNotificationToast(this.notifications, 'retrieve', 'alerts', alertsRes?.error);
         }
       }
-    } catch (e) {
+    } catch (e: any) {
       errorNotificationToast(this.notifications, 'retrieve', 'alerts', e);
     }
 
@@ -185,10 +190,10 @@ export class OverviewViewModelActor {
     this.refreshState = 'Complete';
   }
 
-  private filterChartDataByTime = (chartData) => {
+  private filterChartDataByTime = (chartData: any) => {
     const startMoment = dateMath.parse(this.startTime);
     const endMoment = dateMath.parse(this.endTime);
-    return chartData.filter((dataItem) => {
+    return chartData.filter((dataItem: any) => {
       return moment(dataItem.time).isBetween(moment(startMoment), moment(endMoment));
     });
   };

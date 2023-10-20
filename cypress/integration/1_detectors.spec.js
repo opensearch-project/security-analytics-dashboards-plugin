@@ -125,7 +125,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
 
   fillDetailsForm(detectorName, dataSource);
 
-  cy.getElementByText('.euiAccordion .euiTitle', 'Detection rules (14 selected)')
+  cy.getElementByText('.euiAccordion .euiTitle', 'Selected detection rules (14)')
     .click({ force: true, timeout: 5000 })
     .then(() => cy.contains('.euiTable .euiTableRow', 'Dns'));
 
@@ -149,8 +149,6 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
     .find('input')
     .focus()
     .blur();
-
-  cy.getFieldByLabel('Specify alert severity').selectComboboxItem('1 (Highest)');
 
   cy.intercept('POST', '/_plugins/_security_analytics/mappings').as('createMappingsRequest');
   cy.intercept('POST', '/_plugins/_security_analytics/detectors').as('createDetectorRequest');

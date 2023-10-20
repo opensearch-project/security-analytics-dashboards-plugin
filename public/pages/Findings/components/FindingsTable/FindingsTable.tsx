@@ -73,8 +73,8 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
     };
   }
 
-  componentDidMount = async () => {
-    await this.filterFindings();
+  componentDidMount = () => {
+    this.filterFindings();
   };
 
   componentDidUpdate(prevProps: Readonly<FindingsTableProps>) {
@@ -181,29 +181,20 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
           ) || DEFAULT_EMPTY_DATA,
       },
       {
-        field: 'ruleName',
-        name: 'Rule name',
-        sortable: true,
-        dataType: 'string',
-        render: (ruleName: string) => ruleName || DEFAULT_EMPTY_DATA,
-      },
-      {
         field: 'detectorName',
-        name: 'Threat detector',
+        name: 'Detector',
         sortable: true,
         dataType: 'string',
         render: (name: string) => name || DEFAULT_EMPTY_DATA,
       },
       {
-        field: 'logType',
-        name: 'Log type',
-        sortable: true,
-        dataType: 'string',
-        render: (logType: string) => formatRuleType(logType),
+        field: 'detectionType',
+        name: 'Detection type',
+        render: (detectionType: string) => detectionType || DEFAULT_EMPTY_DATA,
       },
       {
         field: 'ruleSeverity',
-        name: 'Rule severity',
+        name: 'Severity',
         sortable: true,
         dataType: 'string',
         align: 'left',
@@ -217,6 +208,13 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
             </EuiBadge>
           );
         },
+      },
+      {
+        field: 'logType',
+        name: 'Log type',
+        sortable: true,
+        dataType: 'string',
+        render: (logType: string) => formatRuleType(logType),
       },
       {
         name: 'Actions',
@@ -270,7 +268,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         {
           type: 'field_value_selection',
           field: 'ruleSeverity',
-          name: 'Rule severity',
+          name: 'Severity',
           options: Array.from(severities).map((severity) => {
             const name =
               parseAlertSeverityToOption(severity)?.label || capitalizeFirstLetter(severity);
@@ -286,6 +284,22 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
             value: type,
             name: formatRuleType(type),
           })),
+          multiSelect: 'or',
+        } as FieldValueSelectionFilterConfigType,
+        {
+          type: 'field_value_selection',
+          field: 'detectionType',
+          name: 'Detection type',
+          options: [
+            {
+              value: 'Detection rules',
+              name: 'Detection rules',
+            },
+            {
+              value: 'Threat intelligence',
+              name: 'Threat intelligence',
+            },
+          ],
           multiSelect: 'or',
         } as FieldValueSelectionFilterConfigType,
       ],

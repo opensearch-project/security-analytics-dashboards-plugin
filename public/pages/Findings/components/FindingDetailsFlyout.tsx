@@ -45,6 +45,7 @@ import { CorrelationFinding, RuleItemInfoBase } from '../../../../types';
 import { FindingFlyoutTabId, FindingFlyoutTabs } from '../utils/constants';
 import { DataStore } from '../../../store/DataStore';
 import { CorrelationsTable } from './CorrelationsTable/CorrelationsTable';
+import { getSeverityColor } from '../../Correlations/utils/constants';
 
 export interface FindingDetailsFlyoutBaseProps {
   finding: FindingItemType;
@@ -441,17 +442,44 @@ export default class FindingDetailsFlyout extends Component<
 
   private createFindingDetails(isDocumentLoading: boolean) {
     const {
-      finding: { queries },
+      finding: { queries, detectionType },
     } = this.props;
+
+    const showThreatDetectionInfo = detectionType.includes('Threat');
+    const showRuleDetailsInfo = detectionType.includes('Detection');
+    const severity = 'High';
+    const { background, text } = getSeverityColor(severity);
 
     return (
       <>
-        <EuiTitle size={'s'}>
-          <h3>Rule details</h3>
-        </EuiTitle>
-        <EuiSpacer size={'m'} />
-        {this.renderRuleDetails(queries)}
-        <EuiSpacer size="l" />
+        {showThreatDetectionInfo && (
+          <>
+            <EuiTitle size={'s'}>
+              <h3>Threat intelligence feed</h3>
+            </EuiTitle>
+            <EuiSpacer size={'m'} />
+            <div>
+              Severity{' '}
+              <EuiBadge color={background} style={{ color: text }}>
+                {severity}
+              </EuiBadge>
+            </div>
+            <EuiSpacer size="s" />
+            <EuiText>
+              <p>This finding is generated from a threat intelligence feed IOCs.</p>
+            </EuiText>
+            <EuiSpacer size={'l'} />
+          </>
+        )}
+        {showRuleDetailsInfo && (
+          <>
+            <EuiTitle size={'s'}>
+              <h3>Rule details</h3>
+            </EuiTitle>
+            {this.renderRuleDetails(queries)}
+            <EuiSpacer size="l" />
+          </>
+        )}
         {this.renderFindingDocuments(isDocumentLoading)}
       </>
     );
@@ -460,14 +488,7 @@ export default class FindingDetailsFlyout extends Component<
   render() {
     const { backButton } = this.props;
     const {
-      finding: {
-        id,
-        detector: {
-          _id,
-          _source: { name },
-        },
-        timestamp,
-      },
+      finding: { id, timestamp, detectionType },
     } = this.props;
     const { isDocumentLoading } = this.state;
     return (
@@ -529,14 +550,8 @@ export default class FindingDetailsFlyout extends Component<
             </EuiFlexItem>
 
             <EuiFlexItem>
-              <EuiFormRow label={'Detector'}>
-                <EuiLink
-                  href={`#${ROUTES.DETECTOR_DETAILS}/${_id}`}
-                  target={'_blank'}
-                  data-test-subj={'finding-details-flyout-detector-link'}
-                >
-                  {name || DEFAULT_EMPTY_DATA}
-                </EuiLink>
+              <EuiFormRow label={'Detection type'}>
+                <EuiText>{detectionType}</EuiText>
               </EuiFormRow>
             </EuiFlexItem>
           </EuiFlexGroup>
