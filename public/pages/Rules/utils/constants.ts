@@ -5,7 +5,13 @@
 
 import { euiPaletteForStatus } from '@elastic/eui';
 
-export const ruleTypes: { label: string; value: string; id: string; category: string }[] = [];
+export const ruleTypes: {
+  label: string;
+  value: string;
+  id: string;
+  category: string;
+  isStandard: boolean;
+}[] = [];
 
 const paletteColors = euiPaletteForStatus(5);
 

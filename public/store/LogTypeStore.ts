@@ -55,11 +55,12 @@ export class LogTypeStore {
         0,
         ruleTypes.length,
         ...logTypes
-          .map(({ category, id, name }) => ({
+          .map(({ category, id, name, source }) => ({
             label: getLogTypeLabel(name),
             value: name,
             id,
             category,
+            isStandard: source === 'Standard',
           }))
           .sort((a, b) => {
             return a.label < b.label ? -1 : a.label > b.label ? 1 : 0;

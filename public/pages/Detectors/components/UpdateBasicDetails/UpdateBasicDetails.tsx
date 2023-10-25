@@ -8,6 +8,7 @@ import {
   EuiComboBoxOptionOption,
   EuiFlexGroup,
   EuiFlexItem,
+  EuiPanel,
   EuiSpacer,
   EuiTitle,
 } from '@elastic/eui';
@@ -27,6 +28,7 @@ import { errorNotificationToast, successNotificationToast } from '../../../../ut
 import { CoreServicesContext } from '../../../../components/core_services';
 import ReviewFieldMappings from '../ReviewFieldMappings/ReviewFieldMappings';
 import { FieldMapping, Detector } from '../../../../../types';
+import { ThreatIntelligence } from '../../../CreateDetector/components/DefineDetector/components/ThreatIntelligence/ThreatIntelligence';
 
 export interface UpdateDetectorBasicDetailsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
@@ -47,6 +49,11 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
   const detectorId = props.location.pathname.replace(`${ROUTES.EDIT_DETECTOR_DETAILS}/`, '');
 
   const context = useContext(CoreServicesContext);
+  const [threatIntelEnabledInitially, setThreatIntelEnabledInitially] = useState(false);
+
+  useEffect(() => {
+    setThreatIntelEnabledInitially(detector.threat_intel_enabled);
+  }, []);
 
   useEffect(() => {
     const getDetector = async () => {
@@ -165,6 +172,19 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
     [detector, updateDetectorState, setFieldMappingsIsVisible]
   );
 
+  const onThreatIntelFeedToggle = useCallback(
+    (enabled: boolean) => {
+      const newDetector: Detector = {
+        ...detector,
+        threat_intel_enabled: enabled,
+      };
+
+      setFieldMappingsIsVisible(!threatIntelEnabledInitially && enabled);
+      updateDetectorState(newDetector);
+    },
+    [detector, updateDetectorState, setFieldMappingsIsVisible]
+  );
+
   const onDetectorScheduleChange = useCallback(
     (schedule: PeriodSchedule) => {
       const newDetector: Detector = {
@@ -244,46 +264,57 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
   }, [detector, fieldMappings]);
 
   return (
-    <div>
+    <>
       <EuiTitle size={'m'}>
         <h3>Edit detector details</h3>
       </EuiTitle>
-      <EuiSpacer size="xxl" />
-
-      <DetectorBasicDetailsForm
-        isEdit={true}
-        detectorName={name}
-        detectorDescription={description}
-        onDetectorNameChange={onDetectorNameChange}
-        onDetectorInputDescriptionChange={onDetectorInputDescriptionChange}
-      />
       <EuiSpacer size="xl" />
 
-      <DetectorDataSource
-        isEdit={true}
-        detector_type={detector.detector_type}
-        notifications={props.notifications}
-        indexService={services?.indexService as IndexService}
-        detectorIndices={inputs[0].detector_input.indices}
-        fieldMappingService={services?.fieldMappingService as FieldMappingService}
-        onDetectorInputIndicesChange={onDetectorInputIndicesChange}
-      />
-      <EuiSpacer size={'xl'} />
+      <EuiPanel>
+        <DetectorBasicDetailsForm
+          isEdit={true}
+          detectorName={name}
+          detectorDescription={description}
+          onDetectorNameChange={onDetectorNameChange}
+          onDetectorInputDescriptionChange={onDetectorInputDescriptionChange}
+        />
+        <EuiSpacer size="l" />
 
-      <DetectorSchedule detector={detector} onDetectorScheduleChange={onDetectorScheduleChange} />
-      <EuiSpacer size="xl" />
+        <DetectorDataSource
+          isEdit={true}
+          detector_type={detector.detector_type}
+          notifications={props.notifications}
+          indexService={services?.indexService as IndexService}
+          detectorIndices={inputs[0].detector_input.indices}
+          fieldMappingService={services?.fieldMappingService as FieldMappingService}
+          onDetectorInputIndicesChange={onDetectorInputIndicesChange}
+        />
+        <EuiSpacer size={'l'} />
 
-      {fieldMappingsIsVisible ? (
-        <>
-          <ReviewFieldMappings
-            {...props}
-            detector={detector}
-            fieldMappingService={services?.fieldMappingService}
-            onFieldMappingChange={onFieldMappingChange}
-          />
-          <EuiSpacer size="xl" />
-        </>
-      ) : null}
+        <ThreatIntelligence
+          threatIntelChecked={detector.threat_intel_enabled}
+          onThreatIntelChange={onThreatIntelFeedToggle}
+        />
+
+        <EuiSpacer size="l" />
+
+        <DetectorSchedule detector={detector} onDetectorScheduleChange={onDetectorScheduleChange} />
+        <EuiSpacer size="l" />
+
+        {fieldMappingsIsVisible ? (
+          <>
+            <ReviewFieldMappings
+              {...props}
+              detector={detector}
+              fieldMappingService={services?.fieldMappingService}
+              onFieldMappingChange={onFieldMappingChange}
+            />
+            <EuiSpacer size="l" />
+          </>
+        ) : null}
+      </EuiPanel>
+
+      <EuiSpacer />
 
       <EuiFlexGroup justifyContent="flexEnd">
         <EuiFlexItem grow={false}>
@@ -303,6 +334,6 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
           </EuiButton>
         </EuiFlexItem>
       </EuiFlexGroup>
-    </div>
+    </>
   );
 };

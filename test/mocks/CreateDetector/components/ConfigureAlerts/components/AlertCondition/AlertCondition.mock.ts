@@ -24,4 +24,5 @@ export default {
     };
   }),
   severity: '1',
+  detection_types: ['rules'],
 } as AlertCondition;

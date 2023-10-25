@@ -52,7 +52,7 @@ Object {
                 class="euiAccordion__padding--m"
               >
                 <div
-                  class="euiSpacer euiSpacer--m"
+                  class="euiSpacer euiSpacer--s"
                 />
                 <div
                   class="euiFormRow euiFormRow--fullWidth"
@@ -65,15 +65,7 @@ Object {
                       class="euiFormLabel euiFormRow__label"
                       for="some_html_id"
                     >
-                      <div
-                        class="euiText euiText--medium"
-                      >
-                        <div
-                          class="euiTextColor euiTextColor--subdued"
-                        >
-                          Trigger name
-                        </div>
-                      </div>
+                      Trigger name
                     </label>
                   </div>
                   <div
@@ -89,98 +81,49 @@ Object {
                   </div>
                 </div>
                 <div
-                  class="euiSpacer euiSpacer--xl"
+                  class="euiSpacer euiSpacer--l"
                 />
-                <h5
+                <h4
                   class="euiTitle euiTitle--small"
                 >
-                  If any detection rule matches
+                  Trigger condition 
+                </h4>
+                <h5
+                  class="euiTitle euiTitle--xsmall"
+                >
+                  For detection rules
                 </h5>
                 <div
-                  class="euiSpacer euiSpacer--m"
+                  class="euiSpacer euiSpacer--s"
                 />
                 <div
-                  class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
+                  class="euiFormRow euiFormRow--fullWidth"
+                  id="some_html_id-row"
                 >
                   <div
-                    class="euiFlexItem"
+                    class="euiFormRow__labelWrapper"
                   >
-                    <div
-                      class="euiFormRow euiFormRow--fullWidth"
-                      id="some_html_id-row"
+                    <label
+                      class="euiFormLabel euiFormRow__label"
+                      for="some_html_id"
                     >
-                      <div
-                        class="euiFormRow__labelWrapper"
-                      >
-                        <label
-                          class="euiFormLabel euiFormRow__label"
-                          for="some_html_id"
-                        >
-                          <div
-                            class="euiText euiText--medium"
-                          >
-                            <div
-                              class="euiTextColor euiTextColor--subdued"
-                            >
-                              Log type
-                            </div>
-                          </div>
-                        </label>
-                      </div>
-                      <div
-                        class="euiFormRow__fieldWrapper"
-                      >
-                        <div
-                          class="euiText euiText--medium"
-                          data-test-subj="text-details-group-content-log-type"
-                          id="some_html_id"
-                        >
-                          detector_type_1
-                        </div>
-                      </div>
-                    </div>
+                      Rule names
+                    </label>
                   </div>
                   <div
-                    class="euiFlexItem"
+                    class="euiFormRow__fieldWrapper"
                   >
                     <div
-                      class="euiFormRow euiFormRow--fullWidth"
-                      id="some_html_id-row"
+                      class="euiText euiText--medium"
+                      data-test-subj="text-details-group-content-rule-names"
+                      id="some_html_id"
                     >
-                      <div
-                        class="euiFormRow__labelWrapper"
-                      >
-                        <label
-                          class="euiFormLabel euiFormRow__label"
-                          for="some_html_id"
-                        >
-                          <div
-                            class="euiText euiText--medium"
-                          >
-                            <div
-                              class="euiTextColor euiTextColor--subdued"
-                            >
-                              Rule names
-                            </div>
-                          </div>
-                        </label>
-                      </div>
-                      <div
-                        class="euiFormRow__fieldWrapper"
-                      >
-                        <div
-                          class="euiText euiText--medium"
-                          data-test-subj="text-details-group-content-rule-names"
-                          id="some_html_id"
-                        >
-                          -
-                        </div>
-                      </div>
+                      Any rule
                     </div>
                   </div>
                 </div>
                 <div
-                  class="euiSpacer euiSpacer--xl"
+                  class="euiSpacer euiSpacer--l"
                 />
                 <div
                   class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
@@ -199,15 +142,7 @@ Object {
                           class="euiFormLabel euiFormRow__label"
                           for="some_html_id"
                         >
-                          <div
-                            class="euiText euiText--medium"
-                          >
-                            <div
-                              class="euiTextColor euiTextColor--subdued"
-                            >
-                              Rule severities
-                            </div>
-                          </div>
+                          Rule severities
                         </label>
                       </div>
                       <div
@@ -237,15 +172,7 @@ Object {
                           class="euiFormLabel euiFormRow__label"
                           for="some_html_id"
                         >
-                          <div
-                            class="euiText euiText--medium"
-                          >
-                            <div
-                              class="euiTextColor euiTextColor--subdued"
-                            >
-                              Tags
-                            </div>
-                          </div>
+                          Tags
                         </label>
                       </div>
                       <div
@@ -263,10 +190,7 @@ Object {
                   </div>
                 </div>
                 <div
-                  class="euiSpacer euiSpacer--xl"
-                />
-                <div
-                  class="euiSpacer euiSpacer--xl"
+                  class="euiSpacer euiSpacer--l"
                 />
                 <h5
                   class="euiTitle euiTitle--small"
@@ -287,15 +211,7 @@ Object {
                       class="euiFormLabel euiFormRow__label"
                       for="some_html_id"
                     >
-                      <div
-                        class="euiText euiText--medium"
-                      >
-                        <div
-                          class="euiTextColor euiTextColor--subdued"
-                        >
-                          Trigger alerts with severity
-                        </div>
-                      </div>
+                      Trigger alerts with severity
                     </label>
                   </div>
                   <div
@@ -314,6 +230,9 @@ Object {
                   class="euiSpacer euiSpacer--l"
                 />
                 <div
+                  class="euiSpacer euiSpacer--l"
+                />
+                <div
                   class="euiFormRow euiFormRow--fullWidth"
                   id="some_html_id-row"
                 >
@@ -324,15 +243,7 @@ Object {
                       class="euiFormLabel euiFormRow__label"
                       for="some_html_id"
                     >
-                      <div
-                        class="euiText euiText--medium"
-                      >
-                        <div
-                          class="euiTextColor euiTextColor--subdued"
-                        >
-                          Notify channel
-                        </div>
-                      </div>
+                      Notify channel
                     </label>
                   </div>
                   <div
@@ -351,6 +262,9 @@ Object {
                     </div>
                   </div>
                 </div>
+                <div
+                  class="euiSpacer euiSpacer--l"
+                />
               </div>
             </div>
           </div>
@@ -406,7 +320,7 @@ Object {
               class="euiAccordion__padding--m"
             >
               <div
-                class="euiSpacer euiSpacer--m"
+                class="euiSpacer euiSpacer--s"
               />
               <div
                 class="euiFormRow euiFormRow--fullWidth"
@@ -419,15 +333,7 @@ Object {
                     class="euiFormLabel euiFormRow__label"
                     for="some_html_id"
                   >
-                    <div
-                      class="euiText euiText--medium"
-                    >
-                      <div
-                        class="euiTextColor euiTextColor--subdued"
-                      >
-                        Trigger name
-                      </div>
-                    </div>
+                    Trigger name
                   </label>
                 </div>
                 <div
@@ -443,98 +349,49 @@ Object {
                 </div>
               </div>
               <div
-                class="euiSpacer euiSpacer--xl"
+                class="euiSpacer euiSpacer--l"
               />
-              <h5
+              <h4
                 class="euiTitle euiTitle--small"
               >
-                If any detection rule matches
+                Trigger condition 
+              </h4>
+              <h5
+                class="euiTitle euiTitle--xsmall"
+              >
+                For detection rules
               </h5>
               <div
-                class="euiSpacer euiSpacer--m"
+                class="euiSpacer euiSpacer--s"
               />
               <div
-                class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
+                class="euiFormRow euiFormRow--fullWidth"
+                id="some_html_id-row"
               >
                 <div
-                  class="euiFlexItem"
+                  class="euiFormRow__labelWrapper"
                 >
-                  <div
-                    class="euiFormRow euiFormRow--fullWidth"
-                    id="some_html_id-row"
+                  <label
+                    class="euiFormLabel euiFormRow__label"
+                    for="some_html_id"
                   >
-                    <div
-                      class="euiFormRow__labelWrapper"
-                    >
-                      <label
-                        class="euiFormLabel euiFormRow__label"
-                        for="some_html_id"
-                      >
-                        <div
-                          class="euiText euiText--medium"
-                        >
-                          <div
-                            class="euiTextColor euiTextColor--subdued"
-                          >
-                            Log type
-                          </div>
-                        </div>
-                      </label>
-                    </div>
-                    <div
-                      class="euiFormRow__fieldWrapper"
-                    >
-                      <div
-                        class="euiText euiText--medium"
-                        data-test-subj="text-details-group-content-log-type"
-                        id="some_html_id"
-                      >
-                        detector_type_1
-                      </div>
-                    </div>
-                  </div>
+                    Rule names
+                  </label>
                 </div>
                 <div
-                  class="euiFlexItem"
+                  class="euiFormRow__fieldWrapper"
                 >
                   <div
-                    class="euiFormRow euiFormRow--fullWidth"
-                    id="some_html_id-row"
+                    class="euiText euiText--medium"
+                    data-test-subj="text-details-group-content-rule-names"
+                    id="some_html_id"
                   >
-                    <div
-                      class="euiFormRow__labelWrapper"
-                    >
-                      <label
-                        class="euiFormLabel euiFormRow__label"
-                        for="some_html_id"
-                      >
-                        <div
-                          class="euiText euiText--medium"
-                        >
-                          <div
-                            class="euiTextColor euiTextColor--subdued"
-                          >
-                            Rule names
-                          </div>
-                        </div>
-                      </label>
-                    </div>
-                    <div
-                      class="euiFormRow__fieldWrapper"
-                    >
-                      <div
-                        class="euiText euiText--medium"
-                        data-test-subj="text-details-group-content-rule-names"
-                        id="some_html_id"
-                      >
-                        -
-                      </div>
-                    </div>
+                    Any rule
                   </div>
                 </div>
               </div>
               <div
-                class="euiSpacer euiSpacer--xl"
+                class="euiSpacer euiSpacer--l"
               />
               <div
                 class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
@@ -553,15 +410,7 @@ Object {
                         class="euiFormLabel euiFormRow__label"
                         for="some_html_id"
                       >
-                        <div
-                          class="euiText euiText--medium"
-                        >
-                          <div
-                            class="euiTextColor euiTextColor--subdued"
-                          >
-                            Rule severities
-                          </div>
-                        </div>
+                        Rule severities
                       </label>
                     </div>
                     <div
@@ -591,15 +440,7 @@ Object {
                         class="euiFormLabel euiFormRow__label"
                         for="some_html_id"
                       >
-                        <div
-                          class="euiText euiText--medium"
-                        >
-                          <div
-                            class="euiTextColor euiTextColor--subdued"
-                          >
-                            Tags
-                          </div>
-                        </div>
+                        Tags
                       </label>
                     </div>
                     <div
@@ -617,10 +458,7 @@ Object {
                 </div>
               </div>
               <div
-                class="euiSpacer euiSpacer--xl"
-              />
-              <div
-                class="euiSpacer euiSpacer--xl"
+                class="euiSpacer euiSpacer--l"
               />
               <h5
                 class="euiTitle euiTitle--small"
@@ -641,15 +479,7 @@ Object {
                     class="euiFormLabel euiFormRow__label"
                     for="some_html_id"
                   >
-                    <div
-                      class="euiText euiText--medium"
-                    >
-                      <div
-                        class="euiTextColor euiTextColor--subdued"
-                      >
-                        Trigger alerts with severity
-                      </div>
-                    </div>
+                    Trigger alerts with severity
                   </label>
                 </div>
                 <div
@@ -668,6 +498,9 @@ Object {
                 class="euiSpacer euiSpacer--l"
               />
               <div
+                class="euiSpacer euiSpacer--l"
+              />
+              <div
                 class="euiFormRow euiFormRow--fullWidth"
                 id="some_html_id-row"
               >
@@ -678,15 +511,7 @@ Object {
                     class="euiFormLabel euiFormRow__label"
                     for="some_html_id"
                   >
-                    <div
-                      class="euiText euiText--medium"
-                    >
-                      <div
-                        class="euiTextColor euiTextColor--subdued"
-                      >
-                        Notify channel
-                      </div>
-                    </div>
+                    Notify channel
                   </label>
                 </div>
                 <div
@@ -705,6 +530,9 @@ Object {
                   </div>
                 </div>
               </div>
+              <div
+                class="euiSpacer euiSpacer--l"
+              />
             </div>
           </div>
         </div>
