@@ -108,6 +108,9 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                 "throttle_enabled": true,
               },
             ],
+            "detection_types": Array [
+              "rules",
+            ],
             "id": "trigger_id_0",
             "ids": Array [
               "rule_id_1",
@@ -162,6 +165,9 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                 },
                 "throttle_enabled": true,
               },
+            ],
+            "detection_types": Array [
+              "rules",
             ],
             "id": "trigger_id_1",
             "ids": Array [
@@ -305,6 +311,9 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                               "throttle_enabled": true,
                             },
                           ],
+                          "detection_types": Array [
+                            "rules",
+                          ],
                           "id": "trigger_id_0",
                           "ids": Array [
                             "rule_id_1",
@@ -359,6 +368,9 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                               },
                               "throttle_enabled": true,
                             },
+                          ],
+                          "detection_types": Array [
+                            "rules",
                           ],
                           "id": "trigger_id_1",
                           "ids": Array [
@@ -480,6 +492,9 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                             "throttle_enabled": true,
                           },
                         ],
+                        "detection_types": Array [
+                          "rules",
+                        ],
                         "id": "trigger_id_0",
                         "ids": Array [
                           "rule_id_1",
@@ -534,6 +549,9 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                             },
                             "throttle_enabled": true,
                           },
+                        ],
+                        "detection_types": Array [
+                          "rules",
                         ],
                         "id": "trigger_id_1",
                         "ids": Array [
@@ -594,10 +612,10 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
     </h3>
   </EuiTitle>
   <EuiSpacer
-    size="xxl"
+    size="xl"
   >
     <div
-      className="euiSpacer euiSpacer--xxl"
+      className="euiSpacer euiSpacer--xl"
     />
   </EuiSpacer>
   <EuiPanel>
@@ -823,10 +841,10 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
         </EuiFormRow>
       </DetectorBasicDetailsForm>
       <EuiSpacer
-        size="xl"
+        size="l"
       >
         <div
-          className="euiSpacer euiSpacer--xl"
+          className="euiSpacer euiSpacer--l"
         />
       </EuiSpacer>
       <Component
@@ -859,10 +877,70 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
         />
       </Component>
       <EuiSpacer
-        size="xl"
+        size="l"
       >
         <div
-          className="euiSpacer euiSpacer--xl"
+          className="euiSpacer euiSpacer--l"
+        />
+      </EuiSpacer>
+      <ThreatIntelligence
+        onThreatIntelChange={[Function]}
+      >
+        <EuiTitle
+          size="m"
+        >
+          <h3
+            className="euiTitle euiTitle--medium"
+          >
+            Threat intelligence feeds
+          </h3>
+        </EuiTitle>
+        <EuiText>
+          <div
+            className="euiText euiText--medium"
+          >
+            <p>
+              Match your data source against known malicious IP-addresses. Available for standard log types only. Learn more
+            </p>
+          </div>
+        </EuiText>
+        <EuiCheckbox
+          checked={false}
+          compressed={false}
+          disabled={false}
+          id="some_html_id"
+          indeterminate={false}
+          label="Enable threat intelligence-based detection"
+          onChange={[Function]}
+        >
+          <div
+            className="euiCheckbox"
+          >
+            <input
+              checked={false}
+              className="euiCheckbox__input"
+              disabled={false}
+              id="some_html_id"
+              onChange={[Function]}
+              type="checkbox"
+            />
+            <div
+              className="euiCheckbox__square"
+            />
+            <label
+              className="euiCheckbox__label"
+              htmlFor="some_html_id"
+            >
+              Enable threat intelligence-based detection
+            </label>
+          </div>
+        </EuiCheckbox>
+      </ThreatIntelligence>
+      <EuiSpacer
+        size="l"
+      >
+        <div
+          className="euiSpacer euiSpacer--l"
         />
       </EuiSpacer>
       <DetectorSchedule
@@ -969,6 +1047,9 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                     "throttle_enabled": true,
                   },
                 ],
+                "detection_types": Array [
+                  "rules",
+                ],
                 "id": "trigger_id_0",
                 "ids": Array [
                   "rule_id_1",
@@ -1023,6 +1104,9 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                     },
                     "throttle_enabled": true,
                   },
+                ],
+                "detection_types": Array [
+                  "rules",
                 ],
                 "id": "trigger_id_1",
                 "ids": Array [
@@ -1164,6 +1248,9 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                       "throttle_enabled": true,
                     },
                   ],
+                  "detection_types": Array [
+                    "rules",
+                  ],
                   "id": "trigger_id_0",
                   "ids": Array [
                     "rule_id_1",
@@ -1218,6 +1305,9 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                       },
                       "throttle_enabled": true,
                     },
+                  ],
+                  "detection_types": Array [
+                    "rules",
                   ],
                   "id": "trigger_id_1",
                   "ids": Array [
@@ -1495,10 +1585,10 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
         </Interval>
       </DetectorSchedule>
       <EuiSpacer
-        size="xl"
+        size="l"
       >
         <div
-          className="euiSpacer euiSpacer--xl"
+          className="euiSpacer euiSpacer--l"
         />
       </EuiSpacer>
     </div>

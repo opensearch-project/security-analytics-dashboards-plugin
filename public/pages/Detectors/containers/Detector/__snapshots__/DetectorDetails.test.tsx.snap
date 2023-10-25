@@ -108,6 +108,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                 "throttle_enabled": true,
               },
             ],
+            "detection_types": Array [
+              "rules",
+            ],
             "id": "trigger_id_0",
             "ids": Array [
               "rule_id_1",
@@ -162,6 +165,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                 },
                 "throttle_enabled": true,
               },
+            ],
+            "detection_types": Array [
+              "rules",
             ],
             "id": "trigger_id_1",
             "ids": Array [
@@ -623,6 +629,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                 "throttle_enabled": true,
               },
             ],
+            "detection_types": Array [
+              "rules",
+            ],
             "id": "trigger_id_0",
             "ids": Array [
               "rule_id_1",
@@ -677,6 +686,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                 },
                 "throttle_enabled": true,
               },
+            ],
+            "detection_types": Array [
+              "rules",
             ],
             "id": "trigger_id_1",
             "ids": Array [
@@ -804,6 +816,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                   "throttle_enabled": true,
                 },
               ],
+              "detection_types": Array [
+                "rules",
+              ],
               "id": "trigger_id_0",
               "ids": Array [
                 "rule_id_1",
@@ -858,6 +873,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                   },
                   "throttle_enabled": true,
                 },
+              ],
+              "detection_types": Array [
+                "rules",
               ],
               "id": "trigger_id_1",
               "ids": Array [
@@ -1036,6 +1054,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                   "throttle_enabled": true,
                 },
               ],
+              "detection_types": Array [
+                "rules",
+              ],
               "id": "trigger_id_0",
               "ids": Array [
                 "rule_id_1",
@@ -1090,6 +1111,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                   },
                   "throttle_enabled": true,
                 },
+              ],
+              "detection_types": Array [
+                "rules",
               ],
               "id": "trigger_id_1",
               "ids": Array [
@@ -1217,6 +1241,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     "throttle_enabled": true,
                   },
                 ],
+                "detection_types": Array [
+                  "rules",
+                ],
                 "id": "trigger_id_0",
                 "ids": Array [
                   "rule_id_1",
@@ -1271,6 +1298,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     },
                     "throttle_enabled": true,
                   },
+                ],
+                "detection_types": Array [
+                  "rules",
                 ],
                 "id": "trigger_id_1",
                 "ids": Array [
@@ -2313,6 +2343,81 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                   className="euiSpacer euiSpacer--xl"
                 />
               </EuiSpacer>
+              <EuiFormRow
+                describedByIds={Array []}
+                display="row"
+                fullWidth={true}
+                hasChildLabel={true}
+                hasEmptyLabelSpace={false}
+                label={
+                  <EuiText
+                    color="subdued"
+                  >
+                    Threat intelligence feed enabled
+                  </EuiText>
+                }
+                labelType="label"
+              >
+                <div
+                  className="euiFormRow euiFormRow--fullWidth"
+                  id="some_html_id-row"
+                >
+                  <div
+                    className="euiFormRow__labelWrapper"
+                  >
+                    <EuiFormLabel
+                      className="euiFormRow__label"
+                      htmlFor="some_html_id"
+                      isFocused={false}
+                      type="label"
+                    >
+                      <label
+                        className="euiFormLabel euiFormRow__label"
+                        htmlFor="some_html_id"
+                      >
+                        <EuiText
+                          color="subdued"
+                        >
+                          <div
+                            className="euiText euiText--medium"
+                          >
+                            <EuiTextColor
+                              color="subdued"
+                              component="div"
+                            >
+                              <div
+                                className="euiTextColor euiTextColor--subdued"
+                              >
+                                Threat intelligence feed enabled
+                              </div>
+                            </EuiTextColor>
+                          </div>
+                        </EuiText>
+                      </label>
+                    </EuiFormLabel>
+                  </div>
+                  <div
+                    className="euiFormRow__fieldWrapper"
+                  >
+                    <EuiText
+                      data-test-subj="text-details-group-content-threat-intelligence-feed-enabled"
+                      id="some_html_id"
+                      onBlur={[Function]}
+                      onFocus={[Function]}
+                    >
+                      <div
+                        className="euiText euiText--medium"
+                        data-test-subj="text-details-group-content-threat-intelligence-feed-enabled"
+                        id="some_html_id"
+                        onBlur={[Function]}
+                        onFocus={[Function]}
+                      >
+                        No
+                      </div>
+                    </EuiText>
+                  </div>
+                </div>
+              </EuiFormRow>
             </div>
           </div>
         </EuiPanel>
@@ -2436,6 +2541,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                   "throttle_enabled": true,
                 },
               ],
+              "detection_types": Array [
+                "rules",
+              ],
               "id": "trigger_id_0",
               "ids": Array [
                 "rule_id_1",
@@ -2490,6 +2598,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                   },
                   "throttle_enabled": true,
                 },
+              ],
+              "detection_types": Array [
+                "rules",
               ],
               "id": "trigger_id_1",
               "ids": Array [
@@ -2617,6 +2728,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     "throttle_enabled": true,
                   },
                 ],
+                "detection_types": Array [
+                  "rules",
+                ],
                 "id": "trigger_id_0",
                 "ids": Array [
                   "rule_id_1",
@@ -2671,6 +2785,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     },
                     "throttle_enabled": true,
                   },
+                ],
+                "detection_types": Array [
+                  "rules",
                 ],
                 "id": "trigger_id_1",
                 "ids": Array [

@@ -426,6 +426,40 @@ Object {
           <div
             class="euiSpacer euiSpacer--xl"
           />
+          <div
+            class="euiFormRow euiFormRow--fullWidth"
+            id="some_html_id-row"
+          >
+            <div
+              class="euiFormRow__labelWrapper"
+            >
+              <label
+                class="euiFormLabel euiFormRow__label"
+                for="some_html_id"
+              >
+                <div
+                  class="euiText euiText--medium"
+                >
+                  <div
+                    class="euiTextColor euiTextColor--subdued"
+                  >
+                    Threat intelligence feed enabled
+                  </div>
+                </div>
+              </label>
+            </div>
+            <div
+              class="euiFormRow__fieldWrapper"
+            >
+              <div
+                class="euiText euiText--medium"
+                data-test-subj="text-details-group-content-threat-intelligence-feed-enabled"
+                id="some_html_id"
+              >
+                No
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -852,6 +886,40 @@ Object {
         <div
           class="euiSpacer euiSpacer--xl"
         />
+        <div
+          class="euiFormRow euiFormRow--fullWidth"
+          id="some_html_id-row"
+        >
+          <div
+            class="euiFormRow__labelWrapper"
+          >
+            <label
+              class="euiFormLabel euiFormRow__label"
+              for="some_html_id"
+            >
+              <div
+                class="euiText euiText--medium"
+              >
+                <div
+                  class="euiTextColor euiTextColor--subdued"
+                >
+                  Threat intelligence feed enabled
+                </div>
+              </div>
+            </label>
+          </div>
+          <div
+            class="euiFormRow__fieldWrapper"
+          >
+            <div
+              class="euiText euiText--medium"
+              data-test-subj="text-details-group-content-threat-intelligence-feed-enabled"
+              id="some_html_id"
+            >
+              No
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>,
