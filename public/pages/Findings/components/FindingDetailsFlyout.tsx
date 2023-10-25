@@ -32,8 +32,13 @@ import {
   EuiTab,
   EuiLoadingContent,
 } from '@elastic/eui';
-import { capitalizeFirstLetter, renderTime } from '../../../utils/helpers';
-import { DEFAULT_EMPTY_DATA, ROUTES } from '../../../utils/constants';
+import {
+  capitalizeFirstLetter,
+  createTextDetailsGroup,
+  isThreatIntelQuery,
+  renderTime,
+} from '../../../utils/helpers';
+import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 import { Query } from '../models/interfaces';
 import { RuleViewerFlyout } from '../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
 import { RuleSource } from '../../../../server/models/interfaces';
@@ -45,6 +50,7 @@ import { CorrelationFinding, RuleItemInfoBase } from '../../../../types';
 import { FindingFlyoutTabId, FindingFlyoutTabs } from '../utils/constants';
 import { DataStore } from '../../../store/DataStore';
 import { CorrelationsTable } from './CorrelationsTable/CorrelationsTable';
+import { getSeverityColor } from '../../Correlations/utils/constants';
 import { getLogTypeLabel } from '../../LogTypes/utils/helpers';
 
 export interface FindingDetailsFlyoutBaseProps {
@@ -166,9 +172,7 @@ export default class FindingDetailsFlyout extends Component<
     });
   }
 
-  renderTags = () => {
-    const { finding } = this.props;
-    const tags = finding.queries[0].tags || [];
+  renderTags = (tags: string[]) => {
     return (
       tags && (
         <EuiBadgeGroup gutterSize={'s'}>
@@ -204,77 +208,77 @@ export default class FindingDetailsFlyout extends Component<
 
   renderRuleDetails = (rules: Query[] = []) => {
     const { allRules = {} } = this.state;
-    return rules.map((rule, key) => {
-      const fullRule = allRules[rule.id];
-      const severity = capitalizeFirstLetter(fullRule.level);
-      return (
-        <div key={key}>
-          <EuiAccordion
-            id={`${key}`}
-            buttonClassName="euiAccordionForm__button"
-            buttonContent={
-              <div data-test-subj={'finding-details-flyout-rule-accordion-button'}>
-                <EuiText size={'s'}>{fullRule.title}</EuiText>
-                <EuiText size={'s'} color={'subdued'}>
-                  Severity: {severity}
-                </EuiText>
-              </div>
-            }
-            initialIsOpen={rules.length === 1}
-            data-test-subj={`finding-details-flyout-rule-accordion-${key}`}
-          >
-            <EuiPanel color="subdued">
-              <EuiFlexGroup>
-                <EuiFlexItem>
-                  <EuiFormRow label={'Rule name'}>
-                    <EuiLink
-                      onClick={() => this.showRuleDetails(fullRule, rule.id)}
-                      data-test-subj={`finding-details-flyout-${fullRule.title}-details`}
+    return rules
+      .filter(({ id }) => !isThreatIntelQuery(id))
+      .map((rule, key) => {
+        const fullRule = allRules[rule.id];
+        const severity = capitalizeFirstLetter(fullRule.level);
+        return (
+          <div key={key}>
+            <EuiAccordion
+              id={`${key}`}
+              buttonClassName="euiAccordionForm__button"
+              buttonContent={
+                <div data-test-subj={'finding-details-flyout-rule-accordion-button'}>
+                  <EuiText size={'s'}>{fullRule.title}</EuiText>
+                  <EuiText size={'s'} color={'subdued'}>
+                    Severity: {severity}
+                  </EuiText>
+                </div>
+              }
+              initialIsOpen={rules.length === 1}
+              data-test-subj={`finding-details-flyout-rule-accordion-${key}`}
+            >
+              <EuiPanel color="subdued">
+                <EuiFlexGroup>
+                  <EuiFlexItem>
+                    <EuiFormRow label={'Rule name'}>
+                      <EuiLink
+                        onClick={() => this.showRuleDetails(fullRule, rule.id)}
+                        data-test-subj={`finding-details-flyout-${fullRule.title}-details`}
+                      >
+                        {fullRule.title || DEFAULT_EMPTY_DATA}
+                      </EuiLink>
+                    </EuiFormRow>
+                  </EuiFlexItem>
+
+                  <EuiFlexItem>
+                    <EuiFormRow
+                      label={'Rule severity'}
+                      data-test-subj={'finding-details-flyout-rule-severity'}
                     >
-                      {fullRule.title || DEFAULT_EMPTY_DATA}
-                    </EuiLink>
-                  </EuiFormRow>
-                </EuiFlexItem>
+                      <EuiText>{severity || DEFAULT_EMPTY_DATA}</EuiText>
+                    </EuiFormRow>
+                  </EuiFlexItem>
 
-                <EuiFlexItem>
-                  <EuiFormRow
-                    label={'Rule severity'}
-                    data-test-subj={'finding-details-flyout-rule-severity'}
-                  >
-                    <EuiText>{severity || DEFAULT_EMPTY_DATA}</EuiText>
-                  </EuiFormRow>
-                </EuiFlexItem>
+                  <EuiFlexItem>
+                    <EuiFormRow
+                      label={'Log type'}
+                      data-test-subj={'finding-details-flyout-rule-category'}
+                    >
+                      <EuiText>{getLogTypeLabel(fullRule.category) || DEFAULT_EMPTY_DATA}</EuiText>
+                    </EuiFormRow>
+                  </EuiFlexItem>
+                </EuiFlexGroup>
 
-                <EuiFlexItem>
-                  <EuiFormRow
-                    label={'Log type'}
-                    data-test-subj={'finding-details-flyout-rule-category'}
-                  >
-                    <EuiText>{getLogTypeLabel(fullRule.category) || DEFAULT_EMPTY_DATA}</EuiText>
-                  </EuiFormRow>
-                </EuiFlexItem>
-              </EuiFlexGroup>
+                <EuiFormRow
+                  label={'Description'}
+                  data-test-subj={'finding-details-flyout-rule-description'}
+                >
+                  <EuiText>{fullRule.description || DEFAULT_EMPTY_DATA}</EuiText>
+                </EuiFormRow>
 
-              <EuiSpacer size={'m'} />
+                <EuiSpacer size={'m'} />
 
-              <EuiFormRow
-                label={'Description'}
-                data-test-subj={'finding-details-flyout-rule-description'}
-              >
-                <EuiText>{fullRule.description || DEFAULT_EMPTY_DATA}</EuiText>
-              </EuiFormRow>
-
-              <EuiSpacer size={'m'} />
-
-              <EuiFormRow label={'Tags'} data-test-subj={'finding-details-flyout-rule-tags'}>
-                <EuiText>{this.renderTags() || DEFAULT_EMPTY_DATA}</EuiText>
-              </EuiFormRow>
-            </EuiPanel>
-          </EuiAccordion>
-          {rules.length > 1 && <EuiHorizontalRule margin={'xs'} />}
-        </div>
-      );
-    });
+                <EuiFormRow label={'Tags'} data-test-subj={'finding-details-flyout-rule-tags'}>
+                  <EuiText>{this.renderTags(rule.tags) || DEFAULT_EMPTY_DATA}</EuiText>
+                </EuiFormRow>
+              </EuiPanel>
+            </EuiAccordion>
+            {rules.length > 1 && <EuiHorizontalRule margin={'xs'} />}
+          </div>
+        );
+      });
   };
 
   getIndexPatternId = async () => {
@@ -440,17 +444,63 @@ export default class FindingDetailsFlyout extends Component<
 
   private createFindingDetails(isDocumentLoading: boolean) {
     const {
-      finding: { queries },
+      finding: { queries, detectionType },
     } = this.props;
+
+    const showRuleDetailsInfo = detectionType.includes('Detection');
+    const severity = 'High';
+    const { background, text } = getSeverityColor(severity);
+    const threatIntelQuery = queries.find(({ id }) => isThreatIntelQuery(id));
+    let threatIntelQueryData: { [key: string]: string } = {};
+    if (threatIntelQuery) {
+      threatIntelQuery.tags.forEach((tag) => {
+        if (tag.startsWith('field:')) {
+          threatIntelQueryData['field'] = tag.split(':')[1];
+        }
+
+        if (tag.startsWith('feed_name:')) {
+          threatIntelQueryData['feedName'] = tag.split(':')[1];
+        }
+      });
+    }
 
     return (
       <>
-        <EuiTitle size={'s'}>
-          <h3>Rule details</h3>
-        </EuiTitle>
-        <EuiSpacer size={'m'} />
-        {this.renderRuleDetails(queries)}
-        <EuiSpacer size="l" />
+        {threatIntelQuery && (
+          <>
+            <EuiTitle size={'s'}>
+              <h3>Threat intelligence feed</h3>
+            </EuiTitle>
+            <EuiSpacer size={'m'} />
+            <div>
+              Severity{' '}
+              <EuiBadge color={background} style={{ color: text }}>
+                {severity}
+              </EuiBadge>
+            </div>
+            <EuiSpacer size="s" />
+            <EuiText>
+              <p>This finding is generated from a threat intelligence feed IOCs.</p>
+            </EuiText>
+            <EuiSpacer size={'l'} />
+            {createTextDetailsGroup([
+              { label: 'Field', content: threatIntelQueryData['field'] || DEFAULT_EMPTY_DATA },
+              {
+                label: 'Feed name',
+                content: threatIntelQueryData['feedName'] || DEFAULT_EMPTY_DATA,
+              },
+            ])}
+          </>
+        )}
+        {showRuleDetailsInfo && (
+          <>
+            <EuiTitle size={'s'}>
+              <h3>Rule details</h3>
+            </EuiTitle>
+            {this.renderRuleDetails(queries)}
+            <EuiSpacer size="l" />
+          </>
+        )}
         {this.renderFindingDocuments(isDocumentLoading)}
       </>
     );
@@ -459,14 +509,7 @@ export default class FindingDetailsFlyout extends Component<
   render() {
     const { backButton } = this.props;
     const {
-      finding: {
-        id,
-        detector: {
-          _id,
-          _source: { name },
-        },
-        timestamp,
-      },
+      finding: { id, timestamp, detectionType },
     } = this.props;
     const { isDocumentLoading } = this.state;
     return (
@@ -528,14 +571,11 @@ export default class FindingDetailsFlyout extends Component<
             </EuiFlexItem>
 
             <EuiFlexItem>
-              <EuiFormRow label={'Detector'}>
-                <EuiLink
-                  href={`#${ROUTES.DETECTOR_DETAILS}/${_id}`}
-                  target={'_blank'}
-                  data-test-subj={'finding-details-flyout-detector-link'}
-                >
-                  {name || DEFAULT_EMPTY_DATA}
-                </EuiLink>
+              <EuiFormRow
+                label={'Detection type'}
+                data-test-subj={'finding-details-flyout-detection-type'}
+              >
+                <EuiText>{detectionType}</EuiText>
               </EuiFormRow>
             </EuiFlexItem>
           </EuiFlexGroup>

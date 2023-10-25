@@ -270,6 +270,7 @@ export class DetectorsStore implements IDetectorsStore {
         'View detector',
         goToDetectorDetails
       );
+      setTimeout(() => this.hideCallout(), 3000);
 
       return Promise.resolve({
         detectorId: detectorId,

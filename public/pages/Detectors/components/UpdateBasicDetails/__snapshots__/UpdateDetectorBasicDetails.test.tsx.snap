@@ -108,6 +108,9 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                 "throttle_enabled": true,
               },
             ],
+            "detection_types": Array [
+              "rules",
+            ],
             "id": "trigger_id_0",
             "ids": Array [
               "rule_id_1",
@@ -162,6 +165,9 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                 },
                 "throttle_enabled": true,
               },
+            ],
+            "detection_types": Array [
+              "rules",
             ],
             "id": "trigger_id_1",
             "ids": Array [
@@ -305,6 +311,9 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                               "throttle_enabled": true,
                             },
                           ],
+                          "detection_types": Array [
+                            "rules",
+                          ],
                           "id": "trigger_id_0",
                           "ids": Array [
                             "rule_id_1",
@@ -359,6 +368,9 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                               },
                               "throttle_enabled": true,
                             },
+                          ],
+                          "detection_types": Array [
+                            "rules",
                           ],
                           "id": "trigger_id_1",
                           "ids": Array [
@@ -480,6 +492,9 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                             "throttle_enabled": true,
                           },
                         ],
+                        "detection_types": Array [
+                          "rules",
+                        ],
                         "id": "trigger_id_0",
                         "ids": Array [
                           "rule_id_1",
@@ -534,6 +549,9 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                             },
                             "throttle_enabled": true,
                           },
+                        ],
+                        "detection_types": Array [
+                          "rules",
                         ],
                         "id": "trigger_id_1",
                         "ids": Array [
@@ -584,946 +602,945 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
     }
   }
 >
-  <div>
-    <EuiTitle
-      size="m"
+  <EuiTitle
+    size="m"
+  >
+    <h3
+      className="euiTitle euiTitle--medium"
     >
-      <h3
-        className="euiTitle euiTitle--medium"
+      Edit detector details
+    </h3>
+  </EuiTitle>
+  <EuiSpacer
+    size="xl"
+  >
+    <div
+      className="euiSpacer euiSpacer--xl"
+    />
+  </EuiSpacer>
+  <EuiPanel>
+    <div
+      className="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
+    >
+      <DetectorBasicDetailsForm
+        detectorDescription="detectorDescription"
+        detectorName="detector_name"
+        isEdit={true}
+        onDetectorInputDescriptionChange={[Function]}
+        onDetectorNameChange={[Function]}
       >
-        Edit detector details
-      </h3>
-    </EuiTitle>
-    <EuiSpacer
-      size="xxl"
-    >
-      <div
-        className="euiSpacer euiSpacer--xxl"
-      />
-    </EuiSpacer>
-    <DetectorBasicDetailsForm
-      detectorDescription="detectorDescription"
-      detectorName="detector_name"
-      isEdit={true}
-      onDetectorInputDescriptionChange={[Function]}
-      onDetectorNameChange={[Function]}
-    >
-      <ContentPanel
-        title="Detector details"
-        titleSize="m"
-      >
-        <EuiPanel
-          className=""
-          style={
-            Object {
-              "paddingLeft": "0px",
-              "paddingRight": "0px",
-            }
-          }
+        <EuiTitle
+          size="m"
+        >
+          <h3
+            className="euiTitle euiTitle--medium"
+          >
+            Detector details
+          </h3>
+        </EuiTitle>
+        <EuiSpacer
+          size="m"
         >
           <div
-            className="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
-            style={
-              Object {
-                "paddingLeft": "0px",
-                "paddingRight": "0px",
-              }
-            }
+            className="euiSpacer euiSpacer--m"
+          />
+        </EuiSpacer>
+        <EuiFormRow
+          describedByIds={Array []}
+          display="row"
+          fullWidth={false}
+          hasChildLabel={true}
+          hasEmptyLabelSpace={false}
+          isInvalid={false}
+          label={
+            <FormFieldHeader
+              headerTitle="Name"
+            />
+          }
+          labelType="label"
+        >
+          <div
+            className="euiFormRow"
+            id="some_html_id-row"
           >
-            <EuiFlexGroup
-              alignItems="center"
-              justifyContent="spaceBetween"
-              style={
-                Object {
-                  "padding": "0px 10px",
-                }
-              }
-            >
-              <div
-                className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive"
-                style={
-                  Object {
-                    "padding": "0px 10px",
-                  }
-                }
-              >
-                <EuiFlexItem>
-                  <div
-                    className="euiFlexItem"
-                  >
-                    <EuiTitle
-                      size="m"
-                    >
-                      <h3
-                        className="euiTitle euiTitle--medium"
-                      >
-                        Detector details
-                      </h3>
-                    </EuiTitle>
-                  </div>
-                </EuiFlexItem>
-              </div>
-            </EuiFlexGroup>
-            <EuiHorizontalRule
-              margin="xs"
-            >
-              <hr
-                className="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginXSmall"
-              />
-            </EuiHorizontalRule>
             <div
-              style={
-                Object {
-                  "padding": "0px 10px",
-                }
-              }
+              className="euiFormRow__labelWrapper"
             >
-              <EuiSpacer
-                size="m"
-              >
-                <div
-                  className="euiSpacer euiSpacer--m"
-                />
-              </EuiSpacer>
-              <EuiFormRow
-                describedByIds={Array []}
-                display="row"
-                fullWidth={false}
-                hasChildLabel={true}
-                hasEmptyLabelSpace={false}
+              <EuiFormLabel
+                aria-invalid={false}
+                className="euiFormRow__label"
+                htmlFor="some_html_id"
+                isFocused={false}
                 isInvalid={false}
-                label={
+                type="label"
+              >
+                <label
+                  aria-invalid={false}
+                  className="euiFormLabel euiFormRow__label"
+                  htmlFor="some_html_id"
+                >
                   <FormFieldHeader
                     headerTitle="Name"
-                  />
-                }
-                labelType="label"
+                  >
+                    <EuiText
+                      size="s"
+                    >
+                      <div
+                        className="euiText euiText--small"
+                      >
+                        <strong>
+                          Name
+                        </strong>
+                      </div>
+                    </EuiText>
+                  </FormFieldHeader>
+                </label>
+              </EuiFormLabel>
+            </div>
+            <div
+              className="euiFormRow__fieldWrapper"
+            >
+              <EuiFieldText
+                data-test-subj="define-detector-detector-name"
+                id="some_html_id"
+                onBlur={[Function]}
+                onChange={[Function]}
+                onFocus={[Function]}
+                placeholder="Enter a name for the detector."
+                readOnly={false}
+                required={true}
+                value="detector_name"
               >
-                <div
-                  className="euiFormRow"
-                  id="some_html_id-row"
+                <EuiFormControlLayout
+                  fullWidth={false}
+                  inputId="some_html_id"
+                  readOnly={false}
                 >
                   <div
-                    className="euiFormRow__labelWrapper"
+                    className="euiFormControlLayout"
                   >
-                    <EuiFormLabel
-                      aria-invalid={false}
-                      className="euiFormRow__label"
-                      htmlFor="some_html_id"
-                      isFocused={false}
-                      isInvalid={false}
-                      type="label"
-                    >
-                      <label
-                        aria-invalid={false}
-                        className="euiFormLabel euiFormRow__label"
-                        htmlFor="some_html_id"
-                      >
-                        <FormFieldHeader
-                          headerTitle="Name"
-                        >
-                          <EuiText
-                            size="s"
-                          >
-                            <div
-                              className="euiText euiText--small"
-                            >
-                              <strong>
-                                Name
-                              </strong>
-                            </div>
-                          </EuiText>
-                        </FormFieldHeader>
-                      </label>
-                    </EuiFormLabel>
-                  </div>
-                  <div
-                    className="euiFormRow__fieldWrapper"
-                  >
-                    <EuiFieldText
-                      data-test-subj="define-detector-detector-name"
-                      id="some_html_id"
-                      onBlur={[Function]}
-                      onChange={[Function]}
-                      onFocus={[Function]}
-                      placeholder="Enter a name for the detector."
-                      readOnly={false}
-                      required={true}
-                      value="detector_name"
-                    >
-                      <EuiFormControlLayout
-                        fullWidth={false}
-                        inputId="some_html_id"
-                        readOnly={false}
-                      >
-                        <div
-                          className="euiFormControlLayout"
-                        >
-                          <div
-                            className="euiFormControlLayout__childrenWrapper"
-                          >
-                            <EuiValidatableControl>
-                              <input
-                                className="euiFieldText"
-                                data-test-subj="define-detector-detector-name"
-                                id="some_html_id"
-                                onBlur={[Function]}
-                                onChange={[Function]}
-                                onFocus={[Function]}
-                                placeholder="Enter a name for the detector."
-                                readOnly={false}
-                                required={true}
-                                type="text"
-                                value="detector_name"
-                              />
-                            </EuiValidatableControl>
-                            <EuiFormControlLayoutIcons />
-                          </div>
-                        </div>
-                      </EuiFormControlLayout>
-                    </EuiFieldText>
-                  </div>
-                </div>
-              </EuiFormRow>
-              <EuiSpacer
-                size="m"
-              >
-                <div
-                  className="euiSpacer euiSpacer--m"
-                />
-              </EuiSpacer>
-              <EuiFormRow
-                describedByIds={Array []}
-                display="row"
-                fullWidth={false}
-                hasChildLabel={true}
-                hasEmptyLabelSpace={false}
-                isInvalid={false}
-                label={
-                  <FormFieldHeader
-                    headerTitle="Description"
-                    optionalField={true}
-                  />
-                }
-                labelType="label"
-              >
-                <div
-                  className="euiFormRow"
-                  id="some_html_id-row"
-                >
-                  <div
-                    className="euiFormRow__labelWrapper"
-                  >
-                    <EuiFormLabel
-                      aria-invalid={false}
-                      className="euiFormRow__label"
-                      htmlFor="some_html_id"
-                      isFocused={false}
-                      isInvalid={false}
-                      type="label"
-                    >
-                      <label
-                        aria-invalid={false}
-                        className="euiFormLabel euiFormRow__label"
-                        htmlFor="some_html_id"
-                      >
-                        <FormFieldHeader
-                          headerTitle="Description"
-                          optionalField={true}
-                        >
-                          <EuiText
-                            size="s"
-                          >
-                            <div
-                              className="euiText euiText--small"
-                            >
-                              <strong>
-                                Description
-                              </strong>
-                              <i>
-                                 - optional 
-                              </i>
-                            </div>
-                          </EuiText>
-                        </FormFieldHeader>
-                      </label>
-                    </EuiFormLabel>
-                  </div>
-                  <div
-                    className="euiFormRow__fieldWrapper"
-                  >
-                    <EuiTextArea
-                      compressed={true}
-                      data-test-subj="define-detector-detector-description"
-                      id="some_html_id"
-                      onBlur={[Function]}
-                      onChange={[Function]}
-                      onFocus={[Function]}
-                      placeholder="Enter a description for the detector."
-                      value="detectorDescription"
+                    <div
+                      className="euiFormControlLayout__childrenWrapper"
                     >
                       <EuiValidatableControl>
-                        <textarea
-                          className="euiTextArea euiTextArea--resizeVertical euiTextArea--compressed"
-                          data-test-subj="define-detector-detector-description"
+                        <input
+                          className="euiFieldText"
+                          data-test-subj="define-detector-detector-name"
                           id="some_html_id"
                           onBlur={[Function]}
                           onChange={[Function]}
                           onFocus={[Function]}
-                          placeholder="Enter a description for the detector."
-                          rows={3}
-                          value="detectorDescription"
+                          placeholder="Enter a name for the detector."
+                          readOnly={false}
+                          required={true}
+                          type="text"
+                          value="detector_name"
                         />
                       </EuiValidatableControl>
-                    </EuiTextArea>
+                      <EuiFormControlLayoutIcons />
+                    </div>
                   </div>
-                </div>
-              </EuiFormRow>
+                </EuiFormControlLayout>
+              </EuiFieldText>
             </div>
           </div>
-        </EuiPanel>
-      </ContentPanel>
-    </DetectorBasicDetailsForm>
-    <EuiSpacer
-      size="xl"
-    >
-      <div
-        className="euiSpacer euiSpacer--xl"
-      />
-    </EuiSpacer>
-    <Component
-      detectorIndices={
-        Array [
-          ".windows",
-        ]
-      }
-      detector_type="detector_type"
-      indexService={
-        Object {
-          "getIndices": [Function],
-        }
-      }
-      isEdit={true}
-      notifications={
-        Object {
-          "toasts": Object {
-            "addDanger": [MockFunction],
-            "addInfo": [MockFunction],
-            "addSuccess": [MockFunction],
-            "addWarning": [MockFunction],
-          },
-        }
-      }
-      onDetectorInputIndicesChange={[Function]}
-    >
-      <mock-component
-        mock="DetectorDataSource"
-      />
-    </Component>
-    <EuiSpacer
-      size="xl"
-    >
-      <div
-        className="euiSpacer euiSpacer--xl"
-      />
-    </EuiSpacer>
-    <DetectorSchedule
-      detector={
-        Object {
-          "createdBy": "someone",
-          "detector_type": "detector_type",
-          "enabled": true,
-          "enabled_time": 1,
-          "id": "detector_id_1",
-          "inputs": Array [
-            Object {
-              "detector_input": Object {
-                "custom_rules": Array [
-                  Object {
-                    "_id": "rule_id_1",
-                    "_index": ".windows",
-                    "_primary_term": 1,
-                    "_source": Object {
-                      "last_update_time": "12/12/2022",
-                      "queries": Array [
-                        Object {
-                          "value": ".windows",
-                        },
-                      ],
-                      "rule": "rule_name",
-                    },
-                    "_version": 1,
-                    "id": "rule_id_1",
-                    "prePackaged": true,
-                  },
-                ],
-                "description": "detectorDescription",
-                "indices": Array [
-                  ".windows",
-                ],
-                "pre_packaged_rules": Array [
-                  Object {
-                    "_id": "rule_id_1",
-                    "_index": ".windows",
-                    "_primary_term": 1,
-                    "_source": Object {
-                      "last_update_time": "12/12/2022",
-                      "queries": Array [
-                        Object {
-                          "value": ".windows",
-                        },
-                      ],
-                      "rule": "rule_name",
-                    },
-                    "_version": 1,
-                    "id": "rule_id_1",
-                    "prePackaged": true,
-                  },
-                ],
-              },
-            },
-          ],
-          "last_update_time": 1,
-          "name": "detector_name",
-          "schedule": Object {
-            "period": Object {
-              "interval": 1,
-              "unit": "MINUTES",
-            },
-          },
-          "triggers": Array [
-            Object {
-              "actions": Array [
-                Object {
-                  "destination_id": "some_destination_id_1",
-                  "id": "trigger_id_1_0",
-                  "message_template": Object {
-                    "lang": "some_lang",
-                    "source": "some_source",
-                  },
-                  "name": "some_name",
-                  "subject_template": Object {
-                    "lang": "some_lang",
-                    "source": "some_source",
-                  },
-                  "throttle": Object {
-                    "unit": "minutes",
-                    "value": 1,
-                  },
-                  "throttle_enabled": true,
-                },
-                Object {
-                  "destination_id": "some_destination_id_1",
-                  "id": "trigger_id_1_1",
-                  "message_template": Object {
-                    "lang": "some_lang",
-                    "source": "some_source",
-                  },
-                  "name": "some_name",
-                  "subject_template": Object {
-                    "lang": "some_lang",
-                    "source": "some_source",
-                  },
-                  "throttle": Object {
-                    "unit": "minutes",
-                    "value": 1,
-                  },
-                  "throttle_enabled": true,
-                },
-              ],
-              "id": "trigger_id_0",
-              "ids": Array [
-                "rule_id_1",
-              ],
-              "name": "alert_name",
-              "sev_levels": Array [
-                "severity_level_low",
-              ],
-              "severity": "1",
-              "tags": Array [
-                "any.tag",
-              ],
-              "types": Array [
-                "detector_type_1",
-              ],
-            },
-            Object {
-              "actions": Array [
-                Object {
-                  "destination_id": "some_destination_id_1",
-                  "id": "trigger_id_1_0",
-                  "message_template": Object {
-                    "lang": "some_lang",
-                    "source": "some_source",
-                  },
-                  "name": "some_name",
-                  "subject_template": Object {
-                    "lang": "some_lang",
-                    "source": "some_source",
-                  },
-                  "throttle": Object {
-                    "unit": "minutes",
-                    "value": 1,
-                  },
-                  "throttle_enabled": true,
-                },
-                Object {
-                  "destination_id": "some_destination_id_1",
-                  "id": "trigger_id_1_1",
-                  "message_template": Object {
-                    "lang": "some_lang",
-                    "source": "some_source",
-                  },
-                  "name": "some_name",
-                  "subject_template": Object {
-                    "lang": "some_lang",
-                    "source": "some_source",
-                  },
-                  "throttle": Object {
-                    "unit": "minutes",
-                    "value": 1,
-                  },
-                  "throttle_enabled": true,
-                },
-              ],
-              "id": "trigger_id_1",
-              "ids": Array [
-                "rule_id_1",
-              ],
-              "name": "alert_name",
-              "sev_levels": Array [
-                "severity_level_low",
-              ],
-              "severity": "1",
-              "tags": Array [
-                "any.tag",
-              ],
-              "types": Array [
-                "detector_type_1",
-              ],
-            },
-          ],
-          "type": "detector",
-        }
-      }
-      onDetectorScheduleChange={[Function]}
-    >
-      <ContentPanel
-        title="Detector schedule"
-      >
-        <EuiPanel
-          className=""
-          style={
-            Object {
-              "paddingLeft": "0px",
-              "paddingRight": "0px",
-            }
-          }
+        </EuiFormRow>
+        <EuiSpacer
+          size="m"
         >
           <div
-            className="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
-            style={
-              Object {
-                "paddingLeft": "0px",
-                "paddingRight": "0px",
-              }
-            }
+            className="euiSpacer euiSpacer--m"
+          />
+        </EuiSpacer>
+        <EuiFormRow
+          describedByIds={Array []}
+          display="row"
+          fullWidth={false}
+          hasChildLabel={true}
+          hasEmptyLabelSpace={false}
+          isInvalid={false}
+          label={
+            <FormFieldHeader
+              headerTitle="Description"
+              optionalField={true}
+            />
+          }
+          labelType="label"
+        >
+          <div
+            className="euiFormRow"
+            id="some_html_id-row"
           >
-            <EuiFlexGroup
-              alignItems="center"
-              justifyContent="spaceBetween"
-              style={
+            <div
+              className="euiFormRow__labelWrapper"
+            >
+              <EuiFormLabel
+                aria-invalid={false}
+                className="euiFormRow__label"
+                htmlFor="some_html_id"
+                isFocused={false}
+                isInvalid={false}
+                type="label"
+              >
+                <label
+                  aria-invalid={false}
+                  className="euiFormLabel euiFormRow__label"
+                  htmlFor="some_html_id"
+                >
+                  <FormFieldHeader
+                    headerTitle="Description"
+                    optionalField={true}
+                  >
+                    <EuiText
+                      size="s"
+                    >
+                      <div
+                        className="euiText euiText--small"
+                      >
+                        <strong>
+                          Description
+                        </strong>
+                        <i>
+                           - optional 
+                        </i>
+                      </div>
+                    </EuiText>
+                  </FormFieldHeader>
+                </label>
+              </EuiFormLabel>
+            </div>
+            <div
+              className="euiFormRow__fieldWrapper"
+            >
+              <EuiTextArea
+                compressed={true}
+                data-test-subj="define-detector-detector-description"
+                id="some_html_id"
+                onBlur={[Function]}
+                onChange={[Function]}
+                onFocus={[Function]}
+                placeholder="Enter a description for the detector."
+                value="detectorDescription"
+              >
+                <EuiValidatableControl>
+                  <textarea
+                    className="euiTextArea euiTextArea--resizeVertical euiTextArea--compressed"
+                    data-test-subj="define-detector-detector-description"
+                    id="some_html_id"
+                    onBlur={[Function]}
+                    onChange={[Function]}
+                    onFocus={[Function]}
+                    placeholder="Enter a description for the detector."
+                    rows={3}
+                    value="detectorDescription"
+                  />
+                </EuiValidatableControl>
+              </EuiTextArea>
+            </div>
+          </div>
+        </EuiFormRow>
+      </DetectorBasicDetailsForm>
+      <EuiSpacer
+        size="l"
+      >
+        <div
+          className="euiSpacer euiSpacer--l"
+        />
+      </EuiSpacer>
+      <Component
+        detectorIndices={
+          Array [
+            ".windows",
+          ]
+        }
+        detector_type="detector_type"
+        indexService={
+          Object {
+            "getIndices": [Function],
+          }
+        }
+        isEdit={true}
+        notifications={
+          Object {
+            "toasts": Object {
+              "addDanger": [MockFunction],
+              "addInfo": [MockFunction],
+              "addSuccess": [MockFunction],
+              "addWarning": [MockFunction],
+            },
+          }
+        }
+        onDetectorInputIndicesChange={[Function]}
+      >
+        <mock-component
+          mock="DetectorDataSource"
+        />
+      </Component>
+      <EuiSpacer
+        size="l"
+      >
+        <div
+          className="euiSpacer euiSpacer--l"
+        />
+      </EuiSpacer>
+      <ThreatIntelligence
+        onThreatIntelChange={[Function]}
+      >
+        <EuiTitle
+          size="m"
+        >
+          <h3
+            className="euiTitle euiTitle--medium"
+          >
+            Threat intelligence feeds
+          </h3>
+        </EuiTitle>
+        <EuiText>
+          <div
+            className="euiText euiText--medium"
+          >
+            <p>
+              Match your data source against known malicious IP-addresses. Available for standard log types only.
+            </p>
+          </div>
+        </EuiText>
+        <EuiCheckbox
+          checked={false}
+          compressed={false}
+          disabled={false}
+          id="some_html_id"
+          indeterminate={false}
+          label="Enable threat intelligence-based detection"
+          onChange={[Function]}
+        >
+          <div
+            className="euiCheckbox"
+          >
+            <input
+              checked={false}
+              className="euiCheckbox__input"
+              disabled={false}
+              id="some_html_id"
+              onChange={[Function]}
+              type="checkbox"
+            />
+            <div
+              className="euiCheckbox__square"
+            />
+            <label
+              className="euiCheckbox__label"
+              htmlFor="some_html_id"
+            >
+              Enable threat intelligence-based detection
+            </label>
+          </div>
+        </EuiCheckbox>
+      </ThreatIntelligence>
+      <EuiSpacer
+        size="l"
+      >
+        <div
+          className="euiSpacer euiSpacer--l"
+        />
+      </EuiSpacer>
+      <DetectorSchedule
+        detector={
+          Object {
+            "createdBy": "someone",
+            "detector_type": "detector_type",
+            "enabled": true,
+            "enabled_time": 1,
+            "id": "detector_id_1",
+            "inputs": Array [
+              Object {
+                "detector_input": Object {
+                  "custom_rules": Array [
+                    Object {
+                      "_id": "rule_id_1",
+                      "_index": ".windows",
+                      "_primary_term": 1,
+                      "_source": Object {
+                        "last_update_time": "12/12/2022",
+                        "queries": Array [
+                          Object {
+                            "value": ".windows",
+                          },
+                        ],
+                        "rule": "rule_name",
+                      },
+                      "_version": 1,
+                      "id": "rule_id_1",
+                      "prePackaged": true,
+                    },
+                  ],
+                  "description": "detectorDescription",
+                  "indices": Array [
+                    ".windows",
+                  ],
+                  "pre_packaged_rules": Array [
+                    Object {
+                      "_id": "rule_id_1",
+                      "_index": ".windows",
+                      "_primary_term": 1,
+                      "_source": Object {
+                        "last_update_time": "12/12/2022",
+                        "queries": Array [
+                          Object {
+                            "value": ".windows",
+                          },
+                        ],
+                        "rule": "rule_name",
+                      },
+                      "_version": 1,
+                      "id": "rule_id_1",
+                      "prePackaged": true,
+                    },
+                  ],
+                },
+              },
+            ],
+            "last_update_time": 1,
+            "name": "detector_name",
+            "schedule": Object {
+              "period": Object {
+                "interval": 1,
+                "unit": "MINUTES",
+              },
+            },
+            "triggers": Array [
+              Object {
+                "actions": Array [
+                  Object {
+                    "destination_id": "some_destination_id_1",
+                    "id": "trigger_id_1_0",
+                    "message_template": Object {
+                      "lang": "some_lang",
+                      "source": "some_source",
+                    },
+                    "name": "some_name",
+                    "subject_template": Object {
+                      "lang": "some_lang",
+                      "source": "some_source",
+                    },
+                    "throttle": Object {
+                      "unit": "minutes",
+                      "value": 1,
+                    },
+                    "throttle_enabled": true,
+                  },
+                  Object {
+                    "destination_id": "some_destination_id_1",
+                    "id": "trigger_id_1_1",
+                    "message_template": Object {
+                      "lang": "some_lang",
+                      "source": "some_source",
+                    },
+                    "name": "some_name",
+                    "subject_template": Object {
+                      "lang": "some_lang",
+                      "source": "some_source",
+                    },
+                    "throttle": Object {
+                      "unit": "minutes",
+                      "value": 1,
+                    },
+                    "throttle_enabled": true,
+                  },
+                ],
+                "detection_types": Array [
+                  "rules",
+                ],
+                "id": "trigger_id_0",
+                "ids": Array [
+                  "rule_id_1",
+                ],
+                "name": "alert_name",
+                "sev_levels": Array [
+                  "severity_level_low",
+                ],
+                "severity": "1",
+                "tags": Array [
+                  "any.tag",
+                ],
+                "types": Array [
+                  "detector_type_1",
+                ],
+              },
+              Object {
+                "actions": Array [
+                  Object {
+                    "destination_id": "some_destination_id_1",
+                    "id": "trigger_id_1_0",
+                    "message_template": Object {
+                      "lang": "some_lang",
+                      "source": "some_source",
+                    },
+                    "name": "some_name",
+                    "subject_template": Object {
+                      "lang": "some_lang",
+                      "source": "some_source",
+                    },
+                    "throttle": Object {
+                      "unit": "minutes",
+                      "value": 1,
+                    },
+                    "throttle_enabled": true,
+                  },
+                  Object {
+                    "destination_id": "some_destination_id_1",
+                    "id": "trigger_id_1_1",
+                    "message_template": Object {
+                      "lang": "some_lang",
+                      "source": "some_source",
+                    },
+                    "name": "some_name",
+                    "subject_template": Object {
+                      "lang": "some_lang",
+                      "source": "some_source",
+                    },
+                    "throttle": Object {
+                      "unit": "minutes",
+                      "value": 1,
+                    },
+                    "throttle_enabled": true,
+                  },
+                ],
+                "detection_types": Array [
+                  "rules",
+                ],
+                "id": "trigger_id_1",
+                "ids": Array [
+                  "rule_id_1",
+                ],
+                "name": "alert_name",
+                "sev_levels": Array [
+                  "severity_level_low",
+                ],
+                "severity": "1",
+                "tags": Array [
+                  "any.tag",
+                ],
+                "types": Array [
+                  "detector_type_1",
+                ],
+              },
+            ],
+            "type": "detector",
+          }
+        }
+        onDetectorScheduleChange={[Function]}
+      >
+        <EuiTitle
+          size="m"
+        >
+          <h3
+            className="euiTitle euiTitle--medium"
+          >
+            Detector schedule
+          </h3>
+        </EuiTitle>
+        <EuiSpacer>
+          <div
+            className="euiSpacer euiSpacer--l"
+          />
+        </EuiSpacer>
+        <Interval
+          detector={
+            Object {
+              "createdBy": "someone",
+              "detector_type": "detector_type",
+              "enabled": true,
+              "enabled_time": 1,
+              "id": "detector_id_1",
+              "inputs": Array [
                 Object {
-                  "padding": "0px 10px",
-                }
-              }
+                  "detector_input": Object {
+                    "custom_rules": Array [
+                      Object {
+                        "_id": "rule_id_1",
+                        "_index": ".windows",
+                        "_primary_term": 1,
+                        "_source": Object {
+                          "last_update_time": "12/12/2022",
+                          "queries": Array [
+                            Object {
+                              "value": ".windows",
+                            },
+                          ],
+                          "rule": "rule_name",
+                        },
+                        "_version": 1,
+                        "id": "rule_id_1",
+                        "prePackaged": true,
+                      },
+                    ],
+                    "description": "detectorDescription",
+                    "indices": Array [
+                      ".windows",
+                    ],
+                    "pre_packaged_rules": Array [
+                      Object {
+                        "_id": "rule_id_1",
+                        "_index": ".windows",
+                        "_primary_term": 1,
+                        "_source": Object {
+                          "last_update_time": "12/12/2022",
+                          "queries": Array [
+                            Object {
+                              "value": ".windows",
+                            },
+                          ],
+                          "rule": "rule_name",
+                        },
+                        "_version": 1,
+                        "id": "rule_id_1",
+                        "prePackaged": true,
+                      },
+                    ],
+                  },
+                },
+              ],
+              "last_update_time": 1,
+              "name": "detector_name",
+              "schedule": Object {
+                "period": Object {
+                  "interval": 1,
+                  "unit": "MINUTES",
+                },
+              },
+              "triggers": Array [
+                Object {
+                  "actions": Array [
+                    Object {
+                      "destination_id": "some_destination_id_1",
+                      "id": "trigger_id_1_0",
+                      "message_template": Object {
+                        "lang": "some_lang",
+                        "source": "some_source",
+                      },
+                      "name": "some_name",
+                      "subject_template": Object {
+                        "lang": "some_lang",
+                        "source": "some_source",
+                      },
+                      "throttle": Object {
+                        "unit": "minutes",
+                        "value": 1,
+                      },
+                      "throttle_enabled": true,
+                    },
+                    Object {
+                      "destination_id": "some_destination_id_1",
+                      "id": "trigger_id_1_1",
+                      "message_template": Object {
+                        "lang": "some_lang",
+                        "source": "some_source",
+                      },
+                      "name": "some_name",
+                      "subject_template": Object {
+                        "lang": "some_lang",
+                        "source": "some_source",
+                      },
+                      "throttle": Object {
+                        "unit": "minutes",
+                        "value": 1,
+                      },
+                      "throttle_enabled": true,
+                    },
+                  ],
+                  "detection_types": Array [
+                    "rules",
+                  ],
+                  "id": "trigger_id_0",
+                  "ids": Array [
+                    "rule_id_1",
+                  ],
+                  "name": "alert_name",
+                  "sev_levels": Array [
+                    "severity_level_low",
+                  ],
+                  "severity": "1",
+                  "tags": Array [
+                    "any.tag",
+                  ],
+                  "types": Array [
+                    "detector_type_1",
+                  ],
+                },
+                Object {
+                  "actions": Array [
+                    Object {
+                      "destination_id": "some_destination_id_1",
+                      "id": "trigger_id_1_0",
+                      "message_template": Object {
+                        "lang": "some_lang",
+                        "source": "some_source",
+                      },
+                      "name": "some_name",
+                      "subject_template": Object {
+                        "lang": "some_lang",
+                        "source": "some_source",
+                      },
+                      "throttle": Object {
+                        "unit": "minutes",
+                        "value": 1,
+                      },
+                      "throttle_enabled": true,
+                    },
+                    Object {
+                      "destination_id": "some_destination_id_1",
+                      "id": "trigger_id_1_1",
+                      "message_template": Object {
+                        "lang": "some_lang",
+                        "source": "some_source",
+                      },
+                      "name": "some_name",
+                      "subject_template": Object {
+                        "lang": "some_lang",
+                        "source": "some_source",
+                      },
+                      "throttle": Object {
+                        "unit": "minutes",
+                        "value": 1,
+                      },
+                      "throttle_enabled": true,
+                    },
+                  ],
+                  "detection_types": Array [
+                    "rules",
+                  ],
+                  "id": "trigger_id_1",
+                  "ids": Array [
+                    "rule_id_1",
+                  ],
+                  "name": "alert_name",
+                  "sev_levels": Array [
+                    "severity_level_low",
+                  ],
+                  "severity": "1",
+                  "tags": Array [
+                    "any.tag",
+                  ],
+                  "types": Array [
+                    "detector_type_1",
+                  ],
+                },
+              ],
+              "type": "detector",
+            }
+          }
+          onDetectorScheduleChange={[Function]}
+        >
+          <EuiFormRow
+            describedByIds={Array []}
+            display="row"
+            error="Enter schedule interval."
+            fullWidth={false}
+            hasChildLabel={true}
+            hasEmptyLabelSpace={false}
+            isInvalid={false}
+            label={
+              <FormFieldHeader
+                headerTitle="Run every"
+              />
+            }
+            labelType="label"
+          >
+            <div
+              className="euiFormRow"
+              id="some_html_id-row"
             >
               <div
-                className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive"
-                style={
-                  Object {
-                    "padding": "0px 10px",
-                  }
-                }
+                className="euiFormRow__labelWrapper"
               >
-                <EuiFlexItem>
-                  <div
-                    className="euiFlexItem"
-                  >
-                    <EuiTitle
-                      size="m"
-                    >
-                      <h3
-                        className="euiTitle euiTitle--medium"
-                      >
-                        Detector schedule
-                      </h3>
-                    </EuiTitle>
-                  </div>
-                </EuiFlexItem>
-              </div>
-            </EuiFlexGroup>
-            <EuiHorizontalRule
-              margin="xs"
-            >
-              <hr
-                className="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginXSmall"
-              />
-            </EuiHorizontalRule>
-            <div
-              style={
-                Object {
-                  "padding": "0px 10px",
-                }
-              }
-            >
-              <Interval
-                detector={
-                  Object {
-                    "createdBy": "someone",
-                    "detector_type": "detector_type",
-                    "enabled": true,
-                    "enabled_time": 1,
-                    "id": "detector_id_1",
-                    "inputs": Array [
-                      Object {
-                        "detector_input": Object {
-                          "custom_rules": Array [
-                            Object {
-                              "_id": "rule_id_1",
-                              "_index": ".windows",
-                              "_primary_term": 1,
-                              "_source": Object {
-                                "last_update_time": "12/12/2022",
-                                "queries": Array [
-                                  Object {
-                                    "value": ".windows",
-                                  },
-                                ],
-                                "rule": "rule_name",
-                              },
-                              "_version": 1,
-                              "id": "rule_id_1",
-                              "prePackaged": true,
-                            },
-                          ],
-                          "description": "detectorDescription",
-                          "indices": Array [
-                            ".windows",
-                          ],
-                          "pre_packaged_rules": Array [
-                            Object {
-                              "_id": "rule_id_1",
-                              "_index": ".windows",
-                              "_primary_term": 1,
-                              "_source": Object {
-                                "last_update_time": "12/12/2022",
-                                "queries": Array [
-                                  Object {
-                                    "value": ".windows",
-                                  },
-                                ],
-                                "rule": "rule_name",
-                              },
-                              "_version": 1,
-                              "id": "rule_id_1",
-                              "prePackaged": true,
-                            },
-                          ],
-                        },
-                      },
-                    ],
-                    "last_update_time": 1,
-                    "name": "detector_name",
-                    "schedule": Object {
-                      "period": Object {
-                        "interval": 1,
-                        "unit": "MINUTES",
-                      },
-                    },
-                    "triggers": Array [
-                      Object {
-                        "actions": Array [
-                          Object {
-                            "destination_id": "some_destination_id_1",
-                            "id": "trigger_id_1_0",
-                            "message_template": Object {
-                              "lang": "some_lang",
-                              "source": "some_source",
-                            },
-                            "name": "some_name",
-                            "subject_template": Object {
-                              "lang": "some_lang",
-                              "source": "some_source",
-                            },
-                            "throttle": Object {
-                              "unit": "minutes",
-                              "value": 1,
-                            },
-                            "throttle_enabled": true,
-                          },
-                          Object {
-                            "destination_id": "some_destination_id_1",
-                            "id": "trigger_id_1_1",
-                            "message_template": Object {
-                              "lang": "some_lang",
-                              "source": "some_source",
-                            },
-                            "name": "some_name",
-                            "subject_template": Object {
-                              "lang": "some_lang",
-                              "source": "some_source",
-                            },
-                            "throttle": Object {
-                              "unit": "minutes",
-                              "value": 1,
-                            },
-                            "throttle_enabled": true,
-                          },
-                        ],
-                        "id": "trigger_id_0",
-                        "ids": Array [
-                          "rule_id_1",
-                        ],
-                        "name": "alert_name",
-                        "sev_levels": Array [
-                          "severity_level_low",
-                        ],
-                        "severity": "1",
-                        "tags": Array [
-                          "any.tag",
-                        ],
-                        "types": Array [
-                          "detector_type_1",
-                        ],
-                      },
-                      Object {
-                        "actions": Array [
-                          Object {
-                            "destination_id": "some_destination_id_1",
-                            "id": "trigger_id_1_0",
-                            "message_template": Object {
-                              "lang": "some_lang",
-                              "source": "some_source",
-                            },
-                            "name": "some_name",
-                            "subject_template": Object {
-                              "lang": "some_lang",
-                              "source": "some_source",
-                            },
-                            "throttle": Object {
-                              "unit": "minutes",
-                              "value": 1,
-                            },
-                            "throttle_enabled": true,
-                          },
-                          Object {
-                            "destination_id": "some_destination_id_1",
-                            "id": "trigger_id_1_1",
-                            "message_template": Object {
-                              "lang": "some_lang",
-                              "source": "some_source",
-                            },
-                            "name": "some_name",
-                            "subject_template": Object {
-                              "lang": "some_lang",
-                              "source": "some_source",
-                            },
-                            "throttle": Object {
-                              "unit": "minutes",
-                              "value": 1,
-                            },
-                            "throttle_enabled": true,
-                          },
-                        ],
-                        "id": "trigger_id_1",
-                        "ids": Array [
-                          "rule_id_1",
-                        ],
-                        "name": "alert_name",
-                        "sev_levels": Array [
-                          "severity_level_low",
-                        ],
-                        "severity": "1",
-                        "tags": Array [
-                          "any.tag",
-                        ],
-                        "types": Array [
-                          "detector_type_1",
-                        ],
-                      },
-                    ],
-                    "type": "detector",
-                  }
-                }
-                onDetectorScheduleChange={[Function]}
-              >
-                <EuiFormRow
-                  describedByIds={Array []}
-                  display="row"
-                  error="Enter schedule interval."
-                  fullWidth={false}
-                  hasChildLabel={true}
-                  hasEmptyLabelSpace={false}
+                <EuiFormLabel
+                  aria-invalid={false}
+                  className="euiFormRow__label"
+                  htmlFor="some_html_id"
+                  isFocused={false}
                   isInvalid={false}
-                  label={
+                  type="label"
+                >
+                  <label
+                    aria-invalid={false}
+                    className="euiFormLabel euiFormRow__label"
+                    htmlFor="some_html_id"
+                  >
                     <FormFieldHeader
                       headerTitle="Run every"
-                    />
-                  }
-                  labelType="label"
-                >
-                  <div
-                    className="euiFormRow"
-                    id="some_html_id-row"
-                  >
-                    <div
-                      className="euiFormRow__labelWrapper"
                     >
-                      <EuiFormLabel
-                        aria-invalid={false}
-                        className="euiFormRow__label"
-                        htmlFor="some_html_id"
-                        isFocused={false}
-                        isInvalid={false}
-                        type="label"
-                      >
-                        <label
-                          aria-invalid={false}
-                          className="euiFormLabel euiFormRow__label"
-                          htmlFor="some_html_id"
-                        >
-                          <FormFieldHeader
-                            headerTitle="Run every"
-                          >
-                            <EuiText
-                              size="s"
-                            >
-                              <div
-                                className="euiText euiText--small"
-                              >
-                                <strong>
-                                  Run every
-                                </strong>
-                              </div>
-                            </EuiText>
-                          </FormFieldHeader>
-                        </label>
-                      </EuiFormLabel>
-                    </div>
-                    <div
-                      className="euiFormRow__fieldWrapper"
-                    >
-                      <EuiFlexGroup
-                        id="some_html_id"
-                        onBlur={[Function]}
-                        onFocus={[Function]}
+                      <EuiText
+                        size="s"
                       >
                         <div
-                          className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
-                          id="some_html_id"
-                          onBlur={[Function]}
-                          onFocus={[Function]}
+                          className="euiText euiText--small"
                         >
-                          <EuiFlexItem>
+                          <strong>
+                            Run every
+                          </strong>
+                        </div>
+                      </EuiText>
+                    </FormFieldHeader>
+                  </label>
+                </EuiFormLabel>
+              </div>
+              <div
+                className="euiFormRow__fieldWrapper"
+              >
+                <EuiFlexGroup
+                  id="some_html_id"
+                  onBlur={[Function]}
+                  onFocus={[Function]}
+                >
+                  <div
+                    className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+                    id="some_html_id"
+                    onBlur={[Function]}
+                    onFocus={[Function]}
+                  >
+                    <EuiFlexItem>
+                      <div
+                        className="euiFlexItem"
+                      >
+                        <EuiFieldNumber
+                          data-test-subj="detector-schedule-number-select"
+                          icon="clock"
+                          isInvalid={false}
+                          min={1}
+                          onChange={[Function]}
+                          required={true}
+                          value={1}
+                        >
+                          <EuiFormControlLayout
+                            compressed={false}
+                            fullWidth={false}
+                            icon="clock"
+                            isLoading={false}
+                          >
                             <div
-                              className="euiFlexItem"
+                              className="euiFormControlLayout"
                             >
-                              <EuiFieldNumber
-                                data-test-subj="detector-schedule-number-select"
-                                icon="clock"
-                                isInvalid={false}
-                                min={1}
-                                onChange={[Function]}
-                                required={true}
-                                value={1}
+                              <div
+                                className="euiFormControlLayout__childrenWrapper"
                               >
-                                <EuiFormControlLayout
+                                <EuiValidatableControl
+                                  isInvalid={false}
+                                >
+                                  <input
+                                    className="euiFieldNumber euiFieldNumber--withIcon"
+                                    data-test-subj="detector-schedule-number-select"
+                                    min={1}
+                                    onChange={[Function]}
+                                    required={true}
+                                    type="number"
+                                    value={1}
+                                  />
+                                </EuiValidatableControl>
+                                <EuiFormControlLayoutIcons
                                   compressed={false}
-                                  fullWidth={false}
                                   icon="clock"
                                   isLoading={false}
                                 >
                                   <div
-                                    className="euiFormControlLayout"
+                                    className="euiFormControlLayoutIcons"
                                   >
-                                    <div
-                                      className="euiFormControlLayout__childrenWrapper"
+                                    <EuiFormControlLayoutCustomIcon
+                                      size="m"
+                                      type="clock"
                                     >
-                                      <EuiValidatableControl
-                                        isInvalid={false}
+                                      <span
+                                        className="euiFormControlLayoutCustomIcon"
                                       >
-                                        <input
-                                          className="euiFieldNumber euiFieldNumber--withIcon"
-                                          data-test-subj="detector-schedule-number-select"
-                                          min={1}
-                                          onChange={[Function]}
-                                          required={true}
-                                          type="number"
-                                          value={1}
-                                        />
-                                      </EuiValidatableControl>
-                                      <EuiFormControlLayoutIcons
-                                        compressed={false}
-                                        icon="clock"
-                                        isLoading={false}
-                                      >
-                                        <div
-                                          className="euiFormControlLayoutIcons"
+                                        <EuiIcon
+                                          aria-hidden="true"
+                                          className="euiFormControlLayoutCustomIcon__icon"
+                                          size="m"
+                                          type="clock"
                                         >
-                                          <EuiFormControlLayoutCustomIcon
-                                            size="m"
-                                            type="clock"
-                                          >
-                                            <span
-                                              className="euiFormControlLayoutCustomIcon"
-                                            >
-                                              <EuiIcon
-                                                aria-hidden="true"
-                                                className="euiFormControlLayoutCustomIcon__icon"
-                                                size="m"
-                                                type="clock"
-                                              >
-                                                EuiIconMock
-                                              </EuiIcon>
-                                            </span>
-                                          </EuiFormControlLayoutCustomIcon>
-                                        </div>
-                                      </EuiFormControlLayoutIcons>
-                                    </div>
+                                          EuiIconMock
+                                        </EuiIcon>
+                                      </span>
+                                    </EuiFormControlLayoutCustomIcon>
                                   </div>
-                                </EuiFormControlLayout>
-                              </EuiFieldNumber>
+                                </EuiFormControlLayoutIcons>
+                              </div>
                             </div>
-                          </EuiFlexItem>
-                          <EuiFlexItem>
+                          </EuiFormControlLayout>
+                        </EuiFieldNumber>
+                      </div>
+                    </EuiFlexItem>
+                    <EuiFlexItem>
+                      <div
+                        className="euiFlexItem"
+                      >
+                        <EuiSelect
+                          data-test-subj="detector-schedule-unit-select"
+                          onChange={[Function]}
+                          options={
+                            Array [
+                              Object {
+                                "text": "Minutes",
+                                "value": "MINUTES",
+                              },
+                              Object {
+                                "text": "Hours",
+                                "value": "HOURS",
+                              },
+                              Object {
+                                "text": "Days",
+                                "value": "DAYS",
+                              },
+                            ]
+                          }
+                          value="MINUTES"
+                        >
+                          <EuiFormControlLayout
+                            compressed={false}
+                            fullWidth={false}
+                            icon={
+                              Object {
+                                "side": "right",
+                                "type": "arrowDown",
+                              }
+                            }
+                            isLoading={false}
+                          >
                             <div
-                              className="euiFlexItem"
+                              className="euiFormControlLayout"
                             >
-                              <EuiSelect
-                                data-test-subj="detector-schedule-unit-select"
-                                onChange={[Function]}
-                                options={
-                                  Array [
-                                    Object {
-                                      "text": "Minutes",
-                                      "value": "MINUTES",
-                                    },
-                                    Object {
-                                      "text": "Hours",
-                                      "value": "HOURS",
-                                    },
-                                    Object {
-                                      "text": "Days",
-                                      "value": "DAYS",
-                                    },
-                                  ]
-                                }
-                                value="MINUTES"
+                              <div
+                                className="euiFormControlLayout__childrenWrapper"
                               >
-                                <EuiFormControlLayout
+                                <EuiValidatableControl>
+                                  <select
+                                    className="euiSelect"
+                                    data-test-subj="detector-schedule-unit-select"
+                                    onChange={[Function]}
+                                    onMouseUp={[Function]}
+                                    value="MINUTES"
+                                  >
+                                    <option
+                                      key="0"
+                                      value="MINUTES"
+                                    >
+                                      Minutes
+                                    </option>
+                                    <option
+                                      key="1"
+                                      value="HOURS"
+                                    >
+                                      Hours
+                                    </option>
+                                    <option
+                                      key="2"
+                                      value="DAYS"
+                                    >
+                                      Days
+                                    </option>
+                                  </select>
+                                </EuiValidatableControl>
+                                <EuiFormControlLayoutIcons
                                   compressed={false}
-                                  fullWidth={false}
                                   icon={
                                     Object {
                                       "side": "right",
@@ -1533,217 +1550,175 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                                   isLoading={false}
                                 >
                                   <div
-                                    className="euiFormControlLayout"
+                                    className="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
                                   >
-                                    <div
-                                      className="euiFormControlLayout__childrenWrapper"
+                                    <EuiFormControlLayoutCustomIcon
+                                      size="m"
+                                      type="arrowDown"
                                     >
-                                      <EuiValidatableControl>
-                                        <select
-                                          className="euiSelect"
-                                          data-test-subj="detector-schedule-unit-select"
-                                          onChange={[Function]}
-                                          onMouseUp={[Function]}
-                                          value="MINUTES"
-                                        >
-                                          <option
-                                            key="0"
-                                            value="MINUTES"
-                                          >
-                                            Minutes
-                                          </option>
-                                          <option
-                                            key="1"
-                                            value="HOURS"
-                                          >
-                                            Hours
-                                          </option>
-                                          <option
-                                            key="2"
-                                            value="DAYS"
-                                          >
-                                            Days
-                                          </option>
-                                        </select>
-                                      </EuiValidatableControl>
-                                      <EuiFormControlLayoutIcons
-                                        compressed={false}
-                                        icon={
-                                          Object {
-                                            "side": "right",
-                                            "type": "arrowDown",
-                                          }
-                                        }
-                                        isLoading={false}
+                                      <span
+                                        className="euiFormControlLayoutCustomIcon"
                                       >
-                                        <div
-                                          className="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
+                                        <EuiIcon
+                                          aria-hidden="true"
+                                          className="euiFormControlLayoutCustomIcon__icon"
+                                          size="m"
+                                          type="arrowDown"
                                         >
-                                          <EuiFormControlLayoutCustomIcon
-                                            size="m"
-                                            type="arrowDown"
-                                          >
-                                            <span
-                                              className="euiFormControlLayoutCustomIcon"
-                                            >
-                                              <EuiIcon
-                                                aria-hidden="true"
-                                                className="euiFormControlLayoutCustomIcon__icon"
-                                                size="m"
-                                                type="arrowDown"
-                                              >
-                                                EuiIconMock
-                                              </EuiIcon>
-                                            </span>
-                                          </EuiFormControlLayoutCustomIcon>
-                                        </div>
-                                      </EuiFormControlLayoutIcons>
-                                    </div>
+                                          EuiIconMock
+                                        </EuiIcon>
+                                      </span>
+                                    </EuiFormControlLayoutCustomIcon>
                                   </div>
-                                </EuiFormControlLayout>
-                              </EuiSelect>
+                                </EuiFormControlLayoutIcons>
+                              </div>
                             </div>
-                          </EuiFlexItem>
-                        </div>
-                      </EuiFlexGroup>
-                    </div>
+                          </EuiFormControlLayout>
+                        </EuiSelect>
+                      </div>
+                    </EuiFlexItem>
                   </div>
-                </EuiFormRow>
-              </Interval>
+                </EuiFlexGroup>
+              </div>
             </div>
-          </div>
-        </EuiPanel>
-      </ContentPanel>
-    </DetectorSchedule>
-    <EuiSpacer
-      size="xl"
-    >
-      <div
-        className="euiSpacer euiSpacer--xl"
-      />
-    </EuiSpacer>
-    <EuiFlexGroup
-      justifyContent="flexEnd"
-    >
-      <div
-        className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
+          </EuiFormRow>
+        </Interval>
+      </DetectorSchedule>
+      <EuiSpacer
+        size="l"
       >
-        <EuiFlexItem
-          grow={false}
+        <div
+          className="euiSpacer euiSpacer--l"
+        />
+      </EuiSpacer>
+    </div>
+  </EuiPanel>
+  <EuiSpacer>
+    <div
+      className="euiSpacer euiSpacer--l"
+    />
+  </EuiSpacer>
+  <EuiFlexGroup
+    justifyContent="flexEnd"
+  >
+    <div
+      className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
+    >
+      <EuiFlexItem
+        grow={false}
+      >
+        <div
+          className="euiFlexItem euiFlexItem--flexGrowZero"
         >
-          <div
-            className="euiFlexItem euiFlexItem--flexGrowZero"
+          <EuiButton
+            disabled={false}
+            onClick={[Function]}
           >
-            <EuiButton
+            <EuiButtonDisplay
+              baseClassName="euiButton"
               disabled={false}
+              element="button"
+              isDisabled={false}
               onClick={[Function]}
+              type="button"
             >
-              <EuiButtonDisplay
-                baseClassName="euiButton"
+              <button
+                className="euiButton euiButton--primary"
                 disabled={false}
-                element="button"
-                isDisabled={false}
                 onClick={[Function]}
+                style={
+                  Object {
+                    "minWidth": undefined,
+                  }
+                }
                 type="button"
               >
-                <button
-                  className="euiButton euiButton--primary"
-                  disabled={false}
-                  onClick={[Function]}
-                  style={
+                <EuiButtonContent
+                  className="euiButton__content"
+                  iconSide="left"
+                  textProps={
                     Object {
-                      "minWidth": undefined,
+                      "className": "euiButton__text",
                     }
                   }
-                  type="button"
                 >
-                  <EuiButtonContent
-                    className="euiButton__content"
-                    iconSide="left"
-                    textProps={
-                      Object {
-                        "className": "euiButton__text",
-                      }
-                    }
+                  <span
+                    className="euiButtonContent euiButton__content"
                   >
                     <span
-                      className="euiButtonContent euiButton__content"
+                      className="euiButton__text"
                     >
-                      <span
-                        className="euiButton__text"
-                      >
-                        Cancel
-                      </span>
+                      Cancel
                     </span>
-                  </EuiButtonContent>
-                </button>
-              </EuiButtonDisplay>
-            </EuiButton>
-          </div>
-        </EuiFlexItem>
-        <EuiFlexItem
-          grow={false}
+                  </span>
+                </EuiButtonContent>
+              </button>
+            </EuiButtonDisplay>
+          </EuiButton>
+        </div>
+      </EuiFlexItem>
+      <EuiFlexItem
+        grow={false}
+      >
+        <div
+          className="euiFlexItem euiFlexItem--flexGrowZero"
         >
-          <div
-            className="euiFlexItem euiFlexItem--flexGrowZero"
+          <EuiButton
+            data-test-subj="save-basic-details-edits"
+            disabled={false}
+            fill={true}
+            isLoading={false}
+            onClick={[Function]}
           >
-            <EuiButton
+            <EuiButtonDisplay
+              baseClassName="euiButton"
               data-test-subj="save-basic-details-edits"
               disabled={false}
+              element="button"
               fill={true}
+              isDisabled={false}
               isLoading={false}
               onClick={[Function]}
+              type="button"
             >
-              <EuiButtonDisplay
-                baseClassName="euiButton"
+              <button
+                className="euiButton euiButton--primary euiButton--fill"
                 data-test-subj="save-basic-details-edits"
                 disabled={false}
-                element="button"
-                fill={true}
-                isDisabled={false}
-                isLoading={false}
                 onClick={[Function]}
+                style={
+                  Object {
+                    "minWidth": undefined,
+                  }
+                }
                 type="button"
               >
-                <button
-                  className="euiButton euiButton--primary euiButton--fill"
-                  data-test-subj="save-basic-details-edits"
-                  disabled={false}
-                  onClick={[Function]}
-                  style={
+                <EuiButtonContent
+                  className="euiButton__content"
+                  iconSide="left"
+                  isLoading={false}
+                  textProps={
                     Object {
-                      "minWidth": undefined,
+                      "className": "euiButton__text",
                     }
                   }
-                  type="button"
                 >
-                  <EuiButtonContent
-                    className="euiButton__content"
-                    iconSide="left"
-                    isLoading={false}
-                    textProps={
-                      Object {
-                        "className": "euiButton__text",
-                      }
-                    }
+                  <span
+                    className="euiButtonContent euiButton__content"
                   >
                     <span
-                      className="euiButtonContent euiButton__content"
+                      className="euiButton__text"
                     >
-                      <span
-                        className="euiButton__text"
-                      >
-                        Save changes
-                      </span>
+                      Save changes
                     </span>
-                  </EuiButtonContent>
-                </button>
-              </EuiButtonDisplay>
-            </EuiButton>
-          </div>
-        </EuiFlexItem>
-      </div>
-    </EuiFlexGroup>
-  </div>
+                  </span>
+                </EuiButtonContent>
+              </button>
+            </EuiButtonDisplay>
+          </EuiButton>
+        </div>
+      </EuiFlexItem>
+    </div>
+  </EuiFlexGroup>
 </UpdateDetectorBasicDetails>
 `;

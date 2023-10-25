@@ -165,8 +165,10 @@ describe('Alerts', () => {
       // Confirm finding timestamp
       cy.get('[data-test-subj="finding-details-flyout-timestamp"]').contains(date);
 
-      // Confirm finding detector name
-      cy.get('[data-test-subj="finding-details-flyout-detector-link"]').contains(testDetector.name);
+      // Confirm finding detection type
+      cy.get('[data-test-subj="finding-details-flyout-detection-type"]').contains(
+        'Detection rules'
+      );
 
       // Confirm there's only 1 rule details accordion
       cy.get('[data-test-subj="finding-details-flyout-rule-accordion-1"]').should('not.exist');
@@ -356,41 +358,6 @@ describe('Alerts', () => {
       // Confirm the "Acknowledge" button is disabled
       cy.get('[data-test-subj="alert-details-flyout-acknowledge-button"]').should('be.disabled');
     });
-  });
-
-  it('detector name hyperlink on finding details flyout redirects to the detector details page', () => {
-    // Open first alert details flyout
-    cy.get('tbody > tr')
-      .first()
-      .within(() => {
-        // Click the "View details" button for the first alert
-        cy.get('[aria-label="View details"]').click({ force: true });
-      });
-
-    cy.get('[data-test-subj="alert-details-flyout"]').within(() => {
-      // Wait for findings table to finish loading
-      cy.contains('Cypress USB Rule');
-
-      // Click the details button for the first finding
-      cy.get('tbody > tr')
-        .first()
-        .within(() => {
-          cy.get('[data-test-subj="finding-details-flyout-button"]').click({
-            force: true,
-          });
-        });
-    });
-
-    cy.get('[data-test-subj="finding-details-flyout"]').within(() => {
-      // Click the detector name hyperlink
-      cy.get('[data-test-subj="finding-details-flyout-detector-link"]')
-        // Removing the "target" attribute so the link won't open a new tab. Cypress wouldn't test the new tab.
-        .invoke('removeAttr', 'target')
-        .click({ force: true });
-    });
-
-    // Confirm the detector details page is for the expected detector
-    cy.get('[data-test-subj="detector-details-detector-name"]').contains(testDetector.name);
   });
 
   after(() => cy.cleanUpTests());
