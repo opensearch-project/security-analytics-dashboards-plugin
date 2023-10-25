@@ -900,7 +900,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
             className="euiText euiText--medium"
           >
             <p>
-              Match your data source against known malicious IP-addresses. Available for standard log types only. Learn more
+              Match your data source against known malicious IP-addresses. Available for standard log types only.
             </p>
           </div>
         </EuiText>
