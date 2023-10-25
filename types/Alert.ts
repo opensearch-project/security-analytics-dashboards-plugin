@@ -15,11 +15,12 @@ export interface AlertCondition {
   sev_levels: string[];
   tags: string[];
   ids: string[];
-  threat_intel_enabled: boolean;
 
   // Alert related fields
   actions: TriggerAction[];
   severity: string;
+
+  detection_types: string[];
 }
 
 export interface TriggerAction {

@@ -50,7 +50,10 @@ export function parseNotificationChannelsToOptions(
   }));
 }
 
-export function getEmptyAlertCondition(conditionName: string = ''): AlertCondition {
+export function getEmptyAlertCondition(
+  conditionName: string = '',
+  detection_types: string[] = []
+): AlertCondition {
   const emptyTriggerAction: TriggerAction = {
     id: '',
     name: '',
@@ -78,6 +81,6 @@ export function getEmptyAlertCondition(conditionName: string = ''): AlertConditi
     types: [],
     severity: '1',
     ids: [],
-    threat_intel_enabled: true,
+    detection_types,
   };
 }

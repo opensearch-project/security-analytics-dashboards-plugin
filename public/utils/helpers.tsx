@@ -37,7 +37,7 @@ import { OpenSearchService } from '../services';
 import { ruleSeverity, ruleTypes } from '../pages/Rules/utils/constants';
 import { Handler } from 'vega-tooltip';
 import _ from 'lodash';
-import { LogType } from '../../types';
+import { AlertCondition, LogType } from '../../types';
 import { DataStore } from '../store/DataStore';
 import { LogCategoryOptionView } from '../components/Utility/LogCategoryOption';
 
@@ -386,4 +386,22 @@ export function getLogTypeCategoryOptions(): any[] {
       </>
     ),
   }));
+}
+
+export function removeDetectionTypeFromTrigger(
+  trigger: AlertCondition,
+  detectionType: 'rules' | 'threat_intel'
+): string[] {
+  const detectionTypes = new Set(trigger.detection_types);
+  detectionTypes.delete(detectionType);
+  return Array.from(detectionTypes);
+}
+
+export function addDetectionTypeToTrigger(
+  trigger: AlertCondition,
+  detectionType: 'rules' | 'threat_intel'
+): string[] {
+  const detectionTypes = new Set(trigger.detection_types);
+  detectionTypes.add(detectionType);
+  return Array.from(detectionTypes);
 }

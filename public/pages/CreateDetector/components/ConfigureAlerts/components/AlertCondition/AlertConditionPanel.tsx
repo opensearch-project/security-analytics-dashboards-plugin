@@ -70,13 +70,21 @@ export default class AlertConditionPanel extends Component<
       previewToggle: false,
       selectedNames: [],
       showNotificationDetails: true,
-      detectionRulesTriggerEnabled: true,
-      threatIntelTriggerEnabled: true,
+      detectionRulesTriggerEnabled: props.alertCondition.detection_types.includes('rules'),
+      threatIntelTriggerEnabled: props.alertCondition.detection_types.includes('threat_intel'),
     };
   }
 
   componentDidMount() {
     this.prepareMessage();
+  }
+
+  onDetectionTypeChange(detectionType: 'rules' | 'threat_intel', enabled: boolean) {
+    const detectionTypes = new Set(this.props.alertCondition.detection_types);
+    enabled ? detectionTypes.add(detectionType) : detectionTypes.delete(detectionType);
+    this.updateTrigger({
+      detection_types: Array.from(detectionTypes),
+    });
   }
 
   prepareMessage = (updateMessage: boolean = false) => {
@@ -362,7 +370,10 @@ export default class AlertConditionPanel extends Component<
             id="detection-type-rules"
             label="Detection rules"
             checked={detectionRulesTriggerEnabled}
-            onChange={(e) => this.setState({ detectionRulesTriggerEnabled: e.target.checked })}
+            onChange={(e) => {
+              this.setState({ detectionRulesTriggerEnabled: e.target.checked });
+              this.onDetectionTypeChange('rules', e.target.checked);
+            }}
           />
         ) : (
           <EuiText>
@@ -450,7 +461,10 @@ export default class AlertConditionPanel extends Component<
               id="detection-type-threat-intel"
               label="Threat intelligence"
               checked={threatIntelTriggerEnabled}
-              onChange={(e) => this.setState({ threatIntelTriggerEnabled: e.target.checked })}
+              onChange={(e) => {
+                this.setState({ threatIntelTriggerEnabled: e.target.checked });
+                this.onDetectionTypeChange('threat_intel', e.target.checked);
+              }}
             />
 
             {threatIntelTriggerEnabled && (

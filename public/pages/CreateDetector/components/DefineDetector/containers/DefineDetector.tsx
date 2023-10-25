@@ -23,6 +23,10 @@ import { ConfigureFieldMappingProps } from '../../ConfigureFieldMapping/containe
 import { ContentPanel } from '../../../../../components/ContentPanel';
 import { ruleTypes } from '../../../../Rules/utils/constants';
 import { ThreatIntelligence } from '../components/ThreatIntelligence/ThreatIntelligence';
+import {
+  addDetectionTypeToTrigger,
+  removeDetectionTypeFromTrigger,
+} from '../../../../../utils/helpers';
 
 interface DefineDetectorProps extends RouteComponentProps {
   detector: Detector;
@@ -137,9 +141,17 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
   };
 
   onThreatIntelligenceChanged = (checked: boolean) => {
+    const newTriggers = this.state.detector.triggers.map((trigger) => ({
+      ...trigger,
+      detection_types: checked
+        ? addDetectionTypeToTrigger(trigger, 'threat_intel')
+        : removeDetectionTypeFromTrigger(trigger, 'threat_intel'),
+    }));
+
     const newDetector: Detector = {
       ...this.state.detector,
       threat_intel_enabled: checked,
+      triggers: newTriggers,
     };
 
     this.updateDetectorCreationState(newDetector);

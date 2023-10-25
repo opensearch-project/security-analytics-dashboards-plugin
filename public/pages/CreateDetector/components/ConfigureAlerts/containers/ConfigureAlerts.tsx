@@ -115,15 +115,25 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
       detector: { triggers },
       getTriggerName,
     } = this.props;
-    triggers.push(getEmptyAlertCondition(getTriggerName()));
-    changeDetector({ ...detector, triggers });
+    const detectionTypes = ['rules'];
+    if (detector.threat_intel_enabled) {
+      detectionTypes.push('threat_intel');
+    }
+    const newTriggers = [...triggers];
+    newTriggers.push(getEmptyAlertCondition(getTriggerName(), detectionTypes));
+    changeDetector({ ...detector, triggers: newTriggers });
   };
 
   onAlertTriggerChanged = (newDetector: Detector): void => {
     const isTriggerDataValid =
       !newDetector.triggers.length ||
       newDetector.triggers.every((trigger) => {
-        return !!trigger.name && validateName(trigger.name) && trigger.severity;
+        return (
+          !!trigger.name &&
+          validateName(trigger.name) &&
+          trigger.severity &&
+          trigger.detection_types.length
+        );
       });
 
     this.props.changeDetector(newDetector);

@@ -73,6 +73,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
       detector: {
         ...EMPTY_DEFAULT_DETECTOR,
         detector_type: '',
+        triggers: [],
       },
       fieldMappings: [],
       stepDataValid: {

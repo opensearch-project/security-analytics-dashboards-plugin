@@ -28,6 +28,7 @@ import { errorNotificationToast, successNotificationToast } from '../../../../ut
 import { CoreServicesContext } from '../../../../components/core_services';
 import ReviewFieldMappings from '../ReviewFieldMappings/ReviewFieldMappings';
 import { FieldMapping, Detector } from '../../../../../types';
+import { ThreatIntelligence } from '../../../CreateDetector/components/DefineDetector/components/ThreatIntelligence/ThreatIntelligence';
 
 export interface UpdateDetectorBasicDetailsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
@@ -48,6 +49,11 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
   const detectorId = props.location.pathname.replace(`${ROUTES.EDIT_DETECTOR_DETAILS}/`, '');
 
   const context = useContext(CoreServicesContext);
+  const [threatIntelEnabledInitially, setThreatIntelEnabledInitially] = useState(false);
+
+  useEffect(() => {
+    setThreatIntelEnabledInitially(detector.threat_intel_enabled);
+  }, []);
 
   useEffect(() => {
     const getDetector = async () => {
@@ -166,6 +172,19 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
     [detector, updateDetectorState, setFieldMappingsIsVisible]
   );
 
+  const onThreatIntelFeedToggle = useCallback(
+    (enabled: boolean) => {
+      const newDetector: Detector = {
+        ...detector,
+        threat_intel_enabled: enabled,
+      };
+
+      setFieldMappingsIsVisible(!threatIntelEnabledInitially && enabled);
+      updateDetectorState(newDetector);
+    },
+    [detector, updateDetectorState, setFieldMappingsIsVisible]
+  );
+
   const onDetectorScheduleChange = useCallback(
     (schedule: PeriodSchedule) => {
       const newDetector: Detector = {
@@ -249,7 +268,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
       <EuiTitle size={'m'}>
         <h3>Edit detector details</h3>
       </EuiTitle>
-      <EuiSpacer size="xxl" />
+      <EuiSpacer size="xl" />
 
       <EuiPanel>
         <DetectorBasicDetailsForm
@@ -259,7 +278,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
           onDetectorNameChange={onDetectorNameChange}
           onDetectorInputDescriptionChange={onDetectorInputDescriptionChange}
         />
-        <EuiSpacer size="xl" />
+        <EuiSpacer size="l" />
 
         <DetectorDataSource
           isEdit={true}
@@ -270,10 +289,17 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
           fieldMappingService={services?.fieldMappingService as FieldMappingService}
           onDetectorInputIndicesChange={onDetectorInputIndicesChange}
         />
-        <EuiSpacer size={'xl'} />
+        <EuiSpacer size={'l'} />
+
+        <ThreatIntelligence
+          threatIntelChecked={detector.threat_intel_enabled}
+          onThreatIntelChange={onThreatIntelFeedToggle}
+        />
+
+        <EuiSpacer size="l" />
 
         <DetectorSchedule detector={detector} onDetectorScheduleChange={onDetectorScheduleChange} />
-        <EuiSpacer size="xl" />
+        <EuiSpacer size="l" />
 
         {fieldMappingsIsVisible ? (
           <>
@@ -283,7 +309,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
               fieldMappingService={services?.fieldMappingService}
               onFieldMappingChange={onFieldMappingChange}
             />
-            <EuiSpacer size="xl" />
+            <EuiSpacer size="l" />
           </>
         ) : null}
       </EuiPanel>
