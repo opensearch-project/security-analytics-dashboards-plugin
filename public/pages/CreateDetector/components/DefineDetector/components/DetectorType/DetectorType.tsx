@@ -12,6 +12,7 @@ import { ruleTypes } from '../../../../../Rules/utils/constants';
 import ConfigureFieldMapping from '../../../ConfigureFieldMapping';
 import { ConfigureFieldMappingProps } from '../../../ConfigureFieldMapping/containers/ConfigureFieldMapping';
 import { getLogTypeOptions } from '../../../../../../utils/helpers';
+import { getLogTypeLabel } from '../../../../../LogTypes/utils/helpers';
 
 interface DetectorTypeProps {
   detectorType: string;
@@ -100,9 +101,11 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
             options={this.detectorTypeOptions}
             singleSelection={{ asPlainText: true }}
             onChange={(e) => {
-              this.onChange(e[0]?.label || '');
+              this.onChange(e[0]?.value || '');
             }}
-            selectedOptions={detectorType ? [{ value: detectorType, label: detectorType }] : []}
+            selectedOptions={
+              detectorType ? [{ value: detectorType, label: getLogTypeLabel(detectorType) }] : []
+            }
           />
         </EuiFormRow>
 

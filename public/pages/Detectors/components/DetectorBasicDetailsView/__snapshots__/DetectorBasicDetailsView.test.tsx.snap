@@ -258,7 +258,7 @@ Object {
                     data-test-subj="text-details-group-content-log-type"
                     id="some_html_id"
                   >
-                    detector_type
+                    Detector Type
                   </div>
                 </div>
               </div>
@@ -718,7 +718,7 @@ Object {
                   data-test-subj="text-details-group-content-log-type"
                   id="some_html_id"
                 >
-                  detector_type
+                  Detector Type
                 </div>
               </div>
             </div>

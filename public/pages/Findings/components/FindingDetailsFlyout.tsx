@@ -46,6 +46,7 @@ import { FindingFlyoutTabId, FindingFlyoutTabs } from '../utils/constants';
 import { DataStore } from '../../../store/DataStore';
 import { CorrelationsTable } from './CorrelationsTable/CorrelationsTable';
 import { getSeverityColor } from '../../Correlations/utils/constants';
+import { getLogTypeLabel } from '../../LogTypes/utils/helpers';
 
 export interface FindingDetailsFlyoutBaseProps {
   finding: FindingItemType;
@@ -252,14 +253,10 @@ export default class FindingDetailsFlyout extends Component<
                       label={'Log type'}
                       data-test-subj={'finding-details-flyout-rule-category'}
                     >
-                      <EuiText>
-                        {capitalizeFirstLetter(fullRule.category) || DEFAULT_EMPTY_DATA}
-                      </EuiText>
+                      <EuiText>{getLogTypeLabel(fullRule.category) || DEFAULT_EMPTY_DATA}</EuiText>
                     </EuiFormRow>
                   </EuiFlexItem>
                 </EuiFlexGroup>
-
-                <EuiSpacer size={'m'} />
 
                 <EuiFormRow
                   label={'Description'}
