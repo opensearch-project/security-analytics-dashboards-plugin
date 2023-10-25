@@ -4,7 +4,6 @@
  */
 
 import React, { Component } from 'react';
-import { ContentPanel } from '../../../../../../components/ContentPanel';
 import {
   EuiComboBox,
   EuiComboBoxOptionOption,
@@ -12,6 +11,7 @@ import {
   EuiSpacer,
   EuiCallOut,
   EuiTextColor,
+  EuiTitle,
 } from '@elastic/eui';
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
 import { IndexOption } from '../../../../../Detectors/models/interfaces';
@@ -149,7 +149,10 @@ export default class DetectorDataSource extends Component<
     } = this.state;
     const isInvalid = fieldTouched && detectorIndices.length < MIN_NUM_DATA_SOURCES;
     return (
-      <ContentPanel title={'Data source'} titleSize={'m'}>
+      <>
+        <EuiTitle size="m">
+          <h3>Data source</h3>
+        </EuiTitle>
         <EuiSpacer size={'m'} />
         <EuiFormRow
           label={
@@ -186,7 +189,7 @@ export default class DetectorDataSource extends Component<
             </EuiCallOut>
           </>
         ) : null}
-      </ContentPanel>
+      </>
     );
   }
 }

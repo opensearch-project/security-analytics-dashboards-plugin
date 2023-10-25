@@ -149,6 +149,7 @@ export const EMPTY_DEFAULT_DETECTOR: Detector = {
   schedule: EMPTY_DEFAULT_PERIOD_SCHEDULE,
   inputs: [EMPTY_DEFAULT_DETECTOR_INPUT],
   triggers: [],
+  threat_intel_enabled: false,
 };
 
 export const EMPTY_DEFAULT_DETECTOR_HIT: DetectorHit = {

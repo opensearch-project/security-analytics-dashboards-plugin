@@ -19,6 +19,8 @@ export interface AlertCondition {
   // Alert related fields
   actions: TriggerAction[];
   severity: string;
+
+  detection_types: string[];
 }
 
 export interface TriggerAction {

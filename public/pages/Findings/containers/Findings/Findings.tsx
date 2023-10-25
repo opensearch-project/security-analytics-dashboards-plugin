@@ -256,11 +256,17 @@ class Findings extends Component<FindingsProps, FindingsState> {
       const findingTime = new Date(finding.timestamp);
       findingTime.setMilliseconds(0);
       findingTime.setSeconds(0);
+      finding.detectionType === 'Threat intelligence';
+      const ruleLevel =
+        finding.detectionType === 'Threat intelligence'
+          ? 'high'
+          : this.state.rules[finding.queries[0].id].level;
       visData.push({
         finding: 1,
         time: findingTime.getTime(),
         logType: finding.detector._source.detector_type,
-        ruleSeverity: this.state.rules[finding.queries[0].id].level,
+        ruleSeverity:
+          ruleLevel === 'critical' ? ruleLevel : (finding as any)['ruleSeverity'] || ruleLevel,
       });
     });
     const {
@@ -307,11 +313,12 @@ class Findings extends Component<FindingsProps, FindingsState> {
       },
     } = this.props;
     if (Object.keys(rules).length > 0) {
-      findings = findings.map((finding) => {
+      findings = findings.map((finding: any) => {
         const rule = rules[finding.queries[0].id];
         if (rule) {
           finding['ruleName'] = rule.title;
-          finding['ruleSeverity'] = rule.level;
+          finding['ruleSeverity'] =
+            rule.level === 'critical' ? rule.level : finding['ruleSeverity'] || rule.level;
         }
         return finding;
       });
