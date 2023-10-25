@@ -549,7 +549,10 @@ export default class FindingDetailsFlyout extends Component<
             </EuiFlexItem>
 
             <EuiFlexItem>
-              <EuiFormRow label={'Detection type'}>
+              <EuiFormRow
+                label={'Detection type'}
+                data-test-subj={'finding-details-flyout-detection-type'}
+              >
                 <EuiText>{detectionType}</EuiText>
               </EuiFormRow>
             </EuiFlexItem>
