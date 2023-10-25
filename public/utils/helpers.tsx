@@ -52,13 +52,24 @@ export const renderTime = (time: number | string) => {
   return DEFAULT_EMPTY_DATA;
 };
 
-export function createTextDetailsGroup(data: { label: string; content: any; url?: string }[]) {
-  const createFormRow = (label: string, content: string, url?: string) => {
+export function createTextDetailsGroup(
+  data: { label: string; content: any; url?: string; target?: string }[]
+) {
+  const createFormRow = (
+    label: string,
+    content: string,
+    url?: string,
+    target: string = '_self'
+  ) => {
     const dataTestSubj = label.toLowerCase().replace(/ /g, '-');
     return (
-      <EuiFormRow fullWidth label={<EuiText color={'subdued'}>{label}</EuiText>}>
+      <EuiFormRow fullWidth label={label}>
         {url ? (
-          <EuiLink data-test-subj={`text-details-group-content-${dataTestSubj}`}>
+          <EuiLink
+            href={url}
+            data-test-subj={`text-details-group-content-${dataTestSubj}`}
+            target={target}
+          >
             {content ?? DEFAULT_EMPTY_DATA}
           </EuiLink>
         ) : (
@@ -71,20 +82,23 @@ export function createTextDetailsGroup(data: { label: string; content: any; url?
   };
   return data.length <= 1 ? (
     !data.length ? null : (
-      createFormRow(data[0].label, data[0].content, data[0].url)
+      <>
+        {createFormRow(data[0].label, data[0].content, data[0].url, data[0].target)}
+        <EuiSpacer size={'l'} />
+      </>
     )
   ) : (
     <>
       <EuiFlexGroup className={'detailsFormRow'}>
-        {data.map(({ label, content, url }, index) => {
+        {data.map(({ label, content, url, target }, index) => {
           return (
             <EuiFlexItem key={index} grow={true}>
-              {createFormRow(label, content, url)}
+              {createFormRow(label, content, url, target)}
             </EuiFlexItem>
           );
         })}
       </EuiFlexGroup>
-      <EuiSpacer size={'xl'} />
+      <EuiSpacer size={'l'} />
     </>
   );
 }
@@ -389,7 +403,11 @@ export function getLogTypeCategoryOptions(): any[] {
   }));
 }
 
-export function removeDetectionTypeFromTrigger(
+/**
+ * Removes the given detectionType from the list of types inside the given trigger
+ * and returns the new list of detectionTypes
+ */
+export function removeDetectionType(
   trigger: AlertCondition,
   detectionType: 'rules' | 'threat_intel'
 ): string[] {
@@ -398,11 +416,19 @@ export function removeDetectionTypeFromTrigger(
   return Array.from(detectionTypes);
 }
 
-export function addDetectionTypeToTrigger(
+/**
+ * Add the given detectionType to the list of types inside the given trigger
+ * and returns the new list of detectionTypes
+ */
+export function addDetectionType(
   trigger: AlertCondition,
   detectionType: 'rules' | 'threat_intel'
 ): string[] {
   const detectionTypes = new Set(trigger.detection_types);
   detectionTypes.add(detectionType);
   return Array.from(detectionTypes);
+}
+
+export function isThreatIntelQuery(queryId: string) {
+  return queryId?.startsWith('threat_intel_');
 }

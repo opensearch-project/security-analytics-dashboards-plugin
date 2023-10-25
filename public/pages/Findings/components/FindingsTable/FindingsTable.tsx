@@ -17,7 +17,12 @@ import {
 } from '@elastic/eui';
 import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
 import dateMath from '@elastic/datemath';
-import { capitalizeFirstLetter, formatRuleType, renderTime } from '../../../../utils/helpers';
+import {
+  capitalizeFirstLetter,
+  formatRuleType,
+  isThreatIntelQuery,
+  renderTime,
+} from '../../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
 import {
   DetectorsService,
@@ -119,15 +124,17 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
   renderCreateAlertFlyout = (finding: Finding) => {
     if (this.state.flyoutOpen) this.closeFlyout();
     else {
-      const ruleOptions = finding.queries.map((query) => {
-        const rule = this.props.rules[query.id];
-        return {
-          name: rule.title,
-          id: query.id,
-          severity: rule.level,
-          tags: rule.tags.map((tag: any) => tag.value),
-        };
-      });
+      const ruleOptions = finding.queries
+        .filter(({ id }) => !isThreatIntelQuery(id))
+        .map((query) => {
+          const rule = this.props.rules[query.id];
+          return {
+            name: rule.title,
+            id: query.id,
+            severity: rule.level,
+            tags: rule.tags.map((tag: any) => tag.value),
+          };
+        });
       this.setState({
         flyout: (
           <CreateAlertFlyout
@@ -253,9 +260,11 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
     const severities = new Set<string>();
     filteredFindings.forEach((finding) => {
       if (finding) {
-        const queryId = finding.queries[0].id;
-        logTypes.add(rules[queryId].category);
-        severities.add(rules[queryId].level);
+        const queryId = finding.queries.find(({ id }) => !isThreatIntelQuery(id))?.id;
+        if (queryId && rules[queryId]) {
+          logTypes.add(rules[queryId].category);
+          severities.add(rules[queryId].level);
+        }
       }
     });
 

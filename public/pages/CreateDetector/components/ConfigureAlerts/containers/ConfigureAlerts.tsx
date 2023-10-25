@@ -27,7 +27,7 @@ import { NotificationsService } from '../../../../../services';
 import { validateName } from '../../../../../utils/validation';
 import { CoreServicesContext } from '../../../../../components/core_services';
 import { BREADCRUMBS } from '../../../../../utils/constants';
-import { Detector, DetectorCreationStep } from '../../../../../../types';
+import { AlertCondition, Detector, DetectorCreationStep } from '../../../../../../types';
 
 interface ConfigureAlertsProps extends RouteComponentProps {
   detector: Detector;
@@ -44,6 +44,22 @@ interface ConfigureAlertsState {
   loading: boolean;
   notificationChannels: NotificationChannelTypeOptions[];
 }
+
+const isTriggerValid = (triggers: AlertCondition[], hasNotificationPlugin: boolean) => {
+  return (
+    !triggers.length ||
+    triggers.every((trigger) => {
+      return (
+        !!trigger.name &&
+        validateName(trigger.name) &&
+        trigger.severity &&
+        trigger.detection_types.length &&
+        (!hasNotificationPlugin ||
+          (hasNotificationPlugin && trigger.actions.every((action) => !!action.destination_id)))
+      );
+    })
+  );
+};
 
 export default class ConfigureAlerts extends Component<ConfigureAlertsProps, ConfigureAlertsState> {
   static contextType = CoreServicesContext;
@@ -84,11 +100,7 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
       this.addCondition();
       this.props.updateDataValidState(DetectorCreationStep.CONFIGURE_ALERTS, true);
     } else {
-      const isTriggerDataValid =
-        !!triggers.length ||
-        triggers.every((trigger) => {
-          return !!trigger.name && validateName(trigger.name) && trigger.severity;
-        });
+      const isTriggerDataValid = isTriggerValid(triggers, this.props.hasNotificationPlugin);
       this.props.updateDataValidState(DetectorCreationStep.CONFIGURE_ALERTS, isTriggerDataValid);
     }
   };
@@ -125,17 +137,10 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
   };
 
   onAlertTriggerChanged = (newDetector: Detector): void => {
-    const isTriggerDataValid =
-      !newDetector.triggers.length ||
-      newDetector.triggers.every((trigger) => {
-        return (
-          !!trigger.name &&
-          validateName(trigger.name) &&
-          trigger.severity &&
-          trigger.detection_types.length
-        );
-      });
-
+    const isTriggerDataValid = isTriggerValid(
+      newDetector.triggers,
+      this.props.hasNotificationPlugin
+    );
     this.props.changeDetector(newDetector);
     this.props.updateDataValidState(DetectorCreationStep.CONFIGURE_ALERTS, isTriggerDataValid);
   };

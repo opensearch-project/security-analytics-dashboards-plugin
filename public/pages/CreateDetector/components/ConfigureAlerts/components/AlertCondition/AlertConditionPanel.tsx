@@ -56,6 +56,7 @@ interface AlertConditionPanelState {
   showNotificationDetails: boolean;
   detectionRulesTriggerEnabled: boolean;
   threatIntelTriggerEnabled: boolean;
+  notificationError: string;
 }
 
 export default class AlertConditionPanel extends Component<
@@ -72,6 +73,7 @@ export default class AlertConditionPanel extends Component<
       showNotificationDetails: true,
       detectionRulesTriggerEnabled: props.alertCondition.detection_types.includes('rules'),
       threatIntelTriggerEnabled: props.alertCondition.detection_types.includes('threat_intel'),
+      notificationError: '',
     };
   }
 
@@ -207,7 +209,12 @@ export default class AlertConditionPanel extends Component<
     } = this.props;
 
     const actions = alertCondition.actions;
-    actions[0].destination_id = selectedOptions.length > 0 ? selectedOptions[0].value! : '';
+    if (selectedOptions.length > 0) {
+      actions[0].destination_id = selectedOptions[0].value!;
+      this.setState({ notificationError: '' });
+    } else {
+      actions[0].destination_id = '';
+    }
 
     triggers.splice(indexNum, 1, {
       ...alertCondition,
@@ -284,6 +291,7 @@ export default class AlertConditionPanel extends Component<
       showNotificationDetails,
       detectionRulesTriggerEnabled,
       threatIntelTriggerEnabled,
+      notificationError,
     } = this.state;
     const { name, sev_levels: ruleSeverityLevels, tags, severity } = alertCondition;
     const uniqueTagsOptions = new Set(
@@ -361,8 +369,8 @@ export default class AlertConditionPanel extends Component<
         </EuiFormRow>
         <EuiSpacer size={'l'} />
 
-        <EuiTitle size="m">
-          <h3>Detection type</h3>
+        <EuiTitle size="s">
+          <h4>Detection type</h4>
         </EuiTitle>
 
         {threatIntelEnabledInDetector ? (
@@ -529,7 +537,7 @@ export default class AlertConditionPanel extends Component<
 
             <EuiSpacer size={'l'} />
 
-            <EuiFlexGroup alignItems="flexEnd">
+            <EuiFlexGroup alignItems={notificationError ? 'center' : 'flexEnd'}>
               <EuiFlexItem style={{ maxWidth: 400 }}>
                 <EuiFormRow
                   label={
@@ -537,6 +545,8 @@ export default class AlertConditionPanel extends Component<
                       <p>Notification channel</p>
                     </EuiText>
                   }
+                  isInvalid={!!notificationError}
+                  error={notificationError}
                 >
                   <EuiComboBox
                     placeholder={'Select notification channel.'}
@@ -548,7 +558,14 @@ export default class AlertConditionPanel extends Component<
                     }
                     onChange={this.onNotificationChannelsChange}
                     singleSelection={{ asPlainText: true }}
-                    onBlur={refreshNotificationChannels}
+                    onFocus={refreshNotificationChannels}
+                    onBlur={(_e) => {
+                      this.setState({
+                        notificationError: selectedNotificationChannelOption.length
+                          ? ''
+                          : 'Notification channel is required',
+                      });
+                    }}
                     isDisabled={!hasNotificationPlugin}
                   />
                 </EuiFormRow>

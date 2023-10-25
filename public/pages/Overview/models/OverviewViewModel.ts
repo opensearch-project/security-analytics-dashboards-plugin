@@ -8,7 +8,7 @@ import { DetectorHit, RuleSource } from '../../../../server/models/interfaces';
 import { AlertItem, FindingItem } from './interfaces';
 import { DEFAULT_DATE_RANGE, DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { errorNotificationToast } from '../../../utils/helpers';
+import { errorNotificationToast, isThreatIntelQuery } from '../../../utils/helpers';
 import dateMath from '@elastic/datemath';
 import moment from 'moment';
 import { DataStore } from '../../../store/DataStore';
@@ -84,7 +84,8 @@ export class OverviewViewModelActor {
           const logType = detectorInfo.get(id)?.logType;
           const detectorName = detectorInfo.get(id)?.name || '';
           const detectorFindings: any[] = findingRes.response.findings.map((finding) => {
-            const ids = finding.queries.map((query) => query.id);
+            const ruleQueries = finding.queries.filter(({ id }) => !isThreatIntelQuery(id));
+            const ids = ruleQueries.map((query) => query.id);
             ids.forEach((id) => ruleIds.add(id));
 
             const findingTime = new Date(finding.timestamp);
@@ -96,9 +97,10 @@ export class OverviewViewModelActor {
               id: finding.id,
               time: findingTime,
               logType: logType || '',
-              ruleId: finding.queries[0].id,
+              ruleId: ruleQueries[0]?.id || finding.queries[0].id,
               ruleName: '',
               ruleSeverity: '',
+              isThreatIntelOnlyFinding: finding.detectionType === 'Threat intelligence',
             };
           });
           findingItems = findingItems.concat(detectorFindings);
@@ -117,7 +119,10 @@ export class OverviewViewModelActor {
 
       return {
         ...item,
-        ruleName: rulesRes[item.ruleId]?.title || DEFAULT_EMPTY_DATA,
+        ruleName:
+          (item.isThreatIntelOnlyFinding
+            ? 'Threat intelligence feed'
+            : rulesRes[item.ruleId]?.title) || DEFAULT_EMPTY_DATA,
         ruleSeverity: severity || DEFAULT_EMPTY_DATA,
       };
     });

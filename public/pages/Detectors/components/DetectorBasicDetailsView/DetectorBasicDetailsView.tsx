@@ -81,7 +81,7 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
         { label: 'Log type', content: getLogTypeLabel(detector_type.toLowerCase()) },
         {
           label: 'Detector dashboard',
-          content: (dashboardId ? (
+          content: dashboardId ? (
             <EuiLink onClick={() => window.open(`dashboards#/view/${dashboardId}`, '_blank')}>
               {`${name} summary`}
               <EuiIcon type={'popout'} />
@@ -90,7 +90,7 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
             'Not available for this log type'
           ) : (
             '-'
-          )) as any,
+          ),
         },
       ])}
       {createTextDetailsGroup([
@@ -99,7 +99,7 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
         { label: 'Last updated time', content: lastUpdated || DEFAULT_EMPTY_DATA },
       ])}
       {createTextDetailsGroup([
-        { label: 'Threat intelligence feed enabled', content: threat_intel_enabled ? 'Yes' : 'No' },
+        { label: 'Threat intelligence', content: threat_intel_enabled ? 'Enabled' : 'Disabled' },
       ])}
       {rulesCanFold ? children : null}
     </ContentPanel>

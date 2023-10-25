@@ -256,7 +256,11 @@ class Findings extends Component<FindingsProps, FindingsState> {
       const findingTime = new Date(finding.timestamp);
       findingTime.setMilliseconds(0);
       findingTime.setSeconds(0);
-      const ruleLevel = this.state.rules[finding.queries[0].id].level;
+      finding.detectionType === 'Threat intelligence';
+      const ruleLevel =
+        finding.detectionType === 'Threat intelligence'
+          ? 'high'
+          : this.state.rules[finding.queries[0].id].level;
       visData.push({
         finding: 1,
         time: findingTime.getTime(),

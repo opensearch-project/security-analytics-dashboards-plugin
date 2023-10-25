@@ -76,15 +76,7 @@ Object {
                     class="euiFormLabel euiFormRow__label"
                     for="some_html_id"
                   >
-                    <div
-                      class="euiText euiText--medium"
-                    >
-                      <div
-                        class="euiTextColor euiTextColor--subdued"
-                      >
-                        Detector name
-                      </div>
-                    </div>
+                    Detector name
                   </label>
                 </div>
                 <div
@@ -114,15 +106,7 @@ Object {
                     class="euiFormLabel euiFormRow__label"
                     for="some_html_id"
                   >
-                    <div
-                      class="euiText euiText--medium"
-                    >
-                      <div
-                        class="euiTextColor euiTextColor--subdued"
-                      >
-                        Description
-                      </div>
-                    </div>
+                    Description
                   </label>
                 </div>
                 <div
@@ -152,15 +136,7 @@ Object {
                     class="euiFormLabel euiFormRow__label"
                     for="some_html_id"
                   >
-                    <div
-                      class="euiText euiText--medium"
-                    >
-                      <div
-                        class="euiTextColor euiTextColor--subdued"
-                      >
-                        Detector schedule
-                      </div>
-                    </div>
+                    Detector schedule
                   </label>
                 </div>
                 <div
@@ -178,7 +154,7 @@ Object {
             </div>
           </div>
           <div
-            class="euiSpacer euiSpacer--xl"
+            class="euiSpacer euiSpacer--l"
           />
           <div
             class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
@@ -197,15 +173,7 @@ Object {
                     class="euiFormLabel euiFormRow__label"
                     for="some_html_id"
                   >
-                    <div
-                      class="euiText euiText--medium"
-                    >
-                      <div
-                        class="euiTextColor euiTextColor--subdued"
-                      >
-                        Data source
-                      </div>
-                    </div>
+                    Data source
                   </label>
                 </div>
                 <div
@@ -239,15 +207,7 @@ Object {
                     class="euiFormLabel euiFormRow__label"
                     for="some_html_id"
                   >
-                    <div
-                      class="euiText euiText--medium"
-                    >
-                      <div
-                        class="euiTextColor euiTextColor--subdued"
-                      >
-                        Log type
-                      </div>
-                    </div>
+                    Log type
                   </label>
                 </div>
                 <div
@@ -277,15 +237,7 @@ Object {
                     class="euiFormLabel euiFormRow__label"
                     for="some_html_id"
                   >
-                    <div
-                      class="euiText euiText--medium"
-                    >
-                      <div
-                        class="euiTextColor euiTextColor--subdued"
-                      >
-                        Detector dashboard
-                      </div>
-                    </div>
+                    Detector dashboard
                   </label>
                 </div>
                 <div
@@ -303,7 +255,7 @@ Object {
             </div>
           </div>
           <div
-            class="euiSpacer euiSpacer--xl"
+            class="euiSpacer euiSpacer--l"
           />
           <div
             class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
@@ -322,15 +274,7 @@ Object {
                     class="euiFormLabel euiFormRow__label"
                     for="some_html_id"
                   >
-                    <div
-                      class="euiText euiText--medium"
-                    >
-                      <div
-                        class="euiTextColor euiTextColor--subdued"
-                      >
-                        Detection rules
-                      </div>
-                    </div>
+                    Detection rules
                   </label>
                 </div>
                 <div
@@ -360,15 +304,7 @@ Object {
                     class="euiFormLabel euiFormRow__label"
                     for="some_html_id"
                   >
-                    <div
-                      class="euiText euiText--medium"
-                    >
-                      <div
-                        class="euiTextColor euiTextColor--subdued"
-                      >
-                        Created at
-                      </div>
-                    </div>
+                    Created at
                   </label>
                 </div>
                 <div
@@ -398,15 +334,7 @@ Object {
                     class="euiFormLabel euiFormRow__label"
                     for="some_html_id"
                   >
-                    <div
-                      class="euiText euiText--medium"
-                    >
-                      <div
-                        class="euiTextColor euiTextColor--subdued"
-                      >
-                        Last updated time
-                      </div>
-                    </div>
+                    Last updated time
                   </label>
                 </div>
                 <div
@@ -424,7 +352,7 @@ Object {
             </div>
           </div>
           <div
-            class="euiSpacer euiSpacer--xl"
+            class="euiSpacer euiSpacer--l"
           />
           <div
             class="euiFormRow euiFormRow--fullWidth"
@@ -437,15 +365,7 @@ Object {
                 class="euiFormLabel euiFormRow__label"
                 for="some_html_id"
               >
-                <div
-                  class="euiText euiText--medium"
-                >
-                  <div
-                    class="euiTextColor euiTextColor--subdued"
-                  >
-                    Threat intelligence feed enabled
-                  </div>
-                </div>
+                Threat intelligence
               </label>
             </div>
             <div
@@ -453,13 +373,16 @@ Object {
             >
               <div
                 class="euiText euiText--medium"
-                data-test-subj="text-details-group-content-threat-intelligence-feed-enabled"
+                data-test-subj="text-details-group-content-threat-intelligence"
                 id="some_html_id"
               >
-                No
+                Disabled
               </div>
             </div>
           </div>
+          <div
+            class="euiSpacer euiSpacer--l"
+          />
         </div>
       </div>
     </div>
@@ -536,15 +459,7 @@ Object {
                   class="euiFormLabel euiFormRow__label"
                   for="some_html_id"
                 >
-                  <div
-                    class="euiText euiText--medium"
-                  >
-                    <div
-                      class="euiTextColor euiTextColor--subdued"
-                    >
-                      Detector name
-                    </div>
-                  </div>
+                  Detector name
                 </label>
               </div>
               <div
@@ -574,15 +489,7 @@ Object {
                   class="euiFormLabel euiFormRow__label"
                   for="some_html_id"
                 >
-                  <div
-                    class="euiText euiText--medium"
-                  >
-                    <div
-                      class="euiTextColor euiTextColor--subdued"
-                    >
-                      Description
-                    </div>
-                  </div>
+                  Description
                 </label>
               </div>
               <div
@@ -612,15 +519,7 @@ Object {
                   class="euiFormLabel euiFormRow__label"
                   for="some_html_id"
                 >
-                  <div
-                    class="euiText euiText--medium"
-                  >
-                    <div
-                      class="euiTextColor euiTextColor--subdued"
-                    >
-                      Detector schedule
-                    </div>
-                  </div>
+                  Detector schedule
                 </label>
               </div>
               <div
@@ -638,7 +537,7 @@ Object {
           </div>
         </div>
         <div
-          class="euiSpacer euiSpacer--xl"
+          class="euiSpacer euiSpacer--l"
         />
         <div
           class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
@@ -657,15 +556,7 @@ Object {
                   class="euiFormLabel euiFormRow__label"
                   for="some_html_id"
                 >
-                  <div
-                    class="euiText euiText--medium"
-                  >
-                    <div
-                      class="euiTextColor euiTextColor--subdued"
-                    >
-                      Data source
-                    </div>
-                  </div>
+                  Data source
                 </label>
               </div>
               <div
@@ -699,15 +590,7 @@ Object {
                   class="euiFormLabel euiFormRow__label"
                   for="some_html_id"
                 >
-                  <div
-                    class="euiText euiText--medium"
-                  >
-                    <div
-                      class="euiTextColor euiTextColor--subdued"
-                    >
-                      Log type
-                    </div>
-                  </div>
+                  Log type
                 </label>
               </div>
               <div
@@ -737,15 +620,7 @@ Object {
                   class="euiFormLabel euiFormRow__label"
                   for="some_html_id"
                 >
-                  <div
-                    class="euiText euiText--medium"
-                  >
-                    <div
-                      class="euiTextColor euiTextColor--subdued"
-                    >
-                      Detector dashboard
-                    </div>
-                  </div>
+                  Detector dashboard
                 </label>
               </div>
               <div
@@ -763,7 +638,7 @@ Object {
           </div>
         </div>
         <div
-          class="euiSpacer euiSpacer--xl"
+          class="euiSpacer euiSpacer--l"
         />
         <div
           class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
@@ -782,15 +657,7 @@ Object {
                   class="euiFormLabel euiFormRow__label"
                   for="some_html_id"
                 >
-                  <div
-                    class="euiText euiText--medium"
-                  >
-                    <div
-                      class="euiTextColor euiTextColor--subdued"
-                    >
-                      Detection rules
-                    </div>
-                  </div>
+                  Detection rules
                 </label>
               </div>
               <div
@@ -820,15 +687,7 @@ Object {
                   class="euiFormLabel euiFormRow__label"
                   for="some_html_id"
                 >
-                  <div
-                    class="euiText euiText--medium"
-                  >
-                    <div
-                      class="euiTextColor euiTextColor--subdued"
-                    >
-                      Created at
-                    </div>
-                  </div>
+                  Created at
                 </label>
               </div>
               <div
@@ -858,15 +717,7 @@ Object {
                   class="euiFormLabel euiFormRow__label"
                   for="some_html_id"
                 >
-                  <div
-                    class="euiText euiText--medium"
-                  >
-                    <div
-                      class="euiTextColor euiTextColor--subdued"
-                    >
-                      Last updated time
-                    </div>
-                  </div>
+                  Last updated time
                 </label>
               </div>
               <div
@@ -884,7 +735,7 @@ Object {
           </div>
         </div>
         <div
-          class="euiSpacer euiSpacer--xl"
+          class="euiSpacer euiSpacer--l"
         />
         <div
           class="euiFormRow euiFormRow--fullWidth"
@@ -897,15 +748,7 @@ Object {
               class="euiFormLabel euiFormRow__label"
               for="some_html_id"
             >
-              <div
-                class="euiText euiText--medium"
-              >
-                <div
-                  class="euiTextColor euiTextColor--subdued"
-                >
-                  Threat intelligence feed enabled
-                </div>
-              </div>
+              Threat intelligence
             </label>
           </div>
           <div
@@ -913,13 +756,16 @@ Object {
           >
             <div
               class="euiText euiText--medium"
-              data-test-subj="text-details-group-content-threat-intelligence-feed-enabled"
+              data-test-subj="text-details-group-content-threat-intelligence"
               id="some_html_id"
             >
-              No
+              Disabled
             </div>
           </div>
         </div>
+        <div
+          class="euiSpacer euiSpacer--l"
+        />
       </div>
     </div>
   </div>,

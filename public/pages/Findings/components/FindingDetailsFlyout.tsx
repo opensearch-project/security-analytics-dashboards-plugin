@@ -32,8 +32,13 @@ import {
   EuiTab,
   EuiLoadingContent,
 } from '@elastic/eui';
-import { capitalizeFirstLetter, renderTime } from '../../../utils/helpers';
-import { DEFAULT_EMPTY_DATA, ROUTES } from '../../../utils/constants';
+import {
+  capitalizeFirstLetter,
+  createTextDetailsGroup,
+  isThreatIntelQuery,
+  renderTime,
+} from '../../../utils/helpers';
+import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 import { Query } from '../models/interfaces';
 import { RuleViewerFlyout } from '../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
 import { RuleSource } from '../../../../server/models/interfaces';
@@ -167,9 +172,7 @@ export default class FindingDetailsFlyout extends Component<
     });
   }
 
-  renderTags = () => {
-    const { finding } = this.props;
-    const tags = finding.queries[0].tags || [];
+  renderTags = (tags: string[]) => {
     return (
       tags && (
         <EuiBadgeGroup gutterSize={'s'}>
@@ -206,7 +209,7 @@ export default class FindingDetailsFlyout extends Component<
   renderRuleDetails = (rules: Query[] = []) => {
     const { allRules = {} } = this.state;
     return rules
-      .filter(({ id }) => !id.startsWith('threat_intel_'))
+      .filter(({ id }) => !isThreatIntelQuery(id))
       .map((rule, key) => {
         const fullRule = allRules[rule.id];
         const severity = capitalizeFirstLetter(fullRule.level);
@@ -268,7 +271,7 @@ export default class FindingDetailsFlyout extends Component<
                 <EuiSpacer size={'m'} />
 
                 <EuiFormRow label={'Tags'} data-test-subj={'finding-details-flyout-rule-tags'}>
-                  <EuiText>{this.renderTags() || DEFAULT_EMPTY_DATA}</EuiText>
+                  <EuiText>{this.renderTags(rule.tags) || DEFAULT_EMPTY_DATA}</EuiText>
                 </EuiFormRow>
               </EuiPanel>
             </EuiAccordion>
@@ -444,14 +447,26 @@ export default class FindingDetailsFlyout extends Component<
       finding: { queries, detectionType },
     } = this.props;
 
-    const showThreatDetectionInfo = detectionType.includes('Threat');
     const showRuleDetailsInfo = detectionType.includes('Detection');
     const severity = 'High';
     const { background, text } = getSeverityColor(severity);
+    const threatIntelQuery = queries.find(({ id }) => isThreatIntelQuery(id));
+    let threatIntelQueryData: { [key: string]: string } = {};
+    if (threatIntelQuery) {
+      threatIntelQuery.tags.forEach((tag) => {
+        if (tag.startsWith('field:')) {
+          threatIntelQueryData['field'] = tag.split(':')[1];
+        }
+
+        if (tag.startsWith('feed_name:')) {
+          threatIntelQueryData['feedName'] = tag.split(':')[1];
+        }
+      });
+    }
 
     return (
       <>
-        {showThreatDetectionInfo && (
+        {threatIntelQuery && (
           <>
             <EuiTitle size={'s'}>
               <h3>Threat intelligence feed</h3>
@@ -468,6 +483,13 @@ export default class FindingDetailsFlyout extends Component<
               <p>This finding is generated from a threat intelligence feed IOCs.</p>
             </EuiText>
             <EuiSpacer size={'l'} />
+            {createTextDetailsGroup([
+              { label: 'Field', content: threatIntelQueryData['field'] || DEFAULT_EMPTY_DATA },
+              {
+                label: 'Feed name',
+                content: threatIntelQueryData['feedName'] || DEFAULT_EMPTY_DATA,
+              },
+            ])}
           </>
         )}
         {showRuleDetailsInfo && (
