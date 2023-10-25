@@ -30,6 +30,7 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { getPlugins } from '../../../utils/helpers';
 import { Detector, DetectorCreationStep } from '../../../../types';
 import { DataStore } from '../../../store/DataStore';
+import { errorNotificationToast } from '../../../utils/helpers';
 
 interface CreateDetectorProps extends RouteComponentProps {
   isEdit: boolean;
@@ -107,7 +108,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     this.setState({ fieldMappings });
   };
 
-  onCreateClick = () => {
+  onCreateClick = async () => {
     const { creatingDetector, detector, fieldMappings } = this.state;
     if (creatingDetector) {
       return;
@@ -120,6 +121,19 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
       detector.detector_type,
       fieldMappings
     );
+
+    const fieldMappingRes = await fieldsMappingPromise;
+
+    if (!fieldMappingRes.ok) {
+      errorNotificationToast(
+        this.props.notifications,
+        'create',
+        'detector',
+        'Invalid field mappings.'
+      );
+      this.setState({ creatingDetector: false });
+      return;
+    }
 
     const createDetectorPromise = this.props.services.detectorsService.createDetector(detector);
 
