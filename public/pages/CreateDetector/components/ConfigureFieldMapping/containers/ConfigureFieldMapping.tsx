@@ -249,11 +249,19 @@ export default class ConfigureFieldMapping extends Component<
             this.state.createdMappings[ruleFieldName] ||
             mappingsView.response.properties[ruleFieldName].path;
         });
+        let threatIntelFeedFields = new Set();
+        mappingsView.response.threat_intel_field_aliases.forEach(({ fields }) => {
+          fields.forEach((field) => threatIntelFeedFields.add(field));
+        });
         mappingsView.response.unmapped_field_aliases?.forEach((ruleFieldName) => {
-          if (!ruleFieldsForEnabledRules.has(ruleFieldName)) {
+          if (
+            !ruleFieldsForEnabledRules.has(ruleFieldName) &&
+            !threatIntelFeedFields.has(ruleFieldName)
+          ) {
             unmappedRuleFields.delete(ruleFieldName);
           }
         });
+
         this.setState({
           createdMappings: existingMappings,
           mappingsData: {

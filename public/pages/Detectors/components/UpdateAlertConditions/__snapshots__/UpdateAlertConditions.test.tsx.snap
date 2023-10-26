@@ -108,6 +108,9 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
                 "throttle_enabled": true,
               },
             ],
+            "detection_types": Array [
+              "rules",
+            ],
             "id": "trigger_id_0",
             "ids": Array [
               "rule_id_1",
@@ -162,6 +165,9 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
                 },
                 "throttle_enabled": true,
               },
+            ],
+            "detection_types": Array [
+              "rules",
             ],
             "id": "trigger_id_1",
             "ids": Array [
@@ -310,6 +316,9 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
                     "throttle_enabled": true,
                   },
                 ],
+                "detection_types": Array [
+                  "rules",
+                ],
                 "id": "trigger_id_0",
                 "ids": Array [
                   "rule_id_1",
@@ -364,6 +373,9 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
                     },
                     "throttle_enabled": true,
                   },
+                ],
+                "detection_types": Array [
+                  "rules",
                 ],
                 "id": "trigger_id_1",
                 "ids": Array [
@@ -535,6 +547,9 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
                   "throttle_enabled": true,
                 },
               ],
+              "detection_types": Array [
+                "rules",
+              ],
               "id": "trigger_id_0",
               "ids": Array [
                 "rule_id_1",
@@ -589,6 +604,9 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
                   },
                   "throttle_enabled": true,
                 },
+              ],
+              "detection_types": Array [
+                "rules",
               ],
               "id": "trigger_id_1",
               "ids": Array [
@@ -716,6 +734,9 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
                     "throttle_enabled": true,
                   },
                 ],
+                "detection_types": Array [
+                  "rules",
+                ],
                 "id": "trigger_id_0",
                 "ids": Array [
                   "rule_id_1",
@@ -770,6 +791,9 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
                     },
                     "throttle_enabled": true,
                   },
+                ],
+                "detection_types": Array [
+                  "rules",
                 ],
                 "id": "trigger_id_1",
                 "ids": Array [
@@ -921,6 +945,9 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
                         "throttle_enabled": true,
                       },
                     ],
+                    "detection_types": Array [
+                      "rules",
+                    ],
                     "id": "trigger_id_0",
                     "ids": Array [
                       "rule_id_1",
@@ -975,6 +1002,9 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
                         },
                         "throttle_enabled": true,
                       },
+                    ],
+                    "detection_types": Array [
+                      "rules",
                     ],
                     "id": "trigger_id_1",
                     "ids": Array [
