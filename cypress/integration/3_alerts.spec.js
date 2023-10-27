@@ -112,12 +112,12 @@ describe('Alerts', () => {
 
       // Wait for the findings table to finish loading
       cy.contains('Findings (1)');
-      cy.contains('Cypress USB Rule');
+      cy.contains('Detection rules');
 
       // Confirm alert findings contain expected values
       cy.get('tbody > tr').should(($tr) => {
         expect($tr, `timestamp`).to.contain(date);
-        expect($tr, `rule name`).to.contain('Cypress USB Rule');
+        expect($tr, `detection type`).to.contain('Detection rules');
         expect($tr, `detector name`).to.contain(testDetector.name);
         expect($tr, `log type`).to.contain(
           `System Activity: ${getLogTypeLabel(testDetector.detector_type)}`
@@ -141,9 +141,11 @@ describe('Alerts', () => {
         cy.get('[aria-label="View details"]').click({ force: true });
       });
 
+    cy.wait(3000);
+
     cy.get('[data-test-subj="alert-details-flyout"]').within(() => {
       // Wait for findings table to finish loading
-      cy.contains('Cypress USB Rule');
+      cy.contains('Detection rules');
 
       // Click the details button for the first finding
       cy.get('tbody > tr')

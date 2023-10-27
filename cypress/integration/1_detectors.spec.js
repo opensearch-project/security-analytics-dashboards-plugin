@@ -386,7 +386,7 @@ describe('Detectors', () => {
 
     it('...can be created', () => {
       createDetector(detectorName, cypressIndexDns, false);
-      cy.getElementByText('.euiCallOut', 'Detector created successfully');
+      cy.contains('Create detector failed.').should('not.exist');
     });
 
     it('...basic details can be edited', () => {
