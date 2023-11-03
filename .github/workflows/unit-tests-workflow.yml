@@ -9,11 +9,53 @@ on:
 env:
   OPENSEARCH_DASHBOARDS_VERSION: '2.x'
 jobs:
-  tests:
-    name: Run unit tests
+  Get-CI-Image-Tag:
+    uses: opensearch-project/opensearch-build/.github/workflows/get-ci-image-tag.yml@main
+    with:
+      product: opensearch-dashboards
+
+  tests-linux:
+    needs: Get-CI-Image-Tag
+    name: Run Test Linux
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    container:
+      # using the same image which is used by opensearch-build team to build the OpenSearch Distribution
+      # this image tag is subject to change as more dependencies and updates will arrive over time
+      image: ${{ needs.Get-CI-Image-Tag.outputs.ci-image-version-linux }}
+      # need to switch to root so that github actions can install runner binary on container without permission issues.
+      options: --user root
+
+    steps:
+      - name: Checkout OpenSearch-Dashboards
+        uses: actions/checkout@v2
+        with:
+          repository: opensearch-project/OpenSearch-Dashboards
+          ref: ${{ env.OPENSEARCH_DASHBOARDS_VERSION }}
+          path: OpenSearch-Dashboards
+      - name: Checkout Security Analytics Dashboards plugin
+        uses: actions/checkout@v2
+        with:
+          path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
+      - name: Bootstrap plugin/OpenSearch-Dashboards and unit tests
+        run: |
+          chown -R 1000:1000 `pwd`
+          cd ./OpenSearch-Dashboards/
+          su `id -un 1000` -c "source $NVM_DIR/nvm.sh && nvm use && node -v && yarn -v &&
+                               cd ./plugins/security-analytics-dashboards-plugin &&
+                               whoami && yarn osd bootstrap && yarn run test:jest --coverage"
+
+      - name: Uploads coverage
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        uses: codecov/codecov-action@v1
+
+  tests-windows:
+    name: Run Tests Windows
+    strategy:
+      matrix:
+        os: [windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       # Enable longer filenames for windows
@@ -52,6 +94,3 @@ jobs:
         run: |
           cd OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
           yarn run test:jest --coverage
-      - name: Uploads coverage
-        if: ${{ matrix.os == 'ubuntu-latest' }}
-        uses: codecov/codecov-action@v1
