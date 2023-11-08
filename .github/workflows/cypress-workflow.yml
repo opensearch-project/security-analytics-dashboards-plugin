@@ -7,8 +7,8 @@ on:
     branches:
       - "*"
 env:
-  OPENSEARCH_DASHBOARDS_VERSION: '2.x'
-  SECURITY_ANALYTICS_BRANCH: '2.x'
+  OPENSEARCH_DASHBOARDS_VERSION: '2.11'
+  SECURITY_ANALYTICS_BRANCH: '2.11'
 jobs:
   tests:
     name: Run Cypress E2E tests
@@ -87,7 +87,7 @@ jobs:
       - name: Run OpenSearch-Dashboards server
         run: |
           cd OpenSearch-Dashboards
-          yarn start --no-base-path --no-watch &
+          yarn start --no-base-path --no-watch --server.host="0.0.0.0" &
         shell: bash
 
       # Window is slow so wait longer
