@@ -20,7 +20,6 @@ import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
 import React, { useState } from 'react';
 import { RuleContentYamlViewer } from './RuleContentYamlViewer';
 import { RuleItemInfoBase } from '../../../../../types';
-import { getLogTypeLabel } from '../../../LogTypes/utils/helpers';
 
 export interface RuleContentViewerProps {
   rule: RuleItemInfoBase;
@@ -68,9 +67,7 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
             </EuiFlexItem>
             <EuiFlexItem>
               <EuiFormLabel>Log Type</EuiFormLabel>
-              <EuiText data-test-subj={'rule_flyout_rule_log_type'}>
-                {getLogTypeLabel(ruleData.category)}
-              </EuiText>
+              <EuiText data-test-subj={'rule_flyout_rule_log_type'}>{ruleData.category}</EuiText>
             </EuiFlexItem>
           </EuiFlexGroup>
 

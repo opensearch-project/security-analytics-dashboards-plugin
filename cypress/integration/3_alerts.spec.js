@@ -10,7 +10,6 @@ import aliasMappings from '../fixtures/sample_alias_mappings.json';
 import indexDoc from '../fixtures/sample_document.json';
 import ruleSettings from '../fixtures/integration_tests/rule/create_windows_usb_rule.json';
 import { createDetector } from '../support/helpers';
-import { getLogTypeLabel } from '../../public/pages/LogTypes/utils/helpers';
 
 const indexName = 'test-index';
 const detectorName = 'test-detector';
@@ -119,9 +118,7 @@ describe('Alerts', () => {
         expect($tr, `timestamp`).to.contain(date);
         expect($tr, `rule name`).to.contain('Cypress USB Rule');
         expect($tr, `detector name`).to.contain(testDetector.name);
-        expect($tr, `log type`).to.contain(
-          `System Activity: ${getLogTypeLabel(testDetector.detector_type)}`
-        );
+        expect($tr, `log type`).to.contain('System Activity: Windows');
       });
 
       // Close the flyout
@@ -192,9 +189,7 @@ describe('Alerts', () => {
         cy.get('[data-test-subj="finding-details-flyout-rule-severity"]').contains('High');
 
         // Confirm the rule category
-        cy.get('[data-test-subj="finding-details-flyout-rule-category"]').contains(
-          getLogTypeLabel(testDetector.detector_type)
-        );
+        cy.get('[data-test-subj="finding-details-flyout-rule-category"]').contains('Windows');
 
         // Confirm the rule description
         cy.get('[data-test-subj="finding-details-flyout-rule-description"]').contains(

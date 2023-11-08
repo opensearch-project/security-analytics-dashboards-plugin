@@ -9,7 +9,6 @@ import aliasMappings from '../fixtures/sample_alias_mappings.json';
 import indexDoc from '../fixtures/sample_document.json';
 import ruleSettings from '../fixtures/integration_tests/rule/create_windows_usb_rule.json';
 import { createDetector } from '../support/helpers';
-import { getLogTypeLabel } from '../../public/pages/LogTypes/utils/helpers';
 
 const indexName = 'test-index';
 const detectorName = 'test-detector';
@@ -53,7 +52,7 @@ describe('Findings', () => {
     cy.contains('No items found').should('not.exist');
 
     // Check for expected findings
-    cy.contains(`System Activity: ${getLogTypeLabel(testDetector.detector_type)}`);
+    cy.contains('System Activity: Windows');
     cy.contains('High');
   });
 

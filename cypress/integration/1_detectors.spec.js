@@ -10,7 +10,6 @@ import dns_name_rule_data from '../fixtures/integration_tests/rule/create_dns_ru
 import dns_type_rule_data from '../fixtures/integration_tests/rule/create_dns_rule_with_type_selection.json';
 import _ from 'lodash';
 import { getMappingFields } from '../../public/pages/Detectors/utils/helpers';
-import { getLogTypeLabel } from '../../public/pages/LogTypes/utils/helpers';
 
 const cypressIndexDns = 'cypress-index-dns';
 const cypressIndexWindows = 'cypress-index-windows';
@@ -115,9 +114,9 @@ const validatePendingFieldMappingsPanel = (mappings) => {
 const fillDetailsForm = (detectorName, dataSource) => {
   getNameField().type(detectorName);
   getDataSourceField().selectComboboxItem(dataSource);
-  getDataSourceField().focus().blur();
-  getLogTypeField().selectComboboxItem(getLogTypeLabel(cypressLogTypeDns));
-  getLogTypeField().focus().blur();
+  getDataSourceField().blur();
+  getLogTypeField().selectComboboxItem(cypressLogTypeDns);
+  getLogTypeField().blur();
 };
 
 const createDetector = (detectorName, dataSource, expectFailure) => {
@@ -127,7 +126,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
 
   cy.getElementByText('.euiAccordion .euiTitle', 'Detection rules (14 selected)')
     .click({ force: true, timeout: 5000 })
-    .then(() => cy.contains('.euiTable .euiTableRow', getLogTypeLabel(cypressLogTypeDns)));
+    .then(() => cy.contains('.euiTable .euiTableRow', 'Dns'));
 
   cy.getElementByText('.euiAccordion .euiTitle', 'Field mapping - optional');
   cy.get('[aria-controls="mappedTitleFieldsAccordion"]').then(($btn) => {

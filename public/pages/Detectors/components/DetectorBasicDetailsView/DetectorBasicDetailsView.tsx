@@ -10,7 +10,6 @@ import { createTextDetailsGroup, parseSchedule } from '../../../../utils/helpers
 import moment from 'moment';
 import { DEFAULT_EMPTY_DATA, logTypesWithDashboards } from '../../../../utils/constants';
 import { Detector } from '../../../../../types';
-import { getLogTypeLabel } from '../../../LogTypes/utils/helpers';
 
 export interface DetectorBasicDetailsViewProps {
   detector: Detector;
@@ -78,7 +77,7 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
             </>
           ),
         },
-        { label: 'Log type', content: getLogTypeLabel(detector_type.toLowerCase()) },
+        { label: 'Log type', content: detector_type.toLowerCase() },
         {
           label: 'Detector dashboard',
           content: (dashboardId ? (

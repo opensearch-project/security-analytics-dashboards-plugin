@@ -40,7 +40,6 @@ import _ from 'lodash';
 import { LogType } from '../../types';
 import { DataStore } from '../store/DataStore';
 import { LogCategoryOptionView } from '../components/Utility/LogCategoryOption';
-import { getLogTypeLabel } from '../pages/LogTypes/utils/helpers';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
@@ -306,11 +305,11 @@ export const getPlugins = async (opensearchService: OpenSearchService) => {
 
 export const formatRuleType = (matchingRuleType: string) => {
   const logType = ruleTypes.find(
-    (ruleType) => ruleType.value.toLowerCase() === matchingRuleType.toLowerCase()
+    (ruleType) => ruleType.label.toLowerCase() === matchingRuleType.toLowerCase()
   );
 
   if (logType) {
-    return `${logType.category}: ${getLogTypeLabel(logType.value)}`;
+    return `${logType.category}: ${_.capitalize(logType.label)}`;
   }
 
   return DEFAULT_EMPTY_DATA;
@@ -333,7 +332,7 @@ export function formatToLogTypeOptions(logTypesByCategories: { [category: string
       value: category,
       options: logTypes
         .map(({ name }) => ({
-          label: getLogTypeLabel(name),
+          label: name,
           value: name.toLowerCase(),
         }))
         .sort((a, b) => (a.label < b.label ? -1 : a.label > b.label ? 1 : 0)),
@@ -364,7 +363,7 @@ export function getLogTypeFilterOptions() {
         value: logTypes[i].value,
         view: (
           <span className="euiFlexItem euiFilterSelectItem__content" style={{ paddingLeft: 20 }}>
-            {getLogTypeLabel(logTypes[i].label)}
+            {_.capitalize(logTypes[i].label)}
           </span>
         ),
       });

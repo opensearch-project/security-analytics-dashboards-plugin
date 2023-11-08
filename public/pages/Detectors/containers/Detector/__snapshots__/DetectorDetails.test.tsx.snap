@@ -1945,7 +1945,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                 onBlur={[Function]}
                                 onFocus={[Function]}
                               >
-                                Detector Type
+                                detector_type
                               </div>
                             </EuiText>
                           </div>

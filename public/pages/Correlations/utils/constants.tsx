@@ -9,7 +9,7 @@ import { ruleSeverity, ruleTypes } from '../../Rules/utils/constants';
 import { FilterItem } from '../components/FilterGroup';
 import { EuiIcon, EuiTitle } from '@elastic/eui';
 import { logTypeCategories, logTypesByCategories } from '../../../utils/constants';
-import { getLogTypeLabel } from '../../LogTypes/utils/helpers';
+import _ from 'lodash';
 
 export const graphRenderOptions = {
   nodes: {
@@ -67,7 +67,7 @@ export const getDefaultLogTypeFilterItemOptions: () => FilterItem[] = () => {
 
     logTypes.forEach(({ name }) => {
       options.push({
-        name: getLogTypeLabel(name),
+        name: _.capitalize(name),
         id: name,
         checked: 'on',
         visible: true,
