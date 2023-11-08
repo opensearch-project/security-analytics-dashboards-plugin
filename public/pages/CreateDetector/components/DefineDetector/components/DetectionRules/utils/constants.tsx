@@ -7,7 +7,6 @@ import { EuiBasicTableColumn, EuiLink, EuiSwitch } from '@elastic/eui';
 import { capitalizeFirstLetter } from '../../../../../../../utils/helpers';
 import React, { ReactNode } from 'react';
 import { RuleItem } from '../types/interfaces';
-import { getLogTypeLabel } from '../../../../../../LogTypes/utils/helpers';
 
 export type ActiveToggleOnChangeEvent = React.BaseSyntheticEvent<
   React.MouseEvent<HTMLButtonElement>,
@@ -52,7 +51,7 @@ export const getRulesColumns = (
       name: 'Log type',
       width: '10%',
       sortable: true,
-      render: (logType: string) => getLogTypeLabel(logType),
+      render: (logType: string) => capitalizeFirstLetter(logType),
     },
     {
       field: 'library',

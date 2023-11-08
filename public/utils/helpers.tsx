@@ -37,10 +37,9 @@ import { OpenSearchService } from '../services';
 import { ruleSeverity, ruleTypes } from '../pages/Rules/utils/constants';
 import { Handler } from 'vega-tooltip';
 import _ from 'lodash';
-import { AlertCondition, LogType } from '../../types';
+import { LogType } from '../../types';
 import { DataStore } from '../store/DataStore';
 import { LogCategoryOptionView } from '../components/Utility/LogCategoryOption';
-import { getLogTypeLabel } from '../pages/LogTypes/utils/helpers';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
@@ -52,24 +51,13 @@ export const renderTime = (time: number | string) => {
   return DEFAULT_EMPTY_DATA;
 };
 
-export function createTextDetailsGroup(
-  data: { label: string; content: any; url?: string; target?: string }[]
-) {
-  const createFormRow = (
-    label: string,
-    content: string,
-    url?: string,
-    target: string = '_self'
-  ) => {
+export function createTextDetailsGroup(data: { label: string; content: any; url?: string }[]) {
+  const createFormRow = (label: string, content: string, url?: string) => {
     const dataTestSubj = label.toLowerCase().replace(/ /g, '-');
     return (
-      <EuiFormRow fullWidth label={label}>
+      <EuiFormRow fullWidth label={<EuiText color={'subdued'}>{label}</EuiText>}>
         {url ? (
-          <EuiLink
-            href={url}
-            data-test-subj={`text-details-group-content-${dataTestSubj}`}
-            target={target}
-          >
+          <EuiLink data-test-subj={`text-details-group-content-${dataTestSubj}`}>
             {content ?? DEFAULT_EMPTY_DATA}
           </EuiLink>
         ) : (
@@ -82,23 +70,20 @@ export function createTextDetailsGroup(
   };
   return data.length <= 1 ? (
     !data.length ? null : (
-      <>
-        {createFormRow(data[0].label, data[0].content, data[0].url, data[0].target)}
-        <EuiSpacer size={'l'} />
-      </>
+      createFormRow(data[0].label, data[0].content, data[0].url)
     )
   ) : (
     <>
       <EuiFlexGroup className={'detailsFormRow'}>
-        {data.map(({ label, content, url, target }, index) => {
+        {data.map(({ label, content, url }, index) => {
           return (
             <EuiFlexItem key={index} grow={true}>
-              {createFormRow(label, content, url, target)}
+              {createFormRow(label, content, url)}
             </EuiFlexItem>
           );
         })}
       </EuiFlexGroup>
-      <EuiSpacer size={'l'} />
+      <EuiSpacer size={'xl'} />
     </>
   );
 }
@@ -320,11 +305,11 @@ export const getPlugins = async (opensearchService: OpenSearchService) => {
 
 export const formatRuleType = (matchingRuleType: string) => {
   const logType = ruleTypes.find(
-    (ruleType) => ruleType.value.toLowerCase() === matchingRuleType.toLowerCase()
+    (ruleType) => ruleType.label.toLowerCase() === matchingRuleType.toLowerCase()
   );
 
   if (logType) {
-    return `${logType.category}: ${getLogTypeLabel(logType.value)}`;
+    return `${logType.category}: ${_.capitalize(logType.label)}`;
   }
 
   return DEFAULT_EMPTY_DATA;
@@ -347,7 +332,7 @@ export function formatToLogTypeOptions(logTypesByCategories: { [category: string
       value: category,
       options: logTypes
         .map(({ name }) => ({
-          label: getLogTypeLabel(name),
+          label: name,
           value: name.toLowerCase(),
         }))
         .sort((a, b) => (a.label < b.label ? -1 : a.label > b.label ? 1 : 0)),
@@ -378,7 +363,7 @@ export function getLogTypeFilterOptions() {
         value: logTypes[i].value,
         view: (
           <span className="euiFlexItem euiFilterSelectItem__content" style={{ paddingLeft: 20 }}>
-            {getLogTypeLabel(logTypes[i].label)}
+            {_.capitalize(logTypes[i].label)}
           </span>
         ),
       });
@@ -401,34 +386,4 @@ export function getLogTypeCategoryOptions(): any[] {
       </>
     ),
   }));
-}
-
-/**
- * Removes the given detectionType from the list of types inside the given trigger
- * and returns the new list of detectionTypes
- */
-export function removeDetectionType(
-  trigger: AlertCondition,
-  detectionType: 'rules' | 'threat_intel'
-): string[] {
-  const detectionTypes = new Set(trigger.detection_types);
-  detectionTypes.delete(detectionType);
-  return Array.from(detectionTypes);
-}
-
-/**
- * Add the given detectionType to the list of types inside the given trigger
- * and returns the new list of detectionTypes
- */
-export function addDetectionType(
-  trigger: AlertCondition,
-  detectionType: 'rules' | 'threat_intel'
-): string[] {
-  const detectionTypes = new Set(trigger.detection_types);
-  detectionTypes.add(detectionType);
-  return Array.from(detectionTypes);
-}
-
-export function isThreatIntelQuery(queryId: string) {
-  return queryId?.startsWith('threat_intel_');
 }

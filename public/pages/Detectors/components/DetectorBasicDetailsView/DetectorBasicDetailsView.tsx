@@ -10,7 +10,6 @@ import { createTextDetailsGroup, parseSchedule } from '../../../../utils/helpers
 import moment from 'moment';
 import { DEFAULT_EMPTY_DATA, logTypesWithDashboards } from '../../../../utils/constants';
 import { Detector } from '../../../../../types';
-import { getLogTypeLabel } from '../../../LogTypes/utils/helpers';
 
 export interface DetectorBasicDetailsViewProps {
   detector: Detector;
@@ -32,7 +31,7 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
   onEditClicked,
   isEditable = true,
 }) => {
-  const { name, detector_type, inputs, schedule, threat_intel_enabled } = detector;
+  const { name, detector_type, inputs, schedule } = detector;
   const detectorSchedule = parseSchedule(schedule);
   const createdAt = enabled_time ? moment(enabled_time).format('YYYY-MM-DDTHH:mm') : undefined;
   const lastUpdated = last_update_time
@@ -78,10 +77,10 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
             </>
           ),
         },
-        { label: 'Log type', content: getLogTypeLabel(detector_type.toLowerCase()) },
+        { label: 'Log type', content: detector_type.toLowerCase() },
         {
           label: 'Detector dashboard',
-          content: dashboardId ? (
+          content: (dashboardId ? (
             <EuiLink onClick={() => window.open(`dashboards#/view/${dashboardId}`, '_blank')}>
               {`${name} summary`}
               <EuiIcon type={'popout'} />
@@ -90,16 +89,13 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
             'Not available for this log type'
           ) : (
             '-'
-          ),
+          )) as any,
         },
       ])}
       {createTextDetailsGroup([
         { label: 'Detection rules', content: totalSelected },
         { label: 'Created at', content: createdAt || DEFAULT_EMPTY_DATA },
         { label: 'Last updated time', content: lastUpdated || DEFAULT_EMPTY_DATA },
-      ])}
-      {createTextDetailsGroup([
-        { label: 'Threat intelligence', content: threat_intel_enabled ? 'Enabled' : 'Disabled' },
       ])}
       {rulesCanFold ? children : null}
     </ContentPanel>

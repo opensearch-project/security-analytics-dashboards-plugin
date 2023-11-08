@@ -59,20 +59,6 @@ export default class FindingsService {
         CLIENT_DETECTOR_METHODS.GET_FINDINGS,
         params
       );
-
-      getFindingsResponse.findings.forEach((finding: any) => {
-        const types: string[] = [];
-        if (!finding.queries.every((query: any) => query.id.startsWith('threat_intel_'))) {
-          types.push('Detection rules');
-        }
-        if (finding.queries.some((query: any) => query.id.startsWith('threat_intel_'))) {
-          types.push('Threat intelligence');
-          finding['ruleSeverity'] = 'high';
-        }
-
-        finding['detectionType'] = types.join(', ');
-      });
-
       return response.custom({
         statusCode: 200,
         body: {

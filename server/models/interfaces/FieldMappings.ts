@@ -11,7 +11,6 @@ export interface GetFieldMapingsViewParams {
 export interface GetFieldMappingViewResponse extends FieldMappingPropertyMap {
   unmapped_index_fields?: string[];
   unmapped_field_aliases?: string[];
-  threat_intel_field_aliases: { ioc: string; fields: string[] }[];
 }
 
 export interface CreateMappingsParams {

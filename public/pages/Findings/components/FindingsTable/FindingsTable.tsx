@@ -17,12 +17,7 @@ import {
 } from '@elastic/eui';
 import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
 import dateMath from '@elastic/datemath';
-import {
-  capitalizeFirstLetter,
-  formatRuleType,
-  isThreatIntelQuery,
-  renderTime,
-} from '../../../../utils/helpers';
+import { capitalizeFirstLetter, formatRuleType, renderTime } from '../../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
 import {
   DetectorsService,
@@ -78,8 +73,8 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
     };
   }
 
-  componentDidMount = () => {
-    this.filterFindings();
+  componentDidMount = async () => {
+    await this.filterFindings();
   };
 
   componentDidUpdate(prevProps: Readonly<FindingsTableProps>) {
@@ -124,17 +119,15 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
   renderCreateAlertFlyout = (finding: Finding) => {
     if (this.state.flyoutOpen) this.closeFlyout();
     else {
-      const ruleOptions = finding.queries
-        .filter(({ id }) => !isThreatIntelQuery(id))
-        .map((query) => {
-          const rule = this.props.rules[query.id];
-          return {
-            name: rule.title,
-            id: query.id,
-            severity: rule.level,
-            tags: rule.tags.map((tag: any) => tag.value),
-          };
-        });
+      const ruleOptions = finding.queries.map((query) => {
+        const rule = this.props.rules[query.id];
+        return {
+          name: rule.title,
+          id: query.id,
+          severity: rule.level,
+          tags: rule.tags.map((tag: any) => tag.value),
+        };
+      });
       this.setState({
         flyout: (
           <CreateAlertFlyout
@@ -188,20 +181,29 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
           ) || DEFAULT_EMPTY_DATA,
       },
       {
+        field: 'ruleName',
+        name: 'Rule name',
+        sortable: true,
+        dataType: 'string',
+        render: (ruleName: string) => ruleName || DEFAULT_EMPTY_DATA,
+      },
+      {
         field: 'detectorName',
-        name: 'Detector',
+        name: 'Threat detector',
         sortable: true,
         dataType: 'string',
         render: (name: string) => name || DEFAULT_EMPTY_DATA,
       },
       {
-        field: 'detectionType',
-        name: 'Detection type',
-        render: (detectionType: string) => detectionType || DEFAULT_EMPTY_DATA,
+        field: 'logType',
+        name: 'Log type',
+        sortable: true,
+        dataType: 'string',
+        render: (logType: string) => formatRuleType(logType),
       },
       {
         field: 'ruleSeverity',
-        name: 'Severity',
+        name: 'Rule severity',
         sortable: true,
         dataType: 'string',
         align: 'left',
@@ -215,13 +217,6 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
             </EuiBadge>
           );
         },
-      },
-      {
-        field: 'logType',
-        name: 'Log type',
-        sortable: true,
-        dataType: 'string',
-        render: (logType: string) => formatRuleType(logType),
       },
       {
         name: 'Actions',
@@ -260,11 +255,9 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
     const severities = new Set<string>();
     filteredFindings.forEach((finding) => {
       if (finding) {
-        const queryId = finding.queries.find(({ id }) => !isThreatIntelQuery(id))?.id;
-        if (queryId && rules[queryId]) {
-          logTypes.add(rules[queryId].category);
-          severities.add(rules[queryId].level);
-        }
+        const queryId = finding.queries[0].id;
+        logTypes.add(rules[queryId].category);
+        severities.add(rules[queryId].level);
       }
     });
 
@@ -277,7 +270,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         {
           type: 'field_value_selection',
           field: 'ruleSeverity',
-          name: 'Severity',
+          name: 'Rule severity',
           options: Array.from(severities).map((severity) => {
             const name =
               parseAlertSeverityToOption(severity)?.label || capitalizeFirstLetter(severity);
@@ -293,22 +286,6 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
             value: type,
             name: formatRuleType(type),
           })),
-          multiSelect: 'or',
-        } as FieldValueSelectionFilterConfigType,
-        {
-          type: 'field_value_selection',
-          field: 'detectionType',
-          name: 'Detection type',
-          options: [
-            {
-              value: 'Detection rules',
-              name: 'Detection rules',
-            },
-            {
-              value: 'Threat intelligence',
-              name: 'Threat intelligence',
-            },
-          ],
           multiSelect: 'or',
         } as FieldValueSelectionFilterConfigType,
       ],

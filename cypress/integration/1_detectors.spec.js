@@ -10,13 +10,11 @@ import dns_name_rule_data from '../fixtures/integration_tests/rule/create_dns_ru
 import dns_type_rule_data from '../fixtures/integration_tests/rule/create_dns_rule_with_type_selection.json';
 import _ from 'lodash';
 import { getMappingFields } from '../../public/pages/Detectors/utils/helpers';
-import { getLogTypeLabel } from '../../public/pages/LogTypes/utils/helpers';
 
 const cypressIndexDns = 'cypress-index-dns';
 const cypressIndexWindows = 'cypress-index-windows';
 const detectorName = 'test detector';
 const cypressLogTypeDns = 'dns';
-const sampleNotificationChannel = 'sample_chime_channel';
 
 const cypressDNSRule = dns_name_rule_data.title;
 
@@ -38,13 +36,9 @@ const dataSourceLabel = 'Select or input source indexes or index patterns';
 
 const getDataSourceField = () => cy.getFieldByLabel(dataSourceLabel);
 
-const logTypeLabel = 'Log type';
+const logTypeLabel = 'Select a log type you would like to detect';
 
 const getLogTypeField = () => cy.getFieldByLabel(logTypeLabel);
-
-const notificationLabel = 'Notification channel';
-
-const getNotificationField = () => cy.getFieldByLabel(notificationLabel);
 
 const openDetectorDetails = (detectorName) => {
   cy.getInputByPlaceholder('Search threat detectors').type(`${detectorName}`).pressEnterKey();
@@ -120,9 +114,9 @@ const validatePendingFieldMappingsPanel = (mappings) => {
 const fillDetailsForm = (detectorName, dataSource) => {
   getNameField().type(detectorName);
   getDataSourceField().selectComboboxItem(dataSource);
-  getDataSourceField().focus().blur();
-  getLogTypeField().selectComboboxItem(getLogTypeLabel(cypressLogTypeDns));
-  getLogTypeField().focus().blur();
+  getDataSourceField().blur();
+  getLogTypeField().selectComboboxItem(cypressLogTypeDns);
+  getLogTypeField().blur();
 };
 
 const createDetector = (detectorName, dataSource, expectFailure) => {
@@ -130,9 +124,9 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
 
   fillDetailsForm(detectorName, dataSource);
 
-  cy.getElementByText('.euiAccordion .euiTitle', 'Selected detection rules (14)')
+  cy.getElementByText('.euiAccordion .euiTitle', 'Detection rules (14 selected)')
     .click({ force: true, timeout: 5000 })
-    .then(() => cy.contains('.euiTable .euiTableRow', getLogTypeLabel(cypressLogTypeDns)));
+    .then(() => cy.contains('.euiTable .euiTableRow', 'Dns'));
 
   cy.getElementByText('.euiAccordion .euiTitle', 'Field mapping - optional');
   cy.get('[aria-controls="mappedTitleFieldsAccordion"]').then(($btn) => {
@@ -155,7 +149,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
     .focus()
     .blur();
 
-  getNotificationField().selectComboboxItem(`[Channel] ${sampleNotificationChannel}`);
+  cy.getFieldByLabel('Specify alert severity').selectComboboxItem('1 (Highest)');
 
   cy.intercept('POST', '/_plugins/_security_analytics/mappings').as('createMappingsRequest');
   cy.intercept('POST', '/_plugins/_security_analytics/detectors').as('createDetectorRequest');
@@ -173,6 +167,8 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
       cy.url()
         .should('contain', detectorId)
         .then(() => {
+          cy.getElementByText('.euiCallOut', `Detector created successfully: ${detectorName}`);
+
           // Confirm detector state
           cy.getElementByText('.euiTitle', detectorName);
           cy.getElementByText('.euiHealth', 'Active').then(() => {
@@ -220,20 +216,6 @@ describe('Detectors', () => {
 
     cy.createRule(dns_name_rule_data);
     cy.createRule(dns_type_rule_data);
-
-    cy.request('POST', 'http://localhost:9200/_plugins/_notifications/configs/', {
-      config_id: 'sa_notification-channel_id',
-      name: sampleNotificationChannel,
-      config: {
-        name: sampleNotificationChannel,
-        description: 'This is a sample chime channel',
-        config_type: 'chime',
-        is_enabled: true,
-        chime: {
-          url: 'https://sample-chime-webhook',
-        },
-      },
-    }).should('have.property', 'status', 200);
   });
 
   describe('...should validate form fields', () => {
@@ -348,6 +330,8 @@ describe('Detectors', () => {
         .parents('.euiFormRow__fieldWrapper')
         .find('.euiFormErrorText')
         .should('not.exist');
+
+      getCreateDetectorButton().should('be.enabled');
 
       getTriggerNameField().type('{selectall}').type('{backspace}').focus().blur();
       getCreateDetectorButton().should('be.disabled');
@@ -512,11 +496,5 @@ describe('Detectors', () => {
     });
   });
 
-  after(() => {
-    cy.cleanUpTests();
-    cy.request(
-      'DELETE',
-      'http://localhost:9200/_plugins/_notifications/configs/sa_notification-channel_id'
-    );
-  });
+  after(() => cy.cleanUpTests());
 });

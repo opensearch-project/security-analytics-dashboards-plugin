@@ -8,7 +8,7 @@ import { DetectorHit, RuleSource } from '../../../../server/models/interfaces';
 import { AlertItem, FindingItem } from './interfaces';
 import { DEFAULT_DATE_RANGE, DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { errorNotificationToast, isThreatIntelQuery } from '../../../utils/helpers';
+import { errorNotificationToast } from '../../../utils/helpers';
 import dateMath from '@elastic/datemath';
 import moment from 'moment';
 import { DataStore } from '../../../store/DataStore';
@@ -40,7 +40,7 @@ export class OverviewViewModelActor {
     if (res?.ok) {
       this.overviewViewModel.detectors = res.response.hits.hits;
     } else if (!res?.error.includes('no such index')) {
-      errorNotificationToast(this.notifications, 'retrieve', 'detectors', res?.error);
+      errorNotificationToast(this.notifications, 'retrieve', 'detectors', res.error);
     }
   }
 
@@ -83,9 +83,8 @@ export class OverviewViewModelActor {
         if (findingRes?.ok) {
           const logType = detectorInfo.get(id)?.logType;
           const detectorName = detectorInfo.get(id)?.name || '';
-          const detectorFindings: any[] = findingRes.response.findings.map((finding) => {
-            const ruleQueries = finding.queries.filter(({ id }) => !isThreatIntelQuery(id));
-            const ids = ruleQueries.map((query) => query.id);
+          const detectorFindings: FindingItem[] = findingRes.response.findings.map((finding) => {
+            const ids = finding.queries.map((query) => query.id);
             ids.forEach((id) => ruleIds.add(id));
 
             const findingTime = new Date(finding.timestamp);
@@ -97,35 +96,26 @@ export class OverviewViewModelActor {
               id: finding.id,
               time: findingTime,
               logType: logType || '',
-              ruleId: ruleQueries[0]?.id || finding.queries[0].id,
+              ruleId: finding.queries[0].id,
               ruleName: '',
               ruleSeverity: '',
-              isThreatIntelOnlyFinding: finding.detectionType === 'Threat intelligence',
             };
           });
           findingItems = findingItems.concat(detectorFindings);
         } else {
-          errorNotificationToast(this.notifications, 'retrieve', 'findings', findingRes?.error);
+          errorNotificationToast(this.notifications, 'retrieve', 'findings', findingRes.error);
         }
       }
-    } catch (e: any) {
+    } catch (e) {
       errorNotificationToast(this.notifications, 'retrieve', 'findings', e);
     }
 
     const rulesRes = await this.getRules([...ruleIds]);
-    findingItems = findingItems.map((item) => {
-      const level = rulesRes[item.ruleId]?.level;
-      const severity = level === 'critical' ? level : item['ruleSeverity'] || level;
-
-      return {
-        ...item,
-        ruleName:
-          (item.isThreatIntelOnlyFinding
-            ? 'Threat intelligence feed'
-            : rulesRes[item.ruleId]?.title) || DEFAULT_EMPTY_DATA,
-        ruleSeverity: severity || DEFAULT_EMPTY_DATA,
-      };
-    });
+    findingItems = findingItems.map((item) => ({
+      ...item,
+      ruleName: rulesRes[item.ruleId]?.title || DEFAULT_EMPTY_DATA,
+      ruleSeverity: rulesRes[item.ruleId]?.level || DEFAULT_EMPTY_DATA,
+    }));
 
     this.overviewViewModel.findings = this.filterChartDataByTime(findingItems);
   }
@@ -154,10 +144,10 @@ export class OverviewViewModelActor {
           }));
           alertItems = alertItems.concat(detectorAlertItems);
         } else {
-          errorNotificationToast(this.notifications, 'retrieve', 'alerts', alertsRes?.error);
+          errorNotificationToast(this.notifications, 'retrieve', 'alerts', alertsRes.error);
         }
       }
-    } catch (e: any) {
+    } catch (e) {
       errorNotificationToast(this.notifications, 'retrieve', 'alerts', e);
     }
 
@@ -195,10 +185,10 @@ export class OverviewViewModelActor {
     this.refreshState = 'Complete';
   }
 
-  private filterChartDataByTime = (chartData: any) => {
+  private filterChartDataByTime = (chartData) => {
     const startMoment = dateMath.parse(this.startTime);
     const endMoment = dateMath.parse(this.endTime);
-    return chartData.filter((dataItem: any) => {
+    return chartData.filter((dataItem) => {
       return moment(dataItem.time).isBetween(moment(startMoment), moment(endMoment));
     });
   };

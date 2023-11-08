@@ -5,15 +5,7 @@
 
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import {
-  EuiButton,
-  EuiButtonEmpty,
-  EuiFlexGroup,
-  EuiFlexItem,
-  EuiSpacer,
-  EuiSteps,
-  EuiTitle,
-} from '@elastic/eui';
+import { EuiButton, EuiButtonEmpty, EuiFlexGroup, EuiFlexItem, EuiSteps } from '@elastic/eui';
 import DefineDetector from '../components/DefineDetector/containers/DefineDetector';
 import { createDetectorSteps, PENDING_DETECTOR_ID } from '../utils/constants';
 import {
@@ -74,7 +66,6 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
       detector: {
         ...EMPTY_DEFAULT_DETECTOR,
         detector_type: '',
-        triggers: [],
       },
       fieldMappings: [],
       stepDataValid: {
@@ -369,15 +360,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
           <EuiFlexItem grow={false}>
             <EuiSteps steps={steps} titleSize={'xs'} />
           </EuiFlexItem>
-          <EuiFlexItem>
-            <>
-              <EuiTitle>
-                <h1>Create detector</h1>
-              </EuiTitle>
-              <EuiSpacer />
-              {this.getStepContent()}
-            </>
-          </EuiFlexItem>
+          <EuiFlexItem>{this.getStepContent()}</EuiFlexItem>
         </EuiFlexGroup>
 
         <EuiFlexGroup alignItems={'center'} justifyContent={'flexEnd'}>

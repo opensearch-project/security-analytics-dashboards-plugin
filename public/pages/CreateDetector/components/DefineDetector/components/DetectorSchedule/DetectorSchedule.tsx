@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ContentPanel } from '../../../../../../components/ContentPanel';
 import React from 'react';
-import { EuiSelectOption, EuiSpacer, EuiTitle } from '@elastic/eui';
+import { EuiSelectOption } from '@elastic/eui';
 import { PeriodSchedule } from '../../../../../../../models/interfaces';
 import { Interval } from './Interval';
 import { CustomCron } from './CustomCron';
@@ -51,13 +52,9 @@ export class DetectorSchedule extends React.Component<
     const FrequencyPicker = components[this.state.selectedFrequency];
 
     return (
-      <>
-        <EuiTitle size="m">
-          <h3>Detector schedule</h3>
-        </EuiTitle>
-        <EuiSpacer />
+      <ContentPanel title={'Detector schedule'}>
         <FrequencyPicker {...this.props} />
-      </>
+      </ContentPanel>
     );
   }
 }

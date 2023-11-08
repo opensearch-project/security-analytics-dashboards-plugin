@@ -10,7 +10,6 @@ import { errorNotificationToast } from '../utils/helpers';
 import { DataStore } from './DataStore';
 import { ruleTypes } from '../pages/Rules/utils/constants';
 import { logTypeCategories, logTypesByCategories } from '../utils/constants';
-import { getLogTypeLabel } from '../pages/LogTypes/utils/helpers';
 
 export class LogTypeStore {
   constructor(private service: LogTypeService, private notifications: NotificationsStart) {}
@@ -55,12 +54,11 @@ export class LogTypeStore {
         0,
         ruleTypes.length,
         ...logTypes
-          .map(({ category, id, name, source }) => ({
-            label: getLogTypeLabel(name),
+          .map(({ category, id, name }) => ({
+            label: name,
             value: name,
             id,
             category,
-            isStandard: source === 'Standard',
           }))
           .sort((a, b) => {
             return a.label < b.label ? -1 : a.label > b.label ? 1 : 0;

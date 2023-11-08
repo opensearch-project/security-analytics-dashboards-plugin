@@ -297,7 +297,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                                 label:
                                   ruleTypes.find(
                                     (logType) =>
-                                      logType.value.toLowerCase() === query.logType.toLowerCase()
+                                      logType.label.toLowerCase() === query.logType.toLowerCase()
                                   )?.label || query.logType,
                               },
                             ]

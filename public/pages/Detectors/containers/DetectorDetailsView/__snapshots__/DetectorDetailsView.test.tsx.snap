@@ -103,9 +103,6 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
               "throttle_enabled": true,
             },
           ],
-          "detection_types": Array [
-            "rules",
-          ],
           "id": "trigger_id_0",
           "ids": Array [
             "rule_id_1",
@@ -160,9 +157,6 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
               },
               "throttle_enabled": true,
             },
-          ],
-          "detection_types": Array [
-            "rules",
           ],
           "id": "trigger_id_1",
           "ids": Array [
@@ -302,9 +296,6 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                 "throttle_enabled": true,
               },
             ],
-            "detection_types": Array [
-              "rules",
-            ],
             "id": "trigger_id_0",
             "ids": Array [
               "rule_id_1",
@@ -359,9 +350,6 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                 },
                 "throttle_enabled": true,
               },
-            ],
-            "detection_types": Array [
-              "rules",
             ],
             "id": "trigger_id_1",
             "ids": Array [
@@ -578,7 +566,13 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                       fullWidth={true}
                       hasChildLabel={true}
                       hasEmptyLabelSpace={false}
-                      label="Detector name"
+                      label={
+                        <EuiText
+                          color="subdued"
+                        >
+                          Detector name
+                        </EuiText>
+                      }
                       labelType="label"
                     >
                       <div
@@ -598,7 +592,24 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                               className="euiFormLabel euiFormRow__label"
                               htmlFor="some_html_id"
                             >
-                              Detector name
+                              <EuiText
+                                color="subdued"
+                              >
+                                <div
+                                  className="euiText euiText--medium"
+                                >
+                                  <EuiTextColor
+                                    color="subdued"
+                                    component="div"
+                                  >
+                                    <div
+                                      className="euiTextColor euiTextColor--subdued"
+                                    >
+                                      Detector name
+                                    </div>
+                                  </EuiTextColor>
+                                </div>
+                              </EuiText>
                             </label>
                           </EuiFormLabel>
                         </div>
@@ -639,7 +650,13 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                       fullWidth={true}
                       hasChildLabel={true}
                       hasEmptyLabelSpace={false}
-                      label="Description"
+                      label={
+                        <EuiText
+                          color="subdued"
+                        >
+                          Description
+                        </EuiText>
+                      }
                       labelType="label"
                     >
                       <div
@@ -659,7 +676,24 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                               className="euiFormLabel euiFormRow__label"
                               htmlFor="some_html_id"
                             >
-                              Description
+                              <EuiText
+                                color="subdued"
+                              >
+                                <div
+                                  className="euiText euiText--medium"
+                                >
+                                  <EuiTextColor
+                                    color="subdued"
+                                    component="div"
+                                  >
+                                    <div
+                                      className="euiTextColor euiTextColor--subdued"
+                                    >
+                                      Description
+                                    </div>
+                                  </EuiTextColor>
+                                </div>
+                              </EuiText>
                             </label>
                           </EuiFormLabel>
                         </div>
@@ -700,7 +734,13 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                       fullWidth={true}
                       hasChildLabel={true}
                       hasEmptyLabelSpace={false}
-                      label="Detector schedule"
+                      label={
+                        <EuiText
+                          color="subdued"
+                        >
+                          Detector schedule
+                        </EuiText>
+                      }
                       labelType="label"
                     >
                       <div
@@ -720,7 +760,24 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                               className="euiFormLabel euiFormRow__label"
                               htmlFor="some_html_id"
                             >
-                              Detector schedule
+                              <EuiText
+                                color="subdued"
+                              >
+                                <div
+                                  className="euiText euiText--medium"
+                                >
+                                  <EuiTextColor
+                                    color="subdued"
+                                    component="div"
+                                  >
+                                    <div
+                                      className="euiTextColor euiTextColor--subdued"
+                                    >
+                                      Detector schedule
+                                    </div>
+                                  </EuiTextColor>
+                                </div>
+                              </EuiText>
                             </label>
                           </EuiFormLabel>
                         </div>
@@ -751,10 +808,10 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
               </div>
             </EuiFlexGroup>
             <EuiSpacer
-              size="l"
+              size="xl"
             >
               <div
-                className="euiSpacer euiSpacer--l"
+                className="euiSpacer euiSpacer--xl"
               />
             </EuiSpacer>
             <EuiFlexGroup
@@ -776,7 +833,13 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                       fullWidth={true}
                       hasChildLabel={true}
                       hasEmptyLabelSpace={false}
-                      label="Data source"
+                      label={
+                        <EuiText
+                          color="subdued"
+                        >
+                          Data source
+                        </EuiText>
+                      }
                       labelType="label"
                     >
                       <div
@@ -796,7 +859,24 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                               className="euiFormLabel euiFormRow__label"
                               htmlFor="some_html_id"
                             >
-                              Data source
+                              <EuiText
+                                color="subdued"
+                              >
+                                <div
+                                  className="euiText euiText--medium"
+                                >
+                                  <EuiTextColor
+                                    color="subdued"
+                                    component="div"
+                                  >
+                                    <div
+                                      className="euiTextColor euiTextColor--subdued"
+                                    >
+                                      Data source
+                                    </div>
+                                  </EuiTextColor>
+                                </div>
+                              </EuiText>
                             </label>
                           </EuiFormLabel>
                         </div>
@@ -845,7 +925,13 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                       fullWidth={true}
                       hasChildLabel={true}
                       hasEmptyLabelSpace={false}
-                      label="Log type"
+                      label={
+                        <EuiText
+                          color="subdued"
+                        >
+                          Log type
+                        </EuiText>
+                      }
                       labelType="label"
                     >
                       <div
@@ -865,7 +951,24 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                               className="euiFormLabel euiFormRow__label"
                               htmlFor="some_html_id"
                             >
-                              Log type
+                              <EuiText
+                                color="subdued"
+                              >
+                                <div
+                                  className="euiText euiText--medium"
+                                >
+                                  <EuiTextColor
+                                    color="subdued"
+                                    component="div"
+                                  >
+                                    <div
+                                      className="euiTextColor euiTextColor--subdued"
+                                    >
+                                      Log type
+                                    </div>
+                                  </EuiTextColor>
+                                </div>
+                              </EuiText>
                             </label>
                           </EuiFormLabel>
                         </div>
@@ -885,7 +988,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                               onBlur={[Function]}
                               onFocus={[Function]}
                             >
-                              Detector Type
+                              detector_type
                             </div>
                           </EuiText>
                         </div>
@@ -906,7 +1009,13 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                       fullWidth={true}
                       hasChildLabel={true}
                       hasEmptyLabelSpace={false}
-                      label="Detector dashboard"
+                      label={
+                        <EuiText
+                          color="subdued"
+                        >
+                          Detector dashboard
+                        </EuiText>
+                      }
                       labelType="label"
                     >
                       <div
@@ -926,7 +1035,24 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                               className="euiFormLabel euiFormRow__label"
                               htmlFor="some_html_id"
                             >
-                              Detector dashboard
+                              <EuiText
+                                color="subdued"
+                              >
+                                <div
+                                  className="euiText euiText--medium"
+                                >
+                                  <EuiTextColor
+                                    color="subdued"
+                                    component="div"
+                                  >
+                                    <div
+                                      className="euiTextColor euiTextColor--subdued"
+                                    >
+                                      Detector dashboard
+                                    </div>
+                                  </EuiTextColor>
+                                </div>
+                              </EuiText>
                             </label>
                           </EuiFormLabel>
                         </div>
@@ -957,10 +1083,10 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
               </div>
             </EuiFlexGroup>
             <EuiSpacer
-              size="l"
+              size="xl"
             >
               <div
-                className="euiSpacer euiSpacer--l"
+                className="euiSpacer euiSpacer--xl"
               />
             </EuiSpacer>
             <EuiFlexGroup
@@ -982,7 +1108,13 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                       fullWidth={true}
                       hasChildLabel={true}
                       hasEmptyLabelSpace={false}
-                      label="Detection rules"
+                      label={
+                        <EuiText
+                          color="subdued"
+                        >
+                          Detection rules
+                        </EuiText>
+                      }
                       labelType="label"
                     >
                       <div
@@ -1002,7 +1134,24 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                               className="euiFormLabel euiFormRow__label"
                               htmlFor="some_html_id"
                             >
-                              Detection rules
+                              <EuiText
+                                color="subdued"
+                              >
+                                <div
+                                  className="euiText euiText--medium"
+                                >
+                                  <EuiTextColor
+                                    color="subdued"
+                                    component="div"
+                                  >
+                                    <div
+                                      className="euiTextColor euiTextColor--subdued"
+                                    >
+                                      Detection rules
+                                    </div>
+                                  </EuiTextColor>
+                                </div>
+                              </EuiText>
                             </label>
                           </EuiFormLabel>
                         </div>
@@ -1043,7 +1192,13 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                       fullWidth={true}
                       hasChildLabel={true}
                       hasEmptyLabelSpace={false}
-                      label="Created at"
+                      label={
+                        <EuiText
+                          color="subdued"
+                        >
+                          Created at
+                        </EuiText>
+                      }
                       labelType="label"
                     >
                       <div
@@ -1063,7 +1218,24 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                               className="euiFormLabel euiFormRow__label"
                               htmlFor="some_html_id"
                             >
-                              Created at
+                              <EuiText
+                                color="subdued"
+                              >
+                                <div
+                                  className="euiText euiText--medium"
+                                >
+                                  <EuiTextColor
+                                    color="subdued"
+                                    component="div"
+                                  >
+                                    <div
+                                      className="euiTextColor euiTextColor--subdued"
+                                    >
+                                      Created at
+                                    </div>
+                                  </EuiTextColor>
+                                </div>
+                              </EuiText>
                             </label>
                           </EuiFormLabel>
                         </div>
@@ -1104,7 +1276,13 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                       fullWidth={true}
                       hasChildLabel={true}
                       hasEmptyLabelSpace={false}
-                      label="Last updated time"
+                      label={
+                        <EuiText
+                          color="subdued"
+                        >
+                          Last updated time
+                        </EuiText>
+                      }
                       labelType="label"
                     >
                       <div
@@ -1124,7 +1302,24 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                               className="euiFormLabel euiFormRow__label"
                               htmlFor="some_html_id"
                             >
-                              Last updated time
+                              <EuiText
+                                color="subdued"
+                              >
+                                <div
+                                  className="euiText euiText--medium"
+                                >
+                                  <EuiTextColor
+                                    color="subdued"
+                                    component="div"
+                                  >
+                                    <div
+                                      className="euiTextColor euiTextColor--subdued"
+                                    >
+                                      Last updated time
+                                    </div>
+                                  </EuiTextColor>
+                                </div>
+                              </EuiText>
                             </label>
                           </EuiFormLabel>
                         </div>
@@ -1155,69 +1350,10 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
               </div>
             </EuiFlexGroup>
             <EuiSpacer
-              size="l"
+              size="xl"
             >
               <div
-                className="euiSpacer euiSpacer--l"
-              />
-            </EuiSpacer>
-            <EuiFormRow
-              describedByIds={Array []}
-              display="row"
-              fullWidth={true}
-              hasChildLabel={true}
-              hasEmptyLabelSpace={false}
-              label="Threat intelligence"
-              labelType="label"
-            >
-              <div
-                className="euiFormRow euiFormRow--fullWidth"
-                id="some_html_id-row"
-              >
-                <div
-                  className="euiFormRow__labelWrapper"
-                >
-                  <EuiFormLabel
-                    className="euiFormRow__label"
-                    htmlFor="some_html_id"
-                    isFocused={false}
-                    type="label"
-                  >
-                    <label
-                      className="euiFormLabel euiFormRow__label"
-                      htmlFor="some_html_id"
-                    >
-                      Threat intelligence
-                    </label>
-                  </EuiFormLabel>
-                </div>
-                <div
-                  className="euiFormRow__fieldWrapper"
-                >
-                  <EuiText
-                    data-test-subj="text-details-group-content-threat-intelligence"
-                    id="some_html_id"
-                    onBlur={[Function]}
-                    onFocus={[Function]}
-                  >
-                    <div
-                      className="euiText euiText--medium"
-                      data-test-subj="text-details-group-content-threat-intelligence"
-                      id="some_html_id"
-                      onBlur={[Function]}
-                      onFocus={[Function]}
-                    >
-                      Disabled
-                    </div>
-                  </EuiText>
-                </div>
-              </div>
-            </EuiFormRow>
-            <EuiSpacer
-              size="l"
-            >
-              <div
-                className="euiSpacer euiSpacer--l"
+                className="euiSpacer euiSpacer--xl"
               />
             </EuiSpacer>
           </div>
@@ -1341,9 +1477,6 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                 "throttle_enabled": true,
               },
             ],
-            "detection_types": Array [
-              "rules",
-            ],
             "id": "trigger_id_0",
             "ids": Array [
               "rule_id_1",
@@ -1398,9 +1531,6 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                 },
                 "throttle_enabled": true,
               },
-            ],
-            "detection_types": Array [
-              "rules",
             ],
             "id": "trigger_id_1",
             "ids": Array [
