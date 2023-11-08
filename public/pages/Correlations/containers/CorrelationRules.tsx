@@ -21,26 +21,21 @@ import {
   getCorrelationRulesTableColumns,
   getCorrelationRulesTableSearchConfig,
 } from '../utils/helpers';
-import { CorrelationRule, CorrelationRuleTableItem } from '../../../../types';
+import { CorrelationRule } from '../../../../types';
 import { RouteComponentProps } from 'react-router-dom';
 import { DeleteCorrelationRuleModal } from '../components/DeleteModal';
 
 export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComponentProps) => {
   const context = useContext(CoreServicesContext);
-  const [allRules, setAllRules] = useState<CorrelationRuleTableItem[]>([]);
+  const [allRules, setAllRules] = useState<CorrelationRule[]>([]);
+  const [filteredRules, setFilteredRules] = useState<CorrelationRule[]>([]);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [selectedRule, setSelectedRule] = useState<CorrelationRule | undefined>(undefined);
 
   const getCorrelationRules = useCallback(async () => {
     const allRuleItems: CorrelationRule[] = await DataStore.correlations.getCorrelationRules();
-    const allRuleTableItems: CorrelationRuleTableItem[] = allRuleItems.map((item) => {
-      const logTypes = item.queries.map((q) => q.logType).join(', ');
-      return {
-        ...item,
-        logTypes,
-      };
-    });
-    setAllRules(allRuleTableItems);
+    setAllRules(allRuleItems);
+    setFilteredRules(allRuleItems);
   }, [DataStore.correlations.getCorrelationRules]);
 
   useEffect(() => {
@@ -64,6 +59,22 @@ export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComp
       </EuiButton>,
     ],
     []
+  );
+
+  const onLogTypeFilterChange = useCallback(
+    (logTypes?: string[]) => {
+      if (!logTypes) {
+        setFilteredRules(allRules);
+        return;
+      }
+
+      const logTypesSet = new Set(logTypes);
+      const filteredRules = allRules.filter((rule) => {
+        return rule.queries.some((query) => logTypesSet.has(query.logType));
+      });
+      setFilteredRules(filteredRules);
+    },
+    [allRules]
   );
 
   const onRuleNameClick = useCallback((rule: CorrelationRule) => {
@@ -132,10 +143,10 @@ export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComp
                   setIsDeleteModalVisible(true);
                   setSelectedRule(rule);
                 })}
-                items={allRules}
+                items={filteredRules}
                 pagination={true}
                 sorting={true}
-                search={getCorrelationRulesTableSearchConfig()}
+                search={getCorrelationRulesTableSearchConfig(onLogTypeFilterChange)}
               />
             ) : (
               <EuiEmptyPrompt

@@ -27,7 +27,7 @@ import { NotificationsService } from '../../../../../services';
 import { validateName } from '../../../../../utils/validation';
 import { CoreServicesContext } from '../../../../../components/core_services';
 import { BREADCRUMBS } from '../../../../../utils/constants';
-import { AlertCondition, Detector, DetectorCreationStep } from '../../../../../../types';
+import { Detector, DetectorCreationStep } from '../../../../../../types';
 
 interface ConfigureAlertsProps extends RouteComponentProps {
   detector: Detector;
@@ -44,22 +44,6 @@ interface ConfigureAlertsState {
   loading: boolean;
   notificationChannels: NotificationChannelTypeOptions[];
 }
-
-const isTriggerValid = (triggers: AlertCondition[], hasNotificationPlugin: boolean) => {
-  return (
-    !triggers.length ||
-    triggers.every((trigger) => {
-      return (
-        !!trigger.name &&
-        validateName(trigger.name) &&
-        trigger.severity &&
-        trigger.detection_types.length &&
-        (!hasNotificationPlugin ||
-          (hasNotificationPlugin && trigger.actions.every((action) => !!action.destination_id)))
-      );
-    })
-  );
-};
 
 export default class ConfigureAlerts extends Component<ConfigureAlertsProps, ConfigureAlertsState> {
   static contextType = CoreServicesContext;
@@ -98,10 +82,6 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
 
     if (triggers.length === 0) {
       this.addCondition();
-      this.props.updateDataValidState(DetectorCreationStep.CONFIGURE_ALERTS, true);
-    } else {
-      const isTriggerDataValid = isTriggerValid(triggers, this.props.hasNotificationPlugin);
-      this.props.updateDataValidState(DetectorCreationStep.CONFIGURE_ALERTS, isTriggerDataValid);
     }
   };
 
@@ -127,20 +107,17 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
       detector: { triggers },
       getTriggerName,
     } = this.props;
-    const detectionTypes = ['rules'];
-    if (detector.threat_intel_enabled) {
-      detectionTypes.push('threat_intel');
-    }
-    const newTriggers = [...triggers];
-    newTriggers.push(getEmptyAlertCondition(getTriggerName(), detectionTypes));
-    changeDetector({ ...detector, triggers: newTriggers });
+    triggers.push(getEmptyAlertCondition(getTriggerName()));
+    changeDetector({ ...detector, triggers });
   };
 
   onAlertTriggerChanged = (newDetector: Detector): void => {
-    const isTriggerDataValid = isTriggerValid(
-      newDetector.triggers,
-      this.props.hasNotificationPlugin
-    );
+    const isTriggerDataValid =
+      !newDetector.triggers.length ||
+      newDetector.triggers.every((trigger) => {
+        return !!trigger.name && validateName(trigger.name) && trigger.severity;
+      });
+
     this.props.changeDetector(newDetector);
     this.props.updateDataValidState(DetectorCreationStep.CONFIGURE_ALERTS, isTriggerDataValid);
   };
@@ -162,7 +139,7 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
 
     let getPageTitle = (): string | JSX.Element => {
       if (isEdit) {
-        return <>{`Alert triggers (${triggers.length})`}</>;
+        return <>Alert triggers (${triggers.length})</>;
       }
 
       return (
@@ -178,8 +155,8 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
     };
 
     const { loading, notificationChannels } = this.state;
-    const content = (
-      <>
+    return (
+      <div>
         {getPageTitle()}
 
         <EuiSpacer size={'m'} />
@@ -239,9 +216,7 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
         <EuiButton disabled={triggers.length >= MAX_ALERT_CONDITIONS} onClick={this.addCondition}>
           {triggers.length > 0 ? 'Add another alert trigger' : 'Add alert triggers'}
         </EuiButton>
-      </>
+      </div>
     );
-
-    return isEdit ? <div>{content}</div> : <EuiPanel>{content}</EuiPanel>;
   }
 }

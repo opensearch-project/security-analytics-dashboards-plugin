@@ -103,9 +103,6 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
               "throttle_enabled": true,
             },
           ],
-          "detection_types": Array [
-            "rules",
-          ],
           "id": "trigger_id_0",
           "ids": Array [
             "rule_id_1",
@@ -160,9 +157,6 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
               },
               "throttle_enabled": true,
             },
-          ],
-          "detection_types": Array [
-            "rules",
           ],
           "id": "trigger_id_1",
           "ids": Array [
@@ -384,9 +378,6 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                     "throttle_enabled": true,
                   },
                 ],
-                "detection_types": Array [
-                  "rules",
-                ],
                 "id": "trigger_id_0",
                 "ids": Array [
                   "rule_id_1",
@@ -505,9 +496,6 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                         "throttle_enabled": true,
                       },
                     ],
-                    "detection_types": Array [
-                      "rules",
-                    ],
                     "id": "trigger_id_0",
                     "ids": Array [
                       "rule_id_1",
@@ -562,9 +550,6 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                         },
                         "throttle_enabled": true,
                       },
-                    ],
-                    "detection_types": Array [
-                      "rules",
                     ],
                     "id": "trigger_id_1",
                     "ids": Array [
@@ -673,10 +658,10 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                           className="euiAccordion__padding--m"
                         >
                           <EuiSpacer
-                            size="s"
+                            size="m"
                           >
                             <div
-                              className="euiSpacer euiSpacer--s"
+                              className="euiSpacer euiSpacer--m"
                             />
                           </EuiSpacer>
                           <EuiFormRow
@@ -685,7 +670,13 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                             fullWidth={true}
                             hasChildLabel={true}
                             hasEmptyLabelSpace={false}
-                            label="Trigger name"
+                            label={
+                              <EuiText
+                                color="subdued"
+                              >
+                                Trigger name
+                              </EuiText>
+                            }
                             labelType="label"
                           >
                             <div
@@ -705,7 +696,24 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                     className="euiFormLabel euiFormRow__label"
                                     htmlFor="some_html_id"
                                   >
-                                    Trigger name
+                                    <EuiText
+                                      color="subdued"
+                                    >
+                                      <div
+                                        className="euiText euiText--medium"
+                                      >
+                                        <EuiTextColor
+                                          color="subdued"
+                                          component="div"
+                                        >
+                                          <div
+                                            className="euiTextColor euiTextColor--subdued"
+                                          >
+                                            Trigger name
+                                          </div>
+                                        </EuiTextColor>
+                                      </div>
+                                    </EuiText>
                                   </label>
                                 </EuiFormLabel>
                               </div>
@@ -732,94 +740,26 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                             </div>
                           </EuiFormRow>
                           <EuiSpacer
-                            size="l"
+                            size="xl"
                           >
                             <div
-                              className="euiSpacer euiSpacer--l"
+                              className="euiSpacer euiSpacer--xl"
                             />
                           </EuiSpacer>
                           <EuiTitle
                             size="s"
                           >
-                            <h4
+                            <h5
                               className="euiTitle euiTitle--small"
                             >
-                              Trigger condition 
-                            </h4>
-                          </EuiTitle>
-                          <EuiTitle
-                            size="xs"
-                          >
-                            <h5
-                              className="euiTitle euiTitle--xsmall"
-                            >
-                              For detection rules
+                              If any detection rule matches
                             </h5>
                           </EuiTitle>
                           <EuiSpacer
-                            size="s"
+                            size="m"
                           >
                             <div
-                              className="euiSpacer euiSpacer--s"
-                            />
-                          </EuiSpacer>
-                          <EuiFormRow
-                            describedByIds={Array []}
-                            display="row"
-                            fullWidth={true}
-                            hasChildLabel={true}
-                            hasEmptyLabelSpace={false}
-                            label="Rule names"
-                            labelType="label"
-                          >
-                            <div
-                              className="euiFormRow euiFormRow--fullWidth"
-                              id="some_html_id-row"
-                            >
-                              <div
-                                className="euiFormRow__labelWrapper"
-                              >
-                                <EuiFormLabel
-                                  className="euiFormRow__label"
-                                  htmlFor="some_html_id"
-                                  isFocused={false}
-                                  type="label"
-                                >
-                                  <label
-                                    className="euiFormLabel euiFormRow__label"
-                                    htmlFor="some_html_id"
-                                  >
-                                    Rule names
-                                  </label>
-                                </EuiFormLabel>
-                              </div>
-                              <div
-                                className="euiFormRow__fieldWrapper"
-                              >
-                                <EuiText
-                                  data-test-subj="text-details-group-content-rule-names"
-                                  id="some_html_id"
-                                  onBlur={[Function]}
-                                  onFocus={[Function]}
-                                >
-                                  <div
-                                    className="euiText euiText--medium"
-                                    data-test-subj="text-details-group-content-rule-names"
-                                    id="some_html_id"
-                                    onBlur={[Function]}
-                                    onFocus={[Function]}
-                                  >
-                                    Any rule
-                                  </div>
-                                </EuiText>
-                              </div>
-                            </div>
-                          </EuiFormRow>
-                          <EuiSpacer
-                            size="l"
-                          >
-                            <div
-                              className="euiSpacer euiSpacer--l"
+                              className="euiSpacer euiSpacer--m"
                             />
                           </EuiSpacer>
                           <EuiFlexGroup
@@ -841,7 +781,13 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                     fullWidth={true}
                                     hasChildLabel={true}
                                     hasEmptyLabelSpace={false}
-                                    label="Rule severities"
+                                    label={
+                                      <EuiText
+                                        color="subdued"
+                                      >
+                                        Log type
+                                      </EuiText>
+                                    }
                                     labelType="label"
                                   >
                                     <div
@@ -861,7 +807,207 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                             className="euiFormLabel euiFormRow__label"
                                             htmlFor="some_html_id"
                                           >
-                                            Rule severities
+                                            <EuiText
+                                              color="subdued"
+                                            >
+                                              <div
+                                                className="euiText euiText--medium"
+                                              >
+                                                <EuiTextColor
+                                                  color="subdued"
+                                                  component="div"
+                                                >
+                                                  <div
+                                                    className="euiTextColor euiTextColor--subdued"
+                                                  >
+                                                    Log type
+                                                  </div>
+                                                </EuiTextColor>
+                                              </div>
+                                            </EuiText>
+                                          </label>
+                                        </EuiFormLabel>
+                                      </div>
+                                      <div
+                                        className="euiFormRow__fieldWrapper"
+                                      >
+                                        <EuiText
+                                          data-test-subj="text-details-group-content-log-type"
+                                          id="some_html_id"
+                                          onBlur={[Function]}
+                                          onFocus={[Function]}
+                                        >
+                                          <div
+                                            className="euiText euiText--medium"
+                                            data-test-subj="text-details-group-content-log-type"
+                                            id="some_html_id"
+                                            onBlur={[Function]}
+                                            onFocus={[Function]}
+                                          >
+                                            detector_type_1
+                                          </div>
+                                        </EuiText>
+                                      </div>
+                                    </div>
+                                  </EuiFormRow>
+                                </div>
+                              </EuiFlexItem>
+                              <EuiFlexItem
+                                grow={true}
+                                key="1"
+                              >
+                                <div
+                                  className="euiFlexItem"
+                                >
+                                  <EuiFormRow
+                                    describedByIds={Array []}
+                                    display="row"
+                                    fullWidth={true}
+                                    hasChildLabel={true}
+                                    hasEmptyLabelSpace={false}
+                                    label={
+                                      <EuiText
+                                        color="subdued"
+                                      >
+                                        Rule names
+                                      </EuiText>
+                                    }
+                                    labelType="label"
+                                  >
+                                    <div
+                                      className="euiFormRow euiFormRow--fullWidth"
+                                      id="some_html_id-row"
+                                    >
+                                      <div
+                                        className="euiFormRow__labelWrapper"
+                                      >
+                                        <EuiFormLabel
+                                          className="euiFormRow__label"
+                                          htmlFor="some_html_id"
+                                          isFocused={false}
+                                          type="label"
+                                        >
+                                          <label
+                                            className="euiFormLabel euiFormRow__label"
+                                            htmlFor="some_html_id"
+                                          >
+                                            <EuiText
+                                              color="subdued"
+                                            >
+                                              <div
+                                                className="euiText euiText--medium"
+                                              >
+                                                <EuiTextColor
+                                                  color="subdued"
+                                                  component="div"
+                                                >
+                                                  <div
+                                                    className="euiTextColor euiTextColor--subdued"
+                                                  >
+                                                    Rule names
+                                                  </div>
+                                                </EuiTextColor>
+                                              </div>
+                                            </EuiText>
+                                          </label>
+                                        </EuiFormLabel>
+                                      </div>
+                                      <div
+                                        className="euiFormRow__fieldWrapper"
+                                      >
+                                        <EuiText
+                                          data-test-subj="text-details-group-content-rule-names"
+                                          id="some_html_id"
+                                          onBlur={[Function]}
+                                          onFocus={[Function]}
+                                        >
+                                          <div
+                                            className="euiText euiText--medium"
+                                            data-test-subj="text-details-group-content-rule-names"
+                                            id="some_html_id"
+                                            onBlur={[Function]}
+                                            onFocus={[Function]}
+                                          >
+                                            -
+                                          </div>
+                                        </EuiText>
+                                      </div>
+                                    </div>
+                                  </EuiFormRow>
+                                </div>
+                              </EuiFlexItem>
+                            </div>
+                          </EuiFlexGroup>
+                          <EuiSpacer
+                            size="xl"
+                          >
+                            <div
+                              className="euiSpacer euiSpacer--xl"
+                            />
+                          </EuiSpacer>
+                          <EuiFlexGroup
+                            className="detailsFormRow"
+                          >
+                            <div
+                              className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
+                            >
+                              <EuiFlexItem
+                                grow={true}
+                                key="0"
+                              >
+                                <div
+                                  className="euiFlexItem"
+                                >
+                                  <EuiFormRow
+                                    describedByIds={Array []}
+                                    display="row"
+                                    fullWidth={true}
+                                    hasChildLabel={true}
+                                    hasEmptyLabelSpace={false}
+                                    label={
+                                      <EuiText
+                                        color="subdued"
+                                      >
+                                        Rule severities
+                                      </EuiText>
+                                    }
+                                    labelType="label"
+                                  >
+                                    <div
+                                      className="euiFormRow euiFormRow--fullWidth"
+                                      id="some_html_id-row"
+                                    >
+                                      <div
+                                        className="euiFormRow__labelWrapper"
+                                      >
+                                        <EuiFormLabel
+                                          className="euiFormRow__label"
+                                          htmlFor="some_html_id"
+                                          isFocused={false}
+                                          type="label"
+                                        >
+                                          <label
+                                            className="euiFormLabel euiFormRow__label"
+                                            htmlFor="some_html_id"
+                                          >
+                                            <EuiText
+                                              color="subdued"
+                                            >
+                                              <div
+                                                className="euiText euiText--medium"
+                                              >
+                                                <EuiTextColor
+                                                  color="subdued"
+                                                  component="div"
+                                                >
+                                                  <div
+                                                    className="euiTextColor euiTextColor--subdued"
+                                                  >
+                                                    Rule severities
+                                                  </div>
+                                                </EuiTextColor>
+                                              </div>
+                                            </EuiText>
                                           </label>
                                         </EuiFormLabel>
                                       </div>
@@ -902,7 +1048,13 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                     fullWidth={true}
                                     hasChildLabel={true}
                                     hasEmptyLabelSpace={false}
-                                    label="Tags"
+                                    label={
+                                      <EuiText
+                                        color="subdued"
+                                      >
+                                        Tags
+                                      </EuiText>
+                                    }
                                     labelType="label"
                                   >
                                     <div
@@ -922,7 +1074,24 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                             className="euiFormLabel euiFormRow__label"
                                             htmlFor="some_html_id"
                                           >
-                                            Tags
+                                            <EuiText
+                                              color="subdued"
+                                            >
+                                              <div
+                                                className="euiText euiText--medium"
+                                              >
+                                                <EuiTextColor
+                                                  color="subdued"
+                                                  component="div"
+                                                >
+                                                  <div
+                                                    className="euiTextColor euiTextColor--subdued"
+                                                  >
+                                                    Tags
+                                                  </div>
+                                                </EuiTextColor>
+                                              </div>
+                                            </EuiText>
                                           </label>
                                         </EuiFormLabel>
                                       </div>
@@ -953,10 +1122,17 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                             </div>
                           </EuiFlexGroup>
                           <EuiSpacer
-                            size="l"
+                            size="xl"
                           >
                             <div
-                              className="euiSpacer euiSpacer--l"
+                              className="euiSpacer euiSpacer--xl"
+                            />
+                          </EuiSpacer>
+                          <EuiSpacer
+                            size="xl"
+                          >
+                            <div
+                              className="euiSpacer euiSpacer--xl"
                             />
                           </EuiSpacer>
                           <EuiTitle
@@ -981,7 +1157,13 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                             fullWidth={true}
                             hasChildLabel={true}
                             hasEmptyLabelSpace={false}
-                            label="Trigger alerts with severity"
+                            label={
+                              <EuiText
+                                color="subdued"
+                              >
+                                Trigger alerts with severity
+                              </EuiText>
+                            }
                             labelType="label"
                           >
                             <div
@@ -1001,7 +1183,24 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                     className="euiFormLabel euiFormRow__label"
                                     htmlFor="some_html_id"
                                   >
-                                    Trigger alerts with severity
+                                    <EuiText
+                                      color="subdued"
+                                    >
+                                      <div
+                                        className="euiText euiText--medium"
+                                      >
+                                        <EuiTextColor
+                                          color="subdued"
+                                          component="div"
+                                        >
+                                          <div
+                                            className="euiTextColor euiTextColor--subdued"
+                                          >
+                                            Trigger alerts with severity
+                                          </div>
+                                        </EuiTextColor>
+                                      </div>
+                                    </EuiText>
                                   </label>
                                 </EuiFormLabel>
                               </div>
@@ -1034,20 +1233,19 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                               className="euiSpacer euiSpacer--l"
                             />
                           </EuiSpacer>
-                          <EuiSpacer
-                            size="l"
-                          >
-                            <div
-                              className="euiSpacer euiSpacer--l"
-                            />
-                          </EuiSpacer>
                           <EuiFormRow
                             describedByIds={Array []}
                             display="row"
                             fullWidth={true}
                             hasChildLabel={true}
                             hasEmptyLabelSpace={false}
-                            label="Notify channel"
+                            label={
+                              <EuiText
+                                color="subdued"
+                              >
+                                Notify channel
+                              </EuiText>
+                            }
                             labelType="label"
                           >
                             <div
@@ -1067,7 +1265,24 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                     className="euiFormLabel euiFormRow__label"
                                     htmlFor="some_html_id"
                                   >
-                                    Notify channel
+                                    <EuiText
+                                      color="subdued"
+                                    >
+                                      <div
+                                        className="euiText euiText--medium"
+                                      >
+                                        <EuiTextColor
+                                          color="subdued"
+                                          component="div"
+                                        >
+                                          <div
+                                            className="euiTextColor euiTextColor--subdued"
+                                          >
+                                            Notify channel
+                                          </div>
+                                        </EuiTextColor>
+                                      </div>
+                                    </EuiText>
                                   </label>
                                 </EuiFormLabel>
                               </div>
@@ -1099,13 +1314,6 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                               </div>
                             </div>
                           </EuiFormRow>
-                          <EuiSpacer
-                            size="l"
-                          >
-                            <div
-                              className="euiSpacer euiSpacer--l"
-                            />
-                          </EuiSpacer>
                         </div>
                       </div>
                     </EuiResizeObserver>
@@ -1154,9 +1362,6 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                     },
                     "throttle_enabled": true,
                   },
-                ],
-                "detection_types": Array [
-                  "rules",
                 ],
                 "id": "trigger_id_1",
                 "ids": Array [
@@ -1276,9 +1481,6 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                         "throttle_enabled": true,
                       },
                     ],
-                    "detection_types": Array [
-                      "rules",
-                    ],
                     "id": "trigger_id_0",
                     "ids": Array [
                       "rule_id_1",
@@ -1333,9 +1535,6 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                         },
                         "throttle_enabled": true,
                       },
-                    ],
-                    "detection_types": Array [
-                      "rules",
                     ],
                     "id": "trigger_id_1",
                     "ids": Array [
@@ -1444,10 +1643,10 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                           className="euiAccordion__padding--m"
                         >
                           <EuiSpacer
-                            size="s"
+                            size="m"
                           >
                             <div
-                              className="euiSpacer euiSpacer--s"
+                              className="euiSpacer euiSpacer--m"
                             />
                           </EuiSpacer>
                           <EuiFormRow
@@ -1456,7 +1655,13 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                             fullWidth={true}
                             hasChildLabel={true}
                             hasEmptyLabelSpace={false}
-                            label="Trigger name"
+                            label={
+                              <EuiText
+                                color="subdued"
+                              >
+                                Trigger name
+                              </EuiText>
+                            }
                             labelType="label"
                           >
                             <div
@@ -1476,7 +1681,24 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                     className="euiFormLabel euiFormRow__label"
                                     htmlFor="some_html_id"
                                   >
-                                    Trigger name
+                                    <EuiText
+                                      color="subdued"
+                                    >
+                                      <div
+                                        className="euiText euiText--medium"
+                                      >
+                                        <EuiTextColor
+                                          color="subdued"
+                                          component="div"
+                                        >
+                                          <div
+                                            className="euiTextColor euiTextColor--subdued"
+                                          >
+                                            Trigger name
+                                          </div>
+                                        </EuiTextColor>
+                                      </div>
+                                    </EuiText>
                                   </label>
                                 </EuiFormLabel>
                               </div>
@@ -1503,94 +1725,26 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                             </div>
                           </EuiFormRow>
                           <EuiSpacer
-                            size="l"
+                            size="xl"
                           >
                             <div
-                              className="euiSpacer euiSpacer--l"
+                              className="euiSpacer euiSpacer--xl"
                             />
                           </EuiSpacer>
                           <EuiTitle
                             size="s"
                           >
-                            <h4
+                            <h5
                               className="euiTitle euiTitle--small"
                             >
-                              Trigger condition 
-                            </h4>
-                          </EuiTitle>
-                          <EuiTitle
-                            size="xs"
-                          >
-                            <h5
-                              className="euiTitle euiTitle--xsmall"
-                            >
-                              For detection rules
+                              If any detection rule matches
                             </h5>
                           </EuiTitle>
                           <EuiSpacer
-                            size="s"
+                            size="m"
                           >
                             <div
-                              className="euiSpacer euiSpacer--s"
-                            />
-                          </EuiSpacer>
-                          <EuiFormRow
-                            describedByIds={Array []}
-                            display="row"
-                            fullWidth={true}
-                            hasChildLabel={true}
-                            hasEmptyLabelSpace={false}
-                            label="Rule names"
-                            labelType="label"
-                          >
-                            <div
-                              className="euiFormRow euiFormRow--fullWidth"
-                              id="some_html_id-row"
-                            >
-                              <div
-                                className="euiFormRow__labelWrapper"
-                              >
-                                <EuiFormLabel
-                                  className="euiFormRow__label"
-                                  htmlFor="some_html_id"
-                                  isFocused={false}
-                                  type="label"
-                                >
-                                  <label
-                                    className="euiFormLabel euiFormRow__label"
-                                    htmlFor="some_html_id"
-                                  >
-                                    Rule names
-                                  </label>
-                                </EuiFormLabel>
-                              </div>
-                              <div
-                                className="euiFormRow__fieldWrapper"
-                              >
-                                <EuiText
-                                  data-test-subj="text-details-group-content-rule-names"
-                                  id="some_html_id"
-                                  onBlur={[Function]}
-                                  onFocus={[Function]}
-                                >
-                                  <div
-                                    className="euiText euiText--medium"
-                                    data-test-subj="text-details-group-content-rule-names"
-                                    id="some_html_id"
-                                    onBlur={[Function]}
-                                    onFocus={[Function]}
-                                  >
-                                    Any rule
-                                  </div>
-                                </EuiText>
-                              </div>
-                            </div>
-                          </EuiFormRow>
-                          <EuiSpacer
-                            size="l"
-                          >
-                            <div
-                              className="euiSpacer euiSpacer--l"
+                              className="euiSpacer euiSpacer--m"
                             />
                           </EuiSpacer>
                           <EuiFlexGroup
@@ -1612,7 +1766,13 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                     fullWidth={true}
                                     hasChildLabel={true}
                                     hasEmptyLabelSpace={false}
-                                    label="Rule severities"
+                                    label={
+                                      <EuiText
+                                        color="subdued"
+                                      >
+                                        Log type
+                                      </EuiText>
+                                    }
                                     labelType="label"
                                   >
                                     <div
@@ -1632,7 +1792,207 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                             className="euiFormLabel euiFormRow__label"
                                             htmlFor="some_html_id"
                                           >
-                                            Rule severities
+                                            <EuiText
+                                              color="subdued"
+                                            >
+                                              <div
+                                                className="euiText euiText--medium"
+                                              >
+                                                <EuiTextColor
+                                                  color="subdued"
+                                                  component="div"
+                                                >
+                                                  <div
+                                                    className="euiTextColor euiTextColor--subdued"
+                                                  >
+                                                    Log type
+                                                  </div>
+                                                </EuiTextColor>
+                                              </div>
+                                            </EuiText>
+                                          </label>
+                                        </EuiFormLabel>
+                                      </div>
+                                      <div
+                                        className="euiFormRow__fieldWrapper"
+                                      >
+                                        <EuiText
+                                          data-test-subj="text-details-group-content-log-type"
+                                          id="some_html_id"
+                                          onBlur={[Function]}
+                                          onFocus={[Function]}
+                                        >
+                                          <div
+                                            className="euiText euiText--medium"
+                                            data-test-subj="text-details-group-content-log-type"
+                                            id="some_html_id"
+                                            onBlur={[Function]}
+                                            onFocus={[Function]}
+                                          >
+                                            detector_type_1
+                                          </div>
+                                        </EuiText>
+                                      </div>
+                                    </div>
+                                  </EuiFormRow>
+                                </div>
+                              </EuiFlexItem>
+                              <EuiFlexItem
+                                grow={true}
+                                key="1"
+                              >
+                                <div
+                                  className="euiFlexItem"
+                                >
+                                  <EuiFormRow
+                                    describedByIds={Array []}
+                                    display="row"
+                                    fullWidth={true}
+                                    hasChildLabel={true}
+                                    hasEmptyLabelSpace={false}
+                                    label={
+                                      <EuiText
+                                        color="subdued"
+                                      >
+                                        Rule names
+                                      </EuiText>
+                                    }
+                                    labelType="label"
+                                  >
+                                    <div
+                                      className="euiFormRow euiFormRow--fullWidth"
+                                      id="some_html_id-row"
+                                    >
+                                      <div
+                                        className="euiFormRow__labelWrapper"
+                                      >
+                                        <EuiFormLabel
+                                          className="euiFormRow__label"
+                                          htmlFor="some_html_id"
+                                          isFocused={false}
+                                          type="label"
+                                        >
+                                          <label
+                                            className="euiFormLabel euiFormRow__label"
+                                            htmlFor="some_html_id"
+                                          >
+                                            <EuiText
+                                              color="subdued"
+                                            >
+                                              <div
+                                                className="euiText euiText--medium"
+                                              >
+                                                <EuiTextColor
+                                                  color="subdued"
+                                                  component="div"
+                                                >
+                                                  <div
+                                                    className="euiTextColor euiTextColor--subdued"
+                                                  >
+                                                    Rule names
+                                                  </div>
+                                                </EuiTextColor>
+                                              </div>
+                                            </EuiText>
+                                          </label>
+                                        </EuiFormLabel>
+                                      </div>
+                                      <div
+                                        className="euiFormRow__fieldWrapper"
+                                      >
+                                        <EuiText
+                                          data-test-subj="text-details-group-content-rule-names"
+                                          id="some_html_id"
+                                          onBlur={[Function]}
+                                          onFocus={[Function]}
+                                        >
+                                          <div
+                                            className="euiText euiText--medium"
+                                            data-test-subj="text-details-group-content-rule-names"
+                                            id="some_html_id"
+                                            onBlur={[Function]}
+                                            onFocus={[Function]}
+                                          >
+                                            -
+                                          </div>
+                                        </EuiText>
+                                      </div>
+                                    </div>
+                                  </EuiFormRow>
+                                </div>
+                              </EuiFlexItem>
+                            </div>
+                          </EuiFlexGroup>
+                          <EuiSpacer
+                            size="xl"
+                          >
+                            <div
+                              className="euiSpacer euiSpacer--xl"
+                            />
+                          </EuiSpacer>
+                          <EuiFlexGroup
+                            className="detailsFormRow"
+                          >
+                            <div
+                              className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive detailsFormRow"
+                            >
+                              <EuiFlexItem
+                                grow={true}
+                                key="0"
+                              >
+                                <div
+                                  className="euiFlexItem"
+                                >
+                                  <EuiFormRow
+                                    describedByIds={Array []}
+                                    display="row"
+                                    fullWidth={true}
+                                    hasChildLabel={true}
+                                    hasEmptyLabelSpace={false}
+                                    label={
+                                      <EuiText
+                                        color="subdued"
+                                      >
+                                        Rule severities
+                                      </EuiText>
+                                    }
+                                    labelType="label"
+                                  >
+                                    <div
+                                      className="euiFormRow euiFormRow--fullWidth"
+                                      id="some_html_id-row"
+                                    >
+                                      <div
+                                        className="euiFormRow__labelWrapper"
+                                      >
+                                        <EuiFormLabel
+                                          className="euiFormRow__label"
+                                          htmlFor="some_html_id"
+                                          isFocused={false}
+                                          type="label"
+                                        >
+                                          <label
+                                            className="euiFormLabel euiFormRow__label"
+                                            htmlFor="some_html_id"
+                                          >
+                                            <EuiText
+                                              color="subdued"
+                                            >
+                                              <div
+                                                className="euiText euiText--medium"
+                                              >
+                                                <EuiTextColor
+                                                  color="subdued"
+                                                  component="div"
+                                                >
+                                                  <div
+                                                    className="euiTextColor euiTextColor--subdued"
+                                                  >
+                                                    Rule severities
+                                                  </div>
+                                                </EuiTextColor>
+                                              </div>
+                                            </EuiText>
                                           </label>
                                         </EuiFormLabel>
                                       </div>
@@ -1673,7 +2033,13 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                     fullWidth={true}
                                     hasChildLabel={true}
                                     hasEmptyLabelSpace={false}
-                                    label="Tags"
+                                    label={
+                                      <EuiText
+                                        color="subdued"
+                                      >
+                                        Tags
+                                      </EuiText>
+                                    }
                                     labelType="label"
                                   >
                                     <div
@@ -1693,7 +2059,24 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                             className="euiFormLabel euiFormRow__label"
                                             htmlFor="some_html_id"
                                           >
-                                            Tags
+                                            <EuiText
+                                              color="subdued"
+                                            >
+                                              <div
+                                                className="euiText euiText--medium"
+                                              >
+                                                <EuiTextColor
+                                                  color="subdued"
+                                                  component="div"
+                                                >
+                                                  <div
+                                                    className="euiTextColor euiTextColor--subdued"
+                                                  >
+                                                    Tags
+                                                  </div>
+                                                </EuiTextColor>
+                                              </div>
+                                            </EuiText>
                                           </label>
                                         </EuiFormLabel>
                                       </div>
@@ -1724,10 +2107,17 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                             </div>
                           </EuiFlexGroup>
                           <EuiSpacer
-                            size="l"
+                            size="xl"
                           >
                             <div
-                              className="euiSpacer euiSpacer--l"
+                              className="euiSpacer euiSpacer--xl"
+                            />
+                          </EuiSpacer>
+                          <EuiSpacer
+                            size="xl"
+                          >
+                            <div
+                              className="euiSpacer euiSpacer--xl"
                             />
                           </EuiSpacer>
                           <EuiTitle
@@ -1752,7 +2142,13 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                             fullWidth={true}
                             hasChildLabel={true}
                             hasEmptyLabelSpace={false}
-                            label="Trigger alerts with severity"
+                            label={
+                              <EuiText
+                                color="subdued"
+                              >
+                                Trigger alerts with severity
+                              </EuiText>
+                            }
                             labelType="label"
                           >
                             <div
@@ -1772,7 +2168,24 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                     className="euiFormLabel euiFormRow__label"
                                     htmlFor="some_html_id"
                                   >
-                                    Trigger alerts with severity
+                                    <EuiText
+                                      color="subdued"
+                                    >
+                                      <div
+                                        className="euiText euiText--medium"
+                                      >
+                                        <EuiTextColor
+                                          color="subdued"
+                                          component="div"
+                                        >
+                                          <div
+                                            className="euiTextColor euiTextColor--subdued"
+                                          >
+                                            Trigger alerts with severity
+                                          </div>
+                                        </EuiTextColor>
+                                      </div>
+                                    </EuiText>
                                   </label>
                                 </EuiFormLabel>
                               </div>
@@ -1805,20 +2218,19 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                               className="euiSpacer euiSpacer--l"
                             />
                           </EuiSpacer>
-                          <EuiSpacer
-                            size="l"
-                          >
-                            <div
-                              className="euiSpacer euiSpacer--l"
-                            />
-                          </EuiSpacer>
                           <EuiFormRow
                             describedByIds={Array []}
                             display="row"
                             fullWidth={true}
                             hasChildLabel={true}
                             hasEmptyLabelSpace={false}
-                            label="Notify channel"
+                            label={
+                              <EuiText
+                                color="subdued"
+                              >
+                                Notify channel
+                              </EuiText>
+                            }
                             labelType="label"
                           >
                             <div
@@ -1838,7 +2250,24 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                     className="euiFormLabel euiFormRow__label"
                                     htmlFor="some_html_id"
                                   >
-                                    Notify channel
+                                    <EuiText
+                                      color="subdued"
+                                    >
+                                      <div
+                                        className="euiText euiText--medium"
+                                      >
+                                        <EuiTextColor
+                                          color="subdued"
+                                          component="div"
+                                        >
+                                          <div
+                                            className="euiTextColor euiTextColor--subdued"
+                                          >
+                                            Notify channel
+                                          </div>
+                                        </EuiTextColor>
+                                      </div>
+                                    </EuiText>
                                   </label>
                                 </EuiFormLabel>
                               </div>
@@ -1870,13 +2299,6 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                               </div>
                             </div>
                           </EuiFormRow>
-                          <EuiSpacer
-                            size="l"
-                          >
-                            <div
-                              className="euiSpacer euiSpacer--l"
-                            />
-                          </EuiSpacer>
                         </div>
                       </div>
                     </EuiResizeObserver>

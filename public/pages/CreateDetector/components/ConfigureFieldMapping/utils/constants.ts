@@ -17,7 +17,6 @@ export const EMPTY_FIELD_MAPPINGS_VIEW: GetFieldMappingViewResponse = {
   properties: {},
   unmapped_field_aliases: [],
   unmapped_index_fields: [],
-  threat_intel_field_aliases: [],
 };
 
 export const EMPTY_FIELD_MAPPINGS: FieldMappingPropertyMap = {

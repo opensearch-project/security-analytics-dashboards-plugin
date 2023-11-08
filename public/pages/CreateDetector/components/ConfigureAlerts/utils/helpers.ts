@@ -50,10 +50,7 @@ export function parseNotificationChannelsToOptions(
   }));
 }
 
-export function getEmptyAlertCondition(
-  conditionName: string = '',
-  detection_types: string[] = []
-): AlertCondition {
+export function getEmptyAlertCondition(conditionName: string = ''): AlertCondition {
   const emptyTriggerAction: TriggerAction = {
     id: '',
     name: '',
@@ -81,6 +78,5 @@ export function getEmptyAlertCondition(
     types: [],
     severity: '1',
     ids: [],
-    detection_types,
   };
 }

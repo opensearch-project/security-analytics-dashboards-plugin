@@ -20,7 +20,7 @@ import {
 import { AlertItem, RuleSource } from '../../../../../server/models/interfaces';
 import React from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
-import { ALERT_STATE, DEFAULT_EMPTY_DATA, ROUTES } from '../../../../utils/constants';
+import { ALERT_STATE, DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
 import {
   capitalizeFirstLetter,
   createTextDetailsGroup,
@@ -145,7 +145,7 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
         name: 'Finding ID',
         sortable: true,
         dataType: 'string',
-        render: (id, finding: any) =>
+        render: (id, finding) =>
           (
             <EuiLink
               onClick={() => {
@@ -157,10 +157,7 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
                     ...finding,
                     detector: { _id: detector.id as string, _index: '', _source: detector },
                     ruleName: rule.title,
-                    ruleSeverity:
-                      rule.level === 'critical'
-                        ? rule.level
-                        : finding['ruleSeverity'] || rule.level,
+                    ruleSeverity: rule.level,
                   },
                   [...this.state.findingItems, finding],
                   true,
@@ -174,9 +171,10 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
           ) || DEFAULT_EMPTY_DATA,
       },
       {
-        field: 'detectionType',
-        name: 'Detection type',
-        render: (detectionType: string) => detectionType || DEFAULT_EMPTY_DATA,
+        field: 'queries',
+        name: 'Rule name',
+        sortable: true,
+        render: (queries: any[]) => rules[queries[0]?.id]?.title || DEFAULT_EMPTY_DATA,
       },
       {
         field: 'detector_id',
@@ -257,12 +255,12 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
           {createTextDetailsGroup([
             { label: 'Start time', content: renderTime(start_time) },
             { label: 'Last updated time', content: renderTime(last_notification_time) },
-            {
-              label: 'Detector',
-              content: detector.name,
-              url: `#${ROUTES.DETECTOR_DETAILS}/${detector.id}`,
-              target: '_blank',
-            },
+            { label: '', content: '' },
+          ])}
+          {createTextDetailsGroup([
+            { label: 'Detector', content: detector.name },
+            { label: '', content: '' },
+            { label: '', content: '' },
           ])}
 
           <EuiSpacer size={'xxl'} />

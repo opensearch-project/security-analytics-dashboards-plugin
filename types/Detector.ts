@@ -32,7 +32,6 @@ export interface Detector {
   schedule: DetectorSchedule;
   inputs: DetectorInput[];
   triggers: AlertCondition[];
-  threat_intel_enabled: boolean;
 }
 
 export interface AlertConditionRuleOption {

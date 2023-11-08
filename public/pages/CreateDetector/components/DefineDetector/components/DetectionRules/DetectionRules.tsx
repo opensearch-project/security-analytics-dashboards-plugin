@@ -98,10 +98,11 @@ export const DetectionRules: React.FC<DetectionRulesProps> = ({
         buttonContent={
           <div data-test-subj="detection-rules-btn">
             <EuiTitle size={'s'}>
-              <h4>{`Selected detection rules (${enabledRulesCount})`}</h4>
+              <h4>{`Detection rules (${enabledRulesCount} selected)`}</h4>
             </EuiTitle>
             <EuiText size="s" color="subdued">
-              Add or remove detection rules for this detector.
+              Detection rules are automatically added based on your chosen log types. Additionally,
+              you may add or remove detection rules for this detector.
             </EuiText>
           </div>
         }

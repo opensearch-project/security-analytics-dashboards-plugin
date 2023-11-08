@@ -18,7 +18,7 @@ import {
   EuiTitle,
 } from '@elastic/eui';
 import AlertConditionPanel from '../../CreateDetector/components/ConfigureAlerts/components/AlertCondition';
-import { AlertCondition } from '../../../../models/interfaces';
+import { AlertCondition, Detector } from '../../../../models/interfaces';
 import { DetectorsService } from '../../../services';
 import { RulesSharedState } from '../../../models/interfaces';
 import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
@@ -26,8 +26,6 @@ import { NotificationChannelTypeOptions } from '../../CreateDetector/components/
 import { Finding } from '../models/interfaces';
 import { getEmptyAlertCondition } from '../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { validateName } from '../../../utils/validation';
-import { addDetectionType } from '../../../utils/helpers';
-import { Detector } from '../../../../types';
 
 interface CreateAlertFlyoutProps extends RouteComponentProps {
   closeFlyout: (refreshPage?: boolean) => void;
@@ -69,16 +67,8 @@ export default class CreateAlertFlyout extends Component<
 
   prepareAlertCondition = async () => {
     const { rulesOptions } = this.props;
-    const { alertCondition, detector } = this.state;
+    const { alertCondition } = this.state;
     const newAlertCondition = { ...alertCondition };
-
-    if (rulesOptions.length) {
-      newAlertCondition.detection_types = addDetectionType(newAlertCondition, 'rules');
-    }
-
-    if (detector.threat_intel_enabled) {
-      newAlertCondition.detection_types = addDetectionType(newAlertCondition, 'threat_intel');
-    }
 
     const selectedRuleNames = new Set<string>();
     const selectedRuleSeverities = new Set<string>();

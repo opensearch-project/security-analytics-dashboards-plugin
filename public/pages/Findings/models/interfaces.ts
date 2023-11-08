@@ -11,7 +11,6 @@ export interface Finding {
   queries: Query[];
   related_doc_ids: string[];
   timestamp: number;
-  detectionType: string;
 }
 
 export interface Query {

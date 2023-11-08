@@ -55,10 +55,6 @@ export interface CorrelationRule extends CorrelationRuleModel {
   id: string;
 }
 
-export interface CorrelationRuleTableItem extends CorrelationRule {
-  logTypes: string;
-}
-
 export interface CorrelationRuleSourceQueries {
   index: string;
   query: string;

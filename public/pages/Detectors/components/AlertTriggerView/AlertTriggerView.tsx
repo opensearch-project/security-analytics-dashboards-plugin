@@ -34,7 +34,7 @@ export const AlertTriggerView: React.FC<AlertTriggerViewProps> = ({
   notificationChannels,
   rules,
 }) => {
-  const { name, sev_levels, tags, ids, severity, actions, detection_types } = alertTrigger;
+  const { name, sev_levels, types, tags, ids, severity, actions } = alertTrigger;
   const alertSeverity = parseAlertSeverityToOption(severity)?.label || DEFAULT_EMPTY_DATA;
   const action = actions[0];
   const notificationChannelId = detector.triggers[orderPosition]?.actions[0]?.destination_id;
@@ -42,8 +42,6 @@ export const AlertTriggerView: React.FC<AlertTriggerViewProps> = ({
     (channel) => !!notificationChannelId && channel.config_id === notificationChannelId
   );
   const conditionRuleNames = ids.map((ruleId) => rules[ruleId]?._source.title);
-  const ruleDetectionTypeEnabled = detection_types.includes('rules');
-  const threatIntelDetectionTypeEnabled = detection_types.includes('threat_intel');
   return (
     <div>
       {orderPosition > 0 && <EuiHorizontalRule margin={'m'} />}
@@ -58,40 +56,23 @@ export const AlertTriggerView: React.FC<AlertTriggerViewProps> = ({
           </EuiText>
         }
       >
-        <EuiSpacer size="s" />
+        <EuiSpacer size="m" />
         {createTextDetailsGroup([{ label: 'Trigger name', content: `${name}` }])}
+        <EuiSpacer size="xl" />
 
         <EuiTitle size="s">
-          <h4>Trigger condition </h4>
+          <h5>If any detection rule matches</h5>
         </EuiTitle>
-
-        {ruleDetectionTypeEnabled && (
-          <>
-            <EuiTitle size="xs">
-              <h5>For detection rules</h5>
-            </EuiTitle>
-            <EuiSpacer size={'s'} />
-            {createTextDetailsGroup([
-              { label: 'Rule names', content: conditionRuleNames.join('\n') || 'Any rule' },
-            ])}
-            {createTextDetailsGroup([
-              { label: 'Rule severities', content: sev_levels.join('\n') || 'Any severity' },
-              { label: 'Tags', content: tags.join('\n') || 'Any tag' },
-            ])}
-          </>
-        )}
-
-        {threatIntelDetectionTypeEnabled && (
-          <>
-            <EuiTitle size="xs">
-              <h5>For threat intelligence </h5>
-            </EuiTitle>
-            <EuiSpacer size={'s'} />
-            {createTextDetailsGroup([
-              { label: 'IOC match', content: 'Any match in threat intelligence feed' },
-            ])}
-          </>
-        )}
+        <EuiSpacer size={'m'} />
+        {createTextDetailsGroup([
+          { label: 'Log type', content: `${types[0]}` || DEFAULT_EMPTY_DATA },
+          { label: 'Rule names', content: conditionRuleNames.join('\n') || DEFAULT_EMPTY_DATA },
+        ])}
+        {createTextDetailsGroup([
+          { label: 'Rule severities', content: sev_levels.join('\n') || DEFAULT_EMPTY_DATA },
+          { label: 'Tags', content: tags.join('\n') || DEFAULT_EMPTY_DATA },
+        ])}
+        <EuiSpacer size="xl" />
 
         <EuiTitle size="s">
           <h5>Alert and notify</h5>
