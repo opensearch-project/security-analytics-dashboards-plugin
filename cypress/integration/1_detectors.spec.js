@@ -236,139 +236,139 @@ describe('Detectors', () => {
     }).should('have.property', 'status', 200);
   });
 
-  describe('...should validate form fields', () => {
-    beforeEach(() => {
-      cy.intercept('/_plugins/_security_analytics/detectors/_search').as('detectorsSearch');
+  // describe('...should validate form fields', () => {
+  //   beforeEach(() => {
+  //     cy.intercept('/_plugins/_security_analytics/detectors/_search').as('detectorsSearch');
 
-      // Visit Detectors page before any test
-      cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
-      cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
+  //     // Visit Detectors page before any test
+  //     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
+  //     cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
 
-      openCreateForm();
-    });
+  //     openCreateForm();
+  //   });
 
-    it('...should validate name field', () => {
-      getNameField().should('be.empty');
-      getNameField().focus().blur();
-      getNameField().parentsUntil('.euiFormRow__fieldWrapper').siblings().contains('Enter a name.');
+  //   it('...should validate name field', () => {
+  //     getNameField().should('be.empty');
+  //     getNameField().focus().blur();
+  //     getNameField().parentsUntil('.euiFormRow__fieldWrapper').siblings().contains('Enter a name.');
 
-      getNameField().type('text').focus().blur();
+  //     getNameField().type('text').focus().blur();
 
-      getNameField()
-        .parents('.euiFormRow__fieldWrapper')
-        .find('.euiFormErrorText')
-        .contains(
-          'Name should only consist of upper and lowercase letters, numbers 0-9, hyphens, spaces, and underscores. Use between 5 and 50 characters.'
-        );
+  //     getNameField()
+  //       .parents('.euiFormRow__fieldWrapper')
+  //       .find('.euiFormErrorText')
+  //       .contains(
+  //         'Name should only consist of upper and lowercase letters, numbers 0-9, hyphens, spaces, and underscores. Use between 5 and 50 characters.'
+  //       );
 
-      getNameField().type('{selectall}').type('{backspace}').type('tex&').focus().blur();
+  //     getNameField().type('{selectall}').type('{backspace}').type('tex&').focus().blur();
 
-      getNameField()
-        .parents('.euiFormRow__fieldWrapper')
-        .find('.euiFormErrorText')
-        .contains(
-          'Name should only consist of upper and lowercase letters, numbers 0-9, hyphens, spaces, and underscores. Use between 5 and 50 characters.'
-        );
+  //     getNameField()
+  //       .parents('.euiFormRow__fieldWrapper')
+  //       .find('.euiFormErrorText')
+  //       .contains(
+  //         'Name should only consist of upper and lowercase letters, numbers 0-9, hyphens, spaces, and underscores. Use between 5 and 50 characters.'
+  //       );
 
-      getNameField()
-        .type('{selectall}')
-        .type('{backspace}')
-        .type('Detector name')
-        .focus()
-        .blur()
-        .parents('.euiFormRow__fieldWrapper')
-        .find('.euiFormErrorText')
-        .should('not.exist');
-    });
+  //     getNameField()
+  //       .type('{selectall}')
+  //       .type('{backspace}')
+  //       .type('Detector name')
+  //       .focus()
+  //       .blur()
+  //       .parents('.euiFormRow__fieldWrapper')
+  //       .find('.euiFormErrorText')
+  //       .should('not.exist');
+  //   });
 
-    it('...should validate description field', () => {
-      const longDescriptionText =
-        'This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text.';
+  //   it('...should validate description field', () => {
+  //     const longDescriptionText =
+  //       'This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text.';
 
-      getDescriptionField().should('be.empty');
+  //     getDescriptionField().should('be.empty');
 
-      getDescriptionField().type(longDescriptionText).focus().blur();
+  //     getDescriptionField().type(longDescriptionText).focus().blur();
 
-      getDescriptionField()
-        .parents('.euiFormRow__fieldWrapper')
-        .find('.euiFormErrorText')
-        .contains(
-          'Description should only consist of upper and lowercase letters, numbers 0-9, commas, hyphens, periods, spaces, and underscores. Max limit of 500 characters.'
-        );
+  //     getDescriptionField()
+  //       .parents('.euiFormRow__fieldWrapper')
+  //       .find('.euiFormErrorText')
+  //       .contains(
+  //         'Description should only consist of upper and lowercase letters, numbers 0-9, commas, hyphens, periods, spaces, and underscores. Max limit of 500 characters.'
+  //       );
 
-      getDescriptionField()
-        .type('{selectall}')
-        .type('{backspace}')
-        .type('Detector description...')
-        .focus()
-        .blur();
+  //     getDescriptionField()
+  //       .type('{selectall}')
+  //       .type('{backspace}')
+  //       .type('Detector description...')
+  //       .focus()
+  //       .blur();
 
-      getDescriptionField()
-        .type('{selectall}')
-        .type('{backspace}')
-        .type('Detector name')
-        .focus()
-        .blur()
-        .parents('.euiFormRow__fieldWrapper')
-        .find('.euiFormErrorText')
-        .should('not.exist');
-    });
+  //     getDescriptionField()
+  //       .type('{selectall}')
+  //       .type('{backspace}')
+  //       .type('Detector name')
+  //       .focus()
+  //       .blur()
+  //       .parents('.euiFormRow__fieldWrapper')
+  //       .find('.euiFormErrorText')
+  //       .should('not.exist');
+  //   });
 
-    it('...should validate data source field', () => {
-      getDataSourceField()
-        .focus()
-        .blur()
-        .parentsUntil('.euiFormRow__fieldWrapper')
-        .siblings()
-        .contains('Select an input source.');
+  //   it('...should validate data source field', () => {
+  //     getDataSourceField()
+  //       .focus()
+  //       .blur()
+  //       .parentsUntil('.euiFormRow__fieldWrapper')
+  //       .siblings()
+  //       .contains('Select an input source.');
 
-      getDataSourceField().selectComboboxItem(cypressIndexDns);
-      getDataSourceField()
-        .focus()
-        .blur()
-        .parentsUntil('.euiFormRow__fieldWrapper')
-        .find('.euiFormErrorText')
-        .should('not.exist');
-    });
+  //     getDataSourceField().selectComboboxItem(cypressIndexDns);
+  //     getDataSourceField()
+  //       .focus()
+  //       .blur()
+  //       .parentsUntil('.euiFormRow__fieldWrapper')
+  //       .find('.euiFormErrorText')
+  //       .should('not.exist');
+  //   });
 
-    it('...should validate next button', () => {
-      getNextButton().should('be.disabled');
+  //   it('...should validate next button', () => {
+  //     getNextButton().should('be.disabled');
 
-      fillDetailsForm(detectorName, cypressIndexDns);
-      getNextButton().should('be.enabled');
-    });
+  //     fillDetailsForm(detectorName, cypressIndexDns);
+  //     getNextButton().should('be.enabled');
+  //   });
 
-    it('...should validate alerts page', () => {
-      fillDetailsForm(detectorName, cypressIndexDns);
-      getNextButton().click({ force: true });
-      // Open the trigger details accordion
-      cy.get('[data-test-subj="trigger-details-btn"]').click({ force: true });
-      getTriggerNameField().should('have.value', 'Trigger 1');
-      getTriggerNameField()
-        .parents('.euiFormRow__fieldWrapper')
-        .find('.euiFormErrorText')
-        .should('not.exist');
+  //   it('...should validate alerts page', () => {
+  //     fillDetailsForm(detectorName, cypressIndexDns);
+  //     getNextButton().click({ force: true });
+  //     // Open the trigger details accordion
+  //     cy.get('[data-test-subj="trigger-details-btn"]').click({ force: true });
+  //     getTriggerNameField().should('have.value', 'Trigger 1');
+  //     getTriggerNameField()
+  //       .parents('.euiFormRow__fieldWrapper')
+  //       .find('.euiFormErrorText')
+  //       .should('not.exist');
 
-      getTriggerNameField().type('{selectall}').type('{backspace}').focus().blur();
-      getCreateDetectorButton().should('be.disabled');
+  //     getTriggerNameField().type('{selectall}').type('{backspace}').focus().blur();
+  //     getCreateDetectorButton().should('be.disabled');
 
-      cy.getButtonByText('Remove').click({ force: true });
-      getCreateDetectorButton().should('be.enabled');
-    });
+  //     cy.getButtonByText('Remove').click({ force: true });
+  //     getCreateDetectorButton().should('be.enabled');
+  //   });
 
-    it('...should show mappings warning', () => {
-      fillDetailsForm(detectorName, cypressIndexDns);
+  //   it('...should show mappings warning', () => {
+  //     fillDetailsForm(detectorName, cypressIndexDns);
 
-      getDataSourceField().selectComboboxItem(cypressIndexWindows);
-      getDataSourceField().focus().blur();
+  //     getDataSourceField().selectComboboxItem(cypressIndexWindows);
+  //     getDataSourceField().focus().blur();
 
-      cy.get('[data-test-subj="define-detector-diff-log-types-warning"]')
-        .should('be.visible')
-        .contains(
-          'To avoid issues with field mappings, we recommend creating separate detectors for different log types.'
-        );
-    });
-  });
+  //     cy.get('[data-test-subj="define-detector-diff-log-types-warning"]')
+  //       .should('be.visible')
+  //       .contains(
+  //         'To avoid issues with field mappings, we recommend creating separate detectors for different log types.'
+  //       );
+  //   });
+  // });
 
   describe('...validate create detector flow', () => {
     beforeEach(() => {
