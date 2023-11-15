@@ -32,6 +32,7 @@ import { mapFormToRule, mapRuleToForm } from './mappers';
 import { DetectionVisualEditor } from './DetectionVisualEditor';
 import { useCallback } from 'react';
 import { getLogTypeOptions } from '../../../../utils/helpers';
+import { getLogTypeLabel } from '../../../LogTypes/utils/helpers';
 
 export interface VisualRuleEditorProps {
   initialValue: RuleEditorFormModel;
@@ -282,13 +283,18 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                         options={logTypeOptions}
                         singleSelection={{ asPlainText: true }}
                         onChange={(e) => {
-                          props.handleChange('logType')(e[0]?.label ? e[0].label : '');
+                          props.handleChange('logType')(e[0]?.value ? e[0].value : '');
                         }}
                         onFocus={refreshLogTypeOptions}
                         onBlur={props.handleBlur('logType')}
                         selectedOptions={
                           props.values.logType
-                            ? [{ value: props.values.logType, label: props.values.logType }]
+                            ? [
+                                {
+                                  value: props.values.logType,
+                                  label: getLogTypeLabel(props.values.logType),
+                                },
+                              ]
                             : []
                         }
                       />

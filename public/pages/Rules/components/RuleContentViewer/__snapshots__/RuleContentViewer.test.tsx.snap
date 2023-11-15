@@ -103,7 +103,7 @@ exports[`<RuleContentViewer /> spec renders the component 1`] = `
           class="euiText euiText--medium"
           data-test-subj="rule_flyout_rule_log_type"
         >
-          dns
+          DNS
         </div>
       </div>
     </div>
