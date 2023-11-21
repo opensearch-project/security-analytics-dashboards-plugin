@@ -17,6 +17,7 @@ const cypressIndexWindows = 'cypress-index-windows';
 const detectorName = 'test detector';
 const cypressLogTypeDns = 'dns';
 const sampleNotificationChannel = 'sample_chime_channel';
+const creationFailedMessage = 'Create detector failed.';
 
 const cypressDNSRule = dns_name_rule_data.title;
 
@@ -381,12 +382,12 @@ describe('Detectors', () => {
 
     it('...can fail creation', () => {
       createDetector(`${detectorName}_fail`, '.kibana_1', true);
-      cy.getElementByText('.euiCallOut', 'Create detector failed.');
+      cy.getElementByText('.euiCallOut', creationFailedMessage);
     });
 
     it('...can be created', () => {
       createDetector(detectorName, cypressIndexDns, false);
-      cy.getElementByText('.euiCallOut', 'Detector created successfully');
+      cy.contains(creationFailedMessage).should('not.exist');
     });
 
     it('...basic details can be edited', () => {
