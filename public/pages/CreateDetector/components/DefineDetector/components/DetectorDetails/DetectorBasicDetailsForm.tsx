@@ -4,8 +4,7 @@
  */
 
 import React, { Component } from 'react';
-import { ContentPanel } from '../../../../../../components/ContentPanel';
-import { EuiFormRow, EuiFieldText, EuiSpacer, EuiTextArea } from '@elastic/eui';
+import { EuiFormRow, EuiFieldText, EuiSpacer, EuiTextArea, EuiTitle } from '@elastic/eui';
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
 import {
   getDescriptionErrorMessage,
@@ -74,7 +73,10 @@ export default class DetectorBasicDetailsForm extends Component<
       nameFieldTouched,
     } = this.state;
     return (
-      <ContentPanel title={'Detector details'} titleSize={'m'}>
+      <>
+        <EuiTitle size="m">
+          <h3>Detector details</h3>
+        </EuiTitle>
         <EuiSpacer size={'m'} />
         <EuiFormRow
           label={<FormFieldHeader headerTitle={'Name'} />}
@@ -111,7 +113,7 @@ export default class DetectorBasicDetailsForm extends Component<
             data-test-subj={'define-detector-detector-description'}
           />
         </EuiFormRow>
-      </ContentPanel>
+      </>
     );
   }
 }

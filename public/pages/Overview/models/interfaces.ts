@@ -34,6 +34,7 @@ export interface FindingItem {
   ruleId: string;
   ruleName: string;
   ruleSeverity: string;
+  isThreatIntelOnlyFinding: boolean;
 }
 
 export interface AlertItem {
