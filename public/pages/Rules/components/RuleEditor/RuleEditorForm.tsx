@@ -76,9 +76,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
   const refreshLogTypeOptions = useCallback(async () => {
     const logTypes = await DataStore.logTypes.getLogTypes();
-    setLogTypeOptions(
-      logTypes.map(({ id, name }) => ({ value: id, label: getLogTypeLabel(name) }))
-    );
+    setLogTypeOptions(logTypes.map(({ name }) => ({ value: name, label: getLogTypeLabel(name) })));
   }, []);
 
   const validateTags = (fields: string[]) => {
