@@ -33,6 +33,7 @@ import {
 } from '@elastic/eui';
 import { ruleTypes } from '../../Rules/utils/constants';
 import {
+  CorrelationRule,
   CorrelationRuleAction,
   CorrelationRuleModel,
   CorrelationRuleQuery,
@@ -88,52 +89,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
   const correlationStore = DataStore.correlations;
   const [indices, setIndices] = useState<CorrelationOptions[]>([]);
   const [logFields, setLogFields] = useState<CorrelationOptions[]>([]);
-
-  const validateCorrelationRule = useCallback((rule: CorrelationRuleModel) => {
-    if (!rule.name) {
-      return 'Invalid rule name';
-    }
-
-    if (Number.isNaN(rule.time_window) || rule.time_window > 86400000 || rule.time_window < 60000) {
-      return 'Invaid time window';
-    }
-
-    let error = '';
-    const invalidQuery = rule.queries.some((query, index) => {
-      const invalidIndex = !query.index;
-      if (invalidIndex) {
-        error = `Invalid index for query ${index + 1}`;
-        return true;
-      }
-
-      const invalidlogType = !query.logType;
-      if (invalidlogType) {
-        error = `Invalid log type for query ${index + 1}`;
-        return true;
-      }
-
-      return query.conditions.some((cond) => {
-        const invalid = !cond.name || !cond.value;
-        if (invalid) {
-          error = `Invalid fields for query ${index + 1}`;
-          return true;
-        }
-
-        return false;
-      });
-    });
-
-    if (invalidQuery) {
-      return error;
-    }
-
-    if (groupByEnabled && rule.queries.some((q) => !!q.field)) {
-      return 'Select valid fields for group by sections';
-    }
-
-    return undefined;
-  }, []);
-
   const params = useParams<{ ruleId: string }>();
   const [initialValues, setInitialValues] = useState({
     ...correlationRuleStateDefaultValue,
@@ -144,17 +99,80 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
   const [dataFilterEnabled, setDataFilterEnabled] = useState(false);
   const [groupByEnabled, setGroupByEnabled] = useState(false);
 
+  const validateCorrelationRule = useCallback(
+    (rule: CorrelationRuleModel) => {
+      if (!rule.name) {
+        return 'Invalid rule name';
+      }
+
+      if (
+        Number.isNaN(rule.time_window) ||
+        rule.time_window > 86400000 ||
+        rule.time_window < 60000
+      ) {
+        return 'Invaid time window';
+      }
+
+      let error = '';
+      const invalidQuery = rule.queries.some((query, index) => {
+        const invalidIndex = !query.index;
+        if (invalidIndex) {
+          error = `Invalid index for query ${index + 1}`;
+          return true;
+        }
+
+        const invalidlogType = !query.logType;
+        if (invalidlogType) {
+          error = `Invalid log type for query ${index + 1}`;
+          return true;
+        }
+
+        if (!dataFilterEnabled && !groupByEnabled) {
+          error = 'Select at least one query type';
+          return true;
+        }
+
+        const invalidDataFilter =
+          dataFilterEnabled &&
+          query.conditions.some((cond) => {
+            const invalid = !cond.name || !cond.value;
+            if (invalid) {
+              error = `Invalid fields for query ${index + 1}`;
+              return true;
+            }
+
+            return false;
+          });
+
+        if (invalidDataFilter) {
+          return true;
+        }
+
+        if (groupByEnabled && rule.queries.some((q) => !q.field)) {
+          error = 'Select valid field for group by';
+          return true;
+        }
+
+        return false;
+      });
+
+      if (invalidQuery) {
+        return error;
+      }
+
+      return undefined;
+    },
+    [dataFilterEnabled, groupByEnabled]
+  );
+
   useEffect(() => {
-    let initialRule = initialValues;
     if (props.history.location.state?.rule) {
       setAction('Edit');
-      initialRule = props.history.location.state?.rule;
       setInitialValues(props.history.location.state?.rule);
     } else if (params.ruleId) {
       const setInitialRuleValues = async () => {
         const ruleRes = await correlationStore.getCorrelationRule(params.ruleId);
         if (ruleRes) {
-          initialRule = ruleRes;
           setInitialValues(ruleRes);
         }
       };
@@ -176,17 +194,29 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
     setDataFilterEnabled(initialValues.queries.some((q) => q.conditions.length > 0));
   }, [initialValues]);
 
-  const submit = async (values: any) => {
+  const submit = async (values: CorrelationRuleModel) => {
     let error;
     if ((error = validateCorrelationRule(values))) {
       errorNotificationToast(props.notifications, action, 'rule', error);
       return;
     }
 
+    if (!dataFilterEnabled) {
+      values.queries.forEach((query) => {
+        query.conditions = [];
+      });
+    }
+
+    if (!groupByEnabled) {
+      values.queries.forEach((query) => {
+        query.field = '';
+      });
+    }
+
     if (action === 'Edit') {
-      await correlationStore.updateCorrelationRule(values);
+      await correlationStore.updateCorrelationRule(values as CorrelationRule);
     } else {
-      await correlationStore.createCorrelationRule(values);
+      await correlationStore.createCorrelationRule(values as CorrelationRule);
     }
 
     props.history.push(ROUTES.CORRELATION_RULES);
