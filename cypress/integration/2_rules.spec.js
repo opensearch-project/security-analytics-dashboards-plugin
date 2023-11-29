@@ -174,8 +174,6 @@ const fillCreateForm = () => {
     getMapValueField().type('FieldValue');
   });
 
-  getConditionAddButton().click({ force: true });
-
   // rule additional details
   SAMPLE_RULE.tags.forEach((tag, idx) => {
     getTagField(idx).type(tag);
