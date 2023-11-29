@@ -175,12 +175,24 @@ export class DetectionVisualEditor extends React.Component<
     delete detectionJSON.condition;
 
     Object.keys(detectionJSON).forEach((selectionKey, selectionIdx) => {
-      const selectionMapJSON = detectionJSON[selectionKey];
+      const selectionJSON = detectionJSON[selectionKey];
       const selectionDataEntries: SelectionData[] = [];
 
-      if (Array.isArray(selectionMapJSON)) {
-        if (selectionMapJSON.length > 0 && typeof selectionMapJSON[0] === 'object') {
-          selectionMapJSON.forEach((map) => {
+      if (Array.isArray(selectionJSON)) {
+        // Case 1: Field and values specified as an array
+        /**
+         
+            selection_destination:
+              - Destination|contains:
+                - new-object
+                - net.webclient
+              - Destination|contains:
+                  - ' iex('
+                  - WScript.shell
+                  - ' -nop '
+        */
+        if (selectionJSON.length > 0 && typeof selectionJSON[0] === 'object') {
+          selectionJSON.forEach((map) => {
             Object.keys(map).forEach((fieldKey, dataIdx) => {
               const [field, modifier] = fieldKey.split('|');
               const val = map[fieldKey];
@@ -198,21 +210,37 @@ export class DetectionVisualEditor extends React.Component<
             });
           });
         } else {
+          // Case 2: Keywords in detection
+          /**
+              keywords:
+                - hello
+                - john
+          */
           selectionDataEntries.push({
             field: '',
             modifier: 'all',
-            values: selectionMapJSON,
+            values: selectionJSON,
             selectedRadioId: `${
-              selectionMapJSON.length <= 1
+              selectionJSON.length <= 1
                 ? SelectionMapValueRadioId.VALUE
                 : SelectionMapValueRadioId.LIST
             }-${selectionIdx}-0`,
           });
         }
-      } else if (typeof selectionMapJSON === 'object') {
-        Object.keys(selectionMapJSON).forEach((fieldKey, dataIdx) => {
+      }
+      // Case 3: Field/Value pairs in selection
+      /**
+          selection:
+            eventService: admin.googleapis.com
+            eventName:
+              - DELETE_ROLE
+              - RENAME_ROLE
+              - UPDATE_ROLE
+       */
+      else if (typeof selectionJSON === 'object') {
+        Object.keys(selectionJSON).forEach((fieldKey, dataIdx) => {
           const [field, modifier] = fieldKey.split('|');
-          const val = selectionMapJSON[fieldKey];
+          const val = selectionJSON[fieldKey];
           const values: any[] = Array.isArray(val) ? val : [val];
           selectionDataEntries.push({
             field,
@@ -223,11 +251,16 @@ export class DetectionVisualEditor extends React.Component<
             }-${selectionIdx}-${dataIdx}`,
           });
         });
-      } else if (typeof selectionMapJSON === 'string' || typeof selectionMapJSON === 'number') {
+      }
+      // Case 4: timeframe field
+      /**
+          timeframe: 5m
+       */
+      else if (typeof selectionJSON === 'string' || typeof selectionJSON === 'number') {
         selectionDataEntries.push({
           field: '',
           modifier: 'all',
-          values: [selectionMapJSON],
+          values: [selectionJSON],
           selectedRadioId: `${SelectionMapValueRadioId.VALUE}-${selectionIdx}-0`,
         });
       }
@@ -276,7 +309,7 @@ export class DetectionVisualEditor extends React.Component<
           delete errors.fields[fieldName];
           if (!validateDetectionFieldName(data.field)) {
             errors.fields[fieldName] =
-              'Invalid key name. Valid characters are a-z, A-Z, 0-9, hyphens, dots, and underscores';
+              'Invalid key name. Valid characters are a-z, A-Z, 0-9, hyphen, period, and underscore.';
           }
           errors.touched[fieldName] = true;
         }
