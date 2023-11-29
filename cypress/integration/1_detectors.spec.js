@@ -16,7 +16,6 @@ const cypressIndexDns = 'cypress-index-dns';
 const cypressIndexWindows = 'cypress-index-windows';
 const detectorName = 'test detector';
 const cypressLogTypeDns = 'dns';
-const sampleNotificationChannel = 'sample_chime_channel';
 const creationFailedMessage = 'Create detector failed.';
 
 const cypressDNSRule = dns_name_rule_data.title;
@@ -42,10 +41,6 @@ const getDataSourceField = () => cy.getFieldByLabel(dataSourceLabel);
 const logTypeLabel = 'Log type';
 
 const getLogTypeField = () => cy.getFieldByLabel(logTypeLabel);
-
-const notificationLabel = 'Notification channel';
-
-const getNotificationField = () => cy.getFieldByLabel(notificationLabel);
 
 const openDetectorDetails = (detectorName) => {
   cy.getInputByPlaceholder('Search threat detectors').type(`${detectorName}`).pressEnterKey();
@@ -156,8 +151,6 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
     .focus()
     .blur();
 
-  getNotificationField().selectComboboxItem(`[Channel] ${sampleNotificationChannel}`);
-
   cy.intercept('POST', '/_plugins/_security_analytics/mappings').as('createMappingsRequest');
   cy.intercept('POST', '/_plugins/_security_analytics/detectors').as('createDetectorRequest');
 
@@ -221,20 +214,6 @@ describe('Detectors', () => {
 
     cy.createRule(dns_name_rule_data);
     cy.createRule(dns_type_rule_data);
-
-    cy.request('POST', 'http://localhost:9200/_plugins/_notifications/configs/', {
-      config_id: 'sa_notification-channel_id',
-      name: sampleNotificationChannel,
-      config: {
-        name: sampleNotificationChannel,
-        description: 'This is a sample chime channel',
-        config_type: 'chime',
-        is_enabled: true,
-        chime: {
-          url: 'https://sample-chime-webhook',
-        },
-      },
-    }).should('have.property', 'status', 200);
   });
 
   describe('...should validate form fields', () => {
@@ -515,9 +494,5 @@ describe('Detectors', () => {
 
   after(() => {
     cy.cleanUpTests();
-    cy.request(
-      'DELETE',
-      'http://localhost:9200/_plugins/_notifications/configs/sa_notification-channel_id'
-    );
   });
 });
