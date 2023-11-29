@@ -250,7 +250,7 @@ export default class ConfigureFieldMapping extends Component<
             mappingsView.response.properties[ruleFieldName].path;
         });
         let threatIntelFeedFields = new Set();
-        mappingsView.response.threat_intel_field_aliases.forEach(({ fields }) => {
+        mappingsView.response.threat_intel_field_aliases?.forEach(({ fields }) => {
           fields.forEach((field) => threatIntelFeedFields.add(field));
         });
         mappingsView.response.unmapped_field_aliases?.forEach((ruleFieldName) => {

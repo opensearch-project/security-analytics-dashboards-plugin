@@ -53,9 +53,7 @@ const isTriggerValid = (triggers: AlertCondition[], hasNotificationPlugin: boole
         !!trigger.name &&
         validateName(trigger.name) &&
         trigger.severity &&
-        trigger.detection_types.length &&
-        (!hasNotificationPlugin ||
-          (hasNotificationPlugin && trigger.actions.every((action) => !!action.destination_id)))
+        trigger.detection_types.length
       );
     })
   );
