@@ -128,7 +128,7 @@ export class CorrelationsStore implements ICorrelationsStore {
         return {
           index: queryData.index,
           logType: queryData.category,
-          field: queryData.field,
+          field: queryData.field || '',
           conditions: this.parseRuleQueryString(queryData.query),
         };
       });
@@ -136,7 +136,7 @@ export class CorrelationsStore implements ICorrelationsStore {
       return {
         id: hit._id,
         name: hit._source.name,
-        time_window: hit._source.time_window,
+        time_window: hit._source.time_window || 300000,
         queries,
       };
     }
@@ -159,7 +159,7 @@ export class CorrelationsStore implements ICorrelationsStore {
           return {
             index: queryData.index,
             logType: queryData.category,
-            field: queryData.field,
+            field: queryData.field || '',
             conditions: this.parseRuleQueryString(queryData.query),
           };
         });
@@ -167,7 +167,7 @@ export class CorrelationsStore implements ICorrelationsStore {
         return {
           id: hit._id,
           name: hit._source.name,
-          time_window: hit._source.time_window,
+          time_window: hit._source.time_window || 300000,
           queries,
         };
       }));
@@ -299,6 +299,9 @@ export class CorrelationsStore implements ICorrelationsStore {
 
   private parseRuleQueryString(queryString: string): CorrelationFieldCondition[] {
     const queries: CorrelationFieldCondition[] = [];
+    if (!queryString) {
+      return queries;
+    }
     const orConditions = queryString.trim().split(/ OR /gi);
 
     orConditions.forEach((cond, conditionIndex) => {
