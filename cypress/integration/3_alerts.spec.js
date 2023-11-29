@@ -140,6 +140,7 @@ describe('Alerts', () => {
 
     cy.get('[data-test-subj="alert-details-flyout"]').within(() => {
       // Wait for findings table to finish loading
+      cy.wait(3000);
       cy.contains('Cypress USB Rule');
 
       // Click the details button for the first finding

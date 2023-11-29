@@ -29,10 +29,10 @@ import {
   EuiFilePicker,
   EuiButtonEmpty,
   EuiCallOut,
+  EuiCodeEditor,
 } from '@elastic/eui';
 import _ from 'lodash';
 import { validateCondition, validateDetectionFieldName } from '../../../../utils/validation';
-import { SelectionExpField } from './components/SelectionExpField';
 
 export interface DetectionVisualEditorProps {
   detectionYml: string;
@@ -90,7 +90,7 @@ const detectionModifierOptions = [
 ];
 
 const defaultDetectionObj: DetectionObject = {
-  condition: '',
+  condition: 'Selection_1',
   selections: [
     {
       name: 'Selection_1',
@@ -178,7 +178,18 @@ export class DetectionVisualEditor extends React.Component<
       const selectionMapJSON = detectionJSON[selectionKey];
       const selectionDataEntries: SelectionData[] = [];
 
-      if (typeof selectionMapJSON === 'object') {
+      if (Array.isArray(selectionMapJSON)) {
+        selectionDataEntries.push({
+          field: '',
+          modifier: 'all',
+          values: selectionMapJSON,
+          selectedRadioId: `${
+            selectionMapJSON.length <= 1
+              ? SelectionMapValueRadioId.VALUE
+              : SelectionMapValueRadioId.LIST
+          }-${selectionIdx}-0`,
+        });
+      } else if (typeof selectionMapJSON === 'object') {
         Object.keys(selectionMapJSON).forEach((fieldKey, dataIdx) => {
           const [field, modifier] = fieldKey.split('|');
           const val = selectionMapJSON[fieldKey];
@@ -212,11 +223,15 @@ export class DetectionVisualEditor extends React.Component<
     };
 
     selections.forEach((selection) => {
-      const selectionMaps: any = {};
+      let selectionMaps: any = {};
 
       selection.data.forEach((datum) => {
-        const key = `${datum.field}${datum.modifier ? `|${datum.modifier}` : ''}`;
-        selectionMaps[key] = datum.values;
+        if (datum.field) {
+          const key = `${datum.field}${datum.modifier ? `|${datum.modifier}` : ''}`;
+          selectionMaps[key] = datum.values;
+        } else {
+          selectionMaps = datum.values;
+        }
       });
 
       compiledDetection[selection.name] = selectionMaps;
@@ -228,21 +243,16 @@ export class DetectionVisualEditor extends React.Component<
   private validateData = (selections: Selection[]) => {
     const { errors } = this.state;
     selections.map((selection, selIdx) => {
-      const fieldNames = new Set<string>();
       selection.data.map((data, idx) => {
         if ('field' in data) {
           const fieldName = `field_${selIdx}_${idx}`;
           delete errors.fields[fieldName];
-          if (!data.field) {
-            errors.fields[fieldName] = 'Key name is required';
-          } else if (fieldNames.has(data.field)) {
-            errors.fields[fieldName] = 'Key name already used';
-          } else {
-            fieldNames.add(data.field);
-            if (!validateDetectionFieldName(data.field)) {
-              errors.fields[fieldName] = 'Invalid key name.';
-            }
+
+          if (!validateDetectionFieldName(data.field)) {
+            errors.fields[fieldName] =
+              'Invalid key name. Valid characters are a-z, A-Z, 0-9, hyphens, dots, and underscores';
           }
+
           errors.touched[fieldName] = true;
         }
 
@@ -343,10 +353,7 @@ export class DetectionVisualEditor extends React.Component<
   };
 
   private validateCondition = (value: string) => {
-    const {
-      errors,
-      detectionObj: { selections },
-    } = this.state;
+    const { errors } = this.state;
     value = value.trim();
     delete errors.fields['condition'];
     if (!value) {
@@ -354,18 +361,6 @@ export class DetectionVisualEditor extends React.Component<
     } else {
       if (!validateCondition(value)) {
         errors.fields['condition'] = 'Invalid condition.';
-      } else {
-        const selectionNames = _.map(selections, 'name');
-        const conditions = _.pull(value.split(' '), ...['and', 'or', 'not']);
-        conditions.map((selection) => {
-          if (_.indexOf(selectionNames, selection) === -1) {
-            errors.fields[
-              'condition'
-            ] = `Invalid selection name ${selection}. Allowed names: "${selectionNames.join(
-              ', '
-            )}"`;
-          }
-        });
       }
     }
 
@@ -376,8 +371,6 @@ export class DetectionVisualEditor extends React.Component<
   };
 
   private updateCondition = (value: string) => {
-    value = value.trim();
-
     const detectionObj: DetectionObject = { ...this.state.detectionObj, condition: value };
     this.setState(
       {
@@ -729,6 +722,7 @@ export class DetectionVisualEditor extends React.Component<
                 <EuiButton
                   style={{ width: '70%' }}
                   iconType="plusInCircle"
+                  disabled={!selection.data.at(-1)?.field}
                   onClick={() => {
                     const newData = [
                       ...selection.data,
@@ -754,14 +748,15 @@ export class DetectionVisualEditor extends React.Component<
           fullWidth
           iconType={'plusInCircle'}
           onClick={() => {
+            const selectionName = `Selection_${selections.length + 1}`;
             this.setState({
               detectionObj: {
-                condition,
+                condition: `${condition} and ${selectionName}`,
                 selections: [
                   ...selections,
                   {
                     ...defaultDetectionObj.selections[0],
-                    name: `Selection_${selections.length + 1}`,
+                    name: selectionName,
                   },
                 ],
               },
@@ -796,11 +791,16 @@ export class DetectionVisualEditor extends React.Component<
             </>
           }
         >
-          <SelectionExpField
-            selections={this.state.detectionObj.selections}
+          <EuiCodeEditor
+            mode="yaml"
+            width="600px"
+            height="50px"
             value={this.state.detectionObj.condition}
-            onChange={this.updateCondition}
-            dataTestSubj={'rule_detection_field'}
+            onChange={(value) => this.updateCondition(value)}
+            onBlur={(e) => {
+              this.updateCondition(this.state.detectionObj.condition);
+            }}
+            data-test-subj={'rule_detection_field'}
           />
         </EuiFormRow>
 
