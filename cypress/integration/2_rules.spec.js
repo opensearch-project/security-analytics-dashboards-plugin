@@ -174,8 +174,6 @@ const fillCreateForm = () => {
     getMapValueField().type('FieldValue');
   });
 
-  getConditionAddButton().click({ force: true });
-
   // rule additional details
   SAMPLE_RULE.tags.forEach((tag, idx) => {
     getTagField(idx).type(tag);
@@ -334,7 +332,7 @@ describe('Rules', () => {
         getMapKeyField()
           .parentsUntil('.euiFormRow__fieldWrapper')
           .siblings()
-          .contains('Key name is required');
+          .contains('Invalid key name');
 
         getMapKeyField().type('FieldKey');
         getMapKeyField()
@@ -386,13 +384,10 @@ describe('Rules', () => {
       getConditionField().scrollIntoView();
       getConditionField().find('.euiFormErrorText').should('not.exist');
       getRuleSubmitButton().click({ force: true });
-      getConditionField().parents('.euiFormRow__fieldWrapper').contains('Condition is required');
-
-      getConditionAddButton().click({ force: true });
-      getConditionField().find('.euiFormErrorText').should('not.exist');
-
-      getConditionRemoveButton(0).click({ force: true });
-      getConditionField().parents('.euiFormRow__fieldWrapper').contains('Condition is required');
+      getConditionField()
+        .parents('.euiFormRow__fieldWrapper')
+        .contains('Condition is required')
+        .should('not.exist');
     });
 
     it('...should validate tag field', () => {
@@ -469,11 +464,6 @@ describe('Rules', () => {
         getListRadioField().click({ force: true });
         getMapListField().type('FieldValue');
       });
-
-      // condition field
-      getConditionRemoveButton(0).click({ force: true });
-      toastShouldExist();
-      getConditionAddButton().click({ force: true });
 
       // tags field
       getTagField(0).clearValue().type('wrong.tag');
