@@ -7,6 +7,7 @@ import { CorrelationRuleModel } from '../../../../types';
 
 export const correlationRuleStateDefaultValue: CorrelationRuleModel = {
   name: '',
+  time_window: 60000,
   queries: [
     {
       logType: '',
@@ -18,6 +19,7 @@ export const correlationRuleStateDefaultValue: CorrelationRuleModel = {
         },
       ],
       index: '',
+      field: '',
     },
     {
       logType: '',
@@ -29,6 +31,7 @@ export const correlationRuleStateDefaultValue: CorrelationRuleModel = {
         },
       ],
       index: '',
+      field: '',
     },
   ],
 };

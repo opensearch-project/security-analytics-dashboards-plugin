@@ -37,6 +37,7 @@ export type CorrelationFinding = {
 export interface CorrelationRuleQuery {
   logType: string;
   index: string;
+  field: string;
   conditions: CorrelationFieldCondition[];
 }
 
@@ -48,6 +49,7 @@ export interface CorrelationFieldCondition {
 
 export interface CorrelationRuleModel {
   name: string;
+  time_window: number; // Time in milliseconds
   queries: CorrelationRuleQuery[];
 }
 
@@ -58,11 +60,13 @@ export interface CorrelationRule extends CorrelationRuleModel {
 export interface CorrelationRuleSourceQueries {
   index: string;
   query: string;
+  field: string;
   category: string;
 }
 
 export interface CorrelationRuleSource {
   name: string;
+  time_window: number;
   correlate: CorrelationRuleSourceQueries[];
 }
 
