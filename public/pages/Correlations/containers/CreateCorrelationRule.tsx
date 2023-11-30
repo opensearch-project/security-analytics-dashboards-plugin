@@ -707,15 +707,17 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
             errors.time_window = 'Invalid time window.';
           }
 
-          values.queries.forEach((query, idx) => {
-            if (!query.field) {
-              if (!errors.queries) {
-                errors.queries = Array(values.queries.length).fill(null);
-              }
+          if (groupByEnabled) {
+            values.queries.forEach((query, idx) => {
+              if (!query.field) {
+                if (!errors.queries) {
+                  errors.queries = Array(values.queries.length).fill(null);
+                }
 
-              (errors.queries as Array<{ field: string }>)[idx] = { field: 'Field is required.' };
-            }
-          });
+                (errors.queries as Array<{ field: string }>)[idx] = { field: 'Field is required.' };
+              }
+            });
+          }
 
           return errors;
         }}
