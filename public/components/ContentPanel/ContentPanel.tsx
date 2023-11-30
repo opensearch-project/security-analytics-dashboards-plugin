@@ -38,7 +38,7 @@ const renderSubTitleText = (subTitleText: string | JSX.Element): JSX.Element | n
   return subTitleText;
 };
 
-const ContentPanel: React.SFC<ContentPanelProps> = ({
+const ContentPanel = ({
   title = '',
   titleSize = 'm',
   subTitleText = '',
@@ -48,7 +48,7 @@ const ContentPanel: React.SFC<ContentPanelProps> = ({
   children,
   hideHeaderBorder = false,
   className = '',
-}) => (
+}: ContentPanelProps): JSX.Element => (
   <EuiPanel
     style={{ paddingLeft: '0px', paddingRight: '0px', ...panelStyles }}
     className={className}

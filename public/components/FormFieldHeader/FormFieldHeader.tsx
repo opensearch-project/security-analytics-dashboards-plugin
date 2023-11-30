@@ -14,13 +14,13 @@ export interface FormFieldHeaderProps {
   toolTipText?: string;
 }
 
-export const FormFieldHeader: React.FC<FormFieldHeaderProps> = ({
+export const FormFieldHeader = ({
   headerTitle = '',
   optionalField = false,
   toolTipIconType = 'questionInCircle',
   toolTipPosition = 'top',
   toolTipText = '',
-}) => {
+}: FormFieldHeaderProps): JSX.Element => {
   return (
     <EuiText size={'s'}>
       <strong>{headerTitle}</strong>
