@@ -110,14 +110,14 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
         rule.time_window > 86400000 ||
         rule.time_window < 60000
       ) {
-        return 'Invaid time window';
+        return 'Invalid time window.';
       }
 
       let error = '';
       const invalidQuery = rule.queries.some((query, index) => {
         const invalidIndex = !query.index;
         if (invalidIndex) {
-          error = `Invalid index for query ${index + 1}`;
+          error = `Invalid index for query ${index + 1}.`;
           return true;
         }
 
@@ -508,10 +508,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                           />
                         );
 
-                        const conditionToggleButtons = [
-                          { id: 'AND', label: 'AND' },
-                          // { id: 'OR', label: 'OR' },
-                        ];
+                        const conditionToggleButtons = [{ id: 'AND', label: 'AND' }];
                         const conditionButtonGroup = (
                           <EuiButtonGroup
                             legend=""
@@ -598,7 +595,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                       <EuiSpacer size="s" />
                       <EuiFormRow
                         label={<EuiText size={'s'}>Field</EuiText>}
-                        // isInvalid={!!(formikErrors.queries?.[queryIdx] as FormikErrors<CorrelationRuleQuery>)?.field}
                         isInvalid={isInvalidInputForQuery('field')}
                         error={
                           (formikErrors.queries?.[queryIdx] as FormikErrors<CorrelationRuleQuery>)
@@ -687,7 +683,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
             values.time_window > 86400000 ||
             values.time_window < 60000
           ) {
-            errors.time_window = 'Invaid time window.';
+            errors.time_window = 'Invalid time window.';
           }
 
           values.queries.forEach((query, idx) => {
