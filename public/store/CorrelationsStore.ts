@@ -273,12 +273,16 @@ export class CorrelationsStore implements ICorrelationsStore {
     );
 
     if (response?.ok) {
-      const correlatedFindings = response.response.findings.map((f) => {
-        return {
-          ...allFindings[f.finding],
-          correlationScore: f.score < 0.01 ? '0.01' : f.score.toFixed(2),
-        };
+      const correlatedFindings: CorrelationFinding[] = [];
+      response.response.findings.forEach((f) => {
+        if (allFindings[f.finding]) {
+          correlatedFindings.push({
+            ...allFindings[f.finding],
+            correlationScore: f.score < 0.01 ? '0.01' : f.score.toFixed(2),
+          });
+        }
       });
+
       return {
         finding: allFindings[finding],
         correlatedFindings,
