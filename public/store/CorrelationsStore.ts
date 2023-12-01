@@ -70,15 +70,27 @@ export class CorrelationsStore implements ICorrelationsStore {
     const response = await this.invalidateCache().service.createCorrelationRule({
       name: correlationRule.name,
       time_window: correlationRule.time_window,
-      correlate: correlationRule.queries?.map((query) => ({
-        index: query.index,
-        category: query.logType,
-        query: query.conditions
+      correlate: correlationRule.queries?.map((query) => {
+        const queryString = query.conditions
           .map((condition) => `${condition.name}:${condition.value}`)
           // TODO: for the phase one only AND condition is supported, add condition once the correlation engine support is implemented
-          .join(' AND '),
-        field: query.field,
-      })),
+          .join(' AND ');
+
+        const correlationInput: any = {
+          index: query.index,
+          category: query.logType,
+        };
+
+        if (queryString) {
+          correlationInput['query'] = queryString;
+        }
+
+        if (query.field) {
+          correlationInput['field'] = query.field;
+        }
+
+        return correlationInput;
+      }),
     });
 
     if (!response.ok) {
