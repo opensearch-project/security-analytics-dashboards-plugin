@@ -61,7 +61,7 @@ interface DetectionVisualEditorState {
 interface SelectionData {
   field: string;
   modifier?: string;
-  values: string[];
+  values: (string | number)[];
   selectedRadioId?: string;
 }
 
@@ -179,16 +179,36 @@ export class DetectionVisualEditor extends React.Component<
       const selectionDataEntries: SelectionData[] = [];
 
       if (Array.isArray(selectionMapJSON)) {
-        selectionDataEntries.push({
-          field: '',
-          modifier: 'all',
-          values: selectionMapJSON,
-          selectedRadioId: `${
-            selectionMapJSON.length <= 1
-              ? SelectionMapValueRadioId.VALUE
-              : SelectionMapValueRadioId.LIST
-          }-${selectionIdx}-0`,
-        });
+        if (selectionMapJSON.length > 0 && typeof selectionMapJSON[0] === 'object') {
+          selectionMapJSON.forEach((map) => {
+            Object.keys(map).forEach((fieldKey, dataIdx) => {
+              const [field, modifier] = fieldKey.split('|');
+              const val = map[fieldKey];
+              const values: any[] = Array.isArray(val) ? val : [val];
+              selectionDataEntries.push({
+                field,
+                modifier,
+                values,
+                selectedRadioId: `${
+                  values.length <= 1
+                    ? SelectionMapValueRadioId.VALUE
+                    : SelectionMapValueRadioId.LIST
+                }-${selectionIdx}-${dataIdx}`,
+              });
+            });
+          });
+        } else {
+          selectionDataEntries.push({
+            field: '',
+            modifier: 'all',
+            values: selectionMapJSON,
+            selectedRadioId: `${
+              selectionMapJSON.length <= 1
+                ? SelectionMapValueRadioId.VALUE
+                : SelectionMapValueRadioId.LIST
+            }-${selectionIdx}-0`,
+          });
+        }
       } else if (typeof selectionMapJSON === 'object') {
         Object.keys(selectionMapJSON).forEach((fieldKey, dataIdx) => {
           const [field, modifier] = fieldKey.split('|');
@@ -202,6 +222,13 @@ export class DetectionVisualEditor extends React.Component<
               values.length <= 1 ? SelectionMapValueRadioId.VALUE : SelectionMapValueRadioId.LIST
             }-${selectionIdx}-${dataIdx}`,
           });
+        });
+      } else if (typeof selectionMapJSON === 'string' || typeof selectionMapJSON === 'number') {
+        selectionDataEntries.push({
+          field: '',
+          modifier: 'all',
+          values: [selectionMapJSON],
+          selectedRadioId: `${SelectionMapValueRadioId.VALUE}-${selectionIdx}-0`,
         });
       }
 
