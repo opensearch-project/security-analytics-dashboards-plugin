@@ -275,7 +275,7 @@ export class DetectionVisualEditor extends React.Component<
           const fieldName = `field_${selIdx}_${idx}`;
           delete errors.fields[fieldName];
 
-          if (!validateDetectionFieldName(data.field)) {
+          if (data.field && !validateDetectionFieldName(data.field)) {
             errors.fields[fieldName] =
               'Invalid key name. Valid characters are a-z, A-Z, 0-9, hyphens, dots, and underscores';
           }
