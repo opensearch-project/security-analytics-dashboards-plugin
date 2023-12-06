@@ -14,10 +14,10 @@ export const LOG_TYPE_NAME_REGEX = new RegExp(/^[a-z0-9_-]{2,50}$/);
 
 // This regex pattern support MIN to MAX character limit, capital and lowercase letters,
 // numbers 0-9, hyphens, dot, and underscores.
-export const DETECTION_NAME_REGEX = new RegExp(/^[a-zA-Z0-9_.-]{5,50}$/);
+export const DETECTION_NAME_REGEX = new RegExp(/^[a-zA-Z0-9_.-]{1,50}$/);
 
 export const DETECTION_CONDITION_REGEX = new RegExp(
-  /^((not )?[a-zA-Z0-9_]+)?( (and|or|and not|or not|not) ?([a-zA-Z0-9_]+))*(?<!and|or|not)$/
+  /^((not )?.+)?( (and|or|and not|or not|not) ?(.+))*(?<!and|or|not)$/
 );
 
 // This regex pattern support MIN to MAX character limit, capital and lowercase letters,
