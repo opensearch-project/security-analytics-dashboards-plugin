@@ -61,7 +61,9 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
 ) => {
   const correlationStore = DataStore.correlations;
   const [indices, setIndices] = useState<CorrelationOptions[]>([]);
-  const [logFields, setLogFields] = useState<CorrelationOptions[]>([]);
+  const [logFieldsByIndex, setLogFieldsByIndex] = useState<{
+    [index: string]: CorrelationOptions[];
+  }>({});
   const validateCorrelationRule = useCallback((rule: CorrelationRuleModel) => {
     if (!rule.name) {
       return 'Invalid rule name';
@@ -121,6 +123,12 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
     }
   }, []);
 
+  useEffect(() => {
+    initialValues.queries.forEach(({ index }) => {
+      updateLogFieldsForIndex(index);
+    });
+  }, [initialValues]);
+
   const submit = async (values: any) => {
     let error;
     if ((error = validateCorrelationRule(values))) {
@@ -165,23 +173,39 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
 
   const getLogFields = useCallback(
     async (indexName: string) => {
+      let fields: {
+        label: string;
+        value: string;
+      }[] = [];
+
       if (indexName) {
         const result = await props.indexService.getIndexFields(indexName);
         if (result?.ok) {
-          let fields: {
-            label: string;
-            value: string;
-          }[] = result.response?.map((field) => ({
+          fields = result.response?.map((field) => ({
             label: field,
             value: field,
           }));
-
-          setLogFields(fields);
         }
+
+        return fields;
       }
+
+      return fields;
     },
-    [props.fieldMappingService?.getMappingsView]
+    [props.indexService.getIndexFields]
   );
+
+  const updateLogFieldsForIndex = (index: string) => {
+    if (!index) {
+      return;
+    }
+    getLogFields(index).then((fields) => {
+      setLogFieldsByIndex((prevState) => ({
+        ...prevState,
+        [index]: fields,
+      }));
+    });
+  };
 
   const createForm = (
     correlationQueries: CorrelationRuleQuery[],
@@ -192,6 +216,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
     return (
       <>
         {correlationQueries.map((query, queryIdx) => {
+          const fieldOptions = logFieldsByIndex[query.index] || [];
           const isInvalidInputForQuery = (field: 'logType' | 'index'): boolean => {
             return (
               !!touchedInputs.queries?.[queryIdx]?.[field] &&
@@ -252,7 +277,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                         props.handleChange(`queries[${queryIdx}].index`)(
                           e[0]?.value ? e[0].value : ''
                         );
-                        getLogFields(e[0]?.value ? e[0].value : '');
+                        updateLogFieldsForIndex(e[0]?.value || '');
                       }}
                       onBlur={props.handleBlur(`queries[${queryIdx}].index`)}
                       selectedOptions={
@@ -316,7 +341,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                         // isInvalid={isInvalidInputForQuery('logType')}
                         placeholder="Select a field"
                         data-test-subj={'field_dropdown'}
-                        options={logFields}
+                        options={fieldOptions}
                         singleSelection={{ asPlainText: true }}
                         onChange={(e) => {
                           props.handleChange(
