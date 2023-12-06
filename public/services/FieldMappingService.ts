@@ -43,6 +43,10 @@ export default class FieldMappingService {
       properties: {},
     };
     fieldMappings.forEach((mapping) => {
+      if (mapping.ruleFieldName === mapping.indexFieldName) {
+        return;
+      }
+
       alias_mappings.properties[mapping.ruleFieldName] = {
         type: 'alias',
         path: mapping.indexFieldName,
