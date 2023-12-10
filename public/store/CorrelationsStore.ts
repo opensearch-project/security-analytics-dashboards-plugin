@@ -107,14 +107,26 @@ export class CorrelationsStore implements ICorrelationsStore {
       {
         name: correlationRule.name,
         time_window: correlationRule.time_window,
-        correlate: correlationRule.queries?.map((query) => ({
-          index: query.index,
-          category: query.logType,
-          query: query.conditions
+        correlate: correlationRule.queries?.map((query) => {
+          const queryString = query.conditions
             .map((condition) => `${condition.name}:${condition.value}`)
-            .join(' AND '),
-          field: query.field,
-        })),
+            .join(' AND ');
+
+          const correlationInput: any = {
+            index: query.index,
+            category: query.logType,
+          };
+
+          if (queryString) {
+            correlationInput['query'] = queryString;
+          }
+
+          if (query.field) {
+            correlationInput['field'] = query.field;
+          }
+
+          return correlationInput;
+        }),
       }
     );
 
