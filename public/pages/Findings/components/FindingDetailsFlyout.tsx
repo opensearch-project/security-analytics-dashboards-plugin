@@ -307,6 +307,13 @@ export default class FindingDetailsFlyout extends Component<
     const docId = related_doc_ids[0];
     const matchedDocuments = documents.filter((doc) => doc.id === docId);
     const document = matchedDocuments.length > 0 ? matchedDocuments[0].document : '';
+    let formattedDocument = '';
+    try {
+      formattedDocument = document ? JSON.stringify(JSON.parse(document), null, 2) : '';
+    } catch {
+      // no-op
+    }
+
     const { indexPatternId } = this.state;
 
     return document ? (
@@ -368,7 +375,7 @@ export default class FindingDetailsFlyout extends Component<
             isCopyable
             data-test-subj={'finding-details-flyout-rule-document'}
           >
-            {JSON.stringify(JSON.parse(document), null, 2)}
+            {formattedDocument}
           </EuiCodeBlock>
         </EuiFormRow>
       </>
