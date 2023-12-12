@@ -31,6 +31,7 @@ import {
   EuiTabs,
   EuiTab,
   EuiLoadingContent,
+  EuiEmptyPrompt,
 } from '@elastic/eui';
 import {
   capitalizeFirstLetter,
@@ -308,7 +309,7 @@ export default class FindingDetailsFlyout extends Component<
     const document = matchedDocuments.length > 0 ? matchedDocuments[0].document : '';
     const { indexPatternId } = this.state;
 
-    return (
+    return document ? (
       <>
         <EuiFlexGroup justifyContent="spaceBetween">
           <EuiFlexItem>
@@ -370,6 +371,19 @@ export default class FindingDetailsFlyout extends Component<
             {JSON.stringify(JSON.parse(document), null, 2)}
           </EuiCodeBlock>
         </EuiFormRow>
+      </>
+    ) : (
+      <>
+        <EuiTitle size={'s'}>
+          <h3>Documents</h3>
+        </EuiTitle>
+        <EuiSpacer />
+        <EuiEmptyPrompt
+          iconType="alert"
+          iconColor="danger"
+          title={<h2>Document not found</h2>}
+          body={<p>The document that generated this finding could not be loaded.</p>}
+        />
       </>
     );
   }
