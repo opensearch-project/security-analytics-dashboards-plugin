@@ -86,8 +86,7 @@ export default class ConfigureFieldMapping extends Component<
 
   componentDidUpdate(
     prevProps: Readonly<ConfigureFieldMappingProps>,
-    prevState: Readonly<ConfigureFieldMappingState>,
-    snapshot?: any
+    prevState: Readonly<ConfigureFieldMappingState>
   ) {
     if (prevProps.detector !== this.props.detector) {
       this.setState(
@@ -124,6 +123,10 @@ export default class ConfigureFieldMapping extends Component<
 
     Object.keys(mappingsData.properties).forEach((ruleFieldName) => {
       mappedRuleFields.unshift(ruleFieldName);
+
+      if (mappingsData.properties[ruleFieldName].path) {
+        logFields.add(mappingsData.properties[ruleFieldName].path);
+      }
 
       // Need this check to avoid adding undefined value
       // When user removes existing mapping for default mapped values, the mapping will be undefined
