@@ -1,6 +1,6 @@
 {
   "name": "opensearch_security_analytics_dashboards",
-  "version": "2.11.0.0",
+  "version": "2.12.0.0",
   "description": "OpenSearch Dashboards plugin for Security Analytics",
   "main": "index.js",
   "license": "Apache-2.0",
@@ -57,6 +57,8 @@
     "@cypress/request": "^3.0.0"
   },
   "devDependencies": {
+    "@babel/plugin-transform-class-properties": "^7.22.9",
+    "@babel/plugin-transform-object-rest-spread": "^7.22.9",
     "@elastic/elastic-eslint-config-kibana": "link:../../packages/opensearch-eslint-config-opensearch-dashboards",
     "@elastic/eslint-import-resolver-kibana": "link:../../packages/osd-eslint-import-resolver-opensearch-dashboards",
     "@testing-library/dom": "^8.11.3",
