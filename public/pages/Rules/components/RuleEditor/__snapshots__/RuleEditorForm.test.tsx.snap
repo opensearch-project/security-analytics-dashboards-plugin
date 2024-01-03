@@ -902,7 +902,8 @@ Object {
                     class="euiSpacer euiSpacer--m"
                   />
                   <button
-                    class="euiButton euiButton--primary"
+                    class="euiButton euiButton--primary euiButton-isDisabled"
+                    disabled=""
                     style="width: 70%;"
                     type="button"
                   >
@@ -988,44 +989,114 @@ Object {
                   class="euiFormRow__fieldWrapper"
                 >
                   <div
-                    class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--directionRow euiFlexGroup--responsive"
+                    class="euiCodeEditorWrapper"
                     data-test-subj="rule_detection_field"
+                    style="width: 600px; height: 50px;"
                   >
-                    <div
-                      class="euiFlexItem euiFlexItem--flexGrowZero"
+                    <button
+                      class="euiCodeEditorKeyboardHint"
+                      data-test-subj="codeEditorHint"
+                      id="some_html_id"
                     >
+                      <p
+                        class="euiText"
+                      >
+                        Press Enter to start editing.
+                      </p>
+                      <p
+                        class="euiText"
+                      >
+                        When you're done, press Escape to stop editing.
+                      </p>
+                    </button>
+                    <div
+                      class=" ace_editor ace-tm"
+                      id="some_html_id"
+                      style="width: 600px; height: 50px;"
+                    >
+                      <textarea
+                        autocapitalize="off"
+                        autocorrect="off"
+                        class="ace_text-input"
+                        spellcheck="false"
+                        style="opacity: 0;"
+                        tabindex="-1"
+                        wrap="off"
+                      />
                       <div
-                        class="euiPopover euiPopover--anchorRightDown"
-                        id="selections_default"
+                        aria-hidden="true"
+                        class="ace_gutter"
                       >
                         <div
-                          class="euiPopover__anchor"
+                          class="ace_layer ace_gutter-layer ace_folding-enabled"
+                        />
+                        <div
+                          class="ace_gutter-active-line"
+                        />
+                      </div>
+                      <div
+                        class="ace_scroller"
+                      >
+                        <div
+                          class="ace_content"
                         >
-                          <span
-                            class="euiExpression euiExpression--success"
+                          <div
+                            class="ace_layer ace_print-margin-layer"
                           >
-                            <span
-                              class="euiExpression__description"
-                            >
-                              Select
-                            </span>
-                             
-                            
-                          </span>
+                            <div
+                              class="ace_print-margin"
+                              style="left: 4px; visibility: visible;"
+                            />
+                          </div>
+                          <div
+                            class="ace_layer ace_marker-layer"
+                          />
+                          <div
+                            class="ace_layer ace_text-layer"
+                            style="padding: 0px 4px;"
+                          />
+                          <div
+                            class="ace_layer ace_marker-layer"
+                          />
+                          <div
+                            class="ace_layer ace_cursor-layer ace_hidden-cursors"
+                          >
+                            <div
+                              class="ace_cursor"
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div
-                      class="euiFlexItem euiFlexItem--flexGrowZero"
-                    >
-                      <button
-                        aria-label="Add one more condition"
-                        class="euiButtonIcon euiButtonIcon--primary euiButtonIcon--empty euiButtonIcon--xSmall"
-                        data-test-subj="condition-add-selection-btn"
-                        type="button"
+                      <div
+                        class="ace_scrollbar ace_scrollbar-v"
+                        style="display: none; width: 20px;"
                       >
-                        EuiIconMock
-                      </button>
+                        <div
+                          class="ace_scrollbar-inner"
+                          style="width: 20px;"
+                        />
+                      </div>
+                      <div
+                        class="ace_scrollbar ace_scrollbar-h"
+                        style="display: none; height: 20px;"
+                      >
+                        <div
+                          class="ace_scrollbar-inner"
+                          style="height: 20px;"
+                        />
+                      </div>
+                      <div
+                        style="height: auto; width: auto; top: 0px; left: 0px; visibility: hidden; position: absolute; white-space: pre; overflow: hidden;"
+                      >
+                        <div
+                          style="height: auto; width: auto; top: 0px; left: 0px; visibility: hidden; position: absolute; white-space: pre; overflow: visible;"
+                        />
+                        <div
+                          style="height: auto; width: auto; top: 0px; left: 0px; visibility: hidden; position: absolute; white-space: pre; overflow: visible;"
+                        >
+                          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -2285,7 +2356,8 @@ Object {
                   class="euiSpacer euiSpacer--m"
                 />
                 <button
-                  class="euiButton euiButton--primary"
+                  class="euiButton euiButton--primary euiButton-isDisabled"
+                  disabled=""
                   style="width: 70%;"
                   type="button"
                 >
@@ -2371,44 +2443,114 @@ Object {
                 class="euiFormRow__fieldWrapper"
               >
                 <div
-                  class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--directionRow euiFlexGroup--responsive"
+                  class="euiCodeEditorWrapper"
                   data-test-subj="rule_detection_field"
+                  style="width: 600px; height: 50px;"
                 >
-                  <div
-                    class="euiFlexItem euiFlexItem--flexGrowZero"
+                  <button
+                    class="euiCodeEditorKeyboardHint"
+                    data-test-subj="codeEditorHint"
+                    id="some_html_id"
                   >
+                    <p
+                      class="euiText"
+                    >
+                      Press Enter to start editing.
+                    </p>
+                    <p
+                      class="euiText"
+                    >
+                      When you're done, press Escape to stop editing.
+                    </p>
+                  </button>
+                  <div
+                    class=" ace_editor ace-tm"
+                    id="some_html_id"
+                    style="width: 600px; height: 50px;"
+                  >
+                    <textarea
+                      autocapitalize="off"
+                      autocorrect="off"
+                      class="ace_text-input"
+                      spellcheck="false"
+                      style="opacity: 0;"
+                      tabindex="-1"
+                      wrap="off"
+                    />
                     <div
-                      class="euiPopover euiPopover--anchorRightDown"
-                      id="selections_default"
+                      aria-hidden="true"
+                      class="ace_gutter"
                     >
                       <div
-                        class="euiPopover__anchor"
+                        class="ace_layer ace_gutter-layer ace_folding-enabled"
+                      />
+                      <div
+                        class="ace_gutter-active-line"
+                      />
+                    </div>
+                    <div
+                      class="ace_scroller"
+                    >
+                      <div
+                        class="ace_content"
                       >
-                        <span
-                          class="euiExpression euiExpression--success"
+                        <div
+                          class="ace_layer ace_print-margin-layer"
                         >
-                          <span
-                            class="euiExpression__description"
-                          >
-                            Select
-                          </span>
-                           
-                          
-                        </span>
+                          <div
+                            class="ace_print-margin"
+                            style="left: 4px; visibility: visible;"
+                          />
+                        </div>
+                        <div
+                          class="ace_layer ace_marker-layer"
+                        />
+                        <div
+                          class="ace_layer ace_text-layer"
+                          style="padding: 0px 4px;"
+                        />
+                        <div
+                          class="ace_layer ace_marker-layer"
+                        />
+                        <div
+                          class="ace_layer ace_cursor-layer ace_hidden-cursors"
+                        >
+                          <div
+                            class="ace_cursor"
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div
-                    class="euiFlexItem euiFlexItem--flexGrowZero"
-                  >
-                    <button
-                      aria-label="Add one more condition"
-                      class="euiButtonIcon euiButtonIcon--primary euiButtonIcon--empty euiButtonIcon--xSmall"
-                      data-test-subj="condition-add-selection-btn"
-                      type="button"
+                    <div
+                      class="ace_scrollbar ace_scrollbar-v"
+                      style="display: none; width: 20px;"
                     >
-                      EuiIconMock
-                    </button>
+                      <div
+                        class="ace_scrollbar-inner"
+                        style="width: 20px;"
+                      />
+                    </div>
+                    <div
+                      class="ace_scrollbar ace_scrollbar-h"
+                      style="display: none; height: 20px;"
+                    >
+                      <div
+                        class="ace_scrollbar-inner"
+                        style="height: 20px;"
+                      />
+                    </div>
+                    <div
+                      style="height: auto; width: auto; top: 0px; left: 0px; visibility: hidden; position: absolute; white-space: pre; overflow: hidden;"
+                    >
+                      <div
+                        style="height: auto; width: auto; top: 0px; left: 0px; visibility: hidden; position: absolute; white-space: pre; overflow: visible;"
+                      />
+                      <div
+                        style="height: auto; width: auto; top: 0px; left: 0px; visibility: hidden; position: absolute; white-space: pre; overflow: visible;"
+                      >
+                        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
