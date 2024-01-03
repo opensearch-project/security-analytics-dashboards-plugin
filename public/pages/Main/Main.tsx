@@ -21,7 +21,7 @@ import { Toast } from '@opensearch-project/oui/src/eui_components/toast/global_t
 import { CoreStart } from 'opensearch-dashboards/public';
 import { ServicesConsumer } from '../../services';
 import { BrowserServices } from '../../models/interfaces';
-import { DEFAULT_DATE_RANGE, ROUTES } from '../../utils/constants';
+import { DEFAULT_DATE_RANGE, DATE_TIME_FILTER_KEY, ROUTES } from '../../utils/constants';
 import { CoreServicesConsumer } from '../../components/core_services';
 import Findings from '../Findings';
 import Detectors from '../Detectors';
@@ -104,13 +104,17 @@ const navItemIndexByRoute: { [route: string]: number } = {
 export default class Main extends Component<MainProps, MainState> {
   constructor(props: MainProps) {
     super(props);
+    const cachedDateTimeFilter = localStorage?.getItem(DATE_TIME_FILTER_KEY);
+    const defaultDateTimeFilter = cachedDateTimeFilter
+      ? JSON.parse(cachedDateTimeFilter)
+      : {
+          startTime: DEFAULT_DATE_RANGE.start,
+          endTime: DEFAULT_DATE_RANGE.end,
+        };
     this.state = {
       getStartedDismissedOnce: false,
       selectedNavItemId: 1,
-      dateTimeFilter: {
-        startTime: DEFAULT_DATE_RANGE.start,
-        endTime: DEFAULT_DATE_RANGE.end,
-      },
+      dateTimeFilter: defaultDateTimeFilter,
       findingFlyout: null,
     };
 
@@ -154,8 +158,9 @@ export default class Main extends Component<MainProps, MainState> {
 
   setDateTimeFilter = (dateTimeFilter: DateTimeFilter) => {
     this.setState({
-      dateTimeFilter: dateTimeFilter,
+      dateTimeFilter,
     });
+    localStorage?.setItem(DATE_TIME_FILTER_KEY, JSON.stringify(dateTimeFilter));
   };
 
   /**
