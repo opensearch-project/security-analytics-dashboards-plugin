@@ -14,6 +14,8 @@ import {
   EuiHorizontalRule,
   EuiToolTip,
   EuiDescriptionList,
+  EuiText,
+  EuiIcon,
 } from '@elastic/eui';
 import { getSeverityLabel, getSeverityColor, getLabelFromLogType } from '../utils/constants';
 import { DataStore } from '../../../store/DataStore';
@@ -50,12 +52,12 @@ export const FindingCard: React.FC<FindingCardProps> = ({
 
   if (finding.correlationRule) {
     list.unshift({
-      title: 'Correlation score',
+      title: 'Correlation rule',
       description: finding.correlationRule.name,
     });
   }
 
-  const badgePadding = '2px 7px';
+  const badgePadding = '2px 5px';
   const { text: severityText, background } = getSeverityColor(detectionRule.severity);
 
   const header = (
@@ -65,7 +67,7 @@ export const FindingCard: React.FC<FindingCardProps> = ({
           <EuiBadge color={background} style={{ padding: badgePadding, color: severityText }}>
             {getSeverityLabel(detectionRule.severity)}
           </EuiBadge>
-          <EuiBadge color="hollow" style={{ padding: '3px 10px' }}>
+          <EuiBadge color="hollow" style={{ padding: '2px 7px' }}>
             {getLabelFromLogType(logType)}
           </EuiBadge>
         </div>
@@ -90,7 +92,9 @@ export const FindingCard: React.FC<FindingCardProps> = ({
     </EuiFlexGroup>
   );
 
-  const attrList = <EuiDescriptionList type="column" textStyle="reverse" listItems={list} />;
+  const attrList = (
+    <EuiDescriptionList type="column" textStyle="reverse" listItems={list} compressed />
+  );
 
   const relatedFindingCard = (
     <EuiPanel>
@@ -98,13 +102,23 @@ export const FindingCard: React.FC<FindingCardProps> = ({
       <EuiSpacer size="s" />
       <EuiFlexGroup justifyContent="spaceBetween" gutterSize="xs" alignItems="center">
         <EuiFlexItem grow={false}>
-          <p>Correlation score</p>
+          <EuiText size="s">
+            Correlation score{' '}
+            <EuiToolTip
+              content={`The score (0-1) is based on the proximity of relevant findings in the threat scenario defined by the 
+            correlation rule. The greater the score, the stronger the correlation.`}
+            >
+              <EuiIcon type={'iInCircle'} />
+            </EuiToolTip>
+          </EuiText>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <b>{correlationData?.score}</b>
+          <EuiText size="s">{correlationData?.score}</EuiText>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <span>{timestamp}</span>
+          <EuiText size="s" color="subdued">
+            {timestamp}
+          </EuiText>
         </EuiFlexItem>
       </EuiFlexGroup>
       <EuiHorizontalRule margin="s" />
