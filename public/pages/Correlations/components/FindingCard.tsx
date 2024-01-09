@@ -45,19 +45,19 @@ export const FindingCard: React.FC<FindingCardProps> = ({
 }) => {
   const list = [
     {
-      title: 'Detection rule',
-      description: detectionRule.name,
+      title: <b>Detection rule</b>,
+      description: <EuiText size="s">{detectionRule.name}</EuiText>,
     },
   ];
 
   if (finding.correlationRule) {
     list.unshift({
-      title: 'Correlation rule',
-      description: finding.correlationRule.name,
+      title: <b>Correlation rule</b>,
+      description: <EuiText size="s">{finding.correlationRule.name}</EuiText>,
     });
   }
 
-  const badgePadding = '2px 5px';
+  const badgePadding = '0px 4px';
   const { text: severityText, background } = getSeverityColor(detectionRule.severity);
 
   const header = (
@@ -67,7 +67,7 @@ export const FindingCard: React.FC<FindingCardProps> = ({
           <EuiBadge color={background} style={{ padding: badgePadding, color: severityText }}>
             {getSeverityLabel(detectionRule.severity)}
           </EuiBadge>
-          <EuiBadge color="hollow" style={{ padding: '2px 7px' }}>
+          <EuiBadge color="hollow" style={{ padding: '0px 4px' }}>
             {getLabelFromLogType(logType)}
           </EuiBadge>
         </div>
@@ -108,12 +108,14 @@ export const FindingCard: React.FC<FindingCardProps> = ({
               content={`The score (0-1) is based on the proximity of relevant findings in the threat scenario defined by the 
             correlation rule. The greater the score, the stronger the correlation.`}
             >
-              <EuiIcon type={'iInCircle'} />
+              <EuiIcon type={'iInCircle'} color="primary" />
             </EuiToolTip>
           </EuiText>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiText size="s">{correlationData?.score}</EuiText>
+          <EuiText size="s">
+            <b>{correlationData?.score}</b>
+          </EuiText>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
           <EuiText size="s" color="subdued">
