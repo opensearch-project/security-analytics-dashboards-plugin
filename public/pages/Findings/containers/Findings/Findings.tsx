@@ -29,6 +29,7 @@ import {
 import {
   BREADCRUMBS,
   DEFAULT_DATE_RANGE,
+  DEFAULT_EMPTY_DATA,
   MAX_RECENTLY_USED_TIME_RANGES,
   OS_NOTIFICATION_PLUGIN,
 } from '../../../../utils/constants';
@@ -157,44 +158,57 @@ class Findings extends Component<FindingsProps, FindingsState> {
     this.setState({ loading: true });
     const { findingsService, detectorService, notifications } = this.props;
     try {
-      const detectorsRes = await detectorService.getDetectors();
-      if (detectorsRes.ok) {
-        const detectors = detectorsRes.response.hits.hits;
+      // Get all the Findings logic
+      const findingRes = await findingsService.getFindings();
+
+      if (findingRes.ok) {
         const ruleIds = new Set<string>();
         let findings: FindingItemType[] = [];
 
-        const detectorId = this.props.match.params['detectorId'];
-        for (let detector of detectors) {
-          if (!detectorId || detector._id === detectorId) {
-            const findingRes = await findingsService.getFindings({ detectorId: detector._id });
+        // Assuming getDetectors returns an array of detectors
+        const detectorsRes = await detectorService.getDetectors();
+        if (detectorsRes.ok) {
+          const detectors = detectorsRes.response.hits.hits;
+          const detectorInfoMap = new Map();
 
-            if (findingRes.ok) {
-              const detectorFindings: FindingItemType[] = findingRes.response.findings.map(
-                (finding) => {
-                  finding.queries.forEach((rule) => ruleIds.add(rule.id));
-                  return {
-                    ...finding,
-                    detectorName: detector._source.name,
-                    logType: detector._source.detector_type,
-                    detector: detector,
-                  };
-                }
-              );
-              findings = findings.concat(detectorFindings);
-            } else {
-              errorNotificationToast(notifications, 'retrieve', 'findings', findingRes.error);
+          detectors.forEach((detector) => {
+            detectorInfoMap.set(detector._id, {
+              logType: detector._source.detector_type,
+              name: detector._source.name,
+              detector: detector,
+            });
+          });
+          const detectorFindingsPromises = findingRes.response.findings.map((finding) => {
+            try {
+              // Use detectorInfoMap to get detector information
+              const detectorInfo = detectorInfoMap.get(finding.detectorId);
+              finding.queries.forEach((rule) => ruleIds.add(rule.id));
+              return {
+                ...finding,
+                detectorName: detectorInfo ? detectorInfo.name : DEFAULT_EMPTY_DATA,
+                logType: detectorInfo ? detectorInfo.logType : DEFAULT_EMPTY_DATA,
+                detector: detectorInfo.detector, // If needed, replace with actual detector information
+              };
+            } catch (error) {
+              console.error('Error while fetching detector information:', error);
+              errorNotificationToast(notifications, 'retrieve', 'findings', error);
+              return null;
             }
-          }
+          });
+
+          const detectorFindings = await Promise.all(detectorFindingsPromises);
+          findings = findings.concat(detectorFindings.filter(Boolean));
+          // Set the state after all asynchronous operations are completed
+          await this.getRules(Array.from(ruleIds));
+          this.setState({ findings });
+        } else {
+          errorNotificationToast(notifications, 'retrieve', 'findings', detectorsRes.error);
         }
-
-        await this.getRules(Array.from(ruleIds));
-
-        this.setState({ findings, detectors: detectors.map((detector) => detector._source) });
       } else {
-        errorNotificationToast(notifications, 'retrieve', 'findings', detectorsRes.error);
+        errorNotificationToast(notifications, 'retrieve', 'findings', findingRes.error);
       }
-    } catch (e) {
-      errorNotificationToast(notifications, 'retrieve', 'findings', e);
+    } catch (error) {
+      errorNotificationToast(notifications, 'retrieve', 'findings', error);
     }
     this.setState({ loading: false });
   };
@@ -208,7 +222,6 @@ class Findings extends Component<FindingsProps, FindingsState> {
 
       const allRules: { [id: string]: RuleSource } = {};
       rules.forEach((hit) => (allRules[hit._id] = hit._source));
-
       this.setState({ rules: allRules });
     } catch (e) {
       errorNotificationToast(notifications, 'retrieve', 'rules', e);
@@ -264,7 +277,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
       visData.push({
         finding: 1,
         time: findingTime.getTime(),
-        logType: finding.detector._source.detector_type,
+        logType: finding.logType,
         ruleSeverity:
           ruleLevel === 'critical' ? ruleLevel : (finding as any)['ruleSeverity'] || ruleLevel,
       });

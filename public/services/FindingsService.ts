@@ -16,12 +16,13 @@ export default class FindingsService {
   }
 
   getFindings = async (
-    detectorParams: GetFindingsParams
+    detectorParams: GetFindingsParams = {}
   ): Promise<ServerResponse<GetFindingsResponse>> => {
     const { detectorType, detectorId } = detectorParams;
-    let query: GetFindingsParams | {} = {
+    let query: GetFindingsParams = {
       sortOrder: 'desc',
       size: 10000,
+      ...detectorParams, // Include other properties from detectorParams
     };
 
     if (detectorId) {
@@ -35,7 +36,6 @@ export default class FindingsService {
         detectorType,
       };
     }
-
     return await this.httpClient.get(`..${API.GET_FINDINGS}`, { query });
   };
 }

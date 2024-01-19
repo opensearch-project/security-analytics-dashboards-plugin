@@ -38,28 +38,11 @@ export default class FindingsService {
         sortOrder,
         size,
       };
-      let params: GetFindingsParams;
-
-      if (detectorId) {
-        params = {
-          ...defaultParams,
-          detectorId,
-        };
-      } else if (detectorType) {
-        params = {
-          ...defaultParams,
-          detectorType,
-        };
-      } else {
-        throw Error(`Invalid request params: detectorId or detectorType must be specified`);
-      }
-
       const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
       const getFindingsResponse: GetFindingsResponse = await callWithRequest(
         CLIENT_DETECTOR_METHODS.GET_FINDINGS,
-        params
+        defaultParams
       );
-
       getFindingsResponse.findings.forEach((finding: any) => {
         const types: string[] = [];
         if (!finding.queries.every((query: any) => query.id.startsWith('threat_intel_'))) {
@@ -69,7 +52,6 @@ export default class FindingsService {
           types.push('Threat intelligence');
           finding['ruleSeverity'] = 'high';
         }
-
         finding['detectionType'] = types.join(', ');
       });
 

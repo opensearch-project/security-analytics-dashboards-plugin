@@ -77,36 +77,33 @@ export class OverviewViewModelActor {
     const ruleIds = new Set<string>();
 
     try {
-      for (let id of detectorIds) {
-        const findingRes = await this.services?.findingsService.getFindings({ detectorId: id });
-
-        if (findingRes?.ok) {
-          const logType = detectorInfo.get(id)?.logType;
-          const detectorName = detectorInfo.get(id)?.name || '';
-          const detectorFindings: any[] = findingRes.response.findings.map((finding) => {
-            const ruleQueries = finding.queries.filter(({ id }) => !isThreatIntelQuery(id));
-            const ids = ruleQueries.map((query) => query.id);
-            ids.forEach((id) => ruleIds.add(id));
-
-            const findingTime = new Date(finding.timestamp);
-            findingTime.setMilliseconds(0);
-            findingTime.setSeconds(0);
-            return {
-              detector: detectorName,
-              findingName: finding.id,
-              id: finding.id,
-              time: findingTime,
-              logType: logType || '',
-              ruleId: ruleQueries[0]?.id || finding.queries[0].id,
-              ruleName: '',
-              ruleSeverity: '',
-              isThreatIntelOnlyFinding: finding.detectionType === 'Threat intelligence',
-            };
-          });
-          findingItems = findingItems.concat(detectorFindings);
-        } else {
-          errorNotificationToast(this.notifications, 'retrieve', 'findings', findingRes?.error);
-        }
+      const findingRes = await this.services?.findingsService.getFindings();
+      if (findingRes?.ok) {
+        const detectorFindings: any[] = findingRes.response.findings.map((finding) => {
+          const detectorId = finding.detectorId;
+          const logType = detectorInfo.get(detectorId)?.logType;
+          const detectorName = detectorInfo.get(detectorId)?.name || '';
+          const ruleQueries = finding.queries.filter(({ id }) => !isThreatIntelQuery(id));
+          const ids = ruleQueries.map((query) => query.id);
+          ids.forEach((id) => ruleIds.add(id));
+          const findingTime = new Date(finding.timestamp);
+          findingTime.setMilliseconds(0);
+          findingTime.setSeconds(0);
+          return {
+            detector: detectorName,
+            findingName: finding.id,
+            id: finding.id,
+            time: findingTime,
+            logType: logType || '',
+            ruleId: ruleQueries[0]?.id || finding.queries[0].id,
+            ruleName: '',
+            ruleSeverity: '',
+            isThreatIntelOnlyFinding: finding.detectionType === 'Threat intelligence',
+          };
+        });
+        findingItems = findingItems.concat(detectorFindings);
+      } else {
+        errorNotificationToast(this.notifications, 'retrieve', 'findings', findingRes?.error);
       }
     } catch (e: any) {
       errorNotificationToast(this.notifications, 'retrieve', 'findings', e);

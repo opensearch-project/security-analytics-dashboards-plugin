@@ -33,15 +33,10 @@ export interface FindingDocument {
 /**
  * API interfaces
  */
-export type GetFindingsParams =
-  | {
-      detectorId: string;
-      detectorType?: string;
-    }
-  | {
-      detectorType: string;
-      detectorId?: string;
-    };
+export type GetFindingsParams = {
+  detectorId?: string;
+  detectorType?: string;
+};
 
 export interface GetFindingsResponse {
   total_findings: number;
