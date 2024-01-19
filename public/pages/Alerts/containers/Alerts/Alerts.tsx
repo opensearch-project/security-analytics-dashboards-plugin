@@ -18,6 +18,12 @@ import {
   EuiTitle,
   EuiToolTip,
   EuiEmptyPrompt,
+  EuiModal,
+  EuiModalHeader,
+  EuiModalHeaderTitle,
+  EuiModalBody,
+  EuiModalFooter,
+  EuiIcon,
 } from '@elastic/eui';
 import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
 import dateMath from '@elastic/datemath';
@@ -84,6 +90,7 @@ export interface AlertsState {
   timeUnit: TimeUnit;
   dateFormat: string;
   widgetEmptyMessage: React.ReactNode | undefined;
+  isModalVisible: boolean;
 }
 
 const groupByOptions = [
@@ -116,6 +123,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       timeUnit: timeUnits.timeUnit,
       dateFormat: timeUnits.dateFormat,
       widgetEmptyMessage: undefined,
+      isModalVisible: false,
     };
   }
 
@@ -199,7 +207,39 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         name: 'Status',
         sortable: true,
         dataType: 'string',
-        render: (status) => (status ? capitalizeFirstLetter(status) : DEFAULT_EMPTY_DATA),
+        render: (status, alertItem) => {
+          if (status === 'ERROR') {
+            const isModalVisible = this.state.isModalVisible;
+            return (
+              <React.Fragment>
+                <EuiLink onClick={() => this.setState({ isModalVisible: true })}>
+                  {capitalizeFirstLetter(status)}
+                </EuiLink>
+
+                {isModalVisible && (
+                  <EuiModal onClose={() => this.setState({ isModalVisible: false })}>
+                    <EuiModalHeader>
+                      <EuiModalHeaderTitle>{capitalizeFirstLetter(status)}</EuiModalHeaderTitle>
+                    </EuiModalHeader>
+
+                    <EuiModalBody>
+                      <EuiIcon type="alert" size="l" />
+                      <p>{alertItem.error_message || ''}</p>
+                    </EuiModalBody>
+
+                    <EuiModalFooter>
+                      <EuiButton onClick={() => this.setState({ isModalVisible: false })}>
+                        Close
+                      </EuiButton>
+                    </EuiModalFooter>
+                  </EuiModal>
+                )}
+              </React.Fragment>
+            );
+          } else {
+            return <span>{status}</span>;
+          }
+        },
       },
       {
         field: 'severity',

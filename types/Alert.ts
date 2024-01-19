@@ -67,6 +67,7 @@ export interface AlertItem {
   trigger_name: string;
   detector_id: string;
   state: string;
+  error_message: string | null;
   severity: string;
   finding_ids: string[];
   last_notification_time: string;
