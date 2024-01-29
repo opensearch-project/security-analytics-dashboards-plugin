@@ -242,7 +242,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
     };
 
     if (fieldMappings?.length) {
-      const createMappingsResponse = await services?.fieldMappingService?.createMappings(
+      const createMappingsResponse = await saContext?.services.fieldMappingService?.createMappings(
         detector.inputs[0].detector_input.indices[0],
         detector.detector_type.toLowerCase(),
         fieldMappings
@@ -284,9 +284,9 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
           isEdit={true}
           detector_type={detector.detector_type}
           notifications={props.notifications}
-          indexService={services?.indexService as IndexService}
+          indexService={saContext?.services?.indexService as IndexService}
           detectorIndices={inputs[0].detector_input.indices}
-          fieldMappingService={services?.fieldMappingService as FieldMappingService}
+          fieldMappingService={saContext?.services?.fieldMappingService as FieldMappingService}
           onDetectorInputIndicesChange={onDetectorInputIndicesChange}
         />
         <EuiSpacer size={'l'} />
@@ -306,7 +306,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
             <ReviewFieldMappings
               {...props}
               detector={detector}
-              fieldMappingService={services?.fieldMappingService}
+              fieldMappingService={saContext?.services.fieldMappingService}
               onFieldMappingChange={onFieldMappingChange}
             />
             <EuiSpacer size="l" />

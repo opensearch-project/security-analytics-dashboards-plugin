@@ -11,11 +11,15 @@ import { ModalConsumer, ModalProvider } from './Modal';
 import { SecurityAnalyticsContext, SaContextConsumer } from '../../services';
 import services from '../../../test/mocks/services';
 import { MetricsContext } from '../../metrics/MetricsContext';
+import MetricsService from '../../services/MetricsService';
+import httpClientMock from '../../../test/mocks/services/httpClient.mock';
 
 describe('<ModalRoot /> spec', () => {
   it('renders nothing when not used', () => {
     const { container } = render(
-      <SecurityAnalyticsContext.Provider value={{ services, metrics: new MetricsContext() }}>
+      <SecurityAnalyticsContext.Provider
+        value={{ services, metrics: new MetricsContext(new MetricsService(httpClientMock)) }}
+      >
         <ModalProvider>
           <SaContextConsumer>
             {(context) => context?.services && <ModalRoot services={context?.services} />}
@@ -35,7 +39,9 @@ describe('<ModalRoot /> spec', () => {
     );
     const { queryByText, getByTestId, getByLabelText } = render(
       <div>
-        <SecurityAnalyticsContext.Provider value={services}>
+        <SecurityAnalyticsContext.Provider
+          value={{ services, metrics: new MetricsContext(new MetricsService(httpClientMock)) }}
+        >
           <ModalProvider>
             <SaContextConsumer>
               {(context) => context?.services && <ModalRoot services={context.services} />}
