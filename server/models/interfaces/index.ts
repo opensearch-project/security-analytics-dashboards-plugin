@@ -14,6 +14,7 @@ import {
 } from '../../services';
 import AlertService from '../../services/AlertService';
 import { LogTypeService } from '../../services/LogTypeService';
+import MetricsService from '../../services/MetricsService';
 import RulesService from '../../services/RuleService';
 
 export interface SecurityAnalyticsApi {
@@ -35,6 +36,7 @@ export interface SecurityAnalyticsApi {
   readonly UPDATE_ALIASES: string;
   readonly CORRELATIONS: string;
   readonly LOGTYPE_BASE: string;
+  readonly METRICS: string;
 }
 
 export interface NodeServices {
@@ -48,6 +50,7 @@ export interface NodeServices {
   rulesService: RulesService;
   notificationsService: NotificationsService;
   logTypeService: LogTypeService;
+  metricsService: MetricsService;
 }
 
 export interface GetIndicesResponse {

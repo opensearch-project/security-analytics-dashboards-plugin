@@ -7,7 +7,7 @@ import { ContentPanel } from '../../../../components/ContentPanel';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { EuiBasicTableColumn, EuiButton, EuiInMemoryTable } from '@elastic/eui';
 import { FieldMappingsTableItem } from '../../../CreateDetector/models/interfaces';
-import { ServicesContext } from '../../../../services';
+import { SecurityAnalyticsContext } from '../../../../services';
 import { FieldMapping } from '../../../../../models/interfaces';
 import { errorNotificationToast } from '../../../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
@@ -53,11 +53,11 @@ export const FieldMappingsView: React.FC<FieldMappingsViewProps> = ({
     []
   );
   const [fieldMappingItems, setFieldMappingItems] = useState<FieldMappingsTableItem[]>([]);
-  const services = useContext(ServicesContext);
+  const saContext = useContext(SecurityAnalyticsContext);
 
   const fetchFieldMappings = useCallback(
     async (indexName: string) => {
-      const getMappingRes = await services?.fieldMappingService.getMappings(indexName);
+      const getMappingRes = await saContext?.services.fieldMappingService.getMappings(indexName);
       if (getMappingRes?.ok) {
         const mappingsData = getMappingRes.response[indexName];
         if (mappingsData) {
@@ -73,7 +73,7 @@ export const FieldMappingsView: React.FC<FieldMappingsViewProps> = ({
         errorNotificationToast(notifications, 'retrieve', 'field mappings', getMappingRes?.error);
       }
     },
-    [services, detector]
+    [saContext?.services, detector]
   );
 
   useEffect(() => {

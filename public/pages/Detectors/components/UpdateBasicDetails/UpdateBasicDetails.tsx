@@ -17,7 +17,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import DetectorBasicDetailsForm from '../../../CreateDetector/components/DefineDetector/components/DetectorDetails';
 import DetectorDataSource from '../../../CreateDetector/components/DefineDetector/components/DetectorDataSource';
-import { FieldMappingService, IndexService, ServicesContext } from '../../../../services';
+import { FieldMappingService, IndexService, SecurityAnalyticsContext } from '../../../../services';
 import { DetectorSchedule } from '../../../CreateDetector/components/DefineDetector/components/DetectorSchedule/DetectorSchedule';
 import { useCallback } from 'react';
 import { DetectorHit, SearchDetectorsResponse } from '../../../../../server/models/interfaces';
@@ -36,7 +36,7 @@ export interface UpdateDetectorBasicDetailsProps
 }
 
 export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProps> = (props) => {
-  const services = useContext(ServicesContext);
+  const saContext = useContext(SecurityAnalyticsContext);
   const [detector, setDetector] = useState<Detector>(
     (props.location.state?.detectorHit?._source || EMPTY_DEFAULT_DETECTOR) as Detector
   );
@@ -57,7 +57,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
 
   useEffect(() => {
     const getDetector = async () => {
-      const response = (await services?.detectorsService.getDetectors()) as ServerResponse<
+      const response = (await saContext?.services.detectorsService.getDetectors()) as ServerResponse<
         SearchDetectorsResponse
       >;
       if (response.ok) {
@@ -99,7 +99,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
         errorNotificationToast(props.notifications, 'retrieve', 'detector', e);
       });
     }
-  }, [services]);
+  }, [saContext?.services]);
 
   const updateDetectorState = useCallback(
     (detector: Detector) => {
@@ -217,7 +217,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
 
     const updateDetector = async () => {
       const detectorHit = props.location.state.detectorHit;
-      const updateDetectorRes = await services?.detectorsService?.updateDetector(
+      const updateDetectorRes = await saContext?.services.detectorsService?.updateDetector(
         detectorHit._id,
         detector
       );

@@ -28,7 +28,7 @@ import { RecentAlertsWidget } from '../../components/Widgets/RecentAlertsWidget'
 import { RecentFindingsWidget } from '../../components/Widgets/RecentFindingsWidget';
 import { DetectorsWidget } from '../../components/Widgets/DetectorsWidget';
 import { OverviewViewModel, OverviewViewModelActor } from '../../models/OverviewViewModel';
-import { ServicesContext } from '../../../../services';
+import { SecurityAnalyticsContext } from '../../../../services';
 import { Summary } from '../../components/Widgets/Summary';
 import { TopRulesWidget } from '../../components/Widgets/TopRulesWidget';
 import { GettingStartedPopup } from '../../components/GettingStarted/GettingStartedPopup';
@@ -60,7 +60,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
   const [timeUnit, setTimeUnit] = useState<TimeUnit>(timeUnits.timeUnit);
 
   const context = useContext(CoreServicesContext);
-  const services = useContext(ServicesContext);
+  const saContext = useContext(SecurityAnalyticsContext);
 
   const updateState = (overviewViewModel: OverviewViewModel) => {
     setState({
@@ -71,8 +71,8 @@ export const Overview: React.FC<OverviewProps> = (props) => {
   };
 
   const overviewViewModelActor = useMemo(
-    () => new OverviewViewModelActor(services, context?.notifications!),
-    [services, context]
+    () => new OverviewViewModelActor(saContext?.services, context?.notifications!),
+    [saContext?.services, context]
   );
 
   useEffect(() => {

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { CreateDetectorSteps, MetricsCounter } from '../../types';
 import { SecurityAnalyticsApi } from '../models/interfaces';
 
 export enum CLUSTER {
@@ -32,6 +33,7 @@ export const API: SecurityAnalyticsApi = {
   UPDATE_ALIASES: `${BASE_API_PATH}/update_aliases`,
   CORRELATIONS: `${BASE_API_PATH}/correlations`,
   LOGTYPE_BASE: `${BASE_API_PATH}/logtype`,
+  METRICS: `/api/security_analytics/stats`,
 };
 
 /**
@@ -138,4 +140,18 @@ export const CLIENT_LOGTYPE_METHODS = {
   CREATE_LOGTYPE: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.CREATE_LOGTYPE}`,
   UPDATE_LOGTYPE: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.UPDATE_LOGTYPE}`,
   DELETE_LOGTYPE: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.DELETE_LOGTYPE}`,
+};
+
+export const DEFAULT_METRICS_COUNTER: MetricsCounter = {
+  CreateDetector: {
+    [CreateDetectorSteps.started]: 0,
+    [CreateDetectorSteps.sourceSelected]: 0,
+    [CreateDetectorSteps.rulesConfigured]: 0,
+    [CreateDetectorSteps.fieldMappingsConfigured]: 0,
+    [CreateDetectorSteps.threatIntelConfigured]: 0,
+    [CreateDetectorSteps.stepTwoInitiated]: 0,
+    [CreateDetectorSteps.triggerConfigured]: 0,
+    [CreateDetectorSteps.createClicked]: 0,
+  },
+  UpdateDetector: {},
 };

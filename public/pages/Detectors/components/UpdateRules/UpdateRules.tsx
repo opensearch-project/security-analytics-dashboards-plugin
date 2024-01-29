@@ -14,7 +14,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { DetectionRulesTable } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/DetectionRulesTable';
 import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
-import { ServicesContext } from '../../../../services';
+import { SecurityAnalyticsContext } from '../../../../services';
 import { ServerResponse } from '../../../../../server/models/types';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { CoreServicesContext } from '../../../../components/core_services';
@@ -36,7 +36,7 @@ export interface UpdateDetectorRulesProps
 }
 
 export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) => {
-  const services = useContext(ServicesContext);
+  const saContext = useContext(SecurityAnalyticsContext);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [detector, setDetector] = useState<Detector>(EMPTY_DEFAULT_DETECTOR as Detector);
@@ -53,7 +53,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
   useEffect(() => {
     const getDetector = async () => {
       setLoading(true);
-      const response = (await services?.detectorsService.getDetectors()) as ServerResponse<
+      const response = (await saContext?.services.detectorsService.getDetectors()) as ServerResponse<
         SearchDetectorsResponse
       >;
       if (response.ok) {
@@ -125,7 +125,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
     execute().catch((e) => {
       errorNotificationToast(props.notifications, 'retrieve', 'detector and rules', e);
     });
-  }, [services, detectorId]);
+  }, [saContext?.services, detectorId]);
 
   const onToggle = async (changedItem: RuleItem, isActive: boolean) => {
     setFieldMappingsIsVisible(true);
@@ -188,7 +188,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
         .filter((rule) => rule.active)
         .map((rule) => ({ id: rule.id }));
 
-      const updateDetectorRes = (await services?.detectorsService?.updateDetector(
+      const updateDetectorRes = (await saContext?.services?.detectorsService?.updateDetector(
         detectorId,
         newDetector
       )) as ServerResponse<UpdateDetectorResponse>;
@@ -207,7 +207,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
 
     try {
       if (fieldMappings?.length) {
-        const createMappingsResponse = await services?.fieldMappingService?.createMappings(
+        const createMappingsResponse = await saContext?.services.fieldMappingService?.createMappings(
           detector.inputs[0].detector_input.indices[0],
           detector.detector_type.toLowerCase(),
           fieldMappings
@@ -310,7 +310,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
             {...props}
             ruleQueryFields={ruleQueryFields}
             detector={detector}
-            fieldMappingService={services?.fieldMappingService}
+            fieldMappingService={saContext?.services.fieldMappingService}
             onFieldMappingChange={onFieldMappingChange}
           />
         ) : null}

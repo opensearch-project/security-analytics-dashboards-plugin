@@ -19,6 +19,7 @@ import {
   setupLogTypeRoutes,
   setupRulesRoutes,
 } from './routes';
+import { setupMetricsRoutes } from './routes/MetricsRoutes';
 import {
   IndexService,
   FindingsService,
@@ -31,6 +32,7 @@ import {
   CorrelationService,
 } from './services';
 import { LogTypeService } from './services/LogTypeService';
+import MetricsService from './services/MetricsService';
 
 export class SecurityAnalyticsPlugin
   implements Plugin<SecurityAnalyticsPluginSetup, SecurityAnalyticsPluginStart> {
@@ -50,6 +52,7 @@ export class SecurityAnalyticsPlugin
       rulesService: new RulesService(osDriver),
       notificationsService: new NotificationsService(osDriver),
       logTypeService: new LogTypeService(osDriver),
+      metricsService: new MetricsService(),
     };
 
     // Create router
@@ -66,6 +69,7 @@ export class SecurityAnalyticsPlugin
     setupRulesRoutes(services, router);
     setupNotificationsRoutes(services, router);
     setupLogTypeRoutes(services, router);
+    setupMetricsRoutes(services, router);
 
     return {};
   }

@@ -27,7 +27,13 @@ import { NotificationsService } from '../../../../../services';
 import { validateName } from '../../../../../utils/validation';
 import { CoreServicesContext } from '../../../../../components/core_services';
 import { BREADCRUMBS } from '../../../../../utils/constants';
-import { AlertCondition, Detector, DetectorCreationStep } from '../../../../../../types';
+import {
+  AlertCondition,
+  CreateDetectorSteps,
+  Detector,
+  DetectorCreationStep,
+} from '../../../../../../types';
+import { MetricsContext } from '../../../../../metrics/MetricsContext';
 
 interface ConfigureAlertsProps extends RouteComponentProps {
   detector: Detector;
@@ -38,6 +44,7 @@ interface ConfigureAlertsProps extends RouteComponentProps {
   notificationsService: NotificationsService;
   hasNotificationPlugin: boolean;
   getTriggerName: () => string;
+  metricsContext?: MetricsContext;
 }
 
 interface ConfigureAlertsState {
@@ -114,7 +121,8 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
   getNotificationChannels = async () => {
     this.setState({ loading: true });
     const channels = await getNotificationChannels(this.props.notificationsService);
-    this.setState({ notificationChannels: parseNotificationChannelsToOptions(channels) });
+    const parsedChannels = parseNotificationChannelsToOptions(channels);
+    this.setState({ notificationChannels: parsedChannels });
     this.setState({ loading: false });
   };
 
@@ -134,13 +142,18 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
     changeDetector({ ...detector, triggers: newTriggers });
   };
 
-  onAlertTriggerChanged = (newDetector: Detector): void => {
+  onAlertTriggerChanged = (newDetector: Detector, emitMetrics: boolean = true): void => {
     const isTriggerDataValid = isTriggerValid(
       newDetector.triggers,
       this.props.hasNotificationPlugin
     );
     this.props.changeDetector(newDetector);
     this.props.updateDataValidState(DetectorCreationStep.CONFIGURE_ALERTS, isTriggerDataValid);
+    if (emitMetrics) {
+      this.props.metricsContext?.detectorMetricsManager.sendMetrics(
+        CreateDetectorSteps.triggerConfigured
+      );
+    }
   };
 
   onDelete = (index: number) => {

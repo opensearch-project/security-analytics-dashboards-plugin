@@ -17,6 +17,7 @@ import {
   LogTypeService,
 } from '../services';
 import CorrelationService from '../services/CorrelationService';
+import MetricsService from '../services/MetricsService';
 
 export interface BrowserServices {
   detectorsService: DetectorsService;
@@ -31,6 +32,7 @@ export interface BrowserServices {
   savedObjectsService: ISavedObjectsService;
   indexPatternsService: IndexPatternsService;
   logTypeService: LogTypeService;
+  metricsService: MetricsService;
 }
 
 export interface RuleOptions {
