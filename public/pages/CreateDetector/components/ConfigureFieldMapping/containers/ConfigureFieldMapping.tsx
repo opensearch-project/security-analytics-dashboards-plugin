@@ -21,7 +21,12 @@ import { GetFieldMappingViewResponse } from '../../../../../../server/models/int
 import FieldMappingService from '../../../../../services/FieldMappingService';
 import { MappingViewType } from '../components/RequiredFieldMapping/FieldMappingsTable';
 import { CreateDetectorRulesState } from '../../DefineDetector/components/DetectionRules/DetectionRules';
-import { Detector } from '../../../../../../types';
+import {
+  CreateDetectorSteps,
+  Detector,
+  SecurityAnalyticsContextType,
+} from '../../../../../../types';
+import { SecurityAnalyticsContext } from '../../../../../services';
 
 export interface ruleFieldToIndexFieldMap {
   [fieldName: string]: string;
@@ -59,6 +64,10 @@ export default class ConfigureFieldMapping extends Component<
   ConfigureFieldMappingProps,
   ConfigureFieldMappingState
 > {
+  public static contextType?:
+    | React.Context<SecurityAnalyticsContextType | null>
+    | undefined = SecurityAnalyticsContext;
+
   constructor(props: ConfigureFieldMappingProps) {
     super(props);
     const createdMappings: ruleFieldToIndexFieldMap = {};
@@ -310,6 +319,9 @@ export default class ConfigureFieldMapping extends Component<
       invalidMappingFieldNames: invalidMappingFieldNames,
     });
     this.updateMappingSharedState(newMappings);
+    this.context.metrics.detectorMetricsManager.sendMetrics(
+      CreateDetectorSteps.fieldMappingsConfigured
+    );
   };
 
   updateMappingSharedState = (createdMappings: ruleFieldToIndexFieldMap) => {

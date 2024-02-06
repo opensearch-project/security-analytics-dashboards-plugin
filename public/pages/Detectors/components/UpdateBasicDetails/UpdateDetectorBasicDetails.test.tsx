@@ -17,7 +17,7 @@ jest.mock(
 );
 describe('<UpdateDetectorBasicDetails /> spec', () => {
   it('renders the component', async () => {
-    let wrapper;
+    let wrapper: any;
     await act(async () => {
       wrapper = await mount(<UpdateDetectorBasicDetails {...props} />);
     });

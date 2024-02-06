@@ -19,8 +19,7 @@ import {
 } from '@elastic/eui';
 import { Toast } from '@opensearch-project/oui/src/eui_components/toast/global_toast_list';
 import { CoreStart } from 'opensearch-dashboards/public';
-import { ServicesConsumer } from '../../services';
-import { BrowserServices } from '../../models/interfaces';
+import { SaContextConsumer } from '../../services';
 import { DEFAULT_DATE_RANGE, ROUTES } from '../../utils/constants';
 import { CoreServicesConsumer } from '../../components/core_services';
 import Findings from '../Findings';
@@ -50,6 +49,7 @@ import FindingDetailsFlyout, {
 import { LogTypes } from '../LogTypes/containers/LogTypes';
 import { LogType } from '../LogTypes/containers/LogType';
 import { CreateLogType } from '../LogTypes/containers/CreateLogType';
+import { SecurityAnalyticsContextType } from '../../../types';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -316,8 +316,8 @@ export default class Main extends Component<MainProps, MainState> {
       <CoreServicesConsumer>
         {(core: CoreStart | null) =>
           core && (
-            <ServicesConsumer>
-              {(services: BrowserServices | null) =>
+            <SaContextConsumer>
+              {({ services, metrics }: SecurityAnalyticsContextType | null) =>
                 services && (
                   <EuiPage restrictWidth={'100%'}>
                     {/* Hide side navigation bar when on any HIDDEN_NAV_ROUTES pages. */}
@@ -373,6 +373,7 @@ export default class Main extends Component<MainProps, MainState> {
                               {...props}
                               isEdit={false}
                               services={services}
+                              metrics={metrics}
                               history={props.history}
                               notifications={core?.notifications}
                             />
@@ -588,7 +589,7 @@ export default class Main extends Component<MainProps, MainState> {
                   </EuiPage>
                 )
               }
-            </ServicesConsumer>
+            </SaContextConsumer>
           )
         }
       </CoreServicesConsumer>

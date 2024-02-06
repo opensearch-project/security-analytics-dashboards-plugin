@@ -11,14 +11,24 @@ import DetectorBasicDetailsForm from '../components/DetectorDetails';
 import DetectorDataSource from '../components/DetectorDataSource';
 import DetectorType from '../components/DetectorType';
 import { EuiComboBoxOptionOption } from '@opensearch-project/oui';
-import { FieldMappingService, IndexService } from '../../../../../services';
+import {
+  FieldMappingService,
+  IndexService,
+  SecurityAnalyticsContext,
+} from '../../../../../services';
 import { MIN_NUM_DATA_SOURCES } from '../../../../Detectors/utils/constants';
 import { DetectorSchedule } from '../components/DetectorSchedule/DetectorSchedule';
 import { RuleItem } from '../components/DetectionRules/types/interfaces';
 import { CreateDetectorRulesState } from '../components/DetectionRules/DetectionRules';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { logTypesWithDashboards } from '../../../../../utils/constants';
-import { Detector, DetectorCreationStep, FieldMapping } from '../../../../../../types';
+import {
+  CreateDetectorSteps,
+  Detector,
+  DetectorCreationStep,
+  FieldMapping,
+  SecurityAnalyticsContextType,
+} from '../../../../../../types';
 import { ConfigureFieldMappingProps } from '../../ConfigureFieldMapping/containers/ConfigureFieldMapping';
 import { ContentPanel } from '../../../../../components/ContentPanel';
 import { ruleTypes } from '../../../../Rules/utils/constants';
@@ -47,6 +57,9 @@ interface DefineDetectorState {
 }
 
 export default class DefineDetector extends Component<DefineDetectorProps, DefineDetectorState> {
+  public static contextType?:
+    | React.Context<SecurityAnalyticsContextType | null>
+    | undefined = SecurityAnalyticsContext;
   private standardLogTypes = new Set(
     ruleTypes.filter((ruleType) => ruleType.isStandard).map(({ value }) => value)
   );
@@ -125,6 +138,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
     };
 
     this.updateDetectorCreationState(newDetector);
+    this.context.metrics.detectorMetricsManager.sendMetrics(CreateDetectorSteps.sourceSelected);
   };
 
   onDetectorTypeChange = (detectorType: string) => {
@@ -135,6 +149,10 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
     };
 
     this.updateDetectorCreationState(newDetector);
+    this.context.metrics.detectorMetricsManager.sendMetrics(
+      CreateDetectorSteps.logTypeConfigured,
+      detectorType
+    );
   };
 
   onThreatIntelligenceChanged = (checked: boolean) => {
@@ -152,46 +170,9 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
     };
 
     this.updateDetectorCreationState(newDetector);
-  };
-
-  onPrepackagedRulesChanged = (enabledRuleIds: string[]) => {
-    const { inputs } = this.state.detector;
-    const newDetector: Detector = {
-      ...this.state.detector,
-      inputs: [
-        {
-          detector_input: {
-            ...inputs[0].detector_input,
-            pre_packaged_rules: enabledRuleIds.map((id) => {
-              return { id };
-            }),
-          },
-        },
-        ...inputs.slice(1),
-      ],
-    };
-
-    this.updateDetectorCreationState(newDetector);
-  };
-
-  onCustomRulesChanged = (enabledRuleIds: string[]) => {
-    const { inputs } = this.state.detector;
-    const newDetector: Detector = {
-      ...this.state.detector,
-      inputs: [
-        {
-          detector_input: {
-            ...inputs[0].detector_input,
-            custom_rules: enabledRuleIds.map((id) => {
-              return { id };
-            }),
-          },
-        },
-        ...inputs.slice(1),
-      ],
-    };
-
-    this.updateDetectorCreationState(newDetector);
+    this.context.metrics.detectorMetricsManager.sendMetrics(
+      CreateDetectorSteps.threatIntelConfigured
+    );
   };
 
   onDetectorScheduleChange = (schedule: PeriodSchedule) => {
