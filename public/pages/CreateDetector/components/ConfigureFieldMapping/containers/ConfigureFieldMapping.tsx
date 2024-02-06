@@ -89,23 +89,20 @@ export default class ConfigureFieldMapping extends Component<
   }
 
   componentDidMount = async () => {
-    await this.getAllMappings();
-    this.setupTabs();
+    await this.getAllMappings(this.setupTabs);
   };
 
   componentDidUpdate(
     prevProps: Readonly<ConfigureFieldMappingProps>,
-    prevState: Readonly<ConfigureFieldMappingState>,
-    snapshot?: any
+    prevState: Readonly<ConfigureFieldMappingState>
   ) {
-    if (prevProps.detector !== this.props.detector) {
+    if (this.shouldUpdateMappingsState(prevProps)) {
       this.setState(
         {
           detector: this.props.detector,
         },
         async () => {
-          await this.getAllMappings();
-          this.setupTabs();
+          await this.getAllMappings(this.setupTabs);
         }
       );
     } else if (prevState.createdMappings !== this.state.createdMappings) {
@@ -113,7 +110,24 @@ export default class ConfigureFieldMapping extends Component<
     }
   }
 
-  setupTabs() {
+  private shouldUpdateMappingsState(prevProps: ConfigureFieldMappingProps) {
+    const prevDetector = prevProps.detector;
+    const newDetector = this.props.detector;
+
+    return (
+      !!newDetector.detector_type &&
+      newDetector.inputs[0]?.detector_input.indices.length > 0 &&
+      (prevDetector.detector_type !== newDetector.detector_type ||
+        prevDetector.inputs[0].detector_input.indices !==
+          newDetector.inputs[0].detector_input.indices ||
+        prevDetector.inputs[0].detector_input.pre_packaged_rules !==
+          newDetector.inputs[0].detector_input.pre_packaged_rules ||
+        prevDetector.inputs[0].detector_input.custom_rules !==
+          newDetector.inputs[0].detector_input.custom_rules)
+    );
+  }
+
+  setupTabs = () => {
     const {
       loading,
       mappingsData,
@@ -222,7 +236,7 @@ export default class ConfigureFieldMapping extends Component<
       selectedTabContent:
         tabs[selectedTabId === FieldMappingTabId.AutomaticMappings ? 0 : 1].content,
     });
-  }
+  };
 
   private getRuleFieldsForEnabledRules(): Set<string> {
     const ruleFieldsForEnabledRules = new Set<string>();
@@ -235,8 +249,11 @@ export default class ConfigureFieldMapping extends Component<
     return ruleFieldsForEnabledRules;
   }
 
-  getAllMappings = async () => {
-    if (this.state.detector.inputs[0]?.detector_input.indices[0]) {
+  getAllMappings = async (onMappingsUpdate: () => void) => {
+    if (
+      this.state.detector.inputs[0]?.detector_input.indices[0] &&
+      !!this.state.detector.detector_type
+    ) {
       this.setState({ loading: true });
       const mappingsView = await this.props.fieldMappingService.getMappingsView(
         this.state.detector.inputs[0].detector_input.indices[0],
@@ -271,17 +288,22 @@ export default class ConfigureFieldMapping extends Component<
           }
         });
 
-        this.setState({
-          createdMappings: existingMappings,
-          mappingsData: {
-            ...mappingsView.response,
-            unmapped_field_aliases: Array.from(unmappedRuleFields),
+        this.setState(
+          {
+            createdMappings: existingMappings,
+            mappingsData: {
+              ...mappingsView.response,
+              unmapped_field_aliases: Array.from(unmappedRuleFields),
+            },
+            fieldMappingIsOpen: !!unmappedRuleFields.size,
+            loading: false,
           },
-          fieldMappingIsOpen: !!unmappedRuleFields.size,
-        });
+          onMappingsUpdate
+        );
         this.updateMappingSharedState(existingMappings);
+      } else {
+        this.setState({ loading: false });
       }
-      this.setState({ loading: false });
     }
   };
 

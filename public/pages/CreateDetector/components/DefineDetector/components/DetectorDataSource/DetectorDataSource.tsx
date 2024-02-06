@@ -106,14 +106,16 @@ export default class DetectorDataSource extends Component<
       }
     }
 
-    for (const indexName of allIndices) {
-      if (!this.indicesMappings[indexName]) {
-        const detectorType = this.props.detector_type.toLowerCase();
-        const result = await this.props.fieldMappingService?.getMappingsView(
-          indexName,
-          detectorType
-        );
-        result?.ok && (this.indicesMappings[indexName] = result.response.unmapped_field_aliases);
+    const detectorType = this.props.detector_type.toLowerCase();
+    if (detectorType) {
+      for (const indexName of allIndices) {
+        if (!this.indicesMappings[indexName]) {
+          const result = await this.props.fieldMappingService?.getMappingsView(
+            indexName,
+            detectorType
+          );
+          result?.ok && (this.indicesMappings[indexName] = result.response.unmapped_field_aliases);
+        }
       }
     }
 
