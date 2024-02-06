@@ -45,7 +45,6 @@ export interface CreateDetectorMetricsType {
 
 export interface MetricsCounter {
   CreateDetector: CreateDetectorMetricsType;
-  UpdateDetector: {};
 }
 
 export type PartialMetricsCounter = {

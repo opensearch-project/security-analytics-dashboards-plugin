@@ -153,5 +153,4 @@ export const DEFAULT_METRICS_COUNTER: MetricsCounter = {
     [CreateDetectorSteps.triggerConfigured]: 0,
     [CreateDetectorSteps.createClicked]: 0,
   },
-  UpdateDetector: {},
 };
