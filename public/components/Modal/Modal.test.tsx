@@ -8,19 +8,24 @@ import { EuiButton, EuiOverlayMask, EuiModal } from '@elastic/eui';
 import { render, fireEvent } from '@testing-library/react';
 import ModalRoot from './ModalRoot';
 import { ModalConsumer, ModalProvider } from './Modal';
-import { ServicesConsumer, ServicesContext } from '../../services';
+import { SecurityAnalyticsContext, SaContextConsumer } from '../../services';
 import services from '../../../test/mocks/services';
+import { MetricsContext } from '../../metrics/MetricsContext';
+import MetricsService from '../../services/MetricsService';
+import httpClientMock from '../../../test/mocks/services/httpClient.mock';
 
 describe('<ModalRoot /> spec', () => {
   it('renders nothing when not used', () => {
     const { container } = render(
-      <ServicesContext.Provider value={services}>
+      <SecurityAnalyticsContext.Provider
+        value={{ services, metrics: new MetricsContext(new MetricsService(httpClientMock)) }}
+      >
         <ModalProvider>
-          <ServicesConsumer>
-            {(services) => services && <ModalRoot services={services} />}
-          </ServicesConsumer>
+          <SaContextConsumer>
+            {(context) => context?.services && <ModalRoot services={context?.services} />}
+          </SaContextConsumer>
         </ModalProvider>
-      </ServicesContext.Provider>
+      </SecurityAnalyticsContext.Provider>
     );
 
     expect(container.firstChild).toBeNull();
@@ -34,11 +39,13 @@ describe('<ModalRoot /> spec', () => {
     );
     const { queryByText, getByTestId, getByLabelText } = render(
       <div>
-        <ServicesContext.Provider value={services}>
+        <SecurityAnalyticsContext.Provider
+          value={{ services, metrics: new MetricsContext(new MetricsService(httpClientMock)) }}
+        >
           <ModalProvider>
-            <ServicesConsumer>
-              {(services) => services && <ModalRoot services={services} />}
-            </ServicesConsumer>
+            <SaContextConsumer>
+              {(context) => context?.services && <ModalRoot services={context.services} />}
+            </SaContextConsumer>
             <ModalConsumer>
               {({ onShow }) => (
                 <EuiButton
@@ -50,7 +57,7 @@ describe('<ModalRoot /> spec', () => {
               )}
             </ModalConsumer>
           </ModalProvider>
-        </ServicesContext.Provider>
+        </SecurityAnalyticsContext.Provider>
       </div>
     );
 
