@@ -4,15 +4,46 @@
  */
 
 import { HttpSetup } from 'opensearch-dashboards/public';
-import { PartialMetricsCounter } from '../../types';
-import { API } from '../../server/utils/constants';
+import { MetricsCounter, PartialMetricsCounter } from '../../types';
+import { API, DEFAULT_METRICS_COUNTER } from '../../server/utils/constants';
+import _ from 'lodash';
+import { aggregateMetrics, getSecurityAnalyticsPluginConfig } from '../../common/helpers';
 
 export default class MetricsService {
-  constructor(private readonly httpClient: HttpSetup) {}
+  private newMetricsAvailable = false;
+  private metricsCounter: MetricsCounter = _.cloneDeep(DEFAULT_METRICS_COUNTER);
+  private emitTimer: NodeJS.Timer | undefined = undefined;
+  private uxTelemetryIntervalInMs: number;
+
+  constructor(private readonly httpClient: HttpSetup) {
+    this.uxTelemetryIntervalInMs = getSecurityAnalyticsPluginConfig().uxTelemetryInterval * 60000;
+  }
+
+  startEmittingMetrics() {
+    if (this.emitTimer) {
+      return;
+    }
+
+    this.emitTimer = setInterval(() => {
+      if (this.newMetricsAvailable) {
+        this.httpClient.post(`..${API.METRICS}`, {
+          body: JSON.stringify(this.metricsCounter),
+        });
+        this.metricsCounter = _.cloneDeep(DEFAULT_METRICS_COUNTER);
+      }
+      console.log(`metrics emitted from the browser`);
+
+      this.newMetricsAvailable = false;
+    }, this.uxTelemetryIntervalInMs);
+  }
 
   updateMetrics(metrics: PartialMetricsCounter) {
-    this.httpClient.post(`..${API.METRICS}`, {
-      body: JSON.stringify(metrics),
-    });
+    if (!this.uxTelemetryIntervalInMs) {
+      return;
+    }
+
+    this.metricsCounter = aggregateMetrics(metrics, this.metricsCounter);
+    this.newMetricsAvailable = true;
+    this.startEmittingMetrics();
   }
 }

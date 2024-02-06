@@ -14,6 +14,7 @@ import { ServerResponse } from '../models/types';
 import { MetricsCounter, PartialMetricsCounter } from '../../types';
 import { DEFAULT_METRICS_COUNTER } from '../utils/constants';
 import _ from 'lodash';
+import { aggregateMetrics } from '../../common/helpers';
 
 let metricsCounter: MetricsCounter = _.cloneDeep(DEFAULT_METRICS_COUNTER);
 
@@ -44,28 +45,7 @@ export default class MetricsService {
     response: OpenSearchDashboardsResponseFactory
   ) {
     const metrics = request.body;
-    const partialMetrics: PartialMetricsCounter = {
-      ...metricsCounter,
-    };
-    Object.keys(metrics).forEach((w) => {
-      const workflow = w as keyof MetricsCounter;
-      const workFlowMetrics = metrics[workflow];
-
-      if (workFlowMetrics) {
-        const counterToUpdate: any =
-          partialMetrics[workflow] || _.cloneDeep(DEFAULT_METRICS_COUNTER[workflow]);
-        Object.entries(workFlowMetrics).forEach(([metric, count]) => {
-          if (!counterToUpdate[metric]) {
-            counterToUpdate[metric] = 0;
-          }
-          counterToUpdate[metric] += count;
-        });
-
-        partialMetrics[workflow] = counterToUpdate;
-      }
-    });
-
-    metricsCounter = partialMetrics as MetricsCounter;
+    metricsCounter = aggregateMetrics(metrics, metricsCounter);
 
     return response.ok({
       body: metricsCounter,
