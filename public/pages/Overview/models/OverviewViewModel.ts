@@ -31,7 +31,7 @@ export class OverviewViewModelActor {
   private refreshState: 'InProgress' | 'Complete' = 'Complete';
 
   constructor(
-    private services: BrowserServices | null,
+    private services: BrowserServices | undefined,
     private notifications: NotificationsStart | null
   ) {}
 
