@@ -16,7 +16,8 @@ export default class MetricsService {
   private uxTelemetryIntervalInMs: number;
 
   constructor(private readonly httpClient: HttpSetup) {
-    this.uxTelemetryIntervalInMs = getSecurityAnalyticsPluginConfig().uxTelemetryInterval * 60000;
+    this.uxTelemetryIntervalInMs =
+      (getSecurityAnalyticsPluginConfig()?.uxTelemetryInterval || 0) * 60000;
   }
 
   startEmittingMetrics() {

@@ -41,4 +41,5 @@ export const setSecurityAnalyticsPluginConfig = (config: SecurityAnalyticsPlugin
   securityAnalyticsPluginConfig = config;
 };
 
-export const getSecurityAnalyticsPluginConfig = () => securityAnalyticsPluginConfig;
+export const getSecurityAnalyticsPluginConfig = (): SecurityAnalyticsPluginConfigType | undefined =>
+  securityAnalyticsPluginConfig;
