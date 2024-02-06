@@ -13,7 +13,7 @@ import {
   EuiFieldSearch,
   FilterChecked,
   EuiPopoverFooter,
-  EuiButtonEmpty,
+  EuiButtonGroup,
 } from '@elastic/eui';
 
 export type FilterItem = {
@@ -31,6 +31,19 @@ export interface LogTypeFilterGroupProps {
   setItems: (items: FilterItem[]) => void;
 }
 
+type SelectionToggleOptionIds = 'select_all' | 'deselect_all';
+
+const selectionToggleButtons = [
+  {
+    id: 'select_all',
+    label: 'Select all',
+  },
+  {
+    id: 'deselect_all',
+    label: 'Deselect all',
+  },
+];
+
 export const FilterGroup: React.FC<LogTypeFilterGroupProps> = ({
   groupName,
   items,
@@ -39,7 +52,10 @@ export const FilterGroup: React.FC<LogTypeFilterGroupProps> = ({
   setItems,
 }) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const [showActiveFilters, setShowActiveFilters] = useState(false);
+  const [filterUpdated, setFilterUpdated] = useState(false);
+  const [selectionToggleSelectedId, setSelectionToggleSelectedId] = useState<
+    SelectionToggleOptionIds
+  >('select_all');
 
   const onButtonClick = () => {
     setIsPopoverOpen(!isPopoverOpen);
@@ -62,6 +78,18 @@ export const FilterGroup: React.FC<LogTypeFilterGroupProps> = ({
           ...newItems[index],
           checked: undefined,
         };
+
+        // This means, it is not a grouping label,
+        // so we need to switch off the grouping label too if it exists
+        if (!newItems[index].childOptionIds) {
+          for (let i = index - 1; i >= 0; i--) {
+            // Found the parent grouping label
+            if (newItems[i].childOptionIds) {
+              newItems[i].checked = undefined;
+              break;
+            }
+          }
+        }
         break;
 
       default:
@@ -69,7 +97,29 @@ export const FilterGroup: React.FC<LogTypeFilterGroupProps> = ({
           ...newItems[index],
           checked: 'on',
         };
+
+        // This means, it is not a grouping label,
+        // so we need to switch ON the grouping label if all children are checked
+        if (!newItems[index].childOptionIds) {
+          let i: number;
+          for (i = index - 1; i >= 0; i--) {
+            const childIds = newItems[i].childOptionIds;
+            // Found the parent grouping label
+            if (childIds) {
+              let allChecked = true;
+              newItems.forEach((item) => {
+                if (childIds.has(item.id)) {
+                  allChecked = allChecked && !!item.checked;
+                }
+              });
+              newItems[i].checked = allChecked ? 'on' : undefined;
+              break;
+            }
+          }
+        }
     }
+
+    // If a grouping label is toggled, toggle all its children
     const childIds = newItems[index].childOptionIds;
     if (childIds) {
       newItems.forEach((item) => {
@@ -80,7 +130,12 @@ export const FilterGroup: React.FC<LogTypeFilterGroupProps> = ({
     }
 
     setItems(newItems);
-    setShowActiveFilters(true);
+    setFilterUpdated(!newItems.every((item) => item.checked));
+  }
+
+  function onSelectionToggleChange(optionId: string) {
+    setSelectionToggleSelectedId(optionId as SelectionToggleOptionIds);
+    toggleAll(optionId === 'select_all' ? 'on' : undefined);
   }
 
   function toggleAll(state: 'on' | undefined) {
@@ -90,7 +145,7 @@ export const FilterGroup: React.FC<LogTypeFilterGroupProps> = ({
     }));
 
     setItems(newItems);
-    setShowActiveFilters(!!state);
+    setFilterUpdated(!state);
   }
 
   function search(term: string) {
@@ -100,18 +155,18 @@ export const FilterGroup: React.FC<LogTypeFilterGroupProps> = ({
       item.visible = item.id.toLowerCase().includes(term);
     });
     setItems(newItems);
-    setShowActiveFilters(true);
+    setFilterUpdated(true);
   }
 
+  const numActiveFilters = items.filter((item) => !item.childOptionIds && item.checked === 'on')
+    .length;
   const button = (
     <EuiFilterButton
       iconType="arrowDown"
       onClick={onButtonClick}
       isSelected={isPopoverOpen}
-      hasActiveFilters={showActiveFilters && !!items.find((item) => item.checked === 'on')}
-      numActiveFilters={
-        showActiveFilters ? items.filter((item) => item.checked === 'on').length : undefined
-      }
+      hasActiveFilters={filterUpdated}
+      numActiveFilters={numActiveFilters > 0 ? numActiveFilters : undefined}
     >
       {groupName}
     </EuiFilterButton>
@@ -127,7 +182,7 @@ export const FilterGroup: React.FC<LogTypeFilterGroupProps> = ({
         panelPaddingSize="none"
       >
         <EuiPopoverTitle paddingSize="s">
-          <EuiFieldSearch compressed onSearch={search} />
+          <EuiFieldSearch compressed onSearch={search} isClearable={true} />
         </EuiPopoverTitle>
         <div
           className="ouiFilterSelect__items"
@@ -154,10 +209,12 @@ export const FilterGroup: React.FC<LogTypeFilterGroupProps> = ({
         </div>
         {hasFooter && (
           <EuiPopoverFooter>
-            <div>
-              <EuiButtonEmpty onClick={() => toggleAll('on')}>Select all</EuiButtonEmpty>
-              <EuiButtonEmpty onClick={() => toggleAll(undefined)}>Deselect all</EuiButtonEmpty>
-            </div>
+            <EuiButtonGroup
+              legend="All toptions selection toggle group"
+              options={selectionToggleButtons}
+              idSelected={selectionToggleSelectedId}
+              onChange={onSelectionToggleChange}
+            />
           </EuiPopoverFooter>
         )}
       </EuiPopover>
