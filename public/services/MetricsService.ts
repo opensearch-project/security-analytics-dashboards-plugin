@@ -20,22 +20,24 @@ export default class MetricsService {
       (getSecurityAnalyticsPluginConfig()?.uxTelemetryInterval || 0) * 60000;
   }
 
-  startEmittingMetrics() {
+  private emitMetrics = () => {
+    if (this.newMetricsAvailable) {
+      this.httpClient.post(`..${API.METRICS}`, {
+        body: JSON.stringify(this.metricsCounter),
+      });
+      this.metricsCounter = _.cloneDeep(DEFAULT_METRICS_COUNTER);
+    }
+
+    this.newMetricsAvailable = false;
+  };
+
+  private setupEmitMetricsTimer() {
     if (this.emitTimer) {
       return;
     }
 
-    this.emitTimer = setInterval(() => {
-      if (this.newMetricsAvailable) {
-        this.httpClient.post(`..${API.METRICS}`, {
-          body: JSON.stringify(this.metricsCounter),
-        });
-        this.metricsCounter = _.cloneDeep(DEFAULT_METRICS_COUNTER);
-      }
-      console.log(`metrics emitted from the browser`);
-
-      this.newMetricsAvailable = false;
-    }, this.uxTelemetryIntervalInMs);
+    this.emitTimer = setInterval(this.emitMetrics, this.uxTelemetryIntervalInMs);
+    window.onbeforeunload = this.emitMetrics;
   }
 
   updateMetrics(metrics: PartialMetricsCounter) {
@@ -45,6 +47,6 @@ export default class MetricsService {
 
     this.metricsCounter = aggregateMetrics(metrics, this.metricsCounter);
     this.newMetricsAvailable = true;
-    this.startEmittingMetrics();
+    this.setupEmitMetricsTimer();
   }
 }
