@@ -14,6 +14,8 @@ import {
   EuiHorizontalRule,
   EuiToolTip,
   EuiDescriptionList,
+  EuiText,
+  EuiIcon,
 } from '@elastic/eui';
 import { getSeverityLabel, getSeverityColor, getLabelFromLogType } from '../utils/constants';
 import { DataStore } from '../../../store/DataStore';
@@ -43,19 +45,19 @@ export const FindingCard: React.FC<FindingCardProps> = ({
 }) => {
   const list = [
     {
-      title: 'Detection rule',
-      description: detectionRule.name,
+      title: <b>Detection rule</b>,
+      description: <EuiText size="s">{detectionRule.name}</EuiText>,
     },
   ];
 
   if (finding.correlationRule) {
     list.unshift({
-      title: 'Correlation score',
-      description: finding.correlationRule.name,
+      title: <b>Correlation rule</b>,
+      description: <EuiText size="s">{finding.correlationRule.name}</EuiText>,
     });
   }
 
-  const badgePadding = '2px 7px';
+  const badgePadding = '0px 4px';
   const { text: severityText, background } = getSeverityColor(detectionRule.severity);
 
   const header = (
@@ -65,7 +67,7 @@ export const FindingCard: React.FC<FindingCardProps> = ({
           <EuiBadge color={background} style={{ padding: badgePadding, color: severityText }}>
             {getSeverityLabel(detectionRule.severity)}
           </EuiBadge>
-          <EuiBadge color="hollow" style={{ padding: '3px 10px' }}>
+          <EuiBadge color="hollow" style={{ padding: '0px 4px' }}>
             {getLabelFromLogType(logType)}
           </EuiBadge>
         </div>
@@ -90,7 +92,9 @@ export const FindingCard: React.FC<FindingCardProps> = ({
     </EuiFlexGroup>
   );
 
-  const attrList = <EuiDescriptionList type="column" textStyle="reverse" listItems={list} />;
+  const attrList = (
+    <EuiDescriptionList type="column" textStyle="reverse" listItems={list} compressed />
+  );
 
   const relatedFindingCard = (
     <EuiPanel>
@@ -98,13 +102,25 @@ export const FindingCard: React.FC<FindingCardProps> = ({
       <EuiSpacer size="s" />
       <EuiFlexGroup justifyContent="spaceBetween" gutterSize="xs" alignItems="center">
         <EuiFlexItem grow={false}>
-          <p>Correlation score</p>
+          <EuiText size="s">
+            Correlation score{' '}
+            <EuiToolTip
+              content={`The score (0-1) is based on the proximity of relevant findings in the threat scenario defined by the 
+            correlation rule. The greater the score, the stronger the correlation.`}
+            >
+              <EuiIcon type={'iInCircle'} color="primary" />
+            </EuiToolTip>
+          </EuiText>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <b>{correlationData?.score}</b>
+          <EuiText size="s">
+            <b>{correlationData?.score}</b>
+          </EuiText>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <span>{timestamp}</span>
+          <EuiText size="s" color="subdued">
+            {timestamp}
+          </EuiText>
         </EuiFlexItem>
       </EuiFlexGroup>
       <EuiHorizontalRule margin="s" />
