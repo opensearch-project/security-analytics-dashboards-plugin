@@ -444,7 +444,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
             maxWidth="400px"
             key={findingCardsData.finding.id}
           >
-            <EuiFlyoutHeader hasBorder>
+            <EuiFlyoutHeader>
               <EuiFlexGroup>
                 <EuiFlexItem>
                   <EuiTitle size="m">
@@ -462,11 +462,11 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                   />
                 </EuiFlexItem>
               </EuiFlexGroup>
-            </EuiFlyoutHeader>
-            <EuiFlyoutBody>
+              <EuiHorizontalRule margin="xs" />
               <EuiTitle size="xs">
                 <p>Finding</p>
               </EuiTitle>
+              <EuiSpacer size="xs" />
               <FindingCard
                 id={findingCardsData.finding.id}
                 logType={findingCardsData.finding.logType}
@@ -475,7 +475,8 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                 finding={findingCardsData.finding}
                 findings={findingCardsData.correlatedFindings}
               />
-              <EuiSpacer />
+            </EuiFlyoutHeader>
+            <EuiFlyoutBody>
               <EuiTitle size="xs">
                 <p>Correlated Findings ({findingCardsData.correlatedFindings.length})</p>
               </EuiTitle>
@@ -508,45 +509,45 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         ) : null}
         <EuiFlexGroup direction="column">
           <EuiFlexItem>
-            <EuiTitle size="m">
-              <h1>Correlations</h1>
-            </EuiTitle>
+            <EuiFlexGroup>
+              <EuiFlexItem>
+                <EuiTitle size="m">
+                  <h1>Correlations</h1>
+                </EuiTitle>
+              </EuiFlexItem>
+              <EuiFlexItem grow={false}>
+                <EuiSuperDatePicker
+                  start={this.startTime}
+                  end={this.endTime}
+                  recentlyUsedRanges={this.state.recentlyUsedRanges}
+                  onTimeChange={this.onTimeChange}
+                  onRefresh={this.onRefresh}
+                  updateButtonProps={{ fill: false }}
+                />
+              </EuiFlexItem>
+            </EuiFlexGroup>
           </EuiFlexItem>
           <EuiFlexItem>
             <EuiPanel>
-              <EuiFlexGroup wrap={true} justifyContent="spaceBetween">
-                <EuiFlexItem>
-                  <EuiFlexGroup gutterSize="xs" wrap={false}>
-                    <EuiFlexItem grow={false}>
-                      <EuiFilterGroup>
-                        <FilterGroup
-                          groupName="Severity"
-                          items={this.state.severityFilterOptions}
-                          setItems={this.onSeverityFilterChange}
-                        />
-                        <FilterGroup
-                          groupName="Log types"
-                          items={this.state.logTypeFilterOptions}
-                          hasGroupOptions={true}
-                          hasFooter={true}
-                          setItems={this.onLogTypeFilterChange}
-                        />
-                      </EuiFilterGroup>
-                    </EuiFlexItem>
-                    <EuiFlexItem grow={false}>
-                      <EuiButtonEmpty onClick={this.resetFilters}>Reset filters</EuiButtonEmpty>
-                    </EuiFlexItem>
-                  </EuiFlexGroup>
+              <EuiFlexGroup gutterSize="xs" wrap={false} justifyContent="flexEnd">
+                <EuiFlexItem grow={false}>
+                  <EuiFilterGroup>
+                    <FilterGroup
+                      groupName="Log types"
+                      items={this.state.logTypeFilterOptions}
+                      hasGroupOptions={true}
+                      hasFooter={true}
+                      setItems={this.onLogTypeFilterChange}
+                    />
+                    <FilterGroup
+                      groupName="Severity"
+                      items={this.state.severityFilterOptions}
+                      setItems={this.onSeverityFilterChange}
+                    />
+                  </EuiFilterGroup>
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>
-                  <EuiSuperDatePicker
-                    start={this.startTime}
-                    end={this.endTime}
-                    recentlyUsedRanges={this.state.recentlyUsedRanges}
-                    onTimeChange={this.onTimeChange}
-                    onRefresh={this.onRefresh}
-                    updateButtonProps={{ fill: false }}
-                  />
+                  <EuiButtonEmpty onClick={this.resetFilters}>Reset filters</EuiButtonEmpty>
                 </EuiFlexItem>
               </EuiFlexGroup>
               <EuiSpacer />
