@@ -12,6 +12,7 @@ import _ from 'lodash';
 export const DATE_MATH_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
 export const MAX_RECENTLY_USED_TIME_RANGES = 5;
 export const DEFAULT_DATE_RANGE = { start: 'now-24h', end: 'now' };
+export const DATE_TIME_FILTER_KEY = 'security_analytics_time_filter';
 
 export const PLUGIN_NAME = 'opensearch_security_analytics_dashboards';
 export const OS_NOTIFICATION_PLUGIN = 'opensearch-notifications';
