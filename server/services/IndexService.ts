@@ -11,7 +11,7 @@ import {
   RequestHandlerContext,
   ILegacyCustomClusterClient,
 } from 'opensearch-dashboards/server';
-import { GetIndicesResponse } from '../models/interfaces';
+import { GetAliasesResponse, GetIndicesResponse } from '../models/interfaces';
 import { ServerResponse } from '../models/types';
 
 export default class IndexService {
@@ -52,9 +52,6 @@ export default class IndexService {
     }
   };
 
-  /**
-   * Calls backend POST Detectors API.
-   */
   getIndices = async (
     _context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
@@ -88,11 +85,44 @@ export default class IndexService {
     }
   };
 
+  getAliases = async (
+    _context: RequestHandlerContext,
+    request: OpenSearchDashboardsRequest,
+    response: OpenSearchDashboardsResponseFactory
+  ): Promise<IOpenSearchDashboardsResponse<ServerResponse<GetAliasesResponse> | ResponseError>> => {
+    try {
+      const { callAsCurrentUser } = this.osDriver.asScoped(request);
+      const aliases = await callAsCurrentUser('cat.aliases', {
+        format: 'json',
+        h: 'alias,index',
+      });
+
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: true,
+          response: {
+            aliases,
+          },
+        },
+      });
+    } catch (err: any) {
+      console.error('Security Analytcis - IndexService - getAliases:', err);
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: false,
+          error: err.message,
+        },
+      });
+    }
+  };
+
   updateAliases = async (
     _context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
-  ): Promise<IOpenSearchDashboardsResponse<ServerResponse<GetIndicesResponse> | ResponseError>> => {
+  ): Promise<IOpenSearchDashboardsResponse<ServerResponse<{}> | ResponseError>> => {
     try {
       const actions = request.body;
       const params = { body: actions };
@@ -101,9 +131,6 @@ export default class IndexService {
 
       return response.custom({
         statusCode: 200,
-        body: {
-          ok: true,
-        },
       });
     } catch (error: any) {
       console.error('Security Analytics - IndexService - createAliases:', error);

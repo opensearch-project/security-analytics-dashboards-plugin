@@ -118,9 +118,15 @@ const validatePendingFieldMappingsPanel = (mappings) => {
   });
 };
 
-const fillDetailsForm = (detectorName, dataSource) => {
+const fillDetailsForm = (detectorName, dataSource, isCustomDataSource = false) => {
   getNameField().type(detectorName);
-  getDataSourceField().selectComboboxItem(dataSource);
+  if (isCustomDataSource) {
+    getDataSourceField()
+      .focus()
+      .type(dataSource + '{enter}');
+  } else {
+    getDataSourceField().selectComboboxItem(dataSource);
+  }
   getDataSourceField().focus().blur();
   getLogTypeField().selectComboboxItem(getLogTypeLabel(cypressLogTypeDns));
   getLogTypeField().focus().blur();
@@ -129,7 +135,7 @@ const fillDetailsForm = (detectorName, dataSource) => {
 const createDetector = (detectorName, dataSource, expectFailure) => {
   getCreateDetectorButton().click({ force: true });
 
-  fillDetailsForm(detectorName, dataSource);
+  fillDetailsForm(detectorName, dataSource, expectFailure);
 
   cy.getElementByText('.euiAccordion .euiTitle', 'Selected detection rules (14)')
     .click({ force: true, timeout: 5000 })
