@@ -19,6 +19,14 @@ export function setupIndexRoutes(services: NodeServices, router: IRouter) {
     indexService.getIndices
   );
 
+  router.get(
+    {
+      path: API.ALIASES_BASE,
+      validate: {},
+    },
+    indexService.getAliases
+  );
+
   router.post(
     {
       path: `${API.INDICES_BASE}`,

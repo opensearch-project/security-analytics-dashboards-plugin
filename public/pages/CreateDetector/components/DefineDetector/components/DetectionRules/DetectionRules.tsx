@@ -105,6 +105,11 @@ export const DetectionRules: React.FC<DetectionRulesProps> = ({
             </EuiText>
           </div>
         }
+        extraAction={
+          <EuiButton href={`#${ROUTES.RULES}`} target="_blank">
+            Manage <EuiIcon type={'popout'} />
+          </EuiButton>
+        }
         id={'detectorRulesAccordion'}
         initialIsOpen={false}
         isLoading={loading}

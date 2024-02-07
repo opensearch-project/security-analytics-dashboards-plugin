@@ -18,7 +18,7 @@ import { IndexOption } from '../../../../../Detectors/models/interfaces';
 import { MIN_NUM_DATA_SOURCES } from '../../../../../Detectors/utils/constants';
 import IndexService from '../../../../../../services/IndexService';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { errorNotificationToast } from '../../../../../../utils/helpers';
+import { getDataSources } from '../../../../../../utils/helpers';
 import _ from 'lodash';
 import { FieldMappingService } from '../../../../../../services';
 
@@ -57,41 +57,28 @@ export default class DetectorDataSource extends Component<
   }
 
   componentDidMount = async () => {
-    this.getIndices();
+    this.getDataSources();
   };
 
-  getIndices = async () => {
+  getDataSources = async () => {
     this.setState({ loading: true });
-    try {
-      const indicesResponse = await this.props.indexService.getIndices();
-      if (indicesResponse.ok) {
-        const indices = indicesResponse.response.indices;
-        const indicesNames = indices.map((index) => index.index);
+    const res = await getDataSources(this.props.indexService, this.props.notifications);
 
-        this.setState({
-          loading: false,
-          indexOptions: this.parseOptions(indicesNames),
-        });
-      } else {
-        errorNotificationToast(
-          this.props.notifications,
-          'retrieve',
-          'indices',
-          indicesResponse.error
-        );
-        this.setState({ errorMessage: indicesResponse.error });
-      }
-    } catch (error: any) {
-      errorNotificationToast(this.props.notifications, 'retrieve', 'indices', error);
+    if (res.ok) {
+      this.setState({
+        loading: false,
+        indexOptions: res.dataSources,
+      });
+    } else {
+      this.setState({ loading: false, errorMessage: res.error });
     }
-    this.setState({ loading: false });
   };
 
-  parseOptions = (indices: string[]) => {
-    return indices.map((index) => ({ label: index }));
+  parseOptions = (options: string[]) => {
+    return options.map((option) => ({ label: option }));
   };
 
-  onCreateOption = (searchValue: string, options: EuiComboBoxOptionOption[]) => {
+  onCreateOption = (searchValue: string) => {
     const parsedOptions = this.parseOptions(this.props.detectorIndices);
     parsedOptions.push({ label: searchValue });
     this.onSelectionChange(parsedOptions);
@@ -174,6 +161,9 @@ export default class DetectorDataSource extends Component<
             isInvalid={!!errorMessage}
             isClearable={true}
             data-test-subj={'define-detector-select-data-source'}
+            renderOption={(option: IndexOption) => {
+              return option.index ? `${option.label} (${option.index})` : option.label;
+            }}
           />
         </EuiFormRow>
         {differentLogTypesDetected ? (
