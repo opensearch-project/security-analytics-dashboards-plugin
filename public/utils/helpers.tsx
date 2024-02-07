@@ -33,7 +33,7 @@ import { parse, View } from 'vega/build-es5/vega.js';
 import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter/build/vega-interpreter';
 import { RuleInfo } from '../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { OpenSearchService } from '../services';
+import { IndexService, OpenSearchService } from '../services';
 import { ruleSeverity, ruleTypes } from '../pages/Rules/utils/constants';
 import { Handler } from 'vega-tooltip';
 import _ from 'lodash';
@@ -431,4 +431,68 @@ export function addDetectionType(
 
 export function isThreatIntelQuery(queryId: string) {
   return queryId?.startsWith('threat_intel_');
+}
+
+export async function getDataSources(
+  indexService: IndexService,
+  notifications: any
+): Promise<
+  | {
+      ok: true;
+      dataSources: { label: string; options: { label: string; value: string; index?: string }[] }[];
+    }
+  | { ok: false; error: string }
+> {
+  const dataSourceOptions = [];
+  try {
+    const aliasesResponse = await indexService.getAliases();
+    const indicesResponse = await indexService.getIndices();
+
+    if (aliasesResponse.ok) {
+      const aliases = aliasesResponse.response.aliases.filter(
+        ({ index }) => !index.startsWith('.')
+      );
+      const aliasOptions = aliases.map(({ alias, index }) => ({
+        label: alias,
+        index: index,
+        value: alias,
+      }));
+
+      dataSourceOptions.push({
+        label: 'Aliases',
+        options: aliasOptions,
+      });
+    } else {
+      errorNotificationToast(notifications, 'retrieve', 'aliases', aliasesResponse.error);
+      return { ok: false, error: aliasesResponse.error };
+    }
+
+    if (indicesResponse.ok) {
+      const indices = indicesResponse.response.indices;
+      const indexOptions = indices
+        .map(({ index }) => ({ label: index, value: index }))
+        .filter(({ label }) => !label.startsWith('.'));
+
+      dataSourceOptions.push({
+        label: 'Indices',
+        options: indexOptions,
+      });
+    } else {
+      errorNotificationToast(notifications, 'retrieve', 'indices', indicesResponse.error);
+
+      return { ok: false, error: indicesResponse.error };
+    }
+
+    return {
+      ok: true,
+      dataSources: dataSourceOptions,
+    };
+  } catch (error: any) {
+    errorNotificationToast(notifications, 'retrieve', 'indices', error);
+
+    return {
+      ok: false,
+      error,
+    };
+  }
 }

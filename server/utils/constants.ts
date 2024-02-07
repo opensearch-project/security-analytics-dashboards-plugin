@@ -19,6 +19,7 @@ export const API: SecurityAnalyticsApi = {
   CORRELATION_BASE: `${BASE_API_PATH}/correlation/rules`,
   SEARCH_DETECTORS: `${BASE_API_PATH}/detectors/_search`,
   INDICES_BASE: `${BASE_API_PATH}/indices`,
+  ALIASES_BASE: `${BASE_API_PATH}/aliases`,
   FINDINGS_BASE: `${BASE_API_PATH}/findings`,
   GET_FINDINGS: `${BASE_API_PATH}/findings/_search`,
   DOCUMENT_IDS_QUERY: `${BASE_API_PATH}/document_ids_query`,
