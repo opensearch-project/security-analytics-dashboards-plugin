@@ -2,6 +2,9 @@
 
 Compatible with OpenSearch Dashboards 2.12.0
 
+### Maintenance
+* [AUTO] Increment version to 2.12.0.0 ([#761](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/761))
+
 ### Features
 * Cache date time filter in local storage ([#848](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/848))
 * Show aliases in data source options for detector and correlation rule creation ([#864](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/864))
