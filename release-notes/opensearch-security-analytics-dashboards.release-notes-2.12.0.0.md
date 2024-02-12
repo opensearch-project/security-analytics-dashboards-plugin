@@ -16,4 +16,4 @@ Compatible with OpenSearch Dashboards 2.12.0
 * Add check for mappings view API call during create detector ([#862](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/862))
 
 ### Documentation
-* Added release notes for 2.12.0
+* Added release notes for 2.12.0 ([#879](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/879))
