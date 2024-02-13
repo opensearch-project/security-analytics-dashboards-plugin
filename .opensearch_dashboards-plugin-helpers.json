@@ -5,6 +5,7 @@
     "yarn.lock",
     ".yarnrc",
     "{lib,public,server,webpackShims,translations,utils,models,test,common,types}/**/*",
-    "!__tests__"
+    "!__tests__",
+    "config.ts"
   ]
 }
