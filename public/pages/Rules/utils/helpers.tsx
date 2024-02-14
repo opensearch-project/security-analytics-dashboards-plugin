@@ -179,17 +179,12 @@ export function setBreadCrumb(
 }
 
 export function getLogTypeFromLogSource(logSource: { [k: string]: string }) {
-  const possibleLogType = new Set();
-  for (let key in logSource) {
-    if (logSource[key]) {
-      possibleLogType.add(logSource[key]);
-    }
-  }
+  const logTypes = new Set(ruleTypes.map(({ value }) => value));
 
-  let logType: string | undefined;
-  ruleTypes.some(({ value }) => {
-    if (possibleLogType.has(value)) {
-      logType = value;
+  let logType;
+  ['product', 'category', 'service'].some((key) => {
+    if (logSource[key] && logTypes.has(logSource[key])) {
+      logType = logSource[key];
       return true;
     }
 
