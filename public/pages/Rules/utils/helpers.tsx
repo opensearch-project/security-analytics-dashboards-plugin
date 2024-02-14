@@ -10,7 +10,7 @@ import {
   formatRuleType,
   getLogTypeFilterOptions,
 } from '../../../utils/helpers';
-import { ruleSeverity, ruleSource } from './constants';
+import { ruleSeverity, ruleSource, ruleTypes } from './constants';
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
 import { Rule } from '../../../../models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
@@ -176,4 +176,25 @@ export function setBreadCrumb(
   breadCrumbSetter?: (breadCrumbs: EuiBreadcrumb[]) => void
 ) {
   breadCrumbSetter?.([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.RULES, breadCrumb]);
+}
+
+export function getLogTypeFromLogSource(logSource: { [k: string]: string }) {
+  const possibleLogType = new Set();
+  for (let key in logSource) {
+    if (logSource[key]) {
+      possibleLogType.add(logSource[key]);
+    }
+  }
+
+  let logType: string | undefined;
+  ruleTypes.some(({ value }) => {
+    if (possibleLogType.has(value)) {
+      logType = value;
+      return true;
+    }
+
+    return false;
+  });
+
+  return logType;
 }
