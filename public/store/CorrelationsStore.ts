@@ -69,14 +69,28 @@ export class CorrelationsStore implements ICorrelationsStore {
   public async createCorrelationRule(correlationRule: CorrelationRule): Promise<boolean> {
     const response = await this.invalidateCache().service.createCorrelationRule({
       name: correlationRule.name,
-      correlate: correlationRule.queries?.map((query) => ({
-        index: query.index,
-        category: query.logType,
-        query: query.conditions
+      time_window: correlationRule.time_window,
+      correlate: correlationRule.queries?.map((query) => {
+        const queryString = query.conditions
           .map((condition) => `${condition.name}:${condition.value}`)
           // TODO: for the phase one only AND condition is supported, add condition once the correlation engine support is implemented
-          .join(' AND '),
-      })),
+          .join(' AND ');
+
+        const correlationInput: any = {
+          index: query.index,
+          category: query.logType,
+        };
+
+        if (queryString) {
+          correlationInput['query'] = queryString;
+        }
+
+        if (query.field) {
+          correlationInput['field'] = query.field;
+        }
+
+        return correlationInput;
+      }),
     });
 
     if (!response.ok) {
@@ -92,13 +106,27 @@ export class CorrelationsStore implements ICorrelationsStore {
       correlationRule.id,
       {
         name: correlationRule.name,
-        correlate: correlationRule.queries?.map((query) => ({
-          index: query.index,
-          category: query.logType,
-          query: query.conditions
+        time_window: correlationRule.time_window,
+        correlate: correlationRule.queries?.map((query) => {
+          const queryString = query.conditions
             .map((condition) => `${condition.name}:${condition.value}`)
-            .join(' AND '),
-        })),
+            .join(' AND ');
+
+          const correlationInput: any = {
+            index: query.index,
+            category: query.logType,
+          };
+
+          if (queryString) {
+            correlationInput['query'] = queryString;
+          }
+
+          if (query.field) {
+            correlationInput['field'] = query.field;
+          }
+
+          return correlationInput;
+        }),
       }
     );
 
@@ -124,6 +152,7 @@ export class CorrelationsStore implements ICorrelationsStore {
         return {
           index: queryData.index,
           logType: queryData.category,
+          field: queryData.field || '',
           conditions: this.parseRuleQueryString(queryData.query),
         };
       });
@@ -131,6 +160,7 @@ export class CorrelationsStore implements ICorrelationsStore {
       return {
         id: hit._id,
         name: hit._source.name,
+        time_window: hit._source.time_window || 300000,
         queries,
       };
     }
@@ -153,6 +183,7 @@ export class CorrelationsStore implements ICorrelationsStore {
           return {
             index: queryData.index,
             logType: queryData.category,
+            field: queryData.field || '',
             conditions: this.parseRuleQueryString(queryData.query),
           };
         });
@@ -160,6 +191,7 @@ export class CorrelationsStore implements ICorrelationsStore {
         return {
           id: hit._id,
           name: hit._source.name,
+          time_window: hit._source.time_window || 300000,
           queries,
         };
       }));
@@ -295,6 +327,9 @@ export class CorrelationsStore implements ICorrelationsStore {
 
   private parseRuleQueryString(queryString: string): CorrelationFieldCondition[] {
     const queries: CorrelationFieldCondition[] = [];
+    if (!queryString) {
+      return queries;
+    }
     const orConditions = queryString.trim().split(/ OR /gi);
 
     orConditions.forEach((cond, conditionIndex) => {
