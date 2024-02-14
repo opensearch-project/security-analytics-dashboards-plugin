@@ -570,7 +570,6 @@ Object {
                 class="euiFormRow__labelWrapper"
               >
                 <label
-                  aria-invalid="false"
                   class="euiFormLabel euiFormRow__label"
                   for="some_html_id"
                 >
@@ -1402,7 +1401,6 @@ Object {
               class="euiFormRow__labelWrapper"
             >
               <label
-                aria-invalid="false"
                 class="euiFormLabel euiFormRow__label"
                 for="some_html_id"
               >
