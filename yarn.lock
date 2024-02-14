@@ -6963,10 +6963,10 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-vis-data@^7.1.2:
-  version "7.1.9"
-  resolved "https://registry.yarnpkg.com/vis-data/-/vis-data-7.1.9.tgz#ea0504df6fcbaae175173f4bbb05a960ce6c8891"
-  integrity sha512-COQsxlVrmcRIbZMMTYwD+C2bxYCFDNQ2EHESklPiInbD/Pk3JZ6qNL84Bp9wWjYjAzXfSlsNaFtRk+hO9yBPWA==
+vis-data@7.1.6, vis-data@^7.1.2:
+  version "7.1.6"
+  resolved "https://registry.yarnpkg.com/vis-data/-/vis-data-7.1.6.tgz#81dcf4d024d23183cacb680ad605e644cdd6ee6c"
+  integrity sha512-lG7LJdkawlKSXsdcEkxe/zRDyW29a4r7N7PMwxCPxK12/QIdqxJwcMxwjVj9ozdisRhP5TyWDHZwsgjmj0g6Dg==
 
 vis-network@^9.0.0:
   version "9.1.9"
