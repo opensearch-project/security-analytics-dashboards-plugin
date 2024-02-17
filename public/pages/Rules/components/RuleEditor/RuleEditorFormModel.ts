@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { DEFAULT_RULE_UUID } from '../../../../../common/constants';
 import { ruleStatus } from '../../utils/constants';
 
 export interface RuleEditorFormModel {
@@ -21,7 +22,7 @@ export interface RuleEditorFormModel {
 }
 
 export const ruleEditorStateDefaultValue: RuleEditorFormModel = {
-  id: '25b9c01c-350d-4b95-bed1-836d04a4f324',
+  id: DEFAULT_RULE_UUID,
   log_source: {},
   logType: '',
   name: '',
