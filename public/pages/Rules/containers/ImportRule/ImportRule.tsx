@@ -78,6 +78,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
               notifications={notifications}
               mode={'create'}
               rule={rule}
+              validateOnMount={true}
             />
           );
         } catch (error: any) {

@@ -81,8 +81,8 @@ enum SelectionMapValueRadioId {
 }
 
 const detectionModifierOptions = [
-  { value: 'contains', label: 'contains' },
   { value: 'all', label: 'all' },
+  { value: 'contains', label: 'contains' },
   { value: 'base64', label: 'base64' },
   { value: 'endswith', label: 'endswith' },
   { value: 'startswith', label: 'startswith' },
