@@ -26,7 +26,6 @@ jobs:
         uses: derek-ho/security-dashboards-plugin/.github/actions/download-install-run-dashboards-with-plugin@generalize-binary-install-workflow
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
-          backend-plugin-name: ${{ env.PLUGIN_NAME }}
           security-enabled: false
 
       
