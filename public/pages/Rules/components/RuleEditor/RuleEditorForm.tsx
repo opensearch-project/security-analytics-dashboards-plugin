@@ -23,7 +23,7 @@ import {
 } from '@elastic/eui';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { FieldTextArray } from './components/FieldTextArray';
-import { ruleStatus } from '../../utils/constants';
+import { ruleSeverity, ruleStatus, ruleTypes } from '../../utils/constants';
 import { AUTHOR_REGEX, validateDescription, validateName } from '../../../../utils/validation';
 import { RuleEditorFormModel } from './RuleEditorFormModel';
 import { FormSubmissionErrorToastNotification } from './FormSubmitionErrorToastNotification';
@@ -33,6 +33,7 @@ import { DetectionVisualEditor } from './DetectionVisualEditor';
 import { useCallback } from 'react';
 import { getLogTypeOptions } from '../../../../utils/helpers';
 import { getLogTypeLabel } from '../../../LogTypes/utils/helpers';
+import { getSeverityLabel } from '../../../Correlations/utils/constants';
 
 export interface VisualRuleEditorProps {
   initialValue: RuleEditorFormModel;
@@ -115,6 +116,8 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
         if (!values.logType) {
           errors.logType = 'Log type is required';
+        } else if (!ruleTypes.some((type) => type.value === values.logType)) {
+          errors.logType = `Invalid log type`;
         }
 
         if (!values.detection) {
@@ -123,6 +126,8 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
         if (!values.level) {
           errors.level = 'Rule level is required';
+        } else if (!ruleSeverity.some((sev) => sev.value === values.level)) {
+          errors.level = `Invalid rule level. Should be one of critical, high, medium, low, informational`;
         }
 
         if (!values.author) {
@@ -135,6 +140,8 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
         if (!values.status) {
           errors.status = 'Rule status is required';
+        } else if (!ruleStatus.includes(values.status)) {
+          errors.status = `Invalid rule status. Should be one of experimental, test, stable`;
         }
 
         if (!validateTags(values.tags)) {
@@ -328,12 +335,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     isInvalid={!!props.errors?.level}
                     placeholder="Select a rule level"
                     data-test-subj={'rule_severity_dropdown'}
-                    options={[
-                      { value: 'critical', label: 'Critical' },
-                      { value: 'high', label: 'High' },
-                      { value: 'medium', label: 'Medium' },
-                      { value: 'low', label: 'Low' },
-                    ]}
+                    options={ruleSeverity.map(({ name, value }) => ({ label: name, value }))}
                     singleSelection={{ asPlainText: true }}
                     onChange={(e) => {
                       props.handleChange('level')(e[0]?.value ? e[0].value : '');
@@ -341,7 +343,12 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     onBlur={props.handleBlur('level')}
                     selectedOptions={
                       props.values.level
-                        ? [{ value: props.values.level, label: props.values.level }]
+                        ? [
+                            {
+                              value: props.values.level,
+                              label: getSeverityLabel(props.values.level),
+                            },
+                          ]
                         : []
                     }
                   />
