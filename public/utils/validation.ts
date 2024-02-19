@@ -22,7 +22,7 @@ export const DETECTION_CONDITION_REGEX = new RegExp(
 
 // This regex pattern support MIN to MAX character limit, capital and lowercase letters,
 // numbers 0-9, hyphens, spaces, and underscores.
-export const AUTHOR_REGEX = new RegExp(/^[a-zA-Z0-9 _,-.]{5,50}$/);
+export const AUTHOR_REGEX = new RegExp(/^[a-zA-Z0-9 _,-.\\(\\)@#$&;]{1,50}$/);
 
 /**
  * Validates a string against NAME_REGEX.
@@ -72,12 +72,11 @@ export function getNameErrorMessage(
   }
 }
 
-export const MIN_DESCRIPTION_CHARACTERS = 0;
-export const MAX_DESCRIPTION_CHARACTERS = 500;
+export const MAX_DESCRIPTION_CHARACTERS = '65,535';
 
 // This regex pattern support MIN to MAX character limit, capital and lowercase letters,
 // numbers 0-9, hyphens, periods, spaces, and underscores.
-export const DESCRIPTION_REGEX = new RegExp(/^[a-zA-Z0-9 _.,-]{0,500}$/);
+export const DESCRIPTION_REGEX = new RegExp(/^[a-zA-Z0-9 _.,-\\(\\)@#$&;]{0,65535}$/);
 
 /**
  * Validates a string against NAME_REGEX.
