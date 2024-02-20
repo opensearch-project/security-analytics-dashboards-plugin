@@ -270,8 +270,9 @@ export default class ConfigureFieldMapping extends Component<
 
         Object.keys(mappingsView.response.properties).forEach((ruleFieldName) => {
           // Filter the mappings view to include only the rule fields for the enabled rules
-          if (!ruleFieldsForEnabledRules.has(ruleFieldName)) {
+          if (!ruleFieldsForEnabledRules.has(ruleFieldName) && ruleFieldName !== 'timestamp') {
             delete mappingsView.response.properties[ruleFieldName];
+            delete existingMappings[ruleFieldName];
             return;
           }
 
@@ -290,6 +291,7 @@ export default class ConfigureFieldMapping extends Component<
 
         mappingsView.response.unmapped_field_aliases?.forEach((ruleFieldName) => {
           if (
+            ruleFieldName !== 'timestamp' &&
             !ruleFieldsForEnabledRules.has(ruleFieldName) &&
             !threatIntelFeedFields.has(ruleFieldName)
           ) {
