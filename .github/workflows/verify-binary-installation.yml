@@ -6,7 +6,7 @@ env:
   CI: 1
   # avoid warnings like "tput: No value for $TERM and no -T specified"
   TERM: xterm
-  PLUGIN_NAME: opensearch-security-analytics
+  PLUGIN_NAME: opensearch-security
   OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
 
 jobs:
@@ -22,43 +22,36 @@ jobs:
       - name: Checkout Branch
         uses: actions/checkout@v3
 
-      - name: Download security plugin and create setup scripts
-        uses: derek-ho/security-dashboards-plugin/.github/actions/download-install-run-dashboards-with-plugin@generalize-binary-install-workflow
+      - name: Set env
+        run: |
+          opensearch_version=$(node -p "require('./opensearch_dashboards.json').opensearchDashboardsVersion")
+          plugin_version=$(node -p "require('./opensearch_dashboards.json').version")
+          echo "OPENSEARCH_VERSION=$opensearch_version" >> $GITHUB_ENV
+          echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Run Opensearch with security
+        uses: derek-ho/start-opensearch@v2
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           security-enabled: false
 
-      
-      - uses: actions/checkout@v2
+      - name: Run Dashboard with Security Dashboards Plugin
+        id: setup-dashboards
+        uses: derek-ho/setup-opensearch-dashboards@main
         with:
-          path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
-
-      - name: Install dependencies
-        run: |
-          yarn osd bootstrap
-        working-directory: OpenSearch-Dashboards
-        shell: bash
-
-      - name: Build Plugin Zip
-        run: |
-          yarn build
-        working-directory: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
-        shell: bash
-
-      - name: Install plugin to OSD Linux
-        run: | 
-          build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64/bin/opensearch-dashboards-plugin install file:$(pwd)/plugins/security--analytics-dashboards-plugin/build/security-analytics-dashboards-${{env.PLUGIN_VERSION}}.zip
-        working-directory: OpenSearch-Dashboards
-        shell: bash
-
+          plugin_name: security-analytics-dashboards-plugin
+          built_plugin_name: security--analytics-dashboards
+          install_zip: true
+          
       - name: Start the binary
         run: | 
           nohup ./bin/opensearch-dashboards &
-        working-directory: OpenSearch-Dashboards/build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64
+        working-directory: ${{ steps.setup-dashboards.outputs.dashboards-directory }}
         shell: bash
 
       - name: Health check 
         run: |
-          timeout 300 bash -c 'while [[ "$(curl -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} -k http://localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
+          timeout 300 bash -c 'while [[ "$(curl http://localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
         shell: bash
 
