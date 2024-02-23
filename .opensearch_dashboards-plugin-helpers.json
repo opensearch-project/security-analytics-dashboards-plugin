@@ -4,8 +4,7 @@
     "tsconfig.json",
     "yarn.lock",
     ".yarnrc",
-    "{lib,public,server,webpackShims,translations,utils,models,test,common,types}/**/*",
-    "!__tests__",
-    "config.ts"
+    "{lib,public,server,webpackShims,translations,utils,models,test}/**/*",
+    "!__tests__"
   ]
 }
