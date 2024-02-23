@@ -6,8 +6,6 @@ env:
   CI: 1
   # avoid warnings like "tput: No value for $TERM and no -T specified"
   TERM: xterm
-  PLUGIN_NAME: opensearch-security
-  OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
 
 jobs:
   verify-binary-installation:
