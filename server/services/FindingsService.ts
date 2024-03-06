@@ -11,9 +11,9 @@ import {
   ResponseError,
   RequestHandlerContext,
 } from 'opensearch-dashboards/server';
-import { GetFindingsParams, GetFindingsResponse } from '../models/interfaces';
 import { ServerResponse } from '../models/types';
 import { CLIENT_DETECTOR_METHODS } from '../utils/constants';
+import { GetFindingsParams, GetFindingsResponse } from '../../types';
 
 export default class FindingsService {
   osDriver: ILegacyCustomClusterClient;
@@ -33,27 +33,8 @@ export default class FindingsService {
     IOpenSearchDashboardsResponse<ServerResponse<GetFindingsResponse> | ResponseError>
   > => {
     try {
-      const { detectorType, detectorId, sortOrder, size } = request.query;
-      const defaultParams = {
-        sortOrder,
-        size,
-      };
-      let params: GetFindingsParams;
-
-      if (detectorId) {
-        params = {
-          ...defaultParams,
-          detectorId,
-        };
-      } else if (detectorType) {
-        params = {
-          ...defaultParams,
-          detectorType,
-        };
-      } else {
-        throw Error(`Invalid request params: detectorId or detectorType must be specified`);
-      }
-
+      const params: GetFindingsParams = { ...request.query };
+      console.log(JSON.stringify(params));
       const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
       const getFindingsResponse: GetFindingsResponse = await callWithRequest(
         CLIENT_DETECTOR_METHODS.GET_FINDINGS,

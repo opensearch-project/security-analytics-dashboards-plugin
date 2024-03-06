@@ -15,6 +15,7 @@ import { DetectorsService, FindingsService, CorrelationService } from '../servic
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../utils/helpers';
 import { DEFAULT_EMPTY_DATA } from '../utils/constants';
+import { DataStore } from './DataStore';
 
 export interface ICorrelationsCache {
   [key: string]: CorrelationRule[];
@@ -253,31 +254,26 @@ export class CorrelationsStore implements ICorrelationsStore {
       const detectors = detectorsRes.response.hits.hits;
       let findings: { [id: string]: CorrelationFinding } = {};
       for (let detector of detectors) {
-        const findingRes = await this.findingsService.getFindings({ detectorId: detector._id });
+        const detectorFindings = await DataStore.findings.getFindingsPerDetector(detector._id);
+        detectorFindings.forEach((f) => {
+          const rule = allRules.find((rule) => rule._id === f.queries[0].id);
+          findings[f.id] = {
+            ...f,
+            id: f.id,
+            logType: detector._source.detector_type,
+            detector: detector,
+            detectorName: detector._source.name,
+            timestamp: new Date(f.timestamp).toLocaleString(),
+            detectionRule: rule
+              ? {
+                  name: rule._source.title,
+                  severity: rule._source.level,
+                }
+              : { name: DEFAULT_EMPTY_DATA, severity: DEFAULT_EMPTY_DATA },
+          };
+        });
 
-        if (findingRes.ok) {
-          findingRes.response.findings.forEach((f) => {
-            const rule = allRules.find((rule) => rule._id === f.queries[0].id);
-            findings[f.id] = {
-              ...f,
-              id: f.id,
-              logType: detector._source.detector_type,
-              detector: detector,
-              detectorName: detector._source.name,
-              timestamp: new Date(f.timestamp).toLocaleString(),
-              detectionRule: rule
-                ? {
-                    name: rule._source.title,
-                    severity: rule._source.level,
-                  }
-                : { name: DEFAULT_EMPTY_DATA, severity: DEFAULT_EMPTY_DATA },
-            };
-          });
-
-          this.allFindings = findings;
-        } else {
-          this.allFindings = {};
-        }
+        this.allFindings = findings;
       }
     }
 
@@ -303,6 +299,7 @@ export class CorrelationsStore implements ICorrelationsStore {
           correlatedFindings.push({
             ...allFindings[f.finding],
             correlationScore: f.score < 0.01 ? '0.01' : f.score.toFixed(2),
+            rules: f.rules,
           });
         }
       });

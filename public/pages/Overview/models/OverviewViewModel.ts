@@ -12,6 +12,7 @@ import { errorNotificationToast, isThreatIntelQuery } from '../../../utils/helpe
 import dateMath from '@elastic/datemath';
 import moment from 'moment';
 import { DataStore } from '../../../store/DataStore';
+import { Finding } from '../../../../types';
 
 export interface OverviewViewModel {
   detectors: DetectorHit[];
@@ -78,35 +79,30 @@ export class OverviewViewModelActor {
 
     try {
       for (let id of detectorIds) {
-        const findingRes = await this.services?.findingsService.getFindings({ detectorId: id });
+        let detectorFindings: Finding[] = await DataStore.findings.getFindingsPerDetector(id);
+        const logType = detectorInfo.get(id)?.logType;
+        const detectorName = detectorInfo.get(id)?.name || '';
+        const detectorFindingItems: FindingItem[] = detectorFindings.map((finding) => {
+          const ruleQueries = finding.queries.filter(({ id }) => !isThreatIntelQuery(id));
+          const ids = ruleQueries.map((query) => query.id);
+          ids.forEach((id) => ruleIds.add(id));
 
-        if (findingRes?.ok) {
-          const logType = detectorInfo.get(id)?.logType;
-          const detectorName = detectorInfo.get(id)?.name || '';
-          const detectorFindings: any[] = findingRes.response.findings.map((finding) => {
-            const ruleQueries = finding.queries.filter(({ id }) => !isThreatIntelQuery(id));
-            const ids = ruleQueries.map((query) => query.id);
-            ids.forEach((id) => ruleIds.add(id));
-
-            const findingTime = new Date(finding.timestamp);
-            findingTime.setMilliseconds(0);
-            findingTime.setSeconds(0);
-            return {
-              detector: detectorName,
-              findingName: finding.id,
-              id: finding.id,
-              time: findingTime,
-              logType: logType || '',
-              ruleId: ruleQueries[0]?.id || finding.queries[0].id,
-              ruleName: '',
-              ruleSeverity: '',
-              isThreatIntelOnlyFinding: finding.detectionType === 'Threat intelligence',
-            };
-          });
-          findingItems = findingItems.concat(detectorFindings);
-        } else {
-          errorNotificationToast(this.notifications, 'retrieve', 'findings', findingRes?.error);
-        }
+          const findingTime = new Date(finding.timestamp);
+          findingTime.setMilliseconds(0);
+          findingTime.setSeconds(0);
+          return {
+            detector: detectorName,
+            findingName: finding.id,
+            id: finding.id,
+            time: findingTime,
+            logType: logType || '',
+            ruleId: ruleQueries[0]?.id || finding.queries[0].id,
+            ruleName: '',
+            ruleSeverity: '',
+            isThreatIntelOnlyFinding: finding.detectionType === 'Threat intelligence',
+          };
+        });
+        findingItems = findingItems.concat(detectorFindingItems);
       }
     } catch (e: any) {
       errorNotificationToast(this.notifications, 'retrieve', 'findings', e);

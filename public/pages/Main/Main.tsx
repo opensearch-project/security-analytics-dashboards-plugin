@@ -350,7 +350,6 @@ export default class Main extends Component<MainProps, MainState> {
                               {...props}
                               setDateTimeFilter={this.setDateTimeFilter}
                               dateTimeFilter={this.state.dateTimeFilter}
-                              findingsService={services.findingsService}
                               history={props.history}
                               correlationService={services?.correlationsService}
                               opensearchService={services.opensearchService}

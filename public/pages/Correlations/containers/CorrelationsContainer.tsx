@@ -221,14 +221,32 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     }
 
     this.setState({ loadingGraphData: true });
-    const allFindings = await DataStore.correlations.fetchAllFindings();
-    const detectorType = allFindings[findingId].logType;
-    const correlations = await DataStore.correlations.getCorrelatedFindings(
+
+    let detectorType: string;
+    const node = this.state.graphData.graph.nodes.find((node) => node.id === findingId)!;
+
+    if (node) {
+      detectorType = node.saLogType;
+    } else {
+      const allFindings = await DataStore.correlations.fetchAllFindings();
+      detectorType = allFindings[findingId].logType;
+    }
+
+    const correlatedFindingsInfo = await DataStore.correlations.getCorrelatedFindings(
       findingId,
       detectorType
     );
-    this.setState({ specificFindingInfo: correlations, loadingGraphData: false });
-    this.updateGraphDataState(correlations);
+    const correlationRules = await DataStore.correlations.getCorrelationRules();
+    correlatedFindingsInfo.correlatedFindings = correlatedFindingsInfo.correlatedFindings.map(
+      (finding) => {
+        return {
+          ...finding,
+          correlationRule: correlationRules.find((rule) => finding.rules?.indexOf(rule.id) !== -1),
+        };
+      }
+    );
+    this.setState({ specificFindingInfo: correlatedFindingsInfo, loadingGraphData: false });
+    this.updateGraphDataState(correlatedFindingsInfo);
   };
 
   private updateGraphDataState(specificFindingInfo: SpecificFindingCorrelations) {
@@ -290,6 +308,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         size: 12,
       },
       chosen: true,
+      saLogType: finding.logType,
     });
   }
 
