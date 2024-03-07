@@ -268,6 +268,7 @@ export class CorrelationsStore implements ICorrelationsStore {
               ? {
                   name: rule._source.title,
                   severity: rule._source.level,
+                  tags: rule._source.tags,
                 }
               : { name: DEFAULT_EMPTY_DATA, severity: DEFAULT_EMPTY_DATA },
           };

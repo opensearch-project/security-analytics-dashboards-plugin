@@ -51,6 +51,7 @@ import datemath from '@elastic/datemath';
 import { ruleSeverity } from '../../Rules/utils/constants';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Network } from 'react-graph-vis';
+import { getLogTypeLabel } from '../../LogTypes/utils/helpers';
 
 interface CorrelationsProps
   extends RouteComponentProps<
@@ -144,6 +145,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
           detectionRule: {
             name: (state.finding as any).ruleName,
             severity: (state.finding as any).ruleSeverity,
+            tags: (state.finding as any).tags,
           },
         },
         correlatedFindings: state.correlatedFindings.filter((finding) =>
@@ -286,6 +288,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
 
     nodes.push({
       id: finding.id,
+      label: getLogTypeLabel(finding.logType),
       title: this.createNodeTooltip(finding),
       color: {
         background: borderColor,
@@ -299,9 +302,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
           border: borderColor,
         },
       },
-      widthConstraint: {
-        minimum: getNodeSize(finding.detectionRule.severity),
-      },
+      size: 17,
       borderWidth: 2,
       font: {
         multi: 'html',
@@ -482,9 +483,6 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                 </EuiFlexItem>
               </EuiFlexGroup>
               <EuiHorizontalRule margin="xs" />
-              <EuiTitle size="xs">
-                <p>Finding</p>
-              </EuiTitle>
               <EuiSpacer size="xs" />
               <FindingCard
                 id={findingCardsData.finding.id}

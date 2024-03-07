@@ -30,7 +30,7 @@ export type CorrelationFinding = {
   correlationRule?: CorrelationRule;
   logType: string;
   timestamp: string;
-  detectionRule: { name: string; severity: string };
+  detectionRule: { name: string; severity: string; tags?: { value: string }[] };
   detectorName?: string;
   rules?: string[];
   detector?: DetectorHit;

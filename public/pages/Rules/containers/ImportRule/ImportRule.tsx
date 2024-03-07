@@ -8,7 +8,6 @@ import { RuleEditorContainer } from '../../components/RuleEditor/RuleEditorConta
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { EuiButton, EuiFilePicker, EuiFlexGroup, EuiFlexItem, EuiSpacer } from '@elastic/eui';
 import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
-import { Rule } from '../../../../../models/interfaces';
 import { RouteComponentProps } from 'react-router-dom';
 import { dump, load } from 'js-yaml';
 import { ContentPanel } from '../../../../components/ContentPanel';
@@ -16,6 +15,7 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { setBreadCrumb } from '../../utils/helpers';
 import { yamlMediaTypes } from '../../utils/constants';
+import { Rule } from '../../../../../types';
 
 export interface ImportRuleProps {
   services: BrowserServices;

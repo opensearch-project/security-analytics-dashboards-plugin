@@ -25,7 +25,7 @@ export interface FindingCardProps {
   id: string;
   logType: string;
   timestamp: string;
-  detectionRule: { name: string; severity: string };
+  detectionRule: CorrelationFinding['detectionRule'];
   correlationData?: {
     score: string;
     onInspect: (findingId: string, logType: string) => void;
@@ -57,50 +57,56 @@ export const FindingCard: React.FC<FindingCardProps> = ({
     });
   }
 
-  const badgePadding = '0px 4px';
+  const badgePadding = '0px 6px';
   const { text: severityText, background } = getSeverityColor(detectionRule.severity);
-
-  const header = (
-    <EuiFlexGroup justifyContent="spaceBetween" alignItems="center" gutterSize="s">
-      <EuiFlexItem grow={false}>
-        <div>
-          <EuiBadge color={background} style={{ padding: badgePadding, color: severityText }}>
-            {getSeverityLabel(detectionRule.severity)}
-          </EuiBadge>
-          <EuiBadge color="hollow" style={{ padding: '0px 4px' }}>
-            {getLabelFromLogType(logType)}
-          </EuiBadge>
-        </div>
-      </EuiFlexItem>
-      <EuiFlexItem grow={false}>
-        <div>
-          <EuiToolTip content={'View finding details'}>
-            <EuiButtonIcon
-              aria-label={'View finding details'}
-              data-test-subj={`view-details-icon`}
-              iconType={'inspect'}
-              onClick={() => DataStore.findings.openFlyout(finding, findings, false)}
-            />
-          </EuiToolTip>
-          <EuiButtonIcon
-            iconType={correlationData ? 'pin' : 'pinFilled'}
-            onClick={() => correlationData?.onInspect(id, logType)}
-            disabled={!correlationData}
-          />
-        </div>
-      </EuiFlexItem>
-    </EuiFlexGroup>
+  const logTypeAndSeverityItem = (
+    <div>
+      <EuiBadge
+        color={background}
+        style={{ padding: badgePadding, color: severityText, marginRight: 10 }}
+      >
+        {getSeverityLabel(detectionRule.severity)}
+      </EuiBadge>
+      <span style={{ fontSize: 12 }}>
+        <b>{getLabelFromLogType(logType)}</b>
+      </span>
+    </div>
+  );
+  const openFindingFlyoutButton = (
+    <EuiToolTip content={'View finding details'}>
+      <EuiButtonIcon
+        aria-label={'View finding details'}
+        data-test-subj={`view-details-icon`}
+        iconType={'inspect'}
+        onClick={() => DataStore.findings.openFlyout(finding, findings, false)}
+      />
+    </EuiToolTip>
   );
 
-  const attrList = (
-    <EuiDescriptionList type="column" textStyle="reverse" listItems={list} compressed />
-  );
-
-  const relatedFindingCard = (
-    <EuiPanel>
-      {header}
+  const pinnedFindingHeader = (
+    <>
+      <EuiFlexGroup justifyContent="spaceBetween" alignItems="center" gutterSize="s">
+        <EuiFlexItem grow={false}>
+          <EuiText color="success">{id}</EuiText>
+        </EuiFlexItem>
+        <EuiFlexItem grow={false}>{openFindingFlyoutButton}</EuiFlexItem>
+      </EuiFlexGroup>
       <EuiSpacer size="s" />
-      <EuiFlexGroup justifyContent="spaceBetween" gutterSize="xs" alignItems="center">
+      <EuiFlexGroup justifyContent="spaceBetween" alignItems="center" gutterSize="s">
+        <EuiFlexItem grow={false}>{logTypeAndSeverityItem}</EuiFlexItem>
+        <EuiFlexItem grow={false}>
+          <EuiText size="s" color="subdued">
+            {timestamp}
+          </EuiText>
+        </EuiFlexItem>
+      </EuiFlexGroup>
+      <EuiHorizontalRule margin="s" />
+    </>
+  );
+
+  const relatedFindingHeader = (
+    <>
+      <EuiFlexGroup justifyContent="spaceBetween" alignItems="center" gutterSize="s">
         <EuiFlexItem grow={false}>
           <EuiText size="s">
             Correlation score{' '}
@@ -118,23 +124,58 @@ export const FindingCard: React.FC<FindingCardProps> = ({
           </EuiText>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
+          <div>
+            {openFindingFlyoutButton}
+            <EuiButtonIcon
+              iconType={'pin'}
+              onClick={() => correlationData?.onInspect(id, logType)}
+            />
+          </div>
+        </EuiFlexItem>
+      </EuiFlexGroup>
+      <EuiSpacer size="s" />
+      <EuiFlexGroup justifyContent="spaceBetween" gutterSize="xs" alignItems="center">
+        <EuiFlexItem grow={false}>{logTypeAndSeverityItem}</EuiFlexItem>
+        <EuiFlexItem grow={false}>
           <EuiText size="s" color="subdued">
             {timestamp}
           </EuiText>
         </EuiFlexItem>
       </EuiFlexGroup>
       <EuiHorizontalRule margin="s" />
-      {attrList}
+    </>
+  );
+
+  const attrList = (
+    <EuiDescriptionList type="column" textStyle="reverse" listItems={list} compressed />
+  );
+
+  const relatedFindingCard = (
+    <EuiPanel paddingSize="s">
+      <EuiFlexGroup justifyContent="spaceBetween" gutterSize="m">
+        <EuiFlexItem grow={false}>
+          <EuiIcon type={'returnKey'} style={{ transform: 'scale(-1, 1)', marginTop: 3 }} />
+        </EuiFlexItem>
+        <EuiFlexItem>
+          {relatedFindingHeader}
+          {attrList}
+        </EuiFlexItem>
+      </EuiFlexGroup>
     </EuiPanel>
   );
 
-  return correlationData ? (
-    relatedFindingCard
-  ) : (
+  const pinnedFindingRuleTags = detectionRule.tags
+    ? detectionRule.tags.map((tag) => <EuiBadge>{tag.value}</EuiBadge>)
+    : null;
+
+  const pinnedFindingCard = (
     <EuiPanel>
-      {header}
-      <EuiSpacer size="m" />
+      {pinnedFindingHeader}
       {attrList}
+      <EuiSpacer size="m" />
+      {pinnedFindingRuleTags}
     </EuiPanel>
   );
+
+  return correlationData ? relatedFindingCard : pinnedFindingCard;
 };

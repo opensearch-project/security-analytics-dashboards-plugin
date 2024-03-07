@@ -6,7 +6,7 @@
 import { EuiCodeBlock } from '@elastic/eui';
 import React from 'react';
 import { mapRuleToYamlObject, mapYamlObjectToYamlString } from '../../utils/mappers';
-import { Rule } from '../../../../../models/interfaces';
+import { Rule } from '../../../../../types';
 
 export interface RuleContentYamlViewerProps {
   rule: Rule;

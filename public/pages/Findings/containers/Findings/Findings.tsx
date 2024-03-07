@@ -318,6 +318,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
           finding['ruleName'] = rule.title;
           finding['ruleSeverity'] =
             rule.level === 'critical' ? rule.level : finding['ruleSeverity'] || rule.level;
+          finding['tags'] = rule.tags;
         }
         return finding;
       });

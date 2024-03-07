@@ -59,6 +59,7 @@ import { DateTimeFilter } from '../../../Overview/models/interfaces';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 import { Detector } from '../../../../../types';
 import { DurationRange } from '@elastic/eui/src/components/date_picker/types';
+import { DataStore } from '../../../../store/DataStore';
 
 export interface AlertsProps extends RouteComponentProps {
   alertService: AlertsService;
@@ -301,7 +302,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
 
   async getAlerts() {
     this.setState({ loading: true });
-    const { alertService, detectorService, notifications } = this.props;
+    const { detectorService, notifications } = this.props;
     const { detectors } = this.state;
     try {
       const detectorsRes = await detectorService.getDetectors();
@@ -316,18 +317,11 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
 
         for (let id of detectorIds) {
           if (!detectorId || detectorId === id) {
-            const alertsRes = await alertService.getAlerts({ detector_id: id });
-
-            if (alertsRes.ok) {
-              const detectorAlerts = alertsRes.response.alerts.map((alert) => {
-                const detector = detectors[id];
-                if (!alert.detector_id) alert.detector_id = id;
-                return { ...alert, detectorName: detector.name };
-              });
-              alerts = alerts.concat(detectorAlerts);
-            } else {
-              errorNotificationToast(notifications, 'retrieve', 'alerts', alertsRes.error);
-            }
+            const detectorAlerts = await DataStore.alerts.getAlertsByDetector(
+              id,
+              detectors[id].name
+            );
+            alerts = alerts.concat(detectorAlerts);
           }
         }
 
@@ -335,7 +329,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       } else {
         errorNotificationToast(notifications, 'retrieve', 'detectors', detectorsRes.error);
       }
-    } catch (e) {
+    } catch (e: any) {
       errorNotificationToast(notifications, 'retrieve', 'alerts', e);
     }
     this.filterAlerts();
@@ -413,7 +407,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
           }
         }
       }
-    } catch (e) {
+    } catch (e: any) {
       errorNotificationToast(notifications, 'acknowledge', 'alerts', e);
     }
     if (successCount)

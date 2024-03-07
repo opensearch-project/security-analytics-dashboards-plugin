@@ -127,31 +127,24 @@ export class OverviewViewModelActor {
   }
 
   private async updateAlerts() {
-    const detectorInfo = new Map<string, string>();
-    this.overviewViewModel.detectors.forEach((detector) => {
-      detectorInfo.set(detector._id, detector._source.detector_type);
-    });
-    const detectorIds = detectorInfo.keys();
     let alertItems: AlertItem[] = [];
 
     try {
-      for (let id of detectorIds) {
-        const alertsRes = await this.services?.alertService.getAlerts({ detector_id: id });
-
-        if (alertsRes?.ok) {
-          const logType = detectorInfo.get(id) as string;
-          const detectorAlertItems: AlertItem[] = alertsRes.response.alerts.map((alert) => ({
-            id: alert.id,
-            severity: alert.severity,
-            time: alert.last_notification_time,
-            triggerName: alert.trigger_name,
-            logType,
-            acknowledged: !!alert.acknowledged_time,
-          }));
-          alertItems = alertItems.concat(detectorAlertItems);
-        } else {
-          errorNotificationToast(this.notifications, 'retrieve', 'alerts', alertsRes?.error);
-        }
+      for (let detector of this.overviewViewModel.detectors) {
+        const id = detector._id;
+        const detectorAlerts = await DataStore.alerts.getAlertsByDetector(
+          id,
+          detector._source.name
+        );
+        const detectorAlertItems: AlertItem[] = detectorAlerts.map((alert) => ({
+          id: alert.id,
+          severity: alert.severity,
+          time: alert.last_notification_time,
+          triggerName: alert.trigger_name,
+          logType: detector._source.detector_type,
+          acknowledged: !!alert.acknowledged_time,
+        }));
+        alertItems = alertItems.concat(detectorAlertItems);
       }
     } catch (e: any) {
       errorNotificationToast(this.notifications, 'retrieve', 'alerts', e);

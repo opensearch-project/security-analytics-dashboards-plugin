@@ -12,7 +12,7 @@ import {
   UpdateRuleResponse,
 } from '../../server/models/interfaces';
 import { API } from '../../server/utils/constants';
-import { Rule } from '../../models/interfaces';
+import { Rule } from '../../types';
 
 export default class RuleService {
   httpClient: HttpSetup;

@@ -34,7 +34,6 @@ export default class FindingsService {
   > => {
     try {
       const params: GetFindingsParams = { ...request.query };
-      console.log(JSON.stringify(params));
       const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
       const getFindingsResponse: GetFindingsResponse = await callWithRequest(
         CLIENT_DETECTOR_METHODS.GET_FINDINGS,

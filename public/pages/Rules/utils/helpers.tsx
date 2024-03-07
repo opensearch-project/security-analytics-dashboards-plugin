@@ -12,12 +12,11 @@ import {
 } from '../../../utils/helpers';
 import { ruleSeverity, ruleSource, ruleTypes, sigmaRuleLogSourceFields } from './constants';
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
-import { Rule } from '../../../../models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { AUTHOR_REGEX, validateDescription, validateName } from '../../../utils/validation';
 import { dump, load } from 'js-yaml';
 import { BREADCRUMBS } from '../../../utils/constants';
-import { RuleItemInfoBase, RulesTableColumnFields } from '../../../../types';
+import { RuleItemInfoBase, RulesTableColumnFields, Rule } from '../../../../types';
 import { getSeverityColor, getSeverityLabel } from '../../Correlations/utils/constants';
 
 export interface RuleTableItem {

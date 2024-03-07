@@ -22,10 +22,10 @@ import {
   UpdateRuleResponse,
 } from '../models/interfaces';
 import { CLIENT_RULE_METHODS } from '../utils/constants';
-import { Rule } from '../../models/interfaces';
 import { ServerResponse } from '../models/types';
 import { load, safeDump } from 'js-yaml';
 import moment from 'moment';
+import { Rule } from '../../types';
 
 export default class RulesService {
   osDriver: ILegacyCustomClusterClient;
