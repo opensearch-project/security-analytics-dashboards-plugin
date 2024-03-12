@@ -58,3 +58,5 @@ export const ruleSource: string[] = ['Standard', 'Custom'];
 export const ruleStatus: string[] = ['experimental', 'test', 'stable'];
 
 export const sigmaRuleLogSourceFields = ['product', 'category', 'service'];
+
+export const yamlMediaTypes = new Set(['application/x-yaml', 'text/yaml', 'text/x-yaml']);

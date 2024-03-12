@@ -5,6 +5,7 @@
 
 import { OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
 import { getLogTypeLabel } from '../../public/pages/LogTypes/utils/helpers';
+import { setupIntercept } from '../support/helpers';
 
 const uniqueId = Cypress._.random(0, 1e6);
 const SAMPLE_RULE = {
@@ -193,7 +194,7 @@ describe('Rules', () => {
 
   describe('...should validate form fields', () => {
     beforeEach(() => {
-      cy.intercept('/rules/_search').as('rulesSearch');
+      setupIntercept(cy, '/rules/_search', 'rulesSearch');
       // Visit Rules page
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
       cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
@@ -484,7 +485,7 @@ describe('Rules', () => {
 
   describe('...should validate create rule flow', () => {
     beforeEach(() => {
-      cy.intercept('/rules/_search').as('rulesSearch');
+      setupIntercept(cy, '/rules/_search', 'rulesSearch');
       // Visit Rules page
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
       cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
@@ -509,10 +510,7 @@ describe('Rules', () => {
         cy.get('[data-test-subj="rule_yaml_editor"]').contains(line)
       );
 
-      cy.intercept({
-        url: '/rules',
-      }).as('getRules');
-
+      setupIntercept(cy, '/rules/_search', 'getRules');
       submitRule();
 
       cy.wait('@getRules');
@@ -562,10 +560,7 @@ describe('Rules', () => {
       getDescriptionField().type(SAMPLE_RULE.description);
       getDescriptionField().should('have.value', SAMPLE_RULE.description);
 
-      cy.intercept({
-        url: '/rules',
-      }).as('getRules');
-
+      setupIntercept(cy, '/rules/_search', 'getRules');
       submitRule();
 
       cy.waitForPageLoad('rules', {
@@ -585,19 +580,8 @@ describe('Rules', () => {
     });
 
     it('...can be deleted', () => {
-      cy.intercept({
-        url: '/rules',
-      }).as('deleteRule');
+      setupIntercept(cy, `/rules/_search`, 'getRules');
 
-      cy.intercept('POST', 'rules/_search?prePackaged=true', {
-        delay: 5000,
-      }).as('getPrePackagedRules');
-
-      cy.intercept('POST', 'rules/_search?prePackaged=false', {
-        delay: 5000,
-      }).as('getCustomRules');
-
-      cy.wait('@rulesSearch');
       cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
 
       // Click the rule link to open the details flyout
@@ -615,9 +599,8 @@ describe('Rules', () => {
             .click()
             .then(() => cy.get('.euiModalFooter > .euiButton').contains('Delete').click());
 
-          cy.wait('@deleteRule');
-          cy.wait('@getCustomRules');
-          cy.wait('@getPrePackagedRules');
+          cy.wait(5000);
+          cy.wait('@getRules');
 
           // Search for sample_detector, presumably deleted
           cy.wait(3000);

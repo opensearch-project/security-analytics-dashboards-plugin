@@ -15,6 +15,7 @@ import { ContentPanel } from '../../../../components/ContentPanel';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { setBreadCrumb } from '../../utils/helpers';
+import { yamlMediaTypes } from '../../utils/constants';
 
 export interface ImportRuleProps {
   services: BrowserServices;
@@ -28,7 +29,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
   const onChange = useCallback((files: any) => {
     setFileError('');
 
-    if (files[0]?.type === 'application/x-yaml') {
+    if (yamlMediaTypes.has(files[0]?.type)) {
       let reader = new FileReader();
       reader.readAsText(files[0]);
       reader.onload = function () {
