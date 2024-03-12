@@ -50,3 +50,5 @@ export const ruleSeverity: {
 export const ruleSource: string[] = ['Sigma', 'Custom'];
 
 export const ruleStatus: string[] = ['experimental', 'test', 'stable'];
+
+export const yamlMediaTypes = new Set(['application/x-yaml', 'text/yaml', 'text/x-yaml']);
