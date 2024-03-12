@@ -66,7 +66,7 @@
     "@testing-library/user-event": "^13.1.9",
     "@types/react-dom": "^16.9.8",
     "@types/react-router-dom": "^5.3.2",
-    "cypress": "^6.0.0",
+    "cypress": "9.5.4",
     "cypress-real-events": "1.7.6",
     "cypress-recurse": "^1.27.0",
     "eslint-plugin-no-unsanitized": "^3.0.2",
