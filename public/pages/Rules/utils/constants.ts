@@ -34,3 +34,5 @@ export const ruleSeverity: { name: string; value: string; priority: string; colo
 export const ruleSource: string[] = ['Sigma', 'Custom'];
 
 export const ruleStatus: string[] = ['experimental', 'test', 'stable'];
+
+export const yamlMediaTypes = new Set(['application/x-yaml', 'text/yaml', 'text/x-yaml']);
