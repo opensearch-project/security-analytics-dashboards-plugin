@@ -475,22 +475,12 @@ describe('Detectors', () => {
     });
 
     it('...can be deleted', () => {
-      setupIntercept(
-        cy,
-        '/_plugins/_security_analytics/rules/_search?prePackaged=true',
-        'getSigmaRules'
-      );
-      setupIntercept(
-        cy,
-        '/_plugins/_security_analytics/rules/_search?prePackaged=false',
-        'getCustomRules'
-      );
+      setupIntercept(cy, '/rules/_search', 'getRules');
 
       openDetectorDetails(detectorName);
 
       cy.wait('@detectorsSearch');
-      cy.wait('@getCustomRules');
-      cy.wait('@getSigmaRules');
+      cy.wait('@getRules');
 
       cy.getButtonByText('Actions')
         .click({ force: true })
