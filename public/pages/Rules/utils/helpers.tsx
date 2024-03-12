@@ -10,7 +10,7 @@ import {
   formatRuleType,
   getLogTypeFilterOptions,
 } from '../../../utils/helpers';
-import { ruleSeverity, ruleSource, ruleTypes } from './constants';
+import { ruleSeverity, ruleSource, ruleTypes, sigmaRuleLogSourceFields } from './constants';
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
 import { Rule } from '../../../../models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
@@ -180,16 +180,15 @@ export function setBreadCrumb(
 
 export function getLogTypeFromLogSource(logSource: { [k: string]: string }) {
   const logTypes = new Set(ruleTypes.map(({ value }) => value));
-
   let logType;
-  ['product', 'category', 'service'].some((key) => {
-    if (logSource[key] && logTypes.has(logSource[key])) {
-      logType = logSource[key];
-      return true;
-    }
 
-    return false;
-  });
+  for (let field of sigmaRuleLogSourceFields) {
+    logType = logSource[field];
+
+    if (logType && logTypes.has(logType)) {
+      break;
+    }
+  }
 
   return logType;
 }

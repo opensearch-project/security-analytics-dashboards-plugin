@@ -103,6 +103,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
             multiple={false}
             aria-label="file picker"
             isInvalid={!!fileError}
+            data-test-subj="import_rule_file_picker"
           />
           {fileError && <div style={{ color: 'red', margin: '0 auto' }}>Error: {fileError}</div>}
         </ContentPanel>
