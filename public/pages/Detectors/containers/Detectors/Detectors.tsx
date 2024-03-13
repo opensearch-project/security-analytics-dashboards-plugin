@@ -124,13 +124,9 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
     }
     await this.getDetectors();
     const selectedItemIds = new Set(this.state.selectedItems.map(({ _id }) => _id));
-    const updatedSelectedItems: DetectorHit[] = [];
-    this.state.detectorHits.forEach((hit) => {
-      if (selectedItemIds.has(hit._id)) {
-        updatedSelectedItems.push(hit);
-      }
-    });
-
+    const updatedSelectedItems: DetectorHit[] = this.state.detectorHits.filter((hit) =>
+      selectedItemIds.has(hit._id)
+    );
     this.setState({ loadingDetectors: false, selectedItems: updatedSelectedItems });
   };
 
