@@ -54,7 +54,8 @@
     "@babel/core": "^7.20.12",
     "@babel/traverse": "^7.20.12",
     "word-wrap": "^1.2.4",
-    "@cypress/request": "^3.0.0"
+    "@cypress/request": "^3.0.0",
+    "vis-data": "7.1.6"
   },
   "devDependencies": {
     "@babel/plugin-transform-class-properties": "^7.22.9",
@@ -65,7 +66,7 @@
     "@testing-library/user-event": "^13.1.9",
     "@types/react-dom": "^16.9.8",
     "@types/react-router-dom": "^5.3.2",
-    "cypress": "^6.0.0",
+    "cypress": "9.5.4",
     "cypress-real-events": "1.7.6",
     "cypress-recurse": "^1.27.0",
     "eslint-plugin-no-unsanitized": "^3.0.2",

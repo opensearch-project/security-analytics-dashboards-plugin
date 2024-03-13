@@ -188,7 +188,23 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
   notifications={
     Object {
       "toasts": Object {
-        "addDanger": [MockFunction],
+        "addDanger": [MockFunction] {
+          "calls": Array [
+            Array [
+              Object {
+                "text": [TypeError: Cannot read properties of undefined (reading 'notificationsService')],
+                "title": "Failed to retrieve notification channels and rules:",
+                "toastLifeTimeMs": 5000,
+              },
+            ],
+          ],
+          "results": Array [
+            Object {
+              "type": "return",
+              "value": undefined,
+            },
+          ],
+        },
         "addInfo": [MockFunction],
         "addSuccess": [MockFunction],
         "addWarning": [MockFunction],

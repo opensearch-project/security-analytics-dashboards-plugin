@@ -3,7 +3,16 @@
   "extends": "../../tsconfig.json",
 
   // tell the TypeScript compiler where to find your source files
-  "include": ["server/**/*", "public/**/*", "utils/**/*", "models/**/*", "test/**/*"],
+  "include": [
+    "server/**/*",
+    "public/**/*",
+    "utils/**/*",
+    "models/**/*",
+    "test/**/*",
+    "common/**/*",
+    "types/**/*",
+    "config.ts"
+  ],
   "exclude": ["node_modules", "*/node_modules/"],
   "compilerOptions": {
     "skipLibCheck": true,

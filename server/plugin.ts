@@ -4,7 +4,13 @@
  */
 
 import { SecurityAnalyticsPluginSetup, SecurityAnalyticsPluginStart } from '.';
-import { Plugin, CoreSetup, CoreStart, ILegacyCustomClusterClient } from '../../../src/core/server';
+import {
+  Plugin,
+  CoreSetup,
+  CoreStart,
+  ILegacyCustomClusterClient,
+  PluginInitializerContext,
+} from '../../../src/core/server';
 import { createSecurityAnalyticsCluster } from './clusters/createSecurityAnalyticsCluster';
 import { NodeServices } from './models/interfaces';
 import {
@@ -19,6 +25,7 @@ import {
   setupLogTypeRoutes,
   setupRulesRoutes,
 } from './routes';
+import { setupMetricsRoutes } from './routes/MetricsRoutes';
 import {
   IndexService,
   FindingsService,
@@ -31,9 +38,15 @@ import {
   CorrelationService,
 } from './services';
 import { LogTypeService } from './services/LogTypeService';
+import MetricsService from './services/MetricsService';
+import { SecurityAnalyticsPluginConfigType } from '../config';
 
 export class SecurityAnalyticsPlugin
   implements Plugin<SecurityAnalyticsPluginSetup, SecurityAnalyticsPluginStart> {
+  public constructor(
+    private initializerContext: PluginInitializerContext<SecurityAnalyticsPluginConfigType>
+  ) {}
+
   public async setup(core: CoreSetup) {
     // Create OpenSearch client that aware of SA API endpoints
     const osDriver: ILegacyCustomClusterClient = createSecurityAnalyticsCluster(core);
@@ -50,6 +63,7 @@ export class SecurityAnalyticsPlugin
       rulesService: new RulesService(osDriver),
       notificationsService: new NotificationsService(osDriver),
       logTypeService: new LogTypeService(osDriver),
+      metricsService: new MetricsService(),
     };
 
     // Create router
@@ -66,8 +80,14 @@ export class SecurityAnalyticsPlugin
     setupRulesRoutes(services, router);
     setupNotificationsRoutes(services, router);
     setupLogTypeRoutes(services, router);
+    setupMetricsRoutes(services, router);
 
-    return {};
+    // @ts-ignore
+    const config$ = this.initializerContext.config.create();
+
+    return {
+      config$,
+    };
   }
 
   public async start(_core: CoreStart) {

@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { createContext } from "react";
-import { BrowserServices } from "../models/interfaces";
+import { createContext } from 'react';
+import { SecurityAnalyticsContextType } from '../../types';
 
-const ServicesContext = createContext<BrowserServices | null>(null);
+const SecurityAnalyticsContext = createContext<SecurityAnalyticsContextType | null>(null);
 
-const ServicesConsumer = ServicesContext.Consumer;
+const SaContextConsumer = SecurityAnalyticsContext.Consumer;
 
-export { ServicesContext, ServicesConsumer };
+export { SecurityAnalyticsContext, SaContextConsumer };
