@@ -116,6 +116,7 @@ Object {
                 class="euiFormRow__labelWrapper"
               >
                 <label
+                  aria-invalid="false"
                   class="euiFormLabel euiFormRow__label"
                   for="some_html_id"
                 >
@@ -215,6 +216,7 @@ Object {
                 class="euiFormRow__labelWrapper"
               >
                 <label
+                  aria-invalid="false"
                   class="euiFormLabel euiFormRow__label"
                   for="some_html_id"
                 >
@@ -283,6 +285,7 @@ Object {
                     class="euiFormRow__labelWrapper"
                   >
                     <label
+                      aria-invalid="false"
                       class="euiFormLabel euiFormRow__label"
                       for="some_html_id"
                     >
@@ -390,6 +393,7 @@ Object {
                 class="euiFormRow__labelWrapper"
               >
                 <label
+                  aria-invalid="false"
                   class="euiFormLabel euiFormRow__label"
                   for="some_html_id"
                 >
@@ -473,6 +477,7 @@ Object {
                 class="euiFormRow__labelWrapper"
               >
                 <label
+                  aria-invalid="false"
                   class="euiFormLabel euiFormRow__label"
                   for="some_html_id"
                 >
@@ -770,9 +775,9 @@ Object {
                                           >
                                             <span
                                               class="euiComboBoxPill euiComboBoxPill--plainText"
-                                              value="contains"
+                                              value="all"
                                             >
-                                              contains
+                                              all
                                             </span>
                                             <div
                                               class="euiComboBox__input"
@@ -1162,6 +1167,7 @@ Object {
                             class="euiFormRow__labelWrapper"
                           >
                             <label
+                              aria-invalid="false"
                               class="euiFormLabel euiFormRow__label"
                               for="some_html_id"
                             >
@@ -1245,6 +1251,7 @@ Object {
                             class="euiFormRow__labelWrapper"
                           >
                             <label
+                              aria-invalid="false"
                               class="euiFormLabel euiFormRow__label"
                               for="some_html_id"
                             >
@@ -1328,6 +1335,7 @@ Object {
                             class="euiFormRow__labelWrapper"
                           >
                             <label
+                              aria-invalid="false"
                               class="euiFormLabel euiFormRow__label"
                               for="some_html_id"
                             >
@@ -1573,6 +1581,7 @@ Object {
               class="euiFormRow__labelWrapper"
             >
               <label
+                aria-invalid="false"
                 class="euiFormLabel euiFormRow__label"
                 for="some_html_id"
               >
@@ -1672,6 +1681,7 @@ Object {
               class="euiFormRow__labelWrapper"
             >
               <label
+                aria-invalid="false"
                 class="euiFormLabel euiFormRow__label"
                 for="some_html_id"
               >
@@ -1740,6 +1750,7 @@ Object {
                   class="euiFormRow__labelWrapper"
                 >
                   <label
+                    aria-invalid="false"
                     class="euiFormLabel euiFormRow__label"
                     for="some_html_id"
                   >
@@ -1847,6 +1858,7 @@ Object {
               class="euiFormRow__labelWrapper"
             >
               <label
+                aria-invalid="false"
                 class="euiFormLabel euiFormRow__label"
                 for="some_html_id"
               >
@@ -1930,6 +1942,7 @@ Object {
               class="euiFormRow__labelWrapper"
             >
               <label
+                aria-invalid="false"
                 class="euiFormLabel euiFormRow__label"
                 for="some_html_id"
               >
@@ -2227,9 +2240,9 @@ Object {
                                         >
                                           <span
                                             class="euiComboBoxPill euiComboBoxPill--plainText"
-                                            value="contains"
+                                            value="all"
                                           >
-                                            contains
+                                            all
                                           </span>
                                           <div
                                             class="euiComboBox__input"
@@ -2619,6 +2632,7 @@ Object {
                           class="euiFormRow__labelWrapper"
                         >
                           <label
+                            aria-invalid="false"
                             class="euiFormLabel euiFormRow__label"
                             for="some_html_id"
                           >
@@ -2702,6 +2716,7 @@ Object {
                           class="euiFormRow__labelWrapper"
                         >
                           <label
+                            aria-invalid="false"
                             class="euiFormLabel euiFormRow__label"
                             for="some_html_id"
                           >
@@ -2785,6 +2800,7 @@ Object {
                           class="euiFormRow__labelWrapper"
                         >
                           <label
+                            aria-invalid="false"
                             class="euiFormLabel euiFormRow__label"
                             for="some_html_id"
                           >
