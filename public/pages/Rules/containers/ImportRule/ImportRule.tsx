@@ -14,8 +14,7 @@ import { dump, load } from 'js-yaml';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { CoreServicesContext } from '../../../../components/core_services';
-import { setBreadCrumb, validateRule } from '../../utils/helpers';
-import { DataStore } from '../../../../store/DataStore';
+import { setBreadCrumb } from '../../utils/helpers';
 import { yamlMediaTypes } from '../../utils/constants';
 
 export interface ImportRuleProps {
@@ -64,7 +63,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
             references:
               jsonContent.references?.map((reference: string) => ({ value: reference })) || [],
             tags: jsonContent.tags?.map((tag: string) => ({ value: tag })) || [],
-            log_source: jsonContent.logsource || '',
+            log_source: jsonContent.logsource || {},
             detection: detectionYaml,
             level: jsonContent.level || '',
             false_positives:
@@ -105,6 +104,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
             multiple={false}
             aria-label="file picker"
             isInvalid={!!fileError}
+            data-test-subj="import_rule_file_picker"
           />
           {fileError && <div style={{ color: 'red', margin: '0 auto' }}>Error: {fileError}</div>}
         </ContentPanel>
@@ -118,32 +118,6 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
     );
     setBreadCrumb(BREADCRUMBS.RULES_IMPORT, context?.chrome.setBreadcrumbs);
   }, [fileError, onChange]);
-
-  const footerActions: React.FC<{ rule: Rule }> = ({ rule }) => {
-    const onCreate = async () => {
-      if (!validateRule(rule, notifications!, 'create')) {
-        return;
-      }
-      const response = await DataStore.rules.createRule(rule);
-
-      if (response) {
-        history.replace(ROUTES.RULES);
-      }
-    };
-
-    return (
-      <EuiFlexGroup justifyContent="flexEnd">
-        <EuiFlexItem grow={false}>
-          <EuiButton onClick={() => history.replace(ROUTES.RULES)}>Cancel</EuiButton>
-        </EuiFlexItem>
-        <EuiFlexItem grow={false}>
-          <EuiButton fill onClick={onCreate}>
-            Create
-          </EuiButton>
-        </EuiFlexItem>
-      </EuiFlexGroup>
-    );
-  };
 
   return content;
 };
