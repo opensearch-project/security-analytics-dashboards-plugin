@@ -269,8 +269,11 @@ export default class ConfigureFieldMapping extends Component<
         const unmappedRuleFields = new Set(mappingsView.response.unmapped_field_aliases);
 
         Object.keys(mappingsView.response.properties).forEach((ruleFieldName) => {
-          // Filter the mappings view to include only the rule fields for the enabled rules
-          if (!ruleFieldsForEnabledRules.has(ruleFieldName) && ruleFieldName !== 'timestamp') {
+          // Filter the mappings view to include only the rule fields for the enabled rules except for the timestamp field
+          if (
+            ruleFieldsForEnabledRules.size === 0 ||
+            (!ruleFieldsForEnabledRules.has(ruleFieldName) && ruleFieldName !== 'timestamp')
+          ) {
             delete mappingsView.response.properties[ruleFieldName];
             delete existingMappings[ruleFieldName];
             return;
