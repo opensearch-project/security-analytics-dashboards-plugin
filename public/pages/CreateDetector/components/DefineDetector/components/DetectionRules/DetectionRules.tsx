@@ -11,6 +11,7 @@ import {
   EuiEmptyPrompt,
   EuiButton,
   EuiIcon,
+  EuiLoadingSpinner,
 } from '@elastic/eui';
 
 import React, { useMemo, useState } from 'react';
@@ -47,12 +48,20 @@ export const DetectionRules: React.FC<DetectionRulesProps> = ({
 }) => {
   const [flyoutData, setFlyoutData] = useState<RuleTableItem | null>(null);
 
-  let enabledRulesCount = 0;
-  rulesState.allRules.forEach((ruleItem) => {
-    if (ruleItem.enabled) {
-      enabledRulesCount++;
-    }
-  });
+  let enabledRulesCountDisplay: React.ReactNode;
+
+  if (loading) {
+    enabledRulesCountDisplay = <EuiLoadingSpinner size="m" />;
+  } else {
+    let count = 0;
+    rulesState.allRules.forEach((ruleItem) => {
+      if (ruleItem.enabled) {
+        count++;
+      }
+    });
+
+    enabledRulesCountDisplay = <span>{count}</span>;
+  }
 
   const ruleItems: RuleItem[] = useMemo(
     () =>
@@ -98,7 +107,11 @@ export const DetectionRules: React.FC<DetectionRulesProps> = ({
         buttonContent={
           <div data-test-subj="detection-rules-btn">
             <EuiTitle size={'s'}>
-              <h4>{`Selected detection rules (${enabledRulesCount})`}</h4>
+              <h4>
+                {'Selected detection rules ('}
+                <>{enabledRulesCountDisplay}</>
+                {')'}
+              </h4>
             </EuiTitle>
             <EuiText size="s" color="subdued">
               Add or remove detection rules for this detector.
