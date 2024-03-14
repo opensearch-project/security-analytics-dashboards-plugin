@@ -32,6 +32,7 @@ import {
   EuiTab,
   EuiLoadingContent,
   EuiEmptyPrompt,
+  EuiLoadingSpinner,
 } from '@elastic/eui';
 import {
   capitalizeFirstLetter,
@@ -620,9 +621,11 @@ export default class FindingDetailsFlyout extends Component<
                   {tab.id === 'Correlations' ? (
                     <>
                       {tab.name} (
-                      {this.state.areCorrelationsLoading
-                        ? DEFAULT_EMPTY_DATA
-                        : this.state.correlatedFindings.length}
+                      {this.state.areCorrelationsLoading ? (
+                        <EuiLoadingSpinner size="s" />
+                      ) : (
+                        this.state.correlatedFindings.length
+                      )}
                       )
                     </>
                   ) : (
