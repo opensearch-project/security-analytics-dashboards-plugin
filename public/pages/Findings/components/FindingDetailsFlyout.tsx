@@ -413,7 +413,7 @@ export default class FindingDetailsFlyout extends Component<
             <CreateIndexPatternForm
               indexPatternsService={this.props.indexPatternsService}
               initialValue={{
-                name: this.props.finding.detector._source.inputs[0].detector_input.indices[0] + '*',
+                name: this.props.finding.index + '*',
               }}
               close={() =>
                 this.setState({ ...this.state, isCreateIndexPatternModalVisible: false })
