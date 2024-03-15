@@ -21,6 +21,7 @@ export interface RuleEditorProps {
   history: RouteComponentProps['history'];
   notifications?: NotificationsStart;
   mode: 'create' | 'edit';
+  validateOnMount?: boolean;
 }
 
 export interface VisualEditorFormErrorsState {
@@ -35,6 +36,7 @@ export const RuleEditorContainer: React.FC<RuleEditorProps> = ({
   title,
   rule,
   mode,
+  validateOnMount,
 }) => {
   const initialRuleValue = rule
     ? { ...mapRuleToForm(rule), id: ruleEditorStateDefaultValue.id }
@@ -73,6 +75,7 @@ export const RuleEditorContainer: React.FC<RuleEditorProps> = ({
         mode={mode}
         notifications={notifications}
         initialValue={initialRuleValue}
+        validateOnMount={validateOnMount}
         cancel={goToRulesList}
         submit={onSubmit}
       />

@@ -9,15 +9,11 @@ import { EuiButton, EuiCallOut, EuiSpacer } from '@elastic/eui';
 import { AlertTriggerView } from '../../components/AlertTriggerView/AlertTriggerView';
 import { SecurityAnalyticsContext } from '../../../../services';
 import { ServerResponse } from '../../../../../server/models/types';
-import {
-  FeatureChannelList,
-  GetChannelsResponse,
-  RuleInfo,
-} from '../../../../../server/models/interfaces';
+import { RuleInfo } from '../../../../../server/models/interfaces';
 import { errorNotificationToast } from '../../../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { DataStore } from '../../../../store/DataStore';
-import { Detector } from '../../../../../types';
+import { Detector, FeatureChannelList, GetChannelsResponse } from '../../../../../types';
 
 export interface AlertTriggersViewProps {
   detector: Detector;

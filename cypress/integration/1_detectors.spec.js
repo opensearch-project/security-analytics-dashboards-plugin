@@ -12,6 +12,7 @@ import _ from 'lodash';
 import { getMappingFields } from '../../public/pages/Detectors/utils/helpers';
 import { getLogTypeLabel } from '../../public/pages/LogTypes/utils/helpers';
 import { setupIntercept } from '../support/helpers';
+import { descriptionErrorString } from '../../public/utils/validation';
 
 const cypressIndexDns = 'cypress-index-dns';
 const cypressIndexWindows = 'cypress-index-windows';
@@ -279,9 +280,7 @@ describe('Detectors', () => {
       getDescriptionField()
         .parents('.euiFormRow__fieldWrapper')
         .find('.euiFormErrorText')
-        .contains(
-          'Description should only consist of upper and lowercase letters, numbers 0-9, commas, hyphens, periods, spaces, and underscores. Max limit of 500 characters.'
-        );
+        .contains(descriptionErrorString);
 
       getDescriptionField()
         .type('{selectall}')
