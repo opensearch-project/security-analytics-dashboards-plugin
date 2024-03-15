@@ -27,4 +27,12 @@ export function addNotificationsMethods(securityAnalytics: any, createAction: an
     needBody: false,
     method: 'GET',
   });
+
+  securityAnalytics[METHOD_NAMES.GET_FEATURES] = createAction({
+    url: {
+      fmt: '/_plugins/_notifications/features',
+    },
+    needBody: false,
+    method: 'GET',
+  });
 }

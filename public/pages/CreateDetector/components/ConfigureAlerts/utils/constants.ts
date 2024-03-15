@@ -34,4 +34,14 @@ export const MAX_NUM_RULES = 5;
 export const MIN_NUM_TAGS = 0;
 export const MAX_NUM_TAGS = 5;
 
-export const CHANNEL_TYPES = ['slack', 'email', 'chime', 'webhook', 'ses', 'sns'];
+export let CHANNEL_TYPES = [
+  'slack',
+  'email',
+  'email_group',
+  'chime',
+  'webhook',
+  'ses_account',
+  'sns',
+  'microsoft_teams',
+  'smtp_account',
+];

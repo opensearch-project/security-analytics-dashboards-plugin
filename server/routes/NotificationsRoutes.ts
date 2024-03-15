@@ -30,4 +30,12 @@ export function setupNotificationsRoutes(services: NodeServices, router: IRouter
     },
     notificationsService.getChannels
   );
+
+  router.get(
+    {
+      path: API.NOTIFICATION_FEATURES,
+      validate: false,
+    },
+    notificationsService.getNotificationsFeatures
+  );
 }

@@ -39,3 +39,8 @@ export interface GetNotificationConfigsResponse {
   total_hit_relation: string;
   config_list: NotificationConfig[];
 }
+
+export interface GetFeaturesResponse {
+  allowed_config_type_list: string[];
+  plugin_features: { tooltip_support: boolean };
+}

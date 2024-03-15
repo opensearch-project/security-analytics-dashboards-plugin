@@ -40,7 +40,6 @@ import {
 } from '../../../Overview/utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { Finding } from '../../models/interfaces';
-import { FeatureChannelList } from '../../../../../server/models/interfaces';
 import {
   getNotificationChannels,
   parseNotificationChannelsToOptions,
@@ -56,7 +55,7 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { DateTimeFilter } from '../../../Overview/models/interfaces';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 import { DataStore } from '../../../../store/DataStore';
-import { CorrelationFinding, Detector } from '../../../../../types';
+import { CorrelationFinding, Detector, FeatureChannelList } from '../../../../../types';
 
 interface FindingsProps extends RouteComponentProps {
   detectorService: DetectorsService;

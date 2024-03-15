@@ -32,6 +32,7 @@ import CorrelationService from './services/CorrelationService';
 import { LogType } from '../types';
 import MetricsService from './services/MetricsService';
 import { MetricsContext } from './metrics/MetricsContext';
+import { CHANNEL_TYPES } from './pages/CreateDetector/components/ConfigureAlerts/utils/constants';
 
 export function renderApp(
   coreStart: CoreStart,
@@ -92,6 +93,12 @@ export function renderApp(
       </Router>,
       params.element
     );
+
+    notificationsService.getServerFeatures().then((response) => {
+      if (response.ok) {
+        CHANNEL_TYPES.splice(0, CHANNEL_TYPES.length, ...response.response);
+      }
+    });
   });
 
   return () => ReactDOM.unmountComponentAtNode(params.element);

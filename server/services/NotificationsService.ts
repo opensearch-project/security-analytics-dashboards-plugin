@@ -13,7 +13,11 @@ import {
 } from 'opensearch-dashboards/server';
 import { ServerResponse } from '../models/types';
 import { CLIENT_NOTIFICATIONS_METHODS } from '../utils/constants';
-import { GetChannelsResponse, GetNotificationConfigsResponse } from '../models/interfaces';
+import {
+  GetChannelsResponse,
+  GetFeaturesResponse,
+  GetNotificationConfigsResponse,
+} from '../../types';
 
 export default class NotificationsService {
   osDriver: ILegacyCustomClusterClient;
@@ -27,7 +31,7 @@ export default class NotificationsService {
    * to retrieve the channel config with the specific ID.
    */
   getChannel = async (
-    context: RequestHandlerContext,
+    _context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<
@@ -67,7 +71,7 @@ export default class NotificationsService {
    * Calls backend GET channels API from the Notifications plugin.
    */
   getChannels = async (
-    context: RequestHandlerContext,
+    _context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<
@@ -88,6 +92,36 @@ export default class NotificationsService {
       });
     } catch (err: any) {
       console.error('Security Analytics - NotificationsService - getChannels:', err);
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: false,
+          error: err.message,
+        },
+      });
+    }
+  };
+
+  getNotificationsFeatures = async (
+    _context: RequestHandlerContext,
+    request: OpenSearchDashboardsRequest,
+    response: OpenSearchDashboardsResponseFactory
+  ): Promise<IOpenSearchDashboardsResponse<ServerResponse<Array<string>> | ResponseError>> => {
+    try {
+      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
+      const getFeaturesResponse: GetFeaturesResponse = await callWithRequest(
+        CLIENT_NOTIFICATIONS_METHODS.GET_FEATURES
+      );
+
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: true,
+          response: getFeaturesResponse.allowed_config_type_list,
+        },
+      });
+    } catch (err: any) {
+      console.error('Security Analytics - NotificationsService - getFeatures:', err);
       return response.custom({
         statusCode: 200,
         body: {
