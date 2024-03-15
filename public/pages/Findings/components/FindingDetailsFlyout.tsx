@@ -419,12 +419,25 @@ export default class FindingDetailsFlyout extends Component<
                 this.setState({ ...this.state, isCreateIndexPatternModalVisible: false })
               }
               created={(indexPatternId) => {
-                this.setState({
-                  ...this.state,
-                  indexPatternId,
-                  isCreateIndexPatternModalVisible: false,
-                });
-                window.open(`discover#/context/${indexPatternId}/${related_doc_ids[0]}`, '_blank');
+                this.setState(
+                  {
+                    ...this.state,
+                    indexPatternId,
+                    isCreateIndexPatternModalVisible: false,
+                  },
+                  () => {
+                    this.setState({
+                      selectedTab: {
+                        id: FindingFlyoutTabId.DETAILS,
+                        content: this.getTabContent(FindingFlyoutTabId.DETAILS),
+                      },
+                    });
+                    window.open(
+                      `discover#/context/${indexPatternId}/${related_doc_ids[0]}`,
+                      '_blank'
+                    );
+                  }
+                );
               }}
             ></CreateIndexPatternForm>
           </EuiModalBody>
