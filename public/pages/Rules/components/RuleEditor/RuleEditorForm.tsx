@@ -23,8 +23,14 @@ import {
 } from '@elastic/eui';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { FieldTextArray } from './components/FieldTextArray';
-import { ruleStatus } from '../../utils/constants';
-import { AUTHOR_REGEX, validateDescription, validateName } from '../../../../utils/validation';
+import { ruleSeverity, ruleStatus, ruleTypes } from '../../utils/constants';
+import {
+  AUTHOR_REGEX,
+  RULE_DESCRIPTION_REGEX,
+  ruleDescriptionErrorString,
+  validateDescription,
+  validateName,
+} from '../../../../utils/validation';
 import { RuleEditorFormModel } from './RuleEditorFormModel';
 import { FormSubmissionErrorToastNotification } from './FormSubmitionErrorToastNotification';
 import { YamlRuleEditorComponent } from './components/YamlRuleEditorComponent/YamlRuleEditorComponent';
@@ -33,10 +39,12 @@ import { DetectionVisualEditor } from './DetectionVisualEditor';
 import { useCallback } from 'react';
 import { getLogTypeOptions } from '../../../../utils/helpers';
 import { getLogTypeLabel } from '../../../LogTypes/utils/helpers';
+import { getSeverityLabel } from '../../../Correlations/utils/constants';
 
 export interface VisualRuleEditorProps {
   initialValue: RuleEditorFormModel;
   notifications?: NotificationsStart;
+  validateOnMount?: boolean;
   submit: (values: RuleEditorFormModel) => void;
   cancel: () => void;
   mode: 'create' | 'edit';
@@ -63,6 +71,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
   cancel,
   mode,
   title,
+  validateOnMount,
 }) => {
   const [selectedEditorType, setSelectedEditorType] = useState('visual');
   const [isDetectionInvalid, setIsDetectionInvalid] = useState(false);
@@ -94,6 +103,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
   return (
     <Formik
       initialValues={initialValue}
+      validateOnMount={validateOnMount}
       validate={(values) => {
         const errors: FormikErrors<RuleEditorFormModel> = {};
 
@@ -105,13 +115,17 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
           }
         }
 
-        if (values.description && !validateDescription(values.description)) {
-          errors.description =
-            'Description should only consist of upper and lowercase letters, numbers 0-9, commas, hyphens, periods, spaces, and underscores. Max limit of 500 characters.';
+        if (
+          values.description &&
+          !validateDescription(values.description, RULE_DESCRIPTION_REGEX)
+        ) {
+          errors.description = ruleDescriptionErrorString;
         }
 
         if (!values.logType) {
           errors.logType = 'Log type is required';
+        } else if (!ruleTypes.some((type) => type.value === values.logType)) {
+          errors.logType = `Invalid log type`;
         }
 
         if (!values.detection) {
@@ -120,6 +134,8 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
         if (!values.level) {
           errors.level = 'Rule level is required';
+        } else if (!ruleSeverity.some((sev) => sev.value === values.level)) {
+          errors.level = `Invalid rule level. Should be one of critical, high, medium, low, informational`;
         }
 
         if (!values.author) {
@@ -132,6 +148,8 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
         if (!values.status) {
           errors.status = 'Rule status is required';
+        } else if (!ruleStatus.includes(values.status)) {
+          errors.status = `Invalid rule status. Should be one of experimental, test, stable`;
         }
 
         if (!validateTags(values.tags)) {
@@ -192,12 +210,12 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                       <strong>Rule name</strong>
                     </EuiText>
                   }
-                  isInvalid={props.touched.name && !!props.errors?.name}
+                  isInvalid={!!props.errors?.name}
                   error={props.errors.name}
                   helpText="Rule name must contain 5-50 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, and underscores"
                 >
                   <EuiFieldText
-                    isInvalid={props.touched.name && !!props.errors.name}
+                    isInvalid={!!props.errors?.name}
                     placeholder="My custom rule"
                     data-test-subj={'rule_name_field'}
                     onChange={(e) => {
@@ -240,11 +258,11 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     </EuiText>
                   }
                   helpText="Combine multiple authors separated with a comma"
-                  isInvalid={props.touched.author && !!props.errors?.author}
+                  isInvalid={!!props.errors?.author}
                   error={props.errors.author}
                 >
                   <EuiFieldText
-                    isInvalid={props.touched.author && !!props.errors.author}
+                    isInvalid={!!props.errors?.author}
                     placeholder="Enter author name"
                     data-test-subj={'rule_author_field'}
                     onChange={(e) => {
@@ -273,11 +291,11 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                           <strong>Log type</strong>
                         </EuiText>
                       }
-                      isInvalid={props.touched.logType && !!props.errors?.logType}
+                      isInvalid={!!props.errors?.logType}
                       error={props.errors.logType}
                     >
                       <EuiComboBox
-                        isInvalid={props.touched.logType && !!props.errors.logType}
+                        isInvalid={!!props.errors?.logType}
                         placeholder="Select a log type"
                         data-test-subj={'rule_type_dropdown'}
                         options={logTypeOptions}
@@ -318,19 +336,14 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                       <strong>Rule level (severity)</strong>
                     </EuiText>
                   }
-                  isInvalid={props.touched.level && !!props.errors?.level}
+                  isInvalid={!!props.errors?.level}
                   error={props.errors.level}
                 >
                   <EuiComboBox
-                    isInvalid={props.touched.level && !!props.errors.level}
+                    isInvalid={!!props.errors?.level}
                     placeholder="Select a rule level"
                     data-test-subj={'rule_severity_dropdown'}
-                    options={[
-                      { value: 'critical', label: 'Critical' },
-                      { value: 'high', label: 'High' },
-                      { value: 'medium', label: 'Medium' },
-                      { value: 'low', label: 'Low' },
-                    ]}
+                    options={ruleSeverity.map(({ name, value }) => ({ label: name, value }))}
                     singleSelection={{ asPlainText: true }}
                     onChange={(e) => {
                       props.handleChange('level')(e[0]?.value ? e[0].value : '');
@@ -338,7 +351,12 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     onBlur={props.handleBlur('level')}
                     selectedOptions={
                       props.values.level
-                        ? [{ value: props.values.level, label: props.values.level }]
+                        ? [
+                            {
+                              value: props.values.level,
+                              label: getSeverityLabel(props.values.level),
+                            },
+                          ]
                         : []
                     }
                   />
@@ -352,11 +370,11 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                       <strong>Rule Status</strong>
                     </EuiText>
                   }
-                  isInvalid={props.touched.status && !!props.errors?.status}
+                  isInvalid={!!props.errors?.status}
                   error={props.errors.status}
                 >
                   <EuiComboBox
-                    isInvalid={props.touched.status && !!props.errors.status}
+                    isInvalid={!!props.errors?.status}
                     placeholder="Select a rule status"
                     data-test-subj={'rule_status_dropdown'}
                     options={ruleStatus.map((type: string) => ({ value: type, label: type }))}
@@ -387,7 +405,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                 <EuiSpacer />
 
                 <DetectionVisualEditor
-                  isInvalid={props.touched.detection && isDetectionInvalid}
+                  isInvalid={isDetectionInvalid}
                   detectionYml={props.values.detection}
                   goToYamlEditor={setSelectedEditorType}
                   setIsDetectionInvalid={(isInvalid: boolean) => {
@@ -439,7 +457,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                         addButtonName="Add tag"
                         fields={props.values.tags}
                         error={props.errors.tags}
-                        isInvalid={props.touched.tags && !!props.errors.tags}
+                        isInvalid={!!props.errors.tags}
                         onChange={(tags) => {
                           props.touched.tags = true;
                           props.setFieldValue('tags', tags);
@@ -467,7 +485,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                         addButtonName="Add URL"
                         fields={props.values.references}
                         error={props.errors.references}
-                        isInvalid={props.touched.references && !!props.errors.references}
+                        isInvalid={!!props.errors?.references}
                         onChange={(references) => {
                           props.touched.references = true;
                           props.setFieldValue('references', references);
@@ -495,7 +513,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                         addButtonName="Add false positive"
                         fields={props.values.falsePositives}
                         error={props.errors.falsePositives}
-                        isInvalid={props.touched.falsePositives && !!props.errors.falsePositives}
+                        isInvalid={!!props.errors?.falsePositives}
                         onChange={(falsePositives) => {
                           props.touched.falsePositives = true;
                           props.setFieldValue('falsePositives', falsePositives);

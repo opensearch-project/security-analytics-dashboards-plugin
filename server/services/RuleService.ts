@@ -26,6 +26,7 @@ import { Rule } from '../../models/interfaces';
 import { ServerResponse } from '../models/types';
 import { load, safeDump } from 'js-yaml';
 import moment from 'moment';
+import { DEFAULT_RULE_UUID } from '../../common/constants';
 
 export default class RulesService {
   osDriver: ILegacyCustomClusterClient;
@@ -58,7 +59,7 @@ export default class RulesService {
       } = request.body as Rule;
       const today = moment(moment.now()).format('YYYY/MM/DD');
       const jsonPayload: { [field: string]: any } = {
-        id,
+        id: id || DEFAULT_RULE_UUID,
         title,
         description: description || title,
         status,

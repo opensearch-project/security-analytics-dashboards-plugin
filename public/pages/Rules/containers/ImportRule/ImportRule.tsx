@@ -16,6 +16,7 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { setBreadCrumb } from '../../utils/helpers';
 import { yamlMediaTypes } from '../../utils/constants';
+import { DEFAULT_RULE_UUID } from '../../../../../common/constants';
 
 export interface ImportRuleProps {
   services: BrowserServices;
@@ -54,7 +55,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
           }
 
           const rule: Rule = {
-            id: '25b9c01c-350d-4b95-bed1-836d04a4f324',
+            id: DEFAULT_RULE_UUID,
             category: '',
             title: jsonContent.title || '',
             description: jsonContent.description || '',
@@ -78,6 +79,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
               notifications={notifications}
               mode={'create'}
               rule={rule}
+              validateOnMount={true}
             />
           );
         } catch (error: any) {
