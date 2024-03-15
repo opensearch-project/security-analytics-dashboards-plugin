@@ -12,6 +12,7 @@ import _ from 'lodash';
 import { getMappingFields } from '../../public/pages/Detectors/utils/helpers';
 import { getLogTypeLabel } from '../../public/pages/LogTypes/utils/helpers';
 import { setupIntercept } from '../support/helpers';
+import { descriptionErrorString } from '../../public/utils/validation';
 
 const cypressIndexDns = 'cypress-index-dns';
 const cypressIndexWindows = 'cypress-index-windows';
@@ -279,9 +280,7 @@ describe('Detectors', () => {
       getDescriptionField()
         .parents('.euiFormRow__fieldWrapper')
         .find('.euiFormErrorText')
-        .contains(
-          'Description should only consist of upper and lowercase letters, numbers 0-9, commas, hyphens, periods, spaces, and underscores. Max limit of 500 characters.'
-        );
+        .contains(descriptionErrorString);
 
       getDescriptionField()
         .type('{selectall}')
@@ -472,6 +471,40 @@ describe('Detectors', () => {
       ).click({ force: true });
 
       validateFieldMappingsTable('rules are changed');
+    });
+
+    it('...can be stopped and started back from detectors list action menu', () => {
+      cy.wait(1000);
+      cy.get('tbody > tr')
+        .first()
+        .within(() => {
+          cy.get('[class="euiCheckbox__input"]').click({ force: true });
+        });
+
+      // Waiting for Actions menu button to be enabled
+      cy.wait(1000);
+
+      setupIntercept(cy, '/_plugins/_security_analytics/detectors/_search', 'detectorsSearch');
+
+      cy.get('[data-test-subj="detectorsActionsButton').click({ force: true });
+      cy.get('[data-test-subj="toggleDetectorButton').contains('Stop');
+      cy.get('[data-test-subj="toggleDetectorButton').click({ force: true });
+
+      cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
+      // Need this extra wait time for the Actions button to become enabled again
+      cy.wait(1000);
+
+      setupIntercept(cy, '/_plugins/_security_analytics/detectors/_search', 'detectorsSearch');
+      cy.get('[data-test-subj="detectorsActionsButton').click({ force: true });
+      cy.get('[data-test-subj="toggleDetectorButton').contains('Start');
+      cy.get('[data-test-subj="toggleDetectorButton').click({ force: true });
+
+      cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
+      // Need this extra wait time for the Actions button to become enabled again
+      cy.wait(1000);
+
+      cy.get('[data-test-subj="detectorsActionsButton').click({ force: true });
+      cy.get('[data-test-subj="toggleDetectorButton').contains('Stop');
     });
 
     it('...can be deleted', () => {

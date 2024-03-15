@@ -500,7 +500,31 @@ export default class AlertConditionPanel extends Component<
           </>
         )}
 
-        <EuiSpacer size="l" />
+        <EuiSpacer size="s" />
+
+        <EuiFormRow
+          label={
+            <EuiText size="s">
+              <p>Alert severity</p>
+            </EuiText>
+          }
+        >
+          <EuiComboBox
+            placeholder={'Select applicable severity levels.'}
+            async={true}
+            options={Object.values(ALERT_SEVERITY_OPTIONS)}
+            selectedOptions={
+              severity ? [parseAlertSeverityToOption(severity)] : [ALERT_SEVERITY_OPTIONS.HIGHEST]
+            }
+            onChange={this.onAlertSeverityChange}
+            singleSelection={{ asPlainText: true }}
+            isClearable={false}
+            data-test-subj={'security-levels-combo-box'}
+          />
+        </EuiFormRow>
+
+        <EuiSpacer size={'l'} />
+
         <EuiSwitch
           label="Send notification"
           checked={showNotificationDetails}
@@ -511,31 +535,6 @@ export default class AlertConditionPanel extends Component<
 
         {showNotificationDetails && (
           <>
-            <EuiFormRow
-              label={
-                <EuiText size="s">
-                  <p>Alert severity</p>
-                </EuiText>
-              }
-            >
-              <EuiComboBox
-                placeholder={'Select applicable severity levels.'}
-                async={true}
-                options={Object.values(ALERT_SEVERITY_OPTIONS)}
-                selectedOptions={
-                  severity
-                    ? [parseAlertSeverityToOption(severity)]
-                    : [ALERT_SEVERITY_OPTIONS.HIGHEST]
-                }
-                onChange={this.onAlertSeverityChange}
-                singleSelection={{ asPlainText: true }}
-                isClearable={false}
-                data-test-subj={'security-levels-combo-box'}
-              />
-            </EuiFormRow>
-
-            <EuiSpacer size={'l'} />
-
             <EuiFlexGroup alignItems={'flexEnd'}>
               <EuiFlexItem style={{ maxWidth: 400 }}>
                 <EuiFormRow

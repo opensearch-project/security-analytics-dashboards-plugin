@@ -30,6 +30,7 @@ export const API: SecurityAnalyticsApi = {
   RULES_BASE: `${BASE_API_PATH}/rules`,
   CHANNELS: `${BASE_API_PATH}/_notifications/channels`,
   PLUGINS: `${BASE_API_PATH}/_notifications/plugins`,
+  NOTIFICATION_FEATURES: `${BASE_API_PATH}/_notifications/features`,
   ACKNOWLEDGE_ALERTS: `${BASE_API_PATH}/detectors/{detector_id}/_acknowledge/alerts`,
   UPDATE_ALIASES: `${BASE_API_PATH}/update_aliases`,
   CORRELATIONS: `${BASE_API_PATH}/correlations`,
@@ -81,6 +82,7 @@ export const METHOD_NAMES = {
   // Notifications methods
   GET_CHANNEl: 'getChannel',
   GET_CHANNElS: 'getChannels',
+  GET_FEATURES: 'getFeatures',
 
   // LogType methods
   SEARCH_LOGTYPES: 'searchLogTypes',
@@ -134,6 +136,7 @@ export const CLIENT_ALERTS_METHODS = {
 export const CLIENT_NOTIFICATIONS_METHODS = {
   GET_CHANNEL: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_CHANNEl}`,
   GET_CHANNELS: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_CHANNElS}`,
+  GET_FEATURES: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_FEATURES}`,
 };
 
 export const CLIENT_LOGTYPE_METHODS = {
