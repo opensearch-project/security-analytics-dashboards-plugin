@@ -318,3 +318,8 @@ export const createDetector = (
   cySubject.detector = detectorConfig;
   return cySubject;
 };
+
+export function setupIntercept(cy, url, interceptName, method = 'POST') {
+  const urlRegex = new RegExp(`.*${url}.*`);
+  cy.intercept(method, urlRegex).as(interceptName);
+}
