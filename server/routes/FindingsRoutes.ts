@@ -17,9 +17,14 @@ export function setupFindingsRoutes(services: NodeServices, router: IRouter) {
       validate: {
         query: schema.object({
           detectorType: schema.maybe(schema.string()),
-          detectorId: schema.maybe(schema.string()),
+          detector_id: schema.maybe(schema.string()),
           sortOrder: schema.maybe(schema.string()),
           size: schema.maybe(schema.number()),
+          startIndex: schema.maybe(schema.number()),
+          detectionType: schema.maybe(schema.string()),
+          severity: schema.maybe(schema.string()),
+          searchString: schema.maybe(schema.string()),
+          findingIds: schema.maybe(schema.arrayOf(schema.string())),
         }),
       },
     },

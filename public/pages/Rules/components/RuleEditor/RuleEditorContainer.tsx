@@ -8,12 +8,12 @@ import { RouteComponentProps } from 'react-router-dom';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { ROUTES } from '../../../../utils/constants';
 import { EuiSpacer } from '@elastic/eui';
-import { Rule } from '../../../../../models/interfaces';
 import { RuleEditorFormModel, ruleEditorStateDefaultValue } from './RuleEditorFormModel';
 import { mapFormToRule, mapRuleToForm } from './mappers';
 import { RuleEditorForm } from './RuleEditorForm';
 import { validateRule } from '../../utils/helpers';
 import { DataStore } from '../../../../store/DataStore';
+import { Rule } from '../../../../../types';
 
 export interface RuleEditorProps {
   title: string | JSX.Element;

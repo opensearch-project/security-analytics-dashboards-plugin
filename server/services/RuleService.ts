@@ -22,10 +22,10 @@ import {
   UpdateRuleResponse,
 } from '../models/interfaces';
 import { CLIENT_RULE_METHODS } from '../utils/constants';
-import { Rule } from '../../models/interfaces';
 import { ServerResponse } from '../models/types';
 import { load, safeDump } from 'js-yaml';
 import moment from 'moment';
+import { Rule } from '../../types';
 import { DEFAULT_RULE_UUID } from '../../common/constants';
 
 export default class RulesService {

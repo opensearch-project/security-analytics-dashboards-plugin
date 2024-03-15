@@ -27,7 +27,7 @@ export interface OverviewState {
 
 export interface FindingItem {
   id: string;
-  time: number;
+  time: Date;
   findingName: string;
   detector: string;
   logType: string;
