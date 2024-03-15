@@ -20,6 +20,7 @@ export function setupAlertsRoutes(services: NodeServices, router: IRouter) {
           detector_id: schema.maybe(schema.string()),
           sortOrder: schema.maybe(schema.string()),
           size: schema.maybe(schema.number()),
+          startIndex: schema.maybe(schema.number()),
         }),
       },
     },

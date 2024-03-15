@@ -10,6 +10,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { errorNotificationToast } from '../utils/helpers';
 import { FindingItemType } from '../pages/Findings/containers/Findings/Findings';
 import { FindingDetailsFlyoutBaseProps } from '../pages/Findings/components/FindingDetailsFlyout';
+import { Finding, GetFindingsResponse, ServerResponse } from '../../types';
 
 export interface IFindingsStore {
   readonly service: FindingsService;
@@ -18,7 +19,11 @@ export interface IFindingsStore {
 
   readonly notifications: NotificationsStart;
 
-  getFindingsPerDetector: (detectorId: string) => Promise<FindingItemType[]>;
+  getFinding: (findingId: string) => Promise<Finding | undefined>;
+
+  getFindingsByIds: (findingIds: string[]) => Promise<Finding[]>;
+
+  getFindingsPerDetector: (detectorId: string) => Promise<Finding[]>;
 
   getAllFindings: () => Promise<FindingItemType[]>;
 
@@ -86,13 +91,58 @@ export class FindingsStore implements IFindingsStore {
     this.notifications = notifications;
   }
 
-  public getFindingsPerDetector = async (detectorId: string): Promise<FindingItemType[]> => {
-    let allFindings: FindingItemType[] = [];
-    const findingRes = await this.service.getFindings({ detectorId });
-    if (findingRes.ok) {
-      allFindings = findingRes.response.findings as FindingItemType[];
+  public getFinding = async (findingId: string): Promise<Finding | undefined> => {
+    const getFindingRes = await this.service.getFindings({ findingIds: [findingId] });
+
+    if (getFindingRes.ok) {
+      return getFindingRes.response.findings[0] || undefined;
+    }
+  };
+
+  public getFindingsByIds = async (findingIds: string[]): Promise<Finding[]> => {
+    const getFindingRes = await this.service.getFindings({ findingIds });
+
+    if (getFindingRes.ok) {
+      return getFindingRes.response.findings || [];
     } else {
-      errorNotificationToast(this.notifications, 'retrieve', 'findings', findingRes.error);
+      errorNotificationToast(this.notifications, 'retrieve', 'findings', getFindingRes.error);
+    }
+
+    return [];
+  };
+
+  public getFindingsPerDetector = async (detectorId: string): Promise<Finding[]> => {
+    let allFindings: Finding[] = [];
+    const findingsSize = 10000;
+    const firstGetFindingsRes = await this.service.getFindings({
+      detector_id: detectorId,
+      startIndex: 0,
+      size: findingsSize,
+    });
+
+    if (firstGetFindingsRes.ok) {
+      allFindings = [...firstGetFindingsRes.response.findings];
+      let remainingFindings = firstGetFindingsRes.response.total_findings - findingsSize;
+      let startIndex = findingsSize + 1;
+      const getFindingsPromises: Promise<ServerResponse<GetFindingsResponse>>[] = [];
+
+      while (remainingFindings > 0) {
+        getFindingsPromises.push(
+          this.service.getFindings({ detector_id: detectorId, startIndex, size: findingsSize })
+        );
+        remainingFindings -= findingsSize;
+        startIndex += findingsSize;
+      }
+
+      const findingsPromisesRes = await Promise.allSettled(getFindingsPromises);
+
+      findingsPromisesRes.forEach((response) => {
+        if (response.status === 'fulfilled' && response.value.ok) {
+          allFindings = allFindings.concat(response.value.response.findings);
+        }
+      });
+    } else {
+      errorNotificationToast(this.notifications, 'retrieve', 'findings', firstGetFindingsRes.error);
     }
 
     return allFindings;
@@ -112,6 +162,7 @@ export class FindingsStore implements IFindingsStore {
             detectorName: detector._source.name,
             logType: detector._source.detector_type,
             detector: detector,
+            correlations: [],
           };
         });
         allFindings = allFindings.concat(findingsPerDetector);

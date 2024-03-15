@@ -28,7 +28,7 @@ import {
   formatRuleType,
   renderTime,
 } from '../../../../utils/helpers';
-import { FindingsService, IndexPatternsService, OpenSearchService } from '../../../../services';
+import { IndexPatternsService, OpenSearchService } from '../../../../services';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { Finding } from '../../../Findings/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
@@ -38,7 +38,6 @@ import { Detector } from '../../../../../types';
 export interface AlertFlyoutProps {
   alertItem: AlertItem;
   detector: Detector;
-  findingsService: FindingsService;
   notifications: NotificationsStart;
   opensearchService: OpenSearchService;
   indexPatternService: IndexPatternsService;
@@ -71,21 +70,12 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
 
   getFindings = async () => {
     this.setState({ loading: true });
-    const {
-      alertItem: { detector_id },
-      findingsService,
-      notifications,
-    } = this.props;
+    const { notifications } = this.props;
     try {
-      const findingRes = await findingsService.getFindings({ detectorId: detector_id });
-      if (findingRes.ok) {
-        const relatedFindings = findingRes.response.findings.filter((finding) =>
-          this.props.alertItem.finding_ids.includes(finding.id)
-        );
-        this.setState({ findingItems: relatedFindings });
-      } else {
-        errorNotificationToast(notifications, 'retrieve', 'findings', findingRes.error);
-      }
+      const relatedFindings = await DataStore.findings.getFindingsByIds(
+        this.props.alertItem.finding_ids
+      );
+      this.setState({ findingItems: relatedFindings });
     } catch (e: any) {
       errorNotificationToast(notifications, 'retrieve', 'findings', e);
     }
