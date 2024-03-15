@@ -24,7 +24,13 @@ import {
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { FieldTextArray } from './components/FieldTextArray';
 import { ruleSeverity, ruleStatus, ruleTypes } from '../../utils/constants';
-import { AUTHOR_REGEX, validateDescription, validateName } from '../../../../utils/validation';
+import {
+  AUTHOR_REGEX,
+  RULE_DESCRIPTION_REGEX,
+  ruleDescriptionErrorString,
+  validateDescription,
+  validateName,
+} from '../../../../utils/validation';
 import { RuleEditorFormModel } from './RuleEditorFormModel';
 import { FormSubmissionErrorToastNotification } from './FormSubmitionErrorToastNotification';
 import { YamlRuleEditorComponent } from './components/YamlRuleEditorComponent/YamlRuleEditorComponent';
@@ -109,9 +115,11 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
           }
         }
 
-        if (values.description && !validateDescription(values.description)) {
-          errors.description =
-            'Description should only consist of upper and lowercase letters, numbers 0-9, commas, hyphens, periods, spaces, and underscores. Max limit of 500 characters.';
+        if (
+          values.description &&
+          !validateDescription(values.description, RULE_DESCRIPTION_REGEX)
+        ) {
+          errors.description = ruleDescriptionErrorString;
         }
 
         if (!values.logType) {

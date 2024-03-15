@@ -6,13 +6,14 @@
 import { OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
 import { getLogTypeLabel } from '../../public/pages/LogTypes/utils/helpers';
 import { setupIntercept } from '../support/helpers';
+import { ruleDescriptionErrorString } from '../../public/utils/validation';
 
 const uniqueId = Cypress._.random(0, 1e6);
 const SAMPLE_RULE = {
   name: `Cypress test rule ${uniqueId}`,
   logType: 'windows',
   description: 'This is a rule used to test the rule creation workflow.',
-  detectionLine: ['condition: Selection_1', 'Selection_1:', 'FieldKey|contains:', '- FieldValue'],
+  detectionLine: ['condition: Selection_1', 'Selection_1:', 'FieldKey|all:', '- FieldValue'],
   severity: 'Critical',
   tags: ['attack.persistence', 'attack.privilege_escalation', 'attack.t1543.003'],
   references: 'https://nohello.com',
@@ -231,18 +232,15 @@ describe('Rules', () => {
     });
 
     it('...should validate rule description field', () => {
-      const longDescriptionText =
-        'This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text.';
+      const invalidDescriptionText = 'This is a invalid % description.';
 
       getDescriptionField().should('be.empty');
-      getDescriptionField().type(longDescriptionText).focus().blur();
+      getDescriptionField().type(invalidDescriptionText).focus().blur();
 
       getDescriptionField()
         .parents('.euiFormRow__fieldWrapper')
         .find('.euiFormErrorText')
-        .contains(
-          'Description should only consist of upper and lowercase letters, numbers 0-9, commas, hyphens, periods, spaces, and underscores. Max limit of 500 characters.'
-        );
+        .contains(ruleDescriptionErrorString);
 
       getDescriptionField()
         .type('{selectall}')
@@ -268,10 +266,8 @@ describe('Rules', () => {
       getAuthorField().should('be.empty');
       getAuthorField().focus().blur();
       getAuthorField().containsError('Author name is required');
-      getAuthorField().type('text').focus().blur();
-      getAuthorField().containsError('Invalid author.');
 
-      getAuthorField().type('{selectall}').type('{backspace}').type('tex&').focus().blur();
+      getAuthorField().type('{selectall}').type('{backspace}').type('tex%').focus().blur();
       getAuthorField().containsError('Invalid author.');
 
       getAuthorField()

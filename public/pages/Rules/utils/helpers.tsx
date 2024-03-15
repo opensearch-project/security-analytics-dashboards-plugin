@@ -14,7 +14,12 @@ import { ruleSeverity, ruleSource, ruleTypes, sigmaRuleLogSourceFields } from '.
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
 import { Rule } from '../../../../models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { AUTHOR_REGEX, validateDescription, validateName } from '../../../utils/validation';
+import {
+  AUTHOR_REGEX,
+  RULE_DESCRIPTION_REGEX,
+  validateDescription,
+  validateName,
+} from '../../../utils/validation';
 import { dump, load } from 'js-yaml';
 import { BREADCRUMBS } from '../../../utils/constants';
 import { RuleItemInfoBase, RulesTableColumnFields } from '../../../../types';
@@ -139,7 +144,7 @@ export function validateRule(
   const invalidFields = [];
 
   if (!rule.title || !validateName(rule.title)) invalidFields.push('Rule name');
-  if (!validateDescription(rule.description)) {
+  if (!validateDescription(rule.description, RULE_DESCRIPTION_REGEX)) {
     invalidFields.push('Description');
   }
   if (!rule.category) invalidFields.push('Log type');
