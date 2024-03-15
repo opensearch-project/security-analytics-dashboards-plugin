@@ -115,7 +115,7 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
 
         return errors;
       }}
-      onSubmit={async (values, { setSubmitting }) => {
+      onSubmit={async (values) => {
         try {
           const newIndex = await indexPatternsService.createAndSave({
             title: values.name,
@@ -125,7 +125,6 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
         } catch (e) {
           console.warn(e);
         }
-        setSubmitting(false);
       }}
     >
       {(props) => (
