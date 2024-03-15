@@ -33,6 +33,7 @@ export interface SecurityAnalyticsApi {
   readonly RULES_BASE: string;
   readonly CHANNELS: string;
   readonly PLUGINS: string;
+  readonly NOTIFICATION_FEATURES: string;
   readonly ACKNOWLEDGE_ALERTS: string;
   readonly UPDATE_ALIASES: string;
   readonly CORRELATIONS: string;

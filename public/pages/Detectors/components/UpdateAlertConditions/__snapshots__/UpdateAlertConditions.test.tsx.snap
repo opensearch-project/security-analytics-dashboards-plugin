@@ -414,6 +414,7 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
     NotificationsService {
       "getChannel": [Function],
       "getChannels": [Function],
+      "getServerFeatures": [Function],
       "httpClient": [MockFunction],
     }
   }
@@ -1043,6 +1044,7 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
         NotificationsService {
           "getChannel": [Function],
           "getChannels": [Function],
+          "getServerFeatures": [Function],
           "httpClient": [MockFunction],
         }
       }
