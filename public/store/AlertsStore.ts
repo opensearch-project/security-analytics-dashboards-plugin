@@ -4,15 +4,13 @@
  */
 
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { AlertItem } from '../pages/Overview/models/interfaces';
-import { AlertsService, DetectorsService } from '../services';
+import { AlertsService } from '../services';
 import { errorNotificationToast } from '../utils/helpers';
 import { GetAlertsResponse, ServerResponse } from '../../types';
 
 export class AlertsStore {
   constructor(
     private readonly service: AlertsService,
-    private readonly detectorsService: DetectorsService,
     private readonly notifications: NotificationsStart
   ) {}
 
@@ -60,29 +58,6 @@ export class AlertsStore {
       });
     } else {
       errorNotificationToast(this.notifications, 'retrieve', 'alerts', firstGetAlertsRes.error);
-    }
-
-    return allAlerts;
-  }
-
-  public async getAllAlerts() {
-    let allAlerts: AlertItem[] = [];
-
-    try {
-      const detectorsRes = await this.detectorsService.getDetectors();
-      if (detectorsRes.ok) {
-        for (let {
-          _id,
-          _source: { name },
-        } of detectorsRes.response.hits.hits) {
-          const detectorAlerts = await this.getAlertsByDetector(_id, name);
-          allAlerts = allAlerts.concat(detectorAlerts);
-        }
-      } else {
-        errorNotificationToast(this.notifications, 'retrieve', 'alerts', detectorsRes.error);
-      }
-    } catch (e: any) {
-      errorNotificationToast(this.notifications, 'retrieve', 'alerts', e);
     }
 
     return allAlerts;

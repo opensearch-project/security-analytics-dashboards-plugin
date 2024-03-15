@@ -46,10 +46,6 @@ export class DataStore {
 
     DataStore.logTypes = new LogTypeStore(services.logTypeService, notifications);
 
-    DataStore.alerts = new AlertsStore(
-      services.alertService,
-      services.detectorsService,
-      notifications
-    );
+    DataStore.alerts = new AlertsStore(services.alertService, notifications);
   };
 }
