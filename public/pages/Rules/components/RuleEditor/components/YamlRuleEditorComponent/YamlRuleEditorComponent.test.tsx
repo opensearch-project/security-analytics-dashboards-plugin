@@ -6,6 +6,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { YamlRuleEditorComponent } from './YamlRuleEditorComponent';
+import { DEFAULT_RULE_UUID } from '../../../../../../../common/constants';
 
 describe('<YamlRuleEditorComponent /> spec', () => {
   it('renders the component', () => {
@@ -13,7 +14,7 @@ describe('<YamlRuleEditorComponent /> spec', () => {
       <YamlRuleEditorComponent
         change={() => {}}
         rule={{
-          id: '25b9c01c-350d-4b95-bed1-836d04a4f324',
+          id: DEFAULT_RULE_UUID,
           category: 'windows',
           title: 'Testing rule',
           description: 'Testing Description',
@@ -58,7 +59,7 @@ describe('<YamlRuleEditorComponent /> spec', () => {
       <YamlRuleEditorComponent
         change={() => {}}
         rule={{
-          id: '25b9c01c-350d-4b95-bed1-836d04a4f324',
+          id: DEFAULT_RULE_UUID,
           category: 'windows',
           title: 'Testing rule',
           description: 'Testing Description',
