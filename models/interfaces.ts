@@ -6,7 +6,11 @@
 export interface Rule {
   id: string;
   category: string;
-  log_source: string;
+  log_source: {
+    product?: string;
+    category?: string;
+    service?: string;
+  };
   title: string;
   description: string;
   tags: Array<{ value: string }>;
