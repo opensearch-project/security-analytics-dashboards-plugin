@@ -507,7 +507,7 @@ describe('Detectors', () => {
       // Waiting for Actions menu button to be enabled
       cy.wait(1000);
 
-      setupIntercept(cy, '/_plugins/_security_analytics/detectors/_search', 'detectorsSearch');
+      cy.intercept('/detectors/_search').as('detectorsSearch');
 
       cy.get('[data-test-subj="detectorsActionsButton').click({ force: true });
       cy.get('[data-test-subj="toggleDetectorButton').contains('Stop');
@@ -517,7 +517,7 @@ describe('Detectors', () => {
       // Need this extra wait time for the Actions button to become enabled again
       cy.wait(1000);
 
-      setupIntercept(cy, '/_plugins/_security_analytics/detectors/_search', 'detectorsSearch');
+      cy.intercept('/detectors/_search').as('detectorsSearch');
       cy.get('[data-test-subj="detectorsActionsButton').click({ force: true });
       cy.get('[data-test-subj="toggleDetectorButton').contains('Start');
       cy.get('[data-test-subj="toggleDetectorButton').click({ force: true });
