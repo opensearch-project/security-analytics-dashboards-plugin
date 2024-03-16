@@ -34,7 +34,7 @@ describe('<RuleContentYamlViewer /> spec', () => {
               value: 'attack.t1543.003',
             },
           ],
-          log_source: '',
+          log_source: {},
           detection:
             'selection:\n  Provider_Name: Service Control Manager\n  EventID: 7045\n  ServiceName: ZzNetSvc\ncondition: selection\n',
           level: 'high',

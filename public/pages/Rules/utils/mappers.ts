@@ -50,7 +50,7 @@ export const mapYamlObjectToRule = (obj: any): Rule => {
   const rule: Rule = {
     id: obj.id,
     category: obj.logsource ? obj.logsource.product : undefined,
-    log_source: '',
+    log_source: {},
     title: obj.title,
     description: obj.description,
     tags: obj.tags ? obj.tags.map((tag: string) => ({ value: tag })) : undefined,
