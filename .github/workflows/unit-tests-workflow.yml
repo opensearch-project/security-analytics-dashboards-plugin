@@ -45,7 +45,7 @@ jobs:
           cd ./OpenSearch-Dashboards/
           su `id -un 1000` -c "source $NVM_DIR/nvm.sh && nvm use && node -v && yarn -v &&
                                cd ./plugins/security-analytics-dashboards-plugin &&
-                               whoami && yarn osd bootstrap && yarn run test:jest --coverage"
+                               whoami && yarn osd bootstrap --single-version=loose && yarn run test:jest --coverage"
 
       - name: Uploads coverage
         if: ${{ matrix.os == 'ubuntu-latest' }}
@@ -89,7 +89,7 @@ jobs:
       - name: Bootstrap plugin/OpenSearch-Dashboards
         run: |
           cd OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
-          yarn osd bootstrap
+          yarn osd bootstrap --single-version=loose
       - name: Run tests
         run: |
           cd OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
