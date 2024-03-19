@@ -26,4 +26,4 @@ Compatible with OpenSearch Dashboards 2.13.0
 * don't show index-pattern creation form once created ([#927](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/927))
 
 ### Documentation
-* Added release notes for 2.13.0 ([]())
+* Added release notes for 2.13.0 ([#959](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/959))
