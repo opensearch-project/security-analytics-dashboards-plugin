@@ -28,3 +28,4 @@ Compatible with OpenSearch Dashboards 2.13.0
 
 ### Documentation
 * Added release notes for 2.13.0 ([#959](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/959))
+* Updated release notes for 2.13.0 ([#968](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/968))
