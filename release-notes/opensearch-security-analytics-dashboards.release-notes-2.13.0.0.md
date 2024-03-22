@@ -24,6 +24,8 @@ Compatible with OpenSearch Dashboards 2.13.0
 * Do not filter timestamp field from required mappings when at least one rule is selected ([#925](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/925))
 * fixed create button staying in submit state on review config ([#926](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/926))
 * don't show index-pattern creation form once created ([#927](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/927))
+* Fixed logic to get all alerts for a detector ([#965](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/965))
 
 ### Documentation
 * Added release notes for 2.13.0 ([#959](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/959))
+* Updated release notes for 2.13.0 ([#968](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/968))
