@@ -9,14 +9,18 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 export interface Rule {
   id: string;
   category: string;
-  log_source: string;
+  log_source: {
+    product?: string;
+    category?: string;
+    service?: string;
+  };
   title: string;
   description: string;
-  tags: { value: string }[];
-  false_positives: { value: string }[];
+  tags: Array<{ value: string }>;
+  false_positives: Array<{ value: string }>;
   level: string;
   status: string;
-  references: { value: string }[];
+  references: Array<{ value: string }>;
   author: string;
   detection: string;
 }

@@ -89,7 +89,11 @@ export interface GetDetectorParams {
   detectorId: string;
 }
 
-export interface GetDetectorResponse {}
+export interface GetDetectorResponse {
+  _id: string;
+  _version: number;
+  detector: DetectorResponse;
+}
 
 export interface SearchDetectorsParams {
   body: {

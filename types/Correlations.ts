@@ -7,6 +7,7 @@ import { Edge, GraphEvents, Node } from 'react-graph-vis';
 import { FilterItem } from '../public/pages/Correlations/components/FilterGroup';
 import { Query } from '@opensearch-project/oui/src/eui_components/search_bar/search_bar';
 import { RuleInfo } from './Rule';
+import { DetectorHit } from './Detector';
 
 export enum CorrelationsLevel {
   AllFindings = 'AllFindings',
@@ -17,7 +18,7 @@ export type CorrelationRuleAction = 'Create' | 'Edit' | 'Readonly';
 
 export interface CorrelationGraphData {
   graph: {
-    nodes: (Node & { chosen?: boolean })[];
+    nodes: (Node & { chosen?: boolean; saLogType: string })[];
     edges: Edge[];
   };
   events: GraphEvents;
@@ -29,9 +30,10 @@ export type CorrelationFinding = {
   correlationRule?: CorrelationRule;
   logType: string;
   timestamp: string;
-  detectionRule: { name: string; severity: string };
+  detectionRule: { name: string; severity: string; tags?: { value: string }[] };
   detectorName?: string;
   rules?: string[];
+  detector?: DetectorHit;
 };
 
 export interface CorrelationRuleQuery {
@@ -95,6 +97,7 @@ export interface CorrelationFindingHit {
   finding: string;
   detector_type: string;
   score: number;
+  rules: string[];
 }
 export interface GetCorrelationFindingsResponse {
   findings: CorrelationFindingHit[];

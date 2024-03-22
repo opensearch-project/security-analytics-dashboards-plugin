@@ -12,7 +12,7 @@ import {
   UpdateDetectorResponse,
 } from '../../server/models/interfaces';
 import { API } from '../../server/utils/constants';
-import { Detector, IDetectorService } from '../../types';
+import { Detector, GetDetectorResponse, IDetectorService } from '../../types';
 
 export default class DetectorsService implements IDetectorService {
   constructor(private httpClient: HttpSetup) {}
@@ -35,6 +35,13 @@ export default class DetectorsService implements IDetectorService {
         },
       }),
     })) as ServerResponse<SearchDetectorsResponse>;
+
+    return res;
+  };
+
+  getDetectorWithId = async (id: string): Promise<ServerResponse<GetDetectorResponse>> => {
+    const url = `..${API.DETECTORS_BASE}/${id}`;
+    const res = (await this.httpClient.get(url)) as ServerResponse<GetDetectorResponse>;
 
     return res;
   };
