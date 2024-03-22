@@ -8,12 +8,12 @@ import { RouteComponentProps } from 'react-router-dom';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { ROUTES } from '../../../../utils/constants';
 import { EuiSpacer } from '@elastic/eui';
-import { Rule } from '../../../../../models/interfaces';
 import { RuleEditorFormModel, ruleEditorStateDefaultValue } from './RuleEditorFormModel';
 import { mapFormToRule, mapRuleToForm } from './mappers';
 import { RuleEditorForm } from './RuleEditorForm';
 import { validateRule } from '../../utils/helpers';
 import { DataStore } from '../../../../store/DataStore';
+import { Rule } from '../../../../../types';
 
 export interface RuleEditorProps {
   title: string | JSX.Element;
@@ -21,6 +21,7 @@ export interface RuleEditorProps {
   history: RouteComponentProps['history'];
   notifications?: NotificationsStart;
   mode: 'create' | 'edit';
+  validateOnMount?: boolean;
 }
 
 export interface VisualEditorFormErrorsState {
@@ -35,6 +36,7 @@ export const RuleEditorContainer: React.FC<RuleEditorProps> = ({
   title,
   rule,
   mode,
+  validateOnMount,
 }) => {
   const initialRuleValue = rule
     ? { ...mapRuleToForm(rule), id: ruleEditorStateDefaultValue.id }
@@ -73,6 +75,7 @@ export const RuleEditorContainer: React.FC<RuleEditorProps> = ({
         mode={mode}
         notifications={notifications}
         initialValue={initialRuleValue}
+        validateOnMount={validateOnMount}
         cancel={goToRulesList}
         submit={onSubmit}
       />

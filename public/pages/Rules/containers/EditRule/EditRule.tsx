@@ -6,15 +6,12 @@
 import { BrowserServices } from '../../../../models/interfaces';
 import { RuleEditorContainer } from '../../components/RuleEditor/RuleEditorContainer';
 import React, { useContext, useEffect } from 'react';
-import { EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 import { RouteComponentProps } from 'react-router-dom';
-import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
-import { Rule } from '../../../../../models/interfaces';
-import { RuleItemInfoBase } from '../../models/types';
+import { BREADCRUMBS } from '../../../../utils/constants';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { errorNotificationToast } from '../../../../utils/helpers';
-import { setBreadCrumb, validateRule } from '../../utils/helpers';
+import { setBreadCrumb } from '../../utils/helpers';
+import { RuleItemInfoBase } from '../../../../../types';
 
 export interface EditRuleProps
   extends RouteComponentProps<any, any, { ruleItem: RuleItemInfoBase }> {

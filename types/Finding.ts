@@ -11,6 +11,7 @@ export interface Finding {
   queries: Query[];
   related_doc_ids: string[];
   timestamp: number;
+  detectionType: string;
 }
 
 export interface Query {
@@ -33,15 +34,19 @@ export interface FindingDocument {
 /**
  * API interfaces
  */
-export type GetFindingsParams =
-  | {
-      detectorId: string;
-      detectorType?: string;
-    }
-  | {
-      detectorType: string;
-      detectorId?: string;
-    };
+export type GetFindingsParams = {
+  sortOrder?: string;
+  startIndex?: number;
+  size?: number;
+  detector_id?: string;
+  detectorType?: string;
+  detectionType?: string;
+  severity?: string;
+  searchString?: string;
+  startTime?: number;
+  endTime?: number;
+  findingIds?: string[];
+};
 
 export interface GetFindingsResponse {
   total_findings: number;

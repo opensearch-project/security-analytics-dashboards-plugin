@@ -8,7 +8,7 @@ import services from '../../../services';
 import alertItemMock from '../../AlertItem.mock';
 import detectorMock from '../../../Detectors/containers/Detectors/Detector.mock';
 import { AlertFlyout } from '../../../../../public/pages/Alerts/components/AlertFlyout/AlertFlyout';
-const { openSearchService, findingsService, ruleService } = services;
+const { opensearchService, findingsService, ruleService } = services;
 
 export default ({
   alertItem: alertItemMock,
@@ -16,7 +16,7 @@ export default ({
   findingsService,
   ruleService,
   notifications: notificationsStartMock,
-  opensearchService: openSearchService,
+  opensearchService,
   onClose: jest.fn(),
   onAcknowledge: jest.fn(),
 } as unknown) as AlertFlyout;

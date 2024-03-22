@@ -1,5 +1,10 @@
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import { dump, load } from 'js-yaml';
-import { Rule } from '../../../../models/interfaces';
+import { Rule } from '../../../../types';
 
 export const mapYamlObjectToYamlString = (rule: Rule): string => {
   try {

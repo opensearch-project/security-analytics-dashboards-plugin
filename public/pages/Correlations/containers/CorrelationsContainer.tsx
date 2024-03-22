@@ -51,6 +51,7 @@ import datemath from '@elastic/datemath';
 import { ruleSeverity } from '../../Rules/utils/constants';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Network } from 'react-graph-vis';
+import { getLogTypeLabel } from '../../LogTypes/utils/helpers';
 
 interface CorrelationsProps
   extends RouteComponentProps<
@@ -144,6 +145,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
           detectionRule: {
             name: (state.finding as any).ruleName,
             severity: (state.finding as any).ruleSeverity,
+            tags: (state.finding as any).tags,
           },
         },
         correlatedFindings: state.correlatedFindings.filter((finding) =>
@@ -221,14 +223,32 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     }
 
     this.setState({ loadingGraphData: true });
-    const allFindings = await DataStore.correlations.fetchAllFindings();
-    const detectorType = allFindings[findingId].logType;
-    const correlations = await DataStore.correlations.getCorrelatedFindings(
+
+    let detectorType: string;
+    const node = this.state.graphData.graph.nodes.find((node) => node.id === findingId)!;
+
+    if (node) {
+      detectorType = node.saLogType;
+    } else {
+      const allFindings = await DataStore.correlations.fetchAllFindings();
+      detectorType = allFindings[findingId].logType;
+    }
+
+    const correlatedFindingsInfo = await DataStore.correlations.getCorrelatedFindings(
       findingId,
       detectorType
     );
-    this.setState({ specificFindingInfo: correlations, loadingGraphData: false });
-    this.updateGraphDataState(correlations);
+    const correlationRules = await DataStore.correlations.getCorrelationRules();
+    correlatedFindingsInfo.correlatedFindings = correlatedFindingsInfo.correlatedFindings.map(
+      (finding) => {
+        return {
+          ...finding,
+          correlationRule: correlationRules.find((rule) => finding.rules?.indexOf(rule.id) !== -1),
+        };
+      }
+    );
+    this.setState({ specificFindingInfo: correlatedFindingsInfo, loadingGraphData: false });
+    this.updateGraphDataState(correlatedFindingsInfo);
   };
 
   private updateGraphDataState(specificFindingInfo: SpecificFindingCorrelations) {
@@ -268,6 +288,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
 
     nodes.push({
       id: finding.id,
+      label: getLogTypeLabel(finding.logType),
       title: this.createNodeTooltip(finding),
       color: {
         background: borderColor,
@@ -281,15 +302,14 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
           border: borderColor,
         },
       },
-      widthConstraint: {
-        minimum: getNodeSize(finding.detectionRule.severity),
-      },
+      size: 17,
       borderWidth: 2,
       font: {
         multi: 'html',
         size: 12,
       },
       chosen: true,
+      saLogType: finding.logType,
     });
   }
 
@@ -463,9 +483,6 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                 </EuiFlexItem>
               </EuiFlexGroup>
               <EuiHorizontalRule margin="xs" />
-              <EuiTitle size="xs">
-                <p>Finding</p>
-              </EuiTitle>
               <EuiSpacer size="xs" />
               <FindingCard
                 id={findingCardsData.finding.id}
