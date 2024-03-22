@@ -2,7 +2,8 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
-import { Rule } from '../../../../../models/interfaces';
+
+import { Rule } from '../../../../../types';
 import { getLogTypeFromLogSource } from '../../utils/helpers';
 import { RuleEditorFormModel, ruleEditorStateDefaultValue } from './RuleEditorFormModel';
 

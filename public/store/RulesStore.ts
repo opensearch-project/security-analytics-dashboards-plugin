@@ -5,8 +5,7 @@
 
 import { RuleService } from '../services';
 import { load, safeDump } from 'js-yaml';
-import { RuleItemInfoBase, IRulesStore, IRulesCache } from '../../types';
-import { Rule } from '../../models/interfaces';
+import { RuleItemInfoBase, IRulesStore, IRulesCache, Rule } from '../../types';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../utils/helpers';
 import { ruleTypes } from '../pages/Rules/utils/constants';

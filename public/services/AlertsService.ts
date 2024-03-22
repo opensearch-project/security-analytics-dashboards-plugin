@@ -22,10 +22,11 @@ export default class AlertsService {
   getAlerts = async (
     detectorParams: GetAlertsParams
   ): Promise<ServerResponse<GetAlertsResponse>> => {
-    const { detectorType, detector_id } = detectorParams;
+    const { detectorType, detector_id, size, sortOrder, startIndex } = detectorParams;
     let query: GetAlertsParams | {} = {
-      sortOrder: 'desc',
-      size: 10000,
+      sortOrder: sortOrder || 'desc',
+      size: size || 10000,
+      startIndex: startIndex || 0,
     };
 
     if (detector_id) {
