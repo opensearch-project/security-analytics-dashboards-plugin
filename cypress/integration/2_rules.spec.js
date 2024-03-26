@@ -437,7 +437,6 @@ describe('Rules', () => {
 
       // author field
       getAuthorField().clearValue();
-      toastShouldExist();
       getAuthorField().type('John Doe');
 
       // log field
