@@ -6,13 +6,14 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { RuleContentYamlViewer } from './RuleContentYamlViewer';
+import { DEFAULT_RULE_UUID } from '../../../../../common/constants';
 
 describe('<RuleContentYamlViewer /> spec', () => {
   it('renders the component', () => {
     const { container } = render(
       <RuleContentYamlViewer
         rule={{
-          id: '25b9c01c-350d-4b95-bed1-836d04a4f324',
+          id: DEFAULT_RULE_UUID,
           category: 'windows',
           title: 'Testing rule',
           description: 'Testing Description',
@@ -34,7 +35,7 @@ describe('<RuleContentYamlViewer /> spec', () => {
               value: 'attack.t1543.003',
             },
           ],
-          log_source: '',
+          log_source: {},
           detection:
             'selection:\n  Provider_Name: Service Control Manager\n  EventID: 7045\n  ServiceName: ZzNetSvc\ncondition: selection\n',
           level: 'high',

@@ -43,7 +43,7 @@ import { CoreServicesContext } from '../../../components/core_services';
 import { RouteComponentProps, useParams } from 'react-router-dom';
 import { validateName } from '../../../utils/validation';
 import { FieldMappingService, IndexService } from '../../../services';
-import { errorNotificationToast, getLogTypeOptions } from '../../../utils/helpers';
+import { errorNotificationToast, getDataSources, getLogTypeOptions } from '../../../utils/helpers';
 
 export interface CreateCorrelationRuleProps {
   indexService: IndexService;
@@ -56,9 +56,11 @@ export interface CreateCorrelationRuleProps {
   notifications: NotificationsStart | null;
 }
 
-export interface CorrelationOptions {
+export interface CorrelationOption {
   label: string;
-  value: string;
+  value?: string;
+  index?: string;
+  options?: CorrelationOption[];
 }
 
 const parseTime = (time: number) => {
@@ -87,9 +89,9 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
   props: CreateCorrelationRuleProps
 ) => {
   const correlationStore = DataStore.correlations;
-  const [indices, setIndices] = useState<CorrelationOptions[]>([]);
+  const [indices, setIndices] = useState<CorrelationOption[]>([]);
   const [logFieldsByIndex, setLogFieldsByIndex] = useState<{
-    [index: string]: CorrelationOptions[];
+    [index: string]: CorrelationOption[];
   }>({});
   const params = useParams<{ ruleId: string }>();
   const [initialValues, setInitialValues] = useState({
@@ -229,26 +231,14 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
   };
 
   const context = useContext(CoreServicesContext);
-  const parseOptions = (indices: string[]) => {
-    return indices.map(
-      (index: string): CorrelationOptions => ({
-        label: index,
-        value: index,
-      })
-    );
-  };
-
   const getIndices = useCallback(async () => {
     try {
-      const indicesResponse = await props.indexService.getIndices();
-      if (indicesResponse.ok) {
-        const indicesNames = parseOptions(
-          indicesResponse.response.indices.map((index) => index.index)
-        );
-        setIndices(indicesNames);
+      const dataSourcesRes = await getDataSources(props.indexService, props.notifications);
+      if (dataSourcesRes.ok) {
+        setIndices(dataSourcesRes.dataSources);
       }
     } catch (error: any) {}
-  }, [props.indexService.getIndices]);
+  }, [props.indexService, props.notifications]);
 
   useEffect(() => {
     getIndices();
@@ -422,6 +412,9 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                           e[0]?.value ? e[0].value : ''
                         );
                         updateLogFieldsForIndex(e[0]?.value || '');
+                      }}
+                      renderOption={(option: CorrelationOption) => {
+                        return option.index ? `${option.label} (${option.index})` : option.label;
                       }}
                       onBlur={props.handleBlur(`queries[${queryIdx}].index`)}
                       selectedOptions={

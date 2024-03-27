@@ -19,9 +19,8 @@ import {
 } from '@elastic/eui';
 import { Toast } from '@opensearch-project/oui/src/eui_components/toast/global_toast_list';
 import { CoreStart } from 'opensearch-dashboards/public';
-import { ServicesConsumer } from '../../services';
-import { BrowserServices } from '../../models/interfaces';
-import { DEFAULT_DATE_RANGE, ROUTES } from '../../utils/constants';
+import { SaContextConsumer } from '../../services';
+import { DEFAULT_DATE_RANGE, DATE_TIME_FILTER_KEY, ROUTES } from '../../utils/constants';
 import { CoreServicesConsumer } from '../../components/core_services';
 import Findings from '../Findings';
 import Detectors from '../Detectors';
@@ -50,6 +49,7 @@ import FindingDetailsFlyout, {
 import { LogTypes } from '../LogTypes/containers/LogTypes';
 import { LogType } from '../LogTypes/containers/LogType';
 import { CreateLogType } from '../LogTypes/containers/CreateLogType';
+import { SecurityAnalyticsContextType } from '../../../types';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -104,13 +104,17 @@ const navItemIndexByRoute: { [route: string]: number } = {
 export default class Main extends Component<MainProps, MainState> {
   constructor(props: MainProps) {
     super(props);
+    const cachedDateTimeFilter = localStorage?.getItem(DATE_TIME_FILTER_KEY);
+    const defaultDateTimeFilter = cachedDateTimeFilter
+      ? JSON.parse(cachedDateTimeFilter)
+      : {
+          startTime: DEFAULT_DATE_RANGE.start,
+          endTime: DEFAULT_DATE_RANGE.end,
+        };
     this.state = {
       getStartedDismissedOnce: false,
       selectedNavItemId: 1,
-      dateTimeFilter: {
-        startTime: DEFAULT_DATE_RANGE.start,
-        endTime: DEFAULT_DATE_RANGE.end,
-      },
+      dateTimeFilter: defaultDateTimeFilter,
       findingFlyout: null,
     };
 
@@ -154,8 +158,9 @@ export default class Main extends Component<MainProps, MainState> {
 
   setDateTimeFilter = (dateTimeFilter: DateTimeFilter) => {
     this.setState({
-      dateTimeFilter: dateTimeFilter,
+      dateTimeFilter,
     });
+    localStorage?.setItem(DATE_TIME_FILTER_KEY, JSON.stringify(dateTimeFilter));
   };
 
   /**
@@ -316,8 +321,8 @@ export default class Main extends Component<MainProps, MainState> {
       <CoreServicesConsumer>
         {(core: CoreStart | null) =>
           core && (
-            <ServicesConsumer>
-              {(services: BrowserServices | null) =>
+            <SaContextConsumer>
+              {({ services, metrics }: SecurityAnalyticsContextType | null) =>
                 services && (
                   <EuiPage restrictWidth={'100%'}>
                     {/* Hide side navigation bar when on any HIDDEN_NAV_ROUTES pages. */}
@@ -345,7 +350,6 @@ export default class Main extends Component<MainProps, MainState> {
                               {...props}
                               setDateTimeFilter={this.setDateTimeFilter}
                               dateTimeFilter={this.state.dateTimeFilter}
-                              findingsService={services.findingsService}
                               history={props.history}
                               correlationService={services?.correlationsService}
                               opensearchService={services.opensearchService}
@@ -373,6 +377,7 @@ export default class Main extends Component<MainProps, MainState> {
                               {...props}
                               isEdit={false}
                               services={services}
+                              metrics={metrics}
                               history={props.history}
                               notifications={core?.notifications}
                             />
@@ -588,7 +593,7 @@ export default class Main extends Component<MainProps, MainState> {
                   </EuiPage>
                 )
               }
-            </ServicesConsumer>
+            </SaContextConsumer>
           )
         }
       </CoreServicesConsumer>

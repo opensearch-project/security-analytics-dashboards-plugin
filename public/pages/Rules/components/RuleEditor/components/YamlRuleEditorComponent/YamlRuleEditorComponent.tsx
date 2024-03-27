@@ -7,12 +7,12 @@ import React, { useState } from 'react';
 import { load } from 'js-yaml';
 import { EuiFormRow, EuiCodeEditor, EuiLink, EuiSpacer, EuiText, EuiCallOut } from '@elastic/eui';
 import FormFieldHeader from '../../../../../../components/FormFieldHeader';
-import { Rule } from '../../../../../../../models/interfaces';
 import {
   mapRuleToYamlObject,
   mapYamlObjectToYamlString,
   mapYamlObjectToRule,
 } from '../../../../utils/mappers';
+import { Rule } from '../../../../../../../types';
 
 export interface YamlRuleEditorComponentProps {
   rule: Rule;

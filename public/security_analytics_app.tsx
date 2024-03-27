@@ -10,9 +10,9 @@ import { HashRouter as Router, Route } from 'react-router-dom';
 import {
   AlertsService,
   NotificationsService,
-  ServicesContext,
   IndexPatternsService,
   LogTypeService,
+  SecurityAnalyticsContext,
 } from './services';
 import { DarkModeContext } from './components/DarkMode';
 import Main from './pages/Main';
@@ -30,6 +30,9 @@ import { SecurityAnalyticsPluginStartDeps } from './plugin';
 import { DataStore } from './store/DataStore';
 import CorrelationService from './services/CorrelationService';
 import { LogType } from '../types';
+import MetricsService from './services/MetricsService';
+import { MetricsContext } from './metrics/MetricsContext';
+import { CHANNEL_TYPES } from './pages/CreateDetector/components/ConfigureAlerts/utils/constants';
 
 export function renderApp(
   coreStart: CoreStart,
@@ -51,6 +54,7 @@ export function renderApp(
   const savedObjectsService = new SavedObjectService(savedObjects.client, indexService);
   const indexPatternsService = new IndexPatternsService(depsStart.data.indexPatterns);
   const logTypeService = new LogTypeService(http);
+  const metricsService = new MetricsService(http);
 
   const services: BrowserServices = {
     detectorsService,
@@ -65,7 +69,10 @@ export function renderApp(
     savedObjectsService,
     indexPatternsService,
     logTypeService,
+    metricsService,
   };
+
+  const metrics = new MetricsContext(metricsService);
 
   const isDarkMode = coreStart.uiSettings.get('theme:darkMode') || false;
   DataStore.init(services, coreStart.notifications);
@@ -75,17 +82,23 @@ export function renderApp(
         <Route
           render={(props) => (
             <DarkModeContext.Provider value={isDarkMode}>
-              <ServicesContext.Provider value={services}>
+              <SecurityAnalyticsContext.Provider value={{ services, metrics }}>
                 <CoreServicesContext.Provider value={coreStart}>
                   <Main {...props} landingPage={landingPage} />
                 </CoreServicesContext.Provider>
-              </ServicesContext.Provider>
+              </SecurityAnalyticsContext.Provider>
             </DarkModeContext.Provider>
           )}
         />
       </Router>,
       params.element
     );
+
+    notificationsService.getServerFeatures().then((response) => {
+      if (response.ok) {
+        CHANNEL_TYPES.splice(0, CHANNEL_TYPES.length, ...response.response);
+      }
+    });
   });
 
   return () => ReactDOM.unmountComponentAtNode(params.element);

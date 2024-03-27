@@ -7,17 +7,13 @@ import { ContentPanel } from '../../../../components/ContentPanel';
 import React, { useMemo, useEffect, useState, useContext } from 'react';
 import { EuiButton, EuiCallOut, EuiSpacer } from '@elastic/eui';
 import { AlertTriggerView } from '../../components/AlertTriggerView/AlertTriggerView';
-import { ServicesContext } from '../../../../services';
+import { SecurityAnalyticsContext } from '../../../../services';
 import { ServerResponse } from '../../../../../server/models/types';
-import {
-  FeatureChannelList,
-  GetChannelsResponse,
-  RuleInfo,
-} from '../../../../../server/models/interfaces';
+import { RuleInfo } from '../../../../../server/models/interfaces';
 import { errorNotificationToast } from '../../../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { DataStore } from '../../../../store/DataStore';
-import { Detector } from '../../../../../types';
+import { Detector, FeatureChannelList, GetChannelsResponse } from '../../../../../types';
 
 export interface AlertTriggersViewProps {
   detector: Detector;
@@ -32,7 +28,7 @@ export const AlertTriggersView: React.FC<AlertTriggersViewProps> = ({
   notifications,
   isEditable = true,
 }) => {
-  const services = useContext(ServicesContext);
+  const saContext = useContext(SecurityAnalyticsContext);
   const [channels, setChannels] = useState<FeatureChannelList[]>([]);
   const [rules, setRules] = useState<{ [key: string]: RuleInfo }>({});
   const actions = useMemo(
@@ -42,7 +38,7 @@ export const AlertTriggersView: React.FC<AlertTriggersViewProps> = ({
 
   useEffect(() => {
     const getNotificationChannels = async () => {
-      const response = (await services?.notificationsService.getChannels()) as ServerResponse<
+      const response = (await saContext?.services.notificationsService.getChannels()) as ServerResponse<
         GetChannelsResponse
       >;
       if (response.ok) {
@@ -88,7 +84,7 @@ export const AlertTriggersView: React.FC<AlertTriggersViewProps> = ({
       console.error('Failed to retrieve rules and notification channels:', e);
       errorNotificationToast(notifications, 'retrieve', 'notification channels and rules', e);
     });
-  }, [services, detector]);
+  }, [saContext?.services, detector]);
 
   return (
     <ContentPanel title={`Alert triggers (${detector.triggers.length})`} actions={actions}>

@@ -21,7 +21,12 @@ import { GetFieldMappingViewResponse } from '../../../../../../server/models/int
 import FieldMappingService from '../../../../../services/FieldMappingService';
 import { MappingViewType } from '../components/RequiredFieldMapping/FieldMappingsTable';
 import { CreateDetectorRulesState } from '../../DefineDetector/components/DetectionRules/DetectionRules';
-import { Detector } from '../../../../../../types';
+import {
+  CreateDetectorSteps,
+  Detector,
+  SecurityAnalyticsContextType,
+} from '../../../../../../types';
+import { SecurityAnalyticsContext } from '../../../../../services';
 
 export interface ruleFieldToIndexFieldMap {
   [fieldName: string]: string;
@@ -42,7 +47,6 @@ interface ConfigureFieldMappingState {
   detector: Detector;
   mappingsData: GetFieldMappingViewResponse;
   createdMappings: ruleFieldToIndexFieldMap;
-  invalidMappingFieldNames: string[];
   fieldMappingIsOpen: boolean;
   showMappingEmptyPrompt: boolean;
   selectedTabId: FieldMappingTabId;
@@ -59,6 +63,10 @@ export default class ConfigureFieldMapping extends Component<
   ConfigureFieldMappingProps,
   ConfigureFieldMappingState
 > {
+  public static contextType?:
+    | React.Context<SecurityAnalyticsContextType | null>
+    | undefined = SecurityAnalyticsContext;
+
   constructor(props: ConfigureFieldMappingProps) {
     super(props);
     const createdMappings: ruleFieldToIndexFieldMap = {};
@@ -69,7 +77,6 @@ export default class ConfigureFieldMapping extends Component<
       loading: props.loading || false,
       mappingsData: EMPTY_FIELD_MAPPINGS_VIEW,
       createdMappings,
-      invalidMappingFieldNames: [],
       detector: props.detector,
       fieldMappingIsOpen: false,
       tabs: [],
@@ -80,23 +87,20 @@ export default class ConfigureFieldMapping extends Component<
   }
 
   componentDidMount = async () => {
-    await this.getAllMappings();
-    this.setupTabs();
+    await this.getAllMappings(this.setupTabs);
   };
 
   componentDidUpdate(
     prevProps: Readonly<ConfigureFieldMappingProps>,
-    prevState: Readonly<ConfigureFieldMappingState>,
-    snapshot?: any
+    prevState: Readonly<ConfigureFieldMappingState>
   ) {
-    if (prevProps.detector !== this.props.detector) {
+    if (this.shouldUpdateMappingsState(prevProps)) {
       this.setState(
         {
           detector: this.props.detector,
         },
         async () => {
-          await this.getAllMappings();
-          this.setupTabs();
+          await this.getAllMappings(this.setupTabs);
         }
       );
     } else if (prevState.createdMappings !== this.state.createdMappings) {
@@ -104,12 +108,28 @@ export default class ConfigureFieldMapping extends Component<
     }
   }
 
-  setupTabs() {
+  private shouldUpdateMappingsState(prevProps: ConfigureFieldMappingProps) {
+    const prevDetector = prevProps.detector;
+    const newDetector = this.props.detector;
+
+    return (
+      !!newDetector.detector_type &&
+      newDetector.inputs[0]?.detector_input.indices.length > 0 &&
+      (prevDetector.detector_type !== newDetector.detector_type ||
+        prevDetector.inputs[0].detector_input.indices !==
+          newDetector.inputs[0].detector_input.indices ||
+        prevDetector.inputs[0].detector_input.pre_packaged_rules !==
+          newDetector.inputs[0].detector_input.pre_packaged_rules ||
+        prevDetector.inputs[0].detector_input.custom_rules !==
+          newDetector.inputs[0].detector_input.custom_rules)
+    );
+  }
+
+  setupTabs = () => {
     const {
       loading,
       mappingsData,
       createdMappings,
-      invalidMappingFieldNames,
       selectedTabId,
       detector: { detector_type, inputs },
     } = this.state;
@@ -124,6 +144,10 @@ export default class ConfigureFieldMapping extends Component<
 
     Object.keys(mappingsData.properties).forEach((ruleFieldName) => {
       mappedRuleFields.unshift(ruleFieldName);
+
+      if (mappingsData.properties[ruleFieldName].path) {
+        logFields.add(mappingsData.properties[ruleFieldName].path);
+      }
 
       // Need this check to avoid adding undefined value
       // When user removes existing mapping for default mapped values, the mapping will be undefined
@@ -160,7 +184,6 @@ export default class ConfigureFieldMapping extends Component<
               mappingProps={{
                 type: MappingViewType.Edit,
                 existingMappings,
-                invalidMappingFieldNames,
                 onMappingCreation: this.onMappingCreation,
               }}
             />
@@ -193,7 +216,6 @@ export default class ConfigureFieldMapping extends Component<
               mappingProps={{
                 type: MappingViewType.Edit,
                 existingMappings,
-                invalidMappingFieldNames,
                 onMappingCreation: this.onMappingCreation,
               }}
             />
@@ -213,7 +235,7 @@ export default class ConfigureFieldMapping extends Component<
       selectedTabContent:
         tabs[selectedTabId === FieldMappingTabId.AutomaticMappings ? 0 : 1].content,
     });
-  }
+  };
 
   private getRuleFieldsForEnabledRules(): Set<string> {
     const ruleFieldsForEnabledRules = new Set<string>();
@@ -226,8 +248,11 @@ export default class ConfigureFieldMapping extends Component<
     return ruleFieldsForEnabledRules;
   }
 
-  getAllMappings = async () => {
-    if (this.state.detector.inputs[0]?.detector_input.indices[0]) {
+  getAllMappings = async (onMappingsUpdate: () => void) => {
+    if (
+      this.state.detector.inputs[0]?.detector_input.indices[0] &&
+      !!this.state.detector.detector_type
+    ) {
       this.setState({ loading: true });
       const mappingsView = await this.props.fieldMappingService.getMappingsView(
         this.state.detector.inputs[0].detector_input.indices[0],
@@ -239,9 +264,13 @@ export default class ConfigureFieldMapping extends Component<
         const unmappedRuleFields = new Set(mappingsView.response.unmapped_field_aliases);
 
         Object.keys(mappingsView.response.properties).forEach((ruleFieldName) => {
-          // Filter the mappings view to include only the rule fields for the enabled rules
-          if (!ruleFieldsForEnabledRules.has(ruleFieldName)) {
+          // Filter the mappings view to include only the rule fields for the enabled rules except for the timestamp field
+          if (
+            ruleFieldsForEnabledRules.size === 0 ||
+            (!ruleFieldsForEnabledRules.has(ruleFieldName) && ruleFieldName !== 'timestamp')
+          ) {
             delete mappingsView.response.properties[ruleFieldName];
+            delete existingMappings[ruleFieldName];
             return;
           }
 
@@ -250,11 +279,17 @@ export default class ConfigureFieldMapping extends Component<
             mappingsView.response.properties[ruleFieldName].path;
         });
         let threatIntelFeedFields = new Set();
-        mappingsView.response.threat_intel_field_aliases?.forEach(({ fields }) => {
-          fields.forEach((field) => threatIntelFeedFields.add(field));
-        });
+
+        // Only if threat_intel is enabled, we want to show the relevant fields for mapping
+        if (this.state.detector.threat_intel_enabled) {
+          mappingsView.response.threat_intel_field_aliases?.forEach(({ fields }) => {
+            fields.forEach((field) => threatIntelFeedFields.add(field));
+          });
+        }
+
         mappingsView.response.unmapped_field_aliases?.forEach((ruleFieldName) => {
           if (
+            ruleFieldName !== 'timestamp' &&
             !ruleFieldsForEnabledRules.has(ruleFieldName) &&
             !threatIntelFeedFields.has(ruleFieldName)
           ) {
@@ -262,37 +297,24 @@ export default class ConfigureFieldMapping extends Component<
           }
         });
 
-        this.setState({
-          createdMappings: existingMappings,
-          mappingsData: {
-            ...mappingsView.response,
-            unmapped_field_aliases: Array.from(unmappedRuleFields),
+        this.setState(
+          {
+            createdMappings: existingMappings,
+            mappingsData: {
+              ...mappingsView.response,
+              unmapped_field_aliases: Array.from(unmappedRuleFields),
+            },
+            fieldMappingIsOpen: !!unmappedRuleFields.size,
+            loading: false,
           },
-          fieldMappingIsOpen: !!unmappedRuleFields.size,
-        });
+          onMappingsUpdate
+        );
         this.updateMappingSharedState(existingMappings);
+      } else {
+        this.setState({ loading: false });
       }
-      this.setState({ loading: false });
     }
   };
-
-  /**
-   * Returns the fieldName(s) that have duplicate alias assigned to them
-   */
-  getInvalidMappingFieldNames(mappings: ruleFieldToIndexFieldMap): string[] {
-    const seenAliases = new Set();
-    const invalidFields: string[] = [];
-
-    Object.entries(mappings).forEach((entry) => {
-      if (seenAliases.has(entry[1])) {
-        invalidFields.push(entry[0]);
-      }
-
-      seenAliases.add(entry[1]);
-    });
-
-    return invalidFields;
-  }
 
   onMappingCreation = (ruleFieldName: string, indexFieldName: string): void => {
     const newMappings: ruleFieldToIndexFieldMap = {
@@ -304,12 +326,13 @@ export default class ConfigureFieldMapping extends Component<
       delete newMappings[ruleFieldName];
     }
 
-    const invalidMappingFieldNames = this.getInvalidMappingFieldNames(newMappings);
     this.setState({
       createdMappings: newMappings,
-      invalidMappingFieldNames: invalidMappingFieldNames,
     });
     this.updateMappingSharedState(newMappings);
+    this.context.metrics.detectorMetricsManager.sendMetrics(
+      CreateDetectorSteps.fieldMappingsConfigured
+    );
   };
 
   updateMappingSharedState = (createdMappings: ruleFieldToIndexFieldMap) => {

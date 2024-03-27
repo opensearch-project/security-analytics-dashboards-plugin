@@ -31,7 +31,7 @@ export const ruleSeverity: {
     name: 'High',
     value: 'high',
     priority: '2',
-    color: { background: paletteColors[3], text: 'black' },
+    color: { background: paletteColors[3], text: 'white' },
   },
   {
     name: 'Medium',
@@ -43,7 +43,7 @@ export const ruleSeverity: {
     name: 'Low',
     value: 'low',
     priority: '4',
-    color: { background: paletteColors[1], text: 'black' },
+    color: { background: paletteColors[1], text: 'white' },
   },
   {
     name: 'Informational',
@@ -56,3 +56,7 @@ export const ruleSeverity: {
 export const ruleSource: string[] = ['Standard', 'Custom'];
 
 export const ruleStatus: string[] = ['experimental', 'test', 'stable'];
+
+export const sigmaRuleLogSourceFields = ['product', 'category', 'service'];
+
+export const yamlMediaTypes = new Set(['application/x-yaml', 'text/yaml', 'text/x-yaml']);

@@ -442,7 +442,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                         Object {
                           "color": Object {
                             "background": "#e7664c",
-                            "text": "black",
+                            "text": "white",
                           },
                           "name": "High",
                           "priority": "2",
@@ -460,7 +460,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                         Object {
                           "color": Object {
                             "background": "#54b399",
-                            "text": "black",
+                            "text": "white",
                           },
                           "name": "Low",
                           "priority": "4",
@@ -551,7 +551,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                           Object {
                             "color": Object {
                               "background": "#e7664c",
-                              "text": "black",
+                              "text": "white",
                             },
                             "name": "High",
                             "priority": "2",
@@ -569,7 +569,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                           Object {
                             "color": Object {
                               "background": "#54b399",
-                              "text": "black",
+                              "text": "white",
                             },
                             "name": "Low",
                             "priority": "4",
@@ -732,7 +732,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                     Object {
                                       "color": Object {
                                         "background": "#e7664c",
-                                        "text": "black",
+                                        "text": "white",
                                       },
                                       "name": "High",
                                       "priority": "2",
@@ -750,7 +750,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                     Object {
                                       "color": Object {
                                         "background": "#54b399",
-                                        "text": "black",
+                                        "text": "white",
                                       },
                                       "name": "Low",
                                       "priority": "4",
@@ -957,7 +957,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                         Object {
                                           "color": Object {
                                             "background": "#e7664c",
-                                            "text": "black",
+                                            "text": "white",
                                           },
                                           "name": "High",
                                           "priority": "2",
@@ -975,7 +975,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                         Object {
                                           "color": Object {
                                             "background": "#54b399",
-                                            "text": "black",
+                                            "text": "white",
                                           },
                                           "name": "Low",
                                           "priority": "4",

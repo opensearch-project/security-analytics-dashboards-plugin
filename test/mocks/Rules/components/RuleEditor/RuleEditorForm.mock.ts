@@ -6,11 +6,12 @@
 import { VisualRuleEditorProps } from '../../../../../public/pages/Rules/components/RuleEditor/RuleEditorForm';
 import notificationsStartMock from '../../../services/notifications/NotificationsStart.mock';
 import { ruleStatus } from '../../../../../public/pages/Rules/utils/constants';
+import { DEFAULT_RULE_UUID } from '../../../../../common/constants';
 
 export default {
   initialValue: {
-    id: '25b9c01c-350d-4b95-bed1-836d04a4f324',
-    log_source: '',
+    id: DEFAULT_RULE_UUID,
+    log_source: {},
     logType: '',
     name: '',
     description: '',

@@ -2,7 +2,9 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
-import { Rule } from '../../../../../models/interfaces';
+
+import { Rule } from '../../../../../types';
+import { getLogTypeFromLogSource } from '../../utils/helpers';
 import { RuleEditorFormModel, ruleEditorStateDefaultValue } from './RuleEditorFormModel';
 
 export const mapFormToRule = (formState: RuleEditorFormModel): Rule => {
@@ -25,10 +27,13 @@ export const mapFormToRule = (formState: RuleEditorFormModel): Rule => {
 };
 
 export const mapRuleToForm = (rule: Rule): RuleEditorFormModel => {
+  // get category from log_source
+  const logType = rule.category || getLogTypeFromLogSource(rule.log_source);
+
   return {
     id: rule.id,
     log_source: rule.log_source,
-    logType: rule.category,
+    logType: logType || '',
     name: rule.title,
     description: rule.description,
     status: rule.status,

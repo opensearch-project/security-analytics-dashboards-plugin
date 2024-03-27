@@ -17,7 +17,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import DetectorBasicDetailsForm from '../../../CreateDetector/components/DefineDetector/components/DetectorDetails';
 import DetectorDataSource from '../../../CreateDetector/components/DefineDetector/components/DetectorDataSource';
-import { FieldMappingService, IndexService, ServicesContext } from '../../../../services';
+import { FieldMappingService, IndexService, SecurityAnalyticsContext } from '../../../../services';
 import { DetectorSchedule } from '../../../CreateDetector/components/DefineDetector/components/DetectorSchedule/DetectorSchedule';
 import { useCallback } from 'react';
 import { DetectorHit, SearchDetectorsResponse } from '../../../../../server/models/interfaces';
@@ -36,7 +36,7 @@ export interface UpdateDetectorBasicDetailsProps
 }
 
 export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProps> = (props) => {
-  const services = useContext(ServicesContext);
+  const saContext = useContext(SecurityAnalyticsContext);
   const [detector, setDetector] = useState<Detector>(
     (props.location.state?.detectorHit?._source || EMPTY_DEFAULT_DETECTOR) as Detector
   );
@@ -57,7 +57,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
 
   useEffect(() => {
     const getDetector = async () => {
-      const response = (await services?.detectorsService.getDetectors()) as ServerResponse<
+      const response = (await saContext?.services.detectorsService.getDetectors()) as ServerResponse<
         SearchDetectorsResponse
       >;
       if (response.ok) {
@@ -99,7 +99,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
         errorNotificationToast(props.notifications, 'retrieve', 'detector', e);
       });
     }
-  }, [services]);
+  }, [saContext?.services]);
 
   const updateDetectorState = useCallback(
     (detector: Detector) => {
@@ -217,7 +217,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
 
     const updateDetector = async () => {
       const detectorHit = props.location.state.detectorHit;
-      const updateDetectorRes = await services?.detectorsService?.updateDetector(
+      const updateDetectorRes = await saContext?.services.detectorsService?.updateDetector(
         detectorHit._id,
         detector
       );
@@ -242,7 +242,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
     };
 
     if (fieldMappings?.length) {
-      const createMappingsResponse = await services?.fieldMappingService?.createMappings(
+      const createMappingsResponse = await saContext?.services.fieldMappingService?.createMappings(
         detector.inputs[0].detector_input.indices[0],
         detector.detector_type.toLowerCase(),
         fieldMappings
@@ -284,9 +284,9 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
           isEdit={true}
           detector_type={detector.detector_type}
           notifications={props.notifications}
-          indexService={services?.indexService as IndexService}
+          indexService={saContext?.services?.indexService as IndexService}
           detectorIndices={inputs[0].detector_input.indices}
-          fieldMappingService={services?.fieldMappingService as FieldMappingService}
+          fieldMappingService={saContext?.services?.fieldMappingService as FieldMappingService}
           onDetectorInputIndicesChange={onDetectorInputIndicesChange}
         />
         <EuiSpacer size={'l'} />
@@ -306,7 +306,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
             <ReviewFieldMappings
               {...props}
               detector={detector}
-              fieldMappingService={services?.fieldMappingService}
+              fieldMappingService={saContext?.services.fieldMappingService}
               onFieldMappingChange={onFieldMappingChange}
             />
             <EuiSpacer size="l" />

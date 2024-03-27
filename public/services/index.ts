@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ServicesConsumer, ServicesContext } from './Services';
+import { SecurityAnalyticsContext, SaContextConsumer } from './Services';
 import DetectorsService from './DetectorService';
 import FindingsService from './FindingsService';
 import OpenSearchService from './OpenSearchService';
@@ -18,8 +18,8 @@ import CorrelationService from './CorrelationService';
 import LogTypeService from './LogTypeService';
 
 export {
-  ServicesConsumer,
-  ServicesContext,
+  SaContextConsumer,
+  SecurityAnalyticsContext,
   CorrelationService,
   DetectorsService,
   FindingsService,

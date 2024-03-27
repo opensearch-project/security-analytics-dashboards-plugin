@@ -4,7 +4,6 @@
  */
 
 import {
-  DurationRange,
   EuiBasicTableColumn,
   EuiButton,
   EuiButtonIcon,
@@ -24,6 +23,7 @@ import {
   EuiModalBody,
   EuiModalFooter,
   EuiIcon,
+  EuiTableSelectionType
 } from '@elastic/eui';
 import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
 import dateMath from '@elastic/datemath';
@@ -64,6 +64,8 @@ import { match, RouteComponentProps, withRouter } from 'react-router-dom';
 import { DateTimeFilter } from '../../../Overview/models/interfaces';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 import { Detector } from '../../../../../types';
+import { DurationRange } from '@elastic/eui/src/components/date_picker/types';
+import { DataStore } from '../../../../store/DataStore';
 
 export interface AlertsProps extends RouteComponentProps {
   alertService: AlertsService;
@@ -72,7 +74,7 @@ export interface AlertsProps extends RouteComponentProps {
   opensearchService: OpenSearchService;
   notifications: NotificationsStart;
   indexPatternService: IndexPatternsService;
-  match: match;
+  match: match<{ detectorId: string }>;
   dateTimeFilter?: DateTimeFilter;
   setDateTimeFilter?: Function;
 }
@@ -200,7 +202,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         name: 'Detector',
         sortable: true,
         dataType: 'string',
-        render: (detectorName) => detectorName || DEFAULT_EMPTY_DATA,
+        render: (detectorName: string) => detectorName || DEFAULT_EMPTY_DATA,
       },
       {
         field: 'state',
@@ -237,9 +239,8 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
               </React.Fragment>
             );
           } else {
-            return <span>{status}</span>;
+            return <span>{status ? capitalizeFirstLetter(status) : DEFAULT_EMPTY_DATA}</span>;
           }
-        },
       },
       {
         field: 'severity',
@@ -340,7 +341,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
 
   async getAlerts() {
     this.setState({ loading: true });
-    const { alertService, detectorService, notifications } = this.props;
+    const { detectorService, notifications } = this.props;
     const { detectors } = this.state;
     try {
       const detectorsRes = await detectorService.getDetectors();
@@ -355,18 +356,11 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
 
         for (let id of detectorIds) {
           if (!detectorId || detectorId === id) {
-            const alertsRes = await alertService.getAlerts({ detector_id: id });
-
-            if (alertsRes.ok) {
-              const detectorAlerts = alertsRes.response.alerts.map((alert) => {
-                const detector = detectors[id];
-                if (!alert.detector_id) alert.detector_id = id;
-                return { ...alert, detectorName: detector.name };
-              });
-              alerts = alerts.concat(detectorAlerts);
-            } else {
-              errorNotificationToast(notifications, 'retrieve', 'alerts', alertsRes.error);
-            }
+            const detectorAlerts = await DataStore.alerts.getAlertsByDetector(
+              id,
+              detectors[id].name
+            );
+            alerts = alerts.concat(detectorAlerts);
           }
         }
 
@@ -374,7 +368,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       } else {
         errorNotificationToast(notifications, 'retrieve', 'detectors', detectorsRes.error);
       }
-    } catch (e) {
+    } catch (e: any) {
       errorNotificationToast(notifications, 'retrieve', 'alerts', e);
     }
     this.filterAlerts();
@@ -452,7 +446,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
           }
         }
       }
-    } catch (e) {
+    } catch (e: any) {
       errorNotificationToast(notifications, 'acknowledge', 'alerts', e);
     }
     if (successCount)
@@ -479,8 +473,8 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         endTime: DEFAULT_DATE_RANGE.end,
       },
     } = this.props;
-    const severities = new Set();
-    const statuses = new Set();
+    const severities = new Set<string>();
+    const statuses = new Set<string>();
     filteredAlerts.forEach((alert) => {
       if (alert) {
         severities.add(alert.severity);
@@ -517,11 +511,10 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       ],
     };
 
-    const selection = {
+    const selection: EuiTableSelectionType<AlertItem> = {
       onSelectionChange: this.onSelectionChange,
-      selectable: (item) => item.state === ALERT_STATE.ACTIVE,
-      selectableMessage: (selectable) =>
-        selectable ? undefined : DISABLE_ACKNOWLEDGED_ALERT_HELP_TEXT,
+      selectable: (item: AlertItem) => item.state === ALERT_STATE.ACTIVE,
+      selectableMessage: (selectable) => (selectable ? '' : DISABLE_ACKNOWLEDGED_ALERT_HELP_TEXT),
     };
 
     const sorting: any = {
@@ -540,7 +533,6 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
             detector={detectors[flyoutData.alertItem.detector_id]}
             onClose={this.onFlyoutClose}
             onAcknowledge={this.onAcknowledge}
-            findingsService={this.props.findingService}
             indexPatternService={this.props.indexPatternService}
           />
         )}

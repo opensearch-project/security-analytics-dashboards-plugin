@@ -15,3 +15,5 @@ export * from './services';
 export * from './SavedObjectConfig';
 export * from './Correlations';
 export * from './LogTypes';
+export * from './Metrics';
+export * from './SecurityAnalyticsContext';

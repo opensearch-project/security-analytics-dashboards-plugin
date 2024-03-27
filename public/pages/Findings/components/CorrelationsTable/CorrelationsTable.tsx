@@ -47,7 +47,7 @@ export const CorrelationsTable: React.FC<CorrelationsTableProps> = ({
   const [itemIdToExpandedRowMap, setItemIdToExpandedRowMap] = useState<{
     [key: string]: JSX.Element;
   }>({});
-  const [findingIdCopied, setFindingIdCopied] = useState(false);
+  const [copiedFindingId, setCopiedFindingId] = useState('');
   const [copyPopoverTimeout, setCopyPopoverTimeout] = useState<number | undefined>(undefined);
 
   const toggleCorrelationDetails = (item: CorrelationFinding) => {
@@ -112,11 +112,11 @@ export const CorrelationsTable: React.FC<CorrelationsTableProps> = ({
     const copyFindingIdToClipboard = (findingId: string) => {
       try {
         window.navigator.clipboard.writeText(findingId);
-        setFindingIdCopied(true);
+        setCopiedFindingId(findingId);
         window.clearTimeout(copyPopoverTimeout);
         setCopyPopoverTimeout(
           window.setTimeout(() => {
-            setFindingIdCopied(false);
+            setCopiedFindingId('');
           }, 1000)
         );
       } catch (error: any) {
@@ -134,8 +134,8 @@ export const CorrelationsTable: React.FC<CorrelationsTableProps> = ({
               iconType="copy"
             />
           }
-          isOpen={findingIdCopied}
-          closePopover={() => setFindingIdCopied(false)}
+          isOpen={copiedFindingId === item.id}
+          closePopover={() => setCopiedFindingId('')}
           anchorPosition="upCenter"
         >
           <EuiText>Finding id copied</EuiText>

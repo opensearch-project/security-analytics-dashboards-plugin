@@ -5,13 +5,15 @@
 
 import { OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
 import { getLogTypeLabel } from '../../public/pages/LogTypes/utils/helpers';
+import { setupIntercept } from '../support/helpers';
+import { ruleDescriptionErrorString } from '../../public/utils/validation';
 
 const uniqueId = Cypress._.random(0, 1e6);
 const SAMPLE_RULE = {
   name: `Cypress test rule ${uniqueId}`,
   logType: 'windows',
   description: 'This is a rule used to test the rule creation workflow.',
-  detectionLine: ['condition: Selection_1', 'Selection_1:', 'FieldKey|contains:', '- FieldValue'],
+  detectionLine: ['condition: Selection_1', 'Selection_1:', 'FieldKey|all:', '- FieldValue'],
   severity: 'Critical',
   tags: ['attack.persistence', 'attack.privilege_escalation', 'attack.t1543.003'],
   references: 'https://nohello.com',
@@ -126,6 +128,8 @@ const checkRulesFlyout = () => {
 };
 
 const getCreateButton = () => cy.get('[data-test-subj="create_rule_button"]');
+const getImportButton = () => cy.get('[data-test-subj="import_rule_button"]');
+const getImportRuleFilePicker = () => cy.get('[data-test-subj="import_rule_file_picker"]');
 const getNameField = () => cy.getFieldByLabel('Rule name');
 const getRuleStatusField = () => cy.getFieldByLabel('Rule Status');
 const getDescriptionField = () => cy.getFieldByLabel('Description - optional');
@@ -191,7 +195,7 @@ describe('Rules', () => {
 
   describe('...should validate form fields', () => {
     beforeEach(() => {
-      cy.intercept('/rules/_search').as('rulesSearch');
+      setupIntercept(cy, '/rules/_search', 'rulesSearch');
       // Visit Rules page
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
       cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
@@ -228,18 +232,15 @@ describe('Rules', () => {
     });
 
     it('...should validate rule description field', () => {
-      const longDescriptionText =
-        'This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text.';
+      const invalidDescriptionText = 'This is a invalid % description.';
 
       getDescriptionField().should('be.empty');
-      getDescriptionField().type(longDescriptionText).focus().blur();
+      getDescriptionField().type(invalidDescriptionText).focus().blur();
 
       getDescriptionField()
         .parents('.euiFormRow__fieldWrapper')
         .find('.euiFormErrorText')
-        .contains(
-          'Description should only consist of upper and lowercase letters, numbers 0-9, commas, hyphens, periods, spaces, and underscores. Max limit of 500 characters.'
-        );
+        .contains(ruleDescriptionErrorString);
 
       getDescriptionField()
         .type('{selectall}')
@@ -265,10 +266,8 @@ describe('Rules', () => {
       getAuthorField().should('be.empty');
       getAuthorField().focus().blur();
       getAuthorField().containsError('Author name is required');
-      getAuthorField().type('text').focus().blur();
-      getAuthorField().containsError('Invalid author.');
 
-      getAuthorField().type('{selectall}').type('{backspace}').type('tex&').focus().blur();
+      getAuthorField().type('{selectall}').type('{backspace}').type('tex%').focus().blur();
       getAuthorField().containsError('Invalid author.');
 
       getAuthorField()
@@ -482,7 +481,7 @@ describe('Rules', () => {
 
   describe('...should validate create rule flow', () => {
     beforeEach(() => {
-      cy.intercept('/rules/_search').as('rulesSearch');
+      setupIntercept(cy, '/rules/_search', 'rulesSearch');
       // Visit Rules page
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
       cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
@@ -507,10 +506,7 @@ describe('Rules', () => {
         cy.get('[data-test-subj="rule_yaml_editor"]').contains(line)
       );
 
-      cy.intercept({
-        url: '/rules',
-      }).as('getRules');
-
+      setupIntercept(cy, '/rules/_search', 'getRules');
       submitRule();
 
       cy.wait('@getRules');
@@ -560,10 +556,7 @@ describe('Rules', () => {
       getDescriptionField().type(SAMPLE_RULE.description);
       getDescriptionField().should('have.value', SAMPLE_RULE.description);
 
-      cy.intercept({
-        url: '/rules',
-      }).as('getRules');
-
+      setupIntercept(cy, '/rules/_search', 'getRules');
       submitRule();
 
       cy.waitForPageLoad('rules', {
@@ -575,20 +568,16 @@ describe('Rules', () => {
       checkRulesFlyout();
     });
 
+    it('...can be imported with log type', () => {
+      getImportButton().click({ force: true });
+      getImportRuleFilePicker().selectFile('./cypress/fixtures/sample_aws_s3_rule_to_import.yml');
+      // Check that AWS S3 log type is set.
+      cy.contains('AWS S3');
+    });
+
     it('...can be deleted', () => {
-      cy.intercept({
-        url: '/rules',
-      }).as('deleteRule');
+      setupIntercept(cy, `/rules/_search`, 'getRules');
 
-      cy.intercept('POST', 'rules/_search?prePackaged=true', {
-        delay: 5000,
-      }).as('getPrePackagedRules');
-
-      cy.intercept('POST', 'rules/_search?prePackaged=false', {
-        delay: 5000,
-      }).as('getCustomRules');
-
-      cy.wait('@rulesSearch');
       cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
 
       // Click the rule link to open the details flyout
@@ -606,9 +595,8 @@ describe('Rules', () => {
             .click()
             .then(() => cy.get('.euiModalFooter > .euiButton').contains('Delete').click());
 
-          cy.wait('@deleteRule');
-          cy.wait('@getCustomRules');
-          cy.wait('@getPrePackagedRules');
+          cy.wait(5000);
+          cy.wait('@getRules');
 
           // Search for sample_detector, presumably deleted
           cy.wait(3000);

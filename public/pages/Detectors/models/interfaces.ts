@@ -5,4 +5,5 @@
 
 export interface IndexOption {
   label: string;
+  index?: string;
 }

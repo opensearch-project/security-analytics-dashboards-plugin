@@ -13,7 +13,7 @@ import { getLogTypeLabel } from '../../LogTypes/utils/helpers';
 
 export const graphRenderOptions = {
   nodes: {
-    shape: 'circle',
+    shape: 'dot',
   },
   edges: {
     arrows: {

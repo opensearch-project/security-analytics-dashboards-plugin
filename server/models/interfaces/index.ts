@@ -14,6 +14,7 @@ import {
 } from '../../services';
 import AlertService from '../../services/AlertService';
 import { LogTypeService } from '../../services/LogTypeService';
+import MetricsService from '../../services/MetricsService';
 import RulesService from '../../services/RuleService';
 
 export interface SecurityAnalyticsApi {
@@ -21,6 +22,7 @@ export interface SecurityAnalyticsApi {
   readonly CORRELATION_BASE: string;
   readonly SEARCH_DETECTORS: string;
   readonly INDICES_BASE: string;
+  readonly ALIASES_BASE: string;
   readonly FINDINGS_BASE: string;
   readonly GET_FINDINGS: string;
   readonly DOCUMENT_IDS_QUERY: string;
@@ -31,10 +33,12 @@ export interface SecurityAnalyticsApi {
   readonly RULES_BASE: string;
   readonly CHANNELS: string;
   readonly PLUGINS: string;
+  readonly NOTIFICATION_FEATURES: string;
   readonly ACKNOWLEDGE_ALERTS: string;
   readonly UPDATE_ALIASES: string;
   readonly CORRELATIONS: string;
   readonly LOGTYPE_BASE: string;
+  readonly METRICS: string;
 }
 
 export interface NodeServices {
@@ -48,10 +52,15 @@ export interface NodeServices {
   rulesService: RulesService;
   notificationsService: NotificationsService;
   logTypeService: LogTypeService;
+  metricsService: MetricsService;
 }
 
 export interface GetIndicesResponse {
   indices: CatIndex[];
+}
+
+export interface GetAliasesResponse {
+  aliases: CatAlias[];
 }
 
 // Default _cat index response
@@ -67,6 +76,11 @@ export interface CatIndex {
   'store.size': string;
   uuid: string;
   data_stream: string | null;
+}
+
+export interface CatAlias {
+  alias: string;
+  index: string;
 }
 
 export interface SearchResponse<T> {

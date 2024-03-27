@@ -13,3 +13,4 @@ This document contains a list of maintainers in this repo. See [opensearch-proje
 | Praveen Sameneni      | [praveensameneni](https://github.com/praveensameneni) | Amazon      |
 | Amardeepsingh Siglani | [amsiglan](https://github.com/amsiglan)               | Amazon      |
 | Saurabh Singh         | [getsaurabh02](https://github.com/getsaurabh02)       | Amazon      |
+| Riya Saxena           | [riysaxen-amzn](https://github.com/riysaxen-amzn)     | Amazon      |

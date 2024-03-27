@@ -44,7 +44,7 @@ interface AlertConditionPanelProps extends RouteComponentProps {
   isEdit: boolean;
   hasNotificationPlugin: boolean;
   loadingNotifications: boolean;
-  onAlertTriggerChanged: (newDetector: Detector) => void;
+  onAlertTriggerChanged: (newDetector: Detector, emitMetrics?: boolean) => void;
   refreshNotificationChannels: () => void;
 }
 
@@ -76,7 +76,7 @@ export default class AlertConditionPanel extends Component<
   }
 
   componentDidMount() {
-    this.prepareMessage();
+    this.prepareMessage(false /* updateMessage */, true /* onMount */);
   }
 
   onDetectionTypeChange(detectionType: 'rules' | 'threat_intel', enabled: boolean) {
@@ -87,7 +87,10 @@ export default class AlertConditionPanel extends Component<
     });
   }
 
-  prepareMessage = (updateMessage: boolean = false) => {
+  // When component mounts, we prepare message but at this point we don't want to emit the
+  // trigger changed metric since it is not user initiated. So we use the onMount flag to determine that
+  // and pass it downstream accordingly.
+  prepareMessage = (updateMessage: boolean = false, onMount: boolean = false) => {
     const { alertCondition, detector } = this.props;
     const detectorInput = detector.inputs[0].detector_input;
     const lineBreak = '\n';
@@ -101,7 +104,7 @@ export default class AlertConditionPanel extends Component<
     const defaultSubject = [alertConditionName, alertConditionSeverity, detectorName].join(' - ');
 
     if (updateMessage || !alertCondition.actions[0]?.subject_template.source)
-      this.onMessageSubjectChange(defaultSubject);
+      this.onMessageSubjectChange(defaultSubject, !onMount);
 
     if (updateMessage || !alertCondition.actions[0]?.message_template.source) {
       const selectedNames = this.setSelectedNames(alertCondition.ids);
@@ -142,11 +145,11 @@ export default class AlertConditionPanel extends Component<
       if (alertConditionSelections.length)
         defaultMessageBody =
           defaultMessageBody + lineBreak + lineBreak + alertConditionSelections.join(lineBreak);
-      this.onMessageBodyChange(defaultMessageBody);
+      this.onMessageBodyChange(defaultMessageBody, !onMount);
     }
   };
 
-  updateTrigger(trigger: Partial<AlertCondition>) {
+  updateTrigger(trigger: Partial<AlertCondition>, emitMetrics: boolean = true) {
     const {
       alertCondition,
       onAlertTriggerChanged,
@@ -157,7 +160,7 @@ export default class AlertConditionPanel extends Component<
     trigger.types = [detector.detector_type.toLowerCase()];
     const newTriggers = [...triggers];
     newTriggers.splice(indexNum, 1, { ...alertCondition, ...trigger });
-    onAlertTriggerChanged({ ...detector, triggers: newTriggers });
+    onAlertTriggerChanged({ ...detector, triggers: newTriggers }, emitMetrics);
   }
 
   onNameBlur = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -220,21 +223,21 @@ export default class AlertConditionPanel extends Component<
     onAlertTriggerChanged({ ...detector, triggers: triggers });
   };
 
-  onMessageSubjectChange = (subject: string) => {
+  onMessageSubjectChange = (subject: string, emitMetrics: boolean = true) => {
     const {
       alertCondition: { actions },
     } = this.props;
     actions[0].name = subject;
     actions[0].subject_template.source = subject;
-    this.updateTrigger({ actions: actions });
+    this.updateTrigger({ actions: actions }, emitMetrics);
   };
 
-  onMessageBodyChange = (message: string) => {
+  onMessageBodyChange = (message: string, emitMetrics: boolean = true) => {
     const {
       alertCondition: { actions },
     } = this.props;
     actions[0].message_template.source = message;
-    this.updateTrigger({ actions: actions });
+    this.updateTrigger({ actions: actions }, emitMetrics);
   };
 
   onDelete = () => {
@@ -497,7 +500,31 @@ export default class AlertConditionPanel extends Component<
           </>
         )}
 
-        <EuiSpacer size="l" />
+        <EuiSpacer size="s" />
+
+        <EuiFormRow
+          label={
+            <EuiText size="s">
+              <p>Alert severity</p>
+            </EuiText>
+          }
+        >
+          <EuiComboBox
+            placeholder={'Select applicable severity levels.'}
+            async={true}
+            options={Object.values(ALERT_SEVERITY_OPTIONS)}
+            selectedOptions={
+              severity ? [parseAlertSeverityToOption(severity)] : [ALERT_SEVERITY_OPTIONS.HIGHEST]
+            }
+            onChange={this.onAlertSeverityChange}
+            singleSelection={{ asPlainText: true }}
+            isClearable={false}
+            data-test-subj={'security-levels-combo-box'}
+          />
+        </EuiFormRow>
+
+        <EuiSpacer size={'l'} />
+
         <EuiSwitch
           label="Send notification"
           checked={showNotificationDetails}
@@ -508,31 +535,6 @@ export default class AlertConditionPanel extends Component<
 
         {showNotificationDetails && (
           <>
-            <EuiFormRow
-              label={
-                <EuiText size="s">
-                  <p>Alert severity</p>
-                </EuiText>
-              }
-            >
-              <EuiComboBox
-                placeholder={'Select applicable severity levels.'}
-                async={true}
-                options={Object.values(ALERT_SEVERITY_OPTIONS)}
-                selectedOptions={
-                  severity
-                    ? [parseAlertSeverityToOption(severity)]
-                    : [ALERT_SEVERITY_OPTIONS.HIGHEST]
-                }
-                onChange={this.onAlertSeverityChange}
-                singleSelection={{ asPlainText: true }}
-                isClearable={false}
-                data-test-subj={'security-levels-combo-box'}
-              />
-            </EuiFormRow>
-
-            <EuiSpacer size={'l'} />
-
             <EuiFlexGroup alignItems={'flexEnd'}>
               <EuiFlexItem style={{ maxWidth: 400 }}>
                 <EuiFormRow

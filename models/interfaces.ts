@@ -3,21 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export interface Rule {
-  id: string;
-  category: string;
-  log_source: string;
-  title: string;
-  description: string;
-  tags: Array<{ value: string }>;
-  false_positives: Array<{ value: string }>;
-  level: string;
-  status: string;
-  references: Array<{ value: string }>;
-  author: string;
-  detection: string;
-}
-
 export interface PeriodSchedule {
   period: {
     interval: number;

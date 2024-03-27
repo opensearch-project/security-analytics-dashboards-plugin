@@ -36,13 +36,15 @@ import {
 } from '../components/DefineDetector/components/DetectionRules/types/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { getPlugins } from '../../../utils/helpers';
-import { Detector, DetectorCreationStep } from '../../../../types';
+import { CreateDetectorSteps, Detector, DetectorCreationStep } from '../../../../types';
 import { DataStore } from '../../../store/DataStore';
 import { errorNotificationToast } from '../../../utils/helpers';
+import { MetricsContext } from '../../../metrics/MetricsContext';
 
 interface CreateDetectorProps extends RouteComponentProps {
   isEdit: boolean;
   services: BrowserServices;
+  metrics: MetricsContext;
   history: RouteComponentProps['history'];
   notifications: NotificationsStart;
 }
@@ -95,8 +97,12 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
       BREADCRUMBS.DETECTORS,
       BREADCRUMBS.DETECTORS_CREATE,
     ]);
-    this.setupRulesState();
-    this.getPlugins();
+    if (!(this.props.history.location.state as any)?.detectorInput) {
+      this.setupRulesState();
+      this.props.metrics.detectorMetricsManager.resetMetrics();
+      this.props.metrics.detectorMetricsManager.sendMetrics(CreateDetectorSteps.started);
+      this.getPlugins();
+    }
   }
 
   componentDidUpdate(
@@ -146,16 +152,18 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
 
     const createDetectorPromise = this.props.services.detectorsService.createDetector(detector);
 
-    // set detector pending state, this will be used in detector details page
-    DataStore.detectors.setState(
-      {
-        pendingRequests: [fieldsMappingPromise, createDetectorPromise],
-        detectorInput: { ...this.state },
-      },
-      this.props.history
-    );
+    this.setState({ creatingDetector: false }, () => {
+      // set detector pending state, this will be used in detector details page
+      DataStore.detectors.setState(
+        {
+          pendingRequests: [fieldsMappingPromise, createDetectorPromise],
+          detectorInput: { ...this.state },
+        },
+        this.props.history
+      );
+    });
 
-    this.setState({ creatingDetector: false });
+    this.props.metrics.detectorMetricsManager.sendMetrics(CreateDetectorSteps.createClicked);
 
     // navigate to detector details
     this.props.history.push(`${ROUTES.DETECTOR_DETAILS}/${PENDING_DETECTOR_ID}`);
@@ -164,6 +172,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
   onNextClick = () => {
     const { currentStep } = this.state;
     this.setState({ currentStep: currentStep + 1 });
+    this.props.metrics.detectorMetricsManager.sendMetrics(CreateDetectorSteps.stepTwoInitiated);
   };
 
   onPreviousClick = () => {
@@ -291,6 +300,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
         },
         detector: this.getDetectorWithUpdatedRules(newRules),
       });
+      this.props.metrics.detectorMetricsManager.sendMetrics(CreateDetectorSteps.rulesConfigured);
     }
   };
 
@@ -307,6 +317,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
       },
       detector: this.getDetectorWithUpdatedRules(newRules),
     });
+    this.props.metrics.detectorMetricsManager.sendMetrics(CreateDetectorSteps.rulesConfigured);
   };
 
   getStepContent = () => {
@@ -341,6 +352,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             notificationsService={services.notificationsService}
             hasNotificationPlugin={this.state.plugins.includes(OS_NOTIFICATION_PLUGIN)}
             getTriggerName={this.getNextTriggerName}
+            metricsContext={this.props.metrics}
           />
         );
     }

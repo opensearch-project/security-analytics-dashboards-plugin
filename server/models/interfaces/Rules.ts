@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Rule } from '../../../models/interfaces';
+import { Rule } from '../../../types';
 
 export interface CreateRuleParams {
   body: string;

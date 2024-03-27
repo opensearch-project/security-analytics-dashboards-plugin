@@ -6,10 +6,7 @@
 import { HttpSetup } from 'opensearch-dashboards/public';
 import { ServerResponse } from '../../server/models/types';
 import { API } from '../../server/utils/constants';
-import {
-  GetChannelsResponse,
-  GetNotificationConfigsResponse,
-} from '../../server/models/interfaces';
+import { GetChannelsResponse, GetNotificationConfigsResponse } from '../../types';
 
 export default class NotificationsService {
   httpClient: HttpSetup;
@@ -31,6 +28,12 @@ export default class NotificationsService {
   getChannels = async (): Promise<ServerResponse<GetChannelsResponse>> => {
     let url = `..${API.CHANNELS}`;
     const response = (await this.httpClient.get(url)) as ServerResponse<GetChannelsResponse>;
+    return response;
+  };
+
+  getServerFeatures = async (): Promise<ServerResponse<Array<string>>> => {
+    let url = `..${API.NOTIFICATION_FEATURES}`;
+    const response = (await this.httpClient.get(url)) as ServerResponse<Array<string>>;
     return response;
   };
 }

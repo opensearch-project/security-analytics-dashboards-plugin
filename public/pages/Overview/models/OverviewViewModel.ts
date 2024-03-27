@@ -12,6 +12,7 @@ import { errorNotificationToast, isThreatIntelQuery } from '../../../utils/helpe
 import dateMath from '@elastic/datemath';
 import moment from 'moment';
 import { DataStore } from '../../../store/DataStore';
+import { Finding } from '../../../../types';
 
 export interface OverviewViewModel {
   detectors: DetectorHit[];
@@ -31,7 +32,7 @@ export class OverviewViewModelActor {
   private refreshState: 'InProgress' | 'Complete' = 'Complete';
 
   constructor(
-    private services: BrowserServices | null,
+    private services: BrowserServices | undefined,
     private notifications: NotificationsStart | null
   ) {}
 
@@ -78,35 +79,30 @@ export class OverviewViewModelActor {
 
     try {
       for (let id of detectorIds) {
-        const findingRes = await this.services?.findingsService.getFindings({ detectorId: id });
+        let detectorFindings: Finding[] = await DataStore.findings.getFindingsPerDetector(id);
+        const logType = detectorInfo.get(id)?.logType;
+        const detectorName = detectorInfo.get(id)?.name || '';
+        const detectorFindingItems: FindingItem[] = detectorFindings.map((finding) => {
+          const ruleQueries = finding.queries.filter(({ id }) => !isThreatIntelQuery(id));
+          const ids = ruleQueries.map((query) => query.id);
+          ids.forEach((id) => ruleIds.add(id));
 
-        if (findingRes?.ok) {
-          const logType = detectorInfo.get(id)?.logType;
-          const detectorName = detectorInfo.get(id)?.name || '';
-          const detectorFindings: any[] = findingRes.response.findings.map((finding) => {
-            const ruleQueries = finding.queries.filter(({ id }) => !isThreatIntelQuery(id));
-            const ids = ruleQueries.map((query) => query.id);
-            ids.forEach((id) => ruleIds.add(id));
-
-            const findingTime = new Date(finding.timestamp);
-            findingTime.setMilliseconds(0);
-            findingTime.setSeconds(0);
-            return {
-              detector: detectorName,
-              findingName: finding.id,
-              id: finding.id,
-              time: findingTime,
-              logType: logType || '',
-              ruleId: ruleQueries[0]?.id || finding.queries[0].id,
-              ruleName: '',
-              ruleSeverity: '',
-              isThreatIntelOnlyFinding: finding.detectionType === 'Threat intelligence',
-            };
-          });
-          findingItems = findingItems.concat(detectorFindings);
-        } else {
-          errorNotificationToast(this.notifications, 'retrieve', 'findings', findingRes?.error);
-        }
+          const findingTime = new Date(finding.timestamp);
+          findingTime.setMilliseconds(0);
+          findingTime.setSeconds(0);
+          return {
+            detector: detectorName,
+            findingName: finding.id,
+            id: finding.id,
+            time: findingTime,
+            logType: logType || '',
+            ruleId: ruleQueries[0]?.id || finding.queries[0].id,
+            ruleName: '',
+            ruleSeverity: '',
+            isThreatIntelOnlyFinding: finding.detectionType === 'Threat intelligence',
+          };
+        });
+        findingItems = findingItems.concat(detectorFindingItems);
       }
     } catch (e: any) {
       errorNotificationToast(this.notifications, 'retrieve', 'findings', e);
@@ -131,31 +127,24 @@ export class OverviewViewModelActor {
   }
 
   private async updateAlerts() {
-    const detectorInfo = new Map<string, string>();
-    this.overviewViewModel.detectors.forEach((detector) => {
-      detectorInfo.set(detector._id, detector._source.detector_type);
-    });
-    const detectorIds = detectorInfo.keys();
     let alertItems: AlertItem[] = [];
 
     try {
-      for (let id of detectorIds) {
-        const alertsRes = await this.services?.alertService.getAlerts({ detector_id: id });
-
-        if (alertsRes?.ok) {
-          const logType = detectorInfo.get(id) as string;
-          const detectorAlertItems: AlertItem[] = alertsRes.response.alerts.map((alert) => ({
-            id: alert.id,
-            severity: alert.severity,
-            time: alert.last_notification_time,
-            triggerName: alert.trigger_name,
-            logType,
-            acknowledged: !!alert.acknowledged_time,
-          }));
-          alertItems = alertItems.concat(detectorAlertItems);
-        } else {
-          errorNotificationToast(this.notifications, 'retrieve', 'alerts', alertsRes?.error);
-        }
+      for (let detector of this.overviewViewModel.detectors) {
+        const id = detector._id;
+        const detectorAlerts = await DataStore.alerts.getAlertsByDetector(
+          id,
+          detector._source.name
+        );
+        const detectorAlertItems: AlertItem[] = detectorAlerts.map((alert) => ({
+          id: alert.id,
+          severity: alert.severity,
+          time: alert.last_notification_time,
+          triggerName: alert.trigger_name,
+          logType: detector._source.detector_type,
+          acknowledged: !!alert.acknowledged_time,
+        }));
+        alertItems = alertItems.concat(detectorAlertItems);
       }
     } catch (e: any) {
       errorNotificationToast(this.notifications, 'retrieve', 'alerts', e);

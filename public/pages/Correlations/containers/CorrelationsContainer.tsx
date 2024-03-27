@@ -51,6 +51,7 @@ import datemath from '@elastic/datemath';
 import { ruleSeverity } from '../../Rules/utils/constants';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Network } from 'react-graph-vis';
+import { getLogTypeLabel } from '../../LogTypes/utils/helpers';
 
 interface CorrelationsProps
   extends RouteComponentProps<
@@ -144,6 +145,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
           detectionRule: {
             name: (state.finding as any).ruleName,
             severity: (state.finding as any).ruleSeverity,
+            tags: (state.finding as any).tags,
           },
         },
         correlatedFindings: state.correlatedFindings.filter((finding) =>
@@ -221,14 +223,32 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     }
 
     this.setState({ loadingGraphData: true });
-    const allFindings = await DataStore.correlations.fetchAllFindings();
-    const detectorType = allFindings[findingId].logType;
-    const correlations = await DataStore.correlations.getCorrelatedFindings(
+
+    let detectorType: string;
+    const node = this.state.graphData.graph.nodes.find((node) => node.id === findingId)!;
+
+    if (node) {
+      detectorType = node.saLogType;
+    } else {
+      const allFindings = await DataStore.correlations.fetchAllFindings();
+      detectorType = allFindings[findingId].logType;
+    }
+
+    const correlatedFindingsInfo = await DataStore.correlations.getCorrelatedFindings(
       findingId,
       detectorType
     );
-    this.setState({ specificFindingInfo: correlations, loadingGraphData: false });
-    this.updateGraphDataState(correlations);
+    const correlationRules = await DataStore.correlations.getCorrelationRules();
+    correlatedFindingsInfo.correlatedFindings = correlatedFindingsInfo.correlatedFindings.map(
+      (finding) => {
+        return {
+          ...finding,
+          correlationRule: correlationRules.find((rule) => finding.rules?.indexOf(rule.id) !== -1),
+        };
+      }
+    );
+    this.setState({ specificFindingInfo: correlatedFindingsInfo, loadingGraphData: false });
+    this.updateGraphDataState(correlatedFindingsInfo);
   };
 
   private updateGraphDataState(specificFindingInfo: SpecificFindingCorrelations) {
@@ -268,6 +288,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
 
     nodes.push({
       id: finding.id,
+      label: getLogTypeLabel(finding.logType),
       title: this.createNodeTooltip(finding),
       color: {
         background: borderColor,
@@ -281,15 +302,14 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
           border: borderColor,
         },
       },
-      widthConstraint: {
-        minimum: getNodeSize(finding.detectionRule.severity),
-      },
+      size: 17,
       borderWidth: 2,
       font: {
         multi: 'html',
         size: 12,
       },
       chosen: true,
+      saLogType: finding.logType,
     });
   }
 
@@ -444,7 +464,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
             maxWidth="400px"
             key={findingCardsData.finding.id}
           >
-            <EuiFlyoutHeader hasBorder>
+            <EuiFlyoutHeader>
               <EuiFlexGroup>
                 <EuiFlexItem>
                   <EuiTitle size="m">
@@ -462,11 +482,8 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                   />
                 </EuiFlexItem>
               </EuiFlexGroup>
-            </EuiFlyoutHeader>
-            <EuiFlyoutBody>
-              <EuiTitle size="xs">
-                <p>Finding</p>
-              </EuiTitle>
+              <EuiHorizontalRule margin="xs" />
+              <EuiSpacer size="xs" />
               <FindingCard
                 id={findingCardsData.finding.id}
                 logType={findingCardsData.finding.logType}
@@ -475,7 +492,8 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                 finding={findingCardsData.finding}
                 findings={findingCardsData.correlatedFindings}
               />
-              <EuiSpacer />
+            </EuiFlyoutHeader>
+            <EuiFlyoutBody>
               <EuiTitle size="xs">
                 <p>Correlated Findings ({findingCardsData.correlatedFindings.length})</p>
               </EuiTitle>
@@ -508,45 +526,45 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         ) : null}
         <EuiFlexGroup direction="column">
           <EuiFlexItem>
-            <EuiTitle size="m">
-              <h1>Correlations</h1>
-            </EuiTitle>
+            <EuiFlexGroup>
+              <EuiFlexItem>
+                <EuiTitle size="m">
+                  <h1>Correlations</h1>
+                </EuiTitle>
+              </EuiFlexItem>
+              <EuiFlexItem grow={false}>
+                <EuiSuperDatePicker
+                  start={this.startTime}
+                  end={this.endTime}
+                  recentlyUsedRanges={this.state.recentlyUsedRanges}
+                  onTimeChange={this.onTimeChange}
+                  onRefresh={this.onRefresh}
+                  updateButtonProps={{ fill: false }}
+                />
+              </EuiFlexItem>
+            </EuiFlexGroup>
           </EuiFlexItem>
           <EuiFlexItem>
             <EuiPanel>
-              <EuiFlexGroup wrap={true} justifyContent="spaceBetween">
-                <EuiFlexItem>
-                  <EuiFlexGroup gutterSize="xs" wrap={false}>
-                    <EuiFlexItem grow={false}>
-                      <EuiFilterGroup>
-                        <FilterGroup
-                          groupName="Severity"
-                          items={this.state.severityFilterOptions}
-                          setItems={this.onSeverityFilterChange}
-                        />
-                        <FilterGroup
-                          groupName="Log types"
-                          items={this.state.logTypeFilterOptions}
-                          hasGroupOptions={true}
-                          hasFooter={true}
-                          setItems={this.onLogTypeFilterChange}
-                        />
-                      </EuiFilterGroup>
-                    </EuiFlexItem>
-                    <EuiFlexItem grow={false}>
-                      <EuiButtonEmpty onClick={this.resetFilters}>Reset filters</EuiButtonEmpty>
-                    </EuiFlexItem>
-                  </EuiFlexGroup>
+              <EuiFlexGroup gutterSize="xs" wrap={false} justifyContent="flexEnd">
+                <EuiFlexItem grow={false}>
+                  <EuiFilterGroup>
+                    <FilterGroup
+                      groupName="Log types"
+                      items={this.state.logTypeFilterOptions}
+                      hasGroupOptions={true}
+                      hasFooter={true}
+                      setItems={this.onLogTypeFilterChange}
+                    />
+                    <FilterGroup
+                      groupName="Severity"
+                      items={this.state.severityFilterOptions}
+                      setItems={this.onSeverityFilterChange}
+                    />
+                  </EuiFilterGroup>
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>
-                  <EuiSuperDatePicker
-                    start={this.startTime}
-                    end={this.endTime}
-                    recentlyUsedRanges={this.state.recentlyUsedRanges}
-                    onTimeChange={this.onTimeChange}
-                    onRefresh={this.onRefresh}
-                    updateButtonProps={{ fill: false }}
-                  />
+                  <EuiButtonEmpty onClick={this.resetFilters}>Reset filters</EuiButtonEmpty>
                 </EuiFlexItem>
               </EuiFlexGroup>
               <EuiSpacer />

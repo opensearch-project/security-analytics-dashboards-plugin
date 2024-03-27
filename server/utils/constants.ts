@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { CreateDetectorSteps, MetricsCounter } from '../../types';
 import { SecurityAnalyticsApi } from '../models/interfaces';
 
 export enum CLUSTER {
@@ -18,6 +19,7 @@ export const API: SecurityAnalyticsApi = {
   CORRELATION_BASE: `${BASE_API_PATH}/correlation/rules`,
   SEARCH_DETECTORS: `${BASE_API_PATH}/detectors/_search`,
   INDICES_BASE: `${BASE_API_PATH}/indices`,
+  ALIASES_BASE: `${BASE_API_PATH}/aliases`,
   FINDINGS_BASE: `${BASE_API_PATH}/findings`,
   GET_FINDINGS: `${BASE_API_PATH}/findings/_search`,
   DOCUMENT_IDS_QUERY: `${BASE_API_PATH}/document_ids_query`,
@@ -28,10 +30,12 @@ export const API: SecurityAnalyticsApi = {
   RULES_BASE: `${BASE_API_PATH}/rules`,
   CHANNELS: `${BASE_API_PATH}/_notifications/channels`,
   PLUGINS: `${BASE_API_PATH}/_notifications/plugins`,
+  NOTIFICATION_FEATURES: `${BASE_API_PATH}/_notifications/features`,
   ACKNOWLEDGE_ALERTS: `${BASE_API_PATH}/detectors/{detector_id}/_acknowledge/alerts`,
   UPDATE_ALIASES: `${BASE_API_PATH}/update_aliases`,
   CORRELATIONS: `${BASE_API_PATH}/correlations`,
   LOGTYPE_BASE: `${BASE_API_PATH}/logtype`,
+  METRICS: `/api/security_analytics/stats`,
 };
 
 /**
@@ -78,6 +82,7 @@ export const METHOD_NAMES = {
   // Notifications methods
   GET_CHANNEl: 'getChannel',
   GET_CHANNElS: 'getChannels',
+  GET_FEATURES: 'getFeatures',
 
   // LogType methods
   SEARCH_LOGTYPES: 'searchLogTypes',
@@ -131,6 +136,7 @@ export const CLIENT_ALERTS_METHODS = {
 export const CLIENT_NOTIFICATIONS_METHODS = {
   GET_CHANNEL: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_CHANNEl}`,
   GET_CHANNELS: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_CHANNElS}`,
+  GET_FEATURES: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_FEATURES}`,
 };
 
 export const CLIENT_LOGTYPE_METHODS = {
@@ -138,4 +144,17 @@ export const CLIENT_LOGTYPE_METHODS = {
   CREATE_LOGTYPE: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.CREATE_LOGTYPE}`,
   UPDATE_LOGTYPE: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.UPDATE_LOGTYPE}`,
   DELETE_LOGTYPE: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.DELETE_LOGTYPE}`,
+};
+
+export const DEFAULT_METRICS_COUNTER: MetricsCounter = {
+  CreateDetector: {
+    [CreateDetectorSteps.started]: 0,
+    [CreateDetectorSteps.sourceSelected]: 0,
+    [CreateDetectorSteps.rulesConfigured]: 0,
+    [CreateDetectorSteps.fieldMappingsConfigured]: 0,
+    [CreateDetectorSteps.threatIntelConfigured]: 0,
+    [CreateDetectorSteps.stepTwoInitiated]: 0,
+    [CreateDetectorSteps.triggerConfigured]: 0,
+    [CreateDetectorSteps.createClicked]: 0,
+  },
 };

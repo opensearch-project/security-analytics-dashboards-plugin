@@ -8,14 +8,15 @@ import { RuleEditorContainer } from '../../components/RuleEditor/RuleEditorConta
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { EuiButton, EuiFilePicker, EuiFlexGroup, EuiFlexItem, EuiSpacer } from '@elastic/eui';
 import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
-import { Rule } from '../../../../../models/interfaces';
 import { RouteComponentProps } from 'react-router-dom';
 import { dump, load } from 'js-yaml';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { CoreServicesContext } from '../../../../components/core_services';
-import { setBreadCrumb, validateRule } from '../../utils/helpers';
-import { DataStore } from '../../../../store/DataStore';
+import { setBreadCrumb } from '../../utils/helpers';
+import { yamlMediaTypes } from '../../utils/constants';
+import { Rule } from '../../../../../types';
+import { DEFAULT_RULE_UUID } from '../../../../../common/constants';
 
 export interface ImportRuleProps {
   services: BrowserServices;
@@ -29,7 +30,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
   const onChange = useCallback((files: any) => {
     setFileError('');
 
-    if (files[0]?.type === 'application/x-yaml') {
+    if (yamlMediaTypes.has(files[0]?.type)) {
       let reader = new FileReader();
       reader.readAsText(files[0]);
       reader.onload = function () {
@@ -54,7 +55,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
           }
 
           const rule: Rule = {
-            id: '25b9c01c-350d-4b95-bed1-836d04a4f324',
+            id: DEFAULT_RULE_UUID,
             category: '',
             title: jsonContent.title || '',
             description: jsonContent.description || '',
@@ -63,7 +64,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
             references:
               jsonContent.references?.map((reference: string) => ({ value: reference })) || [],
             tags: jsonContent.tags?.map((tag: string) => ({ value: tag })) || [],
-            log_source: jsonContent.logsource || '',
+            log_source: jsonContent.logsource || {},
             detection: detectionYaml,
             level: jsonContent.level || '',
             false_positives:
@@ -78,6 +79,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
               notifications={notifications}
               mode={'create'}
               rule={rule}
+              validateOnMount={true}
             />
           );
         } catch (error: any) {
@@ -104,6 +106,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
             multiple={false}
             aria-label="file picker"
             isInvalid={!!fileError}
+            data-test-subj="import_rule_file_picker"
           />
           {fileError && <div style={{ color: 'red', margin: '0 auto' }}>Error: {fileError}</div>}
         </ContentPanel>
@@ -117,32 +120,6 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
     );
     setBreadCrumb(BREADCRUMBS.RULES_IMPORT, context?.chrome.setBreadcrumbs);
   }, [fileError, onChange]);
-
-  const footerActions: React.FC<{ rule: Rule }> = ({ rule }) => {
-    const onCreate = async () => {
-      if (!validateRule(rule, notifications!, 'create')) {
-        return;
-      }
-      const response = await DataStore.rules.createRule(rule);
-
-      if (response) {
-        history.replace(ROUTES.RULES);
-      }
-    };
-
-    return (
-      <EuiFlexGroup justifyContent="flexEnd">
-        <EuiFlexItem grow={false}>
-          <EuiButton onClick={() => history.replace(ROUTES.RULES)}>Cancel</EuiButton>
-        </EuiFlexItem>
-        <EuiFlexItem grow={false}>
-          <EuiButton fill onClick={onCreate}>
-            Create
-          </EuiButton>
-        </EuiFlexItem>
-      </EuiFlexGroup>
-    );
-  };
 
   return content;
 };
