@@ -42,7 +42,6 @@ interface ConfigureFieldMappingState {
   detector: Detector;
   mappingsData: GetFieldMappingViewResponse;
   createdMappings: ruleFieldToIndexFieldMap;
-  invalidMappingFieldNames: string[];
   fieldMappingIsOpen: boolean;
   showMappingEmptyPrompt: boolean;
   selectedTabId: FieldMappingTabId;
@@ -69,7 +68,6 @@ export default class ConfigureFieldMapping extends Component<
       loading: props.loading || false,
       mappingsData: EMPTY_FIELD_MAPPINGS_VIEW,
       createdMappings,
-      invalidMappingFieldNames: [],
       detector: props.detector,
       fieldMappingIsOpen: false,
       tabs: [],
@@ -109,7 +107,6 @@ export default class ConfigureFieldMapping extends Component<
       loading,
       mappingsData,
       createdMappings,
-      invalidMappingFieldNames,
       selectedTabId,
       detector: { detector_type, inputs },
     } = this.state;
@@ -160,7 +157,6 @@ export default class ConfigureFieldMapping extends Component<
               mappingProps={{
                 type: MappingViewType.Edit,
                 existingMappings,
-                invalidMappingFieldNames,
                 onMappingCreation: this.onMappingCreation,
               }}
             />
@@ -193,7 +189,6 @@ export default class ConfigureFieldMapping extends Component<
               mappingProps={{
                 type: MappingViewType.Edit,
                 existingMappings,
-                invalidMappingFieldNames,
                 onMappingCreation: this.onMappingCreation,
               }}
             />
@@ -268,24 +263,6 @@ export default class ConfigureFieldMapping extends Component<
     }
   };
 
-  /**
-   * Returns the fieldName(s) that have duplicate alias assigned to them
-   */
-  getInvalidMappingFieldNames(mappings: ruleFieldToIndexFieldMap): string[] {
-    const seenAliases = new Set();
-    const invalidFields: string[] = [];
-
-    Object.entries(mappings).forEach((entry) => {
-      if (seenAliases.has(entry[1])) {
-        invalidFields.push(entry[0]);
-      }
-
-      seenAliases.add(entry[1]);
-    });
-
-    return invalidFields;
-  }
-
   onMappingCreation = (ruleFieldName: string, indexFieldName: string): void => {
     const newMappings: ruleFieldToIndexFieldMap = {
       ...this.state.createdMappings,
@@ -296,10 +273,8 @@ export default class ConfigureFieldMapping extends Component<
       delete newMappings[ruleFieldName];
     }
 
-    const invalidMappingFieldNames = this.getInvalidMappingFieldNames(newMappings);
     this.setState({
       createdMappings: newMappings,
-      invalidMappingFieldNames: invalidMappingFieldNames,
     });
     this.updateMappingSharedState(newMappings);
   };

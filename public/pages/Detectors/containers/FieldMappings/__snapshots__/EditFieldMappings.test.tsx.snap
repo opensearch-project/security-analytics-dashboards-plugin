@@ -487,7 +487,6 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                         mappingProps={
                           Object {
                             "existingMappings": Object {},
-                            "invalidMappingFieldNames": Array [],
                             "onMappingCreation": [Function],
                             "type": 1,
                           }
