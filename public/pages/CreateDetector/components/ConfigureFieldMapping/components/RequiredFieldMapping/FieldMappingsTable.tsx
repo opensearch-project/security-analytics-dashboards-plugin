@@ -32,7 +32,6 @@ export interface MappingProps {
   [MappingViewType.Edit]: {
     type: MappingViewType.Edit;
     existingMappings: ruleFieldToIndexFieldMap;
-    invalidMappingFieldNames: string[];
     onMappingCreation: (fieldName: string, aliasName: string) => void;
   };
 }
@@ -98,7 +97,7 @@ export default class FieldMappingsTable<T extends MappingViewType> extends Compo
         width: '45%',
         render: (logFieldName: string, entry: FieldMappingsTableItem) => {
           if (this.props.mappingProps.type === MappingViewType.Edit) {
-            const { onMappingCreation, invalidMappingFieldNames, existingMappings } = this.props
+            const { onMappingCreation, existingMappings } = this.props
               .mappingProps as MappingProps[MappingViewType.Edit];
             const onMappingSelected = (selectedField: string) => {
               onMappingCreation(entry.ruleFieldName, selectedField);
@@ -107,7 +106,6 @@ export default class FieldMappingsTable<T extends MappingViewType> extends Compo
               <FieldNameSelector
                 fieldNameOptions={indexFields}
                 selectedField={existingMappings[entry.ruleFieldName]}
-                isInvalid={invalidMappingFieldNames.includes(entry.ruleFieldName)}
                 onChange={onMappingSelected}
               />
             );
@@ -131,14 +129,11 @@ export default class FieldMappingsTable<T extends MappingViewType> extends Compo
         align: 'center',
         width: '15%',
         render: (_status: 'mapped' | 'unmapped', entry: FieldMappingsTableItem) => {
-          const { existingMappings: createdMappings, invalidMappingFieldNames } = this.props
+          const { existingMappings: createdMappings } = this.props
             .mappingProps as MappingProps[MappingViewType.Edit];
           let iconProps = STATUS_ICON_PROPS['unmapped'];
           let iconTooltip = 'This field needs to be mapped with a field from your log source.';
-          if (
-            createdMappings[entry.ruleFieldName] &&
-            !invalidMappingFieldNames.includes(entry.ruleFieldName)
-          ) {
+          if (createdMappings[entry.ruleFieldName]) {
             iconProps = STATUS_ICON_PROPS['mapped'];
             iconTooltip = 'This field has been mapped.';
           }
