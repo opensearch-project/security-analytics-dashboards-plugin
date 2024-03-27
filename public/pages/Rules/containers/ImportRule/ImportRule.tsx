@@ -37,14 +37,14 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
           const yamlContent: any = reader.result;
 
           if (!yamlContent) {
-            setFileError('Invalid file content');
+            setFileError('Invalid file content.');
             return;
           }
 
           const jsonContent: { [key: string]: any } = load(yamlContent) as object;
 
           if (!jsonContent) {
-            setFileError('Invalid yaml content');
+            setFileError('Invalid yaml content.');
             return;
           }
 
@@ -82,7 +82,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
             />
           );
         } catch (error: any) {
-          setFileError('Invalid file content');
+          setFileError('Invalid file content.');
         }
       };
     }

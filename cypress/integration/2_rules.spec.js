@@ -9,6 +9,7 @@ import { setupIntercept } from '../support/helpers';
 import {
   detectionRuleNameError,
   detectionRuleDescriptionError,
+  MAX_RULE_DESCRIPTION_LENGTH,
 } from '../../public/utils/validation';
 
 const uniqueId = Cypress._.random(0, 1e6);
@@ -148,9 +149,6 @@ const getMapListField = () => cy.get('[data-test-subj="selection_field_list"]');
 const getListRadioField = () => cy.get('[for="selection-map-list-0-0"]');
 const getTextRadioField = () => cy.get('[for="selection-map-value-0-0"]');
 const getConditionField = () => cy.get('[data-test-subj="rule_detection_field"]');
-const getConditionAddButton = () => cy.get('[data-test-subj="condition-add-selection-btn"]');
-const getConditionRemoveButton = (index) =>
-  cy.get(`[data-test-subj="selection-exp-field-item-remove-${index}"]`);
 const getRuleSubmitButton = () => cy.get('[data-test-subj="submit_rule_form_button"]');
 const getTagField = (index) => cy.get(`[data-test-subj="rule_tags_field_${index}"]`);
 const getReferenceFieldByIndex = (index) =>
@@ -238,12 +236,7 @@ describe('Rules', () => {
     it('...should validate rule description field', () => {
       getDescriptionField().should('be.empty');
 
-      let invalidDescription = '';
-
-      for (let i = 0; i < 65535; i++) {
-        invalidDescription += 'a';
-      }
-
+      const invalidDescription = 'a'.repeat(MAX_RULE_DESCRIPTION_LENGTH);
       getDescriptionField().focus().invoke('val', invalidDescription).type('b').blur();
 
       getDescriptionField()

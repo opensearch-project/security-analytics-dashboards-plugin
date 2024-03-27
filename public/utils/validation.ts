@@ -78,8 +78,10 @@ export function getNameErrorMessage(
 // numbers 0-9, hyphens, periods, spaces, and underscores.
 export const DESCRIPTION_REGEX = new RegExp(/^[a-zA-Z0-9 _.,-]{0,500}$/);
 
+export const MAX_RULE_DESCRIPTION_LENGTH = 65535;
+
 // This regex pattern support MIN to MAX character limit for detection rule description.
-export const RULE_DESCRIPTION_REGEX = new RegExp(/^.{0,65535}$/);
+export const RULE_DESCRIPTION_REGEX = new RegExp(`^.{0,${MAX_RULE_DESCRIPTION_LENGTH}}$`);
 
 /**
  * Validates a string against NAME_REGEX.
