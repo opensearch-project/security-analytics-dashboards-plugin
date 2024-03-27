@@ -10,6 +10,9 @@ export const MAX_NAME_CHARACTERS = 50;
 // numbers 0-9, hyphens, spaces, and underscores.
 export const NAME_REGEX = new RegExp(/^[a-zA-Z0-9 _-]{5,50}$/);
 
+// This regex pattern support MIN to MAX character limit for detection rule name
+export const RULE_NAME_REGEX = new RegExp(/^.{1,256}$/);
+
 export const LOG_TYPE_NAME_REGEX = new RegExp(/^[a-z0-9_-]{2,50}$/);
 
 // This regex pattern support MIN to MAX character limit, capital and lowercase letters,
@@ -20,9 +23,8 @@ export const DETECTION_CONDITION_REGEX = new RegExp(
   /^((not )?.+)?( (and|or|and not|or not|not) ?(.+))*(?<!and|or|not)$/
 );
 
-// This regex pattern support MIN to MAX character limit, capital and lowercase letters,
-// numbers 0-9, hyphens, spaces, and underscores.
-export const AUTHOR_REGEX = new RegExp(/^[a-zA-Z0-9 _,-.\\(\\)@#$&;]{1,50}$/);
+// This regex pattern support MIN to MAX character limit.
+export const AUTHOR_REGEX = new RegExp(/^.{0,256}$/);
 
 /**
  * Validates a string against NAME_REGEX.
@@ -76,9 +78,10 @@ export function getNameErrorMessage(
 // numbers 0-9, hyphens, periods, spaces, and underscores.
 export const DESCRIPTION_REGEX = new RegExp(/^[a-zA-Z0-9 _.,-]{0,500}$/);
 
-// This regex pattern support MIN to MAX character limit, capital and lowercase letters,
-// numbers 0-9, hyphens, periods, spaces, and underscores.
-export const RULE_DESCRIPTION_REGEX = new RegExp(/^[a-zA-Z0-9 _.,-\\(\\)@#$&;]{0,65535}$/);
+export const MAX_RULE_DESCRIPTION_LENGTH = 65535;
+
+// This regex pattern support MIN to MAX character limit for detection rule description.
+export const RULE_DESCRIPTION_REGEX = new RegExp(`^.{0,${MAX_RULE_DESCRIPTION_LENGTH}}$`);
 
 /**
  * Validates a string against NAME_REGEX.
@@ -92,9 +95,9 @@ export function validateDescription(
   return name.trim().match(descriptionRegex) !== null;
 }
 
-export const descriptionErrorString = `Description should only consist of upper and lowercase letters, numbers 0-9, commas, hyphens, periods, spaces, and underscores. Max limit of 500 characters.`;
+export const descriptionError = `Description should only consist of upper and lowercase letters, numbers 0-9, commas, hyphens, periods, spaces, and underscores. Max limit of 500 characters.`;
 
-export const ruleDescriptionErrorString = `Description should only consist of upper and lowercase letters, numbers 0-9, commas, hyphens, periods, spaces, and underscores. Max limit of 65,535 characters.`;
+export const detectionRuleDescriptionError = `Description has max limit of 65,535 characters.`;
 
 export function getDescriptionErrorMessage(
   _description: string,
@@ -102,10 +105,12 @@ export function getDescriptionErrorMessage(
   descriptionFieldTouched: boolean
 ) {
   if (descriptionFieldTouched && descriptionIsInvalid) {
-    return descriptionErrorString;
+    return descriptionError;
   }
 }
 
 export function validateField(hasSubmitted: boolean, fieldTouched: boolean) {
   return hasSubmitted || fieldTouched;
 }
+
+export const detectionRuleNameError = 'Rule name can be max 256 characters.';

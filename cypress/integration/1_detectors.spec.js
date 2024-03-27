@@ -12,7 +12,7 @@ import _ from 'lodash';
 import { getMappingFields } from '../../public/pages/Detectors/utils/helpers';
 import { getLogTypeLabel } from '../../public/pages/LogTypes/utils/helpers';
 import { setupIntercept } from '../support/helpers';
-import { descriptionErrorString } from '../../public/utils/validation';
+import { descriptionError } from '../../public/utils/validation';
 
 const cypressIndexDns = 'cypress-index-dns';
 const cypressIndexWindows = 'cypress-index-windows';
@@ -280,7 +280,7 @@ describe('Detectors', () => {
       getDescriptionField()
         .parents('.euiFormRow__fieldWrapper')
         .find('.euiFormErrorText')
-        .contains(descriptionErrorString);
+        .contains(descriptionError);
 
       getDescriptionField()
         .type('{selectall}')
