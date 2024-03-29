@@ -16,6 +16,7 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import {
   AUTHOR_REGEX,
   RULE_DESCRIPTION_REGEX,
+  RULE_NAME_REGEX,
   validateDescription,
   validateName,
 } from '../../../utils/validation';
@@ -142,14 +143,14 @@ export function validateRule(
 ): boolean {
   const invalidFields = [];
 
-  if (!rule.title || !validateName(rule.title)) invalidFields.push('Rule name');
+  if (!rule.title || !validateName(rule.title, RULE_NAME_REGEX)) invalidFields.push('Rule name');
   if (!validateDescription(rule.description, RULE_DESCRIPTION_REGEX)) {
     invalidFields.push('Description');
   }
   if (!rule.category) invalidFields.push('Log type');
   if (!rule.detection) invalidFields.push('Detection');
   if (!rule.level) invalidFields.push('Rule level');
-  if (!rule.author || !validateName(rule.author, AUTHOR_REGEX)) invalidFields.push('Author');
+  if (!validateName(rule.author, AUTHOR_REGEX)) invalidFields.push('Author');
   if (!rule.status) invalidFields.push('Rule status');
 
   if (rule.detection) {

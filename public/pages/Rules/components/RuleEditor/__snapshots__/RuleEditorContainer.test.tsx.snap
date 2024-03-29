@@ -116,7 +116,6 @@ Object {
                 class="euiFormRow__labelWrapper"
               >
                 <label
-                  aria-invalid="false"
                   class="euiFormLabel euiFormRow__label"
                   for="some_html_id"
                 >
@@ -153,7 +152,7 @@ Object {
                   class="euiFormHelpText euiFormRow__text"
                   id="some_html_id-help-0"
                 >
-                  Rule name must contain 5-50 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, and underscores
+                  Rule name can be max 256 characters.
                 </div>
               </div>
             </div>
@@ -168,7 +167,6 @@ Object {
                 class="euiFormRow__labelWrapper"
               >
                 <label
-                  aria-invalid="false"
                   class="euiFormLabel euiFormRow__label"
                   for="some_html_id"
                 >
@@ -216,7 +214,6 @@ Object {
                 class="euiFormRow__labelWrapper"
               >
                 <label
-                  aria-invalid="false"
                   class="euiFormLabel euiFormRow__label"
                   for="some_html_id"
                 >
@@ -285,7 +282,6 @@ Object {
                     class="euiFormRow__labelWrapper"
                   >
                     <label
-                      aria-invalid="false"
                       class="euiFormLabel euiFormRow__label"
                       for="some_html_id"
                     >
@@ -393,7 +389,6 @@ Object {
                 class="euiFormRow__labelWrapper"
               >
                 <label
-                  aria-invalid="false"
                   class="euiFormLabel euiFormRow__label"
                   for="some_html_id"
                 >
@@ -477,7 +472,6 @@ Object {
                 class="euiFormRow__labelWrapper"
               >
                 <label
-                  aria-invalid="false"
                   class="euiFormLabel euiFormRow__label"
                   for="some_html_id"
                 >
@@ -1167,7 +1161,6 @@ Object {
                             class="euiFormRow__labelWrapper"
                           >
                             <label
-                              aria-invalid="false"
                               class="euiFormLabel euiFormRow__label"
                               for="some_html_id"
                             >
@@ -1251,7 +1244,6 @@ Object {
                             class="euiFormRow__labelWrapper"
                           >
                             <label
-                              aria-invalid="false"
                               class="euiFormLabel euiFormRow__label"
                               for="some_html_id"
                             >
@@ -1335,7 +1327,6 @@ Object {
                             class="euiFormRow__labelWrapper"
                           >
                             <label
-                              aria-invalid="false"
                               class="euiFormLabel euiFormRow__label"
                               for="some_html_id"
                             >
@@ -1581,7 +1572,6 @@ Object {
               class="euiFormRow__labelWrapper"
             >
               <label
-                aria-invalid="false"
                 class="euiFormLabel euiFormRow__label"
                 for="some_html_id"
               >
@@ -1618,7 +1608,7 @@ Object {
                 class="euiFormHelpText euiFormRow__text"
                 id="some_html_id-help-0"
               >
-                Rule name must contain 5-50 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, and underscores
+                Rule name can be max 256 characters.
               </div>
             </div>
           </div>
@@ -1633,7 +1623,6 @@ Object {
               class="euiFormRow__labelWrapper"
             >
               <label
-                aria-invalid="false"
                 class="euiFormLabel euiFormRow__label"
                 for="some_html_id"
               >
@@ -1681,7 +1670,6 @@ Object {
               class="euiFormRow__labelWrapper"
             >
               <label
-                aria-invalid="false"
                 class="euiFormLabel euiFormRow__label"
                 for="some_html_id"
               >
@@ -1750,7 +1738,6 @@ Object {
                   class="euiFormRow__labelWrapper"
                 >
                   <label
-                    aria-invalid="false"
                     class="euiFormLabel euiFormRow__label"
                     for="some_html_id"
                   >
@@ -1858,7 +1845,6 @@ Object {
               class="euiFormRow__labelWrapper"
             >
               <label
-                aria-invalid="false"
                 class="euiFormLabel euiFormRow__label"
                 for="some_html_id"
               >
@@ -1942,7 +1928,6 @@ Object {
               class="euiFormRow__labelWrapper"
             >
               <label
-                aria-invalid="false"
                 class="euiFormLabel euiFormRow__label"
                 for="some_html_id"
               >
@@ -2632,7 +2617,6 @@ Object {
                           class="euiFormRow__labelWrapper"
                         >
                           <label
-                            aria-invalid="false"
                             class="euiFormLabel euiFormRow__label"
                             for="some_html_id"
                           >
@@ -2716,7 +2700,6 @@ Object {
                           class="euiFormRow__labelWrapper"
                         >
                           <label
-                            aria-invalid="false"
                             class="euiFormLabel euiFormRow__label"
                             for="some_html_id"
                           >
@@ -2800,7 +2783,6 @@ Object {
                           class="euiFormRow__labelWrapper"
                         >
                           <label
-                            aria-invalid="false"
                             class="euiFormLabel euiFormRow__label"
                             for="some_html_id"
                           >
