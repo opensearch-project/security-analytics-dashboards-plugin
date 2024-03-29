@@ -13,12 +13,14 @@ import {
   EuiSpacer,
   EuiText,
   EuiBadge,
+  euiPaletteColorBlind,
 } from '@elastic/eui';
 import moment from 'moment';
 import { PeriodSchedule } from '../../models/interfaces';
 import React from 'react';
 import {
   DEFAULT_EMPTY_DATA,
+  defaultColorForVisualizations,
   logTypeCategories,
   logTypeCategoryDescription,
   logTypesByCategories,
@@ -41,6 +43,7 @@ import { AlertCondition, LogType } from '../../types';
 import { DataStore } from '../store/DataStore';
 import { LogCategoryOptionView } from '../components/Utility/LogCategoryOption';
 import { getLogTypeLabel } from '../pages/LogTypes/utils/helpers';
+import { euiThemeVars } from '@osd/ui-shared-deps/theme';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
@@ -181,6 +184,7 @@ export function renderVisualization(spec: TopLevelSpec, containerId: string) {
   let view;
 
   try {
+    setDefaultColors(spec);
     renderVegaSpec(compile({ ...spec, width: 'container', height: 400 }).spec).catch((err: Error) =>
       console.error(err)
     );
@@ -495,4 +499,56 @@ export async function getDataSources(
       error,
     };
   }
+}
+
+/**
+ * Sets default colors in the vega-lite spec unless individual spec provides them.
+ */
+function setDefaultColors(spec: any) {
+  const setValue = getValueSetter(spec.config);
+
+  // Default category coloring to the OpenSearch color scheme
+  setValue(euiPaletteColorBlind(), 'range', 'category');
+
+  // Vega-Lite: set default color, works for fill and strike --  config: { mark:  { color: '#54B399' }}
+  setValue(defaultColorForVisualizations, 'mark', 'color');
+  // By default text marks should use theme-aware text color
+  setValue(euiThemeVars.euiTextColor, 'text', 'fill');
+
+  // provide right colors for light and dark themes
+  setValue(euiThemeVars.euiColorDarkestShade, 'title', 'color');
+  setValue(euiThemeVars.euiColorDarkShade, 'style', 'guide-label', 'fill');
+  setValue(euiThemeVars.euiColorDarkestShade, 'style', 'guide-title', 'fill');
+  setValue(euiThemeVars.euiColorDarkestShade, 'style', 'group-title', 'fill');
+  setValue(euiThemeVars.euiColorDarkestShade, 'style', 'group-subtitle', 'fill');
+  setValue(euiThemeVars.euiColorChartLines, 'axis', 'tickColor');
+  setValue(euiThemeVars.euiColorChartLines, 'axis', 'domainColor');
+  setValue(euiThemeVars.euiColorChartLines, 'axis', 'gridColor');
+  setValue('transparent', 'background');
+  setValue(euiThemeVars.euiColorDarkestShade, 'legend', 'titleColor');
+  setValue(euiThemeVars.euiColorDarkShade, 'legend', 'labelColor');
+}
+
+/**
+ * Returns a function that sets value if it doesn't exist.
+ */
+function getValueSetter(baseObject: any) {
+  // Given an object, and an array of fields, ensure that obj.fld1.fld2. ... .fldN is set to value if it doesn't exist.
+  return function (value: unknown, ...fields: string[]) {
+    let o = baseObject;
+    for (let i = 0; i < fields.length - 1; i++) {
+      const field = fields[i];
+      const subObj = o[field];
+      if (subObj === undefined) {
+        o[field] = {};
+      } else if (!_.isPlainObject(subObj)) {
+        return;
+      }
+      o = o[field];
+    }
+    const lastField = fields[fields.length - 1];
+    if (o[lastField] === undefined) {
+      o[lastField] = value;
+    }
+  };
 }
