@@ -14,7 +14,6 @@ import { ContentPanel } from '../../../../components/ContentPanel';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { setBreadCrumb } from '../../utils/helpers';
-import { yamlMediaTypes } from '../../utils/constants';
 import { Rule } from '../../../../../types';
 import { DEFAULT_RULE_UUID } from '../../../../../common/constants';
 
@@ -27,10 +26,10 @@ export interface ImportRuleProps {
 export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notifications }) => {
   const context = useContext(CoreServicesContext);
   const [fileError, setFileError] = useState('');
-  const onChange = useCallback((files: any) => {
+  const onChange = useCallback((files: FileList | null) => {
     setFileError('');
 
-    if (yamlMediaTypes.has(files[0]?.type)) {
+    if (!!files?.item(0)) {
       let reader = new FileReader();
       reader.readAsText(files[0]);
       reader.onload = function () {
@@ -38,14 +37,14 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
           const yamlContent: any = reader.result;
 
           if (!yamlContent) {
-            setFileError('Invalid content in file');
+            setFileError('Invalid file content.');
             return;
           }
 
-          const jsonContent = load(yamlContent);
+          const jsonContent: { [key: string]: any } = load(yamlContent) as object;
 
           if (!jsonContent) {
-            setFileError('Invalid yaml content');
+            setFileError('Invalid yaml content.');
             return;
           }
 
@@ -83,11 +82,9 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
             />
           );
         } catch (error: any) {
-          setFileError('Invalid file content');
+          setFileError('Invalid file content.');
         }
       };
-    } else {
-      setFileError(files.length > 0 ? 'Only yaml files are accepted' : '');
     }
   }, []);
 
