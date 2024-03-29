@@ -11,6 +11,7 @@ import _ from 'lodash';
 import { DEFAULT_DATE_RANGE } from '../../../utils/constants';
 import { severityOptions } from '../../Alerts/utils/constants';
 import moment from 'moment';
+import { euiThemeVars } from '@osd/ui-shared-deps/theme';
 
 export interface TimeUnit {
   unit: string;
@@ -56,7 +57,7 @@ export const defaultTimeUnit = {
 export const defaultDateFormat = '%Y-%m-%d %H:%M';
 
 // euiColorDanger: #BD271E
-export const alertsDefaultColor = '#BD271E';
+export const alertsDefaultColor = euiThemeVars.euiColorDanger;
 
 export const parseDateString = (dateString: string): number => {
   const date = dateMath.parse(dateString);
@@ -102,8 +103,6 @@ export function getVisualizationSpec(description: string, data: any, layers: any
     config: {
       view: { stroke: 'transparent' },
       legend: {
-        labelColor: '#343741',
-        titleColor: '#1a1c21',
         labelFontSize: 14,
         titleFontWeight: 600,
         titleLineHeight: 21,
