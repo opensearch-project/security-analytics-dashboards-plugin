@@ -6,7 +6,11 @@
 import { OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
 import { getLogTypeLabel } from '../../public/pages/LogTypes/utils/helpers';
 import { setupIntercept } from '../support/helpers';
-import { ruleDescriptionErrorString } from '../../public/utils/validation';
+import {
+  detectionRuleNameError,
+  detectionRuleDescriptionError,
+  MAX_RULE_DESCRIPTION_LENGTH,
+} from '../../public/utils/validation';
 
 const uniqueId = Cypress._.random(0, 1e6);
 const SAMPLE_RULE = {
@@ -145,9 +149,6 @@ const getMapListField = () => cy.get('[data-test-subj="selection_field_list"]');
 const getListRadioField = () => cy.get('[for="selection-map-list-0-0"]');
 const getTextRadioField = () => cy.get('[for="selection-map-value-0-0"]');
 const getConditionField = () => cy.get('[data-test-subj="rule_detection_field"]');
-const getConditionAddButton = () => cy.get('[data-test-subj="condition-add-selection-btn"]');
-const getConditionRemoveButton = (index) =>
-  cy.get(`[data-test-subj="selection-exp-field-item-remove-${index}"]`);
 const getRuleSubmitButton = () => cy.get('[data-test-subj="submit_rule_form_button"]');
 const getTagField = (index) => cy.get(`[data-test-subj="rule_tags_field_${index}"]`);
 const getReferenceFieldByIndex = (index) =>
@@ -209,18 +210,19 @@ describe('Rules', () => {
     });
 
     it('...should validate rule name', () => {
-      getNameField().containsHelperText(
-        'Rule name must contain 5-50 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, and underscores'
-      );
+      getNameField().containsHelperText(detectionRuleNameError);
 
       getNameField().should('be.empty');
       getNameField().focus().blur();
       getNameField().containsError('Rule name is required');
-      getNameField().type('text').focus().blur();
-      getNameField().containsError('Invalid rule name.');
 
-      getNameField().type('{selectall}').type('{backspace}').type('tex&').focus().blur();
-      getNameField().containsError('Invalid rule name.');
+      getNameField()
+        .type('{selectall}')
+        .type('{backspace}')
+        .type('*$&*#(#*($*($')
+        .focus()
+        .blur()
+        .shouldNotHaveError();
 
       getNameField()
         .type('{selectall}')
@@ -232,15 +234,15 @@ describe('Rules', () => {
     });
 
     it('...should validate rule description field', () => {
-      const invalidDescriptionText = 'This is a invalid % description.';
-
       getDescriptionField().should('be.empty');
-      getDescriptionField().type(invalidDescriptionText).focus().blur();
+
+      const invalidDescription = 'a'.repeat(MAX_RULE_DESCRIPTION_LENGTH);
+      getDescriptionField().focus().invoke('val', invalidDescription).type('b').blur();
 
       getDescriptionField()
         .parents('.euiFormRow__fieldWrapper')
         .find('.euiFormErrorText')
-        .contains(ruleDescriptionErrorString);
+        .contains(detectionRuleDescriptionError);
 
       getDescriptionField()
         .type('{selectall}')
@@ -265,15 +267,20 @@ describe('Rules', () => {
 
       getAuthorField().should('be.empty');
       getAuthorField().focus().blur();
-      getAuthorField().containsError('Author name is required');
 
-      getAuthorField().type('{selectall}').type('{backspace}').type('tex%').focus().blur();
+      let invalidAuthor = '';
+
+      for (let i = 0; i < 256; i++) {
+        invalidAuthor += 'a';
+      }
+
+      getAuthorField().focus().invoke('val', invalidAuthor).type('b').blur();
       getAuthorField().containsError('Invalid author.');
 
       getAuthorField()
         .type('{selectall}')
         .type('{backspace}')
-        .type('Rule name')
+        .type('Rule author (@)')
         .focus()
         .blur()
         .shouldNotHaveError();
@@ -423,7 +430,6 @@ describe('Rules', () => {
 
       // author field
       getAuthorField().clearValue();
-      toastShouldExist();
       getAuthorField().type('John Doe');
 
       // log field
