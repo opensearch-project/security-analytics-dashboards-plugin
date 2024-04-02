@@ -27,11 +27,6 @@
     "postbuild": "echo Renaming build artifact to [$npm_package_config_zip_name-$npm_package_version.zip] && mv build/$npm_package_config_id*.zip build/$npm_package_config_zip_name-$npm_package_version.zip",
     "postinstall": "husky"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "resolutions": {
     "@types/react": "^16.9.8",
     "**/@types/angular": "1.6.50",
