@@ -24,7 +24,8 @@
     "test:jest:dev": "../../node_modules/.bin/jest --watch --config ./test/jest.config.js",
     "test:jest:update-snapshots": "yarn run test:jest -u",
     "build": "yarn plugin-helpers build",
-    "postbuild": "echo Renaming build artifact to [$npm_package_config_zip_name-$npm_package_version.zip] && mv build/$npm_package_config_id*.zip build/$npm_package_config_zip_name-$npm_package_version.zip"
+    "postbuild": "echo Renaming build artifact to [$npm_package_config_zip_name-$npm_package_version.zip] && mv build/$npm_package_config_id*.zip build/$npm_package_config_zip_name-$npm_package_version.zip",
+    "postinstall": "husky"
   },
   "husky": {
     "hooks": {
