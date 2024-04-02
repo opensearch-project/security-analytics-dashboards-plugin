@@ -491,8 +491,9 @@ describe('Detectors', () => {
       cy.get('[data-test-subj="toggleDetectorButton').click({ force: true });
 
       cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
+
       // Need this extra wait time for the Actions button to become enabled again
-      cy.wait(1000);
+      cy.wait(2000);
 
       setupIntercept(cy, '/_plugins/_security_analytics/detectors/_search', 'detectorsSearch');
       cy.get('[data-test-subj="detectorsActionsButton').click({ force: true });
@@ -500,8 +501,9 @@ describe('Detectors', () => {
       cy.get('[data-test-subj="toggleDetectorButton').click({ force: true });
 
       cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
+
       // Need this extra wait time for the Actions button to become enabled again
-      cy.wait(1000);
+      cy.wait(2000);
 
       cy.get('[data-test-subj="detectorsActionsButton').click({ force: true });
       cy.get('[data-test-subj="toggleDetectorButton').contains('Stop');
