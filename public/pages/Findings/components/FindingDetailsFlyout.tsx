@@ -32,6 +32,7 @@ import {
   EuiTab,
   EuiLoadingContent,
   EuiEmptyPrompt,
+  EuiLoadingSpinner,
 } from '@elastic/eui';
 import { capitalizeFirstLetter, renderTime } from '../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA, ROUTES } from '../../../utils/constants';
@@ -412,7 +413,7 @@ export default class FindingDetailsFlyout extends Component<
             <CreateIndexPatternForm
               indexPatternsService={this.props.indexPatternsService}
               initialValue={{
-                name: this.props.finding.detector._source.inputs[0].detector_input.indices[0] + '*',
+                name: this.props.finding.index + '*',
               }}
               close={() =>
                 this.setState({ ...this.state, isCreateIndexPatternModalVisible: false })
@@ -581,9 +582,11 @@ export default class FindingDetailsFlyout extends Component<
                   {tab.id === 'Correlations' ? (
                     <>
                       {tab.name} (
-                      {this.state.areCorrelationsLoading
-                        ? DEFAULT_EMPTY_DATA
-                        : this.state.correlatedFindings.length}
+                      {this.state.areCorrelationsLoading ? (
+                        <EuiLoadingSpinner size="s" />
+                      ) : (
+                        this.state.correlatedFindings.length
+                      )}
                       )
                     </>
                   ) : (
