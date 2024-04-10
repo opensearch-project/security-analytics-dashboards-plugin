@@ -40,7 +40,6 @@ interface EditFieldMappingsProps extends RouteComponentProps {
 interface EditFieldMappingsState {
   loading: boolean;
   createdMappings: ruleFieldToIndexFieldMap;
-  invalidMappingFieldNames: string[];
   mappedRuleFields: string[];
   unmappedRuleFields: string[];
   logFieldOptions: string[];
@@ -61,7 +60,6 @@ export default class EditFieldMappings extends Component<
       ruleQueryFields: props.ruleQueryFields ? props.ruleQueryFields : new Set<string>(),
       loading: props.loading || false,
       createdMappings,
-      invalidMappingFieldNames: [],
       mappedRuleFields: [],
       unmappedRuleFields: [],
       logFieldOptions: [],
@@ -126,7 +124,7 @@ export default class EditFieldMappings extends Component<
           });
 
           items.forEach((ruleField) => {
-            existingMappings[ruleField.ruleFieldName] = ruleField.logFieldName;
+            existingMappings[ruleField.ruleFieldName] = ruleField.logFieldName || '';
           });
 
           for (let key in existingMappings) {
@@ -167,24 +165,6 @@ export default class EditFieldMappings extends Component<
     this.setState({ loading: false });
   };
 
-  /**
-   * Returns the fieldName(s) that have duplicate alias assigned to them
-   */
-  getInvalidMappingFieldNames(mappings: ruleFieldToIndexFieldMap): string[] {
-    const seenAliases = new Set();
-    const invalidFields: string[] = [];
-
-    Object.entries(mappings).forEach((entry) => {
-      if (seenAliases.has(entry[1])) {
-        invalidFields.push(entry[0]);
-      }
-
-      seenAliases.add(entry[1]);
-    });
-
-    return invalidFields;
-  }
-
   onMappingCreation = (ruleFieldName: string, indexFieldName: string): void => {
     const newMappings: ruleFieldToIndexFieldMap = {
       ...this.state.createdMappings,
@@ -193,10 +173,8 @@ export default class EditFieldMappings extends Component<
     if (!indexFieldName) {
       delete newMappings[ruleFieldName];
     }
-    const invalidMappingFieldNames = this.getInvalidMappingFieldNames(newMappings);
     this.setState({
       createdMappings: newMappings,
-      invalidMappingFieldNames: invalidMappingFieldNames,
     });
     this.updateMappingSharedState(newMappings);
   };
@@ -216,7 +194,6 @@ export default class EditFieldMappings extends Component<
     const {
       loading,
       createdMappings,
-      invalidMappingFieldNames,
       mappedRuleFields,
       unmappedRuleFields,
       logFieldOptions,
@@ -253,7 +230,6 @@ export default class EditFieldMappings extends Component<
                 mappingProps={{
                   type: MappingViewType.Edit,
                   existingMappings,
-                  invalidMappingFieldNames,
                   onMappingCreation: this.onMappingCreation,
                 }}
               />
@@ -286,7 +262,6 @@ export default class EditFieldMappings extends Component<
                   mappingProps={{
                     type: MappingViewType.Edit,
                     existingMappings,
-                    invalidMappingFieldNames,
                     onMappingCreation: this.onMappingCreation,
                   }}
                 />
