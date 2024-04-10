@@ -1,0 +1,14 @@
+package.AWSSearchServicesKibanaSecurityAnalyticsPlugin = {
+    interfaces = (opensearch_2.11.0);
+ 
+    build-system = custom-build;
+    build-tools = {
+        opensearch_2.11.0 = {
+        };
+    };
+ 
+    dependencies = {
+        opensearch_2.11.0 = {
+        };
+    };
+};
