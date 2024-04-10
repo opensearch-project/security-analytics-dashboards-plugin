@@ -97,10 +97,12 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
       BREADCRUMBS.DETECTORS,
       BREADCRUMBS.DETECTORS_CREATE,
     ]);
-    this.setupRulesState();
-    this.getPlugins();
-    this.props.metrics.detectorMetricsManager.resetMetrics();
-    this.props.metrics.detectorMetricsManager.sendMetrics(CreateDetectorSteps.started);
+    if (!(this.props.history.location.state as any)?.detectorInput) {
+      this.setupRulesState();
+      this.props.metrics.detectorMetricsManager.resetMetrics();
+      this.props.metrics.detectorMetricsManager.sendMetrics(CreateDetectorSteps.started);
+      this.getPlugins();
+    }
   }
 
   componentDidUpdate(
@@ -150,16 +152,17 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
 
     const createDetectorPromise = this.props.services.detectorsService.createDetector(detector);
 
-    // set detector pending state, this will be used in detector details page
-    DataStore.detectors.setState(
-      {
-        pendingRequests: [fieldsMappingPromise, createDetectorPromise],
-        detectorInput: { ...this.state },
-      },
-      this.props.history
-    );
+    this.setState({ creatingDetector: false }, () => {
+      // set detector pending state, this will be used in detector details page
+      DataStore.detectors.setState(
+        {
+          pendingRequests: [fieldsMappingPromise, createDetectorPromise],
+          detectorInput: { ...this.state },
+        },
+        this.props.history
+      );
+    });
 
-    this.setState({ creatingDetector: false });
     this.props.metrics.detectorMetricsManager.sendMetrics(CreateDetectorSteps.createClicked);
 
     // navigate to detector details
