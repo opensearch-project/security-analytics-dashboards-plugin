@@ -13,4 +13,4 @@ Compatible with OpenSearch Dashboards 2.14.0
 * Wait longer for action button to become enabled ([#983](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/983))
 
 ### Documentation
-* Added release notes for 2.14.0 ([#]())
+* Added release notes for 2.14.0 ([#997](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/997))
