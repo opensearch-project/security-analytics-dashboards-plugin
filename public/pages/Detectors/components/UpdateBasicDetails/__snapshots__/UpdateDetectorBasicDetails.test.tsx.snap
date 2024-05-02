@@ -212,7 +212,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
           "calls": Array [
             Array [
               Object {
-                "text": [TypeError: Cannot read properties of undefined (reading 'detectorsService')],
+                "text": [TypeError: Cannot read property 'detectorsService' of undefined],
                 "title": "Failed to retrieve detector:",
                 "toastLifeTimeMs": 5000,
               },
@@ -489,7 +489,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                 "calls": Array [
                   Array [
                     Object {
-                      "text": [TypeError: Cannot read properties of undefined (reading 'detectorsService')],
+                      "text": [TypeError: Cannot read property 'detectorsService' of undefined],
                       "title": "Failed to retrieve detector:",
                       "toastLifeTimeMs": 5000,
                     },
