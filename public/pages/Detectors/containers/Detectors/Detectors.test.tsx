@@ -9,13 +9,13 @@ import { expect } from '@jest/globals';
 import { act } from 'react-dom/test-utils';
 import { mount } from 'enzyme';
 import Detectors from './Detectors';
-import contextMock from '../../../../../test/mocks/useContext.mock';
+import { coreContextMock } from '../../../../../test/mocks/useContext.mock';
 
 describe('<Detectors /> spec', () => {
   it('renders the component', async () => {
     let wrapper;
     await act(async () => {
-      Detectors.contextType = contextMock;
+      Detectors.contextType = React.createContext(coreContextMock);
       wrapper = await mount(<Detectors {...props} />);
     });
     wrapper.update();

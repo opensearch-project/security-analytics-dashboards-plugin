@@ -6,13 +6,22 @@
 import notificationsStartMock from '../../../services/notifications/NotificationsStart.mock';
 import detectorHitMock from '../../containers/Detectors/DetectorHit.mock';
 import browserHistoryMock from '../../../services/browserHistory.mock';
-import { UpdateDetectorBasicDetails } from '../../../../../public/pages/Detectors/components/UpdateBasicDetails/UpdateBasicDetails';
+import { UpdateDetectorBasicDetailsProps } from '../../../../../public/pages/Detectors/components/UpdateBasicDetails/UpdateBasicDetails';
 
-export default ({
+export default {
   notifications: notificationsStartMock,
   detectorHit: detectorHitMock,
   location: {
     pathname: '/edit-detector-details/detector_id_1',
+    search: '',
+    state: { detectorHit: detectorHitMock },
+    hash: '',
   },
   history: browserHistoryMock,
-} as unknown) as typeof UpdateDetectorBasicDetails;
+  match: {
+    isExact: false,
+    path: '',
+    url: '',
+    params: { id: '1' },
+  },
+} as UpdateDetectorBasicDetailsProps;
