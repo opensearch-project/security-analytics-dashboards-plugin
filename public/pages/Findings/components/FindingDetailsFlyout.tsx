@@ -49,7 +49,7 @@ import { OpenSearchService, IndexPatternsService, CorrelationService } from '../
 import { RuleTableItem } from '../../Rules/utils/helpers';
 import { CreateIndexPatternForm } from './CreateIndexPatternForm';
 import { FindingItemType } from '../containers/Findings/Findings';
-import { CorrelationFinding, FindingDocument, RuleItemInfoBase } from '../../../../types';
+import { CorrelationFinding, FindingDocumentItem, RuleItemInfoBase } from '../../../../types';
 import { FindingFlyoutTabId, FindingFlyoutTabs } from '../utils/constants';
 import { DataStore } from '../../../store/DataStore';
 import { CorrelationsTable } from './CorrelationsTable/CorrelationsTable';
@@ -318,7 +318,7 @@ export default class FindingDetailsFlyout extends Component<
     return patternId;
   };
 
-  toggleDocumentDetails(item: FindingDocument) {
+  toggleDocumentDetails(item: FindingDocumentItem) {
     const docIdToExpandedRowMapValues = { ...this.state.docIdToExpandedRowMap };
     let formattedDocument = '';
     try {
@@ -335,7 +335,7 @@ export default class FindingDetailsFlyout extends Component<
           <EuiCodeBlock
             language="json"
             isCopyable
-            data-test-subj={`finding-details-flyout-rule-document-${item.id}`}
+            data-test-subj={`finding-details-flyout-rule-document-${item.itemIdx}`}
           >
             {formattedDocument}
           </EuiCodeBlock>
@@ -352,10 +352,10 @@ export default class FindingDetailsFlyout extends Component<
     } = this.props;
     const { indexPatternId, docIdToExpandedRowMap } = this.state;
     const relatedDocIdsSet = new Set(related_doc_ids);
-    const relatedDocuments: FindingDocument[] = [];
+    const relatedDocuments: FindingDocumentItem[] = [];
     document_list.forEach((documentInfo) => {
       if (documentInfo.found && relatedDocIdsSet.has(documentInfo.id)) {
-        relatedDocuments.push(documentInfo);
+        relatedDocuments.push({ ...documentInfo, itemIdx: relatedDocuments.length });
       }
     });
 
@@ -378,7 +378,7 @@ export default class FindingDetailsFlyout extends Component<
 
     const actions = [
       {
-        render: ({ id }: FindingDocument) => (
+        render: ({ id }: FindingDocumentItem) => (
           <EuiToolTip title="View surrounding documents">
             <EuiButtonIcon
               // isLoading={isDocumentLoading}
@@ -386,10 +386,7 @@ export default class FindingDetailsFlyout extends Component<
               data-test-subj={'finding-details-flyout-view-surrounding-documents'}
               onClick={() => {
                 if (indexPatternId) {
-                  window.open(
-                    `discover#/context/${indexPatternId}/${related_doc_ids[0]}`,
-                    '_blank'
-                  );
+                  window.open(`discover#/context/${indexPatternId}/${id}`, '_blank');
                 } else {
                   this.setState({ ...this.state, isCreateIndexPatternModalVisible: true });
                 }
@@ -400,14 +397,15 @@ export default class FindingDetailsFlyout extends Component<
       },
     ];
 
-    const documentsColumns: EuiBasicTableColumn<FindingDocument>[] = [
+    const documentsColumns: EuiBasicTableColumn<FindingDocumentItem>[] = [
       {
         name: '',
-        render: (item: FindingDocument) => (
+        render: (item: FindingDocumentItem) => (
           <EuiButtonIcon
             onClick={() => this.toggleDocumentDetails(item)}
             aria-label={docIdToExpandedRowMap[item.id] ? 'Collapse' : 'Expand'}
             iconType={docIdToExpandedRowMap[item.id] ? 'arrowUp' : 'arrowDown'}
+            data-test-subj={`finding-details-flyout-document-toggle-${item.itemIdx}`}
           />
         ),
         width: '30',
