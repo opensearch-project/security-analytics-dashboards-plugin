@@ -22,15 +22,15 @@ import {
   getTimeWithMinPrecision,
   TimeUnit,
 } from '../../utils/helpers';
-import { AlertItem, FindingItem } from '../../models/interfaces';
 import { createSelectComponent, renderVisualization } from '../../../../utils/helpers';
 import { PLUGIN_NAME, ROUTES } from '../../../../utils/constants';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 import { getLogTypeLabel } from '../../../LogTypes/utils/helpers';
+import { OverviewAlertItem, OverviewFindingItem } from '../../../../../types';
 
 export interface SummaryProps {
-  findings: FindingItem[];
-  alerts: AlertItem[];
+  findings: OverviewFindingItem[];
+  alerts: OverviewAlertItem[];
   loading?: boolean;
   startTime: string;
   endTime: string;

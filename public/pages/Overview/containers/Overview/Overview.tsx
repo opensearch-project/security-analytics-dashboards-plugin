@@ -22,17 +22,17 @@ import {
   PLUGIN_NAME,
   ROUTES,
 } from '../../../../utils/constants';
-import { OverviewProps, OverviewState } from '../../models/interfaces';
 import { CoreServicesContext } from '../../../../../public/components/core_services';
 import { RecentAlertsWidget } from '../../components/Widgets/RecentAlertsWidget';
 import { RecentFindingsWidget } from '../../components/Widgets/RecentFindingsWidget';
 import { DetectorsWidget } from '../../components/Widgets/DetectorsWidget';
-import { OverviewViewModel, OverviewViewModelActor } from '../../models/OverviewViewModel';
+import { OverviewViewModelActor } from '../../models/OverviewViewModel';
 import { SecurityAnalyticsContext } from '../../../../services';
 import { Summary } from '../../components/Widgets/Summary';
 import { TopRulesWidget } from '../../components/Widgets/TopRulesWidget';
 import { GettingStartedPopup } from '../../components/GettingStarted/GettingStartedPopup';
 import { getChartTimeUnit, TimeUnit } from '../../utils/helpers';
+import { OverviewProps, OverviewState, OverviewViewModel } from '../../../../../types';
 
 export const Overview: React.FC<OverviewProps> = (props) => {
   const {
@@ -78,10 +78,15 @@ export const Overview: React.FC<OverviewProps> = (props) => {
   useEffect(() => {
     context?.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.OVERVIEW]);
     overviewViewModelActor.registerRefreshHandler(updateState);
+  }, []);
 
+  useEffect(() => {
     const updateModel = async () => {
       await overviewViewModelActor.onRefresh(dateTimeFilter.startTime, dateTimeFilter.endTime);
-      setInitialLoadingFinished(true);
+
+      if (!initialLoadingFinished) {
+        setInitialLoadingFinished(true);
+      }
     };
 
     updateModel();
@@ -117,14 +122,14 @@ export const Overview: React.FC<OverviewProps> = (props) => {
     setRecentlyUsedRanges(usedRanges);
   };
 
-  useEffect(() => {
-    overviewViewModelActor.onRefresh(dateTimeFilter.startTime, dateTimeFilter.endTime);
-  }, [dateTimeFilter.startTime, dateTimeFilter.endTime]);
-
   const onRefresh = async () => {
     setLoading(true);
     await overviewViewModelActor.onRefresh(dateTimeFilter.startTime, dateTimeFilter.endTime);
   };
+
+  useEffect(() => {
+    onRefresh();
+  }, [props.dataSource]);
 
   const onButtonClick = () => setIsPopoverOpen((isPopoverOpen) => !isPopoverOpen);
 

@@ -5,14 +5,14 @@
 
 import { renderVisualization } from '../../../../utils/helpers';
 import React, { useEffect } from 'react';
-import { FindingItem } from '../../models/interfaces';
 import { WidgetContainer } from './WidgetContainer';
 import { getTopRulesVisualizationSpec } from '../../utils/helpers';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 import { EuiEmptyPrompt } from '@elastic/eui';
+import { OverviewFindingItem } from '../../../../../types';
 
 export interface TopRulesWidgetProps {
-  findings: FindingItem[];
+  findings: OverviewFindingItem[];
   loading?: boolean;
 }
 

@@ -3,51 +3,41 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useCallback, useState } from 'react';
+import React, { useContext } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import {
   DataSourceManagementPluginSetup,
-  DataSourceOption,
   DataSourceSelectableConfig,
   DataSourceViewConfig,
 } from '../../../../../src/plugins/data_source_management/public';
 import { AppMountParameters, CoreStart } from 'opensearch-dashboards/public';
 import { ROUTES } from '../../utils/constants';
+import { DataSourceContext } from '../../services/DataSourceContext';
 
 export interface DataSourceMenuWrapperProps {
   core: CoreStart;
   dataSourceManagement?: DataSourceManagementPluginSetup;
+  dataSourceMenuReadOnly: boolean;
   setHeaderActionMenu: AppMountParameters['setHeaderActionMenu'];
 }
 
 export const DataSourceMenuWrapper: React.FC<DataSourceMenuWrapperProps> = ({
   core,
   dataSourceManagement,
+  dataSourceMenuReadOnly,
   setHeaderActionMenu,
 }) => {
   if (!dataSourceManagement) {
     return null;
   }
 
-  const [activeOption, setActiveOption] = useState({ id: '', label: '', checked: '' });
+  const { dataSource, setDataSource } = useContext(DataSourceContext)!;
   const DataSourceMenuViewComponent = dataSourceManagement.ui?.getDataSourceMenu<
     DataSourceViewConfig
   >();
   const DataSourceMenuSelectableComponent = dataSourceManagement.ui?.getDataSourceMenu<
     DataSourceSelectableConfig
   >();
-
-  const onDataSourceSelected = useCallback(
-    (sources: DataSourceOption[]) => {
-      if (
-        sources[0] &&
-        (activeOption.id !== sources[0].id || activeOption.label !== sources[0].label)
-      ) {
-        setActiveOption(sources[0]);
-      }
-    },
-    [setActiveOption, activeOption]
-  );
 
   return (
     <Switch>
@@ -69,7 +59,7 @@ export const DataSourceMenuWrapper: React.FC<DataSourceMenuWrapperProps> = ({
             <DataSourceMenuViewComponent
               componentConfig={{
                 fullWidth: false,
-                activeOption: [activeOption],
+                activeOption: [dataSource],
               }}
               componentType="DataSourceView"
               setMenuMountPoint={setHeaderActionMenu}
@@ -90,7 +80,6 @@ export const DataSourceMenuWrapper: React.FC<DataSourceMenuWrapperProps> = ({
           ROUTES.RULES_CREATE,
           ROUTES.RULES_IMPORT,
           ROUTES.RULES_DUPLICATE,
-          ROUTES.DETECTORS_CREATE,
           ROUTES.LOG_TYPES_CREATE,
           ROUTES.CORRELATION_RULE_CREATE,
         ]}
@@ -101,9 +90,36 @@ export const DataSourceMenuWrapper: React.FC<DataSourceMenuWrapperProps> = ({
               setMenuMountPoint={setHeaderActionMenu}
               componentConfig={{
                 fullWidth: false,
-                activeOption: [activeOption],
+                activeOption: [dataSource],
                 notifications: core.notifications,
-                onSelectedDataSources: onDataSourceSelected,
+                onSelectedDataSources: setDataSource,
+                savedObjects: core.savedObjects.client,
+              }}
+            />
+          );
+        }}
+      />
+      <Route
+        path={[ROUTES.DETECTORS_CREATE]}
+        render={() => {
+          return dataSourceMenuReadOnly ? (
+            <DataSourceMenuViewComponent
+              componentConfig={{
+                fullWidth: false,
+                activeOption: [dataSource],
+              }}
+              componentType="DataSourceView"
+              setMenuMountPoint={setHeaderActionMenu}
+            />
+          ) : (
+            <DataSourceMenuSelectableComponent
+              componentType="DataSourceSelectable"
+              setMenuMountPoint={setHeaderActionMenu}
+              componentConfig={{
+                fullWidth: false,
+                activeOption: [dataSource],
+                notifications: core.notifications,
+                onSelectedDataSources: setDataSource,
                 savedObjects: core.savedObjects.client,
               }}
             />

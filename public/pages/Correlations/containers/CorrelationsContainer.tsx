@@ -2,7 +2,12 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
-import { CorrelationFinding, CorrelationGraphData, DateTimeFilter } from '../../../../types';
+import {
+  CorrelationFinding,
+  CorrelationGraphData,
+  DataSourceProps,
+  DateTimeFilter,
+} from '../../../../types';
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
@@ -13,7 +18,6 @@ import {
   getSeverityColor,
   getSeverityLabel,
   graphRenderOptions,
-  getNodeSize,
 } from '../utils/constants';
 import {
   EuiIcon,
@@ -55,10 +59,11 @@ import { getLogTypeLabel } from '../../LogTypes/utils/helpers';
 
 interface CorrelationsProps
   extends RouteComponentProps<
-    any,
-    any,
-    { finding: FindingItemType; correlatedFindings: CorrelationFinding[] }
-  > {
+      any,
+      any,
+      { finding: FindingItemType; correlatedFindings: CorrelationFinding[] }
+    >,
+    DataSourceProps {
   setDateTimeFilter?: Function;
   dateTimeFilter?: DateTimeFilter;
   onMount: () => void;
@@ -123,7 +128,9 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     prevState: Readonly<CorrelationsState>,
     snapshot?: any
   ): void {
-    if (
+    if (prevProps.dataSource !== this.props.dataSource) {
+      this.onRefresh();
+    } else if (
       prevState.logTypeFilterOptions !== this.state.logTypeFilterOptions ||
       prevState.severityFilterOptions !== this.state.severityFilterOptions ||
       prevProps.dateTimeFilter !== this.props.dateTimeFilter

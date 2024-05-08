@@ -4,8 +4,8 @@
  */
 
 import { EuiInMemoryTable } from '@elastic/eui';
+import { TableWidgetItem, TableWidgetProps } from '../../../../../types';
 import React from 'react';
-import { TableWidgetItem, TableWidgetProps } from '../../models/types';
 
 export class TableWidget<T extends TableWidgetItem> extends React.Component<TableWidgetProps<T>> {
   render() {

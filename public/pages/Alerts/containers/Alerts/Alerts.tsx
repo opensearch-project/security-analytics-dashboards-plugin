@@ -40,7 +40,6 @@ import {
 import { CoreServicesContext } from '../../../../components/core_services';
 import AlertsService from '../../../../services/AlertsService';
 import DetectorService from '../../../../services/DetectorService';
-import { AlertItem } from '../../../../../server/models/interfaces';
 import { AlertFlyout } from '../../components/AlertFlyout/AlertFlyout';
 import { FindingsService, IndexPatternsService, OpenSearchService } from '../../../../services';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
@@ -55,13 +54,12 @@ import {
 } from '../../../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { match, RouteComponentProps, withRouter } from 'react-router-dom';
-import { DateTimeFilter } from '../../../Overview/models/interfaces';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
-import { Detector } from '../../../../../types';
+import { AlertItem, DataSourceProps, DateTimeFilter, Detector } from '../../../../../types';
 import { DurationRange } from '@elastic/eui/src/components/date_picker/types';
 import { DataStore } from '../../../../store/DataStore';
 
-export interface AlertsProps extends RouteComponentProps {
+export interface AlertsProps extends RouteComponentProps, DataSourceProps {
   alertService: AlertsService;
   detectorService: DetectorService;
   findingService: FindingsService;
@@ -134,7 +132,9 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       prevState.alerts !== this.state.alerts ||
       prevState.alerts.length !== this.state.alerts.length;
 
-    if (alertsChanged) {
+    if (this.props.dataSource !== prevProps.dataSource) {
+      this.onRefresh();
+    } else if (alertsChanged) {
       this.filterAlerts();
     } else if (this.state.groupBy !== prevState.groupBy) {
       renderVisualization(this.generateVisualizationSpec(this.state.filteredAlerts), 'alerts-view');

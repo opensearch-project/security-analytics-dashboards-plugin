@@ -8,7 +8,7 @@ import { EuiButton, EuiInMemoryTable } from '@elastic/eui';
 import { ContentPanel } from '../../../components/ContentPanel';
 import { CoreServicesContext } from '../../../components/core_services';
 import { BREADCRUMBS, ROUTES } from '../../../utils/constants';
-import { LogType } from '../../../../types';
+import { DataSourceProps, LogType } from '../../../../types';
 import { DataStore } from '../../../store/DataStore';
 import { getLogTypesTableColumns, getLogTypesTableSearchConfig } from '../utils/helpers';
 import { RouteComponentProps } from 'react-router-dom';
@@ -17,11 +17,11 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { successNotificationToast } from '../../../utils/helpers';
 import { DeleteLogTypeModal } from '../components/DeleteLogTypeModal';
 
-export interface LogTypesProps extends RouteComponentProps {
+export interface LogTypesProps extends RouteComponentProps, DataSourceProps {
   notifications: NotificationsStart;
 }
 
-export const LogTypes: React.FC<LogTypesProps> = ({ history, notifications }) => {
+export const LogTypes: React.FC<LogTypesProps> = ({ history, notifications, dataSource }) => {
   const context = useContext(CoreServicesContext);
   const [logTypes, setLogTypes] = useState<LogType[]>([]);
   const [logTypeToDelete, setLogTypeItemToDelete] = useState<LogType | undefined>(undefined);
@@ -47,9 +47,11 @@ export const LogTypes: React.FC<LogTypesProps> = ({ history, notifications }) =>
       BREADCRUMBS.DETECTORS,
       BREADCRUMBS.LOG_TYPES,
     ]);
-
-    getLogTypes();
   }, []);
+
+  useEffect(() => {
+    getLogTypes();
+  }, [dataSource]);
 
   const showLogTypeDetails = useCallback((id: string) => {
     history.push(`${ROUTES.LOG_TYPES}/${id}`);

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Formik, Form, FormikErrors } from 'formik';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import {
@@ -42,6 +42,7 @@ import { useCallback } from 'react';
 import { getLogTypeOptions } from '../../../../utils/helpers';
 import { getLogTypeLabel } from '../../../LogTypes/utils/helpers';
 import { getSeverityLabel } from '../../../Correlations/utils/constants';
+import { DataSourceContext } from '../../../../services/DataSourceContext';
 
 export interface VisualRuleEditorProps {
   initialValue: RuleEditorFormModel;
@@ -77,7 +78,9 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 }) => {
   const [selectedEditorType, setSelectedEditorType] = useState('visual');
   const [isDetectionInvalid, setIsDetectionInvalid] = useState(false);
+  const resetLogType = useRef(false);
   const [logTypeOptions, setLogTypeOptions] = useState<any[]>([]);
+  const dataSourceContext = useContext(DataSourceContext);
 
   const onEditorTypeChange = (optionId: string) => {
     setSelectedEditorType(optionId);
@@ -87,6 +90,12 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
     const logTypeOptions = await getLogTypeOptions();
     setLogTypeOptions(logTypeOptions);
   }, []);
+
+  useEffect(() => {
+    refreshLogTypeOptions();
+    resetLogType.current = true;
+    console.log('refresh log types');
+  }, [dataSourceContext.dataSource]);
 
   const validateTags = (fields: string[]) => {
     let isValid = true;
@@ -165,396 +174,407 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
         submit(values);
       }}
     >
-      {(props) => (
-        <Form>
-          <ContentPanel title={title} className={'rule-editor-form'}>
-            <EuiButtonGroup
-              data-test-subj="change-editor-type"
-              legend="This is editor type selector"
-              options={editorTypes}
-              idSelected={selectedEditorType}
-              onChange={(id) => onEditorTypeChange(id)}
-            />
+      {(props) => {
+        if (resetLogType.current) {
+          resetLogType.current = false;
+          props.setFieldValue('logType', '');
+        }
 
-            <EuiSpacer size="xl" />
+        return (
+          <Form>
+            <ContentPanel title={title} className={'rule-editor-form'}>
+              <EuiButtonGroup
+                data-test-subj="change-editor-type"
+                legend="This is editor type selector"
+                options={editorTypes}
+                idSelected={selectedEditorType}
+                onChange={(id) => onEditorTypeChange(id)}
+              />
 
-            {selectedEditorType === 'yaml' && (
-              <YamlRuleEditorComponent
-                rule={mapFormToRule(props.values)}
-                isInvalid={Object.keys(props.errors).length > 0}
-                errors={Object.keys(props.errors).map(
-                  (key) => props.errors[key as keyof RuleEditorFormModel] as string
-                )}
-                change={(e) => {
-                  const formState = mapRuleToForm(e);
-                  props.setValues(formState);
-                }}
-              ></YamlRuleEditorComponent>
-            )}
-            <FormSubmissionErrorToastNotification notifications={notifications} />
-            {selectedEditorType === 'visual' && (
-              <>
-                <EuiTitle>
-                  <EuiText>
-                    <h2>Rule overview</h2>
-                  </EuiText>
-                </EuiTitle>
+              <EuiSpacer size="xl" />
 
-                <EuiSpacer />
-
-                <EuiFormRow
-                  label={
-                    <EuiText size={'s'}>
-                      <strong>Rule name</strong>
+              {selectedEditorType === 'yaml' && (
+                <YamlRuleEditorComponent
+                  rule={mapFormToRule(props.values)}
+                  isInvalid={Object.keys(props.errors).length > 0}
+                  errors={Object.keys(props.errors).map(
+                    (key) => props.errors[key as keyof RuleEditorFormModel] as string
+                  )}
+                  change={(e) => {
+                    const formState = mapRuleToForm(e);
+                    props.setValues(formState);
+                  }}
+                ></YamlRuleEditorComponent>
+              )}
+              <FormSubmissionErrorToastNotification notifications={notifications} />
+              {selectedEditorType === 'visual' && (
+                <>
+                  <EuiTitle>
+                    <EuiText>
+                      <h2>Rule overview</h2>
                     </EuiText>
-                  }
-                  isInvalid={(validateOnMount || props.touched.name) && !!props.errors?.name}
-                  error={props.errors.name}
-                  helpText={detectionRuleNameError}
-                >
-                  <EuiFieldText
+                  </EuiTitle>
+
+                  <EuiSpacer />
+
+                  <EuiFormRow
+                    label={
+                      <EuiText size={'s'}>
+                        <strong>Rule name</strong>
+                      </EuiText>
+                    }
                     isInvalid={(validateOnMount || props.touched.name) && !!props.errors?.name}
-                    placeholder="My custom rule"
-                    data-test-subj={'rule_name_field'}
-                    onChange={(e) => {
-                      props.handleChange('name')(e);
-                    }}
-                    onBlur={props.handleBlur('name')}
-                    value={props.values.name}
-                  />
-                </EuiFormRow>
+                    error={props.errors.name}
+                    helpText={detectionRuleNameError}
+                  >
+                    <EuiFieldText
+                      isInvalid={(validateOnMount || props.touched.name) && !!props.errors?.name}
+                      placeholder="My custom rule"
+                      data-test-subj={'rule_name_field'}
+                      onChange={(e) => {
+                        props.handleChange('name')(e);
+                      }}
+                      onBlur={props.handleBlur('name')}
+                      value={props.values.name}
+                    />
+                  </EuiFormRow>
 
-                <EuiSpacer size={'m'} />
+                  <EuiSpacer size={'m'} />
 
-                <EuiFormRow
-                  label={
-                    <EuiText size={'s'}>
-                      <strong>Description </strong>
-                      <i>- optional</i>
-                    </EuiText>
-                  }
-                  isInvalid={
-                    (validateOnMount || props.touched.description) && !!props.errors?.description
-                  }
-                  error={props.errors.description}
-                >
-                  <EuiFieldText
-                    data-test-subj={'rule_description_field'}
-                    onChange={(e) => {
-                      props.handleChange('description')(e.target.value);
-                    }}
-                    onBlur={props.handleBlur('description')}
-                    value={props.values.description}
-                    placeholder={'Detects ...'}
-                  />
-                </EuiFormRow>
+                  <EuiFormRow
+                    label={
+                      <EuiText size={'s'}>
+                        <strong>Description </strong>
+                        <i>- optional</i>
+                      </EuiText>
+                    }
+                    isInvalid={
+                      (validateOnMount || props.touched.description) && !!props.errors?.description
+                    }
+                    error={props.errors.description}
+                  >
+                    <EuiFieldText
+                      data-test-subj={'rule_description_field'}
+                      onChange={(e) => {
+                        props.handleChange('description')(e.target.value);
+                      }}
+                      onBlur={props.handleBlur('description')}
+                      value={props.values.description}
+                      placeholder={'Detects ...'}
+                    />
+                  </EuiFormRow>
 
-                <EuiSpacer size={'m'} />
+                  <EuiSpacer size={'m'} />
 
-                <EuiFormRow
-                  label={
-                    <EuiText size={'s'}>
-                      <strong>Author</strong>
-                    </EuiText>
-                  }
-                  helpText="Combine multiple authors separated with a comma"
-                  isInvalid={(validateOnMount || props.touched.author) && !!props.errors?.author}
-                  error={props.errors.author}
-                >
-                  <EuiFieldText
+                  <EuiFormRow
+                    label={
+                      <EuiText size={'s'}>
+                        <strong>Author</strong>
+                      </EuiText>
+                    }
+                    helpText="Combine multiple authors separated with a comma"
                     isInvalid={(validateOnMount || props.touched.author) && !!props.errors?.author}
-                    placeholder="Enter author name"
-                    data-test-subj={'rule_author_field'}
-                    onChange={(e) => {
-                      props.handleChange('author')(e);
-                    }}
-                    onBlur={props.handleBlur('author')}
-                    value={props.values.author}
-                  />
-                </EuiFormRow>
-
-                <EuiSpacer size={'xl'} />
-
-                <EuiTitle>
-                  <EuiText>
-                    <h2>Details</h2>
-                  </EuiText>
-                </EuiTitle>
-
-                <EuiSpacer />
-
-                <EuiFlexGroup alignItems="flexStart">
-                  <EuiFlexItem style={{ maxWidth: 400 }}>
-                    <EuiFormRow
-                      label={
-                        <EuiText size={'s'}>
-                          <strong>Log type</strong>
-                        </EuiText>
-                      }
+                    error={props.errors.author}
+                  >
+                    <EuiFieldText
                       isInvalid={
-                        (validateOnMount || props.touched.logType) && !!props.errors?.logType
+                        (validateOnMount || props.touched.author) && !!props.errors?.author
                       }
-                      error={props.errors.logType}
-                    >
-                      <EuiComboBox
+                      placeholder="Enter author name"
+                      data-test-subj={'rule_author_field'}
+                      onChange={(e) => {
+                        props.handleChange('author')(e);
+                      }}
+                      onBlur={props.handleBlur('author')}
+                      value={props.values.author}
+                    />
+                  </EuiFormRow>
+
+                  <EuiSpacer size={'xl'} />
+
+                  <EuiTitle>
+                    <EuiText>
+                      <h2>Details</h2>
+                    </EuiText>
+                  </EuiTitle>
+
+                  <EuiSpacer />
+
+                  <EuiFlexGroup alignItems="flexStart">
+                    <EuiFlexItem style={{ maxWidth: 400 }}>
+                      <EuiFormRow
+                        label={
+                          <EuiText size={'s'}>
+                            <strong>Log type</strong>
+                          </EuiText>
+                        }
                         isInvalid={
                           (validateOnMount || props.touched.logType) && !!props.errors?.logType
                         }
-                        placeholder="Select a log type"
-                        data-test-subj={'rule_type_dropdown'}
-                        options={logTypeOptions}
-                        singleSelection={{ asPlainText: true }}
-                        onChange={(e) => {
-                          props.handleChange('logType')(e[0]?.value ? e[0].value : '');
-                        }}
-                        onFocus={refreshLogTypeOptions}
-                        onBlur={props.handleBlur('logType')}
-                        selectedOptions={
-                          props.values.logType
-                            ? [
-                                {
-                                  value: props.values.logType,
-                                  label: getLogTypeLabel(props.values.logType),
-                                },
-                              ]
-                            : []
-                        }
-                      />
-                    </EuiFormRow>
-                  </EuiFlexItem>
-                  <EuiFlexItem grow={false} style={{ marginTop: 36 }}>
-                    <EuiButton
-                      href={'opensearch_security_analytics_dashboards#/log-types'}
-                      target="_blank"
-                    >
-                      Manage <EuiIcon type={'popout'} />
-                    </EuiButton>
-                  </EuiFlexItem>
-                </EuiFlexGroup>
+                        error={props.errors.logType}
+                      >
+                        <EuiComboBox
+                          isInvalid={
+                            (validateOnMount || props.touched.logType) && !!props.errors?.logType
+                          }
+                          placeholder="Select a log type"
+                          data-test-subj={'rule_type_dropdown'}
+                          options={logTypeOptions}
+                          singleSelection={{ asPlainText: true }}
+                          onChange={(e) => {
+                            props.handleChange('logType')(e[0]?.value ? e[0].value : '');
+                          }}
+                          onFocus={refreshLogTypeOptions}
+                          onBlur={props.handleBlur('logType')}
+                          selectedOptions={
+                            props.values.logType
+                              ? [
+                                  {
+                                    value: props.values.logType,
+                                    label: getLogTypeLabel(props.values.logType),
+                                  },
+                                ]
+                              : []
+                          }
+                        />
+                      </EuiFormRow>
+                    </EuiFlexItem>
+                    <EuiFlexItem grow={false} style={{ marginTop: 36 }}>
+                      <EuiButton
+                        href={'opensearch_security_analytics_dashboards#/log-types'}
+                        target="_blank"
+                      >
+                        Manage <EuiIcon type={'popout'} />
+                      </EuiButton>
+                    </EuiFlexItem>
+                  </EuiFlexGroup>
 
-                <EuiSpacer />
+                  <EuiSpacer />
 
-                <EuiFormRow
-                  label={
-                    <EuiText size={'s'}>
-                      <strong>Rule level (severity)</strong>
-                    </EuiText>
-                  }
-                  isInvalid={(validateOnMount || props.touched.level) && !!props.errors?.level}
-                  error={props.errors.level}
-                >
-                  <EuiComboBox
+                  <EuiFormRow
+                    label={
+                      <EuiText size={'s'}>
+                        <strong>Rule level (severity)</strong>
+                      </EuiText>
+                    }
                     isInvalid={(validateOnMount || props.touched.level) && !!props.errors?.level}
-                    placeholder="Select a rule level"
-                    data-test-subj={'rule_severity_dropdown'}
-                    options={ruleSeverity.map(({ name, value }) => ({ label: name, value }))}
-                    singleSelection={{ asPlainText: true }}
-                    onChange={(e) => {
-                      props.handleChange('level')(e[0]?.value ? e[0].value : '');
-                    }}
-                    onBlur={props.handleBlur('level')}
-                    selectedOptions={
-                      props.values.level
-                        ? [
-                            {
-                              value: props.values.level,
-                              label: getSeverityLabel(props.values.level),
-                            },
-                          ]
-                        : []
-                    }
-                  />
-                </EuiFormRow>
-
-                <EuiSpacer />
-
-                <EuiFormRow
-                  label={
-                    <EuiText size={'s'}>
-                      <strong>Rule Status</strong>
-                    </EuiText>
-                  }
-                  isInvalid={(validateOnMount || props.touched.status) && !!props.errors?.status}
-                  error={props.errors.status}
-                >
-                  <EuiComboBox
-                    isInvalid={(validateOnMount || props.touched.status) && !!props.errors?.status}
-                    placeholder="Select a rule status"
-                    data-test-subj={'rule_status_dropdown'}
-                    options={ruleStatus.map((type: string) => ({ value: type, label: type }))}
-                    singleSelection={{ asPlainText: true }}
-                    onChange={(e) => {
-                      props.handleChange('status')(e[0]?.value ? e[0].value : '');
-                    }}
-                    onBlur={props.handleBlur('status')}
-                    selectedOptions={
-                      props.values.status
-                        ? [{ value: props.values.status, label: props.values.status }]
-                        : []
-                    }
-                  />
-                </EuiFormRow>
-
-                <EuiSpacer size={'xxl'} />
-
-                <EuiTitle>
-                  <EuiText>
-                    <h2>Detection</h2>
-                  </EuiText>
-                </EuiTitle>
-                <EuiText size="s">
-                  <p>Define the detection criteria for the rule</p>
-                </EuiText>
-
-                <EuiSpacer />
-
-                <DetectionVisualEditor
-                  isInvalid={(validateOnMount || props.touched.detection) && isDetectionInvalid}
-                  detectionYml={props.values.detection}
-                  goToYamlEditor={setSelectedEditorType}
-                  setIsDetectionInvalid={(isInvalid: boolean) => {
-                    if (isInvalid) {
-                      props.errors.detection = 'Invalid detection entries';
-                    } else {
-                      delete props.errors.detection;
-                    }
-
-                    setIsDetectionInvalid(isInvalid);
-                  }}
-                  onChange={(detection: string) => {
-                    props.handleChange('detection')(detection);
-                  }}
-                />
-
-                <EuiSpacer size={'xl'} />
-
-                <EuiPanel style={{ maxWidth: 1000 }}>
-                  <EuiAccordion
-                    id={'additional-details'}
-                    initialIsOpen={true}
-                    buttonContent={
-                      <>
-                        Additional details <i>- optional</i>
-                      </>
-                    }
+                    error={props.errors.level}
                   >
-                    <div className={'rule-editor-form-additional-details-panel-body'}>
-                      <EuiSpacer />
+                    <EuiComboBox
+                      isInvalid={(validateOnMount || props.touched.level) && !!props.errors?.level}
+                      placeholder="Select a rule level"
+                      data-test-subj={'rule_severity_dropdown'}
+                      options={ruleSeverity.map(({ name, value }) => ({ label: name, value }))}
+                      singleSelection={{ asPlainText: true }}
+                      onChange={(e) => {
+                        props.handleChange('level')(e[0]?.value ? e[0].value : '');
+                      }}
+                      onBlur={props.handleBlur('level')}
+                      selectedOptions={
+                        props.values.level
+                          ? [
+                              {
+                                value: props.values.level,
+                                label: getSeverityLabel(props.values.level),
+                              },
+                            ]
+                          : []
+                      }
+                    />
+                  </EuiFormRow>
 
-                      <FieldTextArray
-                        name="tags"
-                        placeholder={'tag'}
-                        label={
-                          <>
-                            <EuiText size={'m'}>
-                              <strong>Tags </strong>
-                              <i>- optional</i>
-                            </EuiText>
+                  <EuiSpacer />
 
-                            <EuiSpacer size={'m'} />
+                  <EuiFormRow
+                    label={
+                      <EuiText size={'s'}>
+                        <strong>Rule Status</strong>
+                      </EuiText>
+                    }
+                    isInvalid={(validateOnMount || props.touched.status) && !!props.errors?.status}
+                    error={props.errors.status}
+                  >
+                    <EuiComboBox
+                      isInvalid={
+                        (validateOnMount || props.touched.status) && !!props.errors?.status
+                      }
+                      placeholder="Select a rule status"
+                      data-test-subj={'rule_status_dropdown'}
+                      options={ruleStatus.map((type: string) => ({ value: type, label: type }))}
+                      singleSelection={{ asPlainText: true }}
+                      onChange={(e) => {
+                        props.handleChange('status')(e[0]?.value ? e[0].value : '');
+                      }}
+                      onBlur={props.handleBlur('status')}
+                      selectedOptions={
+                        props.values.status
+                          ? [{ value: props.values.status, label: props.values.status }]
+                          : []
+                      }
+                    />
+                  </EuiFormRow>
 
-                            <EuiText size={'xs'}>
-                              <strong>Tag</strong>
-                            </EuiText>
-                          </>
-                        }
-                        addButtonName="Add tag"
-                        fields={props.values.tags}
-                        error={props.errors.tags}
-                        isInvalid={(validateOnMount || props.touched.tags) && !!props.errors.tags}
-                        onChange={(tags) => {
-                          props.touched.tags = true;
-                          props.setFieldValue('tags', tags);
-                        }}
-                        data-test-subj={'rule_tags_field'}
-                      />
+                  <EuiSpacer size={'xxl'} />
 
-                      <FieldTextArray
-                        name="references"
-                        placeholder={'http://'}
-                        label={
-                          <>
-                            <EuiText size={'m'}>
-                              <strong>References </strong>
-                              <i>- optional</i>
-                            </EuiText>
+                  <EuiTitle>
+                    <EuiText>
+                      <h2>Detection</h2>
+                    </EuiText>
+                  </EuiTitle>
+                  <EuiText size="s">
+                    <p>Define the detection criteria for the rule</p>
+                  </EuiText>
 
-                            <EuiSpacer size={'m'} />
+                  <EuiSpacer />
 
-                            <EuiText size={'xs'}>
-                              <strong>URL</strong>
-                            </EuiText>
-                          </>
-                        }
-                        addButtonName="Add URL"
-                        fields={props.values.references}
-                        error={props.errors.references}
-                        isInvalid={
-                          (validateOnMount || props.touched.references) &&
-                          !!props.errors?.references
-                        }
-                        onChange={(references) => {
-                          props.touched.references = true;
-                          props.setFieldValue('references', references);
-                        }}
-                        data-test-subj={'rule_references_field'}
-                      />
+                  <DetectionVisualEditor
+                    isInvalid={(validateOnMount || props.touched.detection) && isDetectionInvalid}
+                    detectionYml={props.values.detection}
+                    goToYamlEditor={setSelectedEditorType}
+                    setIsDetectionInvalid={(isInvalid: boolean) => {
+                      if (isInvalid) {
+                        props.errors.detection = 'Invalid detection entries';
+                      } else {
+                        delete props.errors.detection;
+                      }
 
-                      <FieldTextArray
-                        name="false_positives"
-                        placeholder={'format?'}
-                        label={
-                          <>
-                            <EuiText size={'m'}>
-                              <strong>False positive cases </strong>
-                              <i>- optional</i>
-                            </EuiText>
+                      setIsDetectionInvalid(isInvalid);
+                    }}
+                    onChange={(detection: string) => {
+                      props.handleChange('detection')(detection);
+                    }}
+                  />
 
-                            <EuiSpacer size={'m'} />
+                  <EuiSpacer size={'xl'} />
 
-                            <EuiText size={'xs'}>
-                              <strong>Description</strong>
-                            </EuiText>
-                          </>
-                        }
-                        addButtonName="Add false positive"
-                        fields={props.values.falsePositives}
-                        error={props.errors.falsePositives}
-                        isInvalid={
-                          (validateOnMount || props.touched.falsePositives) &&
-                          !!props.errors?.falsePositives
-                        }
-                        onChange={(falsePositives) => {
-                          props.touched.falsePositives = true;
-                          props.setFieldValue('falsePositives', falsePositives);
-                        }}
-                        data-test-subj={'rule_falsePositives_field'}
-                      />
-                    </div>
-                  </EuiAccordion>
-                </EuiPanel>
-              </>
-            )}
-          </ContentPanel>
+                  <EuiPanel style={{ maxWidth: 1000 }}>
+                    <EuiAccordion
+                      id={'additional-details'}
+                      initialIsOpen={true}
+                      buttonContent={
+                        <>
+                          Additional details <i>- optional</i>
+                        </>
+                      }
+                    >
+                      <div className={'rule-editor-form-additional-details-panel-body'}>
+                        <EuiSpacer />
 
-          <EuiSpacer />
+                        <FieldTextArray
+                          name="tags"
+                          placeholder={'tag'}
+                          label={
+                            <>
+                              <EuiText size={'m'}>
+                                <strong>Tags </strong>
+                                <i>- optional</i>
+                              </EuiText>
 
-          <EuiFlexGroup justifyContent="flexEnd">
-            <EuiFlexItem grow={false}>
-              <EuiButton onClick={cancel}>Cancel</EuiButton>
-            </EuiFlexItem>
-            <EuiFlexItem grow={false}>
-              <EuiButton
-                onClick={() => props.handleSubmit()}
-                data-test-subj={'submit_rule_form_button'}
-                fill
-              >
-                {mode === 'create' ? 'Create detection rule' : 'Save changes'}
-              </EuiButton>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-        </Form>
-      )}
+                              <EuiSpacer size={'m'} />
+
+                              <EuiText size={'xs'}>
+                                <strong>Tag</strong>
+                              </EuiText>
+                            </>
+                          }
+                          addButtonName="Add tag"
+                          fields={props.values.tags}
+                          error={props.errors.tags}
+                          isInvalid={(validateOnMount || props.touched.tags) && !!props.errors.tags}
+                          onChange={(tags) => {
+                            props.touched.tags = true;
+                            props.setFieldValue('tags', tags);
+                          }}
+                          data-test-subj={'rule_tags_field'}
+                        />
+
+                        <FieldTextArray
+                          name="references"
+                          placeholder={'http://'}
+                          label={
+                            <>
+                              <EuiText size={'m'}>
+                                <strong>References </strong>
+                                <i>- optional</i>
+                              </EuiText>
+
+                              <EuiSpacer size={'m'} />
+
+                              <EuiText size={'xs'}>
+                                <strong>URL</strong>
+                              </EuiText>
+                            </>
+                          }
+                          addButtonName="Add URL"
+                          fields={props.values.references}
+                          error={props.errors.references}
+                          isInvalid={
+                            (validateOnMount || props.touched.references) &&
+                            !!props.errors?.references
+                          }
+                          onChange={(references) => {
+                            props.touched.references = true;
+                            props.setFieldValue('references', references);
+                          }}
+                          data-test-subj={'rule_references_field'}
+                        />
+
+                        <FieldTextArray
+                          name="false_positives"
+                          placeholder={'format?'}
+                          label={
+                            <>
+                              <EuiText size={'m'}>
+                                <strong>False positive cases </strong>
+                                <i>- optional</i>
+                              </EuiText>
+
+                              <EuiSpacer size={'m'} />
+
+                              <EuiText size={'xs'}>
+                                <strong>Description</strong>
+                              </EuiText>
+                            </>
+                          }
+                          addButtonName="Add false positive"
+                          fields={props.values.falsePositives}
+                          error={props.errors.falsePositives}
+                          isInvalid={
+                            (validateOnMount || props.touched.falsePositives) &&
+                            !!props.errors?.falsePositives
+                          }
+                          onChange={(falsePositives) => {
+                            props.touched.falsePositives = true;
+                            props.setFieldValue('falsePositives', falsePositives);
+                          }}
+                          data-test-subj={'rule_falsePositives_field'}
+                        />
+                      </div>
+                    </EuiAccordion>
+                  </EuiPanel>
+                </>
+              )}
+            </ContentPanel>
+
+            <EuiSpacer />
+
+            <EuiFlexGroup justifyContent="flexEnd">
+              <EuiFlexItem grow={false}>
+                <EuiButton onClick={cancel}>Cancel</EuiButton>
+              </EuiFlexItem>
+              <EuiFlexItem grow={false}>
+                <EuiButton
+                  onClick={() => props.handleSubmit()}
+                  data-test-subj={'submit_rule_form_button'}
+                  fill
+                >
+                  {mode === 'create' ? 'Create detection rule' : 'Save changes'}
+                </EuiButton>
+              </EuiFlexItem>
+            </EuiFlexGroup>
+          </Form>
+        );
+      }}
     </Formik>
   );
 };

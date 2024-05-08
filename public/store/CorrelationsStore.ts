@@ -39,21 +39,6 @@ export class CorrelationsStore implements ICorrelationsStore {
    */
   readonly notifications: NotificationsStart;
 
-  /**
-   * Keeps rule's data cached
-   *
-   * @property {ICorrelationsCache} cache
-   */
-  private cache: ICorrelationsCache = {};
-
-  /**
-   * Invalidates all rules data
-   */
-  private invalidateCache = () => {
-    this.cache = {};
-    return this;
-  };
-
   constructor(
     service: CorrelationService,
     detectorsService: DetectorsService,
@@ -68,7 +53,7 @@ export class CorrelationsStore implements ICorrelationsStore {
   }
 
   public async createCorrelationRule(correlationRule: CorrelationRule): Promise<boolean> {
-    const response = await this.invalidateCache().service.createCorrelationRule({
+    const response = await this.service.createCorrelationRule({
       name: correlationRule.name,
       time_window: correlationRule.time_window,
       correlate: correlationRule.queries?.map((query) => {
@@ -103,33 +88,30 @@ export class CorrelationsStore implements ICorrelationsStore {
   }
 
   public async updateCorrelationRule(correlationRule: CorrelationRule): Promise<boolean> {
-    const response = await this.invalidateCache().service.updateCorrelationRule(
-      correlationRule.id,
-      {
-        name: correlationRule.name,
-        time_window: correlationRule.time_window,
-        correlate: correlationRule.queries?.map((query) => {
-          const queryString = query.conditions
-            .map((condition) => `${condition.name}:${condition.value}`)
-            .join(' AND ');
+    const response = await this.service.updateCorrelationRule(correlationRule.id, {
+      name: correlationRule.name,
+      time_window: correlationRule.time_window,
+      correlate: correlationRule.queries?.map((query) => {
+        const queryString = query.conditions
+          .map((condition) => `${condition.name}:${condition.value}`)
+          .join(' AND ');
 
-          const correlationInput: any = {
-            index: query.index,
-            category: query.logType,
-          };
+        const correlationInput: any = {
+          index: query.index,
+          category: query.logType,
+        };
 
-          if (queryString) {
-            correlationInput['query'] = queryString;
-          }
+        if (queryString) {
+          correlationInput['query'] = queryString;
+        }
 
-          if (query.field) {
-            correlationInput['field'] = query.field;
-          }
+        if (query.field) {
+          correlationInput['field'] = query.field;
+        }
 
-          return correlationInput;
-        }),
-      }
-    );
+        return correlationInput;
+      }),
+    });
 
     if (!response.ok) {
       errorNotificationToast(this.notifications, 'update', 'correlation rule', response.error);
@@ -170,16 +152,10 @@ export class CorrelationsStore implements ICorrelationsStore {
   }
 
   public async getCorrelationRules(index?: string): Promise<CorrelationRule[]> {
-    const cacheKey: string = `getCorrelationRules:${JSON.stringify(arguments)}`;
-
-    if (this.cache[cacheKey]) {
-      return this.cache[cacheKey];
-    }
-
     const response = await this.service.getCorrelationRules(index);
 
     if (response?.ok) {
-      return (this.cache[cacheKey] = response.response.hits.hits.map((hit) => {
+      return response.response.hits.hits.map((hit) => {
         const queries: CorrelationRuleQuery[] = hit._source.correlate.map((queryData) => {
           return {
             index: queryData.index,
@@ -195,14 +171,14 @@ export class CorrelationsStore implements ICorrelationsStore {
           time_window: hit._source.time_window || 300000,
           queries,
         };
-      }));
+      });
     }
 
     return [];
   }
 
   public async deleteCorrelationRule(ruleId: string): Promise<boolean> {
-    const response = await this.invalidateCache().service.deleteCorrelationRule(ruleId);
+    const response = await this.service.deleteCorrelationRule(ruleId);
 
     if (!response.ok) {
       errorNotificationToast(this.notifications, 'delete', 'correlation rule', response.error);

@@ -13,6 +13,7 @@ import {
 } from '../../server/models/interfaces';
 import { API } from '../../server/utils/constants';
 import { Detector, GetDetectorResponse, IDetectorService } from '../../types';
+import { dataSourceInfo } from './utils/constants';
 
 export default class DetectorsService implements IDetectorService {
   constructor(private httpClient: HttpSetup) {}
@@ -21,6 +22,9 @@ export default class DetectorsService implements IDetectorService {
     const url = `..${API.DETECTORS_BASE}`;
     const response = (await this.httpClient.post(url, {
       body: JSON.stringify(detector),
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+      },
     })) as ServerResponse<CreateDetectorResponse>;
 
     return response;
@@ -34,6 +38,9 @@ export default class DetectorsService implements IDetectorService {
           match_all: {},
         },
       }),
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+      },
     })) as ServerResponse<SearchDetectorsResponse>;
 
     return res;
@@ -41,7 +48,11 @@ export default class DetectorsService implements IDetectorService {
 
   getDetectorWithId = async (id: string): Promise<ServerResponse<GetDetectorResponse>> => {
     const url = `..${API.DETECTORS_BASE}/${id}`;
-    const res = (await this.httpClient.get(url)) as ServerResponse<GetDetectorResponse>;
+    const res = (await this.httpClient.get(url, {
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+      },
+    })) as ServerResponse<GetDetectorResponse>;
 
     return res;
   };
@@ -53,6 +64,9 @@ export default class DetectorsService implements IDetectorService {
     const url = `..${API.DETECTORS_BASE}/${detectorId}`;
     const response = (await this.httpClient.put(url, {
       body: JSON.stringify(detector),
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+      },
     })) as ServerResponse<UpdateDetectorResponse>;
 
     return response;
@@ -60,7 +74,11 @@ export default class DetectorsService implements IDetectorService {
 
   deleteDetector = async (detectorId: string): Promise<ServerResponse<DeleteDetectorResponse>> => {
     const url = `..${API.DETECTORS_BASE}/${detectorId}`;
-    const response = (await this.httpClient.delete(url)) as ServerResponse<DeleteDetectorResponse>;
+    const response = (await this.httpClient.delete(url, {
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+      },
+    })) as ServerResponse<DeleteDetectorResponse>;
 
     return response;
   };
