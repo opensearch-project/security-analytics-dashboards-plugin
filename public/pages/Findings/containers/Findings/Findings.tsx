@@ -66,7 +66,6 @@ interface FindingsProps extends RouteComponentProps {
   match: match<{ detectorId: string }>;
   dateTimeFilter?: DateTimeFilter;
   setDateTimeFilter?: Function;
-  history: RouteComponentProps['history'];
 }
 
 interface FindingsState {

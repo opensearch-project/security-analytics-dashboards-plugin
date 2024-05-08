@@ -4,6 +4,7 @@
   "opensearchDashboardsVersion": "2.14.0",
   "configPath": ["opensearch_security_analytics"],
   "requiredPlugins": ["data"],
+  "optionalPlugins": ["dataSource", "dataSourceManagement"],
   "server": true,
   "ui": true
 }
