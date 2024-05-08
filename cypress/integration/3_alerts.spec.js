@@ -210,13 +210,11 @@ describe('Alerts', () => {
         });
       });
 
-      // Confirm the rule document ID is present
-      cy.get('[data-test-subj="finding-details-flyout-rule-document-id"]')
-        .invoke('text')
-        .then((text) => expect(text).to.not.equal('-'));
-
       // Confirm the rule index
       cy.get('[data-test-subj="finding-details-flyout-rule-document-index"]').contains(indexName);
+
+      // Confirm there is atleast one row of document
+      cy.get('tbody > tr').should('have.length.least', 1);
 
       // Confirm the rule document matches
       // The EuiCodeEditor used for this component stores each line of the JSON in an array of elements;
