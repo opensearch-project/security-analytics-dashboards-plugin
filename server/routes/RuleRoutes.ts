@@ -31,6 +31,7 @@ export function setupRulesRoutes(services: NodeServices, router: IRouter) {
       validate: {
         body: schema.any(),
         query: schema.object({
+          category: schema.maybe(schema.string()),
           dataSourceId: schema.maybe(schema.string()),
         }),
       },
