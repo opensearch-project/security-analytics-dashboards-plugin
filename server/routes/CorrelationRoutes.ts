@@ -16,6 +16,9 @@ export function setupCorrelationRoutes(services: NodeServices, router: IRouter) 
       path: `${API.CORRELATION_BASE}/_search`,
       validate: {
         body: schema.any(),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     correlationService.getCorrelationRules
@@ -26,6 +29,9 @@ export function setupCorrelationRoutes(services: NodeServices, router: IRouter) 
       path: `${API.CORRELATION_BASE}`,
       validate: {
         body: schema.any(),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     correlationService.createCorrelationRule
@@ -38,6 +44,9 @@ export function setupCorrelationRoutes(services: NodeServices, router: IRouter) 
         body: schema.any(),
         params: schema.object({
           ruleId: schema.string(),
+        }),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
         }),
       },
     },
@@ -52,6 +61,7 @@ export function setupCorrelationRoutes(services: NodeServices, router: IRouter) 
           finding: schema.string(),
           detector_type: schema.string(),
           nearby_findings: schema.number(),
+          dataSourceId: schema.maybe(schema.string()),
         }),
       },
     },
@@ -65,6 +75,7 @@ export function setupCorrelationRoutes(services: NodeServices, router: IRouter) 
         query: schema.object({
           start_time: schema.string(),
           end_time: schema.string(),
+          dataSourceId: schema.maybe(schema.string()),
         }),
       },
     },
@@ -77,6 +88,9 @@ export function setupCorrelationRoutes(services: NodeServices, router: IRouter) 
       validate: {
         params: schema.object({
           ruleId: schema.string(),
+        }),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
         }),
       },
     },

@@ -4,7 +4,6 @@
  */
 
 import {
-  ILegacyCustomClusterClient,
   IOpenSearchDashboardsResponse,
   OpenSearchDashboardsRequest,
   OpenSearchDashboardsResponseFactory,
@@ -13,14 +12,9 @@ import {
 } from 'opensearch-dashboards/server';
 import { ServerResponse } from '../models/types';
 import { DocumentIdsQueryParams, SearchResponse, TimeRangeQueryParams } from '../models/interfaces';
+import { MDSEnabledClientService } from './MDSEnabledClientService';
 
-export default class OpenSearchService {
-  osDriver: ILegacyCustomClusterClient;
-
-  constructor(osDriver: ILegacyCustomClusterClient) {
-    this.osDriver = osDriver;
-  }
-
+export default class OpenSearchService extends MDSEnabledClientService {
   /**
    * Searches the provided index for documents with the provided IDs.
    */
@@ -41,8 +35,8 @@ export default class OpenSearchService {
         },
       };
       const params: DocumentIdsQueryParams = { index, body: JSON.stringify(body) };
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const searchResponse: SearchResponse<any> = await callWithRequest('search', params);
+      const client = this.getClient(request, context);
+      const searchResponse: SearchResponse<any> = await client('search', params);
       return response.custom({
         statusCode: 200,
         body: {
@@ -94,8 +88,8 @@ export default class OpenSearchService {
       };
 
       const params: TimeRangeQueryParams = { index, body: JSON.stringify(body) };
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const searchResponse: SearchResponse<any> = await callWithRequest('search', params);
+      const client = this.getClient(request, context);
+      const searchResponse: SearchResponse<any> = await client('search', params);
       return response.custom({
         statusCode: 200,
         body: {
@@ -121,8 +115,8 @@ export default class OpenSearchService {
     response: OpenSearchDashboardsResponseFactory
   ) => {
     try {
-      const { callAsCurrentUser } = this.osDriver.asScoped(request);
-      const plugins = await callAsCurrentUser('cat.plugins', {
+      const client = this.getClient(request, context);
+      const plugins = await client('cat.plugins', {
         format: 'json',
         h: 'component',
       });

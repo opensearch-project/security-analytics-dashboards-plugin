@@ -9,27 +9,21 @@ import {
   IOpenSearchDashboardsResponse,
   ResponseError,
   RequestHandlerContext,
-  ILegacyCustomClusterClient,
 } from 'opensearch-dashboards/server';
 import { GetAliasesResponse, GetIndicesResponse } from '../models/interfaces';
 import { ServerResponse } from '../models/types';
+import { MDSEnabledClientService } from './MDSEnabledClientService';
 
-export default class IndexService {
-  osDriver: ILegacyCustomClusterClient;
-
-  constructor(osDriver: ILegacyCustomClusterClient) {
-    this.osDriver = osDriver;
-  }
-
+export default class IndexService extends MDSEnabledClientService {
   getIndexFields = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest<{}, {}, { index: string }>,
     response: OpenSearchDashboardsResponseFactory
   ) => {
     try {
       const { index } = request.body;
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const indexResponse = await callWithRequest('indices.getFieldMapping', {
+      const client = this.getClient(request, context);
+      const indexResponse = await client('indices.getFieldMapping', {
         index,
         fields: ['*'],
       });
@@ -53,16 +47,16 @@ export default class IndexService {
   };
 
   getIndices = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<GetIndicesResponse> | ResponseError>> => {
     try {
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
+      const client = this.getClient(request, context);
       const params = {
         format: 'json',
       };
-      const getIndicesResponse = await callWithRequest('cat.indices', params);
+      const getIndicesResponse = await client('cat.indices', params);
 
       return response.custom({
         statusCode: 200,
@@ -86,13 +80,13 @@ export default class IndexService {
   };
 
   getAliases = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<GetAliasesResponse> | ResponseError>> => {
     try {
-      const { callAsCurrentUser } = this.osDriver.asScoped(request);
-      const aliases = await callAsCurrentUser('cat.aliases', {
+      const client = this.getClient(request, context);
+      const aliases = await client('cat.aliases', {
         format: 'json',
         h: 'alias,index',
       });
@@ -119,15 +113,15 @@ export default class IndexService {
   };
 
   updateAliases = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<{}> | ResponseError>> => {
     try {
       const actions = request.body;
       const params = { body: actions };
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      await callWithRequest('indices.updateAliases', params);
+      const client = this.getClient(request, context);
+      await client('indices.updateAliases', params);
 
       return response.custom({
         statusCode: 200,

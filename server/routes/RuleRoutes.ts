@@ -17,6 +17,7 @@ export function setupRulesRoutes(services: NodeServices, router: IRouter) {
       validate: {
         query: schema.object({
           prePackaged: schema.boolean(),
+          dataSourceId: schema.maybe(schema.string()),
         }),
         body: schema.any(),
       },
@@ -29,6 +30,9 @@ export function setupRulesRoutes(services: NodeServices, router: IRouter) {
       path: `${API.RULES_BASE}`,
       validate: {
         body: schema.any(),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     rulesService.createRule
@@ -41,6 +45,9 @@ export function setupRulesRoutes(services: NodeServices, router: IRouter) {
         params: schema.object({
           ruleId: schema.string(),
         }),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     rulesService.deleteRule
@@ -52,6 +59,7 @@ export function setupRulesRoutes(services: NodeServices, router: IRouter) {
       validate: {
         query: schema.object({
           category: schema.string(),
+          dataSourceId: schema.maybe(schema.string()),
         }),
         body: schema.any(),
         params: schema.object({

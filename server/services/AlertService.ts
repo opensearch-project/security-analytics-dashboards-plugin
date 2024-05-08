@@ -4,34 +4,28 @@
  */
 
 import {
-  ILegacyCustomClusterClient,
   OpenSearchDashboardsRequest,
   OpenSearchDashboardsResponseFactory,
   IOpenSearchDashboardsResponse,
   ResponseError,
   RequestHandlerContext,
 } from 'opensearch-dashboards/server';
+import { ServerResponse } from '../models/types';
+import { CLIENT_ALERTS_METHODS } from '../utils/constants';
+import { MDSEnabledClientService } from './MDSEnabledClientService';
 import {
   AcknowledgeAlertsParams,
   AcknowledgeAlertsResponse,
   GetAlertsParams,
   GetAlertsResponse,
-} from '../models/interfaces';
-import { ServerResponse } from '../models/types';
-import { CLIENT_ALERTS_METHODS } from '../utils/constants';
+} from '../../types';
 
-export default class AlertService {
-  osDriver: ILegacyCustomClusterClient;
-
-  constructor(osDriver: ILegacyCustomClusterClient) {
-    this.osDriver = osDriver;
-  }
-
+export default class AlertService extends MDSEnabledClientService {
   /**
    * Calls backend GET Alerts API.
    */
   getAlerts = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest<{}, GetAlertsParams>,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<GetAlertsResponse> | ResponseError>> => {
@@ -57,8 +51,8 @@ export default class AlertService {
         throw Error(`Invalid request params: detectorId or detectorType must be specified`);
       }
 
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const getAlertsResponse: GetAlertsResponse = await callWithRequest(
+      const client = this.getClient(request, context);
+      const getAlertsResponse: GetAlertsResponse = await client(
         CLIENT_ALERTS_METHODS.GET_ALERTS,
         params
       );
@@ -85,7 +79,7 @@ export default class AlertService {
    * Calls backend POST Acknowledge Alerts API.
    */
   acknowledgeAlerts = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest<{}, AcknowledgeAlertsParams>,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<
@@ -100,8 +94,8 @@ export default class AlertService {
         detector_id,
       };
 
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const acknowledgeAlertsResponse: AcknowledgeAlertsResponse = await callWithRequest(
+      const client = this.getClient(request, context);
+      const acknowledgeAlertsResponse: AcknowledgeAlertsResponse = await client(
         CLIENT_ALERTS_METHODS.ACKNOWLEDGE_ALERTS,
         params
       );

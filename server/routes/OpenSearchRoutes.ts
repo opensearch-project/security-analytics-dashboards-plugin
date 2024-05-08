@@ -34,7 +34,11 @@ export function setupOpensearchRoutes(services: NodeServices, router: IRouter) {
   router.get(
     {
       path: `${API.PLUGINS}`,
-      validate: false,
+      validate: {
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
+      },
     },
     opensearchService.getPlugins
   );

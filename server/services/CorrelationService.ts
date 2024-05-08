@@ -9,7 +9,6 @@ import {
   IOpenSearchDashboardsResponse,
   ResponseError,
   RequestHandlerContext,
-  ILegacyCustomClusterClient,
 } from 'opensearch-dashboards/server';
 import { CLIENT_CORRELATION_METHODS } from '../utils/constants';
 import { ServerResponse } from '../models/types';
@@ -19,14 +18,9 @@ import {
   GetCorrelationFindingsResponse,
   SearchCorrelationRulesResponse,
 } from '../../types';
+import { MDSEnabledClientService } from './MDSEnabledClientService';
 
-export default class CorrelationService {
-  osDriver: ILegacyCustomClusterClient;
-
-  constructor(osDriver: ILegacyCustomClusterClient) {
-    this.osDriver = osDriver;
-  }
-
+export default class CorrelationService extends MDSEnabledClientService {
   createCorrelationRule = async (
     _context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
@@ -34,8 +28,8 @@ export default class CorrelationService {
   ) => {
     try {
       const params: any = { body: request.body };
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const createRulesResponse = await callWithRequest(
+      const client = this.getClient(request, _context);
+      const createRulesResponse = await client(
         CLIENT_CORRELATION_METHODS.CREATE_CORRELATION_RULE,
         params
       );
@@ -66,8 +60,8 @@ export default class CorrelationService {
     try {
       const { ruleId } = request.params as { ruleId: string };
       const params: any = { body: request.body, ruleId };
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const createRulesResponse = await callWithRequest(
+      const client = this.getClient(request, _context);
+      const createRulesResponse = await client(
         CLIENT_CORRELATION_METHODS.UPDATE_CORRELATION_RULE,
         params
       );
@@ -104,8 +98,8 @@ export default class CorrelationService {
     try {
       const { query } = request.body as { query: object };
       const params: any = { body: { from: 0, size: 10000, query } };
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const getCorrelationsResponse: SearchCorrelationRulesResponse = await callWithRequest(
+      const client = this.getClient(request, _context);
+      const getCorrelationsResponse: SearchCorrelationRulesResponse = await client(
         CLIENT_CORRELATION_METHODS.GET_CORRELATION_RULES,
         params
       );
@@ -135,8 +129,8 @@ export default class CorrelationService {
     response: OpenSearchDashboardsResponseFactory
   ) => {
     try {
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const deleteCorrelationRuleResponse = await callWithRequest(
+      const client = this.getClient(request, _context);
+      const deleteCorrelationRuleResponse = await client(
         CLIENT_CORRELATION_METHODS.DELETE_CORRELATION_RULE,
         request.params
       );
@@ -161,7 +155,7 @@ export default class CorrelationService {
 
   getCorrelatedFindings = async (
     _context: RequestHandlerContext,
-    request: OpenSearchDashboardsRequest,
+    request: OpenSearchDashboardsRequest<unknown, any>,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<
     IOpenSearchDashboardsResponse<ServerResponse<GetCorrelationFindingsResponse> | ResponseError>
@@ -169,8 +163,8 @@ export default class CorrelationService {
     try {
       const { finding, detector_type, nearby_findings = 20 } = request.query;
       const params: any = { finding, detector_type, nearby_findings };
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const getCorrelationFindingsResponse: GetCorrelationFindingsResponse = await callWithRequest(
+      const client = this.getClient(request, _context);
+      const getCorrelationFindingsResponse: GetCorrelationFindingsResponse = await client(
         CLIENT_CORRELATION_METHODS.GET_CORRELATED_FINDINGS,
         params
       );
@@ -196,7 +190,7 @@ export default class CorrelationService {
 
   getAllCorrelationsInTimeRange = async (
     _context: RequestHandlerContext,
-    request: OpenSearchDashboardsRequest,
+    request: OpenSearchDashboardsRequest<unknown, { start_time: string; end_time: string }>,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<
     IOpenSearchDashboardsResponse<
@@ -204,10 +198,10 @@ export default class CorrelationService {
     >
   > => {
     try {
-      const { start_time, end_time } = request.query as { start_time: string; end_time: string };
+      const { start_time, end_time } = request.query;
       const params: any = { start_timestamp: start_time, end_timestamp: end_time };
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const getCorrelationsResponse: GetAllCorrelationsInTimeRangeResponse = await callWithRequest(
+      const client = this.getClient(request, _context);
+      const getCorrelationsResponse: GetAllCorrelationsInTimeRangeResponse = await client(
         CLIENT_CORRELATION_METHODS.GET_ALL_CORRELATIONS,
         params
       );

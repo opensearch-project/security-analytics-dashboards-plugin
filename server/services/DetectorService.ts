@@ -9,7 +9,6 @@ import {
   IOpenSearchDashboardsResponse,
   ResponseError,
   RequestHandlerContext,
-  ILegacyCustomClusterClient,
 } from 'opensearch-dashboards/server';
 import {
   CreateDetectorParams,
@@ -26,14 +25,9 @@ import {
 import { CLIENT_DETECTOR_METHODS } from '../utils/constants';
 import { ServerResponse } from '../models/types';
 import { Detector } from '../../types';
+import { MDSEnabledClientService } from './MDSEnabledClientService';
 
-export default class DetectorService {
-  osDriver: ILegacyCustomClusterClient;
-
-  constructor(osDriver: ILegacyCustomClusterClient) {
-    this.osDriver = osDriver;
-  }
-
+export default class DetectorService extends MDSEnabledClientService {
   /**
    * Calls backend POST Detectors API.
    */
@@ -47,8 +41,8 @@ export default class DetectorService {
     try {
       const detector = request.body as Detector;
       const params: CreateDetectorParams = { body: detector };
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const createDetectorResponse: CreateDetectorResponse = await callWithRequest(
+      const client = this.getClient(request, _context);
+      const createDetectorResponse: CreateDetectorResponse = await client(
         CLIENT_DETECTOR_METHODS.CREATE_DETECTOR,
         params
       );
@@ -85,8 +79,8 @@ export default class DetectorService {
     try {
       const { detectorId } = request.params as { detectorId: string };
       const params: GetDetectorParams = { detectorId };
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const getDetectorResponse: GetDetectorResponse = await callWithRequest(
+      const client = this.getClient(request, _context);
+      const getDetectorResponse: GetDetectorResponse = await client(
         CLIENT_DETECTOR_METHODS.GET_DETECTOR,
         params
       );
@@ -123,8 +117,8 @@ export default class DetectorService {
     try {
       const { query } = request.body as { query: object };
       const params: SearchDetectorsParams = { body: { size: 10000, query } };
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const searchDetectorResponse: SearchDetectorsResponse = await callWithRequest(
+      const client = this.getClient(request, _context);
+      const searchDetectorResponse: SearchDetectorsResponse = await client(
         CLIENT_DETECTOR_METHODS.SEARCH_DETECTORS,
         params
       );
@@ -161,8 +155,8 @@ export default class DetectorService {
     try {
       const { detectorId } = request.params as { detectorId: string };
       const params: DeleteDetectorParams = { detectorId };
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const deleteDetectorResponse: DeleteDetectorResponse = await callWithRequest(
+      const client = this.getClient(request, _context);
+      const deleteDetectorResponse: DeleteDetectorResponse = await client(
         CLIENT_DETECTOR_METHODS.DELETE_DETECTOR,
         params
       );
@@ -200,8 +194,8 @@ export default class DetectorService {
       const detector = request.body as Detector;
       const { detectorId } = request.params as { detectorId: string };
       const params: UpdateDetectorParams = { body: detector, detectorId };
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const updateDetectorResponse: UpdateDetectorResponse = await callWithRequest(
+      const client = this.getClient(request, _context);
+      const updateDetectorResponse: UpdateDetectorResponse = await client(
         CLIENT_DETECTOR_METHODS.UPDATE_DETECTOR,
         params
       );

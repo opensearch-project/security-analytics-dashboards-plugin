@@ -14,7 +14,11 @@ export function setupIndexRoutes(services: NodeServices, router: IRouter) {
   router.get(
     {
       path: API.INDICES_BASE,
-      validate: {},
+      validate: {
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
+      },
     },
     indexService.getIndices
   );
@@ -22,7 +26,11 @@ export function setupIndexRoutes(services: NodeServices, router: IRouter) {
   router.get(
     {
       path: API.ALIASES_BASE,
-      validate: {},
+      validate: {
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
+      },
     },
     indexService.getAliases
   );
@@ -32,6 +40,9 @@ export function setupIndexRoutes(services: NodeServices, router: IRouter) {
       path: `${API.INDICES_BASE}`,
       validate: {
         body: schema.any(),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     indexService.getIndexFields
@@ -42,6 +53,9 @@ export function setupIndexRoutes(services: NodeServices, router: IRouter) {
       path: API.UPDATE_ALIASES,
       validate: {
         body: schema.any(),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     indexService.updateAliases

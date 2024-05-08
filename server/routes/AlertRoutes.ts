@@ -21,6 +21,7 @@ export function setupAlertsRoutes(services: NodeServices, router: IRouter) {
           sortOrder: schema.maybe(schema.string()),
           size: schema.maybe(schema.number()),
           startIndex: schema.maybe(schema.number()),
+          dataSourceId: schema.maybe(schema.string()),
         }),
       },
     },
@@ -35,6 +36,9 @@ export function setupAlertsRoutes(services: NodeServices, router: IRouter) {
           detector_id: schema.string(),
         }),
         body: schema.any(),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     alertService.acknowledgeAlerts

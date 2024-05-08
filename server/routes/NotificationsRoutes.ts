@@ -18,6 +18,9 @@ export function setupNotificationsRoutes(services: NodeServices, router: IRouter
         params: schema.object({
           id: schema.string(),
         }),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     notificationsService.getChannel
@@ -26,7 +29,11 @@ export function setupNotificationsRoutes(services: NodeServices, router: IRouter
   router.get(
     {
       path: API.CHANNELS,
-      validate: false,
+      validate: {
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
+      },
     },
     notificationsService.getChannels
   );
@@ -34,7 +41,11 @@ export function setupNotificationsRoutes(services: NodeServices, router: IRouter
   router.get(
     {
       path: API.NOTIFICATION_FEATURES,
-      validate: false,
+      validate: {
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
+      },
     },
     notificationsService.getNotificationsFeatures
   );

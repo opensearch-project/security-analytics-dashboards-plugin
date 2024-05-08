@@ -16,6 +16,9 @@ export function setupDetectorRoutes(services: NodeServices, router: IRouter) {
       path: API.DETECTORS_BASE,
       validate: {
         body: schema.any(),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     detectorsService.createDetector
@@ -28,6 +31,9 @@ export function setupDetectorRoutes(services: NodeServices, router: IRouter) {
         params: schema.object({
           detectorId: schema.string(),
         }),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     detectorsService.getDetector
@@ -38,6 +44,9 @@ export function setupDetectorRoutes(services: NodeServices, router: IRouter) {
       path: `${API.SEARCH_DETECTORS}`,
       validate: {
         body: schema.any(),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     detectorsService.searchDetectors
@@ -51,6 +60,9 @@ export function setupDetectorRoutes(services: NodeServices, router: IRouter) {
           detectorId: schema.string(),
         }),
         body: schema.any(),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     detectorsService.updateDetector
@@ -64,6 +76,9 @@ export function setupDetectorRoutes(services: NodeServices, router: IRouter) {
           detectorId: schema.string(),
         }),
         body: schema.any(),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     detectorsService.deleteDetector

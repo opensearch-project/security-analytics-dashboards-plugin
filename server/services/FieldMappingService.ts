@@ -9,7 +9,6 @@ import {
   IOpenSearchDashboardsResponse,
   ResponseError,
   RequestHandlerContext,
-  ILegacyCustomClusterClient,
 } from 'opensearch-dashboards/server';
 import {
   CreateMappingBody,
@@ -22,32 +21,27 @@ import {
 } from '../models/interfaces';
 import { ServerResponse } from '../models/types';
 import { CLIENT_FIELD_MAPPINGS_METHODS } from '../utils/constants';
+import { MDSEnabledClientService } from './MDSEnabledClientService';
 
-export default class FieldMappingService {
-  osDriver: ILegacyCustomClusterClient;
-
-  constructor(osDriver: ILegacyCustomClusterClient) {
-    this.osDriver = osDriver;
-  }
-
+export default class FieldMappingService extends MDSEnabledClientService {
   /**
    * Calls backend GET mappings/view API.
    */
   getMappingsView = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<
     IOpenSearchDashboardsResponse<ServerResponse<GetFieldMappingViewResponse> | ResponseError>
   > => {
     try {
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
+      const client = this.getClient(request, context);
       const { indexName, ruleTopic } = request.query as { indexName: string; ruleTopic?: string };
       const params: GetFieldMapingsViewParams = {
         indexName,
         ruleTopic,
       };
-      const getFieldMappingViewResponse = await callWithRequest(
+      const getFieldMappingViewResponse = await client(
         CLIENT_FIELD_MAPPINGS_METHODS.GET_MAPPINGS_VIEW,
         params
       );
@@ -75,7 +69,7 @@ export default class FieldMappingService {
    * Calls backend GET Detector API.
    */
   createMappings = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<
@@ -83,8 +77,8 @@ export default class FieldMappingService {
   > => {
     try {
       const params: CreateMappingsParams = { body: request.body as CreateMappingBody };
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const getDetectorResponse: CreateMappingsResponse = await callWithRequest(
+      const client = this.getClient(request, context);
+      const getDetectorResponse: CreateMappingsResponse = await client(
         CLIENT_FIELD_MAPPINGS_METHODS.CREATE_MAPPINGS,
         params
       );
@@ -112,19 +106,19 @@ export default class FieldMappingService {
    * Calls backend GET mappings/view API.
    */
   getMappings = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<
     IOpenSearchDashboardsResponse<ServerResponse<GetMappingsResponse> | ResponseError>
   > => {
     try {
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
+      const client = this.getClient(request, context);
       const { indexName } = request.query as { indexName: string };
       const params: GetMappingsParams = {
         indexName,
       };
-      const getFieldMappingsResponse = await callWithRequest(
+      const getFieldMappingsResponse = await client(
         CLIENT_FIELD_MAPPINGS_METHODS.GET_MAPPINGS,
         params
       );

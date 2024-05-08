@@ -25,6 +25,7 @@ export function setupFindingsRoutes(services: NodeServices, router: IRouter) {
           severity: schema.maybe(schema.string()),
           searchString: schema.maybe(schema.string()),
           findingIds: schema.maybe(schema.arrayOf(schema.string())),
+          dataSourceId: schema.maybe(schema.string()),
         }),
       },
     },

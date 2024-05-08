@@ -16,6 +16,9 @@ export function setupLogTypeRoutes(services: NodeServices, router: IRouter) {
       path: API.LOGTYPE_BASE,
       validate: {
         body: schema.any(),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     logTypeService.createLogType
@@ -26,6 +29,9 @@ export function setupLogTypeRoutes(services: NodeServices, router: IRouter) {
       path: `${API.LOGTYPE_BASE}/_search`,
       validate: {
         body: schema.any(),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     logTypeService.searchLogTypes
@@ -39,6 +45,9 @@ export function setupLogTypeRoutes(services: NodeServices, router: IRouter) {
           logTypeId: schema.string(),
         }),
         body: schema.any(),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     logTypeService.updateLogType
@@ -52,6 +61,9 @@ export function setupLogTypeRoutes(services: NodeServices, router: IRouter) {
           logTypeId: schema.string(),
         }),
         body: schema.any(),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     logTypeService.deleteLogType

@@ -13,7 +13,11 @@ export function setupMetricsRoutes(services: NodeServices, router: IRouter) {
   router.get(
     {
       path: `${API.METRICS}`,
-      validate: {},
+      validate: {
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
+      },
     },
     metricsService.getMetrics
   );
@@ -23,6 +27,9 @@ export function setupMetricsRoutes(services: NodeServices, router: IRouter) {
       path: `${API.METRICS}`,
       validate: {
         body: schema.any(),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     metricsService.updateMetrics

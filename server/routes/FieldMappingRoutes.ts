@@ -18,6 +18,7 @@ export function setupFieldMappingRoutes(services: NodeServices, router: IRouter)
         query: schema.object({
           indexName: schema.string(),
           ruleTopic: schema.maybe(schema.string()),
+          dataSourceId: schema.maybe(schema.string()),
         }),
       },
     },
@@ -30,6 +31,7 @@ export function setupFieldMappingRoutes(services: NodeServices, router: IRouter)
       validate: {
         query: schema.object({
           indexName: schema.string(),
+          dataSourceId: schema.maybe(schema.string()),
         }),
       },
     },
@@ -41,6 +43,9 @@ export function setupFieldMappingRoutes(services: NodeServices, router: IRouter)
       path: API.MAPPINGS_BASE,
       validate: {
         body: schema.any(),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     fieldMappingService.createMappings
