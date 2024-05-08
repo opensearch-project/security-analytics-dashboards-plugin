@@ -9,17 +9,16 @@ import { expect } from '@jest/globals';
 import { UpdateDetectorBasicDetails } from './UpdateBasicDetails';
 import { act } from 'react-dom/test-utils';
 import { mount } from 'enzyme';
-jest.mock(
-  '../../../CreateDetector/components/DefineDetector/components/DetectorDataSource/DetectorDataSource.tsx',
-  () => () => {
-    return <mock-component mock="DetectorDataSource" />;
-  }
-);
+import { coreContextMock, saContextMock } from '../../../../../test/mocks/useContext.mock';
+
 describe('<UpdateDetectorBasicDetails /> spec', () => {
   it('renders the component', async () => {
     let wrapper: any;
     await act(async () => {
-      wrapper = await mount(<UpdateDetectorBasicDetails {...props} />);
+      jest
+        .spyOn(React, 'useContext')
+        .mockImplementation(() => ({ ...saContextMock, ...coreContextMock }));
+      wrapper = mount(<UpdateDetectorBasicDetails {...props} />);
     });
     wrapper.update();
     expect(wrapper).toMatchSnapshot();

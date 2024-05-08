@@ -5,7 +5,7 @@
 
 import React from 'react';
 import Alerts from './Alerts';
-import contextMock from '../../../../../test/mocks/useContext.mock';
+import { coreContextMock } from '../../../../../test/mocks/useContext.mock';
 import { mount } from 'enzyme';
 import alertsMock from '../../../../../test/mocks/Alerts/Alerts.mock';
 import { shallowToJson } from 'enzyme-to-json';
@@ -14,13 +14,13 @@ import browserHistoryMock from '../../../../../test/mocks/services/browserHistor
 
 describe('<Alerts /> spec', () => {
   it('renders the component', () => {
-    Alerts.WrappedComponent.contextType = contextMock;
+    Alerts.WrappedComponent.contextType = React.createContext(coreContextMock);
     const wrapper = mount(
       <Router history={browserHistoryMock}>
         <Alerts {...alertsMock} />
       </Router>,
       {
-        context: contextMock,
+        context: coreContextMock,
       }
     );
     expect(shallowToJson(wrapper.root().children())).toMatchSnapshot();

@@ -9,7 +9,7 @@ import { expect } from '@jest/globals';
 import UpdateAlertConditions from './UpdateAlertConditions';
 import { act } from 'react-dom/test-utils';
 import { mount } from 'enzyme';
-import { contextServicesMock } from '../../../../../test/mocks/useContext.mock';
+import { coreContextMock } from '../../../../../test/mocks/useContext.mock';
 
 jest.mock(
   '../../../CreateDetector/components/ConfigureAlerts/containers/ConfigureAlerts.tsx',
@@ -22,7 +22,7 @@ describe('<UpdateAlertConditions /> spec', () => {
   it('renders the component', async () => {
     let wrapper;
     await act(async () => {
-      UpdateAlertConditions.contextType = React.createContext(contextServicesMock);
+      UpdateAlertConditions.contextType = React.createContext(coreContextMock);
       wrapper = await mount(<UpdateAlertConditions {...props} />);
     });
     wrapper.update();

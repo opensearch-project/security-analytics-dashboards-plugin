@@ -12,7 +12,7 @@ import ruleInfo from '../Rules/RuleInfo.mock';
 import detectorDetailsView from './containers/DetectorDetailsView/DetectorDetailsView.mock';
 import editFieldMappings from './containers/EditFieldMappings/EditFieldMappings.mock';
 import detectorDetails from './containers/DetectorDetails/DetectorDetails.mock';
-import alertTriggersView from './containers/AlertTriggersView/AlertTriggersView.mock';
+import { alertTriggerViewProps } from './containers/AlertTriggersView/AlertTriggersView.mock';
 import alertTriggerView from './components/AlertTriggerView/AlertTriggerView.mock';
 import detectorBasicDetailsView from './components/DetectorBasicDetailsView/DetectorBasicDetailsView.mock';
 import detectorRulesView from './components/DetectorRulesView/DetectorRulesView.mock';
@@ -33,7 +33,7 @@ export default {
   detectorDetailsView,
   editFieldMappings,
   detectorDetails,
-  alertTriggersView,
+  alertTriggerViewProps,
   alertTriggerView,
   detectorBasicDetailsView,
   detectorRulesView,
