@@ -192,7 +192,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
           "calls": Array [
             Array [
               Object {
-                "text": [TypeError: Cannot read properties of undefined (reading 'notificationsService')],
+                "text": [TypeError: Cannot read property 'notificationsService' of undefined],
                 "title": "Failed to retrieve notification channels and rules:",
                 "toastLifeTimeMs": 5000,
               },
