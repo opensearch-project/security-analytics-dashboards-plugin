@@ -78,7 +78,7 @@ interface FindingDetailsFlyoutState {
   selectedTab: { id: FindingFlyoutTabId; content: React.ReactNode | null };
   correlatedFindings: CorrelationFinding[];
   allRules: { [id: string]: RuleSource };
-  isDocumentLoading: boolean;
+  loadingIndexPatternId: boolean;
   areCorrelationsLoading: boolean;
   docIdToExpandedRowMap: { [id: string]: JSX.Element };
 }
@@ -106,7 +106,7 @@ export default class FindingDetailsFlyout extends Component<
         ),
       },
       correlatedFindings: [],
-      isDocumentLoading: true,
+      loadingIndexPatternId: true,
       areCorrelationsLoading: true,
       allRules: {},
       docIdToExpandedRowMap: {},
@@ -158,7 +158,7 @@ export default class FindingDetailsFlyout extends Component<
         }
       })
       .finally(() => {
-        this.setState({ isDocumentLoading: false });
+        this.setState({ loadingIndexPatternId: false });
       });
 
     this.getCorrelations();
@@ -186,7 +186,7 @@ export default class FindingDetailsFlyout extends Component<
       this.setState({
         selectedTab: {
           id: this.state.selectedTab.id,
-          content: this.getTabContent(this.state.selectedTab.id, this.state.isDocumentLoading),
+          content: this.getTabContent(this.state.selectedTab.id, this.state.loadingIndexPatternId),
         },
       });
     }
@@ -346,7 +346,7 @@ export default class FindingDetailsFlyout extends Component<
     this.setState({ docIdToExpandedRowMap: docIdToExpandedRowMapValues });
   }
 
-  renderFindingDocuments() {
+  renderFindingDocuments(loadingIndexPatternId: boolean) {
     const {
       finding: { index, document_list, related_doc_ids },
     } = this.props;
@@ -381,7 +381,7 @@ export default class FindingDetailsFlyout extends Component<
         render: ({ id }: FindingDocumentItem) => (
           <EuiToolTip title="View surrounding documents">
             <EuiButtonIcon
-              // isLoading={isDocumentLoading}
+              disabled={loadingIndexPatternId}
               iconType={'popout'}
               data-test-subj={'finding-details-flyout-view-surrounding-documents'}
               onClick={() => {
@@ -498,7 +498,7 @@ export default class FindingDetailsFlyout extends Component<
     }
   }
 
-  private getTabContent(tabId: FindingFlyoutTabId, isDocumentLoading = false) {
+  private getTabContent(tabId: FindingFlyoutTabId, loadingIndexPatternId = false) {
     switch (tabId) {
       case FindingFlyoutTabId.CORRELATIONS:
         const logTypes = new Set<string>();
@@ -522,11 +522,11 @@ export default class FindingDetailsFlyout extends Component<
         );
       case FindingFlyoutTabId.DETAILS:
       default:
-        return this.createFindingDetails(isDocumentLoading);
+        return this.createFindingDetails(loadingIndexPatternId);
     }
   }
 
-  private createFindingDetails(isDocumentLoading: boolean) {
+  private createFindingDetails(loadingIndexPatternId: boolean) {
     const {
       finding: { queries, detectionType },
     } = this.props;
@@ -585,7 +585,7 @@ export default class FindingDetailsFlyout extends Component<
             <EuiSpacer size="l" />
           </>
         )}
-        {this.renderFindingDocuments()}
+        {this.renderFindingDocuments(loadingIndexPatternId)}
       </>
     );
   }
@@ -595,7 +595,7 @@ export default class FindingDetailsFlyout extends Component<
     const {
       finding: { id, timestamp, detectionType },
     } = this.props;
-    const { isDocumentLoading } = this.state;
+    const { loadingIndexPatternId } = this.state;
     return (
       <EuiFlyout
         onClose={DataStore.findings.closeFlyout}
@@ -675,7 +675,7 @@ export default class FindingDetailsFlyout extends Component<
                     this.setState({
                       selectedTab: {
                         id: tab.id,
-                        content: this.getTabContent(tab.id, isDocumentLoading),
+                        content: this.getTabContent(tab.id, loadingIndexPatternId),
                       },
                     });
                   }}
