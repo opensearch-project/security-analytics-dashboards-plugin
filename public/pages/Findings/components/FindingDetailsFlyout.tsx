@@ -8,7 +8,6 @@ import {
   EuiAccordion,
   EuiBadge,
   EuiBadgeGroup,
-  EuiButton,
   EuiButtonIcon,
   EuiCodeBlock,
   EuiFlexGroup,
@@ -27,12 +26,14 @@ import {
   EuiSpacer,
   EuiText,
   EuiTitle,
-  EuiIcon,
   EuiTabs,
   EuiTab,
   EuiLoadingContent,
-  EuiEmptyPrompt,
   EuiLoadingSpinner,
+  EuiBasicTableColumn,
+  EuiInMemoryTable,
+  EuiToolTip,
+  EuiEmptyPrompt,
 } from '@elastic/eui';
 import {
   capitalizeFirstLetter,
@@ -48,7 +49,7 @@ import { OpenSearchService, IndexPatternsService, CorrelationService } from '../
 import { RuleTableItem } from '../../Rules/utils/helpers';
 import { CreateIndexPatternForm } from './CreateIndexPatternForm';
 import { FindingItemType } from '../containers/Findings/Findings';
-import { CorrelationFinding, RuleItemInfoBase } from '../../../../types';
+import { CorrelationFinding, FindingDocumentItem, RuleItemInfoBase } from '../../../../types';
 import { FindingFlyoutTabId, FindingFlyoutTabs } from '../utils/constants';
 import { DataStore } from '../../../store/DataStore';
 import { CorrelationsTable } from './CorrelationsTable/CorrelationsTable';
@@ -75,11 +76,12 @@ interface FindingDetailsFlyoutState {
   ruleViewerFlyoutData: RuleTableItem | null;
   indexPatternId?: string;
   isCreateIndexPatternModalVisible: boolean;
-  selectedTab: { id: string; content: React.ReactNode | null };
+  selectedTab: { id: FindingFlyoutTabId; content: React.ReactNode | null };
   correlatedFindings: CorrelationFinding[];
   allRules: { [id: string]: RuleSource };
-  isDocumentLoading: boolean;
+  loadingIndexPatternId: boolean;
   areCorrelationsLoading: boolean;
+  docIdToExpandedRowMap: { [id: string]: JSX.Element };
 }
 
 export default class FindingDetailsFlyout extends Component<
@@ -105,9 +107,10 @@ export default class FindingDetailsFlyout extends Component<
         ),
       },
       correlatedFindings: [],
-      isDocumentLoading: true,
+      loadingIndexPatternId: true,
       areCorrelationsLoading: true,
       allRules: {},
+      docIdToExpandedRowMap: {},
     };
   }
 
@@ -156,7 +159,7 @@ export default class FindingDetailsFlyout extends Component<
         }
       })
       .finally(() => {
-        this.setState({ isDocumentLoading: false });
+        this.setState({ loadingIndexPatternId: false });
       });
 
     this.getCorrelations();
@@ -173,6 +176,21 @@ export default class FindingDetailsFlyout extends Component<
         });
       });
     });
+  }
+
+  componentDidUpdate(
+    prevProps: Readonly<FindingDetailsFlyoutProps>,
+    prevState: Readonly<FindingDetailsFlyoutState>,
+    snapshot?: any
+  ): void {
+    if (prevState.docIdToExpandedRowMap !== this.state.docIdToExpandedRowMap) {
+      this.setState({
+        selectedTab: {
+          id: this.state.selectedTab.id,
+          content: this.getTabContent(this.state.selectedTab.id, this.state.loadingIndexPatternId),
+        },
+      });
+    }
   }
 
   renderTags = (tags: string[]) => {
@@ -301,97 +319,127 @@ export default class FindingDetailsFlyout extends Component<
     return patternId;
   };
 
-  renderFindingDocuments(isDocumentLoading: boolean) {
-    const {
-      finding: { index, document_list, related_doc_ids },
-    } = this.props;
-    const documents = document_list;
-    const docId = related_doc_ids[0];
-    const matchedDocuments = documents.filter((doc) => doc.id === docId);
-    const document = matchedDocuments.length > 0 ? matchedDocuments[0].document : '';
+  toggleDocumentDetails(item: FindingDocumentItem) {
+    const docIdToExpandedRowMapValues = { ...this.state.docIdToExpandedRowMap };
     let formattedDocument = '';
     try {
-      formattedDocument = document ? JSON.stringify(JSON.parse(document), null, 2) : '';
+      formattedDocument = document ? JSON.stringify(JSON.parse(item.document), null, 2) : '';
     } catch {
       // no-op
     }
 
-    const { indexPatternId } = this.state;
-
-    return document ? (
-      <>
-        <EuiFlexGroup justifyContent="spaceBetween">
-          <EuiFlexItem>
-            <EuiTitle size={'s'}>
-              <h3>Documents</h3>
-            </EuiTitle>
-          </EuiFlexItem>
-          <EuiFlexItem grow={false}>
-            <EuiButton
-              isLoading={isDocumentLoading}
-              data-test-subj={'finding-details-flyout-view-surrounding-documents'}
-              onClick={() => {
-                if (indexPatternId) {
-                  window.open(
-                    `discover#/context/${indexPatternId}/${related_doc_ids[0]}`,
-                    '_blank'
-                  );
-                } else {
-                  this.setState({ ...this.state, isCreateIndexPatternModalVisible: true });
-                }
-              }}
-            >
-              View surrounding documents
-              <EuiIcon type={'popout'} />
-            </EuiButton>
-          </EuiFlexItem>
-        </EuiFlexGroup>
-
-        <EuiSpacer size={'s'} />
-
-        <EuiFlexGroup>
-          <EuiFlexItem>
-            <EuiFormRow
-              label={'Document ID'}
-              data-test-subj={'finding-details-flyout-rule-document-id'}
-            >
-              <EuiText>{docId || DEFAULT_EMPTY_DATA}</EuiText>
-            </EuiFormRow>
-          </EuiFlexItem>
-
-          <EuiFlexItem>
-            <EuiFormRow
-              label={'Index'}
-              data-test-subj={'finding-details-flyout-rule-document-index'}
-            >
-              <EuiText>{index || DEFAULT_EMPTY_DATA}</EuiText>
-            </EuiFormRow>
-          </EuiFlexItem>
-        </EuiFlexGroup>
-
-        <EuiSpacer size={'m'} />
-
+    if (docIdToExpandedRowMapValues[item.id]) {
+      delete docIdToExpandedRowMapValues[item.id];
+    } else {
+      docIdToExpandedRowMapValues[item.id] = (
         <EuiFormRow fullWidth={true}>
           <EuiCodeBlock
             language="json"
             isCopyable
-            data-test-subj={'finding-details-flyout-rule-document'}
+            data-test-subj={`finding-details-flyout-rule-document-${item.itemIdx}`}
           >
             {formattedDocument}
           </EuiCodeBlock>
         </EuiFormRow>
-      </>
-    ) : (
+      );
+    }
+
+    this.setState({ docIdToExpandedRowMap: docIdToExpandedRowMapValues });
+  }
+
+  renderFindingDocuments(loadingIndexPatternId: boolean) {
+    const {
+      finding: { index, document_list, related_doc_ids },
+    } = this.props;
+    const { indexPatternId, docIdToExpandedRowMap } = this.state;
+    const relatedDocIdsSet = new Set(related_doc_ids);
+    const relatedDocuments: FindingDocumentItem[] = [];
+    document_list.forEach((documentInfo) => {
+      if (documentInfo.found && relatedDocIdsSet.has(documentInfo.id)) {
+        relatedDocuments.push({ ...documentInfo, itemIdx: relatedDocuments.length });
+      }
+    });
+
+    if (relatedDocuments.length === 0) {
+      return (
+        <>
+          <EuiTitle size={'s'}>
+            <h3>Documents</h3>
+          </EuiTitle>
+          <EuiSpacer />
+          <EuiEmptyPrompt
+            iconType="alert"
+            iconColor="danger"
+            title={<h2>Document not found</h2>}
+            body={<p>The document that generated this finding could not be loaded.</p>}
+          />
+        </>
+      );
+    }
+
+    const actions = [
+      {
+        render: ({ id }: FindingDocumentItem) => (
+          <EuiToolTip title="View surrounding documents">
+            <EuiButtonIcon
+              disabled={loadingIndexPatternId}
+              iconType={'popout'}
+              data-test-subj={'finding-details-flyout-view-surrounding-documents'}
+              onClick={() => {
+                if (indexPatternId) {
+                  window.open(`discover#/context/${indexPatternId}/${id}`, '_blank');
+                } else {
+                  this.setState({ ...this.state, isCreateIndexPatternModalVisible: true });
+                }
+              }}
+            />
+          </EuiToolTip>
+        ),
+      },
+    ];
+
+    const documentsColumns: EuiBasicTableColumn<FindingDocumentItem>[] = [
+      {
+        name: '',
+        render: (item: FindingDocumentItem) => (
+          <EuiButtonIcon
+            onClick={() => this.toggleDocumentDetails(item)}
+            aria-label={docIdToExpandedRowMap[item.id] ? 'Collapse' : 'Expand'}
+            iconType={docIdToExpandedRowMap[item.id] ? 'arrowUp' : 'arrowDown'}
+            data-test-subj={`finding-details-flyout-document-toggle-${item.itemIdx}`}
+          />
+        ),
+        width: '30',
+        isExpander: true,
+      },
+      {
+        field: 'id',
+        name: 'Document Id',
+      },
+      {
+        name: 'Actions',
+        actions,
+      },
+    ];
+
+    return (
       <>
         <EuiTitle size={'s'}>
           <h3>Documents</h3>
         </EuiTitle>
         <EuiSpacer />
-        <EuiEmptyPrompt
-          iconType="alert"
-          iconColor="danger"
-          title={<h2>Document not found</h2>}
-          body={<p>The document that generated this finding could not be loaded.</p>}
+        <EuiFormRow label={'Index'} data-test-subj={`finding-details-flyout-rule-document-index`}>
+          <EuiText size="s">{index || DEFAULT_EMPTY_DATA}</EuiText>
+        </EuiFormRow>
+        <EuiSpacer />
+        <EuiInMemoryTable
+          columns={documentsColumns}
+          items={relatedDocuments}
+          itemId="id"
+          itemIdToExpandedRowMap={docIdToExpandedRowMap}
+          isExpandable={true}
+          hasActions={true}
+          pagination={true}
         />
       </>
     );
@@ -401,6 +449,7 @@ export default class FindingDetailsFlyout extends Component<
     const {
       finding: { related_doc_ids },
     } = this.props;
+
     if (this.state.isCreateIndexPatternModalVisible) {
       return (
         <EuiModal
@@ -450,7 +499,7 @@ export default class FindingDetailsFlyout extends Component<
     }
   }
 
-  private getTabContent(tabId: FindingFlyoutTabId, isDocumentLoading = false) {
+  private getTabContent(tabId: FindingFlyoutTabId, loadingIndexPatternId = false) {
     switch (tabId) {
       case FindingFlyoutTabId.CORRELATIONS:
         const logTypes = new Set<string>();
@@ -474,11 +523,11 @@ export default class FindingDetailsFlyout extends Component<
         );
       case FindingFlyoutTabId.DETAILS:
       default:
-        return this.createFindingDetails(isDocumentLoading);
+        return this.createFindingDetails(loadingIndexPatternId);
     }
   }
 
-  private createFindingDetails(isDocumentLoading: boolean) {
+  private createFindingDetails(loadingIndexPatternId: boolean) {
     const {
       finding: { queries, detectionType },
     } = this.props;
@@ -537,7 +586,7 @@ export default class FindingDetailsFlyout extends Component<
             <EuiSpacer size="l" />
           </>
         )}
-        {this.renderFindingDocuments(isDocumentLoading)}
+        {this.renderFindingDocuments(loadingIndexPatternId)}
       </>
     );
   }
@@ -547,7 +596,7 @@ export default class FindingDetailsFlyout extends Component<
     const {
       finding: { id, timestamp, detectionType },
     } = this.props;
-    const { isDocumentLoading } = this.state;
+    const { loadingIndexPatternId } = this.state;
     return (
       <EuiFlyout
         onClose={DataStore.findings.closeFlyout}
@@ -627,7 +676,7 @@ export default class FindingDetailsFlyout extends Component<
                     this.setState({
                       selectedTab: {
                         id: tab.id,
-                        content: this.getTabContent(tab.id, isDocumentLoading),
+                        content: this.getTabContent(tab.id, loadingIndexPatternId),
                       },
                     });
                   }}
