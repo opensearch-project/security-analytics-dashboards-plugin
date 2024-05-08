@@ -54,6 +54,7 @@ import { DataStore } from '../../../store/DataStore';
 import { CorrelationsTable } from './CorrelationsTable/CorrelationsTable';
 import { getSeverityColor } from '../../Correlations/utils/constants';
 import { getLogTypeLabel } from '../../LogTypes/utils/helpers';
+import { RouteComponentProps } from 'react-router-dom';
 
 export interface FindingDetailsFlyoutBaseProps {
   finding: FindingItemType;
@@ -66,7 +67,7 @@ export interface FindingDetailsFlyoutProps extends FindingDetailsFlyoutBaseProps
   opensearchService: OpenSearchService;
   indexPatternsService: IndexPatternsService;
   correlationService: CorrelationService;
-  history: History;
+  history: RouteComponentProps['history'];
 }
 
 interface FindingDetailsFlyoutState {

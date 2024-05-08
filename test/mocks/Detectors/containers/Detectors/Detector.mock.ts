@@ -7,7 +7,7 @@ import detectorInputMock from './DetectorInput.mock';
 import periodScheduleMock from '../../../Alerts/PeriodSchedule.mock';
 import alertConditionMock from '../../../CreateDetector/components/ConfigureAlerts/components/AlertCondition/AlertCondition.mock';
 import { times } from 'lodash';
-import { Detector } from '../../../../../models/interfaces';
+import { Detector } from '../../../../../types';
 
 export default {
   id: 'detector_id_1',

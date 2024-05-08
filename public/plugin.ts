@@ -15,12 +15,16 @@ import { SecurityAnalyticsPluginSetup, SecurityAnalyticsPluginStart } from './in
 import { DataPublicPluginStart, DataPublicPluginSetup } from '../../../src/plugins/data/public';
 import { SecurityAnalyticsPluginConfigType } from '../config';
 import { setSecurityAnalyticsPluginConfig } from '../common/helpers';
+import { DataSourceManagementPluginSetup } from '../../../src/plugins/data_source_management/public';
+import { DataSourcePluginStart } from '../../../src/plugins/data_source/public';
 
 export interface SecurityAnalyticsPluginSetupDeps {
   data: DataPublicPluginSetup;
+  dataSourceManagement?: DataSourceManagementPluginSetup;
 }
 export interface SecurityAnalyticsPluginStartDeps {
   data: DataPublicPluginStart;
+  dataSource?: DataSourcePluginStart;
 }
 
 export class SecurityAnalyticsPlugin
@@ -37,7 +41,7 @@ export class SecurityAnalyticsPlugin
 
   public setup(
     core: CoreSetup<SecurityAnalyticsPluginStartDeps>,
-    _plugins: SecurityAnalyticsPluginSetupDeps
+    { dataSourceManagement }: SecurityAnalyticsPluginSetupDeps
   ): SecurityAnalyticsPluginSetup {
     core.application.register({
       id: PLUGIN_NAME,
@@ -51,7 +55,7 @@ export class SecurityAnalyticsPlugin
       mount: async (params: AppMountParameters) => {
         const { renderApp } = await import('./security_analytics_app');
         const [coreStart, depsStart] = await core.getStartServices();
-        return renderApp(coreStart, params, ROUTES.LANDING_PAGE, depsStart);
+        return renderApp(coreStart, params, ROUTES.LANDING_PAGE, depsStart, dataSourceManagement);
       },
     });
     setDarkMode(core.uiSettings.get('theme:darkMode'));

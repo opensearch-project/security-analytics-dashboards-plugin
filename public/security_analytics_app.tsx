@@ -33,12 +33,14 @@ import { LogType } from '../types';
 import MetricsService from './services/MetricsService';
 import { MetricsContext } from './metrics/MetricsContext';
 import { CHANNEL_TYPES } from './pages/CreateDetector/components/ConfigureAlerts/utils/constants';
+import { DataSourceManagementPluginSetup } from '../../../src/plugins/data_source_management/public';
 
 export function renderApp(
   coreStart: CoreStart,
   params: AppMountParameters,
   landingPage: string,
-  depsStart: SecurityAnalyticsPluginStartDeps
+  depsStart: SecurityAnalyticsPluginStartDeps,
+  dataSourceManagement?: DataSourceManagementPluginSetup
 ) {
   const { http, savedObjects } = coreStart;
 
@@ -84,7 +86,13 @@ export function renderApp(
             <DarkModeContext.Provider value={isDarkMode}>
               <SecurityAnalyticsContext.Provider value={{ services, metrics }}>
                 <CoreServicesContext.Provider value={coreStart}>
-                  <Main {...props} landingPage={landingPage} />
+                  <Main
+                    {...props}
+                    landingPage={landingPage}
+                    multiDataSourceEnabled={!!depsStart.dataSource}
+                    dataSourceManagement={dataSourceManagement}
+                    setActionMenu={params.setHeaderActionMenu}
+                  />
                 </CoreServicesContext.Provider>
               </SecurityAnalyticsContext.Provider>
             </DarkModeContext.Provider>
