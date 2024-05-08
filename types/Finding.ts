@@ -30,6 +30,10 @@ export interface FindingDocument {
   document: string;
 }
 
+export interface FindingDocumentItem extends FindingDocument {
+  itemIdx: number;
+}
+
 /**
  * API interfaces
  */

@@ -203,13 +203,11 @@ describe('Alerts', () => {
         });
       });
 
-      // Confirm the rule document ID is present
-      cy.get('[data-test-subj="finding-details-flyout-rule-document-id"]')
-        .invoke('text')
-        .then((text) => expect(text).to.not.equal('-'));
-
       // Confirm the rule index
       cy.get('[data-test-subj="finding-details-flyout-rule-document-index"]').contains(indexName);
+
+      // Confirm there is atleast one row of document
+      cy.get('tbody > tr').should('have.length.least', 1);
 
       // Confirm the rule document matches
       // The EuiCodeEditor used for this component stores each line of the JSON in an array of elements;
@@ -217,7 +215,8 @@ describe('Alerts', () => {
       // and matches each entry with the corresponding element line.
       const document = JSON.stringify(JSON.parse('{"winlog.event_id": 2003}'), null, 2);
       const documentLines = document.split('\n');
-      cy.get('[data-test-subj="finding-details-flyout-rule-document"]')
+      cy.get('[data-test-subj="finding-details-flyout-document-toggle-0"]').click({ force: true });
+      cy.get('[data-test-subj="finding-details-flyout-rule-document-0"]')
         .get('[class="euiCodeBlock__line"]')
         .each((lineElement, lineIndex) => {
           let line = lineElement.text();
