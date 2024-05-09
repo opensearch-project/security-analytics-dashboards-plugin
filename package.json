@@ -25,7 +25,7 @@
     "test:jest:update-snapshots": "yarn run test:jest -u",
     "build": "yarn plugin-helpers build",
     "postbuild": "echo Renaming build artifact to [$npm_package_config_zip_name-$npm_package_version.zip] && mv build/$npm_package_config_id*.zip build/$npm_package_config_zip_name-$npm_package_version.zip",
-    "postinstall": "husky install"
+    "postinstall": "node -e \"const { execSync } = require('child_process');const { INIT_CWD, PWD = process.cwd() } = process.env; if (INIT_CWD?.startsWith?.(PWD)) {try {execSync('husky install');} catch (e) {}}\""
   },
   "resolutions": {
     "@types/react": "^16.9.8",
