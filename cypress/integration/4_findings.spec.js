@@ -162,6 +162,27 @@ describe('Findings', () => {
     });
   });
 
+  it('shows document not found warning when the document is empty', () => {
+    cy.deleteIndex(indexName);
+    cy.reload();
+
+    // Wait for page to load
+    cy.waitForPageLoad('findings', {
+      contains: 'Findings',
+    });
+
+    // filter table to show only sample_detector findings
+    cy.get(`input[placeholder="Search findings"]`).ospSearch(indexName);
+
+    // open Finding details flyout via finding id link. cy.wait essential, timeout insufficient.
+    cy.getTableFirstRow('[data-test-subj="view-details-icon"]').then(($el) => {
+      cy.get($el).click({ force: true });
+    });
+
+    // Flyout should show 'Document not found' warning
+    cy.contains('Document not found');
+  });
+
   it('...can delete detector', () => {
     // Visit Detectors page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
@@ -200,27 +221,6 @@ describe('Findings', () => {
           cy.contains('There are no existing detectors.');
         });
     });
-  });
-
-  it('shows document not found warning when the document is empty', () => {
-    cy.deleteIndex(indexName);
-    cy.reload();
-
-    // Wait for page to load
-    cy.waitForPageLoad('findings', {
-      contains: 'Findings',
-    });
-
-    // filter table to show only sample_detector findings
-    cy.get(`input[placeholder="Search findings"]`).ospSearch(indexName);
-
-    // open Finding details flyout via finding id link. cy.wait essential, timeout insufficient.
-    cy.getTableFirstRow('[data-test-subj="view-details-icon"]').then(($el) => {
-      cy.get($el).click({ force: true });
-    });
-
-    // Flyout should show 'Document not found' warning
-    cy.contains('Document not found');
   });
 
   after(() => cy.cleanUpTests());
