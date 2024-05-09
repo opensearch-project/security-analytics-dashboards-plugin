@@ -5,6 +5,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
   alertService={
     AlertService {
       "acknowledgeAlerts": [Function],
+      "dataSourceEnabled": undefined,
       "getAlerts": [Function],
       "osDriver": Object {
         "delete": [MockFunction],
@@ -24,6 +25,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
   detectorService={
     DetectorService {
       "createDetector": [Function],
+      "dataSourceEnabled": undefined,
       "deleteDetector": [Function],
       "getDetector": [Function],
       "getDetectors": [Function],
@@ -84,6 +86,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
     alertService={
       AlertService {
         "acknowledgeAlerts": [Function],
+        "dataSourceEnabled": undefined,
         "getAlerts": [Function],
         "osDriver": Object {
           "delete": [MockFunction],
@@ -103,6 +106,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
     detectorService={
       DetectorService {
         "createDetector": [Function],
+        "dataSourceEnabled": undefined,
         "deleteDetector": [Function],
         "getDetector": [Function],
         "getDetectors": [Function],

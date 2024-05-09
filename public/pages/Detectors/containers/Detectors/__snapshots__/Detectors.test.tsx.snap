@@ -5,6 +5,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
   detectorService={
     DetectorService {
       "createDetector": [Function],
+      "dataSourceEnabled": undefined,
       "deleteDetector": [Function],
       "getDetector": [Function],
       "getDetectors": [Function],
