@@ -11,16 +11,16 @@ const coreContextMock = {
   },
 };
 
-const saContextMock = {
+const mockContexts = {
   services: {
     notificationsService: {
       getChannels: () => {
-        return {
+        return Promise.resolve({
           ok: true,
           response: {
             channel_list: [],
           },
-        };
+        });
       },
     },
     indexService: {
@@ -75,6 +75,11 @@ const saContextMock = {
       resetMetrics: jest.fn(),
     },
   },
+  dataSource: {
+    id: '',
+  },
+  setDataSource: jest.fn(),
+  setDataSourceMenuReadOnly: jest.fn(),
 };
 
-export { saContextMock, coreContextMock };
+export { mockContexts, coreContextMock };

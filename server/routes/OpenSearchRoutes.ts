@@ -7,6 +7,7 @@ import { IRouter } from 'opensearch-dashboards/server';
 import { schema } from '@osd/config-schema';
 import { NodeServices } from '../models/interfaces';
 import { API } from '../utils/constants';
+import { createQueryValidationSchema } from '../utils/helpers';
 
 export function setupOpensearchRoutes(services: NodeServices, router: IRouter) {
   const { opensearchService } = services;
@@ -34,7 +35,9 @@ export function setupOpensearchRoutes(services: NodeServices, router: IRouter) {
   router.get(
     {
       path: `${API.PLUGINS}`,
-      validate: false,
+      validate: {
+        query: createQueryValidationSchema(),
+      },
     },
     opensearchService.getPlugins
   );
