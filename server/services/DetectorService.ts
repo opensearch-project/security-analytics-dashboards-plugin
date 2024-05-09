@@ -32,7 +32,7 @@ export default class DetectorService extends MDSEnabledClientService {
    * Calls backend POST Detectors API.
    */
   createDetector = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<
@@ -41,7 +41,7 @@ export default class DetectorService extends MDSEnabledClientService {
     try {
       const detector = request.body as Detector;
       const params: CreateDetectorParams = { body: detector };
-      const client = this.getClient(request, _context);
+      const client = this.getClient(request, context);
       const createDetectorResponse: CreateDetectorResponse = await client(
         CLIENT_DETECTOR_METHODS.CREATE_DETECTOR,
         params
@@ -70,7 +70,7 @@ export default class DetectorService extends MDSEnabledClientService {
    * Calls backend GET Detector API.
    */
   getDetector = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<
@@ -79,7 +79,7 @@ export default class DetectorService extends MDSEnabledClientService {
     try {
       const { detectorId } = request.params as { detectorId: string };
       const params: GetDetectorParams = { detectorId };
-      const client = this.getClient(request, _context);
+      const client = this.getClient(request, context);
       const getDetectorResponse: GetDetectorResponse = await client(
         CLIENT_DETECTOR_METHODS.GET_DETECTOR,
         params
@@ -108,7 +108,7 @@ export default class DetectorService extends MDSEnabledClientService {
    * Calls backend Search Detector API.
    */
   searchDetectors = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<
@@ -117,7 +117,7 @@ export default class DetectorService extends MDSEnabledClientService {
     try {
       const { query } = request.body as { query: object };
       const params: SearchDetectorsParams = { body: { size: 10000, query } };
-      const client = this.getClient(request, _context);
+      const client = this.getClient(request, context);
       const searchDetectorResponse: SearchDetectorsResponse = await client(
         CLIENT_DETECTOR_METHODS.SEARCH_DETECTORS,
         params
@@ -146,7 +146,7 @@ export default class DetectorService extends MDSEnabledClientService {
    * Calls backend DELETE Detector API.
    */
   deleteDetector = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<
@@ -155,7 +155,7 @@ export default class DetectorService extends MDSEnabledClientService {
     try {
       const { detectorId } = request.params as { detectorId: string };
       const params: DeleteDetectorParams = { detectorId };
-      const client = this.getClient(request, _context);
+      const client = this.getClient(request, context);
       const deleteDetectorResponse: DeleteDetectorResponse = await client(
         CLIENT_DETECTOR_METHODS.DELETE_DETECTOR,
         params
@@ -184,7 +184,7 @@ export default class DetectorService extends MDSEnabledClientService {
    * Calls backend PUT Detectors API.
    */
   updateDetector = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<
@@ -194,7 +194,7 @@ export default class DetectorService extends MDSEnabledClientService {
       const detector = request.body as Detector;
       const { detectorId } = request.params as { detectorId: string };
       const params: UpdateDetectorParams = { body: detector, detectorId };
-      const client = this.getClient(request, _context);
+      const client = this.getClient(request, context);
       const updateDetectorResponse: UpdateDetectorResponse = await client(
         CLIENT_DETECTOR_METHODS.UPDATE_DETECTOR,
         params

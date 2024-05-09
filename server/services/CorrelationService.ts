@@ -22,13 +22,13 @@ import { MDSEnabledClientService } from './MDSEnabledClientService';
 
 export default class CorrelationService extends MDSEnabledClientService {
   createCorrelationRule = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
   ) => {
     try {
       const params: any = { body: request.body };
-      const client = this.getClient(request, _context);
+      const client = this.getClient(request, context);
       const createRulesResponse = await client(
         CLIENT_CORRELATION_METHODS.CREATE_CORRELATION_RULE,
         params
@@ -53,14 +53,14 @@ export default class CorrelationService extends MDSEnabledClientService {
   };
 
   updateCorrelationRule = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
   ) => {
     try {
       const { ruleId } = request.params as { ruleId: string };
       const params: any = { body: request.body, ruleId };
-      const client = this.getClient(request, _context);
+      const client = this.getClient(request, context);
       const createRulesResponse = await client(
         CLIENT_CORRELATION_METHODS.UPDATE_CORRELATION_RULE,
         params
@@ -89,7 +89,7 @@ export default class CorrelationService extends MDSEnabledClientService {
    * URL /correlation/rules/_search
    */
   getCorrelationRules = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<
@@ -98,7 +98,7 @@ export default class CorrelationService extends MDSEnabledClientService {
     try {
       const { query } = request.body as { query: object };
       const params: any = { body: { from: 0, size: 10000, query } };
-      const client = this.getClient(request, _context);
+      const client = this.getClient(request, context);
       const getCorrelationsResponse: SearchCorrelationRulesResponse = await client(
         CLIENT_CORRELATION_METHODS.GET_CORRELATION_RULES,
         params
@@ -124,12 +124,12 @@ export default class CorrelationService extends MDSEnabledClientService {
   };
 
   deleteCorrelationRule = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest<{}, GetCorrelationFindingsParams>,
     response: OpenSearchDashboardsResponseFactory
   ) => {
     try {
-      const client = this.getClient(request, _context);
+      const client = this.getClient(request, context);
       const deleteCorrelationRuleResponse = await client(
         CLIENT_CORRELATION_METHODS.DELETE_CORRELATION_RULE,
         request.params
@@ -154,7 +154,7 @@ export default class CorrelationService extends MDSEnabledClientService {
   };
 
   getCorrelatedFindings = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest<unknown, any>,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<
@@ -163,7 +163,7 @@ export default class CorrelationService extends MDSEnabledClientService {
     try {
       const { finding, detector_type, nearby_findings = 20 } = request.query;
       const params: any = { finding, detector_type, nearby_findings };
-      const client = this.getClient(request, _context);
+      const client = this.getClient(request, context);
       const getCorrelationFindingsResponse: GetCorrelationFindingsResponse = await client(
         CLIENT_CORRELATION_METHODS.GET_CORRELATED_FINDINGS,
         params
@@ -189,7 +189,7 @@ export default class CorrelationService extends MDSEnabledClientService {
   };
 
   getAllCorrelationsInTimeRange = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest<unknown, { start_time: string; end_time: string }>,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<
@@ -200,7 +200,7 @@ export default class CorrelationService extends MDSEnabledClientService {
     try {
       const { start_time, end_time } = request.query;
       const params: any = { start_timestamp: start_time, end_timestamp: end_time };
-      const client = this.getClient(request, _context);
+      const client = this.getClient(request, context);
       const getCorrelationsResponse: GetAllCorrelationsInTimeRangeResponse = await client(
         CLIENT_CORRELATION_METHODS.GET_ALL_CORRELATIONS,
         params
