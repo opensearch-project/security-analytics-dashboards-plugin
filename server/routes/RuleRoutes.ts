@@ -7,6 +7,7 @@ import { IRouter } from 'opensearch-dashboards/server';
 import { schema } from '@osd/config-schema';
 import { NodeServices } from '../models/interfaces';
 import { API } from '../utils/constants';
+import { createQueryValidationSchema } from '../utils/helpers';
 
 export function setupRulesRoutes(services: NodeServices, router: IRouter) {
   const { rulesService } = services;
@@ -15,9 +16,8 @@ export function setupRulesRoutes(services: NodeServices, router: IRouter) {
     {
       path: `${API.RULES_BASE}/_search`,
       validate: {
-        query: schema.object({
+        query: createQueryValidationSchema({
           prePackaged: schema.boolean(),
-          dataSourceId: schema.maybe(schema.string()),
         }),
         body: schema.any(),
       },
@@ -30,9 +30,8 @@ export function setupRulesRoutes(services: NodeServices, router: IRouter) {
       path: `${API.RULES_BASE}`,
       validate: {
         body: schema.any(),
-        query: schema.object({
+        query: createQueryValidationSchema({
           category: schema.maybe(schema.string()),
-          dataSourceId: schema.maybe(schema.string()),
         }),
       },
     },
@@ -46,9 +45,7 @@ export function setupRulesRoutes(services: NodeServices, router: IRouter) {
         params: schema.object({
           ruleId: schema.string(),
         }),
-        query: schema.object({
-          dataSourceId: schema.maybe(schema.string()),
-        }),
+        query: createQueryValidationSchema(),
       },
     },
     rulesService.deleteRule
@@ -58,9 +55,8 @@ export function setupRulesRoutes(services: NodeServices, router: IRouter) {
     {
       path: `${API.RULES_BASE}/{ruleId}`,
       validate: {
-        query: schema.object({
+        query: createQueryValidationSchema({
           category: schema.string(),
-          dataSourceId: schema.maybe(schema.string()),
         }),
         body: schema.any(),
         params: schema.object({

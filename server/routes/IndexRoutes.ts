@@ -7,6 +7,7 @@ import { IRouter } from 'opensearch-dashboards/server';
 import { API } from '../utils/constants';
 import { NodeServices } from '../models/interfaces';
 import { schema } from '@osd/config-schema';
+import { createQueryValidationSchema } from '../utils/helpers';
 
 export function setupIndexRoutes(services: NodeServices, router: IRouter) {
   const { indexService } = services;
@@ -15,9 +16,7 @@ export function setupIndexRoutes(services: NodeServices, router: IRouter) {
     {
       path: API.INDICES_BASE,
       validate: {
-        query: schema.object({
-          dataSourceId: schema.maybe(schema.string()),
-        }),
+        query: createQueryValidationSchema(),
       },
     },
     indexService.getIndices
@@ -27,9 +26,7 @@ export function setupIndexRoutes(services: NodeServices, router: IRouter) {
     {
       path: API.ALIASES_BASE,
       validate: {
-        query: schema.object({
-          dataSourceId: schema.maybe(schema.string()),
-        }),
+        query: createQueryValidationSchema(),
       },
     },
     indexService.getAliases
@@ -40,9 +37,7 @@ export function setupIndexRoutes(services: NodeServices, router: IRouter) {
       path: `${API.INDICES_BASE}`,
       validate: {
         body: schema.any(),
-        query: schema.object({
-          dataSourceId: schema.maybe(schema.string()),
-        }),
+        query: createQueryValidationSchema(),
       },
     },
     indexService.getIndexFields
@@ -53,9 +48,7 @@ export function setupIndexRoutes(services: NodeServices, router: IRouter) {
       path: API.UPDATE_ALIASES,
       validate: {
         body: schema.any(),
-        query: schema.object({
-          dataSourceId: schema.maybe(schema.string()),
-        }),
+        query: createQueryValidationSchema(),
       },
     },
     indexService.updateAliases

@@ -7,6 +7,7 @@ import { IRouter } from 'opensearch-dashboards/server';
 import { schema } from '@osd/config-schema';
 import { API } from '../utils/constants';
 import { NodeServices } from '../models/interfaces';
+import { createQueryValidationSchema } from '../utils/helpers';
 
 export function setupDetectorRoutes(services: NodeServices, router: IRouter) {
   const { detectorsService } = services;
@@ -16,9 +17,7 @@ export function setupDetectorRoutes(services: NodeServices, router: IRouter) {
       path: API.DETECTORS_BASE,
       validate: {
         body: schema.any(),
-        query: schema.object({
-          dataSourceId: schema.maybe(schema.string()),
-        }),
+        query: createQueryValidationSchema(),
       },
     },
     detectorsService.createDetector
@@ -31,9 +30,7 @@ export function setupDetectorRoutes(services: NodeServices, router: IRouter) {
         params: schema.object({
           detectorId: schema.string(),
         }),
-        query: schema.object({
-          dataSourceId: schema.maybe(schema.string()),
-        }),
+        query: createQueryValidationSchema(),
       },
     },
     detectorsService.getDetector
@@ -44,9 +41,7 @@ export function setupDetectorRoutes(services: NodeServices, router: IRouter) {
       path: `${API.SEARCH_DETECTORS}`,
       validate: {
         body: schema.any(),
-        query: schema.object({
-          dataSourceId: schema.maybe(schema.string()),
-        }),
+        query: createQueryValidationSchema(),
       },
     },
     detectorsService.searchDetectors
@@ -60,9 +55,7 @@ export function setupDetectorRoutes(services: NodeServices, router: IRouter) {
           detectorId: schema.string(),
         }),
         body: schema.any(),
-        query: schema.object({
-          dataSourceId: schema.maybe(schema.string()),
-        }),
+        query: createQueryValidationSchema(),
       },
     },
     detectorsService.updateDetector
@@ -76,9 +69,7 @@ export function setupDetectorRoutes(services: NodeServices, router: IRouter) {
           detectorId: schema.string(),
         }),
         body: schema.any(),
-        query: schema.object({
-          dataSourceId: schema.maybe(schema.string()),
-        }),
+        query: createQueryValidationSchema(),
       },
     },
     detectorsService.deleteDetector

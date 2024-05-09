@@ -7,6 +7,7 @@ import { IRouter } from 'opensearch-dashboards/server';
 import { schema } from '@osd/config-schema';
 import { NodeServices } from '../models/interfaces';
 import { API } from '../utils/constants';
+import { createQueryValidationSchema } from '../utils/helpers';
 
 export function setupNotificationsRoutes(services: NodeServices, router: IRouter) {
   const { notificationsService } = services;
@@ -18,9 +19,7 @@ export function setupNotificationsRoutes(services: NodeServices, router: IRouter
         params: schema.object({
           id: schema.string(),
         }),
-        query: schema.object({
-          dataSourceId: schema.maybe(schema.string()),
-        }),
+        query: createQueryValidationSchema(),
       },
     },
     notificationsService.getChannel
@@ -30,9 +29,7 @@ export function setupNotificationsRoutes(services: NodeServices, router: IRouter
     {
       path: API.CHANNELS,
       validate: {
-        query: schema.object({
-          dataSourceId: schema.maybe(schema.string()),
-        }),
+        query: createQueryValidationSchema(),
       },
     },
     notificationsService.getChannels
@@ -42,9 +39,7 @@ export function setupNotificationsRoutes(services: NodeServices, router: IRouter
     {
       path: API.NOTIFICATION_FEATURES,
       validate: {
-        query: schema.object({
-          dataSourceId: schema.maybe(schema.string()),
-        }),
+        query: createQueryValidationSchema(),
       },
     },
     notificationsService.getNotificationsFeatures

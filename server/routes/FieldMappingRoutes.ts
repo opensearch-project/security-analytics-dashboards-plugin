@@ -7,6 +7,7 @@ import { IRouter } from 'opensearch-dashboards/server';
 import { schema } from '@osd/config-schema';
 import { API } from '../utils/constants';
 import { NodeServices } from '../models/interfaces';
+import { createQueryValidationSchema } from '../utils/helpers';
 
 export function setupFieldMappingRoutes(services: NodeServices, router: IRouter) {
   const { fieldMappingService } = services;
@@ -15,10 +16,9 @@ export function setupFieldMappingRoutes(services: NodeServices, router: IRouter)
     {
       path: API.MAPPINGS_VIEW,
       validate: {
-        query: schema.object({
+        query: createQueryValidationSchema({
           indexName: schema.string(),
           ruleTopic: schema.maybe(schema.string()),
-          dataSourceId: schema.maybe(schema.string()),
         }),
       },
     },
@@ -29,9 +29,8 @@ export function setupFieldMappingRoutes(services: NodeServices, router: IRouter)
     {
       path: API.MAPPINGS_BASE,
       validate: {
-        query: schema.object({
+        query: createQueryValidationSchema({
           indexName: schema.string(),
-          dataSourceId: schema.maybe(schema.string()),
         }),
       },
     },
@@ -43,9 +42,7 @@ export function setupFieldMappingRoutes(services: NodeServices, router: IRouter)
       path: API.MAPPINGS_BASE,
       validate: {
         body: schema.any(),
-        query: schema.object({
-          dataSourceId: schema.maybe(schema.string()),
-        }),
+        query: createQueryValidationSchema(),
       },
     },
     fieldMappingService.createMappings

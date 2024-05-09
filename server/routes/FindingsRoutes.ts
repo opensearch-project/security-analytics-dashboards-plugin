@@ -7,6 +7,7 @@ import { IRouter } from 'opensearch-dashboards/server';
 import { schema } from '@osd/config-schema';
 import { NodeServices } from '../models/interfaces';
 import { API } from '../utils/constants';
+import { createQueryValidationSchema } from '../utils/helpers';
 
 export function setupFindingsRoutes(services: NodeServices, router: IRouter) {
   const { findingsService } = services;
@@ -15,7 +16,7 @@ export function setupFindingsRoutes(services: NodeServices, router: IRouter) {
     {
       path: `${API.GET_FINDINGS}`,
       validate: {
-        query: schema.object({
+        query: createQueryValidationSchema({
           detectorType: schema.maybe(schema.string()),
           detector_id: schema.maybe(schema.string()),
           sortOrder: schema.maybe(schema.string()),
@@ -25,7 +26,6 @@ export function setupFindingsRoutes(services: NodeServices, router: IRouter) {
           severity: schema.maybe(schema.string()),
           searchString: schema.maybe(schema.string()),
           findingIds: schema.maybe(schema.arrayOf(schema.string())),
-          dataSourceId: schema.maybe(schema.string()),
         }),
       },
     },

@@ -7,6 +7,7 @@ import { IRouter } from 'opensearch-dashboards/server';
 import { NodeServices } from '../models/interfaces';
 import { API } from '../utils/constants';
 import { schema } from '@osd/config-schema';
+import { createQueryValidationSchema } from '../utils/helpers';
 
 export function setupMetricsRoutes(services: NodeServices, router: IRouter) {
   const { metricsService } = services;
@@ -14,9 +15,7 @@ export function setupMetricsRoutes(services: NodeServices, router: IRouter) {
     {
       path: `${API.METRICS}`,
       validate: {
-        query: schema.object({
-          dataSourceId: schema.maybe(schema.string()),
-        }),
+        query: createQueryValidationSchema(),
       },
     },
     metricsService.getMetrics
@@ -27,9 +26,7 @@ export function setupMetricsRoutes(services: NodeServices, router: IRouter) {
       path: `${API.METRICS}`,
       validate: {
         body: schema.any(),
-        query: schema.object({
-          dataSourceId: schema.maybe(schema.string()),
-        }),
+        query: createQueryValidationSchema(),
       },
     },
     metricsService.updateMetrics
