@@ -47,7 +47,11 @@ export interface TriggerAction {
  * API interfaces
  */
 
-export type GetAlertsParams =
+export type GetAlertsParams = {
+  sortOrder?: string;
+  size?: number;
+  startIndex?: number;
+} & (
   | {
       detector_id: string;
       detectorType?: string;
@@ -55,10 +59,13 @@ export type GetAlertsParams =
   | {
       detectorType: string;
       detector_id?: string;
-    };
+    }
+);
 
 export interface GetAlertsResponse {
   alerts: AlertResponse[];
+  total_alerts: number;
+  detectorType: string;
 }
 
 export interface AlertItem {

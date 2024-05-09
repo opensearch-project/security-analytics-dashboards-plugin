@@ -4,7 +4,6 @@
  */
 
 import {
-  ILegacyCustomClusterClient,
   IOpenSearchDashboardsResponse,
   OpenSearchDashboardsRequest,
   OpenSearchDashboardsResponseFactory,
@@ -23,12 +22,11 @@ import {
   UpdateLogTypeResponse,
 } from '../../types';
 import { CLIENT_LOGTYPE_METHODS } from '../utils/constants';
+import { MDSEnabledClientService } from './MDSEnabledClientService';
 
-export class LogTypeService {
-  constructor(private osDriver: ILegacyCustomClusterClient) {}
-
+export class LogTypeService extends MDSEnabledClientService {
   createLogType = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest<unknown, unknown, CreateLogTypeRequestBody>,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<
@@ -36,8 +34,8 @@ export class LogTypeService {
   > => {
     try {
       const logType = request.body;
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const createLogTypeResponse: CreateLogTypeResponse = await callWithRequest(
+      const client = this.getClient(request, context);
+      const createLogTypeResponse: CreateLogTypeResponse = await client(
         CLIENT_LOGTYPE_METHODS.CREATE_LOGTYPE,
         { body: logType }
       );
@@ -62,7 +60,7 @@ export class LogTypeService {
   };
 
   searchLogTypes = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<
@@ -70,8 +68,8 @@ export class LogTypeService {
   > => {
     try {
       const query = request.body;
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const searchLogTypesResponse: SearchLogTypesResponse = await callWithRequest(
+      const client = this.getClient(request, context);
+      const searchLogTypesResponse: SearchLogTypesResponse = await client(
         CLIENT_LOGTYPE_METHODS.SEARCH_LOGTYPES,
         {
           body: {
@@ -103,7 +101,7 @@ export class LogTypeService {
   };
 
   updateLogType = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest<{ logTypeId: string }, unknown, LogTypeBase>,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<
@@ -113,8 +111,8 @@ export class LogTypeService {
       const logType = request.body;
       const { logTypeId } = request.params;
       const params: UpdateLogTypeParams = { body: logType, logTypeId };
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const updateLogTypeResponse: UpdateLogTypeResponse = await callWithRequest(
+      const client = this.getClient(request, context);
+      const updateLogTypeResponse: UpdateLogTypeResponse = await client(
         CLIENT_LOGTYPE_METHODS.UPDATE_LOGTYPE,
         params
       );
@@ -139,7 +137,7 @@ export class LogTypeService {
   };
 
   deleteLogType = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest<{ logTypeId: string }>,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<
@@ -148,8 +146,8 @@ export class LogTypeService {
     try {
       const { logTypeId } = request.params;
       const params: DeleteLogTypeParams = { logTypeId };
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const deleteLogTypeResponse: DeleteLogTypeResponse = await callWithRequest(
+      const client = this.getClient(request, context);
+      const deleteLogTypeResponse: DeleteLogTypeResponse = await client(
         CLIENT_LOGTYPE_METHODS.DELETE_LOGTYPE,
         params
       );

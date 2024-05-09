@@ -17,3 +17,5 @@ export * from './Correlations';
 export * from './LogTypes';
 export * from './Metrics';
 export * from './SecurityAnalyticsContext';
+export * from './DataSourceContext';
+export * from './DataSource';

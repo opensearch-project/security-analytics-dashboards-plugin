@@ -4,7 +4,6 @@
  */
 
 import {
-  ILegacyCustomClusterClient,
   OpenSearchDashboardsRequest,
   OpenSearchDashboardsResponseFactory,
   IOpenSearchDashboardsResponse,
@@ -13,29 +12,26 @@ import {
 } from 'opensearch-dashboards/server';
 import { ServerResponse } from '../models/types';
 import { CLIENT_DETECTOR_METHODS } from '../utils/constants';
-import { GetFindingsParams, GetFindingsResponse } from '../../types';
+import { DataSourceRequestParams, GetFindingsParams, GetFindingsResponse } from '../../types';
+import { MDSEnabledClientService } from './MDSEnabledClientService';
 
-export default class FindingsService {
-  osDriver: ILegacyCustomClusterClient;
-
-  constructor(osDriver: ILegacyCustomClusterClient) {
-    this.osDriver = osDriver;
-  }
-
+export default class FindingsService extends MDSEnabledClientService {
   /**
    * Calls backend GET Findings API.
    */
   getFindings = async (
     context: RequestHandlerContext,
-    request: OpenSearchDashboardsRequest<{}, GetFindingsParams>,
+    request: OpenSearchDashboardsRequest<{}, GetFindingsParams & DataSourceRequestParams>,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<
     IOpenSearchDashboardsResponse<ServerResponse<GetFindingsResponse> | ResponseError>
   > => {
     try {
-      const params: GetFindingsParams = { ...request.query };
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const getFindingsResponse: GetFindingsResponse = await callWithRequest(
+      const params: GetFindingsParams & DataSourceRequestParams = { ...request.query };
+      const client = this.getClient(request, context);
+      // Delete the dataSourceId since this query param is not supported by the finding API
+      delete params['dataSourceId'];
+      const getFindingsResponse: GetFindingsResponse = await client(
         CLIENT_DETECTOR_METHODS.GET_FINDINGS,
         params
       );

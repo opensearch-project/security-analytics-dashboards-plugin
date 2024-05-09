@@ -9,7 +9,6 @@ import {
   IOpenSearchDashboardsResponse,
   ResponseError,
   RequestHandlerContext,
-  ILegacyCustomClusterClient,
 } from 'opensearch-dashboards/server';
 import {
   CreateRuleParams,
@@ -27,19 +26,14 @@ import { load, safeDump } from 'js-yaml';
 import moment from 'moment';
 import { Rule } from '../../types';
 import { DEFAULT_RULE_UUID } from '../../common/constants';
+import { MDSEnabledClientService } from './MDSEnabledClientService';
 
-export default class RulesService {
-  osDriver: ILegacyCustomClusterClient;
-
-  constructor(osDriver: ILegacyCustomClusterClient) {
-    this.osDriver = osDriver;
-  }
-
+export default class RulesService extends MDSEnabledClientService {
   /**
    * Calls backend POST Rules API.
    */
   createRule = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<CreateRuleResponse> | ResponseError>> => {
@@ -87,8 +81,8 @@ export default class RulesService {
         body: ruleYamlPayload,
         category: encodeURIComponent(category),
       };
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const createRuleResponse: CreateRuleResponse = await callWithRequest(
+      const client = this.getClient(request, context);
+      const createRuleResponse: CreateRuleResponse = await client(
         CLIENT_RULE_METHODS.CREATE_RULE,
         params
       );
@@ -113,7 +107,7 @@ export default class RulesService {
   };
 
   getRules = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest<{}, GetRulesParams>,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<GetRulesResponse> | ResponseError>> => {
@@ -123,11 +117,8 @@ export default class RulesService {
         prePackaged,
         body: request.body,
       };
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const getRuleResponse: GetRulesResponse = await callWithRequest(
-        CLIENT_RULE_METHODS.GET_RULES,
-        params
-      );
+      const client = this.getClient(request, context);
+      const getRuleResponse: GetRulesResponse = await client(CLIENT_RULE_METHODS.GET_RULES, params);
 
       return response.custom({
         statusCode: 200,
@@ -149,13 +140,13 @@ export default class RulesService {
   };
 
   deleteRule = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest<DeleteRuleParams, {}>,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<DeleteRuleResponse> | ResponseError>> => {
     try {
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const deleteRuleResponse: DeleteRuleResponse = await callWithRequest(
+      const client = this.getClient(request, context);
+      const deleteRuleResponse: DeleteRuleResponse = await client(
         CLIENT_RULE_METHODS.DELETE_RULE,
         request.params
       );
@@ -182,7 +173,7 @@ export default class RulesService {
    * Calls backend PUT Rules API.
    */
   updateRule = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<UpdateRuleResponse> | ResponseError>> => {
@@ -228,8 +219,8 @@ export default class RulesService {
 
       const ruleYamlPayload = safeDump(jsonPayload);
       const params: UpdateRuleParams = { body: ruleYamlPayload, category, ruleId };
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const createRuleResponse: UpdateRuleResponse = await callWithRequest(
+      const client = this.getClient(request, context);
+      const createRuleResponse: UpdateRuleResponse = await client(
         CLIENT_RULE_METHODS.UPDATE_RULE,
         params
       );

@@ -7,6 +7,7 @@ import { IRouter } from 'opensearch-dashboards/server';
 import { API } from '../utils/constants';
 import { NodeServices } from '../models/interfaces';
 import { schema } from '@osd/config-schema';
+import { createQueryValidationSchema } from '../utils/helpers';
 
 export function setupIndexRoutes(services: NodeServices, router: IRouter) {
   const { indexService } = services;
@@ -14,7 +15,9 @@ export function setupIndexRoutes(services: NodeServices, router: IRouter) {
   router.get(
     {
       path: API.INDICES_BASE,
-      validate: {},
+      validate: {
+        query: createQueryValidationSchema(),
+      },
     },
     indexService.getIndices
   );
@@ -22,7 +25,9 @@ export function setupIndexRoutes(services: NodeServices, router: IRouter) {
   router.get(
     {
       path: API.ALIASES_BASE,
-      validate: {},
+      validate: {
+        query: createQueryValidationSchema(),
+      },
     },
     indexService.getAliases
   );
@@ -32,6 +37,7 @@ export function setupIndexRoutes(services: NodeServices, router: IRouter) {
       path: `${API.INDICES_BASE}`,
       validate: {
         body: schema.any(),
+        query: createQueryValidationSchema(),
       },
     },
     indexService.getIndexFields
@@ -42,6 +48,7 @@ export function setupIndexRoutes(services: NodeServices, router: IRouter) {
       path: API.UPDATE_ALIASES,
       validate: {
         body: schema.any(),
+        query: createQueryValidationSchema(),
       },
     },
     indexService.updateAliases

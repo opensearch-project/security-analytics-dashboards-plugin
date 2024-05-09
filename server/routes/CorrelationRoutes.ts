@@ -7,6 +7,7 @@ import { IRouter } from 'opensearch-dashboards/server';
 import { schema } from '@osd/config-schema';
 import { API } from '../utils/constants';
 import { NodeServices } from '../models/interfaces';
+import { createQueryValidationSchema } from '../utils/helpers';
 
 export function setupCorrelationRoutes(services: NodeServices, router: IRouter) {
   const { correlationService } = services;
@@ -16,6 +17,7 @@ export function setupCorrelationRoutes(services: NodeServices, router: IRouter) 
       path: `${API.CORRELATION_BASE}/_search`,
       validate: {
         body: schema.any(),
+        query: createQueryValidationSchema(),
       },
     },
     correlationService.getCorrelationRules
@@ -26,6 +28,7 @@ export function setupCorrelationRoutes(services: NodeServices, router: IRouter) 
       path: `${API.CORRELATION_BASE}`,
       validate: {
         body: schema.any(),
+        query: createQueryValidationSchema(),
       },
     },
     correlationService.createCorrelationRule
@@ -39,6 +42,7 @@ export function setupCorrelationRoutes(services: NodeServices, router: IRouter) 
         params: schema.object({
           ruleId: schema.string(),
         }),
+        query: createQueryValidationSchema(),
       },
     },
     correlationService.updateCorrelationRule
@@ -48,7 +52,7 @@ export function setupCorrelationRoutes(services: NodeServices, router: IRouter) 
     {
       path: `${API.FINDINGS_BASE}/correlate`,
       validate: {
-        query: schema.object({
+        query: createQueryValidationSchema({
           finding: schema.string(),
           detector_type: schema.string(),
           nearby_findings: schema.number(),
@@ -62,7 +66,7 @@ export function setupCorrelationRoutes(services: NodeServices, router: IRouter) 
     {
       path: `${API.CORRELATIONS}`,
       validate: {
-        query: schema.object({
+        query: createQueryValidationSchema({
           start_time: schema.string(),
           end_time: schema.string(),
         }),
@@ -78,6 +82,7 @@ export function setupCorrelationRoutes(services: NodeServices, router: IRouter) 
         params: schema.object({
           ruleId: schema.string(),
         }),
+        query: createQueryValidationSchema(),
       },
     },
     correlationService.deleteCorrelationRule

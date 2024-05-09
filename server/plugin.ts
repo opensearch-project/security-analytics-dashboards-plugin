@@ -40,6 +40,12 @@ import {
 import { LogTypeService } from './services/LogTypeService';
 import MetricsService from './services/MetricsService';
 import { SecurityAnalyticsPluginConfigType } from '../config';
+import { DataSourcePluginSetup } from 'src/plugins/data_source/server';
+import { securityAnalyticsPlugin } from './clusters/securityAnalyticsPlugin';
+
+export interface SecurityAnalyticsPluginDependencies {
+  dataSource?: DataSourcePluginSetup;
+}
 
 export class SecurityAnalyticsPlugin
   implements Plugin<SecurityAnalyticsPluginSetup, SecurityAnalyticsPluginStart> {
@@ -47,22 +53,29 @@ export class SecurityAnalyticsPlugin
     private initializerContext: PluginInitializerContext<SecurityAnalyticsPluginConfigType>
   ) {}
 
-  public async setup(core: CoreSetup) {
+  public async setup(core: CoreSetup, { dataSource }: SecurityAnalyticsPluginDependencies) {
     // Create OpenSearch client that aware of SA API endpoints
-    const osDriver: ILegacyCustomClusterClient = createSecurityAnalyticsCluster(core);
+    const securityAnalyticsClient: ILegacyCustomClusterClient = createSecurityAnalyticsCluster(
+      core
+    );
+    const dataSourceEnabled = !!dataSource;
+
+    if (dataSourceEnabled) {
+      dataSource.registerCustomApiSchema(securityAnalyticsPlugin);
+    }
 
     // Initialize services
     const services: NodeServices = {
-      detectorsService: new DetectorService(osDriver),
-      correlationService: new CorrelationService(osDriver),
-      indexService: new IndexService(osDriver),
-      findingsService: new FindingsService(osDriver),
-      opensearchService: new OpenSearchService(osDriver),
-      fieldMappingService: new FieldMappingService(osDriver),
-      alertService: new AlertService(osDriver),
-      rulesService: new RulesService(osDriver),
-      notificationsService: new NotificationsService(osDriver),
-      logTypeService: new LogTypeService(osDriver),
+      detectorsService: new DetectorService(securityAnalyticsClient, dataSourceEnabled),
+      correlationService: new CorrelationService(securityAnalyticsClient, dataSourceEnabled),
+      indexService: new IndexService(securityAnalyticsClient, dataSourceEnabled),
+      findingsService: new FindingsService(securityAnalyticsClient, dataSourceEnabled),
+      opensearchService: new OpenSearchService(securityAnalyticsClient, dataSourceEnabled),
+      fieldMappingService: new FieldMappingService(securityAnalyticsClient, dataSourceEnabled),
+      alertService: new AlertService(securityAnalyticsClient, dataSourceEnabled),
+      rulesService: new RulesService(securityAnalyticsClient, dataSourceEnabled),
+      notificationsService: new NotificationsService(securityAnalyticsClient, dataSourceEnabled),
+      logTypeService: new LogTypeService(securityAnalyticsClient, dataSourceEnabled),
       metricsService: new MetricsService(),
     };
 
