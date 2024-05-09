@@ -229,9 +229,16 @@ export default class FindingDetailsFlyout extends Component<
     this.setState({ ...this.state, ruleViewerFlyoutData: null });
   };
 
+  shouldRenderRule = ({ id }: Query) => {
+    const { allRules = {} } = this.state;
+    const isSigmaRule = !!allRules[id];
+
+    return isSigmaRule;
+  };
+
   renderRuleDetails = (rules: Query[] = []) => {
     const { allRules = {} } = this.state;
-    return rules.map((rule, key) => {
+    return rules.filter(this.shouldRenderRule).map((rule, key) => {
       const fullRule = allRules[rule.id];
       const severity = capitalizeFirstLetter(fullRule.level);
       return (
