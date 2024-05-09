@@ -89,6 +89,13 @@ export default class FindingDetailsFlyout extends Component<
 > {
   constructor(props: FindingDetailsFlyoutProps) {
     super(props);
+    const relatedDocuments: FindingDocumentItem[] = this.getRelatedDocuments();
+    const docIdToExpandedRowMap: FindingDetailsFlyoutState['docIdToExpandedRowMap'] = {};
+
+    if (relatedDocuments.length === 1) {
+      docIdToExpandedRowMap[relatedDocuments[0].id] = this.createDocumentBlock(relatedDocuments[0]);
+    }
+
     this.state = {
       loading: false,
       ruleViewerFlyoutData: null,
@@ -109,7 +116,7 @@ export default class FindingDetailsFlyout extends Component<
       loadingIndexPatternId: true,
       areCorrelationsLoading: true,
       allRules: {},
-      docIdToExpandedRowMap: {},
+      docIdToExpandedRowMap,
     };
   }
 
@@ -318,8 +325,7 @@ export default class FindingDetailsFlyout extends Component<
     return patternId;
   };
 
-  toggleDocumentDetails(item: FindingDocumentItem) {
-    const docIdToExpandedRowMapValues = { ...this.state.docIdToExpandedRowMap };
+  createDocumentBlock = (item: FindingDocumentItem) => {
     let formattedDocument = '';
     try {
       formattedDocument = document ? JSON.stringify(JSON.parse(item.document), null, 2) : '';
@@ -327,30 +333,23 @@ export default class FindingDetailsFlyout extends Component<
       // no-op
     }
 
-    if (docIdToExpandedRowMapValues[item.id]) {
-      delete docIdToExpandedRowMapValues[item.id];
-    } else {
-      docIdToExpandedRowMapValues[item.id] = (
-        <EuiFormRow fullWidth={true}>
-          <EuiCodeBlock
-            language="json"
-            isCopyable
-            data-test-subj={`finding-details-flyout-rule-document-${item.itemIdx}`}
-          >
-            {formattedDocument}
-          </EuiCodeBlock>
-        </EuiFormRow>
-      );
-    }
+    return (
+      <EuiFormRow fullWidth={true} style={{ width: '100%' }}>
+        <EuiCodeBlock
+          language="json"
+          isCopyable
+          data-test-subj={`finding-details-flyout-rule-document-${item.itemIdx}`}
+        >
+          {formattedDocument}
+        </EuiCodeBlock>
+      </EuiFormRow>
+    );
+  };
 
-    this.setState({ docIdToExpandedRowMap: docIdToExpandedRowMapValues });
-  }
-
-  renderFindingDocuments(loadingIndexPatternId: boolean) {
+  getRelatedDocuments() {
     const {
-      finding: { index, document_list, related_doc_ids },
+      finding: { document_list, related_doc_ids },
     } = this.props;
-    const { indexPatternId, docIdToExpandedRowMap } = this.state;
     const relatedDocIdsSet = new Set(related_doc_ids);
     const relatedDocuments: FindingDocumentItem[] = [];
     document_list.forEach((documentInfo) => {
@@ -358,6 +357,28 @@ export default class FindingDetailsFlyout extends Component<
         relatedDocuments.push({ ...documentInfo, itemIdx: relatedDocuments.length });
       }
     });
+
+    return relatedDocuments;
+  }
+
+  toggleDocumentDetails(item: FindingDocumentItem) {
+    const docIdToExpandedRowMapValues = { ...this.state.docIdToExpandedRowMap };
+
+    if (docIdToExpandedRowMapValues[item.id]) {
+      delete docIdToExpandedRowMapValues[item.id];
+    } else {
+      docIdToExpandedRowMapValues[item.id] = this.createDocumentBlock(item);
+    }
+
+    this.setState({ docIdToExpandedRowMap: docIdToExpandedRowMapValues });
+  }
+
+  renderFindingDocuments(loadingIndexPatternId: boolean) {
+    const {
+      finding: { index },
+    } = this.props;
+    const { indexPatternId, docIdToExpandedRowMap } = this.state;
+    const relatedDocuments: FindingDocumentItem[] = this.getRelatedDocuments();
 
     if (relatedDocuments.length === 0) {
       return (
@@ -379,10 +400,10 @@ export default class FindingDetailsFlyout extends Component<
     const actions = [
       {
         render: ({ id }: FindingDocumentItem) => (
-          <EuiToolTip title="View surrounding documents">
+          <EuiToolTip content="View surrounding documents">
             <EuiButtonIcon
               disabled={loadingIndexPatternId}
-              iconType={'popout'}
+              iconType={'inspect'}
               data-test-subj={'finding-details-flyout-view-surrounding-documents'}
               onClick={() => {
                 if (indexPatternId) {
@@ -424,7 +445,7 @@ export default class FindingDetailsFlyout extends Component<
     return (
       <>
         <EuiTitle size={'s'}>
-          <h3>Documents</h3>
+          <h3>Documents ({relatedDocuments.length})</h3>
         </EuiTitle>
         <EuiSpacer />
         <EuiFormRow label={'Index'} data-test-subj={`finding-details-flyout-rule-document-index`}>
