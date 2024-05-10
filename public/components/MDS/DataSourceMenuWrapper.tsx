@@ -69,6 +69,7 @@ export const DataSourceMenuWrapper: React.FC<DataSourceMenuWrapperProps> = ({
       />
       <Route
         path={[
+          ROUTES.ROOT,
           ROUTES.OVERVIEW,
           ROUTES.DETECTORS,
           ROUTES.ALERTS,
