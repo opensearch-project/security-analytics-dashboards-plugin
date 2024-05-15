@@ -82,6 +82,10 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
   const [logTypeOptions, setLogTypeOptions] = useState<any[]>([]);
   const dataSourceContext = useContext(DataSourceContext);
 
+  // This is used to avoid refreshing the log type options on first render since that clears the
+  // selected log type when importing log types.
+  const firstUpdate = useRef(true);
+
   const onEditorTypeChange = (optionId: string) => {
     setSelectedEditorType(optionId);
   };
@@ -92,9 +96,14 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
   }, []);
 
   useEffect(() => {
+    const shouldResetLogTypeOptions = mode !== 'edit' && !firstUpdate.current;
+    if (!shouldResetLogTypeOptions) {
+      return;
+    }
+
     refreshLogTypeOptions();
     resetLogType.current = true;
-    console.log('refresh log types');
+    firstUpdate.current = false;
   }, [dataSourceContext.dataSource]);
 
   const validateTags = (fields: string[]) => {
