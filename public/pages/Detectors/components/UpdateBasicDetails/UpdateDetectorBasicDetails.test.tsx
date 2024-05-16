@@ -9,7 +9,7 @@ import { expect } from '@jest/globals';
 import { UpdateDetectorBasicDetails } from './UpdateBasicDetails';
 import { act } from 'react-dom/test-utils';
 import { mount } from 'enzyme';
-import { coreContextMock, saContextMock } from '../../../../../test/mocks/useContext.mock';
+import { coreContextMock, mockContexts } from '../../../../../test/mocks/useContext.mock';
 
 describe('<UpdateDetectorBasicDetails /> spec', () => {
   it('renders the component', async () => {
@@ -17,7 +17,7 @@ describe('<UpdateDetectorBasicDetails /> spec', () => {
     await act(async () => {
       jest
         .spyOn(React, 'useContext')
-        .mockImplementation(() => ({ ...saContextMock, ...coreContextMock }));
+        .mockImplementation(() => ({ ...mockContexts, ...coreContextMock }));
       wrapper = mount(<UpdateDetectorBasicDetails {...props} />);
     });
     wrapper.update();

@@ -68,6 +68,11 @@ const mockContexts = {
         };
       },
     },
+    logTypeService: {
+      searchLogTypes: () => {
+        return Promise.resolve([]);
+      },
+    },
   },
   metrics: {
     detectorMetricsManager: {

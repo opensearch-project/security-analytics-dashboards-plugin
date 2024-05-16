@@ -4,23 +4,20 @@
  */
 
 import { BrowserServices } from '../../../models/interfaces';
-import { DetectorHit, RuleSource } from '../../../../server/models/interfaces';
-import { AlertItem, FindingItem } from './interfaces';
+import { RuleSource } from '../../../../server/models/interfaces';
 import { DEFAULT_DATE_RANGE, DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast, isThreatIntelQuery } from '../../../utils/helpers';
 import dateMath from '@elastic/datemath';
 import moment from 'moment';
 import { DataStore } from '../../../store/DataStore';
-import { Finding } from '../../../../types';
-
-export interface OverviewViewModel {
-  detectors: DetectorHit[];
-  findings: FindingItem[];
-  alerts: AlertItem[];
-}
-
-export type OverviewViewModelRefreshHandler = (overviewState: OverviewViewModel) => void;
+import {
+  Finding,
+  OverviewAlertItem,
+  OverviewFindingItem,
+  OverviewViewModel,
+  OverviewViewModelRefreshHandler,
+} from '../../../../types';
 
 export class OverviewViewModelActor {
   private overviewViewModel: OverviewViewModel = {
@@ -74,7 +71,7 @@ export class OverviewViewModelActor {
       });
     });
     const detectorIds = detectorInfo.keys();
-    let findingItems: FindingItem[] = [];
+    let findingItems: OverviewFindingItem[] = [];
     const ruleIds = new Set<string>();
 
     try {
@@ -82,7 +79,7 @@ export class OverviewViewModelActor {
         let detectorFindings: Finding[] = await DataStore.findings.getFindingsPerDetector(id);
         const logType = detectorInfo.get(id)?.logType;
         const detectorName = detectorInfo.get(id)?.name || '';
-        const detectorFindingItems: FindingItem[] = detectorFindings.map((finding) => {
+        const detectorFindingItems: OverviewFindingItem[] = detectorFindings.map((finding) => {
           const ruleQueries = finding.queries.filter(({ id }) => !isThreatIntelQuery(id));
           const ids = ruleQueries.map((query) => query.id);
           ids.forEach((id) => ruleIds.add(id));
@@ -94,7 +91,7 @@ export class OverviewViewModelActor {
             detector: detectorName,
             findingName: finding.id,
             id: finding.id,
-            time: findingTime,
+            time: findingTime.getTime(),
             logType: logType || '',
             ruleId: ruleQueries[0]?.id || finding.queries[0].id,
             ruleName: '',
@@ -127,7 +124,7 @@ export class OverviewViewModelActor {
   }
 
   private async updateAlerts() {
-    let alertItems: AlertItem[] = [];
+    let alertItems: OverviewAlertItem[] = [];
 
     try {
       for (let detector of this.overviewViewModel.detectors) {
@@ -136,7 +133,7 @@ export class OverviewViewModelActor {
           id,
           detector._source.name
         );
-        const detectorAlertItems: AlertItem[] = detectorAlerts.map((alert) => ({
+        const detectorAlertItems: OverviewAlertItem[] = detectorAlerts.map((alert) => ({
           id: alert.id,
           severity: alert.severity,
           time: alert.last_notification_time,

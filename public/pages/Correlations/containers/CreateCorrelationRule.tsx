@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Form, Formik, FormikErrors, FormikTouched } from 'formik';
 import { ContentPanel } from '../../../components/ContentPanel';
 import { DataStore } from '../../../store/DataStore';
@@ -37,6 +37,7 @@ import {
   CorrelationRuleAction,
   CorrelationRuleModel,
   CorrelationRuleQuery,
+  DataSourceProps,
 } from '../../../../types';
 import { BREADCRUMBS, ROUTES } from '../../../utils/constants';
 import { CoreServicesContext } from '../../../components/core_services';
@@ -44,8 +45,9 @@ import { RouteComponentProps, useParams } from 'react-router-dom';
 import { validateName } from '../../../utils/validation';
 import { FieldMappingService, IndexService } from '../../../services';
 import { errorNotificationToast, getDataSources, getLogTypeOptions } from '../../../utils/helpers';
+import _ from 'lodash';
 
-export interface CreateCorrelationRuleProps {
+export interface CreateCorrelationRuleProps extends DataSourceProps {
   indexService: IndexService;
   fieldMappingService: FieldMappingService;
   history: RouteComponentProps<
@@ -102,6 +104,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
   const [period, setPeriod] = useState({ interval: 1, unit: 'MINUTES' });
   const [dataFilterEnabled, setDataFilterEnabled] = useState(false);
   const [groupByEnabled, setGroupByEnabled] = useState(false);
+  const resetForm = useRef(false);
 
   const validateCorrelationRule = useCallback(
     (rule: CorrelationRuleModel) => {
@@ -190,7 +193,9 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
       setLogTypeOptions(options);
     };
     setupLogTypeOptions();
-  }, []);
+
+    resetForm.current = true;
+  }, [props.dataSource]);
 
   useEffect(() => {
     setPeriod(parseTime(initialValues.time_window));
@@ -242,7 +247,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
 
   useEffect(() => {
     getIndices();
-  }, [props.indexService]);
+  }, [props.indexService, props.dataSource]);
 
   const getLogFields = useCallback(
     async (indexName: string) => {
@@ -723,6 +728,11 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
         enableReinitialize={true}
       >
         {({ values: { name, queries, time_window }, touched, errors, ...props }) => {
+          if (resetForm.current) {
+            resetForm.current = false;
+            props.resetForm();
+          }
+
           return (
             <Form>
               <ContentPanel

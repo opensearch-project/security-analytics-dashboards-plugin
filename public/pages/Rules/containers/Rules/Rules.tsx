@@ -13,8 +13,9 @@ import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { DataStore } from '../../../../store/DataStore';
+import { DataSourceProps } from '../../../../../types';
 
-export interface RulesProps extends RouteComponentProps {
+export interface RulesProps extends RouteComponentProps, DataSourceProps {
   notifications?: NotificationsStart;
 }
 
@@ -46,8 +47,11 @@ export const Rules: React.FC<RulesProps> = (props) => {
 
   useEffect(() => {
     context?.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.RULES]);
+  }, []);
+
+  useEffect(() => {
     getRules();
-  }, [getRules]);
+  }, [getRules, props.dataSource]);
 
   const openImportPage = useCallback(() => {
     props.history.push(ROUTES.RULES_IMPORT);

@@ -27,7 +27,7 @@ export default ({
   indexService,
   ruleService,
   notificationsService,
-  httpClientMock,
-  notificationsMock,
   openSearchService,
 } as unknown) as BrowserServices;
+
+export { httpClientMock, notificationsMock };

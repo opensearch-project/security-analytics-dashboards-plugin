@@ -6,13 +6,13 @@
 import { EuiBasicTableColumn, EuiButton, EuiEmptyPrompt } from '@elastic/eui';
 import { DEFAULT_EMPTY_DATA, ROUTES, SortDirection } from '../../../../utils/constants';
 import React, { useEffect, useState } from 'react';
-import { AlertItem } from '../../models/interfaces';
 import { TableWidget } from './TableWidget';
 import { WidgetContainer } from './WidgetContainer';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { renderTime } from '../../../../utils/helpers';
+import { OverviewAlertItem } from '../../../../../types';
 
-const columns: EuiBasicTableColumn<AlertItem>[] = [
+const columns: EuiBasicTableColumn<OverviewAlertItem>[] = [
   {
     field: 'time',
     name: 'Time',
@@ -36,7 +36,7 @@ const columns: EuiBasicTableColumn<AlertItem>[] = [
 ];
 
 export interface RecentAlertsWidgetProps {
-  items: AlertItem[];
+  items: OverviewAlertItem[];
   loading?: boolean;
 }
 
@@ -44,7 +44,7 @@ export const RecentAlertsWidget: React.FC<RecentAlertsWidgetProps> = ({
   items,
   loading = false,
 }) => {
-  const [alertItems, setAlertItems] = useState<AlertItem[]>([]);
+  const [alertItems, setAlertItems] = useState<OverviewAlertItem[]>([]);
   const [widgetEmptyMessage, setwidgetEmptyMessage] = useState<React.ReactNode | undefined>(
     undefined
   );

@@ -21,11 +21,13 @@ import {
   getCorrelationRulesTableColumns,
   getCorrelationRulesTableSearchConfig,
 } from '../utils/helpers';
-import { CorrelationRule, CorrelationRuleTableItem } from '../../../../types';
+import { CorrelationRule, CorrelationRuleTableItem, DataSourceProps } from '../../../../types';
 import { RouteComponentProps } from 'react-router-dom';
 import { DeleteCorrelationRuleModal } from '../components/DeleteModal';
 
-export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComponentProps) => {
+export interface CorrelationRulesProps extends RouteComponentProps, DataSourceProps {}
+
+export const CorrelationRules: React.FC<CorrelationRulesProps> = (props: CorrelationRulesProps) => {
   const context = useContext(CoreServicesContext);
   const [allRules, setAllRules] = useState<CorrelationRuleTableItem[]>([]);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
@@ -49,9 +51,11 @@ export const CorrelationRules: React.FC<RouteComponentProps> = (props: RouteComp
       BREADCRUMBS.CORRELATIONS,
       BREADCRUMBS.CORRELATION_RULES,
     ]);
+  }, []);
 
+  useEffect(() => {
     getCorrelationRules();
-  }, [getCorrelationRules]);
+  }, [getCorrelationRules, props.dataSource]);
 
   const headerActions = useMemo(
     () => [
