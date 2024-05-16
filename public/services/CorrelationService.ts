@@ -15,6 +15,7 @@ import {
   ICorrelationsService,
   UpdateCorrelationRuleResponse,
 } from '../../types';
+import { dataSourceInfo } from './utils/constants';
 
 export default class CorrelationService implements ICorrelationsService {
   constructor(private httpClient: HttpSetup) {}
@@ -30,6 +31,7 @@ export default class CorrelationService implements ICorrelationsService {
         finding,
         detector_type,
         nearby_findings,
+        dataSourceId: dataSourceInfo.activeDataSource.id,
       },
     })) as ServerResponse<GetCorrelationFindingsResponse>;
   };
@@ -44,6 +46,9 @@ export default class CorrelationService implements ICorrelationsService {
       body: JSON.stringify({
         query: query ?? { match_all: {} },
       }),
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+      },
     })) as ServerResponse<SearchCorrelationRulesResponse>;
   };
 
@@ -54,6 +59,9 @@ export default class CorrelationService implements ICorrelationsService {
 
     return (await this.httpClient.post(url, {
       body: JSON.stringify(body),
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+      },
     })) as ServerResponse<CreateCorrelationRuleResponse>;
   };
 
@@ -65,6 +73,9 @@ export default class CorrelationService implements ICorrelationsService {
 
     return (await this.httpClient.put(url, {
       body: JSON.stringify(body),
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+      },
     })) as ServerResponse<UpdateCorrelationRuleResponse>;
   };
 
@@ -72,7 +83,11 @@ export default class CorrelationService implements ICorrelationsService {
     ruleId: string
   ): Promise<ServerResponse<DeleteCorrelationRuleResponse>> => {
     const url = `..${API.CORRELATION_BASE}/${ruleId}`;
-    return (await this.httpClient.delete(url)) as ServerResponse<DeleteCorrelationRuleResponse>;
+    return (await this.httpClient.delete(url, {
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+      },
+    })) as ServerResponse<DeleteCorrelationRuleResponse>;
   };
 
   getAllCorrelationsInTimeWindow = async (
@@ -84,6 +99,7 @@ export default class CorrelationService implements ICorrelationsService {
       query: {
         start_time,
         end_time,
+        dataSourceId: dataSourceInfo.activeDataSource.id,
       },
     })) as ServerResponse<GetAllCorrelationsInTimeRangeResponse>;
   };

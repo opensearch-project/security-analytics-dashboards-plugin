@@ -13,6 +13,7 @@ import {
   UpdateLogTypeResponse,
 } from '../../types';
 import { API } from '../../server/utils/constants';
+import { dataSourceInfo } from './utils/constants';
 
 export default class LogTypeService {
   constructor(private httpClient: HttpSetup) {}
@@ -21,6 +22,9 @@ export default class LogTypeService {
     const url = `..${API.LOGTYPE_BASE}`;
     const response = (await this.httpClient.post(url, {
       body: JSON.stringify(logType),
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+      },
     })) as ServerResponse<CreateLogTypeResponse>;
 
     return response;
@@ -43,9 +47,12 @@ export default class LogTypeService {
           },
         };
     const queryString = JSON.stringify(query);
-    return (await this.httpClient.post(url, { body: queryString })) as ServerResponse<
-      SearchLogTypesResponse
-    >;
+    return (await this.httpClient.post(url, {
+      body: queryString,
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+      },
+    })) as ServerResponse<SearchLogTypesResponse>;
   };
 
   updateLogType = async (
@@ -55,6 +62,9 @@ export default class LogTypeService {
     const url = `..${API.LOGTYPE_BASE}/${logTypeId}`;
     const response = (await this.httpClient.put(url, {
       body: JSON.stringify(logType),
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+      },
     })) as ServerResponse<UpdateLogTypeResponse>;
 
     return response;
@@ -62,6 +72,10 @@ export default class LogTypeService {
 
   deleteLogType = async (logTypeId: string): Promise<ServerResponse<DeleteLogTypeResponse>> => {
     const url = `..${API.LOGTYPE_BASE}/${logTypeId}`;
-    return (await this.httpClient.delete(url)) as ServerResponse<DeleteLogTypeResponse>;
+    return (await this.httpClient.delete(url, {
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+      },
+    })) as ServerResponse<DeleteLogTypeResponse>;
   };
 }

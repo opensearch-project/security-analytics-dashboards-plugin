@@ -37,7 +37,6 @@ import { CreateRule } from '../Rules/containers/CreateRule/CreateRule';
 import { EditRule } from '../Rules/containers/EditRule/EditRule';
 import { ImportRule } from '../Rules/containers/ImportRule/ImportRule';
 import { DuplicateRule } from '../Rules/containers/DuplicateRule/DuplicateRule';
-import { DateTimeFilter } from '../Overview/models/interfaces';
 import Callout, { ICalloutProps } from './components/Callout';
 import { DataStore } from '../../store/DataStore';
 import { CreateCorrelationRule } from '../Correlations/containers/CreateCorrelationRule';
@@ -49,9 +48,16 @@ import FindingDetailsFlyout, {
 import { LogTypes } from '../LogTypes/containers/LogTypes';
 import { LogType } from '../LogTypes/containers/LogType';
 import { CreateLogType } from '../LogTypes/containers/CreateLogType';
-import { SecurityAnalyticsContextType } from '../../../types';
+import {
+  DataSourceContextType,
+  DateTimeFilter,
+  SecurityAnalyticsContextType,
+} from '../../../types';
 import { DataSourceManagementPluginSetup } from '../../../../../src/plugins/data_source_management/public';
 import { DataSourceMenuWrapper } from '../../components/MDS/DataSourceMenuWrapper';
+import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
+import { DataSourceContext, DataSourceContextConsumer } from '../../services/DataSourceContext';
+import { dataSourceInfo } from '../../services/utils/constants';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -96,7 +102,13 @@ interface MainState {
   callout?: ICalloutProps;
   toasts?: Toast[];
   findingFlyout: FindingDetailsFlyoutBaseProps | null;
+  selectedDataSource: DataSourceOption;
+  dataSourceLoading: boolean;
+  dataSourceMenuReadOnly: boolean;
 }
+/**
+ *
+ */
 
 const navItemIndexByRoute: { [route: string]: number } = {
   [ROUTES.OVERVIEW]: 1,
@@ -121,6 +133,9 @@ export default class Main extends Component<MainProps, MainState> {
       selectedNavItemId: 1,
       dateTimeFilter: defaultDateTimeFilter,
       findingFlyout: null,
+      dataSourceLoading: props.multiDataSourceEnabled,
+      selectedDataSource: { id: '' },
+      dataSourceMenuReadOnly: false,
     };
 
     DataStore.detectors.setHandlers(this.showCallout, this.showToast);
@@ -200,18 +215,33 @@ export default class Main extends Component<MainProps, MainState> {
     this.setState({ getStartedDismissedOnce: true });
   };
 
-  render() {
-    const {
-      landingPage,
-      location: { pathname },
-      history,
-      multiDataSourceEnabled,
-      dataSourceManagement,
-      setActionMenu,
-    } = this.props;
+  onDataSourceSelected = (sources: DataSourceOption[]) => {
+    const { selectedDataSource: dataSource, dataSourceLoading } = this.state;
+    if (
+      sources[0] &&
+      (dataSource?.id !== sources[0].id || dataSource?.label !== sources[0].label)
+    ) {
+      dataSourceInfo.activeDataSource = sources[0];
+      this.setState({
+        selectedDataSource: { ...sources[0] },
+      });
+    }
 
-    const { callout, findingFlyout, selectedNavItemId: selectedNavItemIndex } = this.state;
-    const sideNav: EuiSideNavItemType<{ style: any }>[] = [
+    if (dataSourceLoading) {
+      this.setState({ dataSourceLoading: false });
+    }
+  };
+
+  setDataSourceMenuReadOnly = (readOnly: boolean) => {
+    this.setState({ dataSourceMenuReadOnly: readOnly });
+  };
+
+  getSideNavItems = () => {
+    const { history } = this.props;
+
+    const { selectedNavItemId: selectedNavItemIndex } = this.state;
+
+    return [
       {
         name: Navigation.SecurityAnalytics,
         id: 0,
@@ -290,7 +320,7 @@ export default class Main extends Component<MainProps, MainState> {
               this.setState({ selectedNavItemId: 6 });
               history.push(ROUTES.CORRELATIONS);
             },
-            renderItem: (props) => {
+            renderItem: (props: any) => {
               return (
                 <EuiFlexGroup alignItems="center" gutterSize="xs">
                   <EuiFlexItem grow={false}>
@@ -324,6 +354,32 @@ export default class Main extends Component<MainProps, MainState> {
         ],
       },
     ];
+  };
+
+  render() {
+    const {
+      landingPage,
+      location: { pathname },
+      history,
+      multiDataSourceEnabled,
+      dataSourceManagement,
+      setActionMenu,
+    } = this.props;
+
+    const {
+      callout,
+      findingFlyout,
+      selectedDataSource,
+      dataSourceLoading,
+      dataSourceMenuReadOnly,
+    } = this.state;
+    const sideNav: EuiSideNavItemType<{ style: any }>[] = this.getSideNavItems();
+
+    const dataSourceContextValue: DataSourceContextType = {
+      dataSource: selectedDataSource,
+      setDataSource: this.onDataSourceSelected,
+      setDataSourceMenuReadOnly: this.setDataSourceMenuReadOnly,
+    };
 
     return (
       <CoreServicesConsumer>
@@ -335,288 +391,337 @@ export default class Main extends Component<MainProps, MainState> {
                 const metrics = saContext?.metrics!;
 
                 return (
-                  <>
-                    {multiDataSourceEnabled && (
-                      <DataSourceMenuWrapper
-                        dataSourceManagement={dataSourceManagement}
-                        core={core}
-                        setHeaderActionMenu={setActionMenu}
-                      />
-                    )}
-                    {services && (
-                      <EuiPage restrictWidth={'100%'}>
-                        {/* Hide side navigation bar when on any HIDDEN_NAV_ROUTES pages. */}
-                        {!HIDDEN_NAV_ROUTES.some((route) => pathname.match(route)) && (
-                          <EuiPageSideBar style={{ minWidth: 200 }}>
-                            <EuiSideNav style={{ width: 200 }} items={sideNav} />
-                          </EuiPageSideBar>
-                        )}
-                        <EuiPageBody>
-                          {callout ? <Callout {...callout} /> : null}
-                          {findingFlyout ? (
-                            <FindingDetailsFlyout
-                              {...findingFlyout}
-                              history={history}
-                              indexPatternsService={services.indexPatternsService}
-                              correlationService={services?.correlationsService}
-                              opensearchService={services.opensearchService}
-                            />
-                          ) : null}
-                          <Switch>
-                            <Route
-                              path={`${ROUTES.FINDINGS}/:detectorId?`}
-                              render={(props: RouteComponentProps) => (
-                                <Findings
-                                  {...props}
-                                  setDateTimeFilter={this.setDateTimeFilter}
-                                  dateTimeFilter={this.state.dateTimeFilter}
-                                  correlationService={services?.correlationsService}
-                                  opensearchService={services.opensearchService}
-                                  detectorService={services.detectorsService}
-                                  notificationsService={services.notificationsService}
-                                  indexPatternsService={services.indexPatternsService}
-                                  notifications={core?.notifications}
-                                />
-                              )}
-                            />
-                            <Route
-                              path={ROUTES.DETECTORS}
-                              render={(props: RouteComponentProps) => (
-                                <Detectors
-                                  {...props}
-                                  detectorService={services.detectorsService}
-                                  notifications={core?.notifications}
-                                />
-                              )}
-                            />
-                            <Route
-                              path={ROUTES.DETECTORS_CREATE}
-                              render={(props: RouteComponentProps) => (
-                                <CreateDetector
-                                  {...props}
-                                  isEdit={false}
-                                  services={services}
-                                  metrics={metrics}
-                                  history={props.history}
-                                  notifications={core?.notifications}
-                                />
-                              )}
-                            />
-                            <Route
-                              path={ROUTES.RULES}
-                              render={(props: RouteComponentProps) => (
-                                <Rules {...props} notifications={core?.notifications} />
-                              )}
-                            />
-                            <Route
-                              path={ROUTES.RULES_CREATE}
-                              render={(props: RouteComponentProps) => (
-                                <CreateRule
-                                  services={services}
-                                  history={props.history}
-                                  notifications={core?.notifications}
-                                />
-                              )}
-                            />
-                            <Route
-                              path={ROUTES.RULES_EDIT}
-                              render={(props: RouteComponentProps<any, any, any>) => {
-                                if (!props.location.state?.ruleItem) {
-                                  props.history.replace(ROUTES.RULES);
-                                  return <Rules {...props} notifications={core?.notifications} />;
-                                }
+                  <DataSourceContext.Provider value={dataSourceContextValue}>
+                    <DataSourceContextConsumer>
+                      {(_dataSource: DataSourceContextType | null) =>
+                        _dataSource && (
+                          <>
+                            {multiDataSourceEnabled && (
+                              <DataSourceMenuWrapper
+                                dataSourceManagement={dataSourceManagement}
+                                core={core}
+                                dataSourceMenuReadOnly={dataSourceMenuReadOnly}
+                                setHeaderActionMenu={setActionMenu}
+                              />
+                            )}
+                            {!dataSourceLoading && services && (
+                              <EuiPage restrictWidth={'100%'}>
+                                {/* Hide side navigation bar when on any HIDDEN_NAV_ROUTES pages. */}
+                                {!HIDDEN_NAV_ROUTES.some((route) => pathname.match(route)) && (
+                                  <EuiPageSideBar style={{ minWidth: 200 }}>
+                                    <EuiSideNav style={{ width: 200 }} items={sideNav} />
+                                  </EuiPageSideBar>
+                                )}
+                                <EuiPageBody>
+                                  {callout ? <Callout {...callout} /> : null}
+                                  {findingFlyout ? (
+                                    <FindingDetailsFlyout
+                                      {...findingFlyout}
+                                      history={history}
+                                      indexPatternsService={services.indexPatternsService}
+                                      correlationService={services?.correlationsService}
+                                      opensearchService={services.opensearchService}
+                                    />
+                                  ) : null}
+                                  <Switch>
+                                    <Route
+                                      path={`${ROUTES.FINDINGS}/:detectorId?`}
+                                      render={(props: RouteComponentProps) => (
+                                        <Findings
+                                          {...props}
+                                          setDateTimeFilter={this.setDateTimeFilter}
+                                          dateTimeFilter={this.state.dateTimeFilter}
+                                          correlationService={services?.correlationsService}
+                                          opensearchService={services.opensearchService}
+                                          detectorService={services.detectorsService}
+                                          notificationsService={services.notificationsService}
+                                          indexPatternsService={services.indexPatternsService}
+                                          notifications={core?.notifications}
+                                          dataSource={selectedDataSource}
+                                        />
+                                      )}
+                                    />
+                                    <Route
+                                      path={ROUTES.DETECTORS}
+                                      render={(props: RouteComponentProps) => (
+                                        <Detectors
+                                          {...props}
+                                          detectorService={services.detectorsService}
+                                          notifications={core?.notifications}
+                                          dataSource={selectedDataSource}
+                                        />
+                                      )}
+                                    />
+                                    <Route
+                                      path={ROUTES.DETECTORS_CREATE}
+                                      render={(props: RouteComponentProps) => (
+                                        <CreateDetector
+                                          {...props}
+                                          isEdit={false}
+                                          services={services}
+                                          metrics={metrics}
+                                          history={props.history}
+                                          notifications={core?.notifications}
+                                          dataSource={selectedDataSource}
+                                          setDataSource={this.onDataSourceSelected}
+                                          setDataSourceMenuReadOnly={this.setDataSourceMenuReadOnly}
+                                        />
+                                      )}
+                                    />
+                                    <Route
+                                      path={ROUTES.RULES}
+                                      render={(props: RouteComponentProps) => (
+                                        <Rules
+                                          {...props}
+                                          notifications={core?.notifications}
+                                          dataSource={selectedDataSource}
+                                        />
+                                      )}
+                                    />
+                                    <Route
+                                      path={ROUTES.RULES_CREATE}
+                                      render={(props: RouteComponentProps) => (
+                                        <CreateRule
+                                          services={services}
+                                          history={props.history}
+                                          notifications={core?.notifications}
+                                        />
+                                      )}
+                                    />
+                                    <Route
+                                      path={ROUTES.RULES_EDIT}
+                                      render={(props: RouteComponentProps<any, any, any>) => {
+                                        if (!props.location.state?.ruleItem) {
+                                          props.history.replace(ROUTES.RULES);
+                                          return (
+                                            <Rules
+                                              {...props}
+                                              notifications={core?.notifications}
+                                              dataSource={selectedDataSource}
+                                            />
+                                          );
+                                        }
 
-                                return (
-                                  <EditRule
-                                    services={services}
-                                    {...props}
-                                    notifications={core?.notifications}
-                                  />
-                                );
-                              }}
-                            />
-                            <Route
-                              path={ROUTES.RULES_DUPLICATE}
-                              render={(props: RouteComponentProps<any, any, any>) => {
-                                if (!props.location.state?.ruleItem) {
-                                  props.history.replace(ROUTES.RULES);
-                                  return <Rules {...props} notifications={core?.notifications} />;
-                                }
+                                        return (
+                                          <EditRule
+                                            services={services}
+                                            {...props}
+                                            notifications={core?.notifications}
+                                          />
+                                        );
+                                      }}
+                                    />
+                                    <Route
+                                      path={ROUTES.RULES_DUPLICATE}
+                                      render={(props: RouteComponentProps<any, any, any>) => {
+                                        if (!props.location.state?.ruleItem) {
+                                          props.history.replace(ROUTES.RULES);
+                                          return (
+                                            <Rules
+                                              {...props}
+                                              notifications={core?.notifications}
+                                              dataSource={selectedDataSource}
+                                            />
+                                          );
+                                        }
 
-                                return (
-                                  <DuplicateRule
-                                    services={services}
-                                    {...props}
-                                    notifications={core?.notifications}
-                                  />
-                                );
-                              }}
-                            />
-                            <Route
-                              path={ROUTES.RULES_IMPORT}
-                              render={(props: RouteComponentProps) => (
-                                <ImportRule
-                                  services={services}
-                                  history={props.history}
-                                  notifications={core?.notifications}
+                                        return (
+                                          <DuplicateRule
+                                            services={services}
+                                            {...props}
+                                            notifications={core?.notifications}
+                                          />
+                                        );
+                                      }}
+                                    />
+                                    <Route
+                                      path={ROUTES.RULES_IMPORT}
+                                      render={(props: RouteComponentProps) => (
+                                        <ImportRule
+                                          services={services}
+                                          history={props.history}
+                                          notifications={core?.notifications}
+                                        />
+                                      )}
+                                    />
+                                    <Route
+                                      path={ROUTES.OVERVIEW}
+                                      render={(props: RouteComponentProps) => (
+                                        <Overview
+                                          {...props}
+                                          setDateTimeFilter={this.setDateTimeFilter}
+                                          dateTimeFilter={this.state.dateTimeFilter}
+                                          getStartedDismissedOnce={
+                                            this.state.getStartedDismissedOnce
+                                          }
+                                          onGetStartedDismissed={this.setGetStartedDismissedOnce}
+                                          notifications={core?.notifications}
+                                          dataSource={selectedDataSource}
+                                        />
+                                      )}
+                                    />
+                                    <Route
+                                      path={`${ROUTES.ALERTS}/:detectorId?`}
+                                      render={(props: RouteComponentProps) => (
+                                        <Alerts
+                                          {...props}
+                                          setDateTimeFilter={this.setDateTimeFilter}
+                                          dateTimeFilter={this.state.dateTimeFilter}
+                                          alertService={services.alertService}
+                                          detectorService={services.detectorsService}
+                                          findingService={services.findingsService}
+                                          notifications={core?.notifications}
+                                          opensearchService={services.opensearchService}
+                                          indexPatternService={services.indexPatternsService}
+                                          dataSource={selectedDataSource}
+                                        />
+                                      )}
+                                    />
+                                    <Route
+                                      path={`${ROUTES.DETECTOR_DETAILS}/:id`}
+                                      render={(props: RouteComponentProps<{}, any, any>) => (
+                                        <DetectorDetails
+                                          detectorService={services.detectorsService}
+                                          savedObjectsService={services.savedObjectsService}
+                                          indexPatternsService={services.indexPatternsService}
+                                          {...props}
+                                          notifications={core?.notifications}
+                                        />
+                                      )}
+                                    />
+                                    <Route
+                                      path={`${ROUTES.EDIT_DETECTOR_DETAILS}/:id`}
+                                      render={(props: RouteComponentProps<any, any, any>) => (
+                                        <UpdateDetectorBasicDetails
+                                          {...props}
+                                          notifications={core?.notifications}
+                                        />
+                                      )}
+                                    />
+                                    <Route
+                                      path={`${ROUTES.EDIT_DETECTOR_RULES}/:id`}
+                                      render={(props: RouteComponentProps<any, any, any>) => (
+                                        <UpdateDetectorRules
+                                          {...props}
+                                          notifications={core?.notifications}
+                                        />
+                                      )}
+                                    />
+                                    <Route
+                                      path={`${ROUTES.EDIT_FIELD_MAPPINGS}/:id`}
+                                      render={(props: RouteComponentProps<any, any, any>) => (
+                                        <UpdateFieldMappings
+                                          {...props}
+                                          fieldMappingService={services.fieldMappingService}
+                                          detectorService={services.detectorsService}
+                                          notifications={core?.notifications}
+                                        />
+                                      )}
+                                    />
+                                    <Route
+                                      path={`${ROUTES.EDIT_DETECTOR_ALERT_TRIGGERS}/:id`}
+                                      render={(props: RouteComponentProps<any, any, any>) => (
+                                        <UpdateAlertConditions
+                                          {...props}
+                                          detectorService={services.detectorsService}
+                                          notificationsService={services.notificationsService}
+                                          notifications={core?.notifications}
+                                          opensearchService={services.opensearchService}
+                                        />
+                                      )}
+                                    />
+                                    <Route
+                                      path={`${ROUTES.CORRELATION_RULES}`}
+                                      render={(props: RouteComponentProps<any, any, any>) => (
+                                        <CorrelationRules
+                                          {...props}
+                                          dataSource={selectedDataSource}
+                                        />
+                                      )}
+                                    />
+                                    <Route
+                                      path={`${ROUTES.CORRELATION_RULE_CREATE}`}
+                                      render={(props: RouteComponentProps<any, any, any>) => (
+                                        <CreateCorrelationRule
+                                          {...props}
+                                          indexService={services?.indexService}
+                                          fieldMappingService={services?.fieldMappingService}
+                                          notifications={core?.notifications}
+                                          dataSource={selectedDataSource}
+                                        />
+                                      )}
+                                    />
+                                    <Route
+                                      path={`${ROUTES.CORRELATION_RULE_EDIT}/:ruleId`}
+                                      render={(props: RouteComponentProps<any, any, any>) => (
+                                        <CreateCorrelationRule
+                                          {...props}
+                                          indexService={services?.indexService}
+                                          fieldMappingService={services?.fieldMappingService}
+                                          notifications={core?.notifications}
+                                          dataSource={selectedDataSource}
+                                        />
+                                      )}
+                                    />
+                                    <Route
+                                      path={`${ROUTES.CORRELATIONS}`}
+                                      render={(props: RouteComponentProps<any, any, any>) => {
+                                        return (
+                                          <Correlations
+                                            {...props}
+                                            history={props.history}
+                                            onMount={() => this.setState({ selectedNavItemId: 6 })}
+                                            dateTimeFilter={this.state.dateTimeFilter}
+                                            setDateTimeFilter={this.setDateTimeFilter}
+                                            dataSource={selectedDataSource}
+                                          />
+                                        );
+                                      }}
+                                    />
+                                    <Route
+                                      path={`${ROUTES.LOG_TYPES}/:logTypeId`}
+                                      render={(props: RouteComponentProps<any, any, any>) => (
+                                        <LogType notifications={core?.notifications} {...props} />
+                                      )}
+                                    />
+                                    <Route
+                                      path={`${ROUTES.LOG_TYPES}`}
+                                      render={(props: RouteComponentProps<any, any, any>) => {
+                                        return (
+                                          <LogTypes
+                                            notifications={core?.notifications}
+                                            {...props}
+                                            dataSource={selectedDataSource}
+                                          />
+                                        );
+                                      }}
+                                    />
+                                    <Route
+                                      path={ROUTES.LOG_TYPES_CREATE}
+                                      render={(props: RouteComponentProps<any, any, any>) => {
+                                        return (
+                                          <CreateLogType
+                                            notifications={core?.notifications}
+                                            {...props}
+                                          />
+                                        );
+                                      }}
+                                    />
+                                    <Redirect from={'/'} to={landingPage} />
+                                  </Switch>
+                                </EuiPageBody>
+                                <EuiGlobalToastList
+                                  toasts={this.state.toasts}
+                                  dismissToast={DataStore.detectors.hideToast}
+                                  toastLifeTimeMs={6000}
                                 />
-                              )}
-                            />
-                            <Route
-                              path={ROUTES.OVERVIEW}
-                              render={(props: RouteComponentProps) => (
-                                <Overview
-                                  {...props}
-                                  setDateTimeFilter={this.setDateTimeFilter}
-                                  dateTimeFilter={this.state.dateTimeFilter}
-                                  getStartedDismissedOnce={this.state.getStartedDismissedOnce}
-                                  onGetStartedDismissed={this.setGetStartedDismissedOnce}
-                                  notifications={core?.notifications}
-                                />
-                              )}
-                            />
-                            <Route
-                              path={`${ROUTES.ALERTS}/:detectorId?`}
-                              render={(props: RouteComponentProps) => (
-                                <Alerts
-                                  {...props}
-                                  setDateTimeFilter={this.setDateTimeFilter}
-                                  dateTimeFilter={this.state.dateTimeFilter}
-                                  alertService={services.alertService}
-                                  detectorService={services.detectorsService}
-                                  findingService={services.findingsService}
-                                  notifications={core?.notifications}
-                                  opensearchService={services.opensearchService}
-                                  indexPatternService={services.indexPatternsService}
-                                />
-                              )}
-                            />
-                            <Route
-                              path={`${ROUTES.DETECTOR_DETAILS}/:id`}
-                              render={(props: RouteComponentProps<{}, any, any>) => (
-                                <DetectorDetails
-                                  detectorService={services.detectorsService}
-                                  savedObjectsService={services.savedObjectsService}
-                                  indexPatternsService={services.indexPatternsService}
-                                  {...props}
-                                  notifications={core?.notifications}
-                                />
-                              )}
-                            />
-                            <Route
-                              path={`${ROUTES.EDIT_DETECTOR_DETAILS}/:id`}
-                              render={(props: RouteComponentProps<any, any, any>) => (
-                                <UpdateDetectorBasicDetails
-                                  {...props}
-                                  notifications={core?.notifications}
-                                />
-                              )}
-                            />
-                            <Route
-                              path={`${ROUTES.EDIT_DETECTOR_RULES}/:id`}
-                              render={(props: RouteComponentProps<any, any, any>) => (
-                                <UpdateDetectorRules
-                                  {...props}
-                                  notifications={core?.notifications}
-                                />
-                              )}
-                            />
-                            <Route
-                              path={`${ROUTES.EDIT_FIELD_MAPPINGS}/:id`}
-                              render={(props: RouteComponentProps<any, any, any>) => (
-                                <UpdateFieldMappings
-                                  {...props}
-                                  fieldMappingService={services.fieldMappingService}
-                                  detectorService={services.detectorsService}
-                                  notifications={core?.notifications}
-                                />
-                              )}
-                            />
-                            <Route
-                              path={`${ROUTES.EDIT_DETECTOR_ALERT_TRIGGERS}/:id`}
-                              render={(props: RouteComponentProps<any, any, any>) => (
-                                <UpdateAlertConditions
-                                  {...props}
-                                  detectorService={services.detectorsService}
-                                  notificationsService={services.notificationsService}
-                                  notifications={core?.notifications}
-                                  opensearchService={services.opensearchService}
-                                />
-                              )}
-                            />
-                            <Route
-                              path={`${ROUTES.CORRELATION_RULES}`}
-                              render={(props: RouteComponentProps<any, any, any>) => (
-                                <CorrelationRules {...props} />
-                              )}
-                            />
-                            <Route
-                              path={`${ROUTES.CORRELATION_RULE_CREATE}`}
-                              render={(props: RouteComponentProps<any, any, any>) => (
-                                <CreateCorrelationRule
-                                  {...props}
-                                  indexService={services?.indexService}
-                                  fieldMappingService={services?.fieldMappingService}
-                                  notifications={core?.notifications}
-                                />
-                              )}
-                            />
-                            <Route
-                              path={`${ROUTES.CORRELATION_RULE_EDIT}/:ruleId`}
-                              render={(props: RouteComponentProps<any, any, any>) => (
-                                <CreateCorrelationRule
-                                  {...props}
-                                  indexService={services?.indexService}
-                                  fieldMappingService={services?.fieldMappingService}
-                                  notifications={core?.notifications}
-                                />
-                              )}
-                            />
-                            <Route
-                              path={`${ROUTES.CORRELATIONS}`}
-                              render={(props: RouteComponentProps<any, any, any>) => {
-                                return (
-                                  <Correlations
-                                    {...props}
-                                    history={props.history}
-                                    onMount={() => this.setState({ selectedNavItemId: 6 })}
-                                    dateTimeFilter={this.state.dateTimeFilter}
-                                    setDateTimeFilter={this.setDateTimeFilter}
-                                  />
-                                );
-                              }}
-                            />
-                            <Route
-                              path={`${ROUTES.LOG_TYPES}/:logTypeId`}
-                              render={(props: RouteComponentProps<any, any, any>) => (
-                                <LogType notifications={core?.notifications} {...props} />
-                              )}
-                            />
-                            <Route
-                              path={`${ROUTES.LOG_TYPES}`}
-                              render={(props: RouteComponentProps<any, any, any>) => {
-                                return <LogTypes notifications={core?.notifications} {...props} />;
-                              }}
-                            />
-                            <Route
-                              path={ROUTES.LOG_TYPES_CREATE}
-                              render={(props: RouteComponentProps<any, any, any>) => {
-                                return (
-                                  <CreateLogType notifications={core?.notifications} {...props} />
-                                );
-                              }}
-                            />
-                            <Redirect from={'/'} to={landingPage} />
-                          </Switch>
-                        </EuiPageBody>
-                        <EuiGlobalToastList
-                          toasts={this.state.toasts}
-                          dismissToast={DataStore.detectors.hideToast}
-                          toastLifeTimeMs={6000}
-                        />
-                      </EuiPage>
-                    )}
-                  </>
+                              </EuiPage>
+                            )}
+                          </>
+                        )
+                      }
+                    </DataSourceContextConsumer>
+                  </DataSourceContext.Provider>
                 );
               }}
             </SaContextConsumer>

@@ -37,10 +37,12 @@ import { DetectorsService } from '../../../../services';
 import { DetectorHit } from '../../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { Direction } from '@opensearch-project/oui/src/services/sort/sort_direction';
+import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
 
 export interface DetectorsProps extends RouteComponentProps {
   detectorService: DetectorsService;
   notifications: NotificationsStart;
+  dataSource: DataSourceOption;
 }
 
 interface DetectorsState {
@@ -69,6 +71,16 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
   async componentDidMount() {
     this.context.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.DETECTORS]);
     await this.getDetectors();
+  }
+
+  componentDidUpdate(
+    prevProps: Readonly<DetectorsProps>,
+    prevState: Readonly<DetectorsState>,
+    snapshot?: any
+  ): void {
+    if (this.props.dataSource && prevProps.dataSource !== this.props.dataSource) {
+      this.getDetectors();
+    }
   }
 
   getDetectors = async () => {

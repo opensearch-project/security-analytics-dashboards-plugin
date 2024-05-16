@@ -14,6 +14,7 @@ import {
 } from '../../server/models/interfaces';
 import { API } from '../../server/utils/constants';
 import { FieldMapping } from '.././../models/interfaces';
+import { dataSourceInfo } from './utils/constants';
 
 export default class FieldMappingService {
   constructor(private readonly httpClient: HttpSetup) {}
@@ -27,6 +28,7 @@ export default class FieldMappingService {
       query: {
         indexName,
         ruleTopic,
+        dataSourceId: dataSourceInfo.activeDataSource.id,
       },
     })) as ServerResponse<GetFieldMappingViewResponse>;
 
@@ -60,6 +62,9 @@ export default class FieldMappingService {
     };
     const params = {
       body: JSON.stringify(fieldMappingPayload),
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+      },
     };
 
     return (await this.httpClient.post(url, params)) as ServerResponse<CreateMappingsResponse>;
@@ -70,6 +75,7 @@ export default class FieldMappingService {
     return (await this.httpClient.get(url, {
       query: {
         indexName,
+        dataSourceId: dataSourceInfo.activeDataSource.id,
       },
     })) as ServerResponse<GetMappingsResponse>;
   };

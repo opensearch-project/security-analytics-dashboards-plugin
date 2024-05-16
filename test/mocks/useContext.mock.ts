@@ -68,6 +68,11 @@ const saContextMock = {
         };
       },
     },
+    logTypeService: {
+      searchLogTypes: () => {
+        return Promise.resolve([]);
+      },
+    },
   },
   metrics: {
     detectorMetricsManager: {

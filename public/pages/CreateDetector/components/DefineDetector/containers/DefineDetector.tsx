@@ -24,6 +24,7 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { logTypesWithDashboards } from '../../../../../utils/constants';
 import {
   CreateDetectorSteps,
+  DataSourceProps,
   Detector,
   DetectorCreationStep,
   FieldMapping,
@@ -35,7 +36,7 @@ import { ruleTypes } from '../../../../Rules/utils/constants';
 import { ThreatIntelligence } from '../components/ThreatIntelligence/ThreatIntelligence';
 import { addDetectionType, removeDetectionType } from '../../../../../utils/helpers';
 
-interface DefineDetectorProps extends RouteComponentProps {
+interface DefineDetectorProps extends RouteComponentProps, DataSourceProps {
   detector: Detector;
   isEdit: boolean;
   indexService: IndexService;

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { SecurityAnalyticsContext, SaContextConsumer } from './Services';
+import { SecurityAnalyticsContext, SaContextConsumer } from './SecurityAnalyticsContext';
 import DetectorsService from './DetectorService';
 import FindingsService from './FindingsService';
 import OpenSearchService from './OpenSearchService';
