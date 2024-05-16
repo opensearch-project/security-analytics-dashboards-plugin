@@ -387,7 +387,6 @@ exports[`<RuleEditorContainer /> spec renders the component 1`] = `
                   <EuiFormRow
                     describedByIds={Array []}
                     display="row"
-                    error="Rule name is required"
                     fullWidth={false}
                     hasChildLabel={true}
                     hasEmptyLabelSpace={false}
@@ -757,7 +756,6 @@ exports[`<RuleEditorContainer /> spec renders the component 1`] = `
                           <EuiFormRow
                             describedByIds={Array []}
                             display="row"
-                            error="Log type is required"
                             fullWidth={false}
                             hasChildLabel={true}
                             hasEmptyLabelSpace={false}
@@ -1089,7 +1087,6 @@ exports[`<RuleEditorContainer /> spec renders the component 1`] = `
                   <EuiFormRow
                     describedByIds={Array []}
                     display="row"
-                    error="Rule level is required"
                     fullWidth={false}
                     hasChildLabel={true}
                     hasEmptyLabelSpace={false}
