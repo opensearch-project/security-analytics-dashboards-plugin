@@ -19,3 +19,4 @@ export * from './Metrics';
 export * from './SecurityAnalyticsContext';
 export * from './DataSourceContext';
 export * from './DataSource';
+export * from './shared';

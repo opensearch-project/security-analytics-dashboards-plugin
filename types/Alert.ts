@@ -51,6 +51,8 @@ export type GetAlertsParams = {
   sortOrder?: string;
   size?: number;
   startIndex?: number;
+  startTime?: number;
+  endTime?: number;
 } & (
   | {
       detector_id: string;

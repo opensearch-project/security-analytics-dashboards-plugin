@@ -37,7 +37,6 @@ import {
   TimeUnit,
 } from '../../../Overview/utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
-import { Finding } from '../../models/interfaces';
 import {
   getNotificationChannels,
   parseNotificationChannelsToOptions,
@@ -47,17 +46,20 @@ import {
   errorNotificationToast,
   renderVisualization,
   getPlugins,
+  getDuration,
 } from '../../../../utils/helpers';
-import { DetectorHit, RuleSource } from '../../../../../server/models/interfaces';
+import { RuleSource } from '../../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 import { DataStore } from '../../../../store/DataStore';
 import { DurationRange } from '@elastic/eui/src/components/date_picker/types';
 import {
-  CorrelationFinding,
   DataSourceProps,
   FeatureChannelList,
   DateTimeFilter,
+  FindingItemType,
+  DetectorHit,
+  AbortSignal,
 } from '../../../../../types';
 
 interface FindingsProps extends RouteComponentProps, DataSourceProps {
@@ -92,10 +94,6 @@ interface FindingVisualizationData {
   ruleSeverity: string;
 }
 
-export type FindingItemType = Finding & { detector: DetectorHit } & {
-  correlations: CorrelationFinding[];
-};
-
 type FindingsGroupByType = 'logType' | 'ruleSeverity';
 
 export const groupByOptions = [
@@ -105,6 +103,8 @@ export const groupByOptions = [
 
 class Findings extends Component<FindingsProps, FindingsState> {
   static contextType = CoreServicesContext;
+
+  private abortGetFindingsSignals: AbortSignal[] = [];
 
   constructor(props: FindingsProps) {
     super(props);
@@ -146,6 +146,10 @@ class Findings extends Component<FindingsProps, FindingsState> {
     this.onRefresh();
   };
 
+  componentWillUnmount(): void {
+    this.abortGetFindings();
+  }
+
   onRefresh = async () => {
     await this.getFindings();
     await this.getNotificationChannels();
@@ -153,49 +157,50 @@ class Findings extends Component<FindingsProps, FindingsState> {
     renderVisualization(this.generateVisualizationSpec(), 'findings-view');
   };
 
-  getFindings = async () => {
-    this.setState({ loading: true });
-    const { detectorService, notifications } = this.props;
-    try {
-      const ruleIds = new Set<string>();
-      let findings: FindingItemType[] = [];
+  onStreamingFindings = async (findings: FindingItemType[]) => {
+    const ruleIds = new Set<string>();
+    findings.forEach((finding) => {
+      finding.queries.forEach((rule) => ruleIds.add(rule.id));
+    });
 
+    await this.getRules(Array.from(ruleIds));
+    this.setState({ findings: [...this.state.findings, ...findings] });
+  }
+
+  abortGetFindings = () => {
+    this.abortGetFindingsSignals.forEach(abort => {
+      abort.signal = true;
+    });
+  }
+
+  getFindings = async () => {
+    this.abortGetFindings();
+    this.setState({ loading: true, findings: [] });
+    const { detectorService, notifications, dateTimeFilter } = this.props;
+    const abort = { signal: false };
+    this.abortGetFindingsSignals.push(abort);
+    try {
       const detectorId = this.props.match.params['detectorId'];
+      const duration = dateTimeFilter ? getDuration(dateTimeFilter) : undefined;
 
       // Not looking for findings from specific detector
       if (!detectorId) {
-        findings = await DataStore.findings.getAllFindings();
+        await DataStore.findings.getAllFindings(abort, duration, this.onStreamingFindings);
       } else {
         // get findings for a detector
-        const detectorFindings = await DataStore.findings.getFindingsPerDetector(detectorId);
         const getDetectorResponse = await detectorService.getDetectorWithId(detectorId);
 
         if (getDetectorResponse.ok) {
-          const detector = getDetectorResponse.response.detector;
-          findings = detectorFindings.map((finding) => {
-            return {
-              ...finding,
-              detectorName: detector.name,
-              logType: detector.detector_type,
-              detector: {
-                _id: getDetectorResponse.response._id,
-                _source: detector,
-                _index: '',
-              },
-              correlations: [],
-            };
-          });
+          const detectorHit: DetectorHit = {
+            _id: getDetectorResponse.response._id,
+            _index: '',
+            _source: getDetectorResponse.response.detector
+          }
+          await DataStore.findings.getFindingsPerDetector(detectorId, detectorHit, abort, duration, this.onStreamingFindings);
         } else {
           errorNotificationToast(notifications, 'retrieve', 'findings', getDetectorResponse.error);
         }
       }
-
-      findings.forEach((finding) => {
-        finding.queries.forEach((rule) => ruleIds.add(rule.id));
-      });
-
-      await this.getRules(Array.from(ruleIds));
-      this.setState({ findings });
     } catch (e) {
       errorNotificationToast(notifications, 'retrieve', 'findings', e);
     }
@@ -209,7 +214,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
         _id: ruleIds,
       });
 
-      const allRules: { [id: string]: RuleSource } = {};
+      const allRules: { [id: string]: RuleSource } = { ...this.state.rules };
       rules.forEach((hit) => (allRules[hit._id] = hit._source));
 
       this.setState({ rules: allRules });

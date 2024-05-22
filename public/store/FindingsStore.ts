@@ -8,9 +8,8 @@ import { DetectorsService, FindingsService } from '../services';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { RouteComponentProps } from 'react-router-dom';
 import { errorNotificationToast } from '../utils/helpers';
-import { FindingItemType } from '../pages/Findings/containers/Findings/Findings';
 import { FindingDetailsFlyoutBaseProps } from '../pages/Findings/components/FindingDetailsFlyout';
-import { Finding, GetFindingsResponse, ServerResponse } from '../../types';
+import { AbortSignal, DetectorHit, Duration, Finding, FindingItemType, GetFindingsResponse, ServerResponse } from '../../types';
 
 export interface IFindingsStore {
   readonly service: FindingsService;
@@ -23,9 +22,15 @@ export interface IFindingsStore {
 
   getFindingsByIds: (findingIds: string[]) => Promise<Finding[]>;
 
-  getFindingsPerDetector: (detectorId: string) => Promise<Finding[]>;
+  getFindingsPerDetector: (
+    detectorId: string, 
+    detector: DetectorHit,
+    abort: AbortSignal,
+    duration?: Duration, 
+    onPartialFindingsFetched?: (findings: Finding[]) => void
+  ) => Promise<Finding[]>;
 
-  getAllFindings: () => Promise<FindingItemType[]>;
+  getAllFindings: (abort: AbortSignal, duration?: { startTime: number; endTime: number; }, onPartialFindingsFetched?: (findings: Finding[]) => void) => Promise<FindingItemType[]>;
 
   setFlyoutCallback: (
     flyoutCallback: (findingFlyout: FindingDetailsFlyoutBaseProps | null) => void
@@ -111,25 +116,60 @@ export class FindingsStore implements IFindingsStore {
     return [];
   };
 
-  public getFindingsPerDetector = async (detectorId: string): Promise<Finding[]> => {
-    let allFindings: Finding[] = [];
+  public getFindingsPerDetector = async (
+    detectorId: string,
+    detector: DetectorHit,
+    abort: AbortSignal,
+    duration?: Duration,
+    onPartialFindingsFetched?: (findings: FindingItemType[]) => void
+  ): Promise<FindingItemType[]> => {
+    let allFindings: FindingItemType[] = [];
     const findingsSize = 10000;
-    const firstGetFindingsRes = await this.service.getFindings({
+    const getFindingsQueryParams = {
       detector_id: detectorId,
       startIndex: 0,
       size: findingsSize,
-    });
+      startTime: duration?.startTime,
+      endTime: duration?.endTime
+    }
+
+    if (abort.signal) {
+      return allFindings;
+    }
+
+    const firstGetFindingsRes = await this.service.getFindings(getFindingsQueryParams);
 
     if (firstGetFindingsRes.ok) {
-      allFindings = [...firstGetFindingsRes.response.findings];
+      const extendedFindings = this.extendFindings(firstGetFindingsRes.response.findings, detector);
+      onPartialFindingsFetched?.(extendedFindings);
+      allFindings = [...extendedFindings];
       let remainingFindings = firstGetFindingsRes.response.total_findings - findingsSize;
       let startIndex = findingsSize + 1;
       const getFindingsPromises: Promise<ServerResponse<GetFindingsResponse>>[] = [];
 
       while (remainingFindings > 0) {
+
+        if (abort.signal) {
+          return allFindings;
+        }
+
+        const getFindingsPromise = this.service.getFindings({ 
+          ...getFindingsQueryParams,
+          startIndex
+        });
+
+        if (abort.signal) {
+          return allFindings;
+        }
+
         getFindingsPromises.push(
-          this.service.getFindings({ detector_id: detectorId, startIndex, size: findingsSize })
+          getFindingsPromise
         );
+        getFindingsPromise.then((res): any => {
+          if (res.ok) {
+            onPartialFindingsFetched?.(this.extendFindings(res.response.findings, detector));
+          }
+        });
         remainingFindings -= findingsSize;
         startIndex += findingsSize;
       }
@@ -138,7 +178,7 @@ export class FindingsStore implements IFindingsStore {
 
       findingsPromisesRes.forEach((response) => {
         if (response.status === 'fulfilled' && response.value.ok) {
-          allFindings = allFindings.concat(response.value.response.findings);
+          allFindings = allFindings.concat(this.extendFindings(response.value.response.findings, detector));
         }
       });
     } else {
@@ -148,23 +188,19 @@ export class FindingsStore implements IFindingsStore {
     return allFindings;
   };
 
-  public getAllFindings = async (): Promise<FindingItemType[]> => {
+  public getAllFindings = async (
+    abort: AbortSignal,
+    duration?: Duration,
+    onPartialFindingsFetched?: (findings: FindingItemType[]) => void
+  ): Promise<FindingItemType[]> => {
     let allFindings: FindingItemType[] = [];
     const detectorsRes = await this.detectorsService.getDetectors();
     if (detectorsRes.ok) {
       const detectors = detectorsRes.response.hits.hits;
 
       for (let detector of detectors) {
-        const findings = await this.getFindingsPerDetector(detector._id);
-        const findingsPerDetector: FindingItemType[] = findings.map((finding) => {
-          return {
-            ...finding,
-            detectorName: detector._source.name,
-            logType: detector._source.detector_type,
-            detector: detector,
-            correlations: [],
-          };
-        });
+        const findings = await this.getFindingsPerDetector(detector._id, detector, abort, duration, onPartialFindingsFetched);
+        const findingsPerDetector: FindingItemType[] = this.extendFindings(findings, detector);
         allFindings = allFindings.concat(findingsPerDetector);
       }
     }
@@ -196,4 +232,16 @@ export class FindingsStore implements IFindingsStore {
     } as FindingDetailsFlyoutBaseProps;
     this.openFlyoutCallback(flyout);
   };
+
+  private extendFindings(findings: Finding[], detector: DetectorHit): FindingItemType[] {
+    return findings.map((finding) => {
+      return {
+        ...finding,
+        detectorName: detector._source.name,
+        logType: detector._source.detector_type,
+        detector: detector,
+        correlations: [],
+      };
+    });
+  }
 }

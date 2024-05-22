@@ -30,14 +30,13 @@ import {
   IndexPatternsService,
   CorrelationService,
 } from '../../../../services';
-import { Finding } from '../../models/interfaces';
 import CreateAlertFlyout from '../CreateAlertFlyout';
 import { NotificationChannelTypeOptions } from '../../../CreateDetector/components/ConfigureAlerts/models/interfaces';
-import { FindingItemType } from '../../containers/Findings/Findings';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { RuleSource } from '../../../../../server/models/interfaces';
 import { DataStore } from '../../../../store/DataStore';
 import { getSeverityColor } from '../../../Correlations/utils/constants';
+import { Finding, FindingItemType } from '../../../../../types';
 
 interface FindingsTableProps extends RouteComponentProps {
   detectorService: DetectorsService;

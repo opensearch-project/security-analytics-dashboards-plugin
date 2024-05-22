@@ -17,15 +17,15 @@ export default class FindingsService {
   }
 
   getFindings = async (
-    detectorParams: GetFindingsParams
+    getFindingsParams: GetFindingsParams
   ): Promise<ServerResponse<GetFindingsResponse>> => {
-    const findingIds = detectorParams.findingIds
-      ? JSON.stringify(detectorParams.findingIds)
+    const findingIds = getFindingsParams.findingIds
+      ? JSON.stringify(getFindingsParams.findingIds)
       : undefined;
     const query = {
       sortOrder: 'desc',
       size: 10000,
-      ...detectorParams,
+      ...getFindingsParams,
       findingIds,
       dataSourceId: dataSourceInfo.activeDataSource.id,
     };

@@ -14,7 +14,7 @@ import {
   EuiSpacer,
   EuiButton,
 } from '@elastic/eui';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import {
   BREADCRUMBS,
   DEFAULT_DATE_RANGE,
@@ -61,6 +61,17 @@ export const Overview: React.FC<OverviewProps> = (props) => {
 
   const context = useContext(CoreServicesContext);
   const saContext = useContext(SecurityAnalyticsContext);
+  const [abortSignals, setAbortSignals] = useState<Array<{ signal: boolean; }>>([]);
+  const fireAbortSignals = useCallback(() => {
+    abortSignals.forEach(abort => {
+      abort.signal = true;
+    });
+  }, [abortSignals]);
+
+  // This essentially makes sure we fire abort signals on the component unmount
+  useEffect(() => {
+    return fireAbortSignals;
+  }, [fireAbortSignals]);
 
   const updateState = (overviewViewModel: OverviewViewModel) => {
     setState({
@@ -77,12 +88,14 @@ export const Overview: React.FC<OverviewProps> = (props) => {
 
   useEffect(() => {
     context?.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.OVERVIEW]);
-    overviewViewModelActor.registerRefreshHandler(updateState);
+    overviewViewModelActor.registerRefreshHandler(updateState, true /* allowPartialResults */);
   }, []);
 
   useEffect(() => {
+    const abort = { signal: false };
+
     const updateModel = async () => {
-      await overviewViewModelActor.onRefresh(dateTimeFilter.startTime, dateTimeFilter.endTime);
+      await overviewViewModelActor.onRefresh(dateTimeFilter.startTime, dateTimeFilter.endTime, abort);
 
       if (!initialLoadingFinished) {
         setInitialLoadingFinished(true);
@@ -90,6 +103,10 @@ export const Overview: React.FC<OverviewProps> = (props) => {
     };
 
     updateModel();
+
+    return () => {
+      abort.signal = true;
+    }
   }, [dateTimeFilter.startTime, dateTimeFilter.endTime]);
 
   useEffect(() => {
@@ -122,13 +139,18 @@ export const Overview: React.FC<OverviewProps> = (props) => {
     setRecentlyUsedRanges(usedRanges);
   };
 
-  const onRefresh = async () => {
+  const onRefresh = async (abort: { signal : boolean }) => {
     setLoading(true);
-    await overviewViewModelActor.onRefresh(dateTimeFilter.startTime, dateTimeFilter.endTime);
+    await overviewViewModelActor.onRefresh(dateTimeFilter.startTime, dateTimeFilter.endTime, abort);
   };
 
   useEffect(() => {
-    onRefresh();
+    const abort = { signal: false };
+    onRefresh(abort);
+
+    return () => {
+      abort.signal = true;
+    }
   }, [props.dataSource]);
 
   const onButtonClick = () => setIsPopoverOpen((isPopoverOpen) => !isPopoverOpen);
@@ -170,7 +192,12 @@ export const Overview: React.FC<OverviewProps> = (props) => {
               recentlyUsedRanges={recentlyUsedRanges}
               isLoading={loading}
               onTimeChange={onTimeChange}
-              onRefresh={onRefresh}
+              onRefresh={() => { 
+                const abort = { signal: false };
+                fireAbortSignals();
+                setAbortSignals([abort]);
+                onRefresh(abort);
+              }}
               updateButtonProps={{ fill: false }}
             />
           </EuiFlexItem>
