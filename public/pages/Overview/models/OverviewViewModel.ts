@@ -192,19 +192,19 @@ export class OverviewViewModelActor {
     await this.runSteps([
       async () => {
         await this.updateDetectors();
-        this.updateResults(this.partialUpdateHandlers);
+        this.updateResults(this.partialUpdateHandlers, false);
       },
       async () => {
         await this.updateFindings(signal);
-        this.updateResults(this.partialUpdateHandlers);
+        this.updateResults(this.partialUpdateHandlers, false);
       },
       async (signal: AbortSignal) => {
         await this.updateAlerts(signal);
-        this.updateResults(this.partialUpdateHandlers);
+        this.updateResults(this.partialUpdateHandlers, false);
       }
     ], signal);
 
-    this.updateResults(this.fullUpdateHandlers);
+    this.updateResults(this.fullUpdateHandlers, true);
     this.refreshState = 'Complete';
   }
 
@@ -216,9 +216,9 @@ export class OverviewViewModelActor {
     });
   };
 
-  private updateResults(handlers: OverviewViewModelRefreshHandler[]) {
+  private updateResults(handlers: OverviewViewModelRefreshHandler[], modelLoadingComplete: boolean) {
     handlers.forEach((handler) => {
-      handler(this.overviewViewModel);
+      handler(this.overviewViewModel, modelLoadingComplete);
     });
   }
 

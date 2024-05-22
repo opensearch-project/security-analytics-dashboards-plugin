@@ -176,13 +176,13 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         name: 'Finding ID',
         sortable: true,
         dataType: 'string',
-        render: (id, finding) =>
+        render: (id: string, finding) =>
           (
             <EuiLink
               onClick={() => DataStore.findings.openFlyout(finding, this.state.filteredFindings)}
               data-test-subj={'finding-details-flyout-button'}
             >
-              {`${(id as string).slice(0, 7)}...`}
+              {id.length > 7 ? `${id.slice(0, 7)}...` : id}
             </EuiLink>
           ) || DEFAULT_EMPTY_DATA,
       },

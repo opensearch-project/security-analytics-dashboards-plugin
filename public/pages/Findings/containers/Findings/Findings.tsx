@@ -150,9 +150,9 @@ class Findings extends Component<FindingsProps, FindingsState> {
   }
 
   onRefresh = async () => {
-    await this.getFindings();
     await this.getNotificationChannels();
     await this.getPlugins();
+    await this.getFindings();
     renderVisualization(this.generateVisualizationSpec(), 'findings-view');
   };
 

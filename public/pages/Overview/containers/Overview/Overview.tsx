@@ -73,13 +73,16 @@ export const Overview: React.FC<OverviewProps> = (props) => {
     return fireAbortSignals;
   }, [fireAbortSignals]);
 
-  const updateState = (overviewViewModel: OverviewViewModel) => {
+  const updateState = (overviewViewModel: OverviewViewModel, modelLoadingComplete: boolean) => {
     setState({
       ...state,
       overviewViewModel: { ...overviewViewModel },
     });
-    setLoading(false);
   };
+
+  const onLoadingComplete = (_overviewViewModel: OverviewViewModel, modelLoadingComplete: boolean) => {
+    setLoading(!modelLoadingComplete);
+  }
 
   const overviewViewModelActor = useMemo(
     () => new OverviewViewModelActor(saContext?.services, context?.notifications!),
@@ -89,6 +92,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
   useEffect(() => {
     context?.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.OVERVIEW]);
     overviewViewModelActor.registerRefreshHandler(updateState, true /* allowPartialResults */);
+    overviewViewModelActor.registerRefreshHandler(onLoadingComplete, false /* allowPartialResults */);
   }, []);
 
   useEffect(() => {
