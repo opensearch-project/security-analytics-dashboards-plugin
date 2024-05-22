@@ -6,6 +6,7 @@
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { AlertsService } from '../services';
 import { errorNotificationToast } from '../utils/helpers';
+import { AlertResponse, Duration } from '../../types';
 
 export class AlertsStore {
   constructor(
@@ -13,20 +14,37 @@ export class AlertsStore {
     private readonly notifications: NotificationsStart
   ) {}
 
-  public async getAlertsByDetector(detectorId: string, detectorName: string) {
+  public async getAlertsByDetector(
+    detectorId: string, 
+    detectorName: string, 
+    signal: AbortSignal,
+    duration: Duration,
+    onPartialAlertsFetched?: (alerts: AlertResponse[]) => void
+  ) {
     let allAlerts: any[] = [];
     const maxAlertsReturned = 10000;
     let startIndex = 0;
     let alertsCount = 0;
 
     do {
+      if (signal.aborted) {
+        break;
+      }
+
       const getAlertsRes = await this.service.getAlerts({
         detector_id: detectorId,
         startIndex,
         size: maxAlertsReturned,
+        startTime: duration.startTime,
+        endTime: duration.endTime
       });
 
+      if (signal.aborted) {
+        break;
+      }
+      
       if (getAlertsRes.ok) {
+        onPartialAlertsFetched?.(getAlertsRes.response.alerts)
         allAlerts = allAlerts.concat(getAlertsRes.response.alerts);
         alertsCount = getAlertsRes.response.alerts.length;
       } else {

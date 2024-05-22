@@ -1182,6 +1182,24 @@ exports[`<Alerts /> spec renders the component 1`] = `
                       itemId={[Function]}
                       items={Array []}
                       loading={true}
+                      message={
+                        <EuiEmptyPrompt
+                          body={
+                            <p>
+                              <span
+                                style={
+                                  Object {
+                                    "display": "block",
+                                  }
+                                }
+                              >
+                                No alerts.
+                              </span>
+                              Adjust the time range to see more results.
+                            </p>
+                          }
+                        />
+                      }
                       pagination={true}
                       responsive={true}
                       search={
@@ -1745,7 +1763,24 @@ exports[`<Alerts /> spec renders the component 1`] = `
                           itemId={[Function]}
                           items={Array []}
                           loading={true}
-                          noItemsMessage="No items found"
+                          noItemsMessage={
+                            <EuiEmptyPrompt
+                              body={
+                                <p>
+                                  <span
+                                    style={
+                                      Object {
+                                        "display": "block",
+                                      }
+                                    }
+                                  >
+                                    No alerts.
+                                  </span>
+                                  Adjust the time range to see more results.
+                                </p>
+                              }
+                            />
+                          }
                           onChange={[Function]}
                           pagination={
                             Object {
@@ -2408,7 +2443,53 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                                 <span
                                                   className="euiTableCellContent__text"
                                                 >
-                                                  No items found
+                                                  <EuiEmptyPrompt
+                                                    body={
+                                                      <p>
+                                                        <span
+                                                          style={
+                                                            Object {
+                                                              "display": "block",
+                                                            }
+                                                          }
+                                                        >
+                                                          No alerts.
+                                                        </span>
+                                                        Adjust the time range to see more results.
+                                                      </p>
+                                                    }
+                                                  >
+                                                    <div
+                                                      className="euiEmptyPrompt"
+                                                    >
+                                                      <EuiTextColor
+                                                        color="subdued"
+                                                      >
+                                                        <span
+                                                          className="euiTextColor euiTextColor--subdued"
+                                                        >
+                                                          <EuiText>
+                                                            <div
+                                                              className="euiText euiText--medium"
+                                                            >
+                                                              <p>
+                                                                <span
+                                                                  style={
+                                                                    Object {
+                                                                      "display": "block",
+                                                                    }
+                                                                  }
+                                                                >
+                                                                  No alerts.
+                                                                </span>
+                                                                Adjust the time range to see more results.
+                                                              </p>
+                                                            </div>
+                                                          </EuiText>
+                                                        </span>
+                                                      </EuiTextColor>
+                                                    </div>
+                                                  </EuiEmptyPrompt>
                                                 </span>
                                               </div>
                                             </td>
