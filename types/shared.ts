@@ -7,10 +7,6 @@ import { CorrelationFinding } from "./Correlations";
 import { DetectorHit } from "./Detector";
 import { Finding } from "./Finding";
 
-export interface AbortSignal {
-  signal: boolean;
-}
-
 export interface Duration { 
   startTime: number; 
   endTime: number; 

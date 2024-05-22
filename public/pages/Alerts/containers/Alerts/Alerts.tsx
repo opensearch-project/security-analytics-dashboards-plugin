@@ -56,7 +56,7 @@ import {
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { match, RouteComponentProps, withRouter } from 'react-router-dom';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
-import { AbortSignal, AlertItem, DataSourceProps, DateTimeFilter, Detector } from '../../../../../types';
+import { AlertItem, DataSourceProps, DateTimeFilter, Detector } from '../../../../../types';
 import { DurationRange } from '@elastic/eui/src/components/date_picker/types';
 import { DataStore } from '../../../../store/DataStore';
 
@@ -94,7 +94,7 @@ const groupByOptions = [
 
 export class Alerts extends Component<AlertsProps, AlertsState> {
   static contextType = CoreServicesContext;
-  private abortSignals: AbortSignal[] = [];
+  private abortControllers: AbortController[] = [];
 
   constructor(props: AlertsProps) {
     super(props);
@@ -382,17 +382,15 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
   };
 
   private abortPendingGetAlerts() {
-    this.abortSignals.forEach(abort => {
-      abort.signal = true;
-    });
-    this.abortSignals = [];
+    this.abortControllers.forEach(controller => controller.abort());
+    this.abortControllers = [];
   }
 
   onRefresh = async () => {
     this.abortPendingGetAlerts();
-    const abort = { signal: false };
-    this.abortSignals.push(abort);
-    this.getAlerts(abort);
+    const abortController = new AbortController();
+    this.abortControllers.push(abortController);
+    this.getAlerts(abortController.signal);
     renderVisualization(this.generateVisualizationSpec(this.state.filteredAlerts), 'alerts-view');
   };
 

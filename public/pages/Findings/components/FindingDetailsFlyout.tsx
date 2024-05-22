@@ -48,7 +48,7 @@ import { RuleSource } from '../../../../server/models/interfaces';
 import { OpenSearchService, IndexPatternsService, CorrelationService } from '../../../services';
 import { RuleTableItem } from '../../Rules/utils/helpers';
 import { CreateIndexPatternForm } from './CreateIndexPatternForm';
-import { CorrelationFinding, FindingDocumentItem, RuleItemInfoBase, FindingItemType, AbortSignal } from '../../../../types';
+import { CorrelationFinding, FindingDocumentItem, RuleItemInfoBase, FindingItemType } from '../../../../types';
 import { FindingFlyoutTabId, FindingFlyoutTabs } from '../utils/constants';
 import { DataStore } from '../../../store/DataStore';
 import { CorrelationsTable } from './CorrelationsTable/CorrelationsTable';
@@ -87,7 +87,7 @@ export default class FindingDetailsFlyout extends Component<
   FindingDetailsFlyoutProps,
   FindingDetailsFlyoutState
 > {
-  private abortGetFindingsSignals: AbortSignal[] = []; 
+  private abortGetFindingsControllers: AbortController[] = []; 
 
   constructor(props: FindingDetailsFlyoutProps) {
     super(props);
@@ -123,10 +123,10 @@ export default class FindingDetailsFlyout extends Component<
   }
 
   componentWillUnmount(): void {
-    this.abortGetFindingsSignals.forEach(abort => {
-      abort.signal = true;
+    this.abortGetFindingsControllers.forEach(controller => {
+      controller.abort();
     })
-    this.abortGetFindingsSignals = [];
+    this.abortGetFindingsControllers = [];
   }
 
   getCorrelations = async () => {
@@ -134,9 +134,9 @@ export default class FindingDetailsFlyout extends Component<
     let allFindings = this.props.findings;
     if (this.props.shouldLoadAllFindings) {
       // if findings come from the alerts fly-out, we need to get all the findings to match those with the correlations
-      const abort = { signal: false };
-      this.abortGetFindingsSignals.push(abort);
-      allFindings = await DataStore.findings.getAllFindings(abort);
+      const abortController = new AbortController();
+      this.abortGetFindingsControllers.push(abortController);
+      allFindings = await DataStore.findings.getAllFindings(abortController.signal);
     }
 
     DataStore.correlations.getCorrelationRules().then((correlationRules) => {

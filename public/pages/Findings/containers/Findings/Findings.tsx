@@ -58,8 +58,7 @@ import {
   FeatureChannelList,
   DateTimeFilter,
   FindingItemType,
-  DetectorHit,
-  AbortSignal,
+  DetectorHit
 } from '../../../../../types';
 
 interface FindingsProps extends RouteComponentProps, DataSourceProps {
@@ -104,7 +103,7 @@ export const groupByOptions = [
 class Findings extends Component<FindingsProps, FindingsState> {
   static contextType = CoreServicesContext;
 
-  private abortGetFindingsSignals: AbortSignal[] = [];
+  private abortGetFindingsControllers: AbortController[] = [];
 
   constructor(props: FindingsProps) {
     super(props);
@@ -168,8 +167,8 @@ class Findings extends Component<FindingsProps, FindingsState> {
   }
 
   abortGetFindings = () => {
-    this.abortGetFindingsSignals.forEach(abort => {
-      abort.signal = true;
+    this.abortGetFindingsControllers.forEach(controller => {
+      controller.abort();
     });
   }
 
@@ -177,15 +176,15 @@ class Findings extends Component<FindingsProps, FindingsState> {
     this.abortGetFindings();
     this.setState({ loading: true, findings: [] });
     const { detectorService, notifications, dateTimeFilter } = this.props;
-    const abort = { signal: false };
-    this.abortGetFindingsSignals.push(abort);
+    const abortController = new AbortController();
+    this.abortGetFindingsControllers.push(abortController);
     try {
       const detectorId = this.props.match.params['detectorId'];
       const duration = dateTimeFilter ? getDuration(dateTimeFilter) : undefined;
 
       // Not looking for findings from specific detector
       if (!detectorId) {
-        await DataStore.findings.getAllFindings(abort, duration, this.onStreamingFindings);
+        await DataStore.findings.getAllFindings(abortController.signal, duration, this.onStreamingFindings);
       } else {
         // get findings for a detector
         const getDetectorResponse = await detectorService.getDetectorWithId(detectorId);
@@ -196,7 +195,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
             _index: '',
             _source: getDetectorResponse.response.detector
           }
-          await DataStore.findings.getFindingsPerDetector(detectorId, detectorHit, abort, duration, this.onStreamingFindings);
+          await DataStore.findings.getFindingsPerDetector(detectorId, detectorHit, abortController.signal, duration, this.onStreamingFindings);
         } else {
           errorNotificationToast(notifications, 'retrieve', 'findings', getDetectorResponse.error);
         }

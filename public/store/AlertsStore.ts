@@ -6,7 +6,7 @@
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { AlertsService } from '../services';
 import { errorNotificationToast } from '../utils/helpers';
-import { AbortSignal, AlertResponse, Duration } from '../../types';
+import { AlertResponse, Duration } from '../../types';
 
 export class AlertsStore {
   constructor(
@@ -17,7 +17,7 @@ export class AlertsStore {
   public async getAlertsByDetector(
     detectorId: string, 
     detectorName: string, 
-    abort: AbortSignal,
+    signal: AbortSignal,
     duration: Duration,
     onPartialAlertsFetched?: (alerts: AlertResponse[]) => void
   ) {
@@ -27,7 +27,7 @@ export class AlertsStore {
     let alertsCount = 0;
 
     do {
-      if (abort.signal) {
+      if (signal.aborted) {
         break;
       }
 
@@ -39,7 +39,7 @@ export class AlertsStore {
         endTime: duration.endTime
       });
 
-      if (abort.signal) {
+      if (signal.aborted) {
         break;
       }
       

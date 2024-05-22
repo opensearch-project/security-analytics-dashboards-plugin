@@ -9,7 +9,7 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { RouteComponentProps } from 'react-router-dom';
 import { errorNotificationToast } from '../utils/helpers';
 import { FindingDetailsFlyoutBaseProps } from '../pages/Findings/components/FindingDetailsFlyout';
-import { AbortSignal, DetectorHit, Duration, Finding, FindingItemType, GetFindingsResponse, ServerResponse } from '../../types';
+import { DetectorHit, Duration, Finding, FindingItemType, GetFindingsResponse, ServerResponse } from '../../types';
 
 export interface IFindingsStore {
   readonly service: FindingsService;
@@ -25,12 +25,12 @@ export interface IFindingsStore {
   getFindingsPerDetector: (
     detectorId: string, 
     detector: DetectorHit,
-    abort: AbortSignal,
+    signal: AbortSignal,
     duration?: Duration, 
     onPartialFindingsFetched?: (findings: Finding[]) => void
   ) => Promise<Finding[]>;
 
-  getAllFindings: (abort: AbortSignal, duration?: { startTime: number; endTime: number; }, onPartialFindingsFetched?: (findings: Finding[]) => void) => Promise<FindingItemType[]>;
+  getAllFindings: (signal: AbortSignal, duration?: { startTime: number; endTime: number; }, onPartialFindingsFetched?: (findings: Finding[]) => void) => Promise<FindingItemType[]>;
 
   setFlyoutCallback: (
     flyoutCallback: (findingFlyout: FindingDetailsFlyoutBaseProps | null) => void
@@ -119,7 +119,7 @@ export class FindingsStore implements IFindingsStore {
   public getFindingsPerDetector = async (
     detectorId: string,
     detector: DetectorHit,
-    abort: AbortSignal,
+    signal: AbortSignal,
     duration?: Duration,
     onPartialFindingsFetched?: (findings: FindingItemType[]) => void
   ): Promise<FindingItemType[]> => {
@@ -133,7 +133,7 @@ export class FindingsStore implements IFindingsStore {
       endTime: duration?.endTime
     }
 
-    if (abort.signal) {
+    if (signal.aborted) {
       return allFindings;
     }
 
@@ -149,7 +149,7 @@ export class FindingsStore implements IFindingsStore {
 
       while (remainingFindings > 0) {
 
-        if (abort.signal) {
+        if (signal.aborted) {
           return allFindings;
         }
 
@@ -158,7 +158,7 @@ export class FindingsStore implements IFindingsStore {
           startIndex
         });
 
-        if (abort.signal) {
+        if (signal.aborted) {
           return allFindings;
         }
 
@@ -189,7 +189,7 @@ export class FindingsStore implements IFindingsStore {
   };
 
   public getAllFindings = async (
-    abort: AbortSignal,
+    signal: AbortSignal,
     duration?: Duration,
     onPartialFindingsFetched?: (findings: FindingItemType[]) => void
   ): Promise<FindingItemType[]> => {
@@ -199,7 +199,7 @@ export class FindingsStore implements IFindingsStore {
       const detectors = detectorsRes.response.hits.hits;
 
       for (let detector of detectors) {
-        const findings = await this.getFindingsPerDetector(detector._id, detector, abort, duration, onPartialFindingsFetched);
+        const findings = await this.getFindingsPerDetector(detector._id, detector, signal, duration, onPartialFindingsFetched);
         const findingsPerDetector: FindingItemType[] = this.extendFindings(findings, detector);
         allFindings = allFindings.concat(findingsPerDetector);
       }

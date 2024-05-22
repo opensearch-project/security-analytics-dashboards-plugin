@@ -61,12 +61,12 @@ export const Overview: React.FC<OverviewProps> = (props) => {
 
   const context = useContext(CoreServicesContext);
   const saContext = useContext(SecurityAnalyticsContext);
-  const [abortSignals, setAbortSignals] = useState<Array<{ signal: boolean; }>>([]);
+  const [abortController, setControllers] = useState<Array<AbortController>>([]);
   const fireAbortSignals = useCallback(() => {
-    abortSignals.forEach(abort => {
-      abort.signal = true;
+    abortController.forEach(controller => {
+      controller.abort();
     });
-  }, [abortSignals]);
+  }, [abortController]);
 
   // This essentially makes sure we fire abort signals on the component unmount
   useEffect(() => {
@@ -92,10 +92,10 @@ export const Overview: React.FC<OverviewProps> = (props) => {
   }, []);
 
   useEffect(() => {
-    const abort = { signal: false };
+    const abortController = new AbortController();
 
     const updateModel = async () => {
-      await overviewViewModelActor.onRefresh(dateTimeFilter.startTime, dateTimeFilter.endTime, abort);
+      await overviewViewModelActor.onRefresh(dateTimeFilter.startTime, dateTimeFilter.endTime, abortController.signal);
 
       if (!initialLoadingFinished) {
         setInitialLoadingFinished(true);
@@ -105,7 +105,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
     updateModel();
 
     return () => {
-      abort.signal = true;
+      abortController.abort()
     }
   }, [dateTimeFilter.startTime, dateTimeFilter.endTime]);
 
@@ -139,17 +139,17 @@ export const Overview: React.FC<OverviewProps> = (props) => {
     setRecentlyUsedRanges(usedRanges);
   };
 
-  const onRefresh = async (abort: { signal : boolean }) => {
+  const onRefresh = async (signal: AbortSignal) => {
     setLoading(true);
-    await overviewViewModelActor.onRefresh(dateTimeFilter.startTime, dateTimeFilter.endTime, abort);
+    await overviewViewModelActor.onRefresh(dateTimeFilter.startTime, dateTimeFilter.endTime, signal);
   };
 
   useEffect(() => {
-    const abort = { signal: false };
-    onRefresh(abort);
+    const abortController = new AbortController();
+    onRefresh(abortController.signal);
 
     return () => {
-      abort.signal = true;
+      abortController.abort();
     }
   }, [props.dataSource]);
 
@@ -193,10 +193,10 @@ export const Overview: React.FC<OverviewProps> = (props) => {
               isLoading={loading}
               onTimeChange={onTimeChange}
               onRefresh={() => { 
-                const abort = { signal: false };
+                const abortController = new AbortController();
                 fireAbortSignals();
-                setAbortSignals([abort]);
-                onRefresh(abort);
+                setControllers([abortController]);
+                onRefresh(abortController.signal);
               }}
               updateButtonProps={{ fill: false }}
             />

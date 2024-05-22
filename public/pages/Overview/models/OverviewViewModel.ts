@@ -12,7 +12,6 @@ import dateMath from '@elastic/datemath';
 import moment from 'moment';
 import { DataStore } from '../../../store/DataStore';
 import {
-  AbortSignal,
   DetectorHit,
   Finding,
   OverviewAlertItem,
@@ -65,7 +64,7 @@ export class OverviewViewModelActor {
     }
   }
 
-  private async updateFindings(abort: AbortSignal) {
+  private async updateFindings(signal: AbortSignal) {
     const detectorInfo = new Map<string, { logType: string; name: string, detectorHit: DetectorHit }>();
     this.overviewViewModel.detectors.forEach((detectorHit) => {
       detectorInfo.set(detectorHit._id, {
@@ -87,7 +86,7 @@ export class OverviewViewModelActor {
         let detectorFindings: Finding[] = await DataStore.findings.getFindingsPerDetector(
           id,
           detectorInfo.get(id)!.detectorHit,
-          abort,
+          signal,
           duration
         );
         const logType = detectorInfo.get(id)?.logType;
@@ -136,7 +135,7 @@ export class OverviewViewModelActor {
     this.overviewViewModel.findings = this.filterChartDataByTime(findingItems);
   }
 
-  private async updateAlerts(abort: AbortSignal) {
+  private async updateAlerts(signal: AbortSignal) {
     let alertItems: OverviewAlertItem[] = [];
     const duration = getDuration({
       startTime: this.startTime,
@@ -149,7 +148,7 @@ export class OverviewViewModelActor {
         const detectorAlerts = await DataStore.alerts.getAlertsByDetector(
           id,
           detector._source.name,
-          abort,
+          signal,
           duration
         );
         const detectorAlertItems: OverviewAlertItem[] = detectorAlerts.map((alert) => ({
@@ -180,7 +179,7 @@ export class OverviewViewModelActor {
   startTime = DEFAULT_DATE_RANGE.start;
   endTime = DEFAULT_DATE_RANGE.end;
 
-  public async onRefresh(startTime: string, endTime: string, abort: AbortSignal) {
+  public async onRefresh(startTime: string, endTime: string, signal: AbortSignal) {
     this.startTime = startTime;
     this.endTime = endTime;
 
@@ -196,14 +195,14 @@ export class OverviewViewModelActor {
         this.updateResults(this.partialUpdateHandlers);
       },
       async () => {
-        await this.updateFindings(abort);
+        await this.updateFindings(signal);
         this.updateResults(this.partialUpdateHandlers);
       },
-      async (abort: AbortSignal) => {
-        await this.updateAlerts(abort);
+      async (signal: AbortSignal) => {
+        await this.updateAlerts(signal);
         this.updateResults(this.partialUpdateHandlers);
       }
-    ], abort);
+    ], signal);
 
     this.updateResults(this.fullUpdateHandlers);
     this.refreshState = 'Complete';
@@ -223,15 +222,15 @@ export class OverviewViewModelActor {
     });
   }
 
-  private async runSteps(steps: Array<(abort: AbortSignal) => Promise<any>>, abort: AbortSignal) {
+  private async runSteps(steps: Array<(signal: AbortSignal) => Promise<any>>, signal: AbortSignal) {
     for (let step of steps) {
-      if (abort.signal) {
+      if (signal.aborted) {
         break;
       }
       
-      await step(abort);
+      await step(signal);
 
-      if (abort.signal) {
+      if (signal.aborted) {
         break;
       }
     }
