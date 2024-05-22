@@ -22,6 +22,8 @@ export function setupAlertsRoutes(services: NodeServices, router: IRouter) {
           sortOrder: schema.maybe(schema.string()),
           size: schema.maybe(schema.number()),
           startIndex: schema.maybe(schema.number()),
+          startTime: schema.maybe(schema.number()),
+          endTime: schema.maybe(schema.number())
         }),
       },
     },

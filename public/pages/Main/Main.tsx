@@ -675,6 +675,7 @@ export default class Main extends Component<MainProps, MainState> {
                                             dateTimeFilter={this.state.dateTimeFilter}
                                             setDateTimeFilter={this.setDateTimeFilter}
                                             dataSource={selectedDataSource}
+                                            notifications={core?.notifications}
                                           />
                                         );
                                       }}

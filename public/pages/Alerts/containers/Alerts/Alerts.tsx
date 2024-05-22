@@ -48,6 +48,7 @@ import {
   capitalizeFirstLetter,
   createSelectComponent,
   errorNotificationToast,
+  getDuration,
   renderTime,
   renderVisualization,
   successNotificationToast,
@@ -67,7 +68,7 @@ export interface AlertsProps extends RouteComponentProps, DataSourceProps {
   notifications: NotificationsStart;
   indexPatternService: IndexPatternsService;
   match: match<{ detectorId: string }>;
-  dateTimeFilter?: DateTimeFilter;
+  dateTimeFilter: DateTimeFilter;
   setDateTimeFilter?: Function;
 }
 
@@ -93,6 +94,7 @@ const groupByOptions = [
 
 export class Alerts extends Component<AlertsProps, AlertsState> {
   static contextType = CoreServicesContext;
+  private abortControllers: AbortController[] = [];
 
   constructor(props: AlertsProps) {
     super(props);
@@ -300,32 +302,39 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     this.onRefresh();
   }
 
-  async getAlerts() {
-    this.setState({ loading: true });
-    const { detectorService, notifications } = this.props;
+  componentWillUnmount(): void {
+    this.abortPendingGetAlerts();
+  }
+
+  async getAlerts(abort: AbortSignal) {
+    this.setState({ loading: true, alerts: [] });
+    const { detectorService, notifications, dateTimeFilter } = this.props;
     const { detectors } = this.state;
     try {
       const detectorsRes = await detectorService.getDetectors();
+      const duration = getDuration(dateTimeFilter);
       if (detectorsRes.ok) {
+        this.setState({ detectors: detectors });
         const detectorIds = detectorsRes.response.hits.hits.map((hit) => {
           detectors[hit._id] = { ...hit._source, id: hit._id };
           return hit._id;
         });
 
-        let alerts: AlertItem[] = [];
         const detectorId = this.props.match.params['detectorId'];
 
         for (let id of detectorIds) {
           if (!detectorId || detectorId === id) {
-            const detectorAlerts = await DataStore.alerts.getAlertsByDetector(
+            await DataStore.alerts.getAlertsByDetector(
               id,
-              detectors[id].name
+              detectors[id].name,
+              abort,
+              duration,
+              (alerts) => {
+                this.setState({ alerts: [...this.state.alerts, ...alerts]})
+              }
             );
-            alerts = alerts.concat(detectorAlerts);
           }
         }
-
-        this.setState({ alerts: alerts, detectors: detectors });
       } else {
         errorNotificationToast(notifications, 'retrieve', 'detectors', detectorsRes.error);
       }
@@ -372,8 +381,16 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       });
   };
 
+  private abortPendingGetAlerts() {
+    this.abortControllers.forEach(controller => controller.abort());
+    this.abortControllers = [];
+  }
+
   onRefresh = async () => {
-    this.getAlerts();
+    this.abortPendingGetAlerts();
+    const abortController = new AbortController();
+    this.abortControllers.push(abortController);
+    this.getAlerts(abortController.signal);
     renderVisualization(this.generateVisualizationSpec(this.state.filteredAlerts), 'alerts-view');
   };
 

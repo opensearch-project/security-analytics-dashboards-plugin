@@ -8,6 +8,7 @@ import {
   CorrelationFinding,
   CorrelationRule,
   CorrelationRuleQuery,
+  DetectorHit,
   ICorrelationsStore,
   IRulesStore,
 } from '../../types';
@@ -195,12 +196,32 @@ export class CorrelationsStore implements ICorrelationsStore {
       start_time,
       end_time
     );
-    const allFindings = await this.fetchAllFindings();
-
+    
     const result: { finding1: CorrelationFinding; finding2: CorrelationFinding }[] = [];
-
+    
     if (allCorrelationsRes.ok) {
-      allCorrelationsRes.response.findings.forEach(({ finding1, finding2 }) => {
+      const firstTenGrandCorrelations = allCorrelationsRes.response.findings.slice(0, 10000);
+      const allFindingIdsSet = new Set<string>();
+      firstTenGrandCorrelations.forEach(({ finding1, finding2 }) => {
+        allFindingIdsSet.add(finding1);
+        allFindingIdsSet.add(finding2);
+      });
+
+      const allFindingIds = Array.from(allFindingIdsSet);
+      let allFindings: { [id: string]: CorrelationFinding } = {};
+      const maxFindingsFetchedInSingleCall = 10000;
+
+      for (let i = 0; i < allFindingIds.length; i+= maxFindingsFetchedInSingleCall) {
+        const findingIds = allFindingIds.slice(i, i + maxFindingsFetchedInSingleCall);
+        const findings = await this.fetchAllFindings(findingIds);
+        allFindings = {
+          ...allFindings,
+          ...findings
+        }
+      }
+
+      const maxNumberOfCorrelationsDisplayed = 10000;
+      allCorrelationsRes.response.findings.slice(0, maxNumberOfCorrelationsDisplayed).forEach(({ finding1, finding2 }) => {
         const f1 = allFindings[finding1];
         const f2 = allFindings[finding2];
         if (f1 && f2)
@@ -222,55 +243,58 @@ export class CorrelationsStore implements ICorrelationsStore {
 
   public allFindings: { [id: string]: CorrelationFinding } = {};
 
-  public async fetchAllFindings(): Promise<{ [id: string]: CorrelationFinding }> {
+  private async fetchAllFindings(findingIds: string[]): Promise<{ [id: string]: CorrelationFinding }> {
     const detectorsRes = await this.detectorsService.getDetectors();
     const allRules = await this.rulesStore.getAllRules();
 
     if (detectorsRes.ok) {
-      const detectors = detectorsRes.response.hits.hits;
-      let findings: { [id: string]: CorrelationFinding } = {};
-      for (let detector of detectors) {
-        const detectorFindings = await DataStore.findings.getFindingsPerDetector(detector._id);
-        detectorFindings.forEach((f) => {
-          const rule = allRules.find((rule) => rule._id === f.queries[0].id);
-          findings[f.id] = {
-            ...f,
-            id: f.id,
-            logType: detector._source.detector_type,
-            detector: detector,
-            detectorName: detector._source.name,
-            timestamp: new Date(f.timestamp).toLocaleString(),
-            detectionRule: rule
-              ? {
-                  name: rule._source.title,
-                  severity: rule._source.level,
-                  tags: rule._source.tags,
-                }
-              : { name: DEFAULT_EMPTY_DATA, severity: DEFAULT_EMPTY_DATA },
-          };
-        });
+      const detectorsMap: { [id: string]: DetectorHit } = {};
+      detectorsRes.response.hits.hits.forEach(detector => {
+        detectorsMap[detector._id] = detector;
+      });
+      let findingsMap: { [id: string]: CorrelationFinding } = {};
+      const findings = await DataStore.findings.getFindingsByIds(findingIds);
+      findings.forEach((f) => {
+        const detector = detectorsMap[f.detectorId];
+        const rule = allRules.find((rule) => rule._id === f.queries[0].id);
+        findingsMap[f.id] = {
+          ...f,
+          id: f.id,
+          logType: detector._source.detector_type,
+          detector: detector,
+          detectorName: detector._source.name,
+          timestamp: new Date(f.timestamp).toLocaleString(),
+          detectionRule: rule
+            ? {
+                name: rule._source.title,
+                severity: rule._source.level,
+                tags: rule._source.tags,
+              }
+            : { name: DEFAULT_EMPTY_DATA, severity: DEFAULT_EMPTY_DATA },
+        };
+      });
 
-        this.allFindings = findings;
-      }
+      this.allFindings = findingsMap;
     }
 
     return this.allFindings;
   }
 
   public async getCorrelatedFindings(
-    finding: string,
+    findingId: string,
     detector_type: string,
     nearby_findings = 20
   ): Promise<{ finding: CorrelationFinding; correlatedFindings: CorrelationFinding[] }> {
-    const allFindings = await this.fetchAllFindings();
     const response = await this.service.getCorrelatedFindings(
-      finding,
+      findingId,
       detector_type,
       nearby_findings
     );
 
     if (response?.ok) {
       const correlatedFindings: CorrelationFinding[] = [];
+      const allFindingIds = response.response.findings.map(f => f.finding);
+      const allFindings = await this.fetchAllFindings(allFindingIds);      
       response.response.findings.forEach((f) => {
         if (allFindings[f.finding]) {
           correlatedFindings.push({
@@ -282,15 +306,17 @@ export class CorrelationsStore implements ICorrelationsStore {
       });
 
       return {
-        finding: allFindings[finding],
+        finding: allFindings[findingId],
         correlatedFindings,
       };
     }
 
+    const finding = (await DataStore.findings.getFindingsByIds([findingId]))[0];
+
     return {
       finding: {
-        ...allFindings[finding],
-        id: finding,
+        ...finding,
+        id: findingId,
         logType: detector_type,
         timestamp: '',
         detectionRule: { name: '', severity: 'high' },
