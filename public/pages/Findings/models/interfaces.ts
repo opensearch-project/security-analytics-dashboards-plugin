@@ -3,17 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export interface Finding {
-  id: string;
-  detectorId: string;
-  document_list: FindingDocument[];
-  index: string;
-  queries: Query[];
-  related_doc_ids: string[];
-  timestamp: number;
-  detectionType: string;
-}
-
 export interface Query {
   id: string;
   name: string;

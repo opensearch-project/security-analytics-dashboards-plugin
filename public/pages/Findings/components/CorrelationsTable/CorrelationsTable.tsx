@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { CorrelationFinding } from '../../../../../types';
+import { CorrelationFinding, FindingItemType } from '../../../../../types';
 import { ruleTypes } from '../../../Rules/utils/constants';
 import { DEFAULT_EMPTY_DATA, ROUTES } from '../../../../utils/constants';
 import {
@@ -20,7 +20,6 @@ import {
   EuiPopover,
 } from '@elastic/eui';
 import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
-import { FindingItemType } from '../../containers/Findings/Findings';
 import { RouteComponentProps } from 'react-router-dom';
 import { DataStore } from '../../../../store/DataStore';
 import { capitalizeFirstLetter, formatRuleType, getSeverityBadge } from '../../../../utils/helpers';

@@ -39,11 +39,12 @@ import { IndexService, OpenSearchService } from '../services';
 import { ruleSeverity, ruleTypes } from '../pages/Rules/utils/constants';
 import { Handler } from 'vega-tooltip';
 import _ from 'lodash';
-import { AlertCondition, LogType } from '../../types';
+import { AlertCondition, DateTimeFilter, Duration, LogType } from '../../types';
 import { DataStore } from '../store/DataStore';
 import { LogCategoryOptionView } from '../components/Utility/LogCategoryOption';
 import { getLogTypeLabel } from '../pages/LogTypes/utils/helpers';
 import { euiThemeVars } from '@osd/ui-shared-deps/theme';
+import dateMath from '@elastic/datemath';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
@@ -551,4 +552,14 @@ function getValueSetter(baseObject: any) {
       o[lastField] = value;
     }
   };
+}
+
+export function getDuration({ startTime, endTime }: DateTimeFilter): Duration {
+  const startMoment = dateMath.parse(startTime)!;
+  const endMoment = dateMath.parse(endTime)!;
+
+  return {
+    startTime: startMoment.valueOf(),
+    endTime: endMoment.valueOf()
+  }
 }
