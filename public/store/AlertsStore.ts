@@ -44,9 +44,10 @@ export class AlertsStore {
       }
       
       if (getAlertsRes.ok) {
-        onPartialAlertsFetched?.(getAlertsRes.response.alerts)
-        allAlerts = allAlerts.concat(getAlertsRes.response.alerts);
-        alertsCount = getAlertsRes.response.alerts.length;
+        const alerts = this.extendAlerts(getAlertsRes.response.alerts, detectorId, detectorName);
+        onPartialAlertsFetched?.(alerts);
+        allAlerts = allAlerts.concat(alerts);
+        alertsCount = alerts.length;
       } else {
         alertsCount = 0;
         errorNotificationToast(this.notifications, 'retrieve', 'alerts', getAlertsRes.error);
@@ -59,7 +60,11 @@ export class AlertsStore {
       alertsCount === maxAlertsReturned
     );
 
-    allAlerts = allAlerts.map((alert) => {
+    return allAlerts;
+  }
+
+  private extendAlerts(allAlerts: any[], detectorId: string, detectorName: string) {
+    return allAlerts.map((alert) => {
       if (!alert.detector_id) {
         alert.detector_id = detectorId;
       }
@@ -69,7 +74,5 @@ export class AlertsStore {
         detectorName: detectorName,
       };
     });
-
-    return allAlerts;
   }
 }
