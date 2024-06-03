@@ -9,7 +9,7 @@ import { configure } from '@testing-library/react';
 import Enzyme from 'enzyme';
 // @ts-ignore
 import Adapter from 'enzyme-adapter-react-16';
-import { saContextMock as mockSaContext } from './mocks/useContext.mock';
+import { mockContexts } from './mocks/useContext.mock';
 import { DataStore } from '../public/store/DataStore';
 import services from './mocks/services';
 import notificationsStartMock from './mocks/services/notifications/NotificationsStart.mock';
@@ -86,7 +86,7 @@ jest.mock('react', () => {
   const ActualReact = jest.requireActual('react');
   return {
     ...ActualReact,
-    useContext: () => mockSaContext,
+    useContext: () => mockContexts,
   };
 });
 

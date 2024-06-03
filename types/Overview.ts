@@ -7,6 +7,8 @@ import { EuiBasicTableColumn } from '@elastic/eui';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { RouteComponentProps } from 'react-router-dom';
 import { DetectorHit } from './Detector';
+import { SortDirection } from '../public/utils/constants';
+import { DataSourceProps } from './DataSource';
 
 export interface DateTimeFilter {
   startTime: string;
@@ -21,7 +23,7 @@ export interface OverviewViewModel {
 
 export type OverviewViewModelRefreshHandler = (overviewState: OverviewViewModel) => void;
 
-export interface OverviewProps extends RouteComponentProps {
+export interface OverviewProps extends RouteComponentProps, DataSourceProps {
   getStartedDismissedOnce: boolean;
   onGetStartedDismissed: () => void;
   notifications?: NotificationsStart;
@@ -43,6 +45,7 @@ export interface OverviewFindingItem {
   ruleId: string;
   ruleName: string;
   ruleSeverity: string;
+  isThreatIntelOnlyFinding: boolean;
 }
 
 export interface OverviewAlertItem {
@@ -66,5 +69,20 @@ export type TableWidgetItem = OverviewFindingItem | OverviewAlertItem | Overview
 export type TableWidgetProps<T extends TableWidgetItem> = {
   columns: EuiBasicTableColumn<T>[];
   items: T[];
+  sorting?: {
+    sort: {
+      field: string;
+      direction: SortDirection;
+    };
+  };
+  className?: string;
   loading?: boolean;
+  message?: React.ReactNode;
 };
+
+export interface DetectorItem {
+  id: string;
+  detectorName: string;
+  status: string;
+  logTypes: string;
+}

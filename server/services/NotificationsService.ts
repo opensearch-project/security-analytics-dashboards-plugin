@@ -4,7 +4,6 @@
  */
 
 import {
-  ILegacyCustomClusterClient,
   OpenSearchDashboardsRequest,
   OpenSearchDashboardsResponseFactory,
   IOpenSearchDashboardsResponse,
@@ -18,20 +17,15 @@ import {
   GetFeaturesResponse,
   GetNotificationConfigsResponse,
 } from '../../types';
+import { MDSEnabledClientService } from './MDSEnabledClientService';
 
-export default class NotificationsService {
-  osDriver: ILegacyCustomClusterClient;
-
-  constructor(osDriver: ILegacyCustomClusterClient) {
-    this.osDriver = osDriver;
-  }
-
+export default class NotificationsService extends MDSEnabledClientService {
   /**
    * Calls backend GET channels API from the Notifications plugin
    * to retrieve the channel config with the specific ID.
    */
   getChannel = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<
@@ -42,8 +36,8 @@ export default class NotificationsService {
         id: string;
       };
 
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const getResponse: GetNotificationConfigsResponse = await callWithRequest(
+      const client = this.getClient(request, context);
+      const getResponse: GetNotificationConfigsResponse = await client(
         CLIENT_NOTIFICATIONS_METHODS.GET_CHANNEL,
         { id }
       );
@@ -71,15 +65,15 @@ export default class NotificationsService {
    * Calls backend GET channels API from the Notifications plugin.
    */
   getChannels = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<
     IOpenSearchDashboardsResponse<ServerResponse<GetChannelsResponse> | ResponseError>
   > => {
     try {
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const getChannelsResponse: GetChannelsResponse = await callWithRequest(
+      const client = this.getClient(request, context);
+      const getChannelsResponse: GetChannelsResponse = await client(
         CLIENT_NOTIFICATIONS_METHODS.GET_CHANNELS
       );
 
@@ -103,13 +97,13 @@ export default class NotificationsService {
   };
 
   getNotificationsFeatures = async (
-    _context: RequestHandlerContext,
+    context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<Array<string>> | ResponseError>> => {
     try {
-      const { callAsCurrentUser: callWithRequest } = this.osDriver.asScoped(request);
-      const getFeaturesResponse: GetFeaturesResponse = await callWithRequest(
+      const client = this.getClient(request, context);
+      const getFeaturesResponse: GetFeaturesResponse = await client(
         CLIENT_NOTIFICATIONS_METHODS.GET_FEATURES
       );
 

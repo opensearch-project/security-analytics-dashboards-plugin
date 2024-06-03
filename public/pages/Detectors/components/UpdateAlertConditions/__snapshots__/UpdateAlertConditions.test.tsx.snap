@@ -193,6 +193,7 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
   detectorService={
     DetectorService {
       "createDetector": [Function],
+      "dataSourceEnabled": undefined,
       "deleteDetector": [Function],
       "getDetector": [Function],
       "getDetectors": [Function],
@@ -820,6 +821,7 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
       detectorService={
         DetectorService {
           "createDetector": [Function],
+          "dataSourceEnabled": undefined,
           "deleteDetector": [Function],
           "getDetector": [Function],
           "getDetectors": [Function],

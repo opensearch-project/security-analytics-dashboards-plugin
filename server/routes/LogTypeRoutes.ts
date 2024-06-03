@@ -7,6 +7,7 @@ import { IRouter } from 'opensearch-dashboards/server';
 import { schema } from '@osd/config-schema';
 import { NodeServices } from '../models/interfaces';
 import { API } from '../utils/constants';
+import { createQueryValidationSchema } from '../utils/helpers';
 
 export function setupLogTypeRoutes(services: NodeServices, router: IRouter) {
   const { logTypeService } = services;
@@ -16,6 +17,7 @@ export function setupLogTypeRoutes(services: NodeServices, router: IRouter) {
       path: API.LOGTYPE_BASE,
       validate: {
         body: schema.any(),
+        query: createQueryValidationSchema(),
       },
     },
     logTypeService.createLogType
@@ -26,6 +28,7 @@ export function setupLogTypeRoutes(services: NodeServices, router: IRouter) {
       path: `${API.LOGTYPE_BASE}/_search`,
       validate: {
         body: schema.any(),
+        query: createQueryValidationSchema(),
       },
     },
     logTypeService.searchLogTypes
@@ -39,6 +42,7 @@ export function setupLogTypeRoutes(services: NodeServices, router: IRouter) {
           logTypeId: schema.string(),
         }),
         body: schema.any(),
+        query: createQueryValidationSchema(),
       },
     },
     logTypeService.updateLogType
@@ -52,6 +56,7 @@ export function setupLogTypeRoutes(services: NodeServices, router: IRouter) {
           logTypeId: schema.string(),
         }),
         body: schema.any(),
+        query: createQueryValidationSchema(),
       },
     },
     logTypeService.deleteLogType
