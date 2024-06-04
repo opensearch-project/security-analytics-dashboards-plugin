@@ -10,6 +10,7 @@ import {
 } from 'opensearch-dashboards/public';
 import { ServerResponse } from '../../server/models/types';
 import { API } from '../../server/utils/constants';
+import { dataSourceInfo } from './utils/constants';
 
 export default class OpenSearchService {
   constructor(
@@ -19,7 +20,11 @@ export default class OpenSearchService {
 
   getPlugins = async (): Promise<ServerResponse<Plugin[]>> => {
     let url = `..${API.PLUGINS}`;
-    return await this.httpClient.get(url);
+    return await this.httpClient.get(url, {
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+      },
+    });
   };
 
   getIndexPatterns = async (): Promise<SimpleSavedObject<{ title: string }>[]> => {

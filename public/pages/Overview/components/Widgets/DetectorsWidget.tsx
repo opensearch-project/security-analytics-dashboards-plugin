@@ -6,12 +6,12 @@
 import { EuiBasicTableColumn, EuiButton, EuiEmptyPrompt, EuiLink } from '@elastic/eui';
 import { ROUTES } from '../../../../utils/constants';
 import React, { useCallback } from 'react';
-import { DetectorItem } from '../../models/interfaces';
 import { TableWidget } from './TableWidget';
 import { WidgetContainer } from './WidgetContainer';
 import { DetectorHit } from '../../../../../server/models/interfaces';
 import { RouteComponentProps } from 'react-router-dom';
 import { formatRuleType } from '../../../../utils/helpers';
+import { DetectorItem } from '../../../../../types';
 
 type DetectorIdToHit = { [id: string]: DetectorHit };
 

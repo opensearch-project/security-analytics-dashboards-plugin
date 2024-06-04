@@ -21,8 +21,9 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { getDataSources } from '../../../../../../utils/helpers';
 import _ from 'lodash';
 import { FieldMappingService } from '../../../../../../services';
+import { DataSourceProps } from '../../../../../../../types';
 
-interface DetectorDataSourceProps {
+interface DetectorDataSourceProps extends DataSourceProps {
   detectorIndices: string[];
   indexService: IndexService;
   fieldMappingService?: FieldMappingService;
@@ -59,6 +60,16 @@ export default class DetectorDataSource extends Component<
   componentDidMount = async () => {
     this.getDataSources();
   };
+
+  componentDidUpdate(
+    prevProps: Readonly<DetectorDataSourceProps>,
+    prevState: Readonly<DetectorDataSourceState>,
+    snapshot?: any
+  ): void {
+    if (prevProps.dataSource !== this.props.dataSource) {
+      this.getDataSources();
+    }
+  }
 
   getDataSources = async () => {
     this.setState({ loading: true });

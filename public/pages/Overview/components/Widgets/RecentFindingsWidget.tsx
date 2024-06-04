@@ -6,12 +6,12 @@
 import { EuiBasicTableColumn, EuiButton, EuiEmptyPrompt } from '@elastic/eui';
 import { ROUTES, SortDirection } from '../../../../utils/constants';
 import React, { useEffect, useState } from 'react';
-import { FindingItem } from '../../models/interfaces';
 import { TableWidget } from './TableWidget';
 import { WidgetContainer } from './WidgetContainer';
 import { renderTime, capitalizeFirstLetter } from '../../../../utils/helpers';
+import { OverviewFindingItem } from '../../../../../types';
 
-const columns: EuiBasicTableColumn<FindingItem>[] = [
+const columns: EuiBasicTableColumn<OverviewFindingItem>[] = [
   {
     field: 'time',
     name: 'Time',
@@ -43,7 +43,7 @@ const columns: EuiBasicTableColumn<FindingItem>[] = [
 ];
 
 export interface RecentFindingsWidgetProps {
-  items: FindingItem[];
+  items: OverviewFindingItem[];
   loading?: boolean;
 }
 
@@ -51,7 +51,7 @@ export const RecentFindingsWidget: React.FC<RecentFindingsWidgetProps> = ({
   items,
   loading = false,
 }) => {
-  const [findingItems, setFindingItems] = useState<FindingItem[]>([]);
+  const [findingItems, setFindingItems] = useState<OverviewFindingItem[]>([]);
   const [widgetEmptyMessage, setWidgetEmptyMessage] = useState<React.ReactNode | undefined>(
     undefined
   );

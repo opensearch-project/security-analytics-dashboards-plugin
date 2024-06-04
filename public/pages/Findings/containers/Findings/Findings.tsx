@@ -50,13 +50,17 @@ import {
 } from '../../../../utils/helpers';
 import { DetectorHit, RuleSource } from '../../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { DateTimeFilter } from '../../../Overview/models/interfaces';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 import { DataStore } from '../../../../store/DataStore';
 import { DurationRange } from '@elastic/eui/src/components/date_picker/types';
-import { CorrelationFinding, FeatureChannelList } from '../../../../../types';
+import {
+  CorrelationFinding,
+  DataSourceProps,
+  FeatureChannelList,
+  DateTimeFilter,
+} from '../../../../../types';
 
-interface FindingsProps extends RouteComponentProps {
+interface FindingsProps extends RouteComponentProps, DataSourceProps {
   detectorService: DetectorsService;
   correlationService: CorrelationService;
   notificationsService: NotificationsService;
@@ -127,7 +131,9 @@ class Findings extends Component<FindingsProps, FindingsState> {
   }
 
   componentDidUpdate(prevProps: Readonly<FindingsProps>, prevState: Readonly<FindingsState>): void {
-    if (
+    if (this.props.dataSource !== prevProps.dataSource) {
+      this.onRefresh();
+    } else if (
       this.state.filteredFindings !== prevState.filteredFindings ||
       this.state.groupBy !== prevState.groupBy
     ) {

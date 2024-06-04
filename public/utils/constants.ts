@@ -27,6 +27,7 @@ export function setDarkMode(isDarkModeSetting: boolean) {
 }
 
 export const ROUTES = Object.freeze({
+  ROOT: '/',
   ALERTS: '/alerts',
   DETECTORS: '/detectors',
   FINDINGS: '/findings',

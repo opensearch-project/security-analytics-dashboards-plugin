@@ -13,6 +13,7 @@ import {
 } from '../../server/models/interfaces';
 import { API } from '../../server/utils/constants';
 import { Rule } from '../../types';
+import { dataSourceInfo } from './utils/constants';
 
 export default class RuleService {
   httpClient: HttpSetup;
@@ -26,6 +27,7 @@ export default class RuleService {
     return (await this.httpClient.post(url, {
       query: {
         prePackaged,
+        dataSourceId: dataSourceInfo.activeDataSource.id,
       },
       body: JSON.stringify(body),
     })) as ServerResponse<GetRulesResponse>;
@@ -35,6 +37,9 @@ export default class RuleService {
     const url = `..${API.RULES_BASE}`;
     return (await this.httpClient.post(url, {
       body: JSON.stringify(rule),
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+      },
     })) as ServerResponse<CreateRuleResponse>;
   };
 
@@ -47,6 +52,7 @@ export default class RuleService {
     return (await this.httpClient.put(url, {
       query: {
         category,
+        dataSourceId: dataSourceInfo.activeDataSource.id,
       },
       body: JSON.stringify(rule),
     })) as ServerResponse<UpdateRuleResponse>;
@@ -54,6 +60,10 @@ export default class RuleService {
 
   deleteRule = async (ruleId: string): Promise<ServerResponse<DeleteRuleResponse>> => {
     const url = `..${API.RULES_BASE}/${ruleId}`;
-    return (await this.httpClient.delete(url)) as ServerResponse<DeleteRuleResponse>;
+    return (await this.httpClient.delete(url, {
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+      },
+    })) as ServerResponse<DeleteRuleResponse>;
   };
 }

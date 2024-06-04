@@ -36,12 +36,18 @@ import {
 } from '../components/DefineDetector/components/DetectionRules/types/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { getPlugins } from '../../../utils/helpers';
-import { CreateDetectorSteps, Detector, DetectorCreationStep } from '../../../../types';
+import {
+  CreateDetectorSteps,
+  DataSourceManagerProps,
+  DataSourceProps,
+  Detector,
+  DetectorCreationStep,
+} from '../../../../types';
 import { DataStore } from '../../../store/DataStore';
 import { errorNotificationToast } from '../../../utils/helpers';
 import { MetricsContext } from '../../../metrics/MetricsContext';
 
-interface CreateDetectorProps extends RouteComponentProps {
+interface CreateDetectorProps extends RouteComponentProps, DataSourceProps, DataSourceManagerProps {
   isEdit: boolean;
   services: BrowserServices;
   metrics: MetricsContext;
@@ -66,12 +72,15 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
 
   constructor(props: CreateDetectorProps) {
     super(props);
+    this.state = this.getInitialState();
+  }
 
+  getInitialState() {
     let detectorInput = {}; // if there is detector state in history, then use it to populate all the fields
     const historyState = this.props.history.location.state as any;
     if (historyState) detectorInput = historyState.detectorInput;
 
-    this.state = {
+    return {
       currentStep: DetectorCreationStep.DEFINE_DETECTOR,
       detector: {
         ...EMPTY_DEFAULT_DETECTOR,
@@ -91,6 +100,13 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     };
   }
 
+  resetDependencies() {
+    this.setupRulesState();
+    this.props.metrics.detectorMetricsManager.resetMetrics();
+    this.props.metrics.detectorMetricsManager.sendMetrics(CreateDetectorSteps.started);
+    this.getPlugins();
+  }
+
   componentDidMount(): void {
     this.context.chrome.setBreadcrumbs([
       BREADCRUMBS.SECURITY_ANALYTICS,
@@ -98,11 +114,12 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
       BREADCRUMBS.DETECTORS_CREATE,
     ]);
     if (!(this.props.history.location.state as any)?.detectorInput) {
-      this.setupRulesState();
-      this.props.metrics.detectorMetricsManager.resetMetrics();
-      this.props.metrics.detectorMetricsManager.sendMetrics(CreateDetectorSteps.started);
-      this.getPlugins();
+      this.resetDependencies();
     }
+  }
+
+  componentWillUnmount(): void {
+    this.props.setDataSourceMenuReadOnly(false);
   }
 
   componentDidUpdate(
@@ -110,7 +127,10 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     prevState: Readonly<CreateDetectorState>,
     snapshot?: any
   ): void {
-    if (prevState.detector.detector_type !== this.state.detector.detector_type) {
+    if (prevProps.dataSource !== this.props.dataSource) {
+      this.setState(this.getInitialState());
+      this.resetDependencies();
+    } else if (prevState.detector.detector_type !== this.state.detector.detector_type) {
       this.setupRulesState();
     }
   }
@@ -172,12 +192,14 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
   onNextClick = () => {
     const { currentStep } = this.state;
     this.setState({ currentStep: currentStep + 1 });
+    this.props.setDataSourceMenuReadOnly(true);
     this.props.metrics.detectorMetricsManager.sendMetrics(CreateDetectorSteps.stepTwoInitiated);
   };
 
   onPreviousClick = () => {
     const { currentStep } = this.state;
     this.setState({ currentStep: currentStep - 1 });
+    this.props.setDataSourceMenuReadOnly(false);
   };
 
   setCurrentStep = (currentStep: DetectorCreationStep) => {
