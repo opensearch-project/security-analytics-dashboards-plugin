@@ -17,4 +17,4 @@ Compatible with OpenSearch Dashboards 2.15.0
 * Added addition check for filtering rendered rules. ([#1022](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/1022))
 
 ### Documentation
-* Added v2.15 release notes. ([#]())
+* Added v2.15 release notes. ([#1037](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/1037))
