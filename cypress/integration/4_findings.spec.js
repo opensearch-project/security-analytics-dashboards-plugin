@@ -142,9 +142,6 @@ describe('Findings', () => {
     });
   });
 
-  // TODO - upon reaching rules page, trigger appropriate rules detail flyout
-  // see github issue #124 at https://github.com/opensearch-project/security-analytics-dashboards-plugin/issues/124
-
   it('opens rule details flyout when rule name inside accordion drop down is clicked', () => {
     // filter table to show only sample_detector findings
     cy.get(`input[placeholder="Search findings"]`).ospSearch('sample_detector');
@@ -163,6 +160,27 @@ describe('Findings', () => {
     cy.get('[data-test-subj="rule_flyout_USB Device Plugged"]').within(() => {
       cy.get('[data-test-subj="rule_flyout_rule_name"]').contains('USB Device Plugged');
     });
+  });
+
+  it('shows document not found warning when the document is empty', () => {
+    cy.deleteIndex(indexName);
+    cy.reload();
+
+    // Wait for page to load
+    cy.waitForPageLoad('findings', {
+      contains: 'Findings',
+    });
+
+    // filter table to show only sample_detector findings
+    cy.get(`input[placeholder="Search findings"]`).ospSearch(indexName);
+
+    // open Finding details flyout via finding id link. cy.wait essential, timeout insufficient.
+    cy.getTableFirstRow('[data-test-subj="view-details-icon"]').then(($el) => {
+      cy.get($el).click({ force: true });
+    });
+
+    // Flyout should show 'Document not found' warning
+    cy.contains('Document not found');
   });
 
   it('...can delete detector', () => {
