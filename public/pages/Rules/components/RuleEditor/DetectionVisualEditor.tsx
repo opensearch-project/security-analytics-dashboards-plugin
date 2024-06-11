@@ -253,7 +253,9 @@ export class DetectionVisualEditor extends React.Component<
       let selectionMaps: any = {};
 
       selection.data.forEach((datum) => {
-        if (datum.field) {
+        if (selection.name === 'timeframe') {
+          selectionMaps = datum.values[0] || '';
+        } else if (datum.field) {
           const key = `${datum.field}${datum.modifier ? `|${datum.modifier}` : ''}`;
           selectionMaps[key] = datum.values;
         } else {
