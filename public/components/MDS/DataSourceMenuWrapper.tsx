@@ -18,6 +18,7 @@ export interface DataSourceMenuWrapperProps {
   core: CoreStart;
   dataSourceManagement?: DataSourceManagementPluginSetup;
   dataSourceMenuReadOnly: boolean;
+  dataSourceLoading: boolean;
   setHeaderActionMenu: AppMountParameters['setHeaderActionMenu'];
 }
 
@@ -25,6 +26,7 @@ export const DataSourceMenuWrapper: React.FC<DataSourceMenuWrapperProps> = ({
   core,
   dataSourceManagement,
   dataSourceMenuReadOnly,
+  dataSourceLoading,
   setHeaderActionMenu,
 }) => {
   if (!dataSourceManagement) {
@@ -38,6 +40,8 @@ export const DataSourceMenuWrapper: React.FC<DataSourceMenuWrapperProps> = ({
   const DataSourceMenuSelectableComponent = dataSourceManagement.ui?.getDataSourceMenu<
     DataSourceSelectableConfig
   >();
+
+  const activeOption = dataSourceLoading ? undefined : [dataSource];
 
   return (
     <Switch>
@@ -68,39 +72,6 @@ export const DataSourceMenuWrapper: React.FC<DataSourceMenuWrapperProps> = ({
         }}
       />
       <Route
-        path={[
-          ROUTES.ROOT,
-          ROUTES.OVERVIEW,
-          ROUTES.DETECTORS,
-          ROUTES.ALERTS,
-          ROUTES.FINDINGS,
-          ROUTES.LOG_TYPES,
-          ROUTES.RULES,
-          ROUTES.CORRELATIONS,
-          ROUTES.CORRELATION_RULES,
-          ROUTES.RULES_CREATE,
-          ROUTES.RULES_IMPORT,
-          ROUTES.RULES_DUPLICATE,
-          ROUTES.LOG_TYPES_CREATE,
-          ROUTES.CORRELATION_RULE_CREATE,
-        ]}
-        render={() => {
-          return (
-            <DataSourceMenuSelectableComponent
-              componentType="DataSourceSelectable"
-              setMenuMountPoint={setHeaderActionMenu}
-              componentConfig={{
-                fullWidth: false,
-                activeOption: [dataSource],
-                notifications: core.notifications,
-                onSelectedDataSources: setDataSource,
-                savedObjects: core.savedObjects.client,
-              }}
-            />
-          );
-        }}
-      />
-      <Route
         path={[ROUTES.DETECTORS_CREATE]}
         render={() => {
           return dataSourceMenuReadOnly ? (
@@ -118,7 +89,40 @@ export const DataSourceMenuWrapper: React.FC<DataSourceMenuWrapperProps> = ({
               setMenuMountPoint={setHeaderActionMenu}
               componentConfig={{
                 fullWidth: false,
-                activeOption: [dataSource],
+                activeOption,
+                notifications: core.notifications,
+                onSelectedDataSources: setDataSource,
+                savedObjects: core.savedObjects.client,
+              }}
+            />
+          );
+        }}
+      />
+      <Route
+        path={[
+          ROUTES.OVERVIEW,
+          ROUTES.DETECTORS,
+          ROUTES.ALERTS,
+          ROUTES.FINDINGS,
+          ROUTES.LOG_TYPES,
+          ROUTES.RULES,
+          ROUTES.CORRELATIONS,
+          ROUTES.CORRELATION_RULES,
+          ROUTES.RULES_CREATE,
+          ROUTES.RULES_IMPORT,
+          ROUTES.RULES_DUPLICATE,
+          ROUTES.LOG_TYPES_CREATE,
+          ROUTES.CORRELATION_RULE_CREATE,
+          ROUTES.ROOT,
+        ]}
+        render={() => {
+          return (
+            <DataSourceMenuSelectableComponent
+              componentType="DataSourceSelectable"
+              setMenuMountPoint={setHeaderActionMenu}
+              componentConfig={{
+                fullWidth: false,
+                activeOption,
                 notifications: core.notifications,
                 onSelectedDataSources: setDataSource,
                 savedObjects: core.savedObjects.client,
