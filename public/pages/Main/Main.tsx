@@ -400,6 +400,7 @@ export default class Main extends Component<MainProps, MainState> {
                               <DataSourceMenuWrapper
                                 dataSourceManagement={dataSourceManagement}
                                 core={core}
+                                dataSourceLoading={this.state.dataSourceLoading}
                                 dataSourceMenuReadOnly={dataSourceMenuReadOnly}
                                 setHeaderActionMenu={setActionMenu}
                               />
