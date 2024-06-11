@@ -13,6 +13,9 @@ Compatible with OpenSearch Dashboards 2.15.0
 * [MDS][Part 2] Added server-side glue code to use data source id when getting opensearch client for making API calls to cluster. ([#1008](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/1008))
 * [MDS][Part 3] Wired all UI components to the data source menu. ([#1029](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/1029))
 
+### Bug fixes
+* [MDS fixes] Select default data source on load; re-order router paths for correct data source component rendering. ([#1036](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/1036))
+
 ### Refactoring
 * Added addition check for filtering rendered rules. ([#1022](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/1022))
 
