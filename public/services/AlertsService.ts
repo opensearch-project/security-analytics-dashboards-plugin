@@ -19,12 +19,14 @@ export default class AlertsService {
   getAlerts = async (
     getAlertsParams: GetAlertsParams
   ): Promise<ServerResponse<GetAlertsResponse>> => {
-    const { detectorType, detector_id, size, sortOrder, startIndex } = getAlertsParams;
+    const { detectorType, detector_id, size, sortOrder, startIndex, startTime, endTime } = getAlertsParams;
     const baseQuery = {
       sortOrder: sortOrder || 'desc',
       size: size || 10000,
       startIndex: startIndex || 0,
       dataSourceId: dataSourceInfo.activeDataSource.id,
+      startTime,
+      endTime
     };
     let query;
 

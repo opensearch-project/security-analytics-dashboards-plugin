@@ -6,6 +6,7 @@
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { AlertsService } from '../services';
 import { errorNotificationToast } from '../utils/helpers';
+import { AlertResponse, Duration } from '../../types';
 
 export class AlertsStore {
   constructor(
@@ -13,22 +14,40 @@ export class AlertsStore {
     private readonly notifications: NotificationsStart
   ) {}
 
-  public async getAlertsByDetector(detectorId: string, detectorName: string) {
+  public async getAlertsByDetector(
+    detectorId: string, 
+    detectorName: string, 
+    signal: AbortSignal,
+    duration: Duration,
+    onPartialAlertsFetched?: (alerts: AlertResponse[]) => void
+  ) {
     let allAlerts: any[] = [];
     const maxAlertsReturned = 10000;
     let startIndex = 0;
     let alertsCount = 0;
 
     do {
+      if (signal.aborted) {
+        break;
+      }
+
       const getAlertsRes = await this.service.getAlerts({
         detector_id: detectorId,
         startIndex,
         size: maxAlertsReturned,
+        startTime: duration.startTime,
+        endTime: duration.endTime
       });
 
+      if (signal.aborted) {
+        break;
+      }
+      
       if (getAlertsRes.ok) {
-        allAlerts = allAlerts.concat(getAlertsRes.response.alerts);
-        alertsCount = getAlertsRes.response.alerts.length;
+        const alerts = this.extendAlerts(getAlertsRes.response.alerts, detectorId, detectorName);
+        onPartialAlertsFetched?.(alerts);
+        allAlerts = allAlerts.concat(alerts);
+        alertsCount = alerts.length;
       } else {
         alertsCount = 0;
         errorNotificationToast(this.notifications, 'retrieve', 'alerts', getAlertsRes.error);
@@ -41,7 +60,11 @@ export class AlertsStore {
       alertsCount === maxAlertsReturned
     );
 
-    allAlerts = allAlerts.map((alert) => {
+    return allAlerts;
+  }
+
+  private extendAlerts(allAlerts: any[], detectorId: string, detectorName: string) {
+    return allAlerts.map((alert) => {
       if (!alert.detector_id) {
         alert.detector_id = detectorId;
       }
@@ -51,7 +74,5 @@ export class AlertsStore {
         detectorName: detectorName,
       };
     });
-
-    return allAlerts;
   }
 }

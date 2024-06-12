@@ -137,7 +137,6 @@ export interface ICorrelationsStore {
     end_time: string
   ): Promise<{ finding1: CorrelationFinding; finding2: CorrelationFinding }[]>;
   allFindings: { [id: string]: CorrelationFinding };
-  fetchAllFindings(): Promise<{ [id: string]: CorrelationFinding }>;
 }
 
 export type CorrelationLevelInfo =

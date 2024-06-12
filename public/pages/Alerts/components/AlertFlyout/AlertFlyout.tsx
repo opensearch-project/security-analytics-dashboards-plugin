@@ -17,7 +17,7 @@ import {
   EuiSpacer,
   EuiTitle,
 } from '@elastic/eui';
-import { AlertItem, RuleSource } from '../../../../../server/models/interfaces';
+import { RuleSource } from '../../../../../server/models/interfaces';
 import React from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { ALERT_STATE, DEFAULT_EMPTY_DATA, ROUTES } from '../../../../utils/constants';
@@ -30,10 +30,9 @@ import {
 } from '../../../../utils/helpers';
 import { IndexPatternsService, OpenSearchService } from '../../../../services';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
-import { Finding } from '../../../Findings/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { DataStore } from '../../../../store/DataStore';
-import { Detector } from '../../../../../types';
+import { AlertItem, Detector, Finding } from '../../../../../types';
 
 export interface AlertFlyoutProps {
   alertItem: AlertItem;
@@ -135,7 +134,7 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
         name: 'Finding ID',
         sortable: true,
         dataType: 'string',
-        render: (id, finding: any) =>
+        render: (id: string, finding: any) =>
           (
             <EuiLink
               onClick={() => {
@@ -159,7 +158,7 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
               }}
               data-test-subj={'finding-details-flyout-button'}
             >
-              {`${(id as string).slice(0, 7)}...`}
+              {id.length > 7 ? `${id.slice(0, 7)}...` : id}
             </EuiLink>
           ) || DEFAULT_EMPTY_DATA,
       },
