@@ -21,6 +21,7 @@ $euiTextColor: $euiColorDarkestShade !default;
 @import "./pages/Rules/components/RuleEditor/RuleEditorForm.scss";
 @import "./pages/Rules/components/RuleEditor/DetectionVisualEditor.scss";
 @import "./pages/Rules/components/RuleEditor/components/SelectionExpField.scss";
+@import "./pages/ThreatIntel/ThreatIntel.scss";
 
 .selected-radio-panel {
   background-color: tintOrShade($euiColorPrimary, 90%, 70%);

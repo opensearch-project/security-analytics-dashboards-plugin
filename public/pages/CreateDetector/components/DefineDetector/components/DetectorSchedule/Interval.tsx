@@ -14,10 +14,11 @@ import {
 import FormFieldHeader from '../../../../../../components/FormFieldHeader';
 import React from 'react';
 import { PeriodSchedule } from '../../../../../../../models/interfaces';
-import { Detector } from '../../../../../../../types';
+import { DetectorSchedule } from '../../../../../../../types';
 
 export interface IntervalProps {
-  detector: Detector;
+  detector: { schedule: DetectorSchedule };
+  label?: string;
   onDetectorScheduleChange(schedule: PeriodSchedule): void;
 }
 
@@ -62,7 +63,7 @@ export class Interval extends React.Component<IntervalProps, IntervalState> {
     const { period } = this.props.detector.schedule;
     return (
       <EuiFormRow
-        label={<FormFieldHeader headerTitle={'Run every'} />}
+        label={<FormFieldHeader headerTitle={this.props.label ?? 'Run every'} />}
         isInvalid={!isIntervalValid}
         error={'Enter schedule interval.'}
       >

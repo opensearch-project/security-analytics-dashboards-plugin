@@ -49,6 +49,8 @@ export const ROUTES = Object.freeze({
   CORRELATION_RULE_EDIT: '/correlations/rule',
   LOG_TYPES: '/log-types',
   LOG_TYPES_CREATE: '/create-log-type',
+  THREAT_INTEL_OVERVIEW: '/threat-intel',
+  THREAT_INTEL_CONNECT_CUSTOM_SOURCE: '/connect-threat-intel-source',
 
   get LANDING_PAGE(): string {
     return this.OVERVIEW;
@@ -87,6 +89,11 @@ export const BREADCRUMBS = Object.freeze({
   },
   LOG_TYPES: { text: 'Log types', href: `#${ROUTES.LOG_TYPES}` },
   LOG_TYPE_CREATE: { text: 'Create log type', href: `#${ROUTES.LOG_TYPES_CREATE}` },
+  THREAT_INTEL_OVERVIEW: { text: 'Threat intelligence', href: `#${ROUTES.THREAT_INTEL_OVERVIEW}` },
+  THREAT_INTEL_CONNECT_CUSTOM_SOURCE: {
+    text: 'Connect threat intel source',
+    href: `#${ROUTES.THREAT_INTEL_CONNECT_CUSTOM_SOURCE}`,
+  },
 });
 
 export enum SortDirection {
