@@ -58,6 +58,7 @@ import { DataSourceMenuWrapper } from '../../components/MDS/DataSourceMenuWrappe
 import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
 import { DataSourceContext, DataSourceContextConsumer } from '../../services/DataSourceContext';
 import { dataSourceInfo } from '../../services/utils/constants';
+import { getPlugins } from '../../utils/helpers';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -389,7 +390,6 @@ export default class Main extends Component<MainProps, MainState> {
               {(saContext: SecurityAnalyticsContextType | null) => {
                 const services = saContext?.services;
                 const metrics = saContext?.metrics!;
-
                 return (
                   <DataSourceContext.Provider value={dataSourceContextValue}>
                     <DataSourceContextConsumer>
@@ -649,6 +649,7 @@ export default class Main extends Component<MainProps, MainState> {
                                           fieldMappingService={services?.fieldMappingService}
                                           notifications={core?.notifications}
                                           dataSource={selectedDataSource}
+                                          services={services}
                                         />
                                       )}
                                     />
@@ -661,6 +662,7 @@ export default class Main extends Component<MainProps, MainState> {
                                           fieldMappingService={services?.fieldMappingService}
                                           notifications={core?.notifications}
                                           dataSource={selectedDataSource}
+                                          services={services}
                                         />
                                       )}
                                     />
