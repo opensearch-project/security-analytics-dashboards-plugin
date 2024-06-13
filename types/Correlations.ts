@@ -8,6 +8,7 @@ import { FilterItem } from '../public/pages/Correlations/components/FilterGroup'
 import { Query } from '@opensearch-project/oui/src/eui_components/search_bar/search_bar';
 import { RuleInfo } from './Rule';
 import { DetectorHit } from './Detector';
+import { TriggerAction } from './Alert';
 
 export enum CorrelationsLevel {
   AllFindings = 'AllFindings',
@@ -53,6 +54,7 @@ export interface CorrelationRuleModel {
   name: string;
   time_window: number; // Time in milliseconds
   queries: CorrelationRuleQuery[];
+  trigger: CorrelationRuleTrigger;
 }
 
 export interface CorrelationRule extends CorrelationRuleModel {
@@ -116,6 +118,20 @@ export interface CreateCorrelationRuleResponse {
   rule: CorrelationRuleSource;
   _id: string;
   _version: number;
+}
+
+export interface CorrelationRuleTrigger {
+  // Trigger fields
+  name: string;
+  id?: string;
+
+  // Trigger fields based on Rules
+  sev_levels: string[];
+  ids: string[];
+
+  // Alert related fields
+  actions: TriggerAction[];
+  severity: string;
 }
 
 export interface UpdateCorrelationRuleResponse extends CreateCorrelationRuleResponse {}

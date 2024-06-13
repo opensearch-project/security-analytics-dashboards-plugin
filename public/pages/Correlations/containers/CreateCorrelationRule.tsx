@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Form, Formik, FormikErrors, FormikTouched } from 'formik';
 import { ContentPanel } from '../../../components/ContentPanel';
 import { DataStore } from '../../../store/DataStore';
@@ -30,6 +30,9 @@ import {
   EuiFieldNumber,
   EuiCheckableCard,
   htmlIdGenerator,
+  EuiComboBoxOptionOption,
+  EuiSwitch,
+  EuiTextArea,
 } from '@elastic/eui';
 import { ruleTypes } from '../../Rules/utils/constants';
 import {
@@ -45,7 +48,10 @@ import { RouteComponentProps, useParams } from 'react-router-dom';
 import { validateName } from '../../../utils/validation';
 import { FieldMappingService, IndexService } from '../../../services';
 import { errorNotificationToast, getDataSources, getLogTypeOptions } from '../../../utils/helpers';
+import { severityOptions } from '../../../pages/Alerts/utils/constants';
 import _ from 'lodash';
+import { NotificationChannelTypeOptions } from '../components/ConfigureAlerts/models/interfaces';
+import AlertCondition from '../components/ConfigureAlerts/components/AlertCondition';
 
 export interface CreateCorrelationRuleProps extends DataSourceProps {
   indexService: IndexService;
@@ -56,6 +62,11 @@ export interface CreateCorrelationRuleProps extends DataSourceProps {
     { rule: CorrelationRuleModel; isReadOnly: boolean }
   >['history'];
   notifications: NotificationsStart | null;
+  alertCondition: AlertCondition;
+  allNotificationChannels: NotificationChannelTypeOptions[];
+  hasNotificationPlugin: boolean;
+  loadingNotifications: boolean;
+  refreshNotificationChannels: () => void;
 }
 
 export interface CorrelationOption {
@@ -87,6 +98,11 @@ const unitOptions: EuiSelectOption[] = [
   { value: 'HOURS', text: 'Hours' },
 ];
 
+const ruleSeverityComboBoxOptions = severityOptions.map(option => ({
+  label: option.text,
+  value: option.value,
+}));
+
 export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
   props: CreateCorrelationRuleProps
 ) => {
@@ -104,7 +120,33 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
   const [period, setPeriod] = useState({ interval: 1, unit: 'MINUTES' });
   const [dataFilterEnabled, setDataFilterEnabled] = useState(false);
   const [groupByEnabled, setGroupByEnabled] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [showNotificationDetails, setShowNotificationDetails] = useState(true);
   const resetForm = useRef(false);
+
+  const onRuleSeverityChange = (selectedOptions: Array<EuiComboBoxOptionOption<string>>) => {
+    const sev_levels: string[] = selectedOptions
+      .map(option => option.value)
+      .filter((value): value is string => value !== undefined);
+
+    setInitialValues(prevState => ({
+      ...prevState,
+      trigger: {
+        ...prevState.trigger,
+        sev_levels,
+      },
+    }));
+  };
+
+  const onNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setInitialValues({
+      ...initialValues,
+      trigger: {
+        ...initialValues.trigger,
+        name: e.target.value,
+      },
+    });
+  };
 
   const validateCorrelationRule = useCallback(
     (rule: CorrelationRuleModel) => {
@@ -171,6 +213,55 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
     },
     [dataFilterEnabled, groupByEnabled]
   );
+
+  const channelId = alertCondition.actions[0].destination_id;
+    const selectedNotificationChannelOption: NotificationChannelOption[] = [];
+    if (channelId) {
+      allNotificationChannels.forEach((typeOption) => {
+        const matchingChannel = typeOption.options.find((option) => option.value === channelId);
+        if (matchingChannel) selectedNotificationChannelOption.push(matchingChannel);
+      });
+    }
+
+    onNotificationChannelsChange = (selectedOptions: EuiComboBoxOptionOption<string>[]) => {
+      const {
+        alertCondition,
+        onAlertTriggerChanged,
+        detector,
+        detector: { triggers },
+        indexNum,
+      } = this.props;
+  
+      const actions = alertCondition.actions;
+      if (selectedOptions.length > 0) {
+        actions[0].destination_id = selectedOptions[0].value!;
+      } else {
+        actions[0].destination_id = '';
+      }
+  
+      triggers.splice(indexNum, 1, {
+        ...alertCondition,
+        actions: actions,
+      });
+      onAlertTriggerChanged({ ...detector, triggers: triggers });
+    };
+  
+    onMessageSubjectChange = (subject: string, emitMetrics: boolean = true) => {
+      const {
+        alertCondition: { actions },
+      } = this.props;
+      actions[0].name = subject;
+      actions[0].subject_template.source = subject;
+      this.updateTrigger({ actions: actions }, emitMetrics);
+    };
+  
+    onMessageBodyChange = (message: string, emitMetrics: boolean = true) => {
+      const {
+        alertCondition: { actions },
+      } = this.props;
+      actions[0].message_template.source = message;
+      this.updateTrigger({ actions: actions }, emitMetrics);
+    };
 
   useEffect(() => {
     if (props.history.location.state?.rule) {
@@ -242,7 +333,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
       if (dataSourcesRes.ok) {
         setIndices(dataSourcesRes.dataSources);
       }
-    } catch (error: any) {}
+    } catch (error: any) { }
   }, [props.indexService, props.notifications]);
 
   useEffect(() => {
@@ -452,15 +543,15 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                       selectedOptions={
                         query.logType
                           ? [
-                              {
-                                value: query.logType,
-                                label:
-                                  ruleTypes.find(
-                                    (logType) =>
-                                      logType.value.toLowerCase() === query.logType.toLowerCase()
-                                  )?.label || query.logType,
-                              },
-                            ]
+                            {
+                              value: query.logType,
+                              label:
+                                ruleTypes.find(
+                                  (logType) =>
+                                    logType.value.toLowerCase() === query.logType.toLowerCase()
+                                )?.label || query.logType,
+                            },
+                          ]
                           : []
                       }
                       isClearable={true}
@@ -827,30 +918,228 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
               >
                 {createForm(queries, touched, errors, props)}
               </ContentPanel>
-              {action === 'Create' || action === 'Edit' ? (
-                <>
-                  <EuiSpacer size="xl" />
-                  <EuiFlexGroup justifyContent="flexEnd">
-                    <EuiFlexItem grow={false}>
-                      <EuiButton href={`#${ROUTES.CORRELATION_RULES}`}>Cancel</EuiButton>
-                    </EuiFlexItem>
+              <ContentPanel
+                style={{ paddingLeft: 10, paddingRight: 10 }}
+                hideHeaderBorder
+              >
+                <EuiTitle size="m">
+                  <h2>Alert Trigger [Experimental]</h2>
+                </EuiTitle>
+                <EuiSpacer size="s" />
+                <EuiText>
+                  <p>Get an alert on the correlation between the findings.</p>
+                </EuiText>
+                <EuiSpacer size="m" />
+                <EuiFormRow>
+                  <EuiFlexGroup>
                     <EuiFlexItem grow={false}>
                       <EuiButton
-                        onClick={() => {
-                          props.handleSubmit();
-                        }}
-                        fill={true}
+                        onClick={() => setShowForm(!showForm)}
                       >
-                        {action === 'Edit' ? 'Update' : 'Create '} correlation rule
+                        Add Alert Trigger
                       </EuiButton>
                     </EuiFlexItem>
                   </EuiFlexGroup>
-                </>
-              ) : null}
+                </EuiFormRow>
+                {showForm && (
+                  <>
+                    <EuiSpacer size="m" />
+                    <EuiFlexGroup>
+                      <EuiFlexItem>
+                        <EuiFormRow
+                          label={
+                            <EuiText size="s">
+                              <p>Trigger Name</p>
+                            </EuiText>
+                          }
+                        >
+                          <EuiFieldText
+                            placeholder="Trigger Name"
+                            value={initialValues.trigger.name}
+                            onChange={onNameChange}
+                            data-test-subj="alert-condition-name"
+                          />
+                        </EuiFormRow>
+                      </EuiFlexItem>
+                      <EuiFlexItem>
+                        <EuiFormRow
+                          label={
+                            <EuiText size="s">
+                              <p>Rule Severities</p>
+                            </EuiText>
+                          }
+                        >
+                          <EuiComboBox
+                            placeholder="Alert Severity"
+                            options={ruleSeverityComboBoxOptions}
+                            onChange={onRuleSeverityChange}
+                            selectedOptions={ruleSeverityComboBoxOptions.filter(option =>
+                              initialValues.trigger.sev_levels.includes(option.value || '')
+                            )}
+                            data-test-subj="alert-severity-combo-box"
+                          />
+                        </EuiFormRow>
+                      </EuiFlexItem>
+                      <EuiFlexItem grow={false}>
+                        <EuiToolTip content="Delete">
+                          <EuiButtonIcon
+                            aria-label="Delete Alert Trigger"
+                            data-test-subj="delete-alert-trigger-icon"
+                            iconType="trash"
+                            color="danger"
+                            onClick={() => setShowForm(false)}
+                          />
+                        </EuiToolTip>
+                      </EuiFlexItem>
+                    </EuiFlexGroup>
+                    <EuiSpacer size={'l'} />
+
+                    <EuiSwitch
+                      label="Send notification"
+                      checked={showNotificationDetails}
+                      onChange={(e) => {setShowNotificationDetails(e.target.checked)}}
+                    />
+                    <EuiSpacer />
+
+                    {showNotificationDetails && (
+                      <>
+                        <EuiFlexGroup alignItems={'flexEnd'}>
+                          <EuiFlexItem style={{ maxWidth: 400 }}>
+                            <EuiFormRow
+                              label={
+                                <EuiText size="m">
+                                  <p>Notification channel</p>
+                                </EuiText>
+                              }
+                            >
+                              <EuiComboBox
+                                placeholder={'Select notification channel.'}
+                                async={true}
+                                isLoading={loadingNotifications}
+                                options={allNotificationChannels as EuiComboBoxOptionOption<string>[]}
+                                selectedOptions={
+                                  selectedNotificationChannelOption as EuiComboBoxOptionOption<string>[]
+                                }
+                                onChange={onNotificationChannelsChange}
+                                singleSelection={{ asPlainText: true }}
+                                onFocus={refreshNotificationChannels}
+                                isDisabled={!hasNotificationPlugin}
+                              />
+                            </EuiFormRow>
+                          </EuiFlexItem>
+                          <EuiFlexItem grow={false}>
+                            <EuiButton
+                              href={NOTIFICATIONS_HREF}
+                              iconType={'popout'}
+                              target={'_blank'}
+                              isDisabled={!hasNotificationPlugin}
+                            >
+                              Manage channels
+                            </EuiButton>
+                          </EuiFlexItem>
+                        </EuiFlexGroup>
+
+                        {!hasNotificationPlugin && (
+                          <>
+                            <EuiSpacer size="m" />
+                            <NotificationsCallOut />
+                          </>
+                        )}
+
+                        <EuiSpacer size={'l'} />
+
+                        <EuiAccordion
+                          id={`alert-condition-notify-msg-${indexNum}`}
+                          buttonContent={
+                            <EuiText size="m">
+                              <p>Notification message</p>
+                            </EuiText>
+                          }
+                          paddingSize={'l'}
+                          initialIsOpen={false}
+                        >
+                          <EuiFlexGroup direction={'column'} style={{ width: '75%' }}>
+                            <EuiFlexItem>
+                              <EuiFormRow
+                                label={
+                                  <EuiText size={'s'}>
+                                    <p>Message subject</p>
+                                  </EuiText>
+                                }
+                                fullWidth={true}
+                              >
+                                <EuiFieldText
+                                  placeholder={'Enter a subject for the notification message.'}
+                                  value={alertCondition.actions[0]?.subject_template.source}
+                                  onChange={(e) => this.onMessageSubjectChange(e.target.value)}
+                                  required={true}
+                                  fullWidth={true}
+                                />
+                              </EuiFormRow>
+                            </EuiFlexItem>
+
+                            <EuiFlexItem>
+                              <EuiFormRow
+                                label={
+                                  <EuiText size="s">
+                                    <p>Message body</p>
+                                  </EuiText>
+                                }
+                                fullWidth={true}
+                              >
+                                <EuiTextArea
+                                  placeholder={'Enter the content of the notification message.'}
+                                  value={alertCondition.actions[0]?.message_template.source}
+                                  onChange={(e) => this.onMessageBodyChange(e.target.value)}
+                                  required={true}
+                                  fullWidth={true}
+                                />
+                              </EuiFormRow>
+                            </EuiFlexItem>
+
+                            <EuiFlexItem>
+                              <EuiFormRow>
+                                <EuiButton fullWidth={false} onClick={() => this.prepareMessage(true)}>
+                                  Generate message
+                                </EuiButton>
+                              </EuiFormRow>
+                            </EuiFlexItem>
+                          </EuiFlexGroup>
+                        </EuiAccordion>
+
+                        <EuiSpacer size="xl" />
+                      </>
+                    )}
+                  </div>
+              </>
+                )}
+            </ContentPanel>
+              {
+            action === 'Create' || action === 'Edit' ? (
+              <>
+                <EuiSpacer size="xl" />
+                <EuiFlexGroup justifyContent="flexEnd">
+                  <EuiFlexItem grow={false}>
+                    <EuiButton href={`#${ROUTES.CORRELATION_RULES}`}>Cancel</EuiButton>
+                  </EuiFlexItem>
+                  <EuiFlexItem grow={false}>
+                    <EuiButton
+                      onClick={() => {
+                        props.handleSubmit();
+                      }}
+                      fill={true}
+                    >
+                      {action === 'Edit' ? 'Update' : 'Create '} correlation rule
+                    </EuiButton>
+                  </EuiFlexItem>
+                </EuiFlexGroup>
+              </>
+            ) : null
+          }
             </Form>
-          );
+      );
         }}
-      </Formik>
+    </Formik >
     </>
   );
 };
