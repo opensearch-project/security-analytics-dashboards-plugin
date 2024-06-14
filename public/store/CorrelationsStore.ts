@@ -78,8 +78,8 @@ export class CorrelationsStore implements ICorrelationsStore {
 
         return correlationInput;
       }),
+      trigger: correlationRule.trigger,
     });
-
     if (!response.ok) {
       errorNotificationToast(this.notifications, 'create', 'correlation rule', response.error);
       return false;
@@ -89,6 +89,7 @@ export class CorrelationsStore implements ICorrelationsStore {
   }
 
   public async updateCorrelationRule(correlationRule: CorrelationRule): Promise<boolean> {
+    console.log("Correlation rule is ", correlationRule);
     const response = await this.service.updateCorrelationRule(correlationRule.id, {
       name: correlationRule.name,
       time_window: correlationRule.time_window,
@@ -112,8 +113,9 @@ export class CorrelationsStore implements ICorrelationsStore {
 
         return correlationInput;
       }),
+      trigger: correlationRule.trigger,
     });
-
+    console.log("Resposne is ", response);
     if (!response.ok) {
       errorNotificationToast(this.notifications, 'update', 'correlation rule', response.error);
       return false;

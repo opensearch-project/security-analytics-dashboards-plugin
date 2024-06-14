@@ -125,6 +125,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
   const [showForm, setShowForm] = useState(false);
   const [showNotificationDetails, setShowNotificationDetails] = useState(false);
   const resetForm = useRef(false);
+  const [selectedNotificationChannelOption, setSelectedNotificationChannelOption] = useState<NotificationChannelOption[]>([]);
 
   const onRuleSeverityChange = (selectedOptions: Array<EuiComboBoxOptionOption<string>>) => {
     const sev_levels: string[] = selectedOptions
@@ -134,7 +135,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
     setInitialValues(prevState => ({
       ...prevState,
       trigger: {
-        ...prevState.trigger,
+        ...prevState.trigger!,
         sev_levels,
       },
     }));
@@ -144,7 +145,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
     setInitialValues({
       ...initialValues,
       trigger: {
-        ...initialValues.trigger,
+        ...initialValues.trigger!,
         name: e.target.value,
       },
     });
@@ -240,7 +241,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
           setInitialValues(ruleRes);
         }
       };
-      
+
       setAction('Edit');
       setInitialRuleValues();
     }
@@ -267,78 +268,100 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
 
 
   const onNotificationChannelsChange = (selectedOptions: EuiComboBoxOptionOption<string>[]) => {
-    const newActions = initialValues.trigger.actions;
-    if (selectedOptions.length > 0) {
-      newActions[0].destination_id = selectedOptions[0].value!;
-    } else {
-      newActions[0].destination_id = '';
+    const newActions = [...(initialValues?.trigger?.actions ?? [])];
+    if (newActions.length > 0) {
+      if (selectedOptions.length > 0) {
+        newActions[0].destination_id = selectedOptions[0].value!;
+      } else {
+        newActions[0].destination_id = '';
+      }
     }
     setInitialValues(prevState => ({
       ...prevState,
       trigger: {
-        ...prevState.trigger,
+        ...prevState.trigger!,
+        actions: newActions,
+      },
+    }));
+  };
+
+  const onMessageSubjectChange = (subject: string) => {
+    const newActions = initialValues?.trigger?.actions;
+    if (newActions) {
+      newActions[0].name = subject;
+      newActions[0].subject_template.source = subject;
+      setInitialValues(prevState => ({
+        ...prevState,
+        trigger: {
+          ...prevState.trigger!,
+          newActions,
+        },
+      }));
+    }
+  };
+
+  const onMessageBodyChange = (message: string) => {
+    const newActions = [...(initialValues?.trigger?.actions ?? [])];
+    newActions[0].message_template.source = message;
+    setInitialValues(prevState => ({
+      ...prevState,
+      trigger: {
+        ...prevState.trigger!,
         newActions,
       },
     }));
   };
 
- const onMessageSubjectChange = (subject: string) => {
-  const actions = initialValues.trigger.actions;
-    actions[0].name = subject;
-    actions[0].subject_template.source = subject;
-  };
-
-  const onMessageBodyChange = (message: string) => {
-    const actions = initialValues.trigger.actions;
-    actions[0].message_template.source = message;
-  };
-
   const prepareMessage = (updateMessage: boolean = false, onMount: boolean = false) => {
-    const alertCondition = initialValues.trigger;
-    const lineBreak = '\n';
-    const lineBreakAndTab = '\n\t';
+    const alertCondition = initialValues?.trigger;
+    if (alertCondition) {
+      const lineBreak = '\n';
+      const lineBreakAndTab = '\n\t';
 
-    const alertConditionName = `Triggered alert condition: ${alertCondition.name}`;
-    const alertConditionSeverity = `Severity: ${
-      parseAlertSeverityToOption(alertCondition.severity)?.label || alertCondition.severity
-    }`;
-    const correlationRuleName = `Correlation Rule name: ${initialValues.name}`;
-    const defaultSubject = [alertConditionName, alertConditionSeverity, correlationRuleName].join(' - ');
+      const alertConditionName = `Triggered alert condition: ${alertCondition.name}`;
+      const alertConditionSeverity = `Severity: ${parseAlertSeverityToOption(alertCondition.severity)?.label || alertCondition.severity
+        }`;
+      const correlationRuleName = `Correlation Rule name: ${initialValues.name}`;
+      const defaultSubject = [alertConditionName, alertConditionSeverity, correlationRuleName].join(' - ');
 
-    if (updateMessage || !alertCondition.actions[0]?.subject_template.source)
-      onMessageSubjectChange(defaultSubject);
+      if (alertCondition.actions) {
+        if (updateMessage || !alertCondition.actions[0]?.subject_template.source)
+          onMessageSubjectChange(defaultSubject);
 
-    if (updateMessage || !alertCondition.actions[0]?.message_template.source) {
-      const selectedNames = alertCondition.ids;
-      const corrRuleQueries = `Detector data sources:${lineBreakAndTab}${initialValues.queries.join(
-        `,${lineBreakAndTab}`
-      )}`;
-      const ruleNames = `Rule Names:${lineBreakAndTab}${selectedNames.join(`,${lineBreakAndTab}`)}`;
-      const ruleSeverities = `Rule Severities:${lineBreakAndTab}${alertCondition.sev_levels.join(
-        `,${lineBreakAndTab}`
-      )}`;
+        if (updateMessage || !alertCondition.actions[0]?.message_template.source) {
+          const selectedNames = alertCondition.ids;
+          const corrRuleQueries = `Detector data sources:${lineBreakAndTab}${initialValues.queries.join(
+            `,${lineBreakAndTab}`
+          )}`;
+          const ruleNames = `Rule Names:${lineBreakAndTab}${selectedNames?.join(`,${lineBreakAndTab}`) ?? ''}`;
+          const ruleSeverities = `Rule Severities:${lineBreakAndTab}${alertCondition.sev_levels.join(
+            `,${lineBreakAndTab}`
+          )}`;
 
-      const alertConditionSelections = [];
-      if (selectedNames.length) {
-        alertConditionSelections.push(ruleNames);
-        alertConditionSelections.push(lineBreak);
+          const alertConditionSelections = [];
+          if (selectedNames?.length) {
+            alertConditionSelections.push(ruleNames);
+            alertConditionSelections.push(lineBreak);
+          }
+          if (alertCondition.sev_levels.length) {
+            alertConditionSelections.push(ruleSeverities);
+            alertConditionSelections.push(lineBreak);
+          }
+
+          const alertConditionDetails = [
+            alertConditionName,
+            alertConditionSeverity,
+            correlationRuleName,
+            corrRuleQueries,
+          ];
+          let defaultMessageBody = alertConditionDetails.join(lineBreak);
+          if (alertConditionSelections.length)
+            defaultMessageBody =
+              defaultMessageBody + lineBreak + lineBreak + alertConditionSelections.join(lineBreak);
+          onMessageBodyChange(defaultMessageBody);
+        }
       }
-      if (alertCondition.sev_levels.length) {
-        alertConditionSelections.push(ruleSeverities);
-        alertConditionSelections.push(lineBreak);
-      }
 
-      const alertConditionDetails = [
-        alertConditionName,
-        alertConditionSeverity,
-        correlationRuleName,
-        corrRuleQueries,
-      ];
-      let defaultMessageBody = alertConditionDetails.join(lineBreak);
-      if (alertConditionSelections.length)
-        defaultMessageBody =
-          defaultMessageBody + lineBreak + lineBreak + alertConditionSelections.join(lineBreak);
-      onMessageBodyChange(defaultMessageBody);
     }
   };
 
@@ -804,6 +827,24 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
   };
 
   useEffect(() => {
+    const alertCondition = initialValues.trigger;
+    if (alertCondition && alertCondition.actions) {
+      if (alertCondition.actions.length == 0)
+        alertCondition.actions = getEmptyAlertCondition().actions;
+      
+      const channelId = alertCondition?.actions[0].destination_id;
+      const selectedNotificationChannelOption: NotificationChannelOption[] = [];
+      if (channelId) {
+        notificationChannels.forEach((typeOption) => {
+          const matchingChannel = typeOption.options.find((option) => option.value === channelId);
+          if (matchingChannel) selectedNotificationChannelOption.push(matchingChannel);
+        });
+      }
+      setSelectedNotificationChannelOption(selectedNotificationChannelOption);
+    }
+  }, [initialValues, notificationChannels]);
+
+  useEffect(() => {
     context?.chrome.setBreadcrumbs([
       BREADCRUMBS.SECURITY_ANALYTICS,
       BREADCRUMBS.CORRELATIONS,
@@ -811,18 +852,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
       BREADCRUMBS.CORRELATIONS_RULE_CREATE,
     ]);
   }, []);
-
-  const alertCondition = initialValues.trigger;
-  alertCondition.actions = getEmptyAlertCondition().actions;
-  const channelId = alertCondition.actions[0].destination_id;
-  const selectedNotificationChannelOption: NotificationChannelOption[] = [];
-  if (channelId) {
-    notificationChannels.forEach((typeOption) => {
-      const matchingChannel = typeOption.options.find((option) => option.value === channelId);
-      if (matchingChannel) selectedNotificationChannelOption.push(matchingChannel);
-    });
-    console.log("Heyyyas ", channelId);
-  }
 
   return (
     <>
@@ -977,7 +1006,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
               </ContentPanel>
               <ExperimentalBanner />
               <ContentPanel
-                style={{ paddingLeft: 10, paddingRight: 10 }}
+                panelStyles={{ paddingLeft: 10, paddingRight: 10 }}
                 hideHeaderBorder
               >
                 <EuiTitle size="m">
@@ -1013,7 +1042,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                         >
                           <EuiFieldText
                             placeholder="Trigger Name"
-                            value={initialValues.trigger.name}
+                            value={initialValues?.trigger?.name}
                             onChange={onNameChange}
                             data-test-subj="alert-condition-name"
                           />
@@ -1023,7 +1052,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                         <EuiFormRow
                           label={
                             <EuiText size="s">
-                              <p>Rule Severities</p>
+                              <p>Alert Severity</p>
                             </EuiText>
                           }
                         >
@@ -1032,7 +1061,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                             options={ruleSeverityComboBoxOptions}
                             onChange={onRuleSeverityChange}
                             selectedOptions={ruleSeverityComboBoxOptions.filter(option =>
-                              initialValues.trigger.sev_levels.includes(option.value || '')
+                              (initialValues?.trigger?.sev_levels ?? []).includes(option.value || '')
                             )}
                             data-test-subj="alert-severity-combo-box"
                           />
@@ -1073,11 +1102,9 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                               <EuiComboBox
                                 placeholder={'Select notification channel.'}
                                 async={true}
-                                isLoading={loadingNotifications}
+                                isLoading={!!loadingNotifications}
                                 options={notificationChannels as EuiComboBoxOptionOption<string>[]}
-                                selectedOptions={
-                                  selectedNotificationChannelOption as EuiComboBoxOptionOption<string>[]
-                                }
+                                selectedOptions={selectedNotificationChannelOption.map(option => ({ label: option.label, value: option.value }))}
                                 onChange={onNotificationChannelsChange}
                                 singleSelection={{ asPlainText: true }}
                                 isDisabled={!hasNotificationPlugin}
@@ -1127,7 +1154,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                               >
                                 <EuiFieldText
                                   placeholder={'Enter a subject for the notification message.'}
-                                  value={initialValues.trigger.actions[0]?.subject_template.source}
+                                  value={initialValues?.trigger?.actions?.[0]?.subject_template?.source ?? ''}
                                   onChange={(e) => onMessageSubjectChange(e.target.value)}
                                   required={true}
                                   fullWidth={true}
@@ -1146,7 +1173,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                               >
                                 <EuiTextArea
                                   placeholder={'Enter the content of the notification message.'}
-                                  value={initialValues.trigger.actions[0]?.message_template.source}
+                                  value={initialValues?.trigger?.actions?.[0]?.message_template?.source ?? ''}
                                   onChange={(e) => onMessageBodyChange(e.target.value)}
                                   required={true}
                                   fullWidth={true}

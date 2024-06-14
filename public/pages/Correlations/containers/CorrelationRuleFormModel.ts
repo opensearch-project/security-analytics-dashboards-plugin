@@ -34,12 +34,4 @@ export const correlationRuleStateDefaultValue: CorrelationRuleModel = {
       field: '',
     },
   ],
-  trigger: {
-    name: '',
-    id: '',
-    sev_levels: [],
-    ids: [],
-    actions: [],
-    severity: ''
-  }
 };

@@ -54,7 +54,7 @@ export interface CorrelationRuleModel {
   name: string;
   time_window: number; // Time in milliseconds
   queries: CorrelationRuleQuery[];
-  trigger: CorrelationRuleTrigger;
+  trigger?: CorrelationRuleTrigger | undefined;
 }
 
 export interface CorrelationRule extends CorrelationRuleModel {
@@ -76,6 +76,7 @@ export interface CorrelationRuleSource {
   name: string;
   time_window: number;
   correlate: CorrelationRuleSourceQueries[];
+  trigger?: CorrelationRuleTrigger | undefined;
 }
 
 export interface CorrelationRuleHit {
@@ -130,7 +131,7 @@ export interface CorrelationRuleTrigger {
   ids: string[];
 
   // Alert related fields
-  actions: TriggerAction[];
+  actions?: TriggerAction[];
   severity: string;
 }
 
