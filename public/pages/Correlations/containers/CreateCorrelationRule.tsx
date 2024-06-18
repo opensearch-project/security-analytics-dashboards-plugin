@@ -254,6 +254,21 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
   }, [props.dataSource]);
 
   useEffect(() => {
+    const alertCondition = initialValues.trigger;
+    if (alertCondition && alertCondition.actions) {
+      if (alertCondition.actions.length == 0)
+        alertCondition.actions = getEmptyAlertCondition().actions;
+
+      const channelId = alertCondition?.actions[0].destination_id;
+      const selectedNotificationChannelOption: NotificationChannelOption[] = [];
+      if (channelId) {
+        notificationChannels.forEach((typeOption) => {
+          const matchingChannel = typeOption.options.find((option) => option.value === channelId);
+          if (matchingChannel) selectedNotificationChannelOption.push(matchingChannel);
+        });
+      }
+      setSelectedNotificationChannelOption(selectedNotificationChannelOption);
+    }
     setPeriod(parseTime(initialValues.time_window));
     setGroupByEnabled(initialValues.queries.some((q) => !!q.field));
     setDataFilterEnabled(initialValues.queries.some((q) => q.conditions.length > 0));
@@ -261,7 +276,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
     initialValues.queries.forEach(({ index }) => {
       updateLogFieldsForIndex(index);
     });
-  }, [initialValues]);
+  }, [initialValues, notificationChannels]);
 
 
   const onNotificationChannelsChange = (selectedOptions: EuiComboBoxOptionOption<string>[]) => {
@@ -824,24 +839,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
   };
 
   useEffect(() => {
-    const alertCondition = initialValues.trigger;
-    if (alertCondition && alertCondition.actions) {
-      if (alertCondition.actions.length == 0)
-        alertCondition.actions = getEmptyAlertCondition().actions;
-
-      const channelId = alertCondition?.actions[0].destination_id;
-      const selectedNotificationChannelOption: NotificationChannelOption[] = [];
-      if (channelId) {
-        notificationChannels.forEach((typeOption) => {
-          const matchingChannel = typeOption.options.find((option) => option.value === channelId);
-          if (matchingChannel) selectedNotificationChannelOption.push(matchingChannel);
-        });
-      }
-      setSelectedNotificationChannelOption(selectedNotificationChannelOption);
-    }
-  }, [initialValues, notificationChannels]);
-
-  useEffect(() => {
     context?.chrome.setBreadcrumbs([
       BREADCRUMBS.SECURITY_ANALYTICS,
       BREADCRUMBS.CORRELATIONS,
@@ -1041,7 +1038,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                             value={trigger?.name}
                             onChange={(e) => {
                               const triggerName = e.target.value || '';
-                              props.handleChange('trigger?.name')(triggerName);
+                              props.setFieldValue('trigger?.name', triggerName)
                               onNameChange(triggerName);
                             }}
                             data-test-subj="alert-condition-name"

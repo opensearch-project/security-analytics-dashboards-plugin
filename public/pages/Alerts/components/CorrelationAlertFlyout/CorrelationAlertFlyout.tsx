@@ -32,7 +32,7 @@ import {
   import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
   import { NotificationsStart } from 'opensearch-dashboards/public';
   import { DataStore } from '../../../../store/DataStore';
-  import { CorrelationAlertItem, Detector, Finding } from '../../../../../types';
+  import { CorrelationAlertItem, Finding } from '../../../../../types';
   
   export interface CorrelationAlertFlyoutProps {
     alertItem: CorrelationAlertItem;
@@ -147,7 +147,7 @@ import {
               onClick={() => {
                 const ruleId = finding.queries[0]?.id; // Assuming you retrieve rule ID from finding
                 const rule: RuleSource | undefined = rules[ruleId];
-    
+                
                 DataStore.findings.openFlyout(
                   {
                     ...finding,
@@ -177,10 +177,7 @@ import {
           sortable: true,
           dataType: 'string',
           render: (finding: any) => {
-            const ruleId = finding.queries[0]?.id; // Retrieve rule ID from the first query of the finding
-            const rule: RuleSource | undefined = rules[ruleId];
-            
-            return formatRuleType(rule?.category || ''); // Pass category from rule as string, default to empty string if rule is undefined
+            return formatRuleType(finding[0]?.tags[1]); // Pass category from rule as string, default to empty string if rule is undefined
           },
         },
       ];

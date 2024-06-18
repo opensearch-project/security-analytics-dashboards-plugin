@@ -28,7 +28,7 @@ export default class CorrelationService implements ICorrelationsService {
       const url = `..${API.ACK_CORRELATION_ALERTS}`;
   
       return (await this.httpClient.post(url, {
-        body: JSON.stringify(body),
+        body: JSON.stringify({alertIds: body}),
         query: {
           dataSourceId: dataSourceInfo.activeDataSource.id,
         },

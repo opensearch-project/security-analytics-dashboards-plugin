@@ -93,6 +93,7 @@ export interface AlertsState {
   timeUnit: TimeUnit;
   dateFormat: string;
   widgetEmptyMessage: React.ReactNode | undefined;
+  widgetEmptyCorrelationMessage: React.ReactNode | undefined;
   tab: string;
 }
 
@@ -131,6 +132,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       timeUnit: timeUnits.timeUnit,
       dateFormat: timeUnits.dateFormat,
       widgetEmptyMessage: undefined,
+      widgetEmptyCorrelationMessage: undefined,
       tab: 'findings'
     };
   }
@@ -154,12 +156,8 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       prevState.correlationAlerts !== this.state.correlationAlerts ||
       prevState.correlationAlerts.length !== this.state.correlationAlerts.length;
     
-    if (prevState.tab != this.state.tab) {
-      if (this.state.tab == "findings") {
-        renderVisualization(this.generateVisualizationSpec(this.state.filteredAlerts), 'alerts-view');
-      } else {
-        renderVisualization(this.generateCorrelationVisualizationSpec(this.state.filteredCorrelationAlerts), 'alerts-view');
-      }
+    if (prevState.tab !== this.state.tab) {
+      this.onRefresh();
     }
     if (this.props.dataSource !== prevProps.dataSource) {
       this.onRefresh();
@@ -167,9 +165,8 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       this.filterAlerts();
     } else if (correlationAlertsChanged) {
       this.filterCorrelationAlerts();
-    }
-    else if (this.state.groupBy !== prevState.groupBy) {
-      renderVisualization(this.generateVisualizationSpec(this.state.filteredAlerts), 'alerts-view');
+    } else if (this.state.groupBy !== prevState.groupBy) {
+      this.renderVisAsPerTab();
     }
   }
 
@@ -219,7 +216,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     this.setState({
       alertsFiltered: true,
       filteredCorrelationAlerts: filteredCorrelationAlerts,
-      widgetEmptyMessage: filteredCorrelationAlerts.length ? undefined : (
+      widgetEmptyCorrelationMessage: filteredCorrelationAlerts.length ? undefined : (
         <EuiEmptyPrompt
           body={
             <p>
@@ -232,6 +229,25 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     });
     renderVisualization(this.generateCorrelationVisualizationSpec(filteredCorrelationAlerts), 'alerts-view');
   };
+
+  private renderVisAsPerTab() {
+    if (this.state.tab === "findings") {
+      renderVisualization(this.generateVisualizationSpec(this.state.filteredAlerts), 'alerts-view');
+    } else {
+      renderVisualization(this.generateCorrelationVisualizationSpec(this.state.filteredCorrelationAlerts), 'alerts-view');
+    }
+  }
+
+  private getAlertsAsPerTab() {
+    if (this.state.tab === "findings") {
+      this.abortPendingGetAlerts();
+      const abortController = new AbortController();
+      this.abortControllers.push(abortController);
+      this.getAlerts(abortController.signal);
+    } else {
+      this.getCorrelationAlerts();
+    }
+  }
 
   getColumns(): EuiBasicTableColumn<AlertItem>[] {
     return [
@@ -481,10 +497,9 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
 
   async getCorrelationAlerts() {
     this.setState({ loading: true, correlationAlerts: [] });
-    const { correlationService, notifications, dateTimeFilter } = this.props;
+    const { correlationService, notifications } = this.props;
     try {
       const correlationRes = await correlationService.getCorrelationAlerts();
-      const duration = getDuration(dateTimeFilter);
       if (correlationRes.ok) {
         this.setState({ correlationAlerts: correlationRes.response.correlationAlerts });
       } else {
@@ -549,6 +564,19 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     );
   }
 
+  createAcknowledgeControlForCorrelations() {
+    const { correlatedItems } = this.state;
+    return (
+      <EuiButton
+        disabled={!correlatedItems.length}
+        onClick={() => this.onAcknowledgeCorrelationAlert(correlatedItems)}
+        data-test-subj={'acknowledge-button'}
+      >
+        Acknowledge
+      </EuiButton>
+    );
+  }
+
   onTimeChange = ({ start, end }: { start: string; end: string }) => {
     let { recentlyUsedRanges } = this.state;
     recentlyUsedRanges = recentlyUsedRanges.filter(
@@ -578,13 +606,8 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
   }
 
   onRefresh = async () => {
-    this.abortPendingGetAlerts();
-    const abortController = new AbortController();
-    this.abortControllers.push(abortController);
-    this.getAlerts(abortController.signal);
-    this.getCorrelationAlerts();
-    renderVisualization(this.generateVisualizationSpec(this.state.filteredAlerts), 'alerts-view');
-    renderVisualization(this.generateCorrelationVisualizationSpec(this.state.filteredCorrelationAlerts), 'alerts-view');
+    this.getAlertsAsPerTab();
+    this.renderVisAsPerTab();
   };
 
   onSelectionChange = (selectedItems: AlertItem[]) => {
@@ -638,21 +661,17 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     let successCount = 0;
     try {
       // Separating the selected items by detector ID, and adding all selected alert IDs to an array for that detector ID.
-      const correlations: { [key: string]: string[] } = {};
+      const alertIds: string[] = [];
       selectedItems.forEach((item) => {
-        if (!correlations[item.correlation_rule_id]) correlations[item.correlation_rule_id] = [item.id];
-        else correlations[item.correlation_rule_id].push(item.id);
+        alertIds.push(item.id);
       });
 
-      for (let corrId of Object.keys(correlations)) {
-        const alertIds = correlations[corrId];
-        if (alertIds.length > 0) {
-          const response = await correlationService.acknowledgeCorrelationAlerts(alertIds);
-          if (response.ok) {
-            successCount += alertIds.length;
-          } else {
-            errorNotificationToast(notifications, 'acknowledge', 'alerts', response.error);
-          }
+      if (alertIds.length > 0) {
+        const response = await correlationService.acknowledgeCorrelationAlerts(alertIds);
+        if (response.ok) {
+          successCount += alertIds.length;
+        } else {
+          errorNotificationToast(notifications, 'acknowledge', 'alerts', response.error);
         }
       }
     } catch (e: any) {
@@ -677,6 +696,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       loading,
       recentlyUsedRanges,
       widgetEmptyMessage,
+      widgetEmptyCorrelationMessage,
     } = this.state;
 
     const {
@@ -851,7 +871,11 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
             <EuiSpacer size="xxl" />
           </EuiFlexItem>
           <EuiFlexItem>
-            <ContentPanel title={'Alerts'} actions={[this.createAcknowledgeControl()]}>
+            <ContentPanel title={'Alerts'} actions={[
+            this.state.tab === 'findings'
+              ? this.createAcknowledgeControl()
+              : this.createAcknowledgeControlForCorrelations()
+              ]}>
               <EuiTabs>
                 <EuiTab onClick={() => this.setState({ tab: 'findings' })} isSelected={this.state.tab === 'findings'}>
                   Findings
@@ -886,7 +910,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
                   sorting={sorting}
                   selection={correlationSelection}
                   loading={loading}
-                  message={widgetEmptyMessage}
+                  message={widgetEmptyCorrelationMessage}
               />
               )}
             </ContentPanel>
