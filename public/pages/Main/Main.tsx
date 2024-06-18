@@ -574,6 +574,7 @@ export default class Main extends Component<MainProps, MainState> {
                                           notifications={core?.notifications}
                                           opensearchService={services.opensearchService}
                                           indexPatternService={services.indexPatternsService}
+                                          correlationService={services.correlationsService}
                                           dataSource={selectedDataSource}
                                         />
                                       )}
