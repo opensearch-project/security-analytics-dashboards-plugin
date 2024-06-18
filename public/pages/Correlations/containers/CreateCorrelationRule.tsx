@@ -261,22 +261,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
     });
   }, [initialValues, notificationChannels]);
 
-
-  const onNotificationChannelsChange = (selectedOptions: EuiComboBoxOptionOption<string>[], trigger: CorrelationRuleTrigger) => {
-    const updatedTrigger = { ...trigger };
-
-    // Update actions directly
-    if (updatedTrigger.actions && updatedTrigger.actions.length > 0) {
-      if (selectedOptions.length > 0 && selectedOptions[0].value !== undefined) {
-        updatedTrigger.actions[0].destination_id = selectedOptions[0].value;
-      } else {
-        updatedTrigger.actions[0].destination_id = '';
-      }
-    }
-    // Update trigger state directly
-    trigger.actions = updatedTrigger.actions; // Directly updating state
-  };
-
   const onMessageSubjectChange = (subject: string) => {
     const newActions = initialValues?.trigger?.actions;
     if (newActions) {
@@ -384,6 +368,12 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
       // Set default values for ids
       values.trigger.id = randomTriggerId;
       values.trigger.ids?.push(randomTriggerId);
+      if (!values.trigger.severity) {
+        values.trigger.severity = ALERT_SEVERITY_OPTIONS.HIGHEST.value;
+      }
+      if (!values.trigger.name) {
+        values.trigger.name = `trigger-${randomTriggerId}`;
+      }
       // Set default values for actions if present
       if (values.trigger.actions) {
         values.trigger.actions.forEach((action) => {
@@ -864,7 +854,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
               errors.name = 'Invalid rule name.';
             }
           }
-
           if (
             Number.isNaN(values.time_window) ||
             values.time_window > 86400000 ||
@@ -1036,6 +1025,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                               props.setFieldValue('trigger.name', triggerName)
                             }}
                             value={trigger?.name}
+                            required={true}
                             data-test-subj="alert-condition-name"
                           />
                         </EuiFormRow>
@@ -1195,14 +1185,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                                   required={true}
                                   fullWidth={true}
                                 />
-                              </EuiFormRow>
-                            </EuiFlexItem>
-
-                            <EuiFlexItem>
-                              <EuiFormRow>
-                                <EuiButton fullWidth={false} onClick={() => prepareMessage(true)}>
-                                  Generate message
-                                </EuiButton>
                               </EuiFormRow>
                             </EuiFlexItem>
                           </EuiFlexGroup>
