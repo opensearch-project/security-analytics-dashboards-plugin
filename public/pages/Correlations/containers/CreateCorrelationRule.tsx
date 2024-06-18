@@ -50,12 +50,12 @@ import { FieldMappingService, IndexService } from '../../../services';
 import { errorNotificationToast, getDataSources, getLogTypeOptions, getPlugins } from '../../../utils/helpers';
 import { severityOptions } from '../../../pages/Alerts/utils/constants';
 import _ from 'lodash';
-import { NotificationChannelOption, NotificationChannelTypeOptions } from '../components/ConfigureAlerts/models/interfaces';
-import { getEmptyAlertCondition, getNotificationChannels, parseAlertSeverityToOption, parseNotificationChannelsToOptions } from '../components/ConfigureAlerts/utils/helpers';
+import { NotificationChannelOption, NotificationChannelTypeOptions } from '../../CreateDetector/components/ConfigureAlerts/models/interfaces';
+import { getEmptyAlertCondition, getNotificationChannels, parseAlertSeverityToOption, parseNotificationChannelsToOptions } from '../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { NotificationsCallOut } from '../../../../public/components/NotificationsCallOut';
 import { BrowserServices } from '../../../../public/models/interfaces';
 import { ExperimentalBanner } from '../components/ExperimentalBanner';
-import { ALERT_SEVERITY_OPTIONS } from '../components/ConfigureAlerts/utils/constants';
+import { ALERT_SEVERITY_OPTIONS } from'../../CreateDetector/components/ConfigureAlerts/utils/constants';
 
 export interface CreateCorrelationRuleProps extends DataSourceProps {
   indexService: IndexService;
