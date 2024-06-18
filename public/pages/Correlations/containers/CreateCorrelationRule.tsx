@@ -57,6 +57,8 @@ import { NotificationsCallOut } from '../../../../public/components/Notification
 import { BrowserServices } from '../../../../public/models/interfaces';
 import { ExperimentalBanner } from '../components/ExperimentalBanner';
 import { ALERT_SEVERITY_OPTIONS } from '../../CreateDetector/components/ConfigureAlerts/utils/constants';
+import uuid from 'uuid';
+import { randomUUID } from 'crypto';
 
 export interface CreateCorrelationRuleProps extends DataSourceProps {
   indexService: IndexService;
@@ -357,6 +359,8 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
 
 
   const submit = async (values: CorrelationRuleModel) => {
+    const randomTriggerId = uuid();
+    const randomActionId = uuid();
     let error;
     if ((error = validateCorrelationRule(values))) {
       errorNotificationToast(props.notifications, action, 'rule', error);
@@ -373,6 +377,20 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
       values.queries.forEach((query) => {
         query.field = '';
       });
+    }
+
+    // Modify or set default values for trigger if present
+    if (values.trigger) {
+      // Set default values for ids
+      values.trigger.id = randomTriggerId;
+      values.trigger.ids?.push(randomTriggerId);
+      // Set default values for actions if present
+      if (values.trigger.actions) {
+        values.trigger.actions.forEach((action) => {
+          action.id = randomActionId;
+          action.name = randomActionId;
+        });
+      }
     }
 
     if (action === 'Edit') {
