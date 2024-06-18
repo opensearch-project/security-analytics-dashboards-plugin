@@ -40,6 +40,7 @@ import {
   CorrelationRuleAction,
   CorrelationRuleModel,
   CorrelationRuleQuery,
+  CorrelationRuleTrigger,
   DataSourceProps,
 } from '../../../../types';
 import { BREADCRUMBS, NOTIFICATIONS_HREF, OS_NOTIFICATION_PLUGIN, ROUTES } from '../../../utils/constants';
@@ -55,7 +56,7 @@ import { getEmptyAlertCondition, getNotificationChannels, parseAlertSeverityToOp
 import { NotificationsCallOut } from '../../../../public/components/NotificationsCallOut';
 import { BrowserServices } from '../../../../public/models/interfaces';
 import { ExperimentalBanner } from '../components/ExperimentalBanner';
-import { ALERT_SEVERITY_OPTIONS } from'../../CreateDetector/components/ConfigureAlerts/utils/constants';
+import { ALERT_SEVERITY_OPTIONS } from '../../CreateDetector/components/ConfigureAlerts/utils/constants';
 
 export interface CreateCorrelationRuleProps extends DataSourceProps {
   indexService: IndexService;
@@ -127,26 +128,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
   const [showNotificationDetails, setShowNotificationDetails] = useState(false);
   const resetForm = useRef(false);
   const [selectedNotificationChannelOption, setSelectedNotificationChannelOption] = useState<NotificationChannelOption[]>([]);
-
-  const onAlertSeverityChange = (severity: string) => {
-    setInitialValues({
-      ...initialValues,
-      trigger: {
-        ...initialValues.trigger!,
-        name: severity,
-      },
-    });
-  };
-
-  const onNameChange = (triggerName: string) => {
-    setInitialValues({
-      ...initialValues,
-      trigger: {
-        ...initialValues.trigger!,
-        name: triggerName,
-      },
-    });
-  };
 
   const validateCorrelationRule = useCallback(
     (rule: CorrelationRuleModel) => {
@@ -279,22 +260,19 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
   }, [initialValues, notificationChannels]);
 
 
-  const onNotificationChannelsChange = (selectedOptions: EuiComboBoxOptionOption<string>[]) => {
-    const newActions = [...(initialValues?.trigger?.actions ?? [])];
-    if (newActions.length > 0) {
-      if (selectedOptions.length > 0) {
-        newActions[0].destination_id = selectedOptions[0].value!;
+  const onNotificationChannelsChange = (selectedOptions: EuiComboBoxOptionOption<string>[], trigger: CorrelationRuleTrigger) => {
+    const updatedTrigger = { ...trigger };
+
+    // Update actions directly
+    if (updatedTrigger.actions && updatedTrigger.actions.length > 0) {
+      if (selectedOptions.length > 0 && selectedOptions[0].value !== undefined) {
+        updatedTrigger.actions[0].destination_id = selectedOptions[0].value;
       } else {
-        newActions[0].destination_id = '';
+        updatedTrigger.actions[0].destination_id = '';
       }
     }
-    setInitialValues(prevState => ({
-      ...prevState,
-      trigger: {
-        ...prevState.trigger!,
-        actions: newActions,
-      },
-    }));
+    // Update trigger state directly
+    trigger.actions = updatedTrigger.actions; // Directly updating state
   };
 
   const onMessageSubjectChange = (subject: string) => {
@@ -1035,12 +1013,11 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                         >
                           <EuiFieldText
                             placeholder="Trigger Name"
-                            value={trigger?.name}
                             onChange={(e) => {
                               const triggerName = e.target.value || '';
-                              props.setFieldValue('trigger?.name', triggerName)
-                              onNameChange(triggerName);
+                              props.setFieldValue('trigger.name', triggerName)
                             }}
+                            value={trigger?.name}
                             data-test-subj="alert-condition-name"
                           />
                         </EuiFormRow>
@@ -1057,16 +1034,13 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                             placeholder="Alert Severity"
                             options={ruleSeverityComboBoxOptions}
                             singleSelection={{ asPlainText: true }}
+                            onChange={(e) => {
+                              const selectedSeverity = e[0]?.value || '';
+                              props.setFieldValue('trigger.severity', selectedSeverity); // Update using setFieldValue
+                            }}
                             selectedOptions={
                               trigger?.severity ? [parseAlertSeverityToOption(trigger?.severity)] : [ALERT_SEVERITY_OPTIONS.HIGHEST]
                             }
-                            onChange={(e) => {
-                              const selectedSeverity = e[0]?.value || '';
-                              props.handleChange(`trigger?.severity`)(selectedSeverity);
-                              if (selectedSeverity !== '') {
-                                onAlertSeverityChange(selectedSeverity);
-                              }
-                            }}
                             isClearable={true}
                             data-test-subj="alert-severity-combo-box"
                           />
@@ -1108,9 +1082,23 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                                 placeholder={'Select notification channel.'}
                                 async={true}
                                 isLoading={!!loadingNotifications}
-                                options={notificationChannels as EuiComboBoxOptionOption<string>[]}
-                                selectedOptions={selectedNotificationChannelOption.map(option => ({ label: option.label, value: option.value }))}
-                                onChange={onNotificationChannelsChange}
+                                options={notificationChannels.flatMap(channelType =>
+                                  channelType.options.map(option => ({
+                                    label: option.label,
+                                    value: option.value,
+                                  }))
+                                )}
+                                onChange={(selectedOptions) => {
+                                  const newDestinationId = selectedOptions.length > 0 ? selectedOptions[0].value || '' : '';
+                                  props.setFieldValue('trigger.actions[0].destination_id', newDestinationId);
+                                }}
+                                selectedOptions={
+                                  trigger?.actions && trigger.actions.length > 0 && trigger.actions[0]?.destination_id
+                                    ? [notificationChannels.flatMap(channelType =>
+                                      channelType.options.filter(option => option.value === trigger.actions[0]?.destination_id)
+                                    )[0]]
+                                    : []
+                                }
                                 singleSelection={{ asPlainText: true }}
                                 isDisabled={!hasNotificationPlugin}
                               />
@@ -1159,8 +1147,11 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                               >
                                 <EuiFieldText
                                   placeholder={'Enter a subject for the notification message.'}
+                                  onChange={(e) => {
+                                    const subjectBody = e.target.value || ''; 
+                                    props.setFieldValue('trigger.actions[0].subject_template.source', subjectBody)
+                                  }}
                                   value={trigger?.actions?.[0]?.subject_template?.source ?? ''}
-                                  onChange={(e) => onMessageSubjectChange(e.target.value)}
                                   required={true}
                                   fullWidth={true}
                                 />
@@ -1178,8 +1169,11 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                               >
                                 <EuiTextArea
                                   placeholder={'Enter the content of the notification message.'}
+                                  onChange={(e) => {
+                                    const messsageBody = e.target.value || ''; 
+                                    props.setFieldValue('trigger.actions[0].message_template.source', messsageBody)
+                                  }}
                                   value={trigger?.actions?.[0]?.message_template?.source ?? ''}
-                                  onChange={(e) => onMessageBodyChange(e.target.value)}
                                   required={true}
                                   fullWidth={true}
                                 />

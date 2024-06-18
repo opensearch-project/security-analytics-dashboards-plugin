@@ -19,6 +19,7 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../utils/helpers';
 import { DEFAULT_EMPTY_DATA } from '../utils/constants';
 import { DataStore } from './DataStore';
+import uuid from 'uuid';
 
 export interface ICorrelationsCache {
   [key: string]: CorrelationRule[];
@@ -56,6 +57,7 @@ export class CorrelationsStore implements ICorrelationsStore {
   }
 
   public async createCorrelationRule(correlationRule: CorrelationRule): Promise<boolean> {
+    const randomUUID = uuid();
     const response = await this.service.createCorrelationRule({
       name: correlationRule.name,
       time_window: correlationRule.time_window,
@@ -80,7 +82,17 @@ export class CorrelationsStore implements ICorrelationsStore {
 
         return correlationInput;
       }),
-      trigger: correlationRule.trigger,
+      trigger: correlationRule.trigger ? {
+        name: correlationRule.trigger.name,
+        id: correlationRule.trigger.name ? randomUUID : undefined,
+        sev_levels: correlationRule.trigger.sev_levels,
+        ids: correlationRule.trigger.ids ? correlationRule.trigger.ids.map(() => randomUUID) : [], // Update ids with the same UUID
+        severity: correlationRule.trigger.severity,
+        actions: correlationRule.trigger.actions ? correlationRule.trigger.actions.map((action) => ({
+          ...action,
+          id: uuid(), // Update each action's id with the same UUID
+        })) : undefined,
+      } : undefined,
     });
     if (!response.ok) {
       errorNotificationToast(this.notifications, 'create', 'correlation rule', response.error);
