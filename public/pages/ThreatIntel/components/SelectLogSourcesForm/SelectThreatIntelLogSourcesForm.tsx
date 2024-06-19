@@ -19,7 +19,7 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import { IocLabel, ThreatIntelIoc } from '../../../../../common/constants';
+import { IocLabel, ThreatIntelIocType } from '../../../../../common/constants';
 import React, { useState } from 'react';
 import { ThreatIntelLogSource } from '../../../../../types';
 import { Interval } from '../../../CreateDetector/components/DefineDetector/components/DetectorSchedule/Interval';
@@ -41,7 +41,7 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
   const onIocToggle = (
     source: ThreatIntelLogSource,
     sourceIdx: number,
-    toggledIoc: ThreatIntelIoc,
+    toggledIoc: ThreatIntelIocType,
     enabled: boolean
   ) => {
     const newSources: ThreatIntelLogSource[] = [
@@ -67,7 +67,7 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
     action: 'add' | 'remove',
     source: ThreatIntelLogSource,
     sourceIdx: number,
-    ioc: ThreatIntelIoc,
+    ioc: ThreatIntelIocType,
     alias: string
   ) => {
     const aliasesSet = new Set(source.iocConfigMap[ioc].fieldAliases);
@@ -148,10 +148,15 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
                       <EuiFlexItem grow={1}>
                         <EuiCheckbox
                           id={`${name}-${ioc}`}
-                          label={IocLabel[ioc as ThreatIntelIoc]}
+                          label={IocLabel[ioc as ThreatIntelIocType]}
                           checked={config.enabled}
                           onChange={(event) =>
-                            onIocToggle(source, idx, ioc as ThreatIntelIoc, event.target.checked)
+                            onIocToggle(
+                              source,
+                              idx,
+                              ioc as ThreatIntelIocType,
+                              event.target.checked
+                            )
                           }
                         />
                       </EuiFlexItem>
@@ -170,7 +175,7 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
                                     'remove',
                                     source,
                                     idx,
-                                    ioc as ThreatIntelIoc,
+                                    ioc as ThreatIntelIocType,
                                     alias
                                   )
                                 }

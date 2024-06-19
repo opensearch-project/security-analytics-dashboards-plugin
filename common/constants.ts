@@ -5,14 +5,14 @@
 
 export const DEFAULT_RULE_UUID = '25b9c01c-350d-4b95-bed1-836d04a4f324';
 
-export enum ThreatIntelIoc {
+export enum ThreatIntelIocType {
   IPAddress = 'IP',
   Domain = 'Domain',
   FileHash = 'FileHash',
 }
 
-export const IocLabel: { [k in ThreatIntelIoc]: string } = {
-  [ThreatIntelIoc.IPAddress]: 'IP-Address',
-  [ThreatIntelIoc.Domain]: 'Domains',
-  [ThreatIntelIoc.FileHash]: 'File hash',
+export const IocLabel: { [k in ThreatIntelIocType]: string } = {
+  [ThreatIntelIocType.IPAddress]: 'IP-Address',
+  [ThreatIntelIocType.Domain]: 'Domains',
+  [ThreatIntelIocType.FileHash]: 'File hash',
 };

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ThreatIntelIoc } from '../common/constants';
+import { ThreatIntelIocType } from '../common/constants';
 import { AlertSeverity } from '../public/pages/Alerts/utils/constants';
 import { TriggerAction } from './Alert';
 
@@ -43,7 +43,7 @@ export interface LogSourceIocConfig {
 }
 
 export type ThreatIntelIocConfigMap = {
-  [k in ThreatIntelIoc]: LogSourceIocConfig;
+  [k in ThreatIntelIocType]: LogSourceIocConfig;
 };
 
 export interface ThreatIntelLogSource {
@@ -54,7 +54,7 @@ export interface ThreatIntelLogSource {
 export interface ThreatIntelAlertTrigger {
   name: string;
   triggerCondition: {
-    indicatorType: ThreatIntelIoc[];
+    indicatorType: ThreatIntelIocType[];
     dataSource: string[];
   };
   alertSeverity: AlertSeverity;
@@ -70,7 +70,7 @@ export interface ThreatIntelScanConfig {
 export interface ThreatIntelIocData {
   id: string;
   name: string;
-  type: ThreatIntelIoc;
+  type: ThreatIntelIocType;
   value: string;
   severity: string;
   created: number;
@@ -85,7 +85,7 @@ export interface ThreatIntelIocData {
 export const dummyIoCDetails: ThreatIntelIocData = {
   id: 'indicator--8e2e2d2b-17d4-4cbf-938f-98ee46b3cd3f',
   name: 'my-bad-ip',
-  type: ThreatIntelIoc.IPAddress,
+  type: ThreatIntelIocType.IPAddress,
   value: '192.0.2.1',
   severity: 'High',
   created: 1718761171,
@@ -129,15 +129,15 @@ export const dummySource: ThreatIntelSourceItem = {
 export const dummyLogSource: ThreatIntelLogSource = {
   name: 'windows*',
   iocConfigMap: {
-    [ThreatIntelIoc.IPAddress]: {
+    [ThreatIntelIocType.IPAddress]: {
       enabled: true,
       fieldAliases: ['src_ip', 'dst.ip'],
     },
-    [ThreatIntelIoc.Domain]: {
+    [ThreatIntelIocType.Domain]: {
       enabled: true,
       fieldAliases: ['domain'],
     },
-    [ThreatIntelIoc.FileHash]: {
+    [ThreatIntelIocType.FileHash]: {
       enabled: false,
       fieldAliases: ['hash'],
     },
@@ -147,15 +147,15 @@ export const dummyLogSource: ThreatIntelLogSource = {
 export const dummyLogSource2: ThreatIntelLogSource = {
   name: 'cloudtrail*',
   iocConfigMap: {
-    [ThreatIntelIoc.IPAddress]: {
+    [ThreatIntelIocType.IPAddress]: {
       enabled: true,
       fieldAliases: ['src_ip', 'dst.ip'],
     },
-    [ThreatIntelIoc.Domain]: {
+    [ThreatIntelIocType.Domain]: {
       enabled: true,
       fieldAliases: ['domain'],
     },
-    [ThreatIntelIoc.FileHash]: {
+    [ThreatIntelIocType.FileHash]: {
       enabled: false,
       fieldAliases: ['hash'],
     },
