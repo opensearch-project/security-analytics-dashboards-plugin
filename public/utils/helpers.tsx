@@ -31,8 +31,8 @@ import {
   RuleItemInfo,
 } from '../pages/CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { compile, TopLevelSpec } from 'vega-lite';
-import { parse, View } from 'vega/build-es5/vega.js';
-import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter/build/vega-interpreter';
+import { parse, View } from 'vega';
+import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter';
 import { RuleInfo } from '../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { IndexService, OpenSearchService } from '../services';
@@ -237,7 +237,7 @@ export function renderVisualization(spec: TopLevelSpec, containerId: string) {
         `;
       },
     });
-    view = new View(parse(spec, null, { expr: vegaExpressionInterpreter }), {
+    view = new View(parse(spec, undefined, { expr: vegaExpressionInterpreter } as any), {
       renderer: 'canvas', // renderer (canvas or svg)
       container: `#${containerId}`, // parent DOM container
       hover: true, // enable hover processing
@@ -560,6 +560,15 @@ export function getDuration({ startTime, endTime }: DateTimeFilter): Duration {
 
   return {
     startTime: startMoment.valueOf(),
-    endTime: endMoment.valueOf()
-  }
+    endTime: endMoment.valueOf(),
+  };
+}
+
+let isNotificationPluginInstalled = false;
+export function setIsNotificationPluginInstalled(isInstalled: boolean) {
+  isNotificationPluginInstalled = isInstalled;
+}
+
+export function getIsNotificationPluginInstalled(): boolean {
+  return isNotificationPluginInstalled;
 }

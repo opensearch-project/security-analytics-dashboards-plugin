@@ -28,7 +28,6 @@ import {
   BREADCRUMBS,
   DEFAULT_DATE_RANGE,
   MAX_RECENTLY_USED_TIME_RANGES,
-  OS_NOTIFICATION_PLUGIN,
 } from '../../../../utils/constants';
 import {
   getChartTimeUnit,
@@ -45,8 +44,8 @@ import {
   createSelectComponent,
   errorNotificationToast,
   renderVisualization,
-  getPlugins,
   getDuration,
+  getIsNotificationPluginInstalled,
 } from '../../../../utils/helpers';
 import { RuleSource } from '../../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
@@ -58,7 +57,7 @@ import {
   FeatureChannelList,
   DateTimeFilter,
   FindingItemType,
-  DetectorHit
+  DetectorHit,
 } from '../../../../../types';
 
 interface FindingsProps extends RouteComponentProps, DataSourceProps {
@@ -81,7 +80,6 @@ interface FindingsState {
   recentlyUsedRanges: DurationRange[];
   groupBy: FindingsGroupByType;
   filteredFindings: FindingItemType[];
-  plugins: string[];
   timeUnit: TimeUnit;
   dateFormat: string;
 }
@@ -123,7 +121,6 @@ class Findings extends Component<FindingsProps, FindingsState> {
       recentlyUsedRanges: [DEFAULT_DATE_RANGE],
       groupBy: 'logType',
       filteredFindings: [],
-      plugins: [],
       timeUnit: timeUnits.timeUnit,
       dateFormat: timeUnits.dateFormat,
     };
@@ -151,7 +148,6 @@ class Findings extends Component<FindingsProps, FindingsState> {
 
   onRefresh = async () => {
     await this.getNotificationChannels();
-    await this.getPlugins();
     await this.getFindings();
     renderVisualization(this.generateVisualizationSpec(), 'findings-view');
   };
@@ -164,13 +160,13 @@ class Findings extends Component<FindingsProps, FindingsState> {
 
     await this.getRules(Array.from(ruleIds));
     this.setState({ findings: [...this.state.findings, ...findings] });
-  }
+  };
 
   abortGetFindings = () => {
-    this.abortGetFindingsControllers.forEach(controller => {
+    this.abortGetFindingsControllers.forEach((controller) => {
       controller.abort();
     });
-  }
+  };
 
   getFindings = async () => {
     this.abortGetFindings();
@@ -184,7 +180,11 @@ class Findings extends Component<FindingsProps, FindingsState> {
 
       // Not looking for findings from specific detector
       if (!detectorId) {
-        await DataStore.findings.getAllFindings(abortController.signal, duration, this.onStreamingFindings);
+        await DataStore.findings.getAllFindings(
+          abortController.signal,
+          duration,
+          this.onStreamingFindings
+        );
       } else {
         // get findings for a detector
         const getDetectorResponse = await detectorService.getDetectorWithId(detectorId);
@@ -193,9 +193,15 @@ class Findings extends Component<FindingsProps, FindingsState> {
           const detectorHit: DetectorHit = {
             _id: getDetectorResponse.response._id,
             _index: '',
-            _source: getDetectorResponse.response.detector
-          }
-          await DataStore.findings.getFindingsPerDetector(detectorId, detectorHit, abortController.signal, duration, this.onStreamingFindings);
+            _source: getDetectorResponse.response.detector,
+          };
+          await DataStore.findings.getFindingsPerDetector(
+            detectorId,
+            detectorHit,
+            abortController.signal,
+            duration,
+            this.onStreamingFindings
+          );
         } else {
           errorNotificationToast(notifications, 'retrieve', 'findings', getDetectorResponse.error);
         }
@@ -226,13 +232,6 @@ class Findings extends Component<FindingsProps, FindingsState> {
     const channels = await getNotificationChannels(this.props.notificationsService);
     this.setState({ notificationChannels: channels });
   };
-
-  async getPlugins() {
-    const { opensearchService } = this.props;
-    const plugins = await getPlugins(opensearchService);
-
-    this.setState({ plugins });
-  }
 
   onTimeChange = ({ start, end }: { start: string; end: string }) => {
     let { recentlyUsedRanges } = this.state;
@@ -399,7 +398,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
               notificationChannels={parseNotificationChannelsToOptions(notificationChannels)}
               refreshNotificationChannels={this.getNotificationChannels}
               onFindingsFiltered={this.onFindingsFiltered}
-              hasNotificationsPlugin={this.state.plugins.includes(OS_NOTIFICATION_PLUGIN)}
+              hasNotificationsPlugin={getIsNotificationPluginInstalled()}
               correlationService={this.props.correlationService}
             />
           </ContentPanel>

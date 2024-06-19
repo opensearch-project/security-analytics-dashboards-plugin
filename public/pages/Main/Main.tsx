@@ -58,8 +58,10 @@ import { DataSourceMenuWrapper } from '../../components/MDS/DataSourceMenuWrappe
 import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
 import { DataSourceContext, DataSourceContextConsumer } from '../../services/DataSourceContext';
 import { dataSourceInfo } from '../../services/utils/constants';
-import { ThreatIntelOverview } from '../ThreatIntel/containers/ThreatIntelOverview';
-import { ConnectThreatIntelSource } from '../ThreatIntel/containers/ConnectThreatIntelSource';
+import { ThreatIntelOverview } from '../ThreatIntel/containers/Overview/ThreatIntelOverview';
+import { AddThreatIntelSource } from '../ThreatIntel/containers/AddThreatIntelSource/AddThreatIntelSource';
+import { ThreatIntelScanConfigForm } from '../ThreatIntel/containers/ScanConfiguration/ThreatIntelScanConfigForm';
+import { ThreatIntelSource } from '../ThreatIntel/containers/ThreatIntelSource/ThreatIntelSource';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -89,7 +91,8 @@ const HIDDEN_NAV_ROUTES: string[] = [
   ROUTES.EDIT_DETECTOR_ALERT_TRIGGERS,
   `${ROUTES.LOG_TYPES}/.+`,
   ROUTES.LOG_TYPES_CREATE,
-  ROUTES.THREAT_INTEL_CONNECT_CUSTOM_SOURCE,
+  ROUTES.THREAT_INTEL_ADD_CUSTOM_SOURCE,
+  ROUTES.THREAT_INTEL_SCAN_CONFIG,
 ];
 
 interface MainProps extends RouteComponentProps {
@@ -433,7 +436,7 @@ export default class Main extends Component<MainProps, MainState> {
                                       {...findingFlyout}
                                       history={history}
                                       indexPatternsService={services.indexPatternsService}
-                                      correlationService={services?.correlationsService}
+                                      correlationService={services.correlationsService}
                                       opensearchService={services.opensearchService}
                                     />
                                   ) : null}
@@ -445,7 +448,7 @@ export default class Main extends Component<MainProps, MainState> {
                                           {...props}
                                           setDateTimeFilter={this.setDateTimeFilter}
                                           dateTimeFilter={this.state.dateTimeFilter}
-                                          correlationService={services?.correlationsService}
+                                          correlationService={services.correlationsService}
                                           opensearchService={services.opensearchService}
                                           detectorService={services.detectorsService}
                                           notificationsService={services.notificationsService}
@@ -659,8 +662,8 @@ export default class Main extends Component<MainProps, MainState> {
                                       render={(props: RouteComponentProps<any, any, any>) => (
                                         <CreateCorrelationRule
                                           {...props}
-                                          indexService={services?.indexService}
-                                          fieldMappingService={services?.fieldMappingService}
+                                          indexService={services.indexService}
+                                          fieldMappingService={services.fieldMappingService}
                                           notifications={core?.notifications}
                                           dataSource={selectedDataSource}
                                           notificationsService={services?.notificationsService}
@@ -673,8 +676,8 @@ export default class Main extends Component<MainProps, MainState> {
                                       render={(props: RouteComponentProps<any, any, any>) => (
                                         <CreateCorrelationRule
                                           {...props}
-                                          indexService={services?.indexService}
-                                          fieldMappingService={services?.fieldMappingService}
+                                          indexService={services.indexService}
+                                          fieldMappingService={services.fieldMappingService}
                                           notifications={core?.notifications}
                                           dataSource={selectedDataSource}
                                           notificationsService={services?.notificationsService}
@@ -732,15 +735,32 @@ export default class Main extends Component<MainProps, MainState> {
                                       }}
                                     />
                                     <Route
-                                      path={ROUTES.THREAT_INTEL_CONNECT_CUSTOM_SOURCE}
+                                      path={ROUTES.THREAT_INTEL_ADD_CUSTOM_SOURCE}
                                       render={(props) => {
-                                        return <ConnectThreatIntelSource {...props} />;
+                                        return <AddThreatIntelSource {...props} />;
                                       }}
                                     />
                                     <Route
                                       path={ROUTES.THREAT_INTEL_OVERVIEW}
                                       render={(props) => {
                                         return <ThreatIntelOverview {...props} />;
+                                      }}
+                                    />
+                                    <Route
+                                      path={ROUTES.THREAT_INTEL_SCAN_CONFIG}
+                                      render={(props: RouteComponentProps<any, any, any>) => {
+                                        return (
+                                          <ThreatIntelScanConfigForm
+                                            {...props}
+                                            notificationsService={services.notificationsService}
+                                          />
+                                        );
+                                      }}
+                                    />
+                                    <Route
+                                      path={`${ROUTES.THREAT_INTEL_SOURCE_DETAILS}/:id`}
+                                      render={(props: RouteComponentProps<any, any, any>) => {
+                                        return <ThreatIntelSource {...props} />;
                                       }}
                                     />
 

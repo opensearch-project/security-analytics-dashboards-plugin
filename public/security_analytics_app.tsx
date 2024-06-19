@@ -34,6 +34,8 @@ import MetricsService from './services/MetricsService';
 import { MetricsContext } from './metrics/MetricsContext';
 import { CHANNEL_TYPES } from './pages/CreateDetector/components/ConfigureAlerts/utils/constants';
 import { DataSourceManagementPluginSetup } from '../../../src/plugins/data_source_management/public';
+import { getPlugins, setIsNotificationPluginInstalled } from './utils/helpers';
+import { OS_NOTIFICATION_PLUGIN } from './utils/constants';
 
 export function renderApp(
   coreStart: CoreStart,
@@ -106,6 +108,10 @@ export function renderApp(
       if (response.ok) {
         CHANNEL_TYPES.splice(0, CHANNEL_TYPES.length, ...response.response);
       }
+    });
+
+    getPlugins(opensearchService).then((plugins): void => {
+      setIsNotificationPluginInstalled(plugins.includes(OS_NOTIFICATION_PLUGIN));
     });
   });
 
