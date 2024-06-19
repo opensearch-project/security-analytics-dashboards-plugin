@@ -4,7 +4,7 @@
  */
 
 import React, { useContext, useMemo, useState } from 'react';
-import { ThreatIntelSourceItem, dummySource } from '../../../../../types';
+import { ThreatIntelSourceItem } from '../../../../../types';
 import { RouteComponentProps } from 'react-router-dom';
 import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { useEffect } from 'react';
@@ -24,6 +24,7 @@ import {
 import { DescriptionGroup } from '../../../../components/Utility/DescriptionGroup';
 import { IoCstable } from '../../components/IoCsTable/IoCsTable';
 import { ThreatIntelSourceDetails } from '../../components/ThreatIntelSourceDetails/ThreatIntelSourceDetails';
+import { dummySource } from '../../utils/constants';
 
 export interface ThreatIntelSource
   extends RouteComponentProps<any, any, { source?: ThreatIntelSourceItem }> {}

@@ -24,8 +24,6 @@ import {
   ThreatIntelNextStepId,
   ThreatIntelScanConfig,
   ThreatIntelSourceItem,
-  dummyLogSource,
-  dummySource,
 } from '../../../../../types';
 import { RouteComponentProps } from 'react-router-dom';
 import { ThreatIntelSourcesList } from '../../components/ThreatIntelSourcesList/ThreatIntelSourcesList';
@@ -33,6 +31,7 @@ import { ThreatIntelLogSources } from '../../components/ThreatIntelLogSources/Th
 import { getEmptyThreatIntelAlertTrigger, getThreatIntelNextStepsProps } from '../../utils/helpers';
 import { ThreatIntelAlertTriggers } from '../../components/ThreatIntelAlertTriggers/ThreatIntelAlertTriggers';
 import { ThreatIntelOverviewActions } from '../../components/ThreatIntelOverviewActions/ThreatIntelOverviewActions';
+import { dummyLogSource, dummySource } from '../../utils/constants';
 
 export interface ThreatIntelOverviewProps extends RouteComponentProps {}
 

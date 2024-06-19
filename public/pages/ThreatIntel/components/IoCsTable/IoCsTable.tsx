@@ -5,7 +5,8 @@
 
 import React, { useState } from 'react';
 import { EuiBasicTableColumn, EuiInMemoryTable, EuiPanel, EuiSpacer, EuiText } from '@elastic/eui';
-import { ThreatIntelIocData, dummyIoCDetails } from '../../../../../types';
+import { ThreatIntelIocData } from '../../../../../types';
+import { dummyIoCDetails } from '../../utils/constants';
 
 export interface IoCstableProps {}
 
