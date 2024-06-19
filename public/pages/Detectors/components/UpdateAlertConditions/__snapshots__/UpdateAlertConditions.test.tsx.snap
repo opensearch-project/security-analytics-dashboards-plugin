@@ -837,7 +837,6 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
         }
       }
       getTriggerName={[Function]}
-      hasNotificationPlugin={false}
       isEdit={true}
       location={
         Object {

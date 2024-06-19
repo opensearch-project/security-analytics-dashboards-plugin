@@ -1540,6 +1540,11 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
               "type": "detector",
             }
           }
+          label={
+            <FormFieldHeader
+              headerTitle="Runs every"
+            />
+          }
           onDetectorScheduleChange={[Function]}
         >
           <EuiFormRow
@@ -1552,7 +1557,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
             isInvalid={false}
             label={
               <FormFieldHeader
-                headerTitle="Run every"
+                headerTitle="Runs every"
               />
             }
             labelType="label"
@@ -1578,7 +1583,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                     htmlFor="some_html_id"
                   >
                     <FormFieldHeader
-                      headerTitle="Run every"
+                      headerTitle="Runs every"
                     >
                       <EuiText
                         size="s"
@@ -1587,7 +1592,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                           className="euiText euiText--small"
                         >
                           <strong>
-                            Run every
+                            Runs every
                           </strong>
                         </div>
                       </EuiText>

@@ -588,7 +588,7 @@ Object {
                 <div
                   aria-expanded="false"
                   aria-haspopup="listbox"
-                  class="euiComboBox"
+                  class="euiComboBox euiComboBox-isDisabled"
                   role="combobox"
                 >
                   <div
@@ -598,7 +598,7 @@ Object {
                       class="euiFormControlLayout__childrenWrapper"
                     >
                       <div
-                        class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isClearable"
+                        class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap"
                         data-test-subj="comboBoxInput"
                         tabindex="-1"
                       >
@@ -614,6 +614,7 @@ Object {
                           <input
                             aria-controls=""
                             data-test-subj="comboBoxSearchInput"
+                            disabled=""
                             id="some_html_id"
                             role="textbox"
                             style="box-sizing: content-box; width: 2px;"
@@ -631,6 +632,7 @@ Object {
                           aria-label="Open list of options"
                           class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
                           data-test-subj="comboBoxToggleListButton"
+                          disabled=""
                           type="button"
                         >
                           EuiIconMock
@@ -645,11 +647,10 @@ Object {
           <div
             class="euiFlexItem euiFlexItem--flexGrowZero"
           >
-            <a
-              class="euiButton euiButton--primary"
-              href="notifications-dashboards#/channels"
-              rel="noopener noreferrer"
-              target="_blank"
+            <button
+              class="euiButton euiButton--primary euiButton-isDisabled"
+              disabled=""
+              type="button"
             >
               <span
                 class="euiButtonContent euiButton__content"
@@ -661,9 +662,49 @@ Object {
                   Manage channels
                 </span>
               </span>
-            </a>
+            </button>
           </div>
         </div>
+        <div
+          class="euiSpacer euiSpacer--m"
+        />
+        <div
+          class="euiCallOut euiCallOut--danger"
+        >
+          <div
+            class="euiCallOutHeader"
+          >
+            EuiIconMock
+            <span
+              class="euiCallOutHeader__title"
+            >
+              Notifications plugin is not installed
+            </span>
+          </div>
+          <div
+            class="euiText euiText--small"
+          >
+            <div
+              class="euiTextColor euiTextColor--default"
+            >
+              <p>
+                Install the notifications plugin in order to create and select channels to send out notifications. 
+                <a
+                  class="euiLink euiLink--primary"
+                  href="https://opensearch.org/docs/latest/notifications-plugin/index/"
+                  rel="noreferrer"
+                >
+                  Learn more
+                  EuiIconMock
+                </a>
+                .
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="euiSpacer euiSpacer--m"
+        />
         <div
           class="euiSpacer euiSpacer--l"
         />
@@ -674,7 +715,7 @@ Object {
             class="euiAccordion__triggerWrapper"
           >
             <button
-              aria-controls="alert-condition-notify-msg-0"
+              aria-controls="alert-condition-notify-msg-trigger_id_1_0"
               aria-expanded="false"
               class="euiAccordion__button"
               id="some_html_id"
@@ -701,7 +742,7 @@ Object {
           <div
             aria-labelledby="some_html_id"
             class="euiAccordion__childWrapper"
-            id="alert-condition-notify-msg-0"
+            id="alert-condition-notify-msg-trigger_id_1_0"
             role="region"
             tabindex="-1"
           >
@@ -1419,7 +1460,7 @@ Object {
               <div
                 aria-expanded="false"
                 aria-haspopup="listbox"
-                class="euiComboBox"
+                class="euiComboBox euiComboBox-isDisabled"
                 role="combobox"
               >
                 <div
@@ -1429,7 +1470,7 @@ Object {
                     class="euiFormControlLayout__childrenWrapper"
                   >
                     <div
-                      class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isClearable"
+                      class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap"
                       data-test-subj="comboBoxInput"
                       tabindex="-1"
                     >
@@ -1445,6 +1486,7 @@ Object {
                         <input
                           aria-controls=""
                           data-test-subj="comboBoxSearchInput"
+                          disabled=""
                           id="some_html_id"
                           role="textbox"
                           style="box-sizing: content-box; width: 2px;"
@@ -1462,6 +1504,7 @@ Object {
                         aria-label="Open list of options"
                         class="euiFormControlLayoutCustomIcon euiFormControlLayoutCustomIcon--clickable"
                         data-test-subj="comboBoxToggleListButton"
+                        disabled=""
                         type="button"
                       >
                         EuiIconMock
@@ -1476,11 +1519,10 @@ Object {
         <div
           class="euiFlexItem euiFlexItem--flexGrowZero"
         >
-          <a
-            class="euiButton euiButton--primary"
-            href="notifications-dashboards#/channels"
-            rel="noopener noreferrer"
-            target="_blank"
+          <button
+            class="euiButton euiButton--primary euiButton-isDisabled"
+            disabled=""
+            type="button"
           >
             <span
               class="euiButtonContent euiButton__content"
@@ -1492,9 +1534,49 @@ Object {
                 Manage channels
               </span>
             </span>
-          </a>
+          </button>
         </div>
       </div>
+      <div
+        class="euiSpacer euiSpacer--m"
+      />
+      <div
+        class="euiCallOut euiCallOut--danger"
+      >
+        <div
+          class="euiCallOutHeader"
+        >
+          EuiIconMock
+          <span
+            class="euiCallOutHeader__title"
+          >
+            Notifications plugin is not installed
+          </span>
+        </div>
+        <div
+          class="euiText euiText--small"
+        >
+          <div
+            class="euiTextColor euiTextColor--default"
+          >
+            <p>
+              Install the notifications plugin in order to create and select channels to send out notifications. 
+              <a
+                class="euiLink euiLink--primary"
+                href="https://opensearch.org/docs/latest/notifications-plugin/index/"
+                rel="noreferrer"
+              >
+                Learn more
+                EuiIconMock
+              </a>
+              .
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="euiSpacer euiSpacer--m"
+      />
       <div
         class="euiSpacer euiSpacer--l"
       />
@@ -1505,7 +1587,7 @@ Object {
           class="euiAccordion__triggerWrapper"
         >
           <button
-            aria-controls="alert-condition-notify-msg-0"
+            aria-controls="alert-condition-notify-msg-trigger_id_1_0"
             aria-expanded="false"
             class="euiAccordion__button"
             id="some_html_id"
@@ -1532,7 +1614,7 @@ Object {
         <div
           aria-labelledby="some_html_id"
           class="euiAccordion__childWrapper"
-          id="alert-condition-notify-msg-0"
+          id="alert-condition-notify-msg-trigger_id_1_0"
           role="region"
           tabindex="-1"
         >
