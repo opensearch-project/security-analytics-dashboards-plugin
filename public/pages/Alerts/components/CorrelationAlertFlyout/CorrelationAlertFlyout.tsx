@@ -32,16 +32,13 @@ import {
   import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
   import { NotificationsStart } from 'opensearch-dashboards/public';
   import { DataStore } from '../../../../store/DataStore';
-  import { CorrelationAlertItem, Finding } from '../../../../../types';
+  import { CorrelationAlertColumns, Finding } from '../../../../../types';
   
   export interface CorrelationAlertFlyoutProps {
-    alertItem: CorrelationAlertItem;
+    alertItem: CorrelationAlertColumns;
     notifications: NotificationsStart;
-    detectorService: DetectorsService;
-    opensearchService: OpenSearchService;
-    indexPatternService: IndexPatternsService;
     onClose: () => void;
-    onAcknowledge: (selectedItems: CorrelationAlertItem[]) => void;
+    onAcknowledge: (selectedItems: CorrelationAlertColumns[]) => void;
   }
   
   export interface CorrelationAlertFlyoutState {

@@ -371,9 +371,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
       if (!values.trigger.severity) {
         values.trigger.severity = ALERT_SEVERITY_OPTIONS.HIGHEST.value;
       }
-      if (!values.trigger.name) {
-        values.trigger.name = `trigger-${randomTriggerId}`;
-      }
       // Set default values for actions if present
       if (values.trigger.actions) {
         values.trigger.actions.forEach((action) => {
@@ -1009,8 +1006,8 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                 {showForm && (
                   <>
                     <EuiSpacer size="m" />
-                    <EuiFlexGroup>
-                      <EuiFlexItem>
+                    <EuiFlexGroup alignItems="center">
+                      <EuiFlexItem grow={false}>
                         <EuiFormRow
                           label={
                             <EuiText size="s">
@@ -1019,9 +1016,9 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                           }
                         >
                           <EuiFieldText
-                            placeholder="Trigger Name"
+                            placeholder="Trigger 1"
                             onChange={(e) => {
-                              const triggerName = e.target.value || '';
+                              const triggerName = e.target.value || 'Trigger 1';
                               props.setFieldValue('trigger.name', triggerName)
                             }}
                             value={trigger?.name}
@@ -1030,7 +1027,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                           />
                         </EuiFormRow>
                       </EuiFlexItem>
-                      <EuiFlexItem>
+                      <EuiFlexItem grow={false}>
                         <EuiFormRow
                           label={
                             <EuiText size="s">
@@ -1055,7 +1052,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                         </EuiFormRow>
                       </EuiFlexItem>
                       <EuiFlexItem grow={false}>
-                        <EuiToolTip content="Delete">
+                      <EuiFormRow label={<p style={{ visibility: 'hidden' }}>_</p>}>
                           <EuiButtonIcon
                             aria-label="Delete Alert Trigger"
                             data-test-subj="delete-alert-trigger-icon"
@@ -1063,7 +1060,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                             color="danger"
                             onClick={() => setShowForm(false)}
                           />
-                        </EuiToolTip>
+                        </EuiFormRow>
                       </EuiFlexItem>
                     </EuiFlexGroup>
                     <EuiSpacer size={'l'} />
