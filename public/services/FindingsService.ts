@@ -19,7 +19,7 @@ export default class FindingsService {
     detectorParams: GetFindingsParams
   ): Promise<ServerResponse<GetFindingsResponse>> => {
     const findingIds = detectorParams.findingIds
-      ? JSON.stringify(detectorParams.findingIds)
+      ? detectorsParams.findingIds.join(',')
       : undefined;
     const query: GetFindingsParams | {} = {
       sortOrder: 'desc',
