@@ -105,7 +105,7 @@ export interface CorrelationAlertItem {
   acknowledged_time: string | null;
 }
 
-export interface CorrelationAlertColumns extends CorrelationAlertItem{
+export interface CorrelationAlertTableItem extends CorrelationAlertItem{
   correlation_rule_categories: string[];
 }
 

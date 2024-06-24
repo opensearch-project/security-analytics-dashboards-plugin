@@ -59,7 +59,7 @@ import {
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { match, RouteComponentProps, withRouter } from 'react-router-dom';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
-import { AlertItem, CorrelationAlertColumns, DataSourceProps, DateTimeFilter, Detector } from '../../../../../types';
+import { AlertItem, CorrelationAlertTableItem, DataSourceProps, DateTimeFilter, Detector } from '../../../../../types';
 import { DurationRange } from '@elastic/eui/src/components/date_picker/types';
 import { DataStore } from '../../../../store/DataStore';
 
@@ -80,13 +80,13 @@ export interface AlertsState {
   groupBy: string;
   recentlyUsedRanges: DurationRange[];
   selectedItems: AlertItem[];
-  correlatedItems: CorrelationAlertColumns[];
+  correlatedItems: CorrelationAlertTableItem[];
   alerts: AlertItem[];
-  correlationAlerts: CorrelationAlertColumns[];
+  correlationAlerts: CorrelationAlertTableItem[];
   flyoutData?: { alertItem: AlertItem };
-  flyoutCorrelationData?: { alertItem: CorrelationAlertColumns };
+  flyoutCorrelationData?: { alertItem: CorrelationAlertTableItem };
   alertsFiltered: boolean;
-  filteredCorrelationAlerts: CorrelationAlertColumns[];
+  filteredCorrelationAlerts: CorrelationAlertTableItem[];
   filteredAlerts: AlertItem[];
   detectors: { [key: string]: Detector };
   loading: boolean;
@@ -328,7 +328,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     ];
   }
 
-  getCorrelationColumns(): EuiBasicTableColumn<CorrelationAlertColumns>[] {
+  getCorrelationColumns(): EuiBasicTableColumn<CorrelationAlertTableItem>[] {
     return [
       {
         field: 'start_time',
@@ -349,7 +349,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         name: 'Correlation Rule Name',
         sortable: true,
         dataType: 'string',
-        render: (correlationRulename: string, alertItem: CorrelationAlertColumns) => (
+        render: (correlationRulename: string, alertItem: CorrelationAlertTableItem) => (
           <EuiLink onClick={() => this.setCorrelationFlyout(alertItem)}>{correlationRulename}</EuiLink>
         ),
       },
@@ -380,7 +380,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         sortable: false,
         actions: [
           {
-            render: (alertItem: CorrelationAlertColumns) => {
+            render: (alertItem: CorrelationAlertTableItem) => {
               const disableAcknowledge = alertItem.state !== ALERT_STATE.ACTIVE;
               return (
                 <EuiToolTip
@@ -399,7 +399,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
             },
           },
           {
-            render: (alertItem: CorrelationAlertColumns) => (
+            render: (alertItem: CorrelationAlertTableItem) => (
               <EuiToolTip content={'View details'}>
                 <EuiButtonIcon
                   aria-label={'View details'}
@@ -418,7 +418,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     this.setState({ flyoutData: alertItem ? { alertItem } : undefined });
   }
 
-  setCorrelationFlyout(alertItem?: CorrelationAlertColumns): void {
+  setCorrelationFlyout(alertItem?: CorrelationAlertTableItem): void {
     this.setState({ flyoutCorrelationData: alertItem ? { alertItem } : undefined });
   }
 
@@ -452,7 +452,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     });
   }
 
-  generateCorrelationVisualizationSpec(alerts: CorrelationAlertColumns[]) {
+  generateCorrelationVisualizationSpec(alerts: CorrelationAlertTableItem[]) {
     const visData = alerts.map((alert) => {
       const time = new Date(alert.start_time);
       time.setMilliseconds(0);
@@ -632,7 +632,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     this.setState({ selectedItems });
   };
 
-  onCorrelationSelectionChange = (correlatedItems: CorrelationAlertColumns[]) => {
+  onCorrelationSelectionChange = (correlatedItems: CorrelationAlertTableItem[]) => {
     this.setState({ correlatedItems });
   };
 
@@ -674,7 +674,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     this.onRefresh();
   };
 
-  onAcknowledgeCorrelationAlert = async (selectedItems: CorrelationAlertColumns[] = []) => {
+  onAcknowledgeCorrelationAlert = async (selectedItems: CorrelationAlertTableItem[] = []) => {
     const { correlationService, notifications } = this.props;
     let successCount = 0;
     try {
@@ -806,9 +806,9 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       selectableMessage: (selectable) => (selectable ? '' : DISABLE_ACKNOWLEDGED_ALERT_HELP_TEXT),
     };
 
-    const correlationSelection: EuiTableSelectionType<CorrelationAlertColumns> = {
+    const correlationSelection: EuiTableSelectionType<CorrelationAlertTableItem> = {
       onSelectionChange: this.onCorrelationSelectionChange,
-      selectable: (item: CorrelationAlertColumns) => item.state === ALERT_STATE.ACTIVE,
+      selectable: (item: CorrelationAlertTableItem) => item.state === ALERT_STATE.ACTIVE,
       selectableMessage: (selectable) => (selectable ? '' : DISABLE_ACKNOWLEDGED_ALERT_HELP_TEXT),
     };
 

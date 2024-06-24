@@ -979,11 +979,12 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
               >
                 {createForm(queries, touched, errors, props)}
               </ContentPanel>
-              <ExperimentalBanner />
+              <EuiSpacer size="l" />
               <ContentPanel
                 panelStyles={{ paddingLeft: 10, paddingRight: 10 }}
                 hideHeaderBorder
               >
+                <ExperimentalBanner />
                 <EuiTitle size="m">
                   <h2>Alert Trigger </h2>
                 </EuiTitle>
