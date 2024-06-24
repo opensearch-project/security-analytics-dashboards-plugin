@@ -1165,7 +1165,44 @@ exports[`<Alerts /> spec renders the component 1`] = `
                             <span
                               className="euiTab__content"
                             >
-                              Correlations
+                              <EuiToolTip
+                                content="This object was created using an experimental feature. It may not appear in view if the feature is discontinued."
+                                delay="regular"
+                                position="top"
+                              >
+                                <span
+                                  className="euiToolTipAnchor"
+                                  onKeyUp={[Function]}
+                                  onMouseOut={[Function]}
+                                  onMouseOver={[Function]}
+                                >
+                                  <div
+                                    onBlur={[Function]}
+                                    onFocus={[Function]}
+                                    style={
+                                      Object {
+                                        "alignItems": "center",
+                                        "display": "flex",
+                                      }
+                                    }
+                                  >
+                                    <span
+                                      style={
+                                        Object {
+                                          "marginRight": "4px",
+                                        }
+                                      }
+                                    >
+                                      Correlations
+                                    </span>
+                                    <EuiIcon
+                                      type="beaker"
+                                    >
+                                      EuiIconMock
+                                    </EuiIcon>
+                                  </div>
+                                </span>
+                              </EuiToolTip>
                             </span>
                           </button>
                         </EuiTab>
