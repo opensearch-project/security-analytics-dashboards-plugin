@@ -20,6 +20,7 @@ import {
   EuiTableSelectionType,
   EuiTabs,
   EuiTab,
+  EuiIcon,
 } from '@elastic/eui';
 import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
 import dateMath from '@elastic/datemath';
@@ -899,7 +900,12 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
                   Findings
                 </EuiTab>
                 <EuiTab onClick={() => this.setState({ tab: 'correlations' })} isSelected={this.state.tab === 'correlations'}>
-                  Correlations
+                  <EuiToolTip content="This object was created using an experimental feature. It may not appear in view if the feature is discontinued.">
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <span style={{ marginRight: '4px' }}>Correlations</span>
+                      <EuiIcon type="beaker" />
+                    </div>
+                  </EuiToolTip>
                 </EuiTab>
               </EuiTabs>
               {this.state.tab === 'findings' && (
