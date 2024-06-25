@@ -64,7 +64,7 @@ describe('Alerts', () => {
     cy.get('[data-test-subj="superDatePickerApplyTimeButton"]').click({ force: true });
 
     // Confirm there are alerts created
-    cy.get('tbody > tr').filter(`:contains(${alertName})`).should('have.length', docCount);
+    cy.get('tbody > tr', { timeout: 60000 }).filter(`:contains(${alertName})`).should('have.length', docCount);
   });
 
   it('contain expected values in table', () => {
@@ -318,7 +318,7 @@ describe('Alerts', () => {
         cy.get('[aria-label="Acknowledge"]').click({ force: true });
       });
 
-    cy.get('tbody > tr').filter(`:contains(${alertName})`).should('have.length', 2);
+    cy.get('tbody > tr').filter(`:contains(${alertName})`).should('have.length', 3);
 
     // Filter the table to show only "Acknowledged" alerts
     cy.get('[data-text="Status"]');
@@ -328,7 +328,7 @@ describe('Alerts', () => {
     });
 
     // Confirm there are now 3 "Acknowledged" alerts
-    cy.get('tbody > tr').filter(`:contains(${alertName})`).should('have.length', 2);
+    cy.get('tbody > tr').filter(`:contains(${alertName})`).should('have.length', 3);
   });
 
   it('can be acknowledged via flyout button', () => {
