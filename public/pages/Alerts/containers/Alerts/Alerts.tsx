@@ -95,7 +95,7 @@ export interface AlertsState {
   dateFormat: string;
   widgetEmptyMessage: React.ReactNode | undefined;
   widgetEmptyCorrelationMessage: React.ReactNode | undefined;
-  tab: string;
+  tab: 'detector findings' | 'correlations'; // Union type for tab
 }
 
 const groupByOptions = [
@@ -106,7 +106,6 @@ const groupByOptions = [
 export class Alerts extends Component<AlertsProps, AlertsState> {
   static contextType = CoreServicesContext;
   private abortControllers: AbortController[] = [];
-
 
   constructor(props: AlertsProps) {
     super(props);
@@ -134,7 +133,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       dateFormat: timeUnits.dateFormat,
       widgetEmptyMessage: undefined,
       widgetEmptyCorrelationMessage: undefined,
-      tab: 'findings'
+      tab: 'detector findings'
     };
   }
 
@@ -232,7 +231,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
   };
 
   private renderVisAsPerTab() {
-    if (this.state.tab === "findings") {
+    if (this.state.tab === "detector findings") {
       renderVisualization(this.generateVisualizationSpec(this.state.filteredAlerts), 'alerts-view');
     } else {
       renderVisualization(this.generateCorrelationVisualizationSpec(this.state.filteredCorrelationAlerts), 'alerts-view');
@@ -240,7 +239,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
   }
 
   private getAlertsAsPerTab() {
-    if (this.state.tab === "findings") {
+    if (this.state.tab === "detector findings") {
       this.abortPendingGetAlerts();
       const abortController = new AbortController();
       this.abortControllers.push(abortController);
@@ -838,7 +837,6 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
             alertItem={flyoutCorrelationData.alertItem}
             onClose={this.onCorrelationFlyoutClose}
             onAcknowledge={this.onAcknowledgeCorrelationAlert}
-            indexPatternService={this.props.indexPatternService}
           />
         )}
         <EuiFlexGroup direction="column">
@@ -891,12 +889,12 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
           </EuiFlexItem>
           <EuiFlexItem>
             <ContentPanel title={'Alerts'} actions={[
-              this.state.tab === 'findings'
+              this.state.tab === 'detector findings'
                 ? this.createAcknowledgeControl()
                 : this.createAcknowledgeControlForCorrelations()
             ]}>
               <EuiTabs>
-                <EuiTab onClick={() => this.setState({ tab: 'findings' })} isSelected={this.state.tab === 'findings'}>
+                <EuiTab onClick={() => this.setState({ tab: 'detector findings' })} isSelected={this.state.tab === 'detector findings'}>
                   Findings
                 </EuiTab>
                 <EuiTab onClick={() => this.setState({ tab: 'correlations' })} isSelected={this.state.tab === 'correlations'}>
@@ -908,7 +906,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
                   </EuiToolTip>
                 </EuiTab>
               </EuiTabs>
-              {this.state.tab === 'findings' && (
+              {this.state.tab === 'detector findings' && (
                 // Content for the "Findings" tab
                 <EuiInMemoryTable
                   columns={this.getColumns()}

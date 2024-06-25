@@ -40,25 +40,22 @@ import {
   CorrelationRuleAction,
   CorrelationRuleModel,
   CorrelationRuleQuery,
-  CorrelationRuleTrigger,
   DataSourceProps,
 } from '../../../../types';
 import { BREADCRUMBS, NOTIFICATIONS_HREF, OS_NOTIFICATION_PLUGIN, ROUTES } from '../../../utils/constants';
 import { CoreServicesContext } from '../../../components/core_services';
 import { RouteComponentProps, useParams } from 'react-router-dom';
 import { validateName } from '../../../utils/validation';
-import { FieldMappingService, IndexService } from '../../../services';
+import { FieldMappingService, IndexService, OpenSearchService, NotificationsService } from '../../../services';
 import { errorNotificationToast, getDataSources, getLogTypeOptions, getPlugins } from '../../../utils/helpers';
 import { severityOptions } from '../../../pages/Alerts/utils/constants';
 import _ from 'lodash';
 import { NotificationChannelOption, NotificationChannelTypeOptions } from '../../CreateDetector/components/ConfigureAlerts/models/interfaces';
 import { getEmptyAlertCondition, getNotificationChannels, parseAlertSeverityToOption, parseNotificationChannelsToOptions } from '../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { NotificationsCallOut } from '../../../../public/components/NotificationsCallOut';
-import { BrowserServices } from '../../../../public/models/interfaces';
 import { ExperimentalBanner } from '../components/ExperimentalBanner';
 import { ALERT_SEVERITY_OPTIONS } from '../../CreateDetector/components/ConfigureAlerts/utils/constants';
 import uuid from 'uuid';
-import { randomUUID } from 'crypto';
 
 export interface CreateCorrelationRuleProps extends DataSourceProps {
   indexService: IndexService;
@@ -69,7 +66,8 @@ export interface CreateCorrelationRuleProps extends DataSourceProps {
     { rule: CorrelationRuleModel; isReadOnly: boolean }
   >['history'];
   notifications: NotificationsStart | null;
-  services: BrowserServices;
+  notificationsService: NotificationsService
+  opensearchService: OpenSearchService
 }
 
 export interface CorrelationOption {
@@ -199,14 +197,13 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
 
   useEffect(() => {
     const setInitalNotificationValues = async () => {
-      const { services } = props;
-      const plugins = await getPlugins(services.opensearchService);
+      const plugins = await getPlugins(props.opensearchService);
       if (plugins) {
         setHasNotificationPlugin(plugins.includes(OS_NOTIFICATION_PLUGIN));
       }
     };
     const setNotificationChannelValues = async () => {
-      const channels = await getNotificationChannels(props.services.notificationsService);
+      const channels = await getNotificationChannels(props.notificationsService);
       const parsedChannels = parseNotificationChannelsToOptions(channels);
       setNotificationChannels(parsedChannels);
       setLoadingNotifications(false);

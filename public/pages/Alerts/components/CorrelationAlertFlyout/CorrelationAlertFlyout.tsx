@@ -28,7 +28,6 @@ import {
     formatRuleType,
     renderTime,
   } from '../../../../utils/helpers';
-  import { IndexPatternsService, OpenSearchService, DetectorsService } from '../../../../services';
   import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
   import { NotificationsStart } from 'opensearch-dashboards/public';
   import { DataStore } from '../../../../store/DataStore';

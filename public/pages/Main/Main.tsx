@@ -650,7 +650,8 @@ export default class Main extends Component<MainProps, MainState> {
                                           fieldMappingService={services?.fieldMappingService}
                                           notifications={core?.notifications}
                                           dataSource={selectedDataSource}
-                                          services={services}
+                                          notificationsService={services?.notificationsService}
+                                          opensearchService={services?.opensearchService}
                                         />
                                       )}
                                     />
@@ -663,7 +664,8 @@ export default class Main extends Component<MainProps, MainState> {
                                           fieldMappingService={services?.fieldMappingService}
                                           notifications={core?.notifications}
                                           dataSource={selectedDataSource}
-                                          services={services}
+                                          notificationsService={services?.notificationsService}
+                                          opensearchService={services?.opensearchService}
                                         />
                                       )}
                                     />
