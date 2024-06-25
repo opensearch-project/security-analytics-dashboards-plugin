@@ -64,7 +64,7 @@ describe('Alerts', () => {
     cy.get('[data-test-subj="superDatePickerApplyTimeButton"]').click({ force: true });
 
     // Confirm there are alerts created
-    cy.get('tbody > tr', { timeout: 60000 }).filter(`:contains(${alertName})`).should('have.length', docCount);
+    cy.get('tbody > tr').filter(`:contains(${alertName})`).should('have.length', docCount);
   });
 
   it('contain expected values in table', () => {
