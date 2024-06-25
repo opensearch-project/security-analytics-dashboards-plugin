@@ -4,6 +4,7 @@
  */
 
 import {
+  EuiBadge,
     EuiBasicTable,
     EuiBasicTableColumn,
     EuiButton,
@@ -31,7 +32,7 @@ import {
   import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
   import { NotificationsStart } from 'opensearch-dashboards/public';
   import { DataStore } from '../../../../store/DataStore';
-  import { CorrelationAlertTableItem, Finding } from '../../../../../types';
+  import { CorrelationAlertTableItem, Finding, Query } from '../../../../../types';
   
   export interface CorrelationAlertFlyoutProps {
     alertItem: CorrelationAlertTableItem;
@@ -165,15 +166,21 @@ import {
         {
           field: 'detectionType',
           name: 'Detection type',
-          render: (detectionType: string, finding: any) => detectionType || DEFAULT_EMPTY_DATA,
+          render: (detectionType: string) => detectionType || DEFAULT_EMPTY_DATA,
         },
         {
           field: 'queries',
           name: 'Log type',
           sortable: true,
           dataType: 'string',
-          render: (finding: any) => {
-            return formatRuleType(finding[0]?.tags[1]); // Pass category from rule as string, default to empty string if rule is undefined
+          render: (queries: Query[], item: any) => {
+            const key = item.id;
+            const tag = queries[0]?.tags[1];
+            return (
+              <EuiBadge key={key}>
+                {tag ? formatRuleType(tag) : ''}
+              </EuiBadge>
+            );
           },
         },
       ];
