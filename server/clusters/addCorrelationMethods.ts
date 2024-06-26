@@ -89,4 +89,20 @@ export function addCorrelationMethods(securityAnalytics: any, createAction: any)
     needBody: false,
     method: 'GET',
   });
+
+  securityAnalytics[METHOD_NAMES.GET_CORRELATION_ALERTS] = createAction({
+    url: {
+      fmt: `${API.GET_CORRELATION_ALERTS}`,
+    },
+    needBody: false,
+    method: 'GET',
+  });
+
+  securityAnalytics[METHOD_NAMES.ACK_CORRELATION_ALERTS] = createAction({
+    url: {
+      fmt: `${API.ACK_CORRELATION_ALERTS}`,
+    },
+    needBody: true,
+    method: 'POST',
+  });
 }

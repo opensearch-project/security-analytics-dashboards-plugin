@@ -87,4 +87,25 @@ export function setupCorrelationRoutes(services: NodeServices, router: IRouter) 
     },
     correlationService.deleteCorrelationRule
   );
+
+  router.get(
+    {
+      path: `${API.GET_CORRELATION_ALERTS}`,
+      validate: {
+        query: createQueryValidationSchema(),
+      },
+    },
+    correlationService.getAllCorrelationAlerts
+  );
+
+  router.post(
+    {
+      path: `${API.ACK_CORRELATION_ALERTS}`,
+      validate: {
+        body: schema.any(),
+        query: createQueryValidationSchema(),
+      },
+    },
+    correlationService.acknowledgeCorrelationAlerts
+  );
 }
