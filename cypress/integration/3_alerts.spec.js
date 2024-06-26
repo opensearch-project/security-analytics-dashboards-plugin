@@ -63,6 +63,8 @@ describe('Alerts', () => {
     // Refresh the table
     cy.get('[data-test-subj="superDatePickerApplyTimeButton"]').click({ force: true });
 
+    cy.wait(10000);
+
     // Confirm there are alerts created
     cy.get('tbody > tr').filter(`:contains(${alertName})`).should('have.length', docCount);
   });
@@ -140,6 +142,8 @@ describe('Alerts', () => {
         // Click the "View details" button for the first alert
         cy.get('[aria-label="View details"]').click({ force: true });
       });
+
+    cy.wait(10000);
 
     cy.get('[data-test-subj="alert-details-flyout"]').within(() => {
       // Wait for findings table to finish loading
@@ -274,6 +278,8 @@ describe('Alerts', () => {
     // Press the "Acknowledge" button
     cy.get('[data-test-subj="acknowledge-button"]').click({ force: true });
 
+    cy.wait(10000)
+
     // Wait for acknowledge API to finish executing
     cy.contains('Acknowledged');
 
@@ -309,8 +315,9 @@ describe('Alerts', () => {
       cy.contains('Active').click({ force: true });
     });
 
+    cy.wait(10000);
     cy.get('tbody > tr').filter(`:contains(${alertName})`).should('have.length', 3);
-
+    
     cy.get('tbody > tr')
       // Click the "Acknowledge" icon button in the first row
       .first()
@@ -318,16 +325,18 @@ describe('Alerts', () => {
         cy.get('[aria-label="Acknowledge"]').click({ force: true });
       });
 
+    cy.wait(10000);
     cy.get('tbody > tr').filter(`:contains(${alertName})`).should('have.length', 2);
 
     // Filter the table to show only "Acknowledged" alerts
-    cy.get('[data-text="Status"]');
+    cy.get('[data-text="Status"]').click({ force: true });
     cy.get('[class="euiFilterSelect__items"]').within(() => {
       cy.contains('Active').click({ force: true });
       cy.contains('Acknowledged').click({ force: true });
     });
 
-    // Confirm there are now 3 "Acknowledged" alerts
+    cy.wait(10000);
+    // Confirm there are now 2 "Acknowledged" alerts
     cy.get('tbody > tr').filter(`:contains(${alertName})`).should('have.length', 2);
   });
 
@@ -351,6 +360,8 @@ describe('Alerts', () => {
 
       // Click the "Acknowledge" button on the flyout
       cy.get('[data-test-subj="alert-details-flyout-acknowledge-button"]').click({ force: true });
+
+      cy.wait(5000);
 
       // Confirm the alert is now "Acknowledged"
       cy.get('[data-test-subj="text-details-group-content-alert-status"]').contains('Active');

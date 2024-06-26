@@ -21,6 +21,67 @@ import {
 import { MDSEnabledClientService } from './MDSEnabledClientService';
 
 export default class CorrelationService extends MDSEnabledClientService {
+
+  acknowledgeCorrelationAlerts = async (
+    context: RequestHandlerContext,
+    request: OpenSearchDashboardsRequest,
+    response: OpenSearchDashboardsResponseFactory
+  ) => {
+    try {
+      const params: any = { body: request.body };
+      const client = this.getClient(request, context);
+      const ackCorrelationAlertsResp = await client(
+        CLIENT_CORRELATION_METHODS.ACK_CORRELATION_ALERTS,
+        params
+      );
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: true,
+          response: ackCorrelationAlertsResp,
+        },
+      });
+    } catch (error: any) {
+      console.error('Security Analytics - CorrelationService - ackCorrelationAlertsResp:', error);
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: false,
+          error: error.message,
+        },
+      });
+    }
+  };
+
+  getAllCorrelationAlerts = async (
+    context: RequestHandlerContext,
+    request: OpenSearchDashboardsRequest,
+    response: OpenSearchDashboardsResponseFactory
+  ) => {
+    try {
+      const client = this.getClient(request, context);
+      const getCorrelationAlertsResp = await client(
+        CLIENT_CORRELATION_METHODS.GET_CORRELATION_ALERTS,
+      );
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: true,
+          response: getCorrelationAlertsResp,
+        },
+      });
+    } catch (error: any) {
+      console.error('Security Analytics - CorrelationService - getCorrelationAlerts:', error);
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: false,
+          error: error.message,
+        },
+      });
+    }
+  };
+
   createCorrelationRule = async (
     context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
