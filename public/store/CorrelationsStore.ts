@@ -268,9 +268,9 @@ export class CorrelationsStore implements ICorrelationsStore {
           timestamp: new Date(f.timestamp).toLocaleString(),
           detectionRule: rule
             ? {
-              name: rule._source.title,
-              severity: rule._source.level,
-              tags: rule._source.tags,
+                name: rule._source.title,
+                severity: rule._source.level,
+                tags: rule._source.tags,
             }
             : { name: DEFAULT_EMPTY_DATA, severity: DEFAULT_EMPTY_DATA },
         };
@@ -342,17 +342,17 @@ export class CorrelationsStore implements ICorrelationsStore {
 
   public async acknowledgeCorrelationAlerts(
     alertIds: string[]
-    ): Promise<AckCorrelationAlertsResponse> {
-      const response = await this.service.acknowledgeCorrelationAlerts(alertIds);
-      if (response?.ok) {
-        return {
-          acknowledged: response.response.acknowledged,
-          failed: response.response.failed,
-        };
-      } else {
-        throw new Error('Failed to acknowledge correlated alerts');
-      }
+  ): Promise<AckCorrelationAlertsResponse> {
+    const response = await this.service.acknowledgeCorrelationAlerts(alertIds);
+    if (response?.ok) {
+      return {
+        acknowledged: response.response.acknowledged,
+        failed: response.response.failed,
+      };
+    } else {
+      throw new Error('Failed to acknowledge correlated alerts');
     }
+  }
 
   private parseRuleQueryString(queryString: string): CorrelationFieldCondition[] {
     const queries: CorrelationFieldCondition[] = [];
