@@ -7,11 +7,12 @@ import { BrowserServices } from '../../../models/interfaces';
 import { RuleSource } from '../../../../server/models/interfaces';
 import { DEFAULT_DATE_RANGE, DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { errorNotificationToast, isThreatIntelQuery } from '../../../utils/helpers';
+import { errorNotificationToast, getDuration, isThreatIntelQuery } from '../../../utils/helpers';
 import dateMath from '@elastic/datemath';
 import moment from 'moment';
 import { DataStore } from '../../../store/DataStore';
 import {
+  DetectorHit,
   Finding,
   OverviewAlertItem,
   OverviewFindingItem,
@@ -25,7 +26,8 @@ export class OverviewViewModelActor {
     findings: [],
     alerts: [],
   };
-  private refreshHandlers: OverviewViewModelRefreshHandler[] = [];
+  private partialUpdateHandlers: OverviewViewModelRefreshHandler[] = [];
+  private fullUpdateHandlers: OverviewViewModelRefreshHandler[] = [];
   private refreshState: 'InProgress' | 'Complete' = 'Complete';
 
   constructor(
@@ -62,21 +64,31 @@ export class OverviewViewModelActor {
     }
   }
 
-  private async updateFindings() {
-    const detectorInfo = new Map<string, { logType: string; name: string }>();
-    this.overviewViewModel.detectors.forEach((detector) => {
-      detectorInfo.set(detector._id, {
-        logType: detector._source.detector_type,
-        name: detector._source.name,
+  private async updateFindings(signal: AbortSignal) {
+    const detectorInfo = new Map<string, { logType: string; name: string, detectorHit: DetectorHit }>();
+    this.overviewViewModel.detectors.forEach((detectorHit) => {
+      detectorInfo.set(detectorHit._id, {
+        logType: detectorHit._source.detector_type,
+        name: detectorHit._source.name,
+        detectorHit
       });
     });
     const detectorIds = detectorInfo.keys();
     let findingItems: OverviewFindingItem[] = [];
     const ruleIds = new Set<string>();
+    const duration = getDuration({
+      startTime: this.startTime,
+      endTime: this.endTime
+    })
 
     try {
       for (let id of detectorIds) {
-        let detectorFindings: Finding[] = await DataStore.findings.getFindingsPerDetector(id);
+        let detectorFindings: Finding[] = await DataStore.findings.getFindingsPerDetector(
+          id,
+          detectorInfo.get(id)!.detectorHit,
+          signal,
+          duration
+        );
         const logType = detectorInfo.get(id)?.logType;
         const detectorName = detectorInfo.get(id)?.name || '';
         const detectorFindingItems: OverviewFindingItem[] = detectorFindings.map((finding) => {
@@ -123,15 +135,21 @@ export class OverviewViewModelActor {
     this.overviewViewModel.findings = this.filterChartDataByTime(findingItems);
   }
 
-  private async updateAlerts() {
+  private async updateAlerts(signal: AbortSignal) {
     let alertItems: OverviewAlertItem[] = [];
+    const duration = getDuration({
+      startTime: this.startTime,
+      endTime: this.endTime
+    })
 
     try {
       for (let detector of this.overviewViewModel.detectors) {
         const id = detector._id;
         const detectorAlerts = await DataStore.alerts.getAlertsByDetector(
           id,
-          detector._source.name
+          detector._source.name,
+          signal,
+          duration
         );
         const detectorAlertItems: OverviewAlertItem[] = detectorAlerts.map((alert) => ({
           id: alert.id,
@@ -154,14 +172,14 @@ export class OverviewViewModelActor {
     return this.overviewViewModel;
   }
 
-  public registerRefreshHandler(handler: OverviewViewModelRefreshHandler) {
-    this.refreshHandlers.push(handler);
+  public registerRefreshHandler(handler: OverviewViewModelRefreshHandler, allowPartialResults: boolean) {
+    allowPartialResults ? this.partialUpdateHandlers.push(handler) : this.fullUpdateHandlers.push(handler);
   }
 
   startTime = DEFAULT_DATE_RANGE.start;
   endTime = DEFAULT_DATE_RANGE.end;
 
-  public async onRefresh(startTime: string, endTime: string) {
+  public async onRefresh(startTime: string, endTime: string, signal: AbortSignal) {
     this.startTime = startTime;
     this.endTime = endTime;
 
@@ -170,14 +188,23 @@ export class OverviewViewModelActor {
     }
 
     this.refreshState = 'InProgress';
-    await this.updateDetectors();
-    await this.updateFindings();
-    await this.updateAlerts();
 
-    this.refreshHandlers.forEach((handler) => {
-      handler(this.overviewViewModel);
-    });
+    await this.runSteps([
+      async () => {
+        await this.updateDetectors();
+        this.updateResults(this.partialUpdateHandlers, false);
+      },
+      async () => {
+        await this.updateFindings(signal);
+        this.updateResults(this.partialUpdateHandlers, false);
+      },
+      async (signal: AbortSignal) => {
+        await this.updateAlerts(signal);
+        this.updateResults(this.partialUpdateHandlers, false);
+      }
+    ], signal);
 
+    this.updateResults(this.fullUpdateHandlers, true);
     this.refreshState = 'Complete';
   }
 
@@ -188,4 +215,24 @@ export class OverviewViewModelActor {
       return moment(dataItem.time).isBetween(moment(startMoment), moment(endMoment));
     });
   };
+
+  private updateResults(handlers: OverviewViewModelRefreshHandler[], modelLoadingComplete: boolean) {
+    handlers.forEach((handler) => {
+      handler(this.overviewViewModel, modelLoadingComplete);
+    });
+  }
+
+  private async runSteps(steps: Array<(signal: AbortSignal) => Promise<any>>, signal: AbortSignal) {
+    for (let step of steps) {
+      if (signal.aborted) {
+        break;
+      }
+      
+      await step(signal);
+
+      if (signal.aborted) {
+        break;
+      }
+    }
+  }
 }

@@ -21,7 +21,7 @@ export interface OverviewViewModel {
   alerts: OverviewAlertItem[];
 }
 
-export type OverviewViewModelRefreshHandler = (overviewState: OverviewViewModel) => void;
+export type OverviewViewModelRefreshHandler = (overviewState: OverviewViewModel, modelUpdateComplete: boolean) => void;
 
 export interface OverviewProps extends RouteComponentProps, DataSourceProps {
   getStartedDismissedOnce: boolean;

@@ -7,6 +7,7 @@ import {
   CorrelationGraphData,
   DataSourceProps,
   DateTimeFilter,
+  FindingItemType,
 } from '../../../../types';
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
@@ -50,12 +51,13 @@ import {
 import { CorrelationGraph } from '../components/CorrelationGraph';
 import { FindingCard } from '../components/FindingCard';
 import { DataStore } from '../../../store/DataStore';
-import { FindingItemType } from '../../Findings/containers/Findings/Findings';
 import datemath from '@elastic/datemath';
 import { ruleSeverity } from '../../Rules/utils/constants';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Network } from 'react-graph-vis';
 import { getLogTypeLabel } from '../../LogTypes/utils/helpers';
+import { NotificationsStart } from 'opensearch-dashboards/public';
+import { errorNotificationToast } from '../../../utils/helpers';
 
 interface CorrelationsProps
   extends RouteComponentProps<
@@ -67,6 +69,7 @@ interface CorrelationsProps
   setDateTimeFilter?: Function;
   dateTimeFilter?: DateTimeFilter;
   onMount: () => void;
+  notifications: NotificationsStart | null;
 }
 
 interface SpecificFindingCorrelations {
@@ -237,8 +240,13 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     if (node) {
       detectorType = node.saLogType;
     } else {
-      const allFindings = await DataStore.correlations.fetchAllFindings();
-      detectorType = allFindings[findingId].logType;
+      const finding = (await DataStore.findings.getFindingsByIds([findingId]))[0];
+      detectorType = finding?.detectionType;
+    }
+
+    if (!detectorType) {
+      errorNotificationToast(this.props.notifications, 'show', 'correlated findings');
+      return;
     }
 
     const correlatedFindingsInfo = await DataStore.correlations.getCorrelatedFindings(

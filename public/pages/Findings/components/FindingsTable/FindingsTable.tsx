@@ -30,14 +30,13 @@ import {
   IndexPatternsService,
   CorrelationService,
 } from '../../../../services';
-import { Finding } from '../../models/interfaces';
 import CreateAlertFlyout from '../CreateAlertFlyout';
 import { NotificationChannelTypeOptions } from '../../../CreateDetector/components/ConfigureAlerts/models/interfaces';
-import { FindingItemType } from '../../containers/Findings/Findings';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { RuleSource } from '../../../../../server/models/interfaces';
 import { DataStore } from '../../../../store/DataStore';
 import { getSeverityColor } from '../../../Correlations/utils/constants';
+import { Finding, FindingItemType } from '../../../../../types';
 
 interface FindingsTableProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -177,13 +176,13 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         name: 'Finding ID',
         sortable: true,
         dataType: 'string',
-        render: (id, finding) =>
+        render: (id: string, finding) =>
           (
             <EuiLink
               onClick={() => DataStore.findings.openFlyout(finding, this.state.filteredFindings)}
               data-test-subj={'finding-details-flyout-button'}
             >
-              {`${(id as string).slice(0, 7)}...`}
+              {id.length > 7 ? `${id.slice(0, 7)}...` : id}
             </EuiLink>
           ) || DEFAULT_EMPTY_DATA,
       },
