@@ -14,11 +14,37 @@ import {
   SearchCorrelationRulesResponse,
   ICorrelationsService,
   UpdateCorrelationRuleResponse,
+  GetCorrelationAlertsResponse,
+  AckCorrelationAlertsResponse
 } from '../../types';
 import { dataSourceInfo } from './utils/constants';
 
 export default class CorrelationService implements ICorrelationsService {
   constructor(private httpClient: HttpSetup) {}
+
+  acknowledgeCorrelationAlerts = async (
+    body: any
+    ): Promise<ServerResponse<AckCorrelationAlertsResponse>> => {
+      const url = `..${API.ACK_CORRELATION_ALERTS}`;
+  
+      return (await this.httpClient.post(url, {
+        body: JSON.stringify({alertIds: body}),
+        query: {
+          dataSourceId: dataSourceInfo.activeDataSource.id,
+        },
+      })) as ServerResponse<AckCorrelationAlertsResponse>;
+    };
+
+  getCorrelationAlerts = async (
+  ): Promise<ServerResponse<GetCorrelationAlertsResponse>> => {
+    const url = `..${API.GET_CORRELATION_ALERTS}`;
+
+    return (await this.httpClient.get(url, {
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+      },
+    })) as ServerResponse<GetCorrelationAlertsResponse>;
+  };
 
   getCorrelatedFindings = async (
     finding: string,
