@@ -32,7 +32,11 @@ export class DetectorSchedule extends React.Component<
           <h3>Detector schedule</h3>
         </EuiTitle>
         <EuiSpacer />
-        <Interval {...this.props} label={<FormFieldHeader headerTitle={'Runs every'} />} />
+        <Interval
+          schedule={this.props.detector.schedule}
+          label={<FormFieldHeader headerTitle={'Runs every'} />}
+          onScheduleChange={this.props.onDetectorScheduleChange}
+        />
       </>
     );
   }

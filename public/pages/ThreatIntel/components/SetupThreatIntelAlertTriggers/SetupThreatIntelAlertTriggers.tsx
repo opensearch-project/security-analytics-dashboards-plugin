@@ -11,17 +11,25 @@ import {
   parseNotificationChannelsToOptions,
 } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { NotificationsService } from '../../../../services';
-import { EuiPanel, EuiSpacer, EuiTitle } from '@elastic/eui';
+import { EuiButton, EuiPanel, EuiSpacer, EuiTitle } from '@elastic/eui';
+import { ThreatIntelIocType } from '../../../../../common/constants';
+import { getEmptyThreatIntelAlertTrigger } from '../../utils/helpers';
 
 export interface SetupThreatIntelAlertTriggersProps {
   alertTriggers: ThreatIntelAlertTrigger[];
   notificationsService: NotificationsService;
+  enabledIocTypes: ThreatIntelIocType[];
+  logSources: string[];
+  getNextTriggerName: () => string;
   updateTriggers: (alertTriggers: ThreatIntelAlertTrigger[]) => void;
 }
 
 export const SetupThreatIntelAlertTriggers: React.FC<SetupThreatIntelAlertTriggersProps> = ({
   alertTriggers,
+  enabledIocTypes,
+  logSources,
   notificationsService,
+  getNextTriggerName,
   updateTriggers,
 }) => {
   const [loadingNotificationChannels, setLoadingNotificationChannels] = useState(false);
@@ -42,7 +50,8 @@ export const SetupThreatIntelAlertTriggers: React.FC<SetupThreatIntelAlertTrigge
   }, [notificationsService]);
 
   const onDeleteTrigger = (triggerIdx: number) => {
-    const newTriggers = [...alertTriggers].splice(triggerIdx, 1);
+    const newTriggers = [...alertTriggers];
+    newTriggers.splice(triggerIdx, 1);
     updateTriggers(newTriggers);
   };
 
@@ -67,6 +76,8 @@ export const SetupThreatIntelAlertTriggers: React.FC<SetupThreatIntelAlertTrigge
           <ThreatIntelAlertTriggerForm
             allNotificationChannels={notificationChannels}
             loadingNotifications={loadingNotificationChannels}
+            enabledIocTypes={enabledIocTypes}
+            logSources={logSources}
             onDeleteTrgger={() => onDeleteTrigger(idx)}
             refreshNotificationChannels={updateNotificationChannels}
             trigger={trigger}
@@ -74,6 +85,14 @@ export const SetupThreatIntelAlertTriggers: React.FC<SetupThreatIntelAlertTrigge
           />
         );
       })}
+      <EuiSpacer />
+      <EuiButton
+        onClick={() => {
+          updateTriggers([...alertTriggers, getEmptyThreatIntelAlertTrigger(getNextTriggerName())]);
+        }}
+      >
+        Add another alert trigger
+      </EuiButton>
     </EuiPanel>
   );
 };

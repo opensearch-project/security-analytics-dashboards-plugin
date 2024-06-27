@@ -15,11 +15,17 @@ import {
 import { NotificationChannelTypeOptions, ThreatIntelAlertTrigger } from '../../../../../types';
 import React from 'react';
 import { NotificationForm } from '../../../../components/Notifications/NotificationForm';
+import { ThreatIntelIocType } from '../../../../../common/constants';
+import { ALERT_SEVERITY_OPTIONS } from '../../../CreateDetector/components/ConfigureAlerts/utils/constants';
+import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
+import { AlertSeverity } from '../../../Alerts/utils/constants';
 
 export interface ThreatIntelAlertTriggerProps {
   allNotificationChannels: NotificationChannelTypeOptions[];
   loadingNotifications: boolean;
   trigger: ThreatIntelAlertTrigger;
+  enabledIocTypes: ThreatIntelIocType[];
+  logSources: string[];
   onDeleteTrgger: () => void;
   refreshNotificationChannels: () => void;
   updateTrigger: (trigger: ThreatIntelAlertTrigger) => void;
@@ -29,6 +35,8 @@ export const ThreatIntelAlertTriggerForm: React.FC<ThreatIntelAlertTriggerProps>
   allNotificationChannels,
   loadingNotifications,
   trigger,
+  enabledIocTypes,
+  logSources,
   onDeleteTrgger,
   refreshNotificationChannels,
   updateTrigger,
@@ -82,7 +90,16 @@ export const ThreatIntelAlertTriggerForm: React.FC<ThreatIntelAlertTriggerProps>
       paddingSize="l"
     >
       <EuiFormRow>
-        <EuiFieldText placeholder="Trigger name" />
+        <EuiFieldText
+          placeholder="Trigger name"
+          value={trigger.name}
+          onChange={(event) => {
+            updateTrigger({
+              ...trigger,
+              name: event.target.value,
+            });
+          }}
+        />
       </EuiFormRow>
       <EuiSpacer />
       <EuiAccordion
@@ -92,13 +109,50 @@ export const ThreatIntelAlertTriggerForm: React.FC<ThreatIntelAlertTriggerProps>
         paddingSize="l"
       >
         <EuiFormRow label="Indicator type(s)">
-          <EuiComboBox />
+          <EuiComboBox
+            placeholder="Any"
+            options={enabledIocTypes.map((ioc) => ({ label: ioc }))}
+            selectedOptions={trigger.ioc_types.map((iocType) => ({ label: iocType }))}
+            onChange={(options) => {
+              updateTrigger({
+                ...trigger,
+                ioc_types: options.map(({ label }) => label),
+              });
+            }}
+          />
         </EuiFormRow>
         <EuiSpacer />
         <EuiFormRow label="Log source(s)">
-          <EuiComboBox />
+          <EuiComboBox
+            placeholder="Any"
+            options={logSources.map((logSource) => ({ label: logSource }))}
+            selectedOptions={trigger.data_sources.map((source) => ({ label: source }))}
+            onChange={(options) => {
+              updateTrigger({
+                ...trigger,
+                data_sources: options.map(({ label }) => label),
+              });
+            }}
+          />
         </EuiFormRow>
       </EuiAccordion>
+      <EuiSpacer />
+      <EuiFormRow label="Alert severity">
+        <EuiComboBox
+          singleSelection
+          options={Object.values(ALERT_SEVERITY_OPTIONS)}
+          selectedOptions={[
+            parseAlertSeverityToOption(trigger.severity) ?? ALERT_SEVERITY_OPTIONS.HIGHEST,
+          ]}
+          onChange={(options) => {
+            updateTrigger({
+              ...trigger,
+              severity: (options[0]?.value ||
+                ALERT_SEVERITY_OPTIONS.HIGHEST.value) as AlertSeverity,
+            });
+          }}
+        />
+      </EuiFormRow>
       <EuiSpacer />
       <NotificationForm
         action={trigger.action}

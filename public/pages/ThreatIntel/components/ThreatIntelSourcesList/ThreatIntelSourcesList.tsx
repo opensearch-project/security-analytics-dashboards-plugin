@@ -9,6 +9,7 @@ import {
   EuiButton,
   EuiButtonEmpty,
   EuiCard,
+  EuiEmptyPrompt,
   EuiFlexGroup,
   EuiFlexItem,
   EuiIcon,
@@ -19,6 +20,7 @@ import {
 import { ROUTES } from '../../../../utils/constants';
 import { ThreatIntelSourceItem } from '../../../../../types';
 import { RouteComponentProps } from 'react-router-dom';
+import { IocLabel } from '../../../../../common/constants';
 
 export interface ThreatIntelSourcesListProps {
   threatIntelSources: ThreatIntelSourceItem[];
@@ -38,33 +40,36 @@ export const ThreatIntelSourcesList: React.FC<ThreatIntelSourcesListProps> = ({
             <h4>Threat intelligence sources ({threatIntelSources.length})</h4>
           </EuiTitle>
         </EuiFlexItem>
-        <EuiFlexItem grow={false}>
-          <EuiButton
-            onClick={() => {
-              history.push({
-                pathname: ROUTES.THREAT_INTEL_ADD_CUSTOM_SOURCE,
-              });
-            }}
-          >
-            Add threat intel source
-          </EuiButton>
-        </EuiFlexItem>
+        {threatIntelSources.length > 0 && (
+          <EuiFlexItem grow={false}>
+            <EuiButton
+              onClick={() => {
+                history.push({
+                  pathname: ROUTES.THREAT_INTEL_ADD_CUSTOM_SOURCE,
+                });
+              }}
+            >
+              Add threat intel source
+            </EuiButton>
+          </EuiFlexItem>
+        )}
       </EuiFlexGroup>
       <EuiSpacer />
       <EuiFlexGroup>
-        {threatIntelSources.map((source) => {
+        {threatIntelSources.map((source, idx) => {
           return (
-            <EuiFlexItem style={{ maxWidth: 350 }}>
+            <EuiFlexItem key={idx} style={{ maxWidth: 350 }}>
               <EuiCard
                 // icon={source.icon}
-                title={source.feedName}
+                title={source.name}
                 description={source.description}
                 footer={
                   <>
                     <EuiButtonEmpty
                       onClick={() => {
                         history.push({
-                          pathname: `${ROUTES.THREAT_INTEL_SOURCE_DETAILS}/hello`,
+                          pathname: `${ROUTES.THREAT_INTEL_SOURCE_DETAILS}/${source.id}`,
+                          state: { source },
                         });
                       }}
                       iconType={'iInCircle'}
@@ -72,11 +77,11 @@ export const ThreatIntelSourcesList: React.FC<ThreatIntelSourcesListProps> = ({
                       More details
                     </EuiButtonEmpty>
                     <EuiSpacer size="m" />
-                    {source.isEnabled ? (
+                    {source.enabled ? (
                       <>
                         <EuiIcon
                           type={'dot'}
-                          color={source.isEnabled ? 'success' : 'text'}
+                          color={source.enabled ? 'success' : 'text'}
                           style={{ marginBottom: 4 }}
                         />{' '}
                         Active
@@ -87,14 +92,31 @@ export const ThreatIntelSourcesList: React.FC<ThreatIntelSourcesListProps> = ({
                   </>
                 }
               >
-                {source.iocTypes.map((iocType) => (
-                  <EuiBadge>{iocType}</EuiBadge>
+                {source.ioc_types.map((iocType) => (
+                  <EuiBadge key={iocType}>{IocLabel[iocType]}</EuiBadge>
                 ))}
               </EuiCard>
             </EuiFlexItem>
           );
         })}
       </EuiFlexGroup>
+      {threatIntelSources.length === 0 && (
+        <EuiEmptyPrompt
+          title={<h3>No threat intel source present</h3>}
+          actions={[
+            <EuiButton
+              fill
+              onClick={() => {
+                history.push({
+                  pathname: ROUTES.THREAT_INTEL_ADD_CUSTOM_SOURCE,
+                });
+              }}
+            >
+              Add threat intel source
+            </EuiButton>,
+          ]}
+        />
+      )}
     </EuiPanel>
   );
 };

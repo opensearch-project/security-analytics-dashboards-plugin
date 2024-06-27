@@ -10,6 +10,7 @@ import {
   EuiButtonEmpty,
   EuiCheckbox,
   EuiComboBox,
+  EuiComboBoxOptionOption,
   EuiFlexGroup,
   EuiFlexItem,
   EuiFormRow,
@@ -20,100 +21,182 @@ import {
   EuiTitle,
 } from '@elastic/eui';
 import { IocLabel, ThreatIntelIocType } from '../../../../../common/constants';
-import React, { useState } from 'react';
-import { ThreatIntelLogSource } from '../../../../../types';
+import React, { useCallback, useEffect, useState } from 'react';
+import { LogSourceIocConfig, ThreatIntelLogSource } from '../../../../../types';
 import { Interval } from '../../../CreateDetector/components/DefineDetector/components/DetectorSchedule/Interval';
+import { getDataSources, getFieldsForIndex } from '../../../../utils/helpers';
+import { useContext } from 'react';
+import { SecurityAnalyticsContext } from '../../../../services';
+import { NotificationsStart } from 'opensearch-dashboards/public';
+import { IndexOption } from '../../../Detectors/models/interfaces';
+import { PeriodSchedule } from '../../../../../models/interfaces';
 
 export interface SelectThreatIntelLogSourcesProps {
   sources: ThreatIntelLogSource[];
-  updateSources?: (sources: ThreatIntelLogSource[]) => void;
+  schedule: PeriodSchedule;
+  notifications: NotificationsStart;
+  updateSources: (sources: ThreatIntelLogSource[]) => void;
+  updateSchedule: (schedule: PeriodSchedule) => void;
 }
 
 export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesProps> = ({
   sources,
+  notifications,
+  schedule,
   updateSources,
+  updateSchedule,
 }) => {
-  const [selectedSources, setSelectedSources] = useState([...sources]);
-  const [iocWithAddFieldOpen, setIocWithAddFieldOpen] = useState<
-    { sourceName: string; ioc: string } | undefined
+  const saContext = useContext(SecurityAnalyticsContext);
+  const [loadingLogSourceOptions, setLoadingLogSourceOptions] = useState(false);
+  const [logSourceOptions, setLogSourceOptions] = useState<EuiComboBoxOptionOption<string>[]>([]);
+  const [logSourceMappingByName, setLogSourceMappingByName] = useState<Record<string, any>>({});
+  const [iocInfoWithAddFieldOpen, setIocInfoWithAddFieldOpen] = useState<
+    { sourceName: string; ioc: string; selectedFields: string[] } | undefined
   >(undefined);
+
+  const getLogFields = useCallback(
+    async (indexName: string) => {
+      if (saContext && !logSourceMappingByName[indexName]) {
+        getFieldsForIndex(saContext.services.indexService, indexName).then((fields) => {
+          setLogSourceMappingByName({
+            ...logSourceMappingByName,
+            [indexName]: fields,
+          });
+        });
+      }
+    },
+    [saContext]
+  );
+  const [selectedSourcesMap, setSelectedSourcesMap] = useState(() => {
+    const selectedSourcesByName: Map<string, ThreatIntelLogSource> = new Map();
+    sources.forEach((source) => {
+      selectedSourcesByName.set(source.name, source);
+      getLogFields(source.name);
+    });
+    return selectedSourcesByName;
+  });
+
+  useEffect(() => {
+    const getLogSourceOptions = async () => {
+      if (saContext) {
+        setLoadingLogSourceOptions(true);
+        const res = await getDataSources(saContext.services.indexService, notifications);
+        if (res.ok) {
+          setLogSourceOptions(res.dataSources);
+        }
+        setLoadingLogSourceOptions(false);
+      }
+    };
+
+    getLogSourceOptions();
+  }, [saContext]);
 
   const onIocToggle = (
     source: ThreatIntelLogSource,
-    sourceIdx: number,
     toggledIoc: ThreatIntelIocType,
     enabled: boolean
   ) => {
-    const newSources: ThreatIntelLogSource[] = [
-      ...selectedSources.slice(0, sourceIdx),
-      {
-        ...source,
-        iocConfigMap: {
-          ...source.iocConfigMap,
-          [toggledIoc]: {
-            ...source.iocConfigMap[toggledIoc],
-            enabled: enabled,
-          },
-        },
+    const newSelectedSourcesMap = new Map(selectedSourcesMap);
+    newSelectedSourcesMap.get(source.name)!.iocConfigMap = {
+      ...source.iocConfigMap,
+      [toggledIoc]: {
+        fieldAliases: [],
+        ...source.iocConfigMap[toggledIoc],
+        enabled,
       },
-      ...selectedSources.slice(sourceIdx + 1),
-    ];
+    };
 
-    setSelectedSources(newSources);
-    updateSources?.(newSources);
+    setSelectedSourcesMap(newSelectedSourcesMap);
+    updateSources?.(Array.from(newSelectedSourcesMap.values()));
   };
 
-  const onFieldAliasUpdate = (
-    action: 'add' | 'remove',
+  const onFieldAliasRemove = (
     source: ThreatIntelLogSource,
-    sourceIdx: number,
     ioc: ThreatIntelIocType,
     alias: string
   ) => {
-    const aliasesSet = new Set(source.iocConfigMap[ioc].fieldAliases);
-    if (action === 'add') {
-      aliasesSet.add(alias);
-    } else {
-      aliasesSet.delete(alias);
-    }
+    const aliasesSet = new Set(source.iocConfigMap[ioc]?.fieldAliases || []);
+    aliasesSet.delete(alias);
 
-    const newSources: ThreatIntelLogSource[] = [
-      ...selectedSources.slice(0, sourceIdx),
-      {
-        ...source,
-        iocConfigMap: {
-          ...source.iocConfigMap,
-          [ioc]: {
-            ...source.iocConfigMap[ioc],
-            fieldAliases: Array.from(aliasesSet),
-          },
-        },
+    updateAliases(source, ioc, Array.from(aliasesSet));
+  };
+
+  const onFieldAliasesAdd = (source: ThreatIntelLogSource, ioc: ThreatIntelIocType) => {
+    const newFieldAliasesSet = new Set([...(source.iocConfigMap[ioc]?.fieldAliases || [])]);
+    iocInfoWithAddFieldOpen?.selectedFields.forEach((field) => newFieldAliasesSet.add(field));
+    updateAliases(source, ioc, Array.from(newFieldAliasesSet));
+    setIocInfoWithAddFieldOpen(undefined);
+  };
+
+  const onFieldAliasesSelect = (aliases: string[]) => {
+    setIocInfoWithAddFieldOpen({
+      ...iocInfoWithAddFieldOpen!,
+      selectedFields: aliases,
+    });
+  };
+
+  const updateAliases = (
+    source: ThreatIntelLogSource,
+    ioc: ThreatIntelIocType,
+    fieldAliases: string[]
+  ) => {
+    const newSelectedSourcesMap = new Map(selectedSourcesMap);
+    newSelectedSourcesMap.get(source.name)!.iocConfigMap = {
+      ...source.iocConfigMap,
+      [ioc]: {
+        ...source.iocConfigMap[ioc],
+        fieldAliases,
       },
-      ...selectedSources.slice(sourceIdx + 1),
-    ];
+    };
 
-    setSelectedSources(newSources);
-    updateSources?.(newSources);
+    setSelectedSourcesMap(newSelectedSourcesMap);
+    updateSources?.(Array.from(newSelectedSourcesMap.values()));
+  };
+
+  const onLogSourceSelectionChange = (options: EuiComboBoxOptionOption<string>[]) => {
+    const newSelectedSourcesMap: Map<string, ThreatIntelLogSource> = new Map();
+
+    options.forEach(({ label }) => {
+      if (selectedSourcesMap.get(label)) {
+        newSelectedSourcesMap.set(label, selectedSourcesMap.get(label)!);
+      } else {
+        newSelectedSourcesMap.set(label, {
+          name: label,
+          iocConfigMap: {},
+        });
+      }
+      getLogFields(label);
+    });
+
+    setSelectedSourcesMap(newSelectedSourcesMap);
+    updateSources?.(Array.from(newSelectedSourcesMap.values()));
   };
 
   return (
-    <EuiPanel style={{ minHeight: 700 }}>
+    <EuiPanel>
       <EuiTitle size="s">
-        <h2>Select log sources</h2>
+        <h2>Configure logs scan</h2>
       </EuiTitle>
       <EuiSpacer />
       <EuiFormRow
         label="Select Indexes/Aliases"
-        helpText="Using index patterns and aliases is recommended for more precise field mapping"
+        helpText="Using indexes and aliases is recommended for more precise field mapping"
       >
-        <EuiComboBox />
+        <EuiComboBox
+          options={logSourceOptions}
+          placeholder={'Select an input source for the detector.'}
+          isLoading={loadingLogSourceOptions}
+          selectedOptions={sources.map(({ name }) => ({ label: name }))}
+          // onBlur={() => this.setState({ fieldTouched: true })}
+          onChange={onLogSourceSelectionChange}
+          // isInvalid={!!errorMessage}
+          isClearable={true}
+          data-test-subj={'define-detector-select-data-source'}
+          renderOption={(option: IndexOption) => {
+            return option.index ? `${option.label} (${option.index})` : option.label;
+          }}
+        />
       </EuiFormRow>
-      <EuiSpacer />
-      <Interval
-        label={'Run scan every'}
-        detector={{ schedule: { period: { interval: 1, unit: 'DAYS' } } }}
-        onDetectorScheduleChange={(sch) => {}}
-      />
       <EuiSpacer size="xxl" />
       <EuiTitle size="s">
         <h4>Select fields to scan</h4>
@@ -126,12 +209,14 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
       </EuiText>
       <EuiSpacer />
 
-      {selectedSources.length === 0 ? (
+      {selectedSourcesMap.size === 0 ? (
         <EuiText>
-          <p>Select indexes/aliases above to view the fields.</p>
+          <p>
+            Select <b>indexes/aliases</b> above to view the fields.
+          </p>
         </EuiText>
       ) : (
-        selectedSources.map((source, idx) => {
+        Array.from(selectedSourcesMap.values()).map((source, idx) => {
           const { name, iocConfigMap } = source;
           return (
             <>
@@ -139,85 +224,99 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
                 key={name}
                 id={name}
                 buttonContent={name}
-                initialIsOpen={Object.values(iocConfigMap).some((config) => !config.enabled)}
+                initialIsOpen={true}
                 paddingSize="l"
               >
                 <div style={{ marginTop: -20 }}>
-                  {Object.entries(iocConfigMap).map(([ioc, config]) => (
-                    <EuiFlexGroup key={ioc} alignItems="center" gutterSize="s">
-                      <EuiFlexItem grow={1}>
-                        <EuiCheckbox
-                          id={`${name}-${ioc}`}
-                          label={IocLabel[ioc as ThreatIntelIocType]}
-                          checked={config.enabled}
-                          onChange={(event) =>
-                            onIocToggle(
-                              source,
-                              idx,
-                              ioc as ThreatIntelIocType,
-                              event.target.checked
-                            )
-                          }
-                        />
-                      </EuiFlexItem>
-                      <EuiFlexItem grow={7}>
-                        <EuiFlexGroup gutterSize="s" alignItems="center">
-                          {config.fieldAliases.map((alias) => (
-                            <EuiFlexItem grow={false} key={alias}>
-                              <EuiBadge
-                                key={alias}
-                                color="hollow"
-                                iconType="cross"
-                                iconSide="right"
-                                iconOnClickAriaLabel="Remove field alias"
-                                iconOnClick={() =>
-                                  onFieldAliasUpdate(
-                                    'remove',
-                                    source,
-                                    idx,
-                                    ioc as ThreatIntelIocType,
-                                    alias
-                                  )
+                  {Object.values(ThreatIntelIocType).map((iocType) => {
+                    const iocEnabled = iocConfigMap[iocType as ThreatIntelIocType]?.enabled;
+                    const [ioc, config]: [ThreatIntelIocType, LogSourceIocConfig] = [
+                      iocType as ThreatIntelIocType,
+                      iocConfigMap[iocType as ThreatIntelIocType] ?? {
+                        enabled: false,
+                        fieldAliases: [],
+                      },
+                    ];
+
+                    return (
+                      <EuiFlexGroup key={ioc} alignItems="center" gutterSize="s">
+                        <EuiFlexItem grow={1}>
+                          <EuiCheckbox
+                            id={`${name}-${ioc}`}
+                            label={IocLabel[ioc]}
+                            checked={iocEnabled}
+                            onChange={(event) => onIocToggle(source, ioc, event.target.checked)}
+                          />
+                        </EuiFlexItem>
+                        <EuiFlexItem grow={7}>
+                          <EuiFlexGroup gutterSize="s" alignItems="center">
+                            {config.fieldAliases.map((alias) => (
+                              <EuiFlexItem grow={false} key={alias}>
+                                <EuiBadge
+                                  key={alias}
+                                  color="hollow"
+                                  iconType="cross"
+                                  iconSide="right"
+                                  iconOnClickAriaLabel="Remove field alias"
+                                  iconOnClick={() => onFieldAliasRemove(source, ioc, alias)}
+                                >
+                                  {alias}
+                                </EuiBadge>
+                              </EuiFlexItem>
+                            ))}
+                            <EuiFlexItem grow={false}>
+                              <EuiPopover
+                                button={
+                                  <EuiButtonEmpty
+                                    iconType={'plus'}
+                                    onClick={() =>
+                                      setIocInfoWithAddFieldOpen({
+                                        ioc: ioc,
+                                        sourceName: name,
+                                        selectedFields:
+                                          iocInfoWithAddFieldOpen?.selectedFields || [],
+                                      })
+                                    }
+                                  >
+                                    Add fields
+                                  </EuiButtonEmpty>
+                                }
+                                panelPaddingSize="s"
+                                closePopover={() => setIocInfoWithAddFieldOpen(undefined)}
+                                isOpen={
+                                  iocInfoWithAddFieldOpen &&
+                                  iocInfoWithAddFieldOpen.sourceName === name &&
+                                  iocInfoWithAddFieldOpen.ioc === ioc
                                 }
                               >
-                                {alias}
-                              </EuiBadge>
+                                <EuiComboBox
+                                  style={{ minWidth: 300 }}
+                                  options={logSourceMappingByName[source.name]}
+                                  onChange={(options) =>
+                                    onFieldAliasesSelect(options.map(({ label }) => label))
+                                  }
+                                  selectedOptions={iocInfoWithAddFieldOpen?.selectedFields.map(
+                                    (field) => ({ label: field })
+                                  )}
+                                />
+                                <EuiSpacer />
+                                <EuiFlexGroup gutterSize="s" justifyContent="flexEnd">
+                                  <EuiFlexItem grow={false}>
+                                    <EuiButtonEmpty>Cancel</EuiButtonEmpty>
+                                  </EuiFlexItem>
+                                  <EuiFlexItem grow={false}>
+                                    <EuiButton fill onClick={() => onFieldAliasesAdd(source, ioc)}>
+                                      Add fields
+                                    </EuiButton>
+                                  </EuiFlexItem>
+                                </EuiFlexGroup>
+                              </EuiPopover>
                             </EuiFlexItem>
-                          ))}
-                          <EuiFlexItem grow={false}>
-                            <EuiPopover
-                              button={
-                                <EuiButtonEmpty
-                                  iconType={'plus'}
-                                  onClick={() => setIocWithAddFieldOpen({ ioc, sourceName: name })}
-                                >
-                                  Add fields
-                                </EuiButtonEmpty>
-                              }
-                              panelPaddingSize="s"
-                              closePopover={() => setIocWithAddFieldOpen(undefined)}
-                              isOpen={
-                                iocWithAddFieldOpen &&
-                                iocWithAddFieldOpen.sourceName === name &&
-                                iocWithAddFieldOpen.ioc === ioc
-                              }
-                            >
-                              <EuiComboBox style={{ minWidth: 300 }}></EuiComboBox>
-                              <EuiSpacer />
-                              <EuiFlexGroup gutterSize="s" justifyContent="flexEnd">
-                                <EuiFlexItem grow={false}>
-                                  <EuiButtonEmpty>Cancel</EuiButtonEmpty>
-                                </EuiFlexItem>
-                                <EuiFlexItem grow={false}>
-                                  <EuiButton fill>Add fields</EuiButton>
-                                </EuiFlexItem>
-                              </EuiFlexGroup>
-                            </EuiPopover>
-                          </EuiFlexItem>
-                        </EuiFlexGroup>
-                      </EuiFlexItem>
-                    </EuiFlexGroup>
-                  ))}
+                          </EuiFlexGroup>
+                        </EuiFlexItem>
+                      </EuiFlexGroup>
+                    );
+                  })}
                 </div>
               </EuiAccordion>
               <EuiSpacer />
@@ -225,6 +324,16 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
           );
         })
       )}
+
+      <EuiSpacer />
+      <EuiTitle size="s">
+        <h4>Scan schedule</h4>
+      </EuiTitle>
+      <EuiText color="subdued">
+        <p>Define the frequency of the log scan execution.</p>
+      </EuiText>
+      <EuiSpacer />
+      <Interval label={'Run scan every'} schedule={schedule} onScheduleChange={updateSchedule} />
     </EuiPanel>
   );
 };

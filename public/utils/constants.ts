@@ -213,3 +213,9 @@ export const logTypeCategories: string[] = [];
 export const logTypesByCategories: { [category: string]: LogType[] } = {};
 
 export const defaultColorForVisualizations: string = euiPaletteColorBlind()[0];
+
+export const defaultIntervalUnitOptions = {
+  MINUTES: { value: 'MINUTES', text: 'Minutes' },
+  HOURS: { value: 'HOURS', text: 'Hours' },
+  DAYS: { value: 'DAYS', text: 'Days' },
+};

@@ -12,6 +12,7 @@ import { addRulesMethods } from './addRuleMethods';
 import { addNotificationsMethods } from './addNotificationsMethods';
 import { addCorrelationMethods } from './addCorrelationMethods';
 import { addLogTypeMethods } from './addLogTypeMethods';
+import { addThreatIntelMethods } from './addThreatIntelMethods';
 
 export function securityAnalyticsPlugin(Client: any, config: any, components: any) {
   const createAction = components.clientAction.factory;
@@ -27,4 +28,5 @@ export function securityAnalyticsPlugin(Client: any, config: any, components: an
   addRulesMethods(securityAnalytics, createAction);
   addNotificationsMethods(securityAnalytics, createAction);
   addLogTypeMethods(securityAnalytics, createAction);
+  addThreatIntelMethods(securityAnalytics, createAction);
 }

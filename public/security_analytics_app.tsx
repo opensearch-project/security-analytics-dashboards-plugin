@@ -36,6 +36,7 @@ import { CHANNEL_TYPES } from './pages/CreateDetector/components/ConfigureAlerts
 import { DataSourceManagementPluginSetup } from '../../../src/plugins/data_source_management/public';
 import { getPlugins, setIsNotificationPluginInstalled } from './utils/helpers';
 import { OS_NOTIFICATION_PLUGIN } from './utils/constants';
+import ThreatIntelService from './services/ThreatIntelService';
 
 export function renderApp(
   coreStart: CoreStart,
@@ -59,6 +60,7 @@ export function renderApp(
   const indexPatternsService = new IndexPatternsService(depsStart.data.indexPatterns);
   const logTypeService = new LogTypeService(http);
   const metricsService = new MetricsService(http);
+  const threatIntelService = new ThreatIntelService(http);
 
   const services: BrowserServices = {
     detectorsService,
@@ -74,6 +76,7 @@ export function renderApp(
     indexPatternsService,
     logTypeService,
     metricsService,
+    threatIntelService,
   };
 
   const metrics = new MetricsContext(metricsService);

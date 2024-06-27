@@ -13,24 +13,19 @@ import {
 } from '@elastic/eui';
 import React from 'react';
 import { PeriodSchedule } from '../../../../../../../models/interfaces';
-import { DetectorSchedule } from '../../../../../../../types';
+import { defaultIntervalUnitOptions } from '../../../../../../utils/constants';
 
 export interface IntervalProps {
-  detector: { schedule: DetectorSchedule };
+  schedule: PeriodSchedule;
   label?: string | React.ReactNode;
   readonly?: boolean;
-  onDetectorScheduleChange(schedule: PeriodSchedule): void;
+  scheduleUnitOptions?: EuiSelectOption[];
+  onScheduleChange(schedule: PeriodSchedule): void;
 }
 
 export interface IntervalState {
   isIntervalValid: boolean;
 }
-
-const unitOptions: EuiSelectOption[] = [
-  { value: 'MINUTES', text: 'Minutes' },
-  { value: 'HOURS', text: 'Hours' },
-  { value: 'DAYS', text: 'Days' },
-];
 
 export class Interval extends React.Component<IntervalProps, IntervalState> {
   state = {
@@ -41,18 +36,18 @@ export class Interval extends React.Component<IntervalProps, IntervalState> {
     this.setState({
       isIntervalValid: !!event.target.value,
     });
-    this.props.onDetectorScheduleChange({
+    this.props.onScheduleChange({
       period: {
-        ...this.props.detector.schedule.period,
+        ...this.props.schedule.period,
         interval: parseInt(event.target.value),
       },
     });
   };
 
   onUnitChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    this.props.onDetectorScheduleChange({
+    this.props.onScheduleChange({
       period: {
-        ...this.props.detector.schedule.period,
+        ...this.props.schedule.period,
         unit: event.target.value,
       },
     });
@@ -60,7 +55,7 @@ export class Interval extends React.Component<IntervalProps, IntervalState> {
 
   render() {
     const { isIntervalValid } = this.state;
-    const { period } = this.props.detector.schedule;
+    const { period } = this.props.schedule;
     return (
       <EuiFormRow
         label={this.props.label}
@@ -82,7 +77,7 @@ export class Interval extends React.Component<IntervalProps, IntervalState> {
           </EuiFlexItem>
           <EuiFlexItem>
             <EuiSelect
-              options={unitOptions}
+              options={this.props.scheduleUnitOptions ?? Object.values(defaultIntervalUnitOptions)}
               onChange={this.onUnitChange}
               value={period.unit}
               data-test-subj={'detector-schedule-unit-select'}

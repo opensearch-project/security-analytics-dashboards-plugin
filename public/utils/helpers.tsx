@@ -572,3 +572,24 @@ export function setIsNotificationPluginInstalled(isInstalled: boolean) {
 export function getIsNotificationPluginInstalled(): boolean {
   return isNotificationPluginInstalled;
 }
+
+export async function getFieldsForIndex(indexService: IndexService, indexName: string) {
+  let fields: {
+    label: string;
+    value: string;
+  }[] = [];
+
+  if (indexName) {
+    const result = await indexService.getIndexFields(indexName);
+    if (result?.ok) {
+      fields = result.response?.map((field) => ({
+        label: field,
+        value: field,
+      }));
+    }
+
+    return fields;
+  }
+
+  return fields;
+}

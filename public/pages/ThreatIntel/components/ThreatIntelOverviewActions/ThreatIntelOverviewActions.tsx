@@ -13,7 +13,7 @@ import { ConfigureThreatIntelScanStep } from '../../utils/constants';
 
 export interface ThreatIntelOverviewActionsProps {
   sourceCount: number;
-  scanConfig: ThreatIntelScanConfig;
+  scanConfig?: ThreatIntelScanConfig;
   history: RouteComponentProps['history'];
 }
 
@@ -28,9 +28,9 @@ export const ThreatIntelOverviewActions: React.FC<ThreatIntelOverviewActionsProp
   scanConfig,
   history,
 }) => {
-  const scanIsSetup = scanConfig.logSources.length > 0;
-  const scanRunning = scanConfig.isRunning;
-  const alertTriggerSetup = scanConfig.triggers.length > 0;
+  const scanIsSetup = !!scanConfig;
+  const scanRunning = scanIsSetup && scanConfig.enabled;
+  const alertTriggerSetup = scanIsSetup && scanConfig.triggers.length > 0;
 
   let status: React.ReactNode = null;
   let actions = [];
@@ -111,7 +111,7 @@ export const ThreatIntelOverviewActions: React.FC<ThreatIntelOverviewActionsProp
     <EuiFlexGroup alignItems="center" gutterSize="m">
       <EuiFlexItem>{status}</EuiFlexItem>
       {actions.map((action, idx) => (
-        <EuiFlexItem grow={false}>
+        <EuiFlexItem grow={false} key={idx}>
           <EuiButton fill={action.fill} disabled={action.disabled} onClick={action.onClick}>
             {action.label}
           </EuiButton>

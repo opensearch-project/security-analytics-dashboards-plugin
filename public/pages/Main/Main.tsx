@@ -737,13 +737,23 @@ export default class Main extends Component<MainProps, MainState> {
                                     <Route
                                       path={ROUTES.THREAT_INTEL_ADD_CUSTOM_SOURCE}
                                       render={(props) => {
-                                        return <AddThreatIntelSource {...props} />;
+                                        return (
+                                          <AddThreatIntelSource
+                                            {...props}
+                                            threatIntelService={services.threatIntelService}
+                                          />
+                                        );
                                       }}
                                     />
                                     <Route
                                       path={ROUTES.THREAT_INTEL_OVERVIEW}
                                       render={(props) => {
-                                        return <ThreatIntelOverview {...props} />;
+                                        return (
+                                          <ThreatIntelOverview
+                                            {...props}
+                                            threatIntelService={services.threatIntelService}
+                                          />
+                                        );
                                       }}
                                     />
                                     <Route
@@ -753,6 +763,8 @@ export default class Main extends Component<MainProps, MainState> {
                                           <ThreatIntelScanConfigForm
                                             {...props}
                                             notificationsService={services.notificationsService}
+                                            threatIntelService={services.threatIntelService}
+                                            notifications={core.notifications}
                                           />
                                         );
                                       }}
@@ -760,7 +772,12 @@ export default class Main extends Component<MainProps, MainState> {
                                     <Route
                                       path={`${ROUTES.THREAT_INTEL_SOURCE_DETAILS}/:id`}
                                       render={(props: RouteComponentProps<any, any, any>) => {
-                                        return <ThreatIntelSource {...props} />;
+                                        return (
+                                          <ThreatIntelSource
+                                            {...props}
+                                            threatIntelService={services.threatIntelService}
+                                          />
+                                        );
                                       }}
                                     />
 

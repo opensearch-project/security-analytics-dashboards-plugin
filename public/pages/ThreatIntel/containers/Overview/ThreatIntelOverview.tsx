@@ -9,6 +9,7 @@ import {
   EuiCard,
   EuiFlexGroup,
   EuiFlexItem,
+  EuiFlyout,
   EuiLink,
   EuiSpacer,
   EuiTabbedContent,
@@ -16,7 +17,7 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import React, { MouseEventHandler, useContext, useEffect, useMemo } from 'react';
+import React, { MouseEventHandler, useCallback, useContext, useEffect, useMemo } from 'react';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { useState } from 'react';
@@ -27,24 +28,25 @@ import {
 } from '../../../../../types';
 import { RouteComponentProps } from 'react-router-dom';
 import { ThreatIntelSourcesList } from '../../components/ThreatIntelSourcesList/ThreatIntelSourcesList';
-import { ThreatIntelLogSources } from '../../components/ThreatIntelLogSources/ThreatIntelLogSources';
-import { getEmptyThreatIntelAlertTrigger, getThreatIntelNextStepsProps } from '../../utils/helpers';
-import { ThreatIntelAlertTriggers } from '../../components/ThreatIntelAlertTriggers/ThreatIntelAlertTriggers';
+import { deriveFormModelFromConfig, getThreatIntelNextStepsProps } from '../../utils/helpers';
 import { ThreatIntelOverviewActions } from '../../components/ThreatIntelOverviewActions/ThreatIntelOverviewActions';
-import { dummyLogSource, dummySource } from '../../utils/constants';
+import ThreatIntelService from '../../../../services/ThreatIntelService';
+import { ThreatIntelIocType } from '../../../../../common/constants';
+import { ThreatIntelLogScanConfig } from '../../components/ThreatIntelLogScanConfig/ThreatIntelLogScanConfig';
+import { dummySource } from '../../utils/constants';
 
-export interface ThreatIntelOverviewProps extends RouteComponentProps {}
+export interface ThreatIntelOverviewProps extends RouteComponentProps {
+  threatIntelService: ThreatIntelService;
+}
 
-export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({ history }) => {
+export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
+  history,
+  threatIntelService,
+}) => {
   const context = useContext(CoreServicesContext);
-  const [threatIntelSources, setThreatIntelSources] = useState<ThreatIntelSourceItem[]>([
-    dummySource,
-  ]);
-  const [scanConfig, setScanConfig] = useState<ThreatIntelScanConfig>({
-    isRunning: true,
-    logSources: threatIntelSources.length ? [dummyLogSource] : [],
-    triggers: [getEmptyThreatIntelAlertTrigger()],
-  });
+  const [threatIntelSources, setThreatIntelSources] = useState<ThreatIntelSourceItem[]>([]);
+  const [scanConfig, setScanConfig] = useState<ThreatIntelScanConfig>();
+  const [flyoutContent, setFlyoutContent] = useState<React.ReactNode>(null);
 
   const onEditScanConfig = () => {
     history.push({
@@ -52,6 +54,20 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({ histor
       state: { scanConfig },
     });
   };
+
+  const logSources = useMemo(() => {
+    if (!scanConfig) {
+      return [];
+    }
+
+    return deriveFormModelFromConfig(scanConfig).logSources;
+  }, [scanConfig]);
+
+  const addThreatIntelSourceActionHandler = useCallback(() => {
+    history.push({
+      pathname: ROUTES.THREAT_INTEL_ADD_CUSTOM_SOURCE,
+    });
+  }, []);
 
   const tabs: EuiTabbedContentTab[] = useMemo(
     () => [
@@ -63,24 +79,15 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({ histor
         ),
       },
       {
-        id: 'log-sources',
-        name: <span>Log sources</span>,
+        id: 'log-scan-config',
+        name: <span>Log scan configuration</span>,
         content: (
-          <ThreatIntelLogSources
-            logSources={scanConfig.logSources}
+          <ThreatIntelLogScanConfig
+            scanConfig={scanConfig}
             threatIntelSourceCount={threatIntelSources.length}
+            setFlyoutContent={(content) => setFlyoutContent(content)}
             scanConfigActionHandler={onEditScanConfig}
-          />
-        ),
-      },
-      {
-        id: 'alert-triggers',
-        name: <span>Alert triggers</span>,
-        content: (
-          <ThreatIntelAlertTriggers
-            triggers={scanConfig.triggers}
-            threatIntelSourceCount={threatIntelSources.length}
-            scanConfigActionHandler={onEditScanConfig}
+            addThreatIntelActionHandler={addThreatIntelSourceActionHandler}
           />
         ),
       },
@@ -95,12 +102,34 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({ histor
     ]);
   }, []);
 
+  useEffect(() => {
+    const searchSources = async () => {
+      const res = await threatIntelService.searchThreatIntelSource();
+
+      if (res.ok) {
+        setThreatIntelSources(res.response);
+      }
+    };
+
+    const getScanConfig = async () => {
+      try {
+        const res = await threatIntelService.getThreatIntelScanConfig();
+
+        if (res.ok) {
+          // setScanConfig(res.response.hits.hits[0]);
+        }
+      } catch (e: any) {
+        console.log('failed to get scan config');
+      }
+    };
+
+    getScanConfig();
+
+    searchSources();
+  }, [threatIntelService]);
+
   const nextStepClickHandlerById: Record<ThreatIntelNextStepId, MouseEventHandler> = {
-    ['add-source']: () => {
-      history.push({
-        pathname: ROUTES.THREAT_INTEL_ADD_CUSTOM_SOURCE,
-      });
-    },
+    ['add-source']: addThreatIntelSourceActionHandler,
     ['configure-scan']: () => {
       history.push({
         pathname: ROUTES.THREAT_INTEL_SCAN_CONFIG,
@@ -111,7 +140,7 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({ histor
 
   const threatIntelNextStepsProps = getThreatIntelNextStepsProps(
     threatIntelSources.length > 0,
-    scanConfig.logSources.length > 0
+    logSources.length > 0
   );
 
   return (
@@ -145,13 +174,13 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({ histor
       <EuiAccordion
         id="threat-intel-management-steps"
         buttonContent="Get started"
-        initialIsOpen={threatIntelSources.length === 0}
+        initialIsOpen={threatIntelSources.length === 0 || logSources.length === 0}
       >
         <EuiSpacer />
         <EuiFlexGroup>
           {threatIntelNextStepsProps.map(
             ({ id, title, description, footerButtonProps: { text, disabled } }) => (
-              <EuiFlexItem>
+              <EuiFlexItem key={id}>
                 <EuiCard
                   title={title}
                   description={description}
@@ -168,6 +197,12 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({ histor
       </EuiAccordion>
       <EuiSpacer />
       <EuiTabbedContent tabs={tabs} initialSelectedTab={tabs[0]} />
+      {flyoutContent && (
+        <EuiFlyout onClose={() => setFlyoutContent(null)}>
+          <EuiSpacer />
+          {flyoutContent}
+        </EuiFlyout>
+      )}
     </>
   );
 };

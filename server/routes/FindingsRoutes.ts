@@ -27,10 +27,29 @@ export function setupFindingsRoutes(services: NodeServices, router: IRouter) {
           searchString: schema.maybe(schema.string()),
           findingIds: schema.maybe(schema.string()),
           startTime: schema.maybe(schema.number()),
-          endTime: schema.maybe(schema.number())
+          endTime: schema.maybe(schema.number()),
         }),
       },
     },
     findingsService.getFindings
+  );
+
+  router.get(
+    {
+      path: `${API.THREAT_INTEL_BASE}/findings/_search`,
+      validate: {
+        query: createQueryValidationSchema({
+          sortOrder: schema.maybe(schema.string()),
+          size: schema.maybe(schema.number()),
+          startIndex: schema.maybe(schema.number()),
+          searchString: schema.maybe(schema.string()),
+          findingIds: schema.maybe(schema.string()),
+          startTime: schema.maybe(schema.number()),
+          endTime: schema.maybe(schema.number()),
+          iocIds: schema.maybe(schema.string()),
+        }),
+      },
+    },
+    findingsService.getThreatIntelFindings
   );
 }

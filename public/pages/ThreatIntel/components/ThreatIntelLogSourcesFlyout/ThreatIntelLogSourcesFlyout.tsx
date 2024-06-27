@@ -5,7 +5,6 @@
 
 import {
   EuiBasicTableColumn,
-  EuiButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
   EuiInMemoryTable,
@@ -24,7 +23,7 @@ export interface ThreatIntelLogSourcesProps {
   scanConfigActionHandler: () => void;
 }
 
-export const ThreatIntelLogSources: React.FC<ThreatIntelLogSourcesProps> = ({
+export const ThreatIntelLogSourcesFlyout: React.FC<ThreatIntelLogSourcesProps> = ({
   logSources,
   threatIntelSourceCount,
   scanConfigActionHandler,
@@ -40,28 +39,16 @@ export const ThreatIntelLogSources: React.FC<ThreatIntelLogSourcesProps> = ({
         name: 'Indicator types',
         render: ({ iocConfigMap }: ThreatIntelLogSource) => {
           return Object.entries(iocConfigMap)
-            .filter(([_ioc, config]) => config.enabled)
             .map(([ioc]) => ioc)
             .join(', ');
         },
-      },
-      {
-        name: 'Actions',
-        actions: [
-          {
-            name: 'Inspect',
-            render: (item) => {
-              return <EuiButtonIcon iconType={'inspect'} />;
-            },
-          },
-        ],
       },
     ],
     []
   );
 
   return (
-    <EuiPanel>
+    <EuiPanel hasBorder={false} hasShadow={false}>
       <EuiSpacer size="m" />
       <EuiFlexGroup alignItems="flexStart">
         <EuiFlexItem>

@@ -14,7 +14,7 @@ import {
 } from '@elastic/eui';
 import { ThreatIntelAlertTrigger } from '../../../../../types';
 import React, { useCallback } from 'react';
-import { IocLabel } from '../../../../../common/constants';
+import { IocLabel, ThreatIntelIocType } from '../../../../../common/constants';
 import {
   DescriptionGroup,
   DescriptionGroupProps,
@@ -29,22 +29,23 @@ export interface ThreatIntelAlertTriggersProps {
   scanConfigActionHandler: () => void;
 }
 
-export const ThreatIntelAlertTriggers: React.FC<ThreatIntelAlertTriggersProps> = ({
+export const ThreatIntelAlertTriggersFlyout: React.FC<ThreatIntelAlertTriggersProps> = ({
   triggers,
   threatIntelSourceCount,
   scanConfigActionHandler,
 }) => {
   const getTriggerConditionDetails = (
-    triggerCondtion: ThreatIntelAlertTrigger['triggerCondition']
+    dataSources: string[],
+    indicatorTypes: string[]
   ): DescriptionGroupProps['listItems'] => {
     return [
       {
         title: 'Indicator type',
-        description: triggerCondtion.indicatorType.join(', ') || 'Any',
+        description: indicatorTypes.join(', ') || 'Any',
       },
       {
         title: 'Log source',
-        description: triggerCondtion.dataSource.join(', ') || 'Any',
+        description: dataSources.join(', ') || 'Any',
       },
     ];
   };
@@ -68,7 +69,7 @@ export const ThreatIntelAlertTriggers: React.FC<ThreatIntelAlertTriggersProps> =
   const createTitle = useCallback((text: string) => {
     return (
       <>
-        <EuiTitle size="m">
+        <EuiTitle size="s">
           <h4>{text}</h4>
         </EuiTitle>
         <EuiSpacer />
@@ -77,12 +78,11 @@ export const ThreatIntelAlertTriggers: React.FC<ThreatIntelAlertTriggersProps> =
   }, []);
 
   return (
-    <EuiPanel>
-      <EuiSpacer size="m" />
-      <EuiFlexGroup alignItems="flexStart">
+    <EuiPanel hasBorder={false} hasShadow={false}>
+      <EuiFlexGroup>
         <EuiFlexItem>
           <EuiTitle>
-            <h4>Log sources</h4>
+            <h4>Alert triggers ({triggers.length})</h4>
           </EuiTitle>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
@@ -94,15 +94,12 @@ export const ThreatIntelAlertTriggers: React.FC<ThreatIntelAlertTriggersProps> =
         </EuiFlexItem>
       </EuiFlexGroup>
       <EuiSpacer />
-      {triggers.map(({ action, alertSeverity, name, triggerCondition }, idx) => {
-        const logSourcesCount =
-          triggerCondition.dataSource.length === 0
-            ? 'Any'
-            : triggerCondition.dataSource.length.toString();
+      {triggers.map(({ action, severity, name, data_sources, ioc_types }, idx) => {
+        const logSourcesCount = data_sources.length === 0 ? 'Any' : data_sources.length.toString();
         const iocTriggerCondition =
-          triggerCondition.indicatorType.length === 0
+          ioc_types.length === 0
             ? 'All types of indicators'
-            : triggerCondition.indicatorType.map((iocType) => IocLabel[iocType]).join(', ');
+            : ioc_types.map((iocType) => IocLabel[iocType as ThreatIntelIocType]).join(', ');
 
         return (
           <EuiAccordion
@@ -128,16 +125,21 @@ export const ThreatIntelAlertTriggers: React.FC<ThreatIntelAlertTriggersProps> =
                   title: createTitle('Trigger condition'),
                   description: (
                     <DescriptionGroup
-                      listItems={getTriggerConditionDetails(triggerCondition)}
+                      listItems={getTriggerConditionDetails(data_sources, ioc_types)}
                       groupProps={{ justifyContent: 'spaceAround' }}
                     />
                   ),
                 },
+              ]}
+            />
+            <EuiSpacer />
+            <DescriptionGroup
+              listItems={[
                 {
                   title: createTitle('Notification'),
                   description: (
                     <DescriptionGroup
-                      listItems={getNotificationConfig(alertSeverity, action)}
+                      listItems={getNotificationConfig(severity, action)}
                       groupProps={{ justifyContent: 'spaceAround' }}
                     />
                   ),

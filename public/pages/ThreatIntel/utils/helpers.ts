@@ -6,13 +6,40 @@
 import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 import {
   ThreatIntelAlertTrigger,
+  ThreatIntelScanConfig,
   ThreatIntelNextStepCardProps,
+  ThreatIntelSourcePayload,
   TriggerAction,
+  ThreatIntelScanConfigFormModel,
+  ThreatIntelLogSource,
+  ThreatIntelMonitorPayload,
+  IocFieldAliases,
+  S3ConnectionSource,
+  FileUploadSource,
+  ThreatIntelSourceItem,
 } from '../../../../types';
 import { AlertSeverity } from '../../Alerts/utils/constants';
 import { ALERT_SEVERITY_OPTIONS } from '../../CreateDetector/components/ConfigureAlerts/utils/constants';
+import _ from 'lodash';
+import { ThreatIntelIocType } from '../../../../common/constants';
 
-export function getEmptyThreatIntelAlertTrigger(): ThreatIntelAlertTrigger {
+export function getEmptyScanConfigFormModel(triggerName: string): ThreatIntelScanConfigFormModel {
+  return {
+    enabled: true,
+    name: 'Threat intel monitor',
+    indices: [],
+    logSources: [],
+    schedule: {
+      period: {
+        interval: 1,
+        unit: 'DAYS',
+      },
+    },
+    triggers: [getEmptyThreatIntelAlertTrigger(triggerName)],
+  };
+}
+
+export function getEmptyThreatIntelAlertTrigger(triggerName: string): ThreatIntelAlertTrigger {
   const emptyTriggerAction: TriggerAction = {
     id: '',
     name: '',
@@ -33,12 +60,10 @@ export function getEmptyThreatIntelAlertTrigger(): ThreatIntelAlertTrigger {
   };
 
   return {
-    name: 'Trigger 1',
-    triggerCondition: {
-      indicatorType: [],
-      dataSource: [],
-    },
-    alertSeverity: AlertSeverity.ONE,
+    name: triggerName,
+    data_sources: [],
+    ioc_types: [],
+    severity: AlertSeverity.ONE,
     action: {
       ...emptyTriggerAction,
       destination_name: '',
@@ -76,4 +101,180 @@ export function getThreatIntelNextStepsProps(
       },
     },
   ];
+}
+
+export function getEmptyS3ConnectionSource(): S3ConnectionSource {
+  return {
+    s3: {
+      bucket_name: '',
+      object_key: '',
+      region: '',
+      role_arn: '',
+    },
+  };
+}
+
+export function getEmptyIocFileUploadSource(): FileUploadSource {
+  return {
+    ioc_upload: {
+      file_name: '',
+      iocs: [],
+    },
+  };
+}
+
+export function getEmptyThreatIntelSourcePayload(): ThreatIntelSourcePayload {
+  return {
+    type: 'S3_CUSTOM',
+    name: '',
+    description: '',
+    format: 'STIX2',
+    store_type: 'OS',
+    enabled: true,
+    schedule: {
+      interval: {
+        start_time: Date.now(),
+        period: 1,
+        unit: 'MINUTES',
+      },
+    },
+    source: getEmptyS3ConnectionSource(),
+    ioc_types: [],
+  };
+}
+
+export function deriveFormModelFromConfig(
+  scanConfig: ThreatIntelScanConfig
+): ThreatIntelScanConfigFormModel {
+  const logSourcesByName: { [name: string]: ThreatIntelLogSource } = {};
+  scanConfig.per_ioc_type_scan_input_list.forEach(({ ioc_type, index_to_fields_map }) => {
+    Object.entries(index_to_fields_map).forEach(([index, fieldAliases]) => {
+      if (!logSourcesByName[index]) {
+        logSourcesByName[index] = {
+          name: index,
+          iocConfigMap: {
+            [ioc_type]: {
+              fieldAliases,
+              enabled: true,
+            },
+          },
+        };
+      } else {
+        logSourcesByName[index].iocConfigMap = {
+          ...logSourcesByName[index].iocConfigMap,
+          [ioc_type]: {
+            fieldAliases,
+            enabled: true,
+          },
+        };
+      }
+    });
+  });
+
+  const configClone: any = _.cloneDeep(scanConfig);
+  delete configClone.per_ioc_type_scan_input_list;
+
+  const formModel: ThreatIntelScanConfigFormModel = {
+    ...configClone,
+    logSources: Object.values(logSourcesByName),
+  };
+
+  return formModel;
+}
+
+export function configFormModelToMonitorPayload(
+  formModel: ThreatIntelScanConfigFormModel
+): ThreatIntelMonitorPayload {
+  const fieldAliasesByIocType: { [k in ThreatIntelIocType]?: IocFieldAliases } = {};
+
+  formModel.logSources.forEach((source) => {
+    Object.entries(source.iocConfigMap).forEach(([iocType, iocConfig]) => {
+      if (!iocConfig?.enabled) {
+        return;
+      }
+
+      if (!fieldAliasesByIocType[iocType as ThreatIntelIocType]) {
+        fieldAliasesByIocType[iocType as ThreatIntelIocType] = {
+          ioc_type: iocType as ThreatIntelIocType,
+          index_to_fields_map: {
+            [source.name]: iocConfig.fieldAliases,
+          },
+        };
+      } else {
+        fieldAliasesByIocType[iocType as ThreatIntelIocType]!.index_to_fields_map[source.name] =
+          iocConfig.fieldAliases;
+      }
+    });
+  });
+
+  const formModelClone: any = _.cloneDeep(formModel);
+  delete formModelClone['logSources'];
+
+  return {
+    ...formModelClone,
+    per_ioc_type_scan_input_list: Object.values(fieldAliasesByIocType),
+  };
+}
+
+export function readIocsFromFile(
+  file: File,
+  onRead: (
+    readResponse: { ok: true; sourceData: FileUploadSource } | { ok: false; errorMessage: string }
+  ) => void
+) {
+  if (file.size > 512000) {
+    return onRead({ ok: false, errorMessage: 'File size should be less then 500KB.' });
+  }
+
+  const reader = new FileReader();
+  reader.readAsText(file);
+  reader.onload = function () {
+    try {
+      const iocs =
+        reader.result
+          ?.toString()
+          .split('\n')
+          .filter((iocObj) => !!iocObj) || [];
+      for (let ioc of iocs) {
+        try {
+          if (typeof JSON.parse(ioc) !== 'object') {
+            throw '';
+          }
+        } catch (e: any) {
+          onRead({
+            ok: false,
+            errorMessage: 'Invalid IoC format found, must follow STIX spec.',
+          });
+        }
+      }
+      onRead({
+        ok: true,
+        sourceData: {
+          ioc_upload: {
+            file_name: file.name,
+            iocs,
+          },
+        },
+      });
+    } catch (e: any) {
+      onRead({ ok: false, errorMessage: e?.message || e?.toString?.() });
+    }
+  };
+}
+
+export function threatIntelSourceItemToUpdatePayload(
+  sourceItem: ThreatIntelSourceItem
+): ThreatIntelSourcePayload {
+  const { name, description, enabled, schedule, source, ioc_types } = sourceItem;
+  return {
+    type: 'S3_CUSTOM',
+    name,
+    description,
+    format: 'STIX2',
+    store_type: 'OS',
+    enabled,
+    schedule,
+    source,
+    ioc_types,
+  };
 }

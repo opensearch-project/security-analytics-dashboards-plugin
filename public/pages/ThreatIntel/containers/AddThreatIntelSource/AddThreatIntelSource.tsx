@@ -6,41 +6,70 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {
   EuiButton,
+  EuiCheckableCard,
   EuiCheckboxGroup,
   EuiFieldText,
+  EuiFilePicker,
   EuiFlexGroup,
   EuiFlexItem,
+  EuiFormLabel,
   EuiFormRow,
   EuiPanel,
   EuiSpacer,
   EuiSwitch,
   EuiText,
   EuiTitle,
-  htmlIdGenerator,
 } from '@elastic/eui';
 import { CoreServicesContext } from '../../../../components/core_services';
-import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
+import { BREADCRUMBS, ROUTES, defaultIntervalUnitOptions } from '../../../../utils/constants';
 import { Interval } from '../../../CreateDetector/components/DefineDetector/components/DetectorSchedule/Interval';
 import { RouteComponentProps } from 'react-router-dom';
+import ThreatIntelService from '../../../../services/ThreatIntelService';
+import {
+  FileUploadSource,
+  S3ConnectionSource,
+  ThreatIntelSourcePayload,
+} from '../../../../../types';
+import {
+  getEmptyIocFileUploadSource,
+  getEmptyS3ConnectionSource,
+  getEmptyThreatIntelSourcePayload,
+  readIocsFromFile,
+} from '../../utils/helpers';
+import { ThreatIntelIocType } from '../../../../../common/constants';
+import { PeriodSchedule } from '../../../../../models/interfaces';
 
-const idPrefix = htmlIdGenerator()();
+export interface AddThreatIntelSourceProps extends RouteComponentProps {
+  threatIntelService: ThreatIntelService;
+}
 
-export interface AddThreatIntelSourceProps extends RouteComponentProps {}
-
-export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({ history }) => {
+export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
+  history,
+  threatIntelService,
+}) => {
   const context = useContext(CoreServicesContext);
-  const [onDemandChecked, setOnDemandChecked] = useState(false);
+  const [source, setSource] = useState<ThreatIntelSourcePayload>(
+    getEmptyThreatIntelSourcePayload()
+  );
+  const [s3ConnectionDetails, setS3ConnectionDetails] = useState<S3ConnectionSource>(
+    getEmptyS3ConnectionSource()
+  );
+  const [fileUploadSource, setFileUploadSource] = useState<FileUploadSource>(
+    getEmptyIocFileUploadSource()
+  );
+  const [fileError, setFileError] = useState('');
+  const [submitInProgress, setSubmitInProgress] = useState(false);
   const checkboxes = [
     {
-      id: `${idPrefix}0`,
+      id: ThreatIntelIocType.IPAddress,
       label: 'IP - addresses',
     },
     {
-      id: `${idPrefix}1`,
+      id: ThreatIntelIocType.Domain,
       label: 'Domains',
     },
     {
-      id: `${idPrefix}2`,
+      id: ThreatIntelIocType.FileHash,
       label: 'File hash',
     },
   ];
@@ -48,15 +77,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({ hist
     {}
   );
 
-  const onChange = (optionId: string) => {
-    const newCheckboxIdToSelectedMap = {
-      ...checkboxIdToSelectedMap,
-      ...{
-        [optionId]: !checkboxIdToSelectedMap[optionId],
-      },
-    };
-    setCheckboxIdToSelectedMap(newCheckboxIdToSelectedMap);
-  };
+  const [iocSource, setIocSource] = useState<'data_store' | 'file'>('data_store');
 
   useEffect(() => {
     context?.chrome.setBreadcrumbs([
@@ -66,19 +87,119 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({ hist
     ]);
   }, []);
 
+  const onIocTypesChange = (optionId: string) => {
+    const newCheckboxIdToSelectedMap = {
+      ...checkboxIdToSelectedMap,
+      ...{
+        [optionId]: !checkboxIdToSelectedMap[optionId],
+      },
+    };
+    setCheckboxIdToSelectedMap(newCheckboxIdToSelectedMap);
+  };
+
+  const onRefreshSwitchChange = (checked: boolean) => {
+    setSource({
+      ...source,
+      enabled: !checked,
+    });
+  };
+
+  const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSource({
+      ...source,
+      name: event.target.value,
+    });
+  };
+
+  const onDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSource({
+      ...source,
+      description: event.target.value,
+    });
+  };
+
+  const onS3DataChange = (field: keyof S3ConnectionSource['s3'], value: string) => {
+    setS3ConnectionDetails({
+      s3: {
+        ...s3ConnectionDetails.s3,
+        [field]: value,
+      },
+    });
+  };
+
+  const onIntervalChange = (schedule: PeriodSchedule) => {
+    setSource({
+      ...source,
+      schedule: {
+        interval: {
+          start_time: Date.now(),
+          period: schedule.period.interval,
+          unit: schedule.period.unit,
+        },
+      },
+    });
+  };
+
+  const onFileChange = (files: FileList | null) => {
+    setFileError('');
+    if (!!files?.item(0)) {
+      readIocsFromFile(files[0], (response) => {
+        if (response.ok) {
+          setFileUploadSource(response.sourceData);
+        } else {
+          setFileError(response.errorMessage);
+        }
+      });
+    }
+  };
+
+  const onSubmit = () => {
+    setSubmitInProgress(true);
+    const payload: ThreatIntelSourcePayload = {
+      ...source,
+      schedule: {
+        ...source.schedule,
+        interval: {
+          ...source.schedule.interval,
+          start_time: Date.now(),
+        },
+      },
+      ioc_types: Object.entries(checkboxIdToSelectedMap)
+        .filter(([ioc, checked]) => checked)
+        .map(([ioc]) => ioc as ThreatIntelIocType),
+      source: iocSource === 'data_store' ? s3ConnectionDetails : fileUploadSource,
+    };
+    threatIntelService.addThreatIntelSource(payload).then((res) => {
+      setSubmitInProgress(false);
+      if (res.ok) {
+        history.push({
+          pathname: `${ROUTES.THREAT_INTEL_SOURCE_DETAILS}/${res.response.id}`,
+          state: { source: res.response },
+        });
+      }
+    });
+  };
+
   return (
     <>
       <EuiPanel>
         <EuiTitle>
           <h4>Add custom threat intelligence source</h4>
         </EuiTitle>
+        <EuiSpacer size="xs" />
+        <EuiText color="subdued">
+          <p>
+            Add your custom threat intelligence source that contains indicators of malicious
+            behaviors in STIX (Structured Threat Information Expression) format.
+          </p>
+        </EuiText>
         <EuiSpacer />
         <EuiText>
           <h4>Details</h4>
         </EuiText>
         <EuiSpacer />
         <EuiFormRow label="Name">
-          <EuiFieldText placeholder="Title" />
+          <EuiFieldText placeholder="Title" onChange={onNameChange} value={source.name} />
         </EuiFormRow>
         <EuiSpacer />
         <EuiFormRow
@@ -89,44 +210,170 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({ hist
             </>
           }
         >
-          <EuiFieldText placeholder="Description" />
+          <EuiFieldText
+            placeholder="Description"
+            onChange={onDescriptionChange}
+            value={source.description}
+          />
         </EuiFormRow>
         <EuiSpacer />
-        <EuiText>
-          <h4>Connection details</h4>
+        <EuiText size="xs">
+          <b>Threat intel source type</b>
         </EuiText>
-        <EuiSpacer />
-        <EuiFormRow label="IAM Role ARN">
-          <EuiFieldText placeholder="IAM role" />
-        </EuiFormRow>
-        <EuiSpacer />
-        <EuiFormRow label="S3 bucket directory">
-          <EuiFieldText placeholder="S3://" />
-        </EuiFormRow>
-        <EuiSpacer />
-        <EuiFormRow label="S3 object key">
-          <EuiFieldText placeholder="object" />
-        </EuiFormRow>
-        <EuiSpacer />
-        <EuiButton>Test connection</EuiButton>
-        <EuiSpacer />
-        <EuiText>
-          <h4>Download schedule</h4>
-        </EuiText>
-        <EuiSpacer />
-        <EuiSwitch
-          label="Download on demand only"
-          checked={onDemandChecked}
-          onChange={(event) => setOnDemandChecked(event.target.checked)}
-        />
-        <EuiSpacer />
-        {!onDemandChecked && (
-          <>
-            <Interval
-              label="Download new data every"
-              detector={{ schedule: { period: { interval: 1, unit: 'DAYS' } } }}
-              onDetectorScheduleChange={(sch) => {}}
+        <EuiSpacer size="s" />
+        <EuiFlexGroup>
+          <EuiFlexItem style={{ maxWidth: 400 }}>
+            <EuiCheckableCard
+              className="eui-fullHeight"
+              id={'data-store'}
+              label={
+                <>
+                  <EuiTitle size="s">
+                    <h4>Data storage location</h4>
+                  </EuiTitle>
+                  <EuiText size="s">
+                    <p>Connect your custom data storage.</p>
+                  </EuiText>
+                </>
+              }
+              checkableType="radio"
+              checked={iocSource === 'data_store'}
+              onChange={() => {
+                setIocSource('data_store');
+              }}
             />
+          </EuiFlexItem>
+          <EuiFlexItem style={{ maxWidth: 400 }}>
+            <EuiCheckableCard
+              className="eui-fullHeight"
+              id={'file-upload'}
+              label={
+                <>
+                  <EuiTitle size="s">
+                    <h4>File upload</h4>
+                  </EuiTitle>
+                  <EuiText size="s">
+                    <p>Upload your own threat intel as a local file or using a URL.</p>
+                  </EuiText>
+                </>
+              }
+              checkableType="radio"
+              checked={iocSource === 'file'}
+              onChange={() => {
+                setIocSource('file');
+              }}
+            />
+          </EuiFlexItem>
+        </EuiFlexGroup>
+        <EuiSpacer />
+        {iocSource === 'data_store' && (
+          <>
+            <EuiText>
+              <h4>Connection details</h4>
+            </EuiText>
+            <EuiSpacer />
+            <EuiFormRow
+              label={
+                <>
+                  <EuiFormLabel>IAM Role ARN</EuiFormLabel>
+                  <EuiText color="subdued" size="xs">
+                    <span>
+                      The Amazon Resource Name for an IAM role in Amazon Web Services (AWS)
+                    </span>
+                  </EuiText>
+                </>
+              }
+            >
+              <EuiFieldText
+                placeholder="arn:"
+                onChange={(event) => onS3DataChange('role_arn', event.target.value)}
+                value={s3ConnectionDetails.s3.role_arn}
+              />
+            </EuiFormRow>
+            <EuiSpacer />
+            <EuiFormRow label="S3 bucket directory">
+              <EuiFieldText
+                placeholder="S3://"
+                onChange={(event) => onS3DataChange('bucket_name', event.target.value)}
+                value={s3ConnectionDetails.s3.bucket_name}
+              />
+            </EuiFormRow>
+            <EuiSpacer />
+            <EuiFormRow label="Specify a directory or file">
+              <EuiFieldText
+                placeholder="Object key"
+                onChange={(event) => onS3DataChange('object_key', event.target.value)}
+                value={s3ConnectionDetails.s3.object_key}
+              />
+            </EuiFormRow>
+            <EuiSpacer />
+            <EuiFormRow label="Region">
+              <EuiFieldText
+                placeholder="Region"
+                onChange={(event) => onS3DataChange('region', event.target.value)}
+                value={s3ConnectionDetails.s3.region}
+              />
+            </EuiFormRow>
+            <EuiSpacer />
+            {/* <EuiButton>Test connection</EuiButton>
+            <EuiSpacer /> */}
+            <EuiText>
+              <h4>Download schedule</h4>
+            </EuiText>
+            <EuiSpacer />
+            <EuiSwitch
+              label="Download on demand only"
+              checked={!source.enabled}
+              onChange={(event) => onRefreshSwitchChange(event.target.checked)}
+            />
+            <EuiSpacer />
+            {source.enabled && (
+              <>
+                <Interval
+                  label="Download new data every"
+                  schedule={{
+                    period: {
+                      interval: source.schedule.interval.period,
+                      unit: source.schedule.interval.unit,
+                    },
+                  }}
+                  scheduleUnitOptions={[defaultIntervalUnitOptions.DAYS]}
+                  onScheduleChange={onIntervalChange}
+                />
+                <EuiSpacer />
+              </>
+            )}
+          </>
+        )}
+        {iocSource === 'file' && (
+          <>
+            <EuiText>
+              <h4>Upload a file</h4>
+            </EuiText>
+            <EuiSpacer />
+            <EuiFormRow
+              label="File"
+              helpText={
+                <>
+                  <p>Accepted format: JSON (.json) based on STIX spec.</p>
+                  <p>Maximum size: 500 kB. </p>
+                </>
+              }
+              isInvalid={!!fileError}
+              error={fileError}
+            >
+              <EuiFilePicker
+                id={'filePickerId'}
+                fullWidth
+                initialPromptText="Select or drag and drop a file"
+                onChange={onFileChange}
+                display={'large'}
+                multiple={false}
+                aria-label="ioc file picker"
+                isInvalid={!!fileError}
+                data-test-subj="import_ioc_file"
+              />
+            </EuiFormRow>
             <EuiSpacer />
           </>
         )}
@@ -137,7 +384,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({ hist
         <EuiCheckboxGroup
           options={checkboxes}
           idToSelectedMap={checkboxIdToSelectedMap}
-          onChange={onChange}
+          onChange={onIocTypesChange}
         />
         <EuiSpacer />
       </EuiPanel>
@@ -147,7 +394,9 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({ hist
           <EuiButton onClick={() => history.push(ROUTES.THREAT_INTEL_OVERVIEW)}>Cancel</EuiButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton fill>Add threat intel source</EuiButton>
+          <EuiButton isLoading={submitInProgress} fill onClick={onSubmit}>
+            Add threat intel source
+          </EuiButton>
         </EuiFlexItem>
       </EuiFlexGroup>
     </>
