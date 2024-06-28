@@ -70,6 +70,20 @@ export function setupThreatIntelRoutes({ threatIntelService }: NodeServices, rou
     threatIntelService.createThreatIntelMonitor
   );
 
+  router.put(
+    {
+      path: `${API.THREAT_INTEL_BASE}/monitors/{monitorId}`,
+      validate: {
+        params: schema.object({
+          monitorId: schema.string(),
+        }),
+        body: schema.any(),
+        query: createQueryValidationSchema(),
+      },
+    },
+    threatIntelService.updateThreatIntelMonitor
+  );
+
   router.post(
     {
       path: `${API.THREAT_INTEL_BASE}/monitors/_search`,
@@ -96,5 +110,31 @@ export function setupThreatIntelRoutes({ threatIntelService }: NodeServices, rou
       },
     },
     threatIntelService.getThreatIntelIocs
+  );
+
+  router.delete(
+    {
+      path: `${API.THREAT_INTEL_BASE}/sources/{sourceId}`,
+      validate: {
+        params: schema.object({
+          sourceId: schema.string(),
+        }),
+        query: createQueryValidationSchema(),
+      },
+    },
+    threatIntelService.deleteThreatIntelSource
+  );
+
+  router.post(
+    {
+      path: `${API.THREAT_INTEL_BASE}/sources/{sourceId}/_refresh`,
+      validate: {
+        params: schema.object({
+          sourceId: schema.string(),
+        }),
+        query: createQueryValidationSchema(),
+      },
+    },
+    threatIntelService.refreshThreatIntelSource
   );
 }

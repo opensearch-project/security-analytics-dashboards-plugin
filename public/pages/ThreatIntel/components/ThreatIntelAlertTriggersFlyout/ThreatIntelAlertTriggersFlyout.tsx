@@ -12,7 +12,7 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import { ThreatIntelAlertTrigger } from '../../../../../types';
+import { ThreatIntelAlertTrigger, ThreatIntelAlertTriggerAction } from '../../../../../types';
 import React, { useCallback } from 'react';
 import { IocLabel, ThreatIntelIocType } from '../../../../../common/constants';
 import {
@@ -22,6 +22,7 @@ import {
 import { getThreatIntelALertSeverityLabel } from '../../utils/helpers';
 import { AlertSeverity } from '../../../Alerts/utils/constants';
 import { ConfigActionButton } from '../Utility/ConfigActionButton';
+import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
 
 export interface ThreatIntelAlertTriggersProps {
   triggers: ThreatIntelAlertTrigger[];
@@ -52,7 +53,7 @@ export const ThreatIntelAlertTriggersFlyout: React.FC<ThreatIntelAlertTriggersPr
 
   const getNotificationConfig = (
     alertSeverity: AlertSeverity,
-    triggerAction: ThreatIntelAlertTrigger['action']
+    triggerAction: ThreatIntelAlertTriggerAction
   ): DescriptionGroupProps['listItems'] => {
     return [
       {
@@ -61,7 +62,7 @@ export const ThreatIntelAlertTriggersFlyout: React.FC<ThreatIntelAlertTriggersPr
       },
       {
         title: 'Notification channel',
-        description: triggerAction.destination_name,
+        description: DEFAULT_EMPTY_DATA,
       },
     ];
   };
@@ -94,7 +95,7 @@ export const ThreatIntelAlertTriggersFlyout: React.FC<ThreatIntelAlertTriggersPr
         </EuiFlexItem>
       </EuiFlexGroup>
       <EuiSpacer />
-      {triggers.map(({ action, severity, name, data_sources, ioc_types }, idx) => {
+      {triggers.map(({ actions, severity, name, data_sources, ioc_types }, idx) => {
         const logSourcesCount = data_sources.length === 0 ? 'Any' : data_sources.length.toString();
         const iocTriggerCondition =
           ioc_types.length === 0
@@ -139,7 +140,7 @@ export const ThreatIntelAlertTriggersFlyout: React.FC<ThreatIntelAlertTriggersPr
                   title: createTitle('Notification'),
                   description: (
                     <DescriptionGroup
-                      listItems={getNotificationConfig(severity, action)}
+                      listItems={getNotificationConfig(severity, actions[0])}
                       groupProps={{ justifyContent: 'spaceAround' }}
                     />
                   ),

@@ -62,7 +62,8 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
   threatIntelService,
   history,
 }) => {
-  const isEdit = !!location.state?.scanConfig?.indices.length;
+  const isEdit = location.pathname.includes(ROUTES.THREAT_INTEL_EDIT_SCAN_CONFIG);
+  const [scanId, setScanId] = useState('');
   const context = useContext(CoreServicesContext);
   const [currentStep, setCurrentStep] = useState(
     location.state?.step ?? ConfigureThreatIntelScanStep.SelectLogSources
@@ -71,7 +72,7 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
   const [configureInProgress, setConfigureInProgress] = useState(false);
   const [stepDataValid, setStepDataValid] = useState({
     [ConfigureThreatIntelScanStep.SelectLogSources]: true,
-    [ConfigureThreatIntelScanStep.SetupAlertTriggers]: false,
+    [ConfigureThreatIntelScanStep.SetupAlertTriggers]: true,
   });
   const threatIntelTriggerCounter = useRef(0);
   const getNextTriggerName = () => {
@@ -79,11 +80,12 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
     return `Trigger ${threatIntelTriggerCounter.current}`;
   };
 
-  const [configureScanFormInputs, setConfigureScanPayload] = useState<
+  const [configureScanFormInputs, setConfigureScanFormInputs] = useState<
     ThreatIntelScanConfigFormModel
   >(() => {
     if (location.state?.scanConfig) {
-      return deriveFormModelFromConfig(location.state?.scanConfig);
+      setScanId(location.state.scanConfig.id);
+      return deriveFormModelFromConfig(location.state.scanConfig);
     }
 
     return getEmptyScanConfigFormModel(getNextTriggerName());
@@ -97,6 +99,23 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
         ? BREADCRUMBS.THREAT_INTEL_EDIT_SCAN_CONFIG
         : BREADCRUMBS.THREAT_INTEL_SETUP_SCAN_CONFIG,
     ]);
+
+    if (isEdit && !location.state?.scanConfig) {
+      const getScanConfig = async () => {
+        try {
+          const res = await threatIntelService.getThreatIntelScanConfig();
+
+          if (res.ok) {
+            setScanId(res.response.id);
+            setConfigureScanFormInputs(deriveFormModelFromConfig(res.response));
+          }
+        } catch (e: any) {
+          console.log('failed to get scan config');
+        }
+      };
+
+      getScanConfig();
+    }
   }, []);
 
   const updateFormErrors = (errors: FormErrors) => {
@@ -152,7 +171,7 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
   };
 
   const updatePayload = (formModel: ThreatIntelScanConfigFormModel) => {
-    setConfigureScanPayload(formModel);
+    setConfigureScanFormInputs(formModel);
   };
 
   const onSourcesChange = (logSources: ThreatIntelLogSource[]): void => {
@@ -223,9 +242,18 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
 
   const onSubmit = async () => {
     setConfigureInProgress(true);
-    const res = await threatIntelService.createThreatIntelMonitor(
-      configFormModelToMonitorPayload(configureScanFormInputs)
-    );
+
+    let res;
+    if (isEdit) {
+      res = await threatIntelService.updateThreatIntelMonitor(
+        scanId,
+        configFormModelToMonitorPayload(configureScanFormInputs)
+      );
+    } else {
+      res = await threatIntelService.createThreatIntelMonitor(
+        configFormModelToMonitorPayload(configureScanFormInputs)
+      );
+    }
 
     if (res.ok) {
       history.push({

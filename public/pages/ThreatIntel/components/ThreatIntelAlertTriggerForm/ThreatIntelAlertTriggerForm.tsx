@@ -44,38 +44,43 @@ export const ThreatIntelAlertTriggerForm: React.FC<ThreatIntelAlertTriggerProps>
   const onChannelsChange = (selectedOptions: EuiComboBoxOptionOption<string>[]) => {
     updateTrigger({
       ...trigger,
-      action: {
-        ...trigger.action,
-        destination_id: selectedOptions[0]?.value || '',
-        destination_name: selectedOptions[0].label || '',
-      },
+      actions: [
+        {
+          ...trigger.actions[0],
+          destination_id: selectedOptions[0]?.value || '',
+        },
+      ],
     });
   };
 
   const onMessageSubjectChange = (subject: string) => {
     updateTrigger({
       ...trigger,
-      action: {
-        ...trigger.action,
-        name: subject,
-        subject_template: {
-          ...trigger.action.subject_template,
-          source: subject,
+      actions: [
+        {
+          ...trigger.actions[0],
+          name: subject,
+          subject_template: {
+            ...trigger.actions[0].subject_template,
+            source: subject,
+          },
         },
-      },
+      ],
     });
   };
 
   const onMessageBodyChange = (message: string) => {
     updateTrigger({
       ...trigger,
-      action: {
-        ...trigger.action,
-        message_template: {
-          ...trigger.action.message_template,
-          source: message,
+      actions: [
+        {
+          ...trigger.actions[0],
+          message_template: {
+            ...trigger.actions[0].message_template,
+            source: message,
+          },
         },
-      },
+      ],
     });
   };
 
@@ -155,7 +160,7 @@ export const ThreatIntelAlertTriggerForm: React.FC<ThreatIntelAlertTriggerProps>
       </EuiFormRow>
       <EuiSpacer />
       <NotificationForm
-        action={trigger.action}
+        action={trigger.actions[0]}
         allNotificationChannels={allNotificationChannels}
         loadingNotifications={loadingNotifications}
         onChannelsChange={onChannelsChange}

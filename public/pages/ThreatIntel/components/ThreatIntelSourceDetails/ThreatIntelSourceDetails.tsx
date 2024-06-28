@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   EuiBottomBar,
   EuiButton,
@@ -21,23 +21,29 @@ import {
   EuiTitle,
 } from '@elastic/eui';
 import { Interval } from '../../../CreateDetector/components/DefineDetector/components/DetectorSchedule/Interval';
-import { FileUploadSource, S3ConnectionSource, ThreatIntelSourceItem } from '../../../../../types';
-import { ROUTES, defaultIntervalUnitOptions } from '../../../../utils/constants';
-import { readIocsFromFile, threatIntelSourceItemToUpdatePayload } from '../../utils/helpers';
+import {
+  FileUploadSource,
+  S3ConnectionSource,
+  ThreatIntelS3CustomSourcePayload,
+  ThreatIntelSourceItem,
+  ThreatIntelSourcePayload,
+} from '../../../../../types';
+import { defaultIntervalUnitOptions } from '../../../../utils/constants';
+import { readIocsFromFile, threatIntelSourceItemToBasePayload } from '../../utils/helpers';
 import { ThreatIntelService } from '../../../../services';
-import { RouteComponentProps } from 'react-router-dom';
 import { ThreatIntelIocType } from '../../../../../common/constants';
+import { PeriodSchedule } from '../../../../../models/interfaces';
 
 export interface ThreatIntelSourceDetailsProps {
   sourceItem: ThreatIntelSourceItem;
   threatIntelService: ThreatIntelService;
-  history: RouteComponentProps['history'];
+  onSourceUpdate: () => void;
 }
 
 export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> = ({
   sourceItem,
   threatIntelService,
-  history,
+  onSourceUpdate,
 }) => {
   const [isReadOnly, setIsReadOnly] = useState(true);
   const [sourceItemState, setSourceItemState] = useState(sourceItem);
@@ -47,29 +53,24 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
   const [fileUploadSource, setFileUploadSource] = useState<FileUploadSource>(
     sourceItem.source as FileUploadSource
   );
-  const {
-    id,
-    description,
-    name,
-    schedule,
-    ioc_types,
-    source: iocSourceData,
-    enabled,
-  } = sourceItemState;
-  const iocSourceType = (iocSourceData as S3ConnectionSource).s3 ? 'data_store' : 'file';
+  const { id, description, name, ioc_types, enabled, type } = sourceItemState;
+  const [schedule, setSchedule] = useState<ThreatIntelS3CustomSourcePayload['schedule']>(
+    (sourceItem as ThreatIntelS3CustomSourcePayload).schedule
+  );
   const [fileError, setFileError] = useState('');
   const [saveInProgress, setSaveInProgress] = useState(false);
+  const [saveDisabled, setSaveDisabled] = useState(false);
   const checkboxes = [
     {
-      id: `ip`,
+      id: ThreatIntelIocType.IPAddress,
       label: 'IP - addresses',
     },
     {
-      id: `domain`,
+      id: ThreatIntelIocType.Domain,
       label: 'Domains',
     },
     {
-      id: `file_hash`,
+      id: ThreatIntelIocType.FileHash,
       label: 'File hash',
     },
   ];
@@ -83,11 +84,20 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
     }
   );
 
+  useEffect(() => {
+    if (!isReadOnly && type === 'IOC_UPLOAD' && fileUploadSource.ioc_upload.iocs.length === 0) {
+      setSaveDisabled(true);
+    } else if (type === 'IOC_UPLOAD' && fileUploadSource.ioc_upload.iocs.length > 0) {
+      setSaveDisabled(false);
+    }
+  }, [fileUploadSource, isReadOnly, type]);
+
   const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSourceItemState({
       ...sourceItemState,
       name: event.target.value,
     });
+    setSaveDisabled(!event.target.value);
   };
 
   const onDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -136,32 +146,57 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
     }
   };
 
+  const onIntervalChange = (schedule: PeriodSchedule) => {
+    setSchedule({
+      interval: {
+        start_time: Date.now(),
+        period: schedule.period.interval,
+        unit: schedule.period.unit,
+      },
+    });
+  };
+
   const onSave = () => {
     setSaveInProgress(true);
-    let payload = threatIntelSourceItemToUpdatePayload(sourceItemState);
-    payload = {
-      ...payload,
-      schedule: {
-        ...sourceItemState.schedule,
-        interval: {
-          ...sourceItemState.schedule.interval,
-          start_time: Date.now(),
-        },
-      },
+
+    const payloadBase = {
+      ...threatIntelSourceItemToBasePayload(sourceItemState),
       ioc_types: Object.entries(checkboxIdToSelectedMap)
         .filter(([ioc, checked]) => checked)
         .map(([ioc]) => ioc as ThreatIntelIocType),
-      source: iocSourceType === 'data_store' ? s3ConnectionDetails : fileUploadSource,
     };
+
+    const payload: ThreatIntelSourcePayload =
+      sourceItemState.type === 'S3_CUSTOM'
+        ? {
+            ...payloadBase,
+            type: 'S3_CUSTOM',
+            schedule: {
+              ...sourceItemState.schedule,
+              interval: {
+                ...sourceItemState.schedule.interval,
+                start_time: Date.now(),
+              },
+            },
+            source: s3ConnectionDetails,
+          }
+        : {
+            ...payloadBase,
+            type: 'IOC_UPLOAD',
+            source: fileUploadSource,
+            enabled: false,
+          };
+
+    if (sourceItem.type === 'IOC_UPLOAD') {
+      delete (payload as any)['schedule'];
+    }
+
     threatIntelService.updateThreatIntelSource(id, payload).then((res) => {
       setSaveInProgress(false);
       if (res.ok) {
         setSaveInProgress(false);
         setIsReadOnly(true);
-        history.push({
-          pathname: `${ROUTES.THREAT_INTEL_SOURCE_DETAILS}/${res.response.id}`,
-          state: { source: res.response },
-        });
+        onSourceUpdate();
       }
     });
   };
@@ -196,7 +231,7 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
               />
             </EuiFormRow>
             <EuiSpacer />
-            {iocSourceType === 'data_store' && (
+            {type === 'S3_CUSTOM' && schedule && (
               <>
                 <EuiFormLabel>Download schedule</EuiFormLabel>
                 <EuiSpacer size="xs" />
@@ -210,7 +245,7 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
                           unit: schedule.interval.unit,
                         },
                       }}
-                      onScheduleChange={(sch) => {}}
+                      onScheduleChange={onIntervalChange}
                       readonly={isReadOnly || !enabled}
                       scheduleUnitOptions={[defaultIntervalUnitOptions.DAYS]}
                     />
@@ -270,7 +305,7 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
                 <EuiSpacer />
               </>
             )}
-            {iocSourceType === 'file' && (
+            {type === 'IOC_UPLOAD' && (
               <>
                 {isReadOnly && (
                   <EuiFormRow label="Uploaded file">
@@ -340,7 +375,7 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
               <EuiButton onClick={onDiscard}>Discard</EuiButton>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
-              <EuiButton isLoading={saveInProgress} fill onClick={onSave}>
+              <EuiButton isLoading={saveInProgress} fill onClick={onSave} disabled={saveDisabled}>
                 Save
               </EuiButton>
             </EuiFlexItem>

@@ -68,9 +68,43 @@ export default class ThreatIntelService {
     return response;
   };
 
+  deleteThreatIntelSource = async (sourceId: string): Promise<ServerResponse<any>> => {
+    const url = `..${API.THREAT_INTEL_BASE}/sources/${sourceId}`;
+    const response = (await this.httpClient.delete(url, {
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+      },
+    })) as ServerResponse<any>;
+
+    return response;
+  };
+
+  refreshThreatIntelSource = async (sourceId: string): Promise<ServerResponse<any>> => {
+    const url = `..${API.THREAT_INTEL_BASE}/sources/${sourceId}/_refresh`;
+    const response = (await this.httpClient.post(url, {
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+      },
+    })) as ServerResponse<any>;
+
+    return response;
+  };
+
   createThreatIntelMonitor = async (montiorPayload: ThreatIntelMonitorPayload) => {
     const url = `..${API.THREAT_INTEL_BASE}/monitors`;
     const response = (await this.httpClient.post(url, {
+      body: JSON.stringify(montiorPayload),
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+      },
+    })) as ServerResponse<any>;
+
+    return response;
+  };
+
+  updateThreatIntelMonitor = async (id: string, montiorPayload: ThreatIntelMonitorPayload) => {
+    const url = `..${API.THREAT_INTEL_BASE}/monitors/${id}`;
+    const response = (await this.httpClient.put(url, {
       body: JSON.stringify(montiorPayload),
       query: {
         dataSourceId: dataSourceInfo.activeDataSource.id,
@@ -90,11 +124,11 @@ export default class ThreatIntelService {
     })) as ServerResponse<any>;
 
     if (response.ok) {
-      const { _id, _source } = response.response.hits.hits[0];
+      const { _source } = response.response.hits.hits[0];
 
       return {
         ok: response.ok,
-        response: { id: _id, ..._source },
+        response: { ..._source },
       };
     }
 

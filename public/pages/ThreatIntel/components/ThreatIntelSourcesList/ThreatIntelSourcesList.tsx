@@ -77,7 +77,7 @@ export const ThreatIntelSourcesList: React.FC<ThreatIntelSourcesListProps> = ({
                       More details
                     </EuiButtonEmpty>
                     <EuiSpacer size="m" />
-                    {source.enabled ? (
+                    {source.enabled && (
                       <>
                         <EuiIcon
                           type={'dot'}
@@ -86,8 +86,6 @@ export const ThreatIntelSourcesList: React.FC<ThreatIntelSourcesListProps> = ({
                         />{' '}
                         Active
                       </>
-                    ) : (
-                      <EuiButton style={{ width: '100%' }}>Activate</EuiButton>
                     )}
                   </>
                 }

@@ -92,7 +92,8 @@ const HIDDEN_NAV_ROUTES: string[] = [
   `${ROUTES.LOG_TYPES}/.+`,
   ROUTES.LOG_TYPES_CREATE,
   ROUTES.THREAT_INTEL_ADD_CUSTOM_SOURCE,
-  ROUTES.THREAT_INTEL_SCAN_CONFIG,
+  ROUTES.THREAT_INTEL_CREATE_SCAN_CONFIG,
+  ROUTES.THREAT_INTEL_EDIT_SCAN_CONFIG,
 ];
 
 interface MainProps extends RouteComponentProps {
@@ -757,7 +758,10 @@ export default class Main extends Component<MainProps, MainState> {
                                       }}
                                     />
                                     <Route
-                                      path={ROUTES.THREAT_INTEL_SCAN_CONFIG}
+                                      path={[
+                                        ROUTES.THREAT_INTEL_CREATE_SCAN_CONFIG,
+                                        ROUTES.THREAT_INTEL_EDIT_SCAN_CONFIG,
+                                      ]}
                                       render={(props: RouteComponentProps<any, any, any>) => {
                                         return (
                                           <ThreatIntelScanConfigForm
@@ -776,6 +780,7 @@ export default class Main extends Component<MainProps, MainState> {
                                           <ThreatIntelSource
                                             {...props}
                                             threatIntelService={services.threatIntelService}
+                                            notifications={core.notifications}
                                           />
                                         );
                                       }}

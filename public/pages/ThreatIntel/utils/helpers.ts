@@ -8,8 +8,6 @@ import {
   ThreatIntelAlertTrigger,
   ThreatIntelScanConfig,
   ThreatIntelNextStepCardProps,
-  ThreatIntelSourcePayload,
-  TriggerAction,
   ThreatIntelScanConfigFormModel,
   ThreatIntelLogSource,
   ThreatIntelMonitorPayload,
@@ -17,6 +15,8 @@ import {
   S3ConnectionSource,
   FileUploadSource,
   ThreatIntelSourceItem,
+  ThreatIntelSourcePayloadBase,
+  ThreatIntelAlertTriggerAction,
 } from '../../../../types';
 import { AlertSeverity } from '../../Alerts/utils/constants';
 import { ALERT_SEVERITY_OPTIONS } from '../../CreateDetector/components/ConfigureAlerts/utils/constants';
@@ -32,15 +32,15 @@ export function getEmptyScanConfigFormModel(triggerName: string): ThreatIntelSca
     schedule: {
       period: {
         interval: 1,
-        unit: 'DAYS',
+        unit: 'MINUTES',
       },
     },
     triggers: [getEmptyThreatIntelAlertTrigger(triggerName)],
   };
 }
 
-export function getEmptyThreatIntelAlertTrigger(triggerName: string): ThreatIntelAlertTrigger {
-  const emptyTriggerAction: TriggerAction = {
+export function getEmptyThreatIntelAlertTriggerAction(): ThreatIntelAlertTriggerAction {
+  return {
     id: '',
     name: '',
     destination_id: '',
@@ -58,16 +58,15 @@ export function getEmptyThreatIntelAlertTrigger(triggerName: string): ThreatInte
       unit: 'MINUTES',
     },
   };
+}
 
+export function getEmptyThreatIntelAlertTrigger(triggerName: string): ThreatIntelAlertTrigger {
   return {
     name: triggerName,
     data_sources: [],
     ioc_types: [],
     severity: AlertSeverity.ONE,
-    action: {
-      ...emptyTriggerAction,
-      destination_name: '',
-    },
+    actions: [getEmptyThreatIntelAlertTriggerAction()],
   };
 }
 
@@ -123,22 +122,13 @@ export function getEmptyIocFileUploadSource(): FileUploadSource {
   };
 }
 
-export function getEmptyThreatIntelSourcePayload(): ThreatIntelSourcePayload {
+export function getEmptyThreatIntelSourcePayloadBase(): ThreatIntelSourcePayloadBase {
   return {
-    type: 'S3_CUSTOM',
     name: '',
     description: '',
     format: 'STIX2',
     store_type: 'OS',
     enabled: true,
-    schedule: {
-      interval: {
-        start_time: Date.now(),
-        period: 1,
-        unit: 'MINUTES',
-      },
-    },
-    source: getEmptyS3ConnectionSource(),
     ioc_types: [],
   };
 }
@@ -173,6 +163,12 @@ export function deriveFormModelFromConfig(
 
   const configClone: any = _.cloneDeep(scanConfig);
   delete configClone.per_ioc_type_scan_input_list;
+
+  configClone.triggers.forEach((trigger: ThreatIntelAlertTrigger) => {
+    if (trigger.actions.length === 0) {
+      trigger.actions.push(getEmptyThreatIntelAlertTriggerAction());
+    }
+  });
 
   const formModel: ThreatIntelScanConfigFormModel = {
     ...configClone,
@@ -230,16 +226,19 @@ export function readIocsFromFile(
   reader.readAsText(file);
   reader.onload = function () {
     try {
-      const iocs =
+      const iocStrings =
         reader.result
           ?.toString()
           .split('\n')
           .filter((iocObj) => !!iocObj) || [];
-      for (let ioc of iocs) {
+      const iocs = [];
+      for (let iocStr of iocStrings) {
         try {
-          if (typeof JSON.parse(ioc) !== 'object') {
+          const ioc = JSON.parse(iocStr);
+          if (typeof ioc !== 'object') {
             throw '';
           }
+          iocs.push(ioc);
         } catch (e: any) {
           onRead({
             ok: false,
@@ -262,19 +261,16 @@ export function readIocsFromFile(
   };
 }
 
-export function threatIntelSourceItemToUpdatePayload(
+export function threatIntelSourceItemToBasePayload(
   sourceItem: ThreatIntelSourceItem
-): ThreatIntelSourcePayload {
-  const { name, description, enabled, schedule, source, ioc_types } = sourceItem;
+): ThreatIntelSourcePayloadBase {
+  const { name, description, enabled, ioc_types } = sourceItem;
   return {
-    type: 'S3_CUSTOM',
     name,
     description,
     format: 'STIX2',
     store_type: 'OS',
     enabled,
-    schedule,
-    source,
     ioc_types,
   };
 }

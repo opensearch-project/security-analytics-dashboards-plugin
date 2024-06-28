@@ -51,7 +51,8 @@ export const ROUTES = Object.freeze({
   LOG_TYPES_CREATE: '/create-log-type',
   THREAT_INTEL_OVERVIEW: '/threat-intel',
   THREAT_INTEL_ADD_CUSTOM_SOURCE: '/add-threat-intel-source',
-  THREAT_INTEL_SCAN_CONFIG: '/scan-config',
+  THREAT_INTEL_CREATE_SCAN_CONFIG: '/create-scan-config',
+  THREAT_INTEL_EDIT_SCAN_CONFIG: '/edit-scan-config',
   THREAT_INTEL_SOURCE_DETAILS: '/threat-intel-source',
 
   get LANDING_PAGE(): string {
@@ -98,11 +99,11 @@ export const BREADCRUMBS = Object.freeze({
   },
   THREAT_INTEL_SETUP_SCAN_CONFIG: {
     text: 'Setup real-time scan',
-    href: `#${ROUTES.THREAT_INTEL_SCAN_CONFIG}`,
+    href: `#${ROUTES.THREAT_INTEL_CREATE_SCAN_CONFIG}`,
   },
   THREAT_INTEL_EDIT_SCAN_CONFIG: {
     text: 'Edit real-time scan',
-    href: `#${ROUTES.THREAT_INTEL_SCAN_CONFIG}`,
+    href: `#${ROUTES.THREAT_INTEL_EDIT_SCAN_CONFIG}`,
   },
   THREAT_INTEL_SOURCE_DETAILS: (name: string, id: string) => ({
     text: `${name}`,

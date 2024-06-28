@@ -30,10 +30,10 @@ export enum FeedType {
   GUARDDUTY,
 }
 
-export interface ThreatIntelSourceItem extends ThreatIntelSourceSearchHitSourceConfig {
+export type ThreatIntelSourceItem = ThreatIntelSourceSearchHitSourceConfig & {
   id: string;
   version: number;
-}
+};
 
 export interface S3ConnectionSource {
   s3: {
@@ -51,13 +51,17 @@ export interface FileUploadSource {
   };
 }
 
-export interface ThreatIntelSourcePayload {
-  type: 'S3_CUSTOM';
+export interface ThreatIntelSourcePayloadBase {
   name: string;
   description?: string;
   format: 'STIX2';
   store_type: 'OS';
   enabled: boolean;
+  ioc_types: ThreatIntelIocType[];
+}
+
+export interface ThreatIntelS3CustomSourcePayload extends ThreatIntelSourcePayloadBase {
+  type: 'S3_CUSTOM';
   schedule: {
     interval: {
       start_time: number;
@@ -65,9 +69,17 @@ export interface ThreatIntelSourcePayload {
       unit: string;
     };
   };
-  source: S3ConnectionSource | FileUploadSource;
-  ioc_types: ThreatIntelIocType[];
+  source: S3ConnectionSource;
 }
+
+export interface ThreatIntelIocUploadSourcePayload extends ThreatIntelSourcePayloadBase {
+  type: 'IOC_UPLOAD';
+  source: FileUploadSource;
+}
+
+export type ThreatIntelSourcePayload =
+  | ThreatIntelS3CustomSourcePayload
+  | ThreatIntelIocUploadSourcePayload;
 
 export interface LogSourceIocConfig {
   enabled: boolean;
@@ -83,12 +95,14 @@ export interface ThreatIntelLogSource {
   iocConfigMap: ThreatIntelIocConfigMap;
 }
 
+export type ThreatIntelAlertTriggerAction = TriggerAction;
+
 export interface ThreatIntelAlertTrigger {
   name: string;
   data_sources: string[];
   ioc_types: string[];
   severity: AlertSeverity;
-  action: TriggerAction & { destination_name: string };
+  actions: ThreatIntelAlertTriggerAction[];
 }
 
 export interface ThreatIntelScanConfig extends ThreatIntelMonitorPayload {
@@ -122,7 +136,7 @@ export type UpdateThreatIntelSourcePayload = ThreatIntelSourcePayload;
 export type ThreatIntelSourceState = string;
 export type ThreatIntelSourceRefreshType = string;
 
-export interface ThreatIntelSourceSearchHitSourceConfig extends ThreatIntelSourcePayload {
+export type ThreatIntelSourceSearchHitSourceConfig = ThreatIntelSourcePayload & {
   created_by_user: string | null;
   created_at: string | number;
   enabled_time: string | number;
@@ -131,7 +145,7 @@ export interface ThreatIntelSourceSearchHitSourceConfig extends ThreatIntelSourc
   refresh_type: ThreatIntelSourceRefreshType;
   last_refreshed_time: string | number;
   last_refreshed_user: string | null;
-}
+};
 
 export interface ThreatIntelSourceSearchHit {
   _index: string;

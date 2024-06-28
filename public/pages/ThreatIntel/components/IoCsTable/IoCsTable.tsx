@@ -3,20 +3,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useContext, useEffect, useState } from 'react';
+import React from 'react';
 import { EuiBasicTableColumn, EuiInMemoryTable, EuiPanel, EuiSpacer, EuiText } from '@elastic/eui';
 import { ThreatIntelIocData } from '../../../../../types';
-import { SecurityAnalyticsContext } from '../../../../services';
 import moment from 'moment';
 
 export interface IoCstableProps {
   sourceId?: string;
+  loadingIocs: boolean;
+  iocs: ThreatIntelIocData[];
 }
 
-export const IoCstable: React.FC<IoCstableProps> = ({ sourceId }) => {
-  const saContext = useContext(SecurityAnalyticsContext);
-  const [iocs, setIocs] = useState<ThreatIntelIocData[]>([]);
-  const [loadingIocs, setLoadingIocs] = useState(true);
+export const IoCstable: React.FC<IoCstableProps> = ({ sourceId, iocs, loadingIocs }) => {
   const columns: EuiBasicTableColumn<ThreatIntelIocData>[] = [
     {
       name: 'Value',
@@ -45,22 +43,6 @@ export const IoCstable: React.FC<IoCstableProps> = ({ sourceId }) => {
       render: (timestamp: number | string) => moment(timestamp).format('YYYY-MM-DDTHH:mm'),
     },
   ];
-
-  useEffect(() => {
-    const getIocs = async () => {
-      if (saContext && sourceId) {
-        setLoadingIocs(true);
-        const iocsRes = await saContext.services.threatIntelService.getThreatIntelIocs({});
-
-        if (iocsRes.ok) {
-          setIocs(iocsRes.response.iocs);
-        }
-        setLoadingIocs(false);
-      }
-    };
-
-    getIocs();
-  }, [saContext]);
 
   return (
     <EuiPanel>

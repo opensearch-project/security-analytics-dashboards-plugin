@@ -51,7 +51,7 @@ export const ThreatIntelOverviewActions: React.FC<ThreatIntelOverviewActionsProp
       fill: true,
       onClick: () => {
         history.push({
-          pathname: ROUTES.THREAT_INTEL_SCAN_CONFIG,
+          pathname: ROUTES.THREAT_INTEL_CREATE_SCAN_CONFIG,
         });
       },
     });
@@ -76,7 +76,7 @@ export const ThreatIntelOverviewActions: React.FC<ThreatIntelOverviewActionsProp
         fill: true,
         onClick: () => {
           history.push({
-            pathname: ROUTES.THREAT_INTEL_SCAN_CONFIG,
+            pathname: ROUTES.THREAT_INTEL_EDIT_SCAN_CONFIG,
             state: {
               scanConfig,
               step: ConfigureThreatIntelScanStep.SetupAlertTriggers,

@@ -28,12 +28,14 @@ import ThreatIntelService from '../../../../services/ThreatIntelService';
 import {
   FileUploadSource,
   S3ConnectionSource,
+  ThreatIntelS3CustomSourcePayload,
   ThreatIntelSourcePayload,
+  ThreatIntelSourcePayloadBase,
 } from '../../../../../types';
 import {
   getEmptyIocFileUploadSource,
   getEmptyS3ConnectionSource,
-  getEmptyThreatIntelSourcePayload,
+  getEmptyThreatIntelSourcePayloadBase,
   readIocsFromFile,
 } from '../../utils/helpers';
 import { ThreatIntelIocType } from '../../../../../common/constants';
@@ -48,9 +50,17 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
   threatIntelService,
 }) => {
   const context = useContext(CoreServicesContext);
-  const [source, setSource] = useState<ThreatIntelSourcePayload>(
-    getEmptyThreatIntelSourcePayload()
+  const [source, setSource] = useState<ThreatIntelSourcePayloadBase>(
+    getEmptyThreatIntelSourcePayloadBase()
   );
+  const [schedule, setSchedule] = useState<ThreatIntelS3CustomSourcePayload['schedule']>({
+    interval: {
+      start_time: Date.now(),
+      period: 1,
+      unit: 'DAYS',
+    },
+  });
+  const [sourceType, setSourceType] = useState<'S3_CUSTOM' | 'IOC_UPLOAD'>('S3_CUSTOM');
   const [s3ConnectionDetails, setS3ConnectionDetails] = useState<S3ConnectionSource>(
     getEmptyS3ConnectionSource()
   );
@@ -76,8 +86,6 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
   const [checkboxIdToSelectedMap, setCheckboxIdToSelectedMap] = useState<Record<string, boolean>>(
     {}
   );
-
-  const [iocSource, setIocSource] = useState<'data_store' | 'file'>('data_store');
 
   useEffect(() => {
     context?.chrome.setBreadcrumbs([
@@ -128,14 +136,11 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
   };
 
   const onIntervalChange = (schedule: PeriodSchedule) => {
-    setSource({
-      ...source,
-      schedule: {
-        interval: {
-          start_time: Date.now(),
-          period: schedule.period.interval,
-          unit: schedule.period.unit,
-        },
+    setSchedule({
+      interval: {
+        start_time: Date.now(),
+        period: schedule.period.interval,
+        unit: schedule.period.unit,
       },
     });
   };
@@ -155,20 +160,33 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
 
   const onSubmit = () => {
     setSubmitInProgress(true);
-    const payload: ThreatIntelSourcePayload = {
-      ...source,
-      schedule: {
-        ...source.schedule,
-        interval: {
-          ...source.schedule.interval,
-          start_time: Date.now(),
-        },
-      },
-      ioc_types: Object.entries(checkboxIdToSelectedMap)
-        .filter(([ioc, checked]) => checked)
-        .map(([ioc]) => ioc as ThreatIntelIocType),
-      source: iocSource === 'data_store' ? s3ConnectionDetails : fileUploadSource,
-    };
+    const payload: ThreatIntelSourcePayload =
+      sourceType === 'S3_CUSTOM'
+        ? {
+            ...source,
+            type: 'S3_CUSTOM',
+            schedule: {
+              ...schedule,
+              interval: {
+                ...schedule.interval,
+                start_time: Date.now(),
+              },
+            },
+            ioc_types: Object.entries(checkboxIdToSelectedMap)
+              .filter(([ioc, checked]) => checked)
+              .map(([ioc]) => ioc as ThreatIntelIocType),
+            source: s3ConnectionDetails,
+          }
+        : {
+            ...source,
+            type: 'IOC_UPLOAD',
+            ioc_types: Object.entries(checkboxIdToSelectedMap)
+              .filter(([ioc, checked]) => checked)
+              .map(([ioc]) => ioc as ThreatIntelIocType),
+            source: fileUploadSource,
+            enabled: false,
+          };
+
     threatIntelService.addThreatIntelSource(payload).then((res) => {
       setSubmitInProgress(false);
       if (res.ok) {
@@ -237,9 +255,9 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
                 </>
               }
               checkableType="radio"
-              checked={iocSource === 'data_store'}
+              checked={sourceType === 'S3_CUSTOM'}
               onChange={() => {
-                setIocSource('data_store');
+                setSourceType('S3_CUSTOM');
               }}
             />
           </EuiFlexItem>
@@ -258,15 +276,15 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
                 </>
               }
               checkableType="radio"
-              checked={iocSource === 'file'}
+              checked={sourceType === 'IOC_UPLOAD'}
               onChange={() => {
-                setIocSource('file');
+                setSourceType('IOC_UPLOAD');
               }}
             />
           </EuiFlexItem>
         </EuiFlexGroup>
         <EuiSpacer />
-        {iocSource === 'data_store' && (
+        {sourceType === 'S3_CUSTOM' && (
           <>
             <EuiText>
               <h4>Connection details</h4>
@@ -327,14 +345,14 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
               onChange={(event) => onRefreshSwitchChange(event.target.checked)}
             />
             <EuiSpacer />
-            {source.enabled && (
+            {source.enabled && sourceType === 'S3_CUSTOM' && (
               <>
                 <Interval
                   label="Download new data every"
                   schedule={{
                     period: {
-                      interval: source.schedule.interval.period,
-                      unit: source.schedule.interval.unit,
+                      interval: schedule.interval.period,
+                      unit: schedule.interval.unit,
                     },
                   }}
                   scheduleUnitOptions={[defaultIntervalUnitOptions.DAYS]}
@@ -345,7 +363,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
             )}
           </>
         )}
-        {iocSource === 'file' && (
+        {sourceType === 'IOC_UPLOAD' && (
           <>
             <EuiText>
               <h4>Upload a file</h4>

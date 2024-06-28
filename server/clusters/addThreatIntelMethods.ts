@@ -58,6 +58,20 @@ export function addThreatIntelMethods(securityAnalytics: any, createAction: any)
     method: 'POST',
   });
 
+  securityAnalytics[METHOD_NAMES.UPDATE_THREAT_INTEL_MONITOR] = createAction({
+    url: {
+      fmt: `${API.THREAT_INTEL_BASE}/monitors/<%=monitorId%>`,
+      req: {
+        monitorId: {
+          type: 'string',
+          required: true,
+        },
+      },
+    },
+    needBody: true,
+    method: 'PUT',
+  });
+
   securityAnalytics[METHOD_NAMES.SEARCH_THREAT_INTEL_MONITORS] = createAction({
     url: {
       fmt: `${API.THREAT_INTEL_BASE}/monitors/_search`,
@@ -93,5 +107,33 @@ export function addThreatIntelMethods(securityAnalytics: any, createAction: any)
     },
     needBody: false,
     method: 'GET',
+  });
+
+  securityAnalytics[METHOD_NAMES.DELETE_THREAT_INTEL_SOURCE] = createAction({
+    url: {
+      fmt: `${API.THREAT_INTEL_BASE}/sources/<%=sourceId%>`,
+      req: {
+        sourceId: {
+          type: 'string',
+          required: true,
+        },
+      },
+    },
+    needBody: false,
+    method: 'DELETE',
+  });
+
+  securityAnalytics[METHOD_NAMES.REFRESH_THREAT_INTEL_SOURCE] = createAction({
+    url: {
+      fmt: `${API.THREAT_INTEL_BASE}/sources/<%=sourceId%>/_refresh`,
+      req: {
+        sourceId: {
+          type: 'string',
+          required: true,
+        },
+      },
+    },
+    needBody: false,
+    method: 'POST',
   });
 }

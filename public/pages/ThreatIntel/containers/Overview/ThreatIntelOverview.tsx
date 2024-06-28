@@ -31,9 +31,7 @@ import { ThreatIntelSourcesList } from '../../components/ThreatIntelSourcesList/
 import { deriveFormModelFromConfig, getThreatIntelNextStepsProps } from '../../utils/helpers';
 import { ThreatIntelOverviewActions } from '../../components/ThreatIntelOverviewActions/ThreatIntelOverviewActions';
 import ThreatIntelService from '../../../../services/ThreatIntelService';
-import { ThreatIntelIocType } from '../../../../../common/constants';
 import { ThreatIntelLogScanConfig } from '../../components/ThreatIntelLogScanConfig/ThreatIntelLogScanConfig';
-import { dummySource } from '../../utils/constants';
 
 export interface ThreatIntelOverviewProps extends RouteComponentProps {
   threatIntelService: ThreatIntelService;
@@ -50,7 +48,7 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
 
   const onEditScanConfig = () => {
     history.push({
-      pathname: `${ROUTES.THREAT_INTEL_SCAN_CONFIG}`,
+      pathname: `${ROUTES.THREAT_INTEL_EDIT_SCAN_CONFIG}`,
       state: { scanConfig },
     });
   };
@@ -116,7 +114,7 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
         const res = await threatIntelService.getThreatIntelScanConfig();
 
         if (res.ok) {
-          // setScanConfig(res.response.hits.hits[0]);
+          setScanConfig(res.response);
         }
       } catch (e: any) {
         console.log('failed to get scan config');
@@ -132,7 +130,10 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
     ['add-source']: addThreatIntelSourceActionHandler,
     ['configure-scan']: () => {
       history.push({
-        pathname: ROUTES.THREAT_INTEL_SCAN_CONFIG,
+        pathname:
+          logSources.length > 0
+            ? ROUTES.THREAT_INTEL_EDIT_SCAN_CONFIG
+            : ROUTES.THREAT_INTEL_CREATE_SCAN_CONFIG,
         state: { scanConfig },
       });
     },

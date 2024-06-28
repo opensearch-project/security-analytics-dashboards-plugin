@@ -155,25 +155,25 @@ export default class ThreatIntelService extends MDSEnabledClientService {
 
   deleteThreatIntelSource = async (
     context: RequestHandlerContext,
-    request: OpenSearchDashboardsRequest<{}, any>,
+    request: OpenSearchDashboardsRequest<{ sourceId: string }, any>,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<any> | ResponseError>> => {
     try {
-      const params = request.params;
+      const params = { sourceId: request.params.sourceId };
       const client = this.getClient(request, context);
-      const getAlertsResponse: any = await client(
-        CLIENT_THREAT_INTEL_METHODS.ADD_THREAT_INTEL_SOURCE,
+      const deleteRes: any = await client(
+        CLIENT_THREAT_INTEL_METHODS.DELETE_THREAT_INTEL_SOURCE,
         params
       );
       return response.custom({
         statusCode: 200,
         body: {
           ok: true,
-          response: getAlertsResponse,
+          response: deleteRes,
         },
       });
     } catch (error: any) {
-      console.error('Security Analytics - AlertService - getAlerts:', error);
+      console.error('Security Analytics - ThreatIntelService - deleteThreatIntelSource:', error);
       return response.custom({
         statusCode: 200,
         body: {
@@ -186,25 +186,25 @@ export default class ThreatIntelService extends MDSEnabledClientService {
 
   refreshThreatIntelSource = async (
     context: RequestHandlerContext,
-    request: OpenSearchDashboardsRequest<{}, any>,
+    request: OpenSearchDashboardsRequest<{ sourceId: string }, any>,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<any> | ResponseError>> => {
     try {
-      const params = request.params;
+      const params = { sourceId: request.params.sourceId };
       const client = this.getClient(request, context);
-      const getAlertsResponse: any = await client(
-        CLIENT_THREAT_INTEL_METHODS.ADD_THREAT_INTEL_SOURCE,
+      const refreshRes: any = await client(
+        CLIENT_THREAT_INTEL_METHODS.REFRESH_THREAT_INTEL_SOURCE,
         params
       );
       return response.custom({
         statusCode: 200,
         body: {
           ok: true,
-          response: getAlertsResponse,
+          response: refreshRes,
         },
       });
     } catch (error: any) {
-      console.error('Security Analytics - AlertService - getAlerts:', error);
+      console.error('Security Analytics - ThreatIntelService - refreshThreatIntelSource:', error);
       return response.custom({
         statusCode: 200,
         body: {
@@ -268,6 +268,37 @@ export default class ThreatIntelService extends MDSEnabledClientService {
       });
     } catch (error: any) {
       console.error('Security Analytics - ThreatIntelService - createThreatIntelMonitor:', error);
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: false,
+          error: error.message,
+        },
+      });
+    }
+  };
+
+  updateThreatIntelMonitor = async (
+    context: RequestHandlerContext,
+    request: OpenSearchDashboardsRequest<{ monitorId: string }, any>,
+    response: OpenSearchDashboardsResponseFactory
+  ): Promise<IOpenSearchDashboardsResponse<ServerResponse<any> | ResponseError>> => {
+    try {
+      const params = { body: request.body, monitorId: request.params.monitorId };
+      const client = this.getClient(request, context);
+      const updateMonitorRes: any = await client(
+        CLIENT_THREAT_INTEL_METHODS.UPDATE_THREAT_INTEL_MONITOR,
+        params
+      );
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: true,
+          response: updateMonitorRes,
+        },
+      });
+    } catch (error: any) {
+      console.error('Security Analytics - ThreatIntelService - updateThreatIntelMonitor:', error);
       return response.custom({
         statusCode: 200,
         body: {
