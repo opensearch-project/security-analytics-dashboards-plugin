@@ -35,7 +35,41 @@ export function addFindingsMethods(securityAnalytics: any, createAction: any): v
           type: 'string',
         },
         findingIds: {
+          type: 'string',
+        },
+      },
+    },
+    needBody: false,
+    method: 'GET',
+  });
+
+  securityAnalytics[METHOD_NAMES.GET_THREAT_INTEL_FINDINGS] = createAction({
+    url: {
+      fmt: `${API.THREAT_INTEL_BASE}/findings/_search`,
+      params: {
+        sortOrder: {
+          type: 'string',
+        },
+        size: {
+          type: 'number',
+        },
+        startIndex: {
+          type: 'number',
+        },
+        searchString: {
+          type: 'string',
+        },
+        findingIds: {
           type: 'list',
+        },
+        iocIds: {
+          type: 'string',
+        },
+        startTime: {
+          type: 'number',
+        },
+        endTime: {
+          type: 'number',
         },
       },
     },

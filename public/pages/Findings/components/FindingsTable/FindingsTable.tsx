@@ -31,12 +31,11 @@ import {
   CorrelationService,
 } from '../../../../services';
 import CreateAlertFlyout from '../CreateAlertFlyout';
-import { NotificationChannelTypeOptions } from '../../../CreateDetector/components/ConfigureAlerts/models/interfaces';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { RuleSource } from '../../../../../server/models/interfaces';
 import { DataStore } from '../../../../store/DataStore';
 import { getSeverityColor } from '../../../Correlations/utils/constants';
-import { Finding, FindingItemType } from '../../../../../types';
+import { Finding, FindingItemType, NotificationChannelTypeOptions } from '../../../../../types';
 
 interface FindingsTableProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -120,7 +119,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
     if (refreshPage) this.props.onRefresh();
   };
 
-  renderCreateAlertFlyout = (finding: Finding) => {
+  renderCreateAlertFlyout = (finding: FindingItemType) => {
     if (this.state.flyoutOpen) this.closeFlyout();
     else {
       const ruleOptions = finding.queries

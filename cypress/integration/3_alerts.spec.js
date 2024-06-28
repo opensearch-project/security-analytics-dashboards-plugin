@@ -60,8 +60,10 @@ describe('Alerts', () => {
   });
 
   it('are generated', () => {
+    setupIntercept(cy, '/_security_analytics/alerts', 'getAlerts', 'GET');
     // Refresh the table
     cy.get('[data-test-subj="superDatePickerApplyTimeButton"]').click({ force: true });
+    cy.wait('@getAlerts').should('have.property', 'state', 'Complete');
 
     cy.wait(10000);
 
