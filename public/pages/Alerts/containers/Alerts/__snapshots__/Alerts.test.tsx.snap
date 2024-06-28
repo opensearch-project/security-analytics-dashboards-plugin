@@ -1126,6 +1126,88 @@ exports[`<Alerts /> spec renders the component 1`] = `
                       }
                     }
                   >
+                    <EuiTabs>
+                      <div
+                        className="euiTabs"
+                        role="tablist"
+                      >
+                        <EuiTab
+                          isSelected={true}
+                          onClick={[Function]}
+                        >
+                          <button
+                            aria-selected={true}
+                            className="euiTab euiTab-isSelected"
+                            disabled={false}
+                            onClick={[Function]}
+                            role="tab"
+                            type="button"
+                          >
+                            <span
+                              className="euiTab__content"
+                            >
+                              Findings
+                            </span>
+                          </button>
+                        </EuiTab>
+                        <EuiTab
+                          isSelected={false}
+                          onClick={[Function]}
+                        >
+                          <button
+                            aria-selected={false}
+                            className="euiTab"
+                            disabled={false}
+                            onClick={[Function]}
+                            role="tab"
+                            type="button"
+                          >
+                            <span
+                              className="euiTab__content"
+                            >
+                              <EuiToolTip
+                                content="This object was created using an experimental feature. It may not appear in view if the feature is discontinued."
+                                delay="regular"
+                                position="top"
+                              >
+                                <span
+                                  className="euiToolTipAnchor"
+                                  onKeyUp={[Function]}
+                                  onMouseOut={[Function]}
+                                  onMouseOver={[Function]}
+                                >
+                                  <div
+                                    onBlur={[Function]}
+                                    onFocus={[Function]}
+                                    style={
+                                      Object {
+                                        "alignItems": "center",
+                                        "display": "flex",
+                                      }
+                                    }
+                                  >
+                                    <span
+                                      style={
+                                        Object {
+                                          "marginRight": "4px",
+                                        }
+                                      }
+                                    >
+                                      Correlations
+                                    </span>
+                                    <EuiIcon
+                                      type="beaker"
+                                    >
+                                      EuiIconMock
+                                    </EuiIcon>
+                                  </div>
+                                </span>
+                              </EuiToolTip>
+                            </span>
+                          </button>
+                        </EuiTab>
+                      </div>
+                    </EuiTabs>
                     <EuiInMemoryTable
                       columns={
                         Array [

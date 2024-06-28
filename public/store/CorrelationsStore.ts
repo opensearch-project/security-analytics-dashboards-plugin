@@ -4,11 +4,13 @@
  */
 
 import {
+  AckCorrelationAlertsResponse,
   CorrelationFieldCondition,
   CorrelationFinding,
   CorrelationRule,
   CorrelationRuleQuery,
   DetectorHit,
+  GetCorrelationAlertsResponse,
   ICorrelationsStore,
   IRulesStore,
 } from '../../types';
@@ -78,8 +80,8 @@ export class CorrelationsStore implements ICorrelationsStore {
 
         return correlationInput;
       }),
+      trigger: correlationRule.trigger
     });
-
     if (!response.ok) {
       errorNotificationToast(this.notifications, 'create', 'correlation rule', response.error);
       return false;
@@ -112,8 +114,8 @@ export class CorrelationsStore implements ICorrelationsStore {
 
         return correlationInput;
       }),
+      trigger: correlationRule.trigger,
     });
-
     if (!response.ok) {
       errorNotificationToast(this.notifications, 'update', 'correlation rule', response.error);
       return false;
@@ -196,9 +198,9 @@ export class CorrelationsStore implements ICorrelationsStore {
       start_time,
       end_time
     );
-    
+
     const result: { finding1: CorrelationFinding; finding2: CorrelationFinding }[] = [];
-    
+
     if (allCorrelationsRes.ok) {
       const firstTenGrandCorrelations = allCorrelationsRes.response.findings.slice(0, 10000);
       const allFindingIdsSet = new Set<string>();
@@ -211,7 +213,7 @@ export class CorrelationsStore implements ICorrelationsStore {
       let allFindings: { [id: string]: CorrelationFinding } = {};
       const maxFindingsFetchedInSingleCall = 10000;
 
-      for (let i = 0; i < allFindingIds.length; i+= maxFindingsFetchedInSingleCall) {
+      for (let i = 0; i < allFindingIds.length; i += maxFindingsFetchedInSingleCall) {
         const findingIds = allFindingIds.slice(i, i + maxFindingsFetchedInSingleCall);
         const findings = await this.fetchAllFindings(findingIds);
         allFindings = {
@@ -269,7 +271,7 @@ export class CorrelationsStore implements ICorrelationsStore {
                 name: rule._source.title,
                 severity: rule._source.level,
                 tags: rule._source.tags,
-              }
+            }
             : { name: DEFAULT_EMPTY_DATA, severity: DEFAULT_EMPTY_DATA },
         };
       });
@@ -294,7 +296,7 @@ export class CorrelationsStore implements ICorrelationsStore {
     if (response?.ok) {
       const correlatedFindings: CorrelationFinding[] = [];
       const allFindingIds = response.response.findings.map(f => f.finding);
-      const allFindings = await this.fetchAllFindings(allFindingIds);      
+      const allFindings = await this.fetchAllFindings(allFindingIds);
       response.response.findings.forEach((f) => {
         if (allFindings[f.finding]) {
           correlatedFindings.push({
@@ -323,6 +325,33 @@ export class CorrelationsStore implements ICorrelationsStore {
       },
       correlatedFindings: [],
     };
+  }
+
+  public async getAllCorrelationAlerts(
+  ): Promise<GetCorrelationAlertsResponse> {
+    const response = await this.service.getCorrelationAlerts();
+    if (response?.ok) {
+      return {
+        correlationAlerts: response.response.correlationAlerts,
+        total_alerts: response.response.total_alerts,
+      };
+    } else {
+      throw new Error('Failed to fetch correlated alerts');
+    }
+  }
+
+  public async acknowledgeCorrelationAlerts(
+    alertIds: string[]
+  ): Promise<AckCorrelationAlertsResponse> {
+    const response = await this.service.acknowledgeCorrelationAlerts(alertIds);
+    if (response?.ok) {
+      return {
+        acknowledged: response.response.acknowledged,
+        failed: response.response.failed,
+      };
+    } else {
+      throw new Error('Failed to acknowledge correlated alerts');
+    }
   }
 
   private parseRuleQueryString(queryString: string): CorrelationFieldCondition[] {
