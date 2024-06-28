@@ -43,6 +43,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
   findingService={
     FindingsService {
       "getFindings": [Function],
+      "getThreatIntelFindings": [Function],
       "httpClient": [MockFunction],
     }
   }
@@ -124,6 +125,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
     findingService={
       FindingsService {
         "getFindings": [Function],
+        "getThreatIntelFindings": [Function],
         "httpClient": [MockFunction],
       }
     }

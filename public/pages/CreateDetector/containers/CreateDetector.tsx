@@ -16,13 +16,7 @@ import {
 } from '@elastic/eui';
 import DefineDetector from '../components/DefineDetector/containers/DefineDetector';
 import { createDetectorSteps, PENDING_DETECTOR_ID } from '../utils/constants';
-import {
-  BREADCRUMBS,
-  EMPTY_DEFAULT_DETECTOR,
-  OS_NOTIFICATION_PLUGIN,
-  PLUGIN_NAME,
-  ROUTES,
-} from '../../../utils/constants';
+import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR, PLUGIN_NAME, ROUTES } from '../../../utils/constants';
 import ConfigureAlerts from '../components/ConfigureAlerts';
 import { FieldMapping } from '../../../../models/interfaces';
 import { EuiContainedStepProps } from '@elastic/eui/src/components/steps/steps';
@@ -35,7 +29,6 @@ import {
   RuleItemInfo,
 } from '../components/DefineDetector/components/DetectionRules/types/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { getPlugins } from '../../../utils/helpers';
 import {
   CreateDetectorSteps,
   DataSourceManagerProps,
@@ -62,7 +55,6 @@ export interface CreateDetectorState {
   stepDataValid: { [step in DetectorCreationStep | string]: boolean };
   creatingDetector: boolean;
   rulesState: CreateDetectorRulesState;
-  plugins: string[];
   loadingRules: boolean;
 }
 
@@ -94,7 +86,6 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
       },
       creatingDetector: false,
       rulesState: { page: { index: 0 }, allRules: [] },
-      plugins: [],
       loadingRules: false,
       ...detectorInput,
     };
@@ -104,7 +95,6 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     this.setupRulesState();
     this.props.metrics.detectorMetricsManager.resetMetrics();
     this.props.metrics.detectorMetricsManager.sendMetrics(CreateDetectorSteps.started);
-    this.getPlugins();
   }
 
   componentDidMount(): void {
@@ -262,13 +252,6 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     });
   }
 
-  async getPlugins() {
-    const { services } = this.props;
-    const plugins = await getPlugins(services.opensearchService);
-
-    this.setState({ plugins });
-  }
-
   onPageChange = (page: { index: number; size: number }) => {
     this.setState({
       rulesState: {
@@ -372,7 +355,6 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
             changeDetector={this.changeDetector}
             updateDataValidState={this.updateDataValidState}
             notificationsService={services.notificationsService}
-            hasNotificationPlugin={this.state.plugins.includes(OS_NOTIFICATION_PLUGIN)}
             getTriggerName={this.getNextTriggerName}
             metricsContext={this.props.metrics}
           />

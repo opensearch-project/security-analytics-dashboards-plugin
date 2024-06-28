@@ -49,6 +49,11 @@ export const ROUTES = Object.freeze({
   CORRELATION_RULE_EDIT: '/correlations/rule',
   LOG_TYPES: '/log-types',
   LOG_TYPES_CREATE: '/create-log-type',
+  THREAT_INTEL_OVERVIEW: '/threat-intel',
+  THREAT_INTEL_ADD_CUSTOM_SOURCE: '/add-threat-intel-source',
+  THREAT_INTEL_CREATE_SCAN_CONFIG: '/create-scan-config',
+  THREAT_INTEL_EDIT_SCAN_CONFIG: '/edit-scan-config',
+  THREAT_INTEL_SOURCE_DETAILS: '/threat-intel-source',
 
   get LANDING_PAGE(): string {
     return this.OVERVIEW;
@@ -87,6 +92,23 @@ export const BREADCRUMBS = Object.freeze({
   },
   LOG_TYPES: { text: 'Log types', href: `#${ROUTES.LOG_TYPES}` },
   LOG_TYPE_CREATE: { text: 'Create log type', href: `#${ROUTES.LOG_TYPES_CREATE}` },
+  THREAT_INTEL_OVERVIEW: { text: 'Threat intelligence', href: `#${ROUTES.THREAT_INTEL_OVERVIEW}` },
+  THREAT_INTEL_ADD_CUSTOM_SOURCE: {
+    text: 'Add threat intel source',
+    href: `#${ROUTES.THREAT_INTEL_ADD_CUSTOM_SOURCE}`,
+  },
+  THREAT_INTEL_SETUP_SCAN_CONFIG: {
+    text: 'Setup real-time scan',
+    href: `#${ROUTES.THREAT_INTEL_CREATE_SCAN_CONFIG}`,
+  },
+  THREAT_INTEL_EDIT_SCAN_CONFIG: {
+    text: 'Edit real-time scan',
+    href: `#${ROUTES.THREAT_INTEL_EDIT_SCAN_CONFIG}`,
+  },
+  THREAT_INTEL_SOURCE_DETAILS: (name: string, id: string) => ({
+    text: `${name}`,
+    href: `#${ROUTES.THREAT_INTEL_SOURCE_DETAILS}/${id}`,
+  }),
 });
 
 export enum SortDirection {
@@ -192,3 +214,9 @@ export const logTypeCategories: string[] = [];
 export const logTypesByCategories: { [category: string]: LogType[] } = {};
 
 export const defaultColorForVisualizations: string = euiPaletteColorBlind()[0];
+
+export const defaultIntervalUnitOptions = {
+  MINUTES: { value: 'MINUTES', text: 'Minutes' },
+  HOURS: { value: 'HOURS', text: 'Hours' },
+  DAYS: { value: 'DAYS', text: 'Days' },
+};

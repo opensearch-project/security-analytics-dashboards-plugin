@@ -30,7 +30,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
     setFileError('');
 
     if (!!files?.item(0)) {
-      let reader = new FileReader();
+      const reader = new FileReader();
       reader.readAsText(files[0]);
       reader.onload = function () {
         try {
