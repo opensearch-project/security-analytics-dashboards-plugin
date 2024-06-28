@@ -30,14 +30,10 @@ import {
   RuleItem,
   RuleItemInfo,
 } from '../pages/CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
-import { compile, TopLevelSpec } from 'vega-lite';
-import { parse, View } from 'vega';
-import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter';
 import { RuleInfo } from '../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { IndexService, OpenSearchService } from '../services';
 import { ruleSeverity, ruleTypes } from '../pages/Rules/utils/constants';
-import { Handler } from 'vega-tooltip';
 import _ from 'lodash';
 import { AlertCondition, DateTimeFilter, Duration, LogType } from '../../types';
 import { DataStore } from '../store/DataStore';
@@ -181,8 +177,10 @@ export function getUpdatedEnabledRuleIds(
   return newEnabledIds;
 }
 
-export function renderVisualization(spec: TopLevelSpec, containerId: string) {
+export async function renderVisualization(spec: any, containerId: string) {
   let view;
+
+  const { compile } = await import('vega-lite');
 
   try {
     setDefaultColors(spec);
@@ -193,8 +191,9 @@ export function renderVisualization(spec: TopLevelSpec, containerId: string) {
     console.error(error);
   }
 
-  function renderVegaSpec(spec: {}) {
+  async function renderVegaSpec(spec: {}) {
     let chartColoredItems: any[] = [];
+    const { Handler } = await import('vega-tooltip');
     const handler = new Handler({
       formatTooltip: (value, sanitize) => {
         let tooltipData = { ...value };
@@ -237,6 +236,10 @@ export function renderVisualization(spec: TopLevelSpec, containerId: string) {
         `;
       },
     });
+    const { expressionInterpreter: vegaExpressionInterpreter } = await import(
+      'vega-interpreter/build/vega-interpreter'
+    );
+    const { parse, View } = await import('vega');
     view = new View(parse(spec, undefined, { expr: vegaExpressionInterpreter } as any), {
       renderer: 'canvas', // renderer (canvas or svg)
       container: `#${containerId}`, // parent DOM container
