@@ -25,7 +25,7 @@ export default class FindingsService {
     getFindingsParams: GetFindingsParams
   ): Promise<ServerResponse<GetFindingsResponse>> => {
     const findingIds = getFindingsParams.findingIds
-      ? JSON.stringify(getFindingsParams.findingIds)
+      ? getFindingsParams.findingIds.join(',')
       : undefined;
     const query = {
       sortOrder: 'desc',
