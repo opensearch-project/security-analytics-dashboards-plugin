@@ -497,7 +497,6 @@ class Findings extends Component<FindingsProps, FindingsState> {
       selectedTabId,
       findingStateByTabId,
     } = this.state;
-    // let { findings } = this.state.findingStateByTabId[this.];
     let findings = findingStateByTabId[selectedTabId].findings;
     const rules = findingStateByTabId[FindingTabId.DetectionRules].rules;
 

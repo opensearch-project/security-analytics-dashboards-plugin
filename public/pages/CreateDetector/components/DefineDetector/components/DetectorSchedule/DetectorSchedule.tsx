@@ -15,12 +15,7 @@ export interface DetectorScheduleProps {
   onDetectorScheduleChange(schedule: PeriodSchedule): void;
 }
 
-export interface DetectorScheduleState {}
-
-export class DetectorSchedule extends React.Component<
-  DetectorScheduleProps,
-  DetectorScheduleState
-> {
+export class DetectorSchedule extends React.Component<DetectorScheduleProps> {
   constructor(props: DetectorScheduleProps) {
     super(props);
   }
@@ -34,7 +29,7 @@ export class DetectorSchedule extends React.Component<
         <EuiSpacer />
         <Interval
           schedule={this.props.detector.schedule}
-          label={<FormFieldHeader headerTitle={'Runs every'} />}
+          label={<FormFieldHeader headerTitle={'Run every'} />}
           onScheduleChange={this.props.onDetectorScheduleChange}
         />
       </>

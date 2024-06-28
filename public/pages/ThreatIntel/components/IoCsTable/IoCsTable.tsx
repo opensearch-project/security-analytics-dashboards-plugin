@@ -8,13 +8,13 @@ import { EuiBasicTableColumn, EuiInMemoryTable, EuiPanel, EuiSpacer, EuiText } f
 import { ThreatIntelIocData } from '../../../../../types';
 import { renderTime } from '../../../../utils/helpers';
 
-export interface IoCstableProps {
+export interface IoCsTableProps {
   sourceId?: string;
-  loadingIocs: boolean;
+  loadingIoCs: boolean;
   iocs: ThreatIntelIocData[];
 }
 
-export const IoCstable: React.FC<IoCstableProps> = ({ sourceId, iocs, loadingIocs }) => {
+export const IoCsTable: React.FC<IoCsTableProps> = ({ sourceId, iocs, loadingIoCs }) => {
   const columns: EuiBasicTableColumn<ThreatIntelIocData>[] = [
     {
       name: 'Value',
@@ -55,7 +55,7 @@ export const IoCstable: React.FC<IoCstableProps> = ({ sourceId, iocs, loadingIoc
         items={iocs}
         search
         pagination
-        loading={!sourceId || loadingIocs}
+        loading={!sourceId || loadingIoCs}
       />
     </EuiPanel>
   );

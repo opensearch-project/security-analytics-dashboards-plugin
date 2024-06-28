@@ -15,7 +15,7 @@ import { EuiButton, EuiPanel, EuiSpacer, EuiTitle } from '@elastic/eui';
 import { ThreatIntelIocType } from '../../../../../common/constants';
 import { getEmptyThreatIntelAlertTrigger } from '../../utils/helpers';
 
-export interface SetupThreatIntelAlertTriggersProps {
+export interface ConfigureThreatIntelAlertTriggersProps {
   alertTriggers: ThreatIntelAlertTrigger[];
   notificationsService: NotificationsService;
   enabledIocTypes: ThreatIntelIocType[];
@@ -24,7 +24,7 @@ export interface SetupThreatIntelAlertTriggersProps {
   updateTriggers: (alertTriggers: ThreatIntelAlertTrigger[]) => void;
 }
 
-export const SetupThreatIntelAlertTriggers: React.FC<SetupThreatIntelAlertTriggersProps> = ({
+export const ConfigureThreatIntelAlertTriggers: React.FC<ConfigureThreatIntelAlertTriggersProps> = ({
   alertTriggers,
   enabledIocTypes,
   logSources,

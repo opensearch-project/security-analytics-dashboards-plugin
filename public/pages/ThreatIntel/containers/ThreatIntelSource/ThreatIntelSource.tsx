@@ -21,7 +21,7 @@ import {
   EuiTitle,
 } from '@elastic/eui';
 import { DescriptionGroup } from '../../../../components/Utility/DescriptionGroup';
-import { IoCstable } from '../../components/IoCsTable/IoCsTable';
+import { IoCsTable } from '../../components/IoCsTable/IoCsTable';
 import { ThreatIntelSourceDetails } from '../../components/ThreatIntelSourceDetails/ThreatIntelSourceDetails';
 import { IocLabel } from '../../../../../common/constants';
 import { ThreatIntelService } from '../../../../services';
@@ -47,7 +47,7 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
     source?.id ?? location.pathname.replace(`${ROUTES.THREAT_INTEL_SOURCE_DETAILS}/`, '');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [iocs, setIocs] = useState<ThreatIntelIocData[]>([]);
-  const [loadingIocs, setLoadingIocs] = useState(true);
+  const [loadingIoCs, setLoadingIoCs] = useState(true);
   const getSource = async (sourceId: string) => {
     const res = await threatIntelService.getThreatIntelSource(sourceId);
 
@@ -64,13 +64,13 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
 
   const getIocs = async () => {
     if (sourceId) {
-      setLoadingIocs(true);
+      setLoadingIoCs(true);
       const iocsRes = await threatIntelService.getThreatIntelIocs({});
 
       if (iocsRes.ok) {
         setIocs(iocsRes.response.iocs);
       }
-      setLoadingIocs(false);
+      setLoadingIoCs(false);
     }
   };
 
@@ -98,7 +98,7 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
     {
       id: 'iocs',
       name: <span>Indicators of Compromise</span>,
-      content: <IoCstable sourceId={source?.id} iocs={iocs} loadingIocs={loadingIocs} />,
+      content: <IoCsTable sourceId={source?.id} iocs={iocs} loadingIoCs={loadingIoCs} />,
     },
     {
       id: 'source-details',

@@ -65,7 +65,7 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
         });
       }
     },
-    [saContext]
+    [saContext, logSourceMappingByName]
   );
   const [selectedSourcesMap, setSelectedSourcesMap] = useState(() => {
     const selectedSourcesByName: Map<string, ThreatIntelLogSource> = new Map();
@@ -187,9 +187,7 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
           placeholder={'Select an input source for the detector.'}
           isLoading={loadingLogSourceOptions}
           selectedOptions={sources.map(({ name }) => ({ label: name }))}
-          // onBlur={() => this.setState({ fieldTouched: true })}
           onChange={onLogSourceSelectionChange}
-          // isInvalid={!!errorMessage}
           isClearable={true}
           data-test-subj={'define-detector-select-data-source'}
           renderOption={(option: IndexOption) => {

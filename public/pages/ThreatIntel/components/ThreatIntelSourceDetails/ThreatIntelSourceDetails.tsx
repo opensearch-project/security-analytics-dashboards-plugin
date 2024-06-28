@@ -238,7 +238,6 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
                 <EuiFlexGroup alignItems="center">
                   <EuiFlexItem>
                     <Interval
-                      label=""
                       schedule={{
                         period: {
                           interval: schedule.interval.period,

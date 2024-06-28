@@ -22,7 +22,7 @@ import {
   ThreatIntelLogSource,
   ThreatIntelScanConfigFormModel,
 } from '../../../../../types';
-import { SetupThreatIntelAlertTriggers } from '../../components/SetupThreatIntelAlertTriggers/SetupThreatIntelAlertTriggers';
+import { ConfigureThreatIntelAlertTriggers } from '../../components/ConfigureThreatIntelAlertTriggers/ConfigureThreatIntelAlertTriggers';
 import { NotificationsService, ThreatIntelService } from '../../../../services';
 import {
   configFormModelToMonitorPayload,
@@ -222,7 +222,7 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
         );
       case ConfigureThreatIntelScanStep.SetupAlertTriggers:
         return (
-          <SetupThreatIntelAlertTriggers
+          <ConfigureThreatIntelAlertTriggers
             alertTriggers={configureScanFormInputs.triggers}
             notificationsService={notificationsService}
             enabledIocTypes={configFormModelToMonitorPayload(

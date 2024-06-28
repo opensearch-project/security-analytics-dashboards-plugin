@@ -150,12 +150,9 @@ export function deriveFormModelFromConfig(
           },
         };
       } else {
-        logSourcesByName[index].iocConfigMap = {
-          ...logSourcesByName[index].iocConfigMap,
-          [ioc_type]: {
-            fieldAliases,
-            enabled: true,
-          },
+        logSourcesByName[index].iocConfigMap[ioc_type] = {
+          fieldAliases,
+          enabled: true,
         };
       }
     });
@@ -258,6 +255,9 @@ export function readIocsFromFile(
     } catch (e: any) {
       onRead({ ok: false, errorMessage: e?.message || e?.toString?.() });
     }
+  };
+  reader.onerror = function () {
+    onRead({ ok: false, errorMessage: 'Error reading file.' });
   };
 }
 

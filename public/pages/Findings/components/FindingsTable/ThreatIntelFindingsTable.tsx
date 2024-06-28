@@ -50,6 +50,7 @@ export const ThreatIntelFindingsTable: React.FC<ThreatIntelFindingsTableProps> =
                 iconType={'inspect'}
                 onClick={
                   () => {}
+                  // TODO: implement finding flyout
                   // DataStore.findings.openFlyout(finding, this.state.filteredFindings)
                 }
               />
