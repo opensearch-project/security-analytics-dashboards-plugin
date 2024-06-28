@@ -108,6 +108,12 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
           if (res.ok) {
             setScanId(res.response.id);
             setConfigureScanFormInputs(deriveFormModelFromConfig(res.response));
+          } else if (
+            res.error.includes('Configured indices are not found: [.opendistro-alerting-config]')
+          ) {
+            history.push({
+              pathname: ROUTES.THREAT_INTEL_CREATE_SCAN_CONFIG,
+            });
           }
         } catch (e: any) {
           console.log('failed to get scan config');
@@ -116,7 +122,7 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
 
       getScanConfig();
     }
-  }, []);
+  }, [isEdit]);
 
   const updateFormErrors = (errors: FormErrors) => {
     const newErrors = {
