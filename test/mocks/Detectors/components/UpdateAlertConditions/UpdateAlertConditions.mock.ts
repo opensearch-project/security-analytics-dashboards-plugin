@@ -9,12 +9,12 @@ import notificationsStartMock from '../../../services/notifications/Notification
 import UpdateAlertConditions from '../../../../../public/pages/Detectors/components/UpdateAlertConditions/UpdateAlertConditions';
 import { ROUTES } from '../../../../../public/utils/constants';
 
-const { notificationsService, detectorService, openSearchService, ruleService } = services;
+const { notificationsService, detectorsService, opensearchService, ruleService } = services;
 
 export default ({
   detectorHit: detectorHitMock,
-  detectorService: detectorService,
-  opensearchService: openSearchService,
+  detectorService: detectorsService,
+  opensearchService: opensearchService,
   ruleService: ruleService,
   notificationsService: notificationsService,
   notifications: notificationsStartMock,
@@ -23,6 +23,5 @@ export default ({
     state: {
       detectorHit: detectorHitMock,
     },
-    pathname: '',
   },
 } as unknown) as typeof UpdateAlertConditions;

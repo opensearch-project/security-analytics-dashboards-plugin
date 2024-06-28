@@ -16,6 +16,7 @@ import AlertService from '../../services/AlertService';
 import { LogTypeService } from '../../services/LogTypeService';
 import MetricsService from '../../services/MetricsService';
 import RulesService from '../../services/RuleService';
+import ThreatIntelService from '../../services/ThreatIntelService';
 
 export interface SecurityAnalyticsApi {
   readonly DETECTORS_BASE: string;
@@ -41,6 +42,7 @@ export interface SecurityAnalyticsApi {
   readonly METRICS: string;
   readonly GET_CORRELATION_ALERTS: string;
   readonly ACK_CORRELATION_ALERTS: string;
+  readonly THREAT_INTEL_BASE: string;
 }
 
 export interface NodeServices {
@@ -55,6 +57,7 @@ export interface NodeServices {
   notificationsService: NotificationsService;
   logTypeService: LogTypeService;
   metricsService: MetricsService;
+  threatIntelService: ThreatIntelService;
 }
 
 export interface GetIndicesResponse {
@@ -109,6 +112,4 @@ export interface Plugin {
 export * from './Detectors';
 export * from './FieldMappings';
 export * from './Findings';
-export * from './Alerts';
 export * from './Rules';
-export * from './Notifications';

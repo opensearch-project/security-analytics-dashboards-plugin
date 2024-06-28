@@ -44,3 +44,15 @@ export interface GetFeaturesResponse {
   allowed_config_type_list: string[];
   plugin_features: { tooltip_support: boolean };
 }
+
+export interface NotificationChannelTypeOptions {
+  label: string;
+  options: NotificationChannelOption[];
+}
+
+export interface NotificationChannelOption {
+  label: string;
+  value: string;
+  type: string;
+  description: string;
+}

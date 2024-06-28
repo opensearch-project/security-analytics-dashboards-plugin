@@ -18,6 +18,7 @@ import {
 } from '../services';
 import CorrelationService from '../services/CorrelationService';
 import MetricsService from '../services/MetricsService';
+import ThreatIntelService from '../services/ThreatIntelService';
 
 export interface BrowserServices {
   detectorsService: DetectorsService;
@@ -33,6 +34,7 @@ export interface BrowserServices {
   indexPatternsService: IndexPatternsService;
   logTypeService: LogTypeService;
   metricsService: MetricsService;
+  threatIntelService: ThreatIntelService;
 }
 
 export interface RuleOptions {

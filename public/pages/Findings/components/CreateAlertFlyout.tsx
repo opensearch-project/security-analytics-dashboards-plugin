@@ -22,17 +22,16 @@ import { AlertCondition } from '../../../../models/interfaces';
 import { DetectorsService } from '../../../services';
 import { RulesSharedState } from '../../../models/interfaces';
 import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
-import { NotificationChannelTypeOptions } from '../../CreateDetector/components/ConfigureAlerts/models/interfaces';
-import { Finding } from '../models/interfaces';
+import {} from '../models/interfaces';
 import { getEmptyAlertCondition } from '../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { validateName } from '../../../utils/validation';
 import { addDetectionType } from '../../../utils/helpers';
-import { Detector } from '../../../../types';
+import { Detector, FindingItemType, NotificationChannelTypeOptions } from '../../../../types';
 
 interface CreateAlertFlyoutProps extends RouteComponentProps {
   closeFlyout: (refreshPage?: boolean) => void;
   detectorService: DetectorsService;
-  finding: Finding;
+  finding: FindingItemType;
   notificationChannels: NotificationChannelTypeOptions[];
   refreshNotificationChannels: () => void;
   allRules: object;
@@ -162,13 +161,12 @@ export default class CreateAlertFlyout extends Component<
             isEdit={false}
             loadingNotifications={loading}
             onAlertTriggerChanged={this.onAlertConditionChange}
-            hasNotificationPlugin={this.props.hasNotificationPlugin}
           />
           <EuiSpacer size={'m'} />
 
           <EuiFlexGroup justifyContent={'flexEnd'}>
             <EuiFlexItem grow={false}>
-              <EuiButton disabled={submitting} onClick={closeFlyout}>
+              <EuiButton disabled={submitting} onClick={() => closeFlyout()}>
                 Cancel
               </EuiButton>
             </EuiFlexItem>
