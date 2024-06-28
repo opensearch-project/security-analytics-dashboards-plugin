@@ -58,6 +58,7 @@ import { DataSourceMenuWrapper } from '../../components/MDS/DataSourceMenuWrappe
 import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
 import { DataSourceContext, DataSourceContextConsumer } from '../../services/DataSourceContext';
 import { dataSourceInfo } from '../../services/utils/constants';
+import { getPlugins } from '../../utils/helpers';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -389,7 +390,6 @@ export default class Main extends Component<MainProps, MainState> {
               {(saContext: SecurityAnalyticsContextType | null) => {
                 const services = saContext?.services;
                 const metrics = saContext?.metrics!;
-
                 return (
                   <DataSourceContext.Provider value={dataSourceContextValue}>
                     <DataSourceContextConsumer>
@@ -574,6 +574,7 @@ export default class Main extends Component<MainProps, MainState> {
                                           notifications={core?.notifications}
                                           opensearchService={services.opensearchService}
                                           indexPatternService={services.indexPatternsService}
+                                          correlationService={services.correlationsService}
                                           dataSource={selectedDataSource}
                                         />
                                       )}
@@ -649,6 +650,8 @@ export default class Main extends Component<MainProps, MainState> {
                                           fieldMappingService={services?.fieldMappingService}
                                           notifications={core?.notifications}
                                           dataSource={selectedDataSource}
+                                          notificationsService={services?.notificationsService}
+                                          opensearchService={services?.opensearchService}
                                         />
                                       )}
                                     />
@@ -661,6 +664,8 @@ export default class Main extends Component<MainProps, MainState> {
                                           fieldMappingService={services?.fieldMappingService}
                                           notifications={core?.notifications}
                                           dataSource={selectedDataSource}
+                                          notificationsService={services?.notificationsService}
+                                          opensearchService={services?.opensearchService}
                                         />
                                       )}
                                     />
@@ -675,6 +680,7 @@ export default class Main extends Component<MainProps, MainState> {
                                             dateTimeFilter={this.state.dateTimeFilter}
                                             setDateTimeFilter={this.setDateTimeFilter}
                                             dataSource={selectedDataSource}
+                                            notifications={core?.notifications}
                                           />
                                         );
                                       }}

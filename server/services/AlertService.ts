@@ -30,10 +30,12 @@ export default class AlertService extends MDSEnabledClientService {
     response: OpenSearchDashboardsResponseFactory
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<GetAlertsResponse> | ResponseError>> => {
     try {
-      const { detectorType, detector_id, sortOrder, size } = request.query;
+      const { detectorType, detector_id, sortOrder, size, startTime, endTime } = request.query;
       const defaultParams = {
         sortOrder,
         size,
+        startTime,
+        endTime
       };
       let params: GetAlertsParams;
 

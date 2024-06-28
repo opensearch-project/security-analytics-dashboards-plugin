@@ -51,6 +51,8 @@ export type GetAlertsParams = {
   sortOrder?: string;
   size?: number;
   startIndex?: number;
+  startTime?: number;
+  endTime?: number;
 } & (
   | {
       detector_id: string;
@@ -68,6 +70,16 @@ export interface GetAlertsResponse {
   detectorType: string;
 }
 
+export interface GetCorrelationAlertsResponse {
+  correlationAlerts: CorrelationAlertResponse[];
+  total_alerts: number;
+}
+
+export interface AckCorrelationAlertsResponse {
+  acknowledged: CorrelationAlertResponse[];
+  failed: CorrelationAlertResponse[];
+}
+
 export interface AlertItem {
   id: string;
   start_time: string;
@@ -79,6 +91,24 @@ export interface AlertItem {
   last_notification_time: string;
   acknowledged_time: string | null;
 }
+
+export interface CorrelationAlertItem {
+  id: string;
+  start_time: string;
+  trigger_name: string;
+  correlation_rule_id: string;
+  correlation_rule_name: string;
+  state: string;
+  severity: string;
+  correlated_finding_ids: string[];
+  end_time: string;
+  acknowledged_time: string | null;
+}
+
+export interface CorrelationAlertTableItem extends CorrelationAlertItem{
+  correlation_rule_categories: string[];
+}
+
 
 export interface AlertResponse extends AlertItem {
   version: number;
@@ -93,6 +123,20 @@ export interface AlertResponse extends AlertItem {
     throttled_count: number;
   }[];
   end_time: string | null;
+}
+
+export interface CorrelationAlertResponse extends CorrelationAlertItem {
+  version: number;
+  schema_version: number;
+  trigger_id: string;
+  related_doc_ids: string[];
+  error_message: string | null;
+  alert_history: string[];
+  action_execution_results: {
+    action_id: string;
+    last_execution_time: number;
+    throttled_count: number;
+  }[];
 }
 
 export interface AcknowledgeAlertsParams {
