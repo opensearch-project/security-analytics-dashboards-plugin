@@ -190,27 +190,9 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
       },
     }
   }
-  detectorService={
-    DetectorService {
-      "createDetector": [Function],
-      "dataSourceEnabled": undefined,
-      "deleteDetector": [Function],
-      "getDetector": [Function],
-      "getDetectors": [Function],
-      "osDriver": Object {
-        "delete": [MockFunction],
-        "get": [MockFunction],
-        "head": [MockFunction],
-        "post": [MockFunction],
-        "put": [MockFunction],
-      },
-      "searchDetectors": [Function],
-      "updateDetector": [Function],
-    }
-  }
   location={
     Object {
-      "pathname": "",
+      "pathname": "/edit-alert-triggers/detector_id_1",
       "state": Object {
         "detectorHit": Object {
           "_id": "detector_id_1",
@@ -419,20 +401,6 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
       "httpClient": [MockFunction],
     }
   }
-  opensearchService={
-    OpenSearchService {
-      "getIndexPatterns": [Function],
-      "getPlugins": [Function],
-      "httpClient": [MockFunction],
-      "savedObjectsClient": Object {
-        "delete": [MockFunction],
-        "get": [MockFunction],
-        "head": [MockFunction],
-        "post": [MockFunction],
-        "put": [MockFunction],
-      },
-    }
-  }
   ruleService={
     RuleService {
       "createRule": [Function],
@@ -452,7 +420,7 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
           "detector_type": "detector_type",
           "enabled": true,
           "enabled_time": 1,
-          "id": "",
+          "id": "detector_id_1",
           "inputs": Array [
             Object {
               "detector_input": Object {
@@ -818,30 +786,11 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
           },
         }
       }
-      detectorService={
-        DetectorService {
-          "createDetector": [Function],
-          "dataSourceEnabled": undefined,
-          "deleteDetector": [Function],
-          "getDetector": [Function],
-          "getDetectors": [Function],
-          "osDriver": Object {
-            "delete": [MockFunction],
-            "get": [MockFunction],
-            "head": [MockFunction],
-            "post": [MockFunction],
-            "put": [MockFunction],
-          },
-          "searchDetectors": [Function],
-          "updateDetector": [Function],
-        }
-      }
       getTriggerName={[Function]}
-      hasNotificationPlugin={false}
       isEdit={true}
       location={
         Object {
-          "pathname": "",
+          "pathname": "/edit-alert-triggers/detector_id_1",
           "state": Object {
             "detectorHit": Object {
               "_id": "detector_id_1",
@@ -1048,20 +997,6 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
           "getChannels": [Function],
           "getServerFeatures": [Function],
           "httpClient": [MockFunction],
-        }
-      }
-      opensearchService={
-        OpenSearchService {
-          "getIndexPatterns": [Function],
-          "getPlugins": [Function],
-          "httpClient": [MockFunction],
-          "savedObjectsClient": Object {
-            "delete": [MockFunction],
-            "get": [MockFunction],
-            "head": [MockFunction],
-            "post": [MockFunction],
-            "put": [MockFunction],
-          },
         }
       }
       ruleService={

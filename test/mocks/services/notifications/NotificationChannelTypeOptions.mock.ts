@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { NotificationChannelTypeOptions } from '../../../../types';
 import notificationChannelOptionMock from './NotificationChannelOption.mock';
-import { NotificationChannelTypeOptions } from '../../../../public/pages/CreateDetector/components/ConfigureAlerts/models/interfaces';
 
 export default {
   label: 'some_label',

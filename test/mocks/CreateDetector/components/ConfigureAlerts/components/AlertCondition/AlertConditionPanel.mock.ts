@@ -4,13 +4,13 @@
  */
 
 import { AlertCondition } from '../../../../../../../models/interfaces';
-import { NotificationChannelTypeOptions } from '../../../../../../../public/pages/CreateDetector/components/ConfigureAlerts/models/interfaces';
 import { RuleOptions } from '../../../../../../../public/models/interfaces';
 import ruleOptionsMock from '../../../../../Rules/RuleOptions.mock';
 import alertConditionMock from './AlertCondition.mock';
 import notificationChannelTypeOptionsMock from '../../../../../services/notifications/NotificationChannelTypeOptions.mock';
 import detectorMock from '../../../../../Detectors/containers/Detectors/Detector.mock';
 import AlertConditionPanel from '../../../../../../../public/pages/CreateDetector/components/ConfigureAlerts/components/AlertCondition';
+import { NotificationChannelTypeOptions } from '../../../../../../../types';
 
 const alertCondition: AlertCondition = alertConditionMock;
 const notificationChannelTypeOptions: NotificationChannelTypeOptions = notificationChannelTypeOptionsMock;

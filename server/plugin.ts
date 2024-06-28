@@ -42,6 +42,8 @@ import MetricsService from './services/MetricsService';
 import { SecurityAnalyticsPluginConfigType } from '../config';
 import { DataSourcePluginSetup } from 'src/plugins/data_source/server';
 import { securityAnalyticsPlugin } from './clusters/securityAnalyticsPlugin';
+import ThreatIntelService from './services/ThreatIntelService';
+import { setupThreatIntelRoutes } from './routes/ThreatIntel';
 
 export interface SecurityAnalyticsPluginDependencies {
   dataSource?: DataSourcePluginSetup;
@@ -77,6 +79,7 @@ export class SecurityAnalyticsPlugin
       notificationsService: new NotificationsService(securityAnalyticsClient, dataSourceEnabled),
       logTypeService: new LogTypeService(securityAnalyticsClient, dataSourceEnabled),
       metricsService: new MetricsService(),
+      threatIntelService: new ThreatIntelService(securityAnalyticsClient, dataSourceEnabled),
     };
 
     // Create router
@@ -94,6 +97,7 @@ export class SecurityAnalyticsPlugin
     setupNotificationsRoutes(services, router);
     setupLogTypeRoutes(services, router);
     setupMetricsRoutes(services, router);
+    setupThreatIntelRoutes(services, router);
 
     // @ts-ignore
     const config$ = this.initializerContext.config.create();

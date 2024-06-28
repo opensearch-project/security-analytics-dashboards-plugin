@@ -359,9 +359,9 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
             </EuiFlexItem>
             <EuiFlexItem>
               <EuiFlexGroup justifyContent="flexEnd">
-                <EuiFlexItem grow={false}>{actions[0]}</EuiFlexItem>
-                <EuiFlexItem grow={false}>{actions[1]}</EuiFlexItem>
-                <EuiFlexItem grow={false}>{actions[2]}</EuiFlexItem>
+                {actions.map((action) => {
+                  return <EuiFlexItem grow={false}>{action}</EuiFlexItem>;
+                })}
               </EuiFlexGroup>
             </EuiFlexItem>
           </EuiFlexGroup>

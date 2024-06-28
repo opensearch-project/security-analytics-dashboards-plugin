@@ -14,20 +14,12 @@ import {
 import ConfigureAlerts from '../../../CreateDetector/components/ConfigureAlerts';
 import { DetectorsService, NotificationsService, OpenSearchService } from '../../../../services';
 import { RuleOptions } from '../../../../models/interfaces';
-import {
-  ROUTES,
-  OS_NOTIFICATION_PLUGIN,
-  EMPTY_DEFAULT_DETECTOR,
-} from '../../../../utils/constants';
+import { ROUTES, EMPTY_DEFAULT_DETECTOR } from '../../../../utils/constants';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import {
-  errorNotificationToast,
-  getPlugins,
-  successNotificationToast,
-} from '../../../../utils/helpers';
+import { errorNotificationToast, successNotificationToast } from '../../../../utils/helpers';
 import { ServerResponse } from '../../../../../server/models/types';
 import { DataStore } from '../../../../store/DataStore';
-import { Detector, DetectorCreationStep } from '../../../../../types';
+import { Detector, DetectorCreationStep, DetectorResponse } from '../../../../../types';
 
 export interface UpdateAlertConditionsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
@@ -42,7 +34,6 @@ export interface UpdateAlertConditionsState {
   rules: object;
   rulesOptions: RuleOptions[];
   submitting: boolean;
-  plugins: string[];
   isTriggerNameValid: boolean;
 }
 
@@ -62,14 +53,12 @@ export default class UpdateAlertConditions extends Component<
       rules: {},
       rulesOptions: [],
       submitting: false,
-      plugins: [],
       isTriggerNameValid: true,
     };
   }
 
   componentDidMount() {
     this.getRules();
-    this.getPlugins();
   }
 
   changeDetector = (detector: Detector) => {
@@ -132,13 +121,6 @@ export default class UpdateAlertConditions extends Component<
     }
   };
 
-  async getPlugins() {
-    const { opensearchService } = this.props;
-    const plugins = await getPlugins(opensearchService);
-
-    this.setState({ plugins });
-  }
-
   onCancel = () => {
     this.props.history.replace({
       pathname: `${ROUTES.DETECTOR_DETAILS}/${this.props.location.state?.detectorHit._id}`,
@@ -159,6 +141,7 @@ export default class UpdateAlertConditions extends Component<
       detectorHit = {
         _source: detector,
         _id: detector.id || '',
+        _index: '',
       },
     } = state || {};
 
@@ -185,7 +168,10 @@ export default class UpdateAlertConditions extends Component<
     history.replace({
       pathname: `${ROUTES.DETECTOR_DETAILS}/${detectorHit._id}`,
       state: {
-        detectorHit: { ...detectorHit, _source: { ...detectorHit._source, ...detector } },
+        detectorHit: {
+          ...detectorHit,
+          _source: { ...(detectorHit._source as DetectorResponse), ...detector },
+        },
       },
     });
   };
@@ -208,7 +194,6 @@ export default class UpdateAlertConditions extends Component<
           rulesOptions={rulesOptions}
           changeDetector={this.changeDetector}
           updateDataValidState={this.updateDataValidState}
-          hasNotificationPlugin={this.state.plugins.includes(OS_NOTIFICATION_PLUGIN)}
           getTriggerName={() => ''}
         />
 

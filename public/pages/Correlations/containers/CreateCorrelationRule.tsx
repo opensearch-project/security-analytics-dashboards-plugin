@@ -47,7 +47,7 @@ import { CoreServicesContext } from '../../../components/core_services';
 import { RouteComponentProps, useParams } from 'react-router-dom';
 import { validateName } from '../../../utils/validation';
 import { FieldMappingService, IndexService, OpenSearchService, NotificationsService } from '../../../services';
-import { errorNotificationToast, getDataSources, getLogTypeOptions, getPlugins } from '../../../utils/helpers';
+import { errorNotificationToast, getDataSources, getFieldsForIndex, getLogTypeOptions, getPlugins } from '../../../utils/helpers';
 import { severityOptions } from '../../../pages/Alerts/utils/constants';
 import _ from 'lodash';
 import { NotificationChannelOption, NotificationChannelTypeOptions } from '../../CreateDetector/components/ConfigureAlerts/models/interfaces';
@@ -402,24 +402,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
 
   const getLogFields = useCallback(
     async (indexName: string) => {
-      let fields: {
-        label: string;
-        value: string;
-      }[] = [];
-
-      if (indexName) {
-        const result = await props.indexService.getIndexFields(indexName);
-        if (result?.ok) {
-          fields = result.response?.map((field) => ({
-            label: field,
-            value: field,
-          }));
-        }
-
-        return fields;
-      }
-
-      return fields;
+      return getFieldsForIndex(props.indexService, indexName);
     },
     [props.indexService.getIndexFields]
   );
