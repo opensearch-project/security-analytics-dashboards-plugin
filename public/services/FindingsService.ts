@@ -41,17 +41,13 @@ export default class FindingsService {
   getThreatIntelFindings = async (
     getFindingsParams: GetThreatIntelFindingsParams
   ): Promise<ServerResponse<GetThreatIntelFindingsResponse>> => {
-    const findingIds = getFindingsParams.findingIds
-      ? JSON.stringify(getFindingsParams.findingIds)
-      : undefined;
     const query = {
       sortOrder: 'desc',
       size: 10000,
       ...getFindingsParams,
-      findingIds,
       dataSourceId: dataSourceInfo.activeDataSource.id,
     };
 
-    return await this.httpClient.get(`..${API.GET_FINDINGS}`, { query });
+    return await this.httpClient.get(`..${API.THREAT_INTEL_BASE}/findings/_search`, { query });
   };
 }

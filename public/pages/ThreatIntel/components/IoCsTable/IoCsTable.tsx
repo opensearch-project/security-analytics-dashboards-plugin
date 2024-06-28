@@ -6,7 +6,7 @@
 import React from 'react';
 import { EuiBasicTableColumn, EuiInMemoryTable, EuiPanel, EuiSpacer, EuiText } from '@elastic/eui';
 import { ThreatIntelIocData } from '../../../../../types';
-import moment from 'moment';
+import { renderTime } from '../../../../utils/helpers';
 
 export interface IoCstableProps {
   sourceId?: string;
@@ -31,7 +31,7 @@ export const IoCstable: React.FC<IoCstableProps> = ({ sourceId, iocs, loadingIoc
     {
       name: 'Created',
       field: 'created',
-      render: (timestamp: number | string) => moment(timestamp).format('YYYY-MM-DDTHH:mm'),
+      render: (timestamp: number | string) => renderTime(timestamp),
     },
     {
       name: 'Threat severity',
@@ -40,7 +40,7 @@ export const IoCstable: React.FC<IoCstableProps> = ({ sourceId, iocs, loadingIoc
     {
       name: 'Last updated',
       field: 'modified',
-      render: (timestamp: number | string) => moment(timestamp).format('YYYY-MM-DDTHH:mm'),
+      render: (timestamp: number | string) => renderTime(timestamp),
     },
   ];
 

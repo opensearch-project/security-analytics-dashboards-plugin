@@ -15,6 +15,7 @@ import {
   EuiTitle,
   EuiEmptyPrompt,
   EuiLink,
+  EuiTabbedContent,
 } from '@elastic/eui';
 import FindingsTable from '../../components/FindingsTable';
 import {
@@ -33,6 +34,7 @@ import {
   getChartTimeUnit,
   getDomainRange,
   getFindingsVisualizationSpec,
+  getThreatIntelFindingsVisualizationSpec,
   TimeUnit,
 } from '../../../Overview/utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
@@ -58,7 +60,10 @@ import {
   DateTimeFilter,
   FindingItemType,
   DetectorHit,
+  ThreatIntelFinding,
+  ThreatIntelFindingsGroupByType,
 } from '../../../../../types';
+import { ThreatIntelFindingsTable } from '../../components/FindingsTable/ThreatIntelFindingsTable';
 
 interface FindingsProps extends RouteComponentProps, DataSourceProps {
   detectorService: DetectorsService;
@@ -72,14 +77,33 @@ interface FindingsProps extends RouteComponentProps, DataSourceProps {
   setDateTimeFilter?: Function;
 }
 
-interface FindingsState {
-  loading: boolean;
+enum FindingTabId {
+  DetectionRules = 'detection-rules',
+  ThreatIntel = 'threat-intel',
+}
+
+interface DetectionRulesFindingsState {
   findings: FindingItemType[];
-  notificationChannels: FeatureChannelList[];
   rules: { [id: string]: RuleSource };
-  recentlyUsedRanges: DurationRange[];
   groupBy: FindingsGroupByType;
   filteredFindings: FindingItemType[];
+}
+
+interface ThreatIntelFindingsState {
+  findings: ThreatIntelFinding[];
+  groupBy: ThreatIntelFindingsGroupByType;
+  filteredFindings: ThreatIntelFinding[];
+}
+
+interface FindingsState {
+  loading: boolean;
+  selectedTabId: FindingTabId;
+  findingStateByTabId: {
+    [FindingTabId.DetectionRules]: DetectionRulesFindingsState;
+    [FindingTabId.ThreatIntel]: ThreatIntelFindingsState;
+  };
+  notificationChannels: FeatureChannelList[];
+  recentlyUsedRanges: DurationRange[];
   timeUnit: TimeUnit;
   dateFormat: string;
 }
@@ -91,12 +115,21 @@ interface FindingVisualizationData {
   ruleSeverity: string;
 }
 
+interface ThreatIntelFindingVisualizationData {
+  time: number;
+  finding: number;
+  indicatorType: string;
+}
+
 type FindingsGroupByType = 'logType' | 'ruleSeverity';
 
-export const groupByOptions = [
-  { text: 'Log type', value: 'logType' },
-  { text: 'Rule severity', value: 'ruleSeverity' },
-];
+export const groupByOptionsByTabId = {
+  [FindingTabId.DetectionRules]: [
+    { text: 'Log type', value: 'logType' },
+    { text: 'Rule severity', value: 'ruleSeverity' },
+  ],
+  [FindingTabId.ThreatIntel]: [{ text: 'Indicator type', value: 'indicatorType' }],
+};
 
 class Findings extends Component<FindingsProps, FindingsState> {
   static contextType = CoreServicesContext;
@@ -115,24 +148,61 @@ class Findings extends Component<FindingsProps, FindingsState> {
     const timeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
     this.state = {
       loading: true,
-      findings: [],
       notificationChannels: [],
-      rules: {},
+      selectedTabId: FindingTabId.DetectionRules,
+      findingStateByTabId: {
+        [FindingTabId.DetectionRules]: {
+          findings: [],
+          rules: {},
+          filteredFindings: [],
+          groupBy: 'logType',
+        },
+        [FindingTabId.ThreatIntel]: {
+          findings: [],
+          filteredFindings: [],
+          groupBy: 'indicatorType',
+        },
+      },
       recentlyUsedRanges: [DEFAULT_DATE_RANGE],
-      groupBy: 'logType',
-      filteredFindings: [],
       timeUnit: timeUnits.timeUnit,
       dateFormat: timeUnits.dateFormat,
     };
   }
 
+  shouldUpdateVisualization(prevState: FindingsState) {
+    const { selectedTabId, findingStateByTabId } = this.state;
+    const { findingStateByTabId: prevFindingStateByTabId } = prevState;
+    let currentFindingsState, prevFindingsState;
+
+    switch (selectedTabId) {
+      case FindingTabId.DetectionRules:
+        currentFindingsState = findingStateByTabId[FindingTabId.DetectionRules];
+        prevFindingsState = prevFindingStateByTabId[FindingTabId.DetectionRules];
+        return (
+          currentFindingsState.filteredFindings !== prevFindingsState.filteredFindings ||
+          currentFindingsState.groupBy !== prevFindingsState.groupBy
+        );
+
+      case FindingTabId.ThreatIntel:
+        currentFindingsState = findingStateByTabId[FindingTabId.ThreatIntel];
+        prevFindingsState = prevFindingStateByTabId[FindingTabId.ThreatIntel];
+        return (
+          currentFindingsState.filteredFindings !== prevFindingsState.filteredFindings ||
+          currentFindingsState.groupBy !== prevFindingsState.groupBy
+        );
+
+      default:
+        return false;
+    }
+  }
+
   componentDidUpdate(prevProps: Readonly<FindingsProps>, prevState: Readonly<FindingsState>): void {
-    if (this.props.dataSource !== prevProps.dataSource) {
-      this.onRefresh();
-    } else if (
-      this.state.filteredFindings !== prevState.filteredFindings ||
-      this.state.groupBy !== prevState.groupBy
+    if (
+      this.props.dataSource !== prevProps.dataSource ||
+      this.state.selectedTabId !== prevState.selectedTabId
     ) {
+      this.onRefresh();
+    } else if (this.shouldUpdateVisualization(prevState)) {
       renderVisualization(this.generateVisualizationSpec(), 'findings-view');
     }
   }
@@ -148,9 +218,33 @@ class Findings extends Component<FindingsProps, FindingsState> {
 
   onRefresh = async () => {
     await this.getNotificationChannels();
-    await this.getFindings();
+    if (this.state.selectedTabId === FindingTabId.DetectionRules) {
+      await this.getDetectionRulesFindings();
+    } else if (this.state.selectedTabId === FindingTabId.ThreatIntel) {
+      await this.getThreatIntelFindings();
+    }
     renderVisualization(this.generateVisualizationSpec(), 'findings-view');
   };
+
+  setStateForTab<T extends FindingTabId, F extends keyof FindingsState['findingStateByTabId'][T]>(
+    {
+      tabId,
+      field,
+      value,
+    }: { tabId: T; field: F; value: FindingsState['findingStateByTabId'][T][F] },
+    otherState?: Partial<Pick<FindingsState, keyof Omit<FindingsState, 'findingStateByTabId'>>>
+  ) {
+    this.setState({
+      ...(otherState as any),
+      findingStateByTabId: {
+        ...this.state.findingStateByTabId,
+        [tabId]: {
+          ...this.state.findingStateByTabId[tabId],
+          [field]: value,
+        },
+      },
+    });
+  }
 
   onStreamingFindings = async (findings: FindingItemType[]) => {
     const ruleIds = new Set<string>();
@@ -159,7 +253,19 @@ class Findings extends Component<FindingsProps, FindingsState> {
     });
 
     await this.getRules(Array.from(ruleIds));
-    this.setState({ findings: [...this.state.findings, ...findings] });
+    this.setStateForTab({
+      tabId: FindingTabId.DetectionRules,
+      field: 'findings',
+      value: [...this.state.findingStateByTabId[FindingTabId.DetectionRules].findings, ...findings],
+    });
+  };
+
+  onStreamingThreatIntelFindings = async (findings: ThreatIntelFinding[]) => {
+    this.setStateForTab({
+      tabId: FindingTabId.ThreatIntel,
+      field: 'findings',
+      value: [...this.state.findingStateByTabId[FindingTabId.ThreatIntel].findings, ...findings],
+    });
   };
 
   abortGetFindings = () => {
@@ -168,9 +274,18 @@ class Findings extends Component<FindingsProps, FindingsState> {
     });
   };
 
-  getFindings = async () => {
+  getDetectionRulesFindings = async () => {
     this.abortGetFindings();
-    this.setState({ loading: true, findings: [] });
+    this.setStateForTab(
+      {
+        tabId: FindingTabId.DetectionRules,
+        field: 'findings',
+        value: [],
+      },
+      {
+        loading: true,
+      }
+    );
     const { detectorService, notifications, dateTimeFilter } = this.props;
     const abortController = new AbortController();
     this.abortGetFindingsControllers.push(abortController);
@@ -212,6 +327,33 @@ class Findings extends Component<FindingsProps, FindingsState> {
     this.setState({ loading: false });
   };
 
+  getThreatIntelFindings = async () => {
+    try {
+      this.abortGetFindings();
+      this.setStateForTab(
+        {
+          tabId: FindingTabId.ThreatIntel,
+          field: 'findings',
+          value: [],
+        },
+        {
+          loading: true,
+        }
+      );
+      const duration = this.props.dateTimeFilter
+        ? getDuration(this.props.dateTimeFilter)
+        : undefined;
+      const abortController = new AbortController();
+      this.abortGetFindingsControllers.push(abortController);
+      await DataStore.threatIntel.getThreatIntelFindings(
+        abortController.signal,
+        duration,
+        this.onStreamingThreatIntelFindings
+      );
+    } catch (e: any) {}
+    this.setState({ loading: false });
+  };
+
   getRules = async (ruleIds: string[]) => {
     const { notifications } = this.props;
     try {
@@ -219,10 +361,16 @@ class Findings extends Component<FindingsProps, FindingsState> {
         _id: ruleIds,
       });
 
-      const allRules: { [id: string]: RuleSource } = { ...this.state.rules };
+      const allRules: { [id: string]: RuleSource } = {
+        ...this.state.findingStateByTabId[FindingTabId.DetectionRules].rules,
+      };
       rules.forEach((hit) => (allRules[hit._id] = hit._source));
 
-      this.setState({ rules: allRules });
+      this.setStateForTab({
+        tabId: FindingTabId.DetectionRules,
+        field: 'rules',
+        value: allRules,
+      });
     } catch (e) {
       errorNotificationToast(notifications, 'retrieve', 'rules', e);
     }
@@ -256,25 +404,49 @@ class Findings extends Component<FindingsProps, FindingsState> {
   };
 
   generateVisualizationSpec() {
-    const visData: FindingVisualizationData[] = [];
+    const visData: (FindingVisualizationData | ThreatIntelFindingVisualizationData)[] = [];
+    const { selectedTabId, findingStateByTabId } = this.state;
 
-    this.state.filteredFindings.forEach((finding: FindingItemType) => {
-      const findingTime = new Date(finding.timestamp);
-      findingTime.setMilliseconds(0);
-      findingTime.setSeconds(0);
-      finding.detectionType === 'Threat intelligence';
-      const ruleLevel =
-        finding.detectionType === 'Threat intelligence'
-          ? 'high'
-          : this.state.rules[finding.queries[0].id].level;
-      visData.push({
-        finding: 1,
-        time: findingTime.getTime(),
-        logType: finding.detector._source.detector_type,
-        ruleSeverity:
-          ruleLevel === 'critical' ? ruleLevel : (finding as any)['ruleSeverity'] || ruleLevel,
+    const findingsState =
+      selectedTabId === FindingTabId.DetectionRules
+        ? findingStateByTabId[FindingTabId.DetectionRules]
+        : findingStateByTabId[FindingTabId.ThreatIntel];
+    const groupBy = findingsState.groupBy;
+    let specGetter;
+
+    if (selectedTabId === FindingTabId.DetectionRules) {
+      (findingsState.filteredFindings as FindingItemType[]).forEach((finding: FindingItemType) => {
+        const findingTime = new Date(finding.timestamp);
+        findingTime.setMilliseconds(0);
+        findingTime.setSeconds(0);
+        finding.detectionType === 'Threat intelligence';
+        const ruleLevel =
+          finding.detectionType === 'Threat intelligence'
+            ? 'high'
+            : (findingsState as DetectionRulesFindingsState).rules[finding.queries[0].id].level;
+        visData.push({
+          finding: 1,
+          time: findingTime.getTime(),
+          logType: finding.detector._source.detector_type,
+          ruleSeverity:
+            ruleLevel === 'critical' ? ruleLevel : (finding as any)['ruleSeverity'] || ruleLevel,
+        });
       });
-    });
+      specGetter = getFindingsVisualizationSpec;
+    } else {
+      (findingsState.findings as ThreatIntelFinding[]).forEach((finding) => {
+        const findingTime = new Date(finding.timestamp);
+        findingTime.setMilliseconds(0);
+        findingTime.setSeconds(0);
+
+        visData.push({
+          finding: 1,
+          time: findingTime.getTime(),
+          indicatorType: finding.ioc_type,
+        });
+      });
+      specGetter = getThreatIntelFindingsVisualizationSpec;
+    }
     const {
       dateTimeFilter = {
         startTime: DEFAULT_DATE_RANGE.start,
@@ -282,7 +454,8 @@ class Findings extends Component<FindingsProps, FindingsState> {
       },
     } = this.props;
     const chartTimeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
-    return getFindingsVisualizationSpec(visData, this.state.groupBy, {
+
+    return specGetter(visData, groupBy, {
       timeUnit: chartTimeUnits.timeUnit,
       dateFormat: chartTimeUnits.dateFormat,
       domain: getDomainRange(
@@ -294,23 +467,39 @@ class Findings extends Component<FindingsProps, FindingsState> {
 
   createGroupByControl(): React.ReactNode {
     return createSelectComponent(
-      groupByOptions,
-      this.state.groupBy,
+      groupByOptionsByTabId[this.state.selectedTabId],
+      this.state.findingStateByTabId[this.state.selectedTabId].groupBy,
       'findings-vis-groupBy',
       (event: React.ChangeEvent<HTMLSelectElement>) => {
         const groupBy = event.target.value as FindingsGroupByType;
-        this.setState({ groupBy });
+        this.setStateForTab({
+          tabId: this.state.selectedTabId,
+          field: 'groupBy',
+          value: groupBy,
+        });
       }
     );
   }
 
   onFindingsFiltered = (findings: FindingItemType[]) => {
-    this.setState({ filteredFindings: findings });
+    this.setStateForTab({
+      tabId: FindingTabId.DetectionRules,
+      field: 'filteredFindings',
+      value: findings,
+    });
   };
 
   render() {
-    const { loading, notificationChannels, rules, recentlyUsedRanges } = this.state;
-    let { findings } = this.state;
+    const {
+      loading,
+      notificationChannels,
+      recentlyUsedRanges,
+      selectedTabId,
+      findingStateByTabId,
+    } = this.state;
+    // let { findings } = this.state.findingStateByTabId[this.];
+    let findings = findingStateByTabId[selectedTabId].findings;
+    const rules = findingStateByTabId[FindingTabId.DetectionRules].rules;
 
     const {
       dateTimeFilter = {
@@ -318,7 +507,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
         endTime: DEFAULT_DATE_RANGE.end,
       },
     } = this.props;
-    if (Object.keys(rules).length > 0) {
+    if (selectedTabId === FindingTabId.DetectionRules && Object.keys(rules).length > 0) {
       findings = findings.map((finding: any) => {
         const rule = rules[finding.queries[0].id];
         if (rule) {
@@ -330,6 +519,57 @@ class Findings extends Component<FindingsProps, FindingsState> {
         return finding;
       });
     }
+
+    const tabs = [
+      {
+        id: FindingTabId.DetectionRules,
+        name: (
+          <span>
+            Detection rules (
+            {findingStateByTabId[FindingTabId.DetectionRules].filteredFindings.length})
+          </span>
+        ),
+        content: (
+          <>
+            <EuiSpacer />
+            <FindingsTable
+              {...this.props}
+              history={this.props.history}
+              findings={findings as FindingItemType[]}
+              loading={loading}
+              rules={rules}
+              startTime={dateTimeFilter.startTime}
+              endTime={dateTimeFilter.endTime}
+              onRefresh={this.onRefresh}
+              notificationChannels={parseNotificationChannelsToOptions(notificationChannels)}
+              refreshNotificationChannels={this.getNotificationChannels}
+              onFindingsFiltered={this.onFindingsFiltered}
+              hasNotificationsPlugin={getIsNotificationPluginInstalled()}
+              correlationService={this.props.correlationService}
+            />
+          </>
+        ),
+      },
+      {
+        id: FindingTabId.ThreatIntel,
+        name: (
+          <span>
+            Threat intel{' '}
+            {this.state.selectedTabId === FindingTabId.ThreatIntel
+              ? `(${findingStateByTabId[FindingTabId.ThreatIntel].findings.length})`
+              : null}
+          </span>
+        ),
+        content: (
+          <>
+            <EuiSpacer />
+            <ThreatIntelFindingsTable
+              findingItems={findingStateByTabId[FindingTabId.ThreatIntel].findings}
+            />
+          </>
+        ),
+      },
+    ];
 
     return (
       <EuiFlexGroup direction="column">
@@ -386,20 +626,12 @@ class Findings extends Component<FindingsProps, FindingsState> {
 
         <EuiFlexItem>
           <ContentPanel title={'Findings'}>
-            <FindingsTable
-              {...this.props}
-              history={this.props.history}
-              findings={findings}
-              loading={loading}
-              rules={rules}
-              startTime={dateTimeFilter.startTime}
-              endTime={dateTimeFilter.endTime}
-              onRefresh={this.onRefresh}
-              notificationChannels={parseNotificationChannelsToOptions(notificationChannels)}
-              refreshNotificationChannels={this.getNotificationChannels}
-              onFindingsFiltered={this.onFindingsFiltered}
-              hasNotificationsPlugin={getIsNotificationPluginInstalled()}
-              correlationService={this.props.correlationService}
+            <EuiTabbedContent
+              tabs={tabs}
+              initialSelectedTab={tabs[0]}
+              onTabClick={(tab) => {
+                this.setState({ selectedTabId: tab.id as FindingTabId });
+              }}
             />
           </ContentPanel>
         </EuiFlexItem>

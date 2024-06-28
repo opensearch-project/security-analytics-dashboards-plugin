@@ -89,7 +89,7 @@ export default class FindingsService extends MDSEnabledClientService {
       const client = this.getClient(request, context);
       // Delete the dataSourceId since this query param is not supported by the finding API
       delete params['dataSourceId'];
-      const getFindingsResponse: GetFindingsResponse = await client(
+      const getFindingsResponse: GetThreatIntelFindingsResponse = await client(
         CLIENT_THREAT_INTEL_METHODS.GET_THREAT_INTEL_FINDINGS,
         params
       );

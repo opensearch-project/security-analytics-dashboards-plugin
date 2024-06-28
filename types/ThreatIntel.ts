@@ -194,13 +194,60 @@ export interface GetThreatIntelFindingsParams {
   sortString?: string;
   sortOrder?: string;
   missing?: string;
-  size?: string;
+  size?: number;
   searchString?: string;
-  startIndex?: string;
+  startIndex?: number;
   findingIds?: string;
   iocIds?: string;
-  startTime?: string;
-  endTime?: string;
+  startTime?: number;
+  endTime?: number;
 }
 
-export interface GetThreatIntelFindingsResponse {}
+export interface ThreatIntelFindingHit {
+  _id: string;
+  _source: {
+    id: string;
+    related_doc_ids: string[];
+    ioc_feed_ids: {
+      ioc_id: string;
+      feed_id: string;
+      index: string;
+    }[];
+    monitor_id: string;
+    monitor_name: string;
+    ioc_value: any;
+    ioc_type: ThreatIntelIocType;
+    timestamp: number;
+    execution_id: string;
+  };
+}
+
+export type ThreatIntelFinding = ThreatIntelFindingHit['_source'];
+
+export type ThreatIntelFindingsGroupByType = 'indicatorType';
+
+export interface GetThreatIntelFindingsResponse {
+  total_findings: number;
+  ioc_findings: ThreatIntelFinding[];
+}
+
+export interface ThreatIntelAlert {
+  id: string;
+  version: number;
+  schemaVersion: number;
+  seqNo: number;
+  primaryTerm: number;
+  user: string;
+  triggerName: string;
+  triggerId: string;
+  state: string;
+  startTime: number;
+  endTime: number;
+  acknowledgedTime: number;
+  lastUpdatedTime: number;
+  errorMessage: string;
+  severity: string;
+  iocValue: string;
+  iocType: ThreatIntelIocType;
+  findingIds: string[];
+}

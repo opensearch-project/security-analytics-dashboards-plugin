@@ -25,8 +25,7 @@ import { IoCstable } from '../../components/IoCsTable/IoCsTable';
 import { ThreatIntelSourceDetails } from '../../components/ThreatIntelSourceDetails/ThreatIntelSourceDetails';
 import { IocLabel } from '../../../../../common/constants';
 import { ThreatIntelService } from '../../../../services';
-import { errorNotificationToast, parseSchedule } from '../../../../utils/helpers';
-import moment from 'moment';
+import { errorNotificationToast, parseSchedule, renderTime } from '../../../../utils/helpers';
 import DeleteModal from '../../../../components/DeleteModal';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 
@@ -192,7 +191,7 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
             },
             {
               title: 'Last updated',
-              description: moment(last_update_time).format('YYYY-MM-DDTHH:mm'),
+              description: renderTime(last_update_time),
             },
             { title: 'Ioc types', description: ioc_types.map((ioc) => IocLabel[ioc]).join(', ') },
           ]}
