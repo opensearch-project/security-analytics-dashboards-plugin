@@ -136,7 +136,7 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
     }
   };
 
-  const { name, enabled, description, type, ioc_types, last_update_time } = source;
+  const { name, description, type, ioc_types, last_update_time, enabled } = source;
   const schedule = type === 'S3_CUSTOM' ? source.schedule : undefined;
 
   return (
@@ -149,7 +149,7 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
           <EuiFlexGroup alignItems="center">
-            {enabled && (
+            {type === 'S3_CUSTOM' && (
               <EuiFlexItem grow={false}>
                 <EuiButton fill onClick={onRefresh}>
                   Refresh
@@ -181,12 +181,14 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
             {
               title: 'Refresh schedule',
               description: schedule
-                ? parseSchedule({
-                    period: {
-                      interval: schedule.interval.period,
-                      unit: schedule.interval.unit.toUpperCase(),
-                    },
-                  })
+                ? enabled
+                  ? parseSchedule({
+                      period: {
+                        interval: schedule.interval.period,
+                        unit: schedule.interval.unit.toUpperCase(),
+                      },
+                    })
+                  : 'Download on demand'
                 : 'File uploaded',
             },
             {
