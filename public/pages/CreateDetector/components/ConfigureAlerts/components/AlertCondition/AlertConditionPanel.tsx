@@ -7,18 +7,13 @@ import React, { ChangeEvent, Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
   EuiAccordion,
-  EuiButton,
   EuiCheckbox,
   EuiComboBox,
   EuiComboBoxOptionOption,
   EuiFieldText,
-  EuiFlexGroup,
-  EuiFlexItem,
   EuiFormRow,
   EuiSpacer,
-  EuiSwitch,
   EuiText,
-  EuiTextArea,
   EuiTitle,
 } from '@elastic/eui';
 import { AlertCondition } from '../../../../../../../models/interfaces';
@@ -29,11 +24,13 @@ import {
 } from '../../utils/helpers';
 import { ALERT_SEVERITY_OPTIONS } from '../../utils/constants';
 import { CreateDetectorRulesOptions } from '../../../../../../models/types';
-import { NotificationChannelOption, NotificationChannelTypeOptions } from '../../models/interfaces';
-import { NOTIFICATIONS_HREF } from '../../../../../../utils/constants';
 import { getNameErrorMessage, validateName } from '../../../../../../utils/validation';
-import { NotificationsCallOut } from '../../../../../../components/NotificationsCallOut';
-import { Detector } from '../../../../../../../types';
+import {
+  Detector,
+  NotificationChannelOption,
+  NotificationChannelTypeOptions,
+} from '../../../../../../../types';
+import { NotificationForm } from '../../../../../../components/Notifications/NotificationForm';
 
 interface AlertConditionPanelProps extends RouteComponentProps {
   alertCondition: AlertCondition;
@@ -42,7 +39,6 @@ interface AlertConditionPanelProps extends RouteComponentProps {
   detector: Detector;
   indexNum: number;
   isEdit: boolean;
-  hasNotificationPlugin: boolean;
   loadingNotifications: boolean;
   onAlertTriggerChanged: (newDetector: Detector, emitMetrics?: boolean) => void;
   refreshNotificationChannels: () => void;
@@ -53,7 +49,6 @@ interface AlertConditionPanelState {
   nameIsInvalid: boolean;
   previewToggle: boolean;
   selectedNames: EuiComboBoxOptionOption<string>[];
-  showNotificationDetails: boolean;
   detectionRulesTriggerEnabled: boolean;
   threatIntelTriggerEnabled: boolean;
 }
@@ -69,7 +64,6 @@ export default class AlertConditionPanel extends Component<
       nameIsInvalid: false,
       previewToggle: false,
       selectedNames: [],
-      showNotificationDetails: true,
       detectionRulesTriggerEnabled: props.alertCondition.detection_types.includes('rules'),
       threatIntelTriggerEnabled: props.alertCondition.detection_types.includes('threat_intel'),
     };
@@ -200,7 +194,7 @@ export default class AlertConditionPanel extends Component<
     this.updateTrigger({ tags });
   };
 
-  onNotificationChannelsChange = (selectedOptions: EuiComboBoxOptionOption<string>[]) => {
+  private onNotificationChannelsChange = (selectedOptions: EuiComboBoxOptionOption<string>[]) => {
     const {
       alertCondition,
       onAlertTriggerChanged,
@@ -282,13 +276,11 @@ export default class AlertConditionPanel extends Component<
       loadingNotifications,
       refreshNotificationChannels,
       rulesOptions,
-      hasNotificationPlugin,
     } = this.props;
     const {
       nameFieldTouched,
       nameIsInvalid,
       selectedNames,
-      showNotificationDetails,
       detectionRulesTriggerEnabled,
       threatIntelTriggerEnabled,
     } = this.state;
@@ -525,123 +517,16 @@ export default class AlertConditionPanel extends Component<
 
         <EuiSpacer size={'l'} />
 
-        <EuiSwitch
-          label="Send notification"
-          checked={showNotificationDetails}
-          onChange={(e) => this.setState({ showNotificationDetails: e.target.checked })}
+        <NotificationForm
+          action={alertCondition.actions[0]}
+          allNotificationChannels={allNotificationChannels}
+          loadingNotifications={loadingNotifications}
+          prepareMessage={this.prepareMessage}
+          refreshNotificationChannels={refreshNotificationChannels}
+          onChannelsChange={this.onNotificationChannelsChange}
+          onMessageBodyChange={this.onMessageBodyChange}
+          onMessageSubjectChange={this.onMessageSubjectChange}
         />
-
-        <EuiSpacer />
-
-        {showNotificationDetails && (
-          <>
-            <EuiFlexGroup alignItems={'flexEnd'}>
-              <EuiFlexItem style={{ maxWidth: 400 }}>
-                <EuiFormRow
-                  label={
-                    <EuiText size="m">
-                      <p>Notification channel</p>
-                    </EuiText>
-                  }
-                >
-                  <EuiComboBox
-                    placeholder={'Select notification channel.'}
-                    async={true}
-                    isLoading={loadingNotifications}
-                    options={allNotificationChannels as EuiComboBoxOptionOption<string>[]}
-                    selectedOptions={
-                      selectedNotificationChannelOption as EuiComboBoxOptionOption<string>[]
-                    }
-                    onChange={this.onNotificationChannelsChange}
-                    singleSelection={{ asPlainText: true }}
-                    onFocus={refreshNotificationChannels}
-                    isDisabled={!hasNotificationPlugin}
-                  />
-                </EuiFormRow>
-              </EuiFlexItem>
-              <EuiFlexItem grow={false}>
-                <EuiButton
-                  href={NOTIFICATIONS_HREF}
-                  iconType={'popout'}
-                  target={'_blank'}
-                  isDisabled={!hasNotificationPlugin}
-                >
-                  Manage channels
-                </EuiButton>
-              </EuiFlexItem>
-            </EuiFlexGroup>
-
-            {!hasNotificationPlugin && (
-              <>
-                <EuiSpacer size="m" />
-                <NotificationsCallOut />
-              </>
-            )}
-
-            <EuiSpacer size={'l'} />
-
-            <EuiAccordion
-              id={`alert-condition-notify-msg-${indexNum}`}
-              buttonContent={
-                <EuiText size="m">
-                  <p>Notification message</p>
-                </EuiText>
-              }
-              paddingSize={'l'}
-              initialIsOpen={false}
-            >
-              <EuiFlexGroup direction={'column'} style={{ width: '75%' }}>
-                <EuiFlexItem>
-                  <EuiFormRow
-                    label={
-                      <EuiText size={'s'}>
-                        <p>Message subject</p>
-                      </EuiText>
-                    }
-                    fullWidth={true}
-                  >
-                    <EuiFieldText
-                      placeholder={'Enter a subject for the notification message.'}
-                      value={alertCondition.actions[0]?.subject_template.source}
-                      onChange={(e) => this.onMessageSubjectChange(e.target.value)}
-                      required={true}
-                      fullWidth={true}
-                    />
-                  </EuiFormRow>
-                </EuiFlexItem>
-
-                <EuiFlexItem>
-                  <EuiFormRow
-                    label={
-                      <EuiText size="s">
-                        <p>Message body</p>
-                      </EuiText>
-                    }
-                    fullWidth={true}
-                  >
-                    <EuiTextArea
-                      placeholder={'Enter the content of the notification message.'}
-                      value={alertCondition.actions[0]?.message_template.source}
-                      onChange={(e) => this.onMessageBodyChange(e.target.value)}
-                      required={true}
-                      fullWidth={true}
-                    />
-                  </EuiFormRow>
-                </EuiFlexItem>
-
-                <EuiFlexItem>
-                  <EuiFormRow>
-                    <EuiButton fullWidth={false} onClick={() => this.prepareMessage(true)}>
-                      Generate message
-                    </EuiButton>
-                  </EuiFormRow>
-                </EuiFlexItem>
-              </EuiFlexGroup>
-            </EuiAccordion>
-
-            <EuiSpacer size="xl" />
-          </>
-        )}
       </div>
     );
   }

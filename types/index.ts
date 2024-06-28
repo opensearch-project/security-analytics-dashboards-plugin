@@ -20,3 +20,4 @@ export * from './SecurityAnalyticsContext';
 export * from './DataSourceContext';
 export * from './DataSource';
 export * from './shared';
+export * from './ThreatIntel';

@@ -272,6 +272,46 @@ export function getFindingsVisualizationSpec(
   ]);
 }
 
+export function getThreatIntelFindingsVisualizationSpec(
+  visualizationData: any[],
+  groupBy: string,
+  dateOpts: DateOpts = {
+    timeUnit: defaultTimeUnit,
+    dateFormat: defaultDateFormat,
+    domain: defaultScaleDomain,
+  }
+) {
+  const indicatorTypeTitle = 'Indicator type';
+
+  return getVisualizationSpec('Findings data overview', visualizationData, [
+    addInteractiveLegends({
+      mark: {
+        type: 'bar',
+        clip: true,
+      },
+      encoding: {
+        tooltip: [
+          getYAxis('finding', 'Findings'),
+          getTimeTooltip(dateOpts),
+          {
+            field: groupBy,
+            title: indicatorTypeTitle,
+          },
+        ],
+        x: getXAxis(dateOpts),
+        y: getYAxis('finding', 'Count'),
+        color: {
+          field: groupBy,
+          title: indicatorTypeTitle,
+          scale: {
+            range: euiPaletteColorBlind(),
+          },
+        },
+      },
+    }),
+  ]);
+}
+
 export function getAlertsVisualizationSpec(
   visualizationData: any[],
   groupBy: string,

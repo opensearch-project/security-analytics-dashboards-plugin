@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { NotificationChannelOption } from '../../../../public/pages/CreateDetector/components/ConfigureAlerts/models/interfaces';
+import { NotificationChannelOption } from '../../../../types';
 
 export default {
   label: 'some_label',

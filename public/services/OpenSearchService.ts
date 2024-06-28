@@ -18,7 +18,7 @@ export default class OpenSearchService {
     private savedObjectsClient: SavedObjectsClientContract
   ) {}
 
-  getPlugins = async (): Promise<ServerResponse<Plugin[]>> => {
+  getPlugins = async (): Promise<ServerResponse<{ component: string }[]>> => {
     let url = `..${API.PLUGINS}`;
     return await this.httpClient.get(url, {
       query: {

@@ -17,7 +17,6 @@ import {
 import { MAX_ALERT_CONDITIONS } from '../utils/constants';
 import AlertConditionPanel from '../components/AlertCondition';
 import { CreateDetectorRulesOptions } from '../../../../../models/types';
-import { NotificationChannelTypeOptions } from '../models/interfaces';
 import {
   getEmptyAlertCondition,
   getNotificationChannels,
@@ -32,6 +31,7 @@ import {
   CreateDetectorSteps,
   Detector,
   DetectorCreationStep,
+  NotificationChannelTypeOptions,
 } from '../../../../../../types';
 import { MetricsContext } from '../../../../../metrics/MetricsContext';
 
@@ -42,7 +42,6 @@ interface ConfigureAlertsProps extends RouteComponentProps {
   changeDetector: (detector: Detector) => void;
   updateDataValidState: (step: DetectorCreationStep, isValid: boolean) => void;
   notificationsService: NotificationsService;
-  hasNotificationPlugin: boolean;
   getTriggerName: () => string;
   metricsContext?: MetricsContext;
 }
@@ -52,7 +51,7 @@ interface ConfigureAlertsState {
   notificationChannels: NotificationChannelTypeOptions[];
 }
 
-const isTriggerValid = (triggers: AlertCondition[], hasNotificationPlugin: boolean) => {
+const isTriggerValid = (triggers: AlertCondition[]) => {
   return (
     !triggers.length ||
     triggers.every((trigger) => {
@@ -105,7 +104,7 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
       this.addCondition();
       this.props.updateDataValidState(DetectorCreationStep.CONFIGURE_ALERTS, true);
     } else {
-      const isTriggerDataValid = isTriggerValid(triggers, this.props.hasNotificationPlugin);
+      const isTriggerDataValid = isTriggerValid(triggers);
       this.props.updateDataValidState(DetectorCreationStep.CONFIGURE_ALERTS, isTriggerDataValid);
     }
   };
@@ -143,10 +142,7 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
   };
 
   onAlertTriggerChanged = (newDetector: Detector, emitMetrics: boolean = true): void => {
-    const isTriggerDataValid = isTriggerValid(
-      newDetector.triggers,
-      this.props.hasNotificationPlugin
-    );
+    const isTriggerDataValid = isTriggerValid(newDetector.triggers);
     this.props.changeDetector(newDetector);
     this.props.updateDataValidState(DetectorCreationStep.CONFIGURE_ALERTS, isTriggerDataValid);
     if (emitMetrics) {
@@ -223,7 +219,6 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
                   loadingNotifications={loading}
                   onAlertTriggerChanged={this.onAlertTriggerChanged}
                   refreshNotificationChannels={this.getNotificationChannels}
-                  hasNotificationPlugin={this.props.hasNotificationPlugin}
                 />
               </EuiAccordion>
             </EuiPanel>
