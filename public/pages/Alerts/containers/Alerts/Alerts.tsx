@@ -521,10 +521,10 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         }));
         this.setState({ correlationAlerts: enrichedAlerts });
       } else {
-        errorNotificationToast(notifications, 'retrieve', 'correlations', correlationRes.error);
+        this.setState({ correlationAlerts: [] });
       }
     } catch (e: any) {
-      errorNotificationToast(notifications, 'retrieve', 'correlationAlerts', e);
+        errorNotificationToast(notifications, 'retrieve', 'correlationAlerts', e);
     }
     this.filterCorrelationAlerts();
     this.setState({ loading: false });
