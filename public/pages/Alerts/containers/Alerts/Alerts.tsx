@@ -524,7 +524,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         this.setState({ correlationAlerts: [] });
       }
     } catch (e: any) {
-        errorNotificationToast(notifications, 'retrieve', 'correlationAlerts', e);
+      errorNotificationToast(notifications, 'retrieve', 'correlationAlerts', e);
     }
     this.filterCorrelationAlerts();
     this.setState({ loading: false });
