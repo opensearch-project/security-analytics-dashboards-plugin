@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpSetup } from 'opensearch-dashboards/public';
+import { HttpSetup, NotificationsStart } from 'opensearch-dashboards/public';
 import { ServerResponse } from '../../server/models/types';
 import {
   AddThreatIntelSourcePayload,
@@ -12,9 +12,10 @@ import {
 } from '../../types';
 import { dataSourceInfo } from './utils/constants';
 import { API } from '../../server/utils/constants';
+import { errorNotificationToast } from '../utils/helpers';
 
 export default class ThreatIntelService {
-  constructor(private httpClient: HttpSetup) {}
+  constructor(private httpClient: HttpSetup, private notifications: NotificationsStart) {}
 
   addThreatIntelSource = async (
     source: AddThreatIntelSourcePayload
@@ -26,6 +27,10 @@ export default class ThreatIntelService {
         dataSourceId: dataSourceInfo.activeDataSource.id,
       },
     })) as ServerResponse<any>;
+
+    if (!response.ok) {
+      errorNotificationToast(this.notifications, 'add', 'threat intel source', response.error);
+    }
 
     return response;
   };
@@ -42,6 +47,10 @@ export default class ThreatIntelService {
       },
     })) as ServerResponse<any>;
 
+    if (!response.ok) {
+      errorNotificationToast(this.notifications, 'update', 'threat intel source', response.error);
+    }
+
     return response;
   };
 
@@ -54,6 +63,10 @@ export default class ThreatIntelService {
       },
     })) as ServerResponse<any>;
 
+    if (!response.ok) {
+      errorNotificationToast(this.notifications, 'get', 'threat intel source(s)', response.error);
+    }
+
     return response;
   };
 
@@ -64,6 +77,10 @@ export default class ThreatIntelService {
         dataSourceId: dataSourceInfo.activeDataSource.id,
       },
     })) as ServerResponse<any>;
+
+    if (!response.ok) {
+      errorNotificationToast(this.notifications, 'get', 'threat intel source', response.error);
+    }
 
     return response;
   };
@@ -76,6 +93,10 @@ export default class ThreatIntelService {
       },
     })) as ServerResponse<any>;
 
+    if (!response.ok) {
+      errorNotificationToast(this.notifications, 'delete', 'threat intel source', response.error);
+    }
+
     return response;
   };
 
@@ -86,6 +107,10 @@ export default class ThreatIntelService {
         dataSourceId: dataSourceInfo.activeDataSource.id,
       },
     })) as ServerResponse<any>;
+
+    if (!response.ok) {
+      errorNotificationToast(this.notifications, 'refresh', 'threat intel source', response.error);
+    }
 
     return response;
   };
@@ -99,6 +124,15 @@ export default class ThreatIntelService {
       },
     })) as ServerResponse<any>;
 
+    if (!response.ok) {
+      errorNotificationToast(
+        this.notifications,
+        'setup',
+        'threat intel scan monitor',
+        response.error
+      );
+    }
+
     return response;
   };
 
@@ -110,6 +144,15 @@ export default class ThreatIntelService {
         dataSourceId: dataSourceInfo.activeDataSource.id,
       },
     })) as ServerResponse<any>;
+
+    if (!response.ok) {
+      errorNotificationToast(
+        this.notifications,
+        'update',
+        'threat intel scan monitor',
+        response.error
+      );
+    }
 
     return response;
   };
@@ -130,6 +173,15 @@ export default class ThreatIntelService {
         ok: response.ok,
         response: { ..._source },
       };
+    } else if (
+      !response.error.includes('Configured indices are not found: [.opendistro-alerting-config]')
+    ) {
+      errorNotificationToast(
+        this.notifications,
+        'get',
+        'threat intel scan monitor',
+        response.error
+      );
     }
 
     return response;
@@ -143,6 +195,10 @@ export default class ThreatIntelService {
         ...getIocsQueryParams,
       },
     })) as ServerResponse<any>;
+
+    if (!response.ok) {
+      errorNotificationToast(this.notifications, 'get', 'indicators of compromise', response.error);
+    }
 
     return response;
   };

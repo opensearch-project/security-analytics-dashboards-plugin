@@ -220,3 +220,14 @@ export const defaultIntervalUnitOptions = {
   HOURS: { value: 'HOURS', text: 'Hours' },
   DAYS: { value: 'DAYS', text: 'Days' },
 };
+
+export enum FindingTabId {
+  DetectionRules = 'detection-rules',
+  ThreatIntel = 'threat-intel',
+}
+
+export enum AlertTabId {
+  DetectionRules = 'detection-rules',
+  ThreatIntel = 'threat-intel',
+  Correlations = 'correlations',
+}

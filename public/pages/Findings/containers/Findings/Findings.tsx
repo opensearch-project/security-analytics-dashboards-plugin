@@ -28,6 +28,7 @@ import {
 import {
   BREADCRUMBS,
   DEFAULT_DATE_RANGE,
+  FindingTabId,
   MAX_RECENTLY_USED_TIME_RANGES,
 } from '../../../../utils/constants';
 import {
@@ -72,14 +73,9 @@ interface FindingsProps extends RouteComponentProps, DataSourceProps {
   indexPatternsService: IndexPatternsService;
   opensearchService: OpenSearchService;
   notifications: NotificationsStart;
-  match: match<{ detectorId: string }>;
+  match: match<{ detectorId?: string }>;
   dateTimeFilter?: DateTimeFilter;
   setDateTimeFilter?: Function;
-}
-
-enum FindingTabId {
-  DetectionRules = 'detection-rules',
-  ThreatIntel = 'threat-intel',
 }
 
 interface DetectionRulesFindingsState {
@@ -133,7 +129,6 @@ export const groupByOptionsByTabId = {
 
 class Findings extends Component<FindingsProps, FindingsState> {
   static contextType = CoreServicesContext;
-
   private abortGetFindingsControllers: AbortController[] = [];
 
   constructor(props: FindingsProps) {
@@ -146,10 +141,12 @@ class Findings extends Component<FindingsProps, FindingsState> {
       },
     } = props;
     const timeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
+    const searchParams = new URLSearchParams(props.location.search);
     this.state = {
       loading: true,
       notificationChannels: [],
-      selectedTabId: FindingTabId.DetectionRules,
+      selectedTabId:
+        (searchParams.get('detectionType') as FindingTabId) ?? FindingTabId.DetectionRules,
       findingStateByTabId: {
         [FindingTabId.DetectionRules]: {
           findings: [],
@@ -627,7 +624,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
           <ContentPanel title={'Findings'}>
             <EuiTabbedContent
               tabs={tabs}
-              initialSelectedTab={tabs[0]}
+              initialSelectedTab={tabs.find(({ id }) => id === selectedTabId) ?? tabs[0]}
               onTabClick={(tab) => {
                 this.setState({ selectedTabId: tab.id as FindingTabId });
               }}
