@@ -157,10 +157,13 @@ export default class AlertService extends MDSEnabledClientService {
 
   updateThreatIntelAlertsState = async (
     context: RequestHandlerContext,
-    request: OpenSearchDashboardsRequest<{
-      state: 'ACKNOWLEDGED' | 'COMPLETED';
-      alert_ids: string;
-    }>,
+    request: OpenSearchDashboardsRequest<
+      any,
+      {
+        state: 'ACKNOWLEDGED' | 'COMPLETED';
+        alert_ids: string;
+      }
+    >,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<any> | ResponseError>> => {
     try {

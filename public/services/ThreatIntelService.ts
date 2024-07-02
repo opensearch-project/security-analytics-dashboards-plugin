@@ -63,7 +63,10 @@ export default class ThreatIntelService {
       },
     })) as ServerResponse<any>;
 
-    if (!response.ok) {
+    if (
+      !response.ok &&
+      !response.error?.includes('Threat intel source config index does not exist')
+    ) {
       errorNotificationToast(this.notifications, 'get', 'threat intel source(s)', response.error);
     }
 
