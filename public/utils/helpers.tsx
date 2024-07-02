@@ -41,7 +41,7 @@ import { LogCategoryOptionView } from '../components/Utility/LogCategoryOption';
 import { getLogTypeLabel } from '../pages/LogTypes/utils/helpers';
 import { euiThemeVars } from '@osd/ui-shared-deps/theme';
 import dateMath from '@elastic/datemath';
-import { IocLabel } from '../../common/constants';
+import { IocLabel, ThreatIntelIocType } from '../../common/constants';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
@@ -601,6 +601,6 @@ export async function getFieldsForIndex(
   return fields;
 }
 
-export function renderIoCType(iocType: string) {
+export function renderIoCType(iocType: ThreatIntelIocType) {
   return IocLabel[iocType] || DEFAULT_EMPTY_DATA;
 }
