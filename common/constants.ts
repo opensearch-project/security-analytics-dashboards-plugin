@@ -8,7 +8,7 @@ export const DEFAULT_RULE_UUID = '25b9c01c-350d-4b95-bed1-836d04a4f324';
 export enum ThreatIntelIocType {
   Domain = 'domain_name',
   FileHash = 'hashes',
-  IPV4 = 'ip',
+  IPV4 = 'ipv4_addr',
   IPV6 = 'ipv6_addr',
 }
 
