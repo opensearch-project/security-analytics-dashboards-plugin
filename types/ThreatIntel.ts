@@ -6,6 +6,7 @@
 import { ThreatIntelIocType } from '../common/constants';
 import { PeriodSchedule } from '../models/interfaces';
 import { AlertSeverity } from '../public/pages/Alerts/utils/constants';
+import { ALERT_STATE } from '../public/utils/constants';
 import { TriggerAction } from './Alert';
 
 export type ThreatIntelNextStepId = 'add-source' | 'configure-scan';
@@ -184,9 +185,9 @@ export interface ThreatIntelMonitorPayload {
 export interface GetIocsQueryParams {
   startIndex?: number;
   size?: number;
-  feedIds?: string;
-  iocTypes?: string;
-  search?: string;
+  feed_ids?: string;
+  ioc_types?: string;
+  searchString?: string;
   sortString?: string;
 }
 
@@ -211,6 +212,7 @@ export interface ThreatIntelFindingHit {
     ioc_feed_ids: {
       ioc_id: string;
       feed_id: string;
+      feed_name: string;
       index: string;
     }[];
     monitor_id: string;
@@ -234,20 +236,49 @@ export interface GetThreatIntelFindingsResponse {
 export interface ThreatIntelAlert {
   id: string;
   version: number;
-  schemaVersion: number;
-  seqNo: number;
-  primaryTerm: number;
-  user: string;
-  triggerName: string;
-  triggerId: string;
-  state: string;
-  startTime: number;
-  endTime: number;
-  acknowledgedTime: number;
-  lastUpdatedTime: number;
-  errorMessage: string;
+  schema_version: number;
+  seq_no: number;
+  primary_term: number;
+  trigger_id: string;
+  trigger_name: string;
+  state: keyof typeof ALERT_STATE;
+  error_message: string;
+  ioc_value: string;
+  ioc_type: ThreatIntelIocType;
   severity: string;
-  iocValue: string;
-  iocType: ThreatIntelIocType;
-  findingIds: string[];
+  finding_ids: string[];
+  acknowledged_time: number;
+  last_updated_time: number;
+  start_time: number;
+  end_time: number;
+}
+
+export interface GetThreatIntelAlertsResponse {
+  total_alerts: number;
+  alerts: ThreatIntelAlert[];
+}
+
+export interface ThreatIntelFindingDetailsFlyoutProps {
+  backButton?: React.ReactNode;
+  finding: ThreatIntelFinding;
+}
+
+export interface ThreatIntelFindingDocumentItem {
+  id: string;
+  pos: number;
+  index: string;
+  document?: string;
+}
+
+export interface GetThreatIntelAlertsParams {
+  startTime?: number;
+  endTime?: number;
+  severityLevel?: string;
+  alertState?: string;
+  sortString?: string;
+  sortOrder?: string;
+  missing?: string;
+  size?: number;
+  startIndex?: number;
+  searchString?: string;
 }

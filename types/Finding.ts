@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { CorrelationService, IndexPatternsService, OpenSearchService } from '../public/services';
+import { FindingItemType } from './shared';
+
 export interface Finding {
   id: string;
   detectorId: string;
@@ -55,4 +58,17 @@ export type GetFindingsParams = {
 export interface GetFindingsResponse {
   total_findings: number;
   findings: Finding[];
+}
+
+export interface FindingDetailsFlyoutBaseProps {
+  finding: FindingItemType;
+  findings: FindingItemType[];
+  shouldLoadAllFindings: boolean;
+  backButton?: React.ReactNode;
+}
+
+export interface FindingDetailsFlyoutProps extends FindingDetailsFlyoutBaseProps {
+  opensearchService: OpenSearchService;
+  indexPatternsService: IndexPatternsService;
+  correlationService: CorrelationService;
 }
