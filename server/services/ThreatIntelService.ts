@@ -344,4 +344,35 @@ export default class ThreatIntelService extends MDSEnabledClientService {
       });
     }
   };
+
+  deleteThreatIntelMonitor = async (
+    context: RequestHandlerContext,
+    request: OpenSearchDashboardsRequest<{ monitorId: string }, any>,
+    response: OpenSearchDashboardsResponseFactory
+  ): Promise<IOpenSearchDashboardsResponse<ServerResponse<any> | ResponseError>> => {
+    try {
+      const params = { monitorId: request.params.monitorId };
+      const client = this.getClient(request, context);
+      const deleteRes: any = await client(
+        CLIENT_THREAT_INTEL_METHODS.DELETE_THREAT_INTEL_MONITOR,
+        params
+      );
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: true,
+          response: deleteRes,
+        },
+      });
+    } catch (error: any) {
+      console.error('Security Analytics - ThreatIntelService - deleteThreatIntelMonitor:', error);
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: false,
+          error: error.message,
+        },
+      });
+    }
+  };
 }

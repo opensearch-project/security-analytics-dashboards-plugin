@@ -136,4 +136,18 @@ export function addThreatIntelMethods(securityAnalytics: any, createAction: any)
     needBody: false,
     method: 'POST',
   });
+
+  securityAnalytics[METHOD_NAMES.DELETE_THREAT_INTEL_MONITOR] = createAction({
+    url: {
+      fmt: `${API.THREAT_INTEL_BASE}/monitors/<%=monitorId%>`,
+      req: {
+        monitorId: {
+          type: 'string',
+          required: true,
+        },
+      },
+    },
+    needBody: false,
+    method: 'DELETE',
+  });
 }

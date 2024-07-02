@@ -137,4 +137,17 @@ export function setupThreatIntelRoutes({ threatIntelService }: NodeServices, rou
     },
     threatIntelService.refreshThreatIntelSource
   );
+
+  router.delete(
+    {
+      path: `${API.THREAT_INTEL_BASE}/monitors/{monitorId}`,
+      validate: {
+        params: schema.object({
+          monitorId: schema.string(),
+        }),
+        query: createQueryValidationSchema(),
+      },
+    },
+    threatIntelService.deleteThreatIntelMonitor
+  );
 }
