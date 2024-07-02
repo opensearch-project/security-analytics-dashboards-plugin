@@ -6,7 +6,7 @@
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { AlertsService } from '../services';
 import { errorNotificationToast } from '../utils/helpers';
-import { AlertResponse, Duration } from '../../types';
+import { AlertResponse, Duration, ThreatIntelAlert } from '../../types';
 
 export class AlertsStore {
   constructor(
@@ -15,8 +15,8 @@ export class AlertsStore {
   ) {}
 
   public async getAlertsByDetector(
-    detectorId: string, 
-    detectorName: string, 
+    detectorId: string,
+    detectorName: string,
     signal: AbortSignal,
     duration: Duration,
     onPartialAlertsFetched?: (alerts: AlertResponse[]) => void
@@ -36,17 +36,18 @@ export class AlertsStore {
         startIndex,
         size: maxAlertsReturned,
         startTime: duration.startTime,
-        endTime: duration.endTime
+        endTime: duration.endTime,
       });
 
       if (signal.aborted) {
         break;
       }
-      
+
       if (getAlertsRes.ok) {
-        onPartialAlertsFetched?.(getAlertsRes.response.alerts)
-        allAlerts = allAlerts.concat(getAlertsRes.response.alerts);
-        alertsCount = getAlertsRes.response.alerts.length;
+        const alerts = this.extendAlerts(getAlertsRes.response.alerts, detectorId, detectorName);
+        onPartialAlertsFetched?.(alerts);
+        allAlerts = allAlerts.concat(alerts);
+        alertsCount = alerts.length;
       } else {
         alertsCount = 0;
         errorNotificationToast(this.notifications, 'retrieve', 'alerts', getAlertsRes.error);
@@ -59,7 +60,57 @@ export class AlertsStore {
       alertsCount === maxAlertsReturned
     );
 
-    allAlerts = allAlerts.map((alert) => {
+    return allAlerts;
+  }
+
+  public async getThreatIntelAlerts(
+    signal: AbortSignal,
+    duration: Duration,
+    onPartialAlertsFetched?: (alerts: ThreatIntelAlert[]) => void
+  ) {
+    let allAlerts: any[] = [];
+    const maxAlertsReturned = 10000;
+    let startIndex = 0;
+    let alertsCount = 0;
+
+    do {
+      if (signal.aborted) {
+        break;
+      }
+
+      const getAlertsRes = await this.service.getThreatIntelAlerts({
+        startIndex,
+        size: maxAlertsReturned,
+        startTime: duration.startTime,
+        endTime: duration.endTime,
+      });
+
+      if (signal.aborted) {
+        break;
+      }
+
+      if (getAlertsRes.ok) {
+        const alerts = getAlertsRes.response.alerts;
+        onPartialAlertsFetched?.(alerts);
+        allAlerts = allAlerts.concat(alerts);
+        alertsCount = alerts.length;
+      } else {
+        alertsCount = 0;
+        errorNotificationToast(this.notifications, 'retrieve', 'alerts', getAlertsRes.error);
+      }
+
+      startIndex += alertsCount;
+    } while (
+      // If we get 10,000 alerts as part of the previous call then there might be more alerts to fetch,
+      // hence we make another call until the number of alerts is less then 10,000
+      alertsCount === maxAlertsReturned
+    );
+
+    return allAlerts;
+  }
+
+  private extendAlerts(allAlerts: any[], detectorId: string, detectorName: string) {
+    return allAlerts.map((alert) => {
       if (!alert.detector_id) {
         alert.detector_id = detectorId;
       }
@@ -69,7 +120,5 @@ export class AlertsStore {
         detectorName: detectorName,
       };
     });
-
-    return allAlerts;
   }
 }

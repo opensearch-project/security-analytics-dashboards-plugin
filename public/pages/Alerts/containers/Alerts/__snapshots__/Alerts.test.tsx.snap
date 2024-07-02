@@ -7,6 +7,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
       "acknowledgeAlerts": [Function],
       "dataSourceEnabled": undefined,
       "getAlerts": [Function],
+      "getThreatIntelAlerts": [Function],
       "osDriver": Object {
         "delete": [MockFunction],
         "get": [MockFunction],
@@ -14,6 +15,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
         "post": [MockFunction],
         "put": [MockFunction],
       },
+      "updateThreatIntelAlertsState": [Function],
     }
   }
   dateTimeFilter={
@@ -45,6 +47,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
       "getFindings": [Function],
       "getThreatIntelFindings": [Function],
       "httpClient": [MockFunction],
+      "notifications": undefined,
     }
   }
   match={[MockFunction]}
@@ -60,6 +63,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
   }
   opensearchService={
     OpenSearchService {
+      "getDocuments": [Function],
       "getIndexPatterns": [Function],
       "getPlugins": [Function],
       "httpClient": [MockFunction],
@@ -89,6 +93,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
         "acknowledgeAlerts": [Function],
         "dataSourceEnabled": undefined,
         "getAlerts": [Function],
+        "getThreatIntelAlerts": [Function],
         "osDriver": Object {
           "delete": [MockFunction],
           "get": [MockFunction],
@@ -96,6 +101,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
           "post": [MockFunction],
           "put": [MockFunction],
         },
+        "updateThreatIntelAlertsState": [Function],
       }
     }
     dateTimeFilter={
@@ -127,6 +133,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
         "getFindings": [Function],
         "getThreatIntelFindings": [Function],
         "httpClient": [MockFunction],
+        "notifications": undefined,
       }
     }
     history={
@@ -176,6 +183,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
     }
     opensearchService={
       OpenSearchService {
+        "getDocuments": [Function],
         "getIndexPatterns": [Function],
         "getPlugins": [Function],
         "httpClient": [MockFunction],
@@ -1128,1467 +1136,1820 @@ exports[`<Alerts /> spec renders the component 1`] = `
                       }
                     }
                   >
-                    <EuiTabs>
-                      <div
-                        className="euiTabs"
-                        role="tablist"
-                      >
-                        <EuiTab
-                          isSelected={true}
-                          onClick={[Function]}
-                        >
-                          <button
-                            aria-selected={true}
-                            className="euiTab euiTab-isSelected"
-                            disabled={false}
-                            onClick={[Function]}
-                            role="tab"
-                            type="button"
-                          >
-                            <span
-                              className="euiTab__content"
-                            >
-                              Findings
-                            </span>
-                          </button>
-                        </EuiTab>
-                        <EuiTab
-                          isSelected={false}
-                          onClick={[Function]}
-                        >
-                          <button
-                            aria-selected={false}
-                            className="euiTab"
-                            disabled={false}
-                            onClick={[Function]}
-                            role="tab"
-                            type="button"
-                          >
-                            <span
-                              className="euiTab__content"
-                            >
-                              <EuiToolTip
-                                content="This object was created using an experimental feature. It may not appear in view if the feature is discontinued."
-                                delay="regular"
-                                position="top"
-                              >
-                                <span
-                                  className="euiToolTipAnchor"
-                                  onKeyUp={[Function]}
-                                  onMouseOut={[Function]}
-                                  onMouseOver={[Function]}
-                                >
-                                  <div
-                                    onBlur={[Function]}
-                                    onFocus={[Function]}
-                                    style={
+                    <EuiTabbedContent
+                      autoFocus="initial"
+                      initialSelectedTab={
+                        Object {
+                          "content": <React.Fragment>
+                            <EuiSpacer
+                              size="m"
+                            />
+                            <EuiInMemoryTable
+                              columns={
+                                Array [
+                                  Object {
+                                    "dataType": "date",
+                                    "field": "start_time",
+                                    "name": "Start time",
+                                    "render": [Function],
+                                    "sortable": true,
+                                  },
+                                  Object {
+                                    "dataType": "string",
+                                    "field": "trigger_name",
+                                    "name": "Alert trigger name",
+                                    "render": [Function],
+                                    "sortable": false,
+                                  },
+                                  Object {
+                                    "dataType": "string",
+                                    "field": "detectorName",
+                                    "name": "Detector",
+                                    "render": [Function],
+                                    "sortable": true,
+                                  },
+                                  Object {
+                                    "dataType": "string",
+                                    "field": "state",
+                                    "name": "Status",
+                                    "render": [Function],
+                                    "sortable": true,
+                                  },
+                                  Object {
+                                    "dataType": "string",
+                                    "field": "severity",
+                                    "name": "Alert severity",
+                                    "render": [Function],
+                                    "sortable": true,
+                                  },
+                                  Object {
+                                    "actions": Array [
                                       Object {
-                                        "alignItems": "center",
-                                        "display": "flex",
-                                      }
-                                    }
-                                  >
-                                    <span
-                                      style={
-                                        Object {
-                                          "marginRight": "4px",
-                                        }
-                                      }
-                                    >
-                                      Correlations
-                                    </span>
-                                    <EuiIcon
-                                      type="beaker"
-                                    >
-                                      EuiIconMock
-                                    </EuiIcon>
-                                  </div>
-                                </span>
-                              </EuiToolTip>
-                            </span>
-                          </button>
-                        </EuiTab>
-                      </div>
-                    </EuiTabs>
-                    <EuiInMemoryTable
-                      columns={
+                                        "render": [Function],
+                                      },
+                                      Object {
+                                        "render": [Function],
+                                      },
+                                    ],
+                                    "name": "Actions",
+                                    "sortable": false,
+                                  },
+                                ]
+                              }
+                              isSelectable={true}
+                              itemId={[Function]}
+                              items={Array []}
+                              loading={true}
+                              pagination={true}
+                              responsive={true}
+                              search={
+                                Object {
+                                  "box": Object {
+                                    "placeholder": "Search alerts",
+                                    "schema": true,
+                                  },
+                                  "filters": Array [
+                                    Object {
+                                      "field": "severity",
+                                      "multiSelect": "or",
+                                      "name": "Alert severity",
+                                      "options": Array [],
+                                      "type": "field_value_selection",
+                                    },
+                                    Object {
+                                      "field": "state",
+                                      "multiSelect": "or",
+                                      "name": "Status",
+                                      "options": Array [],
+                                      "type": "field_value_selection",
+                                    },
+                                  ],
+                                }
+                              }
+                              selection={
+                                Object {
+                                  "onSelectionChange": [Function],
+                                  "selectable": [Function],
+                                  "selectableMessage": [Function],
+                                }
+                              }
+                              sorting={
+                                Object {
+                                  "sort": Object {
+                                    "direction": "dsc",
+                                    "field": "start_time",
+                                  },
+                                }
+                              }
+                              tableLayout="fixed"
+                            />
+                          </React.Fragment>,
+                          "id": "detection-rules",
+                          "name": "Detection rules",
+                        }
+                      }
+                      onTabClick={[Function]}
+                      tabs={
                         Array [
                           Object {
-                            "dataType": "date",
-                            "field": "start_time",
-                            "name": "Start time",
-                            "render": [Function],
-                            "sortable": true,
+                            "content": <React.Fragment>
+                              <EuiSpacer
+                                size="m"
+                              />
+                              <EuiInMemoryTable
+                                columns={
+                                  Array [
+                                    Object {
+                                      "dataType": "date",
+                                      "field": "start_time",
+                                      "name": "Start time",
+                                      "render": [Function],
+                                      "sortable": true,
+                                    },
+                                    Object {
+                                      "dataType": "string",
+                                      "field": "trigger_name",
+                                      "name": "Alert trigger name",
+                                      "render": [Function],
+                                      "sortable": false,
+                                    },
+                                    Object {
+                                      "dataType": "string",
+                                      "field": "detectorName",
+                                      "name": "Detector",
+                                      "render": [Function],
+                                      "sortable": true,
+                                    },
+                                    Object {
+                                      "dataType": "string",
+                                      "field": "state",
+                                      "name": "Status",
+                                      "render": [Function],
+                                      "sortable": true,
+                                    },
+                                    Object {
+                                      "dataType": "string",
+                                      "field": "severity",
+                                      "name": "Alert severity",
+                                      "render": [Function],
+                                      "sortable": true,
+                                    },
+                                    Object {
+                                      "actions": Array [
+                                        Object {
+                                          "render": [Function],
+                                        },
+                                        Object {
+                                          "render": [Function],
+                                        },
+                                      ],
+                                      "name": "Actions",
+                                      "sortable": false,
+                                    },
+                                  ]
+                                }
+                                isSelectable={true}
+                                itemId={[Function]}
+                                items={Array []}
+                                loading={true}
+                                pagination={true}
+                                responsive={true}
+                                search={
+                                  Object {
+                                    "box": Object {
+                                      "placeholder": "Search alerts",
+                                      "schema": true,
+                                    },
+                                    "filters": Array [
+                                      Object {
+                                        "field": "severity",
+                                        "multiSelect": "or",
+                                        "name": "Alert severity",
+                                        "options": Array [],
+                                        "type": "field_value_selection",
+                                      },
+                                      Object {
+                                        "field": "state",
+                                        "multiSelect": "or",
+                                        "name": "Status",
+                                        "options": Array [],
+                                        "type": "field_value_selection",
+                                      },
+                                    ],
+                                  }
+                                }
+                                selection={
+                                  Object {
+                                    "onSelectionChange": [Function],
+                                    "selectable": [Function],
+                                    "selectableMessage": [Function],
+                                  }
+                                }
+                                sorting={
+                                  Object {
+                                    "sort": Object {
+                                      "direction": "dsc",
+                                      "field": "start_time",
+                                    },
+                                  }
+                                }
+                                tableLayout="fixed"
+                              />
+                            </React.Fragment>,
+                            "id": "detection-rules",
+                            "name": "Detection rules",
                           },
                           Object {
-                            "dataType": "string",
-                            "field": "trigger_name",
-                            "name": "Alert trigger name",
-                            "render": [Function],
-                            "sortable": false,
+                            "content": <React.Fragment>
+                              <EuiSpacer
+                                size="m"
+                              />
+                              <ThreatIntelAlertsTable
+                                alerts={Array []}
+                                onAlertStateChange={[Function]}
+                                onSelectionChange={[Function]}
+                              />
+                            </React.Fragment>,
+                            "id": "threat-intel",
+                            "name": "Threat intel",
                           },
                           Object {
-                            "dataType": "string",
-                            "field": "detectorName",
-                            "name": "Detector",
-                            "render": [Function],
-                            "sortable": true,
-                          },
-                          Object {
-                            "dataType": "string",
-                            "field": "state",
-                            "name": "Status",
-                            "render": [Function],
-                            "sortable": true,
-                          },
-                          Object {
-                            "dataType": "string",
-                            "field": "severity",
-                            "name": "Alert severity",
-                            "render": [Function],
-                            "sortable": true,
-                          },
-                          Object {
-                            "actions": Array [
-                              Object {
-                                "render": [Function],
-                              },
-                              Object {
-                                "render": [Function],
-                              },
-                            ],
-                            "name": "Actions",
-                            "sortable": false,
-                          },
-                        ]
-                      }
-                      isSelectable={true}
-                      itemId={[Function]}
-                      items={Array []}
-                      loading={true}
-                      message={
-                        <EuiEmptyPrompt
-                          body={
-                            <p>
-                              <span
+                            "content": <React.Fragment>
+                              <EuiSpacer
+                                size="m"
+                              />
+                              <EuiInMemoryTable
+                                columns={
+                                  Array [
+                                    Object {
+                                      "dataType": "date",
+                                      "field": "start_time",
+                                      "name": "Start time",
+                                      "render": [Function],
+                                      "sortable": true,
+                                    },
+                                    Object {
+                                      "dataType": "string",
+                                      "field": "trigger_name",
+                                      "name": "Alert trigger name",
+                                      "render": [Function],
+                                      "sortable": false,
+                                    },
+                                    Object {
+                                      "dataType": "string",
+                                      "field": "correlation_rule_name",
+                                      "name": "Correlation Rule Name",
+                                      "render": [Function],
+                                      "sortable": true,
+                                    },
+                                    Object {
+                                      "dataType": "string",
+                                      "field": "correlation_rule_categories",
+                                      "name": "Log Types",
+                                      "render": [Function],
+                                      "sortable": false,
+                                    },
+                                    Object {
+                                      "dataType": "string",
+                                      "field": "state",
+                                      "name": "Status",
+                                      "render": [Function],
+                                      "sortable": true,
+                                    },
+                                    Object {
+                                      "dataType": "string",
+                                      "field": "severity",
+                                      "name": "Alert severity",
+                                      "render": [Function],
+                                      "sortable": true,
+                                    },
+                                    Object {
+                                      "actions": Array [
+                                        Object {
+                                          "render": [Function],
+                                        },
+                                        Object {
+                                          "render": [Function],
+                                        },
+                                      ],
+                                      "name": "Actions",
+                                      "sortable": false,
+                                    },
+                                  ]
+                                }
+                                isSelectable={true}
+                                itemId={[Function]}
+                                items={Array []}
+                                loading={true}
+                                pagination={true}
+                                responsive={true}
+                                search={
+                                  Object {
+                                    "box": Object {
+                                      "placeholder": "Search alerts",
+                                      "schema": true,
+                                    },
+                                    "filters": Array [
+                                      Object {
+                                        "field": "severity",
+                                        "multiSelect": "or",
+                                        "name": "Alert severity",
+                                        "options": Array [],
+                                        "type": "field_value_selection",
+                                      },
+                                      Object {
+                                        "field": "state",
+                                        "multiSelect": "or",
+                                        "name": "Status",
+                                        "options": Array [],
+                                        "type": "field_value_selection",
+                                      },
+                                    ],
+                                  }
+                                }
+                                selection={
+                                  Object {
+                                    "onSelectionChange": [Function],
+                                    "selectable": [Function],
+                                    "selectableMessage": [Function],
+                                  }
+                                }
+                                sorting={
+                                  Object {
+                                    "sort": Object {
+                                      "direction": "dsc",
+                                      "field": "start_time",
+                                    },
+                                  }
+                                }
+                                tableLayout="fixed"
+                              />
+                            </React.Fragment>,
+                            "id": "correlations",
+                            "name": <EuiToolTip
+                              content="This object was created using an experimental feature. It may not appear in view if the feature is discontinued."
+                              delay="regular"
+                              position="top"
+                            >
+                              <div
                                 style={
                                   Object {
-                                    "display": "block",
+                                    "alignItems": "center",
+                                    "display": "flex",
                                   }
                                 }
                               >
-                                No alerts.
-                              </span>
-                              Adjust the time range to see more results.
-                            </p>
-                          }
-                        />
-                      }
-                      pagination={true}
-                      responsive={true}
-                      search={
-                        Object {
-                          "box": Object {
-                            "placeholder": "Search alerts",
-                            "schema": true,
+                                <span
+                                  style={
+                                    Object {
+                                      "marginRight": "4px",
+                                    }
+                                  }
+                                >
+                                  Correlations
+                                </span>
+                                <EuiIcon
+                                  type="beaker"
+                                />
+                              </div>
+                            </EuiToolTip>,
                           },
-                          "filters": Array [
-                            Object {
-                              "field": "severity",
-                              "multiSelect": "or",
-                              "name": "Alert severity",
-                              "options": Array [],
-                              "type": "field_value_selection",
-                            },
-                            Object {
-                              "field": "state",
-                              "multiSelect": "or",
-                              "name": "Status",
-                              "options": Array [],
-                              "type": "field_value_selection",
-                            },
-                          ],
-                        }
+                        ]
                       }
-                      selection={
-                        Object {
-                          "onSelectionChange": [Function],
-                          "selectable": [Function],
-                          "selectableMessage": [Function],
-                        }
-                      }
-                      sorting={
-                        Object {
-                          "sort": Object {
-                            "direction": "dsc",
-                            "field": "start_time",
-                          },
-                        }
-                      }
-                      tableLayout="fixed"
                     >
                       <div>
-                        <EuiSearchBar
-                          box={
-                            Object {
-                              "placeholder": "Search alerts",
-                              "schema": Object {
-                                "fields": Object {
-                                  "detectorName": Object {
-                                    "type": "string",
-                                  },
-                                  "severity": Object {
-                                    "type": "string",
-                                  },
-                                  "start_time": Object {
-                                    "type": "date",
-                                  },
-                                  "state": Object {
-                                    "type": "string",
-                                  },
-                                  "trigger_name": Object {
-                                    "type": "string",
-                                  },
-                                },
-                                "strict": true,
-                              },
-                            }
-                          }
-                          filters={
-                            Array [
-                              Object {
-                                "field": "severity",
-                                "multiSelect": "or",
-                                "name": "Alert severity",
-                                "options": Array [],
-                                "type": "field_value_selection",
-                              },
-                              Object {
-                                "field": "state",
-                                "multiSelect": "or",
-                                "name": "Status",
-                                "options": Array [],
-                                "type": "field_value_selection",
-                              },
-                            ]
-                          }
-                          onChange={[Function]}
+                        <EuiTabs
+                          onFocus={[Function]}
                         >
-                          <EuiFlexGroup
-                            alignItems="center"
-                            gutterSize="m"
-                            wrap={true}
+                          <div
+                            className="euiTabs"
+                            onFocus={[Function]}
+                            role="tablist"
+                          >
+                            <EuiTab
+                              aria-controls="some_html_id"
+                              id="detection-rules"
+                              isSelected={true}
+                              key="detection-rules"
+                              onClick={[Function]}
+                            >
+                              <button
+                                aria-controls="some_html_id"
+                                aria-selected={true}
+                                className="euiTab euiTab-isSelected"
+                                disabled={false}
+                                id="detection-rules"
+                                onClick={[Function]}
+                                role="tab"
+                                type="button"
+                              >
+                                <span
+                                  className="euiTab__content"
+                                >
+                                  Detection rules
+                                </span>
+                              </button>
+                            </EuiTab>
+                            <EuiTab
+                              aria-controls="some_html_id"
+                              id="threat-intel"
+                              isSelected={false}
+                              key="threat-intel"
+                              onClick={[Function]}
+                            >
+                              <button
+                                aria-controls="some_html_id"
+                                aria-selected={false}
+                                className="euiTab"
+                                disabled={false}
+                                id="threat-intel"
+                                onClick={[Function]}
+                                role="tab"
+                                type="button"
+                              >
+                                <span
+                                  className="euiTab__content"
+                                >
+                                  Threat intel
+                                </span>
+                              </button>
+                            </EuiTab>
+                            <EuiTab
+                              aria-controls="some_html_id"
+                              id="correlations"
+                              isSelected={false}
+                              key="correlations"
+                              onClick={[Function]}
+                            >
+                              <button
+                                aria-controls="some_html_id"
+                                aria-selected={false}
+                                className="euiTab"
+                                disabled={false}
+                                id="correlations"
+                                onClick={[Function]}
+                                role="tab"
+                                type="button"
+                              >
+                                <span
+                                  className="euiTab__content"
+                                >
+                                  <EuiToolTip
+                                    content="This object was created using an experimental feature. It may not appear in view if the feature is discontinued."
+                                    delay="regular"
+                                    position="top"
+                                  >
+                                    <span
+                                      className="euiToolTipAnchor"
+                                      onKeyUp={[Function]}
+                                      onMouseOut={[Function]}
+                                      onMouseOver={[Function]}
+                                    >
+                                      <div
+                                        onBlur={[Function]}
+                                        onFocus={[Function]}
+                                        style={
+                                          Object {
+                                            "alignItems": "center",
+                                            "display": "flex",
+                                          }
+                                        }
+                                      >
+                                        <span
+                                          style={
+                                            Object {
+                                              "marginRight": "4px",
+                                            }
+                                          }
+                                        >
+                                          Correlations
+                                        </span>
+                                        <EuiIcon
+                                          type="beaker"
+                                        >
+                                          EuiIconMock
+                                        </EuiIcon>
+                                      </div>
+                                    </span>
+                                  </EuiToolTip>
+                                </span>
+                              </button>
+                            </EuiTab>
+                          </div>
+                        </EuiTabs>
+                        <div
+                          aria-labelledby="detection-rules"
+                          id="some_html_id"
+                          role="tabpanel"
+                        >
+                          <EuiSpacer
+                            size="m"
                           >
                             <div
-                              className="euiFlexGroup euiFlexGroup--gutterMedium euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow euiFlexGroup--responsive euiFlexGroup--wrap"
-                            >
-                              <EuiFlexItem
-                                className="euiSearchBar__searchHolder"
-                                grow={true}
+                              className="euiSpacer euiSpacer--m"
+                            />
+                          </EuiSpacer>
+                          <EuiInMemoryTable
+                            columns={
+                              Array [
+                                Object {
+                                  "dataType": "date",
+                                  "field": "start_time",
+                                  "name": "Start time",
+                                  "render": [Function],
+                                  "sortable": true,
+                                },
+                                Object {
+                                  "dataType": "string",
+                                  "field": "trigger_name",
+                                  "name": "Alert trigger name",
+                                  "render": [Function],
+                                  "sortable": false,
+                                },
+                                Object {
+                                  "dataType": "string",
+                                  "field": "detectorName",
+                                  "name": "Detector",
+                                  "render": [Function],
+                                  "sortable": true,
+                                },
+                                Object {
+                                  "dataType": "string",
+                                  "field": "state",
+                                  "name": "Status",
+                                  "render": [Function],
+                                  "sortable": true,
+                                },
+                                Object {
+                                  "dataType": "string",
+                                  "field": "severity",
+                                  "name": "Alert severity",
+                                  "render": [Function],
+                                  "sortable": true,
+                                },
+                                Object {
+                                  "actions": Array [
+                                    Object {
+                                      "render": [Function],
+                                    },
+                                    Object {
+                                      "render": [Function],
+                                    },
+                                  ],
+                                  "name": "Actions",
+                                  "sortable": false,
+                                },
+                              ]
+                            }
+                            isSelectable={true}
+                            itemId={[Function]}
+                            items={Array []}
+                            loading={true}
+                            pagination={true}
+                            responsive={true}
+                            search={
+                              Object {
+                                "box": Object {
+                                  "placeholder": "Search alerts",
+                                  "schema": true,
+                                },
+                                "filters": Array [
+                                  Object {
+                                    "field": "severity",
+                                    "multiSelect": "or",
+                                    "name": "Alert severity",
+                                    "options": Array [],
+                                    "type": "field_value_selection",
+                                  },
+                                  Object {
+                                    "field": "state",
+                                    "multiSelect": "or",
+                                    "name": "Status",
+                                    "options": Array [],
+                                    "type": "field_value_selection",
+                                  },
+                                ],
+                              }
+                            }
+                            selection={
+                              Object {
+                                "onSelectionChange": [Function],
+                                "selectable": [Function],
+                                "selectableMessage": [Function],
+                              }
+                            }
+                            sorting={
+                              Object {
+                                "sort": Object {
+                                  "direction": "dsc",
+                                  "field": "start_time",
+                                },
+                              }
+                            }
+                            tableLayout="fixed"
+                          >
+                            <div>
+                              <EuiSearchBar
+                                box={
+                                  Object {
+                                    "placeholder": "Search alerts",
+                                    "schema": Object {
+                                      "fields": Object {
+                                        "detectorName": Object {
+                                          "type": "string",
+                                        },
+                                        "severity": Object {
+                                          "type": "string",
+                                        },
+                                        "start_time": Object {
+                                          "type": "date",
+                                        },
+                                        "state": Object {
+                                          "type": "string",
+                                        },
+                                        "trigger_name": Object {
+                                          "type": "string",
+                                        },
+                                      },
+                                      "strict": true,
+                                    },
+                                  }
+                                }
+                                filters={
+                                  Array [
+                                    Object {
+                                      "field": "severity",
+                                      "multiSelect": "or",
+                                      "name": "Alert severity",
+                                      "options": Array [],
+                                      "type": "field_value_selection",
+                                    },
+                                    Object {
+                                      "field": "state",
+                                      "multiSelect": "or",
+                                      "name": "Status",
+                                      "options": Array [],
+                                      "type": "field_value_selection",
+                                    },
+                                  ]
+                                }
+                                onChange={[Function]}
                               >
-                                <div
-                                  className="euiFlexItem euiSearchBar__searchHolder"
+                                <EuiFlexGroup
+                                  alignItems="center"
+                                  gutterSize="m"
+                                  wrap={true}
                                 >
-                                  <EuiSearchBox
-                                    incremental={false}
-                                    isInvalid={false}
-                                    onSearch={[Function]}
-                                    placeholder="Search alerts"
-                                    query=""
+                                  <div
+                                    className="euiFlexGroup euiFlexGroup--gutterMedium euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow euiFlexGroup--responsive euiFlexGroup--wrap"
                                   >
-                                    <EuiFieldSearch
-                                      aria-label="This is a search bar. After typing your query, hit enter to filter the results lower in the page."
-                                      compressed={false}
-                                      defaultValue=""
-                                      fullWidth={true}
-                                      incremental={false}
-                                      inputRef={[Function]}
-                                      isClearable={true}
-                                      isInvalid={false}
-                                      isLoading={false}
-                                      onSearch={[Function]}
-                                      placeholder="Search alerts"
+                                    <EuiFlexItem
+                                      className="euiSearchBar__searchHolder"
+                                      grow={true}
                                     >
-                                      <EuiFormControlLayout
-                                        compressed={false}
-                                        fullWidth={true}
-                                        icon="search"
-                                        isLoading={false}
+                                      <div
+                                        className="euiFlexItem euiSearchBar__searchHolder"
                                       >
-                                        <div
-                                          className="euiFormControlLayout euiFormControlLayout--fullWidth"
+                                        <EuiSearchBox
+                                          incremental={false}
+                                          isInvalid={false}
+                                          onSearch={[Function]}
+                                          placeholder="Search alerts"
+                                          query=""
                                         >
-                                          <div
-                                            className="euiFormControlLayout__childrenWrapper"
+                                          <EuiFieldSearch
+                                            aria-label="This is a search bar. After typing your query, hit enter to filter the results lower in the page."
+                                            compressed={false}
+                                            defaultValue=""
+                                            fullWidth={true}
+                                            incremental={false}
+                                            inputRef={[Function]}
+                                            isClearable={true}
+                                            isInvalid={false}
+                                            isLoading={false}
+                                            onSearch={[Function]}
+                                            placeholder="Search alerts"
                                           >
-                                            <EuiValidatableControl
-                                              isInvalid={false}
-                                            >
-                                              <input
-                                                aria-label="This is a search bar. After typing your query, hit enter to filter the results lower in the page."
-                                                className="euiFieldSearch euiFieldSearch--fullWidth"
-                                                defaultValue=""
-                                                onKeyUp={[Function]}
-                                                placeholder="Search alerts"
-                                                type="search"
-                                              />
-                                            </EuiValidatableControl>
-                                            <EuiFormControlLayoutIcons
+                                            <EuiFormControlLayout
                                               compressed={false}
+                                              fullWidth={true}
                                               icon="search"
                                               isLoading={false}
                                             >
                                               <div
-                                                className="euiFormControlLayoutIcons"
+                                                className="euiFormControlLayout euiFormControlLayout--fullWidth"
                                               >
-                                                <EuiFormControlLayoutCustomIcon
-                                                  size="m"
-                                                  type="search"
+                                                <div
+                                                  className="euiFormControlLayout__childrenWrapper"
                                                 >
-                                                  <span
-                                                    className="euiFormControlLayoutCustomIcon"
+                                                  <EuiValidatableControl
+                                                    isInvalid={false}
                                                   >
-                                                    <EuiIcon
-                                                      aria-hidden="true"
-                                                      className="euiFormControlLayoutCustomIcon__icon"
-                                                      size="m"
+                                                    <input
+                                                      aria-label="This is a search bar. After typing your query, hit enter to filter the results lower in the page."
+                                                      className="euiFieldSearch euiFieldSearch--fullWidth"
+                                                      defaultValue=""
+                                                      onKeyUp={[Function]}
+                                                      placeholder="Search alerts"
                                                       type="search"
+                                                    />
+                                                  </EuiValidatableControl>
+                                                  <EuiFormControlLayoutIcons
+                                                    compressed={false}
+                                                    icon="search"
+                                                    isLoading={false}
+                                                  >
+                                                    <div
+                                                      className="euiFormControlLayoutIcons"
                                                     >
-                                                      EuiIconMock
-                                                    </EuiIcon>
-                                                  </span>
-                                                </EuiFormControlLayoutCustomIcon>
+                                                      <EuiFormControlLayoutCustomIcon
+                                                        size="m"
+                                                        type="search"
+                                                      >
+                                                        <span
+                                                          className="euiFormControlLayoutCustomIcon"
+                                                        >
+                                                          <EuiIcon
+                                                            aria-hidden="true"
+                                                            className="euiFormControlLayoutCustomIcon__icon"
+                                                            size="m"
+                                                            type="search"
+                                                          >
+                                                            EuiIconMock
+                                                          </EuiIcon>
+                                                        </span>
+                                                      </EuiFormControlLayoutCustomIcon>
+                                                    </div>
+                                                  </EuiFormControlLayoutIcons>
+                                                </div>
                                               </div>
-                                            </EuiFormControlLayoutIcons>
-                                          </div>
-                                        </div>
-                                      </EuiFormControlLayout>
-                                    </EuiFieldSearch>
-                                  </EuiSearchBox>
-                                </div>
-                              </EuiFlexItem>
-                              <EuiFlexItem
-                                className="euiSearchBar__filtersHolder"
-                                grow={false}
+                                            </EuiFormControlLayout>
+                                          </EuiFieldSearch>
+                                        </EuiSearchBox>
+                                      </div>
+                                    </EuiFlexItem>
+                                    <EuiFlexItem
+                                      className="euiSearchBar__filtersHolder"
+                                      grow={false}
+                                    >
+                                      <div
+                                        className="euiFlexItem euiFlexItem--flexGrowZero euiSearchBar__filtersHolder"
+                                      >
+                                        <EuiSearchFilters
+                                          filters={
+                                            Array [
+                                              Object {
+                                                "field": "severity",
+                                                "multiSelect": "or",
+                                                "name": "Alert severity",
+                                                "options": Array [],
+                                                "type": "field_value_selection",
+                                              },
+                                              Object {
+                                                "field": "state",
+                                                "multiSelect": "or",
+                                                "name": "Status",
+                                                "options": Array [],
+                                                "type": "field_value_selection",
+                                              },
+                                            ]
+                                          }
+                                          onChange={[Function]}
+                                          query={
+                                            Query {
+                                              "ast": _AST {
+                                                "_clauses": Array [],
+                                                "_indexedClauses": Object {
+                                                  "field": Object {},
+                                                  "group": Array [],
+                                                  "is": Object {},
+                                                  "term": Array [],
+                                                },
+                                              },
+                                              "syntax": Object {
+                                                "parse": [Function],
+                                                "print": [Function],
+                                                "printClause": [Function],
+                                              },
+                                              "text": "",
+                                            }
+                                          }
+                                        >
+                                          <EuiFilterGroup>
+                                            <div
+                                              className="euiFilterGroup"
+                                            >
+                                              <FieldValueSelectionFilter
+                                                config={
+                                                  Object {
+                                                    "field": "severity",
+                                                    "multiSelect": "or",
+                                                    "name": "Alert severity",
+                                                    "options": Array [],
+                                                    "type": "field_value_selection",
+                                                  }
+                                                }
+                                                index={0}
+                                                onChange={[Function]}
+                                                query={
+                                                  Query {
+                                                    "ast": _AST {
+                                                      "_clauses": Array [],
+                                                      "_indexedClauses": Object {
+                                                        "field": Object {},
+                                                        "group": Array [],
+                                                        "is": Object {},
+                                                        "term": Array [],
+                                                      },
+                                                    },
+                                                    "syntax": Object {
+                                                      "parse": [Function],
+                                                      "print": [Function],
+                                                      "printClause": [Function],
+                                                    },
+                                                    "text": "",
+                                                  }
+                                                }
+                                              >
+                                                <EuiPopover
+                                                  anchorPosition="downCenter"
+                                                  button={
+                                                    <EuiFilterButton
+                                                      grow={true}
+                                                      hasActiveFilters={false}
+                                                      iconSide="right"
+                                                      iconType="arrowDown"
+                                                      onClick={[Function]}
+                                                    >
+                                                      Alert severity
+                                                    </EuiFilterButton>
+                                                  }
+                                                  closePopover={[Function]}
+                                                  display="inlineBlock"
+                                                  hasArrow={true}
+                                                  id="field_value_selection_0"
+                                                  isOpen={false}
+                                                  ownFocus={true}
+                                                  panelClassName="euiFilterGroup__popoverPanel"
+                                                  panelPaddingSize="none"
+                                                >
+                                                  <div
+                                                    className="euiPopover euiPopover--anchorDownCenter"
+                                                    id="field_value_selection_0"
+                                                  >
+                                                    <div
+                                                      className="euiPopover__anchor"
+                                                    >
+                                                      <EuiFilterButton
+                                                        grow={true}
+                                                        hasActiveFilters={false}
+                                                        iconSide="right"
+                                                        iconType="arrowDown"
+                                                        onClick={[Function]}
+                                                      >
+                                                        <EuiButtonEmpty
+                                                          className="euiFilterButton euiFilterButton--hasIcon"
+                                                          color="text"
+                                                          iconSide="right"
+                                                          iconType="arrowDown"
+                                                          onClick={[Function]}
+                                                          textProps={
+                                                            Object {
+                                                              "className": "",
+                                                            }
+                                                          }
+                                                          type="button"
+                                                        >
+                                                          <button
+                                                            className="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
+                                                            disabled={false}
+                                                            onClick={[Function]}
+                                                            type="button"
+                                                          >
+                                                            <EuiButtonContent
+                                                              className="euiButtonEmpty__content"
+                                                              iconSide="right"
+                                                              iconSize="m"
+                                                              iconType="arrowDown"
+                                                              textProps={
+                                                                Object {
+                                                                  "className": "euiButtonEmpty__text",
+                                                                }
+                                                              }
+                                                            >
+                                                              <span
+                                                                className="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                                                              >
+                                                                <EuiIcon
+                                                                  className="euiButtonContent__icon"
+                                                                  color="inherit"
+                                                                  size="m"
+                                                                  type="arrowDown"
+                                                                >
+                                                                  EuiIconMock
+                                                                </EuiIcon>
+                                                                <span
+                                                                  className="euiButtonEmpty__text"
+                                                                >
+                                                                  <span
+                                                                    className="euiFilterButton__textShift"
+                                                                    data-text="Alert severity"
+                                                                    title="Alert severity"
+                                                                  >
+                                                                    Alert severity
+                                                                  </span>
+                                                                </span>
+                                                              </span>
+                                                            </EuiButtonContent>
+                                                          </button>
+                                                        </EuiButtonEmpty>
+                                                      </EuiFilterButton>
+                                                    </div>
+                                                  </div>
+                                                </EuiPopover>
+                                              </FieldValueSelectionFilter>
+                                              <FieldValueSelectionFilter
+                                                config={
+                                                  Object {
+                                                    "field": "state",
+                                                    "multiSelect": "or",
+                                                    "name": "Status",
+                                                    "options": Array [],
+                                                    "type": "field_value_selection",
+                                                  }
+                                                }
+                                                index={1}
+                                                onChange={[Function]}
+                                                query={
+                                                  Query {
+                                                    "ast": _AST {
+                                                      "_clauses": Array [],
+                                                      "_indexedClauses": Object {
+                                                        "field": Object {},
+                                                        "group": Array [],
+                                                        "is": Object {},
+                                                        "term": Array [],
+                                                      },
+                                                    },
+                                                    "syntax": Object {
+                                                      "parse": [Function],
+                                                      "print": [Function],
+                                                      "printClause": [Function],
+                                                    },
+                                                    "text": "",
+                                                  }
+                                                }
+                                              >
+                                                <EuiPopover
+                                                  anchorPosition="downCenter"
+                                                  button={
+                                                    <EuiFilterButton
+                                                      grow={true}
+                                                      hasActiveFilters={false}
+                                                      iconSide="right"
+                                                      iconType="arrowDown"
+                                                      onClick={[Function]}
+                                                    >
+                                                      Status
+                                                    </EuiFilterButton>
+                                                  }
+                                                  closePopover={[Function]}
+                                                  display="inlineBlock"
+                                                  hasArrow={true}
+                                                  id="field_value_selection_1"
+                                                  isOpen={false}
+                                                  ownFocus={true}
+                                                  panelClassName="euiFilterGroup__popoverPanel"
+                                                  panelPaddingSize="none"
+                                                >
+                                                  <div
+                                                    className="euiPopover euiPopover--anchorDownCenter"
+                                                    id="field_value_selection_1"
+                                                  >
+                                                    <div
+                                                      className="euiPopover__anchor"
+                                                    >
+                                                      <EuiFilterButton
+                                                        grow={true}
+                                                        hasActiveFilters={false}
+                                                        iconSide="right"
+                                                        iconType="arrowDown"
+                                                        onClick={[Function]}
+                                                      >
+                                                        <EuiButtonEmpty
+                                                          className="euiFilterButton euiFilterButton--hasIcon"
+                                                          color="text"
+                                                          iconSide="right"
+                                                          iconType="arrowDown"
+                                                          onClick={[Function]}
+                                                          textProps={
+                                                            Object {
+                                                              "className": "",
+                                                            }
+                                                          }
+                                                          type="button"
+                                                        >
+                                                          <button
+                                                            className="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
+                                                            disabled={false}
+                                                            onClick={[Function]}
+                                                            type="button"
+                                                          >
+                                                            <EuiButtonContent
+                                                              className="euiButtonEmpty__content"
+                                                              iconSide="right"
+                                                              iconSize="m"
+                                                              iconType="arrowDown"
+                                                              textProps={
+                                                                Object {
+                                                                  "className": "euiButtonEmpty__text",
+                                                                }
+                                                              }
+                                                            >
+                                                              <span
+                                                                className="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                                                              >
+                                                                <EuiIcon
+                                                                  className="euiButtonContent__icon"
+                                                                  color="inherit"
+                                                                  size="m"
+                                                                  type="arrowDown"
+                                                                >
+                                                                  EuiIconMock
+                                                                </EuiIcon>
+                                                                <span
+                                                                  className="euiButtonEmpty__text"
+                                                                >
+                                                                  <span
+                                                                    className="euiFilterButton__textShift"
+                                                                    data-text="Status"
+                                                                    title="Status"
+                                                                  >
+                                                                    Status
+                                                                  </span>
+                                                                </span>
+                                                              </span>
+                                                            </EuiButtonContent>
+                                                          </button>
+                                                        </EuiButtonEmpty>
+                                                      </EuiFilterButton>
+                                                    </div>
+                                                  </div>
+                                                </EuiPopover>
+                                              </FieldValueSelectionFilter>
+                                            </div>
+                                          </EuiFilterGroup>
+                                        </EuiSearchFilters>
+                                      </div>
+                                    </EuiFlexItem>
+                                  </div>
+                                </EuiFlexGroup>
+                              </EuiSearchBar>
+                              <EuiSpacer
+                                size="l"
                               >
                                 <div
-                                  className="euiFlexItem euiFlexItem--flexGrowZero euiSearchBar__filtersHolder"
+                                  className="euiSpacer euiSpacer--l"
+                                />
+                              </EuiSpacer>
+                              <EuiBasicTable
+                                columns={
+                                  Array [
+                                    Object {
+                                      "dataType": "date",
+                                      "field": "start_time",
+                                      "name": "Start time",
+                                      "render": [Function],
+                                      "sortable": true,
+                                    },
+                                    Object {
+                                      "dataType": "string",
+                                      "field": "trigger_name",
+                                      "name": "Alert trigger name",
+                                      "render": [Function],
+                                      "sortable": false,
+                                    },
+                                    Object {
+                                      "dataType": "string",
+                                      "field": "detectorName",
+                                      "name": "Detector",
+                                      "render": [Function],
+                                      "sortable": true,
+                                    },
+                                    Object {
+                                      "dataType": "string",
+                                      "field": "state",
+                                      "name": "Status",
+                                      "render": [Function],
+                                      "sortable": true,
+                                    },
+                                    Object {
+                                      "dataType": "string",
+                                      "field": "severity",
+                                      "name": "Alert severity",
+                                      "render": [Function],
+                                      "sortable": true,
+                                    },
+                                    Object {
+                                      "actions": Array [
+                                        Object {
+                                          "render": [Function],
+                                        },
+                                        Object {
+                                          "render": [Function],
+                                        },
+                                      ],
+                                      "name": "Actions",
+                                      "sortable": false,
+                                    },
+                                  ]
+                                }
+                                isSelectable={true}
+                                itemId={[Function]}
+                                items={Array []}
+                                loading={true}
+                                noItemsMessage="No items found"
+                                onChange={[Function]}
+                                pagination={
+                                  Object {
+                                    "hidePerPageOptions": undefined,
+                                    "pageIndex": 0,
+                                    "pageSize": 10,
+                                    "pageSizeOptions": Array [
+                                      10,
+                                      25,
+                                      50,
+                                    ],
+                                    "totalItemCount": 0,
+                                  }
+                                }
+                                responsive={true}
+                                selection={
+                                  Object {
+                                    "onSelectionChange": [Function],
+                                    "selectable": [Function],
+                                    "selectableMessage": [Function],
+                                  }
+                                }
+                                sorting={
+                                  Object {
+                                    "allowNeutralSort": true,
+                                    "sort": Object {
+                                      "direction": "dsc",
+                                      "field": "Start time",
+                                    },
+                                  }
+                                }
+                                tableLayout="fixed"
+                              >
+                                <div
+                                  className="euiBasicTable euiBasicTable-loading"
                                 >
-                                  <EuiSearchFilters
-                                    filters={
-                                      Array [
-                                        Object {
-                                          "field": "severity",
-                                          "multiSelect": "or",
-                                          "name": "Alert severity",
-                                          "options": Array [],
-                                          "type": "field_value_selection",
-                                        },
-                                        Object {
-                                          "field": "state",
-                                          "multiSelect": "or",
-                                          "name": "Status",
-                                          "options": Array [],
-                                          "type": "field_value_selection",
-                                        },
-                                      ]
-                                    }
-                                    onChange={[Function]}
-                                    query={
-                                      Query {
-                                        "ast": _AST {
-                                          "_clauses": Array [],
-                                          "_indexedClauses": Object {
-                                            "field": Object {},
-                                            "group": Array [],
-                                            "is": Object {},
-                                            "term": Array [],
-                                          },
-                                        },
-                                        "syntax": Object {
-                                          "parse": [Function],
-                                          "print": [Function],
-                                          "printClause": [Function],
-                                        },
-                                        "text": "",
-                                      }
-                                    }
-                                  >
-                                    <EuiFilterGroup>
+                                  <div>
+                                    <EuiTableHeaderMobile>
                                       <div
-                                        className="euiFilterGroup"
+                                        className="euiTableHeaderMobile"
                                       >
-                                        <FieldValueSelectionFilter
-                                          config={
-                                            Object {
-                                              "field": "severity",
-                                              "multiSelect": "or",
-                                              "name": "Alert severity",
-                                              "options": Array [],
-                                              "type": "field_value_selection",
-                                            }
-                                          }
-                                          index={0}
-                                          onChange={[Function]}
-                                          query={
-                                            Query {
-                                              "ast": _AST {
-                                                "_clauses": Array [],
-                                                "_indexedClauses": Object {
-                                                  "field": Object {},
-                                                  "group": Array [],
-                                                  "is": Object {},
-                                                  "term": Array [],
-                                                },
-                                              },
-                                              "syntax": Object {
-                                                "parse": [Function],
-                                                "print": [Function],
-                                                "printClause": [Function],
-                                              },
-                                              "text": "",
-                                            }
-                                          }
+                                        <EuiFlexGroup
+                                          alignItems="baseline"
+                                          justifyContent="spaceBetween"
+                                          responsive={false}
                                         >
-                                          <EuiPopover
-                                            anchorPosition="downCenter"
-                                            button={
-                                              <EuiFilterButton
-                                                grow={true}
-                                                hasActiveFilters={false}
-                                                iconSide="right"
-                                                iconType="arrowDown"
-                                                onClick={[Function]}
-                                              >
-                                                Alert severity
-                                              </EuiFilterButton>
-                                            }
-                                            closePopover={[Function]}
-                                            display="inlineBlock"
-                                            hasArrow={true}
-                                            id="field_value_selection_0"
-                                            isOpen={false}
-                                            ownFocus={true}
-                                            panelClassName="euiFilterGroup__popoverPanel"
-                                            panelPaddingSize="none"
+                                          <div
+                                            className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsBaseline euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow"
                                           >
-                                            <div
-                                              className="euiPopover euiPopover--anchorDownCenter"
-                                              id="field_value_selection_0"
+                                            <EuiFlexItem
+                                              grow={false}
                                             >
                                               <div
-                                                className="euiPopover__anchor"
+                                                className="euiFlexItem euiFlexItem--flexGrowZero"
                                               >
-                                                <EuiFilterButton
-                                                  grow={true}
-                                                  hasActiveFilters={false}
-                                                  iconSide="right"
-                                                  iconType="arrowDown"
-                                                  onClick={[Function]}
+                                                <EuiI18n
+                                                  default="Select all rows"
+                                                  token="euiBasicTable.selectAllRows"
                                                 >
-                                                  <EuiButtonEmpty
-                                                    className="euiFilterButton euiFilterButton--hasIcon"
-                                                    color="text"
-                                                    iconSide="right"
-                                                    iconType="arrowDown"
-                                                    onClick={[Function]}
-                                                    textProps={
-                                                      Object {
-                                                        "className": "",
-                                                      }
-                                                    }
-                                                    type="button"
+                                                  <EuiCheckbox
+                                                    aria-label="Select all rows"
+                                                    checked={false}
+                                                    compressed={false}
+                                                    disabled={true}
+                                                    id="_selection_column-checkbox_some_html_id"
+                                                    indeterminate={false}
+                                                    label="Select all rows"
+                                                    onChange={[Function]}
                                                   >
-                                                    <button
-                                                      className="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
-                                                      disabled={false}
-                                                      onClick={[Function]}
-                                                      type="button"
+                                                    <div
+                                                      className="euiCheckbox"
                                                     >
-                                                      <EuiButtonContent
-                                                        className="euiButtonEmpty__content"
-                                                        iconSide="right"
-                                                        iconSize="m"
-                                                        iconType="arrowDown"
-                                                        textProps={
-                                                          Object {
-                                                            "className": "euiButtonEmpty__text",
-                                                          }
-                                                        }
+                                                      <input
+                                                        aria-label="Select all rows"
+                                                        checked={false}
+                                                        className="euiCheckbox__input"
+                                                        disabled={true}
+                                                        id="_selection_column-checkbox_some_html_id"
+                                                        onChange={[Function]}
+                                                        type="checkbox"
+                                                      />
+                                                      <div
+                                                        className="euiCheckbox__square"
+                                                      />
+                                                      <label
+                                                        className="euiCheckbox__label"
+                                                        htmlFor="_selection_column-checkbox_some_html_id"
                                                       >
-                                                        <span
-                                                          className="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
-                                                        >
-                                                          <EuiIcon
-                                                            className="euiButtonContent__icon"
-                                                            color="inherit"
-                                                            size="m"
-                                                            type="arrowDown"
-                                                          >
-                                                            EuiIconMock
-                                                          </EuiIcon>
-                                                          <span
-                                                            className="euiButtonEmpty__text"
-                                                          >
-                                                            <span
-                                                              className="euiFilterButton__textShift"
-                                                              data-text="Alert severity"
-                                                              title="Alert severity"
-                                                            >
-                                                              Alert severity
-                                                            </span>
-                                                          </span>
-                                                        </span>
-                                                      </EuiButtonContent>
-                                                    </button>
-                                                  </EuiButtonEmpty>
-                                                </EuiFilterButton>
+                                                        Select all rows
+                                                      </label>
+                                                    </div>
+                                                  </EuiCheckbox>
+                                                </EuiI18n>
                                               </div>
-                                            </div>
-                                          </EuiPopover>
-                                        </FieldValueSelectionFilter>
-                                        <FieldValueSelectionFilter
-                                          config={
-                                            Object {
-                                              "field": "state",
-                                              "multiSelect": "or",
-                                              "name": "Status",
-                                              "options": Array [],
-                                              "type": "field_value_selection",
-                                            }
-                                          }
-                                          index={1}
-                                          onChange={[Function]}
-                                          query={
-                                            Query {
-                                              "ast": _AST {
-                                                "_clauses": Array [],
-                                                "_indexedClauses": Object {
-                                                  "field": Object {},
-                                                  "group": Array [],
-                                                  "is": Object {},
-                                                  "term": Array [],
-                                                },
-                                              },
-                                              "syntax": Object {
-                                                "parse": [Function],
-                                                "print": [Function],
-                                                "printClause": [Function],
-                                              },
-                                              "text": "",
-                                            }
-                                          }
-                                        >
-                                          <EuiPopover
-                                            anchorPosition="downCenter"
-                                            button={
-                                              <EuiFilterButton
-                                                grow={true}
-                                                hasActiveFilters={false}
-                                                iconSide="right"
-                                                iconType="arrowDown"
-                                                onClick={[Function]}
-                                              >
-                                                Status
-                                              </EuiFilterButton>
-                                            }
-                                            closePopover={[Function]}
-                                            display="inlineBlock"
-                                            hasArrow={true}
-                                            id="field_value_selection_1"
-                                            isOpen={false}
-                                            ownFocus={true}
-                                            panelClassName="euiFilterGroup__popoverPanel"
-                                            panelPaddingSize="none"
-                                          >
-                                            <div
-                                              className="euiPopover euiPopover--anchorDownCenter"
-                                              id="field_value_selection_1"
+                                            </EuiFlexItem>
+                                            <EuiFlexItem
+                                              grow={false}
                                             >
                                               <div
-                                                className="euiPopover__anchor"
+                                                className="euiFlexItem euiFlexItem--flexGrowZero"
                                               >
-                                                <EuiFilterButton
-                                                  grow={true}
-                                                  hasActiveFilters={false}
-                                                  iconSide="right"
-                                                  iconType="arrowDown"
-                                                  onClick={[Function]}
-                                                >
-                                                  <EuiButtonEmpty
-                                                    className="euiFilterButton euiFilterButton--hasIcon"
-                                                    color="text"
-                                                    iconSide="right"
-                                                    iconType="arrowDown"
-                                                    onClick={[Function]}
-                                                    textProps={
+                                                <EuiTableSortMobile
+                                                  items={
+                                                    Array [
                                                       Object {
-                                                        "className": "",
+                                                        "isSortAscending": false,
+                                                        "isSorted": true,
+                                                        "key": "_data_s_start_time_0",
+                                                        "name": "Start time",
+                                                        "onSort": [Function],
+                                                      },
+                                                      Object {
+                                                        "isSortAscending": undefined,
+                                                        "isSorted": false,
+                                                        "key": "_data_s_detectorName_2",
+                                                        "name": "Detector",
+                                                        "onSort": [Function],
+                                                      },
+                                                      Object {
+                                                        "isSortAscending": undefined,
+                                                        "isSorted": false,
+                                                        "key": "_data_s_state_3",
+                                                        "name": "Status",
+                                                        "onSort": [Function],
+                                                      },
+                                                      Object {
+                                                        "isSortAscending": undefined,
+                                                        "isSorted": false,
+                                                        "key": "_data_s_severity_4",
+                                                        "name": "Alert severity",
+                                                        "onSort": [Function],
+                                                      },
+                                                    ]
+                                                  }
+                                                >
+                                                  <div
+                                                    className="euiTableSortMobile"
+                                                  >
+                                                    <EuiPopover
+                                                      anchorPosition="downRight"
+                                                      button={
+                                                        <EuiButtonEmpty
+                                                          flush="right"
+                                                          iconSide="right"
+                                                          iconType="arrowDown"
+                                                          onClick={[Function]}
+                                                          size="xs"
+                                                        >
+                                                          <EuiI18n
+                                                            default="Sorting"
+                                                            token="euiTableSortMobile.sorting"
+                                                          />
+                                                        </EuiButtonEmpty>
                                                       }
+                                                      closePopover={[Function]}
+                                                      display="inlineBlock"
+                                                      hasArrow={true}
+                                                      isOpen={false}
+                                                      ownFocus={true}
+                                                      panelPaddingSize="none"
+                                                    >
+                                                      <div
+                                                        className="euiPopover euiPopover--anchorDownRight"
+                                                      >
+                                                        <div
+                                                          className="euiPopover__anchor"
+                                                        >
+                                                          <EuiButtonEmpty
+                                                            flush="right"
+                                                            iconSide="right"
+                                                            iconType="arrowDown"
+                                                            onClick={[Function]}
+                                                            size="xs"
+                                                          >
+                                                            <button
+                                                              className="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--flushRight"
+                                                              disabled={false}
+                                                              onClick={[Function]}
+                                                              type="button"
+                                                            >
+                                                              <EuiButtonContent
+                                                                className="euiButtonEmpty__content"
+                                                                iconSide="right"
+                                                                iconSize="s"
+                                                                iconType="arrowDown"
+                                                                textProps={
+                                                                  Object {
+                                                                    "className": "euiButtonEmpty__text",
+                                                                  }
+                                                                }
+                                                              >
+                                                                <span
+                                                                  className="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                                                                >
+                                                                  <EuiIcon
+                                                                    className="euiButtonContent__icon"
+                                                                    color="inherit"
+                                                                    size="s"
+                                                                    type="arrowDown"
+                                                                  >
+                                                                    EuiIconMock
+                                                                  </EuiIcon>
+                                                                  <span
+                                                                    className="euiButtonEmpty__text"
+                                                                  >
+                                                                    <EuiI18n
+                                                                      default="Sorting"
+                                                                      token="euiTableSortMobile.sorting"
+                                                                    >
+                                                                      Sorting
+                                                                    </EuiI18n>
+                                                                  </span>
+                                                                </span>
+                                                              </EuiButtonContent>
+                                                            </button>
+                                                          </EuiButtonEmpty>
+                                                        </div>
+                                                      </div>
+                                                    </EuiPopover>
+                                                  </div>
+                                                </EuiTableSortMobile>
+                                              </div>
+                                            </EuiFlexItem>
+                                          </div>
+                                        </EuiFlexGroup>
+                                      </div>
+                                    </EuiTableHeaderMobile>
+                                    <EuiTable
+                                      id="some_html_id"
+                                      responsive={true}
+                                      tableLayout="fixed"
+                                    >
+                                      <table
+                                        className="euiTable euiTable--responsive"
+                                        id="some_html_id"
+                                        tabIndex={-1}
+                                      >
+                                        <EuiScreenReaderOnly>
+                                          <caption
+                                            className="euiScreenReaderOnly euiTableCaption"
+                                          >
+                                            <EuiDelayRender
+                                              delay={500}
+                                            />
+                                          </caption>
+                                        </EuiScreenReaderOnly>
+                                        <EuiTableHeader>
+                                          <thead>
+                                            <tr>
+                                              <EuiTableHeaderCellCheckbox
+                                                key="_selection_column_h"
+                                              >
+                                                <th
+                                                  className="euiTableHeaderCellCheckbox"
+                                                  scope="col"
+                                                  style={
+                                                    Object {
+                                                      "width": undefined,
                                                     }
+                                                  }
+                                                >
+                                                  <div
+                                                    className="euiTableCellContent"
+                                                  >
+                                                    <EuiI18n
+                                                      default="Select all rows"
+                                                      token="euiBasicTable.selectAllRows"
+                                                    >
+                                                      <EuiCheckbox
+                                                        aria-label="Select all rows"
+                                                        checked={false}
+                                                        compressed={false}
+                                                        data-test-subj="checkboxSelectAll"
+                                                        disabled={true}
+                                                        id="_selection_column-checkbox_some_html_id"
+                                                        indeterminate={false}
+                                                        label={null}
+                                                        onChange={[Function]}
+                                                        type="inList"
+                                                      >
+                                                        <div
+                                                          className="euiCheckbox euiCheckbox--inList euiCheckbox--noLabel"
+                                                        >
+                                                          <input
+                                                            aria-label="Select all rows"
+                                                            checked={false}
+                                                            className="euiCheckbox__input"
+                                                            data-test-subj="checkboxSelectAll"
+                                                            disabled={true}
+                                                            id="_selection_column-checkbox_some_html_id"
+                                                            onChange={[Function]}
+                                                            type="checkbox"
+                                                          />
+                                                          <div
+                                                            className="euiCheckbox__square"
+                                                          />
+                                                        </div>
+                                                      </EuiCheckbox>
+                                                    </EuiI18n>
+                                                  </div>
+                                                </th>
+                                              </EuiTableHeaderCellCheckbox>
+                                              <EuiTableHeaderCell
+                                                align="left"
+                                                data-test-subj="tableHeaderCell_start_time_0"
+                                                isSortAscending={false}
+                                                isSorted={true}
+                                                key="_data_h_start_time_0"
+                                                onSort={[Function]}
+                                              >
+                                                <th
+                                                  aria-live="polite"
+                                                  aria-sort="descending"
+                                                  className="euiTableHeaderCell"
+                                                  data-test-subj="tableHeaderCell_start_time_0"
+                                                  role="columnheader"
+                                                  scope="col"
+                                                  style={
+                                                    Object {
+                                                      "width": undefined,
+                                                    }
+                                                  }
+                                                >
+                                                  <button
+                                                    className="euiTableHeaderButton euiTableHeaderButton-isSorted"
+                                                    data-test-subj="tableHeaderSortButton"
+                                                    onClick={[Function]}
                                                     type="button"
                                                   >
-                                                    <button
-                                                      className="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
-                                                      disabled={false}
-                                                      onClick={[Function]}
-                                                      type="button"
+                                                    <CellContents
+                                                      className="euiTableCellContent"
+                                                      isSortAscending={false}
+                                                      isSorted={true}
+                                                      showSortMsg={true}
                                                     >
-                                                      <EuiButtonContent
-                                                        className="euiButtonEmpty__content"
-                                                        iconSide="right"
-                                                        iconSize="m"
-                                                        iconType="arrowDown"
-                                                        textProps={
-                                                          Object {
-                                                            "className": "euiButtonEmpty__text",
-                                                          }
-                                                        }
+                                                      <span
+                                                        className="euiTableCellContent"
                                                       >
-                                                        <span
-                                                          className="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
-                                                        >
-                                                          <EuiIcon
-                                                            className="euiButtonContent__icon"
-                                                            color="inherit"
-                                                            size="m"
-                                                            type="arrowDown"
-                                                          >
-                                                            EuiIconMock
-                                                          </EuiIcon>
-                                                          <span
-                                                            className="euiButtonEmpty__text"
+                                                        <EuiInnerText>
+                                                          <EuiI18n
+                                                            default="{innerText}; {description}"
+                                                            token="euiTableHeaderCell.titleTextWithDesc"
+                                                            values={
+                                                              Object {
+                                                                "description": undefined,
+                                                                "innerText": "Start time",
+                                                              }
+                                                            }
                                                           >
                                                             <span
-                                                              className="euiFilterButton__textShift"
-                                                              data-text="Status"
+                                                              className="euiTableCellContent__text"
+                                                              title="Start time"
+                                                            >
+                                                              Start time
+                                                            </span>
+                                                          </EuiI18n>
+                                                        </EuiInnerText>
+                                                        <EuiIcon
+                                                          className="euiTableSortIcon"
+                                                          size="m"
+                                                          type="sortDown"
+                                                        >
+                                                          EuiIconMock
+                                                        </EuiIcon>
+                                                      </span>
+                                                    </CellContents>
+                                                  </button>
+                                                </th>
+                                              </EuiTableHeaderCell>
+                                              <EuiTableHeaderCell
+                                                align="left"
+                                                data-test-subj="tableHeaderCell_trigger_name_1"
+                                                key="_data_h_trigger_name_1"
+                                              >
+                                                <th
+                                                  className="euiTableHeaderCell"
+                                                  data-test-subj="tableHeaderCell_trigger_name_1"
+                                                  role="columnheader"
+                                                  scope="col"
+                                                  style={
+                                                    Object {
+                                                      "width": undefined,
+                                                    }
+                                                  }
+                                                >
+                                                  <CellContents
+                                                    className="euiTableCellContent"
+                                                    showSortMsg={false}
+                                                  >
+                                                    <span
+                                                      className="euiTableCellContent"
+                                                    >
+                                                      <EuiInnerText>
+                                                        <EuiI18n
+                                                          default="{innerText}; {description}"
+                                                          token="euiTableHeaderCell.titleTextWithDesc"
+                                                          values={
+                                                            Object {
+                                                              "description": undefined,
+                                                              "innerText": "Alert trigger name",
+                                                            }
+                                                          }
+                                                        >
+                                                          <span
+                                                            className="euiTableCellContent__text"
+                                                            title="Alert trigger name"
+                                                          >
+                                                            Alert trigger name
+                                                          </span>
+                                                        </EuiI18n>
+                                                      </EuiInnerText>
+                                                    </span>
+                                                  </CellContents>
+                                                </th>
+                                              </EuiTableHeaderCell>
+                                              <EuiTableHeaderCell
+                                                align="left"
+                                                data-test-subj="tableHeaderCell_detectorName_2"
+                                                isSorted={false}
+                                                key="_data_h_detectorName_2"
+                                                onSort={[Function]}
+                                              >
+                                                <th
+                                                  aria-live="polite"
+                                                  aria-sort="none"
+                                                  className="euiTableHeaderCell"
+                                                  data-test-subj="tableHeaderCell_detectorName_2"
+                                                  role="columnheader"
+                                                  scope="col"
+                                                  style={
+                                                    Object {
+                                                      "width": undefined,
+                                                    }
+                                                  }
+                                                >
+                                                  <button
+                                                    className="euiTableHeaderButton"
+                                                    data-test-subj="tableHeaderSortButton"
+                                                    onClick={[Function]}
+                                                    type="button"
+                                                  >
+                                                    <CellContents
+                                                      className="euiTableCellContent"
+                                                      isSorted={false}
+                                                      showSortMsg={true}
+                                                    >
+                                                      <span
+                                                        className="euiTableCellContent"
+                                                      >
+                                                        <EuiInnerText>
+                                                          <EuiI18n
+                                                            default="{innerText}; {description}"
+                                                            token="euiTableHeaderCell.titleTextWithDesc"
+                                                            values={
+                                                              Object {
+                                                                "description": undefined,
+                                                                "innerText": "Detector",
+                                                              }
+                                                            }
+                                                          >
+                                                            <span
+                                                              className="euiTableCellContent__text"
+                                                              title="Detector"
+                                                            >
+                                                              Detector
+                                                            </span>
+                                                          </EuiI18n>
+                                                        </EuiInnerText>
+                                                      </span>
+                                                    </CellContents>
+                                                  </button>
+                                                </th>
+                                              </EuiTableHeaderCell>
+                                              <EuiTableHeaderCell
+                                                align="left"
+                                                data-test-subj="tableHeaderCell_state_3"
+                                                isSorted={false}
+                                                key="_data_h_state_3"
+                                                onSort={[Function]}
+                                              >
+                                                <th
+                                                  aria-live="polite"
+                                                  aria-sort="none"
+                                                  className="euiTableHeaderCell"
+                                                  data-test-subj="tableHeaderCell_state_3"
+                                                  role="columnheader"
+                                                  scope="col"
+                                                  style={
+                                                    Object {
+                                                      "width": undefined,
+                                                    }
+                                                  }
+                                                >
+                                                  <button
+                                                    className="euiTableHeaderButton"
+                                                    data-test-subj="tableHeaderSortButton"
+                                                    onClick={[Function]}
+                                                    type="button"
+                                                  >
+                                                    <CellContents
+                                                      className="euiTableCellContent"
+                                                      isSorted={false}
+                                                      showSortMsg={true}
+                                                    >
+                                                      <span
+                                                        className="euiTableCellContent"
+                                                      >
+                                                        <EuiInnerText>
+                                                          <EuiI18n
+                                                            default="{innerText}; {description}"
+                                                            token="euiTableHeaderCell.titleTextWithDesc"
+                                                            values={
+                                                              Object {
+                                                                "description": undefined,
+                                                                "innerText": "Status",
+                                                              }
+                                                            }
+                                                          >
+                                                            <span
+                                                              className="euiTableCellContent__text"
                                                               title="Status"
                                                             >
                                                               Status
                                                             </span>
-                                                          </span>
-                                                        </span>
-                                                      </EuiButtonContent>
-                                                    </button>
-                                                  </EuiButtonEmpty>
-                                                </EuiFilterButton>
-                                              </div>
-                                            </div>
-                                          </EuiPopover>
-                                        </FieldValueSelectionFilter>
-                                      </div>
-                                    </EuiFilterGroup>
-                                  </EuiSearchFilters>
-                                </div>
-                              </EuiFlexItem>
-                            </div>
-                          </EuiFlexGroup>
-                        </EuiSearchBar>
-                        <EuiSpacer
-                          size="l"
-                        >
-                          <div
-                            className="euiSpacer euiSpacer--l"
-                          />
-                        </EuiSpacer>
-                        <EuiBasicTable
-                          columns={
-                            Array [
-                              Object {
-                                "dataType": "date",
-                                "field": "start_time",
-                                "name": "Start time",
-                                "render": [Function],
-                                "sortable": true,
-                              },
-                              Object {
-                                "dataType": "string",
-                                "field": "trigger_name",
-                                "name": "Alert trigger name",
-                                "render": [Function],
-                                "sortable": false,
-                              },
-                              Object {
-                                "dataType": "string",
-                                "field": "detectorName",
-                                "name": "Detector",
-                                "render": [Function],
-                                "sortable": true,
-                              },
-                              Object {
-                                "dataType": "string",
-                                "field": "state",
-                                "name": "Status",
-                                "render": [Function],
-                                "sortable": true,
-                              },
-                              Object {
-                                "dataType": "string",
-                                "field": "severity",
-                                "name": "Alert severity",
-                                "render": [Function],
-                                "sortable": true,
-                              },
-                              Object {
-                                "actions": Array [
-                                  Object {
-                                    "render": [Function],
-                                  },
-                                  Object {
-                                    "render": [Function],
-                                  },
-                                ],
-                                "name": "Actions",
-                                "sortable": false,
-                              },
-                            ]
-                          }
-                          isSelectable={true}
-                          itemId={[Function]}
-                          items={Array []}
-                          loading={true}
-                          noItemsMessage={
-                            <EuiEmptyPrompt
-                              body={
-                                <p>
-                                  <span
-                                    style={
-                                      Object {
-                                        "display": "block",
-                                      }
-                                    }
-                                  >
-                                    No alerts.
-                                  </span>
-                                  Adjust the time range to see more results.
-                                </p>
-                              }
-                            />
-                          }
-                          onChange={[Function]}
-                          pagination={
-                            Object {
-                              "hidePerPageOptions": undefined,
-                              "pageIndex": 0,
-                              "pageSize": 10,
-                              "pageSizeOptions": Array [
-                                10,
-                                25,
-                                50,
-                              ],
-                              "totalItemCount": 0,
-                            }
-                          }
-                          responsive={true}
-                          selection={
-                            Object {
-                              "onSelectionChange": [Function],
-                              "selectable": [Function],
-                              "selectableMessage": [Function],
-                            }
-                          }
-                          sorting={
-                            Object {
-                              "allowNeutralSort": true,
-                              "sort": Object {
-                                "direction": "dsc",
-                                "field": "Start time",
-                              },
-                            }
-                          }
-                          tableLayout="fixed"
-                        >
-                          <div
-                            className="euiBasicTable euiBasicTable-loading"
-                          >
-                            <div>
-                              <EuiTableHeaderMobile>
-                                <div
-                                  className="euiTableHeaderMobile"
-                                >
-                                  <EuiFlexGroup
-                                    alignItems="baseline"
-                                    justifyContent="spaceBetween"
-                                    responsive={false}
-                                  >
-                                    <div
-                                      className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsBaseline euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow"
-                                    >
-                                      <EuiFlexItem
-                                        grow={false}
-                                      >
-                                        <div
-                                          className="euiFlexItem euiFlexItem--flexGrowZero"
-                                        >
-                                          <EuiI18n
-                                            default="Select all rows"
-                                            token="euiBasicTable.selectAllRows"
-                                          >
-                                            <EuiCheckbox
-                                              aria-label="Select all rows"
-                                              checked={false}
-                                              compressed={false}
-                                              disabled={true}
-                                              id="_selection_column-checkbox_some_html_id"
-                                              indeterminate={false}
-                                              label="Select all rows"
-                                              onChange={[Function]}
-                                            >
-                                              <div
-                                                className="euiCheckbox"
+                                                          </EuiI18n>
+                                                        </EuiInnerText>
+                                                      </span>
+                                                    </CellContents>
+                                                  </button>
+                                                </th>
+                                              </EuiTableHeaderCell>
+                                              <EuiTableHeaderCell
+                                                align="left"
+                                                data-test-subj="tableHeaderCell_severity_4"
+                                                isSorted={false}
+                                                key="_data_h_severity_4"
+                                                onSort={[Function]}
                                               >
-                                                <input
-                                                  aria-label="Select all rows"
-                                                  checked={false}
-                                                  className="euiCheckbox__input"
-                                                  disabled={true}
-                                                  id="_selection_column-checkbox_some_html_id"
-                                                  onChange={[Function]}
-                                                  type="checkbox"
-                                                />
-                                                <div
-                                                  className="euiCheckbox__square"
-                                                />
-                                                <label
-                                                  className="euiCheckbox__label"
-                                                  htmlFor="_selection_column-checkbox_some_html_id"
+                                                <th
+                                                  aria-live="polite"
+                                                  aria-sort="none"
+                                                  className="euiTableHeaderCell"
+                                                  data-test-subj="tableHeaderCell_severity_4"
+                                                  role="columnheader"
+                                                  scope="col"
+                                                  style={
+                                                    Object {
+                                                      "width": undefined,
+                                                    }
+                                                  }
                                                 >
-                                                  Select all rows
-                                                </label>
-                                              </div>
-                                            </EuiCheckbox>
-                                          </EuiI18n>
-                                        </div>
-                                      </EuiFlexItem>
-                                      <EuiFlexItem
-                                        grow={false}
-                                      >
-                                        <div
-                                          className="euiFlexItem euiFlexItem--flexGrowZero"
-                                        >
-                                          <EuiTableSortMobile
-                                            items={
-                                              Array [
-                                                Object {
-                                                  "isSortAscending": false,
-                                                  "isSorted": true,
-                                                  "key": "_data_s_start_time_0",
-                                                  "name": "Start time",
-                                                  "onSort": [Function],
-                                                },
-                                                Object {
-                                                  "isSortAscending": undefined,
-                                                  "isSorted": false,
-                                                  "key": "_data_s_detectorName_2",
-                                                  "name": "Detector",
-                                                  "onSort": [Function],
-                                                },
-                                                Object {
-                                                  "isSortAscending": undefined,
-                                                  "isSorted": false,
-                                                  "key": "_data_s_state_3",
-                                                  "name": "Status",
-                                                  "onSort": [Function],
-                                                },
-                                                Object {
-                                                  "isSortAscending": undefined,
-                                                  "isSorted": false,
-                                                  "key": "_data_s_severity_4",
-                                                  "name": "Alert severity",
-                                                  "onSort": [Function],
-                                                },
-                                              ]
-                                            }
-                                          >
-                                            <div
-                                              className="euiTableSortMobile"
-                                            >
-                                              <EuiPopover
-                                                anchorPosition="downRight"
-                                                button={
-                                                  <EuiButtonEmpty
-                                                    flush="right"
-                                                    iconSide="right"
-                                                    iconType="arrowDown"
+                                                  <button
+                                                    className="euiTableHeaderButton"
+                                                    data-test-subj="tableHeaderSortButton"
                                                     onClick={[Function]}
-                                                    size="xs"
+                                                    type="button"
                                                   >
-                                                    <EuiI18n
-                                                      default="Sorting"
-                                                      token="euiTableSortMobile.sorting"
-                                                    />
-                                                  </EuiButtonEmpty>
-                                                }
-                                                closePopover={[Function]}
-                                                display="inlineBlock"
-                                                hasArrow={true}
-                                                isOpen={false}
-                                                ownFocus={true}
-                                                panelPaddingSize="none"
-                                              >
-                                                <div
-                                                  className="euiPopover euiPopover--anchorDownRight"
-                                                >
-                                                  <div
-                                                    className="euiPopover__anchor"
-                                                  >
-                                                    <EuiButtonEmpty
-                                                      flush="right"
-                                                      iconSide="right"
-                                                      iconType="arrowDown"
-                                                      onClick={[Function]}
-                                                      size="xs"
+                                                    <CellContents
+                                                      className="euiTableCellContent"
+                                                      isSorted={false}
+                                                      showSortMsg={true}
                                                     >
-                                                      <button
-                                                        className="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--flushRight"
-                                                        disabled={false}
-                                                        onClick={[Function]}
-                                                        type="button"
+                                                      <span
+                                                        className="euiTableCellContent"
                                                       >
-                                                        <EuiButtonContent
-                                                          className="euiButtonEmpty__content"
-                                                          iconSide="right"
-                                                          iconSize="s"
-                                                          iconType="arrowDown"
-                                                          textProps={
+                                                        <EuiInnerText>
+                                                          <EuiI18n
+                                                            default="{innerText}; {description}"
+                                                            token="euiTableHeaderCell.titleTextWithDesc"
+                                                            values={
+                                                              Object {
+                                                                "description": undefined,
+                                                                "innerText": "Alert severity",
+                                                              }
+                                                            }
+                                                          >
+                                                            <span
+                                                              className="euiTableCellContent__text"
+                                                              title="Alert severity"
+                                                            >
+                                                              Alert severity
+                                                            </span>
+                                                          </EuiI18n>
+                                                        </EuiInnerText>
+                                                      </span>
+                                                    </CellContents>
+                                                  </button>
+                                                </th>
+                                              </EuiTableHeaderCell>
+                                              <EuiTableHeaderCell
+                                                align="right"
+                                                key="_actions_h_5"
+                                              >
+                                                <th
+                                                  className="euiTableHeaderCell"
+                                                  role="columnheader"
+                                                  scope="col"
+                                                  style={
+                                                    Object {
+                                                      "width": undefined,
+                                                    }
+                                                  }
+                                                >
+                                                  <CellContents
+                                                    className="euiTableCellContent euiTableCellContent--alignRight"
+                                                    showSortMsg={false}
+                                                  >
+                                                    <span
+                                                      className="euiTableCellContent euiTableCellContent--alignRight"
+                                                    >
+                                                      <EuiInnerText>
+                                                        <EuiI18n
+                                                          default="{innerText}; {description}"
+                                                          token="euiTableHeaderCell.titleTextWithDesc"
+                                                          values={
                                                             Object {
-                                                              "className": "euiButtonEmpty__text",
+                                                              "description": undefined,
+                                                              "innerText": "Actions",
                                                             }
                                                           }
                                                         >
                                                           <span
-                                                            className="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                                                            className="euiTableCellContent__text"
+                                                            title="Actions"
                                                           >
-                                                            <EuiIcon
-                                                              className="euiButtonContent__icon"
-                                                              color="inherit"
-                                                              size="s"
-                                                              type="arrowDown"
-                                                            >
-                                                              EuiIconMock
-                                                            </EuiIcon>
-                                                            <span
-                                                              className="euiButtonEmpty__text"
-                                                            >
-                                                              <EuiI18n
-                                                                default="Sorting"
-                                                                token="euiTableSortMobile.sorting"
-                                                              >
-                                                                Sorting
-                                                              </EuiI18n>
-                                                            </span>
+                                                            Actions
                                                           </span>
-                                                        </EuiButtonContent>
-                                                      </button>
-                                                    </EuiButtonEmpty>
-                                                  </div>
-                                                </div>
-                                              </EuiPopover>
-                                            </div>
-                                          </EuiTableSortMobile>
-                                        </div>
-                                      </EuiFlexItem>
-                                    </div>
-                                  </EuiFlexGroup>
-                                </div>
-                              </EuiTableHeaderMobile>
-                              <EuiTable
-                                id="some_html_id"
-                                responsive={true}
-                                tableLayout="fixed"
-                              >
-                                <table
-                                  className="euiTable euiTable--responsive"
-                                  id="some_html_id"
-                                  tabIndex={-1}
-                                >
-                                  <EuiScreenReaderOnly>
-                                    <caption
-                                      className="euiScreenReaderOnly euiTableCaption"
-                                    >
-                                      <EuiDelayRender
-                                        delay={500}
-                                      />
-                                    </caption>
-                                  </EuiScreenReaderOnly>
-                                  <EuiTableHeader>
-                                    <thead>
-                                      <tr>
-                                        <EuiTableHeaderCellCheckbox
-                                          key="_selection_column_h"
-                                        >
-                                          <th
-                                            className="euiTableHeaderCellCheckbox"
-                                            scope="col"
-                                            style={
-                                              Object {
-                                                "width": undefined,
-                                              }
-                                            }
-                                          >
-                                            <div
-                                              className="euiTableCellContent"
-                                            >
-                                              <EuiI18n
-                                                default="Select all rows"
-                                                token="euiBasicTable.selectAllRows"
-                                              >
-                                                <EuiCheckbox
-                                                  aria-label="Select all rows"
-                                                  checked={false}
-                                                  compressed={false}
-                                                  data-test-subj="checkboxSelectAll"
-                                                  disabled={true}
-                                                  id="_selection_column-checkbox_some_html_id"
-                                                  indeterminate={false}
-                                                  label={null}
-                                                  onChange={[Function]}
-                                                  type="inList"
-                                                >
-                                                  <div
-                                                    className="euiCheckbox euiCheckbox--inList euiCheckbox--noLabel"
-                                                  >
-                                                    <input
-                                                      aria-label="Select all rows"
-                                                      checked={false}
-                                                      className="euiCheckbox__input"
-                                                      data-test-subj="checkboxSelectAll"
-                                                      disabled={true}
-                                                      id="_selection_column-checkbox_some_html_id"
-                                                      onChange={[Function]}
-                                                      type="checkbox"
-                                                    />
-                                                    <div
-                                                      className="euiCheckbox__square"
-                                                    />
-                                                  </div>
-                                                </EuiCheckbox>
-                                              </EuiI18n>
-                                            </div>
-                                          </th>
-                                        </EuiTableHeaderCellCheckbox>
-                                        <EuiTableHeaderCell
-                                          align="left"
-                                          data-test-subj="tableHeaderCell_start_time_0"
-                                          isSortAscending={false}
-                                          isSorted={true}
-                                          key="_data_h_start_time_0"
-                                          onSort={[Function]}
-                                        >
-                                          <th
-                                            aria-live="polite"
-                                            aria-sort="descending"
-                                            className="euiTableHeaderCell"
-                                            data-test-subj="tableHeaderCell_start_time_0"
-                                            role="columnheader"
-                                            scope="col"
-                                            style={
-                                              Object {
-                                                "width": undefined,
-                                              }
-                                            }
-                                          >
-                                            <button
-                                              className="euiTableHeaderButton euiTableHeaderButton-isSorted"
-                                              data-test-subj="tableHeaderSortButton"
-                                              onClick={[Function]}
-                                              type="button"
-                                            >
-                                              <CellContents
-                                                className="euiTableCellContent"
-                                                isSortAscending={false}
-                                                isSorted={true}
-                                                showSortMsg={true}
-                                              >
-                                                <span
-                                                  className="euiTableCellContent"
-                                                >
-                                                  <EuiInnerText>
-                                                    <EuiI18n
-                                                      default="{innerText}; {description}"
-                                                      token="euiTableHeaderCell.titleTextWithDesc"
-                                                      values={
-                                                        Object {
-                                                          "description": undefined,
-                                                          "innerText": "Start time",
-                                                        }
-                                                      }
-                                                    >
-                                                      <span
-                                                        className="euiTableCellContent__text"
-                                                        title="Start time"
-                                                      >
-                                                        Start time
-                                                      </span>
-                                                    </EuiI18n>
-                                                  </EuiInnerText>
-                                                  <EuiIcon
-                                                    className="euiTableSortIcon"
-                                                    size="m"
-                                                    type="sortDown"
-                                                  >
-                                                    EuiIconMock
-                                                  </EuiIcon>
-                                                </span>
-                                              </CellContents>
-                                            </button>
-                                          </th>
-                                        </EuiTableHeaderCell>
-                                        <EuiTableHeaderCell
-                                          align="left"
-                                          data-test-subj="tableHeaderCell_trigger_name_1"
-                                          key="_data_h_trigger_name_1"
-                                        >
-                                          <th
-                                            className="euiTableHeaderCell"
-                                            data-test-subj="tableHeaderCell_trigger_name_1"
-                                            role="columnheader"
-                                            scope="col"
-                                            style={
-                                              Object {
-                                                "width": undefined,
-                                              }
-                                            }
-                                          >
-                                            <CellContents
-                                              className="euiTableCellContent"
-                                              showSortMsg={false}
-                                            >
-                                              <span
-                                                className="euiTableCellContent"
-                                              >
-                                                <EuiInnerText>
-                                                  <EuiI18n
-                                                    default="{innerText}; {description}"
-                                                    token="euiTableHeaderCell.titleTextWithDesc"
-                                                    values={
-                                                      Object {
-                                                        "description": undefined,
-                                                        "innerText": "Alert trigger name",
-                                                      }
-                                                    }
-                                                  >
-                                                    <span
-                                                      className="euiTableCellContent__text"
-                                                      title="Alert trigger name"
-                                                    >
-                                                      Alert trigger name
+                                                        </EuiI18n>
+                                                      </EuiInnerText>
                                                     </span>
-                                                  </EuiI18n>
-                                                </EuiInnerText>
-                                              </span>
-                                            </CellContents>
-                                          </th>
-                                        </EuiTableHeaderCell>
-                                        <EuiTableHeaderCell
-                                          align="left"
-                                          data-test-subj="tableHeaderCell_detectorName_2"
-                                          isSorted={false}
-                                          key="_data_h_detectorName_2"
-                                          onSort={[Function]}
-                                        >
-                                          <th
-                                            aria-live="polite"
-                                            aria-sort="none"
-                                            className="euiTableHeaderCell"
-                                            data-test-subj="tableHeaderCell_detectorName_2"
-                                            role="columnheader"
-                                            scope="col"
-                                            style={
-                                              Object {
-                                                "width": undefined,
-                                              }
-                                            }
-                                          >
-                                            <button
-                                              className="euiTableHeaderButton"
-                                              data-test-subj="tableHeaderSortButton"
-                                              onClick={[Function]}
-                                              type="button"
-                                            >
-                                              <CellContents
-                                                className="euiTableCellContent"
-                                                isSorted={false}
-                                                showSortMsg={true}
+                                                  </CellContents>
+                                                </th>
+                                              </EuiTableHeaderCell>
+                                            </tr>
+                                          </thead>
+                                        </EuiTableHeader>
+                                        <EuiTableBody>
+                                          <tbody>
+                                            <EuiTableRow>
+                                              <tr
+                                                className="euiTableRow"
                                               >
-                                                <span
-                                                  className="euiTableCellContent"
+                                                <EuiTableRowCell
+                                                  align="center"
+                                                  colSpan={7}
+                                                  isMobileFullWidth={true}
                                                 >
-                                                  <EuiInnerText>
-                                                    <EuiI18n
-                                                      default="{innerText}; {description}"
-                                                      token="euiTableHeaderCell.titleTextWithDesc"
-                                                      values={
-                                                        Object {
-                                                          "description": undefined,
-                                                          "innerText": "Detector",
-                                                        }
-                                                      }
-                                                    >
-                                                      <span
-                                                        className="euiTableCellContent__text"
-                                                        title="Detector"
-                                                      >
-                                                        Detector
-                                                      </span>
-                                                    </EuiI18n>
-                                                  </EuiInnerText>
-                                                </span>
-                                              </CellContents>
-                                            </button>
-                                          </th>
-                                        </EuiTableHeaderCell>
-                                        <EuiTableHeaderCell
-                                          align="left"
-                                          data-test-subj="tableHeaderCell_state_3"
-                                          isSorted={false}
-                                          key="_data_h_state_3"
-                                          onSort={[Function]}
-                                        >
-                                          <th
-                                            aria-live="polite"
-                                            aria-sort="none"
-                                            className="euiTableHeaderCell"
-                                            data-test-subj="tableHeaderCell_state_3"
-                                            role="columnheader"
-                                            scope="col"
-                                            style={
-                                              Object {
-                                                "width": undefined,
-                                              }
-                                            }
-                                          >
-                                            <button
-                                              className="euiTableHeaderButton"
-                                              data-test-subj="tableHeaderSortButton"
-                                              onClick={[Function]}
-                                              type="button"
-                                            >
-                                              <CellContents
-                                                className="euiTableCellContent"
-                                                isSorted={false}
-                                                showSortMsg={true}
-                                              >
-                                                <span
-                                                  className="euiTableCellContent"
-                                                >
-                                                  <EuiInnerText>
-                                                    <EuiI18n
-                                                      default="{innerText}; {description}"
-                                                      token="euiTableHeaderCell.titleTextWithDesc"
-                                                      values={
-                                                        Object {
-                                                          "description": undefined,
-                                                          "innerText": "Status",
-                                                        }
-                                                      }
-                                                    >
-                                                      <span
-                                                        className="euiTableCellContent__text"
-                                                        title="Status"
-                                                      >
-                                                        Status
-                                                      </span>
-                                                    </EuiI18n>
-                                                  </EuiInnerText>
-                                                </span>
-                                              </CellContents>
-                                            </button>
-                                          </th>
-                                        </EuiTableHeaderCell>
-                                        <EuiTableHeaderCell
-                                          align="left"
-                                          data-test-subj="tableHeaderCell_severity_4"
-                                          isSorted={false}
-                                          key="_data_h_severity_4"
-                                          onSort={[Function]}
-                                        >
-                                          <th
-                                            aria-live="polite"
-                                            aria-sort="none"
-                                            className="euiTableHeaderCell"
-                                            data-test-subj="tableHeaderCell_severity_4"
-                                            role="columnheader"
-                                            scope="col"
-                                            style={
-                                              Object {
-                                                "width": undefined,
-                                              }
-                                            }
-                                          >
-                                            <button
-                                              className="euiTableHeaderButton"
-                                              data-test-subj="tableHeaderSortButton"
-                                              onClick={[Function]}
-                                              type="button"
-                                            >
-                                              <CellContents
-                                                className="euiTableCellContent"
-                                                isSorted={false}
-                                                showSortMsg={true}
-                                              >
-                                                <span
-                                                  className="euiTableCellContent"
-                                                >
-                                                  <EuiInnerText>
-                                                    <EuiI18n
-                                                      default="{innerText}; {description}"
-                                                      token="euiTableHeaderCell.titleTextWithDesc"
-                                                      values={
-                                                        Object {
-                                                          "description": undefined,
-                                                          "innerText": "Alert severity",
-                                                        }
-                                                      }
-                                                    >
-                                                      <span
-                                                        className="euiTableCellContent__text"
-                                                        title="Alert severity"
-                                                      >
-                                                        Alert severity
-                                                      </span>
-                                                    </EuiI18n>
-                                                  </EuiInnerText>
-                                                </span>
-                                              </CellContents>
-                                            </button>
-                                          </th>
-                                        </EuiTableHeaderCell>
-                                        <EuiTableHeaderCell
-                                          align="right"
-                                          key="_actions_h_5"
-                                        >
-                                          <th
-                                            className="euiTableHeaderCell"
-                                            role="columnheader"
-                                            scope="col"
-                                            style={
-                                              Object {
-                                                "width": undefined,
-                                              }
-                                            }
-                                          >
-                                            <CellContents
-                                              className="euiTableCellContent euiTableCellContent--alignRight"
-                                              showSortMsg={false}
-                                            >
-                                              <span
-                                                className="euiTableCellContent euiTableCellContent--alignRight"
-                                              >
-                                                <EuiInnerText>
-                                                  <EuiI18n
-                                                    default="{innerText}; {description}"
-                                                    token="euiTableHeaderCell.titleTextWithDesc"
-                                                    values={
+                                                  <td
+                                                    className="euiTableRowCell euiTableRowCell--isMobileFullWidth"
+                                                    colSpan={7}
+                                                    style={
                                                       Object {
-                                                        "description": undefined,
-                                                        "innerText": "Actions",
+                                                        "width": undefined,
                                                       }
-                                                    }
-                                                  >
-                                                    <span
-                                                      className="euiTableCellContent__text"
-                                                      title="Actions"
-                                                    >
-                                                      Actions
-                                                    </span>
-                                                  </EuiI18n>
-                                                </EuiInnerText>
-                                              </span>
-                                            </CellContents>
-                                          </th>
-                                        </EuiTableHeaderCell>
-                                      </tr>
-                                    </thead>
-                                  </EuiTableHeader>
-                                  <EuiTableBody>
-                                    <tbody>
-                                      <EuiTableRow>
-                                        <tr
-                                          className="euiTableRow"
-                                        >
-                                          <EuiTableRowCell
-                                            align="center"
-                                            colSpan={7}
-                                            isMobileFullWidth={true}
-                                          >
-                                            <td
-                                              className="euiTableRowCell euiTableRowCell--isMobileFullWidth"
-                                              colSpan={7}
-                                              style={
-                                                Object {
-                                                  "width": undefined,
-                                                }
-                                              }
-                                            >
-                                              <div
-                                                className="euiTableCellContent euiTableCellContent--alignCenter"
-                                              >
-                                                <span
-                                                  className="euiTableCellContent__text"
-                                                >
-                                                  <EuiEmptyPrompt
-                                                    body={
-                                                      <p>
-                                                        <span
-                                                          style={
-                                                            Object {
-                                                              "display": "block",
-                                                            }
-                                                          }
-                                                        >
-                                                          No alerts.
-                                                        </span>
-                                                        Adjust the time range to see more results.
-                                                      </p>
                                                     }
                                                   >
                                                     <div
-                                                      className="euiEmptyPrompt"
+                                                      className="euiTableCellContent euiTableCellContent--alignCenter"
                                                     >
-                                                      <EuiTextColor
-                                                        color="subdued"
+                                                      <span
+                                                        className="euiTableCellContent__text"
                                                       >
-                                                        <span
-                                                          className="euiTextColor euiTextColor--subdued"
-                                                        >
-                                                          <EuiText>
-                                                            <div
-                                                              className="euiText euiText--medium"
-                                                            >
-                                                              <p>
-                                                                <span
-                                                                  style={
-                                                                    Object {
-                                                                      "display": "block",
-                                                                    }
-                                                                  }
-                                                                >
-                                                                  No alerts.
-                                                                </span>
-                                                                Adjust the time range to see more results.
-                                                              </p>
-                                                            </div>
-                                                          </EuiText>
-                                                        </span>
-                                                      </EuiTextColor>
+                                                        No items found
+                                                      </span>
                                                     </div>
-                                                  </EuiEmptyPrompt>
-                                                </span>
-                                              </div>
-                                            </td>
-                                          </EuiTableRowCell>
-                                        </tr>
-                                      </EuiTableRow>
-                                    </tbody>
-                                  </EuiTableBody>
-                                </table>
-                              </EuiTable>
+                                                  </td>
+                                                </EuiTableRowCell>
+                                              </tr>
+                                            </EuiTableRow>
+                                          </tbody>
+                                        </EuiTableBody>
+                                      </table>
+                                    </EuiTable>
+                                  </div>
+                                </div>
+                              </EuiBasicTable>
                             </div>
-                          </div>
-                        </EuiBasicTable>
+                          </EuiInMemoryTable>
+                        </div>
                       </div>
-                    </EuiInMemoryTable>
+                    </EuiTabbedContent>
                   </div>
                 </div>
               </EuiPanel>

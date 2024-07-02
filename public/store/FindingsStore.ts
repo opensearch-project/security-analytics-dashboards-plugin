@@ -4,12 +4,30 @@
  */
 
 import React from 'react';
-import { DetectorsService, FindingsService } from '../services';
+import {
+  CorrelationService,
+  DetectorsService,
+  FindingsService,
+  IndexPatternsService,
+  OpenSearchService,
+} from '../services';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { RouteComponentProps } from 'react-router-dom';
 import { errorNotificationToast } from '../utils/helpers';
-import { FindingDetailsFlyoutBaseProps } from '../pages/Findings/components/FindingDetailsFlyout';
-import { DetectorHit, Duration, Finding, FindingItemType, GetFindingsResponse, ServerResponse } from '../../types';
+import {
+  DetectorHit,
+  Duration,
+  Finding,
+  FindingDetailsFlyoutProps,
+  FindingItemType,
+  ShowFlyoutDataType,
+  GetFindingsResponse,
+  ServerResponse,
+  FlyoutPropsType,
+  ThreatIntelFinding,
+  ThreatIntelFindingDetailsFlyoutProps,
+} from '../../types';
+import FindingDetailsFlyout from '../pages/Findings/components/FindingDetailsFlyout';
+import { ThreatIntelFindingDetailsFlyout } from '../pages/Findings/components/ThreatIntelFindingDetailsFlyout';
 
 export interface IFindingsStore {
   readonly service: FindingsService;
@@ -23,17 +41,21 @@ export interface IFindingsStore {
   getFindingsByIds: (findingIds: string[]) => Promise<Finding[]>;
 
   getFindingsPerDetector: (
-    detectorId: string, 
+    detectorId: string,
     detector: DetectorHit,
     signal: AbortSignal,
-    duration?: Duration, 
+    duration?: Duration,
     onPartialFindingsFetched?: (findings: Finding[]) => void
   ) => Promise<Finding[]>;
 
-  getAllFindings: (signal: AbortSignal, duration?: { startTime: number; endTime: number; }, onPartialFindingsFetched?: (findings: Finding[]) => void) => Promise<FindingItemType[]>;
+  getAllFindings: (
+    signal: AbortSignal,
+    duration?: { startTime: number; endTime: number },
+    onPartialFindingsFetched?: (findings: Finding[]) => void
+  ) => Promise<FindingItemType[]>;
 
   setFlyoutCallback: (
-    flyoutCallback: (findingFlyout: FindingDetailsFlyoutBaseProps | null) => void
+    flyoutCallback: (flyoutData: ShowFlyoutDataType<FlyoutPropsType> | null) => void
   ) => void;
 
   openFlyout: (
@@ -42,6 +64,8 @@ export interface IFindingsStore {
     shouldLoadAllFindings: boolean,
     backButton?: React.ReactNode
   ) => void;
+
+  openThreatIntelFindingFlyout: (finding: ThreatIntelFinding, backButton?: React.ReactNode) => void;
 
   closeFlyout: () => void;
 }
@@ -56,45 +80,14 @@ export interface IFindingsCache {}
  * @param {BrowserServices} services Uses services to make API requests
  */
 export class FindingsStore implements IFindingsStore {
-  /**
-   * Findings service instance
-   *
-   * @property {FindingsService} service
-   * @readonly
-   */
-  readonly service: FindingsService;
-
-  /**
-   * Detectors service instance
-   *
-   * @property {DetectorsService} detectorsService
-   * @readonly
-   */
-  readonly detectorsService: DetectorsService;
-
-  /**
-   * Notifications
-   * @property {NotificationsStart}
-   * @readonly
-   */
-  readonly notifications: NotificationsStart;
-
-  /**
-   * Router history
-   * @property {RouteComponentProps['history']}
-   * @readonly
-   */
-  history: RouteComponentProps['history'] | undefined = undefined;
-
   constructor(
-    service: FindingsService,
-    detectorsService: DetectorsService,
-    notifications: NotificationsStart
-  ) {
-    this.service = service;
-    this.detectorsService = detectorsService;
-    this.notifications = notifications;
-  }
+    readonly service: FindingsService,
+    readonly detectorsService: DetectorsService,
+    readonly notifications: NotificationsStart,
+    private readonly indexPatternsService: IndexPatternsService,
+    private readonly correlationService: CorrelationService,
+    private readonly opensearchService: OpenSearchService
+  ) {}
 
   public getFinding = async (findingId: string): Promise<Finding | undefined> => {
     const getFindingRes = await this.service.getFindings({ findingIds: [findingId] });
@@ -130,8 +123,8 @@ export class FindingsStore implements IFindingsStore {
       startIndex: 0,
       size: findingsSize,
       startTime: duration?.startTime,
-      endTime: duration?.endTime
-    }
+      endTime: duration?.endTime,
+    };
 
     if (signal.aborted) {
       return allFindings;
@@ -148,23 +141,20 @@ export class FindingsStore implements IFindingsStore {
       const getFindingsPromises: Promise<ServerResponse<GetFindingsResponse>>[] = [];
 
       while (remainingFindings > 0) {
-
         if (signal.aborted) {
           return allFindings;
         }
 
-        const getFindingsPromise = this.service.getFindings({ 
+        const getFindingsPromise = this.service.getFindings({
           ...getFindingsQueryParams,
-          startIndex
+          startIndex,
         });
 
         if (signal.aborted) {
           return allFindings;
         }
 
-        getFindingsPromises.push(
-          getFindingsPromise
-        );
+        getFindingsPromises.push(getFindingsPromise);
         getFindingsPromise.then((res): any => {
           if (res.ok) {
             onPartialFindingsFetched?.(this.extendFindings(res.response.findings, detector));
@@ -178,7 +168,9 @@ export class FindingsStore implements IFindingsStore {
 
       findingsPromisesRes.forEach((response) => {
         if (response.status === 'fulfilled' && response.value.ok) {
-          allFindings = allFindings.concat(this.extendFindings(response.value.response.findings, detector));
+          allFindings = allFindings.concat(
+            this.extendFindings(response.value.response.findings, detector)
+          );
         }
       });
     } else {
@@ -199,7 +191,13 @@ export class FindingsStore implements IFindingsStore {
       const detectors = detectorsRes.response.hits.hits;
 
       for (let detector of detectors) {
-        const findings = await this.getFindingsPerDetector(detector._id, detector, signal, duration, onPartialFindingsFetched);
+        const findings = await this.getFindingsPerDetector(
+          detector._id,
+          detector,
+          signal,
+          duration,
+          onPartialFindingsFetched
+        );
         const findingsPerDetector: FindingItemType[] = this.extendFindings(findings, detector);
         allFindings = allFindings.concat(findingsPerDetector);
       }
@@ -209,12 +207,12 @@ export class FindingsStore implements IFindingsStore {
   };
 
   public setFlyoutCallback = (
-    flyoutCallback: (findingFlyout: FindingDetailsFlyoutBaseProps | null) => void
+    flyoutCallback: (findingFlyout: ShowFlyoutDataType<FlyoutPropsType> | null) => void
   ): void => {
     this.openFlyoutCallback = flyoutCallback;
   };
 
-  public openFlyoutCallback = (findingFlyout: FindingDetailsFlyoutBaseProps | null) => {};
+  public openFlyoutCallback = (findingFlyout: ShowFlyoutDataType<FlyoutPropsType> | null) => {};
 
   closeFlyout = () => this.openFlyoutCallback(null);
 
@@ -224,14 +222,33 @@ export class FindingsStore implements IFindingsStore {
     shouldLoadAllFindings: boolean = false,
     backButton?: React.ReactNode
   ) => {
-    const flyout = {
+    const flyoutProps: FindingDetailsFlyoutProps = {
       finding,
       findings,
       shouldLoadAllFindings,
       backButton,
-    } as FindingDetailsFlyoutBaseProps;
+      opensearchService: this.opensearchService,
+      correlationService: this.correlationService,
+      indexPatternsService: this.indexPatternsService,
+    };
+    const flyout: ShowFlyoutDataType<FindingDetailsFlyoutProps> = {
+      componentProps: flyoutProps,
+      component: FindingDetailsFlyout,
+    };
     this.openFlyoutCallback(flyout);
   };
+
+  public openThreatIntelFindingFlyout(finding: ThreatIntelFinding, backButton?: React.ReactNode) {
+    const flyoutData: ShowFlyoutDataType<ThreatIntelFindingDetailsFlyoutProps> = {
+      component: ThreatIntelFindingDetailsFlyout,
+      componentProps: {
+        finding,
+        backButton,
+      },
+    };
+
+    this.openFlyoutCallback(flyoutData);
+  }
 
   private extendFindings(findings: Finding[], detector: DetectorHit): FindingItemType[] {
     return findings.map((finding) => {
