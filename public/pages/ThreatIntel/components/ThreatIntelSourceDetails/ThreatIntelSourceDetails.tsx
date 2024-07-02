@@ -33,6 +33,7 @@ import { readIocsFromFile, threatIntelSourceItemToBasePayload } from '../../util
 import { ThreatIntelService } from '../../../../services';
 import { ThreatIntelIocType } from '../../../../../common/constants';
 import { PeriodSchedule } from '../../../../../models/interfaces';
+import { checkboxes } from '../../utils/constants';
 
 export interface ThreatIntelSourceDetailsProps {
   sourceItem: ThreatIntelSourceItem;
@@ -60,20 +61,6 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
   const [fileError, setFileError] = useState('');
   const [saveInProgress, setSaveInProgress] = useState(false);
   const [saveDisabled, setSaveDisabled] = useState(false);
-  const checkboxes = [
-    {
-      id: ThreatIntelIocType.IPAddress,
-      label: 'IP - addresses',
-    },
-    {
-      id: ThreatIntelIocType.Domain,
-      label: 'Domains',
-    },
-    {
-      id: ThreatIntelIocType.FileHash,
-      label: 'File hash',
-    },
-  ];
   const [checkboxIdToSelectedMap, setCheckboxIdToSelectedMap] = useState<Record<string, boolean>>(
     () => {
       const newCheckboxIdToSelectedMap: any = {};

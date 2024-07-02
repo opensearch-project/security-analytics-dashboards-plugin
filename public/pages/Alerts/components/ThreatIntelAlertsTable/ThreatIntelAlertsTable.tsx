@@ -11,11 +11,16 @@ import {
   EuiToolTip,
 } from '@elastic/eui';
 import { ThreatIntelAlert } from '../../../../../types';
-import React from 'react';
+import React, { useState } from 'react';
 import { renderIoCType, renderTime } from '../../../../utils/helpers';
 import { ALERT_STATE, DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { DISABLE_ACKNOWLEDGED_ALERT_HELP_TEXT } from '../../utils/constants';
+import { ThreatIntelIocType } from '../../../../../common/constants';
+import {
+  ThreatIntelAlertFlyout,
+  ThreatIntelAlertFlyoutProps,
+} from '../ThreatIntelAlertFlyout/ThreatIntelAlertFlyout';
 
 export interface ThreatIntelAlertsTableProps {
   alerts: ThreatIntelAlert[];
@@ -31,6 +36,9 @@ export const ThreatIntelAlertsTable: React.FC<ThreatIntelAlertsTableProps> = ({
   onAlertStateChange,
   onSelectionChange,
 }) => {
+  const [flyoutProps, setFlyoutProps] = useState<ThreatIntelAlertFlyoutProps | undefined>(
+    undefined
+  );
   const itemSelection: EuiTableSelectionType<ThreatIntelAlert> = {
     onSelectionChange: (items) => {
       onSelectionChange(items);
@@ -49,7 +57,7 @@ export const ThreatIntelAlertsTable: React.FC<ThreatIntelAlertsTableProps> = ({
     {
       field: 'ioc_type',
       name: 'Indicator type',
-      render: (iocType: string) => renderIoCType(iocType),
+      render: (iocType: ThreatIntelIocType) => renderIoCType(iocType),
     },
     { field: 'state', name: 'Status', render: (state: string) => state || DEFAULT_EMPTY_DATA },
     {
@@ -93,19 +101,39 @@ export const ThreatIntelAlertsTable: React.FC<ThreatIntelAlertsTableProps> = ({
             );
           },
         },
+        {
+          render: (alertItem: ThreatIntelAlert) => (
+            <EuiToolTip content={'View details'}>
+              <EuiButtonIcon
+                aria-label={'View details'}
+                iconType={'expand'}
+                onClick={() => {
+                  setFlyoutProps({
+                    alertItem,
+                    onAlertStateChange: onAlertStateChange,
+                    onClose: () => setFlyoutProps(undefined),
+                  });
+                }}
+              />
+            </EuiToolTip>
+          ),
+        },
       ],
     },
   ];
 
   return (
-    <EuiInMemoryTable
-      columns={columns}
-      items={alerts}
-      itemId={(item) => `${item.id}`}
-      pagination
-      search
-      selection={itemSelection}
-      isSelectable={true}
-    />
+    <>
+      <EuiInMemoryTable
+        columns={columns}
+        items={alerts}
+        itemId={(item) => `${item.id}`}
+        pagination
+        search
+        selection={itemSelection}
+        isSelectable={true}
+      />
+      {flyoutProps && <ThreatIntelAlertFlyout {...flyoutProps} />}
+    </>
   );
 };

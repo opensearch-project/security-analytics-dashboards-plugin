@@ -6,7 +6,6 @@
 export const DEFAULT_RULE_UUID = '25b9c01c-350d-4b95-bed1-836d04a4f324';
 
 export enum ThreatIntelIocType {
-  IPAddress = 'ip',
   Domain = 'domain_name',
   FileHash = 'hashes',
   IPV4 = 'ipv4_addr',
@@ -14,7 +13,6 @@ export enum ThreatIntelIocType {
 }
 
 export const IocLabel: { [k in ThreatIntelIocType]: string } = {
-  [ThreatIntelIocType.IPAddress]: 'IP-Address',
   [ThreatIntelIocType.IPV4]: 'IPV4-Address',
   [ThreatIntelIocType.IPV6]: 'IPV6-Address',
   [ThreatIntelIocType.Domain]: 'Domains',

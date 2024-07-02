@@ -345,7 +345,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
         : undefined;
       const abortController = new AbortController();
       this.abortGetFindingsControllers.push(abortController);
-      await DataStore.threatIntel.getThreatIntelFindings(
+      await DataStore.threatIntel.getAllThreatIntelFindings(
         abortController.signal,
         duration,
         this.onStreamingThreatIntelFindings
