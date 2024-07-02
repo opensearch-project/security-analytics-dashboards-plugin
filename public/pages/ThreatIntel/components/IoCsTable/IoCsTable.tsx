@@ -7,6 +7,7 @@ import React from 'react';
 import { EuiBasicTableColumn, EuiInMemoryTable, EuiPanel, EuiSpacer, EuiText } from '@elastic/eui';
 import { ThreatIntelIocData } from '../../../../../types';
 import { renderTime } from '../../../../utils/helpers';
+import { IocLabel, ThreatIntelIocType } from '../../../../../common/constants';
 
 export interface IoCsTableProps {
   sourceId?: string;
@@ -23,6 +24,7 @@ export const IoCsTable: React.FC<IoCsTableProps> = ({ sourceId, iocs, loadingIoC
     {
       name: 'Type',
       field: 'type',
+      render: (type: string) => IocLabel[type as ThreatIntelIocType],
     },
     {
       name: 'IoC matches',

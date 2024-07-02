@@ -9,7 +9,7 @@ import { FindingsService } from '../services';
 export class ThreatIntelStore {
   constructor(private findingsService: FindingsService) {}
 
-  public async getThreatIntelFindings(
+  public async getAllThreatIntelFindings(
     signal: AbortSignal,
     duration?: Duration,
     onPartialFindingsFetched?: (findings: ThreatIntelFinding[]) => void
@@ -54,5 +54,17 @@ export class ThreatIntelStore {
     } while (remaining > 0);
 
     return findings;
+  }
+
+  public async getThreatIntelFindingsByIds(findingIds: string[]) {
+    const res = await this.findingsService.getThreatIntelFindings({
+      findingIds: findingIds.join(','),
+    });
+
+    if (res.ok) {
+      return res.response.ioc_findings;
+    }
+
+    return [];
   }
 }
