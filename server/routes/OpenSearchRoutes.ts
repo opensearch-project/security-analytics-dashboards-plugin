@@ -12,11 +12,12 @@ import { createQueryValidationSchema } from '../utils/helpers';
 export function setupOpensearchRoutes(services: NodeServices, router: IRouter) {
   const { opensearchService } = services;
 
-  router.get(
+  router.post(
     {
       path: `${API.DOCUMENT_IDS_QUERY}`,
       validate: {
-        query: schema.any(),
+        query: createQueryValidationSchema(),
+        body: schema.any(),
       },
     },
     opensearchService.documentIdsQuery

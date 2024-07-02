@@ -33,6 +33,7 @@ import { readIocsFromFile, threatIntelSourceItemToBasePayload } from '../../util
 import { ThreatIntelService } from '../../../../services';
 import { ThreatIntelIocType } from '../../../../../common/constants';
 import { PeriodSchedule } from '../../../../../models/interfaces';
+import { checkboxes } from '../../utils/constants';
 
 export interface ThreatIntelSourceDetailsProps {
   sourceItem: ThreatIntelSourceItem;
@@ -60,20 +61,6 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
   const [fileError, setFileError] = useState('');
   const [saveInProgress, setSaveInProgress] = useState(false);
   const [saveDisabled, setSaveDisabled] = useState(false);
-  const checkboxes = [
-    {
-      id: ThreatIntelIocType.IPAddress,
-      label: 'IP - addresses',
-    },
-    {
-      id: ThreatIntelIocType.Domain,
-      label: 'Domains',
-    },
-    {
-      id: ThreatIntelIocType.FileHash,
-      label: 'File hash',
-    },
-  ];
   const [checkboxIdToSelectedMap, setCheckboxIdToSelectedMap] = useState<Record<string, boolean>>(
     () => {
       const newCheckboxIdToSelectedMap: any = {};
@@ -278,7 +265,7 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
                 <EuiFormRow label="S3 bucket directory">
                   <EuiFieldText
                     readOnly={isReadOnly}
-                    placeholder="S3://"
+                    placeholder="S3 bucket name"
                     onChange={(event) => onS3DataChange('bucket_name', event.target.value)}
                     value={s3ConnectionDetails.s3.bucket_name}
                   />

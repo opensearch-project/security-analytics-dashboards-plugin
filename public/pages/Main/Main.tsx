@@ -42,16 +42,15 @@ import { DataStore } from '../../store/DataStore';
 import { CreateCorrelationRule } from '../Correlations/containers/CreateCorrelationRule';
 import { CorrelationRules } from '../Correlations/containers/CorrelationRules';
 import { Correlations } from '../Correlations/containers/CorrelationsContainer';
-import FindingDetailsFlyout, {
-  FindingDetailsFlyoutBaseProps,
-} from '../Findings/components/FindingDetailsFlyout';
 import { LogTypes } from '../LogTypes/containers/LogTypes';
 import { LogType } from '../LogTypes/containers/LogType';
 import { CreateLogType } from '../LogTypes/containers/CreateLogType';
 import {
   DataSourceContextType,
   DateTimeFilter,
+  ShowFlyoutDataType,
   SecurityAnalyticsContextType,
+  FlyoutPropsType,
 } from '../../../types';
 import { DataSourceManagementPluginSetup } from '../../../../../src/plugins/data_source_management/public';
 import { DataSourceMenuWrapper } from '../../components/MDS/DataSourceMenuWrapper';
@@ -109,7 +108,7 @@ interface MainState {
   dateTimeFilter: DateTimeFilter;
   callout?: ICalloutProps;
   toasts?: Toast[];
-  findingFlyout: FindingDetailsFlyoutBaseProps | null;
+  showFlyoutData: ShowFlyoutDataType<FlyoutPropsType> | null;
   selectedDataSource: DataSourceOption;
   dataSourceLoading: boolean;
   dataSourceMenuReadOnly: boolean;
@@ -141,19 +140,19 @@ export default class Main extends Component<MainProps, MainState> {
       getStartedDismissedOnce: false,
       selectedNavItemId: Navigation.Overview,
       dateTimeFilter: defaultDateTimeFilter,
-      findingFlyout: null,
+      showFlyoutData: null,
       dataSourceLoading: props.multiDataSourceEnabled,
       selectedDataSource: { id: '' },
       dataSourceMenuReadOnly: false,
     };
 
     DataStore.detectors.setHandlers(this.showCallout, this.showToast);
-    DataStore.findings.setFlyoutCallback(this.showFindingFlyout);
+    DataStore.findings.setFlyoutCallback(this.showFlyout);
   }
 
-  showFindingFlyout = (findingFlyout: FindingDetailsFlyoutBaseProps | null) => {
+  showFlyout = (flyoutData: ShowFlyoutDataType<FlyoutPropsType> | null) => {
     this.setState({
-      findingFlyout,
+      showFlyoutData: flyoutData,
     });
   };
 
@@ -386,7 +385,7 @@ export default class Main extends Component<MainProps, MainState> {
 
     const {
       callout,
-      findingFlyout,
+      showFlyoutData,
       selectedDataSource,
       dataSourceLoading,
       dataSourceMenuReadOnly,
@@ -432,13 +431,10 @@ export default class Main extends Component<MainProps, MainState> {
                                 )}
                                 <EuiPageBody>
                                   {callout ? <Callout {...callout} /> : null}
-                                  {findingFlyout ? (
-                                    <FindingDetailsFlyout
-                                      {...findingFlyout}
+                                  {showFlyoutData ? (
+                                    <showFlyoutData.component
+                                      {...showFlyoutData.componentProps}
                                       history={history}
-                                      indexPatternsService={services.indexPatternsService}
-                                      correlationService={services.correlationsService}
-                                      opensearchService={services.opensearchService}
                                     />
                                   ) : null}
                                   <Switch>
