@@ -105,10 +105,11 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
         try {
           const res = await threatIntelService.getThreatIntelScanConfig();
 
-          if (res.ok) {
+          if (res.ok && res.response) {
             setScanId(res.response.id);
             setConfigureScanFormInputs(deriveFormModelFromConfig(res.response));
           } else if (
+            res.ok ||
             res.error.includes('Configured indices are not found: [.opendistro-alerting-config]')
           ) {
             history.push({

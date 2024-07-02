@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 import { StatusWithIndicator } from '../../../../components/Utility/StatusWithIndicator';
 import { RouteComponentProps } from 'react-router-dom';
@@ -15,6 +15,7 @@ export interface ThreatIntelOverviewActionsProps {
   sourceCount: number;
   scanConfig?: ThreatIntelScanConfig;
   history: RouteComponentProps['history'];
+  toggleScan: () => Promise<any>;
 }
 
 const statusByScanState = {
@@ -27,27 +28,21 @@ export const ThreatIntelOverviewActions: React.FC<ThreatIntelOverviewActionsProp
   sourceCount,
   scanConfig,
   history,
+  toggleScan,
 }) => {
   const scanIsSetup = !!scanConfig;
   const scanRunning = scanIsSetup && scanConfig.enabled;
   const alertTriggerSetup = scanIsSetup && scanConfig.triggers.length > 0;
+  const [togglingScan, setTogglingScan] = useState(false);
 
   let status: React.ReactNode = null;
   let actions = [];
 
-  if (sourceCount === 0) {
+  if (sourceCount === 0 || !scanIsSetup) {
     status = statusByScanState['notRunning'];
     actions.push({
       label: 'Configure scan',
-      disabled: true,
-      fill: true,
-      onClick: () => {},
-    });
-  } else if (!scanIsSetup) {
-    status = statusByScanState['notRunning'];
-    actions.push({
-      label: 'Configure scan',
-      disabled: false,
+      disabled: sourceCount === 0,
       fill: true,
       onClick: () => {
         history.push({
@@ -102,8 +97,12 @@ export const ThreatIntelOverviewActions: React.FC<ThreatIntelOverviewActionsProp
     actions.push({
       label: 'Start scan',
       disabled: false,
+      isLoading: togglingScan,
       fill: true,
-      onClick: () => {},
+      onClick: () => {
+        setTogglingScan(true);
+        toggleScan().then(() => setTogglingScan(false));
+      },
     });
   }
 
@@ -112,7 +111,12 @@ export const ThreatIntelOverviewActions: React.FC<ThreatIntelOverviewActionsProp
       <EuiFlexItem>{status}</EuiFlexItem>
       {actions.map((action, idx) => (
         <EuiFlexItem grow={false} key={idx}>
-          <EuiButton fill={action.fill} disabled={action.disabled} onClick={action.onClick}>
+          <EuiButton
+            fill={action.fill}
+            disabled={action.disabled}
+            isLoading={action.isLoading}
+            onClick={action.onClick}
+          >
             {action.label}
           </EuiButton>
         </EuiFlexItem>

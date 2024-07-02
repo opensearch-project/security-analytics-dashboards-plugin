@@ -9,10 +9,11 @@ import {
   AddThreatIntelSourcePayload,
   GetIocsQueryParams,
   ThreatIntelMonitorPayload,
+  ThreatIntelScanConfig,
 } from '../../types';
 import { dataSourceInfo } from './utils/constants';
 import { API } from '../../server/utils/constants';
-import { errorNotificationToast } from '../utils/helpers';
+import { errorNotificationToast, successNotificationToast } from '../utils/helpers';
 
 export default class ThreatIntelService {
   constructor(private httpClient: HttpSetup, private notifications: NotificationsStart) {}
@@ -30,6 +31,8 @@ export default class ThreatIntelService {
 
     if (!response.ok) {
       errorNotificationToast(this.notifications, 'add', 'threat intel source', response.error);
+    } else {
+      successNotificationToast(this.notifications, 'created', 'threat intel source');
     }
 
     return response;
@@ -49,6 +52,8 @@ export default class ThreatIntelService {
 
     if (!response.ok) {
       errorNotificationToast(this.notifications, 'update', 'threat intel source', response.error);
+    } else {
+      successNotificationToast(this.notifications, 'updated', 'threat intel source');
     }
 
     return response;
@@ -98,6 +103,8 @@ export default class ThreatIntelService {
 
     if (!response.ok) {
       errorNotificationToast(this.notifications, 'delete', 'threat intel source', response.error);
+    } else {
+      successNotificationToast(this.notifications, 'deleted', 'threat intel source');
     }
 
     return response;
@@ -113,6 +120,8 @@ export default class ThreatIntelService {
 
     if (!response.ok) {
       errorNotificationToast(this.notifications, 'refresh', 'threat intel source', response.error);
+    } else {
+      successNotificationToast(this.notifications, 'refreshed', 'threat intel source');
     }
 
     return response;
@@ -128,12 +137,9 @@ export default class ThreatIntelService {
     })) as ServerResponse<any>;
 
     if (!response.ok) {
-      errorNotificationToast(
-        this.notifications,
-        'setup',
-        'threat intel scan monitor',
-        response.error
-      );
+      errorNotificationToast(this.notifications, 'setup', 'threat intel scan', response.error);
+    } else {
+      successNotificationToast(this.notifications, 'setup', 'threat intel scan');
     }
 
     return response;
@@ -152,15 +158,41 @@ export default class ThreatIntelService {
       errorNotificationToast(
         this.notifications,
         'update',
-        'threat intel scan monitor',
+        'threat intel scan configuration',
         response.error
       );
+    } else {
+      successNotificationToast(this.notifications, 'updated', 'threat intel scan configuration');
     }
 
     return response;
   };
 
-  getThreatIntelScanConfig = async () => {
+  deleteThreatIntelMonitor = async (monitorId: string): Promise<ServerResponse<any>> => {
+    const url = `..${API.THREAT_INTEL_BASE}/monitors/${monitorId}`;
+    const response = (await this.httpClient.delete(url, {
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+      },
+    })) as ServerResponse<any>;
+
+    if (!response.ok) {
+      errorNotificationToast(
+        this.notifications,
+        'delete',
+        'threat intel scan configuration',
+        response.error
+      );
+    } else {
+      successNotificationToast(this.notifications, 'deleted', 'threat intel scan configuration');
+    }
+
+    return response;
+  };
+
+  getThreatIntelScanConfig = async (): Promise<
+    ServerResponse<ThreatIntelScanConfig | undefined>
+  > => {
     const url = `..${API.THREAT_INTEL_BASE}/monitors/_search`;
     const response = (await this.httpClient.post(url, {
       body: JSON.stringify({ query: { match_all: {} } }),
@@ -170,11 +202,11 @@ export default class ThreatIntelService {
     })) as ServerResponse<any>;
 
     if (response.ok) {
-      const { _source } = response.response.hits.hits[0];
+      const hit = response.response.hits.hits[0];
 
       return {
         ok: response.ok,
-        response: { ..._source },
+        response: hit ? { ...hit._source } : undefined,
       };
     } else if (
       !response.error.includes('Configured indices are not found: [.opendistro-alerting-config]')
