@@ -28,7 +28,7 @@ export interface ThreatIntelAlertsTableProps {
   onAlertStateChange: (
     selectedItems: ThreatIntelAlert[],
     nextState: 'ACKNOWLEDGED' | 'COMPLETED'
-  ) => Promise<void>;
+  ) => Promise<boolean>;
 }
 
 export const ThreatIntelAlertsTable: React.FC<ThreatIntelAlertsTableProps> = ({
