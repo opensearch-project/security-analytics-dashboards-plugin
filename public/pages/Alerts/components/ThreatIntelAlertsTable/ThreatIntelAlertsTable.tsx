@@ -55,6 +55,10 @@ export const ThreatIntelAlertsTable: React.FC<ThreatIntelAlertsTableProps> = ({
       render: (startTime: number) => renderTime(startTime),
     },
     {
+      field: 'ioc_value',
+      name: 'Indicator of compromise',
+    },
+    {
       field: 'ioc_type',
       name: 'Indicator type',
       render: (iocType: ThreatIntelIocType) => renderIoCType(iocType),
@@ -71,7 +75,6 @@ export const ThreatIntelAlertsTable: React.FC<ThreatIntelAlertsTableProps> = ({
       actions: [
         {
           render: (alertItem: ThreatIntelAlert) => {
-            const disableAcknowledge = alertItem.state !== ALERT_STATE.ACTIVE;
             let tooltipContent;
             switch (alertItem.state as keyof typeof ALERT_STATE) {
               case 'ACTIVE':
@@ -84,11 +87,10 @@ export const ThreatIntelAlertsTable: React.FC<ThreatIntelAlertsTableProps> = ({
                 tooltipContent = DISABLE_ACKNOWLEDGED_ALERT_HELP_TEXT;
             }
 
-            return (
+            return alertItem.state === 'ACTIVE' || alertItem.state === 'ACKNOWLEDGED' ? (
               <EuiToolTip content={tooltipContent}>
                 <EuiButtonIcon
                   aria-label={'Acknowledge'}
-                  disabled={disableAcknowledge}
                   iconType={alertItem.state === 'ACTIVE' ? 'thumbsUp' : 'check'}
                   onClick={() =>
                     onAlertStateChange(
@@ -98,6 +100,8 @@ export const ThreatIntelAlertsTable: React.FC<ThreatIntelAlertsTableProps> = ({
                   }
                 />
               </EuiToolTip>
+            ) : (
+              <></>
             );
           },
         },
