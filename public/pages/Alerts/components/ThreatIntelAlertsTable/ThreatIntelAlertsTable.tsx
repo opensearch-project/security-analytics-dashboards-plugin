@@ -3,18 +3,43 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiBasicTableColumn, EuiInMemoryTable } from '@elastic/eui';
+import {
+  EuiBasicTableColumn,
+  EuiButtonIcon,
+  EuiInMemoryTable,
+  EuiTableSelectionType,
+  EuiToolTip,
+} from '@elastic/eui';
 import { ThreatIntelAlert } from '../../../../../types';
 import React from 'react';
 import { renderIoCType, renderTime } from '../../../../utils/helpers';
-import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
+import { ALERT_STATE, DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
+import { DISABLE_ACKNOWLEDGED_ALERT_HELP_TEXT } from '../../utils/constants';
 
 export interface ThreatIntelAlertsTableProps {
   alerts: ThreatIntelAlert[];
+  onSelectionChange: (alerts: ThreatIntelAlert[]) => void;
+  onAlertStateChange: (
+    selectedItems: ThreatIntelAlert[],
+    nextState: 'ACKNOWLEDGED' | 'COMPLETED'
+  ) => Promise<void>;
 }
 
-export const ThreatIntelAlertsTable: React.FC<ThreatIntelAlertsTableProps> = ({ alerts }) => {
+export const ThreatIntelAlertsTable: React.FC<ThreatIntelAlertsTableProps> = ({
+  alerts,
+  onAlertStateChange,
+  onSelectionChange,
+}) => {
+  const itemSelection: EuiTableSelectionType<ThreatIntelAlert> = {
+    onSelectionChange: (items) => {
+      onSelectionChange(items);
+    },
+    selectable: (item: ThreatIntelAlert) =>
+      [ALERT_STATE.ACTIVE, ALERT_STATE.ACKNOWLEDGED].includes(item.state as any),
+    selectableMessage: (selectable) => (selectable ? '' : DISABLE_ACKNOWLEDGED_ALERT_HELP_TEXT),
+  };
+
   const columns: EuiBasicTableColumn<ThreatIntelAlert>[] = [
     {
       field: 'start_time',
@@ -33,7 +58,54 @@ export const ThreatIntelAlertsTable: React.FC<ThreatIntelAlertsTableProps> = ({ 
       render: (severity: string) =>
         parseAlertSeverityToOption(severity)?.label || DEFAULT_EMPTY_DATA,
     },
+    {
+      name: 'Actions',
+      actions: [
+        {
+          render: (alertItem: ThreatIntelAlert) => {
+            const disableAcknowledge = alertItem.state !== ALERT_STATE.ACTIVE;
+            let tooltipContent;
+            switch (alertItem.state as keyof typeof ALERT_STATE) {
+              case 'ACTIVE':
+                tooltipContent = 'Acknowledge';
+                break;
+              case 'ACKNOWLEDGED':
+                tooltipContent = 'Complete';
+                break;
+              default:
+                tooltipContent = DISABLE_ACKNOWLEDGED_ALERT_HELP_TEXT;
+            }
+
+            return (
+              <EuiToolTip content={tooltipContent}>
+                <EuiButtonIcon
+                  aria-label={'Acknowledge'}
+                  disabled={disableAcknowledge}
+                  iconType={alertItem.state === 'ACTIVE' ? 'thumbsUp' : 'check'}
+                  onClick={() =>
+                    onAlertStateChange(
+                      [alertItem],
+                      alertItem.state === 'ACTIVE' ? 'ACKNOWLEDGED' : 'COMPLETED'
+                    )
+                  }
+                />
+              </EuiToolTip>
+            );
+          },
+        },
+      ],
+    },
   ];
 
-  return <EuiInMemoryTable columns={columns} items={alerts} pagination search />;
+  return (
+    <EuiInMemoryTable
+      columns={columns}
+      items={alerts}
+      itemId={(item) => `${item.id}`}
+      pagination
+      search
+      selection={itemSelection}
+      isSelectable={true}
+    />
+  );
 };

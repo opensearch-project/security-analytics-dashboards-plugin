@@ -59,4 +59,17 @@ export function setupAlertsRoutes(services: NodeServices, router: IRouter) {
     },
     alertService.getThreatIntelAlerts
   );
+
+  router.put(
+    {
+      path: `${API.THREAT_INTEL_BASE}/alerts/status`,
+      validate: {
+        query: createQueryValidationSchema({
+          state: schema.string(),
+          alert_ids: schema.string(),
+        }),
+      },
+    },
+    alertService.updateThreatIntelAlertsState
+  );
 }
