@@ -34,6 +34,7 @@ import {
 import moment from 'moment';
 import {
   ALERT_STATE,
+  AlertTabId,
   BREADCRUMBS,
   DEFAULT_DATE_RANGE,
   DEFAULT_EMPTY_DATA,
@@ -80,12 +81,6 @@ type FilterAlertParams =
   | { alerts: AlertItem[]; timeField: 'last_notification_time' }
   | { alerts: CorrelationAlertTableItem[]; timeField: 'end_time' }
   | { alerts: ThreatIntelAlert[]; timeField: 'start_time' };
-
-enum AlertTabId {
-  DetectionRules = 'detection-rules',
-  ThreatIntel = 'threat-intel',
-  Correlations = 'correlations',
-}
 
 export interface AlertsProps extends RouteComponentProps, DataSourceProps {
   alertService: AlertsService;
@@ -144,6 +139,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       },
     } = props;
     const timeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
+    const searchParams = new URLSearchParams(props.location.search);
     this.state = {
       loading: true,
       groupBy: 'status',
@@ -161,7 +157,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       dateFormat: timeUnits.dateFormat,
       widgetEmptyMessage: undefined,
       widgetEmptyCorrelationMessage: undefined,
-      selectedTabId: AlertTabId.DetectionRules,
+      selectedTabId: (searchParams.get('detectionType') as AlertTabId) ?? AlertTabId.DetectionRules,
       threatIntelAlerts: [],
       filteredThreatIntelAlerts: [],
     };
@@ -1014,6 +1010,72 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       },
     };
 
+    const tabs = [
+      {
+        id: 'detection-rules',
+        name: 'Detection rules',
+        content: (
+          <>
+            <EuiSpacer size="m" />
+            <EuiInMemoryTable
+              columns={this.getColumns()}
+              items={alertsFiltered ? filteredDetectionRuleAlerts : detectionRuleAlerts}
+              itemId={(item) => `${item.id}`}
+              isSelectable={true}
+              pagination
+              search={search}
+              sorting={sorting}
+              selection={selection}
+              loading={loading}
+              message={widgetEmptyMessage}
+            />
+          </>
+        ),
+      },
+      {
+        id: 'threat-intel',
+        name: 'Threat intel',
+        content: (
+          <>
+            <EuiSpacer size="m" />
+            <ThreatIntelAlertsTable
+              alerts={alertsFiltered ? filteredThreatIntelAlerts : threatIntelAlerts}
+              onAlertStateChange={this.onThreatIntelAlertStateChange}
+              onSelectionChange={this.onThreatIntelAlertSelectionChange}
+            />
+          </>
+        ),
+      },
+      {
+        id: 'correlations',
+        name: (
+          <EuiToolTip content="This object was created using an experimental feature. It may not appear in view if the feature is discontinued.">
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ marginRight: '4px' }}>Correlations</span>
+              <EuiIcon type="beaker" />
+            </div>
+          </EuiToolTip>
+        ),
+        content: (
+          <>
+            <EuiSpacer size="m" />
+            <EuiInMemoryTable
+              columns={this.getCorrelationColumns()}
+              items={alertsFiltered ? filteredCorrelationAlerts : correlationAlerts}
+              itemId={(item) => `${item.id}`}
+              isSelectable={true}
+              pagination
+              search={correlationSearch}
+              sorting={sorting}
+              selection={correlationSelection}
+              loading={loading}
+              message={widgetEmptyCorrelationMessage}
+            />
+          </>
+        ),
+      },
+    ];
+
     return (
       <>
         {flyoutData && (
@@ -1085,72 +1147,9 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
           <EuiFlexItem>
             <ContentPanel title={'Alerts'} actions={[this.getContelPanelActions()]}>
               <EuiTabbedContent
-                tabs={[
-                  {
-                    id: 'detection-rules',
-                    name: 'Detection rules',
-                    content: (
-                      <>
-                        <EuiSpacer size="m" />
-                        <EuiInMemoryTable
-                          columns={this.getColumns()}
-                          items={alertsFiltered ? filteredDetectionRuleAlerts : detectionRuleAlerts}
-                          itemId={(item) => `${item.id}`}
-                          isSelectable={true}
-                          pagination
-                          search={search}
-                          sorting={sorting}
-                          selection={selection}
-                          loading={loading}
-                          message={widgetEmptyMessage}
-                        />
-                      </>
-                    ),
-                  },
-                  {
-                    id: 'threat-intel',
-                    name: 'Threat intel',
-                    content: (
-                      <>
-                        <EuiSpacer size="m" />
-                        <ThreatIntelAlertsTable
-                          alerts={alertsFiltered ? filteredThreatIntelAlerts : threatIntelAlerts}
-                          onAlertStateChange={this.onThreatIntelAlertStateChange}
-                          onSelectionChange={this.onThreatIntelAlertSelectionChange}
-                        />
-                      </>
-                    ),
-                  },
-                  {
-                    id: 'correlations',
-                    name: (
-                      <EuiToolTip content="This object was created using an experimental feature. It may not appear in view if the feature is discontinued.">
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                          <span style={{ marginRight: '4px' }}>Correlations</span>
-                          <EuiIcon type="beaker" />
-                        </div>
-                      </EuiToolTip>
-                    ),
-                    content: (
-                      <>
-                        <EuiSpacer size="m" />
-                        <EuiInMemoryTable
-                          columns={this.getCorrelationColumns()}
-                          items={alertsFiltered ? filteredCorrelationAlerts : correlationAlerts}
-                          itemId={(item) => `${item.id}`}
-                          isSelectable={true}
-                          pagination
-                          search={correlationSearch}
-                          sorting={sorting}
-                          selection={correlationSelection}
-                          loading={loading}
-                          message={widgetEmptyCorrelationMessage}
-                        />
-                      </>
-                    ),
-                  },
-                ]}
+                tabs={tabs}
                 onTabClick={({ id }) => this.setState({ selectedTabId: id as AlertTabId })}
+                initialSelectedTab={tabs.find(({ id }) => id === selectedTabId) ?? tabs[0]}
               />
             </ContentPanel>
           </EuiFlexItem>

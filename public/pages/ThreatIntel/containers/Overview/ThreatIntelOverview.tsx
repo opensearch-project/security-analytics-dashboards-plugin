@@ -78,7 +78,7 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
       },
       {
         id: 'log-scan-config',
-        name: <span>Log scan configuration</span>,
+        name: <span>Threat intel monitor</span>,
         content: (
           <ThreatIntelLogScanConfig
             scanConfig={scanConfig}

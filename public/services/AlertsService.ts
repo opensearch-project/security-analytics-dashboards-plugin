@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpSetup } from 'opensearch-dashboards/public';
+import { HttpSetup, NotificationsStart } from 'opensearch-dashboards/public';
 import { ServerResponse } from '../../server/models/types';
 import { API } from '../../server/utils/constants';
 import {
@@ -14,13 +14,10 @@ import {
   GetThreatIntelAlertsResponse,
 } from '../../types';
 import { dataSourceInfo } from './utils/constants';
+import { errorNotificationToast } from '../utils/helpers';
 
 export default class AlertsService {
-  httpClient: HttpSetup;
-
-  constructor(httpClient: HttpSetup) {
-    this.httpClient = httpClient;
-  }
+  constructor(private httpClient: HttpSetup, private notifications: NotificationsStart) {}
 
   getAlerts = async (
     getAlertsParams: GetAlertsParams
@@ -84,7 +81,13 @@ export default class AlertsService {
       endTime,
     };
 
-    return await this.httpClient.get(`..${API.THREAT_INTEL_BASE}/alerts`, { query });
+    const res = await this.httpClient.get(`..${API.THREAT_INTEL_BASE}/alerts`, { query });
+
+    if (!res.ok) {
+      errorNotificationToast(this.notifications, 'get', 'alerts', res.error);
+    }
+
+    return res;
   };
 
   updateThreatIntelAlertsState = async (

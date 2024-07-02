@@ -10,11 +10,13 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiFormRow,
+  EuiIcon,
   EuiLink,
   EuiPanel,
   EuiSpacer,
   EuiText,
   EuiTitle,
+  EuiToolTip,
 } from '@elastic/eui';
 import React from 'react';
 import { ConfigActionButton } from '../Utility/ConfigActionButton';
@@ -105,9 +107,17 @@ export const ThreatIntelLogScanConfig: React.FC<ThreatIntelLogScanConfigProps> =
               <EuiDescriptionList
                 listItems={[
                   {
-                    title: `Log sources (${logSources.length})`,
-                    description: `Select indexes, aliases and wildcard patterns that 
-                  are being scanned for the matches with the known malicious activity indicators`,
+                    title: (
+                      <>
+                        {`Log sources (${logSources.length})`}&nbsp;
+                        <EuiToolTip
+                          content={`Select indexes and aliases that are being scanned for the matches with the known malicious activity indicators`}
+                        >
+                          <EuiIcon type={'iInCircle'} color="success" />
+                        </EuiToolTip>
+                      </>
+                    ),
+                    description: ``,
                   },
                 ]}
               />
@@ -131,7 +141,7 @@ export const ThreatIntelLogScanConfig: React.FC<ThreatIntelLogScanConfigProps> =
                     </EuiFlexItem>
                   );
                 })}
-                {logSources.length > 0 && (
+                {logSources.length > 3 && (
                   <EuiFlexItem grow={false}>
                     <EuiButtonEmpty
                       onClick={() => {
@@ -157,8 +167,15 @@ export const ThreatIntelLogScanConfig: React.FC<ThreatIntelLogScanConfigProps> =
               <EuiDescriptionList
                 listItems={[
                   {
-                    title: 'Scan schedule',
-                    description: 'Define the frequency of the log scan execution.',
+                    title: (
+                      <>
+                        {`Scan schedule`}&nbsp;
+                        <EuiToolTip content={`Define the frequency of the log scan execution.`}>
+                          <EuiIcon type={'iInCircle'} color="success" />
+                        </EuiToolTip>
+                      </>
+                    ),
+                    description: '',
                   },
                 ]}
               />
@@ -175,9 +192,17 @@ export const ThreatIntelLogScanConfig: React.FC<ThreatIntelLogScanConfigProps> =
               <EuiDescriptionList
                 listItems={[
                   {
-                    title: `Alert triggers (${triggers.length})`,
-                    description:
-                      'Set up alert triggers to get notified on the matches with threat intel sources in your log sources.',
+                    title: (
+                      <>
+                        {`Alert triggers (${triggers.length})`}&nbsp;
+                        <EuiToolTip
+                          content={`Set up alert triggers to get notified on the matches with threat intel sources in your log sources.`}
+                        >
+                          <EuiIcon type={'iInCircle'} color="success" />
+                        </EuiToolTip>
+                      </>
+                    ),
+                    description: '',
                   },
                 ]}
               />
@@ -207,7 +232,7 @@ export const ThreatIntelLogScanConfig: React.FC<ThreatIntelLogScanConfigProps> =
                     </EuiFlexItem>
                   );
                 })}
-                {triggers.length > 0 && (
+                {triggers.length > 3 && (
                   <EuiFlexItem grow={false}>
                     <EuiButtonEmpty
                       size="s"

@@ -7,7 +7,7 @@ import React from 'react';
 import { EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 import { StatusWithIndicator } from '../../../../components/Utility/StatusWithIndicator';
 import { RouteComponentProps } from 'react-router-dom';
-import { ROUTES } from '../../../../utils/constants';
+import { AlertTabId, FindingTabId, ROUTES } from '../../../../utils/constants';
 import { ThreatIntelScanConfig } from '../../../../../types';
 import { ConfigureThreatIntelScanStep } from '../../utils/constants';
 
@@ -64,7 +64,7 @@ export const ThreatIntelOverviewActions: React.FC<ThreatIntelOverviewActionsProp
       onClick: () => {
         history.push({
           pathname: ROUTES.FINDINGS,
-          search: '?detectionType=Threat intelligence',
+          search: `?detectionType=${FindingTabId.ThreatIntel}`,
         });
       },
     });
@@ -92,7 +92,7 @@ export const ThreatIntelOverviewActions: React.FC<ThreatIntelOverviewActionsProp
         onClick: () => {
           history.push({
             pathname: ROUTES.ALERTS,
-            search: '?detectionType=Threat intelligence',
+            search: `?detectionType=${AlertTabId.ThreatIntel}`,
           });
         },
       });
