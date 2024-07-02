@@ -19,6 +19,7 @@ import { ThreatIntelIocType } from '../../../../../common/constants';
 import { ALERT_SEVERITY_OPTIONS } from '../../../CreateDetector/components/ConfigureAlerts/utils/constants';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { AlertSeverity } from '../../../Alerts/utils/constants';
+import { getEmptyThreatIntelAlertTriggerAction } from '../../utils/helpers';
 
 export interface ThreatIntelAlertTriggerProps {
   allNotificationChannels: NotificationChannelTypeOptions[];
@@ -50,6 +51,13 @@ export const ThreatIntelAlertTriggerForm: React.FC<ThreatIntelAlertTriggerProps>
           destination_id: selectedOptions[0]?.value || '',
         },
       ],
+    });
+  };
+
+  const onNotificationToggle = (enabled: boolean) => {
+    updateTrigger({
+      ...trigger,
+      actions: enabled ? [getEmptyThreatIntelAlertTriggerAction()] : [],
     });
   };
 
@@ -168,6 +176,7 @@ export const ThreatIntelAlertTriggerForm: React.FC<ThreatIntelAlertTriggerProps>
         onMessageSubjectChange={onMessageSubjectChange}
         prepareMessage={prepareMessage}
         refreshNotificationChannels={refreshNotificationChannels}
+        onNotificationToggle={onNotificationToggle}
       />
     </EuiAccordion>
   );

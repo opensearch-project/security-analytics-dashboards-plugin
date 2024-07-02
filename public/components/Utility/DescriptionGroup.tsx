@@ -15,7 +15,7 @@ import React from 'react';
 export interface DescriptionGroupProps {
   listItems: { title: NonNullable<React.ReactNode>; description: NonNullable<React.ReactNode> }[];
   itemProps?: Pick<EuiFlexItemProps, 'grow'>;
-  groupProps?: Pick<EuiFlexGroupProps, 'justifyContent'>;
+  groupProps?: Pick<EuiFlexGroupProps, 'justifyContent' | 'direction'>;
 }
 
 export const DescriptionGroup: React.FC<DescriptionGroupProps> = ({

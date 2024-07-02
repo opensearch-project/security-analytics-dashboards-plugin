@@ -102,9 +102,9 @@ export function setupThreatIntelRoutes({ threatIntelService }: NodeServices, rou
         query: createQueryValidationSchema({
           startIndex: schema.maybe(schema.number()),
           size: schema.maybe(schema.number()),
-          feedIds: schema.maybe(schema.string()),
-          iocTypes: schema.maybe(schema.string()),
-          search: schema.maybe(schema.string()),
+          feed_ids: schema.maybe(schema.string()),
+          ioc_types: schema.maybe(schema.string()),
+          searchString: schema.maybe(schema.string()),
           sortString: schema.maybe(schema.string()),
         }),
       },
@@ -136,5 +136,18 @@ export function setupThreatIntelRoutes({ threatIntelService }: NodeServices, rou
       },
     },
     threatIntelService.refreshThreatIntelSource
+  );
+
+  router.delete(
+    {
+      path: `${API.THREAT_INTEL_BASE}/monitors/{monitorId}`,
+      validate: {
+        params: schema.object({
+          monitorId: schema.string(),
+        }),
+        query: createQueryValidationSchema(),
+      },
+    },
+    threatIntelService.deleteThreatIntelMonitor
   );
 }

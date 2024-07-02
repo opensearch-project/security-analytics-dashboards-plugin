@@ -55,10 +55,10 @@ export const ThreatIntelSourcesList: React.FC<ThreatIntelSourcesListProps> = ({
         )}
       </EuiFlexGroup>
       <EuiSpacer />
-      <EuiFlexGroup>
+      <EuiFlexGroup wrap>
         {threatIntelSources.map((source, idx) => {
           return (
-            <EuiFlexItem key={idx} style={{ maxWidth: 350 }}>
+            <EuiFlexItem key={idx} style={{ minWidth: 350, maxWidth: 350 }}>
               <EuiCard
                 // icon={source.icon}
                 title={source.name}
