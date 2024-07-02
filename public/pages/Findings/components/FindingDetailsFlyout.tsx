@@ -45,30 +45,21 @@ import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 import { Query } from '../models/interfaces';
 import { RuleViewerFlyout } from '../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
 import { RuleSource } from '../../../../server/models/interfaces';
-import { OpenSearchService, IndexPatternsService, CorrelationService } from '../../../services';
 import { RuleTableItem } from '../../Rules/utils/helpers';
 import { CreateIndexPatternForm } from './CreateIndexPatternForm';
-import { CorrelationFinding, FindingDocumentItem, RuleItemInfoBase, FindingItemType } from '../../../../types';
+import {
+  CorrelationFinding,
+  FindingDocumentItem,
+  RuleItemInfoBase,
+  FindingItemType,
+  FindingDetailsFlyoutProps,
+  FlyoutBaseProps,
+} from '../../../../types';
 import { FindingFlyoutTabId, FindingFlyoutTabs } from '../utils/constants';
 import { DataStore } from '../../../store/DataStore';
 import { CorrelationsTable } from './CorrelationsTable/CorrelationsTable';
 import { getSeverityColor } from '../../Correlations/utils/constants';
 import { getLogTypeLabel } from '../../LogTypes/utils/helpers';
-import { RouteComponentProps } from 'react-router-dom';
-
-export interface FindingDetailsFlyoutBaseProps {
-  finding: FindingItemType;
-  findings: FindingItemType[];
-  shouldLoadAllFindings: boolean;
-  backButton?: React.ReactNode;
-}
-
-export interface FindingDetailsFlyoutProps extends FindingDetailsFlyoutBaseProps {
-  opensearchService: OpenSearchService;
-  indexPatternsService: IndexPatternsService;
-  correlationService: CorrelationService;
-  history: RouteComponentProps['history'];
-}
 
 interface FindingDetailsFlyoutState {
   loading: boolean;
@@ -84,12 +75,12 @@ interface FindingDetailsFlyoutState {
 }
 
 export default class FindingDetailsFlyout extends Component<
-  FindingDetailsFlyoutProps,
+  FindingDetailsFlyoutProps & FlyoutBaseProps,
   FindingDetailsFlyoutState
 > {
-  private abortGetFindingsControllers: AbortController[] = []; 
+  private abortGetFindingsControllers: AbortController[] = [];
 
-  constructor(props: FindingDetailsFlyoutProps) {
+  constructor(props: FindingDetailsFlyoutProps & FlyoutBaseProps) {
     super(props);
     const relatedDocuments: FindingDocumentItem[] = this.getRelatedDocuments();
     const docIdToExpandedRowMap: FindingDetailsFlyoutState['docIdToExpandedRowMap'] = {};
@@ -123,9 +114,9 @@ export default class FindingDetailsFlyout extends Component<
   }
 
   componentWillUnmount(): void {
-    this.abortGetFindingsControllers.forEach(controller => {
+    this.abortGetFindingsControllers.forEach((controller) => {
       controller.abort();
-    })
+    });
     this.abortGetFindingsControllers = [];
   }
 
@@ -348,7 +339,7 @@ export default class FindingDetailsFlyout extends Component<
   createDocumentBlock = (item: FindingDocumentItem) => {
     let formattedDocument = '';
     try {
-      formattedDocument = document ? JSON.stringify(JSON.parse(item.document), null, 2) : '';
+      formattedDocument = item.document ? JSON.stringify(JSON.parse(item.document), null, 2) : '';
     } catch {
       // no-op
     }

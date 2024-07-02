@@ -50,17 +50,17 @@ export function renderApp(
   const detectorsService = new DetectorsService(http);
   const correlationsService = new CorrelationService(http);
   const indexService = new IndexService(http);
-  const findingsService = new FindingsService(http);
+  const findingsService = new FindingsService(http, coreStart.notifications);
   const opensearchService = new OpenSearchService(http, savedObjects.client);
   const fieldMappingService = new FieldMappingService(http);
-  const alertsService = new AlertsService(http);
+  const alertsService = new AlertsService(http, coreStart.notifications);
   const ruleService = new RuleService(http);
   const notificationsService = new NotificationsService(http);
   const savedObjectsService = new SavedObjectService(savedObjects.client, indexService);
   const indexPatternsService = new IndexPatternsService(depsStart.data.indexPatterns);
   const logTypeService = new LogTypeService(http);
   const metricsService = new MetricsService(http);
-  const threatIntelService = new ThreatIntelService(http);
+  const threatIntelService = new ThreatIntelService(http, coreStart.notifications);
 
   const services: BrowserServices = {
     detectorsService,

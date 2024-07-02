@@ -40,6 +40,7 @@ import {
 } from '../../utils/helpers';
 import { ThreatIntelIocType } from '../../../../../common/constants';
 import { PeriodSchedule } from '../../../../../models/interfaces';
+import { checkboxes } from '../../utils/constants';
 
 export interface AddThreatIntelSourceProps extends RouteComponentProps {
   threatIntelService: ThreatIntelService;
@@ -69,20 +70,6 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
   );
   const [fileError, setFileError] = useState('');
   const [submitInProgress, setSubmitInProgress] = useState(false);
-  const checkboxes = [
-    {
-      id: ThreatIntelIocType.IPAddress,
-      label: 'IP - addresses',
-    },
-    {
-      id: ThreatIntelIocType.Domain,
-      label: 'Domains',
-    },
-    {
-      id: ThreatIntelIocType.FileHash,
-      label: 'File hash',
-    },
-  ];
   const [checkboxIdToSelectedMap, setCheckboxIdToSelectedMap] = useState<Record<string, boolean>>(
     {}
   );
@@ -247,10 +234,10 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
               label={
                 <>
                   <EuiTitle size="s">
-                    <h4>Data storage location</h4>
+                    <h4>Remote data store location</h4>
                   </EuiTitle>
                   <EuiText size="s">
-                    <p>Connect your custom data storage.</p>
+                    <p>Connect your custom data store.</p>
                   </EuiText>
                 </>
               }
@@ -268,10 +255,10 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
               label={
                 <>
                   <EuiTitle size="s">
-                    <h4>File upload</h4>
+                    <h4>Local file upload</h4>
                   </EuiTitle>
                   <EuiText size="s">
-                    <p>Upload your own threat intel as a local file or using a URL.</p>
+                    <p>Upload your own threat intel IoCs using a local file.</p>
                   </EuiText>
                 </>
               }
@@ -311,7 +298,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
             <EuiSpacer />
             <EuiFormRow label="S3 bucket directory">
               <EuiFieldText
-                placeholder="S3://"
+                placeholder="S3 bucket name"
                 onChange={(event) => onS3DataChange('bucket_name', event.target.value)}
                 value={s3ConnectionDetails.s3.bucket_name}
               />

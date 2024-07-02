@@ -1,15 +1,18 @@
 /*
-* Copyright OpenSearch Contributors
-* SPDX-License-Identifier: Apache-2.0
-*/
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
-import { CorrelationFinding } from "./Correlations";
-import { DetectorHit } from "./Detector";
-import { Finding } from "./Finding";
+import React from 'react';
+import { CorrelationFinding } from './Correlations';
+import { DetectorHit } from './Detector';
+import { Finding, FindingDetailsFlyoutProps } from './Finding';
+import { ThreatIntelFindingDetailsFlyoutProps } from './ThreatIntel';
+import { RouteComponentProps } from 'react-router-dom';
 
-export interface Duration { 
-  startTime: number; 
-  endTime: number; 
+export interface Duration {
+  startTime: number;
+  endTime: number;
 }
 
 export type FindingItemType = Finding & {
@@ -22,6 +25,17 @@ export type FindingItemType = Finding & {
 export interface FindingDetectorMetadata {
   detectorName: string;
   logType: string;
-  detector: DetectorHit
-  correlations: []
+  detector: DetectorHit;
+  correlations: [];
+}
+
+export type FlyoutPropsType = FindingDetailsFlyoutProps | ThreatIntelFindingDetailsFlyoutProps;
+
+export type ShowFlyoutDataType<T extends FlyoutPropsType> = {
+  component: any;
+  componentProps: T;
+};
+
+export interface FlyoutBaseProps {
+  history: RouteComponentProps['history'];
 }

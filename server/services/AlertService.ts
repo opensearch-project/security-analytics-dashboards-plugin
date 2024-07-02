@@ -11,13 +11,14 @@ import {
   RequestHandlerContext,
 } from 'opensearch-dashboards/server';
 import { ServerResponse } from '../models/types';
-import { CLIENT_ALERTS_METHODS } from '../utils/constants';
+import { CLIENT_ALERTS_METHODS, CLIENT_THREAT_INTEL_METHODS } from '../utils/constants';
 import { MDSEnabledClientService } from './MDSEnabledClientService';
 import {
   AcknowledgeAlertsParams,
   AcknowledgeAlertsResponse,
   GetAlertsParams,
   GetAlertsResponse,
+  GetThreatIntelAlertsParams,
 } from '../../types';
 
 export default class AlertService extends MDSEnabledClientService {
@@ -35,7 +36,7 @@ export default class AlertService extends MDSEnabledClientService {
         sortOrder,
         size,
         startTime,
-        endTime
+        endTime,
       };
       let params: GetAlertsParams;
 
@@ -110,6 +111,80 @@ export default class AlertService extends MDSEnabledClientService {
       });
     } catch (error: any) {
       console.error('Security Analytics - AlertService - acknowledgeAlerts:', error);
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: false,
+          error: error.message,
+        },
+      });
+    }
+  };
+
+  getThreatIntelAlerts = async (
+    context: RequestHandlerContext,
+    request: OpenSearchDashboardsRequest<{}, GetThreatIntelAlertsParams>,
+    response: OpenSearchDashboardsResponseFactory
+  ): Promise<IOpenSearchDashboardsResponse<ServerResponse<any> | ResponseError>> => {
+    try {
+      const params: any = request.query;
+      // Delete the dataSourceId since this query param is not supported by the alerts API
+      delete params['dataSourceId'];
+
+      const client = this.getClient(request, context);
+      const getAlertsResponse: GetAlertsResponse = await client(
+        CLIENT_THREAT_INTEL_METHODS.GET_THREAT_INTEL_ALERTS,
+        params
+      );
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: true,
+          response: getAlertsResponse,
+        },
+      });
+    } catch (error: any) {
+      console.error('Security Analytics - AlertService - getThreatIntelAlerts:', error);
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: false,
+          error: error.message,
+        },
+      });
+    }
+  };
+
+  updateThreatIntelAlertsState = async (
+    context: RequestHandlerContext,
+    request: OpenSearchDashboardsRequest<
+      any,
+      {
+        state: 'ACKNOWLEDGED' | 'COMPLETED';
+        alert_ids: string;
+      }
+    >,
+    response: OpenSearchDashboardsResponseFactory
+  ): Promise<IOpenSearchDashboardsResponse<ServerResponse<any> | ResponseError>> => {
+    try {
+      const params: any = request.query;
+      // Delete the dataSourceId since this query param is not supported by the alerts API
+      delete params['dataSourceId'];
+
+      const client = this.getClient(request, context);
+      const updateStatusResponse: GetAlertsResponse = await client(
+        CLIENT_THREAT_INTEL_METHODS.UPDATE_THREAT_INTEL_ALERTS_STATE,
+        params
+      );
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: true,
+          response: updateStatusResponse,
+        },
+      });
+    } catch (error: any) {
+      console.error('Security Analytics - AlertService - updateThreatIntelAlertsState:', error);
       return response.custom({
         statusCode: 200,
         body: {

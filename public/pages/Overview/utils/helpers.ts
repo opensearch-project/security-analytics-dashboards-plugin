@@ -325,10 +325,12 @@ export function getAlertsVisualizationSpec(
   let severities = severityOptions.map((severity) => severity.text);
   severities.reverse().pop();
 
-  let states = ['ACTIVE', 'ACKNOWLEDGED'];
+  let states = ['ACTIVE', 'ACKNOWLEDGED', 'COMPLETED', 'ERROR'];
   const statusColors = {
-    euiColorVis9: '#E7664C',
-    euiColorVis6: '#B9A888',
+    ACTIVE: '#E7664C',
+    ACKNOWLEDGED: '#6092C0',
+    COMPLETED: '#54B399',
+    ERROR: '#B9A888',
   };
 
   const statusTitle = 'Alert status';

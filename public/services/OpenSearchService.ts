@@ -11,6 +11,7 @@ import {
 import { ServerResponse } from '../../server/models/types';
 import { API } from '../../server/utils/constants';
 import { dataSourceInfo } from './utils/constants';
+import { SearchResponse } from '../../server/models/interfaces';
 
 export default class OpenSearchService {
   constructor(
@@ -37,5 +38,27 @@ export default class OpenSearchService {
       .then((response) => response.savedObjects);
 
     return Promise.resolve(indexPatterns);
+  };
+
+  getDocuments = async (index: string, documentIds: string[]) => {
+    let url = `..${API.DOCUMENT_IDS_QUERY}`;
+    const res: ServerResponse<SearchResponse<any>> = await this.httpClient.post(url, {
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+      },
+      body: JSON.stringify({
+        index,
+        documentIds,
+      }),
+    });
+
+    if (res.ok) {
+      return res.response.hits.hits.map(({ _id, _source }) => ({
+        id: _id,
+        ..._source,
+      }));
+    }
+
+    return [];
   };
 }

@@ -48,11 +48,9 @@ export const ThreatIntelFindingsTable: React.FC<ThreatIntelFindingsTableProps> =
                 aria-label={'View details'}
                 data-test-subj={`view-details-icon`}
                 iconType={'inspect'}
-                onClick={
-                  () => {}
-                  // TODO: implement finding flyout
-                  // DataStore.findings.openFlyout(finding, this.state.filteredFindings)
-                }
+                onClick={() => {
+                  DataStore.findings.openThreatIntelFindingFlyout(finding);
+                }}
               />
             </EuiToolTip>
           ),

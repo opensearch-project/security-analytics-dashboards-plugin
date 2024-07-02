@@ -13,7 +13,11 @@ import {
 import { ServerResponse } from '../models/types';
 import { CLIENT_THREAT_INTEL_METHODS } from '../utils/constants';
 import { MDSEnabledClientService } from './MDSEnabledClientService';
-import { ThreatIntelSourceGetHit, ThreatIntelSourceSearchHit } from '../../types';
+import {
+  GetIocsQueryParams,
+  ThreatIntelSourceGetHit,
+  ThreatIntelSourceSearchHit,
+} from '../../types';
 
 export default class ThreatIntelService extends MDSEnabledClientService {
   addThreatIntelSource = async (
@@ -217,13 +221,14 @@ export default class ThreatIntelService extends MDSEnabledClientService {
 
   getThreatIntelIocs = async (
     context: RequestHandlerContext,
-    request: OpenSearchDashboardsRequest<{}, any>,
+    request: OpenSearchDashboardsRequest<{}, GetIocsQueryParams>,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<any> | ResponseError>> => {
     try {
-      const params = { feed_id: request.query.feedIds };
-
+      const params: any = { ...request.query };
       const client = this.getClient(request, context);
+
+      delete params['dataSourceId'];
       const getIocsResponse: any = await client(
         CLIENT_THREAT_INTEL_METHODS.GET_THREAT_INTEL_IOCS,
         params
@@ -330,6 +335,37 @@ export default class ThreatIntelService extends MDSEnabledClientService {
       });
     } catch (error: any) {
       console.error('Security Analytics - ThreatIntelService - searchThreatIntelMonitors:', error);
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: false,
+          error: error.message,
+        },
+      });
+    }
+  };
+
+  deleteThreatIntelMonitor = async (
+    context: RequestHandlerContext,
+    request: OpenSearchDashboardsRequest<{ monitorId: string }, any>,
+    response: OpenSearchDashboardsResponseFactory
+  ): Promise<IOpenSearchDashboardsResponse<ServerResponse<any> | ResponseError>> => {
+    try {
+      const params = { monitorId: request.params.monitorId };
+      const client = this.getClient(request, context);
+      const deleteRes: any = await client(
+        CLIENT_THREAT_INTEL_METHODS.DELETE_THREAT_INTEL_MONITOR,
+        params
+      );
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: true,
+          response: deleteRes,
+        },
+      });
+    } catch (error: any) {
+      console.error('Security Analytics - ThreatIntelService - deleteThreatIntelMonitor:', error);
       return response.custom({
         statusCode: 200,
         body: {

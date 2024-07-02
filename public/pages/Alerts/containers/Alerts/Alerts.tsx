@@ -18,9 +18,8 @@ import {
   EuiToolTip,
   EuiEmptyPrompt,
   EuiTableSelectionType,
-  EuiTabs,
-  EuiTab,
   EuiIcon,
+  EuiTabbedContent,
 } from '@elastic/eui';
 import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
 import dateMath from '@elastic/datemath';
@@ -35,6 +34,7 @@ import {
 import moment from 'moment';
 import {
   ALERT_STATE,
+  AlertTabId,
   BREADCRUMBS,
   DEFAULT_DATE_RANGE,
   DEFAULT_EMPTY_DATA,
@@ -45,7 +45,12 @@ import AlertsService from '../../../../services/AlertsService';
 import DetectorService from '../../../../services/DetectorService';
 import { AlertFlyout } from '../../components/AlertFlyout/AlertFlyout';
 import { CorrelationAlertFlyout } from '../../components/CorrelationAlertFlyout/CorrelationAlertFlyout';
-import { CorrelationService, FindingsService, IndexPatternsService, OpenSearchService } from '../../../../services';
+import {
+  CorrelationService,
+  FindingsService,
+  IndexPatternsService,
+  OpenSearchService,
+} from '../../../../services';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { DISABLE_ACKNOWLEDGED_ALERT_HELP_TEXT } from '../../utils/constants';
 import {
@@ -60,16 +65,29 @@ import {
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { match, RouteComponentProps, withRouter } from 'react-router-dom';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
-import { AlertItem, CorrelationAlertTableItem, DataSourceProps, DateTimeFilter, Detector } from '../../../../../types';
+import {
+  AlertItem,
+  CorrelationAlertTableItem,
+  DataSourceProps,
+  DateTimeFilter,
+  Detector,
+  ThreatIntelAlert,
+} from '../../../../../types';
 import { DurationRange } from '@elastic/eui/src/components/date_picker/types';
 import { DataStore } from '../../../../store/DataStore';
+import { ThreatIntelAlertsTable } from '../../components/ThreatIntelAlertsTable/ThreatIntelAlertsTable';
+
+type FilterAlertParams =
+  | { alerts: AlertItem[]; timeField: 'last_notification_time' }
+  | { alerts: CorrelationAlertTableItem[]; timeField: 'end_time' }
+  | { alerts: ThreatIntelAlert[]; timeField: 'start_time' };
 
 export interface AlertsProps extends RouteComponentProps, DataSourceProps {
   alertService: AlertsService;
   detectorService: DetectorService;
   findingService: FindingsService;
   opensearchService: OpenSearchService;
-  correlationService: CorrelationService
+  correlationService: CorrelationService;
   notifications: NotificationsStart;
   indexPatternService: IndexPatternsService;
   match: match<{ detectorId: string }>;
@@ -80,22 +98,26 @@ export interface AlertsProps extends RouteComponentProps, DataSourceProps {
 export interface AlertsState {
   groupBy: string;
   recentlyUsedRanges: DurationRange[];
-  selectedItems: AlertItem[];
-  correlatedItems: CorrelationAlertTableItem[];
+  selectedDetectionRuleAlertItems: AlertItem[];
+  selectedCorrelationsAlertItems: CorrelationAlertTableItem[];
+  selectedThreatIntelAlertItems: ThreatIntelAlert[];
   alerts: AlertItem[];
   correlationAlerts: CorrelationAlertTableItem[];
+  threatIntelAlerts: ThreatIntelAlert[];
   flyoutData?: { alertItem: AlertItem };
   flyoutCorrelationData?: { alertItem: CorrelationAlertTableItem };
   alertsFiltered: boolean;
   filteredCorrelationAlerts: CorrelationAlertTableItem[];
   filteredAlerts: AlertItem[];
+  filteredThreatIntelAlerts: ThreatIntelAlert[];
   detectors: { [key: string]: Detector };
   loading: boolean;
   timeUnit: TimeUnit;
   dateFormat: string;
-  widgetEmptyMessage: React.ReactNode | undefined;
-  widgetEmptyCorrelationMessage: React.ReactNode | undefined;
-  tab: 'detector findings' | 'correlations'; // Union type for tab
+  widgetEmptyMessage?: React.ReactNode;
+  widgetEmptyCorrelationMessage?: React.ReactNode;
+  widgetEmptyThreatIntelMessage?: React.ReactNode;
+  selectedTabId: AlertTabId;
 }
 
 const groupByOptions = [
@@ -117,12 +139,14 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       },
     } = props;
     const timeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
+    const searchParams = new URLSearchParams(props.location.search);
     this.state = {
       loading: true,
       groupBy: 'status',
       recentlyUsedRanges: [DEFAULT_DATE_RANGE],
-      selectedItems: [],
-      correlatedItems: [],
+      selectedDetectionRuleAlertItems: [],
+      selectedCorrelationsAlertItems: [],
+      selectedThreatIntelAlertItems: [],
       alerts: [],
       correlationAlerts: [],
       alertsFiltered: false,
@@ -133,7 +157,9 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       dateFormat: timeUnits.dateFormat,
       widgetEmptyMessage: undefined,
       widgetEmptyCorrelationMessage: undefined,
-      tab: 'detector findings'
+      selectedTabId: (searchParams.get('detectionType') as AlertTabId) ?? AlertTabId.DetectionRules,
+      threatIntelAlerts: [],
+      filteredThreatIntelAlerts: [],
     };
   }
 
@@ -144,34 +170,54 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         endTime: DEFAULT_DATE_RANGE.end,
       },
     } = this.props;
-    const alertsChanged =
+    const timeFilterChanged =
       prevProps.dateTimeFilter?.startTime !== dateTimeFilter.startTime ||
-      prevProps.dateTimeFilter?.endTime !== dateTimeFilter.endTime ||
-      prevState.alerts !== this.state.alerts ||
-      prevState.alerts.length !== this.state.alerts.length;
+      prevProps.dateTimeFilter?.endTime !== dateTimeFilter.endTime;
 
-    const correlationAlertsChanged =
-      prevProps.dateTimeFilter?.startTime !== dateTimeFilter.startTime ||
-      prevProps.dateTimeFilter?.endTime !== dateTimeFilter.endTime ||
-      prevState.correlationAlerts !== this.state.correlationAlerts ||
-      prevState.correlationAlerts.length !== this.state.correlationAlerts.length;
-
-    if (prevState.tab !== this.state.tab) {
+    if (
+      prevState.selectedTabId !== this.state.selectedTabId ||
+      this.props.dataSource !== prevProps.dataSource
+    ) {
       this.onRefresh();
-    }
-    if (this.props.dataSource !== prevProps.dataSource) {
-      this.onRefresh();
-    } else if (alertsChanged) {
-      this.filterAlerts();
-    } else if (correlationAlertsChanged) {
-      this.filterCorrelationAlerts();
+    } else if (timeFilterChanged) {
+      this.filterAlertsOnStateChange(prevState);
     } else if (this.state.groupBy !== prevState.groupBy) {
       this.renderVisAsPerTab();
     }
   }
 
-  filterAlerts = () => {
-    const { alerts } = this.state;
+  filterAlertsOnStateChange(prevState: AlertsState) {
+    switch (this.state.selectedTabId) {
+      case AlertTabId.DetectionRules:
+        const alertsChanged =
+          prevState.alerts !== this.state.alerts ||
+          prevState.alerts.length !== this.state.alerts.length;
+        if (alertsChanged) {
+          this.filterDeletectionRuleAlerts();
+        }
+        break;
+
+      case AlertTabId.Correlations:
+        const correlationAlertsChanged =
+          prevState.correlationAlerts !== this.state.correlationAlerts ||
+          prevState.correlationAlerts.length !== this.state.correlationAlerts.length;
+        if (correlationAlertsChanged) {
+          this.filterCorrelationAlerts();
+        }
+        break;
+
+      case AlertTabId.DetectionRules:
+        const threatIntelAlertsChanged =
+          prevState.threatIntelAlerts !== this.state.threatIntelAlerts ||
+          prevState.threatIntelAlerts.length !== this.state.threatIntelAlerts.length;
+        if (threatIntelAlertsChanged) {
+          this.filterThreatIntelAlerts();
+        }
+        break;
+    }
+  }
+
+  filterAlerts = ({ alerts, timeField }: FilterAlertParams) => {
     const {
       dateTimeFilter = {
         startTime: DEFAULT_DATE_RANGE.start,
@@ -180,12 +226,17 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     } = this.props;
     const startMoment = dateMath.parse(dateTimeFilter.startTime);
     const endMoment = dateMath.parse(dateTimeFilter.endTime);
-    const filteredAlerts = alerts.filter((alert) =>
-      moment(alert.last_notification_time).isBetween(moment(startMoment), moment(endMoment))
+    return alerts.filter((correlationAlert) =>
+      moment((correlationAlert as any)[timeField]).isBetween(moment(startMoment), moment(endMoment))
     );
+  };
+
+  filterDeletectionRuleAlerts = () => {
+    const { alerts } = this.state;
+    const filteredAlerts = this.filterAlerts({ alerts, timeField: 'last_notification_time' });
     this.setState({
       alertsFiltered: true,
-      filteredAlerts: filteredAlerts,
+      filteredAlerts: filteredAlerts as AlertItem[],
       widgetEmptyMessage: filteredAlerts.length ? undefined : (
         <EuiEmptyPrompt
           body={
@@ -202,20 +253,14 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
 
   filterCorrelationAlerts = () => {
     const { correlationAlerts } = this.state;
-    const {
-      dateTimeFilter = {
-        startTime: DEFAULT_DATE_RANGE.start,
-        endTime: DEFAULT_DATE_RANGE.end,
-      },
-    } = this.props;
-    const startMoment = dateMath.parse(dateTimeFilter.startTime);
-    const endMoment = dateMath.parse(dateTimeFilter.endTime);
-    const filteredCorrelationAlerts = correlationAlerts.filter((correlationAlert) =>
-      moment(correlationAlert.end_time).isBetween(moment(startMoment), moment(endMoment))
-    );
+    const filteredCorrelationAlerts = this.filterAlerts({
+      alerts: correlationAlerts,
+      timeField: 'end_time',
+    });
+
     this.setState({
       alertsFiltered: true,
-      filteredCorrelationAlerts: filteredCorrelationAlerts,
+      filteredCorrelationAlerts: filteredCorrelationAlerts as CorrelationAlertTableItem[],
       widgetEmptyCorrelationMessage: filteredCorrelationAlerts.length ? undefined : (
         <EuiEmptyPrompt
           body={
@@ -227,25 +272,73 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         />
       ),
     });
-    renderVisualization(this.generateCorrelationVisualizationSpec(filteredCorrelationAlerts), 'alerts-view');
+    renderVisualization(this.generateVisualizationSpec(filteredCorrelationAlerts), 'alerts-view');
+  };
+
+  filterThreatIntelAlerts = () => {
+    const { threatIntelAlerts } = this.state;
+    const filteredAlerts = this.filterAlerts({
+      alerts: threatIntelAlerts,
+      timeField: 'start_time',
+    });
+
+    this.setState({
+      alertsFiltered: true,
+      filteredThreatIntelAlerts: filteredAlerts as ThreatIntelAlert[],
+      widgetEmptyThreatIntelMessage: filteredAlerts.length ? undefined : (
+        <EuiEmptyPrompt
+          body={
+            <p>
+              <span style={{ display: 'block' }}>No alerts.</span>Adjust the time range to see more
+              results.
+            </p>
+          }
+        />
+      ),
+    });
+    renderVisualization(this.generateVisualizationSpec(filteredAlerts), 'alerts-view');
   };
 
   private renderVisAsPerTab() {
-    if (this.state.tab === "detector findings") {
-      renderVisualization(this.generateVisualizationSpec(this.state.filteredAlerts), 'alerts-view');
-    } else {
-      renderVisualization(this.generateCorrelationVisualizationSpec(this.state.filteredCorrelationAlerts), 'alerts-view');
+    switch (this.state.selectedTabId) {
+      case AlertTabId.DetectionRules:
+        renderVisualization(
+          this.generateVisualizationSpec(this.state.filteredAlerts),
+          'alerts-view'
+        );
+        break;
+      case AlertTabId.Correlations:
+        renderVisualization(
+          this.generateVisualizationSpec(this.state.filteredCorrelationAlerts),
+          'alerts-view'
+        );
+        break;
+      case AlertTabId.ThreatIntel:
+        renderVisualization(
+          this.generateVisualizationSpec(this.state.filteredThreatIntelAlerts),
+          'alerts-view'
+        );
+        break;
     }
   }
 
   private getAlertsAsPerTab() {
-    if (this.state.tab === "detector findings") {
-      this.abortPendingGetAlerts();
-      const abortController = new AbortController();
-      this.abortControllers.push(abortController);
-      this.getAlerts(abortController.signal);
-    } else {
-      this.getCorrelationAlerts();
+    this.abortPendingGetAlerts();
+    const abortController = new AbortController();
+    this.abortControllers.push(abortController);
+
+    switch (this.state.selectedTabId) {
+      case AlertTabId.DetectionRules:
+        this.getAlerts(abortController.signal);
+        break;
+
+      case AlertTabId.Correlations:
+        this.getCorrelationAlerts();
+        break;
+
+      case AlertTabId.ThreatIntel:
+        this.getThreatIntelAlerts(abortController.signal);
+        break;
     }
   }
 
@@ -350,7 +443,9 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         sortable: true,
         dataType: 'string',
         render: (correlationRulename: string, alertItem: CorrelationAlertTableItem) => (
-          <EuiLink onClick={() => this.setCorrelationFlyout(alertItem)}>{correlationRulename}</EuiLink>
+          <EuiLink onClick={() => this.setCorrelationFlyout(alertItem)}>
+            {correlationRulename}
+          </EuiLink>
         ),
       },
       {
@@ -358,7 +453,8 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         name: 'Log Types',
         sortable: false,
         dataType: 'string',
-        render: (correlationRuleCategories: string[]) => correlationRuleCategories.join(', ') || DEFAULT_EMPTY_DATA,
+        render: (correlationRuleCategories: string[]) =>
+          correlationRuleCategories.join(', ') || DEFAULT_EMPTY_DATA,
       },
       {
         field: 'state',
@@ -422,37 +518,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     this.setState({ flyoutCorrelationData: alertItem ? { alertItem } : undefined });
   }
 
-  generateVisualizationSpec(alerts: AlertItem[]) {
-    const visData = alerts.map((alert) => {
-      const time = new Date(alert.start_time);
-      time.setMilliseconds(0);
-      time.setSeconds(0);
-
-      return {
-        alert: 1,
-        time,
-        status: alert.state,
-        severity: parseAlertSeverityToOption(alert.severity)?.label || alert.severity,
-      };
-    });
-    const {
-      dateTimeFilter = {
-        startTime: DEFAULT_DATE_RANGE.start,
-        endTime: DEFAULT_DATE_RANGE.end,
-      },
-    } = this.props;
-    const chartTimeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
-    return getAlertsVisualizationSpec(visData, this.state.groupBy, {
-      timeUnit: chartTimeUnits.timeUnit,
-      dateFormat: chartTimeUnits.dateFormat,
-      domain: getDomainRange(
-        [dateTimeFilter.startTime, dateTimeFilter.endTime],
-        chartTimeUnits.timeUnit.unit
-      ),
-    });
-  }
-
-  generateCorrelationVisualizationSpec(alerts: CorrelationAlertTableItem[]) {
+  generateVisualizationSpec(alerts: (AlertItem | CorrelationAlertTableItem | ThreatIntelAlert)[]) {
     const visData = alerts.map((alert) => {
       const time = new Date(alert.start_time);
       time.setMilliseconds(0);
@@ -510,15 +576,19 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       if (correlationRes.ok) {
         const alerts = correlationRes.response.correlationAlerts;
         // Fetch correlation queries for each alert
-        const enrichedAlerts = await Promise.all(alerts.map(async (alert) => {
-          const correlation = await DataStore.correlations.getCorrelationRule(alert.correlation_rule_id);
-          const correlationQueries = correlation?.queries || [];
-          const correlationRuleCategories = correlationQueries.map((query) => query.logType);
-          return {
-            ...alert,
-            correlation_rule_categories: correlationRuleCategories,
-          };
-        }));
+        const enrichedAlerts = await Promise.all(
+          alerts.map(async (alert) => {
+            const correlation = await DataStore.correlations.getCorrelationRule(
+              alert.correlation_rule_id
+            );
+            const correlationQueries = correlation?.queries || [];
+            const correlationRuleCategories = correlationQueries.map((query) => query.logType);
+            return {
+              ...alert,
+              correlation_rule_categories: correlationRuleCategories,
+            };
+          })
+        );
         this.setState({ correlationAlerts: enrichedAlerts });
       } else {
         errorNotificationToast(notifications, 'retrieve', 'correlations', correlationRes.error);
@@ -554,7 +624,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
               abort,
               duration,
               (alerts) => {
-                this.setState({ alerts: [...this.state.alerts, ...alerts] })
+                this.setState({ alerts: [...this.state.alerts, ...alerts] });
               }
             );
           }
@@ -565,16 +635,30 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     } catch (e: any) {
       errorNotificationToast(notifications, 'retrieve', 'alerts', e);
     }
-    this.filterAlerts();
+    this.filterDeletectionRuleAlerts();
+    this.setState({ loading: false });
+  }
+
+  async getThreatIntelAlerts(abort: AbortSignal) {
+    this.setState({ loading: true, threatIntelAlerts: [] });
+    const { dateTimeFilter } = this.props;
+    const duration = getDuration(dateTimeFilter);
+    await DataStore.alerts.getThreatIntelAlerts(abort, duration, (alerts) => {
+      this.setState({
+        threatIntelAlerts: [...this.state.threatIntelAlerts, ...alerts],
+        loading: false,
+      });
+      this.filterThreatIntelAlerts();
+    });
     this.setState({ loading: false });
   }
 
   createAcknowledgeControl() {
-    const { selectedItems } = this.state;
+    const { selectedDetectionRuleAlertItems } = this.state;
     return (
       <EuiButton
-        disabled={!selectedItems.length}
-        onClick={() => this.onAcknowledge(selectedItems)}
+        disabled={!selectedDetectionRuleAlertItems.length}
+        onClick={() => this.onAcknowledge(selectedDetectionRuleAlertItems)}
         data-test-subj={'acknowledge-button'}
       >
         Acknowledge
@@ -583,15 +667,53 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
   }
 
   createAcknowledgeControlForCorrelations() {
-    const { correlatedItems } = this.state;
+    const { selectedCorrelationsAlertItems } = this.state;
     return (
       <EuiButton
-        disabled={!correlatedItems.length}
-        onClick={() => this.onAcknowledgeCorrelationAlert(correlatedItems)}
+        disabled={!selectedCorrelationsAlertItems.length}
+        onClick={() => this.onAcknowledgeCorrelationAlert(selectedCorrelationsAlertItems)}
         data-test-subj={'acknowledge-button'}
       >
         Acknowledge
       </EuiButton>
+    );
+  }
+
+  createAcknowledgeControlForThreatIntel() {
+    const { selectedThreatIntelAlertItems } = this.state;
+    const statesOfSelectedAlerts = new Set(selectedThreatIntelAlertItems.map(({ state }) => state));
+    const disableAllActions =
+      !selectedThreatIntelAlertItems.length || statesOfSelectedAlerts.size > 1;
+    const disableAcknowledge =
+      disableAllActions || selectedThreatIntelAlertItems[0].state !== 'ACTIVE';
+    const disableComplete =
+      disableAllActions || selectedThreatIntelAlertItems[0].state !== 'ACKNOWLEDGED';
+
+    return (
+      <EuiFlexGroup gutterSize="s">
+        <EuiFlexItem grow={false}>
+          <EuiButton
+            disabled={disableAcknowledge}
+            onClick={() =>
+              this.onThreatIntelAlertStateChange(selectedThreatIntelAlertItems, 'ACKNOWLEDGED')
+            }
+            data-test-subj={'acknowledge-button'}
+          >
+            Acknowledge
+          </EuiButton>
+        </EuiFlexItem>
+        <EuiFlexItem grow={false}>
+          <EuiButton
+            disabled={disableComplete}
+            onClick={() =>
+              this.onThreatIntelAlertStateChange(selectedThreatIntelAlertItems, 'COMPLETED')
+            }
+            data-test-subj={'complete-button'}
+          >
+            Complete
+          </EuiButton>
+        </EuiFlexItem>
+      </EuiFlexGroup>
     );
   }
 
@@ -619,7 +741,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
   };
 
   private abortPendingGetAlerts() {
-    this.abortControllers.forEach(controller => controller.abort());
+    this.abortControllers.forEach((controller) => controller.abort());
     this.abortControllers = [];
   }
 
@@ -629,11 +751,15 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
   };
 
   onSelectionChange = (selectedItems: AlertItem[]) => {
-    this.setState({ selectedItems });
+    this.setState({ selectedDetectionRuleAlertItems: selectedItems });
   };
 
-  onCorrelationSelectionChange = (correlatedItems: CorrelationAlertTableItem[]) => {
-    this.setState({ correlatedItems });
+  onCorrelationSelectionChange = (selectedItems: CorrelationAlertTableItem[]) => {
+    this.setState({ selectedCorrelationsAlertItems: selectedItems });
+  };
+
+  onThreatIntelAlertSelectionChange = (items: ThreatIntelAlert[]) => {
+    this.setState({ selectedThreatIntelAlertItems: items });
   };
 
   onFlyoutClose = () => {
@@ -670,7 +796,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     }
     if (successCount)
       successNotificationToast(notifications, 'acknowledged', `${successCount} alerts`);
-    this.setState({ selectedItems: [] });
+    this.setState({ selectedDetectionRuleAlertItems: [] });
     this.onRefresh();
   };
 
@@ -697,16 +823,64 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     }
     if (successCount)
       successNotificationToast(notifications, 'acknowledged', `${successCount} alerts`);
-    this.setState({ selectedItems: [] });
+    this.setState({ selectedCorrelationsAlertItems: [] });
     this.onRefresh();
   };
 
+  onThreatIntelAlertStateChange = async (
+    selectedItems: ThreatIntelAlert[] = [],
+    nextState: 'ACKNOWLEDGED' | 'COMPLETED'
+  ): Promise<boolean> => {
+    const { alertService, notifications } = this.props;
+    let successCount = 0;
+    const actionName = nextState === 'ACKNOWLEDGED' ? 'acknowledge' : 'complete';
+    try {
+      if (selectedItems.length > 0) {
+        const response = await alertService.updateThreatIntelAlertsState(
+          nextState,
+          selectedItems.map(({ id }) => id)
+        );
+        if (response.ok) {
+          successCount = selectedItems.length;
+        } else {
+          errorNotificationToast(notifications, actionName, 'alert(s)', response.error);
+        }
+      }
+    } catch (e: any) {
+      errorNotificationToast(notifications, actionName, 'alert(s)', e);
+    }
+    if (successCount) {
+      successNotificationToast(notifications, nextState.toLowerCase(), `${successCount} alerts`);
+      this.onRefresh();
+    }
+
+    this.setState({ selectedDetectionRuleAlertItems: [] });
+
+    return successCount > 0 ? true : false;
+  };
+
+  getContelPanelActions() {
+    switch (this.state.selectedTabId) {
+      case AlertTabId.DetectionRules:
+        return this.createAcknowledgeControl();
+
+      case AlertTabId.Correlations:
+        return this.createAcknowledgeControlForCorrelations();
+
+      case AlertTabId.ThreatIntel:
+        return this.createAcknowledgeControlForThreatIntel();
+
+      default:
+        return [];
+    }
+  }
+
   render() {
     const {
-      alerts,
+      alerts: detectionRuleAlerts,
       alertsFiltered,
       detectors,
-      filteredAlerts,
+      filteredAlerts: filteredDetectionRuleAlerts,
       filteredCorrelationAlerts,
       correlationAlerts,
       flyoutCorrelationData,
@@ -715,7 +889,26 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       recentlyUsedRanges,
       widgetEmptyMessage,
       widgetEmptyCorrelationMessage,
+      threatIntelAlerts,
+      filteredThreatIntelAlerts,
+      selectedTabId,
     } = this.state;
+
+    let alerts = [];
+
+    switch (selectedTabId) {
+      case AlertTabId.DetectionRules:
+        alerts = detectionRuleAlerts;
+        break;
+
+      case AlertTabId.Correlations:
+        alerts = correlationAlerts;
+        break;
+
+      case AlertTabId.ThreatIntel:
+        alerts = threatIntelAlerts;
+        break;
+    }
 
     const {
       dateTimeFilter = {
@@ -727,7 +920,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     const statuses = new Set<string>();
     const corrSeverities = new Set<string>();
     const corrStatuses = new Set<string>();
-    filteredAlerts.forEach((alert) => {
+    filteredDetectionRuleAlerts.forEach((alert) => {
       if (alert) {
         severities.add(alert.severity);
         statuses.add(alert.state);
@@ -799,7 +992,6 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       ],
     };
 
-
     const selection: EuiTableSelectionType<AlertItem> = {
       onSelectionChange: this.onSelectionChange,
       selectable: (item: AlertItem) => item.state === ALERT_STATE.ACTIVE,
@@ -818,6 +1010,72 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         direction: 'dsc',
       },
     };
+
+    const tabs = [
+      {
+        id: 'detection-rules',
+        name: 'Detection rules',
+        content: (
+          <>
+            <EuiSpacer size="m" />
+            <EuiInMemoryTable
+              columns={this.getColumns()}
+              items={alertsFiltered ? filteredDetectionRuleAlerts : detectionRuleAlerts}
+              itemId={(item) => `${item.id}`}
+              isSelectable={true}
+              pagination
+              search={search}
+              sorting={sorting}
+              selection={selection}
+              loading={loading}
+              message={widgetEmptyMessage}
+            />
+          </>
+        ),
+      },
+      {
+        id: 'threat-intel',
+        name: 'Threat intel',
+        content: (
+          <>
+            <EuiSpacer size="m" />
+            <ThreatIntelAlertsTable
+              alerts={alertsFiltered ? filteredThreatIntelAlerts : threatIntelAlerts}
+              onAlertStateChange={this.onThreatIntelAlertStateChange}
+              onSelectionChange={this.onThreatIntelAlertSelectionChange}
+            />
+          </>
+        ),
+      },
+      {
+        id: 'correlations',
+        name: (
+          <EuiToolTip content="This object was created using an experimental feature. It may not appear in view if the feature is discontinued.">
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ marginRight: '4px' }}>Correlations</span>
+              <EuiIcon type="beaker" />
+            </div>
+          </EuiToolTip>
+        ),
+        content: (
+          <>
+            <EuiSpacer size="m" />
+            <EuiInMemoryTable
+              columns={this.getCorrelationColumns()}
+              items={alertsFiltered ? filteredCorrelationAlerts : correlationAlerts}
+              itemId={(item) => `${item.id}`}
+              isSelectable={true}
+              pagination
+              search={correlationSearch}
+              sorting={sorting}
+              selection={correlationSelection}
+              loading={loading}
+              message={widgetEmptyCorrelationMessage}
+            />
+          </>
+        ),
+      },
+    ];
 
     return (
       <>
@@ -888,56 +1146,14 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
             <EuiSpacer size="xxl" />
           </EuiFlexItem>
           <EuiFlexItem>
-            <ContentPanel title={'Alerts'} actions={[
-              this.state.tab === 'detector findings'
-                ? this.createAcknowledgeControl()
-                : this.createAcknowledgeControlForCorrelations()
-            ]}>
-              <EuiTabs>
-                <EuiTab onClick={() => this.setState({ tab: 'detector findings' })} isSelected={this.state.tab === 'detector findings'}>
-                  Findings
-                </EuiTab>
-                <EuiTab onClick={() => this.setState({ tab: 'correlations' })} isSelected={this.state.tab === 'correlations'}>
-                  <EuiToolTip content="This object was created using an experimental feature. It may not appear in view if the feature is discontinued.">
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <span style={{ marginRight: '4px' }}>Correlations</span>
-                      <EuiIcon type="beaker" />
-                    </div>
-                  </EuiToolTip>
-                </EuiTab>
-              </EuiTabs>
-              {this.state.tab === 'detector findings' && (
-                // Content for the "Findings" tab
-                <EuiInMemoryTable
-                  columns={this.getColumns()}
-                  items={alertsFiltered ? filteredAlerts : alerts}
-                  itemId={(item) => `${item.id}`}
-                  isSelectable={true}
-                  pagination
-                  search={search}
-                  sorting={sorting}
-                  selection={selection}
-                  loading={loading}
-                  message={widgetEmptyMessage}
-                />
-              )}
-              {this.state.tab === 'correlations' && (
-                <EuiInMemoryTable
-                  columns={this.getCorrelationColumns()}
-                  items={alertsFiltered ? filteredCorrelationAlerts : correlationAlerts}
-                  itemId={(item) => `${item.id}`}
-                  isSelectable={true}
-                  pagination
-                  search={correlationSearch}
-                  sorting={sorting}
-                  selection={correlationSelection}
-                  loading={loading}
-                  message={widgetEmptyCorrelationMessage}
-                />
-              )}
+            <ContentPanel title={'Alerts'} actions={[this.getContelPanelActions()]}>
+              <EuiTabbedContent
+                tabs={tabs}
+                onTabClick={({ id }) => this.setState({ selectedTabId: id as AlertTabId })}
+                initialSelectedTab={tabs.find(({ id }) => id === selectedTabId) ?? tabs[0]}
+              />
             </ContentPanel>
           </EuiFlexItem>
-
         </EuiFlexGroup>
       </>
     );

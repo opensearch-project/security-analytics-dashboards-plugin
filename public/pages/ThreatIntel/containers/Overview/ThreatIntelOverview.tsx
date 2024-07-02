@@ -43,7 +43,7 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
 }) => {
   const context = useContext(CoreServicesContext);
   const [threatIntelSources, setThreatIntelSources] = useState<ThreatIntelSourceItem[]>([]);
-  const [scanConfig, setScanConfig] = useState<ThreatIntelScanConfig>();
+  const [scanConfig, setScanConfig] = useState<ThreatIntelScanConfig | undefined>(undefined);
   const [flyoutContent, setFlyoutContent] = useState<React.ReactNode>(null);
 
   const onEditScanConfig = () => {
@@ -67,6 +67,31 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
     });
   }, []);
 
+  const getScanConfig = async () => {
+    try {
+      const res = await threatIntelService.getThreatIntelScanConfig();
+
+      if (res.ok) {
+        setScanConfig(res.response);
+      }
+    } catch (e: any) {
+      console.log('failed to get scan config');
+    }
+  };
+
+  const toggleScan = async () => {
+    if (scanConfig) {
+      const res = await threatIntelService.updateThreatIntelMonitor(scanConfig.id, {
+        ...scanConfig,
+        enabled: !scanConfig.enabled,
+      });
+
+      if (res.ok) {
+        getScanConfig();
+      }
+    }
+  };
+
   const tabs: EuiTabbedContentTab[] = useMemo(
     () => [
       {
@@ -78,11 +103,14 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
       },
       {
         id: 'log-scan-config',
-        name: <span>Log scan configuration</span>,
+        name: <span>Scan configuration</span>,
         content: (
           <ThreatIntelLogScanConfig
             scanConfig={scanConfig}
             threatIntelSourceCount={threatIntelSources.length}
+            threatIntelService={threatIntelService}
+            toggleScan={toggleScan}
+            refreshScanConfig={getScanConfig}
             setFlyoutContent={(content) => setFlyoutContent(content)}
             scanConfigActionHandler={onEditScanConfig}
             addThreatIntelActionHandler={addThreatIntelSourceActionHandler}
@@ -109,21 +137,8 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
       }
     };
 
-    const getScanConfig = async () => {
-      try {
-        const res = await threatIntelService.getThreatIntelScanConfig();
-
-        if (res.ok) {
-          setScanConfig(res.response);
-        }
-      } catch (e: any) {
-        console.log('failed to get scan config');
-      }
-    };
-
-    getScanConfig();
-
     searchSources();
+    getScanConfig();
   }, [threatIntelService]);
 
   const nextStepClickHandlerById: Record<ThreatIntelNextStepId, MouseEventHandler> = {
@@ -157,6 +172,7 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
             history={history}
             scanConfig={scanConfig}
             sourceCount={threatIntelSources.length}
+            toggleScan={toggleScan}
           />
         </EuiFlexItem>
       </EuiFlexGroup>

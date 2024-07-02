@@ -12,6 +12,7 @@ import { FindingsStore } from './FindingsStore';
 import { LogTypeStore } from './LogTypeStore';
 import { AlertsStore } from './AlertsStore';
 import { ThreatIntelStore } from './ThreatIntelStore';
+import { DocumentStore } from './DocumentStore';
 
 export class DataStore {
   public static rules: RulesStore;
@@ -21,6 +22,7 @@ export class DataStore {
   public static logTypes: LogTypeStore;
   public static alerts: AlertsStore;
   public static threatIntel: ThreatIntelStore;
+  public static documents: DocumentStore;
 
   public static init = (services: BrowserServices, notifications: NotificationsStart) => {
     const rulesStore = new RulesStore(services.ruleService, notifications);
@@ -35,7 +37,10 @@ export class DataStore {
     DataStore.findings = new FindingsStore(
       services.findingsService,
       services.detectorsService,
-      notifications
+      notifications,
+      services.indexPatternsService,
+      services.correlationsService,
+      services.opensearchService
     );
 
     DataStore.correlations = new CorrelationsStore(
@@ -51,5 +56,7 @@ export class DataStore {
     DataStore.alerts = new AlertsStore(services.alertService, notifications);
 
     DataStore.threatIntel = new ThreatIntelStore(services.findingsService);
+
+    DataStore.documents = new DocumentStore(services.opensearchService);
   };
 }

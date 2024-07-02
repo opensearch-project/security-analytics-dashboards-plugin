@@ -41,4 +41,46 @@ export function addAlertsMethods(securityAnalytics: any, createAction: any): voi
     needBody: true,
     method: 'POST',
   });
+
+  securityAnalytics[METHOD_NAMES.GET_THREAT_INTEL_ALERTS] = createAction({
+    url: {
+      fmt: `${API.THREAT_INTEL_BASE}/alerts`,
+      params: {
+        sortOrder: {
+          type: 'string',
+        },
+        size: {
+          type: 'number',
+        },
+        startIndex: {
+          type: 'number',
+        },
+        startTime: {
+          type: 'number',
+        },
+        endTime: {
+          type: 'number',
+        },
+      },
+    },
+    needBody: false,
+    method: 'GET',
+  });
+
+  securityAnalytics[METHOD_NAMES.UPDATE_THREAT_INTEL_ALERTS_STATE] = createAction({
+    url: {
+      fmt: `${API.THREAT_INTEL_BASE}/alerts/status`,
+      params: {
+        state: {
+          type: 'string',
+          required: true,
+        },
+        alert_ids: {
+          type: 'string',
+          required: true,
+        },
+      },
+    },
+    method: 'PUT',
+  });
 }

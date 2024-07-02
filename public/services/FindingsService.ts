@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HttpSetup } from 'opensearch-dashboards/public';
+import { HttpSetup, NotificationsStart } from 'opensearch-dashboards/public';
 import { ServerResponse } from '../../server/models/types';
 import { API } from '../../server/utils/constants';
 import {
@@ -13,13 +13,10 @@ import {
   GetThreatIntelFindingsResponse,
 } from '../../types';
 import { dataSourceInfo } from './utils/constants';
+import { errorNotificationToast } from '../utils/helpers';
 
 export default class FindingsService {
-  httpClient: HttpSetup;
-
-  constructor(httpClient: HttpSetup) {
-    this.httpClient = httpClient;
-  }
+  constructor(private httpClient: HttpSetup, private notifications: NotificationsStart) {}
 
   getFindings = async (
     getFindingsParams: GetFindingsParams
@@ -48,6 +45,12 @@ export default class FindingsService {
       dataSourceId: dataSourceInfo.activeDataSource.id,
     };
 
-    return await this.httpClient.get(`..${API.THREAT_INTEL_BASE}/findings/_search`, { query });
+    const res = await this.httpClient.get(`..${API.THREAT_INTEL_BASE}/findings/_search`, { query });
+
+    if (!res.ok) {
+      errorNotificationToast(this.notifications, 'get', 'findings', res.error);
+    }
+
+    return res;
   };
 }
