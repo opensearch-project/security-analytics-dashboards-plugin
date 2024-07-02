@@ -102,9 +102,9 @@ export function setupThreatIntelRoutes({ threatIntelService }: NodeServices, rou
         query: createQueryValidationSchema({
           startIndex: schema.maybe(schema.number()),
           size: schema.maybe(schema.number()),
-          feedIds: schema.maybe(schema.string()),
-          iocTypes: schema.maybe(schema.string()),
-          search: schema.maybe(schema.string()),
+          feed_ids: schema.maybe(schema.string()),
+          ioc_types: schema.maybe(schema.string()),
+          searchString: schema.maybe(schema.string()),
           sortString: schema.maybe(schema.string()),
         }),
       },

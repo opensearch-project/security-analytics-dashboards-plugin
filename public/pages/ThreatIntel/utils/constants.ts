@@ -31,6 +31,7 @@ export const dummyIoCDetails: ThreatIntelIocData = {
   feedId: 'random-feed-id',
   specVersion: '',
   version: 1,
+  num_findings: 0,
 };
 
 export const dummySource: ThreatIntelSourceItem = {

@@ -30,12 +30,13 @@ import { getIsNotificationPluginInstalled } from '../../utils/helpers';
 export interface NotificationFormProps {
   allNotificationChannels: NotificationChannelTypeOptions[];
   loadingNotifications: boolean;
-  action: TriggerAction;
+  action?: TriggerAction;
   prepareMessage: (updateMessage?: boolean, onMount?: boolean) => void;
   refreshNotificationChannels: () => void;
   onChannelsChange: (selectedOptions: EuiComboBoxOptionOption<string>[]) => void;
   onMessageBodyChange: (message: string) => void;
   onMessageSubjectChange: (subject: string) => void;
+  onNotificationToggle?: (enabled: boolean) => void;
 }
 
 export const NotificationForm: React.FC<NotificationFormProps> = ({
@@ -47,11 +48,12 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
   onChannelsChange,
   onMessageBodyChange,
   onMessageSubjectChange,
+  onNotificationToggle,
 }) => {
   const hasNotificationPlugin = getIsNotificationPluginInstalled();
-  const [showNotificationDetails, setShowNotificationDetails] = useState(true);
+  const [isActionRemoved, setIsActionRemoved] = useState(true);
   const selectedNotificationChannelOption: NotificationChannelOption[] = [];
-  if (action.destination_id) {
+  if (!isActionRemoved && action?.destination_id) {
     allNotificationChannels.forEach((typeOption) => {
       const matchingChannel = typeOption.options.find(
         (option) => option.value === action.destination_id
@@ -64,11 +66,14 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
     <>
       <EuiSwitch
         label="Send notification"
-        checked={showNotificationDetails}
-        onChange={(e) => setShowNotificationDetails(e.target.checked)}
+        checked={isActionRemoved}
+        onChange={(e) => {
+          setIsActionRemoved(e.target.checked);
+          onNotificationToggle?.(e.target.checked);
+        }}
       />
       <EuiSpacer />
-      {showNotificationDetails && (
+      {isActionRemoved && (
         <>
           <EuiFlexGroup alignItems={'flexEnd'}>
             <EuiFlexItem style={{ maxWidth: 400 }}>
@@ -116,7 +121,7 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
           <EuiSpacer size={'l'} />
 
           <EuiAccordion
-            id={`alert-condition-notify-msg-${action.id ?? 'draft'}`}
+            id={`alert-condition-notify-msg-${action?.id ?? 'draft'}`}
             buttonContent={
               <EuiText size="m">
                 <p>Notification message</p>

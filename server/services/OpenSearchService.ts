@@ -26,7 +26,7 @@ export default class OpenSearchService extends MDSEnabledClientService {
     IOpenSearchDashboardsResponse<ServerResponse<SearchResponse<any>> | ResponseError>
   > => {
     try {
-      const { index, documentIds } = request.query as { index: string; documentIds: string[] };
+      const { index, documentIds } = request.body as { index: string; documentIds: string[] };
       const body = {
         query: {
           terms: {

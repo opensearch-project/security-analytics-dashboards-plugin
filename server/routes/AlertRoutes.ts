@@ -23,7 +23,7 @@ export function setupAlertsRoutes(services: NodeServices, router: IRouter) {
           size: schema.maybe(schema.number()),
           startIndex: schema.maybe(schema.number()),
           startTime: schema.maybe(schema.number()),
-          endTime: schema.maybe(schema.number())
+          endTime: schema.maybe(schema.number()),
         }),
       },
     },
@@ -42,5 +42,21 @@ export function setupAlertsRoutes(services: NodeServices, router: IRouter) {
       },
     },
     alertService.acknowledgeAlerts
+  );
+
+  router.get(
+    {
+      path: `${API.THREAT_INTEL_BASE}/alerts`,
+      validate: {
+        query: createQueryValidationSchema({
+          sortOrder: schema.maybe(schema.string()),
+          size: schema.maybe(schema.number()),
+          startIndex: schema.maybe(schema.number()),
+          startTime: schema.maybe(schema.number()),
+          endTime: schema.maybe(schema.number()),
+        }),
+      },
+    },
+    alertService.getThreatIntelAlerts
   );
 }

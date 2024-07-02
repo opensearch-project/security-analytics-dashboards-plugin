@@ -6,7 +6,13 @@
 import { HttpSetup } from 'opensearch-dashboards/public';
 import { ServerResponse } from '../../server/models/types';
 import { API } from '../../server/utils/constants';
-import { AcknowledgeAlertsResponse, GetAlertsParams, GetAlertsResponse } from '../../types';
+import {
+  AcknowledgeAlertsResponse,
+  GetAlertsParams,
+  GetAlertsResponse,
+  GetThreatIntelAlertsParams,
+  GetThreatIntelAlertsResponse,
+} from '../../types';
 import { dataSourceInfo } from './utils/constants';
 
 export default class AlertsService {
@@ -19,14 +25,22 @@ export default class AlertsService {
   getAlerts = async (
     getAlertsParams: GetAlertsParams
   ): Promise<ServerResponse<GetAlertsResponse>> => {
-    const { detectorType, detector_id, size, sortOrder, startIndex, startTime, endTime } = getAlertsParams;
+    const {
+      detectorType,
+      detector_id,
+      size,
+      sortOrder,
+      startIndex,
+      startTime,
+      endTime,
+    } = getAlertsParams;
     const baseQuery = {
       sortOrder: sortOrder || 'desc',
       size: size || 10000,
       startIndex: startIndex || 0,
       dataSourceId: dataSourceInfo.activeDataSource.id,
       startTime,
-      endTime
+      endTime,
     };
     let query;
 
@@ -55,5 +69,21 @@ export default class AlertsService {
       body,
       query: { dataSourceId: dataSourceInfo.activeDataSource.id },
     });
+  };
+
+  getThreatIntelAlerts = async (
+    getAlertsParams: GetThreatIntelAlertsParams
+  ): Promise<ServerResponse<GetThreatIntelAlertsResponse>> => {
+    const { size, sortOrder, startIndex, startTime, endTime } = getAlertsParams;
+    const query = {
+      sortOrder: sortOrder || 'desc',
+      size: size || 10000,
+      startIndex: startIndex || 0,
+      dataSourceId: dataSourceInfo.activeDataSource.id,
+      startTime,
+      endTime,
+    };
+
+    return await this.httpClient.get(`..${API.THREAT_INTEL_BASE}/alerts`, { query });
   };
 }
