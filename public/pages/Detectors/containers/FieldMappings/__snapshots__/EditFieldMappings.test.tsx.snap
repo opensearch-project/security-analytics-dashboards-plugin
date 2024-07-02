@@ -188,6 +188,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
   filedMappingService={
     FieldMappingService {
       "createMappings": [Function],
+      "getIndexAliasFields": [Function],
       "getMappings": [Function],
       "getMappingsView": [Function],
       "httpClient": [MockFunction],
@@ -489,6 +490,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                         filedMappingService={
                           FieldMappingService {
                             "createMappings": [Function],
+                            "getIndexAliasFields": [Function],
                             "getMappings": [Function],
                             "getMappingsView": [Function],
                             "httpClient": [MockFunction],
