@@ -70,7 +70,7 @@ export function addAlertsMethods(securityAnalytics: any, createAction: any): voi
   securityAnalytics[METHOD_NAMES.UPDATE_THREAT_INTEL_ALERTS_STATE] = createAction({
     url: {
       fmt: `${API.THREAT_INTEL_BASE}/alerts/status`,
-      req: {
+      params: {
         state: {
           type: 'string',
           required: true,

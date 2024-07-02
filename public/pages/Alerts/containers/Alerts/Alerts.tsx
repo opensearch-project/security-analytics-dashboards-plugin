@@ -833,6 +833,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
   ): Promise<boolean> => {
     const { alertService, notifications } = this.props;
     let successCount = 0;
+    const actionName = nextState === 'ACKNOWLEDGED' ? 'acknowledge' : 'complete';
     try {
       if (selectedItems.length > 0) {
         const response = await alertService.updateThreatIntelAlertsState(
@@ -842,14 +843,14 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         if (response.ok) {
           successCount = selectedItems.length;
         } else {
-          errorNotificationToast(notifications, 'acknowledge', 'alerts', response.error);
+          errorNotificationToast(notifications, actionName, 'alert(s)', response.error);
         }
       }
     } catch (e: any) {
-      errorNotificationToast(notifications, 'acknowledge', 'alerts', e);
+      errorNotificationToast(notifications, actionName, 'alert(s)', e);
     }
     if (successCount) {
-      successNotificationToast(notifications, 'acknowledged', `${successCount} alerts`);
+      successNotificationToast(notifications, nextState.toLowerCase(), `${successCount} alerts`);
       this.onRefresh();
     }
 
