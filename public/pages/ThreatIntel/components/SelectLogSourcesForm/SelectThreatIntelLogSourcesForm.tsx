@@ -57,7 +57,7 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
   const getLogFields = useCallback(
     async (indexName: string) => {
       if (saContext && !logSourceMappingByName[indexName]) {
-        getFieldsForIndex(saContext.services.indexService, indexName).then((fields) => {
+        getFieldsForIndex(saContext.services.fieldMappingService, indexName).then((fields) => {
           setLogSourceMappingByName({
             ...logSourceMappingByName,
             [indexName]: fields,

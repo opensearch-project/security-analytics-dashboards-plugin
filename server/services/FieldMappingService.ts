@@ -141,4 +141,43 @@ export default class FieldMappingService extends MDSEnabledClientService {
       });
     }
   };
+
+  getIndexAliasFields = async (
+    context: RequestHandlerContext,
+    request: OpenSearchDashboardsRequest<{ indexName: string }, {}>,
+    response: OpenSearchDashboardsResponseFactory
+  ) => {
+    try {
+      const { indexName } = request.params;
+      const client = this.getClient(request, context);
+      const mappingsResponse: { [key: string]: { mappings: any } } = await client(
+        CLIENT_FIELD_MAPPINGS_METHODS.GET_INDEX_ALIAS_MAPPINGS,
+        {
+          indexName,
+        }
+      );
+
+      const fieldMappings = Object.values(mappingsResponse)[0]?.mappings;
+      const fields = Object.keys(fieldMappings || {}).filter(
+        (field) => Object.keys(fieldMappings[field].mapping).length > 0
+      );
+
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: true,
+          response: fields,
+        },
+      });
+    } catch (error: any) {
+      console.error('Security Analytics - FieldMappingService - getIndexAliasFields:', error);
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: false,
+          error: error.message,
+        },
+      });
+    }
+  };
 }
