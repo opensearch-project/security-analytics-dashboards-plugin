@@ -11,14 +11,17 @@ import { useEffect } from 'react';
 import { CoreServicesContext } from '../../../../components/core_services';
 import {
   EuiButton,
+  EuiButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
+  EuiIcon,
   EuiLoadingContent,
   EuiPanel,
   EuiSpacer,
   EuiTabbedContent,
   EuiTabbedContentTab,
   EuiTitle,
+  EuiToolTip,
 } from '@elastic/eui';
 import { DescriptionGroup } from '../../../../components/Utility/DescriptionGroup';
 import { IoCsTable } from '../../components/IoCsTable/IoCsTable';
@@ -138,7 +141,25 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
     }
   };
 
-  const { name, description, type, ioc_types, last_update_time, enabled } = source;
+  const toggleActiveState = async () => {
+    const updateRes = await threatIntelService.updateThreatIntelSource(source.id, {
+      ...source,
+      enabled_for_scan: !source.enabled_for_scan,
+    });
+    if (updateRes.ok) {
+      onSourceUpdate();
+    }
+  };
+
+  const {
+    name,
+    description,
+    type,
+    ioc_types,
+    last_update_time,
+    enabled,
+    enabled_for_scan,
+  } = source;
   const schedule = type === 'S3_CUSTOM' ? source.schedule : undefined;
 
   return (
@@ -150,7 +171,32 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
           </EuiTitle>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiFlexGroup alignItems="center">
+          <EuiFlexGroup alignItems="center" wrap>
+            <EuiFlexItem grow={false}>
+              <EuiToolTip
+                content={
+                  'When Active, the indicators of compromise from this source are used to scan the log data as part of the threat intel scan.'
+                }
+              >
+                <span>
+                  <EuiIcon
+                    type={'dot'}
+                    color={enabled_for_scan ? 'success' : 'text'}
+                    style={{ marginBottom: 4 }}
+                  />{' '}
+                  {enabled_for_scan ? 'Active' : 'Inactive'}&nbsp;
+                  <EuiIcon type={'iInCircle'} />
+                </span>
+              </EuiToolTip>
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <EuiButton
+                color={enabled_for_scan ? 'danger' : 'primary'}
+                onClick={toggleActiveState}
+              >
+                {enabled_for_scan ? 'Deactivate' : 'Activate'}
+              </EuiButton>
+            </EuiFlexItem>
             {type === 'S3_CUSTOM' && (
               <EuiFlexItem grow={false}>
                 <EuiButton fill onClick={onRefresh}>
@@ -159,9 +205,9 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
               </EuiFlexItem>
             )}
             <EuiFlexItem grow={false}>
-              <EuiButton color="danger" onClick={onDeleteButtonClick}>
-                Delete
-              </EuiButton>
+              <EuiToolTip content={'Delete'}>
+                <EuiButtonIcon iconType={'trash'} color="danger" onClick={onDeleteButtonClick} />
+              </EuiToolTip>
             </EuiFlexItem>
           </EuiFlexGroup>
         </EuiFlexItem>
