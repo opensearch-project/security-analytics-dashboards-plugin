@@ -86,4 +86,18 @@ export default class AlertsService {
 
     return await this.httpClient.get(`..${API.THREAT_INTEL_BASE}/alerts`, { query });
   };
+
+  updateThreatIntelAlertsState = async (
+    state: 'ACKNOWLEDGED' | 'COMPLETED',
+    alertIds: string[]
+  ): Promise<ServerResponse<AcknowledgeAlertsResponse>> => {
+    const url = `${API.THREAT_INTEL_BASE}/alerts/status`;
+    return await this.httpClient.put(`..${url}`, {
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+        state,
+        alert_ids: alertIds.join(','),
+      },
+    });
+  };
 }

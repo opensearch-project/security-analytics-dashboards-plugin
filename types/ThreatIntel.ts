@@ -6,6 +6,7 @@
 import { ThreatIntelIocType } from '../common/constants';
 import { PeriodSchedule } from '../models/interfaces';
 import { AlertSeverity } from '../public/pages/Alerts/utils/constants';
+import { ALERT_STATE } from '../public/utils/constants';
 import { TriggerAction } from './Alert';
 
 export type ThreatIntelNextStepId = 'add-source' | 'configure-scan';
@@ -240,7 +241,7 @@ export interface ThreatIntelAlert {
   primary_term: number;
   trigger_id: string;
   trigger_name: string;
-  state: string;
+  state: keyof typeof ALERT_STATE;
   error_message: string;
   ioc_value: string;
   ioc_type: ThreatIntelIocType;

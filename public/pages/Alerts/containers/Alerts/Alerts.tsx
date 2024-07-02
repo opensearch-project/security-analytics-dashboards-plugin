@@ -103,8 +103,9 @@ export interface AlertsProps extends RouteComponentProps, DataSourceProps {
 export interface AlertsState {
   groupBy: string;
   recentlyUsedRanges: DurationRange[];
-  selectedItems: AlertItem[];
-  correlatedItems: CorrelationAlertTableItem[];
+  selectedDetectionRuleAlertItems: AlertItem[];
+  selectedCorrelationsAlertItems: CorrelationAlertTableItem[];
+  selectedThreatIntelAlertItems: ThreatIntelAlert[];
   alerts: AlertItem[];
   correlationAlerts: CorrelationAlertTableItem[];
   threatIntelAlerts: ThreatIntelAlert[];
@@ -147,8 +148,9 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       loading: true,
       groupBy: 'status',
       recentlyUsedRanges: [DEFAULT_DATE_RANGE],
-      selectedItems: [],
-      correlatedItems: [],
+      selectedDetectionRuleAlertItems: [],
+      selectedCorrelationsAlertItems: [],
+      selectedThreatIntelAlertItems: [],
       alerts: [],
       correlationAlerts: [],
       alertsFiltered: false,
@@ -656,11 +658,11 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
   }
 
   createAcknowledgeControl() {
-    const { selectedItems } = this.state;
+    const { selectedDetectionRuleAlertItems } = this.state;
     return (
       <EuiButton
-        disabled={!selectedItems.length}
-        onClick={() => this.onAcknowledge(selectedItems)}
+        disabled={!selectedDetectionRuleAlertItems.length}
+        onClick={() => this.onAcknowledge(selectedDetectionRuleAlertItems)}
         data-test-subj={'acknowledge-button'}
       >
         Acknowledge
@@ -669,15 +671,53 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
   }
 
   createAcknowledgeControlForCorrelations() {
-    const { correlatedItems } = this.state;
+    const { selectedCorrelationsAlertItems } = this.state;
     return (
       <EuiButton
-        disabled={!correlatedItems.length}
-        onClick={() => this.onAcknowledgeCorrelationAlert(correlatedItems)}
+        disabled={!selectedCorrelationsAlertItems.length}
+        onClick={() => this.onAcknowledgeCorrelationAlert(selectedCorrelationsAlertItems)}
         data-test-subj={'acknowledge-button'}
       >
         Acknowledge
       </EuiButton>
+    );
+  }
+
+  createAcknowledgeControlForThreatIntel() {
+    const { selectedThreatIntelAlertItems } = this.state;
+    const statesOfSelectedAlerts = new Set(selectedThreatIntelAlertItems.map(({ state }) => state));
+    const disableAllActions =
+      !selectedThreatIntelAlertItems.length || statesOfSelectedAlerts.size > 1;
+    const disableAcknowledge =
+      disableAllActions || selectedThreatIntelAlertItems[0].state !== 'ACTIVE';
+    const disableComplete =
+      disableAllActions || selectedThreatIntelAlertItems[0].state !== 'ACKNOWLEDGED';
+
+    return (
+      <EuiFlexGroup gutterSize="s">
+        <EuiFlexItem grow={false}>
+          <EuiButton
+            disabled={disableAcknowledge}
+            onClick={() =>
+              this.onThreatIntelAlertStateChange(selectedThreatIntelAlertItems, 'ACKNOWLEDGED')
+            }
+            data-test-subj={'acknowledge-button'}
+          >
+            Acknowledge
+          </EuiButton>
+        </EuiFlexItem>
+        <EuiFlexItem grow={false}>
+          <EuiButton
+            disabled={disableComplete}
+            onClick={() =>
+              this.onThreatIntelAlertStateChange(selectedThreatIntelAlertItems, 'COMPLETED')
+            }
+            data-test-subj={'complete-button'}
+          >
+            Complete
+          </EuiButton>
+        </EuiFlexItem>
+      </EuiFlexGroup>
     );
   }
 
@@ -715,11 +755,15 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
   };
 
   onSelectionChange = (selectedItems: AlertItem[]) => {
-    this.setState({ selectedItems });
+    this.setState({ selectedDetectionRuleAlertItems: selectedItems });
   };
 
-  onCorrelationSelectionChange = (correlatedItems: CorrelationAlertTableItem[]) => {
-    this.setState({ correlatedItems });
+  onCorrelationSelectionChange = (selectedItems: CorrelationAlertTableItem[]) => {
+    this.setState({ selectedCorrelationsAlertItems: selectedItems });
+  };
+
+  onThreatIntelAlertSelectionChange = (items: ThreatIntelAlert[]) => {
+    this.setState({ selectedThreatIntelAlertItems: items });
   };
 
   onFlyoutClose = () => {
@@ -756,7 +800,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     }
     if (successCount)
       successNotificationToast(notifications, 'acknowledged', `${successCount} alerts`);
-    this.setState({ selectedItems: [] });
+    this.setState({ selectedDetectionRuleAlertItems: [] });
     this.onRefresh();
   };
 
@@ -783,7 +827,34 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     }
     if (successCount)
       successNotificationToast(notifications, 'acknowledged', `${successCount} alerts`);
-    this.setState({ selectedItems: [] });
+    this.setState({ selectedCorrelationsAlertItems: [] });
+    this.onRefresh();
+  };
+
+  onThreatIntelAlertStateChange = async (
+    selectedItems: ThreatIntelAlert[] = [],
+    nextState: 'ACKNOWLEDGED' | 'COMPLETED'
+  ) => {
+    const { alertService, notifications } = this.props;
+    let successCount = 0;
+    try {
+      if (selectedItems.length > 0) {
+        const response = await alertService.updateThreatIntelAlertsState(
+          nextState,
+          selectedItems.map(({ id }) => id)
+        );
+        if (response.ok) {
+          successCount = selectedItems.length;
+        } else {
+          errorNotificationToast(notifications, 'acknowledge', 'alerts', response.error);
+        }
+      }
+    } catch (e: any) {
+      errorNotificationToast(notifications, 'acknowledge', 'alerts', e);
+    }
+    if (successCount)
+      successNotificationToast(notifications, 'acknowledged', `${successCount} alerts`);
+    this.setState({ selectedDetectionRuleAlertItems: [] });
     this.onRefresh();
   };
 
@@ -796,7 +867,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         return this.createAcknowledgeControlForCorrelations();
 
       case AlertTabId.ThreatIntel:
-        return [];
+        return this.createAcknowledgeControlForThreatIntel();
 
       default:
         return [];
@@ -1040,6 +1111,8 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
                         <EuiSpacer size="m" />
                         <ThreatIntelAlertsTable
                           alerts={alertsFiltered ? filteredThreatIntelAlerts : threatIntelAlerts}
+                          onAlertStateChange={this.onThreatIntelAlertStateChange}
+                          onSelectionChange={this.onThreatIntelAlertSelectionChange}
                         />
                       </>
                     ),

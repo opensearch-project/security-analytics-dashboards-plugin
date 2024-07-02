@@ -154,4 +154,41 @@ export default class AlertService extends MDSEnabledClientService {
       });
     }
   };
+
+  updateThreatIntelAlertsState = async (
+    context: RequestHandlerContext,
+    request: OpenSearchDashboardsRequest<{
+      state: 'ACKNOWLEDGED' | 'COMPLETED';
+      alert_ids: string;
+    }>,
+    response: OpenSearchDashboardsResponseFactory
+  ): Promise<IOpenSearchDashboardsResponse<ServerResponse<any> | ResponseError>> => {
+    try {
+      const params: any = request.query;
+      // Delete the dataSourceId since this query param is not supported by the alerts API
+      delete params['dataSourceId'];
+
+      const client = this.getClient(request, context);
+      const updateStatusResponse: GetAlertsResponse = await client(
+        CLIENT_THREAT_INTEL_METHODS.UPDATE_THREAT_INTEL_ALERTS_STATE,
+        params
+      );
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: true,
+          response: updateStatusResponse,
+        },
+      });
+    } catch (error: any) {
+      console.error('Security Analytics - AlertService - updateThreatIntelAlertsState:', error);
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: false,
+          error: error.message,
+        },
+      });
+    }
+  };
 }
