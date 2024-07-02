@@ -32,7 +32,7 @@ import {
 } from '../pages/CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { RuleInfo } from '../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { IndexService, OpenSearchService } from '../services';
+import { FieldMappingService, IndexService, OpenSearchService } from '../services';
 import { ruleSeverity, ruleTypes } from '../pages/Rules/utils/constants';
 import _ from 'lodash';
 import { AlertCondition, DateTimeFilter, Duration, LogType } from '../../types';
@@ -576,14 +576,17 @@ export function getIsNotificationPluginInstalled(): boolean {
   return isNotificationPluginInstalled;
 }
 
-export async function getFieldsForIndex(indexService: IndexService, indexName: string) {
+export async function getFieldsForIndex(
+  fieldMappingService: FieldMappingService,
+  indexName: string
+) {
   let fields: {
     label: string;
     value: string;
   }[] = [];
 
   if (indexName) {
-    const result = await indexService.getIndexFields(indexName);
+    const result = await fieldMappingService.getIndexAliasFields(indexName);
     if (result?.ok) {
       fields = result.response?.map((field) => ({
         label: field,
