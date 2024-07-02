@@ -91,13 +91,13 @@ export function addThreatIntelMethods(securityAnalytics: any, createAction: any)
         size: {
           type: 'number',
         },
-        feed_id: {
+        feed_ids: {
           type: 'string',
         },
-        iocTypes: {
+        ioc_types: {
           type: 'string',
         },
-        search: {
+        searchString: {
           type: 'string',
         },
         sortString: {

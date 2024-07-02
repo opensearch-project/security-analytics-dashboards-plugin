@@ -311,7 +311,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
             <EuiSpacer />
             <EuiFormRow label="S3 bucket directory">
               <EuiFieldText
-                placeholder="S3://"
+                placeholder="S3 bucket name"
                 onChange={(event) => onS3DataChange('bucket_name', event.target.value)}
                 value={s3ConnectionDetails.s3.bucket_name}
               />
