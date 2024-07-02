@@ -834,7 +834,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
   onThreatIntelAlertStateChange = async (
     selectedItems: ThreatIntelAlert[] = [],
     nextState: 'ACKNOWLEDGED' | 'COMPLETED'
-  ) => {
+  ): Promise<boolean> => {
     const { alertService, notifications } = this.props;
     let successCount = 0;
     try {
@@ -852,10 +852,14 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     } catch (e: any) {
       errorNotificationToast(notifications, 'acknowledge', 'alerts', e);
     }
-    if (successCount)
+    if (successCount) {
       successNotificationToast(notifications, 'acknowledged', `${successCount} alerts`);
+      this.onRefresh();
+    }
+
     this.setState({ selectedDetectionRuleAlertItems: [] });
-    this.onRefresh();
+
+    return successCount > 0 ? true : false;
   };
 
   getContelPanelActions() {

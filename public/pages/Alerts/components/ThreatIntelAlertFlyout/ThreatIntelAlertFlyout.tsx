@@ -35,7 +35,7 @@ export interface ThreatIntelAlertFlyoutProps {
   onAlertStateChange: (
     selectedItems: ThreatIntelAlert[],
     nextState: 'ACKNOWLEDGED' | 'COMPLETED'
-  ) => Promise<void>;
+  ) => Promise<boolean>;
 }
 
 export const ThreatIntelAlertFlyout: React.FC<ThreatIntelAlertFlyoutProps> = ({
@@ -134,8 +134,11 @@ export const ThreatIntelAlertFlyout: React.FC<ThreatIntelAlertFlyoutProps> = ({
                   <EuiButton
                     onClick={() => {
                       const nextState = alertState === 'ACTIVE' ? 'ACKNOWLEDGED' : 'COMPLETED';
-                      setAlertState(nextState);
-                      onAlertStateChange([alertItem], nextState);
+                      onAlertStateChange([alertItem], nextState).then((success) => {
+                        if (success) {
+                          setAlertState(nextState);
+                        }
+                      });
                     }}
                     data-test-subj={'alert-details-flyout-acknowledge-button'}
                   >
