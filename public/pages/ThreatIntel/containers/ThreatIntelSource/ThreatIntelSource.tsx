@@ -67,6 +67,8 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
       setLoadingIoCs(true);
       const iocsRes = await threatIntelService.getThreatIntelIocs({
         feed_ids: sourceId,
+        startIndex: 0,
+        size: 10000,
       });
 
       if (iocsRes.ok) {
