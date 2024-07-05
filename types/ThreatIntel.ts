@@ -52,12 +52,19 @@ export interface FileUploadSource {
   };
 }
 
+export interface URLDownloadSource {
+  url_download: {
+    url: string;
+  };
+}
+
 export interface ThreatIntelSourcePayloadBase {
   name: string;
   description?: string;
   format: 'STIX2';
   store_type: 'OS';
   enabled: boolean;
+  enabled_for_scan: boolean;
   ioc_types: ThreatIntelIocType[];
 }
 
@@ -78,9 +85,22 @@ export interface ThreatIntelIocUploadSourcePayload extends ThreatIntelSourcePayl
   source: FileUploadSource;
 }
 
+export interface ThreatIntelURLDownloadSourceInfo extends ThreatIntelSourcePayloadBase {
+  type: 'URL_DOWNLOAD';
+  schedule: {
+    interval: {
+      start_time: number;
+      period: number;
+      unit: string;
+    };
+  };
+  source: URLDownloadSource;
+}
+
 export type ThreatIntelSourcePayload =
   | ThreatIntelS3CustomSourcePayload
-  | ThreatIntelIocUploadSourcePayload;
+  | ThreatIntelIocUploadSourcePayload
+  | ThreatIntelURLDownloadSourceInfo;
 
 export interface LogSourceIocConfig {
   enabled: boolean;
