@@ -161,6 +161,7 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
     enabled_for_scan,
   } = source;
   const schedule = type === 'S3_CUSTOM' ? source.schedule : undefined;
+  const showActivateControls = 'enabled_for_scan' in source;
 
   return (
     <>
@@ -172,31 +173,35 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
           <EuiFlexGroup alignItems="center" wrap>
-            <EuiFlexItem grow={false}>
-              <EuiToolTip
-                content={
-                  'When Active, the indicators of compromise from this source are used to scan the log data as part of the threat intel scan.'
-                }
-              >
-                <span>
-                  <EuiIcon
-                    type={'dot'}
-                    color={enabled_for_scan ? 'success' : 'text'}
-                    style={{ marginBottom: 4 }}
-                  />{' '}
-                  {enabled_for_scan ? 'Active' : 'Inactive'}&nbsp;
-                  <EuiIcon type={'iInCircle'} />
-                </span>
-              </EuiToolTip>
-            </EuiFlexItem>
-            <EuiFlexItem grow={false}>
-              <EuiButton
-                color={enabled_for_scan ? 'danger' : 'primary'}
-                onClick={toggleActiveState}
-              >
-                {enabled_for_scan ? 'Deactivate' : 'Activate'}
-              </EuiButton>
-            </EuiFlexItem>
+            {showActivateControls && (
+              <>
+                <EuiFlexItem grow={false}>
+                  <EuiToolTip
+                    content={
+                      'When Active, the indicators of compromise from this source are used to scan the log data as part of the threat intel scan.'
+                    }
+                  >
+                    <span>
+                      <EuiIcon
+                        type={'dot'}
+                        color={enabled_for_scan ? 'success' : 'text'}
+                        style={{ marginBottom: 4 }}
+                      />{' '}
+                      {enabled_for_scan ? 'Active' : 'Inactive'}&nbsp;
+                      <EuiIcon type={'iInCircle'} />
+                    </span>
+                  </EuiToolTip>
+                </EuiFlexItem>
+                <EuiFlexItem grow={false}>
+                  <EuiButton
+                    color={enabled_for_scan ? 'danger' : 'primary'}
+                    onClick={toggleActiveState}
+                  >
+                    {enabled_for_scan ? 'Deactivate' : 'Activate'}
+                  </EuiButton>
+                </EuiFlexItem>
+              </>
+            )}
             {type === 'S3_CUSTOM' && (
               <EuiFlexItem grow={false}>
                 <EuiButton fill onClick={onRefresh}>
