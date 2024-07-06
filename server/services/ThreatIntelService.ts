@@ -128,7 +128,8 @@ export default class ThreatIntelService extends MDSEnabledClientService {
     response: OpenSearchDashboardsResponseFactory
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<any> | ResponseError>> => {
     try {
-      const params = { body: request.body };
+      const { query } = request.body as { query: object };
+      const params = { body: { size: 10000, query } };
       const client = this.getClient(request, context);
       const searchSourcesResponse: any = await client(
         CLIENT_THREAT_INTEL_METHODS.SEARCH_THREAT_INTEL_SOURCES,
