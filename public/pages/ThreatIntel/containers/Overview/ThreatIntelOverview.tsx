@@ -194,7 +194,7 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
         initialIsOpen={threatIntelSources.length === 0 || logSources.length === 0}
       >
         <EuiSpacer />
-        <EuiFlexGroup>
+        <EuiFlexGroup wrap>
           {threatIntelNextStepsProps.map(
             ({ id, title, description, footerButtonProps: { text, disabled } }) => (
               <EuiFlexItem key={id}>

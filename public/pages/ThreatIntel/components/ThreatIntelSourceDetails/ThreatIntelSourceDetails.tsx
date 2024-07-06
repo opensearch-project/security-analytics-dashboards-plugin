@@ -27,6 +27,7 @@ import {
   ThreatIntelS3CustomSourcePayload,
   ThreatIntelSourceItem,
   ThreatIntelSourcePayload,
+  URLDownloadSource,
 } from '../../../../../types';
 import { defaultIntervalUnitOptions } from '../../../../utils/constants';
 import { readIocsFromFile, threatIntelSourceItemToBasePayload } from '../../utils/helpers';
@@ -331,6 +332,14 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
                 )}
               </>
             )}
+            {type === 'URL_DOWNLOAD' && (
+              <EuiFormRow label="Source URL">
+                <EuiFieldText
+                  readOnly={isReadOnly}
+                  value={(sourceItem.source as URLDownloadSource).url_download?.url}
+                />
+              </EuiFormRow>
+            )}
             <EuiFormRow label="Types of malicious indicators">
               <>
                 <EuiSpacer size="s" />
@@ -344,14 +353,16 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
             </EuiFormRow>
             <EuiSpacer />
           </EuiFlexItem>
-          <EuiFlexItem grow={false}>
-            <EuiButton
-              style={{ visibility: isReadOnly ? 'visible' : 'hidden' }}
-              onClick={() => setIsReadOnly(false)}
-            >
-              Edit
-            </EuiButton>
-          </EuiFlexItem>
+          {type !== 'URL_DOWNLOAD' && (
+            <EuiFlexItem grow={false}>
+              <EuiButton
+                style={{ visibility: isReadOnly ? 'visible' : 'hidden' }}
+                onClick={() => setIsReadOnly(false)}
+              >
+                Edit
+              </EuiButton>
+            </EuiFlexItem>
+          )}
         </EuiFlexGroup>
       </EuiPanel>
       {!isReadOnly && (
