@@ -12,7 +12,7 @@ import {
   EuiFlyout,
   EuiFlyoutBody,
   EuiFlyoutHeader,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiSpacer,
   EuiText,
   EuiTitle,
@@ -146,10 +146,10 @@ export default class CreateAlertFlyout extends Component<
         </EuiFlyoutHeader>
 
         <EuiFlyoutBody>
-          <EuiFormRow label={'Detector'}>
+          <EuiCompressedFormRow label={'Detector'}>
             {/*//TODO: Refactor EuiText to EuiLink once detector edit page is available, and hyperlink to that page.*/}
             <EuiText>{name || DEFAULT_EMPTY_DATA}</EuiText>
-          </EuiFormRow>
+          </EuiCompressedFormRow>
 
           <EuiSpacer size={'m'} />
           <AlertConditionPanel

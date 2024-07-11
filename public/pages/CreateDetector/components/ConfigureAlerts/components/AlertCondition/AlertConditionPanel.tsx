@@ -11,7 +11,7 @@ import {
   EuiComboBox,
   EuiComboBoxOptionOption,
   EuiFieldText,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiSpacer,
   EuiText,
   EuiTitle,
@@ -339,7 +339,7 @@ export default class AlertConditionPanel extends Component<
 
     return (
       <div>
-        <EuiFormRow
+        <EuiCompressedFormRow
           label={
             <EuiText size="s">
               <p>Trigger name</p>
@@ -357,7 +357,7 @@ export default class AlertConditionPanel extends Component<
             required={nameFieldTouched}
             data-test-subj={`alert-condition-name-${indexNum}`}
           />
-        </EuiFormRow>
+        </EuiCompressedFormRow>
         <EuiSpacer size={'l'} />
 
         <EuiTitle size="s">
@@ -397,7 +397,7 @@ export default class AlertConditionPanel extends Component<
                 </div>
               }
             >
-              <EuiFormRow
+              <EuiCompressedFormRow
                 label={
                   <EuiText size="s">
                     <p>Rule names</p>
@@ -411,10 +411,10 @@ export default class AlertConditionPanel extends Component<
                   selectedOptions={selectedNames}
                   data-test-subj={`alert-rulename-combo-box`}
                 />
-              </EuiFormRow>
+              </EuiCompressedFormRow>
               <EuiSpacer size={'m'} />
 
-              <EuiFormRow
+              <EuiCompressedFormRow
                 label={
                   <EuiText size="s">
                     <p>Rule Severities</p>
@@ -429,10 +429,10 @@ export default class AlertConditionPanel extends Component<
                   selectedOptions={createSelectedOptions(ruleSeverityLevels)}
                   data-test-subj={`alert-severity-combo-box`}
                 />
-              </EuiFormRow>
+              </EuiCompressedFormRow>
               <EuiSpacer size={'m'} />
 
-              <EuiFormRow
+              <EuiCompressedFormRow
                 label={
                   <EuiText size="s">
                     <p>Tags</p>
@@ -447,7 +447,7 @@ export default class AlertConditionPanel extends Component<
                   selectedOptions={createSelectedOptions(tags)}
                   data-test-subj={'alert-tags-combo-box'}
                 />
-              </EuiFormRow>
+              </EuiCompressedFormRow>
             </EuiAccordion>
 
             <EuiSpacer size="m" />
@@ -494,7 +494,7 @@ export default class AlertConditionPanel extends Component<
 
         <EuiSpacer size="s" />
 
-        <EuiFormRow
+        <EuiCompressedFormRow
           label={
             <EuiText size="s">
               <p>Alert severity</p>
@@ -513,7 +513,7 @@ export default class AlertConditionPanel extends Component<
             isClearable={false}
             data-test-subj={'security-levels-combo-box'}
           />
-        </EuiFormRow>
+        </EuiCompressedFormRow>
 
         <EuiSpacer size={'l'} />
 

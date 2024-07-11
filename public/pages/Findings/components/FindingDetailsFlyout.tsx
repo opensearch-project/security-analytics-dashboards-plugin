@@ -15,7 +15,7 @@ import {
   EuiFlyout,
   EuiFlyoutBody,
   EuiFlyoutHeader,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiHorizontalRule,
   EuiLink,
   EuiModal,
@@ -270,47 +270,47 @@ export default class FindingDetailsFlyout extends Component<
             <EuiPanel color="subdued">
               <EuiFlexGroup>
                 <EuiFlexItem>
-                  <EuiFormRow label={'Rule name'}>
+                  <EuiCompressedFormRow label={'Rule name'}>
                     <EuiLink
                       onClick={() => this.showRuleDetails(fullRule, rule.id)}
                       data-test-subj={`finding-details-flyout-${fullRule.title}-details`}
                     >
                       {fullRule.title || DEFAULT_EMPTY_DATA}
                     </EuiLink>
-                  </EuiFormRow>
+                  </EuiCompressedFormRow>
                 </EuiFlexItem>
 
                 <EuiFlexItem>
-                  <EuiFormRow
+                  <EuiCompressedFormRow
                     label={'Rule severity'}
                     data-test-subj={'finding-details-flyout-rule-severity'}
                   >
                     <EuiText>{severity || DEFAULT_EMPTY_DATA}</EuiText>
-                  </EuiFormRow>
+                  </EuiCompressedFormRow>
                 </EuiFlexItem>
 
                 <EuiFlexItem>
-                  <EuiFormRow
+                  <EuiCompressedFormRow
                     label={'Log type'}
                     data-test-subj={'finding-details-flyout-rule-category'}
                   >
                     <EuiText>{getLogTypeLabel(fullRule.category) || DEFAULT_EMPTY_DATA}</EuiText>
-                  </EuiFormRow>
+                  </EuiCompressedFormRow>
                 </EuiFlexItem>
               </EuiFlexGroup>
 
-              <EuiFormRow
+              <EuiCompressedFormRow
                 label={'Description'}
                 data-test-subj={'finding-details-flyout-rule-description'}
               >
                 <EuiText>{fullRule.description || DEFAULT_EMPTY_DATA}</EuiText>
-              </EuiFormRow>
+              </EuiCompressedFormRow>
 
               <EuiSpacer size={'m'} />
 
-              <EuiFormRow label={'Tags'} data-test-subj={'finding-details-flyout-rule-tags'}>
+              <EuiCompressedFormRow label={'Tags'} data-test-subj={'finding-details-flyout-rule-tags'}>
                 <EuiText>{this.renderTags(rule.tags) || DEFAULT_EMPTY_DATA}</EuiText>
-              </EuiFormRow>
+              </EuiCompressedFormRow>
             </EuiPanel>
           </EuiAccordion>
           {rules.length > 1 && <EuiHorizontalRule margin={'xs'} />}
@@ -345,7 +345,7 @@ export default class FindingDetailsFlyout extends Component<
     }
 
     return (
-      <EuiFormRow fullWidth={true} style={{ width: '100%' }}>
+      <EuiCompressedFormRow fullWidth={true} style={{ width: '100%' }}>
         <EuiCodeBlock
           language="json"
           isCopyable
@@ -353,7 +353,7 @@ export default class FindingDetailsFlyout extends Component<
         >
           {formattedDocument}
         </EuiCodeBlock>
-      </EuiFormRow>
+      </EuiCompressedFormRow>
     );
   };
 
@@ -459,9 +459,9 @@ export default class FindingDetailsFlyout extends Component<
           <h3>Documents ({relatedDocuments.length})</h3>
         </EuiTitle>
         <EuiSpacer />
-        <EuiFormRow label={'Index'} data-test-subj={`finding-details-flyout-rule-document-index`}>
+        <EuiCompressedFormRow label={'Index'} data-test-subj={`finding-details-flyout-rule-document-index`}>
           <EuiText size="s">{index || DEFAULT_EMPTY_DATA}</EuiText>
-        </EuiFormRow>
+        </EuiCompressedFormRow>
         <EuiSpacer />
         <EuiInMemoryTable
           columns={documentsColumns}
@@ -670,29 +670,29 @@ export default class FindingDetailsFlyout extends Component<
         <EuiFlyoutBody>
           <EuiFlexGroup>
             <EuiFlexItem>
-              <EuiFormRow label={'Finding ID'}>
+              <EuiCompressedFormRow label={'Finding ID'}>
                 <EuiText data-test-subj={'finding-details-flyout-finding-id'}>
                   {id || DEFAULT_EMPTY_DATA}
                 </EuiText>
-              </EuiFormRow>
+              </EuiCompressedFormRow>
             </EuiFlexItem>
 
             <EuiFlexItem>
-              <EuiFormRow
+              <EuiCompressedFormRow
                 label={'Finding time'}
                 data-test-subj={'finding-details-flyout-timestamp'}
               >
                 <EuiText>{renderTime(timestamp) || DEFAULT_EMPTY_DATA}</EuiText>
-              </EuiFormRow>
+              </EuiCompressedFormRow>
             </EuiFlexItem>
 
             <EuiFlexItem>
-              <EuiFormRow
+              <EuiCompressedFormRow
                 label={'Detection type'}
                 data-test-subj={'finding-details-flyout-detection-type'}
               >
                 <EuiText>{detectionType}</EuiText>
-              </EuiFormRow>
+              </EuiCompressedFormRow>
             </EuiFlexItem>
           </EuiFlexGroup>
 

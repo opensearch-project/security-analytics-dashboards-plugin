@@ -9,7 +9,7 @@ import {
   EuiFieldText,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiSpacer,
   EuiToolTip,
 } from '@elastic/eui';
@@ -52,7 +52,7 @@ export const FieldTextArray: React.FC<FieldTextArrayProps> = ({
 
   return (
     <>
-      <EuiFormRow label={label} isInvalid={isInvalid} error={error}>
+      <EuiCompressedFormRow label={label} isInvalid={isInvalid} error={error}>
         <>
           {values.map((ref: string, index: number) => {
             return (
@@ -103,7 +103,7 @@ export const FieldTextArray: React.FC<FieldTextArrayProps> = ({
             {addButtonName}
           </EuiSmallButton>
         </>
-      </EuiFormRow>
+      </EuiCompressedFormRow>
       <EuiSpacer />
     </>
   );

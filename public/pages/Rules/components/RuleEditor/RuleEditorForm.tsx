@@ -9,7 +9,7 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import {
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiFieldText,
   EuiSmallButton,
   EuiSpacer,
@@ -226,7 +226,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
                   <EuiSpacer />
 
-                  <EuiFormRow
+                  <EuiCompressedFormRow
                     label={
                       <EuiText size={'s'}>
                         <strong>Rule name</strong>
@@ -246,11 +246,11 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                       onBlur={props.handleBlur('name')}
                       value={props.values.name}
                     />
-                  </EuiFormRow>
+                  </EuiCompressedFormRow>
 
                   <EuiSpacer size={'m'} />
 
-                  <EuiFormRow
+                  <EuiCompressedFormRow
                     label={
                       <EuiText size={'s'}>
                         <strong>Description </strong>
@@ -271,11 +271,11 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                       value={props.values.description}
                       placeholder={'Detects ...'}
                     />
-                  </EuiFormRow>
+                  </EuiCompressedFormRow>
 
                   <EuiSpacer size={'m'} />
 
-                  <EuiFormRow
+                  <EuiCompressedFormRow
                     label={
                       <EuiText size={'s'}>
                         <strong>Author</strong>
@@ -297,7 +297,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                       onBlur={props.handleBlur('author')}
                       value={props.values.author}
                     />
-                  </EuiFormRow>
+                  </EuiCompressedFormRow>
 
                   <EuiSpacer size={'xl'} />
 
@@ -311,7 +311,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
                   <EuiFlexGroup alignItems="flexStart">
                     <EuiFlexItem style={{ maxWidth: 400 }}>
-                      <EuiFormRow
+                      <EuiCompressedFormRow
                         label={
                           <EuiText size={'s'}>
                             <strong>Log type</strong>
@@ -346,7 +346,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                               : []
                           }
                         />
-                      </EuiFormRow>
+                      </EuiCompressedFormRow>
                     </EuiFlexItem>
                     <EuiFlexItem grow={false} style={{ marginTop: 36 }}>
                       <EuiSmallButton
@@ -360,7 +360,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
                   <EuiSpacer />
 
-                  <EuiFormRow
+                  <EuiCompressedFormRow
                     label={
                       <EuiText size={'s'}>
                         <strong>Rule level (severity)</strong>
@@ -390,11 +390,11 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                           : []
                       }
                     />
-                  </EuiFormRow>
+                  </EuiCompressedFormRow>
 
                   <EuiSpacer />
 
-                  <EuiFormRow
+                  <EuiCompressedFormRow
                     label={
                       <EuiText size={'s'}>
                         <strong>Rule Status</strong>
@@ -421,7 +421,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                           : []
                       }
                     />
-                  </EuiFormRow>
+                  </EuiCompressedFormRow>
 
                   <EuiSpacer size={'xxl'} />
 

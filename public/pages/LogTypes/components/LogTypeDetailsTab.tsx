@@ -7,7 +7,7 @@ import {
   EuiSmallButton,
   EuiButton,
   EuiDescriptionList,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiFieldText,
   EuiSpacer,
   EuiTextArea,
@@ -55,7 +55,7 @@ export const LogTypeDetailsTab: React.FC<LogTypeDetailsTabProps> = ({
             title: 'Log type',
             description: (
               <>
-                <EuiFormRow label="Name">
+                <EuiCompressedFormRow label="Name">
                   <EuiFieldText
                     value={logTypeDetails?.name}
                     onChange={(e) =>
@@ -67,9 +67,9 @@ export const LogTypeDetailsTab: React.FC<LogTypeDetailsTabProps> = ({
                     placeholder="Enter name for log type"
                     disabled={!isEditMode || !!logTypeDetails.detectionRulesCount}
                   />
-                </EuiFormRow>
+                </EuiCompressedFormRow>
                 <EuiSpacer />
-                <EuiFormRow label="Description">
+                <EuiCompressedFormRow label="Description">
                   <EuiTextArea
                     value={logTypeDetails?.description}
                     onChange={(e) =>
@@ -81,7 +81,7 @@ export const LogTypeDetailsTab: React.FC<LogTypeDetailsTabProps> = ({
                     placeholder="Description of the log type"
                     disabled={!isEditMode}
                   />
-                </EuiFormRow>
+                </EuiCompressedFormRow>
                 {isEditMode ? (
                   <EuiBottomBar>
                     <EuiFlexGroup gutterSize="s" justifyContent="flexEnd">

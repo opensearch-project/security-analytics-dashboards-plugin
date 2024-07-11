@@ -15,7 +15,7 @@ import {
   EuiFlyout,
   EuiFlyoutBody,
   EuiFlyoutHeader,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiInMemoryTable,
   EuiLoadingSpinner,
   EuiSpacer,
@@ -62,7 +62,7 @@ export class ThreatIntelFindingDetailsFlyout extends React.Component<
         DataStore.documents.getDocument(item.index, item.id).then((doc) => {
           formattedDocument = doc ? JSON.stringify(JSON.parse(doc), null, 2) : '';
           onDocUpdate(
-            <EuiFormRow fullWidth={true} style={{ width: '100%' }}>
+            <EuiCompressedFormRow fullWidth={true} style={{ width: '100%' }}>
               {!formattedDocument ? (
                 <EuiEmptyPrompt body={<p>Document not found</p>} />
               ) : (
@@ -74,7 +74,7 @@ export class ThreatIntelFindingDetailsFlyout extends React.Component<
                   {formattedDocument}
                 </EuiCodeBlock>
               )}
-            </EuiFormRow>
+            </EuiCompressedFormRow>
           );
           this.setState({
             docIdToDocument: {
@@ -85,7 +85,7 @@ export class ThreatIntelFindingDetailsFlyout extends React.Component<
         });
       } else {
         return (
-          <EuiFormRow fullWidth={true} style={{ width: '100%' }}>
+          <EuiCompressedFormRow fullWidth={true} style={{ width: '100%' }}>
             <EuiCodeBlock
               language="json"
               isCopyable
@@ -93,7 +93,7 @@ export class ThreatIntelFindingDetailsFlyout extends React.Component<
             >
               {formattedDocument}
             </EuiCodeBlock>
-          </EuiFormRow>
+          </EuiCompressedFormRow>
         );
       }
     } catch {
@@ -101,7 +101,7 @@ export class ThreatIntelFindingDetailsFlyout extends React.Component<
     }
 
     return (
-      <EuiFormRow fullWidth={true} style={{ width: '100%' }}>
+      <EuiCompressedFormRow fullWidth={true} style={{ width: '100%' }}>
         <EuiCodeBlock
           language="json"
           isCopyable
@@ -109,7 +109,7 @@ export class ThreatIntelFindingDetailsFlyout extends React.Component<
         >
           <EuiLoadingSpinner />
         </EuiCodeBlock>
-      </EuiFormRow>
+      </EuiCompressedFormRow>
     );
   };
 

@@ -13,7 +13,7 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiFormLabel,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiPanel,
   EuiSpacer,
   EuiSwitch,
@@ -207,17 +207,17 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
             </EuiTitle>
           </EuiFlexItem>
           <EuiFlexItem grow={2}>
-            <EuiFormRow label="Name">
+            <EuiCompressedFormRow label="Name">
               <EuiFieldText readOnly={isReadOnly} value={name} onChange={onNameChange} />
-            </EuiFormRow>
+            </EuiCompressedFormRow>
             <EuiSpacer />
-            <EuiFormRow label="Description">
+            <EuiCompressedFormRow label="Description">
               <EuiFieldText
                 readOnly={isReadOnly}
                 value={description}
                 onChange={onDescriptionChange}
               />
-            </EuiFormRow>
+            </EuiCompressedFormRow>
             <EuiSpacer />
             {type === 'S3_CUSTOM' && schedule && (
               <>
@@ -254,58 +254,58 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
                   <h4>Connection details</h4>
                 </EuiText>
                 <EuiSpacer />
-                <EuiFormRow label={<EuiFormLabel>IAM Role ARN</EuiFormLabel>}>
+                <EuiCompressedFormRow label={<EuiFormLabel>IAM Role ARN</EuiFormLabel>}>
                   <EuiFieldText
                     readOnly={isReadOnly}
                     placeholder="arn:"
                     onChange={(event) => onS3DataChange('role_arn', event.target.value)}
                     value={s3ConnectionDetails.s3.role_arn}
                   />
-                </EuiFormRow>
+                </EuiCompressedFormRow>
                 <EuiSpacer />
-                <EuiFormRow label="S3 bucket directory">
+                <EuiCompressedFormRow label="S3 bucket directory">
                   <EuiFieldText
                     readOnly={isReadOnly}
                     placeholder="S3 bucket name"
                     onChange={(event) => onS3DataChange('bucket_name', event.target.value)}
                     value={s3ConnectionDetails.s3.bucket_name}
                   />
-                </EuiFormRow>
+                </EuiCompressedFormRow>
                 <EuiSpacer />
-                <EuiFormRow label="Specify a directory or file">
+                <EuiCompressedFormRow label="Specify a directory or file">
                   <EuiFieldText
                     readOnly={isReadOnly}
                     placeholder="Object key"
                     onChange={(event) => onS3DataChange('object_key', event.target.value)}
                     value={s3ConnectionDetails.s3.object_key}
                   />
-                </EuiFormRow>
+                </EuiCompressedFormRow>
                 <EuiSpacer />
-                <EuiFormRow label="Region">
+                <EuiCompressedFormRow label="Region">
                   <EuiFieldText
                     readOnly={isReadOnly}
                     placeholder="Region"
                     onChange={(event) => onS3DataChange('region', event.target.value)}
                     value={s3ConnectionDetails.s3.region}
                   />
-                </EuiFormRow>
+                </EuiCompressedFormRow>
                 <EuiSpacer />
               </>
             )}
             {type === 'IOC_UPLOAD' && (
               <>
                 {isReadOnly && (
-                  <EuiFormRow label="Uploaded file">
+                  <EuiCompressedFormRow label="Uploaded file">
                     <EuiFieldText
                       readOnly={isReadOnly}
                       value={fileUploadSource.ioc_upload?.file_name}
                       icon={'download'}
                     />
-                  </EuiFormRow>
+                  </EuiCompressedFormRow>
                 )}
                 {!isReadOnly && (
                   <>
-                    <EuiFormRow
+                    <EuiCompressedFormRow
                       label="Upload file"
                       helpText={
                         <>
@@ -327,7 +327,7 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
                         isInvalid={!!fileError}
                         data-test-subj="import_ioc_file"
                       />
-                    </EuiFormRow>
+                    </EuiCompressedFormRow>
                   </>
                 )}
               </>
@@ -340,7 +340,7 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
                 />
               </EuiFormRow>
             )}
-            <EuiFormRow label="Types of malicious indicators">
+            <EuiCompressedFormRow label="Types of malicious indicators">
               <>
                 <EuiSpacer size="s" />
                 <EuiCheckboxGroup
@@ -350,7 +350,7 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
                   disabled={isReadOnly}
                 />
               </>
-            </EuiFormRow>
+            </EuiCompressedFormRow>
             <EuiSpacer />
           </EuiFlexItem>
           {type !== 'URL_DOWNLOAD' && (

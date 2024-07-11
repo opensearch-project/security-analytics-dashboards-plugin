@@ -9,7 +9,7 @@ import {
   EuiDatePicker,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFormRow,
+  EuiCompressedFormRow,
 } from '@elastic/eui';
 import React from 'react';
 import moment, { Moment } from 'moment';
@@ -60,7 +60,7 @@ export class Daily extends React.Component<DailyProps, DailyState> {
     return (
       <EuiFlexGroup direction="column">
         <EuiFlexItem>
-          <EuiFormRow
+          <EuiCompressedFormRow
             label={<FormFieldHeader headerTitle={'Around'} />}
             isInvalid={!!invalidTimeMessage}
             error={invalidTimeMessage}
@@ -75,10 +75,10 @@ export class Daily extends React.Component<DailyProps, DailyState> {
               dateFormat="hh:mm A"
               timeIntervals={60}
             />
-          </EuiFormRow>
+          </EuiCompressedFormRow>
         </EuiFlexItem>
         <EuiFlexItem>
-          <EuiFormRow isInvalid={!!invalidTimeZoneMessage} error={invalidTimeZoneMessage}>
+          <EuiCompressedFormRow isInvalid={!!invalidTimeZoneMessage} error={invalidTimeZoneMessage}>
             <EuiComboBox
               placeholder="Select a timezone"
               options={timezones}
@@ -87,7 +87,7 @@ export class Daily extends React.Component<DailyProps, DailyState> {
               selectedOptions={selectedTimeZone ? [{ label: selectedTimeZone }] : undefined}
               onChange={this.onTimeZoneSelect}
             />
-          </EuiFormRow>
+          </EuiCompressedFormRow>
         </EuiFlexItem>
       </EuiFlexGroup>
     );

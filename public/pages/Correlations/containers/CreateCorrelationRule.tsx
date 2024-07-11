@@ -14,7 +14,7 @@ import {
   EuiSmallButton,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiText,
   EuiComboBox,
   EuiFieldText,
@@ -557,7 +557,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                     <h3>Data source</h3>
                   </EuiTitle>
                   <EuiSpacer size="m" />
-                  <EuiFormRow
+                  <EuiCompressedFormRow
                     label={<EuiText size={'s'}>Select index</EuiText>}
                     isInvalid={isInvalidInputForQuery('index')}
                     error={
@@ -589,9 +589,9 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                       }
                       isClearable={true}
                     />
-                  </EuiFormRow>
+                  </EuiCompressedFormRow>
                   <EuiSpacer size="m" />
-                  <EuiFormRow
+                  <EuiCompressedFormRow
                     label={<EuiText size={'s'}>Log type</EuiText>}
                     isInvalid={isInvalidInputForQuery('logType')}
                     error={
@@ -630,7 +630,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                         props.handleChange(`queries[${queryIdx}].logType`)(e);
                       }}
                     />
-                  </EuiFormRow>
+                  </EuiCompressedFormRow>
                   {!dataFilterEnabled && !groupByEnabled && (
                     <>
                       <EuiSpacer />
@@ -709,17 +709,17 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                         const firstFieldRow = (
                           <EuiFlexGroup alignItems="center">
                             <EuiFlexItem grow={false} style={{ minWidth: 200 }}>
-                              <EuiFormRow label={<EuiText size={'s'}>Field</EuiText>}>
+                              <EuiCompressedFormRow label={<EuiText size={'s'}>Field</EuiText>}>
                                 {fieldNameInput}
-                              </EuiFormRow>
+                              </EuiCompressedFormRow>
                             </EuiFlexItem>
                             <EuiFlexItem grow={false} style={{ minWidth: 200 }}>
-                              <EuiFormRow label={<EuiText size={'s'}>Field value</EuiText>}>
+                              <EuiCompressedFormRow label={<EuiText size={'s'}>Field value</EuiText>}>
                                 {fieldValueInput}
-                              </EuiFormRow>
+                              </EuiCompressedFormRow>
                             </EuiFlexItem>
                             <EuiFlexItem>
-                              <EuiFormRow label={<p style={{ visibility: 'hidden' }}>_</p>}>
+                              <EuiCompressedFormRow label={<p style={{ visibility: 'hidden' }}>_</p>}>
                                 <EuiSmallButtonIcon
                                   iconType={'trash'}
                                   color="danger"
@@ -732,7 +732,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                                     );
                                   }}
                                 />
-                              </EuiFormRow>
+                              </EuiCompressedFormRow>
                             </EuiFlexItem>
                           </EuiFlexGroup>
                         );
@@ -776,7 +776,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                         <h3>Group by field</h3>
                       </EuiTitle>
                       <EuiSpacer size="s" />
-                      <EuiFormRow
+                      <EuiCompressedFormRow
                         label={<EuiText size={'s'}>Field</EuiText>}
                         isInvalid={isInvalidInputForQuery('field')}
                         error={
@@ -803,7 +803,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                           }}
                           isClearable={true}
                         />
-                      </EuiFormRow>
+                      </EuiCompressedFormRow>
                     </>
                   )}
                 </EuiAccordion>
@@ -899,7 +899,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                 title={'Correlation rule details'}
                 panelStyles={{ paddingLeft: 10, paddingRight: 10 }}
               >
-                <EuiFormRow
+                <EuiCompressedFormRow
                   label={
                     <EuiText size={'s'}>
                       <strong>Name</strong>
@@ -921,9 +921,9 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                     onBlur={props.handleBlur('name')}
                     value={name}
                   />
-                </EuiFormRow>
+                </EuiCompressedFormRow>
                 <EuiSpacer />
-                <EuiFormRow
+                <EuiCompressedFormRow
                   label={
                     <>
                       <EuiText size={'s'}>
@@ -974,7 +974,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                       />
                     </EuiFlexItem>
                   </EuiFlexGroup>
-                </EuiFormRow>
+                </EuiCompressedFormRow>
               </ContentPanel>
               <EuiSpacer size="l" />
               <ContentPanel
@@ -998,7 +998,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                   <p>Get an alert on the correlation between the findings.</p>
                 </EuiText>
                 <EuiSpacer size="m" />
-                <EuiFormRow>
+                <EuiCompressedFormRow>
                   <EuiFlexGroup>
                     <EuiFlexItem grow={false}>
                       <EuiSmallButton onClick={() => setShowForm(!showForm)}>
@@ -1006,13 +1006,13 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                       </EuiSmallButton>
                     </EuiFlexItem>
                   </EuiFlexGroup>
-                </EuiFormRow>
+                </EuiCompressedFormRow>
                 {showForm && (
                   <>
                     <EuiSpacer size="m" />
                     <EuiFlexGroup alignItems="center">
                       <EuiFlexItem grow={false}>
-                        <EuiFormRow
+                        <EuiCompressedFormRow
                           label={
                             <EuiText size="s">
                               <p>Trigger Name</p>
@@ -1029,10 +1029,10 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                             required={true}
                             data-test-subj="alert-condition-name"
                           />
-                        </EuiFormRow>
+                        </EuiCompressedFormRow>
                       </EuiFlexItem>
                       <EuiFlexItem grow={false}>
-                        <EuiFormRow
+                        <EuiCompressedFormRow
                           label={
                             <EuiText size="s">
                               <p>Alert Severity</p>
@@ -1055,10 +1055,10 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                             isClearable={true}
                             data-test-subj="alert-severity-combo-box"
                           />
-                        </EuiFormRow>
+                        </EuiCompressedFormRow>
                       </EuiFlexItem>
                       <EuiFlexItem grow={false}>
-                        <EuiFormRow label={<p style={{ visibility: 'hidden' }}>_</p>}>
+                        <EuiCompressedFormRow label={<p style={{ visibility: 'hidden' }}>_</p>}>
                           <EuiSmallButtonIcon
                             aria-label="Delete Alert Trigger"
                             data-test-subj="delete-alert-trigger-icon"
@@ -1066,7 +1066,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                             color="danger"
                             onClick={() => setShowForm(false)}
                           />
-                        </EuiFormRow>
+                        </EuiCompressedFormRow>
                       </EuiFlexItem>
                     </EuiFlexGroup>
                     <EuiSpacer size={'l'} />
@@ -1084,7 +1084,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                       <>
                         <EuiFlexGroup alignItems={'flexEnd'}>
                           <EuiFlexItem style={{ maxWidth: 400 }}>
-                            <EuiFormRow
+                            <EuiCompressedFormRow
                               label={
                                 <EuiText size="m">
                                   <p>Notification channel</p>
@@ -1128,7 +1128,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                                 singleSelection={{ asPlainText: true }}
                                 isDisabled={!hasNotificationPlugin}
                               />
-                            </EuiFormRow>
+                            </EuiCompressedFormRow>
                           </EuiFlexItem>
                           <EuiFlexItem grow={false}>
                             <EuiSmallButton
@@ -1163,7 +1163,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                         >
                           <EuiFlexGroup direction={'column'} style={{ width: '75%' }}>
                             <EuiFlexItem>
-                              <EuiFormRow
+                              <EuiCompressedFormRow
                                 label={
                                   <EuiText size={'s'}>
                                     <p>Message subject</p>
@@ -1184,11 +1184,11 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                                   required={true}
                                   fullWidth={true}
                                 />
-                              </EuiFormRow>
+                              </EuiCompressedFormRow>
                             </EuiFlexItem>
 
                             <EuiFlexItem>
-                              <EuiFormRow
+                              <EuiCompressedFormRow
                                 label={
                                   <EuiText size="s">
                                     <p>Message body</p>
@@ -1209,7 +1209,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                                   required={true}
                                   fullWidth={true}
                                 />
-                              </EuiFormRow>
+                              </EuiCompressedFormRow>
                             </EuiFlexItem>
                           </EuiFlexGroup>
                         </EuiAccordion>

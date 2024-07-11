@@ -10,7 +10,7 @@ import {
   EuiFieldText,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiSpacer,
   EuiSuperSelect,
   EuiTextArea,
@@ -70,7 +70,7 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
 
   return (
     <>
-      <EuiFormRow
+      <EuiCompressedFormRow
         label="Name"
         helpText={
           isEditMode &&
@@ -92,9 +92,9 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
           readOnly={!isEditMode}
           disabled={isEditMode && !!logTypeDetails.detectionRulesCount}
         />
-      </EuiFormRow>
+      </EuiCompressedFormRow>
       <EuiSpacer />
-      <EuiFormRow
+      <EuiCompressedFormRow
         label={
           <>
             {'Description - '}
@@ -115,9 +115,9 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
           placeholder="Description of the log type"
           readOnly={!isEditMode}
         />
-      </EuiFormRow>
+      </EuiCompressedFormRow>
       <EuiSpacer />
-      <EuiFormRow label="Category" isInvalid={!!categoryError} error={categoryError}>
+      <EuiCompressedFormRow label="Category" isInvalid={!!categoryError} error={categoryError}>
         <EuiSuperSelect
           options={getLogTypeCategoryOptions().map((option) => ({
             ...option,
@@ -136,7 +136,7 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
           hasDividers
           itemLayoutAlign="top"
         ></EuiSuperSelect>
-      </EuiFormRow>
+      </EuiCompressedFormRow>
       {isEditMode ? (
         <EuiBottomBar>
           <EuiFlexGroup gutterSize="s" justifyContent="flexEnd">
