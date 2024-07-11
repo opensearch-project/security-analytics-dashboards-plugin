@@ -6,7 +6,7 @@
 import {
   EuiBasicTable,
   EuiBasicTableColumn,
-  EuiButton,
+  EuiSmallButton,
   EuiButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
@@ -209,7 +209,7 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
             <EuiFlexItem grow={8}>
               <EuiFlexGroup justifyContent="flexEnd" alignItems="center">
                 <EuiFlexItem grow={false}>
-                  <EuiButton
+                  <EuiSmallButton
                     disabled={acknowledged || alertItem.state !== ALERT_STATE.ACTIVE}
                     onClick={() => {
                       this.setState({ acknowledged: true });
@@ -218,7 +218,7 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
                     data-test-subj={'alert-details-flyout-acknowledge-button'}
                   >
                     Acknowledge
-                  </EuiButton>
+                  </EuiSmallButton>
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>
                   <EuiButtonIcon

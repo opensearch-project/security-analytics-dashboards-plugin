@@ -5,7 +5,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiButtonEmpty,
   EuiFlexGroup,
   EuiFlexItem,
@@ -348,28 +348,28 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
 
         {currentStep === ConfigureThreatIntelScanStep.SelectLogSources && (
           <EuiFlexItem grow={false}>
-            <EuiButton fill={true} onClick={onNextClick} disabled={!stepDataValid[currentStep]}>
+            <EuiSmallButton fill={true} onClick={onNextClick} disabled={!stepDataValid[currentStep]}>
               Next
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
         )}
 
         {currentStep === ConfigureThreatIntelScanStep.SetupAlertTriggers && (
           <>
             <EuiFlexItem grow={false}>
-              <EuiButton disabled={configureInProgress} onClick={onPreviousClick}>
+              <EuiSmallButton disabled={configureInProgress} onClick={onPreviousClick}>
                 Back
-              </EuiButton>
+              </EuiSmallButton>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
-              <EuiButton
+              <EuiSmallButton
                 disabled={configureInProgress || !stepDataValid[currentStep]}
                 isLoading={configureInProgress}
                 fill={true}
                 onClick={onSubmit}
               >
                 Save and start monitoring
-              </EuiButton>
+              </EuiSmallButton>
             </EuiFlexItem>
           </>
         )}

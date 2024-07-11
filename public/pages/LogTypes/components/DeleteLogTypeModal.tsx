@@ -4,7 +4,7 @@
  */
 
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiCallOut,
   EuiConfirmModal,
   EuiFieldText,
@@ -79,9 +79,9 @@ export const DeleteLogTypeModal: React.FC<DeleteLogTypeModalProps> = ({
             </p>
           </EuiModalBody>
           <EuiModalFooter>
-            <EuiButton onClick={closeModal} fill>
+            <EuiSmallButton onClick={closeModal} fill>
               Close
-            </EuiButton>
+            </EuiSmallButton>
           </EuiModalFooter>
         </EuiModal>
       ) : (

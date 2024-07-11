@@ -7,7 +7,7 @@ import {
   EuiBadge,
   EuiBasicTable,
   EuiBasicTableColumn,
-  EuiButton,
+  EuiSmallButton,
   EuiButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
@@ -131,7 +131,7 @@ export const ThreatIntelAlertFlyout: React.FC<ThreatIntelAlertFlyoutProps> = ({
             <EuiFlexGroup justifyContent="flexEnd" alignItems="center">
               {showActionButton && (
                 <EuiFlexItem grow={false}>
-                  <EuiButton
+                  <EuiSmallButton
                     onClick={() => {
                       const nextState = alertState === 'ACTIVE' ? 'ACKNOWLEDGED' : 'COMPLETED';
                       onAlertStateChange([alertItem], nextState).then((success) => {
@@ -143,7 +143,7 @@ export const ThreatIntelAlertFlyout: React.FC<ThreatIntelAlertFlyoutProps> = ({
                     data-test-subj={'alert-details-flyout-acknowledge-button'}
                   >
                     {alertState === 'ACTIVE' ? 'Acknowledge' : 'Complete'}
-                  </EuiButton>
+                  </EuiSmallButton>
                 </EuiFlexItem>
               )}
               <EuiFlexItem grow={false}>

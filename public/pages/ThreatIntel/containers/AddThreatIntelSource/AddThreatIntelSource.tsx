@@ -5,7 +5,7 @@
 
 import React, { useEffect, useState } from 'react';
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiCheckableCard,
   EuiCheckboxGroup,
   EuiFieldText,
@@ -608,17 +608,17 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
       <EuiSpacer />
       <EuiFlexGroup justifyContent="flexEnd">
         <EuiFlexItem grow={false}>
-          <EuiButton onClick={() => history.push(ROUTES.THREAT_INTEL_OVERVIEW)}>Cancel</EuiButton>
+          <EuiSmallButton onClick={() => history.push(ROUTES.THREAT_INTEL_OVERVIEW)}>Cancel</EuiSmallButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton
+          <EuiSmallButton
             disabled={!shouldEnableSubmit()}
             isLoading={submitInProgress}
             fill
             onClick={onSubmit}
           >
             Add threat intel source
-          </EuiButton>
+          </EuiSmallButton>
         </EuiFlexItem>
       </EuiFlexGroup>
     </>

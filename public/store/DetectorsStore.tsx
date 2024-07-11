@@ -11,7 +11,7 @@ import { ICalloutProps, resolveType, TCalloutColor } from '../pages/Main/compone
 import { CreateDetectorResponse, ISavedObjectsService, ServerResponse } from '../../types';
 import { CreateMappingsResponse } from '../../server/models/interfaces';
 import { logTypesWithDashboards, ROUTES } from '../utils/constants';
-import { EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
+import { EuiSmallButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 import { Toast } from '@opensearch-project/oui/src/eui_components/toast/global_toast_list';
 import { RouteComponentProps } from 'react-router-dom';
 import { DataStore } from './DataStore';
@@ -138,7 +138,7 @@ export class DetectorsStore implements IDetectorsStore {
     };
 
     const btn = btnText && (
-      <EuiButton
+      <EuiSmallButton
         color={type}
         onClick={(e: any) => {
           btnHandler && btnHandler(e);
@@ -148,7 +148,7 @@ export class DetectorsStore implements IDetectorsStore {
         size="s"
       >
         {btnText}
-      </EuiButton>
+      </EuiSmallButton>
     );
 
     const messageBody = (

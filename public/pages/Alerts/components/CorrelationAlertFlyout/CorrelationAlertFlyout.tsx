@@ -7,7 +7,7 @@ import {
   EuiBadge,
     EuiBasicTable,
     EuiBasicTableColumn,
-    EuiButton,
+    EuiSmallButton,
     EuiButtonIcon,
     EuiFlexGroup,
     EuiFlexItem,
@@ -33,25 +33,25 @@ import {
   import { NotificationsStart } from 'opensearch-dashboards/public';
   import { DataStore } from '../../../../store/DataStore';
   import { CorrelationAlertTableItem, Finding, Query } from '../../../../../types';
-  
+
   export interface CorrelationAlertFlyoutProps {
     alertItem: CorrelationAlertTableItem;
     notifications: NotificationsStart;
     onClose: () => void;
     onAcknowledge: (selectedItems: CorrelationAlertTableItem[]) => void;
   }
-  
+
   export interface CorrelationAlertFlyoutState {
     acknowledged: boolean;
     findingItems: Finding[];
     loading: boolean;
     rules: { [key: string]: RuleSource };
   }
-  
+
   export class CorrelationAlertFlyout extends React.Component<CorrelationAlertFlyoutProps, CorrelationAlertFlyoutState> {
     constructor(props: CorrelationAlertFlyoutProps) {
       super(props);
-  
+
       this.state = {
         acknowledged: props.alertItem.state === ALERT_STATE.ACKNOWLEDGED,
         findingItems: [],
@@ -59,11 +59,11 @@ import {
         rules: {},
       };
     }
-  
+
     async componentDidMount() {
       this.getFindings();
     }
-  
+
     getFindings = async () => {
       this.setState({ loading: true });
       const { notifications } = this.props;
@@ -79,30 +79,30 @@ import {
       await this.getRules();
       this.setState({ loading: false });
     };
-  
+
     getRules = async () => {
       const { notifications } = this.props;
       try {
         const { findingItems } = this.state;
         const ruleIds: string[] = [];
-        
+
         // Extract ruleIds in order from findingItems
         findingItems.forEach((finding) => {
           finding.queries.forEach((query) => {
             ruleIds.push(query.id);
           });
         });
-    
+
         if (ruleIds.length > 0) {
           // Fetch rules based on ruleIds
           const rules = await DataStore.rules.getAllRules({ _id: ruleIds });
-    
+
           // Prepare allRules object with rules mapped by _id
           const allRules: { [id: string]: RuleSource } = {};
           rules.forEach((hit) => {
             allRules[hit._id] = hit._source;
           });
-    
+
           // Update state with allRules
           this.setState({ rules: allRules });
         }
@@ -110,8 +110,8 @@ import {
         // Handle errors if any
         errorNotificationToast(notifications, 'retrieve', 'rules', e);
       }
-    };    
-  
+    };
+
     createFindingTableColumns(): EuiBasicTableColumn<Finding>[] {
       const { rules } = this.state;
 
@@ -125,7 +125,7 @@ import {
           data-test-subj={'finding-details-flyout-back-button'}
         />
       );
-    
+
       return [
         {
           field: 'timestamp',
@@ -144,7 +144,7 @@ import {
               onClick={() => {
                 const ruleId = finding.queries[0]?.id; // Assuming you retrieve rule ID from finding
                 const rule: RuleSource | undefined = rules[ruleId];
-                
+
                 DataStore.findings.openFlyout(
                   {
                     ...finding,
@@ -185,13 +185,13 @@ import {
         },
       ];
     }
-    
-  
+
+
     render() {
       const { onClose, alertItem, onAcknowledge } = this.props;
       const { trigger_name, state, severity, start_time, end_time } = alertItem;
       const { acknowledged, findingItems, loading } = this.state;
-  
+
       return (
         <EuiFlyout
           onClose={onClose}
@@ -212,7 +212,7 @@ import {
               <EuiFlexItem grow={8}>
                 <EuiFlexGroup justifyContent="flexEnd" alignItems="center">
                   <EuiFlexItem grow={false}>
-                    <EuiButton
+                    <EuiSmallButton
                       disabled={acknowledged || alertItem.state !== ALERT_STATE.ACTIVE}
                       onClick={() => {
                         this.setState({ acknowledged: true });
@@ -221,7 +221,7 @@ import {
                       data-test-subj={'alert-details-flyout-acknowledge-button'}
                     >
                       Acknowledge
-                    </EuiButton>
+                    </EuiSmallButton>
                   </EuiFlexItem>
                   <EuiFlexItem grow={false}>
                     <EuiButtonIcon
@@ -256,9 +256,9 @@ import {
                 target: '_blank',
               },
             ])}
-  
+
             <EuiSpacer size={'xxl'} />
-  
+
             <ContentPanel title={`Findings (${findingItems.length})`}>
               <EuiBasicTable<Finding>
                 columns={this.createFindingTableColumns()}
@@ -271,4 +271,3 @@ import {
       );
     }
   }
-  

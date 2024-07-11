@@ -4,7 +4,7 @@
  */
 
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiButtonIcon,
   EuiFieldText,
   EuiFlexGroup,
@@ -93,7 +93,7 @@ export const FieldTextArray: React.FC<FieldTextArrayProps> = ({
             );
           })}
           <EuiSpacer size="m" />
-          <EuiButton
+          <EuiSmallButton
             type="button"
             className="secondary"
             onClick={() => {
@@ -101,7 +101,7 @@ export const FieldTextArray: React.FC<FieldTextArrayProps> = ({
             }}
           >
             {addButtonName}
-          </EuiButton>
+          </EuiSmallButton>
         </>
       </EuiFormRow>
       <EuiSpacer />

@@ -9,7 +9,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { BREADCRUMBS, DEFAULT_EMPTY_DATA, ROUTES } from '../../../../utils/constants';
 import { useEffect } from 'react';
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
@@ -176,17 +176,17 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
           <EuiIcon type={'iInCircle'} />
         </span>
       </EuiToolTip>,
-      <EuiButton color={enabled_for_scan ? 'danger' : 'primary'} onClick={toggleActiveState}>
+      <EuiSmallButton color={enabled_for_scan ? 'danger' : 'primary'} onClick={toggleActiveState}>
         {enabled_for_scan ? 'Deactivate' : 'Activate'}
-      </EuiButton>
+      </EuiSmallButton>
     );
   }
 
   if (type === 'S3_CUSTOM') {
     headerControls.push(
-      <EuiButton fill onClick={onRefresh}>
+      <EuiSmallButton fill onClick={onRefresh}>
         Refresh
-      </EuiButton>
+      </EuiSmallButton>
     );
   }
 
@@ -265,7 +265,7 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
           onClickDelete={onDeleteConfirmed}
           confirmation
           confirmButtonText="Delete"
-          additionalWarning="You can also deactivate this source temporarily and reactivate later. 
+          additionalWarning="You can also deactivate this source temporarily and reactivate later.
           Cancel to exit and then choose Deactivate."
         />
       )}

@@ -11,7 +11,7 @@ import {
   parseNotificationChannelsToOptions,
 } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { NotificationsService } from '../../../../services';
-import { EuiButton, EuiPanel, EuiSpacer, EuiTitle } from '@elastic/eui';
+import { EuiSmallButton, EuiPanel, EuiSpacer, EuiTitle } from '@elastic/eui';
 import { ThreatIntelIocType } from '../../../../../common/constants';
 import { getEmptyThreatIntelAlertTrigger } from '../../utils/helpers';
 
@@ -86,7 +86,7 @@ export const ConfigureThreatIntelAlertTriggers: React.FC<ConfigureThreatIntelAle
         );
       })}
       <EuiSpacer />
-      <EuiButton
+      <EuiSmallButton
         onClick={() => {
           updateTriggers([
             ...alertTriggers,
@@ -95,7 +95,7 @@ export const ConfigureThreatIntelAlertTriggers: React.FC<ConfigureThreatIntelAle
         }}
       >
         Add another alert trigger
-      </EuiButton>
+      </EuiSmallButton>
     </EuiPanel>
   );
 };

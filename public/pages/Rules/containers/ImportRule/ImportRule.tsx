@@ -7,7 +7,7 @@ import { BrowserServices } from '../../../../models/interfaces';
 import { RuleEditorContainer } from '../../components/RuleEditor/RuleEditorContainer';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiFilePicker,
   EuiFlexGroup,
   EuiFlexItem,
@@ -122,7 +122,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, notifications }
         <EuiSpacer size="xl" />
         <EuiFlexGroup justifyContent="flexEnd">
           <EuiFlexItem grow={false}>
-            <EuiButton onClick={() => history.replace(ROUTES.RULES)}>Cancel</EuiButton>
+            <EuiSmallButton onClick={() => history.replace(ROUTES.RULES)}>Cancel</EuiSmallButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       </>

@@ -12,7 +12,7 @@ import {
   EuiSuperDatePicker,
   EuiTitle,
   EuiSpacer,
-  EuiButton,
+  EuiSmallButton,
 } from '@elastic/eui';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import {
@@ -204,13 +204,13 @@ export const Overview: React.FC<OverviewProps> = (props) => {
   );
 
   const createDetectorAction = (
-    <EuiButton
+    <EuiSmallButton
       href={`${PLUGIN_NAME}#${ROUTES.DETECTORS_CREATE}`}
       fill={true}
       data-test-subj={'detectorsCreateButton'}
     >
       Create detector
-    </EuiButton>
+    </EuiSmallButton>
   );
 
   const gettingStartedBadgeControl = (
