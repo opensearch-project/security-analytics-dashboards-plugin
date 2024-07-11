@@ -14,7 +14,7 @@ import {
   EuiSmallButton,
   EuiSpacer,
   EuiAccordion,
-  EuiComboBox,
+  EuiCompressedComboBox,
   EuiButtonGroup,
   EuiText,
   EuiTitle,
@@ -365,7 +365,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                         }
                         error={props.errors.logType}
                       >
-                        <EuiComboBox
+                        <EuiCompressedComboBox
                           isInvalid={
                             (validateOnMount || props.touched.logType) && !!props.errors?.logType
                           }
@@ -412,7 +412,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     isInvalid={(validateOnMount || props.touched.level) && !!props.errors?.level}
                     error={props.errors.level}
                   >
-                    <EuiComboBox
+                    <EuiCompressedComboBox
                       isInvalid={(validateOnMount || props.touched.level) && !!props.errors?.level}
                       placeholder="Select a rule level"
                       data-test-subj={'rule_severity_dropdown'}
@@ -446,7 +446,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     isInvalid={(validateOnMount || props.touched.status) && !!props.errors?.status}
                     error={props.errors.status}
                   >
-                    <EuiComboBox
+                    <EuiCompressedComboBox
                       isInvalid={
                         (validateOnMount || props.touched.status) && !!props.errors?.status
                       }

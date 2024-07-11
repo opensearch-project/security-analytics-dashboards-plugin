@@ -5,7 +5,7 @@
 
 import React, { Component } from 'react';
 import {
-  EuiComboBox,
+  EuiCompressedComboBox,
   EuiComboBoxOptionOption,
   EuiCompressedFormRow,
   EuiSpacer,
@@ -171,7 +171,7 @@ export default class DetectorDataSource extends Component<
             </span>
           }
         >
-          <EuiComboBox
+          <EuiCompressedComboBox
             placeholder={'Select an input source for the detector.'}
             isLoading={loading}
             options={indexOptions}

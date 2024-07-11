@@ -12,7 +12,7 @@ import {
   EuiCompressedFieldText,
   EuiSmallButton,
   EuiSpacer,
-  EuiComboBox,
+  EuiCompressedComboBox,
   EuiText,
   EuiCallOut,
 } from '@elastic/eui';
@@ -167,7 +167,7 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
             isInvalid={props.touched.timeField && !!props.errors?.timeField}
             error={props.errors.timeField}
           >
-            <EuiComboBox
+            <EuiCompressedComboBox
               isInvalid={props.touched.timeField && !!props.errors.timeField}
               placeholder="Select a time field"
               data-test-subj={'index_pattern_time_field_dropdown'}

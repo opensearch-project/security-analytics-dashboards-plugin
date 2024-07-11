@@ -6,7 +6,7 @@
 import {
   EuiAccordion,
   EuiSmallButtonIcon,
-  EuiComboBox,
+  EuiCompressedComboBox,
   EuiComboBoxOptionOption,
   EuiCompressedFieldText,
   EuiCompressedFormRow,
@@ -120,7 +120,7 @@ export const ThreatIntelAlertTriggerForm: React.FC<ThreatIntelAlertTriggerProps>
         paddingSize="l"
       >
         <EuiCompressedFormRow label="Indicator type(s)">
-          <EuiComboBox
+          <EuiCompressedComboBox
             placeholder="Any"
             options={enabledIocTypes.map((ioc) => ({ label: ioc }))}
             selectedOptions={trigger.ioc_types.map((iocType) => ({ label: iocType }))}
@@ -134,7 +134,7 @@ export const ThreatIntelAlertTriggerForm: React.FC<ThreatIntelAlertTriggerProps>
         </EuiCompressedFormRow>
         <EuiSpacer />
         <EuiCompressedFormRow label="Log source(s)">
-          <EuiComboBox
+          <EuiCompressedComboBox
             placeholder="Any"
             options={logSources.map((logSource) => ({ label: logSource }))}
             selectedOptions={trigger.data_sources.map((source) => ({ label: source }))}
@@ -149,7 +149,7 @@ export const ThreatIntelAlertTriggerForm: React.FC<ThreatIntelAlertTriggerProps>
       </EuiAccordion>
       <EuiSpacer />
       <EuiCompressedFormRow label="Alert severity">
-        <EuiComboBox
+        <EuiCompressedComboBox
           singleSelection
           options={Object.values(ALERT_SEVERITY_OPTIONS)}
           selectedOptions={[

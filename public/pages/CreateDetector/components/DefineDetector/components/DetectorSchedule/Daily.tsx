@@ -4,7 +4,7 @@
  */
 
 import {
-  EuiComboBox,
+  EuiCompressedComboBox,
   EuiComboBoxOptionOption,
   EuiDatePicker,
   EuiFlexGroup,
@@ -79,7 +79,7 @@ export class Daily extends React.Component<DailyProps, DailyState> {
         </EuiFlexItem>
         <EuiFlexItem>
           <EuiCompressedFormRow isInvalid={!!invalidTimeZoneMessage} error={invalidTimeZoneMessage}>
-            <EuiComboBox
+            <EuiCompressedComboBox
               placeholder="Select a timezone"
               options={timezones}
               renderOption={({ label: tz }) => `${tz} (${moment.tz(tz).format('Z')})`}
