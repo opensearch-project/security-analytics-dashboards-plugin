@@ -4,7 +4,7 @@
  */
 
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiContextMenuItem,
   EuiContextMenuPanel,
   EuiFlexGroup,
@@ -353,7 +353,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
       <EuiPopover
         id={'detectorsActionsPopover'}
         button={
-          <EuiButton
+          <EuiSmallButton
             isLoading={loading}
             iconType={'arrowDown'}
             iconSide={'right'}
@@ -361,7 +361,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
             data-test-subj={'detectorsActionsButton'}
           >
             Actions
-          </EuiButton>
+          </EuiSmallButton>
         }
         isOpen={isActionsMenuOpen}
         closePopover={this.closeActionsPopover}

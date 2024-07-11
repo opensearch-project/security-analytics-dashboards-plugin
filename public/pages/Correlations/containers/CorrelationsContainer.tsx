@@ -35,7 +35,7 @@ import {
   EuiButtonIcon,
   EuiText,
   EuiEmptyPrompt,
-  EuiButton,
+  EuiSmallButton,
   EuiBadge,
   EuiFilterGroup,
   EuiHorizontalRule,
@@ -457,9 +457,9 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         }
         body={<p>There are no correlated findings in the system.</p>}
         actions={[
-          <EuiButton fill={true} color="primary" href={`#${ROUTES.CORRELATION_RULE_CREATE}`}>
+          <EuiSmallButton fill={true} color="primary" href={`#${ROUTES.CORRELATION_RULE_CREATE}`}>
             Create correlation rule
-          </EuiButton>,
+          </EuiSmallButton>,
         ]}
       />
     );

@@ -10,7 +10,7 @@ import {
   EuiFlexItem,
   EuiFormRow,
   EuiFieldText,
-  EuiButton,
+  EuiSmallButton,
   EuiSpacer,
   EuiComboBox,
   EuiText,
@@ -83,14 +83,14 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
       <EuiSpacer />
       <EuiFlexGroup justifyContent="flexEnd">
         <EuiFlexItem grow={false}>
-          <EuiButton
+          <EuiSmallButton
             fill
             onClick={() => {
               created(createdIndex?.id || '');
             }}
           >
             View surrounding documents
-          </EuiButton>
+          </EuiSmallButton>
         </EuiFlexItem>
       </EuiFlexGroup>
     </>
@@ -189,17 +189,17 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
 
           <EuiFlexGroup justifyContent="flexEnd">
             <EuiFlexItem grow={false}>
-              <EuiButton onClick={() => close()}>Cancel</EuiButton>
+              <EuiSmallButton onClick={() => close()}>Cancel</EuiSmallButton>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
-              <EuiButton
+              <EuiSmallButton
                 data-test-subj={'index_pattern_form_submit_button'}
                 isLoading={props.isSubmitting}
                 fill
                 onClick={() => props.handleSubmit()}
               >
                 Create index pattern
-              </EuiButton>
+              </EuiSmallButton>
             </EuiFlexItem>
           </EuiFlexGroup>
         </Form>

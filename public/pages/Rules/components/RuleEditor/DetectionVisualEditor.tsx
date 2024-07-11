@@ -20,7 +20,7 @@ import {
   EuiPanel,
   EuiRadioGroup,
   EuiTextArea,
-  EuiButton,
+  EuiSmallButton,
   EuiModal,
   EuiModalHeader,
   EuiModalHeaderTitle,
@@ -649,7 +649,7 @@ export class DetectionVisualEditor extends React.Component<
                           <>
                             <EuiFlexGroup>
                               <EuiFlexItem grow={false}>
-                                <EuiButton
+                                <EuiSmallButton
                                   iconType="download"
                                   onClick={() => {
                                     this.setState({
@@ -661,7 +661,7 @@ export class DetectionVisualEditor extends React.Component<
                                   }}
                                 >
                                   Upload file
-                                </EuiButton>
+                                </EuiSmallButton>
                                 <EuiSpacer size={'s'} />
                               </EuiFlexItem>
 
@@ -748,7 +748,7 @@ export class DetectionVisualEditor extends React.Component<
 
                 <EuiSpacer size={'m'} />
 
-                <EuiButton
+                <EuiSmallButton
                   style={{ width: '70%' }}
                   iconType="plusInCircle"
                   disabled={!selection.data.at(-1)?.field}
@@ -761,7 +761,7 @@ export class DetectionVisualEditor extends React.Component<
                   }}
                 >
                   Add map
-                </EuiButton>
+                </EuiSmallButton>
               </EuiPanel>
 
               {selections.length > 1 && selections.length !== selectionIdx ? (
@@ -773,7 +773,7 @@ export class DetectionVisualEditor extends React.Component<
 
         <EuiSpacer size={'m'} />
 
-        <EuiButton
+        <EuiSmallButton
           fullWidth
           iconType={'plusInCircle'}
           onClick={() => {
@@ -793,7 +793,7 @@ export class DetectionVisualEditor extends React.Component<
           }}
         >
           Add selection
-        </EuiButton>
+        </EuiSmallButton>
 
         <EuiSpacer />
 
@@ -879,9 +879,9 @@ export class DetectionVisualEditor extends React.Component<
             </EuiModalBody>
 
             <EuiModalFooter>
-              <EuiButton fill={true} onClick={this.closeFileUploadModal}>
+              <EuiSmallButton fill={true} onClick={this.closeFileUploadModal}>
                 Close
-              </EuiButton>
+              </EuiSmallButton>
             </EuiModalFooter>
           </EuiModal>
         )}

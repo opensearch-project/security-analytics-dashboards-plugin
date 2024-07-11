@@ -6,7 +6,7 @@
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiButtonEmpty,
   EuiFlexGroup,
   EuiFlexItem,
@@ -403,34 +403,34 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
 
           {currentStep > DetectorCreationStep.DEFINE_DETECTOR && (
             <EuiFlexItem grow={false}>
-              <EuiButton disabled={creatingDetector} onClick={this.onPreviousClick}>
+              <EuiSmallButton disabled={creatingDetector} onClick={this.onPreviousClick}>
                 Back
-              </EuiButton>
+              </EuiSmallButton>
             </EuiFlexItem>
           )}
 
           {currentStep < DetectorCreationStep.CONFIGURE_ALERTS && (
             <EuiFlexItem grow={false}>
-              <EuiButton
+              <EuiSmallButton
                 fill={true}
                 onClick={this.onNextClick}
                 disabled={!stepDataValid[currentStep]}
               >
                 Next
-              </EuiButton>
+              </EuiSmallButton>
             </EuiFlexItem>
           )}
 
           {currentStep === DetectorCreationStep.CONFIGURE_ALERTS && (
             <EuiFlexItem grow={false}>
-              <EuiButton
+              <EuiSmallButton
                 disabled={creatingDetector || !stepDataValid[currentStep]}
                 isLoading={creatingDetector}
                 fill={true}
                 onClick={this.onCreateClick}
               >
                 Create detector
-              </EuiButton>
+              </EuiSmallButton>
             </EuiFlexItem>
           )}
         </EuiFlexGroup>

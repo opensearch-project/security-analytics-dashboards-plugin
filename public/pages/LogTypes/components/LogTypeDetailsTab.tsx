@@ -4,6 +4,7 @@
  */
 
 import {
+  EuiSmallButton,
   EuiButton,
   EuiDescriptionList,
   EuiFormRow,
@@ -45,7 +46,7 @@ export const LogTypeDetailsTab: React.FC<LogTypeDetailsTabProps> = ({
   return (
     <ContentPanel
       title="Details"
-      actions={!isEditMode && [<EuiButton onClick={() => setIsEditMode(true)}>Edit</EuiButton>]}
+      actions={!isEditMode && [<EuiSmallButton onClick={() => setIsEditMode(true)}>Edit</EuiSmallButton>]}
     >
       <EuiDescriptionList
         type="column"

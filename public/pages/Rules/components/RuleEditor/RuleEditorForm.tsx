@@ -11,7 +11,7 @@ import {
   EuiFlexItem,
   EuiFormRow,
   EuiFieldText,
-  EuiButton,
+  EuiSmallButton,
   EuiSpacer,
   EuiAccordion,
   EuiComboBox,
@@ -349,12 +349,12 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                       </EuiFormRow>
                     </EuiFlexItem>
                     <EuiFlexItem grow={false} style={{ marginTop: 36 }}>
-                      <EuiButton
+                      <EuiSmallButton
                         href={'opensearch_security_analytics_dashboards#/log-types'}
                         target="_blank"
                       >
                         Manage <EuiIcon type={'popout'} />
-                      </EuiButton>
+                      </EuiSmallButton>
                     </EuiFlexItem>
                   </EuiFlexGroup>
 
@@ -569,16 +569,16 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
             <EuiFlexGroup justifyContent="flexEnd">
               <EuiFlexItem grow={false}>
-                <EuiButton onClick={cancel}>Cancel</EuiButton>
+                <EuiSmallButton onClick={cancel}>Cancel</EuiSmallButton>
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
-                <EuiButton
+                <EuiSmallButton
                   onClick={() => props.handleSubmit()}
                   data-test-subj={'submit_rule_form_button'}
                   fill
                 >
                   {mode === 'create' ? 'Create detection rule' : 'Save changes'}
-                </EuiButton>
+                </EuiSmallButton>
               </EuiFlexItem>
             </EuiFlexGroup>
           </Form>

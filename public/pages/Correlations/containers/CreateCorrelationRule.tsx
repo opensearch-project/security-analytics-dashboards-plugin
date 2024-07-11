@@ -11,7 +11,7 @@ import { correlationRuleStateDefaultValue } from './CorrelationRuleFormModel';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiFlexGroup,
   EuiFlexItem,
   EuiFormRow,
@@ -754,7 +754,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                           </>
                         );
                       })}
-                      <EuiButton
+                      <EuiSmallButton
                         style={{ width: 125 }}
                         onClick={() => {
                           props.setFieldValue(`queries[${queryIdx}].conditions`, [
@@ -765,7 +765,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                         iconType={'plusInCircle'}
                       >
                         Add field
-                      </EuiButton>
+                      </EuiSmallButton>
                     </>
                   )}
 
@@ -813,7 +813,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
           );
         })}
         <EuiSpacer />
-        <EuiButton
+        <EuiSmallButton
           onClick={() => {
             props.setFieldValue('queries', [
               ...correlationQueries,
@@ -824,7 +824,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
           fullWidth={true}
         >
           Add query
-        </EuiButton>
+        </EuiSmallButton>
       </>
     );
   };
@@ -1001,9 +1001,9 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                 <EuiFormRow>
                   <EuiFlexGroup>
                     <EuiFlexItem grow={false}>
-                      <EuiButton onClick={() => setShowForm(!showForm)}>
+                      <EuiSmallButton onClick={() => setShowForm(!showForm)}>
                         Add Alert Trigger
-                      </EuiButton>
+                      </EuiSmallButton>
                     </EuiFlexItem>
                   </EuiFlexGroup>
                 </EuiFormRow>
@@ -1131,14 +1131,14 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                             </EuiFormRow>
                           </EuiFlexItem>
                           <EuiFlexItem grow={false}>
-                            <EuiButton
+                            <EuiSmallButton
                               href={NOTIFICATIONS_HREF}
                               iconType={'popout'}
                               target={'_blank'}
                               isDisabled={!hasNotificationPlugin}
                             >
                               Manage channels
-                            </EuiButton>
+                            </EuiSmallButton>
                           </EuiFlexItem>
                         </EuiFlexGroup>
 
@@ -1225,17 +1225,17 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                   <EuiSpacer size="xl" />
                   <EuiFlexGroup justifyContent="flexEnd">
                     <EuiFlexItem grow={false}>
-                      <EuiButton href={`#${ROUTES.CORRELATION_RULES}`}>Cancel</EuiButton>
+                      <EuiSmallButton href={`#${ROUTES.CORRELATION_RULES}`}>Cancel</EuiSmallButton>
                     </EuiFlexItem>
                     <EuiFlexItem grow={false}>
-                      <EuiButton
+                      <EuiSmallButton
                         onClick={() => {
                           props.handleSubmit();
                         }}
                         fill={true}
                       >
                         {action === 'Edit' ? 'Update' : 'Create '} correlation rule
-                      </EuiButton>
+                      </EuiSmallButton>
                     </EuiFlexItem>
                   </EuiFlexGroup>
                 </>

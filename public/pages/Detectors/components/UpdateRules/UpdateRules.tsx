@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiButton, EuiFlexGroup, EuiFlexItem, EuiSpacer, EuiTitle } from '@elastic/eui';
+import { EuiSmallButton, EuiFlexGroup, EuiFlexItem, EuiSpacer, EuiTitle } from '@elastic/eui';
 import {
   DetectorHit,
   SearchDetectorsResponse,
@@ -319,13 +319,13 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
 
         <EuiFlexGroup justifyContent="flexEnd">
           <EuiFlexItem grow={false}>
-            <EuiButton disabled={submitting} onClick={onCancel}>
+            <EuiSmallButton disabled={submitting} onClick={onCancel}>
               Cancel
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
 
           <EuiFlexItem grow={false}>
-            <EuiButton
+            <EuiSmallButton
               disabled={loading}
               fill={true}
               isLoading={submitting}
@@ -333,7 +333,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
               data-test-subj={'save-detector-rules-edits'}
             >
               Save changes
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       </ContentPanel>

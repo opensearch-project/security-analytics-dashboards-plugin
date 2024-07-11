@@ -5,7 +5,7 @@
 
 import { ContentPanel } from '../../../../components/ContentPanel';
 import React, { useMemo, useEffect, useState, useContext } from 'react';
-import { EuiButton, EuiCallOut, EuiSpacer } from '@elastic/eui';
+import { EuiSmallButton, EuiCallOut, EuiSpacer } from '@elastic/eui';
 import { AlertTriggerView } from '../../components/AlertTriggerView/AlertTriggerView';
 import { SecurityAnalyticsContext } from '../../../../services';
 import { ServerResponse } from '../../../../../server/models/types';
@@ -32,7 +32,7 @@ export const AlertTriggersView: React.FC<AlertTriggersViewProps> = ({
   const [channels, setChannels] = useState<FeatureChannelList[]>([]);
   const [rules, setRules] = useState<{ [key: string]: RuleInfo }>({});
   const actions = useMemo(
-    () => (isEditable ? [<EuiButton onClick={editAlertTriggers}>Edit</EuiButton>] : null),
+    () => (isEditable ? [<EuiSmallButton onClick={editAlertTriggers}>Edit</EuiSmallButton>] : null),
     []
   );
 

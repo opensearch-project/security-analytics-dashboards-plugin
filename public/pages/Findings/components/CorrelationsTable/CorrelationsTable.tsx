@@ -8,7 +8,7 @@ import { CorrelationFinding, FindingItemType } from '../../../../../types';
 import { ruleTypes } from '../../../Rules/utils/constants';
 import { DEFAULT_EMPTY_DATA, ROUTES } from '../../../../utils/constants';
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
@@ -232,12 +232,12 @@ export const CorrelationsTable: React.FC<CorrelationsTableProps> = ({
           </EuiTitle>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton
+          <EuiSmallButton
             onClick={() => goToCorrelationsPage()}
             disabled={correlatedFindings.length === 0}
           >
             View correlations graph
-          </EuiButton>
+          </EuiSmallButton>
         </EuiFlexItem>
       </EuiFlexGroup>
       <EuiFlexGroup>

@@ -7,7 +7,7 @@ import React, { useState, useCallback } from 'react';
 import { RulesTable } from '../../Rules/components/RulesTable/RulesTable';
 import { RuleTableItem } from '../../Rules/utils/helpers';
 import { ContentPanel } from '../../../components/ContentPanel';
-import { EuiButton, EuiFlexGroup, EuiFlexItem, EuiIcon, EuiSpacer, EuiText } from '@elastic/eui';
+import { EuiSmallButton, EuiFlexGroup, EuiFlexItem, EuiIcon, EuiSpacer, EuiText } from '@elastic/eui';
 import { RuleViewerFlyout } from '../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
 
 export interface LogTypeDetectionRulesProps {
@@ -32,7 +32,7 @@ export const LogTypeDetectionRules: React.FC<LogTypeDetectionRulesProps> = ({
       <ContentPanel
         title="Detection rules"
         hideHeaderBorder={true}
-        actions={[<EuiButton onClick={refreshRules}>Refresh</EuiButton>]}
+        actions={[<EuiSmallButton onClick={refreshRules}>Refresh</EuiSmallButton>]}
       >
         {rules.length === 0 ? (
           <EuiFlexGroup justifyContent="center" alignItems="center" direction="column">
@@ -42,14 +42,14 @@ export const LogTypeDetectionRules: React.FC<LogTypeDetectionRulesProps> = ({
               </EuiText>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
-              <EuiButton
+              <EuiSmallButton
                 fill
                 href={`opensearch_security_analytics_dashboards#/create-rule`}
                 target="_blank"
               >
                 Create detection rule&nbsp;
                 <EuiIcon type={'popout'} />
-              </EuiButton>
+              </EuiSmallButton>
               <EuiSpacer size="xl" />
             </EuiFlexItem>
           </EuiFlexGroup>

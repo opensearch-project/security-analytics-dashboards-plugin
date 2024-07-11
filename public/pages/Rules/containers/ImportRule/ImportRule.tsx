@@ -6,7 +6,7 @@
 import { BrowserServices } from '../../../../models/interfaces';
 import { RuleEditorContainer } from '../../components/RuleEditor/RuleEditorContainer';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { EuiButton, EuiFilePicker, EuiFlexGroup, EuiFlexItem, EuiSpacer } from '@elastic/eui';
+import { EuiSmallButton, EuiFilePicker, EuiFlexGroup, EuiFlexItem, EuiSpacer } from '@elastic/eui';
 import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { RouteComponentProps } from 'react-router-dom';
 import { dump, load } from 'js-yaml';
@@ -110,7 +110,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
         <EuiSpacer size="xl" />
         <EuiFlexGroup justifyContent="flexEnd">
           <EuiFlexItem grow={false}>
-            <EuiButton onClick={() => history.replace(ROUTES.RULES)}>Cancel</EuiButton>
+            <EuiSmallButton onClick={() => history.replace(ROUTES.RULES)}>Cancel</EuiSmallButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       </>

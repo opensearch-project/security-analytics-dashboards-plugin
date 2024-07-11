@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
+import { EuiSmallButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 import { ModalConsumer } from '../Modal';
 
 interface ContentPanelActionsProps {
@@ -22,22 +22,22 @@ const ContentPanelActions: React.SFC<ContentPanelActionsProps> = ({ actions }) =
   <EuiFlexGroup justifyContent="spaceBetween" alignItems="center">
     {actions.map(({ text, buttonProps = {}, flexItemProps = {}, modal = null }, index) => {
       let button = (
-        <EuiButton {...buttonProps} data-test-subj={`${text}Button`}>
+        <EuiSmallButton {...buttonProps} data-test-subj={`${text}Button`}>
           {text}
-        </EuiButton>
+        </EuiSmallButton>
       );
 
       if (modal) {
         button = (
           <ModalConsumer>
             {({ onShow }) => (
-              <EuiButton
+              <EuiSmallButton
                 {...buttonProps}
                 onClick={modal.onClickModal(onShow)}
                 data-test-subj={`${text}Button`}
               >
                 {text}
-              </EuiButton>
+              </EuiSmallButton>
             )}
           </ModalConsumer>
         );

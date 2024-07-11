@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiBasicTableColumn, EuiButton, EuiEmptyPrompt } from '@elastic/eui';
+import { EuiBasicTableColumn, EuiSmallButton, EuiEmptyPrompt } from '@elastic/eui';
 import { DEFAULT_EMPTY_DATA, ROUTES, SortDirection } from '../../../../utils/constants';
 import React, { useEffect, useState } from 'react';
 import { TableWidget } from './TableWidget';
@@ -71,7 +71,7 @@ export const RecentAlertsWidget: React.FC<RecentAlertsWidgetProps> = ({
   }, [items]);
 
   const actions = React.useMemo(
-    () => [<EuiButton href={`#${ROUTES.ALERTS}`}>View Alerts</EuiButton>],
+    () => [<EuiSmallButton href={`#${ROUTES.ALERTS}`}>View Alerts</EuiSmallButton>],
     []
   );
 

@@ -6,7 +6,7 @@
 import React from 'react';
 import {
   EuiBadge,
-  EuiButton,
+  EuiSmallButton,
   EuiButtonEmpty,
   EuiCard,
   EuiEmptyPrompt,
@@ -42,7 +42,7 @@ export const ThreatIntelSourcesList: React.FC<ThreatIntelSourcesListProps> = ({
         </EuiFlexItem>
         {threatIntelSources.length > 0 && (
           <EuiFlexItem grow={false}>
-            <EuiButton
+            <EuiSmallButton
               onClick={() => {
                 history.push({
                   pathname: ROUTES.THREAT_INTEL_ADD_CUSTOM_SOURCE,
@@ -50,7 +50,7 @@ export const ThreatIntelSourcesList: React.FC<ThreatIntelSourcesListProps> = ({
               }}
             >
               Add threat intel source
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
         )}
       </EuiFlexGroup>
@@ -102,7 +102,7 @@ export const ThreatIntelSourcesList: React.FC<ThreatIntelSourcesListProps> = ({
         <EuiEmptyPrompt
           title={<h3>No threat intel source present</h3>}
           actions={[
-            <EuiButton
+            <EuiSmallButton
               fill
               onClick={() => {
                 history.push({
@@ -111,7 +111,7 @@ export const ThreatIntelSourcesList: React.FC<ThreatIntelSourcesListProps> = ({
               }}
             >
               Add threat intel source
-            </EuiButton>,
+            </EuiSmallButton>,
           ]}
         />
       )}

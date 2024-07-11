@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiButton, EuiButtonEmpty, EuiFlexGroup, EuiFlexItem, EuiPopover } from '@elastic/eui';
+import { EuiSmallButton, EuiButtonEmpty, EuiFlexGroup, EuiFlexItem, EuiPopover } from '@elastic/eui';
 import React from 'react';
 
 export interface RuleViewerFlyoutHeaderActionsProps {
@@ -26,13 +26,13 @@ export const RuleViewerFlyoutHeaderActions: React.FC<RuleViewerFlyoutHeaderActio
   toggleActionsPopover,
 }) => {
   return ruleSource === 'Standard' ? (
-    <EuiButton onClick={duplicateRule}>Duplicate</EuiButton>
+    <EuiSmallButton onClick={duplicateRule}>Duplicate</EuiSmallButton>
   ) : (
     <EuiPopover
       button={
-        <EuiButton iconType="arrowDown" iconSide="right" onClick={toggleActionsPopover}>
+        <EuiSmallButton iconType="arrowDown" iconSide="right" onClick={toggleActionsPopover}>
           Action
-        </EuiButton>
+        </EuiSmallButton>
       }
       isOpen={actionsPopoverOpen}
       closePopover={closeActionsPopover}

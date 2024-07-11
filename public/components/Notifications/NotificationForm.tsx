@@ -5,7 +5,7 @@
 
 import {
   EuiAccordion,
-  EuiButton,
+  EuiSmallButton,
   EuiComboBox,
   EuiComboBoxOptionOption,
   EuiFieldText,
@@ -100,14 +100,14 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
               </EuiFormRow>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
-              <EuiButton
+              <EuiSmallButton
                 href={NOTIFICATIONS_HREF}
                 iconType={'popout'}
                 target={'_blank'}
                 isDisabled={!hasNotificationPlugin}
               >
                 Manage channels
-              </EuiButton>
+              </EuiSmallButton>
             </EuiFlexItem>
           </EuiFlexGroup>
 
@@ -171,12 +171,12 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
               {prepareMessage && (
                 <EuiFlexItem>
                   <EuiFormRow>
-                    <EuiButton
+                    <EuiSmallButton
                       fullWidth={false}
                       onClick={() => prepareMessage(true /* updateMessage */)}
                     >
                       Generate message
-                    </EuiButton>
+                    </EuiSmallButton>
                   </EuiFormRow>
                 </EuiFlexItem>
               )}

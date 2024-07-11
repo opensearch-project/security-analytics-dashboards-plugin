@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
   EuiAccordion,
-  EuiButton,
+  EuiSmallButton,
   EuiCallOut,
   EuiPanel,
   EuiSpacer,
@@ -205,9 +205,9 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
                 paddingSize={'none'}
                 initialIsOpen={true}
                 extraAction={
-                  <EuiButton color="danger" onClick={() => this.onDelete(index)}>
+                  <EuiSmallButton color="danger" onClick={() => this.onDelete(index)}>
                     Remove
-                  </EuiButton>
+                  </EuiSmallButton>
                 }
               >
                 <EuiSpacer size={'m'} />
@@ -242,9 +242,9 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
 
         <EuiSpacer size={'m'} />
 
-        <EuiButton disabled={triggers.length >= MAX_ALERT_CONDITIONS} onClick={this.addCondition}>
+        <EuiSmallButton disabled={triggers.length >= MAX_ALERT_CONDITIONS} onClick={this.addCondition}>
           {triggers.length > 0 ? 'Add another alert trigger' : 'Add alert triggers'}
-        </EuiButton>
+        </EuiSmallButton>
       </>
     );
 

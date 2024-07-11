@@ -6,7 +6,7 @@
 import {
   EuiAccordion,
   EuiBadge,
-  EuiButton,
+  EuiSmallButton,
   EuiButtonEmpty,
   EuiComboBox,
   EuiComboBoxOptionOption,
@@ -322,9 +322,9 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
                                     />
                                   </EuiFlexItem>
                                   <EuiFlexItem grow={false}>
-                                    <EuiButton onClick={() => onFieldAliasesAdd(source, ioc)}>
+                                    <EuiSmallButton onClick={() => onFieldAliasesAdd(source, ioc)}>
                                       Done
-                                    </EuiButton>
+                                    </EuiSmallButton>
                                   </EuiFlexItem>
                                 </EuiFlexGroup>
                               </EuiPopover>

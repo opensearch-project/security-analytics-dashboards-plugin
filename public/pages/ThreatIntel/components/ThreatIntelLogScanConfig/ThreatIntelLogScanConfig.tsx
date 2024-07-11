@@ -4,7 +4,7 @@
  */
 
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiButtonEmpty,
   EuiContextMenuItem,
   EuiContextMenuPanel,
@@ -146,14 +146,14 @@ export const ThreatIntelLogScanConfig: React.FC<ThreatIntelLogScanConfigProps> =
             <EuiPopover
               id={'detectorsActionsPopover'}
               button={
-                <EuiButton
+                <EuiSmallButton
                   iconType={isPopoverOpen ? 'arrowUp' : 'arrowDown'}
                   iconSide={'right'}
                   onClick={toggleActionMenu}
                   data-test-subj={'log-scan-config-action-button'}
                 >
                   Actions
-                </EuiButton>
+                </EuiSmallButton>
               }
               isOpen={isPopoverOpen}
               closePopover={closeActionMenu}

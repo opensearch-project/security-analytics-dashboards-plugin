@@ -5,7 +5,7 @@
 
 import { ContentPanel } from '../../../../components/ContentPanel';
 import React, { useContext, useEffect, useState } from 'react';
-import { EuiAccordion, EuiButton, EuiSpacer, EuiText } from '@elastic/eui';
+import { EuiAccordion, EuiSmallButton, EuiSpacer, EuiText } from '@elastic/eui';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { SecurityAnalyticsContext } from '../../../../services';
 import { RuleInfo } from '../../../../../server/models/interfaces';
@@ -52,12 +52,12 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
   const [loading, setLoading] = useState(false);
   const actions = props.isEditable
     ? [
-        <EuiButton
+        <EuiSmallButton
           onClick={() => props.onEditClicked(enabledRuleItems, allRuleItems)}
           data-test-subj={'edit-detector-rules'}
         >
           Edit
-        </EuiButton>,
+        </EuiSmallButton>,
       ]
     : null;
   const saContext = useContext(SecurityAnalyticsContext);

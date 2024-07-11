@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiButton, EuiSpacer, EuiLink, EuiIcon, EuiText } from '@elastic/eui';
+import { EuiSmallButton, EuiSpacer, EuiLink, EuiIcon, EuiText } from '@elastic/eui';
 import React from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { createTextDetailsGroup, parseSchedule } from '../../../../utils/helpers';
@@ -51,9 +51,9 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
       actions={
         isEditable
           ? [
-              <EuiButton onClick={onEditClicked} data-test-subj={'edit-detector-basic-details'}>
+              <EuiSmallButton onClick={onEditClicked} data-test-subj={'edit-detector-basic-details'}>
                 Edit
-              </EuiButton>,
+              </EuiSmallButton>,
             ]
           : null
       }

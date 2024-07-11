@@ -5,7 +5,7 @@
 
 import {
   EuiBasicTableColumn,
-  EuiButton,
+  EuiSmallButton,
   EuiButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
@@ -656,26 +656,26 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
   createAcknowledgeControl() {
     const { selectedDetectionRuleAlertItems } = this.state;
     return (
-      <EuiButton
+      <EuiSmallButton
         disabled={!selectedDetectionRuleAlertItems.length}
         onClick={() => this.onAcknowledge(selectedDetectionRuleAlertItems)}
         data-test-subj={'acknowledge-button'}
       >
         Acknowledge
-      </EuiButton>
+      </EuiSmallButton>
     );
   }
 
   createAcknowledgeControlForCorrelations() {
     const { selectedCorrelationsAlertItems } = this.state;
     return (
-      <EuiButton
+      <EuiSmallButton
         disabled={!selectedCorrelationsAlertItems.length}
         onClick={() => this.onAcknowledgeCorrelationAlert(selectedCorrelationsAlertItems)}
         data-test-subj={'acknowledge-button'}
       >
         Acknowledge
-      </EuiButton>
+      </EuiSmallButton>
     );
   }
 
@@ -692,7 +692,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     return (
       <EuiFlexGroup gutterSize="s">
         <EuiFlexItem grow={false}>
-          <EuiButton
+          <EuiSmallButton
             disabled={disableAcknowledge}
             onClick={() =>
               this.onThreatIntelAlertStateChange(selectedThreatIntelAlertItems, 'ACKNOWLEDGED')
@@ -700,10 +700,10 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
             data-test-subj={'acknowledge-button'}
           >
             Acknowledge
-          </EuiButton>
+          </EuiSmallButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton
+          <EuiSmallButton
             disabled={disableComplete}
             onClick={() =>
               this.onThreatIntelAlertStateChange(selectedThreatIntelAlertItems, 'COMPLETED')
@@ -711,7 +711,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
             data-test-subj={'complete-button'}
           >
             Complete
-          </EuiButton>
+          </EuiSmallButton>
         </EuiFlexItem>
       </EuiFlexGroup>
     );
