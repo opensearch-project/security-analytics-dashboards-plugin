@@ -7,7 +7,7 @@ import {
   EuiSmallButton,
   EuiCallOut,
   EuiConfirmModal,
-  EuiFieldText,
+  EuiCompressedFieldText,
   EuiForm,
   EuiCompressedFormRow,
   EuiLoadingSpinner,
@@ -102,7 +102,7 @@ export const DeleteLogTypeModal: React.FC<DeleteLogTypeModalProps> = ({
               Type <b>{logTypeName}</b> to confirm
             </p>
             <EuiCompressedFormRow>
-              <EuiFieldText
+              <EuiCompressedFieldText
                 value={confirmDeleteText}
                 onChange={(e) => setConfirmDeleteText(e.target.value)}
               />

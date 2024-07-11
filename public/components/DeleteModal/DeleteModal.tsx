@@ -6,7 +6,7 @@
 import React, { ChangeEvent, Component } from 'react';
 import {
   EuiConfirmModal,
-  EuiFieldText,
+  EuiCompressedFieldText,
   EuiForm,
   EuiCompressedFormRow,
   EuiOverlayMask,
@@ -76,7 +76,7 @@ export default class DeleteModal extends Component<DeleteModalProps, DeleteModal
             <EuiSpacer size="s" />
             {!!confirmation && (
               <EuiCompressedFormRow helpText={`To confirm deletion, type "${DEFAULT_DELETION_TEXT}".`}>
-                <EuiFieldText
+                <EuiCompressedFieldText
                   value={confirmDeleteText}
                   placeholder={DEFAULT_DELETION_TEXT}
                   onChange={this.onChange}

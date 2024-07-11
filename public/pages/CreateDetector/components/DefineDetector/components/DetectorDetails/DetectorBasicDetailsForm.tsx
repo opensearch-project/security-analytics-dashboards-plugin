@@ -4,7 +4,7 @@
  */
 
 import React, { Component } from 'react';
-import { EuiCompressedFormRow, EuiFieldText, EuiSpacer, EuiTextArea, EuiTitle } from '@elastic/eui';
+import { EuiCompressedFormRow, EuiCompressedFieldText, EuiSpacer, EuiTextArea, EuiTitle } from '@elastic/eui';
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
 import {
   getDescriptionErrorMessage,
@@ -83,7 +83,7 @@ export default class DetectorBasicDetailsForm extends Component<
           isInvalid={nameFieldTouched && nameIsInvalid}
           error={getNameErrorMessage(detectorName, nameIsInvalid, nameFieldTouched)}
         >
-          <EuiFieldText
+          <EuiCompressedFieldText
             placeholder={'Enter a name for the detector.'}
             readOnly={false}
             value={detectorName}

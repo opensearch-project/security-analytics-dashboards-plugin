@@ -6,7 +6,7 @@
 import {
   EuiSmallButton,
   EuiSmallButtonIcon,
-  EuiFieldText,
+  EuiCompressedFieldText,
   EuiFlexGroup,
   EuiFlexItem,
   EuiCompressedFormRow,
@@ -58,7 +58,7 @@ export const FieldTextArray: React.FC<FieldTextArrayProps> = ({
             return (
               <EuiFlexGroup key={index}>
                 <EuiFlexItem style={{ minWidth: '100%' }}>
-                  <EuiFieldText
+                  <EuiCompressedFieldText
                     name={name}
                     value={ref}
                     placeholder={placeholder}

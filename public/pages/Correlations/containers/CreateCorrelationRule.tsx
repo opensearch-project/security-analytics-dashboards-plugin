@@ -17,7 +17,7 @@ import {
   EuiCompressedFormRow,
   EuiText,
   EuiComboBox,
-  EuiFieldText,
+  EuiCompressedFieldText,
   EuiSpacer,
   EuiTitle,
   EuiPanel,
@@ -27,7 +27,7 @@ import {
   EuiButtonGroup,
   EuiSelect,
   EuiSelectOption,
-  EuiFieldNumber,
+  EuiCompressedFieldNumber,
   EuiCheckableCard,
   htmlIdGenerator,
   EuiComboBoxOptionOption,
@@ -676,7 +676,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                         );
 
                         const fieldValueInput = (
-                          <EuiFieldText
+                          <EuiCompressedFieldText
                             placeholder="Enter field value"
                             data-test-subj={'rule_name_field'}
                             onChange={(e) => {
@@ -922,7 +922,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                     'Rule name must contain 5-50 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, and underscores.'
                   }
                 >
-                  <EuiFieldText
+                  <EuiCompressedFieldText
                     isInvalid={touched.name && !!errors.name}
                     placeholder="Enter rule name"
                     data-test-subj={'rule_name_field'}
@@ -953,7 +953,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                 >
                   <EuiFlexGroup gutterSize="none">
                     <EuiFlexItem>
-                      <EuiFieldNumber
+                      <EuiCompressedFieldNumber
                         isInvalid={!!errors.time_window}
                         min={1}
                         max={period.unit === 'HOURS' ? 24 : 1440}
@@ -1030,7 +1030,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                             </EuiText>
                           }
                         >
-                          <EuiFieldText
+                          <EuiCompressedFieldText
                             placeholder="Trigger 1"
                             onChange={(e) => {
                               const triggerName = e.target.value || 'Trigger 1';
@@ -1182,7 +1182,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                                 }
                                 fullWidth={true}
                               >
-                                <EuiFieldText
+                                <EuiCompressedFieldText
                                   placeholder={'Enter a subject for the notification message.'}
                                   onChange={(e) => {
                                     const subjectBody = e.target.value || '';

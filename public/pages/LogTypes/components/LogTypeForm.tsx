@@ -7,7 +7,7 @@ import {
   EuiBottomBar,
   EuiButton,
   EuiButtonEmpty,
-  EuiFieldText,
+  EuiCompressedFieldText,
   EuiFlexGroup,
   EuiFlexItem,
   EuiCompressedFormRow,
@@ -79,7 +79,7 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
         isInvalid={!!nameError}
         error={nameError}
       >
-        <EuiFieldText
+        <EuiCompressedFieldText
           value={logTypeDetails?.name}
           onChange={(e) => {
             const newLogType = {
