@@ -18,7 +18,7 @@ import {
   EuiCompressedFieldText,
   EuiComboBox,
   EuiPanel,
-  EuiRadioGroup,
+  EuiCompressedRadioGroup,
   EuiTextArea,
   EuiSmallButton,
   EuiModal,
@@ -633,7 +633,7 @@ export class DetectionVisualEditor extends React.Component<
 
                         <EuiSpacer size="m" />
 
-                        <EuiRadioGroup
+                        <EuiCompressedRadioGroup
                           options={radioGroupOptions}
                           idSelected={datum.selectedRadioId || radioGroupOptions[0].id}
                           onChange={(id) => {
