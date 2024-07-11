@@ -8,7 +8,7 @@ import { RuleEditorContainer } from '../../components/RuleEditor/RuleEditorConta
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   EuiSmallButton,
-  EuiFilePicker,
+  EuiCompressedFilePicker,
   EuiFlexGroup,
   EuiFlexItem,
   EuiPanel,
@@ -106,7 +106,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, notifications }
               <h3>Import rule</h3>
             </EuiTitle>
           </PageHeader>
-          <EuiFilePicker
+          <EuiCompressedFilePicker
             id={'filePickerId'}
             fullWidth
             initialPromptText="Select or drag yml file containing Sigma rules"
