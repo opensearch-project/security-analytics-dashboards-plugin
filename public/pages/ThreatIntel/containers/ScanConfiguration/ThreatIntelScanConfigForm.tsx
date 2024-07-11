@@ -6,7 +6,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   EuiSmallButton,
-  EuiButtonEmpty,
+  EuiSmallButtonEmpty,
   EuiFlexGroup,
   EuiFlexItem,
   EuiSpacer,
@@ -341,9 +341,9 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
       <EuiSpacer />
       <EuiFlexGroup alignItems={'center'} justifyContent={'flexEnd'}>
         <EuiFlexItem grow={false}>
-          <EuiButtonEmpty href={`${PLUGIN_NAME}#${ROUTES.THREAT_INTEL_OVERVIEW}`}>
+          <EuiSmallButtonEmpty href={`${PLUGIN_NAME}#${ROUTES.THREAT_INTEL_OVERVIEW}`}>
             Cancel
-          </EuiButtonEmpty>
+          </EuiSmallButtonEmpty>
         </EuiFlexItem>
 
         {currentStep === ConfigureThreatIntelScanStep.SelectLogSources && (

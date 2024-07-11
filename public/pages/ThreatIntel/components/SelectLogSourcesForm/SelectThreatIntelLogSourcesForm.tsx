@@ -7,7 +7,7 @@ import {
   EuiAccordion,
   EuiBadge,
   EuiSmallButton,
-  EuiButtonEmpty,
+  EuiSmallButtonEmpty,
   EuiComboBox,
   EuiComboBoxOptionOption,
   EuiFlexGroup,
@@ -294,7 +294,7 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
                             <EuiFlexItem grow={false}>
                               <EuiPopover
                                 button={
-                                  <EuiButtonEmpty
+                                  <EuiSmallButtonEmpty
                                     iconType={'plus'}
                                     onClick={() =>
                                       setIocInfoWithAddFieldOpen({
@@ -306,7 +306,7 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
                                     }
                                   >
                                     Add fields
-                                  </EuiButtonEmpty>
+                                  </EuiSmallButtonEmpty>
                                 }
                                 panelPaddingSize="s"
                                 closePopover={() => onFieldAliasesAdd(source, ioc)}
@@ -333,9 +333,9 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
                                     />
                                   </EuiFlexItem>
                                   <EuiFlexItem grow={false}>
-                                    <EuiSmallButton onClick={() => onFieldAliasesAdd(source, ioc)}>
+                                    <EuiSmallButtonEmpty onClick={() => onFieldAliasesAdd(source, ioc)}>
                                       Done
-                                    </EuiSmallButton>
+                                    </EuiSmallButtonEmpty>
                                   </EuiFlexItem>
                                 </EuiFlexGroup>
                               </EuiPopover>

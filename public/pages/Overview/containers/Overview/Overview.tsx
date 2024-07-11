@@ -4,7 +4,7 @@
  */
 
 import {
-  EuiButtonEmpty,
+  EuiSmallButtonEmpty,
   EuiFlexGrid,
   EuiFlexGroup,
   EuiFlexItem,
@@ -181,9 +181,9 @@ export const Overview: React.FC<OverviewProps> = (props) => {
   };
 
   const button = (
-    <EuiButtonEmpty iconType="cheer" onClick={onButtonClick}>
+    <EuiSmallButtonEmpty iconType="cheer" onClick={onButtonClick}>
       Getting started
-    </EuiButtonEmpty>
+    </EuiSmallButtonEmpty>
   );
 
   const datePicker = (
