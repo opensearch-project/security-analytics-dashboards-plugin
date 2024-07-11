@@ -13,7 +13,7 @@ import {
   EuiFlexItem,
   EuiCompressedFormRow,
   EuiSpacer,
-  EuiSwitch,
+  EuiCompressedSwitch,
   EuiText,
   EuiTextArea,
 } from '@elastic/eui';
@@ -64,7 +64,7 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
 
   return (
     <>
-      <EuiSwitch
+      <EuiCompressedSwitch
         label="Send notification"
         checked={shouldSendNotification}
         onChange={(e) => {

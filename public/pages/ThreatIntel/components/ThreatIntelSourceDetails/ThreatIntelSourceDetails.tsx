@@ -16,7 +16,7 @@ import {
   EuiCompressedFormRow,
   EuiPanel,
   EuiSpacer,
-  EuiSwitch,
+  EuiCompressedSwitch,
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
@@ -239,7 +239,7 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
                   </EuiFlexItem>
                   {(!isReadOnly || !enabled) && (
                     <EuiFlexItem grow={false}>
-                      <EuiSwitch
+                      <EuiCompressedSwitch
                         label="Download on demand only"
                         checked={!enabled}
                         onChange={(event) => onRefreshSwitchChange(event.target.checked)}

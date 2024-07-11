@@ -31,7 +31,7 @@ import {
   EuiCheckableCard,
   htmlIdGenerator,
   EuiComboBoxOptionOption,
-  EuiSwitch,
+  EuiCompressedSwitch,
   EuiTextArea,
 } from '@elastic/eui';
 import { ruleTypes } from '../../Rules/utils/constants';
@@ -1071,7 +1071,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                     </EuiFlexGroup>
                     <EuiSpacer size={'l'} />
 
-                    <EuiSwitch
+                    <EuiCompressedSwitch
                       label="Send notification"
                       checked={showNotificationDetails}
                       onChange={(e) => {
