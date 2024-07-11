@@ -7,7 +7,7 @@ import {
   EuiAccordion,
   EuiBadge,
   EuiSmallButtonEmpty,
-  EuiComboBox,
+  EuiCompressedComboBox,
   EuiComboBoxOptionOption,
   EuiFlexGroup,
   EuiFlexItem,
@@ -188,7 +188,7 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
         label="Select Indexes/Aliases"
         helpText="Using indexes and aliases is recommended for more precise field mapping"
       >
-        <EuiComboBox
+        <EuiCompressedComboBox
           options={logSourceOptions}
           placeholder={'Select an input source for the detector.'}
           isLoading={loadingLogSourceOptions}
@@ -306,7 +306,7 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
                               >
                                 <EuiFlexGroup alignItems="flexEnd">
                                   <EuiFlexItem>
-                                    <EuiComboBox
+                                    <EuiCompressedComboBox
                                       style={{ minWidth: 300 }}
                                       options={Array.from(fieldOptionsSet).map((f) => ({
                                         label: f,

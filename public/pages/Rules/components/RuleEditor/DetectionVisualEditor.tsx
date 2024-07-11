@@ -16,7 +16,7 @@ import {
   EuiFlexItem,
   EuiCompressedFormRow,
   EuiCompressedFieldText,
-  EuiComboBox,
+  EuiCompressedComboBox,
   EuiPanel,
   EuiCompressedRadioGroup,
   EuiTextArea,
@@ -611,7 +611,7 @@ export class DetectionVisualEditor extends React.Component<
                           </EuiFlexItem>
                           <EuiFlexItem grow={false} style={{ minWidth: 200 }}>
                             <EuiCompressedFormRow label={<EuiText size={'s'}>Modifier</EuiText>}>
-                              <EuiComboBox
+                              <EuiCompressedComboBox
                                 data-test-subj={'modifier_dropdown'}
                                 options={detectionModifierOptions}
                                 singleSelection={{ asPlainText: true }}

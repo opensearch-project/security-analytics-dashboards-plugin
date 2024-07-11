@@ -6,7 +6,7 @@
 import {
   EuiAccordion,
   EuiSmallButton,
-  EuiComboBox,
+  EuiCompressedComboBox,
   EuiComboBoxOptionOption,
   EuiCompressedFieldText,
   EuiFlexGroup,
@@ -84,7 +84,7 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
                   </EuiText>
                 }
               >
-                <EuiComboBox
+                <EuiCompressedComboBox
                   placeholder={'Select notification channel.'}
                   async={true}
                   isLoading={loadingNotifications}

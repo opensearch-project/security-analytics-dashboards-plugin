@@ -16,7 +16,7 @@ import {
   EuiFlexItem,
   EuiCompressedFormRow,
   EuiText,
-  EuiComboBox,
+  EuiCompressedComboBox,
   EuiCompressedFieldText,
   EuiSpacer,
   EuiTitle,
@@ -565,7 +565,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                         ?.index
                     }
                   >
-                    <EuiComboBox
+                    <EuiCompressedComboBox
                       isInvalid={isInvalidInputForQuery('index')}
                       placeholder="Select index or index pattern"
                       data-test-subj={'index_dropdown'}
@@ -599,7 +599,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                         ?.logType
                     }
                   >
-                    <EuiComboBox
+                    <EuiCompressedComboBox
                       isInvalid={isInvalidInputForQuery('logType')}
                       placeholder="Select a log type"
                       data-test-subj={'rule_type_dropdown'}
@@ -648,7 +648,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                       <EuiSpacer size="xs" />
                       {query.conditions.map((condition, conditionIdx) => {
                         const fieldNameInput = (
-                          <EuiComboBox
+                          <EuiCompressedComboBox
                             placeholder="Select a field"
                             data-test-subj={'field_dropdown'}
                             options={fieldOptions}
@@ -784,7 +784,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                             ?.field
                         }
                       >
-                        <EuiComboBox
+                        <EuiCompressedComboBox
                           placeholder="Select a field"
                           data-test-subj={'field_dropdown'}
                           options={fieldOptions}
@@ -1039,7 +1039,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                             </EuiText>
                           }
                         >
-                          <EuiComboBox
+                          <EuiCompressedComboBox
                             placeholder="Alert Severity"
                             options={ruleSeverityComboBoxOptions}
                             singleSelection={{ asPlainText: true }}
@@ -1091,7 +1091,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                                 </EuiText>
                               }
                             >
-                              <EuiComboBox
+                              <EuiCompressedComboBox
                                 placeholder={'Select notification channel.'}
                                 async={true}
                                 isLoading={!!loadingNotifications}

@@ -8,7 +8,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import {
   EuiAccordion,
   EuiCompressedCheckbox,
-  EuiComboBox,
+  EuiCompressedComboBox,
   EuiComboBoxOptionOption,
   EuiCompressedFieldText,
   EuiCompressedFormRow,
@@ -404,7 +404,7 @@ export default class AlertConditionPanel extends Component<
                   </EuiText>
                 }
               >
-                <EuiComboBox
+                <EuiCompressedComboBox
                   placeholder={'Any rules'}
                   options={namesOptions}
                   onChange={this.onRuleNamesChange}
@@ -421,7 +421,7 @@ export default class AlertConditionPanel extends Component<
                   </EuiText>
                 }
               >
-                <EuiComboBox
+                <EuiCompressedComboBox
                   placeholder={'Any severities'}
                   options={ruleSeverityOptions}
                   onChange={this.onRuleSeverityChange}
@@ -439,7 +439,7 @@ export default class AlertConditionPanel extends Component<
                   </EuiText>
                 }
               >
-                <EuiComboBox
+                <EuiCompressedComboBox
                   placeholder={'Any tags'}
                   options={tagsOptions}
                   onChange={this.onTagsChange}
@@ -501,7 +501,7 @@ export default class AlertConditionPanel extends Component<
             </EuiText>
           }
         >
-          <EuiComboBox
+          <EuiCompressedComboBox
             placeholder={'Select applicable severity levels.'}
             async={true}
             options={Object.values(ALERT_SEVERITY_OPTIONS)}

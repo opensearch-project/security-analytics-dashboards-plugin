@@ -4,7 +4,7 @@
  */
 
 import React, { Component } from 'react';
-import { EuiCompressedFormRow, EuiSpacer, EuiComboBox, EuiTitle, EuiText } from '@elastic/eui';
+import { EuiCompressedFormRow, EuiSpacer, EuiCompressedComboBox, EuiTitle, EuiText } from '@elastic/eui';
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
 import { CreateDetectorRulesState, DetectionRules } from '../DetectionRules/DetectionRules';
 import { RuleItem } from '../DetectionRules/types/interfaces';
@@ -94,7 +94,7 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
           isInvalid={this.isInvalid()}
           error={this.getErrorMessage()}
         >
-          <EuiComboBox
+          <EuiCompressedComboBox
             isInvalid={this.isInvalid()}
             placeholder="Select log type"
             data-test-subj={'log_type_dropdown'}
