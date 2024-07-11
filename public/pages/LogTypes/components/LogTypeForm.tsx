@@ -12,7 +12,7 @@ import {
   EuiFlexItem,
   EuiCompressedFormRow,
   EuiSpacer,
-  EuiSuperSelect,
+  EuiCompressedSuperSelect,
   EuiTextArea,
 } from '@elastic/eui';
 import { LogTypeItem } from '../../../../types';
@@ -118,7 +118,7 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
       </EuiCompressedFormRow>
       <EuiSpacer />
       <EuiCompressedFormRow label="Category" isInvalid={!!categoryError} error={categoryError}>
-        <EuiSuperSelect
+        <EuiCompressedSuperSelect
           options={getLogTypeCategoryOptions().map((option) => ({
             ...option,
             disabled: !isEditMode || (isEditMode && !!logTypeDetails.detectionRulesCount),
@@ -135,7 +135,7 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
           }}
           hasDividers
           itemLayoutAlign="top"
-        ></EuiSuperSelect>
+        ></EuiCompressedSuperSelect>
       </EuiCompressedFormRow>
       {isEditMode ? (
         <EuiBottomBar>
