@@ -6,7 +6,6 @@
 import {
   EuiAccordion,
   EuiBadge,
-  EuiSmallButton,
   EuiSmallButtonEmpty,
   EuiComboBox,
   EuiComboBoxOptionOption,
