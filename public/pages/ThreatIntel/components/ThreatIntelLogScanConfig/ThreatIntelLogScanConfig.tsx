@@ -5,6 +5,7 @@
 
 import {
   EuiSmallButton,
+  EuiSmallButtonEmpty,
   EuiButtonEmpty,
   EuiContextMenuItem,
   EuiContextMenuPanel,
@@ -209,7 +210,7 @@ export const ThreatIntelLogScanConfig: React.FC<ThreatIntelLogScanConfigProps> =
                   })}
                   {logSources.length > 3 && (
                     <EuiFlexItem grow={false}>
-                      <EuiButtonEmpty
+                      <EuiSmallButtonEmpty
                         onClick={() => {
                           setFlyoutContent(
                             <ThreatIntelLogSourcesFlyout
@@ -221,7 +222,7 @@ export const ThreatIntelLogScanConfig: React.FC<ThreatIntelLogScanConfigProps> =
                         }}
                       >
                         View {logSources.length} log sources
-                      </EuiButtonEmpty>
+                      </EuiSmallButtonEmpty>
                     </EuiFlexItem>
                   )}
                 </EuiFlexGroup>

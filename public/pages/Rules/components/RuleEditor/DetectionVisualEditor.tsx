@@ -27,7 +27,7 @@ import {
   EuiModalBody,
   EuiModalFooter,
   EuiFilePicker,
-  EuiButtonEmpty,
+  EuiSmallButtonEmpty,
   EuiCallOut,
   EuiCodeEditor,
 } from '@elastic/eui';
@@ -669,7 +669,7 @@ export class DetectionVisualEditor extends React.Component<
                                 grow={true}
                                 className={'detection-visual-editor-textarea-clear-btn'}
                               >
-                                <EuiButtonEmpty
+                                <EuiSmallButtonEmpty
                                   isDisabled={!datum.values[0]}
                                   color={datum.values[0] ? 'primary' : 'ghost'}
                                   iconType={'cross'}
@@ -680,7 +680,7 @@ export class DetectionVisualEditor extends React.Component<
                                   }}
                                 >
                                   Clear list
-                                </EuiButtonEmpty>
+                                </EuiSmallButtonEmpty>
                                 <EuiSpacer size={'s'} />
                               </EuiFlexItem>
                             </EuiFlexGroup>
@@ -809,12 +809,12 @@ export class DetectionVisualEditor extends React.Component<
               <EuiText size="xs">
                 Define how each selection should be included in the final query. For more options
                 use{' '}
-                <EuiButtonEmpty
+                <EuiSmallButtonEmpty
                   className={'empty-text-button'}
                   onClick={() => this.props.goToYamlEditor('yaml')}
                 >
                   <EuiText size="s">YAML editor</EuiText>
-                </EuiButtonEmpty>
+                </EuiSmallButtonEmpty>
                 .
               </EuiText>
             </>

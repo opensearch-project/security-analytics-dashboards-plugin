@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiSmallButton, EuiButtonEmpty, EuiFlexGroup, EuiFlexItem, EuiPopover } from '@elastic/eui';
+import { EuiSmallButton, EuiSmallButtonEmpty, EuiFlexGroup, EuiFlexItem, EuiPopover } from '@elastic/eui';
 import React from 'react';
 
 export interface RuleViewerFlyoutHeaderActionsProps {
@@ -40,15 +40,15 @@ export const RuleViewerFlyoutHeaderActions: React.FC<RuleViewerFlyoutHeaderActio
     >
       <EuiFlexGroup direction="column">
         <EuiFlexItem>
-          <EuiButtonEmpty onClick={editRule}>Edit</EuiButtonEmpty>
+          <EuiSmallButtonEmpty onClick={editRule}>Edit</EuiSmallButtonEmpty>
         </EuiFlexItem>
 
         <EuiFlexItem>
-          <EuiButtonEmpty onClick={duplicateRule}>Duplicate</EuiButtonEmpty>
+          <EuiSmallButtonEmpty onClick={duplicateRule}>Duplicate</EuiSmallButtonEmpty>
         </EuiFlexItem>
 
         <EuiFlexItem>
-          <EuiButtonEmpty onClick={deleteRule}>Delete</EuiButtonEmpty>
+          <EuiSmallButtonEmpty onClick={deleteRule}>Delete</EuiSmallButtonEmpty>
         </EuiFlexItem>
       </EuiFlexGroup>
     </EuiPopover>

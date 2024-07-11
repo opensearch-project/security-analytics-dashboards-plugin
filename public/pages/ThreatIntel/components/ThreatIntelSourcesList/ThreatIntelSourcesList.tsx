@@ -7,7 +7,7 @@ import React from 'react';
 import {
   EuiBadge,
   EuiSmallButton,
-  EuiButtonEmpty,
+  EuiSmallButtonEmpty,
   EuiCard,
   EuiEmptyPrompt,
   EuiFlexGroup,
@@ -65,7 +65,7 @@ export const ThreatIntelSourcesList: React.FC<ThreatIntelSourcesListProps> = ({
                 description={source.description}
                 footer={
                   <>
-                    <EuiButtonEmpty
+                    <EuiSmallButtonEmpty
                       onClick={() => {
                         history.push({
                           pathname: `${ROUTES.THREAT_INTEL_SOURCE_DETAILS}/${source.id}`,
@@ -75,7 +75,7 @@ export const ThreatIntelSourcesList: React.FC<ThreatIntelSourcesListProps> = ({
                       iconType={'iInCircle'}
                     >
                       More details
-                    </EuiButtonEmpty>
+                    </EuiSmallButtonEmpty>
                     <EuiSpacer size="m" />
                     {source.enabled && (
                       <>

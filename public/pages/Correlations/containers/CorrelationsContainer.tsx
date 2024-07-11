@@ -28,7 +28,7 @@ import {
   EuiPanel,
   EuiSuperDatePicker,
   EuiSpacer,
-  EuiButtonEmpty,
+  EuiSmallButtonEmpty,
   EuiFlyout,
   EuiFlyoutHeader,
   EuiFlyoutBody,
@@ -579,7 +579,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                   </EuiFilterGroup>
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>
-                  <EuiButtonEmpty onClick={this.resetFilters}>Reset filters</EuiButtonEmpty>
+                  <EuiSmallButtonEmpty onClick={this.resetFilters}>Reset filters</EuiSmallButtonEmpty>
                 </EuiFlexItem>
               </EuiFlexGroup>
               <EuiSpacer />

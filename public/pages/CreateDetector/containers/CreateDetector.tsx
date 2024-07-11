@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
   EuiSmallButton,
-  EuiButtonEmpty,
+  EuiSmallButtonEmpty,
   EuiFlexGroup,
   EuiFlexItem,
   EuiSpacer,
@@ -398,7 +398,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
 
         <EuiFlexGroup alignItems={'center'} justifyContent={'flexEnd'}>
           <EuiFlexItem grow={false}>
-            <EuiButtonEmpty href={`${PLUGIN_NAME}#${ROUTES.DETECTORS}`}>Cancel</EuiButtonEmpty>
+            <EuiSmallButtonEmpty href={`${PLUGIN_NAME}#${ROUTES.DETECTORS}`}>Cancel</EuiSmallButtonEmpty>
           </EuiFlexItem>
 
           {currentStep > DetectorCreationStep.DEFINE_DETECTOR && (
