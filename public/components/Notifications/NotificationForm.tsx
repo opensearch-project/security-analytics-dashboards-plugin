@@ -15,7 +15,7 @@ import {
   EuiSpacer,
   EuiCompressedSwitch,
   EuiText,
-  EuiTextArea,
+  EuiCompressedTextArea,
 } from '@elastic/eui';
 import React, { useState } from 'react';
 import { NOTIFICATIONS_HREF } from '../../utils/constants';
@@ -159,7 +159,7 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
                   }
                   fullWidth={true}
                 >
-                  <EuiTextArea
+                  <EuiCompressedTextArea
                     placeholder={'Enter the content of the notification message.'}
                     value={action?.message_template.source}
                     onChange={(e) => onMessageBodyChange(e.target.value)}
