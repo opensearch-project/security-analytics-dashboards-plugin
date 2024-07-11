@@ -7,7 +7,7 @@ import {
   EuiBasicTable,
   EuiBasicTableColumn,
   EuiSmallButton,
-  EuiButtonIcon,
+  EuiSmallButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
   EuiFlyout,
@@ -111,7 +111,7 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
     const { rules } = this.state;
 
     const backButton = (
-      <EuiButtonIcon
+      <EuiSmallButtonIcon
         iconType="arrowLeft"
         aria-label="back"
         onClick={() => DataStore.findings.closeFlyout()}
@@ -221,7 +221,7 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
                   </EuiSmallButton>
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>
-                  <EuiButtonIcon
+                  <EuiSmallButtonIcon
                     aria-label="close"
                     iconType="cross"
                     iconSize="m"

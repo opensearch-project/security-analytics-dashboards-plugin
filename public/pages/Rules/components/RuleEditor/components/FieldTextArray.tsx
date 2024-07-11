@@ -5,7 +5,7 @@
 
 import {
   EuiSmallButton,
-  EuiButtonIcon,
+  EuiSmallButtonIcon,
   EuiFieldText,
   EuiFlexGroup,
   EuiFlexItem,
@@ -76,7 +76,7 @@ export const FieldTextArray: React.FC<FieldTextArrayProps> = ({
                 {values.length > 1 ? (
                   <EuiFlexItem grow={false} className={'field-text-array-remove'}>
                     <EuiToolTip title={'Remove'}>
-                      <EuiButtonIcon
+                      <EuiSmallButtonIcon
                         aria-label={'Remove'}
                         iconType={'trash'}
                         color="danger"

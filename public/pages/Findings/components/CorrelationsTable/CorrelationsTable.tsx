@@ -9,7 +9,7 @@ import { ruleTypes } from '../../../Rules/utils/constants';
 import { DEFAULT_EMPTY_DATA, ROUTES } from '../../../../utils/constants';
 import {
   EuiSmallButton,
-  EuiButtonIcon,
+  EuiSmallButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
   EuiTitle,
@@ -98,7 +98,7 @@ export const CorrelationsTable: React.FC<CorrelationsTableProps> = ({
   const actions = [
     {
       render: (item: CorrelationFinding) => (
-        <EuiButtonIcon
+        <EuiSmallButtonIcon
           onClick={() => toggleCorrelationDetails(item)}
           aria-label={itemIdToExpandedRowMap[item.id] ? 'Collapse' : 'Expand'}
           iconType={itemIdToExpandedRowMap[item.id] ? 'arrowUp' : 'arrowDown'}
@@ -127,7 +127,7 @@ export const CorrelationsTable: React.FC<CorrelationsTableProps> = ({
       render: (item: CorrelationFinding) => (
         <EuiPopover
           button={
-            <EuiButtonIcon
+            <EuiSmallButtonIcon
               onClick={() => copyFindingIdToClipboard(item.id)}
               aria-label="Copy"
               iconType="copy"
