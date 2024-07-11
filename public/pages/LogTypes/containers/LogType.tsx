@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import { RouteComponentProps, useParams } from 'react-router-dom';
 import { LogTypeItem } from '../../../../types';
 import {
-  EuiButtonIcon,
+  EuiSmallButtonIcon,
   EuiDescriptionList,
   EuiFlexGroup,
   EuiFlexItem,
@@ -165,7 +165,7 @@ export const LogType: React.FC<LogTypeProps> = ({ notifications, history }) => {
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
           <EuiToolTip content="Delete" position="bottom">
-            <EuiButtonIcon
+            <EuiSmallButtonIcon
               iconType={'trash'}
               color="danger"
               onClick={() => setShowDeleteModal(true)}

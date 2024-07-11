@@ -7,7 +7,7 @@ import React from 'react';
 import {
   EuiAccordion,
   EuiBasicTableColumn,
-  EuiButtonIcon,
+  EuiSmallButtonIcon,
   EuiCodeBlock,
   EuiEmptyPrompt,
   EuiFlexGroup,
@@ -156,7 +156,7 @@ export class ThreatIntelFindingDetailsFlyout extends React.Component<
       {
         name: '',
         render: (item: ThreatIntelFindingDocumentItem) => (
-          <EuiButtonIcon
+          <EuiSmallButtonIcon
             onClick={() => this.toggleDocumentDetails(item)}
             aria-label={docIdToExpandedRowMap[item.id] ? 'Collapse' : 'Expand'}
             iconType={docIdToExpandedRowMap[item.id] ? 'arrowUp' : 'arrowDown'}
@@ -223,7 +223,7 @@ export class ThreatIntelFindingDetailsFlyout extends React.Component<
               </EuiFlexGroup>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
-              <EuiButtonIcon
+              <EuiSmallButtonIcon
                 aria-label="close"
                 iconType="cross"
                 display="empty"

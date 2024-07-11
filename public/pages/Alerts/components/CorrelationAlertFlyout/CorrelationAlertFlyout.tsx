@@ -8,7 +8,7 @@ import {
     EuiBasicTable,
     EuiBasicTableColumn,
     EuiSmallButton,
-    EuiButtonIcon,
+    EuiSmallButtonIcon,
     EuiFlexGroup,
     EuiFlexItem,
     EuiFlyout,
@@ -116,7 +116,7 @@ import {
       const { rules } = this.state;
 
       const backButton = (
-        <EuiButtonIcon
+        <EuiSmallButtonIcon
           iconType="arrowLeft"
           aria-label="back"
           onClick={() => DataStore.findings.closeFlyout()}
@@ -224,7 +224,7 @@ import {
                     </EuiSmallButton>
                   </EuiFlexItem>
                   <EuiFlexItem grow={false}>
-                    <EuiButtonIcon
+                    <EuiSmallButtonIcon
                       aria-label="close"
                       iconType="cross"
                       iconSize="m"

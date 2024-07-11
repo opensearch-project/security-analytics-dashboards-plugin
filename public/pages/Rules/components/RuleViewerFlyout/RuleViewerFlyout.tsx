@@ -10,7 +10,7 @@ import {
   EuiFlyoutBody,
   EuiFlyoutHeader,
   EuiTitle,
-  EuiButtonIcon,
+  EuiSmallButtonIcon,
 } from '@elastic/eui';
 import { ROUTES } from '../../../../utils/constants';
 import React, { useMemo, useState } from 'react';
@@ -117,7 +117,7 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
             </EuiFlexItem>
           )}
           <EuiFlexItem grow={false}>
-            <EuiButtonIcon
+            <EuiSmallButtonIcon
               aria-label="close"
               iconType="cross"
               display="empty"

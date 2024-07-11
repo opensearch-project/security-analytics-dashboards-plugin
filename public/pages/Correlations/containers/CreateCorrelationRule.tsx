@@ -22,7 +22,7 @@ import {
   EuiTitle,
   EuiPanel,
   EuiAccordion,
-  EuiButtonIcon,
+  EuiSmallButtonIcon,
   EuiToolTip,
   EuiButtonGroup,
   EuiSelect,
@@ -538,7 +538,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                   extraAction={
                     correlationQueries.length > 2 ? (
                       <EuiToolTip title={'Delete query'}>
-                        <EuiButtonIcon
+                        <EuiSmallButtonIcon
                           iconType={'trash'}
                           color="danger"
                           onClick={() => {
@@ -720,7 +720,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                             </EuiFlexItem>
                             <EuiFlexItem>
                               <EuiFormRow label={<p style={{ visibility: 'hidden' }}>_</p>}>
-                                <EuiButtonIcon
+                                <EuiSmallButtonIcon
                                   iconType={'trash'}
                                   color="danger"
                                   onClick={() => {
@@ -1059,7 +1059,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                       </EuiFlexItem>
                       <EuiFlexItem grow={false}>
                         <EuiFormRow label={<p style={{ visibility: 'hidden' }}>_</p>}>
-                          <EuiButtonIcon
+                          <EuiSmallButtonIcon
                             aria-label="Delete Alert Trigger"
                             data-test-subj="delete-alert-trigger-icon"
                             iconType="trash"

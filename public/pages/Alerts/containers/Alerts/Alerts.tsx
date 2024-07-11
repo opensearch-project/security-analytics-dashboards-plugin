@@ -6,7 +6,7 @@
 import {
   EuiBasicTableColumn,
   EuiSmallButton,
-  EuiButtonIcon,
+  EuiSmallButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
   EuiInMemoryTable,
@@ -395,7 +395,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
                     disableAcknowledge ? DISABLE_ACKNOWLEDGED_ALERT_HELP_TEXT : 'Acknowledge'
                   }
                 >
-                  <EuiButtonIcon
+                  <EuiSmallButtonIcon
                     aria-label={'Acknowledge'}
                     disabled={disableAcknowledge}
                     iconType={'check'}
@@ -408,7 +408,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
           {
             render: (alertItem: AlertItem) => (
               <EuiToolTip content={'View details'}>
-                <EuiButtonIcon
+                <EuiSmallButtonIcon
                   aria-label={'View details'}
                   iconType={'expand'}
                   onClick={() => this.setFlyout(alertItem)}
@@ -484,7 +484,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
                     disableAcknowledge ? DISABLE_ACKNOWLEDGED_ALERT_HELP_TEXT : 'Acknowledge'
                   }
                 >
-                  <EuiButtonIcon
+                  <EuiSmallButtonIcon
                     aria-label={'Acknowledge'}
                     disabled={disableAcknowledge}
                     iconType={'check'}
@@ -497,7 +497,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
           {
             render: (alertItem: CorrelationAlertTableItem) => (
               <EuiToolTip content={'View details'}>
-                <EuiButtonIcon
+                <EuiSmallButtonIcon
                   aria-label={'View details'}
                   iconType={'expand'}
                   onClick={() => this.setCorrelationFlyout(alertItem)}

@@ -32,7 +32,7 @@ import {
   EuiFlyout,
   EuiFlyoutHeader,
   EuiFlyoutBody,
-  EuiButtonIcon,
+  EuiSmallButtonIcon,
   EuiText,
   EuiEmptyPrompt,
   EuiSmallButton,
@@ -487,7 +487,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                   </EuiTitle>
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>
-                  <EuiButtonIcon
+                  <EuiSmallButtonIcon
                     aria-label="close"
                     iconType="cross"
                     display="empty"

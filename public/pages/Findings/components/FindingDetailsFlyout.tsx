@@ -8,7 +8,7 @@ import {
   EuiAccordion,
   EuiBadge,
   EuiBadgeGroup,
-  EuiButtonIcon,
+  EuiSmallButtonIcon,
   EuiCodeBlock,
   EuiFlexGroup,
   EuiFlexItem,
@@ -412,7 +412,7 @@ export default class FindingDetailsFlyout extends Component<
       {
         render: ({ id }: FindingDocumentItem) => (
           <EuiToolTip content="View surrounding documents">
-            <EuiButtonIcon
+            <EuiSmallButtonIcon
               disabled={loadingIndexPatternId}
               iconType={'inspect'}
               data-test-subj={'finding-details-flyout-view-surrounding-documents'}
@@ -433,7 +433,7 @@ export default class FindingDetailsFlyout extends Component<
       {
         name: '',
         render: (item: FindingDocumentItem) => (
-          <EuiButtonIcon
+          <EuiSmallButtonIcon
             onClick={() => this.toggleDocumentDetails(item)}
             aria-label={docIdToExpandedRowMap[item.id] ? 'Collapse' : 'Expand'}
             iconType={docIdToExpandedRowMap[item.id] ? 'arrowUp' : 'arrowDown'}
@@ -656,7 +656,7 @@ export default class FindingDetailsFlyout extends Component<
               </EuiFlexGroup>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
-              <EuiButtonIcon
+              <EuiSmallButtonIcon
                 aria-label="close"
                 iconType="cross"
                 display="empty"

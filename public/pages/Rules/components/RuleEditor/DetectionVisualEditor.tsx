@@ -8,7 +8,7 @@ import { dump, load } from 'js-yaml';
 import {
   EuiAccordion,
   EuiToolTip,
-  EuiButtonIcon,
+  EuiSmallButtonIcon,
   EuiTitle,
   EuiText,
   EuiSpacer,
@@ -525,7 +525,7 @@ export class DetectionVisualEditor extends React.Component<
                   <EuiFlexItem grow={false} className={'detection-visual-editor-delete-selection'}>
                     {selections.length > 1 && (
                       <EuiToolTip title={'Delete selection'}>
-                        <EuiButtonIcon
+                        <EuiSmallButtonIcon
                           aria-label={'Delete selection'}
                           iconType={'trash'}
                           color="danger"
@@ -567,7 +567,7 @@ export class DetectionVisualEditor extends React.Component<
                         extraAction={
                           selection.data.length > 1 ? (
                             <EuiToolTip title={'Delete map'}>
-                              <EuiButtonIcon
+                              <EuiSmallButtonIcon
                                 aria-label={'Delete map'}
                                 iconType={'trash'}
                                 color="danger"
