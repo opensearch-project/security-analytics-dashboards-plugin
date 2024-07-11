@@ -7,7 +7,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import {
   EuiSmallButton,
   EuiCheckableCard,
-  EuiCheckboxGroup,
+  EuiCompressedCheckboxGroup,
   EuiCompressedFieldText,
   EuiFilePicker,
   EuiFlexGroup,
@@ -592,7 +592,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
         </EuiText>
         <EuiSpacer size="m" />
         <EuiFormRow isInvalid={!!inputErrors.ioc_types} error={inputErrors.ioc_types}>
-          <EuiCheckboxGroup
+          <EuiCompressedCheckboxGroup
             options={checkboxes}
             idToSelectedMap={checkboxIdToSelectedMap}
             onChange={onIocTypesChange}

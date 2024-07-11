@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { EuiCheckbox, EuiText, EuiTitle, htmlIdGenerator } from '@elastic/eui';
+import { EuiCompressedCheckbox, EuiText, EuiTitle, htmlIdGenerator } from '@elastic/eui';
 
 export interface ThreatIntelligenceProps {
   threatIntelChecked: boolean;
@@ -27,7 +27,7 @@ export const ThreatIntelligence: React.FC<ThreatIntelligenceProps> = ({
           types only.
         </p>
       </EuiText>
-      <EuiCheckbox
+      <EuiCompressedCheckbox
         id={htmlIdGenerator()()}
         label="Enable threat intelligence-based detection"
         checked={threatIntelChecked}

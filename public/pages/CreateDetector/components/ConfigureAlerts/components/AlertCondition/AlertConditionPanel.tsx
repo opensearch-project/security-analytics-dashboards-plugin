@@ -7,7 +7,7 @@ import React, { ChangeEvent, Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
   EuiAccordion,
-  EuiCheckbox,
+  EuiCompressedCheckbox,
   EuiComboBox,
   EuiComboBoxOptionOption,
   EuiCompressedFieldText,
@@ -365,7 +365,7 @@ export default class AlertConditionPanel extends Component<
         </EuiTitle>
 
         {threatIntelEnabledInDetector ? (
-          <EuiCheckbox
+          <EuiCompressedCheckbox
             id="detection-type-rules"
             label="Detection rules"
             checked={detectionRulesTriggerEnabled}
@@ -456,7 +456,7 @@ export default class AlertConditionPanel extends Component<
 
         {threatIntelEnabledInDetector && (
           <>
-            <EuiCheckbox
+            <EuiCompressedCheckbox
               id="detection-type-threat-intel"
               label="Threat intelligence"
               checked={threatIntelTriggerEnabled}
