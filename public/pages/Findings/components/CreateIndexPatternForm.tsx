@@ -9,7 +9,7 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiCompressedFormRow,
-  EuiFieldText,
+  EuiCompressedFieldText,
   EuiSmallButton,
   EuiSpacer,
   EuiComboBox,
@@ -143,7 +143,7 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
             isInvalid={props.touched.name && !!props.errors?.name}
             error={props.errors.name}
           >
-            <EuiFieldText
+            <EuiCompressedFieldText
               isInvalid={props.touched.name && !!props.errors.name}
               placeholder="Enter index pattern name"
               data-test-subj={'index_pattern_name_field'}

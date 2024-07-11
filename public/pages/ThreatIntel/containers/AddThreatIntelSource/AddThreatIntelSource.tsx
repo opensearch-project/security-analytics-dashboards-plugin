@@ -8,7 +8,7 @@ import {
   EuiSmallButton,
   EuiCheckableCard,
   EuiCheckboxGroup,
-  EuiFieldText,
+  EuiCompressedFieldText,
   EuiFilePicker,
   EuiFlexGroup,
   EuiFlexItem,
@@ -379,7 +379,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
           isInvalid={!!inputErrors.name}
           error={inputErrors.name}
         >
-          <EuiFieldText
+          <EuiCompressedFieldText
             placeholder="Title"
             onChange={onNameChange}
             onBlur={onNameChange}
@@ -395,7 +395,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
             </>
           }
         >
-          <EuiFieldText
+          <EuiCompressedFieldText
             placeholder="Description"
             onChange={onDescriptionChange}
             onBlur={onDescriptionChange}
@@ -474,7 +474,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
               isInvalid={!!inputErrors.s3?.role_arn}
               error={inputErrors.s3?.role_arn}
             >
-              <EuiFieldText
+              <EuiCompressedFieldText
                 placeholder="arn:"
                 onChange={(event) => onS3DataChange('role_arn', event.target.value)}
                 onBlur={(event) => onS3DataChange('role_arn', event.target.value)}
@@ -487,7 +487,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
               isInvalid={!!inputErrors.s3?.bucket_name}
               error={inputErrors.s3?.bucket_name}
             >
-              <EuiFieldText
+              <EuiCompressedFieldText
                 placeholder="S3 bucket name"
                 onChange={(event) => onS3DataChange('bucket_name', event.target.value)}
                 onBlur={(event) => onS3DataChange('bucket_name', event.target.value)}
@@ -500,7 +500,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
               isInvalid={!!inputErrors.s3?.object_key}
               error={inputErrors.s3?.object_key}
             >
-              <EuiFieldText
+              <EuiCompressedFieldText
                 placeholder="Object key"
                 onChange={(event) => onS3DataChange('object_key', event.target.value)}
                 onBlur={(event) => onS3DataChange('object_key', event.target.value)}
@@ -513,7 +513,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
               isInvalid={!!inputErrors.s3?.region}
               error={inputErrors.s3?.region}
             >
-              <EuiFieldText
+              <EuiCompressedFieldText
                 placeholder="Region"
                 onChange={(event) => onS3DataChange('region', event.target.value)}
                 onBlur={(event) => onS3DataChange('region', event.target.value)}

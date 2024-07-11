@@ -10,7 +10,7 @@ import {
   EuiCheckbox,
   EuiComboBox,
   EuiComboBoxOptionOption,
-  EuiFieldText,
+  EuiCompressedFieldText,
   EuiCompressedFormRow,
   EuiSpacer,
   EuiText,
@@ -348,7 +348,7 @@ export default class AlertConditionPanel extends Component<
           isInvalid={nameFieldTouched && nameIsInvalid}
           error={getNameErrorMessage(name, nameIsInvalid, nameFieldTouched)}
         >
-          <EuiFieldText
+          <EuiCompressedFieldText
             placeholder={'Enter a name to describe the alert condition'}
             readOnly={false}
             value={name}

@@ -8,7 +8,7 @@ import {
   EuiSmallButtonIcon,
   EuiComboBox,
   EuiComboBoxOptionOption,
-  EuiFieldText,
+  EuiCompressedFieldText,
   EuiCompressedFormRow,
   EuiSpacer,
 } from '@elastic/eui';
@@ -101,7 +101,7 @@ export const ThreatIntelAlertTriggerForm: React.FC<ThreatIntelAlertTriggerProps>
       paddingSize="l"
     >
       <EuiCompressedFormRow>
-        <EuiFieldText
+        <EuiCompressedFieldText
           placeholder="Trigger name"
           value={trigger.name}
           onChange={(event) => {

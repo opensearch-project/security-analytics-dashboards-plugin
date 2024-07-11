@@ -15,7 +15,7 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiCompressedFormRow,
-  EuiFieldText,
+  EuiCompressedFieldText,
   EuiComboBox,
   EuiPanel,
   EuiRadioGroup,
@@ -506,7 +506,7 @@ export class DetectionVisualEditor extends React.Component<
                       isInvalid={errors.touched.name && !!errors.fields.name}
                       error={errors.fields.name}
                     >
-                      <EuiFieldText
+                      <EuiCompressedFieldText
                         className={'detection-visual-editor-name euiTitle--small'}
                         isInvalid={errors.touched.name && !!errors.fields.name}
                         placeholder="Enter selection name"
@@ -591,7 +591,7 @@ export class DetectionVisualEditor extends React.Component<
                               error={errors.fields[fieldName]}
                               label={<EuiText size={'s'}>Key</EuiText>}
                             >
-                              <EuiFieldText
+                              <EuiCompressedFieldText
                                 isInvalid={errors.touched[fieldName] && !!errors.fields[fieldName]}
                                 placeholder="Enter key name"
                                 data-test-subj={'selection_field_key_name'}
@@ -721,7 +721,7 @@ export class DetectionVisualEditor extends React.Component<
                             isInvalid={errors.touched[valueId] && !!errors.fields[valueId]}
                             error={errors.fields[valueId]}
                           >
-                            <EuiFieldText
+                            <EuiCompressedFieldText
                               isInvalid={errors.touched[valueId] && !!errors.fields[valueId]}
                               placeholder="Value"
                               data-test-subj={'selection_field_value'}

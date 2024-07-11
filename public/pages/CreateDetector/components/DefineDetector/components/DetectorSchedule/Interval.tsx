@@ -4,7 +4,7 @@
  */
 
 import {
-  EuiFieldNumber,
+  EuiCompressedFieldNumber,
   EuiFlexGroup,
   EuiFlexItem,
   EuiCompressedFormRow,
@@ -64,7 +64,7 @@ export class Interval extends React.Component<IntervalProps, IntervalState> {
       >
         <EuiFlexGroup>
           <EuiFlexItem>
-            <EuiFieldNumber
+            <EuiCompressedFieldNumber
               min={1}
               icon={'clock'}
               value={period.interval}

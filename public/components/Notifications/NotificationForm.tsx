@@ -8,7 +8,7 @@ import {
   EuiSmallButton,
   EuiComboBox,
   EuiComboBoxOptionOption,
-  EuiFieldText,
+  EuiCompressedFieldText,
   EuiFlexGroup,
   EuiFlexItem,
   EuiCompressedFormRow,
@@ -140,7 +140,7 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
                   }
                   fullWidth={true}
                 >
-                  <EuiFieldText
+                  <EuiCompressedFieldText
                     placeholder={'Enter a subject for the notification message.'}
                     value={action?.subject_template.source}
                     onChange={(e) => onMessageSubjectChange(e.target.value)}

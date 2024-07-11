@@ -10,7 +10,7 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiCompressedFormRow,
-  EuiFieldText,
+  EuiCompressedFieldText,
   EuiSmallButton,
   EuiSpacer,
   EuiAccordion,
@@ -236,7 +236,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     error={props.errors.name}
                     helpText={detectionRuleNameError}
                   >
-                    <EuiFieldText
+                    <EuiCompressedFieldText
                       isInvalid={(validateOnMount || props.touched.name) && !!props.errors?.name}
                       placeholder="My custom rule"
                       data-test-subj={'rule_name_field'}
@@ -262,7 +262,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     }
                     error={props.errors.description}
                   >
-                    <EuiFieldText
+                    <EuiCompressedFieldText
                       data-test-subj={'rule_description_field'}
                       onChange={(e) => {
                         props.handleChange('description')(e.target.value);
@@ -285,7 +285,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     isInvalid={(validateOnMount || props.touched.author) && !!props.errors?.author}
                     error={props.errors.author}
                   >
-                    <EuiFieldText
+                    <EuiCompressedFieldText
                       isInvalid={
                         (validateOnMount || props.touched.author) && !!props.errors?.author
                       }
