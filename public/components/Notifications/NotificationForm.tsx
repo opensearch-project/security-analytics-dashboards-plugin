@@ -11,7 +11,7 @@ import {
   EuiFieldText,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiSpacer,
   EuiSwitch,
   EuiText,
@@ -77,7 +77,7 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
         <>
           <EuiFlexGroup alignItems={'flexEnd'}>
             <EuiFlexItem style={{ maxWidth: 400 }}>
-              <EuiFormRow
+              <EuiCompressedFormRow
                 label={
                   <EuiText size="m">
                     <p>Notification channel</p>
@@ -97,7 +97,7 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
                   onFocus={refreshNotificationChannels}
                   isDisabled={!hasNotificationPlugin}
                 />
-              </EuiFormRow>
+              </EuiCompressedFormRow>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
               <EuiSmallButton
@@ -132,7 +132,7 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
           >
             <EuiFlexGroup direction={'column'} style={{ width: '75%' }}>
               <EuiFlexItem>
-                <EuiFormRow
+                <EuiCompressedFormRow
                   label={
                     <EuiText size={'s'}>
                       <p>Message subject</p>
@@ -147,11 +147,11 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
                     required={true}
                     fullWidth={true}
                   />
-                </EuiFormRow>
+                </EuiCompressedFormRow>
               </EuiFlexItem>
 
               <EuiFlexItem>
-                <EuiFormRow
+                <EuiCompressedFormRow
                   label={
                     <EuiText size="s">
                       <p>Message body</p>
@@ -166,18 +166,18 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
                     required={true}
                     fullWidth={true}
                   />
-                </EuiFormRow>
+                </EuiCompressedFormRow>
               </EuiFlexItem>
               {prepareMessage && (
                 <EuiFlexItem>
-                  <EuiFormRow>
+                  <EuiCompressedFormRow>
                     <EuiSmallButton
                       fullWidth={false}
                       onClick={() => prepareMessage(true /* updateMessage */)}
                     >
                       Generate message
                     </EuiSmallButton>
-                  </EuiFormRow>
+                  </EuiCompressedFormRow>
                 </EuiFlexItem>
               )}
             </EuiFlexGroup>

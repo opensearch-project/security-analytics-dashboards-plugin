@@ -4,7 +4,7 @@
  */
 
 import React, { Component } from 'react';
-import { EuiFormRow, EuiFieldText, EuiSpacer, EuiTextArea, EuiTitle } from '@elastic/eui';
+import { EuiCompressedFormRow, EuiFieldText, EuiSpacer, EuiTextArea, EuiTitle } from '@elastic/eui';
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
 import {
   getDescriptionErrorMessage,
@@ -78,7 +78,7 @@ export default class DetectorBasicDetailsForm extends Component<
           <h3>Detector details</h3>
         </EuiTitle>
         <EuiSpacer size={'m'} />
-        <EuiFormRow
+        <EuiCompressedFormRow
           label={<FormFieldHeader headerTitle={'Name'} />}
           isInvalid={nameFieldTouched && nameIsInvalid}
           error={getNameErrorMessage(detectorName, nameIsInvalid, nameFieldTouched)}
@@ -92,10 +92,10 @@ export default class DetectorBasicDetailsForm extends Component<
             required={nameFieldTouched}
             data-test-subj={'define-detector-detector-name'}
           />
-        </EuiFormRow>
+        </EuiCompressedFormRow>
         <EuiSpacer size={'m'} />
 
-        <EuiFormRow
+        <EuiCompressedFormRow
           label={<FormFieldHeader headerTitle={'Description'} optionalField={true} />}
           isInvalid={descriptionFieldTouched && descriptionIsInvalid}
           error={getDescriptionErrorMessage(
@@ -112,7 +112,7 @@ export default class DetectorBasicDetailsForm extends Component<
             onChange={this.onDescriptionChange}
             data-test-subj={'define-detector-detector-description'}
           />
-        </EuiFormRow>
+        </EuiCompressedFormRow>
       </>
     );
   }

@@ -4,7 +4,7 @@
  */
 
 import React, { Component } from 'react';
-import { EuiFormRow, EuiSpacer, EuiComboBox, EuiTitle, EuiText } from '@elastic/eui';
+import { EuiCompressedFormRow, EuiSpacer, EuiComboBox, EuiTitle, EuiText } from '@elastic/eui';
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
 import { CreateDetectorRulesState, DetectionRules } from '../DetectionRules/DetectionRules';
 import { RuleItem } from '../DetectionRules/types/interfaces';
@@ -83,7 +83,7 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
           </p>
         </EuiText>
         <EuiSpacer />
-        <EuiFormRow
+        <EuiCompressedFormRow
           label={
             <div>
               <FormFieldHeader headerTitle={'Log type'} />
@@ -107,9 +107,9 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
               detectorType ? [{ value: detectorType, label: getLogTypeLabel(detectorType) }] : []
             }
           />
-        </EuiFormRow>
+        </EuiCompressedFormRow>
 
-        <EuiFormRow fullWidth={true}>
+        <EuiCompressedFormRow fullWidth={true}>
           <DetectionRules
             detectorType={detectorType}
             rulesState={this.props.rulesState}
@@ -118,11 +118,11 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
             onRuleToggle={this.props.onRuleToggle}
             onAllRulesToggle={this.props.onAllRulesToggle}
           />
-        </EuiFormRow>
+        </EuiCompressedFormRow>
 
-        <EuiFormRow fullWidth={true}>
+        <EuiCompressedFormRow fullWidth={true}>
           <ConfigureFieldMapping {...this.props.configureFieldMappingProps} />
-        </EuiFormRow>
+        </EuiCompressedFormRow>
       </>
     );
   }

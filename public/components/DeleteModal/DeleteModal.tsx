@@ -8,7 +8,7 @@ import {
   EuiConfirmModal,
   EuiFieldText,
   EuiForm,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiOverlayMask,
   EuiSpacer,
 } from '@elastic/eui';
@@ -75,14 +75,14 @@ export default class DeleteModal extends Component<DeleteModalProps, DeleteModal
             </p>
             <EuiSpacer size="s" />
             {!!confirmation && (
-              <EuiFormRow helpText={`To confirm deletion, type "${DEFAULT_DELETION_TEXT}".`}>
+              <EuiCompressedFormRow helpText={`To confirm deletion, type "${DEFAULT_DELETION_TEXT}".`}>
                 <EuiFieldText
                   value={confirmDeleteText}
                   placeholder={DEFAULT_DELETION_TEXT}
                   onChange={this.onChange}
                   data-test-subj={'deleteTextField'}
                 />
-              </EuiFormRow>
+              </EuiCompressedFormRow>
             )}
           </EuiForm>
         </EuiConfirmModal>

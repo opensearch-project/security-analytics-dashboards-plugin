@@ -6,7 +6,7 @@
 import {
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiLink,
   EuiSelect,
   EuiSelectOption,
@@ -70,7 +70,7 @@ export function createTextDetailsGroup(
   ) => {
     const dataTestSubj = label.toLowerCase().replace(/ /g, '-');
     return (
-      <EuiFormRow fullWidth label={label}>
+      <EuiCompressedFormRow fullWidth label={label}>
         {url ? (
           <EuiLink
             href={url}
@@ -84,7 +84,7 @@ export function createTextDetailsGroup(
             {content ?? DEFAULT_EMPTY_DATA}
           </EuiText>
         )}
-      </EuiFormRow>
+      </EuiCompressedFormRow>
     );
   };
   return data.length <= 1 ? (

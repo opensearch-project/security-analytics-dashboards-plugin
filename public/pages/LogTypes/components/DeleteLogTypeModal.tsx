@@ -9,7 +9,7 @@ import {
   EuiConfirmModal,
   EuiFieldText,
   EuiForm,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiLoadingSpinner,
   EuiModal,
   EuiModalBody,
@@ -101,12 +101,12 @@ export const DeleteLogTypeModal: React.FC<DeleteLogTypeModalProps> = ({
             <p style={{ marginBottom: '0.3rem' }}>
               Type <b>{logTypeName}</b> to confirm
             </p>
-            <EuiFormRow>
+            <EuiCompressedFormRow>
               <EuiFieldText
                 value={confirmDeleteText}
                 onChange={(e) => setConfirmDeleteText(e.target.value)}
               />
-            </EuiFormRow>
+            </EuiCompressedFormRow>
           </EuiForm>
         </EuiConfirmModal>
       )}

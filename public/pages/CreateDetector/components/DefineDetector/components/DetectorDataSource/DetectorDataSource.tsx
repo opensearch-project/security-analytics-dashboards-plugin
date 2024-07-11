@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import {
   EuiComboBox,
   EuiComboBoxOptionOption,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiSpacer,
   EuiCallOut,
   EuiTextColor,
@@ -154,7 +154,7 @@ export default class DetectorDataSource extends Component<
           <h3>Data source</h3>
         </EuiTitle>
         <EuiSpacer size={'m'} />
-        <EuiFormRow
+        <EuiCompressedFormRow
           label={<FormFieldHeader headerTitle={'Select indexes/aliases'} />}
           isInvalid={isInvalid}
           error={isInvalid && (errorMessage || 'Select an input source.')}
@@ -186,7 +186,7 @@ export default class DetectorDataSource extends Component<
               return option.index ? `${option.label} (${option.index})` : option.label;
             }}
           />
-        </EuiFormRow>
+        </EuiCompressedFormRow>
         {differentLogTypesDetected ? (
           <>
             <EuiSpacer size={'m'} />

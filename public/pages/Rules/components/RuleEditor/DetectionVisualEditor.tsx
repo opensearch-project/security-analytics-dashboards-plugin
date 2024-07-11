@@ -14,7 +14,7 @@ import {
   EuiSpacer,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiFieldText,
   EuiComboBox,
   EuiPanel,
@@ -502,7 +502,7 @@ export class DetectionVisualEditor extends React.Component<
               >
                 <EuiFlexGroup alignItems="center">
                   <EuiFlexItem grow={true}>
-                    <EuiFormRow
+                    <EuiCompressedFormRow
                       isInvalid={errors.touched.name && !!errors.fields.name}
                       error={errors.fields.name}
                     >
@@ -517,7 +517,7 @@ export class DetectionVisualEditor extends React.Component<
                         onBlur={(e) => this.updateSelection(selectionIdx, { name: e.target.value })}
                         value={selection.name}
                       />
-                    </EuiFormRow>
+                    </EuiCompressedFormRow>
                     <EuiText size="s">
                       <p>Define the search identifier in your data the rule will be applied to.</p>
                     </EuiText>
@@ -585,7 +585,7 @@ export class DetectionVisualEditor extends React.Component<
                       >
                         <EuiFlexGroup>
                           <EuiFlexItem grow={false} style={{ minWidth: 200 }}>
-                            <EuiFormRow
+                            <EuiCompressedFormRow
                               isInvalid={errors.touched[fieldName] && !!errors.fields[fieldName]}
                               error={errors.fields[fieldName]}
                               label={<EuiText size={'s'}>Key</EuiText>}
@@ -606,10 +606,10 @@ export class DetectionVisualEditor extends React.Component<
                                 }
                                 value={datum.field}
                               />
-                            </EuiFormRow>
+                            </EuiCompressedFormRow>
                           </EuiFlexItem>
                           <EuiFlexItem grow={false} style={{ minWidth: 200 }}>
-                            <EuiFormRow label={<EuiText size={'s'}>Modifier</EuiText>}>
+                            <EuiCompressedFormRow label={<EuiText size={'s'}>Modifier</EuiText>}>
                               <EuiComboBox
                                 data-test-subj={'modifier_dropdown'}
                                 options={detectionModifierOptions}
@@ -626,7 +626,7 @@ export class DetectionVisualEditor extends React.Component<
                                     : [detectionModifierOptions[0]]
                                 }
                               />
-                            </EuiFormRow>
+                            </EuiCompressedFormRow>
                           </EuiFlexItem>
                         </EuiFlexGroup>
 
@@ -683,7 +683,7 @@ export class DetectionVisualEditor extends React.Component<
                                 <EuiSpacer size={'s'} />
                               </EuiFlexItem>
                             </EuiFlexGroup>
-                            <EuiFormRow
+                            <EuiCompressedFormRow
                               isInvalid={errors.touched[valueId] && !!errors.fields[valueId]}
                               error={errors.fields[valueId]}
                               className={'detection-visual-editor-form-row'}
@@ -713,10 +713,10 @@ export class DetectionVisualEditor extends React.Component<
                                 compressed={true}
                                 isInvalid={errors.touched[valueId] && !!errors.fields[valueId]}
                               />
-                            </EuiFormRow>
+                            </EuiCompressedFormRow>
                           </>
                         ) : (
-                          <EuiFormRow
+                          <EuiCompressedFormRow
                             isInvalid={errors.touched[valueId] && !!errors.fields[valueId]}
                             error={errors.fields[valueId]}
                           >
@@ -736,7 +736,7 @@ export class DetectionVisualEditor extends React.Component<
                               }}
                               value={datum.values[0]}
                             />
-                          </EuiFormRow>
+                          </EuiCompressedFormRow>
                         )}
 
                         <EuiSpacer size={'m'} />
@@ -796,7 +796,7 @@ export class DetectionVisualEditor extends React.Component<
 
         <EuiSpacer />
 
-        <EuiFormRow
+        <EuiCompressedFormRow
           isInvalid={errors.touched.condition && !!errors.fields.condition}
           error={errors.fields.condition}
           style={{ maxWidth: '100%' }}
@@ -830,7 +830,7 @@ export class DetectionVisualEditor extends React.Component<
             }}
             data-test-subj={'rule_detection_field'}
           />
-        </EuiFormRow>
+        </EuiCompressedFormRow>
 
         {fileUploadModalState && (
           <EuiModal onClose={this.closeFileUploadModal}>

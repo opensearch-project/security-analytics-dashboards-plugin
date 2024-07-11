@@ -12,7 +12,7 @@ import {
   EuiComboBoxOptionOption,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiIcon,
   EuiPanel,
   EuiPopover,
@@ -185,7 +185,7 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
         <h2>Configure logs scan</h2>
       </EuiTitle>
       <EuiSpacer />
-      <EuiFormRow
+      <EuiCompressedFormRow
         label="Select Indexes/Aliases"
         helpText={
           <span>
@@ -212,7 +212,7 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
             return option.index ? `${option.label} (${option.index})` : option.label;
           }}
         />
-      </EuiFormRow>
+      </EuiCompressedFormRow>
       <EuiSpacer size="xxl" />
       <EuiTitle size="s">
         <h4>Select fields to scan</h4>

@@ -8,7 +8,7 @@ import { Formik, Form, FormikErrors } from 'formik';
 import {
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiFieldText,
   EuiSmallButton,
   EuiSpacer,
@@ -134,7 +134,7 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
             an index pattern to continue.
           </EuiText>
           <EuiSpacer />
-          <EuiFormRow
+          <EuiCompressedFormRow
             label={
               <EuiText size={'s'}>
                 <strong>Specify index pattern name</strong>
@@ -156,9 +156,9 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
               onBlur={props.handleBlur('name')}
               value={props.values.name}
             />
-          </EuiFormRow>
+          </EuiCompressedFormRow>
 
-          <EuiFormRow
+          <EuiCompressedFormRow
             label={
               <EuiText size={'s'}>
                 <strong>Time filed</strong>
@@ -183,7 +183,7 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
                   : []
               }
             />
-          </EuiFormRow>
+          </EuiCompressedFormRow>
 
           <EuiSpacer />
 

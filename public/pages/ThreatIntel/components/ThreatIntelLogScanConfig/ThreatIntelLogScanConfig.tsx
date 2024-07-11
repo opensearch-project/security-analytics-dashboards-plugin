@@ -13,7 +13,7 @@ import {
   EuiEmptyPrompt,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiIcon,
   EuiLink,
   EuiPanel,
@@ -248,9 +248,9 @@ export const ThreatIntelLogScanConfig: React.FC<ThreatIntelLogScanConfigProps> =
                 />
               </EuiFlexItem>
               <EuiFlexItem grow={2} style={{ marginLeft: 100 }}>
-                <EuiFormRow label="Scan runs every">
+                <EuiCompressedFormRow label="Scan runs every">
                   <Interval schedule={schedule} readonly onScheduleChange={() => {}} />
-                </EuiFormRow>
+                </EuiCompressedFormRow>
               </EuiFlexItem>
             </EuiFlexGroup>
             <EuiSpacer size="xxl" />

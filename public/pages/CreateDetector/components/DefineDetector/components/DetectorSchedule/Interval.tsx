@@ -7,7 +7,7 @@ import {
   EuiFieldNumber,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiSelect,
   EuiSelectOption,
 } from '@elastic/eui';
@@ -57,7 +57,7 @@ export class Interval extends React.Component<IntervalProps, IntervalState> {
     const { isIntervalValid } = this.state;
     const { period } = this.props.schedule;
     return (
-      <EuiFormRow
+      <EuiCompressedFormRow
         label={this.props.label}
         isInvalid={!isIntervalValid}
         error={'Enter schedule interval.'}
@@ -85,7 +85,7 @@ export class Interval extends React.Component<IntervalProps, IntervalState> {
             />
           </EuiFlexItem>
         </EuiFlexGroup>
-      </EuiFormRow>
+      </EuiCompressedFormRow>
     );
   }
 }
