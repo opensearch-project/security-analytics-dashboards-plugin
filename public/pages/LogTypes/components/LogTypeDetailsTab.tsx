@@ -10,7 +10,7 @@ import {
   EuiCompressedFormRow,
   EuiCompressedFieldText,
   EuiSpacer,
-  EuiTextArea,
+  EuiCompressedTextArea,
   EuiBottomBar,
   EuiFlexGroup,
   EuiFlexItem,
@@ -70,7 +70,7 @@ export const LogTypeDetailsTab: React.FC<LogTypeDetailsTabProps> = ({
                 </EuiCompressedFormRow>
                 <EuiSpacer />
                 <EuiCompressedFormRow label="Description">
-                  <EuiTextArea
+                  <EuiCompressedTextArea
                     value={logTypeDetails?.description}
                     onChange={(e) =>
                       setLogTypeDetails({

@@ -32,7 +32,7 @@ import {
   htmlIdGenerator,
   EuiComboBoxOptionOption,
   EuiCompressedSwitch,
-  EuiTextArea,
+  EuiCompressedTextArea,
 } from '@elastic/eui';
 import { ruleTypes } from '../../Rules/utils/constants';
 import {
@@ -1196,7 +1196,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                                 }
                                 fullWidth={true}
                               >
-                                <EuiTextArea
+                                <EuiCompressedTextArea
                                   placeholder={'Enter the content of the notification message.'}
                                   onChange={(e) => {
                                     const messsageBody = e.target.value || '';

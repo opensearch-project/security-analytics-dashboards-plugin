@@ -13,7 +13,7 @@ import {
   EuiCompressedFormRow,
   EuiSpacer,
   EuiCompressedSuperSelect,
-  EuiTextArea,
+  EuiCompressedTextArea,
 } from '@elastic/eui';
 import { LogTypeItem } from '../../../../types';
 import React from 'react';
@@ -102,7 +102,7 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
           </>
         }
       >
-        <EuiTextArea
+        <EuiCompressedTextArea
           value={logTypeDetails?.description}
           onChange={(e) => {
             const newLogType = {
