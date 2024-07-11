@@ -25,7 +25,7 @@ import {
   EuiSmallButtonIcon,
   EuiToolTip,
   EuiButtonGroup,
-  EuiSelect,
+  EuiCompressedSelect,
   EuiSelectOption,
   EuiCompressedFieldNumber,
   EuiCheckableCard,
@@ -960,7 +960,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                       />
                     </EuiFlexItem>
                     <EuiFlexItem>
-                      <EuiSelect
+                      <EuiCompressedSelect
                         options={unitOptions}
                         onChange={(e) => {
                           const newUnit = e.target.value;

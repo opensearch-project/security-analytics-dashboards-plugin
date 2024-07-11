@@ -8,7 +8,7 @@ import {
   EuiFlexItem,
   EuiCompressedFormRow,
   EuiLink,
-  EuiSelect,
+  EuiCompressedSelect,
   EuiSelectOption,
   EuiSpacer,
   EuiText,
@@ -268,7 +268,7 @@ export function createSelectComponent(
   return (
     <EuiFlexGroup justifyContent="flexEnd" alignItems="center">
       <EuiFlexItem grow={false}>
-        <EuiSelect id={id} options={options} value={value} onChange={onChange} prepend="Group by" />
+        <EuiCompressedSelect id={id} options={options} value={value} onChange={onChange} prepend="Group by" />
       </EuiFlexItem>
     </EuiFlexGroup>
   );

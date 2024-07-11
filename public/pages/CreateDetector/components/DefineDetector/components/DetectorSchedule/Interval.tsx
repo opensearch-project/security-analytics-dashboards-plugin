@@ -8,7 +8,7 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiCompressedFormRow,
-  EuiSelect,
+  EuiCompressedSelect,
   EuiSelectOption,
 } from '@elastic/eui';
 import React from 'react';
@@ -76,7 +76,7 @@ export class Interval extends React.Component<IntervalProps, IntervalState> {
             />
           </EuiFlexItem>
           <EuiFlexItem>
-            <EuiSelect
+            <EuiCompressedSelect
               options={this.props.scheduleUnitOptions ?? Object.values(defaultIntervalUnitOptions)}
               onChange={this.onUnitChange}
               value={period.unit}
