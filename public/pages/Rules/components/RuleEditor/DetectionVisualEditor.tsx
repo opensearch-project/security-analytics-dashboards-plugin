@@ -26,7 +26,7 @@ import {
   EuiModalHeaderTitle,
   EuiModalBody,
   EuiModalFooter,
-  EuiFilePicker,
+  EuiCompressedFilePicker,
   EuiSmallButtonEmpty,
   EuiCallOut,
   EuiCodeEditor,
@@ -858,7 +858,7 @@ export class DetectionVisualEditor extends React.Component<
                   <p>Invalid file.</p>
                 </EuiText>
               )}
-              <EuiFilePicker
+              <EuiCompressedFilePicker
                 id={'filePickerId'}
                 fullWidth
                 initialPromptText="Select or drag file containing list of values"

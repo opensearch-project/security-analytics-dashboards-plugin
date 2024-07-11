@@ -6,7 +6,7 @@
 import { BrowserServices } from '../../../../models/interfaces';
 import { RuleEditorContainer } from '../../components/RuleEditor/RuleEditorContainer';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { EuiSmallButton, EuiFilePicker, EuiFlexGroup, EuiFlexItem, EuiSpacer } from '@elastic/eui';
+import { EuiSmallButton, EuiCompressedFilePicker, EuiFlexGroup, EuiFlexItem, EuiSpacer } from '@elastic/eui';
 import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { RouteComponentProps } from 'react-router-dom';
 import { dump, load } from 'js-yaml';
@@ -94,7 +94,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
     setContent(
       <>
         <ContentPanel title="Import rule">
-          <EuiFilePicker
+          <EuiCompressedFilePicker
             id={'filePickerId'}
             fullWidth
             initialPromptText="Select or drag yml file containing Sigma rules"
