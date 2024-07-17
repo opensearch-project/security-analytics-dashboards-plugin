@@ -7,7 +7,7 @@ on:
     branches:
       - "*"
 env:
-  OPENSEARCH_DASHBOARDS_VERSION: '2.16.0'
+  OPENSEARCH_DASHBOARDS_VERSION: '2.x'
   SECURITY_ANALYTICS_BRANCH: '2.x'
 jobs:
   tests:
