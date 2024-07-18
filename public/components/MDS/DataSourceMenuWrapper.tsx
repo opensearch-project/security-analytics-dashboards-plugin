@@ -10,9 +10,12 @@ import {
   DataSourceSelectableConfig,
   DataSourceViewConfig,
 } from '../../../../../src/plugins/data_source_management/public';
-import { AppMountParameters, CoreStart } from 'opensearch-dashboards/public';
+import { AppMountParameters, CoreStart, SavedObject } from 'opensearch-dashboards/public';
 import { ROUTES } from '../../utils/constants';
 import { DataSourceContext } from '../../services/DataSourceContext';
+import * as pluginManifest from "../../../opensearch_dashboards.json";
+import { DataSourceAttributes } from "../../../../../src/plugins/data_source/common/data_sources";
+import semver from "semver";
 
 export interface DataSourceMenuWrapperProps {
   core: CoreStart;
@@ -21,6 +24,15 @@ export interface DataSourceMenuWrapperProps {
   dataSourceLoading: boolean;
   setHeaderActionMenu: AppMountParameters['setHeaderActionMenu'];
 }
+
+const dataSourceFilterFn = (dataSource: SavedObject<DataSourceAttributes>) => {
+  const dataSourceVersion = dataSource?.attributes?.dataSourceVersion || "";
+  const installedPlugins = dataSource?.attributes?.installedPlugins || [];
+  return (
+    semver.satisfies(dataSourceVersion, pluginManifest.supportedOSDataSourceVersions) &&
+    pluginManifest.requiredOSDataSourcePlugins.every((plugin) => installedPlugins.includes(plugin))
+  );
+};
 
 export const DataSourceMenuWrapper: React.FC<DataSourceMenuWrapperProps> = ({
   core,
@@ -64,6 +76,7 @@ export const DataSourceMenuWrapper: React.FC<DataSourceMenuWrapperProps> = ({
               componentConfig={{
                 fullWidth: false,
                 activeOption: [dataSource],
+                dataSourceFilter: dataSourceFilterFn,
               }}
               componentType="DataSourceView"
               setMenuMountPoint={setHeaderActionMenu}
@@ -79,6 +92,7 @@ export const DataSourceMenuWrapper: React.FC<DataSourceMenuWrapperProps> = ({
               componentConfig={{
                 fullWidth: false,
                 activeOption: [dataSource],
+                dataSourceFilter: dataSourceFilterFn,
               }}
               componentType="DataSourceView"
               setMenuMountPoint={setHeaderActionMenu}
@@ -93,6 +107,7 @@ export const DataSourceMenuWrapper: React.FC<DataSourceMenuWrapperProps> = ({
                 notifications: core.notifications,
                 onSelectedDataSources: setDataSource,
                 savedObjects: core.savedObjects.client,
+                dataSourceFilter: dataSourceFilterFn,
               }}
             />
           );
