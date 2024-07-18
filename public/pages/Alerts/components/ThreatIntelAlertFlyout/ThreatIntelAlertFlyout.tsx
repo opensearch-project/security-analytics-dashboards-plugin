@@ -8,6 +8,7 @@ import {
   EuiBasicTable,
   EuiBasicTableColumn,
   EuiSmallButton,
+  EuiButtonIcon,
   EuiSmallButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
@@ -61,7 +62,7 @@ export const ThreatIntelAlertFlyout: React.FC<ThreatIntelAlertFlyoutProps> = ({
 
   const createFindingTableColumns = (): EuiBasicTableColumn<ThreatIntelFinding>[] => {
     const backButton = (
-      <EuiSmallButtonIcon
+      <EuiButtonIcon
         iconType="arrowLeft"
         aria-label="back"
         onClick={() => DataStore.findings.closeFlyout()}
