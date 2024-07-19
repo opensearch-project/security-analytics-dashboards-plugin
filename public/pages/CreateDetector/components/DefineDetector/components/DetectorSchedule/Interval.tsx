@@ -29,7 +29,7 @@ export interface IntervalState {
 
 export class Interval extends React.Component<IntervalProps, IntervalState> {
   state = {
-    isIntervalValid: true,
+    isIntervalValid: Number.isInteger(this.props.schedule.period.interval),
   };
 
   onTimeIntervalChange = (event: React.ChangeEvent<HTMLInputElement>) => {

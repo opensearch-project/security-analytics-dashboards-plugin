@@ -41,6 +41,42 @@ import {
 import { ThreatIntelIocType } from '../../../../../common/constants';
 import { PeriodSchedule } from '../../../../../models/interfaces';
 import { checkboxes } from '../../utils/constants';
+import {
+  THREAT_INTEL_SOURCE_DESCRIPTION_REGEX,
+  THREAT_INTEL_SOURCE_NAME_REGEX,
+  validateDescription,
+  validateName,
+} from '../../../../utils/validation';
+
+interface AddThreatIntelSourceFormInputErrors {
+  name?: string;
+  description?: string;
+  s3?: Partial<
+    {
+      [field in keyof S3ConnectionSource['s3']]: string;
+    }
+  >;
+  fileUpload?: {
+    file?: string;
+  };
+  schedule?: string;
+  ioc_types?: string;
+}
+
+interface AddThreatIntelSourceFormInputTouched {
+  name?: boolean;
+  description?: boolean;
+  s3?: Partial<
+    {
+      [field in keyof S3ConnectionSource['s3']]: boolean;
+    }
+  >;
+  fileUpload?: {
+    file?: boolean;
+  };
+  schedule?: boolean;
+  ioc_types?: boolean;
+}
 
 export interface AddThreatIntelSourceProps extends RouteComponentProps {
   threatIntelService: ThreatIntelService;
@@ -68,11 +104,25 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
   const [fileUploadSource, setFileUploadSource] = useState<FileUploadSource>(
     getEmptyIocFileUploadSource()
   );
-  const [fileError, setFileError] = useState('');
   const [submitInProgress, setSubmitInProgress] = useState(false);
   const [checkboxIdToSelectedMap, setCheckboxIdToSelectedMap] = useState<Record<string, boolean>>(
     {}
   );
+  const [inputTouched, setInputTouched] = useState<AddThreatIntelSourceFormInputTouched>({});
+  const [inputErrors, setInputErrors] = useState<AddThreatIntelSourceFormInputErrors>({});
+
+  const setFieldError = (fieldErrors: AddThreatIntelSourceFormInputErrors) => {
+    setInputErrors({
+      ...inputErrors,
+      ...fieldErrors,
+    });
+  };
+  const setFieldTouched = (fieldsTouched: AddThreatIntelSourceFormInputTouched) => {
+    setInputTouched({
+      ...inputTouched,
+      ...fieldsTouched,
+    });
+  };
 
   useEffect(() => {
     context?.chrome.setBreadcrumbs([
@@ -82,6 +132,11 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
     ]);
   }, []);
 
+  const validateIocTypes = (iocTypeMap: Record<string, boolean>) => {
+    return !Object.values(iocTypeMap).some((val) => val)
+      ? 'At least one ioc type should be selected'
+      : '';
+  };
   const onIocTypesChange = (optionId: string) => {
     const newCheckboxIdToSelectedMap = {
       ...checkboxIdToSelectedMap,
@@ -89,6 +144,10 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
         [optionId]: !checkboxIdToSelectedMap[optionId],
       },
     };
+    setFieldError({
+      ioc_types: validateIocTypes(newCheckboxIdToSelectedMap),
+    });
+    setFieldTouched({ ioc_types: true });
     setCheckboxIdToSelectedMap(newCheckboxIdToSelectedMap);
   };
 
@@ -99,30 +158,89 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
     });
   };
 
+  const validateSourceName = (name: string) => {
+    let error;
+    if (!name) {
+      error = 'Name is required.';
+    } else if (name.length > 128) {
+      error = 'Max length can be 128.';
+    } else {
+      const isValid = validateName(name, THREAT_INTEL_SOURCE_NAME_REGEX);
+      if (!isValid) {
+        error = 'Invalid name.';
+      }
+    }
+
+    return error;
+  };
   const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const name = event.target.value;
+    const nameError = validateSourceName(name);
+    setFieldError({
+      name: nameError || '',
+    });
+
     setSource({
       ...source,
-      name: event.target.value,
+      name,
     });
+    setFieldTouched({ name: true });
   };
 
+  const validateSourceDescription = (description: string) => {
+    let error;
+    const isValid = validateDescription(description, THREAT_INTEL_SOURCE_DESCRIPTION_REGEX);
+    if (!isValid) {
+      error = 'Invalid name.';
+    }
+
+    return error;
+  };
   const onDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const descriptionError = validateSourceDescription(event.target.value);
+    setFieldError({
+      description: descriptionError || '',
+    });
+
     setSource({
       ...source,
       description: event.target.value,
     });
+    setFieldTouched({ description: true });
   };
 
+  const validateS3ConfigField = (value: string) => {
+    if (!value) {
+      return `Required.`;
+    }
+  };
   const onS3DataChange = (field: keyof S3ConnectionSource['s3'], value: string) => {
+    const error = validateS3ConfigField(value);
+    setFieldError({
+      s3: {
+        ...inputErrors.s3,
+        [field]: error || '',
+      },
+    });
     setS3ConnectionDetails({
       s3: {
         ...s3ConnectionDetails.s3,
         [field]: value,
       },
     });
+    setFieldTouched({ s3: { ...inputTouched.s3, [field]: true } });
   };
 
+  const validateSchedule = (schedule: PeriodSchedule) => {
+    setFieldError({
+      schedule:
+        !schedule.period.interval || Number.isNaN(schedule.period.interval)
+          ? 'Invalid schedule'
+          : '',
+    });
+  };
   const onIntervalChange = (schedule: PeriodSchedule) => {
+    validateSchedule(schedule);
     setSchedule({
       interval: {
         start_time: Date.now(),
@@ -130,19 +248,65 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
         unit: schedule.period.unit,
       },
     });
+    setFieldTouched({ schedule: true });
   };
 
   const onFileChange = (files: FileList | null) => {
-    setFileError('');
+    setFieldError({
+      fileUpload: {
+        ...inputErrors.fileUpload,
+        file: files?.length === 0 ? 'File required.' : '',
+      },
+    });
     if (!!files?.item(0)) {
       readIocsFromFile(files[0], (response) => {
         if (response.ok) {
           setFileUploadSource(response.sourceData);
         } else {
-          setFileError(response.errorMessage);
+          setFieldError({
+            fileUpload: {
+              ...inputErrors.fileUpload,
+              file: response.errorMessage,
+            },
+          });
         }
       });
     }
+    setFieldTouched({ fileUpload: { file: true } });
+  };
+
+  const isThereAnError = (errors: any): boolean => {
+    for (let key of Object.keys(errors)) {
+      if (
+        (sourceType !== 'S3_CUSTOM' && key === 's3') ||
+        (sourceType !== 'IOC_UPLOAD' && key === 'fileUpload') ||
+        (!source.enabled && key === 'schedule')
+      ) {
+        continue;
+      }
+
+      if (typeof errors[key] === 'string' && !!errors[key]) {
+        return true;
+      }
+
+      if (typeof errors[key] === 'object') {
+        if (isThereAnError(errors[key])) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  };
+
+  const shouldEnableSubmit = () => {
+    const { name, s3, fileUpload, ioc_types } = inputTouched;
+    const reqFieldsTouched =
+      name &&
+      ioc_types &&
+      ((sourceType === 'IOC_UPLOAD' && fileUpload?.file) ||
+        (sourceType === 'S3_CUSTOM' && s3 && Object.values(s3).every((val) => val)));
+    return reqFieldsTouched && !isThereAnError(inputErrors);
   };
 
   const onSubmit = () => {
@@ -203,8 +367,18 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
           <h4>Details</h4>
         </EuiText>
         <EuiSpacer />
-        <EuiFormRow label="Name">
-          <EuiFieldText placeholder="Title" onChange={onNameChange} value={source.name} />
+        <EuiFormRow
+          label="Name"
+          helpText="Rule name must contain 1-128 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, and underscores."
+          isInvalid={!!inputErrors.name}
+          error={inputErrors.name}
+        >
+          <EuiFieldText
+            placeholder="Title"
+            onChange={onNameChange}
+            onBlur={onNameChange}
+            value={source.name}
+          />
         </EuiFormRow>
         <EuiSpacer />
         <EuiFormRow
@@ -218,6 +392,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
           <EuiFieldText
             placeholder="Description"
             onChange={onDescriptionChange}
+            onBlur={onDescriptionChange}
             value={source.description}
           />
         </EuiFormRow>
@@ -280,7 +455,9 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
             <EuiFormRow
               label={
                 <>
-                  <EuiFormLabel>IAM Role ARN</EuiFormLabel>
+                  <EuiFormLabel className={!!inputErrors.s3?.role_arn ? 'label--danger' : ''}>
+                    IAM Role ARN
+                  </EuiFormLabel>
                   <EuiText color="subdued" size="xs">
                     <span>
                       The Amazon Resource Name for an IAM role in Amazon Web Services (AWS)
@@ -288,40 +465,56 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
                   </EuiText>
                 </>
               }
+              isInvalid={!!inputErrors.s3?.role_arn}
+              error={inputErrors.s3?.role_arn}
             >
               <EuiFieldText
                 placeholder="arn:"
                 onChange={(event) => onS3DataChange('role_arn', event.target.value)}
+                onBlur={(event) => onS3DataChange('role_arn', event.target.value)}
                 value={s3ConnectionDetails.s3.role_arn}
               />
             </EuiFormRow>
             <EuiSpacer />
-            <EuiFormRow label="S3 bucket directory">
+            <EuiFormRow
+              label="S3 bucket directory"
+              isInvalid={!!inputErrors.s3?.bucket_name}
+              error={inputErrors.s3?.bucket_name}
+            >
               <EuiFieldText
                 placeholder="S3 bucket name"
                 onChange={(event) => onS3DataChange('bucket_name', event.target.value)}
+                onBlur={(event) => onS3DataChange('bucket_name', event.target.value)}
                 value={s3ConnectionDetails.s3.bucket_name}
               />
             </EuiFormRow>
             <EuiSpacer />
-            <EuiFormRow label="Specify a directory or file">
+            <EuiFormRow
+              label="Specify a directory or file"
+              isInvalid={!!inputErrors.s3?.object_key}
+              error={inputErrors.s3?.object_key}
+            >
               <EuiFieldText
                 placeholder="Object key"
                 onChange={(event) => onS3DataChange('object_key', event.target.value)}
+                onBlur={(event) => onS3DataChange('object_key', event.target.value)}
                 value={s3ConnectionDetails.s3.object_key}
               />
             </EuiFormRow>
             <EuiSpacer />
-            <EuiFormRow label="Region">
+            <EuiFormRow
+              label="Region"
+              isInvalid={!!inputErrors.s3?.region}
+              error={inputErrors.s3?.region}
+            >
               <EuiFieldText
                 placeholder="Region"
                 onChange={(event) => onS3DataChange('region', event.target.value)}
+                onBlur={(event) => onS3DataChange('region', event.target.value)}
                 value={s3ConnectionDetails.s3.region}
               />
             </EuiFormRow>
             <EuiSpacer />
-            {/* <EuiButton>Test connection</EuiButton>
-            <EuiSpacer /> */}
             <EuiText>
               <h4>Download schedule</h4>
             </EuiText>
@@ -364,8 +557,8 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
                   <p>Maximum size: 500 kB. </p>
                 </>
               }
-              isInvalid={!!fileError}
-              error={fileError}
+              isInvalid={!!inputErrors.fileUpload?.file}
+              error={inputErrors.fileUpload?.file}
             >
               <EuiFilePicker
                 id={'filePickerId'}
@@ -375,7 +568,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
                 display={'large'}
                 multiple={false}
                 aria-label="ioc file picker"
-                isInvalid={!!fileError}
+                isInvalid={!!inputErrors.fileUpload?.file}
                 data-test-subj="import_ioc_file"
               />
             </EuiFormRow>
@@ -385,12 +578,20 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
         <EuiText>
           <h4>Types of malicious indicators</h4>
         </EuiText>
-        <EuiSpacer />
-        <EuiCheckboxGroup
-          options={checkboxes}
-          idToSelectedMap={checkboxIdToSelectedMap}
-          onChange={onIocTypesChange}
-        />
+        <EuiText color="subdued" size="s">
+          <p>
+            Select atleast one IOC type to select from the{' '}
+            {sourceType === 'IOC_UPLOAD' ? 'uploaded file' : 'S3 bucket'}.
+          </p>
+        </EuiText>
+        <EuiSpacer size="m" />
+        <EuiFormRow isInvalid={!!inputErrors.ioc_types} error={inputErrors.ioc_types}>
+          <EuiCheckboxGroup
+            options={checkboxes}
+            idToSelectedMap={checkboxIdToSelectedMap}
+            onChange={onIocTypesChange}
+          />
+        </EuiFormRow>
         <EuiSpacer />
       </EuiPanel>
       <EuiSpacer />
@@ -399,7 +600,12 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
           <EuiButton onClick={() => history.push(ROUTES.THREAT_INTEL_OVERVIEW)}>Cancel</EuiButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton isLoading={submitInProgress} fill onClick={onSubmit}>
+          <EuiButton
+            disabled={!shouldEnableSubmit()}
+            isLoading={submitInProgress}
+            fill
+            onClick={onSubmit}
+          >
             Add threat intel source
           </EuiButton>
         </EuiFlexItem>

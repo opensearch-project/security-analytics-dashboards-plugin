@@ -34,6 +34,7 @@ import { ConfigureThreatIntelScanStep } from '../../utils/constants';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { PeriodSchedule } from '../../../../../models/interfaces';
 import { errorNotificationToast } from '../../../../utils/helpers';
+import { validateName } from '../../../../utils/validation';
 
 export interface ThreatIntelScanConfigFormProps
   extends RouteComponentProps<
@@ -46,13 +47,17 @@ export interface ThreatIntelScanConfigFormProps
   notifications: NotificationsStart;
 }
 
+interface TriggerErrors {
+  nameError?: string;
+  notificationChannelError?: string;
+}
+
 interface FormErrors {
   logSourceError?: string;
   fieldAliasError?: string;
-  triggersErrors?: {
-    nameError?: string;
-    notificationChannelError?: string;
-  }[];
+
+  scheduleError?: string;
+  triggersErrors?: TriggerErrors[];
 }
 
 export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps> = ({
@@ -71,8 +76,8 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
   const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [configureInProgress, setConfigureInProgress] = useState(false);
   const [stepDataValid, setStepDataValid] = useState({
-    [ConfigureThreatIntelScanStep.SelectLogSources]: true,
-    [ConfigureThreatIntelScanStep.SetupAlertTriggers]: true,
+    [ConfigureThreatIntelScanStep.SelectLogSources]: false,
+    [ConfigureThreatIntelScanStep.SetupAlertTriggers]: false,
   });
   const threatIntelTriggerCounter = useRef(0);
   const getNextTriggerName = () => {
@@ -90,6 +95,10 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
 
     return getEmptyScanConfigFormModel(getNextTriggerName());
   });
+
+  useEffect(() => {
+    updateStepValidity(formErrors);
+  }, [formErrors]);
 
   useEffect(() => {
     context?.chrome.setBreadcrumbs([
@@ -131,7 +140,6 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
       ...errors,
     };
     setFormErrors(newErrors);
-    updateStepValidity(newErrors);
   };
 
   const validateLogSources = (logSources: ThreatIntelScanConfigFormModel['logSources']) => {
@@ -142,7 +150,9 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
 
   const validateFieldAliases = (logSources: ThreatIntelScanConfigFormModel['logSources']) => {
     const iocEnabled = logSources.every((logSource) => {
-      return Object.keys(logSource.iocConfigMap).length !== 0;
+      return Object.values(logSource.iocConfigMap).some(
+        (o) => o.enabled && o.fieldAliases.length > 0
+      );
     });
 
     if (!iocEnabled) {
@@ -160,8 +170,31 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
     return '';
   };
 
+  const validateSchedule = (schedule: PeriodSchedule) => {
+    return !schedule.period.interval || Number.isNaN(schedule.period.interval)
+      ? 'Invalid schedule'
+      : '';
+  };
+
+  const validateTriggers = (triggers: ThreatIntelAlertTrigger[]) => {
+    const triggersErrors: TriggerErrors[] = [];
+    triggers.forEach((t, idx) => {
+      const errors: TriggerErrors = {};
+      errors.nameError = validateName(t.name) ? '' : 'Invalid trigger name';
+      errors.notificationChannelError = t.actions.every((a) => !!a.destination_id)
+        ? ''
+        : 'Select a channel';
+      triggersErrors.push(errors);
+    });
+    setFormErrors({
+      ...formErrors,
+      triggersErrors,
+    });
+  };
+
   const updateStepValidity = (errors: FormErrors) => {
-    const stepOneDataValid = !errors.logSourceError && !errors.fieldAliasError;
+    const stepOneDataValid =
+      !errors.logSourceError && !errors.fieldAliasError && !errors.scheduleError;
     const stepTwoDataValid = !errors.triggersErrors?.some(
       (errors) => errors.nameError || errors.notificationChannelError
     );
@@ -170,11 +203,6 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
       [ConfigureThreatIntelScanStep.SelectLogSources]: stepOneDataValid,
       [ConfigureThreatIntelScanStep.SetupAlertTriggers]: stepTwoDataValid,
     });
-  };
-
-  const validateFormData = (formModel: ThreatIntelScanConfigFormModel) => {
-    validateLogSources(formModel.logSources);
-    validateFieldAliases(formModel.logSources);
   };
 
   const updatePayload = (formModel: ThreatIntelScanConfigFormModel) => {
@@ -200,12 +228,16 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
       ...configureScanFormInputs,
       triggers,
     });
+    validateTriggers(triggers);
   };
 
   const onScheduleChange = (schedule: PeriodSchedule) => {
     updatePayload({
       ...configureScanFormInputs,
       schedule,
+    });
+    updateFormErrors({
+      scheduleError: validateSchedule(schedule),
     });
   };
 
