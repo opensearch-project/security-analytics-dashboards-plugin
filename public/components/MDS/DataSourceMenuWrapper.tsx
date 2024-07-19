@@ -21,7 +21,7 @@ export interface DataSourceMenuWrapperProps {
   dataSourceMenuReadOnly: boolean;
   dataSourceLoading: boolean;
   setHeaderActionMenu: AppMountParameters['setHeaderActionMenu'];
-  dataSourceFilterFn?: (dataSource: SavedObject<DataSourceAttributes>) => boolean;
+  dataSourceFilterFn: (dataSource: SavedObject<DataSourceAttributes>) => boolean;
 }
 
 export const DataSourceMenuWrapper: React.FC<DataSourceMenuWrapperProps> = ({
