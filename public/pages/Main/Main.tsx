@@ -18,7 +18,7 @@ import {
   EuiFlexItem,
 } from '@elastic/eui';
 import { Toast } from '@opensearch-project/oui/src/eui_components/toast/global_toast_list';
-import { AppMountParameters, CoreStart } from 'opensearch-dashboards/public';
+import { AppMountParameters, CoreStart, SavedObject } from 'opensearch-dashboards/public';
 import { SaContextConsumer } from '../../services';
 import { DEFAULT_DATE_RANGE, DATE_TIME_FILTER_KEY, ROUTES } from '../../utils/constants';
 import { CoreServicesConsumer } from '../../components/core_services';
@@ -61,6 +61,9 @@ import { ThreatIntelOverview } from '../ThreatIntel/containers/Overview/ThreatIn
 import { AddThreatIntelSource } from '../ThreatIntel/containers/AddThreatIntelSource/AddThreatIntelSource';
 import { ThreatIntelScanConfigForm } from '../ThreatIntel/containers/ScanConfiguration/ThreatIntelScanConfigForm';
 import { ThreatIntelSource } from '../ThreatIntel/containers/ThreatIntelSource/ThreatIntelSource';
+import * as pluginManifest from "../../../opensearch_dashboards.json";
+import { DataSourceAttributes } from "../../../../../src/plugins/data_source/common/data_sources";
+import semver from "semver";
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -373,6 +376,15 @@ export default class Main extends Component<MainProps, MainState> {
     ];
   };
 
+  dataSourceFilterFn = (dataSource: SavedObject<DataSourceAttributes>) => {
+    const dataSourceVersion = dataSource?.attributes?.dataSourceVersion || "";
+    const installedPlugins = dataSource?.attributes?.installedPlugins || [];
+    return (
+      semver.satisfies(dataSourceVersion, pluginManifest.supportedOSDataSourceVersions) &&
+      pluginManifest.requiredOSDataSourcePlugins.every((plugin) => installedPlugins.includes(plugin))
+    );
+  };
+
   render() {
     const {
       landingPage,
@@ -419,6 +431,7 @@ export default class Main extends Component<MainProps, MainState> {
                                 dataSourceLoading={this.state.dataSourceLoading}
                                 dataSourceMenuReadOnly={dataSourceMenuReadOnly}
                                 setHeaderActionMenu={setActionMenu}
+                                dataSourceFilterFn={this.dataSourceFilterFn}
                               />
                             )}
                             {!dataSourceLoading && services && (
