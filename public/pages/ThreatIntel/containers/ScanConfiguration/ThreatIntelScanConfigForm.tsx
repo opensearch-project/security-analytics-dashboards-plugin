@@ -180,7 +180,7 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
     const triggersErrors: TriggerErrors[] = [];
     triggers.forEach((t, idx) => {
       const errors: TriggerErrors = {};
-      errors.nameError = validateName(t.name) ? '' : 'Invalid trigger name';
+      errors.nameError = validateName(t.name) ? '' : 'Invalid trigger name.';
       errors.notificationChannelError = t.actions.every((a) => !!a.destination_id)
         ? ''
         : 'Select a channel';

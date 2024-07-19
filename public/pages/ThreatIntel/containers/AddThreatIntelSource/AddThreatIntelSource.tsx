@@ -48,18 +48,24 @@ import {
   validateName,
 } from '../../../../utils/validation';
 
+enum ErrorKeys {
+  s3 = 's3',
+  fileUpload = 'fileUpload',
+  schedule = 'schedule',
+}
+
 interface AddThreatIntelSourceFormInputErrors {
   name?: string;
   description?: string;
-  s3?: Partial<
+  [ErrorKeys.s3]?: Partial<
     {
       [field in keyof S3ConnectionSource['s3']]: string;
     }
   >;
-  fileUpload?: {
+  [ErrorKeys.fileUpload]?: {
     file?: string;
   };
-  schedule?: string;
+  [ErrorKeys.schedule]?: string;
   ioc_types?: string;
 }
 
@@ -134,7 +140,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
 
   const validateIocTypes = (iocTypeMap: Record<string, boolean>) => {
     return !Object.values(iocTypeMap).some((val) => val)
-      ? 'At least one ioc type should be selected'
+      ? 'At least one ioc type should be selected.'
       : '';
   };
   const onIocTypesChange = (optionId: string) => {
@@ -235,7 +241,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
     setFieldError({
       schedule:
         !schedule.period.interval || Number.isNaN(schedule.period.interval)
-          ? 'Invalid schedule'
+          ? 'Invalid schedule.'
           : '',
     });
   };
@@ -275,12 +281,12 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
     setFieldTouched({ fileUpload: { file: true } });
   };
 
-  const isThereAnError = (errors: any): boolean => {
+  const hasError = (errors: { [key: string]: any }): boolean => {
     for (let key of Object.keys(errors)) {
       if (
-        (sourceType !== 'S3_CUSTOM' && key === 's3') ||
-        (sourceType !== 'IOC_UPLOAD' && key === 'fileUpload') ||
-        (!source.enabled && key === 'schedule')
+        (sourceType !== 'S3_CUSTOM' && key === ErrorKeys.s3) ||
+        (sourceType !== 'IOC_UPLOAD' && key === ErrorKeys.fileUpload) ||
+        (!source.enabled && key === ErrorKeys.schedule)
       ) {
         continue;
       }
@@ -290,7 +296,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
       }
 
       if (typeof errors[key] === 'object') {
-        if (isThereAnError(errors[key])) {
+        if (hasError(errors[key])) {
           return true;
         }
       }
@@ -306,7 +312,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
       ioc_types &&
       ((sourceType === 'IOC_UPLOAD' && fileUpload?.file) ||
         (sourceType === 'S3_CUSTOM' && s3 && Object.values(s3).every((val) => val)));
-    return reqFieldsTouched && !isThereAnError(inputErrors);
+    return reqFieldsTouched && !hasError(inputErrors);
   };
 
   const onSubmit = () => {
@@ -369,7 +375,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
         <EuiSpacer />
         <EuiFormRow
           label="Name"
-          helpText="Rule name must contain 1-128 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, and underscores."
+          helpText="Source name must contain 1-128 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, and underscores."
           isInvalid={!!inputErrors.name}
           error={inputErrors.name}
         >
@@ -580,7 +586,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
         </EuiText>
         <EuiText color="subdued" size="s">
           <p>
-            Select atleast one IOC type to select from the{' '}
+            Select at least one IoC type to select from the{' '}
             {sourceType === 'IOC_UPLOAD' ? 'uploaded file' : 'S3 bucket'}.
           </p>
         </EuiText>

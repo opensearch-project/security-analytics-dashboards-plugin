@@ -596,7 +596,7 @@ export default class FindingDetailsFlyout extends Component<
             </div>
             <EuiSpacer size="s" />
             <EuiText>
-              <p>This finding is generated from a threat intelligence feed IOCs.</p>
+              <p>This finding is generated from a threat intelligence feed IoCs.</p>
             </EuiText>
             <EuiSpacer size={'l'} />
             {createTextDetailsGroup([
