@@ -13,9 +13,7 @@ import {
 import { AppMountParameters, CoreStart, SavedObject } from 'opensearch-dashboards/public';
 import { ROUTES } from '../../utils/constants';
 import { DataSourceContext } from '../../services/DataSourceContext';
-import * as pluginManifest from "../../../opensearch_dashboards.json";
-import { DataSourceAttributes } from "../../../../../src/plugins/data_source/common/data_sources";
-import semver from "semver";
+import { DataSourceAttributes } from 'src/plugins/data_source/common/data_sources';
 
 export interface DataSourceMenuWrapperProps {
   core: CoreStart;
@@ -23,16 +21,8 @@ export interface DataSourceMenuWrapperProps {
   dataSourceMenuReadOnly: boolean;
   dataSourceLoading: boolean;
   setHeaderActionMenu: AppMountParameters['setHeaderActionMenu'];
+  dataSourceFilterFn?: (dataSource: SavedObject<DataSourceAttributes>) => boolean;
 }
-
-const dataSourceFilterFn = (dataSource: SavedObject<DataSourceAttributes>) => {
-  const dataSourceVersion = dataSource?.attributes?.dataSourceVersion || "";
-  const installedPlugins = dataSource?.attributes?.installedPlugins || [];
-  return (
-    semver.satisfies(dataSourceVersion, pluginManifest.supportedOSDataSourceVersions) &&
-    pluginManifest.requiredOSDataSourcePlugins.every((plugin) => installedPlugins.includes(plugin))
-  );
-};
 
 export const DataSourceMenuWrapper: React.FC<DataSourceMenuWrapperProps> = ({
   core,
@@ -40,6 +30,7 @@ export const DataSourceMenuWrapper: React.FC<DataSourceMenuWrapperProps> = ({
   dataSourceMenuReadOnly,
   dataSourceLoading,
   setHeaderActionMenu,
+  dataSourceFilterFn,
 }) => {
   if (!dataSourceManagement) {
     return null;
@@ -141,6 +132,7 @@ export const DataSourceMenuWrapper: React.FC<DataSourceMenuWrapperProps> = ({
                 notifications: core.notifications,
                 onSelectedDataSources: setDataSource,
                 savedObjects: core.savedObjects.client,
+                dataSourceFilter: dataSourceFilterFn,
               }}
             />
           );

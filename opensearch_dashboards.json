@@ -8,5 +8,5 @@
   "server": true,
   "ui": true,
   "supportedOSDataSourceVersions": ">=2.16.0",
-  "requiredOSDataSourcePlugins": ["opensearch-security-analytics"]
+  "requiredOSDataSourcePlugins": ["opensearch_security_analytics"]
 }
