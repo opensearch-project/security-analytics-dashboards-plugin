@@ -69,14 +69,9 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
     },
     [saContext, fieldsByIndexName]
   );
-  const [selectedSourcesMap, setSelectedSourcesMap] = useState(() => {
-    const selectedSourcesByName: Map<string, ThreatIntelLogSource> = new Map();
-    sources.forEach((source) => {
-      selectedSourcesByName.set(source.name, source);
-      getLogFields(source.name);
-    });
-    return selectedSourcesByName;
-  });
+  const [selectedSourcesMap, setSelectedSourcesMap] = useState<Map<string, ThreatIntelLogSource>>(
+    new Map()
+  );
 
   useEffect(() => {
     const getLogSourceOptions = async () => {
@@ -92,6 +87,15 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
 
     getLogSourceOptions();
   }, [saContext]);
+
+  useEffect(() => {
+    const selectedSourcesByName: Map<string, ThreatIntelLogSource> = new Map();
+    sources.forEach((source) => {
+      selectedSourcesByName.set(source.name, source);
+      getLogFields(source.name);
+    });
+    setSelectedSourcesMap(selectedSourcesByName);
+  }, [sources]);
 
   const onIocToggle = (
     source: ThreatIntelLogSource,

@@ -31,7 +31,7 @@ export interface NotificationFormProps {
   allNotificationChannels: NotificationChannelTypeOptions[];
   loadingNotifications: boolean;
   action?: TriggerAction;
-  prepareMessage: (updateMessage?: boolean, onMount?: boolean) => void;
+  prepareMessage?: (updateMessage?: boolean, onMount?: boolean) => void;
   refreshNotificationChannels: () => void;
   onChannelsChange: (selectedOptions: EuiComboBoxOptionOption<string>[]) => void;
   onMessageBodyChange: (message: string) => void;
@@ -168,17 +168,18 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
                   />
                 </EuiFormRow>
               </EuiFlexItem>
-
-              <EuiFlexItem>
-                <EuiFormRow>
-                  <EuiButton
-                    fullWidth={false}
-                    onClick={() => prepareMessage(true /* updateMessage */)}
-                  >
-                    Generate message
-                  </EuiButton>
-                </EuiFormRow>
-              </EuiFlexItem>
+              {prepareMessage && (
+                <EuiFlexItem>
+                  <EuiFormRow>
+                    <EuiButton
+                      fullWidth={false}
+                      onClick={() => prepareMessage(true /* updateMessage */)}
+                    >
+                      Generate message
+                    </EuiButton>
+                  </EuiFormRow>
+                </EuiFlexItem>
+              )}
             </EuiFlexGroup>
           </EuiAccordion>
 
