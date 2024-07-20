@@ -35,7 +35,7 @@ export function getEmptyScanConfigFormModel(triggerName: string): ThreatIntelSca
         unit: 'MINUTES',
       },
     },
-    triggers: [getEmptyThreatIntelAlertTrigger(triggerName)],
+    triggers: [getEmptyThreatIntelAlertTrigger(triggerName, false)],
   };
 }
 
@@ -60,13 +60,16 @@ export function getEmptyThreatIntelAlertTriggerAction(): ThreatIntelAlertTrigger
   };
 }
 
-export function getEmptyThreatIntelAlertTrigger(triggerName: string): ThreatIntelAlertTrigger {
+export function getEmptyThreatIntelAlertTrigger(
+  triggerName: string,
+  includeEmptyAction: boolean = true
+): ThreatIntelAlertTrigger {
   return {
     name: triggerName,
     data_sources: [],
     ioc_types: [],
     severity: AlertSeverity.ONE,
-    actions: [getEmptyThreatIntelAlertTriggerAction()],
+    actions: includeEmptyAction ? [getEmptyThreatIntelAlertTriggerAction()] : [],
   };
 }
 
@@ -160,12 +163,6 @@ export function deriveFormModelFromConfig(
 
   const configClone: any = _.cloneDeep(scanConfig);
   delete configClone.per_ioc_type_scan_input_list;
-
-  configClone.triggers.forEach((trigger: ThreatIntelAlertTrigger) => {
-    if (trigger.actions.length === 0) {
-      trigger.actions.push(getEmptyThreatIntelAlertTriggerAction());
-    }
-  });
 
   const formModel: ThreatIntelScanConfigFormModel = {
     ...configClone,
