@@ -244,7 +244,7 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
                       },
                     })
                   : 'Download on demand'
-                : 'File uploaded',
+                : 'N/A',
             },
             {
               title: 'Last updated',
@@ -265,6 +265,9 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
           ids={source.name}
           onClickDelete={onDeleteConfirmed}
           confirmation
+          confirmButtonText="Delete"
+          additionalWarning="You can also deactivate this source temporarily and reactivate later. 
+          Cancel to exit and then choose Deactivate."
         />
       )}
     </>

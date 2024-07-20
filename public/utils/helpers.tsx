@@ -580,7 +580,7 @@ export function getIsNotificationPluginInstalled(): boolean {
 export async function getFieldsForIndex(
   fieldMappingService: FieldMappingService,
   indexName: string
-) {
+): Promise<{ label: string; value: string }[]> {
   let fields: {
     label: string;
     value: string;

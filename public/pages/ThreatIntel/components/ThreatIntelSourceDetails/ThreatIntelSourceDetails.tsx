@@ -366,18 +366,21 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
         </EuiFlexGroup>
       </EuiPanel>
       {!isReadOnly && (
-        <EuiBottomBar>
-          <EuiFlexGroup justifyContent="flexEnd">
-            <EuiFlexItem grow={false}>
-              <EuiButton onClick={onDiscard}>Discard</EuiButton>
-            </EuiFlexItem>
-            <EuiFlexItem grow={false}>
-              <EuiButton isLoading={saveInProgress} fill onClick={onSave} disabled={saveDisabled}>
-                Save
-              </EuiButton>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-        </EuiBottomBar>
+        <>
+          <EuiSpacer size="xl" />
+          <EuiBottomBar>
+            <EuiFlexGroup justifyContent="flexEnd">
+              <EuiFlexItem grow={false}>
+                <EuiButton onClick={onDiscard}>Discard</EuiButton>
+              </EuiFlexItem>
+              <EuiFlexItem grow={false}>
+                <EuiButton isLoading={saveInProgress} fill onClick={onSave} disabled={saveDisabled}>
+                  Save
+                </EuiButton>
+              </EuiFlexItem>
+            </EuiFlexGroup>
+          </EuiBottomBar>
+        </>
       )}
     </>
   );

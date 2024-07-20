@@ -92,8 +92,6 @@ export const ThreatIntelAlertTriggerForm: React.FC<ThreatIntelAlertTriggerProps>
     });
   };
 
-  const prepareMessage = () => {};
-
   return (
     <EuiAccordion
       id="threat-intel-trigger"
@@ -174,7 +172,6 @@ export const ThreatIntelAlertTriggerForm: React.FC<ThreatIntelAlertTriggerProps>
         onChannelsChange={onChannelsChange}
         onMessageBodyChange={onMessageBodyChange}
         onMessageSubjectChange={onMessageSubjectChange}
-        prepareMessage={prepareMessage}
         refreshNotificationChannels={refreshNotificationChannels}
         onNotificationToggle={onNotificationToggle}
       />

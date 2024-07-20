@@ -31,7 +31,7 @@ export interface NotificationFormProps {
   allNotificationChannels: NotificationChannelTypeOptions[];
   loadingNotifications: boolean;
   action?: TriggerAction;
-  prepareMessage: (updateMessage?: boolean, onMount?: boolean) => void;
+  prepareMessage?: (updateMessage?: boolean, onMount?: boolean) => void;
   refreshNotificationChannels: () => void;
   onChannelsChange: (selectedOptions: EuiComboBoxOptionOption<string>[]) => void;
   onMessageBodyChange: (message: string) => void;
@@ -51,9 +51,9 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
   onNotificationToggle,
 }) => {
   const hasNotificationPlugin = getIsNotificationPluginInstalled();
-  const [isActionRemoved, setIsActionRemoved] = useState(true);
+  const [shouldSendNotification, setShouldSendNotification] = useState(!!action?.destination_id);
   const selectedNotificationChannelOption: NotificationChannelOption[] = [];
-  if (!isActionRemoved && action?.destination_id) {
+  if (shouldSendNotification && action?.destination_id) {
     allNotificationChannels.forEach((typeOption) => {
       const matchingChannel = typeOption.options.find(
         (option) => option.value === action.destination_id
@@ -66,14 +66,14 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
     <>
       <EuiSwitch
         label="Send notification"
-        checked={isActionRemoved}
+        checked={shouldSendNotification}
         onChange={(e) => {
-          setIsActionRemoved(e.target.checked);
+          setShouldSendNotification(e.target.checked);
           onNotificationToggle?.(e.target.checked);
         }}
       />
       <EuiSpacer />
-      {isActionRemoved && (
+      {shouldSendNotification && (
         <>
           <EuiFlexGroup alignItems={'flexEnd'}>
             <EuiFlexItem style={{ maxWidth: 400 }}>
@@ -168,17 +168,18 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
                   />
                 </EuiFormRow>
               </EuiFlexItem>
-
-              <EuiFlexItem>
-                <EuiFormRow>
-                  <EuiButton
-                    fullWidth={false}
-                    onClick={() => prepareMessage(true /* updateMessage */)}
-                  >
-                    Generate message
-                  </EuiButton>
-                </EuiFormRow>
-              </EuiFlexItem>
+              {prepareMessage && (
+                <EuiFlexItem>
+                  <EuiFormRow>
+                    <EuiButton
+                      fullWidth={false}
+                      onClick={() => prepareMessage(true /* updateMessage */)}
+                    >
+                      Generate message
+                    </EuiButton>
+                  </EuiFormRow>
+                </EuiFlexItem>
+              )}
             </EuiFlexGroup>
           </EuiAccordion>
 
