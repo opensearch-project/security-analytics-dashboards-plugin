@@ -88,7 +88,7 @@ export const AlertTriggerView: React.FC<AlertTriggerViewProps> = ({
             </EuiTitle>
             <EuiSpacer size={'s'} />
             {createTextDetailsGroup([
-              { label: 'IOC match', content: 'Any match in threat intelligence feed' },
+              { label: 'IoC match', content: 'Any match in threat intelligence feed' },
             ])}
           </>
         )}

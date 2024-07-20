@@ -20,6 +20,7 @@ interface DeleteModalProps {
   ids: string;
   onClickDelete: (event?: any) => void;
   type: string;
+  confirmButtonText?: string;
 }
 
 interface DeleteModalState {
@@ -49,6 +50,7 @@ export default class DeleteModal extends Component<DeleteModalProps, DeleteModal
       onClickDelete,
       additionalWarning,
       confirmation,
+      confirmButtonText,
     } = this.props;
     const { confirmDeleteText } = this.state;
 
@@ -62,7 +64,7 @@ export default class DeleteModal extends Component<DeleteModalProps, DeleteModal
             closeDeleteModal();
           }}
           cancelButtonText={'Cancel'}
-          confirmButtonText={`Delete ${type}`}
+          confirmButtonText={confirmButtonText ?? `Delete ${type}`}
           buttonColor={'danger'}
           defaultFocusedButton="confirm"
           confirmButtonDisabled={confirmDeleteText != DEFAULT_DELETION_TEXT}

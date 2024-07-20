@@ -21,10 +21,10 @@ export const checkboxes: { id: ThreatIntelIocType; label: string }[] = [
   },
   {
     id: ThreatIntelIocType.Domain,
-    label: 'Domains',
+    label: IocLabel[ThreatIntelIocType.Domain],
   },
   {
     id: ThreatIntelIocType.FileHash,
-    label: 'File hash',
+    label: IocLabel[ThreatIntelIocType.FileHash],
   },
 ];

@@ -9,6 +9,7 @@ import React from 'react';
 import { renderTime } from '../../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
 import { DataStore } from '../../../../store/DataStore';
+import { IocLabel, ThreatIntelIocType } from '../../../../../common/constants';
 
 export interface ThreatIntelFindingsTableProps {
   findingItems: ThreatIntelFinding[];
@@ -30,6 +31,7 @@ export const ThreatIntelFindingsTable: React.FC<ThreatIntelFindingsTableProps> =
     {
       name: 'Indicator type',
       field: 'ioc_type',
+      render: (iocType: ThreatIntelIocType) => IocLabel[iocType],
     },
     {
       name: 'Threat intel source',
