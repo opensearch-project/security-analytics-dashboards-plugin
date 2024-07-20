@@ -7,10 +7,13 @@ import {
   AppMountParameters,
   CoreSetup,
   CoreStart,
+  DEFAULT_APP_CATEGORIES,
+  DEFAULT_NAV_GROUPS,
   Plugin,
   PluginInitializerContext,
+  WorkspaceAvailability,
 } from '../../../src/core/public';
-import { PLUGIN_NAME, ROUTES, setDarkMode } from './utils/constants';
+import { CORRELATIONS_NAV_ID, CORRELATIONS_RULE_NAV_ID, DETECTORS_NAV_ID, DETECTORS_RULE_NAV_ID, FINDINGS_NAV_ID, LOG_TYPES_NAV_ID, PLUGIN_NAME, ROUTES, THREAT_ALERTS_NAV_ID, THREAT_INTEL_NAV_ID, setDarkMode } from './utils/constants';
 import { SecurityAnalyticsPluginSetup, SecurityAnalyticsPluginStart } from './index';
 import { DataPublicPluginStart, DataPublicPluginSetup } from '../../../src/plugins/data/public';
 import { SecurityAnalyticsPluginConfigType } from '../config';
@@ -43,6 +46,13 @@ export class SecurityAnalyticsPlugin
     core: CoreSetup<SecurityAnalyticsPluginStartDeps>,
     { dataSourceManagement }: SecurityAnalyticsPluginSetupDeps
   ): SecurityAnalyticsPluginSetup {
+
+    const mountWrapper = async (params: AppMountParameters, redirect: string) => {
+      const { renderApp } = await import("./security_analytics_app");
+      const [coreStart, depsStart] = await core.getStartServices();
+      return renderApp(coreStart, params, redirect, depsStart, dataSourceManagement);
+    };
+
     core.application.register({
       id: PLUGIN_NAME,
       title: 'Security Analytics',
@@ -52,12 +62,140 @@ export class SecurityAnalyticsPlugin
         label: 'OpenSearch Plugins',
         order: 2000,
       },
+      workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
       mount: async (params: AppMountParameters) => {
         const { renderApp } = await import('./security_analytics_app');
         const [coreStart, depsStart] = await core.getStartServices();
         return renderApp(coreStart, params, ROUTES.LANDING_PAGE, depsStart, dataSourceManagement);
       },
     });
+
+    if (core.chrome.navGroup.getNavGroupEnabled()) {
+      // register applications with category and use case information
+      core.chrome.navGroup.addNavLinksToGroup(DEFAULT_NAV_GROUPS['security-analytics'], [
+        {
+          id: PLUGIN_NAME,
+          category: DEFAULT_APP_CATEGORIES.investigate,
+          showInAllNavGroup: true
+        },
+        {
+          id: `PLUGIN_NAME`,
+          category: DEFAULT_APP_CATEGORIES.detect,
+          showInAllNavGroup: true
+        },
+      ])
+
+      // register investigate and configure routes
+      core.application.register({
+        id: THREAT_ALERTS_NAV_ID,
+        title: 'Threat alerts',
+        order: 9070,
+        category: DEFAULT_APP_CATEGORIES.investigate,
+        workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+        mount: async (params: AppMountParameters) => {
+          return mountWrapper(params, ROUTES.ALERTS);
+        },
+      });
+
+      core.application.register({
+        id: FINDINGS_NAV_ID,
+        title: 'Findings',
+        order: 9080,
+        category: DEFAULT_APP_CATEGORIES.investigate,
+        workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+        mount: async (params: AppMountParameters) => {
+          return mountWrapper(params, ROUTES.FINDINGS);
+        },
+      });
+
+      core.application.register({
+        id: CORRELATIONS_NAV_ID,
+        title: 'Correlations',
+        order: 9080,
+        category: DEFAULT_APP_CATEGORIES.investigate,
+        workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+        mount: async (params: AppMountParameters) => {
+          return mountWrapper(params, ROUTES.CORRELATIONS);
+        },
+      });
+
+      core.application.register({
+        id: DETECTORS_NAV_ID,
+        title: 'Threat detectors',
+        order: 9080,
+        category: DEFAULT_APP_CATEGORIES.detect,
+        workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+        mount: async (params: AppMountParameters) => {
+          return mountWrapper(params, ROUTES.DETECTORS);
+        },
+      });
+
+      core.application.register({
+        id: DETECTORS_RULE_NAV_ID,
+        title: 'Detection rules',
+        order: 9080,
+        category: DEFAULT_APP_CATEGORIES.detect,
+        workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+        mount: async (params: AppMountParameters) => {
+          return mountWrapper(params, ROUTES.RULES);
+        },
+      });
+
+      core.application.register({
+        id: CORRELATIONS_RULE_NAV_ID,
+        title: 'Correlation rules',
+        order: 9080,
+        category: DEFAULT_APP_CATEGORIES.detect,
+        workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+        mount: async (params: AppMountParameters) => {
+          return mountWrapper(params, ROUTES.CORRELATION_RULES);
+        },
+      });
+
+      core.application.register({
+        id: THREAT_INTEL_NAV_ID,
+        title: 'Threat intelligence',
+        order: 9080,
+        category: DEFAULT_APP_CATEGORIES.detect,
+        workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+        mount: async (params: AppMountParameters) => {
+          return mountWrapper(params, ROUTES.THREAT_INTEL_OVERVIEW);
+        },
+      });
+
+      core.application.register({
+        id: LOG_TYPES_NAV_ID,
+        title: 'Log types',
+        order: 9080,
+        category: DEFAULT_APP_CATEGORIES.detect,
+        workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+        mount: async (params: AppMountParameters) => {
+          return mountWrapper(params, ROUTES.LOG_TYPES);
+        },
+      });
+
+      const navlinks = [
+        { id: THREAT_ALERTS_NAV_ID, parent: PLUGIN_NAME },
+        { id: FINDINGS_NAV_ID, parent: PLUGIN_NAME },
+        { id: CORRELATIONS_NAV_ID, parent: PLUGIN_NAME },
+        { id: DETECTORS_NAV_ID, parent: PLUGIN_NAME },
+        { id: DETECTORS_RULE_NAV_ID, parent: DETECTORS_NAV_ID },
+        { id: CORRELATIONS_RULE_NAV_ID, parent: PLUGIN_NAME },
+        { id: THREAT_INTEL_NAV_ID, parent: PLUGIN_NAME },
+        { id: LOG_TYPES_NAV_ID, parent: PLUGIN_NAME }
+      ]
+
+      const navLinks = navlinks.map(item => ({
+        id: item.id,
+        parentNavLinkId: item.parent
+      }));
+
+      core.chrome.navGroup.addNavLinksToGroup(
+        DEFAULT_NAV_GROUPS['security-analytics'],
+        navLinks
+        );
+      }
+
     setDarkMode(core.uiSettings.get('theme:darkMode'));
 
     const config = this.initializerContext.config.get();
