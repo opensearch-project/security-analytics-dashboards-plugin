@@ -80,7 +80,7 @@ export class SecurityAnalyticsPlugin
         },
         {
           id: `PLUGIN_NAME`,
-          category: DEFAULT_APP_CATEGORIES.detect,
+          category: DEFAULT_APP_CATEGORIES.configure,
           showInAllNavGroup: true
         },
       ])
@@ -123,7 +123,7 @@ export class SecurityAnalyticsPlugin
         id: DETECTORS_NAV_ID,
         title: 'Threat detectors',
         order: 9080,
-        category: DEFAULT_APP_CATEGORIES.detect,
+        category: DEFAULT_APP_CATEGORIES.configure,
         workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
         mount: async (params: AppMountParameters) => {
           return mountWrapper(params, ROUTES.DETECTORS);
@@ -134,7 +134,7 @@ export class SecurityAnalyticsPlugin
         id: DETECTORS_RULE_NAV_ID,
         title: 'Detection rules',
         order: 9080,
-        category: DEFAULT_APP_CATEGORIES.detect,
+        category: DEFAULT_APP_CATEGORIES.configure,
         workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
         mount: async (params: AppMountParameters) => {
           return mountWrapper(params, ROUTES.RULES);
@@ -156,7 +156,7 @@ export class SecurityAnalyticsPlugin
         id: THREAT_INTEL_NAV_ID,
         title: 'Threat intelligence',
         order: 9080,
-        category: DEFAULT_APP_CATEGORIES.detect,
+        category: DEFAULT_APP_CATEGORIES.configure,
         workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
         mount: async (params: AppMountParameters) => {
           return mountWrapper(params, ROUTES.THREAT_INTEL_OVERVIEW);
@@ -167,7 +167,7 @@ export class SecurityAnalyticsPlugin
         id: LOG_TYPES_NAV_ID,
         title: 'Log types',
         order: 9080,
-        category: DEFAULT_APP_CATEGORIES.detect,
+        category: DEFAULT_APP_CATEGORIES.configure,
         workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
         mount: async (params: AppMountParameters) => {
           return mountWrapper(params, ROUTES.LOG_TYPES);
