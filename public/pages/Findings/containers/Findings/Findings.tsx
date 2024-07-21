@@ -83,12 +83,14 @@ interface DetectionRulesFindingsState {
   rules: { [id: string]: RuleSource };
   groupBy: FindingsGroupByType;
   filteredFindings: FindingItemType[];
+  emptyPromptBody: React.ReactNode;
 }
 
 interface ThreatIntelFindingsState {
   findings: ThreatIntelFinding[];
   groupBy: ThreatIntelFindingsGroupByType;
   filteredFindings: ThreatIntelFinding[];
+  emptyPromptBody: React.ReactNode;
 }
 
 interface FindingsState {
@@ -153,11 +155,25 @@ class Findings extends Component<FindingsProps, FindingsState> {
           rules: {},
           filteredFindings: [],
           groupBy: 'logType',
+          emptyPromptBody: (
+            <p>
+              Adjust the time range to see more results or{' '}
+              <EuiLink href={`${location.pathname}#/create-detector`}>create a detector</EuiLink> to
+              generate findings.
+            </p>
+          ),
         },
         [FindingTabId.ThreatIntel]: {
           findings: [],
           filteredFindings: [],
           groupBy: 'indicatorType',
+          emptyPromptBody: (
+            <p>
+              Adjust the time range to see more results or{' '}
+              <EuiLink href={`${location.pathname}#/threat-intel`}>setup threat intel</EuiLink> to
+              generate findings.
+            </p>
+          ),
         },
       },
       recentlyUsedRanges: [DEFAULT_DATE_RANGE],
@@ -600,15 +616,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
                 {!findings || findings.length === 0 ? (
                   <EuiEmptyPrompt
                     title={<h2>No findings</h2>}
-                    body={
-                      <p>
-                        Adjust the time range to see more results or{' '}
-                        <EuiLink href={`${location.pathname}#/create-detector`}>
-                          create a detector
-                        </EuiLink>{' '}
-                        to generate findings.
-                      </p>
-                    }
+                    body={this.state.findingStateByTabId[this.state.selectedTabId].emptyPromptBody}
                   />
                 ) : (
                   <ChartContainer chartViewId={'findings-view'} loading={loading} />

@@ -19,6 +19,10 @@ export const LOG_TYPE_NAME_REGEX = new RegExp(/^[a-z0-9_-]{2,50}$/);
 // numbers 0-9, hyphens, dot, and underscores.
 export const DETECTION_NAME_REGEX = new RegExp(/^[a-zA-Z0-9_.-]{1,50}$/);
 
+// This regex pattern support MIN to MAX character limit, capital and lowercase letters,
+// numbers 0-9, hyphens, dot, and underscores.
+export const THREAT_INTEL_SOURCE_NAME_REGEX = new RegExp(/^[a-zA-Z0-9 _-]{1,128}$/);
+
 export const DETECTION_CONDITION_REGEX = new RegExp(
   /^((not )?.+)?( (and|or|and not|or not|not) ?(.+))*(?<!and|or|not)$/
 );
@@ -82,6 +86,10 @@ export const MAX_RULE_DESCRIPTION_LENGTH = 65535;
 
 // This regex pattern support MIN to MAX character limit for detection rule description.
 export const RULE_DESCRIPTION_REGEX = new RegExp(`^.{0,${MAX_RULE_DESCRIPTION_LENGTH}}$`);
+
+export const THREAT_INTEL_SOURCE_DESCRIPTION_REGEX = new RegExp(
+  `^.{0,${MAX_RULE_DESCRIPTION_LENGTH}}$`
+);
 
 /**
  * Validates a string against NAME_REGEX.

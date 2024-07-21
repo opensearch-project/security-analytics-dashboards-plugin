@@ -58,8 +58,7 @@ export const ThreatIntelLogSourcesFlyout: React.FC<ThreatIntelLogSourcesProps> =
           <EuiSpacer size="xs" />
           <EuiText color="subdued">
             <span>
-              To perform detection the IoC from threat intelligence feeds have to be matched against
-              selected fields in your data.
+              Select log fields that map to at least one IoC type to perform threat intel scan.
             </span>
           </EuiText>
         </EuiFlexItem>

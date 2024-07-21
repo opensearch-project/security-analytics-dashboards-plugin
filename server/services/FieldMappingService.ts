@@ -22,6 +22,7 @@ import {
 import { ServerResponse } from '../models/types';
 import { CLIENT_FIELD_MAPPINGS_METHODS } from '../utils/constants';
 import { MDSEnabledClientService } from './MDSEnabledClientService';
+import { extractFieldsFromMappings } from '../../common/helpers';
 
 export default class FieldMappingService extends MDSEnabledClientService {
   /**
@@ -157,9 +158,10 @@ export default class FieldMappingService extends MDSEnabledClientService {
         }
       );
 
-      const fieldMappings = Object.values(mappingsResponse)[0]?.mappings;
-      const fields = Object.keys(fieldMappings || {}).filter(
-        (field) => Object.keys(fieldMappings[field].mapping).length > 0
+      const fields: string[] = [];
+      extractFieldsFromMappings(
+        Object.values(mappingsResponse)[0]?.mappings?.properties || {},
+        fields
       );
 
       return response.custom({

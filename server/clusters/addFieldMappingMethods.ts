@@ -47,7 +47,7 @@ export function addFieldMappingMethods(securityAnalytics: any, createAction: any
 
   securityAnalytics[METHOD_NAMES.GET_INDEX_ALIAS_MAPPINGS] = createAction({
     url: {
-      fmt: `/<%=indexName%>/_mapping/field/*`,
+      fmt: `/<%=indexName%>/_mapping`,
       req: {
         indexName: {
           type: 'string',
