@@ -43,3 +43,21 @@ export const setSecurityAnalyticsPluginConfig = (config: SecurityAnalyticsPlugin
 
 export const getSecurityAnalyticsPluginConfig = (): SecurityAnalyticsPluginConfigType | undefined =>
   securityAnalyticsPluginConfig;
+
+export function extractFieldsFromMappings(
+  properties: any,
+  fields: string[],
+  parentField: string = ''
+) {
+  Object.keys(properties).forEach((field) => {
+    if (properties[field].hasOwnProperty('properties')) {
+      extractFieldsFromMappings(
+        properties[field]['properties'],
+        fields,
+        parentField ? `${parentField}.${field}` : field
+      );
+    } else {
+      fields.push(parentField ? `${parentField}.${field}` : field);
+    }
+  });
+}

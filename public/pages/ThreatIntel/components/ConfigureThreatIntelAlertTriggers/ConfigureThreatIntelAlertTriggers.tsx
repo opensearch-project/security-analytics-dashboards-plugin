@@ -88,7 +88,10 @@ export const ConfigureThreatIntelAlertTriggers: React.FC<ConfigureThreatIntelAle
       <EuiSpacer />
       <EuiButton
         onClick={() => {
-          updateTriggers([...alertTriggers, getEmptyThreatIntelAlertTrigger(getNextTriggerName())]);
+          updateTriggers([
+            ...alertTriggers,
+            getEmptyThreatIntelAlertTrigger(getNextTriggerName(), false),
+          ]);
         }}
       >
         Add another alert trigger
