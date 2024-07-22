@@ -13,7 +13,7 @@ import {
   PluginInitializerContext,
   WorkspaceAvailability,
 } from '../../../src/core/public';
-import { CORRELATIONS_NAV_ID, CORRELATIONS_RULE_NAV_ID, DETECTORS_NAV_ID, DETECTORS_RULE_NAV_ID, FINDINGS_NAV_ID, LOG_TYPES_NAV_ID, PLUGIN_NAME, ROUTES, THREAT_ALERTS_NAV_ID, THREAT_INTEL_NAV_ID, setDarkMode } from './utils/constants';
+import { CONFIGURE_CATEGORY_ID, CORRELATIONS_NAV_ID, CORRELATIONS_RULE_NAV_ID, DETECTORS_NAV_ID, DETECTORS_RULE_NAV_ID, FINDINGS_NAV_ID, INVESTIGATE_CATEGORY_ID, LOG_TYPES_NAV_ID, PLUGIN_NAME, ROUTES, THREAT_ALERTS_NAV_ID, THREAT_INTEL_NAV_ID, setDarkMode } from './utils/constants';
 import { SecurityAnalyticsPluginSetup, SecurityAnalyticsPluginStart } from './index';
 import { DataPublicPluginStart, DataPublicPluginSetup } from '../../../src/plugins/data/public';
 import { SecurityAnalyticsPluginConfigType } from '../config';
@@ -62,7 +62,6 @@ export class SecurityAnalyticsPlugin
         label: 'OpenSearch Plugins',
         order: 2000,
       },
-      workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
       mount: async (params: AppMountParameters) => {
         const { renderApp } = await import('./security_analytics_app');
         const [coreStart, depsStart] = await core.getStartServices();
@@ -74,12 +73,12 @@ export class SecurityAnalyticsPlugin
       // register applications with category and use case information
       core.chrome.navGroup.addNavLinksToGroup(DEFAULT_NAV_GROUPS['security-analytics'], [
         {
-          id: PLUGIN_NAME,
+          id: INVESTIGATE_CATEGORY_ID,
           category: DEFAULT_APP_CATEGORIES.investigate,
           showInAllNavGroup: true
         },
         {
-          id: `PLUGIN_NAME`,
+          id: CONFIGURE_CATEGORY_ID,
           category: DEFAULT_APP_CATEGORIES.configure,
           showInAllNavGroup: true
         },
@@ -175,19 +174,19 @@ export class SecurityAnalyticsPlugin
       });
 
       const navlinks = [
-        { id: THREAT_ALERTS_NAV_ID, parent: PLUGIN_NAME },
-        { id: FINDINGS_NAV_ID, parent: PLUGIN_NAME },
-        { id: CORRELATIONS_NAV_ID, parent: PLUGIN_NAME },
-        { id: DETECTORS_NAV_ID, parent: PLUGIN_NAME },
+        { id: THREAT_ALERTS_NAV_ID },
+        { id: FINDINGS_NAV_ID },
+        { id: CORRELATIONS_NAV_ID },
+        { id: DETECTORS_NAV_ID },
         { id: DETECTORS_RULE_NAV_ID, parent: DETECTORS_NAV_ID },
-        { id: CORRELATIONS_RULE_NAV_ID, parent: PLUGIN_NAME },
-        { id: THREAT_INTEL_NAV_ID, parent: PLUGIN_NAME },
-        { id: LOG_TYPES_NAV_ID, parent: PLUGIN_NAME }
+        { id: CORRELATIONS_RULE_NAV_ID },
+        { id: THREAT_INTEL_NAV_ID},
+        { id: LOG_TYPES_NAV_ID }
       ]
 
       const navLinks = navlinks.map(item => ({
         id: item.id,
-        parentNavLinkId: item.parent
+        parentNavLinkId: item.parent ? item.parent : undefined,
       }));
 
       core.chrome.navGroup.addNavLinksToGroup(
