@@ -19,6 +19,14 @@ export const PLUGIN_NAME = 'opensearch_security_analytics_dashboards';
 export const OS_NOTIFICATION_PLUGIN = 'opensearch-notifications';
 
 export const DEFAULT_EMPTY_DATA = '-';
+export const THREAT_ALERTS_NAV_ID = `threat_alerts`;
+export const FINDINGS_NAV_ID = `findings`;
+export const CORRELATIONS_NAV_ID = `correlations`;
+export const DETECTORS_NAV_ID = `detectors`;
+export const DETECTORS_RULE_NAV_ID = `detectors_rules`;
+export const CORRELATIONS_RULE_NAV_ID = `correlation_rules`;
+export const THREAT_INTEL_NAV_ID = `threat_intelligence`;
+export const LOG_TYPES_NAV_ID = `log_types`;
 
 export let isDarkMode: boolean = false;
 
