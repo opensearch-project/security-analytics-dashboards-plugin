@@ -62,6 +62,7 @@ export class SecurityAnalyticsPlugin
         label: 'OpenSearch Plugins',
         order: 2000,
       },
+      workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
       mount: async (params: AppMountParameters) => {
         const { renderApp } = await import('./security_analytics_app');
         const [coreStart, depsStart] = await core.getStartServices();
