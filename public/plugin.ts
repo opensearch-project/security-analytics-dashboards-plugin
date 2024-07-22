@@ -175,6 +175,7 @@ export class SecurityAnalyticsPlugin
 
       const navLinks = navlinks.map(item => ({
         id: item.id,
+        showInAllNavGroup: item. showInAllNavGroup,
         parentNavLinkId: item.parent ? item.parent : undefined,
       }));
 
