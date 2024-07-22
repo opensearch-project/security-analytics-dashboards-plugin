@@ -182,8 +182,8 @@ export class SecurityAnalyticsPlugin
       core.chrome.navGroup.addNavLinksToGroup(
         DEFAULT_NAV_GROUPS['security-analytics'],
         navLinks
-        );
-      }
+      );
+    }
 
     setDarkMode(core.uiSettings.get('theme:darkMode'));
 
