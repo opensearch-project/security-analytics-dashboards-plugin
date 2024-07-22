@@ -13,7 +13,7 @@ import {
   PluginInitializerContext,
   WorkspaceAvailability,
 } from '../../../src/core/public';
-import { CONFIGURE_CATEGORY_ID, CORRELATIONS_NAV_ID, CORRELATIONS_RULE_NAV_ID, DETECTORS_NAV_ID, DETECTORS_RULE_NAV_ID, FINDINGS_NAV_ID, INVESTIGATE_CATEGORY_ID, LOG_TYPES_NAV_ID, PLUGIN_NAME, ROUTES, THREAT_ALERTS_NAV_ID, THREAT_INTEL_NAV_ID, setDarkMode } from './utils/constants';
+import { CORRELATIONS_NAV_ID, CORRELATIONS_RULE_NAV_ID, DETECTORS_NAV_ID, DETECTORS_RULE_NAV_ID, FINDINGS_NAV_ID, LOG_TYPES_NAV_ID, PLUGIN_NAME, ROUTES, THREAT_ALERTS_NAV_ID, THREAT_INTEL_NAV_ID, setDarkMode } from './utils/constants';
 import { SecurityAnalyticsPluginSetup, SecurityAnalyticsPluginStart } from './index';
 import { DataPublicPluginStart, DataPublicPluginSetup } from '../../../src/plugins/data/public';
 import { SecurityAnalyticsPluginConfigType } from '../config';
@@ -71,7 +71,6 @@ export class SecurityAnalyticsPlugin
     });
 
     if (core.chrome.navGroup.getNavGroupEnabled()) {
-      // register applications with category and use case information
 
       // register investigate and configure routes
       core.application.register({
