@@ -175,7 +175,7 @@ export class SecurityAnalyticsPlugin
       });
 
       const navlinks = [
-        { id: THREAT_ALERTS_NAV_ID },
+        { id: THREAT_ALERTS_NAV_ID, showInAllNavGroup: true },
         { id: FINDINGS_NAV_ID },
         { id: CORRELATIONS_NAV_ID },
         { id: DETECTORS_NAV_ID },
