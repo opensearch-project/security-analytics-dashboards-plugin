@@ -72,18 +72,6 @@ export class SecurityAnalyticsPlugin
 
     if (core.chrome.navGroup.getNavGroupEnabled()) {
       // register applications with category and use case information
-      core.chrome.navGroup.addNavLinksToGroup(DEFAULT_NAV_GROUPS['security-analytics'], [
-        {
-          id: INVESTIGATE_CATEGORY_ID,
-          category: DEFAULT_APP_CATEGORIES.investigate,
-          showInAllNavGroup: true
-        },
-        {
-          id: CONFIGURE_CATEGORY_ID,
-          category: DEFAULT_APP_CATEGORIES.configure,
-          showInAllNavGroup: true
-        },
-      ])
 
       // register investigate and configure routes
       core.application.register({
