@@ -438,6 +438,7 @@ export default class Main extends Component<MainProps, MainState> {
                               <EuiPage restrictWidth={'100%'}>
                                 {/* Hide side navigation bar when on any HIDDEN_NAV_ROUTES pages. */}
                                 {!HIDDEN_NAV_ROUTES.some((route) => pathname.match(route)) && (
+                                  !core.chrome.navGroup.getNavGroupEnabled() &&
                                   <EuiPageSideBar style={{ minWidth: 200 }}>
                                     <EuiSideNav style={{ width: 200 }} items={sideNav} />
                                   </EuiPageSideBar>
