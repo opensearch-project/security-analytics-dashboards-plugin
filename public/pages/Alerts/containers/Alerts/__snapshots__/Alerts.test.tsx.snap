@@ -492,7 +492,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                       hasArrow={true}
                                       isOpen={false}
                                       ownFocus={true}
-                                      panelPaddingSize="m"
+                                      panelPaddingSize="s"
                                     >
                                       <div
                                         className="euiPopover euiPopover--anchorDownLeft"
@@ -631,7 +631,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                       color="success"
                                       data-test-subj="superDatePickerApplyTimeButton"
                                       fill={false}
-                                      iconType="kqlFunction"
+                                      iconType="refresh"
                                       isDisabled={false}
                                       isLoading={true}
                                       onBlur={[Function]}
@@ -651,7 +651,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                         disabled={true}
                                         element="button"
                                         fill={false}
-                                        iconType="kqlFunction"
+                                        iconType="refresh"
                                         isDisabled={true}
                                         isLoading={true}
                                         onBlur={[Function]}
@@ -681,7 +681,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                           <EuiButtonContent
                                             className="euiButton__content"
                                             iconSide="left"
-                                            iconType="kqlFunction"
+                                            iconType="refresh"
                                             isLoading={true}
                                             textProps={
                                               Object {
