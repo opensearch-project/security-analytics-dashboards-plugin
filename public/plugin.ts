@@ -5,13 +5,13 @@
 
 import {
   AppMountParameters,
+  AppNavLinkStatus,
   CoreSetup,
   CoreStart,
   DEFAULT_APP_CATEGORIES,
   DEFAULT_NAV_GROUPS,
   Plugin,
   PluginInitializerContext,
-  WorkspaceAvailability,
 } from '../../../src/core/public';
 import { CORRELATIONS_NAV_ID, CORRELATIONS_RULE_NAV_ID, DETECTORS_NAV_ID, DETECTORS_RULE_NAV_ID, FINDINGS_NAV_ID, LOG_TYPES_NAV_ID, PLUGIN_NAME, ROUTES, THREAT_ALERTS_NAV_ID, THREAT_INTEL_NAV_ID, setDarkMode } from './utils/constants';
 import { SecurityAnalyticsPluginSetup, SecurityAnalyticsPluginStart } from './index';
@@ -62,7 +62,7 @@ export class SecurityAnalyticsPlugin
         label: 'OpenSearch Plugins',
         order: 2000,
       },
-      workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+      navLinkStatus: core.chrome.navGroup.getNavGroupEnabled() ? AppNavLinkStatus.hidden : AppNavLinkStatus.visible,
       mount: async (params: AppMountParameters) => {
         const { renderApp } = await import('./security_analytics_app');
         const [coreStart, depsStart] = await core.getStartServices();
@@ -78,7 +78,6 @@ export class SecurityAnalyticsPlugin
         title: 'Threat alerts',
         order: 9070,
         category: DEFAULT_APP_CATEGORIES.investigate,
-        workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
         mount: async (params: AppMountParameters) => {
           return mountWrapper(params, ROUTES.ALERTS);
         },
@@ -89,7 +88,6 @@ export class SecurityAnalyticsPlugin
         title: 'Findings',
         order: 9080,
         category: DEFAULT_APP_CATEGORIES.investigate,
-        workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
         mount: async (params: AppMountParameters) => {
           return mountWrapper(params, ROUTES.FINDINGS);
         },
@@ -100,7 +98,6 @@ export class SecurityAnalyticsPlugin
         title: 'Correlations',
         order: 9080,
         category: DEFAULT_APP_CATEGORIES.investigate,
-        workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
         mount: async (params: AppMountParameters) => {
           return mountWrapper(params, ROUTES.CORRELATIONS);
         },
@@ -111,7 +108,6 @@ export class SecurityAnalyticsPlugin
         title: 'Threat detectors',
         order: 9080,
         category: DEFAULT_APP_CATEGORIES.configure,
-        workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
         mount: async (params: AppMountParameters) => {
           return mountWrapper(params, ROUTES.DETECTORS);
         },
@@ -122,7 +118,6 @@ export class SecurityAnalyticsPlugin
         title: 'Detection rules',
         order: 9080,
         category: DEFAULT_APP_CATEGORIES.configure,
-        workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
         mount: async (params: AppMountParameters) => {
           return mountWrapper(params, ROUTES.RULES);
         },
@@ -132,8 +127,7 @@ export class SecurityAnalyticsPlugin
         id: CORRELATIONS_RULE_NAV_ID,
         title: 'Correlation rules',
         order: 9080,
-        category: DEFAULT_APP_CATEGORIES.detect,
-        workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+        category: DEFAULT_APP_CATEGORIES.configure,
         mount: async (params: AppMountParameters) => {
           return mountWrapper(params, ROUTES.CORRELATION_RULES);
         },
@@ -144,7 +138,6 @@ export class SecurityAnalyticsPlugin
         title: 'Threat intelligence',
         order: 9080,
         category: DEFAULT_APP_CATEGORIES.configure,
-        workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
         mount: async (params: AppMountParameters) => {
           return mountWrapper(params, ROUTES.THREAT_INTEL_OVERVIEW);
         },
@@ -155,7 +148,6 @@ export class SecurityAnalyticsPlugin
         title: 'Log types',
         order: 9080,
         category: DEFAULT_APP_CATEGORIES.configure,
-        workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
         mount: async (params: AppMountParameters) => {
           return mountWrapper(params, ROUTES.LOG_TYPES);
         },
