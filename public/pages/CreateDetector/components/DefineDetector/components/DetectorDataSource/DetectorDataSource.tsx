@@ -12,6 +12,7 @@ import {
   EuiCallOut,
   EuiTextColor,
   EuiTitle,
+  EuiLink,
 } from '@elastic/eui';
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
 import { IndexOption } from '../../../../../Detectors/models/interfaces';
@@ -155,11 +156,17 @@ export default class DetectorDataSource extends Component<
         </EuiTitle>
         <EuiSpacer size={'m'} />
         <EuiFormRow
-          label={
-            <FormFieldHeader headerTitle={'Select or input source indexes or index patterns'} />
-          }
+          label={<FormFieldHeader headerTitle={'Select indexes/aliases'} />}
           isInvalid={isInvalid}
           error={isInvalid && (errorMessage || 'Select an input source.')}
+          helpText={
+            <span>
+              <a href="https://opensearch.org/docs/latest/im-plugin/index-alias" target="_blank">
+                Aliases
+              </a>{' '}
+              are recommended for optimal functioning of detectors.
+            </span>
+          }
         >
           <EuiComboBox
             placeholder={'Select an input source for the detector.'}
