@@ -718,7 +718,8 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
               >
                 Aliases
               </a>
-               are recommended for optimal functioning of detectors.
+               
+              are recommended for optimal functioning of detectors.
             </span>
           }
           isInvalid={false}
@@ -1112,7 +1113,8 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                     >
                       Aliases
                     </a>
-                     are recommended for optimal functioning of detectors.
+                     
+                    are recommended for optimal functioning of detectors.
                   </span>
                 </div>
               </EuiFormHelpText>
