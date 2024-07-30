@@ -710,10 +710,22 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
           fullWidth={false}
           hasChildLabel={true}
           hasEmptyLabelSpace={false}
+          helpText={
+            <span>
+              <a
+                href="https://opensearch.org/docs/latest/im-plugin/index-alias"
+                target="_blank"
+              >
+                Aliases
+              </a>
+               
+              are recommended for optimal functioning of detectors.
+            </span>
+          }
           isInvalid={false}
           label={
             <FormFieldHeader
-              headerTitle="Select or input source indexes or index patterns"
+              headerTitle="Select indexes/aliases"
             />
           }
           labelType="label"
@@ -739,7 +751,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                   htmlFor="some_html_id"
                 >
                   <FormFieldHeader
-                    headerTitle="Select or input source indexes or index patterns"
+                    headerTitle="Select indexes/aliases"
                   >
                     <EuiText
                       size="s"
@@ -748,7 +760,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                         className="euiText euiText--small"
                       >
                         <strong>
-                          Select or input source indexes or index patterns
+                          Select indexes/aliases
                         </strong>
                       </div>
                     </EuiText>
@@ -760,6 +772,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
               className="euiFormRow__fieldWrapper"
             >
               <EuiComboBox
+                aria-describedby="some_html_id-help-0"
                 async={false}
                 compressed={false}
                 data-test-subj="define-detector-select-data-source"
@@ -797,6 +810,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                 sortMatchesBy="none"
               >
                 <div
+                  aria-describedby="some_html_id-help-0"
                   aria-expanded={false}
                   aria-haspopup="listbox"
                   className="euiComboBox"
@@ -1083,6 +1097,27 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                   </EuiComboBoxInput>
                 </div>
               </EuiComboBox>
+              <EuiFormHelpText
+                className="euiFormRow__text"
+                id="some_html_id-help-0"
+                key="0"
+              >
+                <div
+                  className="euiFormHelpText euiFormRow__text"
+                  id="some_html_id-help-0"
+                >
+                  <span>
+                    <a
+                      href="https://opensearch.org/docs/latest/im-plugin/index-alias"
+                      target="_blank"
+                    >
+                      Aliases
+                    </a>
+                     
+                    are recommended for optimal functioning of detectors.
+                  </span>
+                </div>
+              </EuiFormHelpText>
             </div>
           </div>
         </EuiFormRow>
