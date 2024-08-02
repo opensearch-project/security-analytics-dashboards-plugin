@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiBasicTableColumn, EuiLink, EuiSwitch } from '@elastic/eui';
+import { EuiBasicTableColumn, EuiLink, EuiCompressedSwitch } from '@elastic/eui';
 import { capitalizeFirstLetter } from '../../../../../../../utils/helpers';
 import React, { ReactNode } from 'react';
 import { RuleItem } from '../types/interfaces';
@@ -69,7 +69,7 @@ export const getRulesColumns = (
   if (onActivationToggle) {
     columns.unshift({
       name: onAllRulesToggled ? (
-        <EuiSwitch
+        <EuiCompressedSwitch
           checked={allEnabled}
           onChange={(event: ActiveToggleOnChangeEvent) => {
             onAllRulesToggled(!allEnabled);
@@ -80,7 +80,7 @@ export const getRulesColumns = (
       ) : undefined,
       render: (item: RuleItem) => {
         return (
-          <EuiSwitch
+          <EuiCompressedSwitch
             checked={item.active}
             onChange={(event: ActiveToggleOnChangeEvent) =>
               onActivationToggle(item, event.target.checked)

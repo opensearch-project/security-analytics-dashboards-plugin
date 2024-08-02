@@ -10,7 +10,7 @@ import {
   EuiSpacer,
   EuiTitle,
   EuiPanel,
-  EuiButton,
+  EuiSmallButton,
   EuiInMemoryTable,
   EuiEmptyPrompt,
 } from '@elastic/eui';
@@ -59,13 +59,13 @@ export const CorrelationRules: React.FC<CorrelationRulesProps> = (props: Correla
 
   const headerActions = useMemo(
     () => [
-      <EuiButton
+      <EuiSmallButton
         href={`${PLUGIN_NAME}#${ROUTES.CORRELATION_RULE_CREATE}`}
         data-test-subj={'create_rule_button'}
         fill={true}
       >
         Create correlation rule
-      </EuiButton>,
+      </EuiSmallButton>,
     ],
     []
   );
@@ -155,13 +155,13 @@ export const CorrelationRules: React.FC<CorrelationRulesProps> = (props: Correla
                   </p>
                 }
                 actions={[
-                  <EuiButton
+                  <EuiSmallButton
                     fill={true}
                     color="primary"
                     href={`#${ROUTES.CORRELATION_RULE_CREATE}`}
                   >
                     Create correlation rule
-                  </EuiButton>,
+                  </EuiSmallButton>,
                 ]}
               />
             )}

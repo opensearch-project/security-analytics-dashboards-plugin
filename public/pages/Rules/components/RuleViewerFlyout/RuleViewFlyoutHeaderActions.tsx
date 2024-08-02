@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiButton, EuiButtonEmpty, EuiFlexGroup, EuiFlexItem, EuiPopover } from '@elastic/eui';
+import { EuiSmallButton, EuiSmallButtonEmpty, EuiFlexGroup, EuiFlexItem, EuiPopover } from '@elastic/eui';
 import React from 'react';
 
 export interface RuleViewerFlyoutHeaderActionsProps {
@@ -26,13 +26,13 @@ export const RuleViewerFlyoutHeaderActions: React.FC<RuleViewerFlyoutHeaderActio
   toggleActionsPopover,
 }) => {
   return ruleSource === 'Standard' ? (
-    <EuiButton onClick={duplicateRule}>Duplicate</EuiButton>
+    <EuiSmallButton onClick={duplicateRule}>Duplicate</EuiSmallButton>
   ) : (
     <EuiPopover
       button={
-        <EuiButton iconType="arrowDown" iconSide="right" onClick={toggleActionsPopover}>
+        <EuiSmallButton iconType="arrowDown" iconSide="right" onClick={toggleActionsPopover}>
           Action
-        </EuiButton>
+        </EuiSmallButton>
       }
       isOpen={actionsPopoverOpen}
       closePopover={closeActionsPopover}
@@ -40,15 +40,15 @@ export const RuleViewerFlyoutHeaderActions: React.FC<RuleViewerFlyoutHeaderActio
     >
       <EuiFlexGroup direction="column">
         <EuiFlexItem>
-          <EuiButtonEmpty onClick={editRule}>Edit</EuiButtonEmpty>
+          <EuiSmallButtonEmpty onClick={editRule}>Edit</EuiSmallButtonEmpty>
         </EuiFlexItem>
 
         <EuiFlexItem>
-          <EuiButtonEmpty onClick={duplicateRule}>Duplicate</EuiButtonEmpty>
+          <EuiSmallButtonEmpty onClick={duplicateRule}>Duplicate</EuiSmallButtonEmpty>
         </EuiFlexItem>
 
         <EuiFlexItem>
-          <EuiButtonEmpty onClick={deleteRule}>Delete</EuiButtonEmpty>
+          <EuiSmallButtonEmpty onClick={deleteRule}>Delete</EuiSmallButtonEmpty>
         </EuiFlexItem>
       </EuiFlexGroup>
     </EuiPopover>

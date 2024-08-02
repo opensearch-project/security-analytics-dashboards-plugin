@@ -4,7 +4,7 @@
  */
 
 import React, { Component } from 'react';
-import { EuiFormRow, EuiSelect } from '@elastic/eui';
+import { EuiCompressedFormRow, EuiCompressedSelect } from '@elastic/eui';
 import { ChangeEvent } from 'react';
 
 interface SIEMFieldNameProps {
@@ -40,12 +40,12 @@ export default class SIEMFieldNameSelector extends Component<
   render() {
     const { isInvalid } = this.props;
     return (
-      <EuiFormRow
+      <EuiCompressedFormRow
         style={{ width: '100%' }}
         isInvalid={isInvalid}
         error={isInvalid ? 'Alias already used' : undefined}
       >
-        <EuiSelect
+        <EuiCompressedSelect
           required={true}
           hasNoInitialSelection
           options={this.props.siemFieldNameOptions.map((option) => ({
@@ -55,7 +55,7 @@ export default class SIEMFieldNameSelector extends Component<
           value={this.state.selectedOption}
           onChange={this.onChange}
         />
-      </EuiFormRow>
+      </EuiCompressedFormRow>
     );
   }
 }

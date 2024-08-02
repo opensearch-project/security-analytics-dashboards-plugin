@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { EuiFormRow, EuiText, EuiComboBox, EuiComboBoxOptionOption, EuiSpacer } from '@elastic/eui';
+import { EuiCompressedFormRow, EuiText, EuiCompressedComboBox, EuiComboBoxOptionOption, EuiSpacer } from '@elastic/eui';
 
 export interface RuleTagsComboBoxProps {
   onCreateOption: (
@@ -37,7 +37,7 @@ export const RuleTagsComboBox: React.FC<RuleTagsComboBoxProps> = ({
 
   return (
     <>
-      <EuiFormRow
+      <EuiCompressedFormRow
         label={
           <>
             <EuiText size={'m'}>
@@ -55,7 +55,7 @@ export const RuleTagsComboBox: React.FC<RuleTagsComboBoxProps> = ({
         isInvalid={isCurrentlyTypingValueInvalid}
         error={isCurrentlyTypingValueInvalid ? 'Invalid tag' : ''}
       >
-        <EuiComboBox
+        <EuiCompressedComboBox
           noSuggestions
           onSearchChange={onSearchChange}
           placeholder="tag"
@@ -68,7 +68,7 @@ export const RuleTagsComboBox: React.FC<RuleTagsComboBoxProps> = ({
           selectedOptions={selectedOptions}
           isInvalid={isCurrentlyTypingValueInvalid}
         />
-      </EuiFormRow>
+      </EuiCompressedFormRow>
     </>
   );
 };

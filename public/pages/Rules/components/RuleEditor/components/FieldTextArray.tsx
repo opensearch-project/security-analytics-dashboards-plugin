@@ -4,12 +4,12 @@
  */
 
 import {
-  EuiButton,
-  EuiButtonIcon,
-  EuiFieldText,
+  EuiSmallButton,
+  EuiSmallButtonIcon,
+  EuiCompressedFieldText,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiSpacer,
   EuiToolTip,
 } from '@elastic/eui';
@@ -52,13 +52,13 @@ export const FieldTextArray: React.FC<FieldTextArrayProps> = ({
 
   return (
     <>
-      <EuiFormRow label={label} isInvalid={isInvalid} error={error}>
+      <EuiCompressedFormRow label={label} isInvalid={isInvalid} error={error}>
         <>
           {values.map((ref: string, index: number) => {
             return (
               <EuiFlexGroup key={index}>
                 <EuiFlexItem style={{ minWidth: '100%' }}>
-                  <EuiFieldText
+                  <EuiCompressedFieldText
                     name={name}
                     value={ref}
                     placeholder={placeholder}
@@ -76,7 +76,7 @@ export const FieldTextArray: React.FC<FieldTextArrayProps> = ({
                 {values.length > 1 ? (
                   <EuiFlexItem grow={false} className={'field-text-array-remove'}>
                     <EuiToolTip title={'Remove'}>
-                      <EuiButtonIcon
+                      <EuiSmallButtonIcon
                         aria-label={'Remove'}
                         iconType={'trash'}
                         color="danger"
@@ -93,7 +93,7 @@ export const FieldTextArray: React.FC<FieldTextArrayProps> = ({
             );
           })}
           <EuiSpacer size="m" />
-          <EuiButton
+          <EuiSmallButton
             type="button"
             className="secondary"
             onClick={() => {
@@ -101,9 +101,9 @@ export const FieldTextArray: React.FC<FieldTextArrayProps> = ({
             }}
           >
             {addButtonName}
-          </EuiButton>
+          </EuiSmallButton>
         </>
-      </EuiFormRow>
+      </EuiCompressedFormRow>
       <EuiSpacer />
     </>
   );

@@ -199,11 +199,11 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
   <ContentPanel
     actions={
       Array [
-        <EuiButton
+        <EuiSmallButton
           onClick={[MockFunction]}
         >
           Edit
-        </EuiButton>,
+        </EuiSmallButton>,
       ]
     }
     title="Alert triggers (2)"
@@ -277,50 +277,56 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                       <div
                         className="euiFlexItem"
                       >
-                        <EuiButton
+                        <EuiSmallButton
                           onClick={[MockFunction]}
                         >
-                          <EuiButtonDisplay
-                            baseClassName="euiButton"
-                            disabled={false}
-                            element="button"
-                            isDisabled={false}
+                          <EuiButton
                             onClick={[MockFunction]}
-                            type="button"
+                            size="s"
                           >
-                            <button
-                              className="euiButton euiButton--primary"
+                            <EuiButtonDisplay
+                              baseClassName="euiButton"
                               disabled={false}
+                              element="button"
+                              isDisabled={false}
                               onClick={[MockFunction]}
-                              style={
-                                Object {
-                                  "minWidth": undefined,
-                                }
-                              }
+                              size="s"
                               type="button"
                             >
-                              <EuiButtonContent
-                                className="euiButton__content"
-                                iconSide="left"
-                                textProps={
+                              <button
+                                className="euiButton euiButton--primary euiButton--small"
+                                disabled={false}
+                                onClick={[MockFunction]}
+                                style={
                                   Object {
-                                    "className": "euiButton__text",
+                                    "minWidth": undefined,
                                   }
                                 }
+                                type="button"
                               >
-                                <span
-                                  className="euiButtonContent euiButton__content"
+                                <EuiButtonContent
+                                  className="euiButton__content"
+                                  iconSide="left"
+                                  textProps={
+                                    Object {
+                                      "className": "euiButton__text",
+                                    }
+                                  }
                                 >
                                   <span
-                                    className="euiButton__text"
+                                    className="euiButtonContent euiButton__content"
                                   >
-                                    Edit
+                                    <span
+                                      className="euiButton__text"
+                                    >
+                                      Edit
+                                    </span>
                                   </span>
-                                </span>
-                              </EuiButtonContent>
-                            </button>
-                          </EuiButtonDisplay>
-                        </EuiButton>
+                                </EuiButtonContent>
+                              </button>
+                            </EuiButtonDisplay>
+                          </EuiButton>
+                        </EuiSmallButton>
                       </div>
                     </EuiFlexItem>
                   </div>
@@ -679,9 +685,9 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                               className="euiSpacer euiSpacer--s"
                             />
                           </EuiSpacer>
-                          <EuiFormRow
+                          <EuiCompressedFormRow
                             describedByIds={Array []}
-                            display="row"
+                            display="rowCompressed"
                             fullWidth={true}
                             hasChildLabel={true}
                             hasEmptyLabelSpace={false}
@@ -689,7 +695,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                             labelType="label"
                           >
                             <div
-                              className="euiFormRow euiFormRow--fullWidth"
+                              className="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                               id="some_html_id-row"
                             >
                               <div
@@ -730,7 +736,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                 </EuiText>
                               </div>
                             </div>
-                          </EuiFormRow>
+                          </EuiCompressedFormRow>
                           <EuiSpacer
                             size="l"
                           >
@@ -763,9 +769,9 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                               className="euiSpacer euiSpacer--s"
                             />
                           </EuiSpacer>
-                          <EuiFormRow
+                          <EuiCompressedFormRow
                             describedByIds={Array []}
-                            display="row"
+                            display="rowCompressed"
                             fullWidth={true}
                             hasChildLabel={true}
                             hasEmptyLabelSpace={false}
@@ -773,7 +779,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                             labelType="label"
                           >
                             <div
-                              className="euiFormRow euiFormRow--fullWidth"
+                              className="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                               id="some_html_id-row"
                             >
                               <div
@@ -814,7 +820,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                 </EuiText>
                               </div>
                             </div>
-                          </EuiFormRow>
+                          </EuiCompressedFormRow>
                           <EuiSpacer
                             size="l"
                           >
@@ -835,9 +841,9 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                 <div
                                   className="euiFlexItem"
                                 >
-                                  <EuiFormRow
+                                  <EuiCompressedFormRow
                                     describedByIds={Array []}
-                                    display="row"
+                                    display="rowCompressed"
                                     fullWidth={true}
                                     hasChildLabel={true}
                                     hasEmptyLabelSpace={false}
@@ -845,7 +851,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                     labelType="label"
                                   >
                                     <div
-                                      className="euiFormRow euiFormRow--fullWidth"
+                                      className="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                                       id="some_html_id-row"
                                     >
                                       <div
@@ -886,7 +892,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                         </EuiText>
                                       </div>
                                     </div>
-                                  </EuiFormRow>
+                                  </EuiCompressedFormRow>
                                 </div>
                               </EuiFlexItem>
                               <EuiFlexItem
@@ -896,9 +902,9 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                 <div
                                   className="euiFlexItem"
                                 >
-                                  <EuiFormRow
+                                  <EuiCompressedFormRow
                                     describedByIds={Array []}
-                                    display="row"
+                                    display="rowCompressed"
                                     fullWidth={true}
                                     hasChildLabel={true}
                                     hasEmptyLabelSpace={false}
@@ -906,7 +912,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                     labelType="label"
                                   >
                                     <div
-                                      className="euiFormRow euiFormRow--fullWidth"
+                                      className="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                                       id="some_html_id-row"
                                     >
                                       <div
@@ -947,7 +953,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                         </EuiText>
                                       </div>
                                     </div>
-                                  </EuiFormRow>
+                                  </EuiCompressedFormRow>
                                 </div>
                               </EuiFlexItem>
                             </div>
@@ -975,9 +981,9 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                               className="euiSpacer euiSpacer--m"
                             />
                           </EuiSpacer>
-                          <EuiFormRow
+                          <EuiCompressedFormRow
                             describedByIds={Array []}
-                            display="row"
+                            display="rowCompressed"
                             fullWidth={true}
                             hasChildLabel={true}
                             hasEmptyLabelSpace={false}
@@ -985,7 +991,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                             labelType="label"
                           >
                             <div
-                              className="euiFormRow euiFormRow--fullWidth"
+                              className="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                               id="some_html_id-row"
                             >
                               <div
@@ -1026,7 +1032,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                 </EuiText>
                               </div>
                             </div>
-                          </EuiFormRow>
+                          </EuiCompressedFormRow>
                           <EuiSpacer
                             size="l"
                           >
@@ -1041,9 +1047,9 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                               className="euiSpacer euiSpacer--l"
                             />
                           </EuiSpacer>
-                          <EuiFormRow
+                          <EuiCompressedFormRow
                             describedByIds={Array []}
-                            display="row"
+                            display="rowCompressed"
                             fullWidth={true}
                             hasChildLabel={true}
                             hasEmptyLabelSpace={false}
@@ -1051,7 +1057,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                             labelType="label"
                           >
                             <div
-                              className="euiFormRow euiFormRow--fullWidth"
+                              className="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                               id="some_html_id-row"
                             >
                               <div
@@ -1098,7 +1104,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                 </EuiText>
                               </div>
                             </div>
-                          </EuiFormRow>
+                          </EuiCompressedFormRow>
                           <EuiSpacer
                             size="l"
                           >
@@ -1450,9 +1456,9 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                               className="euiSpacer euiSpacer--s"
                             />
                           </EuiSpacer>
-                          <EuiFormRow
+                          <EuiCompressedFormRow
                             describedByIds={Array []}
-                            display="row"
+                            display="rowCompressed"
                             fullWidth={true}
                             hasChildLabel={true}
                             hasEmptyLabelSpace={false}
@@ -1460,7 +1466,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                             labelType="label"
                           >
                             <div
-                              className="euiFormRow euiFormRow--fullWidth"
+                              className="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                               id="some_html_id-row"
                             >
                               <div
@@ -1501,7 +1507,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                 </EuiText>
                               </div>
                             </div>
-                          </EuiFormRow>
+                          </EuiCompressedFormRow>
                           <EuiSpacer
                             size="l"
                           >
@@ -1534,9 +1540,9 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                               className="euiSpacer euiSpacer--s"
                             />
                           </EuiSpacer>
-                          <EuiFormRow
+                          <EuiCompressedFormRow
                             describedByIds={Array []}
-                            display="row"
+                            display="rowCompressed"
                             fullWidth={true}
                             hasChildLabel={true}
                             hasEmptyLabelSpace={false}
@@ -1544,7 +1550,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                             labelType="label"
                           >
                             <div
-                              className="euiFormRow euiFormRow--fullWidth"
+                              className="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                               id="some_html_id-row"
                             >
                               <div
@@ -1585,7 +1591,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                 </EuiText>
                               </div>
                             </div>
-                          </EuiFormRow>
+                          </EuiCompressedFormRow>
                           <EuiSpacer
                             size="l"
                           >
@@ -1606,9 +1612,9 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                 <div
                                   className="euiFlexItem"
                                 >
-                                  <EuiFormRow
+                                  <EuiCompressedFormRow
                                     describedByIds={Array []}
-                                    display="row"
+                                    display="rowCompressed"
                                     fullWidth={true}
                                     hasChildLabel={true}
                                     hasEmptyLabelSpace={false}
@@ -1616,7 +1622,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                     labelType="label"
                                   >
                                     <div
-                                      className="euiFormRow euiFormRow--fullWidth"
+                                      className="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                                       id="some_html_id-row"
                                     >
                                       <div
@@ -1657,7 +1663,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                         </EuiText>
                                       </div>
                                     </div>
-                                  </EuiFormRow>
+                                  </EuiCompressedFormRow>
                                 </div>
                               </EuiFlexItem>
                               <EuiFlexItem
@@ -1667,9 +1673,9 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                 <div
                                   className="euiFlexItem"
                                 >
-                                  <EuiFormRow
+                                  <EuiCompressedFormRow
                                     describedByIds={Array []}
-                                    display="row"
+                                    display="rowCompressed"
                                     fullWidth={true}
                                     hasChildLabel={true}
                                     hasEmptyLabelSpace={false}
@@ -1677,7 +1683,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                     labelType="label"
                                   >
                                     <div
-                                      className="euiFormRow euiFormRow--fullWidth"
+                                      className="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                                       id="some_html_id-row"
                                     >
                                       <div
@@ -1718,7 +1724,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                         </EuiText>
                                       </div>
                                     </div>
-                                  </EuiFormRow>
+                                  </EuiCompressedFormRow>
                                 </div>
                               </EuiFlexItem>
                             </div>
@@ -1746,9 +1752,9 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                               className="euiSpacer euiSpacer--m"
                             />
                           </EuiSpacer>
-                          <EuiFormRow
+                          <EuiCompressedFormRow
                             describedByIds={Array []}
-                            display="row"
+                            display="rowCompressed"
                             fullWidth={true}
                             hasChildLabel={true}
                             hasEmptyLabelSpace={false}
@@ -1756,7 +1762,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                             labelType="label"
                           >
                             <div
-                              className="euiFormRow euiFormRow--fullWidth"
+                              className="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                               id="some_html_id-row"
                             >
                               <div
@@ -1797,7 +1803,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                 </EuiText>
                               </div>
                             </div>
-                          </EuiFormRow>
+                          </EuiCompressedFormRow>
                           <EuiSpacer
                             size="l"
                           >
@@ -1812,9 +1818,9 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                               className="euiSpacer euiSpacer--l"
                             />
                           </EuiSpacer>
-                          <EuiFormRow
+                          <EuiCompressedFormRow
                             describedByIds={Array []}
-                            display="row"
+                            display="rowCompressed"
                             fullWidth={true}
                             hasChildLabel={true}
                             hasEmptyLabelSpace={false}
@@ -1822,7 +1828,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                             labelType="label"
                           >
                             <div
-                              className="euiFormRow euiFormRow--fullWidth"
+                              className="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                               id="some_html_id-row"
                             >
                               <div
@@ -1869,7 +1875,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                 </EuiText>
                               </div>
                             </div>
-                          </EuiFormRow>
+                          </EuiCompressedFormRow>
                           <EuiSpacer
                             size="l"
                           >

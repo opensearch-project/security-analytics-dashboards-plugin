@@ -5,7 +5,7 @@
 
 import {
   EuiAccordion,
-  EuiButton,
+  EuiSmallButton,
   EuiCard,
   EuiFlexGroup,
   EuiFlexItem,
@@ -202,9 +202,9 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
                   title={title}
                   description={description}
                   footer={
-                    <EuiButton disabled={disabled} onClick={nextStepClickHandlerById[id]}>
+                    <EuiSmallButton disabled={disabled} onClick={nextStepClickHandlerById[id]}>
                       {text}
-                    </EuiButton>
+                    </EuiSmallButton>
                   }
                 />
               </EuiFlexItem>

@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
   EuiBasicTableColumn,
-  EuiButton,
+  EuiSmallButton,
   EuiContextMenuItem,
   EuiContextMenuPanel,
   EuiEmptyPrompt,
@@ -232,17 +232,17 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
     } = this.state;
 
     const actions = [
-      <EuiButton
+      <EuiSmallButton
         iconType={'refresh'}
         onClick={this.getDetectors}
         data-test-subj={'detectorsRefreshButton'}
       >
         Refresh
-      </EuiButton>,
+      </EuiSmallButton>,
       <EuiPopover
         id={'detectorsActionsPopover'}
         button={
-          <EuiButton
+          <EuiSmallButton
             isLoading={loadingDetectors}
             iconType={'arrowDown'}
             iconSide={'right'}
@@ -251,7 +251,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
             data-test-subj={'detectorsActionsButton'}
           >
             Actions
-          </EuiButton>
+          </EuiSmallButton>
         }
         isOpen={isPopoverOpen}
         closePopover={this.closeActionsPopover}
@@ -261,13 +261,13 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
       >
         <EuiContextMenuPanel items={this.getActionItems(loadingDetectors, selectedItems)} />
       </EuiPopover>,
-      <EuiButton
+      <EuiSmallButton
         href={`${PLUGIN_NAME}#${ROUTES.DETECTORS_CREATE}`}
         fill={true}
         data-test-subj={'detectorsCreateButton'}
       >
         Create detector
-      </EuiButton>,
+      </EuiSmallButton>,
     ];
 
     const columns: EuiBasicTableColumn<DetectorHit>[] = [

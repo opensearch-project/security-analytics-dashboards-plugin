@@ -8,11 +8,11 @@ import { Formik, Form, FormikErrors } from 'formik';
 import {
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFormRow,
-  EuiFieldText,
-  EuiButton,
+  EuiCompressedFormRow,
+  EuiCompressedFieldText,
+  EuiSmallButton,
   EuiSpacer,
-  EuiComboBox,
+  EuiCompressedComboBox,
   EuiText,
   EuiCallOut,
 } from '@elastic/eui';
@@ -83,14 +83,14 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
       <EuiSpacer />
       <EuiFlexGroup justifyContent="flexEnd">
         <EuiFlexItem grow={false}>
-          <EuiButton
+          <EuiSmallButton
             fill
             onClick={() => {
               created(createdIndex?.id || '');
             }}
           >
             View surrounding documents
-          </EuiButton>
+          </EuiSmallButton>
         </EuiFlexItem>
       </EuiFlexGroup>
     </>
@@ -134,7 +134,7 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
             an index pattern to continue.
           </EuiText>
           <EuiSpacer />
-          <EuiFormRow
+          <EuiCompressedFormRow
             label={
               <EuiText size={'s'}>
                 <strong>Specify index pattern name</strong>
@@ -143,7 +143,7 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
             isInvalid={props.touched.name && !!props.errors?.name}
             error={props.errors.name}
           >
-            <EuiFieldText
+            <EuiCompressedFieldText
               isInvalid={props.touched.name && !!props.errors.name}
               placeholder="Enter index pattern name"
               data-test-subj={'index_pattern_name_field'}
@@ -156,9 +156,9 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
               onBlur={props.handleBlur('name')}
               value={props.values.name}
             />
-          </EuiFormRow>
+          </EuiCompressedFormRow>
 
-          <EuiFormRow
+          <EuiCompressedFormRow
             label={
               <EuiText size={'s'}>
                 <strong>Time filed</strong>
@@ -167,7 +167,7 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
             isInvalid={props.touched.timeField && !!props.errors?.timeField}
             error={props.errors.timeField}
           >
-            <EuiComboBox
+            <EuiCompressedComboBox
               isInvalid={props.touched.timeField && !!props.errors.timeField}
               placeholder="Select a time field"
               data-test-subj={'index_pattern_time_field_dropdown'}
@@ -183,23 +183,23 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
                   : []
               }
             />
-          </EuiFormRow>
+          </EuiCompressedFormRow>
 
           <EuiSpacer />
 
           <EuiFlexGroup justifyContent="flexEnd">
             <EuiFlexItem grow={false}>
-              <EuiButton onClick={() => close()}>Cancel</EuiButton>
+              <EuiSmallButton onClick={() => close()}>Cancel</EuiSmallButton>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
-              <EuiButton
+              <EuiSmallButton
                 data-test-subj={'index_pattern_form_submit_button'}
                 isLoading={props.isSubmitting}
                 fill
                 onClick={() => props.handleSubmit()}
               >
                 Create index pattern
-              </EuiButton>
+              </EuiSmallButton>
             </EuiFlexItem>
           </EuiFlexGroup>
         </Form>

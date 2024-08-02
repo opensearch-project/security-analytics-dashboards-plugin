@@ -8,7 +8,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import moment from 'moment';
 import {
   EuiBasicTableColumn,
-  EuiButtonIcon,
+  EuiSmallButtonIcon,
   EuiInMemoryTable,
   EuiLink,
   EuiToolTip,
@@ -228,7 +228,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
           {
             render: (finding) => (
               <EuiToolTip content={'View details'}>
-                <EuiButtonIcon
+                <EuiSmallButtonIcon
                   aria-label={'View details'}
                   data-test-subj={`view-details-icon`}
                   iconType={'inspect'}
@@ -242,7 +242,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
           {
             render: (finding) => (
               <EuiToolTip content={'Create alert'}>
-                <EuiButtonIcon
+                <EuiSmallButtonIcon
                   aria-label={'Create alert'}
                   iconType={'bell'}
                   onClick={() => this.renderCreateAlertFlyout(finding)}

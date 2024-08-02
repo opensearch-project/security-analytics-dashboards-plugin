@@ -28,14 +28,14 @@ import {
   EuiPanel,
   EuiSuperDatePicker,
   EuiSpacer,
-  EuiButtonEmpty,
+  EuiSmallButtonEmpty,
   EuiFlyout,
   EuiFlyoutHeader,
   EuiFlyoutBody,
-  EuiButtonIcon,
+  EuiSmallButtonIcon,
   EuiText,
   EuiEmptyPrompt,
-  EuiButton,
+  EuiSmallButton,
   EuiBadge,
   EuiFilterGroup,
   EuiHorizontalRule,
@@ -457,9 +457,9 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         }
         body={<p>There are no correlated findings in the system.</p>}
         actions={[
-          <EuiButton fill={true} color="primary" href={`#${ROUTES.CORRELATION_RULE_CREATE}`}>
+          <EuiSmallButton fill={true} color="primary" href={`#${ROUTES.CORRELATION_RULE_CREATE}`}>
             Create correlation rule
-          </EuiButton>,
+          </EuiSmallButton>,
         ]}
       />
     );
@@ -487,7 +487,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                   </EuiTitle>
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>
-                  <EuiButtonIcon
+                  <EuiSmallButtonIcon
                     aria-label="close"
                     iconType="cross"
                     display="empty"
@@ -579,7 +579,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                   </EuiFilterGroup>
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>
-                  <EuiButtonEmpty onClick={this.resetFilters}>Reset filters</EuiButtonEmpty>
+                  <EuiSmallButtonEmpty onClick={this.resetFilters}>Reset filters</EuiSmallButtonEmpty>
                 </EuiFlexItem>
               </EuiFlexGroup>
               <EuiSpacer />

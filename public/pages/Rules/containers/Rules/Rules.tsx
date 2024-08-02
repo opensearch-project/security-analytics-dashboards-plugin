@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiButton, EuiFlexGroup, EuiFlexItem, EuiPanel, EuiSpacer, EuiTitle } from '@elastic/eui';
+import { EuiSmallButton, EuiFlexGroup, EuiFlexItem, EuiPanel, EuiSpacer, EuiTitle } from '@elastic/eui';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { RulesTable } from '../../components/RulesTable/RulesTable';
@@ -63,12 +63,12 @@ export const Rules: React.FC<RulesProps> = (props) => {
 
   const headerActions = useMemo(
     () => [
-      <EuiButton onClick={openImportPage} data-test-subj={'import_rule_button'}>
+      <EuiSmallButton onClick={openImportPage} data-test-subj={'import_rule_button'}>
         Import detection rule
-      </EuiButton>,
-      <EuiButton onClick={openCreatePage} data-test-subj={'create_rule_button'} fill={true}>
+      </EuiSmallButton>,
+      <EuiSmallButton onClick={openCreatePage} data-test-subj={'create_rule_button'} fill={true}>
         Create detection rule
-      </EuiButton>,
+      </EuiSmallButton>,
     ],
     []
   );

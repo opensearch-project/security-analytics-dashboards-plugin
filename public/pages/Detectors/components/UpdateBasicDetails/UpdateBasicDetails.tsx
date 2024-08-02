@@ -4,7 +4,7 @@
  */
 
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiComboBoxOptionOption,
   EuiFlexGroup,
   EuiFlexItem,
@@ -318,12 +318,12 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
 
       <EuiFlexGroup justifyContent="flexEnd">
         <EuiFlexItem grow={false}>
-          <EuiButton onClick={onCancel} disabled={loading}>
+          <EuiSmallButton onClick={onCancel} disabled={loading}>
             Cancel
-          </EuiButton>
+          </EuiSmallButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton
+          <EuiSmallButton
             onClick={onSave}
             fill={true}
             disabled={loading || submitting}
@@ -331,7 +331,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
             data-test-subj={'save-basic-details-edits'}
           >
             Save changes
-          </EuiButton>
+          </EuiSmallButton>
         </EuiFlexItem>
       </EuiFlexGroup>
     </>

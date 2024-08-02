@@ -4,7 +4,7 @@
  */
 
 import {
-  EuiButtonEmpty,
+  EuiSmallButtonEmpty,
   EuiFlexGrid,
   EuiFlexGroup,
   EuiFlexItem,
@@ -12,7 +12,7 @@ import {
   EuiSuperDatePicker,
   EuiTitle,
   EuiSpacer,
-  EuiButton,
+  EuiSmallButton,
 } from '@elastic/eui';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import {
@@ -165,9 +165,9 @@ export const Overview: React.FC<OverviewProps> = (props) => {
   };
 
   const button = (
-    <EuiButtonEmpty iconType="cheer" onClick={onButtonClick}>
+    <EuiSmallButtonEmpty iconType="cheer" onClick={onButtonClick}>
       Getting started
-    </EuiButtonEmpty>
+    </EuiSmallButtonEmpty>
   );
 
   return (
@@ -196,7 +196,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
               recentlyUsedRanges={recentlyUsedRanges}
               isLoading={loading}
               onTimeChange={onTimeChange}
-              onRefresh={() => { 
+              onRefresh={() => {
                 const abortController = new AbortController();
                 fireAbortSignals();
                 setControllers([abortController]);
@@ -206,13 +206,13 @@ export const Overview: React.FC<OverviewProps> = (props) => {
             />
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton
+            <EuiSmallButton
               href={`${PLUGIN_NAME}#${ROUTES.DETECTORS_CREATE}`}
               fill={true}
               data-test-subj={'detectorsCreateButton'}
             >
               Create detector
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
         </EuiFlexGroup>
         <EuiSpacer size={'m'} />

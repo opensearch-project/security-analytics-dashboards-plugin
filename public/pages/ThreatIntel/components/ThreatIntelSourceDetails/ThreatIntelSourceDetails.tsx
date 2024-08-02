@@ -6,17 +6,17 @@
 import React, { useEffect, useState } from 'react';
 import {
   EuiBottomBar,
-  EuiButton,
-  EuiCheckboxGroup,
-  EuiFieldText,
-  EuiFilePicker,
+  EuiSmallButton,
+  EuiCompressedCheckboxGroup,
+  EuiCompressedFieldText,
+  EuiCompressedFilePicker,
   EuiFlexGroup,
   EuiFlexItem,
   EuiFormLabel,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiPanel,
   EuiSpacer,
-  EuiSwitch,
+  EuiCompressedSwitch,
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
@@ -207,17 +207,17 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
             </EuiTitle>
           </EuiFlexItem>
           <EuiFlexItem grow={2}>
-            <EuiFormRow label="Name">
-              <EuiFieldText readOnly={isReadOnly} value={name} onChange={onNameChange} />
-            </EuiFormRow>
+            <EuiCompressedFormRow label="Name">
+              <EuiCompressedFieldText readOnly={isReadOnly} value={name} onChange={onNameChange} />
+            </EuiCompressedFormRow>
             <EuiSpacer />
-            <EuiFormRow label="Description">
-              <EuiFieldText
+            <EuiCompressedFormRow label="Description">
+              <EuiCompressedFieldText
                 readOnly={isReadOnly}
                 value={description}
                 onChange={onDescriptionChange}
               />
-            </EuiFormRow>
+            </EuiCompressedFormRow>
             <EuiSpacer />
             {type === 'S3_CUSTOM' && schedule && (
               <>
@@ -239,7 +239,7 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
                   </EuiFlexItem>
                   {(!isReadOnly || !enabled) && (
                     <EuiFlexItem grow={false}>
-                      <EuiSwitch
+                      <EuiCompressedSwitch
                         label="Download on demand only"
                         checked={!enabled}
                         onChange={(event) => onRefreshSwitchChange(event.target.checked)}
@@ -254,58 +254,58 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
                   <h4>Connection details</h4>
                 </EuiText>
                 <EuiSpacer />
-                <EuiFormRow label={<EuiFormLabel>IAM Role ARN</EuiFormLabel>}>
-                  <EuiFieldText
+                <EuiCompressedFormRow label={<EuiFormLabel>IAM Role ARN</EuiFormLabel>}>
+                  <EuiCompressedFieldText
                     readOnly={isReadOnly}
                     placeholder="arn:"
                     onChange={(event) => onS3DataChange('role_arn', event.target.value)}
                     value={s3ConnectionDetails.s3.role_arn}
                   />
-                </EuiFormRow>
+                </EuiCompressedFormRow>
                 <EuiSpacer />
-                <EuiFormRow label="S3 bucket directory">
-                  <EuiFieldText
+                <EuiCompressedFormRow label="S3 bucket directory">
+                  <EuiCompressedFieldText
                     readOnly={isReadOnly}
                     placeholder="S3 bucket name"
                     onChange={(event) => onS3DataChange('bucket_name', event.target.value)}
                     value={s3ConnectionDetails.s3.bucket_name}
                   />
-                </EuiFormRow>
+                </EuiCompressedFormRow>
                 <EuiSpacer />
-                <EuiFormRow label="Specify a directory or file">
-                  <EuiFieldText
+                <EuiCompressedFormRow label="Specify a directory or file">
+                  <EuiCompressedFieldText
                     readOnly={isReadOnly}
                     placeholder="Object key"
                     onChange={(event) => onS3DataChange('object_key', event.target.value)}
                     value={s3ConnectionDetails.s3.object_key}
                   />
-                </EuiFormRow>
+                </EuiCompressedFormRow>
                 <EuiSpacer />
-                <EuiFormRow label="Region">
-                  <EuiFieldText
+                <EuiCompressedFormRow label="Region">
+                  <EuiCompressedFieldText
                     readOnly={isReadOnly}
                     placeholder="Region"
                     onChange={(event) => onS3DataChange('region', event.target.value)}
                     value={s3ConnectionDetails.s3.region}
                   />
-                </EuiFormRow>
+                </EuiCompressedFormRow>
                 <EuiSpacer />
               </>
             )}
             {type === 'IOC_UPLOAD' && (
               <>
                 {isReadOnly && (
-                  <EuiFormRow label="Uploaded file">
-                    <EuiFieldText
+                  <EuiCompressedFormRow label="Uploaded file">
+                    <EuiCompressedFieldText
                       readOnly={isReadOnly}
                       value={fileUploadSource.ioc_upload?.file_name}
                       icon={'download'}
                     />
-                  </EuiFormRow>
+                  </EuiCompressedFormRow>
                 )}
                 {!isReadOnly && (
                   <>
-                    <EuiFormRow
+                    <EuiCompressedFormRow
                       label="Upload file"
                       helpText={
                         <>
@@ -316,7 +316,7 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
                       isInvalid={!!fileError}
                       error={fileError}
                     >
-                      <EuiFilePicker
+                      <EuiCompressedFilePicker
                         id={'filePickerId'}
                         fullWidth
                         initialPromptText="Select or drag and drop a file"
@@ -327,7 +327,7 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
                         isInvalid={!!fileError}
                         data-test-subj="import_ioc_file"
                       />
-                    </EuiFormRow>
+                    </EuiCompressedFormRow>
                   </>
                 )}
               </>
@@ -340,27 +340,27 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
                 />
               </EuiFormRow>
             )}
-            <EuiFormRow label="Types of malicious indicators">
+            <EuiCompressedFormRow label="Types of malicious indicators">
               <>
                 <EuiSpacer size="s" />
-                <EuiCheckboxGroup
+                <EuiCompressedCheckboxGroup
                   options={checkboxes}
                   idToSelectedMap={checkboxIdToSelectedMap}
                   onChange={onIocTypesChange}
                   disabled={isReadOnly}
                 />
               </>
-            </EuiFormRow>
+            </EuiCompressedFormRow>
             <EuiSpacer />
           </EuiFlexItem>
           {type !== 'URL_DOWNLOAD' && (
             <EuiFlexItem grow={false}>
-              <EuiButton
+              <EuiSmallButton
                 style={{ visibility: isReadOnly ? 'visible' : 'hidden' }}
                 onClick={() => setIsReadOnly(false)}
               >
                 Edit
-              </EuiButton>
+              </EuiSmallButton>
             </EuiFlexItem>
           )}
         </EuiFlexGroup>
@@ -371,12 +371,12 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
           <EuiBottomBar>
             <EuiFlexGroup justifyContent="flexEnd">
               <EuiFlexItem grow={false}>
-                <EuiButton onClick={onDiscard}>Discard</EuiButton>
+                <EuiSmallButton onClick={onDiscard}>Discard</EuiSmallButton>
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
-                <EuiButton isLoading={saveInProgress} fill onClick={onSave} disabled={saveDisabled}>
+                <EuiSmallButton isLoading={saveInProgress} fill onClick={onSave} disabled={saveDisabled}>
                   Save
-                </EuiButton>
+                </EuiSmallButton>
               </EuiFlexItem>
             </EuiFlexGroup>
           </EuiBottomBar>

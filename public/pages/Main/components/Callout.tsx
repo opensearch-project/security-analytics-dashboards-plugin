@@ -9,7 +9,7 @@ import {
   EuiSpacer,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiButtonIcon,
+  EuiSmallButtonIcon,
   EuiLoadingSpinner,
 } from '@elastic/eui';
 
@@ -78,7 +78,7 @@ export const CallOut = ({
         <EuiFlexItem grow={false}>{title}</EuiFlexItem>
         {closable && (
           <EuiFlexItem className={'mainCalloutCloseButton'}>
-            <EuiButtonIcon onClick={() => closeCallout()} iconType="cross" aria-label="Close" />
+            <EuiSmallButtonIcon onClick={() => closeCallout()} iconType="cross" aria-label="Close" />
           </EuiFlexItem>
         )}
       </EuiFlexGroup>

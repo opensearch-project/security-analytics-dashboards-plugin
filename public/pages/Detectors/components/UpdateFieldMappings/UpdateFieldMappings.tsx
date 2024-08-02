@@ -5,7 +5,7 @@
 
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { EuiButton, EuiFlexGroup, EuiFlexItem, EuiSpacer, EuiTitle, EuiText } from '@elastic/eui';
+import { EuiSmallButton, EuiFlexGroup, EuiFlexItem, EuiSpacer, EuiTitle, EuiText } from '@elastic/eui';
 import { FieldMapping } from '../../../../../models/interfaces';
 import FieldMappingService from '../../../../services/FieldMappingService';
 import { DetectorHit, SearchDetectorsResponse } from '../../../../../server/models/interfaces';
@@ -192,19 +192,19 @@ export default class UpdateFieldMappings extends Component<
 
         <EuiFlexGroup justifyContent={'flexEnd'}>
           <EuiFlexItem grow={false}>
-            <EuiButton disabled={submitting} onClick={this.onCancel}>
+            <EuiSmallButton disabled={submitting} onClick={this.onCancel}>
               Cancel
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton
+            <EuiSmallButton
               disabled={submitting}
               fill={true}
               isLoading={submitting}
               onClick={this.onSave}
             >
               Save changes
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       </div>

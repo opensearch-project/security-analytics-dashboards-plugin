@@ -6,13 +6,13 @@
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiFlexGroup,
   EuiFlexItem,
   EuiFlyout,
   EuiFlyoutBody,
   EuiFlyoutHeader,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiSpacer,
   EuiText,
   EuiTitle,
@@ -146,10 +146,10 @@ export default class CreateAlertFlyout extends Component<
         </EuiFlyoutHeader>
 
         <EuiFlyoutBody>
-          <EuiFormRow label={'Detector'}>
+          <EuiCompressedFormRow label={'Detector'}>
             {/*//TODO: Refactor EuiText to EuiLink once detector edit page is available, and hyperlink to that page.*/}
             <EuiText>{name || DEFAULT_EMPTY_DATA}</EuiText>
-          </EuiFormRow>
+          </EuiCompressedFormRow>
 
           <EuiSpacer size={'m'} />
           <AlertConditionPanel
@@ -166,20 +166,20 @@ export default class CreateAlertFlyout extends Component<
 
           <EuiFlexGroup justifyContent={'flexEnd'}>
             <EuiFlexItem grow={false}>
-              <EuiButton disabled={submitting} onClick={() => closeFlyout()}>
+              <EuiSmallButton disabled={submitting} onClick={() => closeFlyout()}>
                 Cancel
-              </EuiButton>
+              </EuiSmallButton>
             </EuiFlexItem>
 
             <EuiFlexItem grow={false}>
-              <EuiButton
+              <EuiSmallButton
                 disabled={submitting || !isTriggerDataValid}
                 fill={true}
                 isLoading={submitting}
                 onClick={this.onCreate}
               >
                 Create alert trigger
-              </EuiButton>
+              </EuiSmallButton>
             </EuiFlexItem>
           </EuiFlexGroup>
         </EuiFlyoutBody>

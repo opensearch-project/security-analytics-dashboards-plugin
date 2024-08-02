@@ -8,7 +8,7 @@ import {
   EuiPanel,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiButtonIcon,
+  EuiSmallButtonIcon,
   EuiSpacer,
   EuiBadge,
   EuiHorizontalRule,
@@ -74,7 +74,7 @@ export const FindingCard: React.FC<FindingCardProps> = ({
   );
   const openFindingFlyoutButton = (
     <EuiToolTip content={'View finding details'}>
-      <EuiButtonIcon
+      <EuiSmallButtonIcon
         aria-label={'View finding details'}
         data-test-subj={`view-details-icon`}
         iconType={'inspect'}
@@ -111,7 +111,7 @@ export const FindingCard: React.FC<FindingCardProps> = ({
           <EuiText size="s">
             Correlation score{' '}
             <EuiToolTip
-              content={`The score (0-1) is based on the proximity of relevant findings in the threat scenario defined by the 
+              content={`The score (0-1) is based on the proximity of relevant findings in the threat scenario defined by the
             correlation rule. The greater the score, the stronger the correlation.`}
             >
               <EuiIcon type={'iInCircle'} color="primary" />
@@ -126,7 +126,7 @@ export const FindingCard: React.FC<FindingCardProps> = ({
         <EuiFlexItem grow={false}>
           <div>
             {openFindingFlyoutButton}
-            <EuiButtonIcon
+            <EuiSmallButtonIcon
               iconType={'pin'}
               onClick={() => correlationData?.onInspect(id, logType)}
             />

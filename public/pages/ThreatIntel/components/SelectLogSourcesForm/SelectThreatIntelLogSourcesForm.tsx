@@ -6,13 +6,12 @@
 import {
   EuiAccordion,
   EuiBadge,
-  EuiButton,
-  EuiButtonEmpty,
-  EuiComboBox,
+  EuiSmallButtonEmpty,
+  EuiCompressedComboBox,
   EuiComboBoxOptionOption,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiIcon,
   EuiPanel,
   EuiPopover,
@@ -185,11 +184,11 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
         <h2>Configure logs scan</h2>
       </EuiTitle>
       <EuiSpacer />
-      <EuiFormRow
+      <EuiCompressedFormRow
         label="Select Indexes/Aliases"
         helpText="Using indexes and aliases is recommended for more precise field mapping"
       >
-        <EuiComboBox
+        <EuiCompressedComboBox
           options={logSourceOptions}
           placeholder={'Select an input source for the detector.'}
           isLoading={loadingLogSourceOptions}
@@ -201,7 +200,7 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
             return option.index ? `${option.label} (${option.index})` : option.label;
           }}
         />
-      </EuiFormRow>
+      </EuiCompressedFormRow>
       <EuiSpacer size="xxl" />
       <EuiTitle size="s">
         <h4>Select fields to scan</h4>
@@ -283,7 +282,7 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
                             <EuiFlexItem grow={false}>
                               <EuiPopover
                                 button={
-                                  <EuiButtonEmpty
+                                  <EuiSmallButtonEmpty
                                     iconType={'plus'}
                                     onClick={() =>
                                       setIocInfoWithAddFieldOpen({
@@ -295,7 +294,7 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
                                     }
                                   >
                                     Add fields
-                                  </EuiButtonEmpty>
+                                  </EuiSmallButtonEmpty>
                                 }
                                 panelPaddingSize="s"
                                 closePopover={() => onFieldAliasesAdd(source, ioc)}
@@ -307,7 +306,7 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
                               >
                                 <EuiFlexGroup alignItems="flexEnd">
                                   <EuiFlexItem>
-                                    <EuiComboBox
+                                    <EuiCompressedComboBox
                                       style={{ minWidth: 300 }}
                                       options={Array.from(fieldOptionsSet).map((f) => ({
                                         label: f,
@@ -322,9 +321,9 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
                                     />
                                   </EuiFlexItem>
                                   <EuiFlexItem grow={false}>
-                                    <EuiButton onClick={() => onFieldAliasesAdd(source, ioc)}>
+                                    <EuiSmallButtonEmpty onClick={() => onFieldAliasesAdd(source, ioc)}>
                                       Done
-                                    </EuiButton>
+                                    </EuiSmallButtonEmpty>
                                   </EuiFlexItem>
                                 </EuiFlexGroup>
                               </EuiPopover>

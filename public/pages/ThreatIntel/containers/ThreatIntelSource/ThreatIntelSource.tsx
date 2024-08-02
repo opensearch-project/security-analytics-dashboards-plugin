@@ -10,7 +10,7 @@ import { BREADCRUMBS, DEFAULT_EMPTY_DATA, ROUTES } from '../../../../utils/const
 import { useEffect } from 'react';
 import { CoreServicesContext } from '../../../../components/core_services';
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
@@ -206,14 +206,14 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
             )}
             {type === 'S3_CUSTOM' && (
               <EuiFlexItem grow={false}>
-                <EuiButton fill onClick={onRefresh}>
+                <EuiSmallButton fill onClick={onRefresh}>
                   Refresh
-                </EuiButton>
+                </EuiSmallButton>
               </EuiFlexItem>
             )}
             <EuiFlexItem grow={false}>
               <EuiToolTip content={'Delete'}>
-                <EuiButtonIcon iconType={'trash'} color="danger" onClick={onDeleteButtonClick} />
+                <EuiSmallButton iconType={'trash'} color="danger" onClick={onDeleteButtonClick} />
               </EuiToolTip>
             </EuiFlexItem>
           </EuiFlexGroup>
@@ -266,7 +266,7 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
           onClickDelete={onDeleteConfirmed}
           confirmation
           confirmButtonText="Delete"
-          additionalWarning="You can also deactivate this source temporarily and reactivate later. 
+          additionalWarning="You can also deactivate this source temporarily and reactivate later.
           Cancel to exit and then choose Deactivate."
         />
       )}

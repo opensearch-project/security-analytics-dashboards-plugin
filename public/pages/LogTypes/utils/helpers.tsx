@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { EuiButtonIcon, EuiLink, EuiToolTip } from '@elastic/eui';
+import { EuiSmallButtonIcon, EuiLink, EuiToolTip } from '@elastic/eui';
 import { LogType } from '../../../../types';
 import { capitalize, startCase } from 'lodash';
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
@@ -46,7 +46,7 @@ export const getLogTypesTableColumns = (
         render: (item: LogType) => {
           return (
             <EuiToolTip content="Delete">
-              <EuiButtonIcon
+              <EuiSmallButtonIcon
                 aria-label={'Delete log type'}
                 iconType={'trash'}
                 color="danger"

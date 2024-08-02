@@ -4,12 +4,13 @@
  */
 
 import {
+  EuiSmallButton,
   EuiButton,
   EuiDescriptionList,
-  EuiFormRow,
-  EuiFieldText,
+  EuiCompressedFormRow,
+  EuiCompressedFieldText,
   EuiSpacer,
-  EuiTextArea,
+  EuiCompressedTextArea,
   EuiBottomBar,
   EuiFlexGroup,
   EuiFlexItem,
@@ -45,7 +46,7 @@ export const LogTypeDetailsTab: React.FC<LogTypeDetailsTabProps> = ({
   return (
     <ContentPanel
       title="Details"
-      actions={!isEditMode && [<EuiButton onClick={() => setIsEditMode(true)}>Edit</EuiButton>]}
+      actions={!isEditMode && [<EuiSmallButton onClick={() => setIsEditMode(true)}>Edit</EuiSmallButton>]}
     >
       <EuiDescriptionList
         type="column"
@@ -54,8 +55,8 @@ export const LogTypeDetailsTab: React.FC<LogTypeDetailsTabProps> = ({
             title: 'Log type',
             description: (
               <>
-                <EuiFormRow label="Name">
-                  <EuiFieldText
+                <EuiCompressedFormRow label="Name">
+                  <EuiCompressedFieldText
                     value={logTypeDetails?.name}
                     onChange={(e) =>
                       setLogTypeDetails({
@@ -66,10 +67,10 @@ export const LogTypeDetailsTab: React.FC<LogTypeDetailsTabProps> = ({
                     placeholder="Enter name for log type"
                     disabled={!isEditMode || !!logTypeDetails.detectionRulesCount}
                   />
-                </EuiFormRow>
+                </EuiCompressedFormRow>
                 <EuiSpacer />
-                <EuiFormRow label="Description">
-                  <EuiTextArea
+                <EuiCompressedFormRow label="Description">
+                  <EuiCompressedTextArea
                     value={logTypeDetails?.description}
                     onChange={(e) =>
                       setLogTypeDetails({
@@ -80,7 +81,7 @@ export const LogTypeDetailsTab: React.FC<LogTypeDetailsTabProps> = ({
                     placeholder="Description of the log type"
                     disabled={!isEditMode}
                   />
-                </EuiFormRow>
+                </EuiCompressedFormRow>
                 {isEditMode ? (
                   <EuiBottomBar>
                     <EuiFlexGroup gutterSize="s" justifyContent="flexEnd">

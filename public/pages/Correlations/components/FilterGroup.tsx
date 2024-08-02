@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import {
-  EuiFilterButton,
+  EuiSmallFilterButton,
   EuiFilterGroup,
   EuiFilterSelectItem,
   EuiPopover,
@@ -161,7 +161,7 @@ export const FilterGroup: React.FC<LogTypeFilterGroupProps> = ({
   const numActiveFilters = items.filter((item) => !item.childOptionIds && item.checked === 'on')
     .length;
   const button = (
-    <EuiFilterButton
+    <EuiSmallFilterButton
       iconType="arrowDown"
       onClick={onButtonClick}
       isSelected={isPopoverOpen}
@@ -169,7 +169,7 @@ export const FilterGroup: React.FC<LogTypeFilterGroupProps> = ({
       numActiveFilters={numActiveFilters > 0 ? numActiveFilters : undefined}
     >
       {groupName}
-    </EuiFilterButton>
+    </EuiSmallFilterButton>
   );
 
   return (

@@ -5,7 +5,7 @@
 
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
+import { EuiSmallButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 import {
   DetectorHit,
   RuleSource,
@@ -199,19 +199,19 @@ export default class UpdateAlertConditions extends Component<
 
         <EuiFlexGroup justifyContent={'flexEnd'}>
           <EuiFlexItem grow={false}>
-            <EuiButton disabled={submitting} onClick={this.onCancel}>
+            <EuiSmallButton disabled={submitting} onClick={this.onCancel}>
               Cancel
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton
+            <EuiSmallButton
               disabled={isSaveDisabled}
               fill={true}
               isLoading={submitting}
               onClick={this.onSave}
             >
               Save changes
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       </div>

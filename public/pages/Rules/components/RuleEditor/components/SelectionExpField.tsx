@@ -5,7 +5,7 @@ import {
   EuiFlexGroup,
   EuiPopover,
   EuiSelect,
-  EuiButtonIcon,
+  EuiSmallButtonIcon,
   EuiExpression,
 } from '@elastic/eui';
 import _ from 'lodash';
@@ -243,7 +243,7 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
           >
             {renderOptions(exp, idx)}
           </EuiPopover>
-          <EuiButtonIcon
+          <EuiSmallButtonIcon
             data-test-subj={`selection-exp-field-item-remove-${idx}`}
             className={'selection-exp-field-item-remove'}
             onClick={() => onRemoveSelection(idx)}
@@ -256,7 +256,7 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
       ))}
       {selections.length > usedExpressions.length && (
         <EuiFlexItem grow={false} key={`selections_add`}>
-          <EuiButtonIcon
+          <EuiSmallButtonIcon
             onClick={onAddSelection}
             color={'primary'}
             iconType="plusInCircleFilled"

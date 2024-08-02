@@ -4,7 +4,7 @@
  */
 
 import React, { useContext, useEffect, useState } from 'react';
-import { EuiButton, EuiInMemoryTable } from '@elastic/eui';
+import { EuiSmallButton, EuiInMemoryTable } from '@elastic/eui';
 import { ContentPanel } from '../../../components/ContentPanel';
 import { CoreServicesContext } from '../../../components/core_services';
 import { BREADCRUMBS, ROUTES } from '../../../utils/constants';
@@ -83,9 +83,9 @@ export const LogTypes: React.FC<LogTypesProps> = ({ history, notifications, data
         }
         hideHeaderBorder
         actions={[
-          <EuiButton fill={true} onClick={() => history.push(ROUTES.LOG_TYPES_CREATE)}>
+          <EuiSmallButton fill={true} onClick={() => history.push(ROUTES.LOG_TYPES_CREATE)}>
             Create log type
-          </EuiButton>,
+          </EuiSmallButton>,
         ]}
       >
         <EuiInMemoryTable
