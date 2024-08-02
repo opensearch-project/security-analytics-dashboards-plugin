@@ -242,7 +242,7 @@ exports[`<RuleContentViewer /> spec renders the component 1`] = `
       class="euiSpacer euiSpacer--l"
     />
     <div
-      class="euiFormRow euiFormRow--fullWidth"
+      class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
       id="some_html_id-row"
     >
       <div

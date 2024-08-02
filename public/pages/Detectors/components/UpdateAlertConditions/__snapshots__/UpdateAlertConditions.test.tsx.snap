@@ -1027,51 +1027,58 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
           <div
             className="euiFlexItem euiFlexItem--flexGrowZero"
           >
-            <EuiButton
+            <EuiSmallButton
               disabled={false}
               onClick={[Function]}
             >
-              <EuiButtonDisplay
-                baseClassName="euiButton"
+              <EuiButton
                 disabled={false}
-                element="button"
-                isDisabled={false}
                 onClick={[Function]}
-                type="button"
+                size="s"
               >
-                <button
-                  className="euiButton euiButton--primary"
+                <EuiButtonDisplay
+                  baseClassName="euiButton"
                   disabled={false}
+                  element="button"
+                  isDisabled={false}
                   onClick={[Function]}
-                  style={
-                    Object {
-                      "minWidth": undefined,
-                    }
-                  }
+                  size="s"
                   type="button"
                 >
-                  <EuiButtonContent
-                    className="euiButton__content"
-                    iconSide="left"
-                    textProps={
+                  <button
+                    className="euiButton euiButton--primary euiButton--small"
+                    disabled={false}
+                    onClick={[Function]}
+                    style={
                       Object {
-                        "className": "euiButton__text",
+                        "minWidth": undefined,
                       }
                     }
+                    type="button"
                   >
-                    <span
-                      className="euiButtonContent euiButton__content"
+                    <EuiButtonContent
+                      className="euiButton__content"
+                      iconSide="left"
+                      textProps={
+                        Object {
+                          "className": "euiButton__text",
+                        }
+                      }
                     >
                       <span
-                        className="euiButton__text"
+                        className="euiButtonContent euiButton__content"
                       >
-                        Cancel
+                        <span
+                          className="euiButton__text"
+                        >
+                          Cancel
+                        </span>
                       </span>
-                    </span>
-                  </EuiButtonContent>
-                </button>
-              </EuiButtonDisplay>
-            </EuiButton>
+                    </EuiButtonContent>
+                  </button>
+                </EuiButtonDisplay>
+              </EuiButton>
+            </EuiSmallButton>
           </div>
         </EuiFlexItem>
         <EuiFlexItem
@@ -1080,56 +1087,65 @@ exports[`<UpdateAlertConditions /> spec renders the component 1`] = `
           <div
             className="euiFlexItem euiFlexItem--flexGrowZero"
           >
-            <EuiButton
+            <EuiSmallButton
               disabled={false}
               fill={true}
               isLoading={false}
               onClick={[Function]}
             >
-              <EuiButtonDisplay
-                baseClassName="euiButton"
+              <EuiButton
                 disabled={false}
-                element="button"
                 fill={true}
-                isDisabled={false}
                 isLoading={false}
                 onClick={[Function]}
-                type="button"
+                size="s"
               >
-                <button
-                  className="euiButton euiButton--primary euiButton--fill"
+                <EuiButtonDisplay
+                  baseClassName="euiButton"
                   disabled={false}
+                  element="button"
+                  fill={true}
+                  isDisabled={false}
+                  isLoading={false}
                   onClick={[Function]}
-                  style={
-                    Object {
-                      "minWidth": undefined,
-                    }
-                  }
+                  size="s"
                   type="button"
                 >
-                  <EuiButtonContent
-                    className="euiButton__content"
-                    iconSide="left"
-                    isLoading={false}
-                    textProps={
+                  <button
+                    className="euiButton euiButton--primary euiButton--small euiButton--fill"
+                    disabled={false}
+                    onClick={[Function]}
+                    style={
                       Object {
-                        "className": "euiButton__text",
+                        "minWidth": undefined,
                       }
                     }
+                    type="button"
                   >
-                    <span
-                      className="euiButtonContent euiButton__content"
+                    <EuiButtonContent
+                      className="euiButton__content"
+                      iconSide="left"
+                      isLoading={false}
+                      textProps={
+                        Object {
+                          "className": "euiButton__text",
+                        }
+                      }
                     >
                       <span
-                        className="euiButton__text"
+                        className="euiButtonContent euiButton__content"
                       >
-                        Save changes
+                        <span
+                          className="euiButton__text"
+                        >
+                          Save changes
+                        </span>
                       </span>
-                    </span>
-                  </EuiButtonContent>
-                </button>
-              </EuiButtonDisplay>
-            </EuiButton>
+                    </EuiButtonContent>
+                  </button>
+                </EuiButtonDisplay>
+              </EuiButton>
+            </EuiSmallButton>
           </div>
         </EuiFlexItem>
       </div>
