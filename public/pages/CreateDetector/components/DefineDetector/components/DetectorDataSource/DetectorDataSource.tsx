@@ -12,7 +12,6 @@ import {
   EuiCallOut,
   EuiTextColor,
   EuiTitle,
-  EuiLink,
 } from '@elastic/eui';
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
 import { IndexOption } from '../../../../../Detectors/models/interfaces';
@@ -163,6 +162,10 @@ export default class DetectorDataSource extends Component<
             <span>
               <a href="https://opensearch.org/docs/latest/im-plugin/index-alias" target="_blank">
                 Aliases
+              </a>
+              {' and '}
+              <a href="https://opensearch.org/docs/latest/im-plugin/data-streams/" target="_blank">
+                data streams
               </a>{' '}
               are recommended for optimal functioning of detectors.
             </span>
