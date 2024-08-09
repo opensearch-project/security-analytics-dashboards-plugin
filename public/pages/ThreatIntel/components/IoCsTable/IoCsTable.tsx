@@ -3,19 +3,43 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
-import { EuiBasicTableColumn, EuiInMemoryTable, EuiPanel, EuiSpacer, EuiText } from '@elastic/eui';
+import React, { useState, useEffect } from 'react';
+import {
+  EuiBasicTableColumn,
+  EuiPanel,
+  EuiSpacer,
+  EuiText,
+  EuiBasicTable,
+  Pagination,
+  CriteriaWithPagination,
+  EuiSearchBar,
+} from '@elastic/eui';
 import { ThreatIntelIocData } from '../../../../../types';
 import { renderTime } from '../../../../utils/helpers';
 import { IocLabel, ThreatIntelIocType } from '../../../../../common/constants';
+import { ThreatIntelService } from '../../../../services';
 
 export interface IoCsTableProps {
+  threatIntelService: ThreatIntelService;
   sourceId?: string;
-  loadingIoCs: boolean;
-  iocs: ThreatIntelIocData[];
+  registerRefreshHandler: (handler: () => void) => void;
 }
 
-export const IoCsTable: React.FC<IoCsTableProps> = ({ sourceId, iocs, loadingIoCs }) => {
+export const IoCsTable: React.FC<IoCsTableProps> = ({
+  sourceId,
+  threatIntelService,
+  registerRefreshHandler,
+}) => {
+  const [loading, setLoading] = useState(false);
+  const [searchString, setSearchString] = useState('');
+  const [paginationState, setPaginationState] = useState<Pagination>({
+    pageIndex: 0,
+    pageSize: 10,
+    totalItemCount: 0,
+    pageSizeOptions: [10, 25, 50],
+  });
+  const [iocs, setIocs] = useState([]);
+
   const columns: EuiBasicTableColumn<ThreatIntelIocData>[] = [
     {
       name: 'Value',
@@ -46,18 +70,94 @@ export const IoCsTable: React.FC<IoCsTableProps> = ({ sourceId, iocs, loadingIoC
     },
   ];
 
+  const getIocs = async () => {
+    if (sourceId) {
+      setLoading(true);
+      const iocsRes = await threatIntelService.getThreatIntelIocs({
+        feed_ids: sourceId,
+        startIndex: paginationState.pageIndex * paginationState.pageSize,
+        size: paginationState.pageSize,
+        searchString,
+      });
+
+      if (iocsRes.ok) {
+        setIocs(iocsRes.response.iocs);
+        setPaginationState({
+          ...paginationState,
+          totalItemCount: iocsRes.response.total,
+        });
+      }
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    registerRefreshHandler(getIocs);
+  }, []);
+
+  useEffect(() => {
+    getIocs();
+  }, [paginationState.pageIndex, paginationState.pageSize, searchString]);
+
+  const onTableChange = ({ page }: CriteriaWithPagination<ThreatIntelIocData>) => {
+    if (paginationState.pageIndex !== page.index || paginationState.pageSize !== page.size) {
+      setPaginationState({
+        ...paginationState,
+        pageIndex: page.index,
+        pageSize: page.size,
+      });
+    }
+  };
+
+  const renderSearch = () => {
+    const schema = {
+      strict: true,
+      fields: {
+        value: {
+          type: 'string',
+        },
+        type: {
+          type: 'string',
+        },
+        created: {
+          type: 'date',
+        },
+        modified: {
+          type: 'date',
+        },
+        num_findings: {
+          type: 'number',
+        },
+      },
+    };
+
+    return (
+      <EuiSearchBar
+        defaultQuery={EuiSearchBar.Query.MATCH_ALL}
+        box={{
+          placeholder: 'Search',
+          incremental: false,
+          schema,
+        }}
+        onChange={({ queryText }) => setSearchString(queryText)}
+      />
+    );
+  };
+
   return (
     <EuiPanel>
       <EuiText>
-        <span>{iocs.length} malicious IoCs</span>
+        <span>{paginationState.totalItemCount} malicious IoCs</span>
       </EuiText>
       <EuiSpacer />
-      <EuiInMemoryTable
+      {renderSearch()}
+      <EuiSpacer />
+      <EuiBasicTable
         columns={columns}
         items={iocs}
-        search
-        pagination
-        loading={!sourceId || loadingIoCs}
+        pagination={paginationState}
+        onChange={onTableChange}
+        loading={!sourceId || loading}
       />
     </EuiPanel>
   );
