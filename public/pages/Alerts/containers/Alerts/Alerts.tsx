@@ -79,7 +79,7 @@ import { ThreatIntelAlertsTable } from '../../components/ThreatIntelAlertsTable/
 
 type FilterAlertParams =
   | { alerts: AlertItem[]; timeField: 'last_notification_time' }
-  | { alerts: CorrelationAlertTableItem[]; timeField: 'end_time' }
+  | { alerts: CorrelationAlertTableItem[]; timeField: 'start_time' }
   | { alerts: ThreatIntelAlert[]; timeField: 'start_time' };
 
 export interface AlertsProps extends RouteComponentProps, DataSourceProps {
@@ -255,7 +255,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     const { correlationAlerts } = this.state;
     const filteredCorrelationAlerts = this.filterAlerts({
       alerts: correlationAlerts,
-      timeField: 'end_time',
+      timeField: 'start_time',
     });
 
     this.setState({
