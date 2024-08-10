@@ -718,6 +718,13 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
               >
                 Aliases
               </a>
+               and 
+              <a
+                href="https://opensearch.org/docs/latest/im-plugin/data-streams/"
+                target="_blank"
+              >
+                data streams
+              </a>
                
               are recommended for optimal functioning of detectors.
             </span>
@@ -1112,6 +1119,13 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                       target="_blank"
                     >
                       Aliases
+                    </a>
+                     and 
+                    <a
+                      href="https://opensearch.org/docs/latest/im-plugin/data-streams/"
+                      target="_blank"
+                    >
+                      data streams
                     </a>
                      
                     are recommended for optimal functioning of detectors.

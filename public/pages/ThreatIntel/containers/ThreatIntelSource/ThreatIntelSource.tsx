@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useContext, useState } from 'react';
-import { ThreatIntelIocData, ThreatIntelSourceItem } from '../../../../../types';
+import React, { useContext, useState, useRef } from 'react';
+import { ThreatIntelSourceItem } from '../../../../../types';
 import { RouteComponentProps } from 'react-router-dom';
 import { BREADCRUMBS, DEFAULT_EMPTY_DATA, ROUTES } from '../../../../utils/constants';
 import { useEffect } from 'react';
@@ -49,8 +49,7 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
   const sourceId =
     source?.id ?? location.pathname.replace(`${ROUTES.THREAT_INTEL_SOURCE_DETAILS}/`, '');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [iocs, setIocs] = useState<ThreatIntelIocData[]>([]);
-  const [loadingIoCs, setLoadingIoCs] = useState(true);
+  const refreshHandler = useRef(() => {});
   const getSource = async (sourceId: string) => {
     const res = await threatIntelService.getThreatIntelSource(sourceId);
 
@@ -65,22 +64,6 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
     }
   }, []);
 
-  const getIocs = async () => {
-    if (sourceId) {
-      setLoadingIoCs(true);
-      const iocsRes = await threatIntelService.getThreatIntelIocs({
-        feed_ids: sourceId,
-        startIndex: 0,
-        size: 10000,
-      });
-
-      if (iocsRes.ok) {
-        setIocs(iocsRes.response.iocs);
-      }
-      setLoadingIoCs(false);
-    }
-  };
-
   useEffect(() => {
     const baseCrumbs = [BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.THREAT_INTEL_OVERVIEW];
 
@@ -89,8 +72,6 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
         ? baseCrumbs
         : [...baseCrumbs, BREADCRUMBS.THREAT_INTEL_SOURCE_DETAILS(source.name, sourceId)]
     );
-
-    getIocs();
   }, [source]);
 
   if (!source) {
@@ -105,7 +86,15 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
     {
       id: 'iocs',
       name: <span>Indicators of Compromise</span>,
-      content: <IoCsTable sourceId={source?.id} iocs={iocs} loadingIoCs={loadingIoCs} />,
+      content: (
+        <IoCsTable
+          sourceId={source?.id}
+          threatIntelService={threatIntelService}
+          registerRefreshHandler={(handler) => {
+            refreshHandler.current = handler;
+          }}
+        />
+      ),
     },
     {
       id: 'source-details',
@@ -139,7 +128,7 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
     if (!res.ok) {
       errorNotificationToast(notifications, 'refresh', 'source', res.error);
     } else {
-      getIocs();
+      refreshHandler.current?.();
     }
   };
 
