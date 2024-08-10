@@ -77,16 +77,12 @@ export const ThreatIntelSourcesList: React.FC<ThreatIntelSourcesListProps> = ({
                       More details
                     </EuiButtonEmpty>
                     <EuiSpacer size="m" />
-                    {source.enabled && (
-                      <>
-                        <EuiIcon
-                          type={'dot'}
-                          color={source.enabled ? 'success' : 'text'}
-                          style={{ marginBottom: 4 }}
-                        />{' '}
-                        Active
-                      </>
-                    )}
+                    <EuiIcon
+                      type={'dot'}
+                      color={source.enabled_for_scan ? 'success' : 'text'}
+                      style={{ marginBottom: 4 }}
+                    />{' '}
+                    {source.enabled_for_scan ? 'Active' : 'Inactive'}
                   </>
                 }
               >
