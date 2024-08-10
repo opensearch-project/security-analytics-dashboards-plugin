@@ -290,7 +290,6 @@ exports[`<Alerts /> spec renders the component 1`] = `
                           },
                         ]
                       }
-                      compressed={false}
                       dateFormat="MMM D, YYYY @ HH:mm:ss.SSS"
                       end="now"
                       isAutoRefreshOnly={false}
@@ -331,7 +330,6 @@ exports[`<Alerts /> spec renders the component 1`] = `
                             >
                               <EuiFormControlLayout
                                 className="euiSuperDatePicker"
-                                compressed={false}
                                 isDisabled={false}
                                 prepend={
                                   <EuiQuickSelectPopover
@@ -597,9 +595,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                         </button>
                                       </div>
                                     </EuiDatePickerRange>
-                                    <EuiFormControlLayoutIcons
-                                      compressed={false}
-                                    />
+                                    <EuiFormControlLayoutIcons />
                                   </div>
                                 </div>
                               </EuiFormControlLayout>
@@ -612,7 +608,6 @@ exports[`<Alerts /> spec renders the component 1`] = `
                               className="euiFlexItem euiFlexItem--flexGrowZero"
                             >
                               <EuiSuperUpdateButton
-                                compressed={false}
                                 data-test-subj="superDatePickerApplyTimeButton"
                                 fill={false}
                                 isDisabled={false}
@@ -642,7 +637,6 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                       onBlur={[Function]}
                                       onClick={[Function]}
                                       onFocus={[Function]}
-                                      size="m"
                                       textProps={
                                         Object {
                                           "className": "euiSuperUpdateButton__text",
@@ -663,7 +657,6 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                         onBlur={[Function]}
                                         onClick={[Function]}
                                         onFocus={[Function]}
-                                        size="m"
                                         textProps={
                                           Object {
                                             "className": "euiSuperUpdateButton__text",
