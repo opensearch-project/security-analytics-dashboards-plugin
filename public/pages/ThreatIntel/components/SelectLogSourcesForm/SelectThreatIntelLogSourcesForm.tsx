@@ -187,7 +187,18 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
       <EuiSpacer />
       <EuiFormRow
         label="Select Indexes/Aliases"
-        helpText="Using indexes and aliases is recommended for more precise field mapping"
+        helpText={
+          <span>
+            <a href="https://opensearch.org/docs/latest/im-plugin/index-alias" target="_blank">
+              Aliases
+            </a>
+            {' and '}
+            <a href="https://opensearch.org/docs/latest/im-plugin/data-streams/" target="_blank">
+              data streams
+            </a>{' '}
+            are recommended for optimal threat intel scans.
+          </span>
+        }
       >
         <EuiComboBox
           options={logSourceOptions}

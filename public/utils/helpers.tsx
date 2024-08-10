@@ -42,6 +42,10 @@ import { getLogTypeLabel } from '../pages/LogTypes/utils/helpers';
 import { euiThemeVars } from '@osd/ui-shared-deps/theme';
 import dateMath from '@elastic/datemath';
 import { IocLabel, ThreatIntelIocType } from '../../common/constants';
+import { parse, View } from 'vega/build-es5/vega.js';
+import { compile } from 'vega-lite';
+import { Handler } from 'vega-tooltip';
+import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter/build/vega-interpreter';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
@@ -181,8 +185,6 @@ export function getUpdatedEnabledRuleIds(
 export async function renderVisualization(spec: any, containerId: string) {
   let view;
 
-  const { compile } = await import('vega-lite');
-
   try {
     setDefaultColors(spec);
     renderVegaSpec(compile({ ...spec, width: 'container', height: 400 }).spec).catch((err: Error) =>
@@ -194,7 +196,6 @@ export async function renderVisualization(spec: any, containerId: string) {
 
   async function renderVegaSpec(spec: {}) {
     let chartColoredItems: any[] = [];
-    const { Handler } = await import('vega-tooltip');
     const handler = new Handler({
       formatTooltip: (value, sanitize) => {
         let tooltipData = { ...value };
@@ -237,10 +238,6 @@ export async function renderVisualization(spec: any, containerId: string) {
         `;
       },
     });
-    const { expressionInterpreter: vegaExpressionInterpreter } = await import(
-      'vega-interpreter/build/vega-interpreter'
-    );
-    const { parse, View } = await import('vega');
     view = new View(parse(spec, undefined, { expr: vegaExpressionInterpreter } as any), {
       renderer: 'canvas', // renderer (canvas or svg)
       container: `#${containerId}`, // parent DOM container
