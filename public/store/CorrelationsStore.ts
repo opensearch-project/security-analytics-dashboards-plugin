@@ -80,7 +80,7 @@ export class CorrelationsStore implements ICorrelationsStore {
 
         return correlationInput;
       }),
-      trigger: correlationRule.trigger
+      trigger: correlationRule.trigger,
     });
     if (!response.ok) {
       errorNotificationToast(this.notifications, 'create', 'correlation rule', response.error);
@@ -218,24 +218,26 @@ export class CorrelationsStore implements ICorrelationsStore {
         const findings = await this.fetchAllFindings(findingIds);
         allFindings = {
           ...allFindings,
-          ...findings
-        }
+          ...findings,
+        };
       }
 
       const maxNumberOfCorrelationsDisplayed = 10000;
-      allCorrelationsRes.response.findings.slice(0, maxNumberOfCorrelationsDisplayed).forEach(({ finding1, finding2 }) => {
-        const f1 = allFindings[finding1];
-        const f2 = allFindings[finding2];
-        if (f1 && f2)
-          result.push({
-            finding1: {
-              ...f1,
-            },
-            finding2: {
-              ...f2,
-            },
-          });
-      });
+      allCorrelationsRes.response.findings
+        .slice(0, maxNumberOfCorrelationsDisplayed)
+        .forEach(({ finding1, finding2 }) => {
+          const f1 = allFindings[finding1];
+          const f2 = allFindings[finding2];
+          if (f1 && f2)
+            result.push({
+              finding1: {
+                ...f1,
+              },
+              finding2: {
+                ...f2,
+              },
+            });
+        });
 
       return result;
     }
@@ -245,13 +247,15 @@ export class CorrelationsStore implements ICorrelationsStore {
 
   public allFindings: { [id: string]: CorrelationFinding } = {};
 
-  private async fetchAllFindings(findingIds: string[]): Promise<{ [id: string]: CorrelationFinding }> {
+  private async fetchAllFindings(
+    findingIds: string[]
+  ): Promise<{ [id: string]: CorrelationFinding }> {
     const detectorsRes = await this.detectorsService.getDetectors();
     const allRules = await this.rulesStore.getAllRules();
 
     if (detectorsRes.ok) {
       const detectorsMap: { [id: string]: DetectorHit } = {};
-      detectorsRes.response.hits.hits.forEach(detector => {
+      detectorsRes.response.hits.hits.forEach((detector) => {
         detectorsMap[detector._id] = detector;
       });
       let findingsMap: { [id: string]: CorrelationFinding } = {};
@@ -271,7 +275,7 @@ export class CorrelationsStore implements ICorrelationsStore {
                 name: rule._source.title,
                 severity: rule._source.level,
                 tags: rule._source.tags,
-            }
+              }
             : { name: DEFAULT_EMPTY_DATA, severity: DEFAULT_EMPTY_DATA },
         };
       });
@@ -295,8 +299,8 @@ export class CorrelationsStore implements ICorrelationsStore {
 
     if (response?.ok) {
       const correlatedFindings: CorrelationFinding[] = [];
-      const allFindingIds = response.response.findings.map(f => f.finding);
-      const allFindings = await this.fetchAllFindings(allFindingIds);
+      const allFindingIds = response.response.findings.map((f) => f.finding);
+      const allFindings = await this.fetchAllFindings([...allFindingIds, findingId]);
       response.response.findings.forEach((f) => {
         if (allFindings[f.finding]) {
           correlatedFindings.push({
@@ -327,8 +331,7 @@ export class CorrelationsStore implements ICorrelationsStore {
     };
   }
 
-  public async getAllCorrelationAlerts(
-  ): Promise<GetCorrelationAlertsResponse> {
+  public async getAllCorrelationAlerts(): Promise<GetCorrelationAlertsResponse> {
     const response = await this.service.getCorrelationAlerts();
     if (response?.ok) {
       return {
