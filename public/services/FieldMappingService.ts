@@ -73,4 +73,9 @@ export default class FieldMappingService {
       },
     })) as ServerResponse<GetMappingsResponse>;
   };
+
+  getIndexAliasFields = async (indexName: string): Promise<ServerResponse<string[]>> => {
+    const url = `..${API.MAPPINGS_BASE}/fields/${indexName}`;
+    return (await this.httpClient.get(url)) as ServerResponse<string[]>;
+  };
 }
