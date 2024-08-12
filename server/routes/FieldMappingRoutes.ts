@@ -45,4 +45,16 @@ export function setupFieldMappingRoutes(services: NodeServices, router: IRouter)
     },
     fieldMappingService.createMappings
   );
+
+  router.get(
+    {
+      path: `${API.MAPPINGS_BASE}/fields/{indexName}`,
+      validate: {
+        params: schema.object({
+          indexName: schema.string(),
+        }),
+      },
+    },
+    fieldMappingService.getIndexAliasFields
+  );
 }
