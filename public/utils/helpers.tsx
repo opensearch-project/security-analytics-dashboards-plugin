@@ -35,7 +35,7 @@ import { parse, View } from 'vega/build-es5/vega.js';
 import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter/build/vega-interpreter';
 import { RuleInfo } from '../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { IndexService, OpenSearchService } from '../services';
+import { FieldMappingService, IndexService, OpenSearchService } from '../services';
 import { ruleSeverity, ruleTypes } from '../pages/Rules/utils/constants';
 import { Handler } from 'vega-tooltip';
 import _ from 'lodash';
@@ -551,4 +551,28 @@ function getValueSetter(baseObject: any) {
       o[lastField] = value;
     }
   };
+}
+
+export async function getFieldsForIndex(
+  fieldMappingService: FieldMappingService,
+  indexName: string
+) {
+  let fields: {
+    label: string;
+    value: string;
+  }[] = [];
+
+  if (indexName) {
+    const result = await fieldMappingService.getIndexAliasFields(indexName);
+    if (result?.ok) {
+      fields = result.response?.map((field) => ({
+        label: field,
+        value: field,
+      }));
+    }
+
+    return fields;
+  }
+
+  return fields;
 }
