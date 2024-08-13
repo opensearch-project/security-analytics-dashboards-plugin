@@ -5,7 +5,6 @@
 
 import {
   AppMountParameters,
-  AppNavLinkStatus,
   CoreSetup,
   CoreStart,
   DEFAULT_APP_CATEGORIES,
@@ -62,7 +61,6 @@ export class SecurityAnalyticsPlugin
         label: 'OpenSearch Plugins',
         order: 2000,
       },
-      navLinkStatus: core.chrome.navGroup.getNavGroupEnabled() ? AppNavLinkStatus.hidden : AppNavLinkStatus.visible,
       mount: async (params: AppMountParameters) => {
         const { renderApp } = await import('./security_analytics_app');
         const [coreStart, depsStart] = await core.getStartServices();
@@ -157,22 +155,17 @@ export class SecurityAnalyticsPlugin
         { id: THREAT_ALERTS_NAV_ID, showInAllNavGroup: true },
         { id: FINDINGS_NAV_ID, showInAllNavGroup: true },
         { id: CORRELATIONS_NAV_ID },
-        { id: DETECTORS_NAV_ID },
-        { id: DETECTORS_RULE_NAV_ID, parent: DETECTORS_NAV_ID },
+        { id: PLUGIN_NAME, category: DEFAULT_APP_CATEGORIES.configure, title: 'Threat detection' },
+        { id: DETECTORS_NAV_ID, parentNavLinkId: PLUGIN_NAME },
+        { id: DETECTORS_RULE_NAV_ID, parentNavLinkId: PLUGIN_NAME },
         { id: CORRELATIONS_RULE_NAV_ID },
         { id: THREAT_INTEL_NAV_ID},
         { id: LOG_TYPES_NAV_ID }
-      ]
-
-      const navLinks = navlinks.map(item => ({
-        id: item.id,
-        showInAllNavGroup: item. showInAllNavGroup,
-        parentNavLinkId: item.parent ? item.parent : undefined,
-      }));
+      ];
 
       core.chrome.navGroup.addNavLinksToGroup(
         DEFAULT_NAV_GROUPS['security-analytics'],
-        navLinks
+        navlinks
       );
     }
 
