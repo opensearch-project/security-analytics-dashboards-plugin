@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   EuiButton,
   EuiCheckableCard,
@@ -20,7 +20,6 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import { CoreServicesContext } from '../../../../components/core_services';
 import { BREADCRUMBS, ROUTES, defaultIntervalUnitOptions } from '../../../../utils/constants';
 import { Interval } from '../../../CreateDetector/components/DefineDetector/components/DetectorSchedule/Interval';
 import { RouteComponentProps } from 'react-router-dom';
@@ -47,6 +46,7 @@ import {
   validateDescription,
   validateName,
 } from '../../../../utils/validation';
+import { setBreadcrumbs } from '../../../../utils/helpers';
 
 enum ErrorKeys {
   s3 = 's3',
@@ -92,7 +92,6 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
   history,
   threatIntelService,
 }) => {
-  const context = useContext(CoreServicesContext);
   const [source, setSource] = useState<ThreatIntelSourcePayloadBase>(
     getEmptyThreatIntelSourcePayloadBase()
   );
@@ -131,11 +130,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
   };
 
   useEffect(() => {
-    context?.chrome.setBreadcrumbs([
-      BREADCRUMBS.SECURITY_ANALYTICS,
-      BREADCRUMBS.THREAT_INTEL_OVERVIEW,
-      BREADCRUMBS.THREAT_INTEL_ADD_CUSTOM_SOURCE,
-    ]);
+    setBreadcrumbs([BREADCRUMBS.THREAT_INTEL_OVERVIEW, BREADCRUMBS.THREAT_INTEL_ADD_CUSTOM_SOURCE]);
   }, []);
 
   const validateIocTypes = (iocTypeMap: Record<string, boolean>) => {

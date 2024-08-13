@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useContext } from 'react';
+import React from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { RouteComponentProps, useParams } from 'react-router-dom';
@@ -22,7 +22,6 @@ import {
   EuiToolTip,
 } from '@elastic/eui';
 import { DataStore } from '../../../store/DataStore';
-import { CoreServicesContext } from '../../../components/core_services';
 import { BREADCRUMBS, ROUTES } from '../../../utils/constants';
 import { logTypeDetailsTabs } from '../utils/constants';
 import { LogTypeDetails } from '../components/LogTypeDetails';
@@ -31,14 +30,18 @@ import { LogTypeDetectionRules } from '../components/LogTypeDetectionRules';
 import { RuleTableItem } from '../../Rules/utils/helpers';
 import { useCallback } from 'react';
 import { DeleteLogTypeModal } from '../components/DeleteLogTypeModal';
-import { errorNotificationToast, successNotificationToast } from '../../../utils/helpers';
+import {
+  errorNotificationToast,
+  setBreadcrumbs,
+  successNotificationToast,
+} from '../../../utils/helpers';
+import { PageHeader } from '../../../components/PageHeader/PageHeader';
 
 export interface LogTypeProps extends RouteComponentProps {
   notifications: NotificationsStart;
 }
 
 export const LogType: React.FC<LogTypeProps> = ({ notifications, history }) => {
-  const context = useContext(CoreServicesContext);
   const { logTypeId } = useParams<{ logTypeId: string }>();
   const [selectedTabId, setSelectedTabId] = useState('details');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -91,12 +94,7 @@ export const LogType: React.FC<LogTypeProps> = ({ notifications, history }) => {
         return;
       }
 
-      context?.chrome.setBreadcrumbs([
-        BREADCRUMBS.SECURITY_ANALYTICS,
-        BREADCRUMBS.DETECTORS,
-        BREADCRUMBS.LOG_TYPES,
-        { text: details.name },
-      ]);
+      setBreadcrumbs([BREADCRUMBS.DETECTORS, BREADCRUMBS.LOG_TYPES, { text: details.name }]);
       const logTypeItem = { ...details, detectionRulesCount: details.detectionRules.length };
       updateRules(logTypeItem, logTypeItem);
     };
@@ -143,6 +141,12 @@ export const LogType: React.FC<LogTypeProps> = ({ notifications, history }) => {
     }
   };
 
+  const deleteAction = (
+    <EuiToolTip content="Delete" position="bottom">
+      <EuiButtonIcon iconType={'trash'} color="danger" onClick={() => setShowDeleteModal(true)} />
+    </EuiToolTip>
+  );
+
   return !logTypeDetails ? (
     <EuiTitle>
       <h2>{infoText}</h2>
@@ -157,23 +161,16 @@ export const LogType: React.FC<LogTypeProps> = ({ notifications, history }) => {
           onConfirm={deleteLogType}
         />
       )}
-      <EuiFlexGroup justifyContent="spaceBetween">
-        <EuiFlexItem>
-          <EuiTitle>
-            <h1>{logTypeDetails.name}</h1>
-          </EuiTitle>
-        </EuiFlexItem>
-        <EuiFlexItem grow={false}>
-          <EuiToolTip content="Delete" position="bottom">
-            <EuiButtonIcon
-              iconType={'trash'}
-              color="danger"
-              onClick={() => setShowDeleteModal(true)}
-            />
-          </EuiToolTip>
-        </EuiFlexItem>
-      </EuiFlexGroup>
-
+      <PageHeader appRightControls={[{ renderComponent: deleteAction }]}>
+        <EuiFlexGroup justifyContent="spaceBetween">
+          <EuiFlexItem>
+            <EuiTitle>
+              <h1>{logTypeDetails.name}</h1>
+            </EuiTitle>
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>{deleteAction}</EuiFlexItem>
+        </EuiFlexGroup>
+      </PageHeader>
       <EuiSpacer />
       <EuiPanel grow={false}>
         <EuiDescriptionList

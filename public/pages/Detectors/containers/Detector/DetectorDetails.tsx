@@ -19,7 +19,6 @@ import {
 } from '@elastic/eui';
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { CoreServicesContext } from '../../../../components/core_services';
 import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR_HIT, ROUTES } from '../../../../utils/constants';
 import { DetectorHit } from '../../../../../server/models/interfaces';
 import { DetectorDetailsView } from '../DetectorDetailsView/DetectorDetailsView';
@@ -27,7 +26,7 @@ import { FieldMappingsView } from '../../components/FieldMappingsView/FieldMappi
 import { AlertTriggersView } from '../AlertTriggersView/AlertTriggersView';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { DetectorsService, IndexPatternsService } from '../../../../services';
-import { errorNotificationToast } from '../../../../utils/helpers';
+import { errorNotificationToast, setBreadcrumbs } from '../../../../utils/helpers';
 import { NotificationsStart, SimpleSavedObject } from 'opensearch-dashboards/public';
 import { ISavedObjectsService, ServerResponse } from '../../../../../types';
 import { PENDING_DETECTOR_ID } from '../../../CreateDetector/utils/constants';
@@ -69,8 +68,6 @@ enum TabId {
 }
 
 export class DetectorDetails extends React.Component<DetectorDetailsProps, DetectorDetailsState> {
-  static contextType = CoreServicesContext;
-
   private get detectorHit(): DetectorHit {
     return this.state.detectorHit;
   }
@@ -200,8 +197,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
         },
       });
 
-      this.context.chrome.setBreadcrumbs([
-        BREADCRUMBS.SECURITY_ANALYTICS,
+      setBreadcrumbs([
         BREADCRUMBS.DETECTORS,
         BREADCRUMBS.DETECTORS_DETAILS(detector.name, PENDING_DETECTOR_ID),
       ]);
@@ -253,8 +249,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
             enabled: detector._source.enabled,
           },
         };
-        this.context.chrome.setBreadcrumbs([
-          BREADCRUMBS.SECURITY_ANALYTICS,
+        setBreadcrumbs([
           BREADCRUMBS.DETECTORS,
           BREADCRUMBS.DETECTORS_DETAILS(detector._source.name, detector._id),
         ]);

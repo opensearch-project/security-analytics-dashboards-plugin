@@ -5,13 +5,13 @@
 
 import { BrowserServices } from '../../../../models/interfaces';
 import { RuleEditorContainer } from '../../components/RuleEditor/RuleEditorContainer';
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { BREADCRUMBS } from '../../../../utils/constants';
-import { CoreServicesContext } from '../../../../components/core_services';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { setBreadCrumb } from '../../utils/helpers';
+import { setRulesRelatedBreadCrumb } from '../../utils/helpers';
 import { RuleItemInfoBase } from '../../../../../types';
+import { setBreadcrumbs } from '../../../../utils/helpers';
 
 export interface EditRuleProps
   extends RouteComponentProps<any, any, { ruleItem: RuleItemInfoBase }> {
@@ -19,16 +19,9 @@ export interface EditRuleProps
   notifications?: NotificationsStart;
 }
 
-export const EditRule: React.FC<EditRuleProps> = ({
-  history,
-  services,
-  location,
-  notifications,
-}) => {
-  const context = useContext(CoreServicesContext);
-
+export const EditRule: React.FC<EditRuleProps> = ({ history, location, notifications }) => {
   useEffect(() => {
-    setBreadCrumb(BREADCRUMBS.RULES_EDIT, context?.chrome.setBreadcrumbs);
+    setRulesRelatedBreadCrumb(BREADCRUMBS.RULES_EDIT, setBreadcrumbs);
   });
 
   return (

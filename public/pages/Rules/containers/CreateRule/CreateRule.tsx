@@ -5,13 +5,13 @@
 
 import { BrowserServices } from '../../../../models/interfaces';
 import { RuleEditorContainer } from '../../components/RuleEditor/RuleEditorContainer';
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { BREADCRUMBS } from '../../../../utils/constants';
-import { CoreServicesContext } from '../../../../components/core_services';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { setBreadCrumb } from '../../utils/helpers';
+import { setRulesRelatedBreadCrumb } from '../../utils/helpers';
 import { EuiTitle, EuiText, EuiLink } from '@elastic/eui';
+import { setBreadcrumbs } from '../../../../utils/helpers';
 
 export interface CreateRuleProps {
   services: BrowserServices;
@@ -20,10 +20,8 @@ export interface CreateRuleProps {
 }
 
 export const CreateRule: React.FC<CreateRuleProps> = ({ history, services, notifications }) => {
-  const context = useContext(CoreServicesContext);
-
   useEffect(() => {
-    setBreadCrumb(BREADCRUMBS.RULES_CREATE, context?.chrome.setBreadcrumbs);
+    setRulesRelatedBreadCrumb(BREADCRUMBS.RULES_CREATE, setBreadcrumbs);
   });
 
   return (

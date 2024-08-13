@@ -37,7 +37,7 @@ import {
   DetectorCreationStep,
 } from '../../../../types';
 import { DataStore } from '../../../store/DataStore';
-import { errorNotificationToast } from '../../../utils/helpers';
+import { errorNotificationToast, setBreadcrumbs } from '../../../utils/helpers';
 import { MetricsContext } from '../../../metrics/MetricsContext';
 
 interface CreateDetectorProps extends RouteComponentProps, DataSourceProps, DataSourceManagerProps {
@@ -98,11 +98,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
   }
 
   componentDidMount(): void {
-    this.context.chrome.setBreadcrumbs([
-      BREADCRUMBS.SECURITY_ANALYTICS,
-      BREADCRUMBS.DETECTORS,
-      BREADCRUMBS.DETECTORS_CREATE,
-    ]);
+    setBreadcrumbs([BREADCRUMBS.DETECTORS, BREADCRUMBS.DETECTORS_CREATE]);
     if (!(this.props.history.location.state as any)?.detectorInput) {
       this.resetDependencies();
     }

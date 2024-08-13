@@ -24,7 +24,11 @@ import { DetectorHit, SearchDetectorsResponse } from '../../../../../server/mode
 import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
 import { ServerResponse } from '../../../../../server/models/types';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { errorNotificationToast, successNotificationToast } from '../../../../utils/helpers';
+import {
+  errorNotificationToast,
+  setBreadcrumbs,
+  successNotificationToast,
+} from '../../../../utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
 import ReviewFieldMappings from '../ReviewFieldMappings/ReviewFieldMappings';
 import { FieldMapping, Detector } from '../../../../../types';
@@ -66,8 +70,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
         ) as DetectorHit;
         setDetector(detectorHit._source as Detector);
 
-        context?.chrome.setBreadcrumbs([
-          BREADCRUMBS.SECURITY_ANALYTICS,
+        setBreadcrumbs([
           BREADCRUMBS.DETECTORS,
           BREADCRUMBS.DETECTORS_DETAILS(detectorHit._source.name, detectorHit._id),
           {

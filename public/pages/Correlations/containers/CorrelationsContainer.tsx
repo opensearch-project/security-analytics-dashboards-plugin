@@ -57,7 +57,8 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { Network } from 'react-graph-vis';
 import { getLogTypeLabel } from '../../LogTypes/utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { errorNotificationToast } from '../../../utils/helpers';
+import { errorNotificationToast, setBreadcrumbs } from '../../../utils/helpers';
+import { PageHeader } from '../../../components/PageHeader/PageHeader';
 
 interface CorrelationsProps
   extends RouteComponentProps<
@@ -121,7 +122,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
   }
 
   async componentDidMount(): Promise<void> {
-    this.context.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.CORRELATIONS]);
+    setBreadcrumbs([BREADCRUMBS.CORRELATIONS]);
     this.updateState(true /* onMount */);
     this.props.onMount();
   }
@@ -467,6 +468,16 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
 
   render() {
     const findingCardsData = this.state.specificFindingInfo;
+    const datePicker = (
+      <EuiSuperDatePicker
+        start={this.startTime}
+        end={this.endTime}
+        recentlyUsedRanges={this.state.recentlyUsedRanges}
+        onTimeChange={this.onTimeChange}
+        onRefresh={this.onRefresh}
+        updateButtonProps={{ fill: false }}
+      />
+    );
 
     return (
       <>
@@ -540,25 +551,24 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
           </EuiFlyout>
         ) : null}
         <EuiFlexGroup direction="column">
-          <EuiFlexItem>
-            <EuiFlexGroup>
-              <EuiFlexItem>
-                <EuiTitle size="m">
-                  <h1>Correlations</h1>
-                </EuiTitle>
-              </EuiFlexItem>
-              <EuiFlexItem grow={false}>
-                <EuiSuperDatePicker
-                  start={this.startTime}
-                  end={this.endTime}
-                  recentlyUsedRanges={this.state.recentlyUsedRanges}
-                  onTimeChange={this.onTimeChange}
-                  onRefresh={this.onRefresh}
-                  updateButtonProps={{ fill: false }}
-                />
-              </EuiFlexItem>
-            </EuiFlexGroup>
-          </EuiFlexItem>
+          <PageHeader
+            appRightControls={[
+              {
+                renderComponent: datePicker,
+              },
+            ]}
+          >
+            <EuiFlexItem>
+              <EuiFlexGroup>
+                <EuiFlexItem>
+                  <EuiTitle size="m">
+                    <h1>Correlations</h1>
+                  </EuiTitle>
+                </EuiFlexItem>
+                <EuiFlexItem grow={false}>{datePicker}</EuiFlexItem>
+              </EuiFlexGroup>
+            </EuiFlexItem>
+          </PageHeader>
           <EuiFlexItem>
             <EuiPanel>
               <EuiFlexGroup gutterSize="xs" wrap={false} justifyContent="flexEnd">

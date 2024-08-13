@@ -17,8 +17,11 @@ import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/c
 import { SecurityAnalyticsContext } from '../../../../services';
 import { ServerResponse } from '../../../../../server/models/types';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { CoreServicesContext } from '../../../../components/core_services';
-import { errorNotificationToast, successNotificationToast } from '../../../../utils/helpers';
+import {
+  errorNotificationToast,
+  setBreadcrumbs,
+  successNotificationToast,
+} from '../../../../utils/helpers';
 import { RuleTableItem } from '../../../Rules/utils/helpers';
 import { RuleViewerFlyout } from '../../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
 import { ContentPanel } from '../../../../components/ContentPanel';
@@ -48,8 +51,6 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
   const [fieldMappingsIsVisible, setFieldMappingsIsVisible] = useState(false);
   const [ruleQueryFields, setRuleQueryFields] = useState<Set<string>>();
 
-  const context = useContext(CoreServicesContext);
-
   useEffect(() => {
     const getDetector = async () => {
       setLoading(true);
@@ -63,8 +64,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
         const newDetector = { ...detectorHit._source, id: detectorId } as Detector;
         setDetector(newDetector);
 
-        context?.chrome.setBreadcrumbs([
-          BREADCRUMBS.SECURITY_ANALYTICS,
+        setBreadcrumbs([
           BREADCRUMBS.DETECTORS,
           BREADCRUMBS.DETECTORS_DETAILS(detectorHit._source.name, detectorHit._id),
           {
@@ -241,7 +241,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
       category: ruleItem.logType,
       description: ruleItem.description,
       source: ruleItem.library,
-      ruleInfo: ruleItem.ruleInfo,
+      ruleInfo: { ...ruleItem.ruleInfo, prePackaged: ruleItem.library === 'Standard' },
       ruleId: ruleItem.id,
     }));
   };

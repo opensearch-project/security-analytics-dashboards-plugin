@@ -34,6 +34,7 @@ import {
   NotificationChannelTypeOptions,
 } from '../../../../../../types';
 import { MetricsContext } from '../../../../../metrics/MetricsContext';
+import { setBreadcrumbs } from '../../../../../utils/helpers';
 
 interface ConfigureAlertsProps extends RouteComponentProps {
   detector: Detector;
@@ -83,8 +84,7 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
     } = this.props;
 
     isEdit &&
-      this.context.chrome.setBreadcrumbs([
-        BREADCRUMBS.SECURITY_ANALYTICS,
+      setBreadcrumbs([
         BREADCRUMBS.DETECTORS,
         BREADCRUMBS.DETECTORS_DETAILS(name, id),
         {

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Form, Formik, FormikErrors, FormikTouched } from 'formik';
 import { ContentPanel } from '../../../components/ContentPanel';
 import { DataStore } from '../../../store/DataStore';
@@ -50,7 +50,6 @@ import {
   OS_NOTIFICATION_PLUGIN,
   ROUTES,
 } from '../../../utils/constants';
-import { CoreServicesContext } from '../../../components/core_services';
 import { RouteComponentProps, useParams } from 'react-router-dom';
 import { validateName } from '../../../utils/validation';
 import {
@@ -65,6 +64,7 @@ import {
   getFieldsForIndex,
   getLogTypeOptions,
   getPlugins,
+  setBreadcrumbs,
 } from '../../../utils/helpers';
 import { severityOptions } from '../../../pages/Alerts/utils/constants';
 import {
@@ -77,6 +77,7 @@ import { NotificationsCallOut } from '../../../../public/components/Notification
 import { ExperimentalBanner } from '../components/ExperimentalBanner';
 import { ALERT_SEVERITY_OPTIONS } from '../../CreateDetector/components/ConfigureAlerts/utils/constants';
 import uuid from 'uuid';
+import { PageHeader } from '../../../components/PageHeader/PageHeader';
 
 export interface CreateCorrelationRuleProps extends DataSourceProps {
   indexService: IndexService;
@@ -414,7 +415,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
     props.history.push(ROUTES.CORRELATION_RULES);
   };
 
-  const context = useContext(CoreServicesContext);
   const getIndices = useCallback(async () => {
     try {
       const dataSourcesRes = await getDataSources(props.indexService, props.notifications);
@@ -830,8 +830,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
   };
 
   useEffect(() => {
-    context?.chrome.setBreadcrumbs([
-      BREADCRUMBS.SECURITY_ANALYTICS,
+    setBreadcrumbs([
       BREADCRUMBS.CORRELATIONS,
       BREADCRUMBS.CORRELATION_RULES,
       BREADCRUMBS.CORRELATIONS_RULE_CREATE,
@@ -840,14 +839,16 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
 
   return (
     <>
-      <EuiTitle>
-        <h1>{`${action} correlation rule`}</h1>
-      </EuiTitle>
-      <EuiText size="s" color="subdued">
-        {action === 'Create' ? 'Create a' : 'Edit'} correlation rule to define threat scenarios of
-        interest between different log sources.
-      </EuiText>
-      <EuiSpacer size="l" />
+      <PageHeader>
+        <EuiTitle>
+          <h1>{`${action} correlation rule`}</h1>
+        </EuiTitle>
+        <EuiText size="s" color="subdued">
+          {action === 'Create' ? 'Create a' : 'Edit'} correlation rule to define threat scenarios of
+          interest between different log sources.
+        </EuiText>
+        <EuiSpacer size="l" />
+      </PageHeader>
       <Formik
         initialValues={initialValues}
         validate={(values) => {

@@ -30,6 +30,7 @@ import {
   formatRuleType,
   getLogTypeFilterOptions,
   renderTime,
+  setBreadcrumbs,
 } from '../../../../utils/helpers';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
@@ -69,7 +70,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
   }
 
   async componentDidMount() {
-    this.context.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.DETECTORS]);
+    setBreadcrumbs([BREADCRUMBS.DETECTORS]);
     await this.getDetectors();
   }
 

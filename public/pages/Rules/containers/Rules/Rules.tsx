@@ -4,24 +4,23 @@
  */
 
 import { EuiButton, EuiFlexGroup, EuiFlexItem, EuiPanel, EuiSpacer, EuiTitle } from '@elastic/eui';
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { RulesTable } from '../../components/RulesTable/RulesTable';
 import { RuleTableItem } from '../../utils/helpers';
 import { RuleViewerFlyout } from '../../components/RuleViewerFlyout/RuleViewerFlyout';
 import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { CoreServicesContext } from '../../../../components/core_services';
 import { DataStore } from '../../../../store/DataStore';
 import { DataSourceProps } from '../../../../../types';
+import { setBreadcrumbs } from '../../../../utils/helpers';
+import { PageHeader } from '../../../../components/PageHeader/PageHeader';
 
 export interface RulesProps extends RouteComponentProps, DataSourceProps {
   notifications?: NotificationsStart;
 }
 
 export const Rules: React.FC<RulesProps> = (props) => {
-  const context = useContext(CoreServicesContext);
-
   const [allRules, setAllRules] = useState<RuleTableItem[]>([]);
   const [flyoutData, setFlyoutData] = useState<RuleTableItem | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
@@ -46,7 +45,7 @@ export const Rules: React.FC<RulesProps> = (props) => {
   }, [DataStore.rules.getAllRules]);
 
   useEffect(() => {
-    context?.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.RULES]);
+    setBreadcrumbs([BREADCRUMBS.RULES]);
   }, []);
 
   useEffect(() => {
@@ -95,25 +94,31 @@ export const Rules: React.FC<RulesProps> = (props) => {
         />
       ) : null}
       <EuiFlexGroup direction="column">
-        <EuiFlexItem>
-          <EuiFlexGroup gutterSize={'s'} justifyContent={'spaceBetween'}>
-            <EuiFlexItem>
-              <EuiTitle size="m">
-                <h1>Detection rules</h1>
-              </EuiTitle>
-            </EuiFlexItem>
-            <EuiFlexItem>
-              <EuiFlexGroup justifyContent="flexEnd">
-                {headerActions.map((action, idx) => (
-                  <EuiFlexItem key={idx} grow={false}>
-                    {action}
-                  </EuiFlexItem>
-                ))}
-              </EuiFlexGroup>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-          <EuiSpacer size={'m'} />
-        </EuiFlexItem>
+        <PageHeader
+          appRightControls={headerActions.map((action) => ({
+            renderComponent: action,
+          }))}
+        >
+          <EuiFlexItem>
+            <EuiFlexGroup gutterSize={'s'} justifyContent={'spaceBetween'}>
+              <EuiFlexItem>
+                <EuiTitle size="m">
+                  <h1>Detection rules</h1>
+                </EuiTitle>
+              </EuiFlexItem>
+              <EuiFlexItem>
+                <EuiFlexGroup justifyContent="flexEnd">
+                  {headerActions.map((action, idx) => (
+                    <EuiFlexItem key={idx} grow={false}>
+                      {action}
+                    </EuiFlexItem>
+                  ))}
+                </EuiFlexGroup>
+              </EuiFlexItem>
+            </EuiFlexGroup>
+            <EuiSpacer size={'m'} />
+          </EuiFlexItem>
+        </PageHeader>
         <EuiFlexItem>
           <EuiPanel>
             <RulesTable loading={loading} ruleItems={allRules} showRuleDetails={setFlyoutData} />

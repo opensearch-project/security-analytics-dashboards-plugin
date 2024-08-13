@@ -13,7 +13,11 @@ import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/c
 import { DetectorsService } from '../../../../services';
 import { ServerResponse } from '../../../../../server/models/types';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { errorNotificationToast, successNotificationToast } from '../../../../utils/helpers';
+import {
+  errorNotificationToast,
+  setBreadcrumbs,
+  successNotificationToast,
+} from '../../../../utils/helpers';
 import EditFieldMappings from '../../containers/FieldMappings/EditFieldMapping';
 import { CoreServicesContext } from '../../../../components/core_services';
 import { Detector } from '../../../../../types';
@@ -70,8 +74,7 @@ export default class UpdateFieldMappings extends Component<
         const detector = detectorHit._source;
         detector.detector_type = detector.detector_type.toLowerCase();
 
-        this.context.chrome.setBreadcrumbs([
-          BREADCRUMBS.SECURITY_ANALYTICS,
+        setBreadcrumbs([
           BREADCRUMBS.DETECTORS,
           BREADCRUMBS.DETECTORS_DETAILS(detectorHit._source.name, detectorHit._id),
           {

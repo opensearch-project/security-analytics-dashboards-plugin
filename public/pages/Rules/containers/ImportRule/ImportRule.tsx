@@ -5,17 +5,17 @@
 
 import { BrowserServices } from '../../../../models/interfaces';
 import { RuleEditorContainer } from '../../components/RuleEditor/RuleEditorContainer';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { EuiButton, EuiFilePicker, EuiFlexGroup, EuiFlexItem, EuiSpacer } from '@elastic/eui';
 import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { RouteComponentProps } from 'react-router-dom';
 import { dump, load } from 'js-yaml';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { CoreServicesContext } from '../../../../components/core_services';
-import { setBreadCrumb } from '../../utils/helpers';
+import { setRulesRelatedBreadCrumb } from '../../utils/helpers';
 import { Rule } from '../../../../../types';
 import { DEFAULT_RULE_UUID } from '../../../../../common/constants';
+import { setBreadcrumbs } from '../../../../utils/helpers';
 
 export interface ImportRuleProps {
   services: BrowserServices;
@@ -23,8 +23,7 @@ export interface ImportRuleProps {
   notifications?: NotificationsStart;
 }
 
-export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notifications }) => {
-  const context = useContext(CoreServicesContext);
+export const ImportRule: React.FC<ImportRuleProps> = ({ history, notifications }) => {
   const [fileError, setFileError] = useState('');
   const onChange = useCallback((files: FileList | null) => {
     setFileError('');
@@ -115,7 +114,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, services, notif
         </EuiFlexGroup>
       </>
     );
-    setBreadCrumb(BREADCRUMBS.RULES_IMPORT, context?.chrome.setBreadcrumbs);
+    setRulesRelatedBreadCrumb(BREADCRUMBS.RULES_IMPORT, setBreadcrumbs);
   }, [fileError, onChange]);
 
   return content;

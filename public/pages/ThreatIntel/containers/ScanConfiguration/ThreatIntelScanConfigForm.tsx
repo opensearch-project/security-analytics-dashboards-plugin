@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   EuiButton,
   EuiButtonEmpty,
@@ -14,7 +14,6 @@ import {
   EuiTitle,
 } from '@elastic/eui';
 import { BREADCRUMBS, PLUGIN_NAME, ROUTES } from '../../../../utils/constants';
-import { CoreServicesContext } from '../../../../components/core_services';
 import { SelectThreatIntelLogSources } from '../../components/SelectLogSourcesForm/SelectThreatIntelLogSourcesForm';
 import {
   ThreatIntelScanConfig,
@@ -33,7 +32,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { ConfigureThreatIntelScanStep } from '../../utils/constants';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { PeriodSchedule } from '../../../../../models/interfaces';
-import { errorNotificationToast } from '../../../../utils/helpers';
+import { errorNotificationToast, setBreadcrumbs } from '../../../../utils/helpers';
 import { validateName } from '../../../../utils/validation';
 
 export interface ThreatIntelScanConfigFormProps
@@ -69,7 +68,6 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
 }) => {
   const isEdit = location.pathname.includes(ROUTES.THREAT_INTEL_EDIT_SCAN_CONFIG);
   const [scanId, setScanId] = useState('');
-  const context = useContext(CoreServicesContext);
   const [currentStep, setCurrentStep] = useState(
     location.state?.step ?? ConfigureThreatIntelScanStep.SelectLogSources
   );
@@ -101,8 +99,7 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
   }, [formErrors]);
 
   useEffect(() => {
-    context?.chrome.setBreadcrumbs([
-      BREADCRUMBS.SECURITY_ANALYTICS,
+    setBreadcrumbs([
       BREADCRUMBS.THREAT_INTEL_OVERVIEW,
       isEdit
         ? BREADCRUMBS.THREAT_INTEL_EDIT_SCAN_CONFIG

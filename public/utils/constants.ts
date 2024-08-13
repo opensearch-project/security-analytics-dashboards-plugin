@@ -3,12 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { SimpleSavedObject } from 'opensearch-dashboards/public';
+import { CoreStart, IUiSettingsClient, SimpleSavedObject } from 'opensearch-dashboards/public';
 import { Detector, LogType, ServerResponse } from '../../types';
 import { DetectorInput, PeriodSchedule } from '../../models/interfaces';
 import { DetectorHit } from '../../server/models/interfaces';
 import _ from 'lodash';
 import { euiPaletteColorBlind } from '@elastic/eui';
+import { createGetterSetter } from '../../../../src/plugins/opensearch_dashboards_utils/public';
+import { NavigationPublicPluginStart } from '../../../../src/plugins/navigation/public';
 
 export const DATE_MATH_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
 export const MAX_RECENTLY_USED_TIME_RANGES = 5;
@@ -19,6 +21,7 @@ export const PLUGIN_NAME = 'opensearch_security_analytics_dashboards';
 export const OS_NOTIFICATION_PLUGIN = 'opensearch-notifications';
 
 export const DEFAULT_EMPTY_DATA = '-';
+export const OVERVIEW_NAV_ID = `overview`;
 export const THREAT_ALERTS_NAV_ID = `threat_alerts`;
 export const FINDINGS_NAV_ID = `findings`;
 export const CORRELATIONS_NAV_ID = `correlations`;
@@ -239,3 +242,21 @@ export enum AlertTabId {
   ThreatIntel = 'threat-intel',
   Correlations = 'correlations',
 }
+
+export const [getUISettings, setUISettings] = createGetterSetter<IUiSettingsClient>('UISettings');
+
+export const getUseUpdatedUx = () => {
+  return getUISettings().get('home:useNewHomePage', false);
+};
+
+export const [getNavigationUI, setNavigationUI] = createGetterSetter<
+  NavigationPublicPluginStart['ui']
+>('navigation');
+
+export const [getApplication, setApplication] = createGetterSetter<CoreStart['application']>(
+  'application'
+);
+
+export const [getBreadCrumbsSetter, setBreadCrumbsSetter] = createGetterSetter<
+  CoreStart['chrome']['setBreadcrumbs']
+>('breadCrumbSetter');

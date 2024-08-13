@@ -12,13 +12,31 @@ import {
   Plugin,
   PluginInitializerContext,
 } from '../../../src/core/public';
-import { CORRELATIONS_NAV_ID, CORRELATIONS_RULE_NAV_ID, DETECTORS_NAV_ID, DETECTORS_RULE_NAV_ID, FINDINGS_NAV_ID, LOG_TYPES_NAV_ID, PLUGIN_NAME, ROUTES, THREAT_ALERTS_NAV_ID, THREAT_INTEL_NAV_ID, setDarkMode } from './utils/constants';
+import {
+  CORRELATIONS_NAV_ID,
+  CORRELATIONS_RULE_NAV_ID,
+  DETECTORS_NAV_ID,
+  DETECTORS_RULE_NAV_ID,
+  FINDINGS_NAV_ID,
+  LOG_TYPES_NAV_ID,
+  OVERVIEW_NAV_ID,
+  PLUGIN_NAME,
+  ROUTES,
+  THREAT_ALERTS_NAV_ID,
+  THREAT_INTEL_NAV_ID,
+  setApplication,
+  setBreadCrumbsSetter,
+  setDarkMode,
+  setNavigationUI,
+  setUISettings,
+} from './utils/constants';
 import { SecurityAnalyticsPluginSetup, SecurityAnalyticsPluginStart } from './index';
 import { DataPublicPluginStart, DataPublicPluginSetup } from '../../../src/plugins/data/public';
 import { SecurityAnalyticsPluginConfigType } from '../config';
 import { setSecurityAnalyticsPluginConfig } from '../common/helpers';
 import { DataSourceManagementPluginSetup } from '../../../src/plugins/data_source_management/public';
 import { DataSourcePluginStart } from '../../../src/plugins/data_source/public';
+import { NavigationPublicPluginStart } from 'src/plugins/navigation/public';
 
 export interface SecurityAnalyticsPluginSetupDeps {
   data: DataPublicPluginSetup;
@@ -26,6 +44,7 @@ export interface SecurityAnalyticsPluginSetupDeps {
 }
 export interface SecurityAnalyticsPluginStartDeps {
   data: DataPublicPluginStart;
+  navigation: NavigationPublicPluginStart;
   dataSource?: DataSourcePluginStart;
 }
 
@@ -45,9 +64,8 @@ export class SecurityAnalyticsPlugin
     core: CoreSetup<SecurityAnalyticsPluginStartDeps>,
     { dataSourceManagement }: SecurityAnalyticsPluginSetupDeps
   ): SecurityAnalyticsPluginSetup {
-
     const mountWrapper = async (params: AppMountParameters, redirect: string) => {
-      const { renderApp } = await import("./security_analytics_app");
+      const { renderApp } = await import('./security_analytics_app');
       const [coreStart, depsStart] = await core.getStartServices();
       return renderApp(coreStart, params, redirect, depsStart, dataSourceManagement);
     };
@@ -69,8 +87,15 @@ export class SecurityAnalyticsPlugin
     });
 
     if (core.chrome.navGroup.getNavGroupEnabled()) {
+      core.application.register({
+        id: OVERVIEW_NAV_ID,
+        title: 'Overview',
+        order: 0,
+        mount: async (params: AppMountParameters) => {
+          return mountWrapper(params, ROUTES.LANDING_PAGE);
+        },
+      });
 
-      // register investigate and configure routes
       core.application.register({
         id: THREAT_ALERTS_NAV_ID,
         title: 'Threat alerts',
@@ -152,6 +177,7 @@ export class SecurityAnalyticsPlugin
       });
 
       const navlinks = [
+        { id: OVERVIEW_NAV_ID, showInAllNavGroup: true },
         { id: THREAT_ALERTS_NAV_ID, showInAllNavGroup: true },
         { id: FINDINGS_NAV_ID, showInAllNavGroup: true },
         { id: CORRELATIONS_NAV_ID },
@@ -179,7 +205,14 @@ export class SecurityAnalyticsPlugin
     };
   }
 
-  public start(_core: CoreStart): SecurityAnalyticsPluginStart {
+  public start(
+    core: CoreStart,
+    { navigation }: SecurityAnalyticsPluginStartDeps
+  ): SecurityAnalyticsPluginStart {
+    setUISettings(core.uiSettings);
+    setNavigationUI(navigation.ui);
+    setApplication(core.application);
+    setBreadCrumbsSetter(core.chrome.setBreadcrumbs);
     return {};
   }
 }

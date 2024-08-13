@@ -17,8 +17,7 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import React, { MouseEventHandler, useCallback, useContext, useEffect, useMemo } from 'react';
-import { CoreServicesContext } from '../../../../components/core_services';
+import React, { MouseEventHandler, useCallback, useEffect, useMemo } from 'react';
 import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { useState } from 'react';
 import {
@@ -32,6 +31,7 @@ import { deriveFormModelFromConfig, getThreatIntelNextStepsProps } from '../../u
 import { ThreatIntelOverviewActions } from '../../components/ThreatIntelOverviewActions/ThreatIntelOverviewActions';
 import ThreatIntelService from '../../../../services/ThreatIntelService';
 import { ThreatIntelLogScanConfig } from '../../components/ThreatIntelLogScanConfig/ThreatIntelLogScanConfig';
+import { setBreadcrumbs } from '../../../../utils/helpers';
 
 export interface ThreatIntelOverviewProps extends RouteComponentProps {
   threatIntelService: ThreatIntelService;
@@ -41,7 +41,6 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
   history,
   threatIntelService,
 }) => {
-  const context = useContext(CoreServicesContext);
   const [threatIntelSources, setThreatIntelSources] = useState<ThreatIntelSourceItem[]>([]);
   const [scanConfig, setScanConfig] = useState<ThreatIntelScanConfig | undefined>(undefined);
   const [flyoutContent, setFlyoutContent] = useState<React.ReactNode>(null);
@@ -122,10 +121,7 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
   );
 
   useEffect(() => {
-    context?.chrome.setBreadcrumbs([
-      BREADCRUMBS.SECURITY_ANALYTICS,
-      BREADCRUMBS.THREAT_INTEL_OVERVIEW,
-    ]);
+    setBreadcrumbs([BREADCRUMBS.THREAT_INTEL_OVERVIEW]);
   }, []);
 
   useEffect(() => {

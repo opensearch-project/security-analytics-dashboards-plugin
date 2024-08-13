@@ -28,7 +28,12 @@ import { IoCsTable } from '../../components/IoCsTable/IoCsTable';
 import { ThreatIntelSourceDetails } from '../../components/ThreatIntelSourceDetails/ThreatIntelSourceDetails';
 import { IocLabel } from '../../../../../common/constants';
 import { ThreatIntelService } from '../../../../services';
-import { errorNotificationToast, parseSchedule, renderTime } from '../../../../utils/helpers';
+import {
+  errorNotificationToast,
+  parseSchedule,
+  renderTime,
+  setBreadcrumbs,
+} from '../../../../utils/helpers';
 import DeleteModal from '../../../../components/DeleteModal';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 
@@ -65,9 +70,8 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
   }, []);
 
   useEffect(() => {
-    const baseCrumbs = [BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.THREAT_INTEL_OVERVIEW];
-
-    coreContext?.chrome.setBreadcrumbs(
+    const baseCrumbs = [BREADCRUMBS.THREAT_INTEL_OVERVIEW];
+    setBreadcrumbs(
       !source
         ? baseCrumbs
         : [...baseCrumbs, BREADCRUMBS.THREAT_INTEL_SOURCE_DETAILS(source.name, sourceId)]
