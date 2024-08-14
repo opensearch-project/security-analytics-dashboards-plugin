@@ -9,7 +9,7 @@ import { DetectorInput, PeriodSchedule } from '../../models/interfaces';
 import { DetectorHit } from '../../server/models/interfaces';
 import _ from 'lodash';
 import { euiPaletteColorBlind } from '@elastic/eui';
-import { createGetterSetter } from '../../../../src/plugins/opensearch_dashboards_utils/public';
+import { createGetterSetter } from '../../../../src/plugins/opensearch_dashboards_utils/common';
 import { NavigationPublicPluginStart } from '../../../../src/plugins/navigation/public';
 
 export const DATE_MATH_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';

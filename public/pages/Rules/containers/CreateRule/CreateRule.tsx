@@ -10,7 +10,6 @@ import { RouteComponentProps } from 'react-router-dom';
 import { BREADCRUMBS } from '../../../../utils/constants';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { setRulesRelatedBreadCrumb } from '../../utils/helpers';
-import { EuiTitle, EuiText, EuiLink } from '@elastic/eui';
 import { setBreadcrumbs } from '../../../../utils/helpers';
 
 export interface CreateRuleProps {
@@ -26,22 +25,17 @@ export const CreateRule: React.FC<CreateRuleProps> = ({ history, services, notif
 
   return (
     <RuleEditorContainer
-      // title={
-      //   <>
-      //     <EuiTitle size={'m'}>
-      //       <h3>Create detection rule</h3>
-      //     </EuiTitle>
-      //     <EuiText size="s" color="subdued">
-      //       Create a rule for detectors to identify threat scenarios for different log sources.{' '}
-      //       <EuiLink
-      //         href="https://sigmahq.github.io/sigma-specification/Sigma_specification.html"
-      //         target="_blank"
-      //       >
-      //         Learn more in the Sigma rules specification
-      //       </EuiLink>
-      //     </EuiText>
-      //   </>
-      // }
+      title="Create detection rule"
+      subtitleData={[
+        {
+          text:
+            'Create a rule for detectors to identify threat scenarios for different log sources.',
+        },
+        {
+          text: 'Learn more in the Sigma rules specification',
+          href: 'https://sigmahq.github.io/sigma-specification/Sigma_specification.html',
+        },
+      ]}
       history={history}
       notifications={notifications}
       mode={'create'}
