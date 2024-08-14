@@ -189,7 +189,7 @@ Object {
                                 title="EuiIconMockEuiIconMock"
                               >
                                 <div
-                                  class="euiSwitch"
+                                  class="euiSwitch euiSwitch--primary"
                                 >
                                   <button
                                     aria-checked="true"
@@ -570,7 +570,7 @@ Object {
                               title="EuiIconMockEuiIconMock"
                             >
                               <div
-                                class="euiSwitch"
+                                class="euiSwitch euiSwitch--primary"
                               >
                                 <button
                                   aria-checked="true"
