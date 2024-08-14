@@ -24,7 +24,7 @@ import {
 } from '../utils/helpers';
 import { NotificationsService } from '../../../../../services';
 import { validateName } from '../../../../../utils/validation';
-import { BREADCRUMBS } from '../../../../../utils/constants';
+import { BREADCRUMBS, getUseUpdatedUx } from '../../../../../utils/constants';
 import {
   AlertCondition,
   CreateDetectorSteps,
@@ -164,9 +164,14 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
       detector: { triggers },
     } = this.props;
 
-    let getPageTitle = (): string | JSX.Element => {
+    let getPageTitle = (): React.ReactNode => {
       if (isEdit) {
-        return <>{`Alert triggers (${triggers.length})`}</>;
+        return getUseUpdatedUx() ? null : (
+          <>
+            {`Alert triggers (${triggers.length})`}
+            <EuiSpacer size={'m'} />
+          </>
+        );
       }
 
       return (
@@ -177,6 +182,7 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
           <EuiText size="s" color="subdued">
             Get notified when specific rule conditions are found by the detector.
           </EuiText>
+          <EuiSpacer size={'m'} />
         </>
       );
     };
@@ -185,8 +191,6 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
     const content = (
       <>
         {getPageTitle()}
-
-        <EuiSpacer size={'m'} />
 
         {triggers.map((alertCondition, index) => (
           <div key={index}>
