@@ -32,6 +32,7 @@ import { ThreatIntelOverviewActions } from '../../components/ThreatIntelOverview
 import ThreatIntelService from '../../../../services/ThreatIntelService';
 import { ThreatIntelLogScanConfig } from '../../components/ThreatIntelLogScanConfig/ThreatIntelLogScanConfig';
 import { setBreadcrumbs } from '../../../../utils/helpers';
+import { PageHeader } from '../../../../components/PageHeader/PageHeader';
 
 export interface ThreatIntelOverviewProps extends RouteComponentProps {
   threatIntelService: ThreatIntelService;
@@ -155,35 +156,59 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
     logSources.length > 0
   );
 
+  const threatIntelOverviewActions = (
+    <ThreatIntelOverviewActions
+      history={history}
+      scanConfig={scanConfig}
+      sourceCount={threatIntelSources.length}
+      toggleScan={toggleScan}
+    />
+  );
+
   return (
     <>
-      <EuiFlexGroup alignItems="flexStart">
-        <EuiFlexItem>
-          <EuiTitle size="m">
-            <h1>Threat intelligence</h1>
-          </EuiTitle>
-        </EuiFlexItem>
-        <EuiFlexItem grow={false}>
-          <ThreatIntelOverviewActions
-            history={history}
-            scanConfig={scanConfig}
-            sourceCount={threatIntelSources.length}
-            toggleScan={toggleScan}
-          />
-        </EuiFlexItem>
-      </EuiFlexGroup>
-      <EuiSpacer size="s" />
-      <EuiText color="subdued">
-        <span>
-          Scan log data for indicators of compromise from threat intel data streams to identify
-          malicious actors and security threats.{' '}
-          <EuiLink href="" external>
-            Learn more
-          </EuiLink>
-          .
-        </span>
-      </EuiText>
-      <EuiSpacer />
+      <PageHeader
+        appRightControls={[{ renderComponent: threatIntelOverviewActions }]}
+        appDescriptionControls={[
+          {
+            description: `Scan log data for indicators of compromise from threat intel data streams to identify
+          malicious actors and security threats.`,
+          },
+          {
+            label: 'Learn more',
+            href:
+              'https://opensearch.org/docs/latest/security-analytics/threat-intelligence/index/',
+            controlType: 'link',
+            target: '_blank',
+            iconType: 'popout',
+            iconSide: 'right',
+          },
+        ]}
+      >
+        <EuiFlexGroup alignItems="flexStart">
+          <EuiFlexItem>
+            <EuiTitle size="m">
+              <h1>Threat intelligence</h1>
+            </EuiTitle>
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>{threatIntelOverviewActions}</EuiFlexItem>
+        </EuiFlexGroup>
+        <EuiSpacer size="s" />
+        <EuiText color="subdued">
+          <span>
+            Scan log data for indicators of compromise from threat intel data streams to identify
+            malicious actors and security threats.{' '}
+            <EuiLink
+              href="https://opensearch.org/docs/latest/security-analytics/threat-intelligence/index/"
+              external
+            >
+              Learn more
+            </EuiLink>
+            .
+          </span>
+        </EuiText>
+        <EuiSpacer />
+      </PageHeader>
       <EuiAccordion
         id="threat-intel-management-steps"
         buttonContent="Get started"

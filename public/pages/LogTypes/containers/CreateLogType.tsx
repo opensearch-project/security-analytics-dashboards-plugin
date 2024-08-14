@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ContentPanel } from '../../../components/ContentPanel';
 import React, { useState } from 'react';
 import { LogTypeForm } from '../components/LogTypeForm';
 import { LogTypeBase } from '../../../../types';
@@ -14,6 +13,8 @@ import { useEffect } from 'react';
 import { DataStore } from '../../../store/DataStore';
 import { setBreadcrumbs, successNotificationToast } from '../../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { EuiPanel, EuiSpacer, EuiText, EuiTitle } from '@elastic/eui';
+import { PageHeader } from '../../../components/PageHeader/PageHeader';
 
 export interface CreateLogTypeProps extends RouteComponentProps {
   notifications: NotificationsStart;
@@ -26,14 +27,20 @@ export const CreateLogType: React.FC<CreateLogTypeProps> = ({ history, notificat
     setBreadcrumbs([BREADCRUMBS.DETECTORS, BREADCRUMBS.LOG_TYPES, BREADCRUMBS.LOG_TYPE_CREATE]);
   }, []);
 
+  const description =
+    'Create log type to categorize and identify detection rules for your data sources.';
+
   return (
-    <ContentPanel
-      title={'Create log type'}
-      subTitleText={
-        <p>Create log type to categorize and identify detection rules for your data sources.</p>
-      }
-      hideHeaderBorder={true}
-    >
+    <EuiPanel>
+      <PageHeader appDescriptionControls={[{ description }]}>
+        <EuiTitle>
+          <h3>Create log type</h3>
+        </EuiTitle>
+        <EuiText size="s" color="subdued">
+          {description}
+        </EuiText>
+        <EuiSpacer />
+      </PageHeader>
       <LogTypeForm
         logTypeDetails={{ ...logTypeDetails, id: '', detectionRulesCount: 0 }}
         isEditMode={true}
@@ -49,6 +56,6 @@ export const CreateLogType: React.FC<CreateLogTypeProps> = ({ history, notificat
           }
         }}
       />
-    </ContentPanel>
+    </EuiPanel>
   );
 };

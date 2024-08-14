@@ -833,19 +833,29 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
     setBreadcrumbs([
       BREADCRUMBS.CORRELATIONS,
       BREADCRUMBS.CORRELATION_RULES,
-      BREADCRUMBS.CORRELATIONS_RULE_CREATE,
+      BREADCRUMBS.CORRELATIONS_RULE_CREATE(action),
     ]);
-  }, []);
+  }, [action]);
+
+  const description = `${
+    action === 'Create' ? 'Create a' : 'Edit'
+  } correlation rule to define threat scenarios of
+  interest between different log sources.`;
 
   return (
     <>
-      <PageHeader>
+      <PageHeader
+        appDescriptionControls={[
+          {
+            description,
+          },
+        ]}
+      >
         <EuiTitle>
           <h1>{`${action} correlation rule`}</h1>
         </EuiTitle>
         <EuiText size="s" color="subdued">
-          {action === 'Create' ? 'Create a' : 'Edit'} correlation rule to define threat scenarios of
-          interest between different log sources.
+          {description}
         </EuiText>
         <EuiSpacer size="l" />
       </PageHeader>

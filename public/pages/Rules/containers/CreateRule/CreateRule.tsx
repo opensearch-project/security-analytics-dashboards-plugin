@@ -26,22 +26,22 @@ export const CreateRule: React.FC<CreateRuleProps> = ({ history, services, notif
 
   return (
     <RuleEditorContainer
-      title={
-        <>
-          <EuiTitle size={'m'}>
-            <h3>Create detection rule</h3>
-          </EuiTitle>
-          <EuiText size="s" color="subdued">
-            Create a rule for detectors to identify threat scenarios for different log sources.{' '}
-            <EuiLink
-              href="https://sigmahq.github.io/sigma-specification/Sigma_specification.html"
-              target="_blank"
-            >
-              Learn more in the Sigma rules specification
-            </EuiLink>
-          </EuiText>
-        </>
-      }
+      // title={
+      //   <>
+      //     <EuiTitle size={'m'}>
+      //       <h3>Create detection rule</h3>
+      //     </EuiTitle>
+      //     <EuiText size="s" color="subdued">
+      //       Create a rule for detectors to identify threat scenarios for different log sources.{' '}
+      //       <EuiLink
+      //         href="https://sigmahq.github.io/sigma-specification/Sigma_specification.html"
+      //         target="_blank"
+      //       >
+      //         Learn more in the Sigma rules specification
+      //       </EuiLink>
+      //     </EuiText>
+      //   </>
+      // }
       history={history}
       notifications={notifications}
       mode={'create'}

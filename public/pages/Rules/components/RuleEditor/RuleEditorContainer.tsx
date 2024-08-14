@@ -16,7 +16,7 @@ import { DataStore } from '../../../../store/DataStore';
 import { Rule } from '../../../../../types';
 
 export interface RuleEditorProps {
-  title: string | JSX.Element;
+  title?: string | JSX.Element;
   rule?: Rule;
   history: RouteComponentProps['history'];
   notifications?: NotificationsStart;

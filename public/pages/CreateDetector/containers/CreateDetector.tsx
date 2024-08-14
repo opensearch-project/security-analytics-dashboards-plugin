@@ -20,7 +20,6 @@ import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR, PLUGIN_NAME, ROUTES } from '../../
 import ConfigureAlerts from '../components/ConfigureAlerts';
 import { FieldMapping } from '../../../../models/interfaces';
 import { EuiContainedStepProps } from '@elastic/eui/src/components/steps/steps';
-import { CoreServicesContext } from '../../../components/core_services';
 import { BrowserServices } from '../../../models/interfaces';
 import { CreateDetectorRulesOptions } from '../../../models/types';
 import { CreateDetectorRulesState } from '../components/DefineDetector/components/DetectionRules/DetectionRules';
@@ -39,6 +38,7 @@ import {
 import { DataStore } from '../../../store/DataStore';
 import { errorNotificationToast, setBreadcrumbs } from '../../../utils/helpers';
 import { MetricsContext } from '../../../metrics/MetricsContext';
+import { PageHeader } from '../../../components/PageHeader/PageHeader';
 
 interface CreateDetectorProps extends RouteComponentProps, DataSourceProps, DataSourceManagerProps {
   isEdit: boolean;
@@ -59,7 +59,6 @@ export interface CreateDetectorState {
 }
 
 export default class CreateDetector extends Component<CreateDetectorProps, CreateDetectorState> {
-  static contextType = CoreServicesContext;
   private triggerCounter = 1;
 
   constructor(props: CreateDetectorProps) {
@@ -383,10 +382,12 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
           </EuiFlexItem>
           <EuiFlexItem>
             <>
-              <EuiTitle>
-                <h1>Create detector</h1>
-              </EuiTitle>
-              <EuiSpacer />
+              <PageHeader>
+                <EuiTitle>
+                  <h1>Create detector</h1>
+                </EuiTitle>
+                <EuiSpacer />
+              </PageHeader>
               {this.getStepContent()}
             </>
           </EuiFlexItem>

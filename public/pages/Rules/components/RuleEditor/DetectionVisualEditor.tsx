@@ -556,9 +556,9 @@ export class DetectionVisualEditor extends React.Component<
                   const valueId = `value_${selectionIdx}_${idx}`;
                   return (
                     <div key={`Map-${idx}`} className={'detection-visual-editor-accordion-wrapper'}>
+                      {idx > 0 && <EuiSpacer />}
                       <EuiAccordion
                         className="euiAccordionForm detection-visual-editor-accordion"
-                        buttonClassName="euiAccordionForm__button"
                         id={`Map-${idx}`}
                         key={`Map-${idx}`}
                         data-test-subj={`Map-${idx}`}
@@ -581,9 +581,8 @@ export class DetectionVisualEditor extends React.Component<
                           ) : null
                         }
                         style={{ maxWidth: '70%' }}
+                        paddingSize="m"
                       >
-                        <EuiSpacer size="m" />
-
                         <EuiFlexGroup>
                           <EuiFlexItem grow={false} style={{ minWidth: 200 }}>
                             <EuiFormRow

@@ -6,16 +6,24 @@
 import { BrowserServices } from '../../../../models/interfaces';
 import { RuleEditorContainer } from '../../components/RuleEditor/RuleEditorContainer';
 import React, { useCallback, useEffect, useState } from 'react';
-import { EuiButton, EuiFilePicker, EuiFlexGroup, EuiFlexItem, EuiSpacer } from '@elastic/eui';
+import {
+  EuiButton,
+  EuiFilePicker,
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiPanel,
+  EuiSpacer,
+  EuiTitle,
+} from '@elastic/eui';
 import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { RouteComponentProps } from 'react-router-dom';
 import { dump, load } from 'js-yaml';
-import { ContentPanel } from '../../../../components/ContentPanel';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { setRulesRelatedBreadCrumb } from '../../utils/helpers';
 import { Rule } from '../../../../../types';
 import { DEFAULT_RULE_UUID } from '../../../../../common/constants';
 import { setBreadcrumbs } from '../../../../utils/helpers';
+import { PageHeader } from '../../../../components/PageHeader/PageHeader';
 
 export interface ImportRuleProps {
   services: BrowserServices;
@@ -92,7 +100,12 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, notifications }
   useEffect(() => {
     setContent(
       <>
-        <ContentPanel title="Import rule">
+        <EuiPanel>
+          <PageHeader>
+            <EuiTitle>
+              <h3>Import rule</h3>
+            </EuiTitle>
+          </PageHeader>
           <EuiFilePicker
             id={'filePickerId'}
             fullWidth
@@ -105,7 +118,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, notifications }
             data-test-subj="import_rule_file_picker"
           />
           {fileError && <div style={{ color: 'red', margin: '0 auto' }}>Error: {fileError}</div>}
-        </ContentPanel>
+        </EuiPanel>
         <EuiSpacer size="xl" />
         <EuiFlexGroup justifyContent="flexEnd">
           <EuiFlexItem grow={false}>

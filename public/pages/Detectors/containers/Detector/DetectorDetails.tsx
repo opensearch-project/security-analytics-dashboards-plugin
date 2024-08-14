@@ -31,6 +31,7 @@ import { NotificationsStart, SimpleSavedObject } from 'opensearch-dashboards/pub
 import { ISavedObjectsService, ServerResponse } from '../../../../../types';
 import { PENDING_DETECTOR_ID } from '../../../CreateDetector/utils/constants';
 import { DataStore } from '../../../../store/DataStore';
+import { PageHeader } from '../../../../components/PageHeader/PageHeader';
 
 export interface DetectorDetailsProps
   extends RouteComponentProps<
@@ -341,7 +342,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     this.setState({ loading: false });
   };
 
-  createHeaderActions(): React.ReactNode[] {
+  createHeaderActions(): React.JSX.Element[] {
     const { loading } = this.state;
     const { isActionsMenuOpen } = this.state;
     return [
@@ -475,34 +476,45 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
 
     return (
       <>
-        <EuiFlexGroup>
-          <EuiFlexItem>
-            <EuiFlexGroup alignItems="center">
-              <EuiFlexItem grow={false}>
-                <EuiTitle data-test-subj={'detector-details-detector-name'}>
-                  <h1>{detector.name}</h1>
-                </EuiTitle>
-              </EuiFlexItem>
-              <EuiFlexItem grow={false}>
-                <EuiHealth color={statusColor}>{statusText}</EuiHealth>
-              </EuiFlexItem>
-            </EuiFlexGroup>
-          </EuiFlexItem>
-          <EuiFlexItem>
-            <EuiFlexGroup justifyContent="flexEnd" alignItems="center">
-              {!creatingDetector && !createFailed
-                ? this.createHeaderActions().map(
-                    (action: React.ReactNode, idx: number): React.ReactNode => (
-                      <EuiFlexItem key={idx} grow={false}>
-                        {action}
-                      </EuiFlexItem>
+        <PageHeader
+          appBadgeControls={[
+            { renderComponent: <EuiHealth color={statusColor}>{statusText}</EuiHealth> },
+          ]}
+          appRightControls={
+            !creatingDetector && !createFailed
+              ? this.createHeaderActions().map((action) => ({ renderComponent: action }))
+              : undefined
+          }
+        >
+          <EuiFlexGroup>
+            <EuiFlexItem>
+              <EuiFlexGroup alignItems="center">
+                <EuiFlexItem grow={false}>
+                  <EuiTitle data-test-subj={'detector-details-detector-name'}>
+                    <h1>{detector.name}</h1>
+                  </EuiTitle>
+                </EuiFlexItem>
+                <EuiFlexItem grow={false}>
+                  <EuiHealth color={statusColor}>{statusText}</EuiHealth>
+                </EuiFlexItem>
+              </EuiFlexGroup>
+            </EuiFlexItem>
+            <EuiFlexItem>
+              <EuiFlexGroup justifyContent="flexEnd" alignItems="center">
+                {!creatingDetector && !createFailed
+                  ? this.createHeaderActions().map(
+                      (action: React.ReactNode, idx: number): React.ReactNode => (
+                        <EuiFlexItem key={idx} grow={false}>
+                          {action}
+                        </EuiFlexItem>
+                      )
                     )
-                  )
-                : null}
-            </EuiFlexGroup>
-          </EuiFlexItem>
-        </EuiFlexGroup>
-        <EuiSpacer size="xl" />
+                  : null}
+              </EuiFlexGroup>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+          <EuiSpacer size="xl" />
+        </PageHeader>
         <EuiTabs>{this.renderTabs()}</EuiTabs>
         <EuiSpacer size="xl" />
         {selectedTabContent}

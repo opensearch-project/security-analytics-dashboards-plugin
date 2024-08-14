@@ -38,7 +38,6 @@ import {
   getThreatIntelFindingsVisualizationSpec,
   TimeUnit,
 } from '../../../Overview/utils/helpers';
-import { CoreServicesContext } from '../../../../components/core_services';
 import {
   getNotificationChannels,
   parseNotificationChannelsToOptions,
@@ -132,7 +131,6 @@ export const groupByOptionsByTabId = {
 };
 
 class Findings extends Component<FindingsProps, FindingsState> {
-  static contextType = CoreServicesContext;
   private abortGetFindingsControllers: AbortController[] = [];
 
   constructor(props: FindingsProps) {

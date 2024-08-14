@@ -24,7 +24,6 @@ import {
 } from '../utils/helpers';
 import { NotificationsService } from '../../../../../services';
 import { validateName } from '../../../../../utils/validation';
-import { CoreServicesContext } from '../../../../../components/core_services';
 import { BREADCRUMBS } from '../../../../../utils/constants';
 import {
   AlertCondition,
@@ -67,8 +66,6 @@ const isTriggerValid = (triggers: AlertCondition[]) => {
 };
 
 export default class ConfigureAlerts extends Component<ConfigureAlertsProps, ConfigureAlertsState> {
-  static contextType = CoreServicesContext;
-
   constructor(props: ConfigureAlertsProps) {
     super(props);
     this.state = {

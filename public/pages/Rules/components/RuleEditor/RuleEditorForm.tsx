@@ -21,7 +21,6 @@ import {
   EuiPanel,
   EuiIcon,
 } from '@elastic/eui';
-import { ContentPanel } from '../../../../components/ContentPanel';
 import { FieldTextArray } from './components/FieldTextArray';
 import { ruleSeverity, ruleStatus, ruleTypes } from '../../utils/constants';
 import {
@@ -43,6 +42,7 @@ import { getLogTypeOptions } from '../../../../utils/helpers';
 import { getLogTypeLabel } from '../../../LogTypes/utils/helpers';
 import { getSeverityLabel } from '../../../Correlations/utils/constants';
 import { DataSourceContext } from '../../../../services/DataSourceContext';
+import { PageHeader } from '../../../../components/PageHeader/PageHeader';
 
 export interface VisualRuleEditorProps {
   initialValue: RuleEditorFormModel;
@@ -51,7 +51,7 @@ export interface VisualRuleEditorProps {
   submit: (values: RuleEditorFormModel) => void;
   cancel: () => void;
   mode: 'create' | 'edit';
-  title: string | JSX.Element;
+  title?: string | JSX.Element;
 }
 
 const editorTypes = [
@@ -191,7 +191,12 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
         return (
           <Form>
-            <ContentPanel title={title} className={'rule-editor-form'}>
+            <EuiPanel className={'rule-editor-form'}>
+              <PageHeader>
+                <EuiTitle>
+                  <h3>{title}</h3>
+                </EuiTitle>
+              </PageHeader>
               <EuiButtonGroup
                 data-test-subj="change-editor-type"
                 legend="This is editor type selector"
@@ -456,7 +461,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
                   <EuiSpacer size={'xl'} />
 
-                  <EuiPanel style={{ maxWidth: 1000 }}>
+                  <div style={{ maxWidth: 1000 }}>
                     <EuiAccordion
                       id={'additional-details'}
                       initialIsOpen={true}
@@ -465,10 +470,9 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                           Additional details <i>- optional</i>
                         </>
                       }
+                      paddingSize="l"
                     >
                       <div className={'rule-editor-form-additional-details-panel-body'}>
-                        <EuiSpacer />
-
                         <FieldTextArray
                           name="tags"
                           placeholder={'tag'}
@@ -560,10 +564,10 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                         />
                       </div>
                     </EuiAccordion>
-                  </EuiPanel>
+                  </div>
                 </>
               )}
-            </ContentPanel>
+            </EuiPanel>
 
             <EuiSpacer />
 

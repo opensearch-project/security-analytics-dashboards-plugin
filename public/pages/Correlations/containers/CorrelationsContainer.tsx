@@ -41,7 +41,6 @@ import {
   EuiHorizontalRule,
 } from '@elastic/eui';
 import { FilterItem, FilterGroup } from '../components/FilterGroup';
-import { CoreServicesContext } from '../../../components/core_services';
 import {
   BREADCRUMBS,
   DEFAULT_DATE_RANGE,
@@ -88,7 +87,6 @@ interface CorrelationsState {
 }
 
 export class Correlations extends React.Component<CorrelationsProps, CorrelationsState> {
-  static contextType = CoreServicesContext;
   private correlationGraphNetwork?: Network;
 
   constructor(props: CorrelationsProps) {

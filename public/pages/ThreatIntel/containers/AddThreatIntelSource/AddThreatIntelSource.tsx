@@ -47,6 +47,7 @@ import {
   validateName,
 } from '../../../../utils/validation';
 import { setBreadcrumbs } from '../../../../utils/helpers';
+import { PageHeader } from '../../../../components/PageHeader/PageHeader';
 
 enum ErrorKeys {
   s3 = 's3',
@@ -353,17 +354,26 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
   return (
     <>
       <EuiPanel>
-        <EuiTitle>
-          <h4>Add custom threat intelligence source</h4>
-        </EuiTitle>
-        <EuiSpacer size="xs" />
-        <EuiText color="subdued">
-          <p>
-            Add your custom threat intelligence source that contains indicators of malicious
-            behaviors in STIX (Structured Threat Information Expression) format.
-          </p>
-        </EuiText>
-        <EuiSpacer />
+        <PageHeader
+          appDescriptionControls={[
+            {
+              description: `Add your custom threat intelligence source that contains indicators of malicious
+            behaviors in STIX (Structured Threat Information Expression) format.`,
+            },
+          ]}
+        >
+          <EuiTitle>
+            <h4>Add custom threat intelligence source</h4>
+          </EuiTitle>
+          <EuiSpacer size="xs" />
+          <EuiText color="subdued">
+            <p>
+              Add your custom threat intelligence source that contains indicators of malicious
+              behaviors in STIX (Structured Threat Information Expression) format.
+            </p>
+          </EuiText>
+          <EuiSpacer />
+        </PageHeader>
         <EuiText>
           <h4>Details</h4>
         </EuiText>

@@ -34,6 +34,7 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { PeriodSchedule } from '../../../../../models/interfaces';
 import { errorNotificationToast, setBreadcrumbs } from '../../../../utils/helpers';
 import { validateName } from '../../../../utils/validation';
+import { PageHeader } from '../../../../components/PageHeader/PageHeader';
 
 export interface ThreatIntelScanConfigFormProps
   extends RouteComponentProps<
@@ -328,10 +329,12 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
           />
         </EuiFlexItem>
         <EuiFlexItem>
-          <EuiTitle>
-            <h1>{isEdit ? 'Edit' : 'Set up'} real-time scan</h1>
-          </EuiTitle>
-          <EuiSpacer />
+          <PageHeader>
+            <EuiTitle>
+              <h1>{isEdit ? 'Edit' : 'Set up'} real-time scan</h1>
+            </EuiTitle>
+            <EuiSpacer />
+          </PageHeader>
           {getStepConent(currentStep)}
         </EuiFlexItem>
       </EuiFlexGroup>
