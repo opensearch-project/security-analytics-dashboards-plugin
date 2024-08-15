@@ -19,6 +19,7 @@ export const PLUGIN_NAME = 'opensearch_security_analytics_dashboards';
 export const OS_NOTIFICATION_PLUGIN = 'opensearch-notifications';
 
 export const DEFAULT_EMPTY_DATA = '-';
+export const OVERVIEW_NAV_ID = `overview`;
 export const THREAT_ALERTS_NAV_ID = `threat_alerts`;
 export const FINDINGS_NAV_ID = `findings`;
 export const CORRELATIONS_NAV_ID = `correlations`;
@@ -78,6 +79,7 @@ export const BREADCRUMBS = Object.freeze({
   FINDINGS: { text: 'Findings', href: `#${ROUTES.FINDINGS}` },
   DETECTORS: { text: 'Detectors', href: `#${ROUTES.DETECTORS}` },
   DETECTORS_CREATE: { text: 'Create detector', href: `#${ROUTES.DETECTORS_CREATE}` },
+  EDIT_DETECTOR_DETAILS: { text: 'Edit detector details' },
   DETECTORS_DETAILS: (name: string, detectorId: string) => ({
     text: `${name}`,
     href: `#${ROUTES.DETECTOR_DETAILS}/${detectorId}`,
@@ -94,10 +96,10 @@ export const BREADCRUMBS = Object.freeze({
   RULES_IMPORT: { text: 'Import rule', href: `#${ROUTES.RULES_IMPORT}` },
   CORRELATIONS: { text: 'Correlations', href: `#${ROUTES.CORRELATIONS}` },
   CORRELATION_RULES: { text: 'Correlation rules', href: `#${ROUTES.CORRELATION_RULES}` },
-  CORRELATIONS_RULE_CREATE: {
-    text: 'Create correlation rule',
+  CORRELATIONS_RULE_CREATE: (action: string) => ({
+    text: `${action} correlation rule`,
     href: `#${ROUTES.CORRELATION_RULE_CREATE}`,
-  },
+  }),
   LOG_TYPES: { text: 'Log types', href: `#${ROUTES.LOG_TYPES}` },
   LOG_TYPE_CREATE: { text: 'Create log type', href: `#${ROUTES.LOG_TYPES_CREATE}` },
   THREAT_INTEL_OVERVIEW: { text: 'Threat intelligence', href: `#${ROUTES.THREAT_INTEL_OVERVIEW}` },
@@ -106,7 +108,7 @@ export const BREADCRUMBS = Object.freeze({
     href: `#${ROUTES.THREAT_INTEL_ADD_CUSTOM_SOURCE}`,
   },
   THREAT_INTEL_SETUP_SCAN_CONFIG: {
-    text: 'Setup real-time scan',
+    text: 'Set up real-time scan',
     href: `#${ROUTES.THREAT_INTEL_CREATE_SCAN_CONFIG}`,
   },
   THREAT_INTEL_EDIT_SCAN_CONFIG: {

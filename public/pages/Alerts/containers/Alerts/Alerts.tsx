@@ -40,7 +40,6 @@ import {
   DEFAULT_EMPTY_DATA,
   MAX_RECENTLY_USED_TIME_RANGES,
 } from '../../../../utils/constants';
-import { CoreServicesContext } from '../../../../components/core_services';
 import AlertsService from '../../../../services/AlertsService';
 import DetectorService from '../../../../services/DetectorService';
 import { AlertFlyout } from '../../components/AlertFlyout/AlertFlyout';
@@ -60,6 +59,7 @@ import {
   getDuration,
   renderTime,
   renderVisualization,
+  setBreadcrumbs,
   successNotificationToast,
 } from '../../../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
@@ -76,6 +76,7 @@ import {
 import { DurationRange } from '@elastic/eui/src/components/date_picker/types';
 import { DataStore } from '../../../../store/DataStore';
 import { ThreatIntelAlertsTable } from '../../components/ThreatIntelAlertsTable/ThreatIntelAlertsTable';
+import { PageHeader } from '../../../../components/PageHeader/PageHeader';
 
 type FilterAlertParams =
   | { alerts: AlertItem[]; timeField: 'last_notification_time' }
@@ -126,7 +127,6 @@ const groupByOptions = [
 ];
 
 export class Alerts extends Component<AlertsProps, AlertsState> {
-  static contextType = CoreServicesContext;
   private abortControllers: AbortController[] = [];
 
   constructor(props: AlertsProps) {
@@ -560,7 +560,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
   }
 
   componentDidMount(): void {
-    this.context.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.ALERTS]);
+    setBreadcrumbs([BREADCRUMBS.ALERTS]);
     this.onRefresh();
   }
 
@@ -1077,6 +1077,18 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       },
     ];
 
+    const datePicker = (
+      <EuiSuperDatePicker
+        start={dateTimeFilter.startTime}
+        end={dateTimeFilter.endTime}
+        recentlyUsedRanges={recentlyUsedRanges}
+        isLoading={loading}
+        onTimeChange={this.onTimeChange}
+        onRefresh={this.onRefresh}
+        updateButtonProps={{ fill: false }}
+      />
+    );
+
     return (
       <>
         {flyoutData && (
@@ -1098,27 +1110,26 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
           />
         )}
         <EuiFlexGroup direction="column">
-          <EuiFlexItem>
-            <EuiFlexGroup gutterSize={'s'} justifyContent={'spaceBetween'}>
-              <EuiFlexItem>
-                <EuiTitle size="m">
-                  <h1>Security alerts</h1>
-                </EuiTitle>
-              </EuiFlexItem>
-              <EuiFlexItem grow={false}>
-                <EuiSuperDatePicker
-                  start={dateTimeFilter.startTime}
-                  end={dateTimeFilter.endTime}
-                  recentlyUsedRanges={recentlyUsedRanges}
-                  isLoading={loading}
-                  onTimeChange={this.onTimeChange}
-                  onRefresh={this.onRefresh}
-                  updateButtonProps={{ fill: false }}
-                />
-              </EuiFlexItem>
-            </EuiFlexGroup>
-            <EuiSpacer size={'m'} />
-          </EuiFlexItem>
+          <PageHeader
+            appRightControls={[
+              {
+                renderComponent: datePicker,
+              },
+            ]}
+          >
+            <EuiFlexItem>
+              <EuiFlexGroup gutterSize={'s'} justifyContent={'spaceBetween'}>
+                <EuiFlexItem>
+                  <EuiTitle size="m">
+                    <h1>Security alerts</h1>
+                  </EuiTitle>
+                </EuiFlexItem>
+                <EuiFlexItem grow={false}>{datePicker}</EuiFlexItem>
+              </EuiFlexGroup>
+              <EuiSpacer size={'m'} />
+            </EuiFlexItem>
+          </PageHeader>
+
           <EuiFlexItem>
             <EuiPanel>
               <EuiFlexGroup direction="column">

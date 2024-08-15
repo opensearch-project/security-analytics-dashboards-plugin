@@ -5,13 +5,13 @@
 
 import { BrowserServices } from '../../../../models/interfaces';
 import { RuleEditorContainer } from '../../components/RuleEditor/RuleEditorContainer';
-import React, { useContext } from 'react';
+import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { BREADCRUMBS } from '../../../../utils/constants';
-import { CoreServicesContext } from '../../../../components/core_services';
-import { setBreadCrumb } from '../../utils/helpers';
+import { setRulesRelatedBreadCrumb } from '../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { RuleItemInfoBase } from '../../../../../types';
+import { setBreadcrumbs } from '../../../../utils/helpers';
 
 export interface DuplicateRuleProps
   extends RouteComponentProps<any, any, { ruleItem: RuleItemInfoBase }> {
@@ -25,8 +25,7 @@ export const DuplicateRule: React.FC<DuplicateRuleProps> = ({
   location,
   notifications,
 }) => {
-  const context = useContext(CoreServicesContext);
-  setBreadCrumb(BREADCRUMBS.RULES_DUPLICATE, context?.chrome.setBreadcrumbs);
+  setRulesRelatedBreadCrumb(BREADCRUMBS.RULES_DUPLICATE, setBreadcrumbs);
 
   return (
     <RuleEditorContainer

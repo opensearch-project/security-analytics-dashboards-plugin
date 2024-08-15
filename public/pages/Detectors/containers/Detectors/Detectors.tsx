@@ -30,14 +30,15 @@ import {
   formatRuleType,
   getLogTypeFilterOptions,
   renderTime,
+  setBreadcrumbs,
 } from '../../../../utils/helpers';
-import { CoreServicesContext } from '../../../../components/core_services';
 import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
 import { DetectorsService } from '../../../../services';
 import { DetectorHit } from '../../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { Direction } from '@opensearch-project/oui/src/services/sort/sort_direction';
 import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
+import { PageHeader } from '../../../../components/PageHeader/PageHeader';
 
 export interface DetectorsProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -54,8 +55,6 @@ interface DetectorsState {
 }
 
 export default class Detectors extends Component<DetectorsProps, DetectorsState> {
-  static contextType = CoreServicesContext;
-
   constructor(props: DetectorsProps) {
     super(props);
 
@@ -69,7 +68,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
   }
 
   async componentDidMount() {
-    this.context.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.DETECTORS]);
+    setBreadcrumbs([BREADCRUMBS.DETECTORS]);
     await this.getDetectors();
   }
 
@@ -350,23 +349,33 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
     };
     return (
       <EuiFlexGroup direction="column">
-        <EuiFlexItem>
-          <EuiFlexGroup>
-            <EuiFlexItem>
-              <EuiTitle size="m">
-                <h1>Threat detectors</h1>
-              </EuiTitle>
-            </EuiFlexItem>
-            <EuiFlexItem>
-              <EuiFlexGroup justifyContent="flexEnd">
-                {actions.map((action) => {
-                  return <EuiFlexItem grow={false}>{action}</EuiFlexItem>;
-                })}
-              </EuiFlexGroup>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-          <EuiSpacer size={'m'} />
-        </EuiFlexItem>
+        <PageHeader
+          appRightControls={actions.map((action) => ({
+            renderComponent: action,
+          }))}
+        >
+          <EuiFlexItem>
+            <EuiFlexGroup>
+              <EuiFlexItem>
+                <EuiTitle size="m">
+                  <h1>Threat detectors</h1>
+                </EuiTitle>
+              </EuiFlexItem>
+              <EuiFlexItem>
+                <EuiFlexGroup justifyContent="flexEnd">
+                  {actions.map((action, idx) => {
+                    return (
+                      <EuiFlexItem key={idx} grow={false}>
+                        {action}
+                      </EuiFlexItem>
+                    );
+                  })}
+                </EuiFlexGroup>
+              </EuiFlexItem>
+            </EuiFlexGroup>
+            <EuiSpacer size={'m'} />
+          </EuiFlexItem>
+        </PageHeader>
 
         <EuiFlexItem>
           <EuiPanel>

@@ -521,7 +521,7 @@ Object {
           class="euiSpacer euiSpacer--l"
         />
         <div
-          class="euiSwitch"
+          class="euiSwitch euiSwitch--primary"
         >
           <button
             aria-checked="true"
@@ -1393,7 +1393,7 @@ Object {
         class="euiSpacer euiSpacer--l"
       />
       <div
-        class="euiSwitch"
+        class="euiSwitch euiSwitch--primary"
       >
         <button
           aria-checked="true"

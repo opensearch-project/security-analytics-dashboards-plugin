@@ -12,6 +12,11 @@ import { mockContexts } from '../../../../../test/mocks/useContext.mock';
 import { notificationsMock } from '../../../../../test/mocks/services';
 import { ReactWrapper, mount } from 'enzyme';
 import { expect } from '@jest/globals';
+import { setupCoreStart } from '../../../../../test/utils/helpers';
+
+beforeAll(() => {
+  setupCoreStart();
+});
 
 describe('<RuleEditorContainer /> spec', () => {
   it('renders the component', async () => {

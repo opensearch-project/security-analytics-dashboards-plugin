@@ -7,7 +7,6 @@ import React, { Component } from 'react';
 import { EuiTitle, EuiText } from '@elastic/eui';
 import { FieldMapping } from '../../../../../models/interfaces';
 import EditFieldMappings from '../../containers/FieldMappings/EditFieldMapping';
-import { CoreServicesContext } from '../../../../components/core_services';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { FieldMappingService } from '../../../../services';
 import { NotificationsStart } from 'opensearch-dashboards/public';
@@ -32,8 +31,6 @@ export default class ReviewFieldMappings extends Component<
   UpdateFieldMappingsProps,
   UpdateFieldMappingsState
 > {
-  static contextType = CoreServicesContext;
-
   constructor(props: UpdateFieldMappingsProps) {
     super(props);
 

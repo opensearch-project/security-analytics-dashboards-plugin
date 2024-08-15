@@ -416,22 +416,24 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
     }
   }
 >
-  <EuiTitle
-    size="m"
-  >
-    <h3
-      className="euiTitle euiTitle--medium"
+  <PageHeader>
+    <EuiTitle
+      size="m"
     >
-      Edit detector details
-    </h3>
-  </EuiTitle>
-  <EuiSpacer
-    size="xl"
-  >
-    <div
-      className="euiSpacer euiSpacer--xl"
-    />
-  </EuiSpacer>
+      <h3
+        className="euiTitle euiTitle--medium"
+      >
+        Edit detector details
+      </h3>
+    </EuiTitle>
+    <EuiSpacer
+      size="xl"
+    >
+      <div
+        className="euiSpacer euiSpacer--xl"
+      />
+    </EuiSpacer>
+  </PageHeader>
   <EuiPanel>
     <div
       className="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
@@ -662,6 +664,11 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
         />
       </EuiSpacer>
       <DetectorDataSource
+        dataSource={
+          Object {
+            "id": "",
+          }
+        }
         detectorIndices={
           Array [
             ".windows",
