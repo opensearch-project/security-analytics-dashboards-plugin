@@ -24,7 +24,6 @@ import {
 } from '../utils/helpers';
 import { NotificationsService } from '../../../../../services';
 import { validateName } from '../../../../../utils/validation';
-import { CoreServicesContext } from '../../../../../components/core_services';
 import { BREADCRUMBS } from '../../../../../utils/constants';
 import {
   AlertCondition,
@@ -34,6 +33,8 @@ import {
   NotificationChannelTypeOptions,
 } from '../../../../../../types';
 import { MetricsContext } from '../../../../../metrics/MetricsContext';
+import { setBreadcrumbs } from '../../../../../utils/helpers';
+import { getUseUpdatedUx } from '../../../../../services/utils/constants';
 
 interface ConfigureAlertsProps extends RouteComponentProps {
   detector: Detector;
@@ -66,8 +67,6 @@ const isTriggerValid = (triggers: AlertCondition[]) => {
 };
 
 export default class ConfigureAlerts extends Component<ConfigureAlertsProps, ConfigureAlertsState> {
-  static contextType = CoreServicesContext;
-
   constructor(props: ConfigureAlertsProps) {
     super(props);
     this.state = {
@@ -83,8 +82,7 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
     } = this.props;
 
     isEdit &&
-      this.context.chrome.setBreadcrumbs([
-        BREADCRUMBS.SECURITY_ANALYTICS,
+      setBreadcrumbs([
         BREADCRUMBS.DETECTORS,
         BREADCRUMBS.DETECTORS_DETAILS(name, id),
         {
@@ -167,9 +165,14 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
       detector: { triggers },
     } = this.props;
 
-    let getPageTitle = (): string | JSX.Element => {
+    let getPageTitle = (): React.ReactNode => {
       if (isEdit) {
-        return <>{`Alert triggers (${triggers.length})`}</>;
+        return getUseUpdatedUx() ? null : (
+          <>
+            {`Alert triggers (${triggers.length})`}
+            <EuiSpacer size={'m'} />
+          </>
+        );
       }
 
       return (
@@ -180,6 +183,7 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
           <EuiText size="s" color="subdued">
             Get notified when specific rule conditions are found by the detector.
           </EuiText>
+          <EuiSpacer size={'m'} />
         </>
       );
     };
@@ -188,8 +192,6 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
     const content = (
       <>
         {getPageTitle()}
-
-        <EuiSpacer size={'m'} />
 
         {triggers.map((alertCondition, index) => (
           <div key={index}>

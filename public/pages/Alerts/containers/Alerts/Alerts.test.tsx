@@ -11,6 +11,11 @@ import alertsMock from '../../../../../test/mocks/Alerts/Alerts.mock';
 import { shallowToJson } from 'enzyme-to-json';
 import { Router } from 'react-router-dom';
 import browserHistoryMock from '../../../../../test/mocks/services/browserHistory.mock';
+import { setupCoreStart } from '../../../../../test/utils/helpers';
+
+beforeAll(() => {
+  setupCoreStart();
+});
 
 describe('<Alerts /> spec', () => {
   it('renders the component', () => {

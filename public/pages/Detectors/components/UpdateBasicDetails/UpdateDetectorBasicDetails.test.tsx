@@ -10,6 +10,11 @@ import { UpdateDetectorBasicDetails } from './UpdateBasicDetails';
 import { act } from 'react-dom/test-utils';
 import { mount } from 'enzyme';
 import { coreContextMock, mockContexts } from '../../../../../test/mocks/useContext.mock';
+import { setupCoreStart } from '../../../../../test/utils/helpers';
+
+beforeAll(() => {
+  setupCoreStart();
+});
 
 describe('<UpdateDetectorBasicDetails /> spec', () => {
   it('renders the component', async () => {

@@ -74,7 +74,7 @@ Object {
                   <button
                     aria-controls="Map-0"
                     aria-expanded="true"
-                    class="euiAccordion__button euiAccordionForm__button"
+                    class="euiAccordion__button"
                     id="some_html_id"
                     type="button"
                   >
@@ -104,11 +104,8 @@ Object {
                 >
                   <div>
                     <div
-                      class=""
+                      class="euiAccordion__padding--m"
                     >
-                      <div
-                        class="euiSpacer euiSpacer--m"
-                      />
                       <div
                         class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
                       >
@@ -605,7 +602,7 @@ Object {
                 <button
                   aria-controls="Map-0"
                   aria-expanded="true"
-                  class="euiAccordion__button euiAccordionForm__button"
+                  class="euiAccordion__button"
                   id="some_html_id"
                   type="button"
                 >
@@ -635,11 +632,8 @@ Object {
               >
                 <div>
                   <div
-                    class=""
+                    class="euiAccordion__padding--m"
                   >
-                    <div
-                      class="euiSpacer euiSpacer--m"
-                    />
                     <div
                       class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
                     >

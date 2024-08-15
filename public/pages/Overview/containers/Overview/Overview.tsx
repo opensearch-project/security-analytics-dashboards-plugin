@@ -33,6 +33,8 @@ import { TopRulesWidget } from '../../components/Widgets/TopRulesWidget';
 import { GettingStartedPopup } from '../../components/GettingStarted/GettingStartedPopup';
 import { getChartTimeUnit, TimeUnit } from '../../utils/helpers';
 import { OverviewProps, OverviewState, OverviewViewModel } from '../../../../../types';
+import { setBreadcrumbs } from '../../../../utils/helpers';
+import { PageHeader } from '../../../../components/PageHeader/PageHeader';
 
 export const Overview: React.FC<OverviewProps> = (props) => {
   const {
@@ -63,7 +65,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
   const saContext = useContext(SecurityAnalyticsContext);
   const [abortController, setControllers] = useState<Array<AbortController>>([]);
   const fireAbortSignals = useCallback(() => {
-    abortController.forEach(controller => {
+    abortController.forEach((controller) => {
       controller.abort();
     });
   }, [abortController]);
@@ -80,9 +82,12 @@ export const Overview: React.FC<OverviewProps> = (props) => {
     });
   };
 
-  const onLoadingComplete = (_overviewViewModel: OverviewViewModel, modelLoadingComplete: boolean) => {
+  const onLoadingComplete = (
+    _overviewViewModel: OverviewViewModel,
+    modelLoadingComplete: boolean
+  ) => {
     setLoading(!modelLoadingComplete);
-  }
+  };
 
   const overviewViewModelActor = useMemo(
     () => new OverviewViewModelActor(saContext?.services, context?.notifications!),
@@ -90,16 +95,23 @@ export const Overview: React.FC<OverviewProps> = (props) => {
   );
 
   useEffect(() => {
-    context?.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.OVERVIEW]);
+    setBreadcrumbs([BREADCRUMBS.OVERVIEW]);
     overviewViewModelActor.registerRefreshHandler(updateState, true /* allowPartialResults */);
-    overviewViewModelActor.registerRefreshHandler(onLoadingComplete, false /* allowPartialResults */);
+    overviewViewModelActor.registerRefreshHandler(
+      onLoadingComplete,
+      false /* allowPartialResults */
+    );
   }, []);
 
   useEffect(() => {
     const abortController = new AbortController();
 
     const updateModel = async () => {
-      await overviewViewModelActor.onRefresh(dateTimeFilter.startTime, dateTimeFilter.endTime, abortController.signal);
+      await overviewViewModelActor.onRefresh(
+        dateTimeFilter.startTime,
+        dateTimeFilter.endTime,
+        abortController.signal
+      );
 
       if (!initialLoadingFinished) {
         setInitialLoadingFinished(true);
@@ -109,8 +121,8 @@ export const Overview: React.FC<OverviewProps> = (props) => {
     updateModel();
 
     return () => {
-      abortController.abort()
-    }
+      abortController.abort();
+    };
   }, [dateTimeFilter.startTime, dateTimeFilter.endTime]);
 
   useEffect(() => {
@@ -145,7 +157,11 @@ export const Overview: React.FC<OverviewProps> = (props) => {
 
   const onRefresh = async (signal: AbortSignal) => {
     setLoading(true);
-    await overviewViewModelActor.onRefresh(dateTimeFilter.startTime, dateTimeFilter.endTime, signal);
+    await overviewViewModelActor.onRefresh(
+      dateTimeFilter.startTime,
+      dateTimeFilter.endTime,
+      signal
+    );
   };
 
   useEffect(() => {
@@ -154,7 +170,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
 
     return () => {
       abortController.abort();
-    }
+    };
   }, [props.dataSource]);
 
   const onButtonClick = () => setIsPopoverOpen((isPopoverOpen) => !isPopoverOpen);
@@ -170,53 +186,67 @@ export const Overview: React.FC<OverviewProps> = (props) => {
     </EuiButtonEmpty>
   );
 
+  const datePicker = (
+    <EuiSuperDatePicker
+      start={dateTimeFilter.startTime}
+      end={dateTimeFilter.endTime}
+      recentlyUsedRanges={recentlyUsedRanges}
+      isLoading={loading}
+      onTimeChange={onTimeChange}
+      onRefresh={() => {
+        const abortController = new AbortController();
+        fireAbortSignals();
+        setControllers([abortController]);
+        onRefresh(abortController.signal);
+      }}
+      updateButtonProps={{ fill: false }}
+    />
+  );
+
+  const createDetectorAction = (
+    <EuiButton
+      href={`${PLUGIN_NAME}#${ROUTES.DETECTORS_CREATE}`}
+      fill={true}
+      data-test-subj={'detectorsCreateButton'}
+    >
+      Create detector
+    </EuiButton>
+  );
+
+  const gettingStartedBadgeControl = (
+    <EuiPopover
+      button={button}
+      isOpen={isPopoverOpen}
+      anchorPosition="downRight"
+      closePopover={closePopover}
+    >
+      <GettingStartedPopup dismissPopup={closePopover} history={props.history} />
+    </EuiPopover>
+  );
+
   return (
     <EuiFlexGroup direction="column">
-      <EuiFlexItem>
-        <EuiFlexGroup justifyContent="spaceBetween" gutterSize="s">
-          <EuiFlexItem grow={false}>
-            <EuiTitle size="m">
-              <h1>Overview</h1>
-            </EuiTitle>
-          </EuiFlexItem>
-          <EuiFlexItem>
-            <EuiPopover
-              button={button}
-              isOpen={isPopoverOpen}
-              anchorPosition="downRight"
-              closePopover={closePopover}
-            >
-              <GettingStartedPopup dismissPopup={closePopover} history={props.history} />
-            </EuiPopover>
-          </EuiFlexItem>
-          <EuiFlexItem grow={false}>
-            <EuiSuperDatePicker
-              start={dateTimeFilter.startTime}
-              end={dateTimeFilter.endTime}
-              recentlyUsedRanges={recentlyUsedRanges}
-              isLoading={loading}
-              onTimeChange={onTimeChange}
-              onRefresh={() => { 
-                const abortController = new AbortController();
-                fireAbortSignals();
-                setControllers([abortController]);
-                onRefresh(abortController.signal);
-              }}
-              updateButtonProps={{ fill: false }}
-            />
-          </EuiFlexItem>
-          <EuiFlexItem grow={false}>
-            <EuiButton
-              href={`${PLUGIN_NAME}#${ROUTES.DETECTORS_CREATE}`}
-              fill={true}
-              data-test-subj={'detectorsCreateButton'}
-            >
-              Create detector
-            </EuiButton>
-          </EuiFlexItem>
-        </EuiFlexGroup>
-        <EuiSpacer size={'m'} />
-      </EuiFlexItem>
+      <PageHeader
+        appRightControls={[
+          { renderComponent: datePicker },
+          { renderComponent: createDetectorAction },
+        ]}
+        appBadgeControls={[{ renderComponent: gettingStartedBadgeControl }]}
+      >
+        <EuiFlexItem>
+          <EuiFlexGroup justifyContent="spaceBetween" gutterSize="s">
+            <EuiFlexItem grow={false}>
+              <EuiTitle size="m">
+                <h1>Overview</h1>
+              </EuiTitle>
+            </EuiFlexItem>
+            <EuiFlexItem>{gettingStartedBadgeControl}</EuiFlexItem>
+            <EuiFlexItem grow={false}>{datePicker}</EuiFlexItem>
+            <EuiFlexItem grow={false}>{createDetectorAction}</EuiFlexItem>
+          </EuiFlexGroup>
+          <EuiSpacer size={'m'} />
+        </EuiFlexItem>
+      </PageHeader>
       <EuiFlexItem>
         <Summary
           alerts={state.overviewViewModel.alerts}

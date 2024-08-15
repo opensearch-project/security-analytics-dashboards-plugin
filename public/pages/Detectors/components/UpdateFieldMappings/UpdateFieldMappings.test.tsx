@@ -9,6 +9,11 @@ import props from '../../../../../test/mocks/Detectors/components/UpdateFieldMap
 import { expect } from '@jest/globals';
 import UpdateFieldMappings from './UpdateFieldMappings';
 import { coreContextMock } from '../../../../../test/mocks/useContext.mock';
+import { setupCoreStart } from '../../../../../test/utils/helpers';
+
+beforeAll(() => {
+  setupCoreStart();
+});
 
 jest.mock('../../containers/FieldMappings/EditFieldMapping.tsx', () => () => {
   return <mock-component mock="EditFieldMapping" />;

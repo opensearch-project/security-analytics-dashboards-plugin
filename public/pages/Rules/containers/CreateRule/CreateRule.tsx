@@ -5,13 +5,12 @@
 
 import { BrowserServices } from '../../../../models/interfaces';
 import { RuleEditorContainer } from '../../components/RuleEditor/RuleEditorContainer';
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { BREADCRUMBS } from '../../../../utils/constants';
-import { CoreServicesContext } from '../../../../components/core_services';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { setBreadCrumb } from '../../utils/helpers';
-import { EuiTitle, EuiText, EuiLink } from '@elastic/eui';
+import { setRulesRelatedBreadCrumb } from '../../utils/helpers';
+import { setBreadcrumbs } from '../../../../utils/helpers';
 
 export interface CreateRuleProps {
   services: BrowserServices;
@@ -20,30 +19,23 @@ export interface CreateRuleProps {
 }
 
 export const CreateRule: React.FC<CreateRuleProps> = ({ history, services, notifications }) => {
-  const context = useContext(CoreServicesContext);
-
   useEffect(() => {
-    setBreadCrumb(BREADCRUMBS.RULES_CREATE, context?.chrome.setBreadcrumbs);
+    setRulesRelatedBreadCrumb(BREADCRUMBS.RULES_CREATE, setBreadcrumbs);
   });
 
   return (
     <RuleEditorContainer
-      title={
-        <>
-          <EuiTitle size={'m'}>
-            <h3>Create detection rule</h3>
-          </EuiTitle>
-          <EuiText size="s" color="subdued">
-            Create a rule for detectors to identify threat scenarios for different log sources.{' '}
-            <EuiLink
-              href="https://sigmahq.github.io/sigma-specification/Sigma_specification.html"
-              target="_blank"
-            >
-              Learn more in the Sigma rules specification
-            </EuiLink>
-          </EuiText>
-        </>
-      }
+      title="Create detection rule"
+      subtitleData={[
+        {
+          text:
+            'Create a rule for detectors to identify threat scenarios for different log sources.',
+        },
+        {
+          text: 'Learn more in the Sigma rules specification',
+          href: 'https://sigmahq.github.io/sigma-specification/Sigma_specification.html',
+        },
+      ]}
       history={history}
       notifications={notifications}
       mode={'create'}

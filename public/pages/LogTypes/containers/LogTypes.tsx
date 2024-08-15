@@ -3,10 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useContext, useEffect, useState } from 'react';
-import { EuiButton, EuiInMemoryTable } from '@elastic/eui';
-import { ContentPanel } from '../../../components/ContentPanel';
-import { CoreServicesContext } from '../../../components/core_services';
+import React, { useEffect, useState } from 'react';
+import {
+  EuiButton,
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiInMemoryTable,
+  EuiPanel,
+  EuiSpacer,
+  EuiText,
+  EuiTitle,
+} from '@elastic/eui';
 import { BREADCRUMBS, ROUTES } from '../../../utils/constants';
 import { DataSourceProps, LogType } from '../../../../types';
 import { DataStore } from '../../../store/DataStore';
@@ -14,15 +21,15 @@ import { getLogTypesTableColumns, getLogTypesTableSearchConfig } from '../utils/
 import { RouteComponentProps } from 'react-router-dom';
 import { useCallback } from 'react';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { successNotificationToast } from '../../../utils/helpers';
+import { setBreadcrumbs, successNotificationToast } from '../../../utils/helpers';
 import { DeleteLogTypeModal } from '../components/DeleteLogTypeModal';
+import { PageHeader } from '../../../components/PageHeader/PageHeader';
 
 export interface LogTypesProps extends RouteComponentProps, DataSourceProps {
   notifications: NotificationsStart;
 }
 
 export const LogTypes: React.FC<LogTypesProps> = ({ history, notifications, dataSource }) => {
-  const context = useContext(CoreServicesContext);
   const [logTypes, setLogTypes] = useState<LogType[]>([]);
   const [logTypeToDelete, setLogTypeItemToDelete] = useState<LogType | undefined>(undefined);
   const [deletionDetails, setDeletionDetails] = useState<
@@ -42,11 +49,7 @@ export const LogTypes: React.FC<LogTypesProps> = ({ history, notifications, data
   };
 
   useEffect(() => {
-    context?.chrome.setBreadcrumbs([
-      BREADCRUMBS.SECURITY_ANALYTICS,
-      BREADCRUMBS.DETECTORS,
-      BREADCRUMBS.LOG_TYPES,
-    ]);
+    setBreadcrumbs([BREADCRUMBS.DETECTORS, BREADCRUMBS.LOG_TYPES]);
   }, []);
 
   useEffect(() => {
@@ -65,6 +68,12 @@ export const LogTypes: React.FC<LogTypesProps> = ({ history, notifications, data
     setDeletionDetails({ detectionRulesCount: rules.length });
   };
 
+  const createLogTypeAction = (
+    <EuiButton fill={true} onClick={() => history.push(ROUTES.LOG_TYPES_CREATE)}>
+      Create log type
+    </EuiButton>
+  );
+
   return (
     <>
       {logTypeToDelete && (
@@ -76,18 +85,25 @@ export const LogTypes: React.FC<LogTypesProps> = ({ history, notifications, data
           onConfirm={() => deleteLogType(logTypeToDelete.id)}
         />
       )}
-      <ContentPanel
-        title={'Log types'}
-        subTitleText={
-          'Log types describe the data sources the detection rules are meant to be applied to.'
-        }
-        hideHeaderBorder
-        actions={[
-          <EuiButton fill={true} onClick={() => history.push(ROUTES.LOG_TYPES_CREATE)}>
-            Create log type
-          </EuiButton>,
-        ]}
-      >
+
+      <EuiPanel>
+        <PageHeader appRightControls={[{ renderComponent: createLogTypeAction }]}>
+          <EuiFlexItem>
+            <EuiFlexGroup gutterSize={'s'} justifyContent={'spaceBetween'}>
+              <EuiFlexItem>
+                <EuiTitle size="m">
+                  <h1>Log types</h1>
+                </EuiTitle>
+                <EuiText size="s" color="subdued">
+                  Log types describe the data sources to which the detection rules are meant to be
+                  applied.
+                </EuiText>
+              </EuiFlexItem>
+              <EuiFlexItem grow={false}>{createLogTypeAction}</EuiFlexItem>
+            </EuiFlexGroup>
+            <EuiSpacer size={'m'} />
+          </EuiFlexItem>
+        </PageHeader>
         <EuiInMemoryTable
           items={logTypes}
           columns={getLogTypesTableColumns(showLogTypeDetails, onDeleteClick)}
@@ -97,7 +113,7 @@ export const LogTypes: React.FC<LogTypesProps> = ({ history, notifications, data
           search={getLogTypesTableSearchConfig()}
           sorting={true}
         />
-      </ContentPanel>
+      </EuiPanel>
     </>
   );
 };
