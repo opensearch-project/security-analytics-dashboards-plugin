@@ -11,7 +11,7 @@ import {
   setBreadCrumbsSetter,
   setNavigationUI,
   setUISettings,
-} from '../../public/utils/constants';
+} from '../../public/services/utils/constants';
 
 export function setupCoreStart() {
   setNavigationUI(navigationPluginMock.createStartContract().ui);

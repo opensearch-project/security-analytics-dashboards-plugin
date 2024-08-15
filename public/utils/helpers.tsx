@@ -22,8 +22,6 @@ import {
   BREADCRUMBS,
   DEFAULT_EMPTY_DATA,
   defaultColorForVisualizations,
-  getBreadCrumbsSetter,
-  getUseUpdatedUx,
   logTypeCategories,
   logTypeCategoryDescription,
   logTypesByCategories,
@@ -49,6 +47,7 @@ import { parse, View } from 'vega/build-es5/vega.js';
 import { compile } from 'vega-lite';
 import { Handler } from 'vega-tooltip';
 import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter/build/vega-interpreter';
+import { getBreadCrumbsSetter, getUseUpdatedUx } from '../services/utils/constants';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));

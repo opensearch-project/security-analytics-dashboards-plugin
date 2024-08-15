@@ -24,7 +24,7 @@ import {
 } from '../utils/helpers';
 import { NotificationsService } from '../../../../../services';
 import { validateName } from '../../../../../utils/validation';
-import { BREADCRUMBS, getUseUpdatedUx } from '../../../../../utils/constants';
+import { BREADCRUMBS } from '../../../../../utils/constants';
 import {
   AlertCondition,
   CreateDetectorSteps,
@@ -34,6 +34,7 @@ import {
 } from '../../../../../../types';
 import { MetricsContext } from '../../../../../metrics/MetricsContext';
 import { setBreadcrumbs } from '../../../../../utils/helpers';
+import { getUseUpdatedUx } from '../../../../../services/utils/constants';
 
 interface ConfigureAlertsProps extends RouteComponentProps {
   detector: Detector;

@@ -95,8 +95,8 @@ export const LogTypes: React.FC<LogTypesProps> = ({ history, notifications, data
                   <h1>Log types</h1>
                 </EuiTitle>
                 <EuiText size="s" color="subdued">
-                  Log types describe the data sources the detection rules are meant to be applied
-                  to.
+                  Log types describe the data sources to which the detection rules are meant to be
+                  applied.
                 </EuiText>
               </EuiFlexItem>
               <EuiFlexItem grow={false}>{createLogTypeAction}</EuiFlexItem>

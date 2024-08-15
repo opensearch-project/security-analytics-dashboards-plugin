@@ -4,12 +4,12 @@
  */
 
 import React from 'react';
-import { getApplication, getNavigationUI, getUseUpdatedUx } from '../../utils/constants';
 import {
   TopNavControlData,
   TopNavControlDescriptionData,
   TopNavControlLinkData,
 } from '../../../../../src/plugins/navigation/public';
+import { getApplication, getNavigationUI, getUseUpdatedUx } from '../../services/utils/constants';
 
 export interface PageHeaderProps {
   appRightControls?: TopNavControlData[];

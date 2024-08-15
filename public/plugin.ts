@@ -24,11 +24,7 @@ import {
   ROUTES,
   THREAT_ALERTS_NAV_ID,
   THREAT_INTEL_NAV_ID,
-  setApplication,
-  setBreadCrumbsSetter,
   setDarkMode,
-  setNavigationUI,
-  setUISettings,
 } from './utils/constants';
 import { SecurityAnalyticsPluginSetup, SecurityAnalyticsPluginStart } from './index';
 import { DataPublicPluginStart, DataPublicPluginSetup } from '../../../src/plugins/data/public';
@@ -37,6 +33,12 @@ import { setSecurityAnalyticsPluginConfig } from '../common/helpers';
 import { DataSourceManagementPluginSetup } from '../../../src/plugins/data_source_management/public';
 import { DataSourcePluginStart } from '../../../src/plugins/data_source/public';
 import { NavigationPublicPluginStart } from 'src/plugins/navigation/public';
+import {
+  setUISettings,
+  setNavigationUI,
+  setApplication,
+  setBreadCrumbsSetter,
+} from './services/utils/constants';
 
 export interface SecurityAnalyticsPluginSetupDeps {
   data: DataPublicPluginSetup;
@@ -185,14 +187,11 @@ export class SecurityAnalyticsPlugin
         { id: DETECTORS_NAV_ID, parentNavLinkId: PLUGIN_NAME },
         { id: DETECTORS_RULE_NAV_ID, parentNavLinkId: PLUGIN_NAME },
         { id: CORRELATIONS_RULE_NAV_ID },
-        { id: THREAT_INTEL_NAV_ID},
-        { id: LOG_TYPES_NAV_ID }
+        { id: THREAT_INTEL_NAV_ID },
+        { id: LOG_TYPES_NAV_ID },
       ];
 
-      core.chrome.navGroup.addNavLinksToGroup(
-        DEFAULT_NAV_GROUPS['security-analytics'],
-        navlinks
-      );
+      core.chrome.navGroup.addNavLinksToGroup(DEFAULT_NAV_GROUPS['security-analytics'], navlinks);
     }
 
     setDarkMode(core.uiSettings.get('theme:darkMode'));
