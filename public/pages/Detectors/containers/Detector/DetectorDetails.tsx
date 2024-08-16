@@ -19,7 +19,6 @@ import {
 } from '@elastic/eui';
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { CoreServicesContext } from '../../../../components/core_services';
 import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR_HIT, ROUTES } from '../../../../utils/constants';
 import { DetectorHit } from '../../../../../server/models/interfaces';
 import { DetectorDetailsView } from '../DetectorDetailsView/DetectorDetailsView';
@@ -27,11 +26,12 @@ import { FieldMappingsView } from '../../components/FieldMappingsView/FieldMappi
 import { AlertTriggersView } from '../AlertTriggersView/AlertTriggersView';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { DetectorsService, IndexPatternsService } from '../../../../services';
-import { errorNotificationToast } from '../../../../utils/helpers';
+import { errorNotificationToast, setBreadcrumbs } from '../../../../utils/helpers';
 import { NotificationsStart, SimpleSavedObject } from 'opensearch-dashboards/public';
 import { ISavedObjectsService, ServerResponse } from '../../../../../types';
 import { PENDING_DETECTOR_ID } from '../../../CreateDetector/utils/constants';
 import { DataStore } from '../../../../store/DataStore';
+import { PageHeader } from '../../../../components/PageHeader/PageHeader';
 
 export interface DetectorDetailsProps
   extends RouteComponentProps<
@@ -69,8 +69,6 @@ enum TabId {
 }
 
 export class DetectorDetails extends React.Component<DetectorDetailsProps, DetectorDetailsState> {
-  static contextType = CoreServicesContext;
-
   private get detectorHit(): DetectorHit {
     return this.state.detectorHit;
   }
@@ -200,8 +198,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
         },
       });
 
-      this.context.chrome.setBreadcrumbs([
-        BREADCRUMBS.SECURITY_ANALYTICS,
+      setBreadcrumbs([
         BREADCRUMBS.DETECTORS,
         BREADCRUMBS.DETECTORS_DETAILS(detector.name, PENDING_DETECTOR_ID),
       ]);
@@ -253,8 +250,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
             enabled: detector._source.enabled,
           },
         };
-        this.context.chrome.setBreadcrumbs([
-          BREADCRUMBS.SECURITY_ANALYTICS,
+        setBreadcrumbs([
           BREADCRUMBS.DETECTORS,
           BREADCRUMBS.DETECTORS_DETAILS(detector._source.name, detector._id),
         ]);
@@ -346,7 +342,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     this.setState({ loading: false });
   };
 
-  createHeaderActions(): React.ReactNode[] {
+  createHeaderActions(): React.JSX.Element[] {
     const { loading } = this.state;
     const { isActionsMenuOpen } = this.state;
     return [
@@ -480,34 +476,45 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
 
     return (
       <>
-        <EuiFlexGroup>
-          <EuiFlexItem>
-            <EuiFlexGroup alignItems="center">
-              <EuiFlexItem grow={false}>
-                <EuiTitle data-test-subj={'detector-details-detector-name'}>
-                  <h1>{detector.name}</h1>
-                </EuiTitle>
-              </EuiFlexItem>
-              <EuiFlexItem grow={false}>
-                <EuiHealth color={statusColor}>{statusText}</EuiHealth>
-              </EuiFlexItem>
-            </EuiFlexGroup>
-          </EuiFlexItem>
-          <EuiFlexItem>
-            <EuiFlexGroup justifyContent="flexEnd" alignItems="center">
-              {!creatingDetector && !createFailed
-                ? this.createHeaderActions().map(
-                    (action: React.ReactNode, idx: number): React.ReactNode => (
-                      <EuiFlexItem key={idx} grow={false}>
-                        {action}
-                      </EuiFlexItem>
+        <PageHeader
+          appBadgeControls={[
+            { renderComponent: <EuiHealth color={statusColor}>{statusText}</EuiHealth> },
+          ]}
+          appRightControls={
+            !creatingDetector && !createFailed
+              ? this.createHeaderActions().map((action) => ({ renderComponent: action }))
+              : undefined
+          }
+        >
+          <EuiFlexGroup>
+            <EuiFlexItem>
+              <EuiFlexGroup alignItems="center">
+                <EuiFlexItem grow={false}>
+                  <EuiTitle data-test-subj={'detector-details-detector-name'}>
+                    <h1>{detector.name}</h1>
+                  </EuiTitle>
+                </EuiFlexItem>
+                <EuiFlexItem grow={false}>
+                  <EuiHealth color={statusColor}>{statusText}</EuiHealth>
+                </EuiFlexItem>
+              </EuiFlexGroup>
+            </EuiFlexItem>
+            <EuiFlexItem>
+              <EuiFlexGroup justifyContent="flexEnd" alignItems="center">
+                {!creatingDetector && !createFailed
+                  ? this.createHeaderActions().map(
+                      (action: React.ReactNode, idx: number): React.ReactNode => (
+                        <EuiFlexItem key={idx} grow={false}>
+                          {action}
+                        </EuiFlexItem>
+                      )
                     )
-                  )
-                : null}
-            </EuiFlexGroup>
-          </EuiFlexItem>
-        </EuiFlexGroup>
-        <EuiSpacer size="xl" />
+                  : null}
+              </EuiFlexGroup>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+          <EuiSpacer size="xl" />
+        </PageHeader>
         <EuiTabs>{this.renderTabs()}</EuiTabs>
         <EuiSpacer size="xl" />
         {selectedTabContent}

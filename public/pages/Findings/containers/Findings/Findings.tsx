@@ -38,7 +38,6 @@ import {
   getThreatIntelFindingsVisualizationSpec,
   TimeUnit,
 } from '../../../Overview/utils/helpers';
-import { CoreServicesContext } from '../../../../components/core_services';
 import {
   getNotificationChannels,
   parseNotificationChannelsToOptions,
@@ -49,6 +48,7 @@ import {
   renderVisualization,
   getDuration,
   getIsNotificationPluginInstalled,
+  setBreadcrumbs,
 } from '../../../../utils/helpers';
 import { RuleSource } from '../../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
@@ -65,6 +65,7 @@ import {
   ThreatIntelFindingsGroupByType,
 } from '../../../../../types';
 import { ThreatIntelFindingsTable } from '../../components/FindingsTable/ThreatIntelFindingsTable';
+import { PageHeader } from '../../../../components/PageHeader/PageHeader';
 
 interface FindingsProps extends RouteComponentProps, DataSourceProps {
   detectorService: DetectorsService;
@@ -130,7 +131,6 @@ export const groupByOptionsByTabId = {
 };
 
 class Findings extends Component<FindingsProps, FindingsState> {
-  static contextType = CoreServicesContext;
   private abortGetFindingsControllers: AbortController[] = [];
 
   constructor(props: FindingsProps) {
@@ -221,7 +221,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
   }
 
   componentDidMount = async () => {
-    this.context.chrome.setBreadcrumbs([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.FINDINGS]);
+    setBreadcrumbs([BREADCRUMBS.FINDINGS]);
     this.onRefresh();
   };
 
@@ -583,29 +583,39 @@ class Findings extends Component<FindingsProps, FindingsState> {
       },
     ];
 
+    const datePicker = (
+      <EuiSuperDatePicker
+        start={dateTimeFilter.startTime}
+        end={dateTimeFilter.endTime}
+        recentlyUsedRanges={recentlyUsedRanges}
+        isLoading={loading}
+        onTimeChange={this.onTimeChange}
+        onRefresh={this.onRefresh}
+        updateButtonProps={{ fill: false }}
+      />
+    );
+
     return (
       <EuiFlexGroup direction="column">
-        <EuiFlexItem>
-          <EuiFlexGroup gutterSize={'s'} justifyContent={'spaceBetween'}>
-            <EuiFlexItem>
-              <EuiTitle size="m">
-                <h1>Findings</h1>
-              </EuiTitle>
-            </EuiFlexItem>
-            <EuiFlexItem grow={false}>
-              <EuiSuperDatePicker
-                start={dateTimeFilter.startTime}
-                end={dateTimeFilter.endTime}
-                recentlyUsedRanges={recentlyUsedRanges}
-                isLoading={loading}
-                onTimeChange={this.onTimeChange}
-                onRefresh={this.onRefresh}
-                updateButtonProps={{ fill: false }}
-              />
-            </EuiFlexItem>
-          </EuiFlexGroup>
-          <EuiSpacer size={'m'} />
-        </EuiFlexItem>
+        <PageHeader
+          appRightControls={[
+            {
+              renderComponent: datePicker,
+            },
+          ]}
+        >
+          <EuiFlexItem>
+            <EuiFlexGroup gutterSize={'s'} justifyContent={'spaceBetween'}>
+              <EuiFlexItem>
+                <EuiTitle size="m">
+                  <h1>Findings</h1>
+                </EuiTitle>
+              </EuiFlexItem>
+              <EuiFlexItem grow={false}>{datePicker}</EuiFlexItem>
+            </EuiFlexGroup>
+            <EuiSpacer size={'m'} />
+          </EuiFlexItem>
+        </PageHeader>
         <EuiFlexItem>
           <EuiPanel>
             <EuiFlexGroup direction="column">

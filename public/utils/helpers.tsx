@@ -19,6 +19,7 @@ import moment from 'moment';
 import { PeriodSchedule } from '../../models/interfaces';
 import React from 'react';
 import {
+  BREADCRUMBS,
   DEFAULT_EMPTY_DATA,
   defaultColorForVisualizations,
   logTypeCategories,
@@ -31,7 +32,7 @@ import {
   RuleItemInfo,
 } from '../pages/CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { RuleInfo } from '../../server/models/interfaces';
-import { NotificationsStart } from 'opensearch-dashboards/public';
+import { ChromeBreadcrumb, NotificationsStart } from 'opensearch-dashboards/public';
 import { FieldMappingService, IndexService, OpenSearchService } from '../services';
 import { ruleSeverity, ruleTypes } from '../pages/Rules/utils/constants';
 import _ from 'lodash';
@@ -46,6 +47,7 @@ import { parse, View } from 'vega/build-es5/vega.js';
 import { compile } from 'vega-lite';
 import { Handler } from 'vega-tooltip';
 import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter/build/vega-interpreter';
+import { getBreadCrumbsSetter, getUseUpdatedUx } from '../services/utils/constants';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
@@ -600,4 +602,8 @@ export async function getFieldsForIndex(
 
 export function renderIoCType(iocType: ThreatIntelIocType) {
   return IocLabel[iocType] || DEFAULT_EMPTY_DATA;
+}
+
+export function setBreadcrumbs(crumbs: ChromeBreadcrumb[]) {
+  getBreadCrumbsSetter()(getUseUpdatedUx() ? crumbs : [BREADCRUMBS.SECURITY_ANALYTICS, ...crumbs]);
 }

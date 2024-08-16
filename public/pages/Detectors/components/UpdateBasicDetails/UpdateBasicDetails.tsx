@@ -24,11 +24,16 @@ import { DetectorHit, SearchDetectorsResponse } from '../../../../../server/mode
 import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../../utils/constants';
 import { ServerResponse } from '../../../../../server/models/types';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { errorNotificationToast, successNotificationToast } from '../../../../utils/helpers';
-import { CoreServicesContext } from '../../../../components/core_services';
+import {
+  errorNotificationToast,
+  setBreadcrumbs,
+  successNotificationToast,
+} from '../../../../utils/helpers';
 import ReviewFieldMappings from '../ReviewFieldMappings/ReviewFieldMappings';
 import { FieldMapping, Detector } from '../../../../../types';
 import { ThreatIntelligence } from '../../../CreateDetector/components/DefineDetector/components/ThreatIntelligence/ThreatIntelligence';
+import { PageHeader } from '../../../../components/PageHeader/PageHeader';
+import { dataSourceInfo } from '../../../../services/utils/constants';
 
 export interface UpdateDetectorBasicDetailsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
@@ -48,7 +53,6 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
   const description = inputs[0].detector_input.description;
   const detectorId = props.location.pathname.replace(`${ROUTES.EDIT_DETECTOR_DETAILS}/`, '');
 
-  const context = useContext(CoreServicesContext);
   const [threatIntelEnabledInitially, setThreatIntelEnabledInitially] = useState(false);
 
   useEffect(() => {
@@ -66,13 +70,10 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
         ) as DetectorHit;
         setDetector(detectorHit._source as Detector);
 
-        context?.chrome.setBreadcrumbs([
-          BREADCRUMBS.SECURITY_ANALYTICS,
+        setBreadcrumbs([
           BREADCRUMBS.DETECTORS,
           BREADCRUMBS.DETECTORS_DETAILS(detectorHit._source.name, detectorHit._id),
-          {
-            text: 'Edit detector details',
-          },
+          BREADCRUMBS.EDIT_DETECTOR_DETAILS,
         ]);
         props.history.replace({
           pathname: `${ROUTES.EDIT_DETECTOR_DETAILS}/${detectorId}`,
@@ -265,11 +266,12 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
 
   return (
     <>
-      <EuiTitle size={'m'}>
-        <h3>Edit detector details</h3>
-      </EuiTitle>
-      <EuiSpacer size="xl" />
-
+      <PageHeader>
+        <EuiTitle size={'m'}>
+          <h3>Edit detector details</h3>
+        </EuiTitle>
+        <EuiSpacer size="xl" />
+      </PageHeader>
       <EuiPanel>
         <DetectorBasicDetailsForm
           isEdit={true}
@@ -287,6 +289,7 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
           indexService={saContext?.services?.indexService as IndexService}
           detectorIndices={inputs[0].detector_input.indices}
           fieldMappingService={saContext?.services?.fieldMappingService as FieldMappingService}
+          dataSource={dataSourceInfo.activeDataSource}
           onDetectorInputIndicesChange={onDetectorInputIndicesChange}
         />
         <EuiSpacer size={'l'} />

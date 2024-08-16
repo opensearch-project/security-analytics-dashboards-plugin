@@ -10,6 +10,11 @@ import { act } from 'react-dom/test-utils';
 import { mount } from 'enzyme';
 import { DetectorDetails } from './DetectorDetails';
 import { coreContextMock } from '../../../../../test/mocks/useContext.mock';
+import { setupCoreStart } from '../../../../../test/utils/helpers';
+
+beforeAll(() => {
+  setupCoreStart();
+});
 
 describe('<DetectorDetails /> spec', () => {
   it('renders the component', async () => {

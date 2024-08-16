@@ -3,12 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useContext, useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { ThreatIntelSourceItem } from '../../../../../types';
 import { RouteComponentProps } from 'react-router-dom';
 import { BREADCRUMBS, DEFAULT_EMPTY_DATA, ROUTES } from '../../../../utils/constants';
 import { useEffect } from 'react';
-import { CoreServicesContext } from '../../../../components/core_services';
 import {
   EuiButton,
   EuiButtonIcon,
@@ -28,9 +27,15 @@ import { IoCsTable } from '../../components/IoCsTable/IoCsTable';
 import { ThreatIntelSourceDetails } from '../../components/ThreatIntelSourceDetails/ThreatIntelSourceDetails';
 import { IocLabel } from '../../../../../common/constants';
 import { ThreatIntelService } from '../../../../services';
-import { errorNotificationToast, parseSchedule, renderTime } from '../../../../utils/helpers';
+import {
+  errorNotificationToast,
+  parseSchedule,
+  renderTime,
+  setBreadcrumbs,
+} from '../../../../utils/helpers';
 import DeleteModal from '../../../../components/DeleteModal';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { PageHeader } from '../../../../components/PageHeader/PageHeader';
 
 export interface ThreatIntelSource
   extends RouteComponentProps<any, any, { source?: ThreatIntelSourceItem }> {
@@ -44,7 +49,6 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
   threatIntelService,
   notifications,
 }) => {
-  const coreContext = useContext(CoreServicesContext);
   const [source, setSource] = useState<ThreatIntelSourceItem | undefined>(location.state?.source);
   const sourceId =
     source?.id ?? location.pathname.replace(`${ROUTES.THREAT_INTEL_SOURCE_DETAILS}/`, '');
@@ -65,9 +69,8 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
   }, []);
 
   useEffect(() => {
-    const baseCrumbs = [BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.THREAT_INTEL_OVERVIEW];
-
-    coreContext?.chrome.setBreadcrumbs(
+    const baseCrumbs = [BREADCRUMBS.THREAT_INTEL_OVERVIEW];
+    setBreadcrumbs(
       !source
         ? baseCrumbs
         : [...baseCrumbs, BREADCRUMBS.THREAT_INTEL_SOURCE_DETAILS(source.name, sourceId)]
@@ -154,61 +157,68 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
   const schedule = type === 'S3_CUSTOM' ? source.schedule : undefined;
   const showActivateControls = 'enabled_for_scan' in source;
 
+  const headerControls = [];
+
+  if (showActivateControls) {
+    headerControls.push(
+      <EuiToolTip
+        content={
+          'When Active, the indicators of compromise from this source are used to scan the log data as part of the threat intel scan.'
+        }
+      >
+        <span>
+          <EuiIcon
+            type={'dot'}
+            color={enabled_for_scan ? 'success' : 'text'}
+            style={{ marginBottom: 4 }}
+          />{' '}
+          {enabled_for_scan ? 'Active' : 'Inactive'}&nbsp;
+          <EuiIcon type={'iInCircle'} />
+        </span>
+      </EuiToolTip>,
+      <EuiButton color={enabled_for_scan ? 'danger' : 'primary'} onClick={toggleActiveState}>
+        {enabled_for_scan ? 'Deactivate' : 'Activate'}
+      </EuiButton>
+    );
+  }
+
+  if (type === 'S3_CUSTOM') {
+    headerControls.push(
+      <EuiButton fill onClick={onRefresh}>
+        Refresh
+      </EuiButton>
+    );
+  }
+
+  headerControls.push(
+    <EuiToolTip content={'Delete'}>
+      <EuiButtonIcon iconType={'trash'} color="danger" onClick={onDeleteButtonClick} />
+    </EuiToolTip>
+  );
+
   return (
     <>
-      <EuiFlexGroup alignItems="flexStart">
-        <EuiFlexItem>
-          <EuiTitle>
-            <h2>{name}</h2>
-          </EuiTitle>
-        </EuiFlexItem>
-        <EuiFlexItem grow={false}>
-          <EuiFlexGroup alignItems="center" wrap>
-            {showActivateControls && (
-              <>
-                <EuiFlexItem grow={false}>
-                  <EuiToolTip
-                    content={
-                      'When Active, the indicators of compromise from this source are used to scan the log data as part of the threat intel scan.'
-                    }
-                  >
-                    <span>
-                      <EuiIcon
-                        type={'dot'}
-                        color={enabled_for_scan ? 'success' : 'text'}
-                        style={{ marginBottom: 4 }}
-                      />{' '}
-                      {enabled_for_scan ? 'Active' : 'Inactive'}&nbsp;
-                      <EuiIcon type={'iInCircle'} />
-                    </span>
-                  </EuiToolTip>
+      <PageHeader
+        appRightControls={headerControls.map((control) => ({ renderComponent: control }))}
+      >
+        <EuiFlexGroup alignItems="flexStart">
+          <EuiFlexItem>
+            <EuiTitle>
+              <h2>{name}</h2>
+            </EuiTitle>
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>
+            <EuiFlexGroup alignItems="center" wrap>
+              {headerControls.map((control, idx) => (
+                <EuiFlexItem grow={false} key={idx}>
+                  {control}
                 </EuiFlexItem>
-                <EuiFlexItem grow={false}>
-                  <EuiButton
-                    color={enabled_for_scan ? 'danger' : 'primary'}
-                    onClick={toggleActiveState}
-                  >
-                    {enabled_for_scan ? 'Deactivate' : 'Activate'}
-                  </EuiButton>
-                </EuiFlexItem>
-              </>
-            )}
-            {type === 'S3_CUSTOM' && (
-              <EuiFlexItem grow={false}>
-                <EuiButton fill onClick={onRefresh}>
-                  Refresh
-                </EuiButton>
-              </EuiFlexItem>
-            )}
-            <EuiFlexItem grow={false}>
-              <EuiToolTip content={'Delete'}>
-                <EuiButtonIcon iconType={'trash'} color="danger" onClick={onDeleteButtonClick} />
-              </EuiToolTip>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-        </EuiFlexItem>
-      </EuiFlexGroup>
-      <EuiSpacer />
+              ))}
+            </EuiFlexGroup>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+        <EuiSpacer />
+      </PageHeader>
       <EuiPanel>
         <DescriptionGroup
           listItems={[

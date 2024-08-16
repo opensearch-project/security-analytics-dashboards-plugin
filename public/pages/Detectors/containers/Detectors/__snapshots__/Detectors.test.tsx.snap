@@ -37,142 +37,181 @@ exports[`<Detectors /> spec renders the component 1`] = `
     <div
       className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionColumn euiFlexGroup--responsive"
     >
-      <EuiFlexItem>
-        <div
-          className="euiFlexItem"
-        >
-          <EuiFlexGroup>
-            <div
-              className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
-            >
-              <EuiFlexItem>
-                <div
-                  className="euiFlexItem"
-                >
-                  <EuiTitle
-                    size="m"
+      <PageHeader
+        appRightControls={
+          Array [
+            Object {
+              "renderComponent": <EuiButton
+                data-test-subj="detectorsRefreshButton"
+                iconType="refresh"
+                onClick={[Function]}
+              >
+                Refresh
+              </EuiButton>,
+            },
+            Object {
+              "renderComponent": <EuiPopover
+                anchorPosition="downLeft"
+                button={
+                  <EuiButton
+                    data-test-subj="detectorsActionsButton"
+                    disabled={true}
+                    iconSide="right"
+                    iconType="arrowDown"
+                    isLoading={false}
+                    onClick={[Function]}
                   >
-                    <h1
-                      className="euiTitle euiTitle--medium"
-                    >
-                      Threat detectors
-                    </h1>
-                  </EuiTitle>
-                </div>
-              </EuiFlexItem>
-              <EuiFlexItem>
-                <div
-                  className="euiFlexItem"
-                >
-                  <EuiFlexGroup
-                    justifyContent="flexEnd"
-                  >
-                    <div
-                      className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
-                    >
-                      <EuiFlexItem
-                        grow={false}
+                    Actions
+                  </EuiButton>
+                }
+                closePopover={[Function]}
+                data-test-subj="detectorsActionsPopover"
+                display="inlineBlock"
+                hasArrow={true}
+                id="detectorsActionsPopover"
+                isOpen={false}
+                ownFocus={true}
+                panelPaddingSize="none"
+              >
+                <EuiContextMenuPanel
+                  hasFocus={true}
+                  items={
+                    Array [
+                      <EuiContextMenuItem
+                        data-test-subj="deleteButton"
+                        disabled={true}
+                        icon="empty"
+                        onClick={[Function]}
                       >
-                        <div
-                          className="euiFlexItem euiFlexItem--flexGrowZero"
+                        Delete
+                      </EuiContextMenuItem>,
+                    ]
+                  }
+                />
+              </EuiPopover>,
+            },
+            Object {
+              "renderComponent": <EuiButton
+                data-test-subj="detectorsCreateButton"
+                fill={true}
+                href="opensearch_security_analytics_dashboards#/create-detector"
+              >
+                Create detector
+              </EuiButton>,
+            },
+          ]
+        }
+      >
+        <EuiFlexItem>
+          <div
+            className="euiFlexItem"
+          >
+            <EuiFlexGroup>
+              <div
+                className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+              >
+                <EuiFlexItem>
+                  <div
+                    className="euiFlexItem"
+                  >
+                    <EuiTitle
+                      size="m"
+                    >
+                      <h1
+                        className="euiTitle euiTitle--medium"
+                      >
+                        Threat detectors
+                      </h1>
+                    </EuiTitle>
+                  </div>
+                </EuiFlexItem>
+                <EuiFlexItem>
+                  <div
+                    className="euiFlexItem"
+                  >
+                    <EuiFlexGroup
+                      justifyContent="flexEnd"
+                    >
+                      <div
+                        className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
+                      >
+                        <EuiFlexItem
+                          grow={false}
+                          key="0"
                         >
-                          <EuiButton
-                            data-test-subj="detectorsRefreshButton"
-                            iconType="refresh"
-                            onClick={[Function]}
+                          <div
+                            className="euiFlexItem euiFlexItem--flexGrowZero"
                           >
-                            <EuiButtonDisplay
-                              baseClassName="euiButton"
+                            <EuiButton
                               data-test-subj="detectorsRefreshButton"
-                              disabled={false}
-                              element="button"
                               iconType="refresh"
-                              isDisabled={false}
                               onClick={[Function]}
-                              type="button"
                             >
-                              <button
-                                className="euiButton euiButton--primary"
+                              <EuiButtonDisplay
+                                baseClassName="euiButton"
                                 data-test-subj="detectorsRefreshButton"
                                 disabled={false}
+                                element="button"
+                                iconType="refresh"
+                                isDisabled={false}
                                 onClick={[Function]}
-                                style={
-                                  Object {
-                                    "minWidth": undefined,
-                                  }
-                                }
                                 type="button"
                               >
-                                <EuiButtonContent
-                                  className="euiButton__content"
-                                  iconSide="left"
-                                  iconType="refresh"
-                                  textProps={
+                                <button
+                                  className="euiButton euiButton--primary"
+                                  data-test-subj="detectorsRefreshButton"
+                                  disabled={false}
+                                  onClick={[Function]}
+                                  style={
                                     Object {
-                                      "className": "euiButton__text",
+                                      "minWidth": undefined,
                                     }
                                   }
+                                  type="button"
                                 >
-                                  <span
-                                    className="euiButtonContent euiButton__content"
+                                  <EuiButtonContent
+                                    className="euiButton__content"
+                                    iconSide="left"
+                                    iconType="refresh"
+                                    textProps={
+                                      Object {
+                                        "className": "euiButton__text",
+                                      }
+                                    }
                                   >
-                                    <EuiIcon
-                                      className="euiButtonContent__icon"
-                                      color="inherit"
-                                      size="m"
-                                      type="refresh"
-                                    >
-                                      EuiIconMock
-                                    </EuiIcon>
                                     <span
-                                      className="euiButton__text"
+                                      className="euiButtonContent euiButton__content"
                                     >
-                                      Refresh
+                                      <EuiIcon
+                                        className="euiButtonContent__icon"
+                                        color="inherit"
+                                        size="m"
+                                        type="refresh"
+                                      >
+                                        EuiIconMock
+                                      </EuiIcon>
+                                      <span
+                                        className="euiButton__text"
+                                      >
+                                        Refresh
+                                      </span>
                                     </span>
-                                  </span>
-                                </EuiButtonContent>
-                              </button>
-                            </EuiButtonDisplay>
-                          </EuiButton>
-                        </div>
-                      </EuiFlexItem>
-                      <EuiFlexItem
-                        grow={false}
-                      >
-                        <div
-                          className="euiFlexItem euiFlexItem--flexGrowZero"
+                                  </EuiButtonContent>
+                                </button>
+                              </EuiButtonDisplay>
+                            </EuiButton>
+                          </div>
+                        </EuiFlexItem>
+                        <EuiFlexItem
+                          grow={false}
+                          key="1"
                         >
-                          <EuiPopover
-                            anchorPosition="downLeft"
-                            button={
-                              <EuiButton
-                                data-test-subj="detectorsActionsButton"
-                                disabled={true}
-                                iconSide="right"
-                                iconType="arrowDown"
-                                isLoading={false}
-                                onClick={[Function]}
-                              >
-                                Actions
-                              </EuiButton>
-                            }
-                            closePopover={[Function]}
-                            data-test-subj="detectorsActionsPopover"
-                            display="inlineBlock"
-                            hasArrow={true}
-                            id="detectorsActionsPopover"
-                            isOpen={false}
-                            ownFocus={true}
-                            panelPaddingSize="none"
+                          <div
+                            className="euiFlexItem euiFlexItem--flexGrowZero"
                           >
-                            <div
-                              className="euiPopover euiPopover--anchorDownLeft"
-                              data-test-subj="detectorsActionsPopover"
-                              id="detectorsActionsPopover"
-                            >
-                              <div
-                                className="euiPopover__anchor"
-                              >
+                            <EuiPopover
+                              anchorPosition="downLeft"
+                              button={
                                 <EuiButton
                                   data-test-subj="detectorsActionsButton"
                                   disabled={true}
@@ -181,138 +220,168 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                   isLoading={false}
                                   onClick={[Function]}
                                 >
-                                  <EuiButtonDisplay
-                                    baseClassName="euiButton"
+                                  Actions
+                                </EuiButton>
+                              }
+                              closePopover={[Function]}
+                              data-test-subj="detectorsActionsPopover"
+                              display="inlineBlock"
+                              hasArrow={true}
+                              id="detectorsActionsPopover"
+                              isOpen={false}
+                              ownFocus={true}
+                              panelPaddingSize="none"
+                            >
+                              <div
+                                className="euiPopover euiPopover--anchorDownLeft"
+                                data-test-subj="detectorsActionsPopover"
+                                id="detectorsActionsPopover"
+                              >
+                                <div
+                                  className="euiPopover__anchor"
+                                >
+                                  <EuiButton
                                     data-test-subj="detectorsActionsButton"
                                     disabled={true}
-                                    element="button"
                                     iconSide="right"
                                     iconType="arrowDown"
-                                    isDisabled={true}
                                     isLoading={false}
                                     onClick={[Function]}
-                                    type="button"
                                   >
-                                    <button
-                                      className="euiButton euiButton--primary euiButton-isDisabled"
+                                    <EuiButtonDisplay
+                                      baseClassName="euiButton"
                                       data-test-subj="detectorsActionsButton"
                                       disabled={true}
+                                      element="button"
+                                      iconSide="right"
+                                      iconType="arrowDown"
+                                      isDisabled={true}
+                                      isLoading={false}
                                       onClick={[Function]}
-                                      style={
-                                        Object {
-                                          "minWidth": undefined,
-                                        }
-                                      }
                                       type="button"
                                     >
-                                      <EuiButtonContent
-                                        className="euiButton__content"
-                                        iconSide="right"
-                                        iconType="arrowDown"
-                                        isLoading={false}
-                                        textProps={
+                                      <button
+                                        className="euiButton euiButton--primary euiButton-isDisabled"
+                                        data-test-subj="detectorsActionsButton"
+                                        disabled={true}
+                                        onClick={[Function]}
+                                        style={
                                           Object {
-                                            "className": "euiButton__text",
+                                            "minWidth": undefined,
                                           }
                                         }
+                                        type="button"
                                       >
-                                        <span
-                                          className="euiButtonContent euiButtonContent--iconRight euiButton__content"
+                                        <EuiButtonContent
+                                          className="euiButton__content"
+                                          iconSide="right"
+                                          iconType="arrowDown"
+                                          isLoading={false}
+                                          textProps={
+                                            Object {
+                                              "className": "euiButton__text",
+                                            }
+                                          }
                                         >
-                                          <EuiIcon
-                                            className="euiButtonContent__icon"
-                                            color="inherit"
-                                            size="m"
-                                            type="arrowDown"
-                                          >
-                                            EuiIconMock
-                                          </EuiIcon>
                                           <span
-                                            className="euiButton__text"
+                                            className="euiButtonContent euiButtonContent--iconRight euiButton__content"
                                           >
-                                            Actions
+                                            <EuiIcon
+                                              className="euiButtonContent__icon"
+                                              color="inherit"
+                                              size="m"
+                                              type="arrowDown"
+                                            >
+                                              EuiIconMock
+                                            </EuiIcon>
+                                            <span
+                                              className="euiButton__text"
+                                            >
+                                              Actions
+                                            </span>
                                           </span>
-                                        </span>
-                                      </EuiButtonContent>
-                                    </button>
-                                  </EuiButtonDisplay>
-                                </EuiButton>
+                                        </EuiButtonContent>
+                                      </button>
+                                    </EuiButtonDisplay>
+                                  </EuiButton>
+                                </div>
                               </div>
-                            </div>
-                          </EuiPopover>
-                        </div>
-                      </EuiFlexItem>
-                      <EuiFlexItem
-                        grow={false}
-                      >
-                        <div
-                          className="euiFlexItem euiFlexItem--flexGrowZero"
+                            </EuiPopover>
+                          </div>
+                        </EuiFlexItem>
+                        <EuiFlexItem
+                          grow={false}
+                          key="2"
                         >
-                          <EuiButton
-                            data-test-subj="detectorsCreateButton"
-                            fill={true}
-                            href="opensearch_security_analytics_dashboards#/create-detector"
+                          <div
+                            className="euiFlexItem euiFlexItem--flexGrowZero"
                           >
-                            <EuiButtonDisplay
-                              baseClassName="euiButton"
+                            <EuiButton
                               data-test-subj="detectorsCreateButton"
-                              element="a"
                               fill={true}
                               href="opensearch_security_analytics_dashboards#/create-detector"
-                              isDisabled={false}
-                              rel="noreferrer"
                             >
-                              <a
-                                className="euiButton euiButton--primary euiButton--fill"
+                              <EuiButtonDisplay
+                                baseClassName="euiButton"
                                 data-test-subj="detectorsCreateButton"
-                                disabled={false}
+                                element="a"
+                                fill={true}
                                 href="opensearch_security_analytics_dashboards#/create-detector"
+                                isDisabled={false}
                                 rel="noreferrer"
-                                style={
-                                  Object {
-                                    "minWidth": undefined,
-                                  }
-                                }
                               >
-                                <EuiButtonContent
-                                  className="euiButton__content"
-                                  iconSide="left"
-                                  textProps={
+                                <a
+                                  className="euiButton euiButton--primary euiButton--fill"
+                                  data-test-subj="detectorsCreateButton"
+                                  disabled={false}
+                                  href="opensearch_security_analytics_dashboards#/create-detector"
+                                  rel="noreferrer"
+                                  style={
                                     Object {
-                                      "className": "euiButton__text",
+                                      "minWidth": undefined,
                                     }
                                   }
                                 >
-                                  <span
-                                    className="euiButtonContent euiButton__content"
+                                  <EuiButtonContent
+                                    className="euiButton__content"
+                                    iconSide="left"
+                                    textProps={
+                                      Object {
+                                        "className": "euiButton__text",
+                                      }
+                                    }
                                   >
                                     <span
-                                      className="euiButton__text"
+                                      className="euiButtonContent euiButton__content"
                                     >
-                                      Create detector
+                                      <span
+                                        className="euiButton__text"
+                                      >
+                                        Create detector
+                                      </span>
                                     </span>
-                                  </span>
-                                </EuiButtonContent>
-                              </a>
-                            </EuiButtonDisplay>
-                          </EuiButton>
-                        </div>
-                      </EuiFlexItem>
-                    </div>
-                  </EuiFlexGroup>
-                </div>
-              </EuiFlexItem>
-            </div>
-          </EuiFlexGroup>
-          <EuiSpacer
-            size="m"
-          >
-            <div
-              className="euiSpacer euiSpacer--m"
-            />
-          </EuiSpacer>
-        </div>
-      </EuiFlexItem>
+                                  </EuiButtonContent>
+                                </a>
+                              </EuiButtonDisplay>
+                            </EuiButton>
+                          </div>
+                        </EuiFlexItem>
+                      </div>
+                    </EuiFlexGroup>
+                  </div>
+                </EuiFlexItem>
+              </div>
+            </EuiFlexGroup>
+            <EuiSpacer
+              size="m"
+            >
+              <div
+                className="euiSpacer euiSpacer--m"
+              />
+            </EuiSpacer>
+          </div>
+        </EuiFlexItem>
+      </PageHeader>
       <EuiFlexItem>
         <div
           className="euiFlexItem"

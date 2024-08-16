@@ -176,11 +176,11 @@ export function validateRule(
   return true;
 }
 
-export function setBreadCrumb(
+export function setRulesRelatedBreadCrumb(
   breadCrumb: EuiBreadcrumb,
   breadCrumbSetter?: (breadCrumbs: EuiBreadcrumb[]) => void
 ) {
-  breadCrumbSetter?.([BREADCRUMBS.SECURITY_ANALYTICS, BREADCRUMBS.RULES, breadCrumb]);
+  breadCrumbSetter?.([BREADCRUMBS.RULES, breadCrumb]);
 }
 
 export function getLogTypeFromLogSource(logSource: { [k: string]: string }) {

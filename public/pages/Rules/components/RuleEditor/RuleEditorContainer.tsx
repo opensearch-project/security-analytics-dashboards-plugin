@@ -10,13 +10,14 @@ import { ROUTES } from '../../../../utils/constants';
 import { EuiSpacer } from '@elastic/eui';
 import { RuleEditorFormModel, ruleEditorStateDefaultValue } from './RuleEditorFormModel';
 import { mapFormToRule, mapRuleToForm } from './mappers';
-import { RuleEditorForm } from './RuleEditorForm';
+import { RuleEditorForm, VisualRuleEditorProps } from './RuleEditorForm';
 import { validateRule } from '../../utils/helpers';
 import { DataStore } from '../../../../store/DataStore';
 import { Rule } from '../../../../../types';
 
 export interface RuleEditorProps {
-  title: string | JSX.Element;
+  title: string;
+  subtitleData?: VisualRuleEditorProps['subtitleData'];
   rule?: Rule;
   history: RouteComponentProps['history'];
   notifications?: NotificationsStart;
@@ -37,6 +38,7 @@ export const RuleEditorContainer: React.FC<RuleEditorProps> = ({
   rule,
   mode,
   validateOnMount,
+  subtitleData,
 }) => {
   const initialRuleValue = rule
     ? { ...mapRuleToForm(rule), id: ruleEditorStateDefaultValue.id }
@@ -76,6 +78,7 @@ export const RuleEditorContainer: React.FC<RuleEditorProps> = ({
         notifications={notifications}
         initialValue={initialRuleValue}
         validateOnMount={validateOnMount}
+        subtitleData={subtitleData}
         cancel={goToRulesList}
         submit={onSubmit}
       />

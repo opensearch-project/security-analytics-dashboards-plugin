@@ -237,139 +237,197 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
     }
   }
 >
-  <EuiFlexGroup>
-    <div
-      className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
-    >
-      <EuiFlexItem>
-        <div
-          className="euiFlexItem"
-        >
-          <EuiFlexGroup
-            alignItems="center"
+  <PageHeader
+    appBadgeControls={
+      Array [
+        Object {
+          "renderComponent": <EuiHealth
+            color="success"
           >
-            <div
-              className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow euiFlexGroup--responsive"
-            >
-              <EuiFlexItem
-                grow={false}
+            Active
+          </EuiHealth>,
+        },
+      ]
+    }
+    appRightControls={
+      Array [
+        Object {
+          "renderComponent": <EuiPopover
+            anchorPosition="downLeft"
+            button={
+              <EuiButton
+                data-test-subj="detectorsActionsButton"
+                iconSide="right"
+                iconType="arrowDown"
+                isLoading={false}
+                onClick={[Function]}
               >
-                <div
-                  className="euiFlexItem euiFlexItem--flexGrowZero"
-                >
-                  <EuiTitle
-                    data-test-subj="detector-details-detector-name"
+                Actions
+              </EuiButton>
+            }
+            closePopover={[Function]}
+            data-test-subj="detectorsActionsPopover"
+            display="inlineBlock"
+            hasArrow={true}
+            id="detectorsActionsPopover"
+            isOpen={false}
+            ownFocus={true}
+            panelPaddingSize="none"
+          >
+            <EuiContextMenuPanel
+              hasFocus={true}
+              items={
+                Array [
+                  <EuiContextMenuItem
+                    data-test-subj="viewAlertsButton"
+                    disabled={false}
+                    icon="empty"
+                    onClick={[Function]}
                   >
-                    <h1
-                      className="euiTitle euiTitle--medium"
+                    View Alerts
+                  </EuiContextMenuItem>,
+                  <EuiContextMenuItem
+                    data-test-subj="viewFindingsButton"
+                    disabled={false}
+                    icon="empty"
+                    onClick={[Function]}
+                  >
+                    View Findings
+                  </EuiContextMenuItem>,
+                  <React.Fragment />,
+                  <EuiHorizontalRule
+                    margin="xs"
+                  />,
+                  <EuiContextMenuItem
+                    data-test-subj="deleteButton"
+                    disabled={false}
+                    icon="empty"
+                    onClick={[Function]}
+                  >
+                    Stop detector
+                  </EuiContextMenuItem>,
+                  <EuiContextMenuItem
+                    data-test-subj="editButton"
+                    disabled={false}
+                    icon="empty"
+                    onClick={[Function]}
+                  >
+                    Delete
+                  </EuiContextMenuItem>,
+                ]
+              }
+            />
+          </EuiPopover>,
+        },
+      ]
+    }
+  >
+    <EuiFlexGroup>
+      <div
+        className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+      >
+        <EuiFlexItem>
+          <div
+            className="euiFlexItem"
+          >
+            <EuiFlexGroup
+              alignItems="center"
+            >
+              <div
+                className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow euiFlexGroup--responsive"
+              >
+                <EuiFlexItem
+                  grow={false}
+                >
+                  <div
+                    className="euiFlexItem euiFlexItem--flexGrowZero"
+                  >
+                    <EuiTitle
                       data-test-subj="detector-details-detector-name"
                     >
-                      detector_name
-                    </h1>
-                  </EuiTitle>
-                </div>
-              </EuiFlexItem>
-              <EuiFlexItem
-                grow={false}
-              >
-                <div
-                  className="euiFlexItem euiFlexItem--flexGrowZero"
-                >
-                  <EuiHealth
-                    color="success"
-                  >
-                    <div
-                      className="euiHealth euiHealth--textSizeS"
-                    >
-                      <EuiFlexGroup
-                        alignItems="center"
-                        gutterSize="xs"
-                        responsive={false}
+                      <h1
+                        className="euiTitle euiTitle--medium"
+                        data-test-subj="detector-details-detector-name"
                       >
-                        <div
-                          className="euiFlexGroup euiFlexGroup--gutterExtraSmall euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow"
-                        >
-                          <EuiFlexItem
-                            grow={false}
-                          >
-                            <div
-                              className="euiFlexItem euiFlexItem--flexGrowZero"
-                            >
-                              <EuiIcon
-                                color="success"
-                                type="dot"
-                              >
-                                EuiIconMock
-                              </EuiIcon>
-                            </div>
-                          </EuiFlexItem>
-                          <EuiFlexItem
-                            grow={false}
-                          >
-                            <div
-                              className="euiFlexItem euiFlexItem--flexGrowZero"
-                            >
-                              Active
-                            </div>
-                          </EuiFlexItem>
-                        </div>
-                      </EuiFlexGroup>
-                    </div>
-                  </EuiHealth>
-                </div>
-              </EuiFlexItem>
-            </div>
-          </EuiFlexGroup>
-        </div>
-      </EuiFlexItem>
-      <EuiFlexItem>
-        <div
-          className="euiFlexItem"
-        >
-          <EuiFlexGroup
-            alignItems="center"
-            justifyContent="flexEnd"
-          >
-            <div
-              className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
-            >
-              <EuiFlexItem
-                grow={false}
-                key="0"
-              >
-                <div
-                  className="euiFlexItem euiFlexItem--flexGrowZero"
+                        detector_name
+                      </h1>
+                    </EuiTitle>
+                  </div>
+                </EuiFlexItem>
+                <EuiFlexItem
+                  grow={false}
                 >
-                  <EuiPopover
-                    anchorPosition="downLeft"
-                    button={
-                      <EuiButton
-                        data-test-subj="detectorsActionsButton"
-                        iconSide="right"
-                        iconType="arrowDown"
-                        isLoading={false}
-                        onClick={[Function]}
-                      >
-                        Actions
-                      </EuiButton>
-                    }
-                    closePopover={[Function]}
-                    data-test-subj="detectorsActionsPopover"
-                    display="inlineBlock"
-                    hasArrow={true}
-                    id="detectorsActionsPopover"
-                    isOpen={false}
-                    ownFocus={true}
-                    panelPaddingSize="none"
+                  <div
+                    className="euiFlexItem euiFlexItem--flexGrowZero"
                   >
-                    <div
-                      className="euiPopover euiPopover--anchorDownLeft"
-                      data-test-subj="detectorsActionsPopover"
-                      id="detectorsActionsPopover"
+                    <EuiHealth
+                      color="success"
                     >
                       <div
-                        className="euiPopover__anchor"
+                        className="euiHealth euiHealth--textSizeS"
                       >
+                        <EuiFlexGroup
+                          alignItems="center"
+                          gutterSize="xs"
+                          responsive={false}
+                        >
+                          <div
+                            className="euiFlexGroup euiFlexGroup--gutterExtraSmall euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow"
+                          >
+                            <EuiFlexItem
+                              grow={false}
+                            >
+                              <div
+                                className="euiFlexItem euiFlexItem--flexGrowZero"
+                              >
+                                <EuiIcon
+                                  color="success"
+                                  type="dot"
+                                >
+                                  EuiIconMock
+                                </EuiIcon>
+                              </div>
+                            </EuiFlexItem>
+                            <EuiFlexItem
+                              grow={false}
+                            >
+                              <div
+                                className="euiFlexItem euiFlexItem--flexGrowZero"
+                              >
+                                Active
+                              </div>
+                            </EuiFlexItem>
+                          </div>
+                        </EuiFlexGroup>
+                      </div>
+                    </EuiHealth>
+                  </div>
+                </EuiFlexItem>
+              </div>
+            </EuiFlexGroup>
+          </div>
+        </EuiFlexItem>
+        <EuiFlexItem>
+          <div
+            className="euiFlexItem"
+          >
+            <EuiFlexGroup
+              alignItems="center"
+              justifyContent="flexEnd"
+            >
+              <div
+                className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
+              >
+                <EuiFlexItem
+                  grow={false}
+                  key="0"
+                >
+                  <div
+                    className="euiFlexItem euiFlexItem--flexGrowZero"
+                  >
+                    <EuiPopover
+                      anchorPosition="downLeft"
+                      button={
                         <EuiButton
                           data-test-subj="detectorsActionsButton"
                           iconSide="right"
@@ -377,80 +435,108 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                           isLoading={false}
                           onClick={[Function]}
                         >
-                          <EuiButtonDisplay
-                            baseClassName="euiButton"
+                          Actions
+                        </EuiButton>
+                      }
+                      closePopover={[Function]}
+                      data-test-subj="detectorsActionsPopover"
+                      display="inlineBlock"
+                      hasArrow={true}
+                      id="detectorsActionsPopover"
+                      isOpen={false}
+                      ownFocus={true}
+                      panelPaddingSize="none"
+                    >
+                      <div
+                        className="euiPopover euiPopover--anchorDownLeft"
+                        data-test-subj="detectorsActionsPopover"
+                        id="detectorsActionsPopover"
+                      >
+                        <div
+                          className="euiPopover__anchor"
+                        >
+                          <EuiButton
                             data-test-subj="detectorsActionsButton"
-                            disabled={false}
-                            element="button"
                             iconSide="right"
                             iconType="arrowDown"
-                            isDisabled={false}
                             isLoading={false}
                             onClick={[Function]}
-                            type="button"
                           >
-                            <button
-                              className="euiButton euiButton--primary"
+                            <EuiButtonDisplay
+                              baseClassName="euiButton"
                               data-test-subj="detectorsActionsButton"
                               disabled={false}
+                              element="button"
+                              iconSide="right"
+                              iconType="arrowDown"
+                              isDisabled={false}
+                              isLoading={false}
                               onClick={[Function]}
-                              style={
-                                Object {
-                                  "minWidth": undefined,
-                                }
-                              }
                               type="button"
                             >
-                              <EuiButtonContent
-                                className="euiButton__content"
-                                iconSide="right"
-                                iconType="arrowDown"
-                                isLoading={false}
-                                textProps={
+                              <button
+                                className="euiButton euiButton--primary"
+                                data-test-subj="detectorsActionsButton"
+                                disabled={false}
+                                onClick={[Function]}
+                                style={
                                   Object {
-                                    "className": "euiButton__text",
+                                    "minWidth": undefined,
                                   }
                                 }
+                                type="button"
                               >
-                                <span
-                                  className="euiButtonContent euiButtonContent--iconRight euiButton__content"
+                                <EuiButtonContent
+                                  className="euiButton__content"
+                                  iconSide="right"
+                                  iconType="arrowDown"
+                                  isLoading={false}
+                                  textProps={
+                                    Object {
+                                      "className": "euiButton__text",
+                                    }
+                                  }
                                 >
-                                  <EuiIcon
-                                    className="euiButtonContent__icon"
-                                    color="inherit"
-                                    size="m"
-                                    type="arrowDown"
-                                  >
-                                    EuiIconMock
-                                  </EuiIcon>
                                   <span
-                                    className="euiButton__text"
+                                    className="euiButtonContent euiButtonContent--iconRight euiButton__content"
                                   >
-                                    Actions
+                                    <EuiIcon
+                                      className="euiButtonContent__icon"
+                                      color="inherit"
+                                      size="m"
+                                      type="arrowDown"
+                                    >
+                                      EuiIconMock
+                                    </EuiIcon>
+                                    <span
+                                      className="euiButton__text"
+                                    >
+                                      Actions
+                                    </span>
                                   </span>
-                                </span>
-                              </EuiButtonContent>
-                            </button>
-                          </EuiButtonDisplay>
-                        </EuiButton>
+                                </EuiButtonContent>
+                              </button>
+                            </EuiButtonDisplay>
+                          </EuiButton>
+                        </div>
                       </div>
-                    </div>
-                  </EuiPopover>
-                </div>
-              </EuiFlexItem>
-            </div>
-          </EuiFlexGroup>
-        </div>
-      </EuiFlexItem>
-    </div>
-  </EuiFlexGroup>
-  <EuiSpacer
-    size="xl"
-  >
-    <div
-      className="euiSpacer euiSpacer--xl"
-    />
-  </EuiSpacer>
+                    </EuiPopover>
+                  </div>
+                </EuiFlexItem>
+              </div>
+            </EuiFlexGroup>
+          </div>
+        </EuiFlexItem>
+      </div>
+    </EuiFlexGroup>
+    <EuiSpacer
+      size="xl"
+    >
+      <div
+        className="euiSpacer euiSpacer--xl"
+      />
+    </EuiSpacer>
+  </PageHeader>
   <EuiTabs>
     <div
       className="euiTabs"

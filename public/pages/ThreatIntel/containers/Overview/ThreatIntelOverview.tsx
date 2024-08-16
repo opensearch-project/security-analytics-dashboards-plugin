@@ -17,8 +17,7 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import React, { MouseEventHandler, useCallback, useContext, useEffect, useMemo } from 'react';
-import { CoreServicesContext } from '../../../../components/core_services';
+import React, { MouseEventHandler, useCallback, useEffect, useMemo } from 'react';
 import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { useState } from 'react';
 import {
@@ -32,6 +31,8 @@ import { deriveFormModelFromConfig, getThreatIntelNextStepsProps } from '../../u
 import { ThreatIntelOverviewActions } from '../../components/ThreatIntelOverviewActions/ThreatIntelOverviewActions';
 import ThreatIntelService from '../../../../services/ThreatIntelService';
 import { ThreatIntelLogScanConfig } from '../../components/ThreatIntelLogScanConfig/ThreatIntelLogScanConfig';
+import { setBreadcrumbs } from '../../../../utils/helpers';
+import { PageHeader } from '../../../../components/PageHeader/PageHeader';
 
 export interface ThreatIntelOverviewProps extends RouteComponentProps {
   threatIntelService: ThreatIntelService;
@@ -41,7 +42,6 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
   history,
   threatIntelService,
 }) => {
-  const context = useContext(CoreServicesContext);
   const [threatIntelSources, setThreatIntelSources] = useState<ThreatIntelSourceItem[]>([]);
   const [scanConfig, setScanConfig] = useState<ThreatIntelScanConfig | undefined>(undefined);
   const [flyoutContent, setFlyoutContent] = useState<React.ReactNode>(null);
@@ -122,10 +122,7 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
   );
 
   useEffect(() => {
-    context?.chrome.setBreadcrumbs([
-      BREADCRUMBS.SECURITY_ANALYTICS,
-      BREADCRUMBS.THREAT_INTEL_OVERVIEW,
-    ]);
+    setBreadcrumbs([BREADCRUMBS.THREAT_INTEL_OVERVIEW]);
   }, []);
 
   useEffect(() => {
@@ -159,35 +156,59 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
     logSources.length > 0
   );
 
+  const threatIntelOverviewActions = (
+    <ThreatIntelOverviewActions
+      history={history}
+      scanConfig={scanConfig}
+      sourceCount={threatIntelSources.length}
+      toggleScan={toggleScan}
+    />
+  );
+
   return (
     <>
-      <EuiFlexGroup alignItems="flexStart">
-        <EuiFlexItem>
-          <EuiTitle size="m">
-            <h1>Threat intelligence</h1>
-          </EuiTitle>
-        </EuiFlexItem>
-        <EuiFlexItem grow={false}>
-          <ThreatIntelOverviewActions
-            history={history}
-            scanConfig={scanConfig}
-            sourceCount={threatIntelSources.length}
-            toggleScan={toggleScan}
-          />
-        </EuiFlexItem>
-      </EuiFlexGroup>
-      <EuiSpacer size="s" />
-      <EuiText color="subdued">
-        <span>
-          Scan log data for indicators of compromise from threat intel data streams to identify
-          malicious actors and security threats.{' '}
-          <EuiLink href="" external>
-            Learn more
-          </EuiLink>
-          .
-        </span>
-      </EuiText>
-      <EuiSpacer />
+      <PageHeader
+        appRightControls={[{ renderComponent: threatIntelOverviewActions }]}
+        appDescriptionControls={[
+          {
+            description: `Scan log data for indicators of compromise from threat intel data streams to identify
+          malicious actors and security threats.`,
+          },
+          {
+            label: 'Learn more',
+            href:
+              'https://opensearch.org/docs/latest/security-analytics/threat-intelligence/index/',
+            controlType: 'link',
+            target: '_blank',
+            iconType: 'popout',
+            iconSide: 'right',
+          },
+        ]}
+      >
+        <EuiFlexGroup alignItems="flexStart">
+          <EuiFlexItem>
+            <EuiTitle size="m">
+              <h1>Threat intelligence</h1>
+            </EuiTitle>
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>{threatIntelOverviewActions}</EuiFlexItem>
+        </EuiFlexGroup>
+        <EuiSpacer size="s" />
+        <EuiText color="subdued">
+          <span>
+            Scan log data for indicators of compromise from threat intel data streams to identify
+            malicious actors and security threats.{' '}
+            <EuiLink
+              href="https://opensearch.org/docs/latest/security-analytics/threat-intelligence/index/"
+              external
+            >
+              Learn more
+            </EuiLink>
+            .
+          </span>
+        </EuiText>
+        <EuiSpacer />
+      </PageHeader>
       <EuiAccordion
         id="threat-intel-management-steps"
         buttonContent="Get started"
