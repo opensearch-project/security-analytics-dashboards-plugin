@@ -2058,6 +2058,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                               <FieldValueSelectionFilter
                                                 config={
                                                   Object {
+                                                    "compressed": undefined,
                                                     "field": "severity",
                                                     "multiSelect": "or",
                                                     "name": "Alert severity",
@@ -2187,6 +2188,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                               <FieldValueSelectionFilter
                                                 config={
                                                   Object {
+                                                    "compressed": undefined,
                                                     "field": "state",
                                                     "multiSelect": "or",
                                                     "name": "Status",
