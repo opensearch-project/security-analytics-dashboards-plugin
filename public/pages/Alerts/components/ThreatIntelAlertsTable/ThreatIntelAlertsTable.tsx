@@ -5,7 +5,7 @@
 
 import {
   EuiBasicTableColumn,
-  EuiButtonIcon,
+  EuiSmallButtonIcon,
   EuiInMemoryTable,
   EuiTableSelectionType,
   EuiToolTip,
@@ -89,7 +89,7 @@ export const ThreatIntelAlertsTable: React.FC<ThreatIntelAlertsTableProps> = ({
 
             return alertItem.state === 'ACTIVE' || alertItem.state === 'ACKNOWLEDGED' ? (
               <EuiToolTip content={tooltipContent}>
-                <EuiButtonIcon
+                <EuiSmallButtonIcon
                   aria-label={'Acknowledge'}
                   iconType={alertItem.state === 'ACTIVE' ? 'thumbsUp' : 'check'}
                   onClick={() =>
@@ -108,7 +108,7 @@ export const ThreatIntelAlertsTable: React.FC<ThreatIntelAlertsTableProps> = ({
         {
           render: (alertItem: ThreatIntelAlert) => (
             <EuiToolTip content={'View details'}>
-              <EuiButtonIcon
+              <EuiSmallButtonIcon
                 aria-label={'View details'}
                 iconType={'expand'}
                 onClick={() => {

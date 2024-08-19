@@ -7,8 +7,8 @@ import { BrowserServices } from '../../../../models/interfaces';
 import { RuleEditorContainer } from '../../components/RuleEditor/RuleEditorContainer';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
-  EuiButton,
-  EuiFilePicker,
+  EuiSmallButton,
+  EuiCompressedFilePicker,
   EuiFlexGroup,
   EuiFlexItem,
   EuiPanel,
@@ -106,7 +106,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, notifications }
               <h3>Import rule</h3>
             </EuiTitle>
           </PageHeader>
-          <EuiFilePicker
+          <EuiCompressedFilePicker
             id={'filePickerId'}
             fullWidth
             initialPromptText="Select or drag yml file containing Sigma rules"
@@ -122,7 +122,7 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, notifications }
         <EuiSpacer size="xl" />
         <EuiFlexGroup justifyContent="flexEnd">
           <EuiFlexItem grow={false}>
-            <EuiButton onClick={() => history.replace(ROUTES.RULES)}>Cancel</EuiButton>
+            <EuiSmallButton onClick={() => history.replace(ROUTES.RULES)}>Cancel</EuiSmallButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       </>

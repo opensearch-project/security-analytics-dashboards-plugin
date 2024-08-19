@@ -4,7 +4,8 @@
  */
 
 import {
-  EuiButton,
+  EuiSmallButton,
+  EuiSmallButtonEmpty,
   EuiButtonEmpty,
   EuiContextMenuItem,
   EuiContextMenuPanel,
@@ -12,7 +13,7 @@ import {
   EuiEmptyPrompt,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiIcon,
   EuiLink,
   EuiPanel,
@@ -146,14 +147,14 @@ export const ThreatIntelLogScanConfig: React.FC<ThreatIntelLogScanConfigProps> =
             <EuiPopover
               id={'detectorsActionsPopover'}
               button={
-                <EuiButton
+                <EuiSmallButton
                   iconType={isPopoverOpen ? 'arrowUp' : 'arrowDown'}
                   iconSide={'right'}
                   onClick={toggleActionMenu}
                   data-test-subj={'log-scan-config-action-button'}
                 >
                   Actions
-                </EuiButton>
+                </EuiSmallButton>
               }
               isOpen={isPopoverOpen}
               closePopover={closeActionMenu}
@@ -209,7 +210,7 @@ export const ThreatIntelLogScanConfig: React.FC<ThreatIntelLogScanConfigProps> =
                   })}
                   {logSources.length > 3 && (
                     <EuiFlexItem grow={false}>
-                      <EuiButtonEmpty
+                      <EuiSmallButtonEmpty
                         onClick={() => {
                           setFlyoutContent(
                             <ThreatIntelLogSourcesFlyout
@@ -221,7 +222,7 @@ export const ThreatIntelLogScanConfig: React.FC<ThreatIntelLogScanConfigProps> =
                         }}
                       >
                         View {logSources.length} log sources
-                      </EuiButtonEmpty>
+                      </EuiSmallButtonEmpty>
                     </EuiFlexItem>
                   )}
                 </EuiFlexGroup>
@@ -247,9 +248,9 @@ export const ThreatIntelLogScanConfig: React.FC<ThreatIntelLogScanConfigProps> =
                 />
               </EuiFlexItem>
               <EuiFlexItem grow={2} style={{ marginLeft: 100 }}>
-                <EuiFormRow label="Scan runs every">
+                <EuiCompressedFormRow label="Scan runs every">
                   <Interval schedule={schedule} readonly onScheduleChange={() => {}} />
-                </EuiFormRow>
+                </EuiCompressedFormRow>
               </EuiFlexItem>
             </EuiFlexGroup>
             <EuiSpacer size="xxl" />

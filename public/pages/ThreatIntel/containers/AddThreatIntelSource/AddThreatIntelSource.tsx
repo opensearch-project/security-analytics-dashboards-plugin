@@ -5,18 +5,18 @@
 
 import React, { useEffect, useState } from 'react';
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiCheckableCard,
-  EuiCheckboxGroup,
-  EuiFieldText,
-  EuiFilePicker,
+  EuiCompressedCheckboxGroup,
+  EuiCompressedFieldText,
+  EuiCompressedFilePicker,
   EuiFlexGroup,
   EuiFlexItem,
   EuiFormLabel,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiPanel,
   EuiSpacer,
-  EuiSwitch,
+  EuiCompressedSwitch,
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
@@ -378,21 +378,21 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
           <h4>Details</h4>
         </EuiText>
         <EuiSpacer />
-        <EuiFormRow
+        <EuiCompressedFormRow
           label="Name"
           helpText="Source name must contain 1-128 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, and underscores."
           isInvalid={!!inputErrors.name}
           error={inputErrors.name}
         >
-          <EuiFieldText
+          <EuiCompressedFieldText
             placeholder="Title"
             onChange={onNameChange}
             onBlur={onNameChange}
             value={source.name}
           />
-        </EuiFormRow>
+        </EuiCompressedFormRow>
         <EuiSpacer />
-        <EuiFormRow
+        <EuiCompressedFormRow
           label={
             <>
               {'Description - '}
@@ -400,13 +400,13 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
             </>
           }
         >
-          <EuiFieldText
+          <EuiCompressedFieldText
             placeholder="Description"
             onChange={onDescriptionChange}
             onBlur={onDescriptionChange}
             value={source.description}
           />
-        </EuiFormRow>
+        </EuiCompressedFormRow>
         <EuiSpacer />
         <EuiText size="xs">
           <b>Threat intel source type</b>
@@ -463,7 +463,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
               <h4>Connection details</h4>
             </EuiText>
             <EuiSpacer />
-            <EuiFormRow
+            <EuiCompressedFormRow
               label={
                 <>
                   <EuiFormLabel className={!!inputErrors.s3?.role_arn ? 'label--danger' : ''}>
@@ -479,58 +479,58 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
               isInvalid={!!inputErrors.s3?.role_arn}
               error={inputErrors.s3?.role_arn}
             >
-              <EuiFieldText
+              <EuiCompressedFieldText
                 placeholder="arn:"
                 onChange={(event) => onS3DataChange('role_arn', event.target.value)}
                 onBlur={(event) => onS3DataChange('role_arn', event.target.value)}
                 value={s3ConnectionDetails.s3.role_arn}
               />
-            </EuiFormRow>
+            </EuiCompressedFormRow>
             <EuiSpacer />
-            <EuiFormRow
+            <EuiCompressedFormRow
               label="S3 bucket directory"
               isInvalid={!!inputErrors.s3?.bucket_name}
               error={inputErrors.s3?.bucket_name}
             >
-              <EuiFieldText
+              <EuiCompressedFieldText
                 placeholder="S3 bucket name"
                 onChange={(event) => onS3DataChange('bucket_name', event.target.value)}
                 onBlur={(event) => onS3DataChange('bucket_name', event.target.value)}
                 value={s3ConnectionDetails.s3.bucket_name}
               />
-            </EuiFormRow>
+            </EuiCompressedFormRow>
             <EuiSpacer />
-            <EuiFormRow
+            <EuiCompressedFormRow
               label="Specify a directory or file"
               isInvalid={!!inputErrors.s3?.object_key}
               error={inputErrors.s3?.object_key}
             >
-              <EuiFieldText
+              <EuiCompressedFieldText
                 placeholder="Object key"
                 onChange={(event) => onS3DataChange('object_key', event.target.value)}
                 onBlur={(event) => onS3DataChange('object_key', event.target.value)}
                 value={s3ConnectionDetails.s3.object_key}
               />
-            </EuiFormRow>
+            </EuiCompressedFormRow>
             <EuiSpacer />
-            <EuiFormRow
+            <EuiCompressedFormRow
               label="Region"
               isInvalid={!!inputErrors.s3?.region}
               error={inputErrors.s3?.region}
             >
-              <EuiFieldText
+              <EuiCompressedFieldText
                 placeholder="Region"
                 onChange={(event) => onS3DataChange('region', event.target.value)}
                 onBlur={(event) => onS3DataChange('region', event.target.value)}
                 value={s3ConnectionDetails.s3.region}
               />
-            </EuiFormRow>
+            </EuiCompressedFormRow>
             <EuiSpacer />
             <EuiText>
               <h4>Download schedule</h4>
             </EuiText>
             <EuiSpacer />
-            <EuiSwitch
+            <EuiCompressedSwitch
               label="Download on demand only"
               checked={!source.enabled}
               onChange={(event) => onRefreshSwitchChange(event.target.checked)}
@@ -560,7 +560,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
               <h4>Upload a file</h4>
             </EuiText>
             <EuiSpacer />
-            <EuiFormRow
+            <EuiCompressedFormRow
               label="File"
               helpText={
                 <>
@@ -571,7 +571,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
               isInvalid={!!inputErrors.fileUpload?.file}
               error={inputErrors.fileUpload?.file}
             >
-              <EuiFilePicker
+              <EuiCompressedFilePicker
                 id={'filePickerId'}
                 fullWidth
                 initialPromptText="Select or drag and drop a file"
@@ -582,7 +582,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
                 isInvalid={!!inputErrors.fileUpload?.file}
                 data-test-subj="import_ioc_file"
               />
-            </EuiFormRow>
+            </EuiCompressedFormRow>
             <EuiSpacer />
           </>
         )}
@@ -597,7 +597,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
         </EuiText>
         <EuiSpacer size="m" />
         <EuiFormRow isInvalid={!!inputErrors.ioc_types} error={inputErrors.ioc_types}>
-          <EuiCheckboxGroup
+          <EuiCompressedCheckboxGroup
             options={checkboxes}
             idToSelectedMap={checkboxIdToSelectedMap}
             onChange={onIocTypesChange}
@@ -608,17 +608,17 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
       <EuiSpacer />
       <EuiFlexGroup justifyContent="flexEnd">
         <EuiFlexItem grow={false}>
-          <EuiButton onClick={() => history.push(ROUTES.THREAT_INTEL_OVERVIEW)}>Cancel</EuiButton>
+          <EuiSmallButton onClick={() => history.push(ROUTES.THREAT_INTEL_OVERVIEW)}>Cancel</EuiSmallButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton
+          <EuiSmallButton
             disabled={!shouldEnableSubmit()}
             isLoading={submitInProgress}
             fill
             onClick={onSubmit}
           >
             Add threat intel source
-          </EuiButton>
+          </EuiSmallButton>
         </EuiFlexItem>
       </EuiFlexGroup>
     </>

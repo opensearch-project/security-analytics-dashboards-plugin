@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiBasicTableColumn, EuiButtonIcon, EuiInMemoryTable, EuiToolTip } from '@elastic/eui';
+import { EuiBasicTableColumn, EuiSmallButtonIcon, EuiInMemoryTable, EuiToolTip } from '@elastic/eui';
 import { ThreatIntelFinding } from '../../../../../types';
 import React from 'react';
 import { renderTime } from '../../../../utils/helpers';
@@ -46,7 +46,7 @@ export const ThreatIntelFindingsTable: React.FC<ThreatIntelFindingsTableProps> =
         {
           render: (finding) => (
             <EuiToolTip content={'View details'}>
-              <EuiButtonIcon
+              <EuiSmallButtonIcon
                 aria-label={'View details'}
                 data-test-subj={`view-details-icon`}
                 iconType={'inspect'}

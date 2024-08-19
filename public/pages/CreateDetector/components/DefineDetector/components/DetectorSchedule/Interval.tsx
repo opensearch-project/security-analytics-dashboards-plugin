@@ -4,11 +4,11 @@
  */
 
 import {
-  EuiFieldNumber,
+  EuiCompressedFieldNumber,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFormRow,
-  EuiSelect,
+  EuiCompressedFormRow,
+  EuiCompressedSelect,
   EuiSelectOption,
 } from '@elastic/eui';
 import React from 'react';
@@ -57,14 +57,14 @@ export class Interval extends React.Component<IntervalProps, IntervalState> {
     const { isIntervalValid } = this.state;
     const { period } = this.props.schedule;
     return (
-      <EuiFormRow
+      <EuiCompressedFormRow
         label={this.props.label}
         isInvalid={!isIntervalValid}
         error={'Enter schedule interval.'}
       >
         <EuiFlexGroup>
           <EuiFlexItem>
-            <EuiFieldNumber
+            <EuiCompressedFieldNumber
               min={1}
               icon={'clock'}
               value={period.interval}
@@ -76,7 +76,7 @@ export class Interval extends React.Component<IntervalProps, IntervalState> {
             />
           </EuiFlexItem>
           <EuiFlexItem>
-            <EuiSelect
+            <EuiCompressedSelect
               options={this.props.scheduleUnitOptions ?? Object.values(defaultIntervalUnitOptions)}
               onChange={this.onUnitChange}
               value={period.unit}
@@ -85,7 +85,7 @@ export class Interval extends React.Component<IntervalProps, IntervalState> {
             />
           </EuiFlexItem>
         </EuiFlexGroup>
-      </EuiFormRow>
+      </EuiCompressedFormRow>
     );
   }
 }

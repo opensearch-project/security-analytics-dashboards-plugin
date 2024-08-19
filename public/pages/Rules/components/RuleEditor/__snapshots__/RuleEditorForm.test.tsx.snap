@@ -305,9 +305,9 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                 className="euiSpacer euiSpacer--l"
               />
             </EuiSpacer>
-            <EuiFormRow
+            <EuiCompressedFormRow
               describedByIds={Array []}
-              display="row"
+              display="rowCompressed"
               fullWidth={false}
               hasChildLabel={true}
               hasEmptyLabelSpace={false}
@@ -324,7 +324,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
               labelType="label"
             >
               <div
-                className="euiFormRow"
+                className="euiFormRow euiFormRow--compressed"
                 id="some_html_id-row"
               >
                 <div
@@ -357,7 +357,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                 <div
                   className="euiFormRow__fieldWrapper"
                 >
-                  <EuiFieldText
+                  <EuiCompressedFieldText
                     aria-describedby="some_html_id-help-0"
                     data-test-subj="rule_name_field"
                     id="some_html_id"
@@ -367,35 +367,50 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                     placeholder="My custom rule"
                     value=""
                   >
-                    <EuiFormControlLayout
-                      fullWidth={false}
-                      inputId="some_html_id"
+                    <EuiFieldText
+                      aria-describedby="some_html_id-help-0"
+                      compressed={true}
+                      data-test-subj="rule_name_field"
+                      id="some_html_id"
+                      onBlur={[Function]}
+                      onChange={[Function]}
+                      onFocus={[Function]}
+                      placeholder="My custom rule"
+                      value=""
                     >
-                      <div
-                        className="euiFormControlLayout"
+                      <EuiFormControlLayout
+                        compressed={true}
+                        fullWidth={false}
+                        inputId="some_html_id"
                       >
                         <div
-                          className="euiFormControlLayout__childrenWrapper"
+                          className="euiFormControlLayout euiFormControlLayout--compressed"
                         >
-                          <EuiValidatableControl>
-                            <input
-                              aria-describedby="some_html_id-help-0"
-                              className="euiFieldText"
-                              data-test-subj="rule_name_field"
-                              id="some_html_id"
-                              onBlur={[Function]}
-                              onChange={[Function]}
-                              onFocus={[Function]}
-                              placeholder="My custom rule"
-                              type="text"
-                              value=""
+                          <div
+                            className="euiFormControlLayout__childrenWrapper"
+                          >
+                            <EuiValidatableControl>
+                              <input
+                                aria-describedby="some_html_id-help-0"
+                                className="euiFieldText euiFieldText--compressed"
+                                data-test-subj="rule_name_field"
+                                id="some_html_id"
+                                onBlur={[Function]}
+                                onChange={[Function]}
+                                onFocus={[Function]}
+                                placeholder="My custom rule"
+                                type="text"
+                                value=""
+                              />
+                            </EuiValidatableControl>
+                            <EuiFormControlLayoutIcons
+                              compressed={true}
                             />
-                          </EuiValidatableControl>
-                          <EuiFormControlLayoutIcons />
+                          </div>
                         </div>
-                      </div>
-                    </EuiFormControlLayout>
-                  </EuiFieldText>
+                      </EuiFormControlLayout>
+                    </EuiFieldText>
+                  </EuiCompressedFieldText>
                   <EuiFormHelpText
                     className="euiFormRow__text"
                     id="some_html_id-help-0"
@@ -410,7 +425,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                   </EuiFormHelpText>
                 </div>
               </div>
-            </EuiFormRow>
+            </EuiCompressedFormRow>
             <EuiSpacer
               size="m"
             >
@@ -418,9 +433,9 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                 className="euiSpacer euiSpacer--m"
               />
             </EuiSpacer>
-            <EuiFormRow
+            <EuiCompressedFormRow
               describedByIds={Array []}
-              display="row"
+              display="rowCompressed"
               fullWidth={false}
               hasChildLabel={true}
               hasEmptyLabelSpace={false}
@@ -439,7 +454,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
               labelType="label"
             >
               <div
-                className="euiFormRow"
+                className="euiFormRow euiFormRow--compressed"
                 id="some_html_id-row"
               >
                 <div
@@ -475,7 +490,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                 <div
                   className="euiFormRow__fieldWrapper"
                 >
-                  <EuiFieldText
+                  <EuiCompressedFieldText
                     data-test-subj="rule_description_field"
                     id="some_html_id"
                     onBlur={[Function]}
@@ -484,37 +499,51 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                     placeholder="Detects ..."
                     value=""
                   >
-                    <EuiFormControlLayout
-                      fullWidth={false}
-                      inputId="some_html_id"
+                    <EuiFieldText
+                      compressed={true}
+                      data-test-subj="rule_description_field"
+                      id="some_html_id"
+                      onBlur={[Function]}
+                      onChange={[Function]}
+                      onFocus={[Function]}
+                      placeholder="Detects ..."
+                      value=""
                     >
-                      <div
-                        className="euiFormControlLayout"
+                      <EuiFormControlLayout
+                        compressed={true}
+                        fullWidth={false}
+                        inputId="some_html_id"
                       >
                         <div
-                          className="euiFormControlLayout__childrenWrapper"
+                          className="euiFormControlLayout euiFormControlLayout--compressed"
                         >
-                          <EuiValidatableControl>
-                            <input
-                              className="euiFieldText"
-                              data-test-subj="rule_description_field"
-                              id="some_html_id"
-                              onBlur={[Function]}
-                              onChange={[Function]}
-                              onFocus={[Function]}
-                              placeholder="Detects ..."
-                              type="text"
-                              value=""
+                          <div
+                            className="euiFormControlLayout__childrenWrapper"
+                          >
+                            <EuiValidatableControl>
+                              <input
+                                className="euiFieldText euiFieldText--compressed"
+                                data-test-subj="rule_description_field"
+                                id="some_html_id"
+                                onBlur={[Function]}
+                                onChange={[Function]}
+                                onFocus={[Function]}
+                                placeholder="Detects ..."
+                                type="text"
+                                value=""
+                              />
+                            </EuiValidatableControl>
+                            <EuiFormControlLayoutIcons
+                              compressed={true}
                             />
-                          </EuiValidatableControl>
-                          <EuiFormControlLayoutIcons />
+                          </div>
                         </div>
-                      </div>
-                    </EuiFormControlLayout>
-                  </EuiFieldText>
+                      </EuiFormControlLayout>
+                    </EuiFieldText>
+                  </EuiCompressedFieldText>
                 </div>
               </div>
-            </EuiFormRow>
+            </EuiCompressedFormRow>
             <EuiSpacer
               size="m"
             >
@@ -522,9 +551,9 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                 className="euiSpacer euiSpacer--m"
               />
             </EuiSpacer>
-            <EuiFormRow
+            <EuiCompressedFormRow
               describedByIds={Array []}
-              display="row"
+              display="rowCompressed"
               fullWidth={false}
               hasChildLabel={true}
               hasEmptyLabelSpace={false}
@@ -541,7 +570,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
               labelType="label"
             >
               <div
-                className="euiFormRow"
+                className="euiFormRow euiFormRow--compressed"
                 id="some_html_id-row"
               >
                 <div
@@ -574,7 +603,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                 <div
                   className="euiFormRow__fieldWrapper"
                 >
-                  <EuiFieldText
+                  <EuiCompressedFieldText
                     aria-describedby="some_html_id-help-0"
                     data-test-subj="rule_author_field"
                     id="some_html_id"
@@ -584,35 +613,50 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                     placeholder="Enter author name"
                     value=""
                   >
-                    <EuiFormControlLayout
-                      fullWidth={false}
-                      inputId="some_html_id"
+                    <EuiFieldText
+                      aria-describedby="some_html_id-help-0"
+                      compressed={true}
+                      data-test-subj="rule_author_field"
+                      id="some_html_id"
+                      onBlur={[Function]}
+                      onChange={[Function]}
+                      onFocus={[Function]}
+                      placeholder="Enter author name"
+                      value=""
                     >
-                      <div
-                        className="euiFormControlLayout"
+                      <EuiFormControlLayout
+                        compressed={true}
+                        fullWidth={false}
+                        inputId="some_html_id"
                       >
                         <div
-                          className="euiFormControlLayout__childrenWrapper"
+                          className="euiFormControlLayout euiFormControlLayout--compressed"
                         >
-                          <EuiValidatableControl>
-                            <input
-                              aria-describedby="some_html_id-help-0"
-                              className="euiFieldText"
-                              data-test-subj="rule_author_field"
-                              id="some_html_id"
-                              onBlur={[Function]}
-                              onChange={[Function]}
-                              onFocus={[Function]}
-                              placeholder="Enter author name"
-                              type="text"
-                              value=""
+                          <div
+                            className="euiFormControlLayout__childrenWrapper"
+                          >
+                            <EuiValidatableControl>
+                              <input
+                                aria-describedby="some_html_id-help-0"
+                                className="euiFieldText euiFieldText--compressed"
+                                data-test-subj="rule_author_field"
+                                id="some_html_id"
+                                onBlur={[Function]}
+                                onChange={[Function]}
+                                onFocus={[Function]}
+                                placeholder="Enter author name"
+                                type="text"
+                                value=""
+                              />
+                            </EuiValidatableControl>
+                            <EuiFormControlLayoutIcons
+                              compressed={true}
                             />
-                          </EuiValidatableControl>
-                          <EuiFormControlLayoutIcons />
+                          </div>
                         </div>
-                      </div>
-                    </EuiFormControlLayout>
-                  </EuiFieldText>
+                      </EuiFormControlLayout>
+                    </EuiFieldText>
+                  </EuiCompressedFieldText>
                   <EuiFormHelpText
                     className="euiFormRow__text"
                     id="some_html_id-help-0"
@@ -627,7 +671,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                   </EuiFormHelpText>
                 </div>
               </div>
-            </EuiFormRow>
+            </EuiCompressedFormRow>
             <EuiSpacer
               size="xl"
             >
@@ -674,9 +718,9 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                       }
                     }
                   >
-                    <EuiFormRow
+                    <EuiCompressedFormRow
                       describedByIds={Array []}
-                      display="row"
+                      display="rowCompressed"
                       fullWidth={false}
                       hasChildLabel={true}
                       hasEmptyLabelSpace={false}
@@ -692,7 +736,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                       labelType="label"
                     >
                       <div
-                        className="euiFormRow"
+                        className="euiFormRow euiFormRow--compressed"
                         id="some_html_id-row"
                       >
                         <div
@@ -725,9 +769,9 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                         <div
                           className="euiFormRow__fieldWrapper"
                         >
-                          <EuiComboBox
+                          <EuiCompressedComboBox
                             async={false}
-                            compressed={false}
+                            compressed={true}
                             data-test-subj="rule_type_dropdown"
                             fullWidth={false}
                             id="some_html_id"
@@ -748,14 +792,14 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                             <div
                               aria-expanded={false}
                               aria-haspopup="listbox"
-                              className="euiComboBox"
+                              className="euiComboBox euiComboBox--compressed"
                               data-test-subj="rule_type_dropdown"
                               onKeyDown={[Function]}
                               role="combobox"
                             >
                               <EuiComboBoxInput
                                 autoSizeInputRef={[Function]}
-                                compressed={false}
+                                compressed={true}
                                 fullWidth={false}
                                 hasSelectedOptions={false}
                                 id="some_html_id"
@@ -783,7 +827,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                 value=""
                               >
                                 <EuiFormControlLayout
-                                  compressed={false}
+                                  compressed={true}
                                   fullWidth={false}
                                   icon={
                                     Object {
@@ -798,13 +842,13 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                   }
                                 >
                                   <div
-                                    className="euiFormControlLayout"
+                                    className="euiFormControlLayout euiFormControlLayout--compressed"
                                   >
                                     <div
                                       className="euiFormControlLayout__childrenWrapper"
                                     >
                                       <div
-                                        className="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isClearable"
+                                        className="euiComboBox__inputWrap euiComboBox__inputWrap--compressed euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isClearable"
                                         data-test-subj="comboBoxInput"
                                         onClick={[Function]}
                                         tabIndex={-1}
@@ -875,7 +919,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                         </AutosizeInput>
                                       </div>
                                       <EuiFormControlLayoutIcons
-                                        compressed={false}
+                                        compressed={true}
                                         icon={
                                           Object {
                                             "aria-label": "Open list of options",
@@ -896,7 +940,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                             data-test-subj="comboBoxToggleListButton"
                                             iconRef={[Function]}
                                             onClick={[Function]}
-                                            size="m"
+                                            size="s"
                                             type="arrowDown"
                                           >
                                             <button
@@ -909,7 +953,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                               <EuiIcon
                                                 aria-hidden="true"
                                                 className="euiFormControlLayoutCustomIcon__icon"
-                                                size="m"
+                                                size="s"
                                                 type="arrowDown"
                                               >
                                                 EuiIconMock
@@ -923,10 +967,10 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                 </EuiFormControlLayout>
                               </EuiComboBoxInput>
                             </div>
-                          </EuiComboBox>
+                          </EuiCompressedComboBox>
                         </div>
                       </div>
-                    </EuiFormRow>
+                    </EuiCompressedFormRow>
                   </div>
                 </EuiFlexItem>
                 <EuiFlexItem
@@ -945,57 +989,64 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                       }
                     }
                   >
-                    <EuiButton
+                    <EuiSmallButton
                       href="opensearch_security_analytics_dashboards#/log-types"
                       target="_blank"
                     >
-                      <EuiButtonDisplay
-                        baseClassName="euiButton"
-                        element="a"
+                      <EuiButton
                         href="opensearch_security_analytics_dashboards#/log-types"
-                        isDisabled={false}
-                        rel="noopener noreferrer"
+                        size="s"
                         target="_blank"
                       >
-                        <a
-                          className="euiButton euiButton--primary"
-                          disabled={false}
+                        <EuiButtonDisplay
+                          baseClassName="euiButton"
+                          element="a"
                           href="opensearch_security_analytics_dashboards#/log-types"
+                          isDisabled={false}
                           rel="noopener noreferrer"
-                          style={
-                            Object {
-                              "minWidth": undefined,
-                            }
-                          }
+                          size="s"
                           target="_blank"
                         >
-                          <EuiButtonContent
-                            className="euiButton__content"
-                            iconSide="left"
-                            textProps={
+                          <a
+                            className="euiButton euiButton--primary euiButton--small"
+                            disabled={false}
+                            href="opensearch_security_analytics_dashboards#/log-types"
+                            rel="noopener noreferrer"
+                            style={
                               Object {
-                                "className": "euiButton__text",
+                                "minWidth": undefined,
                               }
                             }
+                            target="_blank"
                           >
-                            <span
-                              className="euiButtonContent euiButton__content"
+                            <EuiButtonContent
+                              className="euiButton__content"
+                              iconSide="left"
+                              textProps={
+                                Object {
+                                  "className": "euiButton__text",
+                                }
+                              }
                             >
                               <span
-                                className="euiButton__text"
+                                className="euiButtonContent euiButton__content"
                               >
-                                Manage 
-                                <EuiIcon
-                                  type="popout"
+                                <span
+                                  className="euiButton__text"
                                 >
-                                  EuiIconMock
-                                </EuiIcon>
+                                  Manage 
+                                  <EuiIcon
+                                    type="popout"
+                                  >
+                                    EuiIconMock
+                                  </EuiIcon>
+                                </span>
                               </span>
-                            </span>
-                          </EuiButtonContent>
-                        </a>
-                      </EuiButtonDisplay>
-                    </EuiButton>
+                            </EuiButtonContent>
+                          </a>
+                        </EuiButtonDisplay>
+                      </EuiButton>
+                    </EuiSmallButton>
                   </div>
                 </EuiFlexItem>
               </div>
@@ -1005,9 +1056,9 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                 className="euiSpacer euiSpacer--l"
               />
             </EuiSpacer>
-            <EuiFormRow
+            <EuiCompressedFormRow
               describedByIds={Array []}
-              display="row"
+              display="rowCompressed"
               fullWidth={false}
               hasChildLabel={true}
               hasEmptyLabelSpace={false}
@@ -1023,7 +1074,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
               labelType="label"
             >
               <div
-                className="euiFormRow"
+                className="euiFormRow euiFormRow--compressed"
                 id="some_html_id-row"
               >
                 <div
@@ -1056,9 +1107,9 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                 <div
                   className="euiFormRow__fieldWrapper"
                 >
-                  <EuiComboBox
+                  <EuiCompressedComboBox
                     async={false}
-                    compressed={false}
+                    compressed={true}
                     data-test-subj="rule_severity_dropdown"
                     fullWidth={false}
                     id="some_html_id"
@@ -1102,14 +1153,14 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                     <div
                       aria-expanded={false}
                       aria-haspopup="listbox"
-                      className="euiComboBox"
+                      className="euiComboBox euiComboBox--compressed"
                       data-test-subj="rule_severity_dropdown"
                       onKeyDown={[Function]}
                       role="combobox"
                     >
                       <EuiComboBoxInput
                         autoSizeInputRef={[Function]}
-                        compressed={false}
+                        compressed={true}
                         fullWidth={false}
                         hasSelectedOptions={false}
                         id="some_html_id"
@@ -1137,7 +1188,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                         value=""
                       >
                         <EuiFormControlLayout
-                          compressed={false}
+                          compressed={true}
                           fullWidth={false}
                           icon={
                             Object {
@@ -1152,13 +1203,13 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                           }
                         >
                           <div
-                            className="euiFormControlLayout"
+                            className="euiFormControlLayout euiFormControlLayout--compressed"
                           >
                             <div
                               className="euiFormControlLayout__childrenWrapper"
                             >
                               <div
-                                className="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isClearable"
+                                className="euiComboBox__inputWrap euiComboBox__inputWrap--compressed euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isClearable"
                                 data-test-subj="comboBoxInput"
                                 onClick={[Function]}
                                 tabIndex={-1}
@@ -1229,7 +1280,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                 </AutosizeInput>
                               </div>
                               <EuiFormControlLayoutIcons
-                                compressed={false}
+                                compressed={true}
                                 icon={
                                   Object {
                                     "aria-label": "Open list of options",
@@ -1250,7 +1301,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                     data-test-subj="comboBoxToggleListButton"
                                     iconRef={[Function]}
                                     onClick={[Function]}
-                                    size="m"
+                                    size="s"
                                     type="arrowDown"
                                   >
                                     <button
@@ -1263,7 +1314,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                       <EuiIcon
                                         aria-hidden="true"
                                         className="euiFormControlLayoutCustomIcon__icon"
-                                        size="m"
+                                        size="s"
                                         type="arrowDown"
                                       >
                                         EuiIconMock
@@ -1277,18 +1328,18 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                         </EuiFormControlLayout>
                       </EuiComboBoxInput>
                     </div>
-                  </EuiComboBox>
+                  </EuiCompressedComboBox>
                 </div>
               </div>
-            </EuiFormRow>
+            </EuiCompressedFormRow>
             <EuiSpacer>
               <div
                 className="euiSpacer euiSpacer--l"
               />
             </EuiSpacer>
-            <EuiFormRow
+            <EuiCompressedFormRow
               describedByIds={Array []}
-              display="row"
+              display="rowCompressed"
               fullWidth={false}
               hasChildLabel={true}
               hasEmptyLabelSpace={false}
@@ -1304,7 +1355,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
               labelType="label"
             >
               <div
-                className="euiFormRow"
+                className="euiFormRow euiFormRow--compressed"
                 id="some_html_id-row"
               >
                 <div
@@ -1337,9 +1388,9 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                 <div
                   className="euiFormRow__fieldWrapper"
                 >
-                  <EuiComboBox
+                  <EuiCompressedComboBox
                     async={false}
-                    compressed={false}
+                    compressed={true}
                     data-test-subj="rule_status_dropdown"
                     fullWidth={false}
                     id="some_html_id"
@@ -1382,14 +1433,14 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                     <div
                       aria-expanded={false}
                       aria-haspopup="listbox"
-                      className="euiComboBox"
+                      className="euiComboBox euiComboBox--compressed"
                       data-test-subj="rule_status_dropdown"
                       onKeyDown={[Function]}
                       role="combobox"
                     >
                       <EuiComboBoxInput
                         autoSizeInputRef={[Function]}
-                        compressed={false}
+                        compressed={true}
                         fullWidth={false}
                         hasSelectedOptions={true}
                         id="some_html_id"
@@ -1430,7 +1481,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                               "onClick": [Function],
                             }
                           }
-                          compressed={false}
+                          compressed={true}
                           fullWidth={false}
                           icon={
                             Object {
@@ -1445,13 +1496,13 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                           }
                         >
                           <div
-                            className="euiFormControlLayout"
+                            className="euiFormControlLayout euiFormControlLayout--compressed"
                           >
                             <div
                               className="euiFormControlLayout__childrenWrapper"
                             >
                               <div
-                                className="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isClearable"
+                                className="euiComboBox__inputWrap euiComboBox__inputWrap--compressed euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isClearable"
                                 data-test-subj="comboBoxInput"
                                 onClick={[Function]}
                                 tabIndex={-1}
@@ -1542,7 +1593,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                     "onClick": [Function],
                                   }
                                 }
-                                compressed={false}
+                                compressed={true}
                                 icon={
                                   Object {
                                     "aria-label": "Open list of options",
@@ -1561,7 +1612,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                   <EuiFormControlLayoutClearButton
                                     data-test-subj="comboBoxClearButton"
                                     onClick={[Function]}
-                                    size="m"
+                                    size="s"
                                   >
                                     <EuiI18n
                                       default="Clear input"
@@ -1569,7 +1620,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                     >
                                       <button
                                         aria-label="Clear input"
-                                        className="euiFormControlLayoutClearButton"
+                                        className="euiFormControlLayoutClearButton euiFormControlLayoutClearButton--small"
                                         data-test-subj="comboBoxClearButton"
                                         onClick={[Function]}
                                         type="button"
@@ -1588,7 +1639,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                     data-test-subj="comboBoxToggleListButton"
                                     iconRef={[Function]}
                                     onClick={[Function]}
-                                    size="m"
+                                    size="s"
                                     type="arrowDown"
                                   >
                                     <button
@@ -1601,7 +1652,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                       <EuiIcon
                                         aria-hidden="true"
                                         className="euiFormControlLayoutCustomIcon__icon"
-                                        size="m"
+                                        size="s"
                                         type="arrowDown"
                                       >
                                         EuiIconMock
@@ -1615,10 +1666,10 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                         </EuiFormControlLayout>
                       </EuiComboBoxInput>
                     </div>
-                  </EuiComboBox>
+                  </EuiCompressedComboBox>
                 </div>
               </div>
-            </EuiFormRow>
+            </EuiCompressedFormRow>
             <EuiSpacer
               size="xxl"
             >
@@ -1693,22 +1744,22 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                             <div
                               className="euiFlexItem"
                             >
-                              <EuiFormRow
+                              <EuiCompressedFormRow
                                 describedByIds={Array []}
-                                display="row"
+                                display="rowCompressed"
                                 fullWidth={false}
                                 hasChildLabel={true}
                                 hasEmptyLabelSpace={false}
                                 labelType="label"
                               >
                                 <div
-                                  className="euiFormRow"
+                                  className="euiFormRow euiFormRow--compressed"
                                   id="some_html_id-row"
                                 >
                                   <div
                                     className="euiFormRow__fieldWrapper"
                                   >
-                                    <EuiFieldText
+                                    <EuiCompressedFieldText
                                       className="detection-visual-editor-name euiTitle--small"
                                       data-test-subj="selection_name"
                                       id="some_html_id"
@@ -1718,37 +1769,52 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                       placeholder="Enter selection name"
                                       value="Selection_1"
                                     >
-                                      <EuiFormControlLayout
-                                        fullWidth={false}
-                                        inputId="some_html_id"
+                                      <EuiFieldText
+                                        className="detection-visual-editor-name euiTitle--small"
+                                        compressed={true}
+                                        data-test-subj="selection_name"
+                                        id="some_html_id"
+                                        onBlur={[Function]}
+                                        onChange={[Function]}
+                                        onFocus={[Function]}
+                                        placeholder="Enter selection name"
+                                        value="Selection_1"
                                       >
-                                        <div
-                                          className="euiFormControlLayout"
+                                        <EuiFormControlLayout
+                                          compressed={true}
+                                          fullWidth={false}
+                                          inputId="some_html_id"
                                         >
                                           <div
-                                            className="euiFormControlLayout__childrenWrapper"
+                                            className="euiFormControlLayout euiFormControlLayout--compressed"
                                           >
-                                            <EuiValidatableControl>
-                                              <input
-                                                className="euiFieldText detection-visual-editor-name euiTitle--small"
-                                                data-test-subj="selection_name"
-                                                id="some_html_id"
-                                                onBlur={[Function]}
-                                                onChange={[Function]}
-                                                onFocus={[Function]}
-                                                placeholder="Enter selection name"
-                                                type="text"
-                                                value="Selection_1"
+                                            <div
+                                              className="euiFormControlLayout__childrenWrapper"
+                                            >
+                                              <EuiValidatableControl>
+                                                <input
+                                                  className="euiFieldText detection-visual-editor-name euiTitle--small euiFieldText--compressed"
+                                                  data-test-subj="selection_name"
+                                                  id="some_html_id"
+                                                  onBlur={[Function]}
+                                                  onChange={[Function]}
+                                                  onFocus={[Function]}
+                                                  placeholder="Enter selection name"
+                                                  type="text"
+                                                  value="Selection_1"
+                                                />
+                                              </EuiValidatableControl>
+                                              <EuiFormControlLayoutIcons
+                                                compressed={true}
                                               />
-                                            </EuiValidatableControl>
-                                            <EuiFormControlLayoutIcons />
+                                            </div>
                                           </div>
-                                        </div>
-                                      </EuiFormControlLayout>
-                                    </EuiFieldText>
+                                        </EuiFormControlLayout>
+                                      </EuiFieldText>
+                                    </EuiCompressedFieldText>
                                   </div>
                                 </div>
-                              </EuiFormRow>
+                              </EuiCompressedFormRow>
                               <EuiText
                                 size="s"
                               >
@@ -1887,9 +1953,9 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                               }
                                             }
                                           >
-                                            <EuiFormRow
+                                            <EuiCompressedFormRow
                                               describedByIds={Array []}
-                                              display="row"
+                                              display="rowCompressed"
                                               fullWidth={false}
                                               hasChildLabel={true}
                                               hasEmptyLabelSpace={false}
@@ -1903,7 +1969,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                               labelType="label"
                                             >
                                               <div
-                                                className="euiFormRow"
+                                                className="euiFormRow euiFormRow--compressed"
                                                 id="some_html_id-row"
                                               >
                                                 <div
@@ -1934,7 +2000,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                                 <div
                                                   className="euiFormRow__fieldWrapper"
                                                 >
-                                                  <EuiFieldText
+                                                  <EuiCompressedFieldText
                                                     data-test-subj="selection_field_key_name"
                                                     id="some_html_id"
                                                     onBlur={[Function]}
@@ -1943,37 +2009,51 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                                     placeholder="Enter key name"
                                                     value=""
                                                   >
-                                                    <EuiFormControlLayout
-                                                      fullWidth={false}
-                                                      inputId="some_html_id"
+                                                    <EuiFieldText
+                                                      compressed={true}
+                                                      data-test-subj="selection_field_key_name"
+                                                      id="some_html_id"
+                                                      onBlur={[Function]}
+                                                      onChange={[Function]}
+                                                      onFocus={[Function]}
+                                                      placeholder="Enter key name"
+                                                      value=""
                                                     >
-                                                      <div
-                                                        className="euiFormControlLayout"
+                                                      <EuiFormControlLayout
+                                                        compressed={true}
+                                                        fullWidth={false}
+                                                        inputId="some_html_id"
                                                       >
                                                         <div
-                                                          className="euiFormControlLayout__childrenWrapper"
+                                                          className="euiFormControlLayout euiFormControlLayout--compressed"
                                                         >
-                                                          <EuiValidatableControl>
-                                                            <input
-                                                              className="euiFieldText"
-                                                              data-test-subj="selection_field_key_name"
-                                                              id="some_html_id"
-                                                              onBlur={[Function]}
-                                                              onChange={[Function]}
-                                                              onFocus={[Function]}
-                                                              placeholder="Enter key name"
-                                                              type="text"
-                                                              value=""
+                                                          <div
+                                                            className="euiFormControlLayout__childrenWrapper"
+                                                          >
+                                                            <EuiValidatableControl>
+                                                              <input
+                                                                className="euiFieldText euiFieldText--compressed"
+                                                                data-test-subj="selection_field_key_name"
+                                                                id="some_html_id"
+                                                                onBlur={[Function]}
+                                                                onChange={[Function]}
+                                                                onFocus={[Function]}
+                                                                placeholder="Enter key name"
+                                                                type="text"
+                                                                value=""
+                                                              />
+                                                            </EuiValidatableControl>
+                                                            <EuiFormControlLayoutIcons
+                                                              compressed={true}
                                                             />
-                                                          </EuiValidatableControl>
-                                                          <EuiFormControlLayoutIcons />
+                                                          </div>
                                                         </div>
-                                                      </div>
-                                                    </EuiFormControlLayout>
-                                                  </EuiFieldText>
+                                                      </EuiFormControlLayout>
+                                                    </EuiFieldText>
+                                                  </EuiCompressedFieldText>
                                                 </div>
                                               </div>
-                                            </EuiFormRow>
+                                            </EuiCompressedFormRow>
                                           </div>
                                         </EuiFlexItem>
                                         <EuiFlexItem
@@ -1992,9 +2072,9 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                               }
                                             }
                                           >
-                                            <EuiFormRow
+                                            <EuiCompressedFormRow
                                               describedByIds={Array []}
-                                              display="row"
+                                              display="rowCompressed"
                                               fullWidth={false}
                                               hasChildLabel={true}
                                               hasEmptyLabelSpace={false}
@@ -2008,7 +2088,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                               labelType="label"
                                             >
                                               <div
-                                                className="euiFormRow"
+                                                className="euiFormRow euiFormRow--compressed"
                                                 id="some_html_id-row"
                                               >
                                                 <div
@@ -2039,9 +2119,9 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                                 <div
                                                   className="euiFormRow__fieldWrapper"
                                                 >
-                                                  <EuiComboBox
+                                                  <EuiCompressedComboBox
                                                     async={false}
-                                                    compressed={false}
+                                                    compressed={true}
                                                     data-test-subj="modifier_dropdown"
                                                     fullWidth={false}
                                                     id="some_html_id"
@@ -2095,14 +2175,14 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                                     <div
                                                       aria-expanded={false}
                                                       aria-haspopup="listbox"
-                                                      className="euiComboBox"
+                                                      className="euiComboBox euiComboBox--compressed"
                                                       data-test-subj="modifier_dropdown"
                                                       onKeyDown={[Function]}
                                                       role="combobox"
                                                     >
                                                       <EuiComboBoxInput
                                                         autoSizeInputRef={[Function]}
-                                                        compressed={false}
+                                                        compressed={true}
                                                         fullWidth={false}
                                                         hasSelectedOptions={true}
                                                         id="some_html_id"
@@ -2142,7 +2222,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                                               "onClick": [Function],
                                                             }
                                                           }
-                                                          compressed={false}
+                                                          compressed={true}
                                                           fullWidth={false}
                                                           icon={
                                                             Object {
@@ -2157,13 +2237,13 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                                           }
                                                         >
                                                           <div
-                                                            className="euiFormControlLayout"
+                                                            className="euiFormControlLayout euiFormControlLayout--compressed"
                                                           >
                                                             <div
                                                               className="euiFormControlLayout__childrenWrapper"
                                                             >
                                                               <div
-                                                                className="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isClearable"
+                                                                className="euiComboBox__inputWrap euiComboBox__inputWrap--compressed euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isClearable"
                                                                 data-test-subj="comboBoxInput"
                                                                 onClick={[Function]}
                                                                 tabIndex={-1}
@@ -2254,7 +2334,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                                                     "onClick": [Function],
                                                                   }
                                                                 }
-                                                                compressed={false}
+                                                                compressed={true}
                                                                 icon={
                                                                   Object {
                                                                     "aria-label": "Open list of options",
@@ -2273,7 +2353,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                                                   <EuiFormControlLayoutClearButton
                                                                     data-test-subj="comboBoxClearButton"
                                                                     onClick={[Function]}
-                                                                    size="m"
+                                                                    size="s"
                                                                   >
                                                                     <EuiI18n
                                                                       default="Clear input"
@@ -2281,7 +2361,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                                                     >
                                                                       <button
                                                                         aria-label="Clear input"
-                                                                        className="euiFormControlLayoutClearButton"
+                                                                        className="euiFormControlLayoutClearButton euiFormControlLayoutClearButton--small"
                                                                         data-test-subj="comboBoxClearButton"
                                                                         onClick={[Function]}
                                                                         type="button"
@@ -2300,7 +2380,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                                                     data-test-subj="comboBoxToggleListButton"
                                                                     iconRef={[Function]}
                                                                     onClick={[Function]}
-                                                                    size="m"
+                                                                    size="s"
                                                                     type="arrowDown"
                                                                   >
                                                                     <button
@@ -2313,7 +2393,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                                                       <EuiIcon
                                                                         aria-hidden="true"
                                                                         className="euiFormControlLayoutCustomIcon__icon"
-                                                                        size="m"
+                                                                        size="s"
                                                                         type="arrowDown"
                                                                       >
                                                                         EuiIconMock
@@ -2327,10 +2407,10 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                                         </EuiFormControlLayout>
                                                       </EuiComboBoxInput>
                                                     </div>
-                                                  </EuiComboBox>
+                                                  </EuiCompressedComboBox>
                                                 </div>
                                               </div>
-                                            </EuiFormRow>
+                                            </EuiCompressedFormRow>
                                           </div>
                                         </EuiFlexItem>
                                       </div>
@@ -2342,7 +2422,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                         className="euiSpacer euiSpacer--m"
                                       />
                                     </EuiSpacer>
-                                    <EuiRadioGroup
+                                    <EuiCompressedRadioGroup
                                       idSelected="selection-map-value-0-0"
                                       onChange={[Function]}
                                       options={
@@ -2358,67 +2438,87 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                         ]
                                       }
                                     >
-                                      <div>
-                                        <EuiRadio
-                                          checked={true}
-                                          className="euiRadioGroup__item"
-                                          id="selection-map-value-0-0"
-                                          key="0"
-                                          label="Value"
-                                          onChange={[Function]}
-                                        >
-                                          <div
-                                            className="euiRadio euiRadioGroup__item"
+                                      <EuiRadioGroup
+                                        compressed={true}
+                                        idSelected="selection-map-value-0-0"
+                                        onChange={[Function]}
+                                        options={
+                                          Array [
+                                            Object {
+                                              "id": "selection-map-value-0-0",
+                                              "label": "Value",
+                                            },
+                                            Object {
+                                              "id": "selection-map-list-0-0",
+                                              "label": "List",
+                                            },
+                                          ]
+                                        }
+                                      >
+                                        <div>
+                                          <EuiRadio
+                                            checked={true}
+                                            className="euiRadioGroup__item"
+                                            compressed={true}
+                                            id="selection-map-value-0-0"
+                                            key="0"
+                                            label="Value"
+                                            onChange={[Function]}
                                           >
-                                            <input
-                                              checked={true}
-                                              className="euiRadio__input"
-                                              id="selection-map-value-0-0"
-                                              onChange={[Function]}
-                                              type="radio"
-                                            />
                                             <div
-                                              className="euiRadio__circle"
-                                            />
-                                            <label
-                                              className="euiRadio__label"
-                                              htmlFor="selection-map-value-0-0"
+                                              className="euiRadio euiRadio--compressed euiRadioGroup__item"
                                             >
-                                              Value
-                                            </label>
-                                          </div>
-                                        </EuiRadio>
-                                        <EuiRadio
-                                          checked={false}
-                                          className="euiRadioGroup__item"
-                                          id="selection-map-list-0-0"
-                                          key="1"
-                                          label="List"
-                                          onChange={[Function]}
-                                        >
-                                          <div
-                                            className="euiRadio euiRadioGroup__item"
+                                              <input
+                                                checked={true}
+                                                className="euiRadio__input"
+                                                id="selection-map-value-0-0"
+                                                onChange={[Function]}
+                                                type="radio"
+                                              />
+                                              <div
+                                                className="euiRadio__circle"
+                                              />
+                                              <label
+                                                className="euiRadio__label"
+                                                htmlFor="selection-map-value-0-0"
+                                              >
+                                                Value
+                                              </label>
+                                            </div>
+                                          </EuiRadio>
+                                          <EuiRadio
+                                            checked={false}
+                                            className="euiRadioGroup__item"
+                                            compressed={true}
+                                            id="selection-map-list-0-0"
+                                            key="1"
+                                            label="List"
+                                            onChange={[Function]}
                                           >
-                                            <input
-                                              checked={false}
-                                              className="euiRadio__input"
-                                              id="selection-map-list-0-0"
-                                              onChange={[Function]}
-                                              type="radio"
-                                            />
                                             <div
-                                              className="euiRadio__circle"
-                                            />
-                                            <label
-                                              className="euiRadio__label"
-                                              htmlFor="selection-map-list-0-0"
+                                              className="euiRadio euiRadio--compressed euiRadioGroup__item"
                                             >
-                                              List
-                                            </label>
-                                          </div>
-                                        </EuiRadio>
-                                      </div>
-                                    </EuiRadioGroup>
+                                              <input
+                                                checked={false}
+                                                className="euiRadio__input"
+                                                id="selection-map-list-0-0"
+                                                onChange={[Function]}
+                                                type="radio"
+                                              />
+                                              <div
+                                                className="euiRadio__circle"
+                                              />
+                                              <label
+                                                className="euiRadio__label"
+                                                htmlFor="selection-map-list-0-0"
+                                              >
+                                                List
+                                              </label>
+                                            </div>
+                                          </EuiRadio>
+                                        </div>
+                                      </EuiRadioGroup>
+                                    </EuiCompressedRadioGroup>
                                     <EuiSpacer
                                       size="m"
                                     >
@@ -2426,22 +2526,22 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                         className="euiSpacer euiSpacer--m"
                                       />
                                     </EuiSpacer>
-                                    <EuiFormRow
+                                    <EuiCompressedFormRow
                                       describedByIds={Array []}
-                                      display="row"
+                                      display="rowCompressed"
                                       fullWidth={false}
                                       hasChildLabel={true}
                                       hasEmptyLabelSpace={false}
                                       labelType="label"
                                     >
                                       <div
-                                        className="euiFormRow"
+                                        className="euiFormRow euiFormRow--compressed"
                                         id="some_html_id-row"
                                       >
                                         <div
                                           className="euiFormRow__fieldWrapper"
                                         >
-                                          <EuiFieldText
+                                          <EuiCompressedFieldText
                                             data-test-subj="selection_field_value"
                                             id="some_html_id"
                                             onBlur={[Function]}
@@ -2450,37 +2550,51 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                             placeholder="Value"
                                             value=""
                                           >
-                                            <EuiFormControlLayout
-                                              fullWidth={false}
-                                              inputId="some_html_id"
+                                            <EuiFieldText
+                                              compressed={true}
+                                              data-test-subj="selection_field_value"
+                                              id="some_html_id"
+                                              onBlur={[Function]}
+                                              onChange={[Function]}
+                                              onFocus={[Function]}
+                                              placeholder="Value"
+                                              value=""
                                             >
-                                              <div
-                                                className="euiFormControlLayout"
+                                              <EuiFormControlLayout
+                                                compressed={true}
+                                                fullWidth={false}
+                                                inputId="some_html_id"
                                               >
                                                 <div
-                                                  className="euiFormControlLayout__childrenWrapper"
+                                                  className="euiFormControlLayout euiFormControlLayout--compressed"
                                                 >
-                                                  <EuiValidatableControl>
-                                                    <input
-                                                      className="euiFieldText"
-                                                      data-test-subj="selection_field_value"
-                                                      id="some_html_id"
-                                                      onBlur={[Function]}
-                                                      onChange={[Function]}
-                                                      onFocus={[Function]}
-                                                      placeholder="Value"
-                                                      type="text"
-                                                      value=""
+                                                  <div
+                                                    className="euiFormControlLayout__childrenWrapper"
+                                                  >
+                                                    <EuiValidatableControl>
+                                                      <input
+                                                        className="euiFieldText euiFieldText--compressed"
+                                                        data-test-subj="selection_field_value"
+                                                        id="some_html_id"
+                                                        onBlur={[Function]}
+                                                        onChange={[Function]}
+                                                        onFocus={[Function]}
+                                                        placeholder="Value"
+                                                        type="text"
+                                                        value=""
+                                                      />
+                                                    </EuiValidatableControl>
+                                                    <EuiFormControlLayoutIcons
+                                                      compressed={true}
                                                     />
-                                                  </EuiValidatableControl>
-                                                  <EuiFormControlLayoutIcons />
+                                                  </div>
                                                 </div>
-                                              </div>
-                                            </EuiFormControlLayout>
-                                          </EuiFieldText>
+                                              </EuiFormControlLayout>
+                                            </EuiFieldText>
+                                          </EuiCompressedFieldText>
                                         </div>
                                       </div>
-                                    </EuiFormRow>
+                                    </EuiCompressedFormRow>
                                     <EuiSpacer
                                       size="m"
                                     >
@@ -2502,7 +2616,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                           className="euiSpacer euiSpacer--m"
                         />
                       </EuiSpacer>
-                      <EuiButton
+                      <EuiSmallButton
                         disabled={true}
                         iconType="plusInCircle"
                         onClick={[Function]}
@@ -2512,63 +2626,76 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                           }
                         }
                       >
-                        <EuiButtonDisplay
-                          baseClassName="euiButton"
+                        <EuiButton
                           disabled={true}
-                          element="button"
                           iconType="plusInCircle"
-                          isDisabled={true}
                           onClick={[Function]}
+                          size="s"
                           style={
                             Object {
                               "width": "70%",
                             }
                           }
-                          type="button"
                         >
-                          <button
-                            className="euiButton euiButton--primary euiButton-isDisabled"
+                          <EuiButtonDisplay
+                            baseClassName="euiButton"
                             disabled={true}
+                            element="button"
+                            iconType="plusInCircle"
+                            isDisabled={true}
                             onClick={[Function]}
+                            size="s"
                             style={
                               Object {
-                                "minWidth": undefined,
                                 "width": "70%",
                               }
                             }
                             type="button"
                           >
-                            <EuiButtonContent
-                              className="euiButton__content"
-                              iconSide="left"
-                              iconType="plusInCircle"
-                              textProps={
+                            <button
+                              className="euiButton euiButton--primary euiButton--small euiButton-isDisabled"
+                              disabled={true}
+                              onClick={[Function]}
+                              style={
                                 Object {
-                                  "className": "euiButton__text",
+                                  "minWidth": undefined,
+                                  "width": "70%",
                                 }
                               }
+                              type="button"
                             >
-                              <span
-                                className="euiButtonContent euiButton__content"
+                              <EuiButtonContent
+                                className="euiButton__content"
+                                iconSide="left"
+                                iconType="plusInCircle"
+                                textProps={
+                                  Object {
+                                    "className": "euiButton__text",
+                                  }
+                                }
                               >
-                                <EuiIcon
-                                  className="euiButtonContent__icon"
-                                  color="inherit"
-                                  size="m"
-                                  type="plusInCircle"
-                                >
-                                  EuiIconMock
-                                </EuiIcon>
                                 <span
-                                  className="euiButton__text"
+                                  className="euiButtonContent euiButton__content"
                                 >
-                                  Add map
+                                  <EuiIcon
+                                    className="euiButtonContent__icon"
+                                    color="inherit"
+                                    size="m"
+                                    type="plusInCircle"
+                                  >
+                                    EuiIconMock
+                                  </EuiIcon>
+                                  <span
+                                    className="euiButton__text"
+                                  >
+                                    Add map
+                                  </span>
                                 </span>
-                              </span>
-                            </EuiButtonContent>
-                          </button>
-                        </EuiButtonDisplay>
-                      </EuiButton>
+                              </EuiButtonContent>
+                            </button>
+                          </EuiButtonDisplay>
+                        </EuiButton>
+                      </EuiSmallButton>
                     </div>
                   </EuiPanel>
                 </div>
@@ -2579,71 +2706,79 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                     className="euiSpacer euiSpacer--m"
                   />
                 </EuiSpacer>
-                <EuiButton
+                <EuiSmallButton
                   fullWidth={true}
                   iconType="plusInCircle"
                   onClick={[Function]}
                 >
-                  <EuiButtonDisplay
-                    baseClassName="euiButton"
-                    disabled={false}
-                    element="button"
+                  <EuiButton
                     fullWidth={true}
                     iconType="plusInCircle"
-                    isDisabled={false}
                     onClick={[Function]}
-                    type="button"
+                    size="s"
                   >
-                    <button
-                      className="euiButton euiButton--primary euiButton--fullWidth"
+                    <EuiButtonDisplay
+                      baseClassName="euiButton"
                       disabled={false}
+                      element="button"
+                      fullWidth={true}
+                      iconType="plusInCircle"
+                      isDisabled={false}
                       onClick={[Function]}
-                      style={
-                        Object {
-                          "minWidth": undefined,
-                        }
-                      }
+                      size="s"
                       type="button"
                     >
-                      <EuiButtonContent
-                        className="euiButton__content"
-                        iconSide="left"
-                        iconType="plusInCircle"
-                        textProps={
+                      <button
+                        className="euiButton euiButton--primary euiButton--small euiButton--fullWidth"
+                        disabled={false}
+                        onClick={[Function]}
+                        style={
                           Object {
-                            "className": "euiButton__text",
+                            "minWidth": undefined,
                           }
                         }
+                        type="button"
                       >
-                        <span
-                          className="euiButtonContent euiButton__content"
+                        <EuiButtonContent
+                          className="euiButton__content"
+                          iconSide="left"
+                          iconType="plusInCircle"
+                          textProps={
+                            Object {
+                              "className": "euiButton__text",
+                            }
+                          }
                         >
-                          <EuiIcon
-                            className="euiButtonContent__icon"
-                            color="inherit"
-                            size="m"
-                            type="plusInCircle"
-                          >
-                            EuiIconMock
-                          </EuiIcon>
                           <span
-                            className="euiButton__text"
+                            className="euiButtonContent euiButton__content"
                           >
-                            Add selection
+                            <EuiIcon
+                              className="euiButtonContent__icon"
+                              color="inherit"
+                              size="m"
+                              type="plusInCircle"
+                            >
+                              EuiIconMock
+                            </EuiIcon>
+                            <span
+                              className="euiButton__text"
+                            >
+                              Add selection
+                            </span>
                           </span>
-                        </span>
-                      </EuiButtonContent>
-                    </button>
-                  </EuiButtonDisplay>
-                </EuiButton>
+                        </EuiButtonContent>
+                      </button>
+                    </EuiButtonDisplay>
+                  </EuiButton>
+                </EuiSmallButton>
                 <EuiSpacer>
                   <div
                     className="euiSpacer euiSpacer--l"
                   />
                 </EuiSpacer>
-                <EuiFormRow
+                <EuiCompressedFormRow
                   describedByIds={Array []}
-                  display="row"
+                  display="rowCompressed"
                   fullWidth={false}
                   hasChildLabel={true}
                   hasEmptyLabelSpace={false}
@@ -2661,7 +2796,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                       >
                         Define how each selection should be included in the final query. For more options use
                          
-                        <EuiButtonEmpty
+                        <EuiSmallButtonEmpty
                           className="empty-text-button"
                           onClick={[Function]}
                         >
@@ -2670,7 +2805,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                           >
                             YAML editor
                           </EuiText>
-                        </EuiButtonEmpty>
+                        </EuiSmallButtonEmpty>
                         .
                       </EuiText>
                     </React.Fragment>
@@ -2683,7 +2818,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                   }
                 >
                   <div
-                    className="euiFormRow"
+                    className="euiFormRow euiFormRow--compressed"
                     id="some_html_id-row"
                     style={
                       Object {
@@ -2721,46 +2856,52 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                             >
                               Define how each selection should be included in the final query. For more options use
                                
-                              <EuiButtonEmpty
+                              <EuiSmallButtonEmpty
                                 className="empty-text-button"
                                 onClick={[Function]}
                               >
-                                <button
-                                  className="euiButtonEmpty euiButtonEmpty--primary empty-text-button"
-                                  disabled={false}
+                                <EuiButtonEmpty
+                                  className="empty-text-button"
                                   onClick={[Function]}
-                                  type="button"
+                                  size="s"
                                 >
-                                  <EuiButtonContent
-                                    className="euiButtonEmpty__content"
-                                    iconSide="left"
-                                    iconSize="m"
-                                    textProps={
-                                      Object {
-                                        "className": "euiButtonEmpty__text",
-                                      }
-                                    }
+                                  <button
+                                    className="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--small empty-text-button"
+                                    disabled={false}
+                                    onClick={[Function]}
+                                    type="button"
                                   >
-                                    <span
-                                      className="euiButtonContent euiButtonEmpty__content"
+                                    <EuiButtonContent
+                                      className="euiButtonEmpty__content"
+                                      iconSide="left"
+                                      iconSize="m"
+                                      textProps={
+                                        Object {
+                                          "className": "euiButtonEmpty__text",
+                                        }
+                                      }
                                     >
                                       <span
-                                        className="euiButtonEmpty__text"
+                                        className="euiButtonContent euiButtonEmpty__content"
                                       >
-                                        <EuiText
-                                          size="s"
+                                        <span
+                                          className="euiButtonEmpty__text"
                                         >
-                                          <div
-                                            className="euiText euiText--small"
+                                          <EuiText
+                                            size="s"
                                           >
-                                            YAML editor
-                                          </div>
-                                        </EuiText>
+                                            <div
+                                              className="euiText euiText--small"
+                                            >
+                                              YAML editor
+                                            </div>
+                                          </EuiText>
+                                        </span>
                                       </span>
-                                    </span>
-                                  </EuiButtonContent>
-                                </button>
-                              </EuiButtonEmpty>
+                                    </EuiButtonContent>
+                                  </button>
+                                </EuiButtonEmpty>
+                              </EuiSmallButtonEmpty>
                               .
                             </div>
                           </EuiText>
@@ -2891,7 +3032,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                       </EuiCodeEditor>
                     </div>
                   </div>
-                </EuiFormRow>
+                </EuiCompressedFormRow>
               </div>
             </DetectionVisualEditor>
             <EuiSpacer
@@ -3008,9 +3149,9 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                               onChange={[Function]}
                               placeholder="tag"
                             >
-                              <EuiFormRow
+                              <EuiCompressedFormRow
                                 describedByIds={Array []}
-                                display="row"
+                                display="rowCompressed"
                                 error=""
                                 fullWidth={false}
                                 hasChildLabel={true}
@@ -3042,7 +3183,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                 labelType="label"
                               >
                                 <div
-                                  className="euiFormRow"
+                                  className="euiFormRow euiFormRow--compressed"
                                   id="some_html_id-row"
                                 >
                                   <div
@@ -3117,38 +3258,50 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                               }
                                             }
                                           >
-                                            <EuiFieldText
+                                            <EuiCompressedFieldText
                                               data-test-subj="rule_tags_field_0"
                                               name="tags"
                                               onChange={[Function]}
                                               placeholder="tag"
                                               value=""
                                             >
-                                              <EuiFormControlLayout
-                                                fullWidth={false}
+                                              <EuiFieldText
+                                                compressed={true}
+                                                data-test-subj="rule_tags_field_0"
+                                                name="tags"
+                                                onChange={[Function]}
+                                                placeholder="tag"
+                                                value=""
                                               >
-                                                <div
-                                                  className="euiFormControlLayout"
+                                                <EuiFormControlLayout
+                                                  compressed={true}
+                                                  fullWidth={false}
                                                 >
                                                   <div
-                                                    className="euiFormControlLayout__childrenWrapper"
+                                                    className="euiFormControlLayout euiFormControlLayout--compressed"
                                                   >
-                                                    <EuiValidatableControl>
-                                                      <input
-                                                        className="euiFieldText"
-                                                        data-test-subj="rule_tags_field_0"
-                                                        name="tags"
-                                                        onChange={[Function]}
-                                                        placeholder="tag"
-                                                        type="text"
-                                                        value=""
+                                                    <div
+                                                      className="euiFormControlLayout__childrenWrapper"
+                                                    >
+                                                      <EuiValidatableControl>
+                                                        <input
+                                                          className="euiFieldText euiFieldText--compressed"
+                                                          data-test-subj="rule_tags_field_0"
+                                                          name="tags"
+                                                          onChange={[Function]}
+                                                          placeholder="tag"
+                                                          type="text"
+                                                          value=""
+                                                        />
+                                                      </EuiValidatableControl>
+                                                      <EuiFormControlLayoutIcons
+                                                        compressed={true}
                                                       />
-                                                    </EuiValidatableControl>
-                                                    <EuiFormControlLayoutIcons />
+                                                    </div>
                                                   </div>
-                                                </div>
-                                              </EuiFormControlLayout>
-                                            </EuiFieldText>
+                                                </EuiFormControlLayout>
+                                              </EuiFieldText>
+                                            </EuiCompressedFieldText>
                                           </div>
                                         </EuiFlexItem>
                                       </div>
@@ -3160,56 +3313,64 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                         className="euiSpacer euiSpacer--m"
                                       />
                                     </EuiSpacer>
-                                    <EuiButton
+                                    <EuiSmallButton
                                       className="secondary"
                                       onClick={[Function]}
                                       type="button"
                                     >
-                                      <EuiButtonDisplay
-                                        baseClassName="euiButton"
+                                      <EuiButton
                                         className="secondary"
-                                        disabled={false}
-                                        element="button"
-                                        isDisabled={false}
                                         onClick={[Function]}
+                                        size="s"
                                         type="button"
                                       >
-                                        <button
-                                          className="euiButton euiButton--primary secondary"
+                                        <EuiButtonDisplay
+                                          baseClassName="euiButton"
+                                          className="secondary"
                                           disabled={false}
+                                          element="button"
+                                          isDisabled={false}
                                           onClick={[Function]}
-                                          style={
-                                            Object {
-                                              "minWidth": undefined,
-                                            }
-                                          }
+                                          size="s"
                                           type="button"
                                         >
-                                          <EuiButtonContent
-                                            className="euiButton__content"
-                                            iconSide="left"
-                                            textProps={
+                                          <button
+                                            className="euiButton euiButton--primary euiButton--small secondary"
+                                            disabled={false}
+                                            onClick={[Function]}
+                                            style={
                                               Object {
-                                                "className": "euiButton__text",
+                                                "minWidth": undefined,
                                               }
                                             }
+                                            type="button"
                                           >
-                                            <span
-                                              className="euiButtonContent euiButton__content"
+                                            <EuiButtonContent
+                                              className="euiButton__content"
+                                              iconSide="left"
+                                              textProps={
+                                                Object {
+                                                  "className": "euiButton__text",
+                                                }
+                                              }
                                             >
                                               <span
-                                                className="euiButton__text"
+                                                className="euiButtonContent euiButton__content"
                                               >
-                                                Add tag
+                                                <span
+                                                  className="euiButton__text"
+                                                >
+                                                  Add tag
+                                                </span>
                                               </span>
-                                            </span>
-                                          </EuiButtonContent>
-                                        </button>
-                                      </EuiButtonDisplay>
-                                    </EuiButton>
+                                            </EuiButtonContent>
+                                          </button>
+                                        </EuiButtonDisplay>
+                                      </EuiButton>
+                                    </EuiSmallButton>
                                   </div>
                                 </div>
-                              </EuiFormRow>
+                              </EuiCompressedFormRow>
                               <EuiSpacer>
                                 <div
                                   className="euiSpacer euiSpacer--l"
@@ -3248,9 +3409,9 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                               onChange={[Function]}
                               placeholder="http://"
                             >
-                              <EuiFormRow
+                              <EuiCompressedFormRow
                                 describedByIds={Array []}
-                                display="row"
+                                display="rowCompressed"
                                 error=""
                                 fullWidth={false}
                                 hasChildLabel={true}
@@ -3282,7 +3443,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                 labelType="label"
                               >
                                 <div
-                                  className="euiFormRow"
+                                  className="euiFormRow euiFormRow--compressed"
                                   id="some_html_id-row"
                                 >
                                   <div
@@ -3357,38 +3518,50 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                               }
                                             }
                                           >
-                                            <EuiFieldText
+                                            <EuiCompressedFieldText
                                               data-test-subj="rule_references_field_0"
                                               name="references"
                                               onChange={[Function]}
                                               placeholder="http://"
                                               value=""
                                             >
-                                              <EuiFormControlLayout
-                                                fullWidth={false}
+                                              <EuiFieldText
+                                                compressed={true}
+                                                data-test-subj="rule_references_field_0"
+                                                name="references"
+                                                onChange={[Function]}
+                                                placeholder="http://"
+                                                value=""
                                               >
-                                                <div
-                                                  className="euiFormControlLayout"
+                                                <EuiFormControlLayout
+                                                  compressed={true}
+                                                  fullWidth={false}
                                                 >
                                                   <div
-                                                    className="euiFormControlLayout__childrenWrapper"
+                                                    className="euiFormControlLayout euiFormControlLayout--compressed"
                                                   >
-                                                    <EuiValidatableControl>
-                                                      <input
-                                                        className="euiFieldText"
-                                                        data-test-subj="rule_references_field_0"
-                                                        name="references"
-                                                        onChange={[Function]}
-                                                        placeholder="http://"
-                                                        type="text"
-                                                        value=""
+                                                    <div
+                                                      className="euiFormControlLayout__childrenWrapper"
+                                                    >
+                                                      <EuiValidatableControl>
+                                                        <input
+                                                          className="euiFieldText euiFieldText--compressed"
+                                                          data-test-subj="rule_references_field_0"
+                                                          name="references"
+                                                          onChange={[Function]}
+                                                          placeholder="http://"
+                                                          type="text"
+                                                          value=""
+                                                        />
+                                                      </EuiValidatableControl>
+                                                      <EuiFormControlLayoutIcons
+                                                        compressed={true}
                                                       />
-                                                    </EuiValidatableControl>
-                                                    <EuiFormControlLayoutIcons />
+                                                    </div>
                                                   </div>
-                                                </div>
-                                              </EuiFormControlLayout>
-                                            </EuiFieldText>
+                                                </EuiFormControlLayout>
+                                              </EuiFieldText>
+                                            </EuiCompressedFieldText>
                                           </div>
                                         </EuiFlexItem>
                                       </div>
@@ -3400,56 +3573,64 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                         className="euiSpacer euiSpacer--m"
                                       />
                                     </EuiSpacer>
-                                    <EuiButton
+                                    <EuiSmallButton
                                       className="secondary"
                                       onClick={[Function]}
                                       type="button"
                                     >
-                                      <EuiButtonDisplay
-                                        baseClassName="euiButton"
+                                      <EuiButton
                                         className="secondary"
-                                        disabled={false}
-                                        element="button"
-                                        isDisabled={false}
                                         onClick={[Function]}
+                                        size="s"
                                         type="button"
                                       >
-                                        <button
-                                          className="euiButton euiButton--primary secondary"
+                                        <EuiButtonDisplay
+                                          baseClassName="euiButton"
+                                          className="secondary"
                                           disabled={false}
+                                          element="button"
+                                          isDisabled={false}
                                           onClick={[Function]}
-                                          style={
-                                            Object {
-                                              "minWidth": undefined,
-                                            }
-                                          }
+                                          size="s"
                                           type="button"
                                         >
-                                          <EuiButtonContent
-                                            className="euiButton__content"
-                                            iconSide="left"
-                                            textProps={
+                                          <button
+                                            className="euiButton euiButton--primary euiButton--small secondary"
+                                            disabled={false}
+                                            onClick={[Function]}
+                                            style={
                                               Object {
-                                                "className": "euiButton__text",
+                                                "minWidth": undefined,
                                               }
                                             }
+                                            type="button"
                                           >
-                                            <span
-                                              className="euiButtonContent euiButton__content"
+                                            <EuiButtonContent
+                                              className="euiButton__content"
+                                              iconSide="left"
+                                              textProps={
+                                                Object {
+                                                  "className": "euiButton__text",
+                                                }
+                                              }
                                             >
                                               <span
-                                                className="euiButton__text"
+                                                className="euiButtonContent euiButton__content"
                                               >
-                                                Add URL
+                                                <span
+                                                  className="euiButton__text"
+                                                >
+                                                  Add URL
+                                                </span>
                                               </span>
-                                            </span>
-                                          </EuiButtonContent>
-                                        </button>
-                                      </EuiButtonDisplay>
-                                    </EuiButton>
+                                            </EuiButtonContent>
+                                          </button>
+                                        </EuiButtonDisplay>
+                                      </EuiButton>
+                                    </EuiSmallButton>
                                   </div>
                                 </div>
-                              </EuiFormRow>
+                              </EuiCompressedFormRow>
                               <EuiSpacer>
                                 <div
                                   className="euiSpacer euiSpacer--l"
@@ -3488,9 +3669,9 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                               onChange={[Function]}
                               placeholder="format?"
                             >
-                              <EuiFormRow
+                              <EuiCompressedFormRow
                                 describedByIds={Array []}
-                                display="row"
+                                display="rowCompressed"
                                 error=""
                                 fullWidth={false}
                                 hasChildLabel={true}
@@ -3522,7 +3703,7 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                 labelType="label"
                               >
                                 <div
-                                  className="euiFormRow"
+                                  className="euiFormRow euiFormRow--compressed"
                                   id="some_html_id-row"
                                 >
                                   <div
@@ -3597,38 +3778,50 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                               }
                                             }
                                           >
-                                            <EuiFieldText
+                                            <EuiCompressedFieldText
                                               data-test-subj="rule_false_positives_field_0"
                                               name="false_positives"
                                               onChange={[Function]}
                                               placeholder="format?"
                                               value=""
                                             >
-                                              <EuiFormControlLayout
-                                                fullWidth={false}
+                                              <EuiFieldText
+                                                compressed={true}
+                                                data-test-subj="rule_false_positives_field_0"
+                                                name="false_positives"
+                                                onChange={[Function]}
+                                                placeholder="format?"
+                                                value=""
                                               >
-                                                <div
-                                                  className="euiFormControlLayout"
+                                                <EuiFormControlLayout
+                                                  compressed={true}
+                                                  fullWidth={false}
                                                 >
                                                   <div
-                                                    className="euiFormControlLayout__childrenWrapper"
+                                                    className="euiFormControlLayout euiFormControlLayout--compressed"
                                                   >
-                                                    <EuiValidatableControl>
-                                                      <input
-                                                        className="euiFieldText"
-                                                        data-test-subj="rule_false_positives_field_0"
-                                                        name="false_positives"
-                                                        onChange={[Function]}
-                                                        placeholder="format?"
-                                                        type="text"
-                                                        value=""
+                                                    <div
+                                                      className="euiFormControlLayout__childrenWrapper"
+                                                    >
+                                                      <EuiValidatableControl>
+                                                        <input
+                                                          className="euiFieldText euiFieldText--compressed"
+                                                          data-test-subj="rule_false_positives_field_0"
+                                                          name="false_positives"
+                                                          onChange={[Function]}
+                                                          placeholder="format?"
+                                                          type="text"
+                                                          value=""
+                                                        />
+                                                      </EuiValidatableControl>
+                                                      <EuiFormControlLayoutIcons
+                                                        compressed={true}
                                                       />
-                                                    </EuiValidatableControl>
-                                                    <EuiFormControlLayoutIcons />
+                                                    </div>
                                                   </div>
-                                                </div>
-                                              </EuiFormControlLayout>
-                                            </EuiFieldText>
+                                                </EuiFormControlLayout>
+                                              </EuiFieldText>
+                                            </EuiCompressedFieldText>
                                           </div>
                                         </EuiFlexItem>
                                       </div>
@@ -3640,56 +3833,64 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                         className="euiSpacer euiSpacer--m"
                                       />
                                     </EuiSpacer>
-                                    <EuiButton
+                                    <EuiSmallButton
                                       className="secondary"
                                       onClick={[Function]}
                                       type="button"
                                     >
-                                      <EuiButtonDisplay
-                                        baseClassName="euiButton"
+                                      <EuiButton
                                         className="secondary"
-                                        disabled={false}
-                                        element="button"
-                                        isDisabled={false}
                                         onClick={[Function]}
+                                        size="s"
                                         type="button"
                                       >
-                                        <button
-                                          className="euiButton euiButton--primary secondary"
+                                        <EuiButtonDisplay
+                                          baseClassName="euiButton"
+                                          className="secondary"
                                           disabled={false}
+                                          element="button"
+                                          isDisabled={false}
                                           onClick={[Function]}
-                                          style={
-                                            Object {
-                                              "minWidth": undefined,
-                                            }
-                                          }
+                                          size="s"
                                           type="button"
                                         >
-                                          <EuiButtonContent
-                                            className="euiButton__content"
-                                            iconSide="left"
-                                            textProps={
+                                          <button
+                                            className="euiButton euiButton--primary euiButton--small secondary"
+                                            disabled={false}
+                                            onClick={[Function]}
+                                            style={
                                               Object {
-                                                "className": "euiButton__text",
+                                                "minWidth": undefined,
                                               }
                                             }
+                                            type="button"
                                           >
-                                            <span
-                                              className="euiButtonContent euiButton__content"
+                                            <EuiButtonContent
+                                              className="euiButton__content"
+                                              iconSide="left"
+                                              textProps={
+                                                Object {
+                                                  "className": "euiButton__text",
+                                                }
+                                              }
                                             >
                                               <span
-                                                className="euiButton__text"
+                                                className="euiButtonContent euiButton__content"
                                               >
-                                                Add false positive
+                                                <span
+                                                  className="euiButton__text"
+                                                >
+                                                  Add false positive
+                                                </span>
                                               </span>
-                                            </span>
-                                          </EuiButtonContent>
-                                        </button>
-                                      </EuiButtonDisplay>
-                                    </EuiButton>
+                                            </EuiButtonContent>
+                                          </button>
+                                        </EuiButtonDisplay>
+                                      </EuiButton>
+                                    </EuiSmallButton>
                                   </div>
                                 </div>
-                              </EuiFormRow>
+                              </EuiCompressedFormRow>
                               <EuiSpacer>
                                 <div
                                   className="euiSpacer euiSpacer--l"
@@ -3723,50 +3924,56 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
               <div
                 className="euiFlexItem euiFlexItem--flexGrowZero"
               >
-                <EuiButton
+                <EuiSmallButton
                   onClick={[Function]}
                 >
-                  <EuiButtonDisplay
-                    baseClassName="euiButton"
-                    disabled={false}
-                    element="button"
-                    isDisabled={false}
+                  <EuiButton
                     onClick={[Function]}
-                    type="button"
+                    size="s"
                   >
-                    <button
-                      className="euiButton euiButton--primary"
+                    <EuiButtonDisplay
+                      baseClassName="euiButton"
                       disabled={false}
+                      element="button"
+                      isDisabled={false}
                       onClick={[Function]}
-                      style={
-                        Object {
-                          "minWidth": undefined,
-                        }
-                      }
+                      size="s"
                       type="button"
                     >
-                      <EuiButtonContent
-                        className="euiButton__content"
-                        iconSide="left"
-                        textProps={
+                      <button
+                        className="euiButton euiButton--primary euiButton--small"
+                        disabled={false}
+                        onClick={[Function]}
+                        style={
                           Object {
-                            "className": "euiButton__text",
+                            "minWidth": undefined,
                           }
                         }
+                        type="button"
                       >
-                        <span
-                          className="euiButtonContent euiButton__content"
+                        <EuiButtonContent
+                          className="euiButton__content"
+                          iconSide="left"
+                          textProps={
+                            Object {
+                              "className": "euiButton__text",
+                            }
+                          }
                         >
                           <span
-                            className="euiButton__text"
+                            className="euiButtonContent euiButton__content"
                           >
-                            Cancel
+                            <span
+                              className="euiButton__text"
+                            >
+                              Cancel
+                            </span>
                           </span>
-                        </span>
-                      </EuiButtonContent>
-                    </button>
-                  </EuiButtonDisplay>
-                </EuiButton>
+                        </EuiButtonContent>
+                      </button>
+                    </EuiButtonDisplay>
+                  </EuiButton>
+                </EuiSmallButton>
               </div>
             </EuiFlexItem>
             <EuiFlexItem
@@ -3775,55 +3982,63 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
               <div
                 className="euiFlexItem euiFlexItem--flexGrowZero"
               >
-                <EuiButton
+                <EuiSmallButton
                   data-test-subj="submit_rule_form_button"
                   fill={true}
                   onClick={[Function]}
                 >
-                  <EuiButtonDisplay
-                    baseClassName="euiButton"
+                  <EuiButton
                     data-test-subj="submit_rule_form_button"
-                    disabled={false}
-                    element="button"
                     fill={true}
-                    isDisabled={false}
                     onClick={[Function]}
-                    type="button"
+                    size="s"
                   >
-                    <button
-                      className="euiButton euiButton--primary euiButton--fill"
+                    <EuiButtonDisplay
+                      baseClassName="euiButton"
                       data-test-subj="submit_rule_form_button"
                       disabled={false}
+                      element="button"
+                      fill={true}
+                      isDisabled={false}
                       onClick={[Function]}
-                      style={
-                        Object {
-                          "minWidth": undefined,
-                        }
-                      }
+                      size="s"
                       type="button"
                     >
-                      <EuiButtonContent
-                        className="euiButton__content"
-                        iconSide="left"
-                        textProps={
+                      <button
+                        className="euiButton euiButton--primary euiButton--small euiButton--fill"
+                        data-test-subj="submit_rule_form_button"
+                        disabled={false}
+                        onClick={[Function]}
+                        style={
                           Object {
-                            "className": "euiButton__text",
+                            "minWidth": undefined,
                           }
                         }
+                        type="button"
                       >
-                        <span
-                          className="euiButtonContent euiButton__content"
+                        <EuiButtonContent
+                          className="euiButton__content"
+                          iconSide="left"
+                          textProps={
+                            Object {
+                              "className": "euiButton__text",
+                            }
+                          }
                         >
                           <span
-                            className="euiButton__text"
+                            className="euiButtonContent euiButton__content"
                           >
-                            Create detection rule
+                            <span
+                              className="euiButton__text"
+                            >
+                              Create detection rule
+                            </span>
                           </span>
-                        </span>
-                      </EuiButtonContent>
-                    </button>
-                  </EuiButtonDisplay>
-                </EuiButton>
+                        </EuiButtonContent>
+                      </button>
+                    </EuiButtonDisplay>
+                  </EuiButton>
+                </EuiSmallButton>
               </div>
             </EuiFlexItem>
           </div>
