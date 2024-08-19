@@ -6,9 +6,9 @@
 import {
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiLink,
-  EuiSelect,
+  EuiCompressedSelect,
   EuiSelectOption,
   EuiSpacer,
   EuiText,
@@ -70,7 +70,7 @@ export function createTextDetailsGroup(
   ) => {
     const dataTestSubj = label.toLowerCase().replace(/ /g, '-');
     return (
-      <EuiFormRow fullWidth label={label}>
+      <EuiCompressedFormRow fullWidth label={label}>
         {url ? (
           <EuiLink
             href={url}
@@ -84,7 +84,7 @@ export function createTextDetailsGroup(
             {content ?? DEFAULT_EMPTY_DATA}
           </EuiText>
         )}
-      </EuiFormRow>
+      </EuiCompressedFormRow>
     );
   };
   return data.length <= 1 ? (
@@ -267,7 +267,7 @@ export function createSelectComponent(
   return (
     <EuiFlexGroup justifyContent="flexEnd" alignItems="center">
       <EuiFlexItem grow={false}>
-        <EuiSelect id={id} options={options} value={value} onChange={onChange} prepend="Group by" />
+        <EuiCompressedSelect id={id} options={options} value={value} onChange={onChange} prepend="Group by" />
       </EuiFlexItem>
     </EuiFlexGroup>
   );

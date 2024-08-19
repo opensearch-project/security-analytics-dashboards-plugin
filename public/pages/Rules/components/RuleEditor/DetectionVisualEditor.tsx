@@ -8,26 +8,26 @@ import { dump, load } from 'js-yaml';
 import {
   EuiAccordion,
   EuiToolTip,
-  EuiButtonIcon,
+  EuiSmallButtonIcon,
   EuiTitle,
   EuiText,
   EuiSpacer,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFormRow,
-  EuiFieldText,
-  EuiComboBox,
+  EuiCompressedFormRow,
+  EuiCompressedFieldText,
+  EuiCompressedComboBox,
   EuiPanel,
-  EuiRadioGroup,
+  EuiCompressedRadioGroup,
   EuiTextArea,
-  EuiButton,
+  EuiSmallButton,
   EuiModal,
   EuiModalHeader,
   EuiModalHeaderTitle,
   EuiModalBody,
   EuiModalFooter,
-  EuiFilePicker,
-  EuiButtonEmpty,
+  EuiCompressedFilePicker,
+  EuiSmallButtonEmpty,
   EuiCallOut,
   EuiCodeEditor,
 } from '@elastic/eui';
@@ -502,11 +502,11 @@ export class DetectionVisualEditor extends React.Component<
               >
                 <EuiFlexGroup alignItems="center">
                   <EuiFlexItem grow={true}>
-                    <EuiFormRow
+                    <EuiCompressedFormRow
                       isInvalid={errors.touched.name && !!errors.fields.name}
                       error={errors.fields.name}
                     >
-                      <EuiFieldText
+                      <EuiCompressedFieldText
                         className={'detection-visual-editor-name euiTitle--small'}
                         isInvalid={errors.touched.name && !!errors.fields.name}
                         placeholder="Enter selection name"
@@ -517,7 +517,7 @@ export class DetectionVisualEditor extends React.Component<
                         onBlur={(e) => this.updateSelection(selectionIdx, { name: e.target.value })}
                         value={selection.name}
                       />
-                    </EuiFormRow>
+                    </EuiCompressedFormRow>
                     <EuiText size="s">
                       <p>Define the search identifier in your data the rule will be applied to.</p>
                     </EuiText>
@@ -525,7 +525,7 @@ export class DetectionVisualEditor extends React.Component<
                   <EuiFlexItem grow={false} className={'detection-visual-editor-delete-selection'}>
                     {selections.length > 1 && (
                       <EuiToolTip title={'Delete selection'}>
-                        <EuiButtonIcon
+                        <EuiSmallButtonIcon
                           aria-label={'Delete selection'}
                           iconType={'trash'}
                           color="danger"
@@ -567,7 +567,7 @@ export class DetectionVisualEditor extends React.Component<
                         extraAction={
                           selection.data.length > 1 ? (
                             <EuiToolTip title={'Delete map'}>
-                              <EuiButtonIcon
+                              <EuiSmallButtonIcon
                                 aria-label={'Delete map'}
                                 iconType={'trash'}
                                 color="danger"
@@ -585,12 +585,12 @@ export class DetectionVisualEditor extends React.Component<
                       >
                         <EuiFlexGroup>
                           <EuiFlexItem grow={false} style={{ minWidth: 200 }}>
-                            <EuiFormRow
+                            <EuiCompressedFormRow
                               isInvalid={errors.touched[fieldName] && !!errors.fields[fieldName]}
                               error={errors.fields[fieldName]}
                               label={<EuiText size={'s'}>Key</EuiText>}
                             >
-                              <EuiFieldText
+                              <EuiCompressedFieldText
                                 isInvalid={errors.touched[fieldName] && !!errors.fields[fieldName]}
                                 placeholder="Enter key name"
                                 data-test-subj={'selection_field_key_name'}
@@ -606,11 +606,11 @@ export class DetectionVisualEditor extends React.Component<
                                 }
                                 value={datum.field}
                               />
-                            </EuiFormRow>
+                            </EuiCompressedFormRow>
                           </EuiFlexItem>
                           <EuiFlexItem grow={false} style={{ minWidth: 200 }}>
-                            <EuiFormRow label={<EuiText size={'s'}>Modifier</EuiText>}>
-                              <EuiComboBox
+                            <EuiCompressedFormRow label={<EuiText size={'s'}>Modifier</EuiText>}>
+                              <EuiCompressedComboBox
                                 data-test-subj={'modifier_dropdown'}
                                 options={detectionModifierOptions}
                                 singleSelection={{ asPlainText: true }}
@@ -626,13 +626,13 @@ export class DetectionVisualEditor extends React.Component<
                                     : [detectionModifierOptions[0]]
                                 }
                               />
-                            </EuiFormRow>
+                            </EuiCompressedFormRow>
                           </EuiFlexItem>
                         </EuiFlexGroup>
 
                         <EuiSpacer size="m" />
 
-                        <EuiRadioGroup
+                        <EuiCompressedRadioGroup
                           options={radioGroupOptions}
                           idSelected={datum.selectedRadioId || radioGroupOptions[0].id}
                           onChange={(id) => {
@@ -648,7 +648,7 @@ export class DetectionVisualEditor extends React.Component<
                           <>
                             <EuiFlexGroup>
                               <EuiFlexItem grow={false}>
-                                <EuiButton
+                                <EuiSmallButton
                                   iconType="download"
                                   onClick={() => {
                                     this.setState({
@@ -660,7 +660,7 @@ export class DetectionVisualEditor extends React.Component<
                                   }}
                                 >
                                   Upload file
-                                </EuiButton>
+                                </EuiSmallButton>
                                 <EuiSpacer size={'s'} />
                               </EuiFlexItem>
 
@@ -668,7 +668,7 @@ export class DetectionVisualEditor extends React.Component<
                                 grow={true}
                                 className={'detection-visual-editor-textarea-clear-btn'}
                               >
-                                <EuiButtonEmpty
+                                <EuiSmallButtonEmpty
                                   isDisabled={!datum.values[0]}
                                   color={datum.values[0] ? 'primary' : 'ghost'}
                                   iconType={'cross'}
@@ -679,11 +679,11 @@ export class DetectionVisualEditor extends React.Component<
                                   }}
                                 >
                                   Clear list
-                                </EuiButtonEmpty>
+                                </EuiSmallButtonEmpty>
                                 <EuiSpacer size={'s'} />
                               </EuiFlexItem>
                             </EuiFlexGroup>
-                            <EuiFormRow
+                            <EuiCompressedFormRow
                               isInvalid={errors.touched[valueId] && !!errors.fields[valueId]}
                               error={errors.fields[valueId]}
                               className={'detection-visual-editor-form-row'}
@@ -713,14 +713,14 @@ export class DetectionVisualEditor extends React.Component<
                                 compressed={true}
                                 isInvalid={errors.touched[valueId] && !!errors.fields[valueId]}
                               />
-                            </EuiFormRow>
+                            </EuiCompressedFormRow>
                           </>
                         ) : (
-                          <EuiFormRow
+                          <EuiCompressedFormRow
                             isInvalid={errors.touched[valueId] && !!errors.fields[valueId]}
                             error={errors.fields[valueId]}
                           >
-                            <EuiFieldText
+                            <EuiCompressedFieldText
                               isInvalid={errors.touched[valueId] && !!errors.fields[valueId]}
                               placeholder="Value"
                               data-test-subj={'selection_field_value'}
@@ -736,7 +736,7 @@ export class DetectionVisualEditor extends React.Component<
                               }}
                               value={datum.values[0]}
                             />
-                          </EuiFormRow>
+                          </EuiCompressedFormRow>
                         )}
 
                         <EuiSpacer size={'m'} />
@@ -747,7 +747,7 @@ export class DetectionVisualEditor extends React.Component<
 
                 <EuiSpacer size={'m'} />
 
-                <EuiButton
+                <EuiSmallButton
                   style={{ width: '70%' }}
                   iconType="plusInCircle"
                   disabled={!selection.data.at(-1)?.field}
@@ -760,7 +760,7 @@ export class DetectionVisualEditor extends React.Component<
                   }}
                 >
                   Add map
-                </EuiButton>
+                </EuiSmallButton>
               </EuiPanel>
 
               {selections.length > 1 && selections.length !== selectionIdx ? (
@@ -772,7 +772,7 @@ export class DetectionVisualEditor extends React.Component<
 
         <EuiSpacer size={'m'} />
 
-        <EuiButton
+        <EuiSmallButton
           fullWidth
           iconType={'plusInCircle'}
           onClick={() => {
@@ -792,11 +792,11 @@ export class DetectionVisualEditor extends React.Component<
           }}
         >
           Add selection
-        </EuiButton>
+        </EuiSmallButton>
 
         <EuiSpacer />
 
-        <EuiFormRow
+        <EuiCompressedFormRow
           isInvalid={errors.touched.condition && !!errors.fields.condition}
           error={errors.fields.condition}
           style={{ maxWidth: '100%' }}
@@ -808,12 +808,12 @@ export class DetectionVisualEditor extends React.Component<
               <EuiText size="xs">
                 Define how each selection should be included in the final query. For more options
                 use{' '}
-                <EuiButtonEmpty
+                <EuiSmallButtonEmpty
                   className={'empty-text-button'}
                   onClick={() => this.props.goToYamlEditor('yaml')}
                 >
                   <EuiText size="s">YAML editor</EuiText>
-                </EuiButtonEmpty>
+                </EuiSmallButtonEmpty>
                 .
               </EuiText>
             </>
@@ -830,7 +830,7 @@ export class DetectionVisualEditor extends React.Component<
             }}
             data-test-subj={'rule_detection_field'}
           />
-        </EuiFormRow>
+        </EuiCompressedFormRow>
 
         {fileUploadModalState && (
           <EuiModal onClose={this.closeFileUploadModal}>
@@ -857,7 +857,7 @@ export class DetectionVisualEditor extends React.Component<
                   <p>Invalid file.</p>
                 </EuiText>
               )}
-              <EuiFilePicker
+              <EuiCompressedFilePicker
                 id={'filePickerId'}
                 fullWidth
                 initialPromptText="Select or drag file containing list of values"
@@ -878,9 +878,9 @@ export class DetectionVisualEditor extends React.Component<
             </EuiModalBody>
 
             <EuiModalFooter>
-              <EuiButton fill={true} onClick={this.closeFileUploadModal}>
+              <EuiSmallButton fill={true} onClick={this.closeFileUploadModal}>
                 Close
-              </EuiButton>
+              </EuiSmallButton>
             </EuiModalFooter>
           </EuiModal>
         )}

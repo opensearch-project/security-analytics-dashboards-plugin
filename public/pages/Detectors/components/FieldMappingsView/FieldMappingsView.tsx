@@ -5,7 +5,7 @@
 
 import { ContentPanel } from '../../../../components/ContentPanel';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { EuiBasicTableColumn, EuiButton, EuiInMemoryTable } from '@elastic/eui';
+import { EuiBasicTableColumn, EuiSmallButton, EuiInMemoryTable } from '@elastic/eui';
 import { FieldMappingsTableItem } from '../../../CreateDetector/models/interfaces';
 import { SecurityAnalyticsContext } from '../../../../services';
 import { FieldMapping } from '../../../../../models/interfaces';
@@ -45,9 +45,9 @@ export const FieldMappingsView: React.FC<FieldMappingsViewProps> = ({
     () =>
       isEditable
         ? [
-            <EuiButton onClick={editFieldMappings} data-test-subj={'edit-detector-field-mappings'}>
+            <EuiSmallButton onClick={editFieldMappings} data-test-subj={'edit-detector-field-mappings'}>
               Edit
-            </EuiButton>,
+            </EuiSmallButton>,
           ]
         : null,
     []

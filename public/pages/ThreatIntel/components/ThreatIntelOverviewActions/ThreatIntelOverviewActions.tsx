@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
+import { EuiSmallButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 import { StatusWithIndicator } from '../../../../components/Utility/StatusWithIndicator';
 import { RouteComponentProps } from 'react-router-dom';
 import { AlertTabId, FindingTabId, ROUTES } from '../../../../utils/constants';
@@ -111,14 +111,14 @@ export const ThreatIntelOverviewActions: React.FC<ThreatIntelOverviewActionsProp
       <EuiFlexItem>{status}</EuiFlexItem>
       {actions.map((action, idx) => (
         <EuiFlexItem grow={false} key={idx}>
-          <EuiButton
+          <EuiSmallButton
             fill={action.fill}
             disabled={action.disabled}
             isLoading={action.isLoading}
             onClick={action.onClick}
           >
             {action.label}
-          </EuiButton>
+          </EuiSmallButton>
         </EuiFlexItem>
       ))}
     </EuiFlexGroup>

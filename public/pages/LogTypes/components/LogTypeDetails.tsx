@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiButton, EuiDescriptionList } from '@elastic/eui';
+import { EuiSmallButton, EuiDescriptionList } from '@elastic/eui';
 import { ContentPanel } from '../../../components/ContentPanel';
 import React from 'react';
 import { LogTypeItem } from '../../../../types';
@@ -44,7 +44,7 @@ export const LogTypeDetails: React.FC<LogTypeDetailsProps> = ({
       actions={
         !isEditMode &&
         logTypeDetails.source.toLocaleLowerCase() !== 'standard' && [
-          <EuiButton onClick={() => setIsEditMode(true)}>Edit</EuiButton>,
+          <EuiSmallButton onClick={() => setIsEditMode(true)}>Edit</EuiSmallButton>,
         ]
       }
     >

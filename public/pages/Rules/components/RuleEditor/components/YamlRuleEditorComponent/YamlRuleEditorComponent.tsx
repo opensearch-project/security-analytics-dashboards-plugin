@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import { load } from 'js-yaml';
-import { EuiFormRow, EuiCodeEditor, EuiLink, EuiSpacer, EuiText, EuiCallOut } from '@elastic/eui';
+import { EuiCompressedFormRow, EuiCodeEditor, EuiLink, EuiSpacer, EuiText, EuiCallOut } from '@elastic/eui';
 import FormFieldHeader from '../../../../../../components/FormFieldHeader';
 import {
   mapRuleToYamlObject,
@@ -93,7 +93,7 @@ export const YamlRuleEditorComponent: React.FC<YamlRuleEditorComponentProps> = (
     <>
       {renderErrors()}
       <EuiSpacer size="s" />
-      <EuiFormRow label={<FormFieldHeader headerTitle={'Define rule in YAML'} />} fullWidth={true}>
+      <EuiCompressedFormRow label={<FormFieldHeader headerTitle={'Define rule in YAML'} />} fullWidth={true}>
         <>
           <EuiSpacer />
           <EuiText size="s" color="subdued">
@@ -113,7 +113,7 @@ export const YamlRuleEditorComponent: React.FC<YamlRuleEditorComponentProps> = (
             data-test-subj={'rule_yaml_editor'}
           />
         </>
-      </EuiFormRow>
+      </EuiCompressedFormRow>
     </>
   );
 };

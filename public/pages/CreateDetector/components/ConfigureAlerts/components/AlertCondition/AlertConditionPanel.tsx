@@ -7,11 +7,11 @@ import React, { ChangeEvent, Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
   EuiAccordion,
-  EuiCheckbox,
-  EuiComboBox,
+  EuiCompressedCheckbox,
+  EuiCompressedComboBox,
   EuiComboBoxOptionOption,
-  EuiFieldText,
-  EuiFormRow,
+  EuiCompressedFieldText,
+  EuiCompressedFormRow,
   EuiSpacer,
   EuiText,
   EuiTitle,
@@ -339,7 +339,7 @@ export default class AlertConditionPanel extends Component<
 
     return (
       <div>
-        <EuiFormRow
+        <EuiCompressedFormRow
           label={
             <EuiText size="s">
               <p>Trigger name</p>
@@ -348,7 +348,7 @@ export default class AlertConditionPanel extends Component<
           isInvalid={nameFieldTouched && nameIsInvalid}
           error={getNameErrorMessage(name, nameIsInvalid, nameFieldTouched)}
         >
-          <EuiFieldText
+          <EuiCompressedFieldText
             placeholder={'Enter a name to describe the alert condition'}
             readOnly={false}
             value={name}
@@ -357,7 +357,7 @@ export default class AlertConditionPanel extends Component<
             required={nameFieldTouched}
             data-test-subj={`alert-condition-name-${indexNum}`}
           />
-        </EuiFormRow>
+        </EuiCompressedFormRow>
         <EuiSpacer size={'l'} />
 
         <EuiTitle size="s">
@@ -365,7 +365,7 @@ export default class AlertConditionPanel extends Component<
         </EuiTitle>
 
         {threatIntelEnabledInDetector ? (
-          <EuiCheckbox
+          <EuiCompressedCheckbox
             id="detection-type-rules"
             label="Detection rules"
             checked={detectionRulesTriggerEnabled}
@@ -397,31 +397,31 @@ export default class AlertConditionPanel extends Component<
                 </div>
               }
             >
-              <EuiFormRow
+              <EuiCompressedFormRow
                 label={
                   <EuiText size="s">
                     <p>Rule names</p>
                   </EuiText>
                 }
               >
-                <EuiComboBox
+                <EuiCompressedComboBox
                   placeholder={'Any rules'}
                   options={namesOptions}
                   onChange={this.onRuleNamesChange}
                   selectedOptions={selectedNames}
                   data-test-subj={`alert-rulename-combo-box`}
                 />
-              </EuiFormRow>
+              </EuiCompressedFormRow>
               <EuiSpacer size={'m'} />
 
-              <EuiFormRow
+              <EuiCompressedFormRow
                 label={
                   <EuiText size="s">
                     <p>Rule Severities</p>
                   </EuiText>
                 }
               >
-                <EuiComboBox
+                <EuiCompressedComboBox
                   placeholder={'Any severities'}
                   options={ruleSeverityOptions}
                   onChange={this.onRuleSeverityChange}
@@ -429,17 +429,17 @@ export default class AlertConditionPanel extends Component<
                   selectedOptions={createSelectedOptions(ruleSeverityLevels)}
                   data-test-subj={`alert-severity-combo-box`}
                 />
-              </EuiFormRow>
+              </EuiCompressedFormRow>
               <EuiSpacer size={'m'} />
 
-              <EuiFormRow
+              <EuiCompressedFormRow
                 label={
                   <EuiText size="s">
                     <p>Tags</p>
                   </EuiText>
                 }
               >
-                <EuiComboBox
+                <EuiCompressedComboBox
                   placeholder={'Any tags'}
                   options={tagsOptions}
                   onChange={this.onTagsChange}
@@ -447,7 +447,7 @@ export default class AlertConditionPanel extends Component<
                   selectedOptions={createSelectedOptions(tags)}
                   data-test-subj={'alert-tags-combo-box'}
                 />
-              </EuiFormRow>
+              </EuiCompressedFormRow>
             </EuiAccordion>
 
             <EuiSpacer size="m" />
@@ -456,7 +456,7 @@ export default class AlertConditionPanel extends Component<
 
         {threatIntelEnabledInDetector && (
           <>
-            <EuiCheckbox
+            <EuiCompressedCheckbox
               id="detection-type-threat-intel"
               label="Threat intelligence"
               checked={threatIntelTriggerEnabled}
@@ -494,14 +494,14 @@ export default class AlertConditionPanel extends Component<
 
         <EuiSpacer size="s" />
 
-        <EuiFormRow
+        <EuiCompressedFormRow
           label={
             <EuiText size="s">
               <p>Alert severity</p>
             </EuiText>
           }
         >
-          <EuiComboBox
+          <EuiCompressedComboBox
             placeholder={'Select applicable severity levels.'}
             async={true}
             options={Object.values(ALERT_SEVERITY_OPTIONS)}
@@ -513,7 +513,7 @@ export default class AlertConditionPanel extends Component<
             isClearable={false}
             data-test-subj={'security-levels-combo-box'}
           />
-        </EuiFormRow>
+        </EuiCompressedFormRow>
 
         <EuiSpacer size={'l'} />
 

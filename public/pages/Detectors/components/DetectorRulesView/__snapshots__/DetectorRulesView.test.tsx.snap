@@ -201,12 +201,12 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
   <ContentPanel
     actions={
       Array [
-        <EuiButton
+        <EuiSmallButton
           data-test-subj="edit-detector-rules"
           onClick={[Function]}
         >
           Edit
-        </EuiButton>,
+        </EuiSmallButton>,
       ]
     }
     title="Active rules (2)"
@@ -280,53 +280,60 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                       <div
                         className="euiFlexItem"
                       >
-                        <EuiButton
+                        <EuiSmallButton
                           data-test-subj="edit-detector-rules"
                           onClick={[Function]}
                         >
-                          <EuiButtonDisplay
-                            baseClassName="euiButton"
+                          <EuiButton
                             data-test-subj="edit-detector-rules"
-                            disabled={false}
-                            element="button"
-                            isDisabled={false}
                             onClick={[Function]}
-                            type="button"
+                            size="s"
                           >
-                            <button
-                              className="euiButton euiButton--primary"
+                            <EuiButtonDisplay
+                              baseClassName="euiButton"
                               data-test-subj="edit-detector-rules"
                               disabled={false}
+                              element="button"
+                              isDisabled={false}
                               onClick={[Function]}
-                              style={
-                                Object {
-                                  "minWidth": undefined,
-                                }
-                              }
+                              size="s"
                               type="button"
                             >
-                              <EuiButtonContent
-                                className="euiButton__content"
-                                iconSide="left"
-                                textProps={
+                              <button
+                                className="euiButton euiButton--primary euiButton--small"
+                                data-test-subj="edit-detector-rules"
+                                disabled={false}
+                                onClick={[Function]}
+                                style={
                                   Object {
-                                    "className": "euiButton__text",
+                                    "minWidth": undefined,
                                   }
                                 }
+                                type="button"
                               >
-                                <span
-                                  className="euiButtonContent euiButton__content"
+                                <EuiButtonContent
+                                  className="euiButton__content"
+                                  iconSide="left"
+                                  textProps={
+                                    Object {
+                                      "className": "euiButton__text",
+                                    }
+                                  }
                                 >
                                   <span
-                                    className="euiButton__text"
+                                    className="euiButtonContent euiButton__content"
                                   >
-                                    Edit
+                                    <span
+                                      className="euiButton__text"
+                                    >
+                                      Edit
+                                    </span>
                                   </span>
-                                </span>
-                              </EuiButtonContent>
-                            </button>
-                          </EuiButtonDisplay>
-                        </EuiButton>
+                                </EuiButtonContent>
+                              </button>
+                            </EuiButtonDisplay>
+                          </EuiButton>
+                        </EuiSmallButton>
                       </div>
                     </EuiFlexItem>
                   </div>
@@ -812,6 +819,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                 <FieldValueSelectionFilter
                                   config={
                                     Object {
+                                      "compressed": undefined,
                                       "field": "category",
                                       "multiSelect": "or",
                                       "name": "Log type",
@@ -941,6 +949,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                 <FieldValueSelectionFilter
                                   config={
                                     Object {
+                                      "compressed": undefined,
                                       "field": "level",
                                       "multiSelect": "or",
                                       "name": "Rule severity",
@@ -1116,6 +1125,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                 <FieldValueSelectionFilter
                                   config={
                                     Object {
+                                      "compressed": undefined,
                                       "field": "source",
                                       "multiSelect": "or",
                                       "name": "Source",

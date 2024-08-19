@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiBasicTableColumn, EuiButton, EuiEmptyPrompt, EuiLink } from '@elastic/eui';
+import { EuiBasicTableColumn, EuiSmallButton, EuiEmptyPrompt, EuiLink } from '@elastic/eui';
 import { ROUTES } from '../../../../utils/constants';
 import React, { useCallback } from 'react';
 import { TableWidget } from './TableWidget';
@@ -81,17 +81,17 @@ export const DetectorsWidget: React.FC<DetectorsWidgetProps> = ({
           </p>
         }
         actions={[
-          <EuiButton fill={false} href={`#${ROUTES.DETECTORS_CREATE}`}>
+          <EuiSmallButton fill={false} href={`#${ROUTES.DETECTORS_CREATE}`}>
             Create detector
-          </EuiButton>,
+          </EuiSmallButton>,
         ]}
       />
     ) : undefined;
 
   const actions = React.useMemo(
     () => [
-      <EuiButton href={`#${ROUTES.DETECTORS}`}>View all detectors</EuiButton>,
-      <EuiButton href={`#${ROUTES.DETECTORS_CREATE}`}>Create detector</EuiButton>,
+      <EuiSmallButton href={`#${ROUTES.DETECTORS}`}>View all detectors</EuiSmallButton>,
+      <EuiSmallButton href={`#${ROUTES.DETECTORS_CREATE}`}>Create detector</EuiSmallButton>,
     ],
     []
   );

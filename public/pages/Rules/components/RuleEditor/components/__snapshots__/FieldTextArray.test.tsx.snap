@@ -6,7 +6,7 @@ Object {
   "baseElement": <body>
     <div>
       <div
-        class="euiFormRow"
+        class="euiFormRow euiFormRow--compressed"
         id="some_html_id-row"
       >
         <div
@@ -31,13 +31,13 @@ Object {
               style="min-width: 100%;"
             >
               <div
-                class="euiFormControlLayout"
+                class="euiFormControlLayout euiFormControlLayout--compressed"
               >
                 <div
                   class="euiFormControlLayout__childrenWrapper"
                 >
                   <input
-                    class="euiFieldText"
+                    class="euiFieldText euiFieldText--compressed"
                     data-test-subj="rule_field_field_0"
                     name="field"
                     placeholder="Field placeholder"
@@ -52,7 +52,7 @@ Object {
             class="euiSpacer euiSpacer--m"
           />
           <button
-            class="euiButton euiButton--primary secondary"
+            class="euiButton euiButton--primary euiButton--small secondary"
             type="button"
           >
             <span
@@ -74,7 +74,7 @@ Object {
   </body>,
   "container": <div>
     <div
-      class="euiFormRow"
+      class="euiFormRow euiFormRow--compressed"
       id="some_html_id-row"
     >
       <div
@@ -99,13 +99,13 @@ Object {
             style="min-width: 100%;"
           >
             <div
-              class="euiFormControlLayout"
+              class="euiFormControlLayout euiFormControlLayout--compressed"
             >
               <div
                 class="euiFormControlLayout__childrenWrapper"
               >
                 <input
-                  class="euiFieldText"
+                  class="euiFieldText euiFieldText--compressed"
                   data-test-subj="rule_field_field_0"
                   name="field"
                   placeholder="Field placeholder"
@@ -120,7 +120,7 @@ Object {
           class="euiSpacer euiSpacer--m"
         />
         <button
-          class="euiButton euiButton--primary secondary"
+          class="euiButton euiButton--primary euiButton--small secondary"
           type="button"
         >
           <span

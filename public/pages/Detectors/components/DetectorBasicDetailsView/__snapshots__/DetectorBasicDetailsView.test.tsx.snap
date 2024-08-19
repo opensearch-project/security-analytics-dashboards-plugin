@@ -32,7 +32,7 @@ Object {
                 class="euiFlexItem"
               >
                 <button
-                  class="euiButton euiButton--primary"
+                  class="euiButton euiButton--primary euiButton--small"
                   data-test-subj="edit-detector-basic-details"
                   type="button"
                 >
@@ -66,7 +66,7 @@ Object {
               class="euiFlexItem"
             >
               <div
-                class="euiFormRow euiFormRow--fullWidth"
+                class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                 id="some_html_id-row"
               >
                 <div
@@ -96,7 +96,7 @@ Object {
               class="euiFlexItem"
             >
               <div
-                class="euiFormRow euiFormRow--fullWidth"
+                class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                 id="some_html_id-row"
               >
                 <div
@@ -126,7 +126,7 @@ Object {
               class="euiFlexItem"
             >
               <div
-                class="euiFormRow euiFormRow--fullWidth"
+                class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                 id="some_html_id-row"
               >
                 <div
@@ -163,7 +163,7 @@ Object {
               class="euiFlexItem"
             >
               <div
-                class="euiFormRow euiFormRow--fullWidth"
+                class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                 id="some_html_id-row"
               >
                 <div
@@ -197,7 +197,7 @@ Object {
               class="euiFlexItem"
             >
               <div
-                class="euiFormRow euiFormRow--fullWidth"
+                class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                 id="some_html_id-row"
               >
                 <div
@@ -227,7 +227,7 @@ Object {
               class="euiFlexItem"
             >
               <div
-                class="euiFormRow euiFormRow--fullWidth"
+                class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                 id="some_html_id-row"
               >
                 <div
@@ -264,7 +264,7 @@ Object {
               class="euiFlexItem"
             >
               <div
-                class="euiFormRow euiFormRow--fullWidth"
+                class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                 id="some_html_id-row"
               >
                 <div
@@ -294,7 +294,7 @@ Object {
               class="euiFlexItem"
             >
               <div
-                class="euiFormRow euiFormRow--fullWidth"
+                class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                 id="some_html_id-row"
               >
                 <div
@@ -324,7 +324,7 @@ Object {
               class="euiFlexItem"
             >
               <div
-                class="euiFormRow euiFormRow--fullWidth"
+                class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                 id="some_html_id-row"
               >
                 <div
@@ -355,7 +355,7 @@ Object {
             class="euiSpacer euiSpacer--l"
           />
           <div
-            class="euiFormRow euiFormRow--fullWidth"
+            class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
             id="some_html_id-row"
           >
             <div
@@ -415,7 +415,7 @@ Object {
               class="euiFlexItem"
             >
               <button
-                class="euiButton euiButton--primary"
+                class="euiButton euiButton--primary euiButton--small"
                 data-test-subj="edit-detector-basic-details"
                 type="button"
               >
@@ -449,7 +449,7 @@ Object {
             class="euiFlexItem"
           >
             <div
-              class="euiFormRow euiFormRow--fullWidth"
+              class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
               id="some_html_id-row"
             >
               <div
@@ -479,7 +479,7 @@ Object {
             class="euiFlexItem"
           >
             <div
-              class="euiFormRow euiFormRow--fullWidth"
+              class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
               id="some_html_id-row"
             >
               <div
@@ -509,7 +509,7 @@ Object {
             class="euiFlexItem"
           >
             <div
-              class="euiFormRow euiFormRow--fullWidth"
+              class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
               id="some_html_id-row"
             >
               <div
@@ -546,7 +546,7 @@ Object {
             class="euiFlexItem"
           >
             <div
-              class="euiFormRow euiFormRow--fullWidth"
+              class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
               id="some_html_id-row"
             >
               <div
@@ -580,7 +580,7 @@ Object {
             class="euiFlexItem"
           >
             <div
-              class="euiFormRow euiFormRow--fullWidth"
+              class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
               id="some_html_id-row"
             >
               <div
@@ -610,7 +610,7 @@ Object {
             class="euiFlexItem"
           >
             <div
-              class="euiFormRow euiFormRow--fullWidth"
+              class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
               id="some_html_id-row"
             >
               <div
@@ -647,7 +647,7 @@ Object {
             class="euiFlexItem"
           >
             <div
-              class="euiFormRow euiFormRow--fullWidth"
+              class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
               id="some_html_id-row"
             >
               <div
@@ -677,7 +677,7 @@ Object {
             class="euiFlexItem"
           >
             <div
-              class="euiFormRow euiFormRow--fullWidth"
+              class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
               id="some_html_id-row"
             >
               <div
@@ -707,7 +707,7 @@ Object {
             class="euiFlexItem"
           >
             <div
-              class="euiFormRow euiFormRow--fullWidth"
+              class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
               id="some_html_id-row"
             >
               <div
@@ -738,7 +738,7 @@ Object {
           class="euiSpacer euiSpacer--l"
         />
         <div
-          class="euiFormRow euiFormRow--fullWidth"
+          class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
           id="some_html_id-row"
         >
           <div

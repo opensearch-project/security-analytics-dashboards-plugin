@@ -6,8 +6,8 @@
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
-  EuiButton,
-  EuiButtonEmpty,
+  EuiSmallButton,
+  EuiSmallButtonEmpty,
   EuiFlexGroup,
   EuiFlexItem,
   EuiSpacer,
@@ -395,39 +395,39 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
 
         <EuiFlexGroup alignItems={'center'} justifyContent={'flexEnd'}>
           <EuiFlexItem grow={false}>
-            <EuiButtonEmpty href={`${PLUGIN_NAME}#${ROUTES.DETECTORS}`}>Cancel</EuiButtonEmpty>
+            <EuiSmallButtonEmpty href={`${PLUGIN_NAME}#${ROUTES.DETECTORS}`}>Cancel</EuiSmallButtonEmpty>
           </EuiFlexItem>
 
           {currentStep > DetectorCreationStep.DEFINE_DETECTOR && (
             <EuiFlexItem grow={false}>
-              <EuiButton disabled={creatingDetector} onClick={this.onPreviousClick}>
+              <EuiSmallButton disabled={creatingDetector} onClick={this.onPreviousClick}>
                 Back
-              </EuiButton>
+              </EuiSmallButton>
             </EuiFlexItem>
           )}
 
           {currentStep < DetectorCreationStep.CONFIGURE_ALERTS && (
             <EuiFlexItem grow={false}>
-              <EuiButton
+              <EuiSmallButton
                 fill={true}
                 onClick={this.onNextClick}
                 disabled={!stepDataValid[currentStep]}
               >
                 Next
-              </EuiButton>
+              </EuiSmallButton>
             </EuiFlexItem>
           )}
 
           {currentStep === DetectorCreationStep.CONFIGURE_ALERTS && (
             <EuiFlexItem grow={false}>
-              <EuiButton
+              <EuiSmallButton
                 disabled={creatingDetector || !stepDataValid[currentStep]}
                 isLoading={creatingDetector}
                 fill={true}
                 onClick={this.onCreateClick}
               >
                 Create detector
-              </EuiButton>
+              </EuiSmallButton>
             </EuiFlexItem>
           )}
         </EuiFlexGroup>
