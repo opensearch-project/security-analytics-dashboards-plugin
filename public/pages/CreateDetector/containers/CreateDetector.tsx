@@ -16,7 +16,7 @@ import {
 } from '@elastic/eui';
 import DefineDetector from '../components/DefineDetector/containers/DefineDetector';
 import { createDetectorSteps, PENDING_DETECTOR_ID } from '../utils/constants';
-import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR, PLUGIN_NAME, ROUTES } from '../../../utils/constants';
+import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR, ROUTES } from '../../../utils/constants';
 import ConfigureAlerts from '../components/ConfigureAlerts';
 import { FieldMapping } from '../../../../models/interfaces';
 import { EuiContainedStepProps } from '@elastic/eui/src/components/steps/steps';
@@ -395,7 +395,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
 
         <EuiFlexGroup alignItems={'center'} justifyContent={'flexEnd'}>
           <EuiFlexItem grow={false}>
-            <EuiButtonEmpty href={`${PLUGIN_NAME}#${ROUTES.DETECTORS}`}>Cancel</EuiButtonEmpty>
+            <EuiButtonEmpty href={`#${ROUTES.DETECTORS}`}>Cancel</EuiButtonEmpty>
           </EuiFlexItem>
 
           {currentStep > DetectorCreationStep.DEFINE_DETECTOR && (

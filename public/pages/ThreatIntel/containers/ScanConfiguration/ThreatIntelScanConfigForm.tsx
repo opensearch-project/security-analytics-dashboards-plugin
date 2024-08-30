@@ -13,7 +13,7 @@ import {
   EuiSteps,
   EuiTitle,
 } from '@elastic/eui';
-import { BREADCRUMBS, PLUGIN_NAME, ROUTES } from '../../../../utils/constants';
+import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { SelectThreatIntelLogSources } from '../../components/SelectLogSourcesForm/SelectThreatIntelLogSourcesForm';
 import {
   ThreatIntelScanConfig,
@@ -341,7 +341,7 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
       <EuiSpacer />
       <EuiFlexGroup alignItems={'center'} justifyContent={'flexEnd'}>
         <EuiFlexItem grow={false}>
-          <EuiButtonEmpty href={`${PLUGIN_NAME}#${ROUTES.THREAT_INTEL_OVERVIEW}`}>
+          <EuiButtonEmpty href={`#${ROUTES.THREAT_INTEL_OVERVIEW}`}>
             Cancel
           </EuiButtonEmpty>
         </EuiFlexItem>

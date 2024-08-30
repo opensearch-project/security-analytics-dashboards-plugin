@@ -14,7 +14,7 @@ import {
   EuiInMemoryTable,
   EuiEmptyPrompt,
 } from '@elastic/eui';
-import { BREADCRUMBS, PLUGIN_NAME, ROUTES } from '../../../utils/constants';
+import { BREADCRUMBS, ROUTES } from '../../../utils/constants';
 import { DataStore } from '../../../store/DataStore';
 import {
   getCorrelationRulesTableColumns,
@@ -56,7 +56,7 @@ export const CorrelationRules: React.FC<CorrelationRulesProps> = (props: Correla
   const createRuleAction = useMemo(
     () => (
       <EuiButton
-        href={`${PLUGIN_NAME}#${ROUTES.CORRELATION_RULE_CREATE}`}
+        href={`#${ROUTES.CORRELATION_RULE_CREATE}`}
         data-test-subj={'create_rule_button'}
         fill={true}
       >

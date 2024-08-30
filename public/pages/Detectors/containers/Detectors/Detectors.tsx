@@ -21,7 +21,7 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import { BREADCRUMBS, DEFAULT_EMPTY_DATA, PLUGIN_NAME, ROUTES } from '../../../../utils/constants';
+import { BREADCRUMBS, DEFAULT_EMPTY_DATA, ROUTES } from '../../../../utils/constants';
 import DeleteModal from '../../../../components/DeleteModal';
 import { getDetectorNames } from '../../utils/helpers';
 import {
@@ -261,7 +261,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
         <EuiContextMenuPanel items={this.getActionItems(loadingDetectors, selectedItems)} />
       </EuiPopover>,
       <EuiButton
-        href={`${PLUGIN_NAME}#${ROUTES.DETECTORS_CREATE}`}
+        href={`#${ROUTES.DETECTORS_CREATE}`}
         fill={true}
         data-test-subj={'detectorsCreateButton'}
       >
