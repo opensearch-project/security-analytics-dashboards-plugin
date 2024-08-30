@@ -516,6 +516,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                 >
                                   <EuiButtonContent
                                     className="euiButton__content"
+                                    iconGap="m"
                                     iconSide="left"
                                     textProps={
                                       Object {
@@ -1562,6 +1563,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                 >
                                   <EuiButtonContent
                                     className="euiButton__content"
+                                    iconGap="m"
                                     iconSide="left"
                                     textProps={
                                       Object {
@@ -2155,6 +2157,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                               >
                                                 <EuiButtonContent
                                                   className="euiButtonEmpty__content"
+                                                  iconGap="m"
                                                   iconSide="right"
                                                   iconSize="m"
                                                   iconType="arrowDown"
@@ -2331,6 +2334,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                               >
                                                 <EuiButtonContent
                                                   className="euiButtonEmpty__content"
+                                                  iconGap="m"
                                                   iconSide="right"
                                                   iconSize="m"
                                                   iconType="arrowDown"
@@ -2468,6 +2472,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                               >
                                                 <EuiButtonContent
                                                   className="euiButtonEmpty__content"
+                                                  iconGap="m"
                                                   iconSide="right"
                                                   iconSize="m"
                                                   iconType="arrowDown"
@@ -2701,6 +2706,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                                 >
                                                   <EuiButtonContent
                                                     className="euiButtonEmpty__content"
+                                                    iconGap="m"
                                                     iconSide="right"
                                                     iconSize="s"
                                                     iconType="arrowDown"

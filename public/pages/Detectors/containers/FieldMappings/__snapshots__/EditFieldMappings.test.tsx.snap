@@ -734,6 +734,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                                                         >
                                                           <EuiButtonContent
                                                             className="euiButtonEmpty__content"
+                                                            iconGap="m"
                                                             iconSide="right"
                                                             iconSize="s"
                                                             iconType="arrowDown"

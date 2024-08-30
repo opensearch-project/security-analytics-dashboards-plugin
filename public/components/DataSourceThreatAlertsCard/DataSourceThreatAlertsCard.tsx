@@ -166,7 +166,7 @@ export const DataSourceThreatAlertsCard: React.FC<DataSourceAlertsCardProps> = (
               <EuiFlexGroup gutterSize="s" justifyContent="spaceBetween">
                 <EuiFlexItem grow={false}>
                   <EuiTitle size="s">
-                    <h3>Recent Threat Alerts</h3>
+                    <h3>Recent threat alerts</h3>
                   </EuiTitle>
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>
