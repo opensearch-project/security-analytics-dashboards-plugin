@@ -17,7 +17,7 @@ import {
 } from '@elastic/eui';
 import moment from 'moment';
 import { PeriodSchedule } from '../../models/interfaces';
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
   BREADCRUMBS,
   DEFAULT_EMPTY_DATA,
@@ -48,6 +48,9 @@ import { compile } from 'vega-lite';
 import { Handler } from 'vega-tooltip';
 import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter/build/vega-interpreter';
 import { getBreadCrumbsSetter, getUseUpdatedUx } from '../services/utils/constants';
+import { useHistory } from 'react-router-dom';
+import queryString from "query-string";
+import { DataSourceContext } from '../services/DataSourceContext';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));

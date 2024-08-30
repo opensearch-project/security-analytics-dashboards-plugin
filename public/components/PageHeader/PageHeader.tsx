@@ -25,7 +25,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
 }) => {
   const { HeaderControl } = getNavigationUI();
   const { setAppBadgeControls, setAppRightControls, setAppDescriptionControls } = getApplication();
-
+  
   return getUseUpdatedUx() ? (
     <>
       <HeaderControl setMountPoint={setAppBadgeControls} controls={appBadgeControls} />

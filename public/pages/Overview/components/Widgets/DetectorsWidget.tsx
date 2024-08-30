@@ -97,7 +97,7 @@ export const DetectorsWidget: React.FC<DetectorsWidgetProps> = ({
   );
 
   return (
-    <WidgetContainer title={`Detectors (${detectors.length})`} actions={actions}>
+    <WidgetContainer title={`Threat detectors (${detectors.length})`} actions={actions}>
       <TableWidget
         columns={getColumns(detectorIdToHit, showDetectorDetails)}
         items={detectors}
