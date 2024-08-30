@@ -32,8 +32,16 @@ import {
   RuleItemInfo,
 } from '../pages/CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { RuleInfo } from '../../server/models/interfaces';
-import { ChromeBreadcrumb, NotificationsStart } from 'opensearch-dashboards/public';
-import { FieldMappingService, IndexService, OpenSearchService } from '../services';
+import { ChromeBreadcrumb, CoreStart, NotificationsStart } from 'opensearch-dashboards/public';
+import {
+  AlertsService,
+  FieldMappingService,
+  IndexPatternsService,
+  IndexService,
+  LogTypeService,
+  NotificationsService,
+  OpenSearchService,
+} from '../services';
 import { ruleSeverity, ruleTypes } from '../pages/Rules/utils/constants';
 import _ from 'lodash';
 import { AlertCondition, DateTimeFilter, Duration, LogType } from '../../types';
@@ -47,7 +55,28 @@ import { parse, View } from 'vega/build-es5/vega.js';
 import { compile } from 'vega-lite';
 import { Handler } from 'vega-tooltip';
 import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter/build/vega-interpreter';
-import { getBreadCrumbsSetter, getUseUpdatedUx } from '../services/utils/constants';
+import {
+  getBreadCrumbsSetter,
+  getBrowserServices,
+  getContentManagement,
+  getUseUpdatedUx,
+  setBrowserServices,
+  getDataSourceManagementPlugin,
+} from '../services/utils/constants';
+import { ANALYTICS_ALL_OVERVIEW_CONTENT_AREAS } from '../../../../src/plugins/content_management/public';
+import DetectorsService from '../services/DetectorService';
+import CorrelationService from '../services/CorrelationService';
+import FindingsService from '../services/FindingsService';
+import RuleService from '../services/RuleService';
+import SavedObjectService from '../services/SavedObjectService';
+import MetricsService from '../services/MetricsService';
+import ThreatIntelService from '../services/ThreatIntelService';
+import { BrowserServices } from '../models/interfaces';
+import { IndexPatternsService as CoreIndexPatternsService } from '../../../../src/plugins/data/common';
+import semver from 'semver';
+import * as pluginManifest from '../../opensearch_dashboards.json';
+import { DataSourceThreatAlertsCard } from '../components/DataSourceThreatAlertsCard/DataSourceThreatAlertsCard';
+import { ALERT_SEVERITY_OPTIONS } from '../pages/CreateDetector/components/ConfigureAlerts/utils/constants';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
@@ -267,7 +296,13 @@ export function createSelectComponent(
   return (
     <EuiFlexGroup justifyContent="flexEnd" alignItems="center">
       <EuiFlexItem grow={false}>
-        <EuiCompressedSelect id={id} options={options} value={value} onChange={onChange} prepend="Group by" />
+        <EuiCompressedSelect
+          id={id}
+          options={options}
+          value={value}
+          onChange={onChange}
+          prepend="Group by"
+        />
       </EuiFlexItem>
     </EuiFlexGroup>
   );
@@ -606,4 +641,85 @@ export function renderIoCType(iocType: ThreatIntelIocType) {
 
 export function setBreadcrumbs(crumbs: ChromeBreadcrumb[]) {
   getBreadCrumbsSetter()(getUseUpdatedUx() ? crumbs : [BREADCRUMBS.SECURITY_ANALYTICS, ...crumbs]);
+}
+
+export function dataSourceFilterFn(dataSource) {
+  const dataSourceVersion = dataSource?.attributes?.dataSourceVersion || '';
+  const installedPlugins = dataSource?.attributes?.installedPlugins || [];
+  return (
+    semver.satisfies(dataSourceVersion, pluginManifest.supportedOSDataSourceVersions) &&
+    pluginManifest.requiredOSDataSourcePlugins.every((plugin) => installedPlugins.includes(plugin))
+  );
+}
+
+export function getSeverityText(severity) {
+  return _.get(_.find(ALERT_SEVERITY_OPTIONS, { value: severity }), 'text');
+}
+
+export function getBadgeText(severity) {
+  return _.get(_.find(ALERT_SEVERITY_OPTIONS, { value: severity }), 'badge');
+}
+
+export function getSeverityColor(severity) {
+  return _.get(_.find(ALERT_SEVERITY_OPTIONS, { value: severity }), 'color');
+}
+
+export const getTruncatedText = (text, textLength = 14) => {
+  return `${text.slice(0, textLength)}${text.length > textLength ? '...' : ''}`;
+};
+
+export function registerThreatAlertsCard() {
+  getContentManagement().registerContentProvider({
+    id: `analytics_all_recent_threat_alerts_card_content`,
+    getTargetArea: () => ANALYTICS_ALL_OVERVIEW_CONTENT_AREAS.SERVICE_CARDS,
+    getContent: () => ({
+      id: 'analytics_all_recent_threat_alerts_card',
+      kind: 'custom',
+      order: 20,
+      render: () => (
+        <DataSourceThreatAlertsCard
+          getDataSourceMenu={getDataSourceManagementPlugin().ui.getDataSourceMenu}
+          detectorService={getBrowserServices().detectorsService}
+        />
+      ),
+    }),
+  });
+}
+
+export function initializeServices(coreStart: CoreStart, indexPattern: CoreIndexPatternsService) {
+  const { http, savedObjects } = coreStart;
+
+  const detectorsService = new DetectorsService(http);
+  const correlationsService = new CorrelationService(http);
+  const indexService = new IndexService(http);
+  const findingsService = new FindingsService(http, coreStart.notifications);
+  const opensearchService = new OpenSearchService(http, savedObjects.client);
+  const fieldMappingService = new FieldMappingService(http);
+  const alertsService = new AlertsService(http, coreStart.notifications);
+  const ruleService = new RuleService(http);
+  const notificationsService = new NotificationsService(http);
+  const savedObjectsService = new SavedObjectService(savedObjects.client, indexService);
+  const indexPatternsService = new IndexPatternsService(indexPattern);
+  const logTypeService = new LogTypeService(http);
+  const metricsService = new MetricsService(http);
+  const threatIntelService = new ThreatIntelService(http, coreStart.notifications);
+
+  const services: BrowserServices = {
+    detectorsService,
+    correlationsService,
+    indexService,
+    fieldMappingService,
+    findingsService,
+    opensearchService,
+    ruleService,
+    alertService: alertsService,
+    notificationsService,
+    savedObjectsService,
+    indexPatternsService,
+    logTypeService,
+    metricsService,
+    threatIntelService,
+  };
+  setBrowserServices(services);
+  DataStore.init(services, coreStart.notifications);
 }

@@ -2,18 +2,57 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
+import { euiPaletteForStatus } from '@elastic/eui';
+
 export const MAX_ALERT_CONDITIONS = 10;
 export const MIN_ALERT_CONDITIONS = 0;
 
 // SEVERITY_OPTIONS have the id, value, label, and text fields because some EUI components
 // (e.g, EuiComboBox) require value/label pairings, while others
 // (e.g., EuiCheckboxGroup) require id/text pairings.
+const paletteColors = euiPaletteForStatus(5);
+
 export const ALERT_SEVERITY_OPTIONS = {
-  HIGHEST: { id: '1', value: '1', label: '1 (Highest)', text: '1 (Highest)' },
-  HIGH: { id: '2', value: '2', label: '2 (High)', text: '2 (High)' },
-  MEDIUM: { id: '3', value: '3', label: '3 (Medium)', text: '3 (Medium)' },
-  LOW: { id: '4', value: '4', label: '4 (Low)', text: '4 (Low)' },
-  LOWEST: { id: '5', value: '5', label: '5 (Lowest)', text: '5 (Lowest)' },
+  HIGHEST: {
+    id: '1',
+    value: '1',
+    label: '1 (Highest)',
+    text: '1 (Highest)',
+    badge: 'Highest',
+    color: { background: paletteColors[4], text: 'white' },
+  },
+  HIGH: {
+    id: '2',
+    value: '2',
+    label: '2 (High)',
+    text: '2 (High)',
+    badge: 'High',
+    color: { background: paletteColors[3], text: 'white' },
+  },
+  MEDIUM: {
+    id: '3',
+    value: '3',
+    label: '3 (Medium)',
+    text: '3 (Medium)',
+    badge: 'Medium',
+    color: { background: paletteColors[2], text: 'black' },
+  },
+  LOW: {
+    id: '4',
+    value: '4',
+    label: '4 (Low)',
+    text: '4 (Low)',
+    badge: 'Low',
+    color: { background: paletteColors[1], text: 'white' },
+  },
+  LOWEST: {
+    id: '5',
+    value: '5',
+    label: '5 (Lowest)',
+    text: '5 (Lowest)',
+    badge: 'Lowest',
+    color: { background: paletteColors[0], text: 'white' },
+  },
 };
 
 export const RULE_SEVERITY_OPTIONS = {

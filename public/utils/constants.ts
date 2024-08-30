@@ -7,7 +7,6 @@ import { SimpleSavedObject } from 'opensearch-dashboards/public';
 import { Detector, LogType, ServerResponse } from '../../types';
 import { DetectorInput, PeriodSchedule } from '../../models/interfaces';
 import { DetectorHit } from '../../server/models/interfaces';
-import _ from 'lodash';
 import { euiPaletteColorBlind } from '@elastic/eui';
 
 export const DATE_MATH_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
