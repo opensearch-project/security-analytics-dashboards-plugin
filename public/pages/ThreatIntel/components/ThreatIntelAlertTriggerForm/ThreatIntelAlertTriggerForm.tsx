@@ -16,10 +16,10 @@ import { NotificationChannelTypeOptions, ThreatIntelAlertTrigger } from '../../.
 import React from 'react';
 import { NotificationForm } from '../../../../components/Notifications/NotificationForm';
 import { ThreatIntelIocType } from '../../../../../common/constants';
-import { ALERT_SEVERITY_OPTIONS } from '../../../CreateDetector/components/ConfigureAlerts/utils/constants';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { AlertSeverity } from '../../../Alerts/utils/constants';
 import { getEmptyThreatIntelAlertTriggerAction } from '../../utils/helpers';
+import { ALERT_SEVERITY_OPTIONS } from '../../../../utils/constants';
 
 export interface ThreatIntelAlertTriggerProps {
   allNotificationChannels: NotificationChannelTypeOptions[];

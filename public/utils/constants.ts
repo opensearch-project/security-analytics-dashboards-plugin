@@ -7,7 +7,7 @@ import { SimpleSavedObject } from 'opensearch-dashboards/public';
 import { Detector, LogType, ServerResponse } from '../../types';
 import { DetectorInput, PeriodSchedule } from '../../models/interfaces';
 import { DetectorHit } from '../../server/models/interfaces';
-import { euiPaletteColorBlind } from '@elastic/eui';
+import { euiPaletteColorBlind, euiPaletteForStatus } from '@elastic/eui';
 
 export const DATE_MATH_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
 export const MAX_RECENTLY_USED_TIME_RANGES = 5;
@@ -240,3 +240,47 @@ export enum AlertTabId {
   ThreatIntel = 'threat-intel',
   Correlations = 'correlations',
 }
+
+const paletteColors = euiPaletteForStatus(5);
+export const ALERT_SEVERITY_OPTIONS = {
+  HIGHEST: {
+    id: '1',
+    value: '1',
+    label: '1 (Highest)',
+    text: '1 (Highest)',
+    badge: 'Highest',
+    color: { background: paletteColors[4], text: 'white' },
+  },
+  HIGH: {
+    id: '2',
+    value: '2',
+    label: '2 (High)',
+    text: '2 (High)',
+    badge: 'High',
+    color: { background: paletteColors[3], text: 'white' },
+  },
+  MEDIUM: {
+    id: '3',
+    value: '3',
+    label: '3 (Medium)',
+    text: '3 (Medium)',
+    badge: 'Medium',
+    color: { background: paletteColors[2], text: 'black' },
+  },
+  LOW: {
+    id: '4',
+    value: '4',
+    label: '4 (Low)',
+    text: '4 (Low)',
+    badge: 'Low',
+    color: { background: paletteColors[1], text: 'white' },
+  },
+  LOWEST: {
+    id: '5',
+    value: '5',
+    label: '5 (Lowest)',
+    text: '5 (Lowest)',
+    badge: 'Lowest',
+    color: { background: paletteColors[0], text: 'white' },
+  },
+};

@@ -19,6 +19,7 @@ import moment from 'moment';
 import { PeriodSchedule } from '../../models/interfaces';
 import React from 'react';
 import {
+  ALERT_SEVERITY_OPTIONS,
   BREADCRUMBS,
   DEFAULT_EMPTY_DATA,
   defaultColorForVisualizations,
@@ -76,7 +77,6 @@ import { IndexPatternsService as CoreIndexPatternsService } from '../../../../sr
 import semver from 'semver';
 import * as pluginManifest from '../../opensearch_dashboards.json';
 import { DataSourceThreatAlertsCard } from '../components/DataSourceThreatAlertsCard/DataSourceThreatAlertsCard';
-import { ALERT_SEVERITY_OPTIONS } from '../pages/CreateDetector/components/ConfigureAlerts/utils/constants';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
