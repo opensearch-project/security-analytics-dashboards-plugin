@@ -4,7 +4,7 @@
  */
 
 import React, { MouseEventHandler } from 'react';
-import { EuiButton, EuiFlexGroup, EuiFlexItem, EuiSpacer, EuiText } from '@elastic/eui';
+import { EuiSmallButton, EuiFlexGroup, EuiFlexItem, EuiSpacer, EuiText } from '@elastic/eui';
 import { EuiButtonPropsForButton } from '@elastic/eui/src/components/button/button';
 
 interface GetStartedStepButton {
@@ -28,9 +28,9 @@ export const GetStartedStep: React.FC<GetStartedStepProps> = ({ buttons, title }
       <EuiFlexGroup gutterSize="s">
         {buttons.map((btn: GetStartedStepButton, index: number) => (
           <EuiFlexItem grow={false} key={index}>
-            <EuiButton {...btn.opts} onClick={btn.onClick}>
+            <EuiSmallButton {...btn.opts} onClick={btn.onClick}>
               {btn.text}
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
         ))}
       </EuiFlexGroup>

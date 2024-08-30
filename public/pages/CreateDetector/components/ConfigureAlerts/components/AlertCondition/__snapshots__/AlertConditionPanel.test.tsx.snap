@@ -7,7 +7,7 @@ Object {
     <div>
       <div>
         <div
-          class="euiFormRow"
+          class="euiFormRow euiFormRow--compressed"
           id="some_html_id-row"
         >
           <div
@@ -31,13 +31,13 @@ Object {
             class="euiFormRow__fieldWrapper"
           >
             <div
-              class="euiFormControlLayout"
+              class="euiFormControlLayout euiFormControlLayout--compressed"
             >
               <div
                 class="euiFormControlLayout__childrenWrapper"
               >
                 <input
-                  class="euiFieldText"
+                  class="euiFieldText euiFieldText--compressed"
                   data-test-subj="alert-condition-name-0"
                   id="some_html_id"
                   placeholder="Enter a name to describe the alert condition"
@@ -124,7 +124,7 @@ Object {
                 class="euiAccordion__padding--l"
               >
                 <div
-                  class="euiFormRow"
+                  class="euiFormRow euiFormRow--compressed"
                   id="some_html_id-row"
                 >
                   <div
@@ -149,18 +149,18 @@ Object {
                     <div
                       aria-expanded="false"
                       aria-haspopup="listbox"
-                      class="euiComboBox"
+                      class="euiComboBox euiComboBox--compressed"
                       data-test-subj="alert-rulename-combo-box"
                       role="combobox"
                     >
                       <div
-                        class="euiFormControlLayout"
+                        class="euiFormControlLayout euiFormControlLayout--compressed"
                       >
                         <div
                           class="euiFormControlLayout__childrenWrapper"
                         >
                           <div
-                            class="euiComboBox__inputWrap euiComboBox__inputWrap-isClearable"
+                            class="euiComboBox__inputWrap euiComboBox__inputWrap--compressed euiComboBox__inputWrap-isClearable"
                             data-test-subj="comboBoxInput"
                             tabindex="-1"
                           >
@@ -207,7 +207,7 @@ Object {
                   class="euiSpacer euiSpacer--m"
                 />
                 <div
-                  class="euiFormRow"
+                  class="euiFormRow euiFormRow--compressed"
                   id="some_html_id-row"
                 >
                   <div
@@ -232,18 +232,18 @@ Object {
                     <div
                       aria-expanded="false"
                       aria-haspopup="listbox"
-                      class="euiComboBox"
+                      class="euiComboBox euiComboBox--compressed"
                       data-test-subj="alert-severity-combo-box"
                       role="combobox"
                     >
                       <div
-                        class="euiFormControlLayout"
+                        class="euiFormControlLayout euiFormControlLayout--compressed"
                       >
                         <div
                           class="euiFormControlLayout__childrenWrapper"
                         >
                           <div
-                            class="euiComboBox__inputWrap euiComboBox__inputWrap-isClearable"
+                            class="euiComboBox__inputWrap euiComboBox__inputWrap--compressed euiComboBox__inputWrap-isClearable"
                             data-test-subj="comboBoxInput"
                             tabindex="-1"
                           >
@@ -292,7 +292,7 @@ Object {
                           >
                             <button
                               aria-label="Clear input"
-                              class="euiFormControlLayoutClearButton"
+                              class="euiFormControlLayoutClearButton euiFormControlLayoutClearButton--small"
                               data-test-subj="comboBoxClearButton"
                               type="button"
                             >
@@ -316,7 +316,7 @@ Object {
                   class="euiSpacer euiSpacer--m"
                 />
                 <div
-                  class="euiFormRow"
+                  class="euiFormRow euiFormRow--compressed"
                   id="some_html_id-row"
                 >
                   <div
@@ -341,18 +341,18 @@ Object {
                     <div
                       aria-expanded="false"
                       aria-haspopup="listbox"
-                      class="euiComboBox"
+                      class="euiComboBox euiComboBox--compressed"
                       data-test-subj="alert-tags-combo-box"
                       role="combobox"
                     >
                       <div
-                        class="euiFormControlLayout"
+                        class="euiFormControlLayout euiFormControlLayout--compressed"
                       >
                         <div
                           class="euiFormControlLayout__childrenWrapper"
                         >
                           <div
-                            class="euiComboBox__inputWrap euiComboBox__inputWrap-isClearable"
+                            class="euiComboBox__inputWrap euiComboBox__inputWrap--compressed euiComboBox__inputWrap-isClearable"
                             data-test-subj="comboBoxInput"
                             tabindex="-1"
                           >
@@ -401,7 +401,7 @@ Object {
                           >
                             <button
                               aria-label="Clear input"
-                              class="euiFormControlLayoutClearButton"
+                              class="euiFormControlLayoutClearButton euiFormControlLayoutClearButton--small"
                               data-test-subj="comboBoxClearButton"
                               type="button"
                             >
@@ -435,7 +435,7 @@ Object {
           class="euiSpacer euiSpacer--s"
         />
         <div
-          class="euiFormRow"
+          class="euiFormRow euiFormRow--compressed"
           id="some_html_id-row"
         >
           <div
@@ -460,18 +460,18 @@ Object {
             <div
               aria-expanded="false"
               aria-haspopup="listbox"
-              class="euiComboBox"
+              class="euiComboBox euiComboBox--compressed"
               data-test-subj="security-levels-combo-box"
               role="combobox"
             >
               <div
-                class="euiFormControlLayout"
+                class="euiFormControlLayout euiFormControlLayout--compressed"
               >
                 <div
                   class="euiFormControlLayout__childrenWrapper"
                 >
                   <div
-                    class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap"
+                    class="euiComboBox__inputWrap euiComboBox__inputWrap--compressed euiComboBox__inputWrap--noWrap"
                     data-test-subj="comboBoxInput"
                     tabindex="-1"
                   >
@@ -521,7 +521,7 @@ Object {
           class="euiSpacer euiSpacer--l"
         />
         <div
-          class="euiSwitch euiSwitch--primary"
+          class="euiSwitch euiSwitch--primary euiSwitch--compressed"
         >
           <button
             aria-checked="true"
@@ -539,10 +539,7 @@ Object {
               />
               <span
                 class="euiSwitch__track"
-              >
-                EuiIconMock
-                EuiIconMock
-              </span>
+              />
             </span>
           </button>
           <span
@@ -563,7 +560,7 @@ Object {
             style="max-width: 400px;"
           >
             <div
-              class="euiFormRow"
+              class="euiFormRow euiFormRow--compressed"
               id="some_html_id-row"
             >
               <div
@@ -588,17 +585,17 @@ Object {
                 <div
                   aria-expanded="false"
                   aria-haspopup="listbox"
-                  class="euiComboBox euiComboBox-isDisabled"
+                  class="euiComboBox euiComboBox--compressed euiComboBox-isDisabled"
                   role="combobox"
                 >
                   <div
-                    class="euiFormControlLayout"
+                    class="euiFormControlLayout euiFormControlLayout--compressed"
                   >
                     <div
                       class="euiFormControlLayout__childrenWrapper"
                     >
                       <div
-                        class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap"
+                        class="euiComboBox__inputWrap euiComboBox__inputWrap--compressed euiComboBox__inputWrap--noWrap"
                         data-test-subj="comboBoxInput"
                         tabindex="-1"
                       >
@@ -648,7 +645,7 @@ Object {
             class="euiFlexItem euiFlexItem--flexGrowZero"
           >
             <button
-              class="euiButton euiButton--primary euiButton-isDisabled"
+              class="euiButton euiButton--primary euiButton--small euiButton-isDisabled"
               disabled=""
               type="button"
             >
@@ -758,7 +755,7 @@ Object {
                     class="euiFlexItem"
                   >
                     <div
-                      class="euiFormRow euiFormRow--fullWidth"
+                      class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                       id="some_html_id-row"
                     >
                       <div
@@ -781,13 +778,13 @@ Object {
                         class="euiFormRow__fieldWrapper"
                       >
                         <div
-                          class="euiFormControlLayout euiFormControlLayout--fullWidth"
+                          class="euiFormControlLayout euiFormControlLayout--fullWidth euiFormControlLayout--compressed"
                         >
                           <div
                             class="euiFormControlLayout__childrenWrapper"
                           >
                             <input
-                              class="euiFieldText euiFieldText--fullWidth"
+                              class="euiFieldText euiFieldText--fullWidth euiFieldText--compressed"
                               id="some_html_id"
                               placeholder="Enter a subject for the notification message."
                               required=""
@@ -803,7 +800,7 @@ Object {
                     class="euiFlexItem"
                   >
                     <div
-                      class="euiFormRow euiFormRow--fullWidth"
+                      class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                       id="some_html_id-row"
                     >
                       <div
@@ -826,11 +823,11 @@ Object {
                         class="euiFormRow__fieldWrapper"
                       >
                         <textarea
-                          class="euiTextArea euiTextArea--resizeVertical euiTextArea--fullWidth"
+                          class="euiTextArea euiTextArea--resizeVertical euiTextArea--fullWidth euiTextArea--compressed"
                           id="some_html_id"
                           placeholder="Enter the content of the notification message."
                           required=""
-                          rows="6"
+                          rows="3"
                         >
                           some_source
                         </textarea>
@@ -841,14 +838,14 @@ Object {
                     class="euiFlexItem"
                   >
                     <div
-                      class="euiFormRow"
+                      class="euiFormRow euiFormRow--compressed"
                       id="some_html_id-row"
                     >
                       <div
                         class="euiFormRow__fieldWrapper"
                       >
                         <button
-                          class="euiButton euiButton--primary"
+                          class="euiButton euiButton--primary euiButton--small"
                           id="some_html_id"
                           type="button"
                         >
@@ -879,7 +876,7 @@ Object {
   "container": <div>
     <div>
       <div
-        class="euiFormRow"
+        class="euiFormRow euiFormRow--compressed"
         id="some_html_id-row"
       >
         <div
@@ -903,13 +900,13 @@ Object {
           class="euiFormRow__fieldWrapper"
         >
           <div
-            class="euiFormControlLayout"
+            class="euiFormControlLayout euiFormControlLayout--compressed"
           >
             <div
               class="euiFormControlLayout__childrenWrapper"
             >
               <input
-                class="euiFieldText"
+                class="euiFieldText euiFieldText--compressed"
                 data-test-subj="alert-condition-name-0"
                 id="some_html_id"
                 placeholder="Enter a name to describe the alert condition"
@@ -996,7 +993,7 @@ Object {
               class="euiAccordion__padding--l"
             >
               <div
-                class="euiFormRow"
+                class="euiFormRow euiFormRow--compressed"
                 id="some_html_id-row"
               >
                 <div
@@ -1021,18 +1018,18 @@ Object {
                   <div
                     aria-expanded="false"
                     aria-haspopup="listbox"
-                    class="euiComboBox"
+                    class="euiComboBox euiComboBox--compressed"
                     data-test-subj="alert-rulename-combo-box"
                     role="combobox"
                   >
                     <div
-                      class="euiFormControlLayout"
+                      class="euiFormControlLayout euiFormControlLayout--compressed"
                     >
                       <div
                         class="euiFormControlLayout__childrenWrapper"
                       >
                         <div
-                          class="euiComboBox__inputWrap euiComboBox__inputWrap-isClearable"
+                          class="euiComboBox__inputWrap euiComboBox__inputWrap--compressed euiComboBox__inputWrap-isClearable"
                           data-test-subj="comboBoxInput"
                           tabindex="-1"
                         >
@@ -1079,7 +1076,7 @@ Object {
                 class="euiSpacer euiSpacer--m"
               />
               <div
-                class="euiFormRow"
+                class="euiFormRow euiFormRow--compressed"
                 id="some_html_id-row"
               >
                 <div
@@ -1104,18 +1101,18 @@ Object {
                   <div
                     aria-expanded="false"
                     aria-haspopup="listbox"
-                    class="euiComboBox"
+                    class="euiComboBox euiComboBox--compressed"
                     data-test-subj="alert-severity-combo-box"
                     role="combobox"
                   >
                     <div
-                      class="euiFormControlLayout"
+                      class="euiFormControlLayout euiFormControlLayout--compressed"
                     >
                       <div
                         class="euiFormControlLayout__childrenWrapper"
                       >
                         <div
-                          class="euiComboBox__inputWrap euiComboBox__inputWrap-isClearable"
+                          class="euiComboBox__inputWrap euiComboBox__inputWrap--compressed euiComboBox__inputWrap-isClearable"
                           data-test-subj="comboBoxInput"
                           tabindex="-1"
                         >
@@ -1164,7 +1161,7 @@ Object {
                         >
                           <button
                             aria-label="Clear input"
-                            class="euiFormControlLayoutClearButton"
+                            class="euiFormControlLayoutClearButton euiFormControlLayoutClearButton--small"
                             data-test-subj="comboBoxClearButton"
                             type="button"
                           >
@@ -1188,7 +1185,7 @@ Object {
                 class="euiSpacer euiSpacer--m"
               />
               <div
-                class="euiFormRow"
+                class="euiFormRow euiFormRow--compressed"
                 id="some_html_id-row"
               >
                 <div
@@ -1213,18 +1210,18 @@ Object {
                   <div
                     aria-expanded="false"
                     aria-haspopup="listbox"
-                    class="euiComboBox"
+                    class="euiComboBox euiComboBox--compressed"
                     data-test-subj="alert-tags-combo-box"
                     role="combobox"
                   >
                     <div
-                      class="euiFormControlLayout"
+                      class="euiFormControlLayout euiFormControlLayout--compressed"
                     >
                       <div
                         class="euiFormControlLayout__childrenWrapper"
                       >
                         <div
-                          class="euiComboBox__inputWrap euiComboBox__inputWrap-isClearable"
+                          class="euiComboBox__inputWrap euiComboBox__inputWrap--compressed euiComboBox__inputWrap-isClearable"
                           data-test-subj="comboBoxInput"
                           tabindex="-1"
                         >
@@ -1273,7 +1270,7 @@ Object {
                         >
                           <button
                             aria-label="Clear input"
-                            class="euiFormControlLayoutClearButton"
+                            class="euiFormControlLayoutClearButton euiFormControlLayoutClearButton--small"
                             data-test-subj="comboBoxClearButton"
                             type="button"
                           >
@@ -1307,7 +1304,7 @@ Object {
         class="euiSpacer euiSpacer--s"
       />
       <div
-        class="euiFormRow"
+        class="euiFormRow euiFormRow--compressed"
         id="some_html_id-row"
       >
         <div
@@ -1332,18 +1329,18 @@ Object {
           <div
             aria-expanded="false"
             aria-haspopup="listbox"
-            class="euiComboBox"
+            class="euiComboBox euiComboBox--compressed"
             data-test-subj="security-levels-combo-box"
             role="combobox"
           >
             <div
-              class="euiFormControlLayout"
+              class="euiFormControlLayout euiFormControlLayout--compressed"
             >
               <div
                 class="euiFormControlLayout__childrenWrapper"
               >
                 <div
-                  class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap"
+                  class="euiComboBox__inputWrap euiComboBox__inputWrap--compressed euiComboBox__inputWrap--noWrap"
                   data-test-subj="comboBoxInput"
                   tabindex="-1"
                 >
@@ -1393,7 +1390,7 @@ Object {
         class="euiSpacer euiSpacer--l"
       />
       <div
-        class="euiSwitch euiSwitch--primary"
+        class="euiSwitch euiSwitch--primary euiSwitch--compressed"
       >
         <button
           aria-checked="true"
@@ -1411,10 +1408,7 @@ Object {
             />
             <span
               class="euiSwitch__track"
-            >
-              EuiIconMock
-              EuiIconMock
-            </span>
+            />
           </span>
         </button>
         <span
@@ -1435,7 +1429,7 @@ Object {
           style="max-width: 400px;"
         >
           <div
-            class="euiFormRow"
+            class="euiFormRow euiFormRow--compressed"
             id="some_html_id-row"
           >
             <div
@@ -1460,17 +1454,17 @@ Object {
               <div
                 aria-expanded="false"
                 aria-haspopup="listbox"
-                class="euiComboBox euiComboBox-isDisabled"
+                class="euiComboBox euiComboBox--compressed euiComboBox-isDisabled"
                 role="combobox"
               >
                 <div
-                  class="euiFormControlLayout"
+                  class="euiFormControlLayout euiFormControlLayout--compressed"
                 >
                   <div
                     class="euiFormControlLayout__childrenWrapper"
                   >
                     <div
-                      class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap"
+                      class="euiComboBox__inputWrap euiComboBox__inputWrap--compressed euiComboBox__inputWrap--noWrap"
                       data-test-subj="comboBoxInput"
                       tabindex="-1"
                     >
@@ -1520,7 +1514,7 @@ Object {
           class="euiFlexItem euiFlexItem--flexGrowZero"
         >
           <button
-            class="euiButton euiButton--primary euiButton-isDisabled"
+            class="euiButton euiButton--primary euiButton--small euiButton-isDisabled"
             disabled=""
             type="button"
           >
@@ -1630,7 +1624,7 @@ Object {
                   class="euiFlexItem"
                 >
                   <div
-                    class="euiFormRow euiFormRow--fullWidth"
+                    class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                     id="some_html_id-row"
                   >
                     <div
@@ -1653,13 +1647,13 @@ Object {
                       class="euiFormRow__fieldWrapper"
                     >
                       <div
-                        class="euiFormControlLayout euiFormControlLayout--fullWidth"
+                        class="euiFormControlLayout euiFormControlLayout--fullWidth euiFormControlLayout--compressed"
                       >
                         <div
                           class="euiFormControlLayout__childrenWrapper"
                         >
                           <input
-                            class="euiFieldText euiFieldText--fullWidth"
+                            class="euiFieldText euiFieldText--fullWidth euiFieldText--compressed"
                             id="some_html_id"
                             placeholder="Enter a subject for the notification message."
                             required=""
@@ -1675,7 +1669,7 @@ Object {
                   class="euiFlexItem"
                 >
                   <div
-                    class="euiFormRow euiFormRow--fullWidth"
+                    class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                     id="some_html_id-row"
                   >
                     <div
@@ -1698,11 +1692,11 @@ Object {
                       class="euiFormRow__fieldWrapper"
                     >
                       <textarea
-                        class="euiTextArea euiTextArea--resizeVertical euiTextArea--fullWidth"
+                        class="euiTextArea euiTextArea--resizeVertical euiTextArea--fullWidth euiTextArea--compressed"
                         id="some_html_id"
                         placeholder="Enter the content of the notification message."
                         required=""
-                        rows="6"
+                        rows="3"
                       >
                         some_source
                       </textarea>
@@ -1713,14 +1707,14 @@ Object {
                   class="euiFlexItem"
                 >
                   <div
-                    class="euiFormRow"
+                    class="euiFormRow euiFormRow--compressed"
                     id="some_html_id-row"
                   >
                     <div
                       class="euiFormRow__fieldWrapper"
                     >
                       <button
-                        class="euiButton euiButton--primary"
+                        class="euiButton euiButton--primary euiButton--small"
                         id="some_html_id"
                         type="button"
                       >

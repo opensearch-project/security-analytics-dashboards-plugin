@@ -7,13 +7,13 @@ import {
   EuiBottomBar,
   EuiButton,
   EuiButtonEmpty,
-  EuiFieldText,
+  EuiCompressedFieldText,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiSpacer,
-  EuiSuperSelect,
-  EuiTextArea,
+  EuiCompressedSuperSelect,
+  EuiCompressedTextArea,
 } from '@elastic/eui';
 import { LogTypeItem } from '../../../../types';
 import React from 'react';
@@ -70,7 +70,7 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
 
   return (
     <>
-      <EuiFormRow
+      <EuiCompressedFormRow
         label="Name"
         helpText={
           isEditMode &&
@@ -79,7 +79,7 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
         isInvalid={!!nameError}
         error={nameError}
       >
-        <EuiFieldText
+        <EuiCompressedFieldText
           value={logTypeDetails?.name}
           onChange={(e) => {
             const newLogType = {
@@ -92,9 +92,9 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
           readOnly={!isEditMode}
           disabled={isEditMode && !!logTypeDetails.detectionRulesCount}
         />
-      </EuiFormRow>
+      </EuiCompressedFormRow>
       <EuiSpacer />
-      <EuiFormRow
+      <EuiCompressedFormRow
         label={
           <>
             {'Description - '}
@@ -102,7 +102,7 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
           </>
         }
       >
-        <EuiTextArea
+        <EuiCompressedTextArea
           value={logTypeDetails?.description}
           onChange={(e) => {
             const newLogType = {
@@ -115,10 +115,10 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
           placeholder="Description of the log type"
           readOnly={!isEditMode}
         />
-      </EuiFormRow>
+      </EuiCompressedFormRow>
       <EuiSpacer />
-      <EuiFormRow label="Category" isInvalid={!!categoryError} error={categoryError}>
-        <EuiSuperSelect
+      <EuiCompressedFormRow label="Category" isInvalid={!!categoryError} error={categoryError}>
+        <EuiCompressedSuperSelect
           options={getLogTypeCategoryOptions().map((option) => ({
             ...option,
             disabled: !isEditMode || (isEditMode && !!logTypeDetails.detectionRulesCount),
@@ -135,8 +135,8 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
           }}
           hasDividers
           itemLayoutAlign="top"
-        ></EuiSuperSelect>
-      </EuiFormRow>
+        ></EuiCompressedSuperSelect>
+      </EuiCompressedFormRow>
       {isEditMode ? (
         <EuiBottomBar>
           <EuiFlexGroup gutterSize="s" justifyContent="flexEnd">

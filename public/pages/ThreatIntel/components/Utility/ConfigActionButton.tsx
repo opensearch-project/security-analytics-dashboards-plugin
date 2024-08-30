@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiButton } from '@elastic/eui';
+import { EuiSmallButton } from '@elastic/eui';
 import React from 'react';
 
 export interface ConfigActionButtonProps {
@@ -31,8 +31,8 @@ export const ConfigActionButton: React.FC<ConfigActionButtonProps> = ({
   }
 
   return buttonText ? (
-    <EuiButton onClick={actionHandler} disabled={disabled}>
+    <EuiSmallButton onClick={actionHandler} disabled={disabled}>
       {buttonText}
-    </EuiButton>
+    </EuiSmallButton>
   ) : null;
 };

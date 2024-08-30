@@ -4,7 +4,7 @@
  */
 
 import {
-  EuiButtonEmpty,
+  EuiSmallButtonEmpty,
   EuiFlexGrid,
   EuiFlexGroup,
   EuiFlexItem,
@@ -12,7 +12,7 @@ import {
   EuiSuperDatePicker,
   EuiTitle,
   EuiSpacer,
-  EuiButton,
+  EuiSmallButton,
 } from '@elastic/eui';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import {
@@ -180,9 +180,9 @@ export const Overview: React.FC<OverviewProps> = (props) => {
   };
 
   const button = (
-    <EuiButtonEmpty iconType="cheer" onClick={onButtonClick}>
+    <EuiSmallButtonEmpty iconType="cheer" onClick={onButtonClick}>
       Getting started
-    </EuiButtonEmpty>
+    </EuiSmallButtonEmpty>
   );
 
   const datePicker = (
@@ -203,13 +203,13 @@ export const Overview: React.FC<OverviewProps> = (props) => {
   );
 
   const createDetectorAction = (
-    <EuiButton
+    <EuiSmallButton
       href={`#${ROUTES.DETECTORS_CREATE}`}
       fill={true}
       data-test-subj={'detectorsCreateButton'}
     >
       Create detector
-    </EuiButton>
+    </EuiSmallButton>
   );
 
   const gettingStartedBadgeControl = (

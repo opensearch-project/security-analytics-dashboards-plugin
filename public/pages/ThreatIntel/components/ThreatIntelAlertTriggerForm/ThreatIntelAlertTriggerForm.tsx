@@ -5,11 +5,11 @@
 
 import {
   EuiAccordion,
-  EuiButtonIcon,
-  EuiComboBox,
+  EuiSmallButtonIcon,
+  EuiCompressedComboBox,
   EuiComboBoxOptionOption,
-  EuiFieldText,
-  EuiFormRow,
+  EuiCompressedFieldText,
+  EuiCompressedFormRow,
   EuiSpacer,
 } from '@elastic/eui';
 import { NotificationChannelTypeOptions, ThreatIntelAlertTrigger } from '../../../../../types';
@@ -97,11 +97,11 @@ export const ThreatIntelAlertTriggerForm: React.FC<ThreatIntelAlertTriggerProps>
       id="threat-intel-trigger"
       initialIsOpen={true}
       buttonContent={trigger.name}
-      extraAction={<EuiButtonIcon iconType={'trash'} onClick={onDeleteTrgger} />}
+      extraAction={<EuiSmallButtonIcon iconType={'trash'} onClick={onDeleteTrgger} />}
       paddingSize="l"
     >
-      <EuiFormRow>
-        <EuiFieldText
+      <EuiCompressedFormRow>
+        <EuiCompressedFieldText
           placeholder="Trigger name"
           value={trigger.name}
           onChange={(event) => {
@@ -111,7 +111,7 @@ export const ThreatIntelAlertTriggerForm: React.FC<ThreatIntelAlertTriggerProps>
             });
           }}
         />
-      </EuiFormRow>
+      </EuiCompressedFormRow>
       <EuiSpacer />
       <EuiAccordion
         id={'threat-intel-trigger-condition'}
@@ -119,8 +119,8 @@ export const ThreatIntelAlertTriggerForm: React.FC<ThreatIntelAlertTriggerProps>
         initialIsOpen={true}
         paddingSize="l"
       >
-        <EuiFormRow label="Indicator type(s)">
-          <EuiComboBox
+        <EuiCompressedFormRow label="Indicator type(s)">
+          <EuiCompressedComboBox
             placeholder="Any"
             options={enabledIocTypes.map((ioc) => ({ label: ioc }))}
             selectedOptions={trigger.ioc_types.map((iocType) => ({ label: iocType }))}
@@ -131,10 +131,10 @@ export const ThreatIntelAlertTriggerForm: React.FC<ThreatIntelAlertTriggerProps>
               });
             }}
           />
-        </EuiFormRow>
+        </EuiCompressedFormRow>
         <EuiSpacer />
-        <EuiFormRow label="Log source(s)">
-          <EuiComboBox
+        <EuiCompressedFormRow label="Log source(s)">
+          <EuiCompressedComboBox
             placeholder="Any"
             options={logSources.map((logSource) => ({ label: logSource }))}
             selectedOptions={trigger.data_sources.map((source) => ({ label: source }))}
@@ -145,11 +145,11 @@ export const ThreatIntelAlertTriggerForm: React.FC<ThreatIntelAlertTriggerProps>
               });
             }}
           />
-        </EuiFormRow>
+        </EuiCompressedFormRow>
       </EuiAccordion>
       <EuiSpacer />
-      <EuiFormRow label="Alert severity">
-        <EuiComboBox
+      <EuiCompressedFormRow label="Alert severity">
+        <EuiCompressedComboBox
           singleSelection
           options={Object.values(ALERT_SEVERITY_OPTIONS)}
           selectedOptions={[
@@ -163,7 +163,7 @@ export const ThreatIntelAlertTriggerForm: React.FC<ThreatIntelAlertTriggerProps>
             });
           }}
         />
-      </EuiFormRow>
+      </EuiCompressedFormRow>
       <EuiSpacer />
       <NotificationForm
         action={trigger.actions[0]}

@@ -255,7 +255,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
           "renderComponent": <EuiPopover
             anchorPosition="downLeft"
             button={
-              <EuiButton
+              <EuiSmallButton
                 data-test-subj="detectorsActionsButton"
                 iconSide="right"
                 iconType="arrowDown"
@@ -263,7 +263,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                 onClick={[Function]}
               >
                 Actions
-              </EuiButton>
+              </EuiSmallButton>
             }
             closePopover={[Function]}
             data-test-subj="detectorsActionsPopover"
@@ -428,7 +428,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     <EuiPopover
                       anchorPosition="downLeft"
                       button={
-                        <EuiButton
+                        <EuiSmallButton
                           data-test-subj="detectorsActionsButton"
                           iconSide="right"
                           iconType="arrowDown"
@@ -436,7 +436,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                           onClick={[Function]}
                         >
                           Actions
-                        </EuiButton>
+                        </EuiSmallButton>
                       }
                       closePopover={[Function]}
                       data-test-subj="detectorsActionsPopover"
@@ -455,69 +455,79 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         <div
                           className="euiPopover__anchor"
                         >
-                          <EuiButton
+                          <EuiSmallButton
                             data-test-subj="detectorsActionsButton"
                             iconSide="right"
                             iconType="arrowDown"
                             isLoading={false}
                             onClick={[Function]}
                           >
-                            <EuiButtonDisplay
-                              baseClassName="euiButton"
+                            <EuiButton
                               data-test-subj="detectorsActionsButton"
-                              disabled={false}
-                              element="button"
                               iconSide="right"
                               iconType="arrowDown"
-                              isDisabled={false}
                               isLoading={false}
                               onClick={[Function]}
-                              type="button"
+                              size="s"
                             >
-                              <button
-                                className="euiButton euiButton--primary"
+                              <EuiButtonDisplay
+                                baseClassName="euiButton"
                                 data-test-subj="detectorsActionsButton"
                                 disabled={false}
+                                element="button"
+                                iconSide="right"
+                                iconType="arrowDown"
+                                isDisabled={false}
+                                isLoading={false}
                                 onClick={[Function]}
-                                style={
-                                  Object {
-                                    "minWidth": undefined,
-                                  }
-                                }
+                                size="s"
                                 type="button"
                               >
-                                <EuiButtonContent
-                                  className="euiButton__content"
-                                  iconSide="right"
-                                  iconType="arrowDown"
-                                  isLoading={false}
-                                  textProps={
+                                <button
+                                  className="euiButton euiButton--primary euiButton--small"
+                                  data-test-subj="detectorsActionsButton"
+                                  disabled={false}
+                                  onClick={[Function]}
+                                  style={
                                     Object {
-                                      "className": "euiButton__text",
+                                      "minWidth": undefined,
                                     }
                                   }
+                                  type="button"
                                 >
-                                  <span
-                                    className="euiButtonContent euiButtonContent--iconRight euiButton__content"
+                                  <EuiButtonContent
+                                    className="euiButton__content"
+                                    iconSide="right"
+                                    iconType="arrowDown"
+                                    isLoading={false}
+                                    textProps={
+                                      Object {
+                                        "className": "euiButton__text",
+                                      }
+                                    }
                                   >
-                                    <EuiIcon
-                                      className="euiButtonContent__icon"
-                                      color="inherit"
-                                      size="m"
-                                      type="arrowDown"
-                                    >
-                                      EuiIconMock
-                                    </EuiIcon>
                                     <span
-                                      className="euiButton__text"
+                                      className="euiButtonContent euiButtonContent--iconRight euiButton__content"
                                     >
-                                      Actions
+                                      <EuiIcon
+                                        className="euiButtonContent__icon"
+                                        color="inherit"
+                                        size="m"
+                                        type="arrowDown"
+                                      >
+                                        EuiIconMock
+                                      </EuiIcon>
+                                      <span
+                                        className="euiButton__text"
+                                      >
+                                        Actions
+                                      </span>
                                     </span>
-                                  </span>
-                                </EuiButtonContent>
-                              </button>
-                            </EuiButtonDisplay>
-                          </EuiButton>
+                                  </EuiButtonContent>
+                                </button>
+                              </EuiButtonDisplay>
+                            </EuiButton>
+                          </EuiSmallButton>
                         </div>
                       </div>
                     </EuiPopover>
@@ -1465,12 +1475,12 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
       <ContentPanel
         actions={
           Array [
-            <EuiButton
+            <EuiSmallButton
               data-test-subj="edit-detector-basic-details"
               onClick={[Function]}
             >
               Edit
-            </EuiButton>,
+            </EuiSmallButton>,
           ]
         }
         title="Detector details"
@@ -1544,53 +1554,60 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                           <div
                             className="euiFlexItem"
                           >
-                            <EuiButton
+                            <EuiSmallButton
                               data-test-subj="edit-detector-basic-details"
                               onClick={[Function]}
                             >
-                              <EuiButtonDisplay
-                                baseClassName="euiButton"
+                              <EuiButton
                                 data-test-subj="edit-detector-basic-details"
-                                disabled={false}
-                                element="button"
-                                isDisabled={false}
                                 onClick={[Function]}
-                                type="button"
+                                size="s"
                               >
-                                <button
-                                  className="euiButton euiButton--primary"
+                                <EuiButtonDisplay
+                                  baseClassName="euiButton"
                                   data-test-subj="edit-detector-basic-details"
                                   disabled={false}
+                                  element="button"
+                                  isDisabled={false}
                                   onClick={[Function]}
-                                  style={
-                                    Object {
-                                      "minWidth": undefined,
-                                    }
-                                  }
+                                  size="s"
                                   type="button"
                                 >
-                                  <EuiButtonContent
-                                    className="euiButton__content"
-                                    iconSide="left"
-                                    textProps={
+                                  <button
+                                    className="euiButton euiButton--primary euiButton--small"
+                                    data-test-subj="edit-detector-basic-details"
+                                    disabled={false}
+                                    onClick={[Function]}
+                                    style={
                                       Object {
-                                        "className": "euiButton__text",
+                                        "minWidth": undefined,
                                       }
                                     }
+                                    type="button"
                                   >
-                                    <span
-                                      className="euiButtonContent euiButton__content"
+                                    <EuiButtonContent
+                                      className="euiButton__content"
+                                      iconSide="left"
+                                      textProps={
+                                        Object {
+                                          "className": "euiButton__text",
+                                        }
+                                      }
                                     >
                                       <span
-                                        className="euiButton__text"
+                                        className="euiButtonContent euiButton__content"
                                       >
-                                        Edit
+                                        <span
+                                          className="euiButton__text"
+                                        >
+                                          Edit
+                                        </span>
                                       </span>
-                                    </span>
-                                  </EuiButtonContent>
-                                </button>
-                              </EuiButtonDisplay>
-                            </EuiButton>
+                                    </EuiButtonContent>
+                                  </button>
+                                </EuiButtonDisplay>
+                              </EuiButton>
+                            </EuiSmallButton>
                           </div>
                         </EuiFlexItem>
                       </div>
@@ -1633,9 +1650,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     <div
                       className="euiFlexItem"
                     >
-                      <EuiFormRow
+                      <EuiCompressedFormRow
                         describedByIds={Array []}
-                        display="row"
+                        display="rowCompressed"
                         fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
@@ -1643,7 +1660,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         labelType="label"
                       >
                         <div
-                          className="euiFormRow euiFormRow--fullWidth"
+                          className="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                           id="some_html_id-row"
                         >
                           <div
@@ -1684,7 +1701,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             </EuiText>
                           </div>
                         </div>
-                      </EuiFormRow>
+                      </EuiCompressedFormRow>
                     </div>
                   </EuiFlexItem>
                   <EuiFlexItem
@@ -1694,9 +1711,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     <div
                       className="euiFlexItem"
                     >
-                      <EuiFormRow
+                      <EuiCompressedFormRow
                         describedByIds={Array []}
-                        display="row"
+                        display="rowCompressed"
                         fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
@@ -1704,7 +1721,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         labelType="label"
                       >
                         <div
-                          className="euiFormRow euiFormRow--fullWidth"
+                          className="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                           id="some_html_id-row"
                         >
                           <div
@@ -1745,7 +1762,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             </EuiText>
                           </div>
                         </div>
-                      </EuiFormRow>
+                      </EuiCompressedFormRow>
                     </div>
                   </EuiFlexItem>
                   <EuiFlexItem
@@ -1755,9 +1772,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     <div
                       className="euiFlexItem"
                     >
-                      <EuiFormRow
+                      <EuiCompressedFormRow
                         describedByIds={Array []}
-                        display="row"
+                        display="rowCompressed"
                         fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
@@ -1765,7 +1782,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         labelType="label"
                       >
                         <div
-                          className="euiFormRow euiFormRow--fullWidth"
+                          className="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                           id="some_html_id-row"
                         >
                           <div
@@ -1806,7 +1823,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             </EuiText>
                           </div>
                         </div>
-                      </EuiFormRow>
+                      </EuiCompressedFormRow>
                     </div>
                   </EuiFlexItem>
                 </div>
@@ -1831,9 +1848,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     <div
                       className="euiFlexItem"
                     >
-                      <EuiFormRow
+                      <EuiCompressedFormRow
                         describedByIds={Array []}
-                        display="row"
+                        display="rowCompressed"
                         fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
@@ -1841,7 +1858,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         labelType="label"
                       >
                         <div
-                          className="euiFormRow euiFormRow--fullWidth"
+                          className="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                           id="some_html_id-row"
                         >
                           <div
@@ -1890,7 +1907,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             </EuiText>
                           </div>
                         </div>
-                      </EuiFormRow>
+                      </EuiCompressedFormRow>
                     </div>
                   </EuiFlexItem>
                   <EuiFlexItem
@@ -1900,9 +1917,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     <div
                       className="euiFlexItem"
                     >
-                      <EuiFormRow
+                      <EuiCompressedFormRow
                         describedByIds={Array []}
-                        display="row"
+                        display="rowCompressed"
                         fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
@@ -1910,7 +1927,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         labelType="label"
                       >
                         <div
-                          className="euiFormRow euiFormRow--fullWidth"
+                          className="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                           id="some_html_id-row"
                         >
                           <div
@@ -1951,7 +1968,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             </EuiText>
                           </div>
                         </div>
-                      </EuiFormRow>
+                      </EuiCompressedFormRow>
                     </div>
                   </EuiFlexItem>
                   <EuiFlexItem
@@ -1961,9 +1978,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     <div
                       className="euiFlexItem"
                     >
-                      <EuiFormRow
+                      <EuiCompressedFormRow
                         describedByIds={Array []}
-                        display="row"
+                        display="rowCompressed"
                         fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
@@ -1971,7 +1988,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         labelType="label"
                       >
                         <div
-                          className="euiFormRow euiFormRow--fullWidth"
+                          className="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                           id="some_html_id-row"
                         >
                           <div
@@ -2012,7 +2029,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             </EuiText>
                           </div>
                         </div>
-                      </EuiFormRow>
+                      </EuiCompressedFormRow>
                     </div>
                   </EuiFlexItem>
                 </div>
@@ -2037,9 +2054,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     <div
                       className="euiFlexItem"
                     >
-                      <EuiFormRow
+                      <EuiCompressedFormRow
                         describedByIds={Array []}
-                        display="row"
+                        display="rowCompressed"
                         fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
@@ -2047,7 +2064,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         labelType="label"
                       >
                         <div
-                          className="euiFormRow euiFormRow--fullWidth"
+                          className="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                           id="some_html_id-row"
                         >
                           <div
@@ -2088,7 +2105,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             </EuiText>
                           </div>
                         </div>
-                      </EuiFormRow>
+                      </EuiCompressedFormRow>
                     </div>
                   </EuiFlexItem>
                   <EuiFlexItem
@@ -2098,9 +2115,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     <div
                       className="euiFlexItem"
                     >
-                      <EuiFormRow
+                      <EuiCompressedFormRow
                         describedByIds={Array []}
-                        display="row"
+                        display="rowCompressed"
                         fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
@@ -2108,7 +2125,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         labelType="label"
                       >
                         <div
-                          className="euiFormRow euiFormRow--fullWidth"
+                          className="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                           id="some_html_id-row"
                         >
                           <div
@@ -2149,7 +2166,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             </EuiText>
                           </div>
                         </div>
-                      </EuiFormRow>
+                      </EuiCompressedFormRow>
                     </div>
                   </EuiFlexItem>
                   <EuiFlexItem
@@ -2159,9 +2176,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     <div
                       className="euiFlexItem"
                     >
-                      <EuiFormRow
+                      <EuiCompressedFormRow
                         describedByIds={Array []}
-                        display="row"
+                        display="rowCompressed"
                         fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
@@ -2169,7 +2186,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         labelType="label"
                       >
                         <div
-                          className="euiFormRow euiFormRow--fullWidth"
+                          className="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                           id="some_html_id-row"
                         >
                           <div
@@ -2210,7 +2227,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             </EuiText>
                           </div>
                         </div>
-                      </EuiFormRow>
+                      </EuiCompressedFormRow>
                     </div>
                   </EuiFlexItem>
                 </div>
@@ -2222,9 +2239,9 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                   className="euiSpacer euiSpacer--l"
                 />
               </EuiSpacer>
-              <EuiFormRow
+              <EuiCompressedFormRow
                 describedByIds={Array []}
-                display="row"
+                display="rowCompressed"
                 fullWidth={true}
                 hasChildLabel={true}
                 hasEmptyLabelSpace={false}
@@ -2232,7 +2249,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                 labelType="label"
               >
                 <div
-                  className="euiFormRow euiFormRow--fullWidth"
+                  className="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                   id="some_html_id-row"
                 >
                   <div
@@ -2273,7 +2290,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     </EuiText>
                   </div>
                 </div>
-              </EuiFormRow>
+              </EuiCompressedFormRow>
               <EuiSpacer
                 size="l"
               >
@@ -2729,12 +2746,12 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
       <ContentPanel
         actions={
           Array [
-            <EuiButton
+            <EuiSmallButton
               data-test-subj="edit-detector-rules"
               onClick={[Function]}
             >
               Edit
-            </EuiButton>,
+            </EuiSmallButton>,
           ]
         }
         title="Active rules (2)"
@@ -2808,53 +2825,60 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                           <div
                             className="euiFlexItem"
                           >
-                            <EuiButton
+                            <EuiSmallButton
                               data-test-subj="edit-detector-rules"
                               onClick={[Function]}
                             >
-                              <EuiButtonDisplay
-                                baseClassName="euiButton"
+                              <EuiButton
                                 data-test-subj="edit-detector-rules"
-                                disabled={false}
-                                element="button"
-                                isDisabled={false}
                                 onClick={[Function]}
-                                type="button"
+                                size="s"
                               >
-                                <button
-                                  className="euiButton euiButton--primary"
+                                <EuiButtonDisplay
+                                  baseClassName="euiButton"
                                   data-test-subj="edit-detector-rules"
                                   disabled={false}
+                                  element="button"
+                                  isDisabled={false}
                                   onClick={[Function]}
-                                  style={
-                                    Object {
-                                      "minWidth": undefined,
-                                    }
-                                  }
+                                  size="s"
                                   type="button"
                                 >
-                                  <EuiButtonContent
-                                    className="euiButton__content"
-                                    iconSide="left"
-                                    textProps={
+                                  <button
+                                    className="euiButton euiButton--primary euiButton--small"
+                                    data-test-subj="edit-detector-rules"
+                                    disabled={false}
+                                    onClick={[Function]}
+                                    style={
                                       Object {
-                                        "className": "euiButton__text",
+                                        "minWidth": undefined,
                                       }
                                     }
+                                    type="button"
                                   >
-                                    <span
-                                      className="euiButtonContent euiButton__content"
+                                    <EuiButtonContent
+                                      className="euiButton__content"
+                                      iconSide="left"
+                                      textProps={
+                                        Object {
+                                          "className": "euiButton__text",
+                                        }
+                                      }
                                     >
                                       <span
-                                        className="euiButton__text"
+                                        className="euiButtonContent euiButton__content"
                                       >
-                                        Edit
+                                        <span
+                                          className="euiButton__text"
+                                        >
+                                          Edit
+                                        </span>
                                       </span>
-                                    </span>
-                                  </EuiButtonContent>
-                                </button>
-                              </EuiButtonDisplay>
-                            </EuiButton>
+                                    </EuiButtonContent>
+                                  </button>
+                                </EuiButtonDisplay>
+                              </EuiButton>
+                            </EuiSmallButton>
                           </div>
                         </EuiFlexItem>
                       </div>
@@ -3340,6 +3364,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                     <FieldValueSelectionFilter
                                       config={
                                         Object {
+                                          "compressed": undefined,
                                           "field": "category",
                                           "multiSelect": "or",
                                           "name": "Log type",
@@ -3469,6 +3494,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                     <FieldValueSelectionFilter
                                       config={
                                         Object {
+                                          "compressed": undefined,
                                           "field": "level",
                                           "multiSelect": "or",
                                           "name": "Rule severity",
@@ -3644,6 +3670,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                     <FieldValueSelectionFilter
                                       config={
                                         Object {
+                                          "compressed": undefined,
                                           "field": "source",
                                           "multiSelect": "or",
                                           "name": "Source",

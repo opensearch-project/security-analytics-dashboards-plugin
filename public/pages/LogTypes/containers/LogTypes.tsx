@@ -5,7 +5,7 @@
 
 import React, { useEffect, useState } from 'react';
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiFlexGroup,
   EuiFlexItem,
   EuiInMemoryTable,
@@ -69,9 +69,9 @@ export const LogTypes: React.FC<LogTypesProps> = ({ history, notifications, data
   };
 
   const createLogTypeAction = (
-    <EuiButton fill={true} onClick={() => history.push(ROUTES.LOG_TYPES_CREATE)}>
+    <EuiSmallButton fill={true} onClick={() => history.push(ROUTES.LOG_TYPES_CREATE)}>
       Create log type
-    </EuiButton>
+    </EuiSmallButton>
   );
 
   return (

@@ -21,20 +21,20 @@ Object {
                 class="euiFlexItem"
               >
                 <div
-                  class="euiFormRow"
+                  class="euiFormRow euiFormRow--compressed"
                   id="some_html_id-row"
                 >
                   <div
                     class="euiFormRow__fieldWrapper"
                   >
                     <div
-                      class="euiFormControlLayout"
+                      class="euiFormControlLayout euiFormControlLayout--compressed"
                     >
                       <div
                         class="euiFormControlLayout__childrenWrapper"
                       >
                         <input
-                          class="euiFieldText detection-visual-editor-name euiTitle--small"
+                          class="euiFieldText detection-visual-editor-name euiTitle--small euiFieldText--compressed"
                           data-test-subj="selection_name"
                           id="some_html_id"
                           placeholder="Enter selection name"
@@ -114,7 +114,7 @@ Object {
                           style="min-width: 200px;"
                         >
                           <div
-                            class="euiFormRow"
+                            class="euiFormRow euiFormRow--compressed"
                             id="some_html_id-row"
                           >
                             <div
@@ -135,13 +135,13 @@ Object {
                               class="euiFormRow__fieldWrapper"
                             >
                               <div
-                                class="euiFormControlLayout"
+                                class="euiFormControlLayout euiFormControlLayout--compressed"
                               >
                                 <div
                                   class="euiFormControlLayout__childrenWrapper"
                                 >
                                   <input
-                                    class="euiFieldText"
+                                    class="euiFieldText euiFieldText--compressed"
                                     data-test-subj="selection_field_key_name"
                                     id="some_html_id"
                                     placeholder="Enter key name"
@@ -158,7 +158,7 @@ Object {
                           style="min-width: 200px;"
                         >
                           <div
-                            class="euiFormRow"
+                            class="euiFormRow euiFormRow--compressed"
                             id="some_html_id-row"
                           >
                             <div
@@ -181,18 +181,18 @@ Object {
                               <div
                                 aria-expanded="false"
                                 aria-haspopup="listbox"
-                                class="euiComboBox"
+                                class="euiComboBox euiComboBox--compressed"
                                 data-test-subj="modifier_dropdown"
                                 role="combobox"
                               >
                                 <div
-                                  class="euiFormControlLayout"
+                                  class="euiFormControlLayout euiFormControlLayout--compressed"
                                 >
                                   <div
                                     class="euiFormControlLayout__childrenWrapper"
                                   >
                                     <div
-                                      class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isClearable"
+                                      class="euiComboBox__inputWrap euiComboBox__inputWrap--compressed euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isClearable"
                                       data-test-subj="comboBoxInput"
                                       tabindex="-1"
                                     >
@@ -224,7 +224,7 @@ Object {
                                     >
                                       <button
                                         aria-label="Clear input"
-                                        class="euiFormControlLayoutClearButton"
+                                        class="euiFormControlLayoutClearButton euiFormControlLayoutClearButton--small"
                                         data-test-subj="comboBoxClearButton"
                                         type="button"
                                       >
@@ -251,7 +251,7 @@ Object {
                       />
                       <div>
                         <div
-                          class="euiRadio euiRadioGroup__item"
+                          class="euiRadio euiRadio--compressed euiRadioGroup__item"
                         >
                           <input
                             checked=""
@@ -271,7 +271,7 @@ Object {
                           </label>
                         </div>
                         <div
-                          class="euiRadio euiRadioGroup__item"
+                          class="euiRadio euiRadio--compressed euiRadioGroup__item"
                         >
                           <input
                             class="euiRadio__input"
@@ -294,20 +294,20 @@ Object {
                         class="euiSpacer euiSpacer--m"
                       />
                       <div
-                        class="euiFormRow"
+                        class="euiFormRow euiFormRow--compressed"
                         id="some_html_id-row"
                       >
                         <div
                           class="euiFormRow__fieldWrapper"
                         >
                           <div
-                            class="euiFormControlLayout"
+                            class="euiFormControlLayout euiFormControlLayout--compressed"
                           >
                             <div
                               class="euiFormControlLayout__childrenWrapper"
                             >
                               <input
-                                class="euiFieldText"
+                                class="euiFieldText euiFieldText--compressed"
                                 data-test-subj="selection_field_value"
                                 id="some_html_id"
                                 placeholder="Value"
@@ -330,7 +330,7 @@ Object {
               class="euiSpacer euiSpacer--m"
             />
             <button
-              class="euiButton euiButton--primary euiButton-isDisabled"
+              class="euiButton euiButton--primary euiButton--small euiButton-isDisabled"
               disabled=""
               style="width: 70%;"
               type="button"
@@ -352,7 +352,7 @@ Object {
           class="euiSpacer euiSpacer--m"
         />
         <button
-          class="euiButton euiButton--primary euiButton--fullWidth"
+          class="euiButton euiButton--primary euiButton--small euiButton--fullWidth"
           type="button"
         >
           <span
@@ -370,7 +370,7 @@ Object {
           class="euiSpacer euiSpacer--l"
         />
         <div
-          class="euiFormRow"
+          class="euiFormRow euiFormRow--compressed"
           id="some_html_id-row"
           style="max-width: 100%;"
         >
@@ -392,7 +392,7 @@ Object {
                 Define how each selection should be included in the final query. For more options use
                  
                 <button
-                  class="euiButtonEmpty euiButtonEmpty--primary empty-text-button"
+                  class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--small empty-text-button"
                   type="button"
                 >
                   <span
@@ -549,20 +549,20 @@ Object {
               class="euiFlexItem"
             >
               <div
-                class="euiFormRow"
+                class="euiFormRow euiFormRow--compressed"
                 id="some_html_id-row"
               >
                 <div
                   class="euiFormRow__fieldWrapper"
                 >
                   <div
-                    class="euiFormControlLayout"
+                    class="euiFormControlLayout euiFormControlLayout--compressed"
                   >
                     <div
                       class="euiFormControlLayout__childrenWrapper"
                     >
                       <input
-                        class="euiFieldText detection-visual-editor-name euiTitle--small"
+                        class="euiFieldText detection-visual-editor-name euiTitle--small euiFieldText--compressed"
                         data-test-subj="selection_name"
                         id="some_html_id"
                         placeholder="Enter selection name"
@@ -642,7 +642,7 @@ Object {
                         style="min-width: 200px;"
                       >
                         <div
-                          class="euiFormRow"
+                          class="euiFormRow euiFormRow--compressed"
                           id="some_html_id-row"
                         >
                           <div
@@ -663,13 +663,13 @@ Object {
                             class="euiFormRow__fieldWrapper"
                           >
                             <div
-                              class="euiFormControlLayout"
+                              class="euiFormControlLayout euiFormControlLayout--compressed"
                             >
                               <div
                                 class="euiFormControlLayout__childrenWrapper"
                               >
                                 <input
-                                  class="euiFieldText"
+                                  class="euiFieldText euiFieldText--compressed"
                                   data-test-subj="selection_field_key_name"
                                   id="some_html_id"
                                   placeholder="Enter key name"
@@ -686,7 +686,7 @@ Object {
                         style="min-width: 200px;"
                       >
                         <div
-                          class="euiFormRow"
+                          class="euiFormRow euiFormRow--compressed"
                           id="some_html_id-row"
                         >
                           <div
@@ -709,18 +709,18 @@ Object {
                             <div
                               aria-expanded="false"
                               aria-haspopup="listbox"
-                              class="euiComboBox"
+                              class="euiComboBox euiComboBox--compressed"
                               data-test-subj="modifier_dropdown"
                               role="combobox"
                             >
                               <div
-                                class="euiFormControlLayout"
+                                class="euiFormControlLayout euiFormControlLayout--compressed"
                               >
                                 <div
                                   class="euiFormControlLayout__childrenWrapper"
                                 >
                                   <div
-                                    class="euiComboBox__inputWrap euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isClearable"
+                                    class="euiComboBox__inputWrap euiComboBox__inputWrap--compressed euiComboBox__inputWrap--noWrap euiComboBox__inputWrap-isClearable"
                                     data-test-subj="comboBoxInput"
                                     tabindex="-1"
                                   >
@@ -752,7 +752,7 @@ Object {
                                   >
                                     <button
                                       aria-label="Clear input"
-                                      class="euiFormControlLayoutClearButton"
+                                      class="euiFormControlLayoutClearButton euiFormControlLayoutClearButton--small"
                                       data-test-subj="comboBoxClearButton"
                                       type="button"
                                     >
@@ -779,7 +779,7 @@ Object {
                     />
                     <div>
                       <div
-                        class="euiRadio euiRadioGroup__item"
+                        class="euiRadio euiRadio--compressed euiRadioGroup__item"
                       >
                         <input
                           checked=""
@@ -799,7 +799,7 @@ Object {
                         </label>
                       </div>
                       <div
-                        class="euiRadio euiRadioGroup__item"
+                        class="euiRadio euiRadio--compressed euiRadioGroup__item"
                       >
                         <input
                           class="euiRadio__input"
@@ -822,20 +822,20 @@ Object {
                       class="euiSpacer euiSpacer--m"
                     />
                     <div
-                      class="euiFormRow"
+                      class="euiFormRow euiFormRow--compressed"
                       id="some_html_id-row"
                     >
                       <div
                         class="euiFormRow__fieldWrapper"
                       >
                         <div
-                          class="euiFormControlLayout"
+                          class="euiFormControlLayout euiFormControlLayout--compressed"
                         >
                           <div
                             class="euiFormControlLayout__childrenWrapper"
                           >
                             <input
-                              class="euiFieldText"
+                              class="euiFieldText euiFieldText--compressed"
                               data-test-subj="selection_field_value"
                               id="some_html_id"
                               placeholder="Value"
@@ -858,7 +858,7 @@ Object {
             class="euiSpacer euiSpacer--m"
           />
           <button
-            class="euiButton euiButton--primary euiButton-isDisabled"
+            class="euiButton euiButton--primary euiButton--small euiButton-isDisabled"
             disabled=""
             style="width: 70%;"
             type="button"
@@ -880,7 +880,7 @@ Object {
         class="euiSpacer euiSpacer--m"
       />
       <button
-        class="euiButton euiButton--primary euiButton--fullWidth"
+        class="euiButton euiButton--primary euiButton--small euiButton--fullWidth"
         type="button"
       >
         <span
@@ -898,7 +898,7 @@ Object {
         class="euiSpacer euiSpacer--l"
       />
       <div
-        class="euiFormRow"
+        class="euiFormRow euiFormRow--compressed"
         id="some_html_id-row"
         style="max-width: 100%;"
       >
@@ -920,7 +920,7 @@ Object {
               Define how each selection should be included in the final query. For more options use
                
               <button
-                class="euiButtonEmpty euiButtonEmpty--primary empty-text-button"
+                class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--small empty-text-button"
                 type="button"
               >
                 <span

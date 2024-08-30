@@ -9,12 +9,12 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import {
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFormRow,
-  EuiFieldText,
-  EuiButton,
+  EuiCompressedFormRow,
+  EuiCompressedFieldText,
+  EuiSmallButton,
   EuiSpacer,
   EuiAccordion,
-  EuiComboBox,
+  EuiCompressedComboBox,
   EuiButtonGroup,
   EuiText,
   EuiTitle,
@@ -269,7 +269,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
                   <EuiSpacer />
 
-                  <EuiFormRow
+                  <EuiCompressedFormRow
                     label={
                       <EuiText size={'s'}>
                         <strong>Rule name</strong>
@@ -279,7 +279,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     error={props.errors.name}
                     helpText={detectionRuleNameError}
                   >
-                    <EuiFieldText
+                    <EuiCompressedFieldText
                       isInvalid={(validateOnMount || props.touched.name) && !!props.errors?.name}
                       placeholder="My custom rule"
                       data-test-subj={'rule_name_field'}
@@ -289,11 +289,11 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                       onBlur={props.handleBlur('name')}
                       value={props.values.name}
                     />
-                  </EuiFormRow>
+                  </EuiCompressedFormRow>
 
                   <EuiSpacer size={'m'} />
 
-                  <EuiFormRow
+                  <EuiCompressedFormRow
                     label={
                       <EuiText size={'s'}>
                         <strong>Description </strong>
@@ -305,7 +305,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     }
                     error={props.errors.description}
                   >
-                    <EuiFieldText
+                    <EuiCompressedFieldText
                       data-test-subj={'rule_description_field'}
                       onChange={(e) => {
                         props.handleChange('description')(e.target.value);
@@ -314,11 +314,11 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                       value={props.values.description}
                       placeholder={'Detects ...'}
                     />
-                  </EuiFormRow>
+                  </EuiCompressedFormRow>
 
                   <EuiSpacer size={'m'} />
 
-                  <EuiFormRow
+                  <EuiCompressedFormRow
                     label={
                       <EuiText size={'s'}>
                         <strong>Author</strong>
@@ -328,7 +328,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     isInvalid={(validateOnMount || props.touched.author) && !!props.errors?.author}
                     error={props.errors.author}
                   >
-                    <EuiFieldText
+                    <EuiCompressedFieldText
                       isInvalid={
                         (validateOnMount || props.touched.author) && !!props.errors?.author
                       }
@@ -340,7 +340,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                       onBlur={props.handleBlur('author')}
                       value={props.values.author}
                     />
-                  </EuiFormRow>
+                  </EuiCompressedFormRow>
 
                   <EuiSpacer size={'xl'} />
 
@@ -354,7 +354,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
                   <EuiFlexGroup alignItems="flexStart">
                     <EuiFlexItem style={{ maxWidth: 400 }}>
-                      <EuiFormRow
+                      <EuiCompressedFormRow
                         label={
                           <EuiText size={'s'}>
                             <strong>Log type</strong>
@@ -365,7 +365,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                         }
                         error={props.errors.logType}
                       >
-                        <EuiComboBox
+                        <EuiCompressedComboBox
                           isInvalid={
                             (validateOnMount || props.touched.logType) && !!props.errors?.logType
                           }
@@ -389,21 +389,21 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                               : []
                           }
                         />
-                      </EuiFormRow>
+                      </EuiCompressedFormRow>
                     </EuiFlexItem>
                     <EuiFlexItem grow={false} style={{ marginTop: 36 }}>
-                      <EuiButton
+                      <EuiSmallButton
                         href={'opensearch_security_analytics_dashboards#/log-types'}
                         target="_blank"
                       >
                         Manage <EuiIcon type={'popout'} />
-                      </EuiButton>
+                      </EuiSmallButton>
                     </EuiFlexItem>
                   </EuiFlexGroup>
 
                   <EuiSpacer />
 
-                  <EuiFormRow
+                  <EuiCompressedFormRow
                     label={
                       <EuiText size={'s'}>
                         <strong>Rule level (severity)</strong>
@@ -412,7 +412,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     isInvalid={(validateOnMount || props.touched.level) && !!props.errors?.level}
                     error={props.errors.level}
                   >
-                    <EuiComboBox
+                    <EuiCompressedComboBox
                       isInvalid={(validateOnMount || props.touched.level) && !!props.errors?.level}
                       placeholder="Select a rule level"
                       data-test-subj={'rule_severity_dropdown'}
@@ -433,11 +433,11 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                           : []
                       }
                     />
-                  </EuiFormRow>
+                  </EuiCompressedFormRow>
 
                   <EuiSpacer />
 
-                  <EuiFormRow
+                  <EuiCompressedFormRow
                     label={
                       <EuiText size={'s'}>
                         <strong>Rule Status</strong>
@@ -446,7 +446,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     isInvalid={(validateOnMount || props.touched.status) && !!props.errors?.status}
                     error={props.errors.status}
                   >
-                    <EuiComboBox
+                    <EuiCompressedComboBox
                       isInvalid={
                         (validateOnMount || props.touched.status) && !!props.errors?.status
                       }
@@ -464,7 +464,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                           : []
                       }
                     />
-                  </EuiFormRow>
+                  </EuiCompressedFormRow>
 
                   <EuiSpacer size={'xxl'} />
 
@@ -611,16 +611,16 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
             <EuiFlexGroup justifyContent="flexEnd">
               <EuiFlexItem grow={false}>
-                <EuiButton onClick={cancel}>Cancel</EuiButton>
+                <EuiSmallButton onClick={cancel}>Cancel</EuiSmallButton>
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
-                <EuiButton
+                <EuiSmallButton
                   onClick={() => props.handleSubmit()}
                   data-test-subj={'submit_rule_form_button'}
                   fill
                 >
                   {mode === 'create' ? 'Create detection rule' : 'Save changes'}
-                </EuiButton>
+                </EuiSmallButton>
               </EuiFlexItem>
             </EuiFlexGroup>
           </Form>

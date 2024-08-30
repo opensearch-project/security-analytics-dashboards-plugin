@@ -9,7 +9,7 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiFormLabel,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiLink,
   EuiModalBody,
   EuiSpacer,
@@ -205,17 +205,17 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
 
           <EuiSpacer />
 
-          <EuiFormRow label="Detection" fullWidth>
+          <EuiCompressedFormRow label="Detection" fullWidth>
             <EuiCodeBlock language="yaml" data-test-subj={'rule_flyout_rule_detection'}>
               {ruleData.detection}
             </EuiCodeBlock>
-          </EuiFormRow>
+          </EuiCompressedFormRow>
         </>
       )}
       {selectedEditorType === 'yaml' && (
-        <EuiFormRow label="Rule" fullWidth>
+        <EuiCompressedFormRow label="Rule" fullWidth>
           <RuleContentYamlViewer rule={ruleData} />
-        </EuiFormRow>
+        </EuiCompressedFormRow>
       )}
     </EuiModalBody>
   );
