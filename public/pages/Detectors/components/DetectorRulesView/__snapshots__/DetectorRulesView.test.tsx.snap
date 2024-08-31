@@ -819,7 +819,6 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                 <FieldValueSelectionFilter
                                   config={
                                     Object {
-                                      "compressed": undefined,
                                       "field": "category",
                                       "multiSelect": "or",
                                       "name": "Log type",
@@ -949,7 +948,6 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                 <FieldValueSelectionFilter
                                   config={
                                     Object {
-                                      "compressed": undefined,
                                       "field": "level",
                                       "multiSelect": "or",
                                       "name": "Rule severity",
@@ -1125,7 +1123,6 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                 <FieldValueSelectionFilter
                                   config={
                                     Object {
-                                      "compressed": undefined,
                                       "field": "source",
                                       "multiSelect": "or",
                                       "name": "Source",

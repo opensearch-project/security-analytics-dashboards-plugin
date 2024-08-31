@@ -95,6 +95,10 @@ export const BREADCRUMBS = Object.freeze({
   ALERTS: { text: 'Threat alerts', href: `#${ROUTES.ALERTS}` },
   RULES_CREATE: { text: 'Create detection rule', href: `#${ROUTES.RULES_CREATE}` },
   RULES_EDIT: { text: 'Edit rule', href: `#${ROUTES.RULES_EDIT}` },
+  RULE_EDIT_DETAILS: (name: string) => ({
+    text: `${name}`,
+    href: `#${ROUTES.RULES_EDIT}`,
+  }),
   RULES_DUPLICATE: { text: 'Duplicate rule', href: `#${ROUTES.RULES_DUPLICATE}` },
   RULES_IMPORT: { text: 'Import rule', href: `#${ROUTES.RULES_IMPORT}` },
   CORRELATIONS: { text: 'Correlations', href: `#${ROUTES.CORRELATIONS}` },

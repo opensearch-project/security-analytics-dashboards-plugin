@@ -94,7 +94,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
               "renderComponent": <EuiSmallButton
                 data-test-subj="detectorsCreateButton"
                 fill={true}
-                href="opensearch_security_analytics_dashboards#/create-detector"
+                href="#/create-detector"
               >
                 Create detector
               </EuiSmallButton>,
@@ -338,12 +338,12 @@ exports[`<Detectors /> spec renders the component 1`] = `
                             <EuiSmallButton
                               data-test-subj="detectorsCreateButton"
                               fill={true}
-                              href="opensearch_security_analytics_dashboards#/create-detector"
+                              href="#/create-detector"
                             >
                               <EuiButton
                                 data-test-subj="detectorsCreateButton"
                                 fill={true}
-                                href="opensearch_security_analytics_dashboards#/create-detector"
+                                href="#/create-detector"
                                 size="s"
                               >
                                 <EuiButtonDisplay
@@ -351,7 +351,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                   data-test-subj="detectorsCreateButton"
                                   element="a"
                                   fill={true}
-                                  href="opensearch_security_analytics_dashboards#/create-detector"
+                                  href="#/create-detector"
                                   isDisabled={false}
                                   rel="noreferrer"
                                   size="s"
@@ -360,7 +360,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                     className="euiButton euiButton--primary euiButton--small euiButton--fill"
                                     data-test-subj="detectorsCreateButton"
                                     disabled={false}
-                                    href="opensearch_security_analytics_dashboards#/create-detector"
+                                    href="#/create-detector"
                                     rel="noreferrer"
                                     style={
                                       Object {
@@ -928,7 +928,6 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                   <FieldValueSelectionFilter
                                     config={
                                       Object {
-                                        "compressed": undefined,
                                         "field": "status",
                                         "multiSelect": "or",
                                         "name": "Status",
@@ -1063,7 +1062,6 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                   <FieldValueSelectionFilter
                                     config={
                                       Object {
-                                        "compressed": undefined,
                                         "field": "logType",
                                         "multiSelect": "or",
                                         "name": "Log type",

@@ -25,6 +25,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { DeleteCorrelationRuleModal } from '../components/DeleteModal';
 import { setBreadcrumbs } from '../../../utils/helpers';
 import { PageHeader } from '../../../components/PageHeader/PageHeader';
+import { getUseUpdatedUx } from '../../../services/utils/constants';
 
 export interface CorrelationRulesProps extends RouteComponentProps, DataSourceProps {}
 
@@ -46,8 +47,12 @@ export const CorrelationRules: React.FC<CorrelationRulesProps> = (props: Correla
   }, [DataStore.correlations.getCorrelationRules]);
 
   useEffect(() => {
-    setBreadcrumbs([BREADCRUMBS.CORRELATIONS, BREADCRUMBS.CORRELATION_RULES]);
-  }, []);
+    if (getUseUpdatedUx()) {
+      setBreadcrumbs([BREADCRUMBS.CORRELATION_RULES]);
+    } else {
+      setBreadcrumbs([BREADCRUMBS.CORRELATIONS, BREADCRUMBS.CORRELATION_RULES]);
+    }
+  }, [getUseUpdatedUx()]);
 
   useEffect(() => {
     getCorrelationRules();
