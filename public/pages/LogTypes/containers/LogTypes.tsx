@@ -24,6 +24,7 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { setBreadcrumbs, successNotificationToast } from '../../../utils/helpers';
 import { DeleteLogTypeModal } from '../components/DeleteLogTypeModal';
 import { PageHeader } from '../../../components/PageHeader/PageHeader';
+import { getUseUpdatedUx } from '../../../services/utils/constants';
 
 export interface LogTypesProps extends RouteComponentProps, DataSourceProps {
   notifications: NotificationsStart;
@@ -49,8 +50,12 @@ export const LogTypes: React.FC<LogTypesProps> = ({ history, notifications, data
   };
 
   useEffect(() => {
-    setBreadcrumbs([BREADCRUMBS.DETECTORS, BREADCRUMBS.LOG_TYPES]);
-  }, []);
+    if (getUseUpdatedUx()) {
+      setBreadcrumbs([BREADCRUMBS.LOG_TYPES]);
+    } else {
+      setBreadcrumbs([BREADCRUMBS.DETECTORS, BREADCRUMBS.LOG_TYPES]);
+    }
+  }, [getUseUpdatedUx()]);
 
   useEffect(() => {
     getLogTypes();
