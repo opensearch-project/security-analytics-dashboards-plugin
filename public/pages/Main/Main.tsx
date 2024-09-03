@@ -20,7 +20,7 @@ import {
 import { Toast } from '@opensearch-project/oui/src/eui_components/toast/global_toast_list';
 import { AppMountParameters, CoreStart, SavedObject } from 'opensearch-dashboards/public';
 import { SaContextConsumer } from '../../services';
-import { DEFAULT_DATE_RANGE, DATE_TIME_FILTER_KEY, ROUTES } from '../../utils/constants';
+import { DEFAULT_DATE_RANGE, DATE_TIME_FILTER_KEY, ROUTES, dataSourceObservable } from '../../utils/constants';
 import { CoreServicesConsumer } from '../../components/core_services';
 import Findings from '../Findings';
 import Detectors from '../Detectors';
@@ -64,6 +64,7 @@ import { ThreatIntelSource } from '../ThreatIntel/containers/ThreatIntelSource/T
 import * as pluginManifest from "../../../opensearch_dashboards.json";
 import { DataSourceAttributes } from "../../../../../src/plugins/data_source/common/data_sources";
 import semver from "semver";
+import queryString from "query-string";
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -136,19 +137,40 @@ export default class Main extends Component<MainProps, MainState> {
     const defaultDateTimeFilter = cachedDateTimeFilter
       ? JSON.parse(cachedDateTimeFilter)
       : {
-          startTime: DEFAULT_DATE_RANGE.start,
-          endTime: DEFAULT_DATE_RANGE.end,
-        };
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      };
+    let dataSourceId = "";
+    let dataSourceLabel = "";
+    if (props.multiDataSourceEnabled) {
+      const { dataSourceId: parsedDataSourceId, dataSourceLabel: parsedDataSourceLabel } = queryString.parse(
+        this.props.location.search
+      ) as {
+        dataSourceId: string;
+        dataSourceLabel: string;
+      };
+      dataSourceId = parsedDataSourceId;
+      dataSourceLabel = parsedDataSourceLabel || "";
+
+      if (dataSourceId) {
+        dataSourceObservable.next({ id: dataSourceId, label: dataSourceLabel });
+      }
+    }
+
     this.state = {
       getStartedDismissedOnce: false,
       selectedNavItemId: Navigation.Overview,
       dateTimeFilter: defaultDateTimeFilter,
       showFlyoutData: null,
-      dataSourceLoading: props.multiDataSourceEnabled,
-      selectedDataSource: { id: '' },
+      /**
+        * undefined: need data source picker to help to determine which data source to use.
+        * empty string: using the local cluster.
+        * string: using the selected data source.
+        */
+      dataSourceLoading: dataSourceId === undefined ? props.multiDataSourceEnabled : false,
+      selectedDataSource: { id: dataSourceId },
       dataSourceMenuReadOnly: false,
     };
-
     DataStore.detectors.setHandlers(this.showCallout, this.showToast);
     DataStore.findings.setFlyoutCallback(this.showFlyout);
   }
@@ -237,7 +259,7 @@ export default class Main extends Component<MainProps, MainState> {
         selectedDataSource: { ...sources[0] },
       });
     }
-
+    dataSourceObservable.next({ id: this.state.selectedDataSource.id, label: this.state.selectedDataSource.label });
     if (dataSourceLoading) {
       this.setState({ dataSourceLoading: false });
     }
@@ -403,7 +425,6 @@ export default class Main extends Component<MainProps, MainState> {
       dataSourceMenuReadOnly,
     } = this.state;
     const sideNav: EuiSideNavItemType<{ style: any }>[] = this.getSideNavItems();
-
     const dataSourceContextValue: DataSourceContextType = {
       dataSource: selectedDataSource,
       setDataSource: this.onDataSourceSelected,
