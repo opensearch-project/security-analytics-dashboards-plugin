@@ -22,7 +22,6 @@ import {
   getEmptyAlertCondition,
   parseAlertSeverityToOption,
 } from '../../utils/helpers';
-import { ALERT_SEVERITY_OPTIONS } from '../../utils/constants';
 import { CreateDetectorRulesOptions } from '../../../../../../models/types';
 import { getNameErrorMessage, validateName } from '../../../../../../utils/validation';
 import {
@@ -31,6 +30,7 @@ import {
   NotificationChannelTypeOptions,
 } from '../../../../../../../types';
 import { NotificationForm } from '../../../../../../components/Notifications/NotificationForm';
+import { ALERT_SEVERITY_OPTIONS } from '../../../../../../utils/constants';
 
 interface AlertConditionPanelProps extends RouteComponentProps {
   alertCondition: AlertCondition;
