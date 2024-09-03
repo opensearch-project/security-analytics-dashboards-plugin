@@ -7,6 +7,6 @@
   "optionalPlugins": ["dataSource", "dataSourceManagement"],
   "server": true,
   "ui": true,
-  "supportedOSDataSourceVersions": ">=2.13.0",
-  "requiredOSDataSourcePlugins": ["opensearch-security-analytics"]
+  "supportedOSDataSourceVersions": ">=2.16.0",
+  "requiredOSDataSourcePlugins": ["opensearch_security_analytics"]
 }
