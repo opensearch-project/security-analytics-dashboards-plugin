@@ -248,7 +248,7 @@ export const ALERT_SEVERITY_OPTIONS = {
     value: '1',
     label: '1 (Highest)',
     text: '1 (Highest)',
-    badge: 'Highest',
+    badgeLabel: 'Highest',
     color: { background: paletteColors[4], text: 'white' },
   },
   HIGH: {
@@ -256,7 +256,7 @@ export const ALERT_SEVERITY_OPTIONS = {
     value: '2',
     label: '2 (High)',
     text: '2 (High)',
-    badge: 'High',
+    badgeLabel: 'High',
     color: { background: paletteColors[3], text: 'white' },
   },
   MEDIUM: {
@@ -264,7 +264,7 @@ export const ALERT_SEVERITY_OPTIONS = {
     value: '3',
     label: '3 (Medium)',
     text: '3 (Medium)',
-    badge: 'Medium',
+    badgeLabel: 'Medium',
     color: { background: paletteColors[2], text: 'black' },
   },
   LOW: {
@@ -272,7 +272,7 @@ export const ALERT_SEVERITY_OPTIONS = {
     value: '4',
     label: '4 (Low)',
     text: '4 (Low)',
-    badge: 'Low',
+    badgeLabel: 'Low',
     color: { background: paletteColors[1], text: 'white' },
   },
   LOWEST: {
@@ -280,7 +280,7 @@ export const ALERT_SEVERITY_OPTIONS = {
     value: '5',
     label: '5 (Lowest)',
     text: '5 (Lowest)',
-    badge: 'Lowest',
+    badgeLabel: 'Lowest',
     color: { background: paletteColors[0], text: 'white' },
   },
 };

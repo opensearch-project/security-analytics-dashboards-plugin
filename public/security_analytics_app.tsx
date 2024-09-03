@@ -15,7 +15,6 @@ import './app.scss';
 import { SecurityAnalyticsPluginStartDeps } from './plugin';
 import { DataStore } from './store/DataStore';
 import { LogType } from '../types';
-import MetricsService from './services/MetricsService';
 import { MetricsContext } from './metrics/MetricsContext';
 import { CHANNEL_TYPES } from './pages/CreateDetector/components/ConfigureAlerts/utils/constants';
 import { DataSourceManagementPluginSetup } from '../../../src/plugins/data_source_management/public';
@@ -30,12 +29,9 @@ export function renderApp(
   depsStart: SecurityAnalyticsPluginStartDeps,
   dataSourceManagement?: DataSourceManagementPluginSetup
 ) {
-  const metricsService = new MetricsService(coreStart.http);
-
-  const metrics = new MetricsContext(metricsService);
-
   const isDarkMode = coreStart.uiSettings.get('theme:darkMode') || false;
   const services = getBrowserServices();
+  const metrics = new MetricsContext(services.metricsService);
 
   DataStore.logTypes.getLogTypes().then((logTypes: LogType[]) => {
     ReactDOM.render(

@@ -657,7 +657,7 @@ export function getSeverityText(severity) {
 }
 
 export function getBadgeText(severity) {
-  return _.get(_.find(ALERT_SEVERITY_OPTIONS, { value: severity }), 'badge');
+  return _.get(_.find(ALERT_SEVERITY_OPTIONS, { value: severity }), 'badgeLabel');
 }
 
 export function getSeverityColor(severity) {
