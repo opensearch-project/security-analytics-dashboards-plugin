@@ -4,10 +4,11 @@
  */
 
 import { EuiComboBoxOptionOption } from '@elastic/eui';
-import { ALERT_SEVERITY_OPTIONS, CHANNEL_TYPES } from './constants';
+import { CHANNEL_TYPES } from './constants';
 import { NotificationsService } from '../../../../../services';
 import { AlertCondition, TriggerAction } from '../../../../../../models/interfaces';
 import { FeatureChannelList, NotificationChannelTypeOptions } from '../../../../../../types';
+import { ALERT_SEVERITY_OPTIONS } from '../../../../../utils/constants';
 
 export const parseAlertSeverityToOption = (severity: string): EuiComboBoxOptionOption<string> => {
   return Object.values(ALERT_SEVERITY_OPTIONS).find(

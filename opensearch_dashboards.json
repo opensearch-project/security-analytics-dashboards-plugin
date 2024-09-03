@@ -3,7 +3,7 @@
   "version": "2.17.0.0",
   "opensearchDashboardsVersion": "2.17.0",
   "configPath": ["opensearch_security_analytics"],
-  "requiredPlugins": ["data", "navigation", "opensearchDashboardsUtils"],
+  "requiredPlugins": ["data", "navigation", "opensearchDashboardsUtils", "contentManagement"],
   "optionalPlugins": ["dataSource", "dataSourceManagement"],
   "server": true,
   "ui": true,
