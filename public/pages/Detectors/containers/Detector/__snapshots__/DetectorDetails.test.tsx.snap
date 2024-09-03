@@ -497,6 +497,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                 >
                                   <EuiButtonContent
                                     className="euiButton__content"
+                                    iconGap="m"
                                     iconSide="right"
                                     iconType="arrowDown"
                                     isLoading={false}
@@ -1587,6 +1588,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                   >
                                     <EuiButtonContent
                                       className="euiButton__content"
+                                      iconGap="m"
                                       iconSide="left"
                                       textProps={
                                         Object {
@@ -2858,6 +2860,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                   >
                                     <EuiButtonContent
                                       className="euiButton__content"
+                                      iconGap="m"
                                       iconSide="left"
                                       textProps={
                                         Object {
@@ -3364,6 +3367,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                     <FieldValueSelectionFilter
                                       config={
                                         Object {
+                                          "compressed": undefined,
                                           "field": "category",
                                           "multiSelect": "or",
                                           "name": "Log type",
@@ -3450,6 +3454,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                                 >
                                                   <EuiButtonContent
                                                     className="euiButtonEmpty__content"
+                                                    iconGap="m"
                                                     iconSide="right"
                                                     iconSize="m"
                                                     iconType="arrowDown"
@@ -3493,6 +3498,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                     <FieldValueSelectionFilter
                                       config={
                                         Object {
+                                          "compressed": undefined,
                                           "field": "level",
                                           "multiSelect": "or",
                                           "name": "Rule severity",
@@ -3625,6 +3631,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                                 >
                                                   <EuiButtonContent
                                                     className="euiButtonEmpty__content"
+                                                    iconGap="m"
                                                     iconSide="right"
                                                     iconSize="m"
                                                     iconType="arrowDown"
@@ -3668,6 +3675,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                     <FieldValueSelectionFilter
                                       config={
                                         Object {
+                                          "compressed": undefined,
                                           "field": "source",
                                           "multiSelect": "or",
                                           "name": "Source",
@@ -3761,6 +3769,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                                 >
                                                   <EuiButtonContent
                                                     className="euiButtonEmpty__content"
+                                                    iconGap="m"
                                                     iconSide="right"
                                                     iconSize="m"
                                                     iconType="arrowDown"
@@ -3994,6 +4003,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                                   >
                                                     <EuiButtonContent
                                                       className="euiButtonEmpty__content"
+                                                      iconGap="m"
                                                       iconSide="right"
                                                       iconSize="s"
                                                       iconType="arrowDown"

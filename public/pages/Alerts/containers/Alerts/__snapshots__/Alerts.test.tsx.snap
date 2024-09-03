@@ -607,6 +607,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                               >
                                                 <EuiButtonContent
                                                   className="euiButtonEmpty__content"
+                                                  iconGap="m"
                                                   iconSide="right"
                                                   iconSize="s"
                                                   iconType="arrowDown"
@@ -767,6 +768,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                           >
                                             <EuiButtonContent
                                               className="euiButton__content"
+                                              iconGap="m"
                                               iconSide="left"
                                               iconType="refresh"
                                               isLoading={true}
@@ -1209,6 +1211,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                         >
                                           <EuiButtonContent
                                             className="euiButton__content"
+                                            iconGap="m"
                                             iconSide="left"
                                             textProps={
                                               Object {
@@ -2058,6 +2061,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                               <FieldValueSelectionFilter
                                                 config={
                                                   Object {
+                                                    "compressed": undefined,
                                                     "field": "severity",
                                                     "multiSelect": "or",
                                                     "name": "Alert severity",
@@ -2144,6 +2148,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                                           >
                                                             <EuiButtonContent
                                                               className="euiButtonEmpty__content"
+                                                              iconGap="m"
                                                               iconSide="right"
                                                               iconSize="m"
                                                               iconType="arrowDown"
@@ -2187,6 +2192,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                               <FieldValueSelectionFilter
                                                 config={
                                                   Object {
+                                                    "compressed": undefined,
                                                     "field": "state",
                                                     "multiSelect": "or",
                                                     "name": "Status",
@@ -2273,6 +2279,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                                           >
                                                             <EuiButtonContent
                                                               className="euiButtonEmpty__content"
+                                                              iconGap="m"
                                                               iconSide="right"
                                                               iconSize="m"
                                                               iconType="arrowDown"
@@ -2567,6 +2574,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                                             >
                                                               <EuiButtonContent
                                                                 className="euiButtonEmpty__content"
+                                                                iconGap="m"
                                                                 iconSide="right"
                                                                 iconSize="s"
                                                                 iconType="arrowDown"
