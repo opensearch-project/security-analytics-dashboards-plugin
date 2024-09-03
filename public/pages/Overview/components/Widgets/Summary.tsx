@@ -23,7 +23,7 @@ import {
   TimeUnit,
 } from '../../utils/helpers';
 import { createSelectComponent, renderVisualization } from '../../../../utils/helpers';
-import { PLUGIN_NAME, ROUTES } from '../../../../utils/constants';
+import { ROUTES } from '../../../../utils/constants';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 import { getLogTypeLabel } from '../../../LogTypes/utils/helpers';
 import { OverviewAlertItem, OverviewFindingItem } from '../../../../../types';
@@ -174,7 +174,7 @@ export const Summary: React.FC<SummaryProps> = ({
                     detector to generate findings.
                   </p>
                   <EuiSmallButton
-                    href={`${PLUGIN_NAME}#${ROUTES.DETECTORS_CREATE}`}
+                    href={`#${ROUTES.DETECTORS_CREATE}`}
                     fill={true}
                     data-test-subj={'detectorsCreateButton'}
                   >

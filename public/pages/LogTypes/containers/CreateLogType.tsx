@@ -15,6 +15,7 @@ import { setBreadcrumbs, successNotificationToast } from '../../../utils/helpers
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { EuiPanel, EuiSpacer, EuiText, EuiTitle } from '@elastic/eui';
 import { PageHeader } from '../../../components/PageHeader/PageHeader';
+import { getUseUpdatedUx } from '../../../services/utils/constants';
 
 export interface CreateLogTypeProps extends RouteComponentProps {
   notifications: NotificationsStart;
@@ -24,8 +25,12 @@ export const CreateLogType: React.FC<CreateLogTypeProps> = ({ history, notificat
   const [logTypeDetails, setLogTypeDetails] = useState<LogTypeBase>({ ...defaultLogType });
 
   useEffect(() => {
-    setBreadcrumbs([BREADCRUMBS.DETECTORS, BREADCRUMBS.LOG_TYPES, BREADCRUMBS.LOG_TYPE_CREATE]);
-  }, []);
+    if (getUseUpdatedUx()) {
+      setBreadcrumbs([BREADCRUMBS.LOG_TYPES, BREADCRUMBS.LOG_TYPE_CREATE]);
+    } else {
+      setBreadcrumbs([BREADCRUMBS.DETECTORS, BREADCRUMBS.LOG_TYPES, BREADCRUMBS.LOG_TYPE_CREATE]);
+    }
+  }, [getUseUpdatedUx()]);
 
   const description =
     'Create log type to categorize and identify detection rules for your data sources.';

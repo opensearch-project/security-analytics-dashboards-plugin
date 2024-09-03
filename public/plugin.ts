@@ -5,6 +5,7 @@
 
 import {
   AppMountParameters,
+  AppUpdater,
   CoreSetup,
   CoreStart,
   DEFAULT_APP_CATEGORIES,
@@ -24,6 +25,7 @@ import {
   ROUTES,
   THREAT_ALERTS_NAV_ID,
   THREAT_INTEL_NAV_ID,
+  dataSourceObservable,
   setDarkMode,
 } from './utils/constants';
 import { SecurityAnalyticsPluginSetup, SecurityAnalyticsPluginStart } from './index';
@@ -39,6 +41,7 @@ import {
   setApplication,
   setBreadCrumbsSetter,
 } from './services/utils/constants';
+import { BehaviorSubject } from 'rxjs';
 
 export interface SecurityAnalyticsPluginSetupDeps {
   data: DataPublicPluginSetup;
@@ -61,6 +64,15 @@ export class SecurityAnalyticsPlugin
   public constructor(
     private initializerContext: PluginInitializerContext<SecurityAnalyticsPluginConfigType>
   ) {}
+
+  private updateDefaultRouteOfManagementApplications: AppUpdater = () => {
+    const hash = `#/?dataSourceId=${dataSourceObservable.value?.id || ""}`;
+    return {
+      defaultPath: hash,
+    };
+  };
+
+  private appStateUpdater = new BehaviorSubject<AppUpdater>(this.updateDefaultRouteOfManagementApplications);
 
   public setup(
     core: CoreSetup<SecurityAnalyticsPluginStartDeps>,
@@ -93,6 +105,7 @@ export class SecurityAnalyticsPlugin
         id: OVERVIEW_NAV_ID,
         title: 'Overview',
         order: 0,
+        updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
           return mountWrapper(params, ROUTES.LANDING_PAGE);
         },
@@ -103,6 +116,7 @@ export class SecurityAnalyticsPlugin
         title: 'Threat alerts',
         order: 9070,
         category: DEFAULT_APP_CATEGORIES.investigate,
+        updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
           return mountWrapper(params, ROUTES.ALERTS);
         },
@@ -113,6 +127,7 @@ export class SecurityAnalyticsPlugin
         title: 'Findings',
         order: 9080,
         category: DEFAULT_APP_CATEGORIES.investigate,
+        updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
           return mountWrapper(params, ROUTES.FINDINGS);
         },
@@ -123,6 +138,7 @@ export class SecurityAnalyticsPlugin
         title: 'Correlations',
         order: 9080,
         category: DEFAULT_APP_CATEGORIES.investigate,
+        updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
           return mountWrapper(params, ROUTES.CORRELATIONS);
         },
@@ -133,6 +149,7 @@ export class SecurityAnalyticsPlugin
         title: 'Threat detectors',
         order: 9080,
         category: DEFAULT_APP_CATEGORIES.configure,
+        updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
           return mountWrapper(params, ROUTES.DETECTORS);
         },
@@ -143,6 +160,7 @@ export class SecurityAnalyticsPlugin
         title: 'Detection rules',
         order: 9080,
         category: DEFAULT_APP_CATEGORIES.configure,
+        updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
           return mountWrapper(params, ROUTES.RULES);
         },
@@ -153,6 +171,7 @@ export class SecurityAnalyticsPlugin
         title: 'Correlation rules',
         order: 9080,
         category: DEFAULT_APP_CATEGORIES.configure,
+        updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
           return mountWrapper(params, ROUTES.CORRELATION_RULES);
         },
@@ -163,6 +182,7 @@ export class SecurityAnalyticsPlugin
         title: 'Threat intelligence',
         order: 9080,
         category: DEFAULT_APP_CATEGORIES.configure,
+        updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
           return mountWrapper(params, ROUTES.THREAT_INTEL_OVERVIEW);
         },
@@ -173,9 +193,16 @@ export class SecurityAnalyticsPlugin
         title: 'Log types',
         order: 9080,
         category: DEFAULT_APP_CATEGORIES.configure,
+        updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
           return mountWrapper(params, ROUTES.LOG_TYPES);
         },
+      });
+
+      dataSourceObservable.subscribe((dataSourceOption) => {
+        if (dataSourceOption) {
+          this.appStateUpdater.next(this.updateDefaultRouteOfManagementApplications);
+        }
       });
 
       const navlinks = [

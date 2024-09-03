@@ -19,7 +19,6 @@ import {
   BREADCRUMBS,
   DEFAULT_DATE_RANGE,
   MAX_RECENTLY_USED_TIME_RANGES,
-  PLUGIN_NAME,
   ROUTES,
 } from '../../../../utils/constants';
 import { CoreServicesContext } from '../../../../../public/components/core_services';
@@ -205,7 +204,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
 
   const createDetectorAction = (
     <EuiSmallButton
-      href={`${PLUGIN_NAME}#${ROUTES.DETECTORS_CREATE}`}
+      href={`#${ROUTES.DETECTORS_CREATE}`}
       fill={true}
       data-test-subj={'detectorsCreateButton'}
     >
