@@ -18,11 +18,12 @@ export class AlertsStore {
     detectorId: string,
     detectorName: string,
     signal: AbortSignal,
-    duration: Duration,
-    onPartialAlertsFetched?: (alerts: AlertResponse[]) => void
+    duration?: Duration,
+    onPartialAlertsFetched?: (alerts: AlertResponse[]) => void,
+    alertCount?: number
   ) {
     let allAlerts: any[] = [];
-    const maxAlertsReturned = 10000;
+    const maxAlertsReturned = alertCount ?? 10000;
     let startIndex = 0;
     let alertsCount = 0;
 
@@ -35,8 +36,8 @@ export class AlertsStore {
         detector_id: detectorId,
         startIndex,
         size: maxAlertsReturned,
-        startTime: duration.startTime,
-        endTime: duration.endTime,
+        startTime: duration?.startTime,
+        endTime: duration?.endTime,
       });
 
       if (signal.aborted) {

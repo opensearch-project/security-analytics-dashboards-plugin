@@ -45,6 +45,7 @@ import {
   NotificationChannelTypeOptions,
 } from '../../../../types';
 import {
+  ALERT_SEVERITY_OPTIONS,
   BREADCRUMBS,
   NOTIFICATIONS_HREF,
   OS_NOTIFICATION_PLUGIN,
@@ -75,7 +76,6 @@ import {
 } from '../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { NotificationsCallOut } from '../../../../public/components/NotificationsCallOut';
 import { ExperimentalBanner } from '../components/ExperimentalBanner';
-import { ALERT_SEVERITY_OPTIONS } from '../../CreateDetector/components/ConfigureAlerts/utils/constants';
 import uuid from 'uuid';
 import { PageHeader } from '../../../components/PageHeader/PageHeader';
 
@@ -714,12 +714,16 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                               </EuiCompressedFormRow>
                             </EuiFlexItem>
                             <EuiFlexItem grow={false} style={{ minWidth: 200 }}>
-                              <EuiCompressedFormRow label={<EuiText size={'s'}>Field value</EuiText>}>
+                              <EuiCompressedFormRow
+                                label={<EuiText size={'s'}>Field value</EuiText>}
+                              >
                                 {fieldValueInput}
                               </EuiCompressedFormRow>
                             </EuiFlexItem>
                             <EuiFlexItem>
-                              <EuiCompressedFormRow label={<p style={{ visibility: 'hidden' }}>_</p>}>
+                              <EuiCompressedFormRow
+                                label={<p style={{ visibility: 'hidden' }}>_</p>}
+                              >
                                 <EuiSmallButtonIcon
                                   iconType={'trash'}
                                   color="danger"

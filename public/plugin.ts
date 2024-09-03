@@ -35,22 +35,29 @@ import { setSecurityAnalyticsPluginConfig } from '../common/helpers';
 import { DataSourceManagementPluginSetup } from '../../../src/plugins/data_source_management/public';
 import { DataSourcePluginStart } from '../../../src/plugins/data_source/public';
 import { NavigationPublicPluginStart } from 'src/plugins/navigation/public';
+import { ContentManagementPluginStart } from 'src/plugins/content_management/public';
 import {
   setUISettings,
   setNavigationUI,
   setApplication,
   setBreadCrumbsSetter,
+  setContentManagement,
+  setDataSourceManagementPlugin,
+  setNotifications,
+  setSavedObjectsClient,
 } from './services/utils/constants';
+import { initializeServices, registerThreatAlertsCard } from './utils/helpers';
 import { BehaviorSubject } from 'rxjs';
 
 export interface SecurityAnalyticsPluginSetupDeps {
   data: DataPublicPluginSetup;
-  dataSourceManagement?: DataSourceManagementPluginSetup;
+  dataSourceManagement: DataSourceManagementPluginSetup;
 }
 export interface SecurityAnalyticsPluginStartDeps {
   data: DataPublicPluginStart;
   navigation: NavigationPublicPluginStart;
   dataSource?: DataSourcePluginStart;
+  contentManagement: ContentManagementPluginStart;
 }
 
 export class SecurityAnalyticsPlugin
@@ -225,6 +232,7 @@ export class SecurityAnalyticsPlugin
 
     const config = this.initializerContext.config.get();
     setSecurityAnalyticsPluginConfig(config);
+    setDataSourceManagementPlugin(dataSourceManagement);
 
     return {
       config,
@@ -233,12 +241,18 @@ export class SecurityAnalyticsPlugin
 
   public start(
     core: CoreStart,
-    { navigation }: SecurityAnalyticsPluginStartDeps
+    { navigation, contentManagement, data }: SecurityAnalyticsPluginStartDeps
   ): SecurityAnalyticsPluginStart {
     setUISettings(core.uiSettings);
     setNavigationUI(navigation.ui);
     setApplication(core.application);
     setBreadCrumbsSetter(core.chrome.setBreadcrumbs);
+    setContentManagement(contentManagement);
+    setNotifications(core.notifications);
+    setSavedObjectsClient(core.savedObjects.client);
+    initializeServices(core, data.indexPatterns);
+    registerThreatAlertsCard();
+
     return {};
   }
 }
