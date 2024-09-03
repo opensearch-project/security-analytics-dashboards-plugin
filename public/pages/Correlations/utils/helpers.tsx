@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { EuiBasicTableColumn, EuiBadge, EuiToolTip, EuiButtonIcon, EuiLink } from '@elastic/eui';
+import { EuiBasicTableColumn, EuiBadge, EuiToolTip, EuiSmallButtonIcon, EuiLink } from '@elastic/eui';
 import { CorrelationRule, CorrelationRuleQuery, CorrelationRuleTableItem } from '../../../../types';
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
 import { formatRuleType, getLogTypeFilterOptions } from '../../../utils/helpers';
@@ -55,7 +55,7 @@ export const getCorrelationRulesTableColumns = (
         {
           render: (ruleItem: CorrelationRule) => (
             <EuiToolTip content={'Delete'}>
-              <EuiButtonIcon
+              <EuiSmallButtonIcon
                 aria-label={'Delete correlation rule'}
                 data-test-subj={`view-details-icon`}
                 iconType={'trash'}

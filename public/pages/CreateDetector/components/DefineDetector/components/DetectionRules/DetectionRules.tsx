@@ -9,7 +9,7 @@ import {
   CriteriaWithPagination,
   EuiText,
   EuiEmptyPrompt,
-  EuiButton,
+  EuiSmallButton,
   EuiIcon,
   EuiLoadingSpinner,
 } from '@elastic/eui';
@@ -119,9 +119,9 @@ export const DetectionRules: React.FC<DetectionRulesProps> = ({
           </div>
         }
         extraAction={
-          <EuiButton href={`#${ROUTES.RULES}`} target="_blank">
+          <EuiSmallButton href={`#${ROUTES.RULES}`} target="_blank">
             Manage <EuiIcon type={'popout'} />
-          </EuiButton>
+          </EuiSmallButton>
         }
         id={'detectorRulesAccordion'}
         initialIsOpen={false}
@@ -153,10 +153,10 @@ export const DetectionRules: React.FC<DetectionRulesProps> = ({
             actions={
               detectorType
                 ? [
-                    <EuiButton href={`#${ROUTES.RULES}`} target="_blank">
+                    <EuiSmallButton href={`#${ROUTES.RULES}`} target="_blank">
                       Manage&nbsp;
                       <EuiIcon type={'popout'} />
-                    </EuiButton>,
+                    </EuiSmallButton>,
                   ]
                 : undefined
             }

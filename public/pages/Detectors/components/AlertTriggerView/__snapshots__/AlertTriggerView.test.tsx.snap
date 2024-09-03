@@ -55,7 +55,7 @@ Object {
                   class="euiSpacer euiSpacer--s"
                 />
                 <div
-                  class="euiFormRow euiFormRow--fullWidth"
+                  class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                   id="some_html_id-row"
                 >
                   <div
@@ -97,7 +97,7 @@ Object {
                   class="euiSpacer euiSpacer--s"
                 />
                 <div
-                  class="euiFormRow euiFormRow--fullWidth"
+                  class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                   id="some_html_id-row"
                 >
                   <div
@@ -132,7 +132,7 @@ Object {
                     class="euiFlexItem"
                   >
                     <div
-                      class="euiFormRow euiFormRow--fullWidth"
+                      class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                       id="some_html_id-row"
                     >
                       <div
@@ -162,7 +162,7 @@ Object {
                     class="euiFlexItem"
                   >
                     <div
-                      class="euiFormRow euiFormRow--fullWidth"
+                      class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                       id="some_html_id-row"
                     >
                       <div
@@ -201,7 +201,7 @@ Object {
                   class="euiSpacer euiSpacer--m"
                 />
                 <div
-                  class="euiFormRow euiFormRow--fullWidth"
+                  class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                   id="some_html_id-row"
                 >
                   <div
@@ -233,7 +233,7 @@ Object {
                   class="euiSpacer euiSpacer--l"
                 />
                 <div
-                  class="euiFormRow euiFormRow--fullWidth"
+                  class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                   id="some_html_id-row"
                 >
                   <div
@@ -323,7 +323,7 @@ Object {
                 class="euiSpacer euiSpacer--s"
               />
               <div
-                class="euiFormRow euiFormRow--fullWidth"
+                class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                 id="some_html_id-row"
               >
                 <div
@@ -365,7 +365,7 @@ Object {
                 class="euiSpacer euiSpacer--s"
               />
               <div
-                class="euiFormRow euiFormRow--fullWidth"
+                class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                 id="some_html_id-row"
               >
                 <div
@@ -400,7 +400,7 @@ Object {
                   class="euiFlexItem"
                 >
                   <div
-                    class="euiFormRow euiFormRow--fullWidth"
+                    class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                     id="some_html_id-row"
                   >
                     <div
@@ -430,7 +430,7 @@ Object {
                   class="euiFlexItem"
                 >
                   <div
-                    class="euiFormRow euiFormRow--fullWidth"
+                    class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                     id="some_html_id-row"
                   >
                     <div
@@ -469,7 +469,7 @@ Object {
                 class="euiSpacer euiSpacer--m"
               />
               <div
-                class="euiFormRow euiFormRow--fullWidth"
+                class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                 id="some_html_id-row"
               >
                 <div
@@ -501,7 +501,7 @@ Object {
                 class="euiSpacer euiSpacer--l"
               />
               <div
-                class="euiFormRow euiFormRow--fullWidth"
+                class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
                 id="some_html_id-row"
               >
                 <div

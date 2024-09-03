@@ -6,8 +6,8 @@
 import React from 'react';
 import {
   EuiBadge,
-  EuiButton,
-  EuiButtonEmpty,
+  EuiSmallButton,
+  EuiSmallButtonEmpty,
   EuiCard,
   EuiEmptyPrompt,
   EuiFlexGroup,
@@ -42,7 +42,7 @@ export const ThreatIntelSourcesList: React.FC<ThreatIntelSourcesListProps> = ({
         </EuiFlexItem>
         {threatIntelSources.length > 0 && (
           <EuiFlexItem grow={false}>
-            <EuiButton
+            <EuiSmallButton
               onClick={() => {
                 history.push({
                   pathname: ROUTES.THREAT_INTEL_ADD_CUSTOM_SOURCE,
@@ -50,7 +50,7 @@ export const ThreatIntelSourcesList: React.FC<ThreatIntelSourcesListProps> = ({
               }}
             >
               Add threat intel source
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
         )}
       </EuiFlexGroup>
@@ -65,7 +65,7 @@ export const ThreatIntelSourcesList: React.FC<ThreatIntelSourcesListProps> = ({
                 description={source.description}
                 footer={
                   <>
-                    <EuiButtonEmpty
+                    <EuiSmallButtonEmpty
                       onClick={() => {
                         history.push({
                           pathname: `${ROUTES.THREAT_INTEL_SOURCE_DETAILS}/${source.id}`,
@@ -75,7 +75,7 @@ export const ThreatIntelSourcesList: React.FC<ThreatIntelSourcesListProps> = ({
                       iconType={'iInCircle'}
                     >
                       More details
-                    </EuiButtonEmpty>
+                    </EuiSmallButtonEmpty>
                     <EuiSpacer size="m" />
                     <EuiIcon
                       type={'dot'}
@@ -98,7 +98,7 @@ export const ThreatIntelSourcesList: React.FC<ThreatIntelSourcesListProps> = ({
         <EuiEmptyPrompt
           title={<h3>No threat intel source present</h3>}
           actions={[
-            <EuiButton
+            <EuiSmallButton
               fill
               onClick={() => {
                 history.push({
@@ -107,7 +107,7 @@ export const ThreatIntelSourcesList: React.FC<ThreatIntelSourcesListProps> = ({
               }}
             >
               Add threat intel source
-            </EuiButton>,
+            </EuiSmallButton>,
           ]}
         />
       )}

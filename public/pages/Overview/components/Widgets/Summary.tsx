@@ -4,7 +4,7 @@
  */
 
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiEmptyPrompt,
   EuiFlexGroup,
   EuiFlexItem,
@@ -173,13 +173,13 @@ export const Summary: React.FC<SummaryProps> = ({
                     Adjust the time range to see more results or create a <br />
                     detector to generate findings.
                   </p>
-                  <EuiButton
+                  <EuiSmallButton
                     href={`${PLUGIN_NAME}#${ROUTES.DETECTORS_CREATE}`}
                     fill={true}
                     data-test-subj={'detectorsCreateButton'}
                   >
                     Create a detector
-                  </EuiButton>
+                  </EuiSmallButton>
                 </>
               }
             />

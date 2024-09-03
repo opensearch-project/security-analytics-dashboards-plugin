@@ -4,7 +4,7 @@
  */
 
 import React, { Component } from 'react';
-import { EuiComboBox, EuiComboBoxOptionOption, EuiFormRow } from '@elastic/eui';
+import { EuiCompressedComboBox, EuiComboBoxOptionOption, EuiCompressedFormRow } from '@elastic/eui';
 
 interface SIEMFieldNameProps {
   fieldNameOptions: string[];
@@ -57,8 +57,8 @@ export default class FieldNameSelector extends Component<SIEMFieldNameProps, SIE
     }));
 
     return (
-      <EuiFormRow style={{ width: '100%' }}>
-        <EuiComboBox
+      <EuiCompressedFormRow style={{ width: '100%' }}>
+        <EuiCompressedComboBox
           data-test-subj={'detector-field-mappings-select'}
           placeholder="Select a mapping field"
           singleSelection={{ asPlainText: true }}
@@ -66,7 +66,7 @@ export default class FieldNameSelector extends Component<SIEMFieldNameProps, SIE
           selectedOptions={selectedOptions}
           onChange={this.onMappingChange}
         />
-      </EuiFormRow>
+      </EuiCompressedFormRow>
     );
   }
 }

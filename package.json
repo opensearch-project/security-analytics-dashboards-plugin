@@ -63,6 +63,7 @@
     "@testing-library/user-event": "^14.4.3",
     "@types/react-dom": "^16.9.8",
     "@types/react-router-dom": "^5.3.2",
+    "@types/vis": "^4.21.21",
     "cypress": "9.5.4",
     "cypress-real-events": "1.7.6",
     "cypress-recurse": "^1.27.0",
@@ -72,9 +73,8 @@
     "jest-cli": "^27.5.1",
     "jest-environment-jsdom": "^27.5.1",
     "lint-staged": "^10.2.0",
-    "ts-loader": "^6.2.1",
-    "@types/vis": "^4.21.21",
-    "string.prototype.replaceall": "1.0.7"
+    "string.prototype.replaceall": "1.0.7",
+    "ts-loader": "^6.2.1"
   },
   "engines": {
     "yarn": "^1.21.1"

@@ -461,9 +461,9 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
             className="euiSpacer euiSpacer--m"
           />
         </EuiSpacer>
-        <EuiFormRow
+        <EuiCompressedFormRow
           describedByIds={Array []}
-          display="row"
+          display="rowCompressed"
           fullWidth={false}
           hasChildLabel={true}
           hasEmptyLabelSpace={false}
@@ -476,7 +476,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
           labelType="label"
         >
           <div
-            className="euiFormRow"
+            className="euiFormRow euiFormRow--compressed"
             id="some_html_id-row"
           >
             <div
@@ -516,7 +516,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
             <div
               className="euiFormRow__fieldWrapper"
             >
-              <EuiFieldText
+              <EuiCompressedFieldText
                 data-test-subj="define-detector-detector-name"
                 id="some_html_id"
                 onBlur={[Function]}
@@ -527,40 +527,56 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                 required={true}
                 value="detector_name"
               >
-                <EuiFormControlLayout
-                  fullWidth={false}
-                  inputId="some_html_id"
+                <EuiFieldText
+                  compressed={true}
+                  data-test-subj="define-detector-detector-name"
+                  id="some_html_id"
+                  onBlur={[Function]}
+                  onChange={[Function]}
+                  onFocus={[Function]}
+                  placeholder="Enter a name for the detector."
                   readOnly={false}
+                  required={true}
+                  value="detector_name"
                 >
-                  <div
-                    className="euiFormControlLayout"
+                  <EuiFormControlLayout
+                    compressed={true}
+                    fullWidth={false}
+                    inputId="some_html_id"
+                    readOnly={false}
                   >
                     <div
-                      className="euiFormControlLayout__childrenWrapper"
+                      className="euiFormControlLayout euiFormControlLayout--compressed"
                     >
-                      <EuiValidatableControl>
-                        <input
-                          className="euiFieldText"
-                          data-test-subj="define-detector-detector-name"
-                          id="some_html_id"
-                          onBlur={[Function]}
-                          onChange={[Function]}
-                          onFocus={[Function]}
-                          placeholder="Enter a name for the detector."
-                          readOnly={false}
-                          required={true}
-                          type="text"
-                          value="detector_name"
+                      <div
+                        className="euiFormControlLayout__childrenWrapper"
+                      >
+                        <EuiValidatableControl>
+                          <input
+                            className="euiFieldText euiFieldText--compressed"
+                            data-test-subj="define-detector-detector-name"
+                            id="some_html_id"
+                            onBlur={[Function]}
+                            onChange={[Function]}
+                            onFocus={[Function]}
+                            placeholder="Enter a name for the detector."
+                            readOnly={false}
+                            required={true}
+                            type="text"
+                            value="detector_name"
+                          />
+                        </EuiValidatableControl>
+                        <EuiFormControlLayoutIcons
+                          compressed={true}
                         />
-                      </EuiValidatableControl>
-                      <EuiFormControlLayoutIcons />
+                      </div>
                     </div>
-                  </div>
-                </EuiFormControlLayout>
-              </EuiFieldText>
+                  </EuiFormControlLayout>
+                </EuiFieldText>
+              </EuiCompressedFieldText>
             </div>
           </div>
-        </EuiFormRow>
+        </EuiCompressedFormRow>
         <EuiSpacer
           size="m"
         >
@@ -568,9 +584,9 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
             className="euiSpacer euiSpacer--m"
           />
         </EuiSpacer>
-        <EuiFormRow
+        <EuiCompressedFormRow
           describedByIds={Array []}
-          display="row"
+          display="rowCompressed"
           fullWidth={false}
           hasChildLabel={true}
           hasEmptyLabelSpace={false}
@@ -584,7 +600,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
           labelType="label"
         >
           <div
-            className="euiFormRow"
+            className="euiFormRow euiFormRow--compressed"
             id="some_html_id-row"
           >
             <div
@@ -654,7 +670,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
               </EuiTextArea>
             </div>
           </div>
-        </EuiFormRow>
+        </EuiCompressedFormRow>
       </DetectorBasicDetailsForm>
       <EuiSpacer
         size="l"
@@ -710,9 +726,9 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
             className="euiSpacer euiSpacer--m"
           />
         </EuiSpacer>
-        <EuiFormRow
+        <EuiCompressedFormRow
           describedByIds={Array []}
-          display="row"
+          display="rowCompressed"
           error={false}
           fullWidth={false}
           hasChildLabel={true}
@@ -745,7 +761,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
           labelType="label"
         >
           <div
-            className="euiFormRow"
+            className="euiFormRow euiFormRow--compressed"
             id="some_html_id-row"
           >
             <div
@@ -785,10 +801,10 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
             <div
               className="euiFormRow__fieldWrapper"
             >
-              <EuiComboBox
+              <EuiCompressedComboBox
                 aria-describedby="some_html_id-help-0"
                 async={false}
-                compressed={false}
+                compressed={true}
                 data-test-subj="define-detector-select-data-source"
                 fullWidth={false}
                 id="some_html_id"
@@ -827,14 +843,14 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                   aria-describedby="some_html_id-help-0"
                   aria-expanded={false}
                   aria-haspopup="listbox"
-                  className="euiComboBox"
+                  className="euiComboBox euiComboBox--compressed"
                   data-test-subj="define-detector-select-data-source"
                   onKeyDown={[Function]}
                   role="combobox"
                 >
                   <EuiComboBoxInput
                     autoSizeInputRef={[Function]}
-                    compressed={false}
+                    compressed={true}
                     fullWidth={false}
                     hasSelectedOptions={true}
                     id="some_html_id"
@@ -871,7 +887,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                           "onClick": [Function],
                         }
                       }
-                      compressed={false}
+                      compressed={true}
                       fullWidth={false}
                       icon={
                         Object {
@@ -887,13 +903,13 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                       isLoading={false}
                     >
                       <div
-                        className="euiFormControlLayout"
+                        className="euiFormControlLayout euiFormControlLayout--compressed"
                       >
                         <div
                           className="euiFormControlLayout__childrenWrapper"
                         >
                           <div
-                            className="euiComboBox__inputWrap euiComboBox__inputWrap-isClearable"
+                            className="euiComboBox__inputWrap euiComboBox__inputWrap--compressed euiComboBox__inputWrap-isClearable"
                             data-test-subj="comboBoxInput"
                             onClick={[Function]}
                             tabIndex={-1}
@@ -1036,7 +1052,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                                 "onClick": [Function],
                               }
                             }
-                            compressed={false}
+                            compressed={true}
                             icon={
                               Object {
                                 "aria-label": "Open list of options",
@@ -1056,7 +1072,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                               <EuiFormControlLayoutClearButton
                                 data-test-subj="comboBoxClearButton"
                                 onClick={[Function]}
-                                size="m"
+                                size="s"
                               >
                                 <EuiI18n
                                   default="Clear input"
@@ -1064,7 +1080,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                                 >
                                   <button
                                     aria-label="Clear input"
-                                    className="euiFormControlLayoutClearButton"
+                                    className="euiFormControlLayoutClearButton euiFormControlLayoutClearButton--small"
                                     data-test-subj="comboBoxClearButton"
                                     onClick={[Function]}
                                     type="button"
@@ -1083,7 +1099,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                                 data-test-subj="comboBoxToggleListButton"
                                 iconRef={[Function]}
                                 onClick={[Function]}
-                                size="m"
+                                size="s"
                                 type="arrowDown"
                               >
                                 <button
@@ -1096,7 +1112,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                                   <EuiIcon
                                     aria-hidden="true"
                                     className="euiFormControlLayoutCustomIcon__icon"
-                                    size="m"
+                                    size="s"
                                     type="arrowDown"
                                   >
                                     EuiIconMock
@@ -1110,7 +1126,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                     </EuiFormControlLayout>
                   </EuiComboBoxInput>
                 </div>
-              </EuiComboBox>
+              </EuiCompressedComboBox>
               <EuiFormHelpText
                 className="euiFormRow__text"
                 id="some_html_id-help-0"
@@ -1141,7 +1157,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
               </EuiFormHelpText>
             </div>
           </div>
-        </EuiFormRow>
+        </EuiCompressedFormRow>
       </DetectorDataSource>
       <EuiSpacer
         size="l"
@@ -1171,9 +1187,9 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
             </p>
           </div>
         </EuiText>
-        <EuiCheckbox
+        <EuiCompressedCheckbox
           checked={false}
-          compressed={false}
+          compressed={true}
           disabled={false}
           id="some_html_id"
           indeterminate={false}
@@ -1181,7 +1197,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
           onChange={[Function]}
         >
           <div
-            className="euiCheckbox"
+            className="euiCheckbox euiCheckbox--compressed"
           >
             <input
               checked={false}
@@ -1201,7 +1217,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
               Enable threat intelligence-based detection
             </label>
           </div>
-        </EuiCheckbox>
+        </EuiCompressedCheckbox>
       </ThreatIntelligence>
       <EuiSpacer
         size="l"
@@ -1427,9 +1443,9 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
             }
           }
         >
-          <EuiFormRow
+          <EuiCompressedFormRow
             describedByIds={Array []}
-            display="row"
+            display="rowCompressed"
             error="Enter schedule interval."
             fullWidth={false}
             hasChildLabel={true}
@@ -1443,7 +1459,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
             labelType="label"
           >
             <div
-              className="euiFormRow"
+              className="euiFormRow euiFormRow--compressed"
               id="some_html_id-row"
             >
               <div
@@ -1498,7 +1514,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                       <div
                         className="euiFlexItem"
                       >
-                        <EuiFieldNumber
+                        <EuiCompressedFieldNumber
                           data-test-subj="detector-schedule-number-select"
                           icon="clock"
                           isInvalid={false}
@@ -1507,69 +1523,80 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                           required={true}
                           value={1}
                         >
-                          <EuiFormControlLayout
-                            compressed={false}
-                            fullWidth={false}
+                          <EuiFieldNumber
+                            compressed={true}
+                            data-test-subj="detector-schedule-number-select"
                             icon="clock"
-                            isLoading={false}
+                            isInvalid={false}
+                            min={1}
+                            onChange={[Function]}
+                            required={true}
+                            value={1}
                           >
-                            <div
-                              className="euiFormControlLayout"
+                            <EuiFormControlLayout
+                              compressed={true}
+                              fullWidth={false}
+                              icon="clock"
+                              isLoading={false}
                             >
                               <div
-                                className="euiFormControlLayout__childrenWrapper"
+                                className="euiFormControlLayout euiFormControlLayout--compressed"
                               >
-                                <EuiValidatableControl
-                                  isInvalid={false}
+                                <div
+                                  className="euiFormControlLayout__childrenWrapper"
                                 >
-                                  <input
-                                    className="euiFieldNumber euiFieldNumber--withIcon"
-                                    data-test-subj="detector-schedule-number-select"
-                                    min={1}
-                                    onChange={[Function]}
-                                    required={true}
-                                    type="number"
-                                    value={1}
-                                  />
-                                </EuiValidatableControl>
-                                <EuiFormControlLayoutIcons
-                                  compressed={false}
-                                  icon="clock"
-                                  isLoading={false}
-                                >
-                                  <div
-                                    className="euiFormControlLayoutIcons"
+                                  <EuiValidatableControl
+                                    isInvalid={false}
                                   >
-                                    <EuiFormControlLayoutCustomIcon
-                                      size="m"
-                                      type="clock"
+                                    <input
+                                      className="euiFieldNumber euiFieldNumber--withIcon euiFieldNumber--compressed"
+                                      data-test-subj="detector-schedule-number-select"
+                                      min={1}
+                                      onChange={[Function]}
+                                      required={true}
+                                      type="number"
+                                      value={1}
+                                    />
+                                  </EuiValidatableControl>
+                                  <EuiFormControlLayoutIcons
+                                    compressed={true}
+                                    icon="clock"
+                                    isLoading={false}
+                                  >
+                                    <div
+                                      className="euiFormControlLayoutIcons"
                                     >
-                                      <span
-                                        className="euiFormControlLayoutCustomIcon"
+                                      <EuiFormControlLayoutCustomIcon
+                                        size="s"
+                                        type="clock"
                                       >
-                                        <EuiIcon
-                                          aria-hidden="true"
-                                          className="euiFormControlLayoutCustomIcon__icon"
-                                          size="m"
-                                          type="clock"
+                                        <span
+                                          className="euiFormControlLayoutCustomIcon"
                                         >
-                                          EuiIconMock
-                                        </EuiIcon>
-                                      </span>
-                                    </EuiFormControlLayoutCustomIcon>
-                                  </div>
-                                </EuiFormControlLayoutIcons>
+                                          <EuiIcon
+                                            aria-hidden="true"
+                                            className="euiFormControlLayoutCustomIcon__icon"
+                                            size="s"
+                                            type="clock"
+                                          >
+                                            EuiIconMock
+                                          </EuiIcon>
+                                        </span>
+                                      </EuiFormControlLayoutCustomIcon>
+                                    </div>
+                                  </EuiFormControlLayoutIcons>
+                                </div>
                               </div>
-                            </div>
-                          </EuiFormControlLayout>
-                        </EuiFieldNumber>
+                            </EuiFormControlLayout>
+                          </EuiFieldNumber>
+                        </EuiCompressedFieldNumber>
                       </div>
                     </EuiFlexItem>
                     <EuiFlexItem>
                       <div
                         className="euiFlexItem"
                       >
-                        <EuiSelect
+                        <EuiCompressedSelect
                           data-test-subj="detector-schedule-unit-select"
                           onChange={[Function]}
                           options={
@@ -1590,94 +1617,117 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                           }
                           value="MINUTES"
                         >
-                          <EuiFormControlLayout
-                            compressed={false}
-                            fullWidth={false}
-                            icon={
-                              Object {
-                                "side": "right",
-                                "type": "arrowDown",
-                              }
+                          <EuiSelect
+                            compressed={true}
+                            data-test-subj="detector-schedule-unit-select"
+                            onChange={[Function]}
+                            options={
+                              Array [
+                                Object {
+                                  "text": "Minutes",
+                                  "value": "MINUTES",
+                                },
+                                Object {
+                                  "text": "Hours",
+                                  "value": "HOURS",
+                                },
+                                Object {
+                                  "text": "Days",
+                                  "value": "DAYS",
+                                },
+                              ]
                             }
-                            isLoading={false}
+                            value="MINUTES"
                           >
-                            <div
-                              className="euiFormControlLayout"
+                            <EuiFormControlLayout
+                              compressed={true}
+                              fullWidth={false}
+                              icon={
+                                Object {
+                                  "side": "right",
+                                  "type": "arrowDown",
+                                }
+                              }
+                              isLoading={false}
                             >
                               <div
-                                className="euiFormControlLayout__childrenWrapper"
+                                className="euiFormControlLayout euiFormControlLayout--compressed"
                               >
-                                <EuiValidatableControl>
-                                  <select
-                                    className="euiSelect"
-                                    data-test-subj="detector-schedule-unit-select"
-                                    onChange={[Function]}
-                                    onMouseUp={[Function]}
-                                    value="MINUTES"
-                                  >
-                                    <option
-                                      key="0"
+                                <div
+                                  className="euiFormControlLayout__childrenWrapper"
+                                >
+                                  <EuiValidatableControl>
+                                    <select
+                                      className="euiSelect euiSelect--compressed"
+                                      data-test-subj="detector-schedule-unit-select"
+                                      onChange={[Function]}
+                                      onMouseUp={[Function]}
                                       value="MINUTES"
                                     >
-                                      Minutes
-                                    </option>
-                                    <option
-                                      key="1"
-                                      value="HOURS"
-                                    >
-                                      Hours
-                                    </option>
-                                    <option
-                                      key="2"
-                                      value="DAYS"
-                                    >
-                                      Days
-                                    </option>
-                                  </select>
-                                </EuiValidatableControl>
-                                <EuiFormControlLayoutIcons
-                                  compressed={false}
-                                  icon={
-                                    Object {
-                                      "side": "right",
-                                      "type": "arrowDown",
-                                    }
-                                  }
-                                  isLoading={false}
-                                >
-                                  <div
-                                    className="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
-                                  >
-                                    <EuiFormControlLayoutCustomIcon
-                                      size="m"
-                                      type="arrowDown"
-                                    >
-                                      <span
-                                        className="euiFormControlLayoutCustomIcon"
+                                      <option
+                                        key="0"
+                                        value="MINUTES"
                                       >
-                                        <EuiIcon
-                                          aria-hidden="true"
-                                          className="euiFormControlLayoutCustomIcon__icon"
-                                          size="m"
-                                          type="arrowDown"
+                                        Minutes
+                                      </option>
+                                      <option
+                                        key="1"
+                                        value="HOURS"
+                                      >
+                                        Hours
+                                      </option>
+                                      <option
+                                        key="2"
+                                        value="DAYS"
+                                      >
+                                        Days
+                                      </option>
+                                    </select>
+                                  </EuiValidatableControl>
+                                  <EuiFormControlLayoutIcons
+                                    compressed={true}
+                                    icon={
+                                      Object {
+                                        "side": "right",
+                                        "type": "arrowDown",
+                                      }
+                                    }
+                                    isLoading={false}
+                                  >
+                                    <div
+                                      className="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
+                                    >
+                                      <EuiFormControlLayoutCustomIcon
+                                        size="s"
+                                        type="arrowDown"
+                                      >
+                                        <span
+                                          className="euiFormControlLayoutCustomIcon"
                                         >
-                                          EuiIconMock
-                                        </EuiIcon>
-                                      </span>
-                                    </EuiFormControlLayoutCustomIcon>
-                                  </div>
-                                </EuiFormControlLayoutIcons>
+                                          <EuiIcon
+                                            aria-hidden="true"
+                                            className="euiFormControlLayoutCustomIcon__icon"
+                                            size="s"
+                                            type="arrowDown"
+                                          >
+                                            EuiIconMock
+                                          </EuiIcon>
+                                        </span>
+                                      </EuiFormControlLayoutCustomIcon>
+                                    </div>
+                                  </EuiFormControlLayoutIcons>
+                                </div>
                               </div>
-                            </div>
-                          </EuiFormControlLayout>
-                        </EuiSelect>
+                            </EuiFormControlLayout>
+                          </EuiSelect>
+                        </EuiCompressedSelect>
                       </div>
                     </EuiFlexItem>
                   </div>
                 </EuiFlexGroup>
               </div>
             </div>
-          </EuiFormRow>
+          </EuiCompressedFormRow>
         </Interval>
       </DetectorSchedule>
       <EuiSpacer
@@ -1706,51 +1756,58 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
         <div
           className="euiFlexItem euiFlexItem--flexGrowZero"
         >
-          <EuiButton
+          <EuiSmallButton
             disabled={false}
             onClick={[Function]}
           >
-            <EuiButtonDisplay
-              baseClassName="euiButton"
+            <EuiButton
               disabled={false}
-              element="button"
-              isDisabled={false}
               onClick={[Function]}
-              type="button"
+              size="s"
             >
-              <button
-                className="euiButton euiButton--primary"
+              <EuiButtonDisplay
+                baseClassName="euiButton"
                 disabled={false}
+                element="button"
+                isDisabled={false}
                 onClick={[Function]}
-                style={
-                  Object {
-                    "minWidth": undefined,
-                  }
-                }
+                size="s"
                 type="button"
               >
-                <EuiButtonContent
-                  className="euiButton__content"
-                  iconSide="left"
-                  textProps={
+                <button
+                  className="euiButton euiButton--primary euiButton--small"
+                  disabled={false}
+                  onClick={[Function]}
+                  style={
                     Object {
-                      "className": "euiButton__text",
+                      "minWidth": undefined,
                     }
                   }
+                  type="button"
                 >
-                  <span
-                    className="euiButtonContent euiButton__content"
+                  <EuiButtonContent
+                    className="euiButton__content"
+                    iconSide="left"
+                    textProps={
+                      Object {
+                        "className": "euiButton__text",
+                      }
+                    }
                   >
                     <span
-                      className="euiButton__text"
+                      className="euiButtonContent euiButton__content"
                     >
-                      Cancel
+                      <span
+                        className="euiButton__text"
+                      >
+                        Cancel
+                      </span>
                     </span>
-                  </span>
-                </EuiButtonContent>
-              </button>
-            </EuiButtonDisplay>
-          </EuiButton>
+                  </EuiButtonContent>
+                </button>
+              </EuiButtonDisplay>
+            </EuiButton>
+          </EuiSmallButton>
         </div>
       </EuiFlexItem>
       <EuiFlexItem
@@ -1759,59 +1816,69 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
         <div
           className="euiFlexItem euiFlexItem--flexGrowZero"
         >
-          <EuiButton
+          <EuiSmallButton
             data-test-subj="save-basic-details-edits"
             disabled={false}
             fill={true}
             isLoading={false}
             onClick={[Function]}
           >
-            <EuiButtonDisplay
-              baseClassName="euiButton"
+            <EuiButton
               data-test-subj="save-basic-details-edits"
               disabled={false}
-              element="button"
               fill={true}
-              isDisabled={false}
               isLoading={false}
               onClick={[Function]}
-              type="button"
+              size="s"
             >
-              <button
-                className="euiButton euiButton--primary euiButton--fill"
+              <EuiButtonDisplay
+                baseClassName="euiButton"
                 data-test-subj="save-basic-details-edits"
                 disabled={false}
+                element="button"
+                fill={true}
+                isDisabled={false}
+                isLoading={false}
                 onClick={[Function]}
-                style={
-                  Object {
-                    "minWidth": undefined,
-                  }
-                }
+                size="s"
                 type="button"
               >
-                <EuiButtonContent
-                  className="euiButton__content"
-                  iconSide="left"
-                  isLoading={false}
-                  textProps={
+                <button
+                  className="euiButton euiButton--primary euiButton--small euiButton--fill"
+                  data-test-subj="save-basic-details-edits"
+                  disabled={false}
+                  onClick={[Function]}
+                  style={
                     Object {
-                      "className": "euiButton__text",
+                      "minWidth": undefined,
                     }
                   }
+                  type="button"
                 >
-                  <span
-                    className="euiButtonContent euiButton__content"
+                  <EuiButtonContent
+                    className="euiButton__content"
+                    iconSide="left"
+                    isLoading={false}
+                    textProps={
+                      Object {
+                        "className": "euiButton__text",
+                      }
+                    }
                   >
                     <span
-                      className="euiButton__text"
+                      className="euiButtonContent euiButton__content"
                     >
-                      Save changes
+                      <span
+                        className="euiButton__text"
+                      >
+                        Save changes
+                      </span>
                     </span>
-                  </span>
-                </EuiButtonContent>
-              </button>
-            </EuiButtonDisplay>
-          </EuiButton>
+                  </EuiButtonContent>
+                </button>
+              </EuiButtonDisplay>
+            </EuiButton>
+          </EuiSmallButton>
         </div>
       </EuiFlexItem>
     </div>
