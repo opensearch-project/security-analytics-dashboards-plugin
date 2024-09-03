@@ -7,7 +7,11 @@ import { SimpleSavedObject } from 'opensearch-dashboards/public';
 import { Detector, LogType, ServerResponse } from '../../types';
 import { DetectorInput, PeriodSchedule } from '../../models/interfaces';
 import { DetectorHit } from '../../server/models/interfaces';
+import _ from 'lodash';
 import { euiPaletteColorBlind, euiPaletteForStatus } from '@elastic/eui';
+import { DataSourceOption } from 'src/plugins/data_source_management/public';
+import { BehaviorSubject } from 'rxjs';
+import { i18n } from "@osd/i18n";
 
 export const DATE_MATH_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
 export const MAX_RECENTLY_USED_TIME_RANGES = 5;
@@ -76,7 +80,7 @@ export const BREADCRUMBS = Object.freeze({
   SECURITY_ANALYTICS: { text: 'Security Analytics', href: '#/' },
   OVERVIEW: { text: 'Overview', href: `#${ROUTES.OVERVIEW}` },
   FINDINGS: { text: 'Findings', href: `#${ROUTES.FINDINGS}` },
-  DETECTORS: { text: 'Detectors', href: `#${ROUTES.DETECTORS}` },
+  DETECTORS: { text: 'Threat detectors', href: `#${ROUTES.DETECTORS}` },
   DETECTORS_CREATE: { text: 'Create detector', href: `#${ROUTES.DETECTORS_CREATE}` },
   EDIT_DETECTOR_DETAILS: { text: 'Edit detector details' },
   DETECTORS_DETAILS: (name: string, detectorId: string) => ({
@@ -88,9 +92,13 @@ export const BREADCRUMBS = Object.freeze({
     href: `#${ROUTES.EDIT_DETECTOR_DETAILS}/${detectorId}`,
   }),
   RULES: { text: 'Detection rules', href: `#${ROUTES.RULES}` },
-  ALERTS: { text: 'Alerts', href: `#${ROUTES.ALERTS}` },
+  ALERTS: { text: 'Threat alerts', href: `#${ROUTES.ALERTS}` },
   RULES_CREATE: { text: 'Create detection rule', href: `#${ROUTES.RULES_CREATE}` },
   RULES_EDIT: { text: 'Edit rule', href: `#${ROUTES.RULES_EDIT}` },
+  RULE_EDIT_DETAILS: (name: string) => ({
+    text: `${name}`,
+    href: `#${ROUTES.RULES_EDIT}`,
+  }),
   RULES_DUPLICATE: { text: 'Duplicate rule', href: `#${ROUTES.RULES_DUPLICATE}` },
   RULES_IMPORT: { text: 'Import rule', href: `#${ROUTES.RULES_IMPORT}` },
   CORRELATIONS: { text: 'Correlations', href: `#${ROUTES.CORRELATIONS}` },
@@ -284,3 +292,12 @@ export const ALERT_SEVERITY_OPTIONS = {
     color: { background: paletteColors[0], text: 'white' },
   },
 };
+
+const LocalCluster: DataSourceOption = {
+  label: i18n.translate("dataSource.localCluster", {
+    defaultMessage: "Local cluster",
+  }),
+  id: "",
+};
+
+export const dataSourceObservable = new BehaviorSubject<DataSourceOption>(LocalCluster);

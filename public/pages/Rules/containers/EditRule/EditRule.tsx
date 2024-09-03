@@ -12,6 +12,7 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { setRulesRelatedBreadCrumb } from '../../utils/helpers';
 import { RuleItemInfoBase } from '../../../../../types';
 import { setBreadcrumbs } from '../../../../utils/helpers';
+import { getUseUpdatedUx } from '../../../../services/utils/constants';
 
 export interface EditRuleProps
   extends RouteComponentProps<any, any, { ruleItem: RuleItemInfoBase }> {
@@ -20,9 +21,17 @@ export interface EditRuleProps
 }
 
 export const EditRule: React.FC<EditRuleProps> = ({ history, location, notifications }) => {
+
   useEffect(() => {
-    setRulesRelatedBreadCrumb(BREADCRUMBS.RULES_EDIT, setBreadcrumbs);
-  });
+    const ruleItemTitle = location.state.ruleItem._source.title;
+    const ruleEditDetailsBreadcrumb = BREADCRUMBS.RULE_EDIT_DETAILS(ruleItemTitle);
+
+    if (!getUseUpdatedUx()) {
+      setRulesRelatedBreadCrumb(BREADCRUMBS.RULES_EDIT, setBreadcrumbs);
+    } else {
+      setBreadcrumbs([ruleEditDetailsBreadcrumb]);
+    }
+  }, [location.state.ruleItem._source.title, getUseUpdatedUx()]); // Add relevant dependencies
 
   return (
     <RuleEditorContainer
