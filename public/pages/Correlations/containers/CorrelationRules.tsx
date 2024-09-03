@@ -14,7 +14,7 @@ import {
   EuiInMemoryTable,
   EuiEmptyPrompt,
 } from '@elastic/eui';
-import { BREADCRUMBS, PLUGIN_NAME, ROUTES } from '../../../utils/constants';
+import { BREADCRUMBS, ROUTES } from '../../../utils/constants';
 import { DataStore } from '../../../store/DataStore';
 import {
   getCorrelationRulesTableColumns,
@@ -25,6 +25,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { DeleteCorrelationRuleModal } from '../components/DeleteModal';
 import { setBreadcrumbs } from '../../../utils/helpers';
 import { PageHeader } from '../../../components/PageHeader/PageHeader';
+import { getUseUpdatedUx } from '../../../services/utils/constants';
 
 export interface CorrelationRulesProps extends RouteComponentProps, DataSourceProps {}
 
@@ -46,8 +47,12 @@ export const CorrelationRules: React.FC<CorrelationRulesProps> = (props: Correla
   }, [DataStore.correlations.getCorrelationRules]);
 
   useEffect(() => {
-    setBreadcrumbs([BREADCRUMBS.CORRELATIONS, BREADCRUMBS.CORRELATION_RULES]);
-  }, []);
+    if (getUseUpdatedUx()) {
+      setBreadcrumbs([BREADCRUMBS.CORRELATION_RULES]);
+    } else {
+      setBreadcrumbs([BREADCRUMBS.CORRELATIONS, BREADCRUMBS.CORRELATION_RULES]);
+    }
+  }, [getUseUpdatedUx()]);
 
   useEffect(() => {
     getCorrelationRules();
@@ -56,7 +61,7 @@ export const CorrelationRules: React.FC<CorrelationRulesProps> = (props: Correla
   const createRuleAction = useMemo(
     () => (
       <EuiSmallButton
-        href={`${PLUGIN_NAME}#${ROUTES.CORRELATION_RULE_CREATE}`}
+        href={`#${ROUTES.CORRELATION_RULE_CREATE}`}
         data-test-subj={'create_rule_button'}
         fill={true}
       >
