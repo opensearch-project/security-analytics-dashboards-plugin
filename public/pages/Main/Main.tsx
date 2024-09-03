@@ -61,9 +61,9 @@ import { ThreatIntelOverview } from '../ThreatIntel/containers/Overview/ThreatIn
 import { AddThreatIntelSource } from '../ThreatIntel/containers/AddThreatIntelSource/AddThreatIntelSource';
 import { ThreatIntelScanConfigForm } from '../ThreatIntel/containers/ScanConfiguration/ThreatIntelScanConfigForm';
 import { ThreatIntelSource } from '../ThreatIntel/containers/ThreatIntelSource/ThreatIntelSource';
-import * as pluginManifest from "../../../opensearch_dashboards.json";
-import { DataSourceAttributes } from "../../../../../src/plugins/data_source/common/data_sources";
-import semver from "semver";
+import * as pluginManifest from '../../../opensearch_dashboards.json';
+import { DataSourceAttributes } from '../../../../../src/plugins/data_source/common/data_sources';
+import semver from 'semver';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -180,11 +180,19 @@ export default class Main extends Component<MainProps, MainState> {
     prevState: Readonly<MainState>,
     snapshot?: any
   ): void {
-    if (this.props.location.pathname === prevProps.location.pathname) {
-      return;
+    const pathnameChanged = this.props.location.pathname !== prevProps.location.pathname;
+
+    if (pathnameChanged || this.state.selectedDataSource.id !== prevState.selectedDataSource.id) {
+      const searchParams = new URLSearchParams(this.props.location.search);
+      searchParams.set('dataSourceId', this.state.selectedDataSource.id);
+      this.props.history.replace({
+        search: searchParams.toString(),
+      });
     }
 
-    this.updateSelectedNavItem();
+    if (pathnameChanged) {
+      this.updateSelectedNavItem();
+    }
   }
 
   setDateTimeFilter = (dateTimeFilter: DateTimeFilter) => {
@@ -377,11 +385,13 @@ export default class Main extends Component<MainProps, MainState> {
   };
 
   dataSourceFilterFn = (dataSource: SavedObject<DataSourceAttributes>) => {
-    const dataSourceVersion = dataSource?.attributes?.dataSourceVersion || "";
+    const dataSourceVersion = dataSource?.attributes?.dataSourceVersion || '';
     const installedPlugins = dataSource?.attributes?.installedPlugins || [];
     return (
       semver.satisfies(dataSourceVersion, pluginManifest.supportedOSDataSourceVersions) &&
-      pluginManifest.requiredOSDataSourcePlugins.every((plugin) => installedPlugins.includes(plugin))
+      pluginManifest.requiredOSDataSourcePlugins.every((plugin) =>
+        installedPlugins.includes(plugin)
+      )
     );
   };
 
@@ -426,6 +436,7 @@ export default class Main extends Component<MainProps, MainState> {
                           <>
                             {multiDataSourceEnabled && (
                               <DataSourceMenuWrapper
+                                {...this.props}
                                 dataSourceManagement={dataSourceManagement}
                                 core={core}
                                 dataSourceLoading={this.state.dataSourceLoading}
@@ -437,12 +448,12 @@ export default class Main extends Component<MainProps, MainState> {
                             {!dataSourceLoading && services && (
                               <EuiPage restrictWidth={'100%'}>
                                 {/* Hide side navigation bar when on any HIDDEN_NAV_ROUTES pages. */}
-                                {!HIDDEN_NAV_ROUTES.some((route) => pathname.match(route)) && (
-                                  !core.chrome.navGroup.getNavGroupEnabled() &&
-                                  <EuiPageSideBar style={{ minWidth: 200 }}>
-                                    <EuiSideNav style={{ width: 200 }} items={sideNav} />
-                                  </EuiPageSideBar>
-                                )}
+                                {!HIDDEN_NAV_ROUTES.some((route) => pathname.match(route)) &&
+                                  !core.chrome.navGroup.getNavGroupEnabled() && (
+                                    <EuiPageSideBar style={{ minWidth: 200 }}>
+                                      <EuiSideNav style={{ width: 200 }} items={sideNav} />
+                                    </EuiPageSideBar>
+                                  )}
                                 <EuiPageBody>
                                   {callout ? <Callout {...callout} /> : null}
                                   {showFlyoutData ? (
@@ -763,6 +774,7 @@ export default class Main extends Component<MainProps, MainState> {
                                           <ThreatIntelOverview
                                             {...props}
                                             threatIntelService={services.threatIntelService}
+                                            dataSource={selectedDataSource}
                                           />
                                         );
                                       }}
