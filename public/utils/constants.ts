@@ -11,7 +11,7 @@ import _ from 'lodash';
 import { euiPaletteColorBlind, euiPaletteForStatus } from '@elastic/eui';
 import { DataSourceOption } from 'src/plugins/data_source_management/public';
 import { BehaviorSubject } from 'rxjs';
-import { i18n } from "@osd/i18n";
+import { i18n } from '@osd/i18n';
 
 export const DATE_MATH_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
 export const MAX_RECENTLY_USED_TIME_RANGES = 5;
@@ -22,12 +22,13 @@ export const PLUGIN_NAME = 'opensearch_security_analytics_dashboards';
 export const OS_NOTIFICATION_PLUGIN = 'opensearch-notifications';
 
 export const DEFAULT_EMPTY_DATA = '-';
-export const OVERVIEW_NAV_ID = `overview`;
+export const OVERVIEW_NAV_ID = `sa_overview`;
+export const GETTING_STARTED_NAV_ID = `getting_started`;
 export const THREAT_ALERTS_NAV_ID = `threat_alerts`;
 export const FINDINGS_NAV_ID = `findings`;
 export const CORRELATIONS_NAV_ID = `correlations`;
 export const DETECTORS_NAV_ID = `detectors`;
-export const DETECTORS_RULE_NAV_ID = `detectors_rules`;
+export const DETECTION_RULE_NAV_ID = `detection_rules`;
 export const CORRELATIONS_RULE_NAV_ID = `correlation_rules`;
 export const THREAT_INTEL_NAV_ID = `threat_intelligence`;
 export const LOG_TYPES_NAV_ID = `log_types`;
@@ -44,6 +45,7 @@ export const ROUTES = Object.freeze({
   DETECTORS: '/detectors',
   FINDINGS: '/findings',
   OVERVIEW: '/overview',
+  GETTING_STARTED: '/getting-started',
   RULES: '/rules',
   RULES_CREATE: '/create-rule',
   RULES_EDIT: '/edit-rule',
@@ -79,6 +81,7 @@ export const getNotificationDetailsHref = (channelId: string) =>
 export const BREADCRUMBS = Object.freeze({
   SECURITY_ANALYTICS: { text: 'Security Analytics', href: '#/' },
   OVERVIEW: { text: 'Overview', href: `#${ROUTES.OVERVIEW}` },
+  GETTING_STARTED: { text: 'Getting started', href: `#${ROUTES.GETTING_STARTED}` },
   FINDINGS: { text: 'Findings', href: `#${ROUTES.FINDINGS}` },
   DETECTORS: { text: 'Threat detectors', href: `#${ROUTES.DETECTORS}` },
   DETECTORS_CREATE: { text: 'Create detector', href: `#${ROUTES.DETECTORS_CREATE}` },
@@ -256,48 +259,61 @@ export const ALERT_SEVERITY_OPTIONS = {
     value: '1',
     label: '1 (Highest)',
     text: '1 (Highest)',
-    badgeLabel: 'Highest',
-    color: { background: paletteColors[4], text: 'white' },
   },
   HIGH: {
     id: '2',
     value: '2',
     label: '2 (High)',
     text: '2 (High)',
-    badgeLabel: 'High',
-    color: { background: paletteColors[3], text: 'white' },
   },
   MEDIUM: {
     id: '3',
     value: '3',
     label: '3 (Medium)',
     text: '3 (Medium)',
-    badgeLabel: 'Medium',
-    color: { background: paletteColors[2], text: 'black' },
   },
   LOW: {
     id: '4',
     value: '4',
     label: '4 (Low)',
     text: '4 (Low)',
-    badgeLabel: 'Low',
-    color: { background: paletteColors[1], text: 'white' },
   },
   LOWEST: {
     id: '5',
     value: '5',
     label: '5 (Lowest)',
     text: '5 (Lowest)',
+  },
+};
+
+export const ALERT_SEVERITY_PROPS = {
+  [ALERT_SEVERITY_OPTIONS.HIGHEST.value]: {
+    badgeLabel: 'Highest',
+    color: { background: paletteColors[4], text: 'white' },
+  },
+  [ALERT_SEVERITY_OPTIONS.HIGH.value]: {
+    badgeLabel: 'High',
+    color: { background: paletteColors[3], text: 'white' },
+  },
+  [ALERT_SEVERITY_OPTIONS.MEDIUM.value]: {
+    badgeLabel: 'Medium',
+    color: { background: paletteColors[2], text: 'black' },
+  },
+  [ALERT_SEVERITY_OPTIONS.LOW.value]: {
+    badgeLabel: 'Low',
+    color: { background: paletteColors[1], text: 'white' },
+  },
+  [ALERT_SEVERITY_OPTIONS.LOWEST.value]: {
     badgeLabel: 'Lowest',
     color: { background: paletteColors[0], text: 'white' },
   },
 };
 
 const LocalCluster: DataSourceOption = {
-  label: i18n.translate("dataSource.localCluster", {
-    defaultMessage: "Local cluster",
+  label: i18n.translate('dataSource.localCluster', {
+    defaultMessage: 'Local cluster',
   }),
-  id: "",
+  id: '',
 };
 
 export const dataSourceObservable = new BehaviorSubject<DataSourceOption>(LocalCluster);

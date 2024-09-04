@@ -4,12 +4,11 @@
  */
 
 import { EuiBasicTableColumn, EuiSmallButton, EuiEmptyPrompt } from '@elastic/eui';
-import { DEFAULT_EMPTY_DATA, ROUTES, SortDirection } from '../../../../utils/constants';
+import { ROUTES, SortDirection } from '../../../../utils/constants';
 import React, { useEffect, useState } from 'react';
 import { TableWidget } from './TableWidget';
 import { WidgetContainer } from './WidgetContainer';
-import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
-import { renderTime } from '../../../../utils/helpers';
+import { getAlertSeverityBadge, renderTime } from '../../../../utils/helpers';
 import { OverviewAlertItem } from '../../../../../types';
 
 const columns: EuiBasicTableColumn<OverviewAlertItem>[] = [
@@ -31,7 +30,7 @@ const columns: EuiBasicTableColumn<OverviewAlertItem>[] = [
     name: 'Alert severity',
     sortable: true,
     align: 'left',
-    render: (severity: string) => parseAlertSeverityToOption(severity)?.label || DEFAULT_EMPTY_DATA,
+    render: (severity: string) => getAlertSeverityBadge(severity),
   },
 ];
 
@@ -76,7 +75,7 @@ export const RecentAlertsWidget: React.FC<RecentAlertsWidgetProps> = ({
   );
 
   return (
-    <WidgetContainer title={'Recent alerts'} actions={actions}>
+    <WidgetContainer title={'Recent threat alerts'} actions={actions}>
       <TableWidget
         columns={columns}
         items={alertItems}

@@ -175,15 +175,16 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
           {
             description: `Scan log data for indicators of compromise from threat intel data streams to identify
           malicious actors and security threats.`,
-          },
-          {
-            label: 'Learn more',
-            href:
-              'https://opensearch.org/docs/latest/security-analytics/threat-intelligence/index/',
-            controlType: 'link',
-            target: '_blank',
-            iconType: 'popout',
-            iconSide: 'right',
+            links: [
+              {
+                label: 'Learn more',
+                href:
+                  'https://opensearch.org/docs/latest/security-analytics/threat-intelligence/index/',
+                controlType: 'link',
+                target: '_blank',
+                flush: 'both',
+              },
+            ],
           },
         ]}
       >

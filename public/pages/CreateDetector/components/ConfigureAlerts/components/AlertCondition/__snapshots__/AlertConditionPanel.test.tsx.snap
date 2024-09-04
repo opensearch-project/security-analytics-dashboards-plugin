@@ -476,7 +476,6 @@ Object {
                     tabindex="-1"
                   >
                     <span
-                      badgelabel="Highest"
                       class="euiComboBoxPill euiComboBoxPill--plainText"
                       id="1"
                       text="1 (Highest)"
@@ -1346,7 +1345,6 @@ Object {
                   tabindex="-1"
                 >
                   <span
-                    badgelabel="Highest"
                     class="euiComboBoxPill euiComboBoxPill--plainText"
                     id="1"
                     text="1 (Highest)"

@@ -132,6 +132,7 @@ export function getEmptyThreatIntelSourcePayloadBase(): ThreatIntelSourcePayload
     store_type: 'OS',
     enabled: true,
     ioc_types: [],
+    enabled_for_scan: true,
   };
 }
 
@@ -260,7 +261,7 @@ export function readIocsFromFile(
 export function threatIntelSourceItemToBasePayload(
   sourceItem: ThreatIntelSourceItem
 ): ThreatIntelSourcePayloadBase {
-  const { name, description, enabled, ioc_types } = sourceItem;
+  const { name, description, enabled, ioc_types, enabled_for_scan } = sourceItem;
   return {
     name,
     description,
@@ -268,5 +269,6 @@ export function threatIntelSourceItemToBasePayload(
     store_type: 'OS',
     enabled,
     ioc_types,
+    enabled_for_scan,
   };
 }
