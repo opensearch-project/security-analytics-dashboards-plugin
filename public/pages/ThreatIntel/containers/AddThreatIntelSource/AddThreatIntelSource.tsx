@@ -596,19 +596,21 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
           </p>
         </EuiText>
         <EuiSpacer size="m" />
-        <EuiFormRow isInvalid={!!inputErrors.ioc_types} error={inputErrors.ioc_types}>
+        <EuiCompressedFormRow isInvalid={!!inputErrors.ioc_types} error={inputErrors.ioc_types}>
           <EuiCompressedCheckboxGroup
             options={checkboxes}
             idToSelectedMap={checkboxIdToSelectedMap}
             onChange={onIocTypesChange}
           />
-        </EuiFormRow>
+        </EuiCompressedFormRow>
         <EuiSpacer />
       </EuiPanel>
       <EuiSpacer />
       <EuiFlexGroup justifyContent="flexEnd">
         <EuiFlexItem grow={false}>
-          <EuiSmallButton onClick={() => history.push(ROUTES.THREAT_INTEL_OVERVIEW)}>Cancel</EuiSmallButton>
+          <EuiSmallButton onClick={() => history.push(ROUTES.THREAT_INTEL_OVERVIEW)}>
+            Cancel
+          </EuiSmallButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
           <EuiSmallButton

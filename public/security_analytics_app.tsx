@@ -20,6 +20,8 @@ import { CHANNEL_TYPES } from './pages/CreateDetector/components/ConfigureAlerts
 import { DataSourceManagementPluginSetup } from '../../../src/plugins/data_source_management/public';
 import { getPlugins, setIsNotificationPluginInstalled } from './utils/helpers';
 import { OS_NOTIFICATION_PLUGIN } from './utils/constants';
+import { dataSourceInfo } from './services/utils/constants';
+import { History } from 'history';
 import { getBrowserServices } from './services/utils/constants';
 
 export function renderApp(
@@ -37,21 +39,62 @@ export function renderApp(
     ReactDOM.render(
       <Router>
         <Route
-          render={(props) => (
-            <DarkModeContext.Provider value={isDarkMode}>
-              <SecurityAnalyticsContext.Provider value={{ services, metrics }}>
-                <CoreServicesContext.Provider value={coreStart}>
-                  <Main
-                    {...props}
-                    landingPage={landingPage}
-                    multiDataSourceEnabled={!!depsStart.dataSource}
-                    dataSourceManagement={dataSourceManagement}
-                    setActionMenu={params.setHeaderActionMenu}
-                  />
-                </CoreServicesContext.Provider>
-              </SecurityAnalyticsContext.Provider>
-            </DarkModeContext.Provider>
-          )}
+          render={(props) => {
+            const originalMethods = {
+              push: props.history.push,
+              replace: props.history.replace,
+            };
+            const wrapper = (method: 'push' | 'replace') => (
+              ...args: Parameters<History['push']>
+            ) => {
+              if (typeof args[0] === 'string') {
+                const url = new URL(args[0], window.location.origin);
+                const searchParams = url.searchParams;
+                searchParams.set('dataSourceId', dataSourceInfo.activeDataSource.id);
+                originalMethods[method](
+                  {
+                    pathname: url.pathname,
+                    search: searchParams.toString(),
+                  },
+                  ...args.slice(1)
+                );
+              } else if (typeof args[0] === 'object') {
+                const searchParams = new URLSearchParams(args[0].search);
+                searchParams.set('dataSourceId', dataSourceInfo.activeDataSource.id);
+                originalMethods[method](
+                  {
+                    ...args[0],
+                    search: searchParams.toString(),
+                  },
+                  ...args.slice(1)
+                );
+              } else {
+                originalMethods[method](...args);
+              }
+            };
+
+            props.history = {
+              ...props.history,
+              push: wrapper('push'),
+              replace: wrapper('replace'),
+            };
+
+            return (
+              <DarkModeContext.Provider value={isDarkMode}>
+                <SecurityAnalyticsContext.Provider value={{ services, metrics }}>
+                  <CoreServicesContext.Provider value={coreStart}>
+                    <Main
+                      {...props}
+                      landingPage={landingPage}
+                      multiDataSourceEnabled={!!depsStart.dataSource}
+                      dataSourceManagement={dataSourceManagement}
+                      setActionMenu={params.setHeaderActionMenu}
+                    />
+                  </CoreServicesContext.Provider>
+                </SecurityAnalyticsContext.Provider>
+              </DarkModeContext.Provider>
+            );
+          }}
         />
       </Router>,
       params.element
