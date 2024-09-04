@@ -61,13 +61,14 @@ import { DataSourceManagementPluginSetup } from '../../../../../src/plugins/data
 import { DataSourceMenuWrapper } from '../../components/MDS/DataSourceMenuWrapper';
 import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
 import { DataSourceContext, DataSourceContextConsumer } from '../../services/DataSourceContext';
-import { dataSourceInfo } from '../../services/utils/constants';
+import { dataSourceInfo, getUseUpdatedUx } from '../../services/utils/constants';
 import { ThreatIntelOverview } from '../ThreatIntel/containers/Overview/ThreatIntelOverview';
 import { AddThreatIntelSource } from '../ThreatIntel/containers/AddThreatIntelSource/AddThreatIntelSource';
 import { ThreatIntelScanConfigForm } from '../ThreatIntel/containers/ScanConfiguration/ThreatIntelScanConfigForm';
 import { ThreatIntelSource } from '../ThreatIntel/containers/ThreatIntelSource/ThreatIntelSource';
 import queryString from 'query-string';
 import { dataSourceFilterFn } from '../../utils/helpers';
+import { GettingStartedContent } from '../Overview/components/GettingStarted/GettingStartedContent';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -607,6 +608,17 @@ export default class Main extends Component<MainProps, MainState> {
                                         />
                                       )}
                                     />
+                                    {getUseUpdatedUx() && (
+                                      <Route
+                                        path={ROUTES.GETTING_STARTED}
+                                        render={(props: RouteComponentProps) => (
+                                          <GettingStartedContent
+                                            {...props}
+                                            onStepClicked={() => {}}
+                                          />
+                                        )}
+                                      />
+                                    )}
                                     <Route
                                       path={`${ROUTES.ALERTS}/:detectorId?`}
                                       render={(props: RouteComponentProps) => (

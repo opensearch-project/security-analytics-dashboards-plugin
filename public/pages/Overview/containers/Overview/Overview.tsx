@@ -13,6 +13,9 @@ import {
   EuiTitle,
   EuiSpacer,
   EuiSmallButton,
+  EuiCard,
+  EuiPanel,
+  EuiStat,
 } from '@elastic/eui';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import {
@@ -24,16 +27,18 @@ import {
 import { CoreServicesContext } from '../../../../../public/components/core_services';
 import { RecentAlertsWidget } from '../../components/Widgets/RecentAlertsWidget';
 import { RecentFindingsWidget } from '../../components/Widgets/RecentFindingsWidget';
-import { DetectorsWidget } from '../../components/Widgets/DetectorsWidget';
 import { OverviewViewModelActor } from '../../models/OverviewViewModel';
 import { SecurityAnalyticsContext } from '../../../../services';
 import { Summary } from '../../components/Widgets/Summary';
 import { TopRulesWidget } from '../../components/Widgets/TopRulesWidget';
-import { GettingStartedPopup } from '../../components/GettingStarted/GettingStartedPopup';
+import { GettingStartedContent } from '../../components/GettingStarted/GettingStartedContent';
 import { getChartTimeUnit, TimeUnit } from '../../utils/helpers';
 import { OverviewProps, OverviewState, OverviewViewModel } from '../../../../../types';
 import { setBreadcrumbs } from '../../../../utils/helpers';
 import { PageHeader } from '../../../../components/PageHeader/PageHeader';
+import { getOverviewStatsProps, getOverviewsCardsProps } from '../../utils/constants';
+import { getUseUpdatedUx } from '../../../../services/utils/constants';
+import { RecentThreatIntelFindingsWidget } from '../../components/Widgets/RecentThreatIntelFindingsWidget';
 
 export const Overview: React.FC<OverviewProps> = (props) => {
   const {
@@ -51,6 +56,8 @@ export const Overview: React.FC<OverviewProps> = (props) => {
       detectors: [],
       findings: [],
       alerts: [],
+      threatIntelFindings: [],
+      correlations: 0,
     },
   });
 
@@ -74,7 +81,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
     return fireAbortSignals;
   }, [fireAbortSignals]);
 
-  const updateState = (overviewViewModel: OverviewViewModel, modelLoadingComplete: boolean) => {
+  const updateState = (overviewViewModel: OverviewViewModel, _modelLoadingComplete: boolean) => {
     setState({
       ...state,
       overviewViewModel: { ...overviewViewModel },
@@ -219,9 +226,16 @@ export const Overview: React.FC<OverviewProps> = (props) => {
       anchorPosition="downRight"
       closePopover={closePopover}
     >
-      <GettingStartedPopup dismissPopup={closePopover} history={props.history} />
+      <GettingStartedContent onStepClicked={closePopover} history={props.history} />
     </EuiPopover>
   );
+
+  const overviewStats = {
+    alerts: state.overviewViewModel.alerts.filter((a) => !a.acknowledged).length,
+    correlations: state.overviewViewModel.correlations,
+    ruleFindings: state.overviewViewModel.findings.length,
+    threatIntelFindings: state.overviewViewModel.threatIntelFindings.length,
+  };
 
   return (
     <EuiFlexGroup direction="column">
@@ -232,7 +246,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
         ]}
       >
         <EuiFlexItem>
-          <EuiFlexGroup justifyContent="spaceBetween" gutterSize="s">
+          <EuiFlexGroup justifyContent="spaceBetween" gutterSize="s" alignItems="center">
             <EuiFlexItem grow={false}>
               <EuiTitle size="m">
                 <h1>Overview</h1>
@@ -245,6 +259,30 @@ export const Overview: React.FC<OverviewProps> = (props) => {
           <EuiSpacer size={'m'} />
         </EuiFlexItem>
       </PageHeader>
+      {getUseUpdatedUx() && (
+        <>
+          <EuiFlexItem>
+            <EuiFlexGroup gutterSize="m">
+              {getOverviewsCardsProps().map((p, idx) => (
+                <EuiFlexItem key={idx}>
+                  <EuiCard {...p} layout="vertical" textAlign="left" />
+                </EuiFlexItem>
+              ))}
+            </EuiFlexGroup>
+          </EuiFlexItem>
+          <EuiFlexItem>
+            <EuiFlexGroup gutterSize="m">
+              {getOverviewStatsProps(overviewStats).map((p, idx) => (
+                <EuiFlexItem key={idx}>
+                  <EuiPanel>
+                    <EuiStat {...p} textAlign="right" titleSize="m" />
+                  </EuiPanel>
+                </EuiFlexItem>
+              ))}
+            </EuiFlexGroup>
+          </EuiFlexItem>
+        </>
+      )}
       <EuiFlexItem>
         <Summary
           alerts={state.overviewViewModel.alerts}
@@ -261,9 +299,8 @@ export const Overview: React.FC<OverviewProps> = (props) => {
           <RecentAlertsWidget items={state.overviewViewModel.alerts} loading={loading} />
           <RecentFindingsWidget items={state.overviewViewModel.findings} loading={loading} />
           <TopRulesWidget findings={state.overviewViewModel.findings} loading={loading} />
-          <DetectorsWidget
-            detectorHits={state.overviewViewModel.detectors}
-            {...props}
+          <RecentThreatIntelFindingsWidget
+            items={state.overviewViewModel.threatIntelFindings}
             loading={loading}
           />
         </EuiFlexGrid>

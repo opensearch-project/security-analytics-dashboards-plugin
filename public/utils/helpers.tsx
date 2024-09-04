@@ -20,6 +20,7 @@ import { PeriodSchedule } from '../../models/interfaces';
 import React from 'react';
 import {
   ALERT_SEVERITY_OPTIONS,
+  ALERT_SEVERITY_PROPS,
   BREADCRUMBS,
   DEFAULT_EMPTY_DATA,
   defaultColorForVisualizations,
@@ -383,7 +384,7 @@ export const getSeverityBadge = (severity: string) => {
   const severityLevel = ruleSeverity.find((sev) => sev.value === severity);
   return (
     <EuiBadge color={severityLevel?.color.background} style={{ color: severityLevel?.color.text }}>
-      {severity || DEFAULT_EMPTY_DATA}
+      {severityLevel?.name || DEFAULT_EMPTY_DATA}
     </EuiBadge>
   );
 };
@@ -663,11 +664,23 @@ export function getSeverityText(severity: string) {
 }
 
 export function getBadgeText(severity: string) {
-  return _.get(_.find(ALERT_SEVERITY_OPTIONS, { value: severity }), 'badgeLabel');
+  return ALERT_SEVERITY_PROPS[severity]?.badgeLabel || DEFAULT_EMPTY_DATA;
 }
 
-export function getSeverityColor(severity: string) {
-  return _.get(_.find(ALERT_SEVERITY_OPTIONS, { value: severity }), 'color');
+export function getAlertSeverityColor(severity: string) {
+  return ALERT_SEVERITY_PROPS[severity]?.color || { background: 'white', text: 'black' };
+}
+
+export function getAlertSeverityBadge(severity: string) {
+  const severityColor = getAlertSeverityColor(severity);
+  return (
+    <EuiBadge
+      color={severityColor.background}
+      style={{ padding: '1px 5px', color: severityColor.text }}
+    >
+      {getBadgeText(severity)}
+    </EuiBadge>
+  );
 }
 
 export const getTruncatedText = (text: string, textLength: number = 14) => {

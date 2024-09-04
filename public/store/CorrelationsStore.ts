@@ -190,6 +190,19 @@ export class CorrelationsStore implements ICorrelationsStore {
     return response.ok;
   }
 
+  public async getCorrelationsCountInWindow(start_time: string, end_time: string): Promise<number> {
+    const allCorrelationsRes = await this.service.getAllCorrelationsInTimeWindow(
+      start_time,
+      end_time
+    );
+
+    if (allCorrelationsRes.ok) {
+      return allCorrelationsRes.response.findings.length;
+    }
+
+    return 0;
+  }
+
   public async getAllCorrelationsInWindow(
     start_time: string,
     end_time: string
