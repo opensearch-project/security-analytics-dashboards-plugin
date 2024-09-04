@@ -21,6 +21,7 @@ import React, { MouseEventHandler, useCallback, useEffect, useMemo } from 'react
 import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { useState } from 'react';
 import {
+  DataSourceProps,
   ThreatIntelNextStepId,
   ThreatIntelScanConfig,
   ThreatIntelSourceItem,
@@ -34,13 +35,14 @@ import { ThreatIntelLogScanConfig } from '../../components/ThreatIntelLogScanCon
 import { setBreadcrumbs } from '../../../../utils/helpers';
 import { PageHeader } from '../../../../components/PageHeader/PageHeader';
 
-export interface ThreatIntelOverviewProps extends RouteComponentProps {
+export interface ThreatIntelOverviewProps extends RouteComponentProps, DataSourceProps {
   threatIntelService: ThreatIntelService;
 }
 
 export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
   history,
   threatIntelService,
+  dataSource,
 }) => {
   const [threatIntelSources, setThreatIntelSources] = useState<ThreatIntelSourceItem[]>([]);
   const [scanConfig, setScanConfig] = useState<ThreatIntelScanConfig | undefined>(undefined);
@@ -136,7 +138,7 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
 
     searchSources();
     getScanConfig();
-  }, [threatIntelService]);
+  }, [threatIntelService, dataSource.id]);
 
   const nextStepClickHandlerById: Record<ThreatIntelNextStepId, MouseEventHandler> = {
     ['add-source']: addThreatIntelSourceActionHandler,
@@ -173,15 +175,16 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
           {
             description: `Scan log data for indicators of compromise from threat intel data streams to identify
           malicious actors and security threats.`,
-          },
-          {
-            label: 'Learn more',
-            href:
-              'https://opensearch.org/docs/latest/security-analytics/threat-intelligence/index/',
-            controlType: 'link',
-            target: '_blank',
-            iconType: 'popout',
-            iconSide: 'right',
+            links: [
+              {
+                label: 'Learn more',
+                href:
+                  'https://opensearch.org/docs/latest/security-analytics/threat-intelligence/index/',
+                controlType: 'link',
+                target: '_blank',
+                flush: 'both',
+              },
+            ],
           },
         ]}
       >

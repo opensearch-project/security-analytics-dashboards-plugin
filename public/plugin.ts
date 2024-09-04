@@ -17,8 +17,9 @@ import {
   CORRELATIONS_NAV_ID,
   CORRELATIONS_RULE_NAV_ID,
   DETECTORS_NAV_ID,
-  DETECTORS_RULE_NAV_ID,
+  DETECTION_RULE_NAV_ID,
   FINDINGS_NAV_ID,
+  GETTING_STARTED_NAV_ID,
   LOG_TYPES_NAV_ID,
   OVERVIEW_NAV_ID,
   PLUGIN_NAME,
@@ -73,13 +74,15 @@ export class SecurityAnalyticsPlugin
   ) {}
 
   private updateDefaultRouteOfManagementApplications: AppUpdater = () => {
-    const hash = `#/?dataSourceId=${dataSourceObservable.value?.id || ""}`;
+    const hash = `#/?dataSourceId=${dataSourceObservable.value?.id || ''}`;
     return {
       defaultPath: hash,
     };
   };
 
-  private appStateUpdater = new BehaviorSubject<AppUpdater>(this.updateDefaultRouteOfManagementApplications);
+  private appStateUpdater = new BehaviorSubject<AppUpdater>(
+    this.updateDefaultRouteOfManagementApplications
+  );
 
   public setup(
     core: CoreSetup<SecurityAnalyticsPluginStartDeps>,
@@ -115,6 +118,16 @@ export class SecurityAnalyticsPlugin
         updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
           return mountWrapper(params, ROUTES.LANDING_PAGE);
+        },
+      });
+
+      core.application.register({
+        id: GETTING_STARTED_NAV_ID,
+        title: 'Getting started',
+        order: 1,
+        updater$: this.appStateUpdater,
+        mount: async (params: AppMountParameters) => {
+          return mountWrapper(params, ROUTES.GETTING_STARTED);
         },
       });
 
@@ -163,7 +176,7 @@ export class SecurityAnalyticsPlugin
       });
 
       core.application.register({
-        id: DETECTORS_RULE_NAV_ID,
+        id: DETECTION_RULE_NAV_ID,
         title: 'Detection rules',
         order: 9080,
         category: DEFAULT_APP_CATEGORIES.configure,
@@ -214,12 +227,13 @@ export class SecurityAnalyticsPlugin
 
       const navlinks = [
         { id: OVERVIEW_NAV_ID, showInAllNavGroup: true },
+        { id: GETTING_STARTED_NAV_ID, showInAllNavGroup: true },
         { id: THREAT_ALERTS_NAV_ID, showInAllNavGroup: true },
         { id: FINDINGS_NAV_ID, showInAllNavGroup: true },
         { id: CORRELATIONS_NAV_ID },
         { id: PLUGIN_NAME, category: DEFAULT_APP_CATEGORIES.configure, title: 'Threat detection' },
         { id: DETECTORS_NAV_ID, parentNavLinkId: PLUGIN_NAME },
-        { id: DETECTORS_RULE_NAV_ID, parentNavLinkId: PLUGIN_NAME },
+        { id: DETECTION_RULE_NAV_ID, parentNavLinkId: PLUGIN_NAME },
         { id: CORRELATIONS_RULE_NAV_ID },
         { id: THREAT_INTEL_NAV_ID },
         { id: LOG_TYPES_NAV_ID },

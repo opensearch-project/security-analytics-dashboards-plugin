@@ -18,9 +18,14 @@ import {
   EuiFlexItem,
 } from '@elastic/eui';
 import { Toast } from '@opensearch-project/oui/src/eui_components/toast/global_toast_list';
-import { AppMountParameters, CoreStart, SavedObject } from 'opensearch-dashboards/public';
+import { AppMountParameters, CoreStart } from 'opensearch-dashboards/public';
 import { SaContextConsumer } from '../../services';
-import { DEFAULT_DATE_RANGE, DATE_TIME_FILTER_KEY, ROUTES, dataSourceObservable } from '../../utils/constants';
+import {
+  DEFAULT_DATE_RANGE,
+  DATE_TIME_FILTER_KEY,
+  ROUTES,
+  dataSourceObservable,
+} from '../../utils/constants';
 import { CoreServicesConsumer } from '../../components/core_services';
 import Findings from '../Findings';
 import Detectors from '../Detectors';
@@ -56,15 +61,14 @@ import { DataSourceManagementPluginSetup } from '../../../../../src/plugins/data
 import { DataSourceMenuWrapper } from '../../components/MDS/DataSourceMenuWrapper';
 import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
 import { DataSourceContext, DataSourceContextConsumer } from '../../services/DataSourceContext';
-import { dataSourceInfo } from '../../services/utils/constants';
+import { dataSourceInfo, getUseUpdatedUx } from '../../services/utils/constants';
 import { ThreatIntelOverview } from '../ThreatIntel/containers/Overview/ThreatIntelOverview';
 import { AddThreatIntelSource } from '../ThreatIntel/containers/AddThreatIntelSource/AddThreatIntelSource';
 import { ThreatIntelScanConfigForm } from '../ThreatIntel/containers/ScanConfiguration/ThreatIntelScanConfigForm';
 import { ThreatIntelSource } from '../ThreatIntel/containers/ThreatIntelSource/ThreatIntelSource';
-import * as pluginManifest from "../../../opensearch_dashboards.json";
-import { DataSourceAttributes } from "../../../../../src/plugins/data_source/common/data_sources";
-import semver from "semver";
-import queryString from "query-string";
+import queryString from 'query-string';
+import { dataSourceFilterFn } from '../../utils/helpers';
+import { GettingStartedContent } from '../Overview/components/GettingStarted/GettingStartedContent';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -137,20 +141,21 @@ export default class Main extends Component<MainProps, MainState> {
     const defaultDateTimeFilter = cachedDateTimeFilter
       ? JSON.parse(cachedDateTimeFilter)
       : {
-        startTime: DEFAULT_DATE_RANGE.start,
-        endTime: DEFAULT_DATE_RANGE.end,
-      };
-    let dataSourceId = "";
-    let dataSourceLabel = "";
+          startTime: DEFAULT_DATE_RANGE.start,
+          endTime: DEFAULT_DATE_RANGE.end,
+        };
+    let dataSourceId = '';
+    let dataSourceLabel = '';
     if (props.multiDataSourceEnabled) {
-      const { dataSourceId: parsedDataSourceId, dataSourceLabel: parsedDataSourceLabel } = queryString.parse(
-        this.props.location.search
-      ) as {
+      const {
+        dataSourceId: parsedDataSourceId,
+        dataSourceLabel: parsedDataSourceLabel,
+      } = queryString.parse(this.props.location.search) as {
         dataSourceId: string;
         dataSourceLabel: string;
       };
       dataSourceId = parsedDataSourceId;
-      dataSourceLabel = parsedDataSourceLabel || "";
+      dataSourceLabel = parsedDataSourceLabel || '';
 
       if (dataSourceId) {
         dataSourceObservable.next({ id: dataSourceId, label: dataSourceLabel });
@@ -163,10 +168,10 @@ export default class Main extends Component<MainProps, MainState> {
       dateTimeFilter: defaultDateTimeFilter,
       showFlyoutData: null,
       /**
-        * undefined: need data source picker to help to determine which data source to use.
-        * empty string: using the local cluster.
-        * string: using the selected data source.
-        */
+       * undefined: need data source picker to help to determine which data source to use.
+       * empty string: using the local cluster.
+       * string: using the selected data source.
+       */
       dataSourceLoading: dataSourceId === undefined ? props.multiDataSourceEnabled : false,
       selectedDataSource: { id: dataSourceId },
       dataSourceMenuReadOnly: false,
@@ -202,11 +207,19 @@ export default class Main extends Component<MainProps, MainState> {
     prevState: Readonly<MainState>,
     snapshot?: any
   ): void {
-    if (this.props.location.pathname === prevProps.location.pathname) {
-      return;
+    const pathnameChanged = this.props.location.pathname !== prevProps.location.pathname;
+
+    if (pathnameChanged || this.state.selectedDataSource.id !== prevState.selectedDataSource.id) {
+      const searchParams = new URLSearchParams(this.props.location.search);
+      searchParams.set('dataSourceId', this.state.selectedDataSource.id);
+      this.props.history.replace({
+        search: searchParams.toString(),
+      });
     }
 
-    this.updateSelectedNavItem();
+    if (pathnameChanged) {
+      this.updateSelectedNavItem();
+    }
   }
 
   setDateTimeFilter = (dateTimeFilter: DateTimeFilter) => {
@@ -259,7 +272,10 @@ export default class Main extends Component<MainProps, MainState> {
         selectedDataSource: { ...sources[0] },
       });
     }
-    dataSourceObservable.next({ id: this.state.selectedDataSource.id, label: this.state.selectedDataSource.label });
+    dataSourceObservable.next({
+      id: this.state.selectedDataSource.id,
+      label: this.state.selectedDataSource.label,
+    });
     if (dataSourceLoading) {
       this.setState({ dataSourceLoading: false });
     }
@@ -398,15 +414,6 @@ export default class Main extends Component<MainProps, MainState> {
     ];
   };
 
-  dataSourceFilterFn = (dataSource: SavedObject<DataSourceAttributes>) => {
-    const dataSourceVersion = dataSource?.attributes?.dataSourceVersion || "";
-    const installedPlugins = dataSource?.attributes?.installedPlugins || [];
-    return (
-      semver.satisfies(dataSourceVersion, pluginManifest.supportedOSDataSourceVersions) &&
-      pluginManifest.requiredOSDataSourcePlugins.every((plugin) => installedPlugins.includes(plugin))
-    );
-  };
-
   render() {
     const {
       landingPage,
@@ -447,23 +454,24 @@ export default class Main extends Component<MainProps, MainState> {
                           <>
                             {multiDataSourceEnabled && (
                               <DataSourceMenuWrapper
+                                {...this.props}
                                 dataSourceManagement={dataSourceManagement}
                                 core={core}
                                 dataSourceLoading={this.state.dataSourceLoading}
                                 dataSourceMenuReadOnly={dataSourceMenuReadOnly}
                                 setHeaderActionMenu={setActionMenu}
-                                dataSourceFilterFn={this.dataSourceFilterFn}
+                                dataSourceFilterFn={dataSourceFilterFn}
                               />
                             )}
                             {!dataSourceLoading && services && (
                               <EuiPage restrictWidth={'100%'}>
                                 {/* Hide side navigation bar when on any HIDDEN_NAV_ROUTES pages. */}
-                                {!HIDDEN_NAV_ROUTES.some((route) => pathname.match(route)) && (
-                                  !core.chrome.navGroup.getNavGroupEnabled() &&
-                                  <EuiPageSideBar style={{ minWidth: 200 }}>
-                                    <EuiSideNav style={{ width: 200 }} items={sideNav} />
-                                  </EuiPageSideBar>
-                                )}
+                                {!HIDDEN_NAV_ROUTES.some((route) => pathname.match(route)) &&
+                                  !core.chrome.navGroup.getNavGroupEnabled() && (
+                                    <EuiPageSideBar style={{ minWidth: 200 }}>
+                                      <EuiSideNav style={{ width: 200 }} items={sideNav} />
+                                    </EuiPageSideBar>
+                                  )}
                                 <EuiPageBody>
                                   {callout ? <Callout {...callout} /> : null}
                                   {showFlyoutData ? (
@@ -609,6 +617,17 @@ export default class Main extends Component<MainProps, MainState> {
                                         />
                                       )}
                                     />
+                                    {getUseUpdatedUx() && (
+                                      <Route
+                                        path={ROUTES.GETTING_STARTED}
+                                        render={(props: RouteComponentProps) => (
+                                          <GettingStartedContent
+                                            {...props}
+                                            onStepClicked={() => {}}
+                                          />
+                                        )}
+                                      />
+                                    )}
                                     <Route
                                       path={`${ROUTES.ALERTS}/:detectorId?`}
                                       render={(props: RouteComponentProps) => (
@@ -784,6 +803,7 @@ export default class Main extends Component<MainProps, MainState> {
                                           <ThreatIntelOverview
                                             {...props}
                                             threatIntelService={services.threatIntelService}
+                                            dataSource={selectedDataSource}
                                           />
                                         );
                                       }}

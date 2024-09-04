@@ -5,7 +5,6 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import {
-  EuiBadge,
   EuiBasicTable,
   EuiBasicTableColumn,
   EuiFlexGroup,
@@ -23,10 +22,9 @@ import {
 import {
   dataSourceFilterFn,
   errorNotificationToast,
-  getBadgeText,
-  getSeverityColor,
   getTruncatedText,
   renderTime,
+  getAlertSeverityBadge,
 } from '../../utils/helpers';
 import { THREAT_ALERTS_NAV_ID } from '../../utils/constants';
 import {
@@ -137,17 +135,7 @@ export const DataSourceThreatAlertsCard: React.FC<DataSourceAlertsCardProps> = (
       name: 'Alert severity',
       sortable: true,
       align: 'left',
-      render: (severity: string) => {
-        const severityColor = getSeverityColor(severity);
-        return (
-          <EuiBadge
-            color={severityColor?.background}
-            style={{ padding: '1px 8px', color: severityColor?.text }}
-          >
-            {getBadgeText(severity)}
-          </EuiBadge>
-        );
-      },
+      render: getAlertSeverityBadge,
     },
   ];
 
