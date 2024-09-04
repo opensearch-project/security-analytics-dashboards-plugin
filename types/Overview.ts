@@ -9,6 +9,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { DetectorHit } from './Detector';
 import { SortDirection } from '../public/utils/constants';
 import { DataSourceProps } from './DataSource';
+import { ThreatIntelFinding } from './ThreatIntel';
 
 export interface DateTimeFilter {
   startTime: string;
@@ -19,9 +20,14 @@ export interface OverviewViewModel {
   detectors: DetectorHit[];
   findings: OverviewFindingItem[];
   alerts: OverviewAlertItem[];
+  threatIntelFindings: ThreatIntelFinding[];
+  correlations: number;
 }
 
-export type OverviewViewModelRefreshHandler = (overviewState: OverviewViewModel, modelUpdateComplete: boolean) => void;
+export type OverviewViewModelRefreshHandler = (
+  overviewState: OverviewViewModel,
+  modelUpdateComplete: boolean
+) => void;
 
 export interface OverviewProps extends RouteComponentProps, DataSourceProps {
   getStartedDismissedOnce: boolean;
@@ -64,7 +70,11 @@ export interface OverviewDetectorItem {
   logTypes: string;
 }
 
-export type TableWidgetItem = OverviewFindingItem | OverviewAlertItem | OverviewDetectorItem;
+export type TableWidgetItem =
+  | OverviewFindingItem
+  | OverviewAlertItem
+  | OverviewDetectorItem
+  | ThreatIntelFinding;
 
 export type TableWidgetProps<T extends TableWidgetItem> = {
   columns: EuiBasicTableColumn<T>[];

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
+import { ALERT_SEVERITY_OPTIONS, DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 import {
   ThreatIntelAlertTrigger,
   ThreatIntelScanConfig,
@@ -19,7 +19,6 @@ import {
   ThreatIntelAlertTriggerAction,
 } from '../../../../types';
 import { AlertSeverity } from '../../Alerts/utils/constants';
-import { ALERT_SEVERITY_OPTIONS } from '../../CreateDetector/components/ConfigureAlerts/utils/constants';
 import _ from 'lodash';
 import { ThreatIntelIocType } from '../../../../common/constants';
 
@@ -133,6 +132,7 @@ export function getEmptyThreatIntelSourcePayloadBase(): ThreatIntelSourcePayload
     store_type: 'OS',
     enabled: true,
     ioc_types: [],
+    enabled_for_scan: true,
   };
 }
 
@@ -261,7 +261,7 @@ export function readIocsFromFile(
 export function threatIntelSourceItemToBasePayload(
   sourceItem: ThreatIntelSourceItem
 ): ThreatIntelSourcePayloadBase {
-  const { name, description, enabled, ioc_types } = sourceItem;
+  const { name, description, enabled, ioc_types, enabled_for_scan } = sourceItem;
   return {
     name,
     description,
@@ -269,5 +269,6 @@ export function threatIntelSourceItemToBasePayload(
     store_type: 'OS',
     enabled,
     ioc_types,
+    enabled_for_scan,
   };
 }

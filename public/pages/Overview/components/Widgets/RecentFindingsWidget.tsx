@@ -4,12 +4,13 @@
  */
 
 import { EuiBasicTableColumn, EuiSmallButton, EuiEmptyPrompt } from '@elastic/eui';
-import { ROUTES, SortDirection } from '../../../../utils/constants';
+import { FINDINGS_NAV_ID, ROUTES, SortDirection } from '../../../../utils/constants';
 import React, { useEffect, useState } from 'react';
 import { TableWidget } from './TableWidget';
 import { WidgetContainer } from './WidgetContainer';
-import { renderTime, capitalizeFirstLetter } from '../../../../utils/helpers';
+import { renderTime, getSeverityBadge } from '../../../../utils/helpers';
 import { OverviewFindingItem } from '../../../../../types';
+import { getApplication, getUseUpdatedUx } from '../../../../services/utils/constants';
 
 const columns: EuiBasicTableColumn<OverviewFindingItem>[] = [
   {
@@ -32,7 +33,7 @@ const columns: EuiBasicTableColumn<OverviewFindingItem>[] = [
     sortable: false,
     align: 'left',
     width: '20%',
-    render: (ruleSeverity: string) => capitalizeFirstLetter(ruleSeverity),
+    render: (ruleSeverity: string) => getSeverityBadge(ruleSeverity), // capitalizeFirstLetter(ruleSeverity),
   },
   {
     field: 'detector',
@@ -75,13 +76,13 @@ export const RecentFindingsWidget: React.FC<RecentFindingsWidgetProps> = ({
     );
   }, [items]);
 
-  const actions = React.useMemo(
-    () => [<EuiSmallButton href={`#${ROUTES.FINDINGS}`}>View all findings</EuiSmallButton>],
-    []
-  );
+  const actions = React.useMemo(() => {
+    const baseUrl = getUseUpdatedUx() ? getApplication().getUrlForApp(FINDINGS_NAV_ID) : '';
+    return [<EuiSmallButton href={`${baseUrl}#${ROUTES.FINDINGS}`}>View all</EuiSmallButton>];
+  }, []);
 
   return (
-    <WidgetContainer title={'Recent findings'} actions={actions}>
+    <WidgetContainer title={'Recent detection rule findings'} actions={actions}>
       <TableWidget
         columns={columns}
         items={findingItems}

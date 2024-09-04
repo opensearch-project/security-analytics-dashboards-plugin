@@ -26,16 +26,17 @@ export const CreateRule: React.FC<CreateRuleProps> = ({ history, services, notif
   return (
     <RuleEditorContainer
       title="Create detection rule"
-      subtitleData={[
-        {
-          text:
-            'Create a rule for detectors to identify threat scenarios for different log sources.',
-        },
-        {
-          text: 'Learn more in the Sigma rules specification',
+      subtitleData={{
+        description:
+          'Create a rule for detectors to identify threat scenarios for different log sources.',
+        links: {
+          label: 'Learn more in the Sigma rules specification',
           href: 'https://sigmahq.github.io/sigma-specification/Sigma_specification.html',
+          controlType: 'link',
+          target: '_blank',
+          flush: 'both',
         },
-      ]}
+      }}
       history={history}
       notifications={notifications}
       mode={'create'}
