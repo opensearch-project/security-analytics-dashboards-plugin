@@ -149,6 +149,7 @@ export interface ICorrelationsStore {
   createCorrelationRule(correlationRule: CorrelationRule): void;
   updateCorrelationRule(correlationRule: CorrelationRule): void;
   deleteCorrelationRule(ruleId: string): Promise<boolean>;
+  getCorrelationsCountInWindow(start_time: string, end_time: string): Promise<number>;
   getAllCorrelationsInWindow(
     start_time: string,
     end_time: string

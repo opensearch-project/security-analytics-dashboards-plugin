@@ -27,6 +27,7 @@ import { ROUTES } from '../../../../utils/constants';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 import { getLogTypeLabel } from '../../../LogTypes/utils/helpers';
 import { OverviewAlertItem, OverviewFindingItem } from '../../../../../types';
+import { getUseUpdatedUx } from '../../../../services/utils/constants';
 
 export interface SummaryProps {
   findings: OverviewFindingItem[];
@@ -147,22 +148,24 @@ export const Summary: React.FC<SummaryProps> = ({
   return (
     <WidgetContainer title="Findings and alert count" actions={createVisualizationActions(groupBy)}>
       <EuiFlexGroup gutterSize="s" direction="column">
-        <EuiFlexItem>
-          {activeAlerts === 0 && totalFindings === 0 ? null : (
-            <EuiFlexGroup gutterSize="xl">
-              {createStatComponent(
-                'Total active alerts',
-                { url: ROUTES.ALERTS, color: 'danger' },
-                activeAlerts
-              )}
-              {createStatComponent(
-                'Total findings',
-                { url: ROUTES.FINDINGS, color: 'primary' },
-                totalFindings
-              )}
-            </EuiFlexGroup>
-          )}
-        </EuiFlexItem>
+        {!getUseUpdatedUx() && (
+          <EuiFlexItem>
+            {activeAlerts === 0 && totalFindings === 0 ? null : (
+              <EuiFlexGroup gutterSize="xl">
+                {createStatComponent(
+                  'Total active alerts',
+                  { url: ROUTES.ALERTS, color: 'danger' },
+                  activeAlerts
+                )}
+                {createStatComponent(
+                  'Total findings',
+                  { url: ROUTES.FINDINGS, color: 'primary' },
+                  totalFindings
+                )}
+              </EuiFlexGroup>
+            )}
+          </EuiFlexItem>
+        )}
         <EuiFlexItem>
           {activeAlerts === 0 && totalFindings === 0 ? (
             <EuiEmptyPrompt

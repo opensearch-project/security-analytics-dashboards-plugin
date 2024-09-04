@@ -20,6 +20,7 @@ import { PeriodSchedule } from '../../models/interfaces';
 import React from 'react';
 import {
   ALERT_SEVERITY_OPTIONS,
+  ALERT_SEVERITY_PROPS,
   BREADCRUMBS,
   DEFAULT_EMPTY_DATA,
   defaultColorForVisualizations,
@@ -33,7 +34,12 @@ import {
   RuleItemInfo,
 } from '../pages/CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { RuleInfo } from '../../server/models/interfaces';
-import { ChromeBreadcrumb, CoreStart, NotificationsStart } from 'opensearch-dashboards/public';
+import {
+  ChromeBreadcrumb,
+  CoreStart,
+  NotificationsStart,
+  SavedObject,
+} from 'opensearch-dashboards/public';
 import {
   AlertsService,
   FieldMappingService,
@@ -77,6 +83,7 @@ import { IndexPatternsService as CoreIndexPatternsService } from '../../../../sr
 import semver from 'semver';
 import * as pluginManifest from '../../opensearch_dashboards.json';
 import { DataSourceThreatAlertsCard } from '../components/DataSourceThreatAlertsCard/DataSourceThreatAlertsCard';
+import { DataSourceAttributes } from '../../../../src/plugins/data_source/common/data_sources';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
@@ -377,7 +384,7 @@ export const getSeverityBadge = (severity: string) => {
   const severityLevel = ruleSeverity.find((sev) => sev.value === severity);
   return (
     <EuiBadge color={severityLevel?.color.background} style={{ color: severityLevel?.color.text }}>
-      {severity || DEFAULT_EMPTY_DATA}
+      {severityLevel?.name || DEFAULT_EMPTY_DATA}
     </EuiBadge>
   );
 };
@@ -643,7 +650,7 @@ export function setBreadcrumbs(crumbs: ChromeBreadcrumb[]) {
   getBreadCrumbsSetter()(getUseUpdatedUx() ? crumbs : [BREADCRUMBS.SECURITY_ANALYTICS, ...crumbs]);
 }
 
-export function dataSourceFilterFn(dataSource) {
+export function dataSourceFilterFn(dataSource: SavedObject<DataSourceAttributes>) {
   const dataSourceVersion = dataSource?.attributes?.dataSourceVersion || '';
   const installedPlugins = dataSource?.attributes?.installedPlugins || [];
   return (
@@ -652,19 +659,31 @@ export function dataSourceFilterFn(dataSource) {
   );
 }
 
-export function getSeverityText(severity) {
+export function getSeverityText(severity: string) {
   return _.get(_.find(ALERT_SEVERITY_OPTIONS, { value: severity }), 'text');
 }
 
-export function getBadgeText(severity) {
-  return _.get(_.find(ALERT_SEVERITY_OPTIONS, { value: severity }), 'badgeLabel');
+export function getBadgeText(severity: string) {
+  return ALERT_SEVERITY_PROPS[severity]?.badgeLabel || DEFAULT_EMPTY_DATA;
 }
 
-export function getSeverityColor(severity) {
-  return _.get(_.find(ALERT_SEVERITY_OPTIONS, { value: severity }), 'color');
+export function getAlertSeverityColor(severity: string) {
+  return ALERT_SEVERITY_PROPS[severity]?.color || { background: 'white', text: 'black' };
 }
 
-export const getTruncatedText = (text, textLength = 14) => {
+export function getAlertSeverityBadge(severity: string) {
+  const severityColor = getAlertSeverityColor(severity);
+  return (
+    <EuiBadge
+      color={severityColor.background}
+      style={{ padding: '1px 5px', color: severityColor.text }}
+    >
+      {getBadgeText(severity)}
+    </EuiBadge>
+  );
+}
+
+export const getTruncatedText = (text: string, textLength: number = 14) => {
   return `${text.slice(0, textLength)}${text.length > textLength ? '...' : ''}`;
 };
 

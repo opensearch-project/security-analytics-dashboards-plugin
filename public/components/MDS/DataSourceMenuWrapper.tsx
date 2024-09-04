@@ -159,6 +159,7 @@ export const DataSourceMenuWrapper: React.FC<DataSourceMenuWrapperProps> = ({
           ROUTES.RULES_DUPLICATE,
           ROUTES.LOG_TYPES_CREATE,
           ROUTES.CORRELATION_RULE_CREATE,
+          ROUTES.GETTING_STARTED,
           ROUTES.ROOT,
         ]}
         render={() => {

@@ -44,6 +44,7 @@ import { getLogTypeLabel } from '../../../LogTypes/utils/helpers';
 import { getSeverityLabel } from '../../../Correlations/utils/constants';
 import { DataSourceContext } from '../../../../services/DataSourceContext';
 import { PageHeader } from '../../../../components/PageHeader/PageHeader';
+import { TopNavControlLinkData } from '../../../../../../../src/plugins/navigation/public';
 
 export interface VisualRuleEditorProps {
   initialValue: RuleEditorFormModel;
@@ -53,7 +54,7 @@ export interface VisualRuleEditorProps {
   cancel: () => void;
   mode: 'create' | 'edit';
   title: string;
-  subtitleData?: { text: string; href?: string }[];
+  subtitleData?: { description: string; links?: TopNavControlLinkData };
 }
 
 const editorTypes = [
@@ -195,45 +196,22 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
         return (
           <Form>
             <EuiPanel className={'rule-editor-form'}>
-              <PageHeader
-                appDescriptionControls={
-                  subtitleData
-                    ? subtitleData.map((slice) => {
-                        return slice.href
-                          ? {
-                              label: slice.text,
-                              href: slice.href,
-                              controlType: 'link',
-                              target: '_blank',
-                              iconType: 'popout',
-                              iconSide: 'right',
-                            }
-                          : {
-                              description: slice.text,
-                            };
-                      })
-                    : undefined
-                }
-              >
+              <PageHeader appDescriptionControls={subtitleData ? [subtitleData] : undefined}>
                 <EuiTitle>
                   <h3>{title}</h3>
                 </EuiTitle>
-                {subtitleData &&
-                  subtitleData.map((slice, idx) => {
-                    return (
-                      <span key={idx}>
-                        {slice.href ? (
-                          <EuiLink href={slice.href} target="_blank">
-                            {slice.text}
-                          </EuiLink>
-                        ) : (
-                          <EuiText size="s" color="subdued">
-                            {slice.text}
-                          </EuiText>
-                        )}
-                      </span>
-                    );
-                  })}
+                {subtitleData && (
+                  <>
+                    <EuiText size="s" color="subdued">
+                      {subtitleData.description}
+                    </EuiText>
+                    {subtitleData.links && (
+                      <EuiLink href={subtitleData.links.href} target="_blank">
+                        {subtitleData.links.label}
+                      </EuiLink>
+                    )}
+                  </>
+                )}
               </PageHeader>
               <EuiButtonGroup
                 data-test-subj="change-editor-type"

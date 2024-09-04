@@ -3,7 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiBasicTableColumn, EuiSmallButtonIcon, EuiInMemoryTable, EuiToolTip } from '@elastic/eui';
+import {
+  EuiBasicTableColumn,
+  EuiSmallButtonIcon,
+  EuiInMemoryTable,
+  EuiToolTip,
+} from '@elastic/eui';
 import { ThreatIntelFinding } from '../../../../../types';
 import React from 'react';
 import { renderTime } from '../../../../utils/helpers';
@@ -37,7 +42,9 @@ export const ThreatIntelFindingsTable: React.FC<ThreatIntelFindingsTableProps> =
       name: 'Threat intel source',
       field: 'ioc_feed_ids',
       render: (ioc_feed_ids: ThreatIntelFinding['ioc_feed_ids']) => {
-        return <span>{ioc_feed_ids[0]?.feed_id ?? DEFAULT_EMPTY_DATA}</span>;
+        return (
+          <span>{ioc_feed_ids.map((ids) => ids.feed_name).join(', ') || DEFAULT_EMPTY_DATA}</span>
+        );
       },
     },
     {
