@@ -21,6 +21,7 @@ import React, { MouseEventHandler, useCallback, useEffect, useMemo } from 'react
 import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { useState } from 'react';
 import {
+  DataSourceProps,
   ThreatIntelNextStepId,
   ThreatIntelScanConfig,
   ThreatIntelSourceItem,
@@ -34,13 +35,14 @@ import { ThreatIntelLogScanConfig } from '../../components/ThreatIntelLogScanCon
 import { setBreadcrumbs } from '../../../../utils/helpers';
 import { PageHeader } from '../../../../components/PageHeader/PageHeader';
 
-export interface ThreatIntelOverviewProps extends RouteComponentProps {
+export interface ThreatIntelOverviewProps extends RouteComponentProps, DataSourceProps {
   threatIntelService: ThreatIntelService;
 }
 
 export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
   history,
   threatIntelService,
+  dataSource,
 }) => {
   const [threatIntelSources, setThreatIntelSources] = useState<ThreatIntelSourceItem[]>([]);
   const [scanConfig, setScanConfig] = useState<ThreatIntelScanConfig | undefined>(undefined);
@@ -136,7 +138,7 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
 
     searchSources();
     getScanConfig();
-  }, [threatIntelService]);
+  }, [threatIntelService, dataSource.id]);
 
   const nextStepClickHandlerById: Record<ThreatIntelNextStepId, MouseEventHandler> = {
     ['add-source']: addThreatIntelSourceActionHandler,
