@@ -7,14 +7,13 @@ import React from 'react';
 import {
   TopNavControlData,
   TopNavControlDescriptionData,
-  TopNavControlLinkData,
 } from '../../../../../src/plugins/navigation/public';
 import { getApplication, getNavigationUI, getUseUpdatedUx } from '../../services/utils/constants';
 
 export interface PageHeaderProps {
   appRightControls?: TopNavControlData[];
   appBadgeControls?: TopNavControlData[];
-  appDescriptionControls?: (TopNavControlDescriptionData | TopNavControlLinkData)[];
+  appDescriptionControls?: TopNavControlDescriptionData[];
 }
 
 export const PageHeader: React.FC<PageHeaderProps> = ({

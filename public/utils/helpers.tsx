@@ -33,7 +33,12 @@ import {
   RuleItemInfo,
 } from '../pages/CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { RuleInfo } from '../../server/models/interfaces';
-import { ChromeBreadcrumb, CoreStart, NotificationsStart } from 'opensearch-dashboards/public';
+import {
+  ChromeBreadcrumb,
+  CoreStart,
+  NotificationsStart,
+  SavedObject,
+} from 'opensearch-dashboards/public';
 import {
   AlertsService,
   FieldMappingService,
@@ -77,6 +82,7 @@ import { IndexPatternsService as CoreIndexPatternsService } from '../../../../sr
 import semver from 'semver';
 import * as pluginManifest from '../../opensearch_dashboards.json';
 import { DataSourceThreatAlertsCard } from '../components/DataSourceThreatAlertsCard/DataSourceThreatAlertsCard';
+import { DataSourceAttributes } from '../../../../src/plugins/data_source/common/data_sources';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
@@ -643,7 +649,7 @@ export function setBreadcrumbs(crumbs: ChromeBreadcrumb[]) {
   getBreadCrumbsSetter()(getUseUpdatedUx() ? crumbs : [BREADCRUMBS.SECURITY_ANALYTICS, ...crumbs]);
 }
 
-export function dataSourceFilterFn(dataSource) {
+export function dataSourceFilterFn(dataSource: SavedObject<DataSourceAttributes>) {
   const dataSourceVersion = dataSource?.attributes?.dataSourceVersion || '';
   const installedPlugins = dataSource?.attributes?.installedPlugins || [];
   return (
@@ -652,19 +658,19 @@ export function dataSourceFilterFn(dataSource) {
   );
 }
 
-export function getSeverityText(severity) {
+export function getSeverityText(severity: string) {
   return _.get(_.find(ALERT_SEVERITY_OPTIONS, { value: severity }), 'text');
 }
 
-export function getBadgeText(severity) {
+export function getBadgeText(severity: string) {
   return _.get(_.find(ALERT_SEVERITY_OPTIONS, { value: severity }), 'badgeLabel');
 }
 
-export function getSeverityColor(severity) {
+export function getSeverityColor(severity: string) {
   return _.get(_.find(ALERT_SEVERITY_OPTIONS, { value: severity }), 'color');
 }
 
-export const getTruncatedText = (text, textLength = 14) => {
+export const getTruncatedText = (text: string, textLength: number = 14) => {
   return `${text.slice(0, textLength)}${text.length > textLength ? '...' : ''}`;
 };
 

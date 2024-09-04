@@ -230,7 +230,6 @@ export const Overview: React.FC<OverviewProps> = (props) => {
           { renderComponent: datePicker },
           { renderComponent: createDetectorAction },
         ]}
-        appBadgeControls={[{ renderComponent: gettingStartedBadgeControl }]}
       >
         <EuiFlexItem>
           <EuiFlexGroup justifyContent="spaceBetween" gutterSize="s">
