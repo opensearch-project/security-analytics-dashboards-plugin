@@ -18,6 +18,7 @@ import {
   OverviewFindingItem,
   OverviewViewModel,
   OverviewViewModelRefreshHandler,
+  ThreatIntelFinding,
 } from '../../../../types';
 
 export class OverviewViewModelActor {
@@ -25,6 +26,8 @@ export class OverviewViewModelActor {
     detectors: [],
     findings: [],
     alerts: [],
+    threatIntelFindings: [],
+    correlations: 0,
   };
   private partialUpdateHandlers: OverviewViewModelRefreshHandler[] = [];
   private fullUpdateHandlers: OverviewViewModelRefreshHandler[] = [];
@@ -65,12 +68,15 @@ export class OverviewViewModelActor {
   }
 
   private async updateFindings(signal: AbortSignal) {
-    const detectorInfo = new Map<string, { logType: string; name: string, detectorHit: DetectorHit }>();
+    const detectorInfo = new Map<
+      string,
+      { logType: string; name: string; detectorHit: DetectorHit }
+    >();
     this.overviewViewModel.detectors.forEach((detectorHit) => {
       detectorInfo.set(detectorHit._id, {
         logType: detectorHit._source.detector_type,
         name: detectorHit._source.name,
-        detectorHit
+        detectorHit,
       });
     });
     const detectorIds = detectorInfo.keys();
@@ -78,8 +84,8 @@ export class OverviewViewModelActor {
     const ruleIds = new Set<string>();
     const duration = getDuration({
       startTime: this.startTime,
-      endTime: this.endTime
-    })
+      endTime: this.endTime,
+    });
 
     try {
       for (let id of detectorIds) {
@@ -139,8 +145,8 @@ export class OverviewViewModelActor {
     let alertItems: OverviewAlertItem[] = [];
     const duration = getDuration({
       startTime: this.startTime,
-      endTime: this.endTime
-    })
+      endTime: this.endTime,
+    });
 
     try {
       for (let detector of this.overviewViewModel.detectors) {
@@ -168,12 +174,55 @@ export class OverviewViewModelActor {
     this.overviewViewModel.alerts = this.filterChartDataByTime(alertItems);
   }
 
+  private async updateThreatIntelFindings(signal: AbortSignal) {
+    let tIFindings: ThreatIntelFinding[] = [];
+    const duration = getDuration({
+      startTime: this.startTime,
+      endTime: this.endTime,
+    });
+
+    try {
+      tIFindings = await DataStore.threatIntel.getAllThreatIntelFindings(signal, duration);
+    } catch (e: any) {
+      errorNotificationToast(this.notifications, 'retrieve', 'threat intel findings', e);
+    }
+
+    this.overviewViewModel.threatIntelFindings = this.filterChartDataByTime(
+      tIFindings,
+      'timestamp'
+    );
+  }
+
+  private async updateCorrelationsCount() {
+    let count = 0;
+    const duration = getDuration({
+      startTime: this.startTime,
+      endTime: this.endTime,
+    });
+
+    try {
+      count = await DataStore.correlations.getCorrelationsCountInWindow(
+        duration.startTime.toString(),
+        duration.endTime.toString()
+      );
+    } catch (e: any) {
+      errorNotificationToast(this.notifications, 'retrieve', 'correlation count', e);
+    }
+
+    this.overviewViewModel.correlations = count;
+  }
+
   public getOverviewViewModel() {
     return this.overviewViewModel;
   }
 
-  public registerRefreshHandler(handler: OverviewViewModelRefreshHandler, allowPartialResults: boolean) {
-    allowPartialResults ? this.partialUpdateHandlers.push(handler) : this.fullUpdateHandlers.push(handler);
+  public registerRefreshHandler(
+    handler: OverviewViewModelRefreshHandler,
+    allowPartialResults: boolean
+  ) {
+    allowPartialResults
+      ? this.partialUpdateHandlers.push(handler)
+      : this.fullUpdateHandlers.push(handler);
   }
 
   startTime = DEFAULT_DATE_RANGE.start;
@@ -189,34 +238,48 @@ export class OverviewViewModelActor {
 
     this.refreshState = 'InProgress';
 
-    await this.runSteps([
-      async () => {
-        await this.updateDetectors();
-        this.updateResults(this.partialUpdateHandlers, false);
-      },
-      async () => {
-        await this.updateFindings(signal);
-        this.updateResults(this.partialUpdateHandlers, false);
-      },
-      async (signal: AbortSignal) => {
-        await this.updateAlerts(signal);
-        this.updateResults(this.partialUpdateHandlers, false);
-      }
-    ], signal);
+    await this.runSteps(
+      [
+        async () => {
+          await this.updateDetectors();
+          this.updateResults(this.partialUpdateHandlers, false);
+        },
+        async (signal: AbortSignal) => {
+          await this.updateFindings(signal);
+          this.updateResults(this.partialUpdateHandlers, false);
+        },
+        async (signal: AbortSignal) => {
+          await this.updateAlerts(signal);
+          this.updateResults(this.partialUpdateHandlers, false);
+        },
+        async (signal: AbortSignal) => {
+          await this.updateThreatIntelFindings(signal);
+          this.updateResults(this.partialUpdateHandlers, false);
+        },
+        async (_signal: AbortSignal) => {
+          await this.updateCorrelationsCount();
+          this.updateResults(this.partialUpdateHandlers, false);
+        },
+      ],
+      signal
+    );
 
     this.updateResults(this.fullUpdateHandlers, true);
     this.refreshState = 'Complete';
   }
 
-  private filterChartDataByTime = (chartData: any) => {
+  private filterChartDataByTime = (chartData: any, timeField: string = 'time') => {
     const startMoment = dateMath.parse(this.startTime);
     const endMoment = dateMath.parse(this.endTime);
     return chartData.filter((dataItem: any) => {
-      return moment(dataItem.time).isBetween(moment(startMoment), moment(endMoment));
+      return moment(dataItem[timeField]).isBetween(moment(startMoment), moment(endMoment));
     });
   };
 
-  private updateResults(handlers: OverviewViewModelRefreshHandler[], modelLoadingComplete: boolean) {
+  private updateResults(
+    handlers: OverviewViewModelRefreshHandler[],
+    modelLoadingComplete: boolean
+  ) {
     handlers.forEach((handler) => {
       handler(this.overviewViewModel, modelLoadingComplete);
     });
@@ -227,7 +290,7 @@ export class OverviewViewModelActor {
       if (signal.aborted) {
         break;
       }
-      
+
       await step(signal);
 
       if (signal.aborted) {
