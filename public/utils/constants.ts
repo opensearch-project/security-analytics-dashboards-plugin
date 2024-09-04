@@ -8,7 +8,7 @@ import { Detector, LogType, ServerResponse } from '../../types';
 import { DetectorInput, PeriodSchedule } from '../../models/interfaces';
 import { DetectorHit } from '../../server/models/interfaces';
 import _ from 'lodash';
-import { euiPaletteColorBlind } from '@elastic/eui';
+import { euiPaletteColorBlind, euiPaletteForStatus } from '@elastic/eui';
 import { DataSourceOption } from 'src/plugins/data_source_management/public';
 import { BehaviorSubject } from 'rxjs';
 import { i18n } from "@osd/i18n";
@@ -248,6 +248,50 @@ export enum AlertTabId {
   ThreatIntel = 'threat-intel',
   Correlations = 'correlations',
 }
+
+const paletteColors = euiPaletteForStatus(5);
+export const ALERT_SEVERITY_OPTIONS = {
+  HIGHEST: {
+    id: '1',
+    value: '1',
+    label: '1 (Highest)',
+    text: '1 (Highest)',
+    badgeLabel: 'Highest',
+    color: { background: paletteColors[4], text: 'white' },
+  },
+  HIGH: {
+    id: '2',
+    value: '2',
+    label: '2 (High)',
+    text: '2 (High)',
+    badgeLabel: 'High',
+    color: { background: paletteColors[3], text: 'white' },
+  },
+  MEDIUM: {
+    id: '3',
+    value: '3',
+    label: '3 (Medium)',
+    text: '3 (Medium)',
+    badgeLabel: 'Medium',
+    color: { background: paletteColors[2], text: 'black' },
+  },
+  LOW: {
+    id: '4',
+    value: '4',
+    label: '4 (Low)',
+    text: '4 (Low)',
+    badgeLabel: 'Low',
+    color: { background: paletteColors[1], text: 'white' },
+  },
+  LOWEST: {
+    id: '5',
+    value: '5',
+    label: '5 (Lowest)',
+    text: '5 (Lowest)',
+    badgeLabel: 'Lowest',
+    color: { background: paletteColors[0], text: 'white' },
+  },
+};
 
 const LocalCluster: DataSourceOption = {
   label: i18n.translate("dataSource.localCluster", {

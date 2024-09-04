@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
+import { ALERT_SEVERITY_OPTIONS, DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 import {
   ThreatIntelAlertTrigger,
   ThreatIntelScanConfig,
@@ -19,7 +19,6 @@ import {
   ThreatIntelAlertTriggerAction,
 } from '../../../../types';
 import { AlertSeverity } from '../../Alerts/utils/constants';
-import { ALERT_SEVERITY_OPTIONS } from '../../CreateDetector/components/ConfigureAlerts/utils/constants';
 import _ from 'lodash';
 import { ThreatIntelIocType } from '../../../../common/constants';
 
