@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
 import { CorrelationFinding } from './Correlations';
 import { DetectorHit } from './Detector';
 import { Finding, FindingDetailsFlyoutProps } from './Finding';

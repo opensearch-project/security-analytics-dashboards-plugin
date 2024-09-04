@@ -207,11 +207,19 @@ export default class Main extends Component<MainProps, MainState> {
     prevState: Readonly<MainState>,
     snapshot?: any
   ): void {
-    if (this.props.location.pathname === prevProps.location.pathname) {
-      return;
+    const pathnameChanged = this.props.location.pathname !== prevProps.location.pathname;
+
+    if (pathnameChanged || this.state.selectedDataSource.id !== prevState.selectedDataSource.id) {
+      const searchParams = new URLSearchParams(this.props.location.search);
+      searchParams.set('dataSourceId', this.state.selectedDataSource.id);
+      this.props.history.replace({
+        search: searchParams.toString(),
+      });
     }
 
-    this.updateSelectedNavItem();
+    if (pathnameChanged) {
+      this.updateSelectedNavItem();
+    }
   }
 
   setDateTimeFilter = (dateTimeFilter: DateTimeFilter) => {
@@ -446,6 +454,7 @@ export default class Main extends Component<MainProps, MainState> {
                           <>
                             {multiDataSourceEnabled && (
                               <DataSourceMenuWrapper
+                                {...this.props}
                                 dataSourceManagement={dataSourceManagement}
                                 core={core}
                                 dataSourceLoading={this.state.dataSourceLoading}
@@ -794,6 +803,7 @@ export default class Main extends Component<MainProps, MainState> {
                                           <ThreatIntelOverview
                                             {...props}
                                             threatIntelService={services.threatIntelService}
+                                            dataSource={selectedDataSource}
                                           />
                                         );
                                       }}
