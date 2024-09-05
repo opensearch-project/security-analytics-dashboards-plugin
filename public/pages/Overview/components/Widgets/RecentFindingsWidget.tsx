@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiBasicTableColumn, EuiSmallButton, EuiEmptyPrompt } from '@elastic/eui';
+import { EuiBasicTableColumn, EuiSmallButton, EuiEmptyPrompt, EuiText } from '@elastic/eui';
 import { FINDINGS_NAV_ID, ROUTES, SortDirection } from '../../../../utils/constants';
 import React, { useEffect, useState } from 'react';
 import { TableWidget } from './TableWidget';
@@ -66,10 +66,10 @@ export const RecentFindingsWidget: React.FC<RecentFindingsWidgetProps> = ({
       items.length > 0 ? undefined : (
         <EuiEmptyPrompt
           body={
-            <p>
+            <EuiText size="s">
               <span style={{ display: 'block' }}>No recent findings.</span>Adjust the time range to
               see more results.
-            </p>
+            </EuiText>
           }
         />
       )

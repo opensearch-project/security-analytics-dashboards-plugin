@@ -190,14 +190,14 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
       >
         <EuiFlexGroup alignItems="flexStart">
           <EuiFlexItem>
-            <EuiTitle size="m">
+            <EuiText size="s">
               <h1>Threat intelligence</h1>
-            </EuiTitle>
+            </EuiText>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>{threatIntelOverviewActions}</EuiFlexItem>
         </EuiFlexGroup>
         <EuiSpacer size="s" />
-        <EuiText color="subdued">
+        <EuiText color="subdued" size="s">
           <span>
             Scan log data for indicators of compromise from threat intel data streams to identify
             malicious actors and security threats.{' '}
@@ -237,7 +237,7 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
         </EuiFlexGroup>
       </EuiAccordion>
       <EuiSpacer />
-      <EuiTabbedContent tabs={tabs} initialSelectedTab={tabs[0]} />
+      <EuiTabbedContent tabs={tabs} initialSelectedTab={tabs[0]} size="s"/>
       {flyoutContent && (
         <EuiFlyout onClose={() => setFlyoutContent(null)}>
           <EuiSpacer />

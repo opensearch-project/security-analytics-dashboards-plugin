@@ -393,7 +393,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
                 <EuiEmptyPrompt
                   style={{ maxWidth: '45em' }}
                   body={
-                    <EuiText>
+                    <EuiText size="s">
                       <p>There are no existing detectors.</p>
                     </EuiText>
                   }

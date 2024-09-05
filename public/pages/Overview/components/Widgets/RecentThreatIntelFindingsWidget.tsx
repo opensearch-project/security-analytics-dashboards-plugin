@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiBasicTableColumn, EuiSmallButton, EuiEmptyPrompt } from '@elastic/eui';
+import { EuiBasicTableColumn, EuiSmallButton, EuiEmptyPrompt, EuiText } from '@elastic/eui';
 import {
   DEFAULT_EMPTY_DATA,
   FINDINGS_NAV_ID,
@@ -68,10 +68,10 @@ export const RecentThreatIntelFindingsWidget: React.FC<RecentThreatIntelFindings
       items.length > 0 ? undefined : (
         <EuiEmptyPrompt
           body={
-            <p>
+            <EuiText size="s">
               <span style={{ display: 'block' }}>No recent findings.</span>Adjust the time range to
               see more results.
-            </p>
+            </EuiText>
           }
         />
       )

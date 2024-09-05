@@ -8,7 +8,7 @@ import React, { useEffect } from 'react';
 import { WidgetContainer } from './WidgetContainer';
 import { getTopRulesVisualizationSpec } from '../../utils/helpers';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
-import { EuiEmptyPrompt } from '@elastic/eui';
+import { EuiEmptyPrompt, EuiText } from '@elastic/eui';
 import { OverviewFindingItem } from '../../../../../types';
 
 export interface TopRulesWidgetProps {
@@ -41,15 +41,17 @@ export const TopRulesWidget: React.FC<TopRulesWidgetProps> = ({ findings, loadin
           style={{ position: 'relative' }}
           body={
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <p style={{ position: 'absolute', top: 'calc(50% - 20px)' }}>
-                <span style={{ display: 'block' }}>No findings with detection rules.</span>Adjust
-                the time range to see more results.
+              <p style={{position: 'absolute', top: 'calc(50% - 20px)'}}>
+                <EuiText size="s">
+                  <span style={{display: 'block'}}>No findings with detection rules.</span>Adjust
+                  the time range to see more results.
+                </EuiText>
               </p>
             </div>
           }
         />
       ) : (
-        <ChartContainer chartViewId={'top-rules-view'} loading={loading} />
+        <ChartContainer chartViewId={'top-rules-view'} loading={loading}/>
       )}
     </WidgetContainer>
   );
