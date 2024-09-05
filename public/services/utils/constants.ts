@@ -10,6 +10,7 @@ import { NavigationPublicPluginStart } from '../../../../../src/plugins/navigati
 import { ContentManagementPluginStart } from '../../../../../src/plugins/content_management/public';
 import { BrowserServices } from '../../models/interfaces';
 import { DataSourceManagementPluginSetup } from '../../../../../src/plugins/data_source_management/public';
+import { createNullableGetterSetter } from '../../../common/helpers';
 
 export const dataSourceInfo: { activeDataSource: DataSourceOption } = {
   activeDataSource: {
@@ -51,6 +52,7 @@ export const [getSavedObjectsClient, setSavedObjectsClient] = createGetterSetter
   CoreStart['savedObjects']['client']
 >('SavedObjectsClient');
 
-export const [getDataSourceManagementPlugin, setDataSourceManagementPlugin] = createGetterSetter<
-  DataSourceManagementPluginSetup
->('DataSourceManagement');
+export const [
+  getDataSourceManagementPlugin,
+  setDataSourceManagementPlugin,
+] = createNullableGetterSetter<DataSourceManagementPluginSetup>();

@@ -7,6 +7,7 @@ import _ from 'lodash';
 import { DEFAULT_METRICS_COUNTER } from '../server/utils/constants';
 import { MetricsCounter, PartialMetricsCounter } from '../types';
 import { SecurityAnalyticsPluginConfigType } from '../config';
+import { Get, Set } from '../../../src/plugins/opensearch_dashboards_utils/common';
 
 export function aggregateMetrics(
   metrics: PartialMetricsCounter,
@@ -60,4 +61,18 @@ export function extractFieldsFromMappings(
       fields.push(parentField ? `${parentField}.${field}` : field);
     }
   });
+}
+
+export function createNullableGetterSetter<T>(): [Get<T | undefined>, Set<T>] {
+  let value: T;
+
+  const get = () => {
+    return value;
+  };
+
+  const set = (newValue: T) => {
+    value = newValue;
+  };
+
+  return [get, set];
 }
