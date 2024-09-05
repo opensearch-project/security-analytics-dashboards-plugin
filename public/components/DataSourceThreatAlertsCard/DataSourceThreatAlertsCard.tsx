@@ -38,7 +38,7 @@ import { OverviewAlertItem } from '../../../types';
 import { Time } from '@opensearch-project/opensearch/api/types';
 
 export interface DataSourceAlertsCardProps {
-  getDataSourceMenu: DataSourceManagementPluginSetup['ui']['getDataSourceMenu'];
+  getDataSourceMenu?: DataSourceManagementPluginSetup['ui']['getDataSourceMenu'];
   detectorService: DetectorsService;
 }
 
@@ -46,7 +46,7 @@ export const DataSourceThreatAlertsCard: React.FC<DataSourceAlertsCardProps> = (
   getDataSourceMenu,
   detectorService,
 }) => {
-  const DataSourceSelector = getDataSourceMenu();
+  const DataSourceSelector = getDataSourceMenu?.();
   const notifications = getNotifications();
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState<DataSourceOption>({
@@ -157,19 +157,21 @@ export const DataSourceThreatAlertsCard: React.FC<DataSourceAlertsCardProps> = (
                     <h3>Recent threat alerts</h3>
                   </EuiTitle>
                 </EuiFlexItem>
-                <EuiFlexItem grow={false}>
-                  <DataSourceSelector
-                    componentType={'DataSourceSelectable'}
-                    componentConfig={{
-                      savedObjects: getSavedObjectsClient(),
-                      notifications: getNotifications(),
-                      onSelectedDataSources: onDataSourceSelected,
-                      fullWidth: false,
-                      dataSourceFilter: dataSourceFilterFn,
-                      activeOption: dataSource ? [{ id: dataSource.id }] : undefined,
-                    }}
-                  />
-                </EuiFlexItem>
+                {DataSourceSelector && (
+                  <EuiFlexItem grow={false}>
+                    <DataSourceSelector
+                      componentType={'DataSourceSelectable'}
+                      componentConfig={{
+                        savedObjects: getSavedObjectsClient(),
+                        notifications: getNotifications(),
+                        onSelectedDataSources: onDataSourceSelected,
+                        fullWidth: false,
+                        dataSourceFilter: dataSourceFilterFn,
+                        activeOption: dataSource ? [{ id: dataSource.id }] : undefined,
+                      }}
+                    />
+                  </EuiFlexItem>
+                )}
               </EuiFlexGroup>
             </EuiFlexItem>
             <EuiFlexItem style={{ overflow: 'scroll' }}>

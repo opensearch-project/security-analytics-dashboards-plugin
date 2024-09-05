@@ -697,7 +697,7 @@ export function registerThreatAlertsCard() {
       order: 20,
       render: () => (
         <DataSourceThreatAlertsCard
-          getDataSourceMenu={getDataSourceManagementPlugin().ui.getDataSourceMenu}
+          getDataSourceMenu={getDataSourceManagementPlugin()?.ui.getDataSourceMenu}
           detectorService={getBrowserServices().detectorsService}
         />
       ),
