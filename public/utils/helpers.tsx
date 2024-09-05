@@ -70,7 +70,6 @@ import {
   setBrowserServices,
   getDataSourceManagementPlugin,
 } from '../services/utils/constants';
-import { ANALYTICS_ALL_OVERVIEW_CONTENT_AREAS } from '../../../../src/plugins/content_management/public';
 import DetectorsService from '../services/DetectorService';
 import CorrelationService from '../services/CorrelationService';
 import FindingsService from '../services/FindingsService';
@@ -690,7 +689,7 @@ export const getTruncatedText = (text: string, textLength: number = 14) => {
 export function registerThreatAlertsCard() {
   getContentManagement().registerContentProvider({
     id: `analytics_all_recent_threat_alerts_card_content`,
-    getTargetArea: () => ANALYTICS_ALL_OVERVIEW_CONTENT_AREAS.SERVICE_CARDS,
+    getTargetArea: () => 'all_overview/service_cards',
     getContent: () => ({
       id: 'analytics_all_recent_threat_alerts_card',
       kind: 'custom',
