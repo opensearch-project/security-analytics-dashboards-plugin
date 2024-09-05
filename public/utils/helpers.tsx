@@ -79,7 +79,7 @@ import SavedObjectService from '../services/SavedObjectService';
 import MetricsService from '../services/MetricsService';
 import ThreatIntelService from '../services/ThreatIntelService';
 import { BrowserServices } from '../models/interfaces';
-import { IndexPatternsService as CoreIndexPatternsService } from '../../../../src/plugins/data/common';
+import { IndexPatternsService as CoreIndexPatternsService } from '../../../../src/plugins/data/common/index_patterns';
 import semver from 'semver';
 import * as pluginManifest from '../../opensearch_dashboards.json';
 import { DataSourceThreatAlertsCard } from '../components/DataSourceThreatAlertsCard/DataSourceThreatAlertsCard';
