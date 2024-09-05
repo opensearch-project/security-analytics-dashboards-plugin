@@ -52,7 +52,9 @@
     "word-wrap": "^1.2.4",
     "@cypress/request": "^3.0.0",
     "vis-data": "7.1.6",
-    "braces": "^3.0.3"
+    "braces": "^3.0.3",
+    "micromatch": "^4.0.8",
+    "ws": "^7.5.10"
   },
   "devDependencies": {
     "@babel/plugin-transform-class-properties": "^7.22.9",
