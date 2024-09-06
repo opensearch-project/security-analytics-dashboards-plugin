@@ -404,7 +404,7 @@ export default class ConfigureFieldMapping extends Component<
           />
         ) : (
           <div style={{ paddingLeft: '30px' }}>
-            <EuiTabs>{this.renderTabs()}</EuiTabs>
+            <EuiTabs size="s">{this.renderTabs()}</EuiTabs>
             {selectedTabContent}
           </div>
         )}
