@@ -76,7 +76,7 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
         <EuiTitle size="m">
           <h3>Detection rules</h3>
         </EuiTitle>
-        <EuiText>
+        <EuiText size="s">
           <p>
             The detection rules are automatically populated based on your selected log type. Threat
             intelligence based detection can be enabled for standard log types.{' '}

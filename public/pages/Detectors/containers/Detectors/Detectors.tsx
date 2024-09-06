@@ -19,7 +19,6 @@ import {
   EuiPopover,
   EuiSpacer,
   EuiText,
-  EuiTitle,
 } from '@elastic/eui';
 import { BREADCRUMBS, DEFAULT_EMPTY_DATA, ROUTES } from '../../../../utils/constants';
 import DeleteModal from '../../../../components/DeleteModal';
@@ -258,7 +257,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
         anchorPosition={'downLeft'}
         data-test-subj={'detectorsActionsPopover'}
       >
-        <EuiContextMenuPanel items={this.getActionItems(loadingDetectors, selectedItems)} />
+        <EuiContextMenuPanel items={this.getActionItems(loadingDetectors, selectedItems)} size="s"/>
       </EuiPopover>,
       <EuiSmallButton
         href={`#${ROUTES.DETECTORS_CREATE}`}
@@ -357,9 +356,9 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
           <EuiFlexItem>
             <EuiFlexGroup>
               <EuiFlexItem>
-                <EuiTitle size="m">
+                <EuiText size="s">
                   <h1>Threat detectors</h1>
-                </EuiTitle>
+                </EuiText>
               </EuiFlexItem>
               <EuiFlexItem>
                 <EuiFlexGroup justifyContent="flexEnd">

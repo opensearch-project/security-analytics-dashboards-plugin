@@ -202,7 +202,7 @@ export const LogType: React.FC<LogTypeProps> = ({ notifications, history }) => {
         </EuiFlexGroup>
       </EuiPanel>
       <EuiSpacer />
-      <EuiTabs>
+      <EuiTabs size="s">
         {logTypeDetailsTabs.map((tab, index) => {
           return (
             <EuiTab

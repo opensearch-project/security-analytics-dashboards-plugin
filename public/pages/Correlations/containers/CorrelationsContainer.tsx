@@ -26,7 +26,7 @@ import {
   EuiFlexItem,
   EuiTitle,
   EuiPanel,
-  EuiSuperDatePicker,
+  EuiCompressedSuperDatePicker,
   EuiSpacer,
   EuiSmallButtonEmpty,
   EuiFlyout,
@@ -450,11 +450,11 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     ) : (
       <EuiEmptyPrompt
         title={
-          <EuiTitle>
-            <h1>No correlations found</h1>
-          </EuiTitle>
+          <EuiText size="s">
+            <h2>No correlations found</h2>
+          </EuiText>
         }
-        body={<p>There are no correlated findings in the system.</p>}
+        body={<EuiText size="s"><p>There are no correlated findings in the system.</p></EuiText>}
         actions={[
           <EuiSmallButton fill={true} color="primary" href={`#${ROUTES.CORRELATION_RULE_CREATE}`}>
             Create correlation rule
@@ -467,7 +467,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
   render() {
     const findingCardsData = this.state.specificFindingInfo;
     const datePicker = (
-      <EuiSuperDatePicker
+      <EuiCompressedSuperDatePicker
         start={this.startTime}
         end={this.endTime}
         recentlyUsedRanges={this.state.recentlyUsedRanges}
@@ -491,9 +491,9 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
             <EuiFlyoutHeader>
               <EuiFlexGroup>
                 <EuiFlexItem>
-                  <EuiTitle size="m">
-                    <h1>Correlation</h1>
-                  </EuiTitle>
+                  <EuiText size="s">
+                    <h2>Correlation</h2>
+                  </EuiText>
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>
                   <EuiSmallButtonIcon
@@ -559,9 +559,9 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
             <EuiFlexItem>
               <EuiFlexGroup>
                 <EuiFlexItem>
-                  <EuiTitle size="m">
+                  <EuiText size="s">
                     <h1>Correlations</h1>
-                  </EuiTitle>
+                  </EuiText>
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>{datePicker}</EuiFlexItem>
               </EuiFlexGroup>
@@ -598,13 +598,13 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                 alignItems="center"
               >
                 <EuiFlexItem grow={false}>
-                  <EuiText>
+                  <EuiText size="s">
                     <strong>Severity:</strong>
                   </EuiText>
                 </EuiFlexItem>
                 {ruleSeverity.map((sev, idx) => (
                   <EuiFlexItem grow={false} key={idx}>
-                    <EuiText>
+                    <EuiText size="s">
                       <EuiIcon type="dot" color={sev.color.background} /> {sev.value}
                     </EuiText>
                   </EuiFlexItem>

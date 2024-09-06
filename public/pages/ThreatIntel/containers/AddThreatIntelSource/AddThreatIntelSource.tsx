@@ -18,7 +18,6 @@ import {
   EuiSpacer,
   EuiCompressedSwitch,
   EuiText,
-  EuiTitle,
 } from '@elastic/eui';
 import { BREADCRUMBS, ROUTES, defaultIntervalUnitOptions } from '../../../../utils/constants';
 import { Interval } from '../../../CreateDetector/components/DefineDetector/components/DetectorSchedule/Interval';
@@ -362,11 +361,11 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
             },
           ]}
         >
-          <EuiTitle>
-            <h4>Add custom threat intelligence source</h4>
-          </EuiTitle>
+          <EuiText size="s">
+            <h1>Add custom threat intelligence source</h1>
+          </EuiText>
           <EuiSpacer size="xs" />
-          <EuiText color="subdued">
+          <EuiText color="subdued" size="s">
             <p>
               Add your custom threat intelligence source that contains indicators of malicious
               behaviors in STIX (Structured Threat Information Expression) format.
@@ -374,8 +373,8 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
           </EuiText>
           <EuiSpacer />
         </PageHeader>
-        <EuiText>
-          <h4>Details</h4>
+        <EuiText size="s">
+          <h2>Details</h2>
         </EuiText>
         <EuiSpacer />
         <EuiCompressedFormRow
@@ -419,9 +418,9 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
               id={'data-store'}
               label={
                 <>
-                  <EuiTitle size="s">
+                  <EuiText size="s">
                     <h4>Remote data store location</h4>
-                  </EuiTitle>
+                  </EuiText>
                   <EuiText size="s">
                     <p>Connect your custom data store.</p>
                   </EuiText>
@@ -440,9 +439,9 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
               id={'file-upload'}
               label={
                 <>
-                  <EuiTitle size="s">
+                  <EuiText size="s">
                     <h4>Local file upload</h4>
-                  </EuiTitle>
+                  </EuiText>
                   <EuiText size="s">
                     <p>Upload your own threat intel IoCs using a local file.</p>
                   </EuiText>
@@ -459,8 +458,8 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
         <EuiSpacer />
         {sourceType === 'S3_CUSTOM' && (
           <>
-            <EuiText>
-              <h4>Connection details</h4>
+            <EuiText size="s">
+              <h2>Connection details</h2>
             </EuiText>
             <EuiSpacer />
             <EuiCompressedFormRow
@@ -526,8 +525,8 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
               />
             </EuiCompressedFormRow>
             <EuiSpacer />
-            <EuiText>
-              <h4>Download schedule</h4>
+            <EuiText size="s">
+              <h2>Download schedule</h2>
             </EuiText>
             <EuiSpacer />
             <EuiCompressedSwitch
@@ -556,8 +555,8 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
         )}
         {sourceType === 'IOC_UPLOAD' && (
           <>
-            <EuiText>
-              <h4>Upload a file</h4>
+            <EuiText size="s">
+              <h2>Upload a file</h2>
             </EuiText>
             <EuiSpacer />
             <EuiCompressedFormRow
@@ -586,8 +585,8 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
             <EuiSpacer />
           </>
         )}
-        <EuiText>
-          <h4>Types of malicious indicators</h4>
+        <EuiText size="s">
+          <h2>Types of malicious indicators</h2>
         </EuiText>
         <EuiText color="subdued" size="s">
           <p>

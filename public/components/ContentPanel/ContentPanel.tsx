@@ -9,14 +9,13 @@ import {
   EuiFlexItem,
   EuiHorizontalRule,
   EuiPanel,
-  EuiTitle,
   EuiText,
   EuiSpacer,
 } from '@elastic/eui';
 
 interface ContentPanelProps {
   title?: string | JSX.Element;
-  titleSize?: 'xxxs' | 'xxs' | 'xs' | 's' | 'm' | 'l';
+  titleSize?: 'xs' | 's' | 'm';
   subTitleText?: string | JSX.Element;
   bodyStyles?: object;
   panelStyles?: object;
@@ -56,9 +55,9 @@ const ContentPanel = ({
     <EuiFlexGroup style={{ padding: '0px 10px' }} justifyContent="spaceBetween" alignItems="center">
       <EuiFlexItem>
         {typeof title === 'string' ? (
-          <EuiTitle size={titleSize}>
-            <h3>{title}</h3>
-          </EuiTitle>
+          <EuiText size={titleSize}>
+            <h2>{title}</h2>
+          </EuiText>
         ) : (
           title
         )}
