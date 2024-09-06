@@ -250,15 +250,17 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
               <div
                 className="euiFlexItem"
               >
-                <EuiTitle
+                <EuiText
                   size="m"
                 >
-                  <h3
-                    className="euiTitle euiTitle--medium"
+                  <div
+                    className="euiText euiText--medium"
                   >
-                    Active rules (2)
-                  </h3>
-                </EuiTitle>
+                    <h2>
+                      Active rules (2)
+                    </h2>
+                  </div>
+                </EuiText>
               </div>
             </EuiFlexItem>
             <EuiFlexItem

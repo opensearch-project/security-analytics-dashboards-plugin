@@ -16,11 +16,13 @@ Object {
           <div
             class="euiFlexItem"
           >
-            <h3
-              class="euiTitle euiTitle--medium"
+            <div
+              class="euiText euiText--medium"
             >
-              Detector details
-            </h3>
+              <h2>
+                Detector details
+              </h2>
+            </div>
           </div>
           <div
             class="euiFlexItem euiFlexItem--flexGrowZero"
@@ -83,7 +85,7 @@ Object {
                   class="euiFormRow__fieldWrapper"
                 >
                   <div
-                    class="euiText euiText--medium"
+                    class="euiText euiText--small"
                     data-test-subj="text-details-group-content-detector-name"
                     id="some_html_id"
                   >
@@ -113,7 +115,7 @@ Object {
                   class="euiFormRow__fieldWrapper"
                 >
                   <div
-                    class="euiText euiText--medium"
+                    class="euiText euiText--small"
                     data-test-subj="text-details-group-content-description"
                     id="some_html_id"
                   >
@@ -143,7 +145,7 @@ Object {
                   class="euiFormRow__fieldWrapper"
                 >
                   <div
-                    class="euiText euiText--medium"
+                    class="euiText euiText--small"
                     data-test-subj="text-details-group-content-detector-schedule"
                     id="some_html_id"
                   >
@@ -180,7 +182,7 @@ Object {
                   class="euiFormRow__fieldWrapper"
                 >
                   <div
-                    class="euiText euiText--medium"
+                    class="euiText euiText--small"
                     data-test-subj="text-details-group-content-data-source"
                     id="some_html_id"
                   >
@@ -214,7 +216,7 @@ Object {
                   class="euiFormRow__fieldWrapper"
                 >
                   <div
-                    class="euiText euiText--medium"
+                    class="euiText euiText--small"
                     data-test-subj="text-details-group-content-log-type"
                     id="some_html_id"
                   >
@@ -244,7 +246,7 @@ Object {
                   class="euiFormRow__fieldWrapper"
                 >
                   <div
-                    class="euiText euiText--medium"
+                    class="euiText euiText--small"
                     data-test-subj="text-details-group-content-detector-dashboard"
                     id="some_html_id"
                   >
@@ -281,7 +283,7 @@ Object {
                   class="euiFormRow__fieldWrapper"
                 >
                   <div
-                    class="euiText euiText--medium"
+                    class="euiText euiText--small"
                     data-test-subj="text-details-group-content-detection-rules"
                     id="some_html_id"
                   >
@@ -311,7 +313,7 @@ Object {
                   class="euiFormRow__fieldWrapper"
                 >
                   <div
-                    class="euiText euiText--medium"
+                    class="euiText euiText--small"
                     data-test-subj="text-details-group-content-created-at"
                     id="some_html_id"
                   >
@@ -341,7 +343,7 @@ Object {
                   class="euiFormRow__fieldWrapper"
                 >
                   <div
-                    class="euiText euiText--medium"
+                    class="euiText euiText--small"
                     data-test-subj="text-details-group-content-last-updated-time"
                     id="some_html_id"
                   >
@@ -372,7 +374,7 @@ Object {
               class="euiFormRow__fieldWrapper"
             >
               <div
-                class="euiText euiText--medium"
+                class="euiText euiText--small"
                 data-test-subj="text-details-group-content-threat-intelligence"
                 id="some_html_id"
               >
@@ -399,11 +401,13 @@ Object {
         <div
           class="euiFlexItem"
         >
-          <h3
-            class="euiTitle euiTitle--medium"
+          <div
+            class="euiText euiText--medium"
           >
-            Detector details
-          </h3>
+            <h2>
+              Detector details
+            </h2>
+          </div>
         </div>
         <div
           class="euiFlexItem euiFlexItem--flexGrowZero"
@@ -466,7 +470,7 @@ Object {
                 class="euiFormRow__fieldWrapper"
               >
                 <div
-                  class="euiText euiText--medium"
+                  class="euiText euiText--small"
                   data-test-subj="text-details-group-content-detector-name"
                   id="some_html_id"
                 >
@@ -496,7 +500,7 @@ Object {
                 class="euiFormRow__fieldWrapper"
               >
                 <div
-                  class="euiText euiText--medium"
+                  class="euiText euiText--small"
                   data-test-subj="text-details-group-content-description"
                   id="some_html_id"
                 >
@@ -526,7 +530,7 @@ Object {
                 class="euiFormRow__fieldWrapper"
               >
                 <div
-                  class="euiText euiText--medium"
+                  class="euiText euiText--small"
                   data-test-subj="text-details-group-content-detector-schedule"
                   id="some_html_id"
                 >
@@ -563,7 +567,7 @@ Object {
                 class="euiFormRow__fieldWrapper"
               >
                 <div
-                  class="euiText euiText--medium"
+                  class="euiText euiText--small"
                   data-test-subj="text-details-group-content-data-source"
                   id="some_html_id"
                 >
@@ -597,7 +601,7 @@ Object {
                 class="euiFormRow__fieldWrapper"
               >
                 <div
-                  class="euiText euiText--medium"
+                  class="euiText euiText--small"
                   data-test-subj="text-details-group-content-log-type"
                   id="some_html_id"
                 >
@@ -627,7 +631,7 @@ Object {
                 class="euiFormRow__fieldWrapper"
               >
                 <div
-                  class="euiText euiText--medium"
+                  class="euiText euiText--small"
                   data-test-subj="text-details-group-content-detector-dashboard"
                   id="some_html_id"
                 >
@@ -664,7 +668,7 @@ Object {
                 class="euiFormRow__fieldWrapper"
               >
                 <div
-                  class="euiText euiText--medium"
+                  class="euiText euiText--small"
                   data-test-subj="text-details-group-content-detection-rules"
                   id="some_html_id"
                 >
@@ -694,7 +698,7 @@ Object {
                 class="euiFormRow__fieldWrapper"
               >
                 <div
-                  class="euiText euiText--medium"
+                  class="euiText euiText--small"
                   data-test-subj="text-details-group-content-created-at"
                   id="some_html_id"
                 >
@@ -724,7 +728,7 @@ Object {
                 class="euiFormRow__fieldWrapper"
               >
                 <div
-                  class="euiText euiText--medium"
+                  class="euiText euiText--small"
                   data-test-subj="text-details-group-content-last-updated-time"
                   id="some_html_id"
                 >
@@ -755,7 +759,7 @@ Object {
             class="euiFormRow__fieldWrapper"
           >
             <div
-              class="euiText euiText--medium"
+              class="euiText euiText--small"
               data-test-subj="text-details-group-content-threat-intelligence"
               id="some_html_id"
             >

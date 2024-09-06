@@ -85,7 +85,7 @@ exports[`<RuleContentViewer /> spec renders the component 1`] = `
           Rule Name
         </label>
         <div
-          class="euiText euiText--medium"
+          class="euiText euiText--small"
           data-test-subj="rule_flyout_rule_name"
         >
           My Rule
@@ -100,7 +100,7 @@ exports[`<RuleContentViewer /> spec renders the component 1`] = `
           Log Type
         </label>
         <div
-          class="euiText euiText--medium"
+          class="euiText euiText--small"
           data-test-subj="rule_flyout_rule_log_type"
         >
           DNS
@@ -116,7 +116,7 @@ exports[`<RuleContentViewer /> spec renders the component 1`] = `
       Description
     </label>
     <div
-      class="euiText euiText--medium"
+      class="euiText euiText--small"
       data-test-subj="rule_flyout_rule_description"
     >
       My Rule
@@ -135,7 +135,11 @@ exports[`<RuleContentViewer /> spec renders the component 1`] = `
         >
           Last Updated
         </label>
-        2022-11-22T23:00:00.000Z
+        <div
+          class="euiText euiText--small"
+        >
+          2022-11-22T23:00:00.000Z
+        </div>
       </div>
       <div
         class="euiFlexItem"
@@ -146,7 +150,11 @@ exports[`<RuleContentViewer /> spec renders the component 1`] = `
         >
           Author
         </label>
-        aleksandar
+        <div
+          class="euiText euiText--small"
+        >
+          aleksandar
+        </div>
       </div>
     </div>
     <div
@@ -164,7 +172,11 @@ exports[`<RuleContentViewer /> spec renders the component 1`] = `
         >
           Source
         </label>
-        Custom
+        <div
+          class="euiText euiText--small"
+        >
+          Custom
+        </div>
       </div>
     </div>
     <div
@@ -182,7 +194,11 @@ exports[`<RuleContentViewer /> spec renders the component 1`] = `
         >
           Rule level
         </label>
-        high
+        <div
+          class="euiText euiText--small"
+        >
+          high
+        </div>
       </div>
     </div>
     <div
@@ -236,7 +252,11 @@ exports[`<RuleContentViewer /> spec renders the component 1`] = `
     <div
       data-test-subj="rule_flyout_rule_status"
     >
-      stable
+      <div
+        class="euiText euiText--small"
+      >
+        stable
+      </div>
     </div>
     <div
       class="euiSpacer euiSpacer--l"

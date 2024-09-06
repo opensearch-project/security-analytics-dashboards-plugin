@@ -87,6 +87,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                       </EuiContextMenuItem>,
                     ]
                   }
+                  size="s"
                 />
               </EuiPopover>,
             },
@@ -114,15 +115,17 @@ exports[`<Detectors /> spec renders the component 1`] = `
                   <div
                     className="euiFlexItem"
                   >
-                    <EuiTitle
-                      size="m"
+                    <EuiText
+                      size="s"
                     >
-                      <h1
-                        className="euiTitle euiTitle--medium"
+                      <div
+                        className="euiText euiText--small"
                       >
-                        Threat detectors
-                      </h1>
-                    </EuiTitle>
+                        <h1>
+                          Threat detectors
+                        </h1>
+                      </div>
+                    </EuiText>
                   </div>
                 </EuiFlexItem>
                 <EuiFlexItem>
@@ -666,7 +669,9 @@ exports[`<Detectors /> spec renders the component 1`] = `
                       ]
                     }
                     body={
-                      <EuiText>
+                      <EuiText
+                        size="s"
+                      >
                         <p>
                           There are no existing detectors.
                         </p>
@@ -1456,7 +1461,9 @@ exports[`<Detectors /> spec renders the component 1`] = `
                           ]
                         }
                         body={
-                          <EuiText>
+                          <EuiText
+                            size="s"
+                          >
                             <p>
                               There are no existing detectors.
                             </p>

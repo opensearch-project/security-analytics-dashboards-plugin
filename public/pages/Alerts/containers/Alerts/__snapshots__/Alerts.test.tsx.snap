@@ -217,7 +217,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
           appRightControls={
             Array [
               Object {
-                "renderComponent": <EuiSuperDatePicker
+                "renderComponent": <EuiCompressedSuperDatePicker
                   commonlyUsedRanges={
                     Array [
                       Object {
@@ -262,7 +262,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                       },
                     ]
                   }
-                  compressed={false}
+                  compressed={true}
                   dateFormat="MMM D, YYYY @ HH:mm:ss.SSS"
                   end="now"
                   isAutoRefreshOnly={false}
@@ -308,15 +308,17 @@ exports[`<Alerts /> spec renders the component 1`] = `
                     <div
                       className="euiFlexItem"
                     >
-                      <EuiTitle
-                        size="m"
+                      <EuiText
+                        size="s"
                       >
-                        <h1
-                          className="euiTitle euiTitle--medium"
+                        <div
+                          className="euiText euiText--small"
                         >
-                          Security alerts
-                        </h1>
-                      </EuiTitle>
+                          <h1>
+                            Security alerts
+                          </h1>
+                        </div>
+                      </EuiText>
                     </div>
                   </EuiFlexItem>
                   <EuiFlexItem
@@ -325,7 +327,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                     <div
                       className="euiFlexItem euiFlexItem--flexGrowZero"
                     >
-                      <EuiSuperDatePicker
+                      <EuiCompressedSuperDatePicker
                         commonlyUsedRanges={
                           Array [
                             Object {
@@ -370,7 +372,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                             },
                           ]
                         }
-                        compressed={false}
+                        compressed={true}
                         dateFormat="MMM D, YYYY @ HH:mm:ss.SSS"
                         end="now"
                         isAutoRefreshOnly={false}
@@ -411,7 +413,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                               >
                                 <EuiFormControlLayout
                                   className="euiSuperDatePicker"
-                                  compressed={false}
+                                  compressed={true}
                                   isDisabled={false}
                                   prepend={
                                     <EuiQuickSelectPopover
@@ -479,7 +481,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                   }
                                 >
                                   <div
-                                    className="euiFormControlLayout euiFormControlLayout--group euiSuperDatePicker"
+                                    className="euiFormControlLayout euiFormControlLayout--compressed euiFormControlLayout--group euiSuperDatePicker"
                                   >
                                     <EuiQuickSelectPopover
                                       applyTime={[Function]}
@@ -659,7 +661,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                           className="euiDatePickerRange euiDatePickerRange--inGroup"
                                         >
                                           <button
-                                            className="euiSuperDatePicker__prettyFormat"
+                                            className="euiSuperDatePicker__prettyFormat euiSuperDatePicker__prettyFormat--compressed"
                                             data-test-subj="superDatePickerShowDatesButton"
                                             disabled={false}
                                             onClick={[Function]}
@@ -679,7 +681,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                         </div>
                                       </EuiDatePickerRange>
                                       <EuiFormControlLayoutIcons
-                                        compressed={false}
+                                        compressed={true}
                                       />
                                     </div>
                                   </div>
@@ -693,7 +695,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                 className="euiFlexItem euiFlexItem--flexGrowZero"
                               >
                                 <EuiSuperUpdateButton
-                                  compressed={false}
+                                  compressed={true}
                                   data-test-subj="superDatePickerApplyTimeButton"
                                   fill={false}
                                   isDisabled={false}
@@ -723,7 +725,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                         onBlur={[Function]}
                                         onClick={[Function]}
                                         onFocus={[Function]}
-                                        size="m"
+                                        size="s"
                                         textProps={
                                           Object {
                                             "className": "euiSuperUpdateButton__text",
@@ -744,7 +746,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                           onBlur={[Function]}
                                           onClick={[Function]}
                                           onFocus={[Function]}
-                                          size="m"
+                                          size="s"
                                           textProps={
                                             Object {
                                               "className": "euiSuperUpdateButton__text",
@@ -753,7 +755,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                           type="button"
                                         >
                                           <button
-                                            className="euiButton euiButton--success euiButton-isDisabled euiSuperUpdateButton"
+                                            className="euiButton euiButton--success euiButton--small euiButton-isDisabled euiSuperUpdateButton"
                                             data-test-subj="superDatePickerApplyTimeButton"
                                             disabled={true}
                                             onBlur={[Function]}
@@ -811,7 +813,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                             </EuiFlexItem>
                           </div>
                         </EuiFlexGroup>
-                      </EuiSuperDatePicker>
+                      </EuiCompressedSuperDatePicker>
                     </div>
                   </EuiFlexItem>
                 </div>
@@ -1007,20 +1009,28 @@ exports[`<Alerts /> spec renders the component 1`] = `
                         <EuiEmptyPrompt
                           body={
                             <p>
-                              Adjust the time range to see more results or create alert triggers in your
-                               
-                              <EuiLink
-                                href="/#/detectors"
+                              <EuiText
+                                size="s"
                               >
-                                detectors
-                              </EuiLink>
-                               to generate alerts.
+                                Adjust the time range to see more results or create alert triggers in your
+                                 
+                                <EuiLink
+                                  href="/#/detectors"
+                                >
+                                  detectors
+                                </EuiLink>
+                                 to generate alerts.
+                              </EuiText>
                             </p>
                           }
                           title={
-                            <h2>
-                              No alerts
-                            </h2>
+                            <EuiText
+                              size="s"
+                            >
+                              <h2>
+                                No alerts
+                              </h2>
+                            </EuiText>
                           }
                         >
                           <div
@@ -1029,11 +1039,18 @@ exports[`<Alerts /> spec renders the component 1`] = `
                             <EuiTitle
                               size="m"
                             >
-                              <h2
+                              <EuiText
                                 className="euiTitle euiTitle--medium"
+                                size="s"
                               >
-                                No alerts
-                              </h2>
+                                <div
+                                  className="euiText euiText--small euiTitle euiTitle--medium"
+                                >
+                                  <h2>
+                                    No alerts
+                                  </h2>
+                                </div>
+                              </EuiText>
                             </EuiTitle>
                             <EuiTextColor
                               color="subdued"
@@ -1053,20 +1070,28 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                     className="euiText euiText--medium"
                                   >
                                     <p>
-                                      Adjust the time range to see more results or create alert triggers in your
-                                       
-                                      <EuiLink
-                                        href="/#/detectors"
+                                      <EuiText
+                                        size="s"
                                       >
-                                        <a
-                                          className="euiLink euiLink--primary"
-                                          href="/#/detectors"
-                                          rel="noreferrer"
+                                        <div
+                                          className="euiText euiText--small"
                                         >
-                                          detectors
-                                        </a>
-                                      </EuiLink>
-                                       to generate alerts.
+                                          Adjust the time range to see more results or create alert triggers in your
+                                           
+                                          <EuiLink
+                                            href="/#/detectors"
+                                          >
+                                            <a
+                                              className="euiLink euiLink--primary"
+                                              href="/#/detectors"
+                                              rel="noreferrer"
+                                            >
+                                              detectors
+                                            </a>
+                                          </EuiLink>
+                                           to generate alerts.
+                                        </div>
+                                      </EuiText>
                                     </p>
                                   </div>
                                 </EuiText>
@@ -1146,15 +1171,17 @@ exports[`<Alerts /> spec renders the component 1`] = `
                         <div
                           className="euiFlexItem"
                         >
-                          <EuiTitle
+                          <EuiText
                             size="m"
                           >
-                            <h3
-                              className="euiTitle euiTitle--medium"
+                            <div
+                              className="euiText euiText--medium"
                             >
-                              Alerts
-                            </h3>
-                          </EuiTitle>
+                              <h2>
+                                Alerts
+                              </h2>
+                            </div>
+                          </EuiText>
                         </div>
                       </EuiFlexItem>
                       <EuiFlexItem
@@ -1368,6 +1395,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                         }
                       }
                       onTabClick={[Function]}
+                      size="s"
                       tabs={
                         Array [
                           Object {
@@ -1639,9 +1667,10 @@ exports[`<Alerts /> spec renders the component 1`] = `
                       <div>
                         <EuiTabs
                           onFocus={[Function]}
+                          size="s"
                         >
                           <div
-                            className="euiTabs"
+                            className="euiTabs euiTabs--small"
                             onFocus={[Function]}
                             role="tablist"
                           >
