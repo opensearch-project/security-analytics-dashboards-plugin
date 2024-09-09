@@ -212,10 +212,13 @@ export default class Main extends Component<MainProps, MainState> {
     if (pathnameChanged || this.state.selectedDataSource.id !== prevState.selectedDataSource.id) {
       const searchParams = new URLSearchParams(this.props.location.search);
       searchParams.set('dataSourceId', this.state.selectedDataSource.id);
-      this.props.history.replace({
-        ...this.props.location,
-        search: searchParams.toString(),
-      });
+      this.props.history.replace(
+        {
+          ...this.props.location,
+          search: searchParams.toString(),
+        },
+        this.props.location.state
+      );
     }
 
     if (pathnameChanged) {
