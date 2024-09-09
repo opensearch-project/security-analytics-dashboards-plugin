@@ -17,7 +17,7 @@ Object {
             class="euiFlexItem"
           >
             <div
-              class="euiText euiText--medium"
+              class="euiText euiText--small"
             >
               <h2>
                 Field mapping
@@ -224,7 +224,7 @@ Object {
           class="euiFlexItem"
         >
           <div
-            class="euiText euiText--medium"
+            class="euiText euiText--small"
           >
             <h2>
               Field mapping
