@@ -15,6 +15,7 @@ Compatible with OpenSearch Dashboards 2.17.0
 * Add threat alerts card for Analytics (All) workspace use case ([#1124](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/1124))
 * Update url with data source id; redirect on reload if ds id not present; minor fixes ([#1125](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/1125))
 * New home page related UI updates ([#1129](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/1129))
+* Fit and Finishes Changes for Security Analytics ([#1147](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/1147))
 
 ### Bug fixes
 * [navigation] update nav category and workspaceAvailability ([#1093](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/1093))
