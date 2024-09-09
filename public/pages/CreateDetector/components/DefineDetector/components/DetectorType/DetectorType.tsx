@@ -4,7 +4,7 @@
  */
 
 import React, { Component } from 'react';
-import { EuiCompressedFormRow, EuiSpacer, EuiCompressedComboBox, EuiTitle, EuiText } from '@elastic/eui';
+import { EuiCompressedFormRow, EuiSpacer, EuiCompressedComboBox, EuiText } from '@elastic/eui';
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
 import { CreateDetectorRulesState, DetectionRules } from '../DetectionRules/DetectionRules';
 import { RuleItem } from '../DetectionRules/types/interfaces';
@@ -73,10 +73,10 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
 
     return (
       <>
-        <EuiTitle size="m">
+        <EuiText size="s">
           <h3>Detection rules</h3>
-        </EuiTitle>
-        <EuiText>
+        </EuiText>
+        <EuiText size="s">
           <p>
             The detection rules are automatically populated based on your selected log type. Threat
             intelligence based detection can be enabled for standard log types.{' '}

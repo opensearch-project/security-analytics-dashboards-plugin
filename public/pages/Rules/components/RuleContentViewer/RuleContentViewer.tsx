@@ -64,11 +64,11 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
           <EuiFlexGroup justifyContent="flexEnd">
             <EuiFlexItem>
               <EuiFormLabel>Rule Name</EuiFormLabel>
-              <EuiText data-test-subj={'rule_flyout_rule_name'}>{ruleData.title}</EuiText>
+              <EuiText data-test-subj={'rule_flyout_rule_name'} size="s">{ruleData.title}</EuiText>
             </EuiFlexItem>
             <EuiFlexItem>
               <EuiFormLabel>Log Type</EuiFormLabel>
-              <EuiText data-test-subj={'rule_flyout_rule_log_type'}>
+              <EuiText data-test-subj={'rule_flyout_rule_log_type'} size="s">
                 {getLogTypeLabel(ruleData.category)}
               </EuiText>
             </EuiFlexItem>
@@ -77,7 +77,7 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
           <EuiSpacer />
 
           <EuiFormLabel>Description</EuiFormLabel>
-          <EuiText data-test-subj={'rule_flyout_rule_description'}>
+          <EuiText data-test-subj={'rule_flyout_rule_description'} size="s">
             {ruleData.description || DEFAULT_EMPTY_DATA}
           </EuiText>
           <EuiSpacer />
@@ -85,11 +85,11 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
           <EuiFlexGroup justifyContent="flexEnd">
             <EuiFlexItem>
               <EuiFormLabel>Last Updated</EuiFormLabel>
-              {ruleData.last_update_time}
+              <EuiText size="s">{ruleData.last_update_time}</EuiText>
             </EuiFlexItem>
             <EuiFlexItem data-test-subj={'rule_flyout_rule_author'}>
               <EuiFormLabel>Author</EuiFormLabel>
-              {ruleData.author}
+              <EuiText size="s">{ruleData.author}</EuiText>
             </EuiFlexItem>
           </EuiFlexGroup>
 
@@ -98,17 +98,19 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
           <EuiFlexGroup justifyContent="flexEnd">
             <EuiFlexItem data-test-subj={'rule_flyout_rule_source'}>
               <EuiFormLabel>Source</EuiFormLabel>
-              {prePackaged ? 'Standard' : 'Custom'}
+              <EuiText size="s">{prePackaged ? 'Standard' : 'Custom'}</EuiText>
             </EuiFlexItem>
             {prePackaged ? (
               <EuiFlexItem>
                 <EuiFormLabel>License</EuiFormLabel>
-                <EuiLink
-                  target={'_blank'}
-                  href={'https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'}
-                >
-                  Detection Rule License (DLR)
-                </EuiLink>
+                <EuiText size="s">
+                  <EuiLink
+                    target={'_blank'}
+                    href={'https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'}
+                  >
+                    Detection Rule License (DLR)
+                  </EuiLink>
+                </EuiText>
               </EuiFlexItem>
             ) : null}
           </EuiFlexGroup>
@@ -118,7 +120,7 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
           <EuiFlexGroup justifyContent="flexEnd">
             <EuiFlexItem data-test-subj={'rule_flyout_rule_severity'}>
               <EuiFormLabel>Rule level</EuiFormLabel>
-              {ruleData.level}
+              <EuiText size="s">{ruleData.level}</EuiText>
             </EuiFlexItem>
           </EuiFlexGroup>
 
@@ -167,15 +169,17 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
           {ruleData.references.length > 0 ? (
             ruleData.references.map((reference: any, i: number) => (
               <div key={i} className="eui-textTruncate">
-                <EuiLink
-                  href={reference.value}
-                  target="_blank"
-                  key={reference}
-                  data-test-subj={'rule_flyout_rule_references'}
-                >
-                  {reference.value}
-                </EuiLink>
-                <EuiSpacer />
+                <EuiText size="s">
+                  <EuiLink
+                    href={reference.value}
+                    target="_blank"
+                    key={reference}
+                    data-test-subj={'rule_flyout_rule_references'}
+                  >
+                    {reference.value}
+                  </EuiLink>
+                </EuiText>
+                <EuiSpacer size="s" />
               </div>
             ))
           ) : (
@@ -189,7 +193,9 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
             {ruleData.false_positives.length > 0 ? (
               ruleData.false_positives.map((falsepositive: any, i: number) => (
                 <div key={i}>
-                  {falsepositive.value}
+                  <EuiText size="s">
+                    {falsepositive.value}
+                  </EuiText>
                   <EuiSpacer />
                 </div>
               ))
@@ -201,7 +207,9 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
           <EuiSpacer />
 
           <EuiFormLabel>Rule Status</EuiFormLabel>
-          <div data-test-subj={'rule_flyout_rule_status'}>{ruleData.status}</div>
+          <div data-test-subj={'rule_flyout_rule_status'}>
+            <EuiText size="s">{ruleData.status}</EuiText>
+          </div>
 
           <EuiSpacer />
 

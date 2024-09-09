@@ -455,9 +455,9 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
   ) => {
     return (
       <>
-        <EuiTitle size="s">
-          <h5>Query type</h5>
-        </EuiTitle>
+        <EuiText size="s">
+          <h3>Query type</h3>
+        </EuiText>
         <EuiSpacer size="s" />
         <EuiFlexGroup>
           <EuiFlexItem style={{ maxWidth: 400 }}>
@@ -466,9 +466,9 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
               id={htmlIdGenerator('corr-rule-filter')()}
               label={
                 <>
-                  <EuiTitle size="s">
+                  <EuiText size="s">
                     <h4>Data filter</h4>
-                  </EuiTitle>
+                  </EuiText>
                   <EuiText size="s">
                     <p>
                       A correlation will be created for the matching findings narrowed down with
@@ -490,9 +490,9 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
               id={htmlIdGenerator('corr-rule-group-by')()}
               label={
                 <>
-                  <EuiTitle size="s">
+                  <EuiText size="s">
                     <h4>Group by field values</h4>
-                  </EuiTitle>
+                  </EuiText>
                   <EuiText size="s">
                     <p>
                       A correlation will be created when the values for the field values for each
@@ -855,9 +855,9 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
           },
         ]}
       >
-        <EuiTitle>
+        <EuiText size="s">
           <h1>{`${action} correlation rule`}</h1>
-        </EuiTitle>
+        </EuiText>
         <EuiText size="s" color="subdued">
           {description}
         </EuiText>
@@ -1005,11 +1005,11 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
               <EuiSpacer size="l" />
               <ContentPanel panelStyles={{ paddingLeft: 10, paddingRight: 10 }} hideHeaderBorder>
                 <ExperimentalBanner />
-                <EuiTitle size="m">
+                <EuiText size="s">
                   <h2>Alert Trigger </h2>
-                </EuiTitle>
+                </EuiText>
                 <EuiSpacer size="s" />
-                <EuiText>
+                <EuiText size="s">
                   <p>Get an alert on the correlation between the findings.</p>
                 </EuiText>
                 <EuiSpacer size="m" />

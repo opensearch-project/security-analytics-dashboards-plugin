@@ -16,7 +16,7 @@ import {
   EuiFlyoutHeader,
   EuiLink,
   EuiSpacer,
-  EuiTitle,
+  EuiText,
 } from '@elastic/eui';
 import { RuleSource } from '../../../../../server/models/interfaces';
 import React from 'react';
@@ -203,9 +203,9 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
         <EuiFlyoutHeader hasBorder={true}>
           <EuiFlexGroup justifyContent="spaceBetween">
             <EuiFlexItem grow={2}>
-              <EuiTitle size={'m'}>
-                <h3>Alert details</h3>
-              </EuiTitle>
+              <EuiText size='s'>
+                <h2>Alert details</h2>
+              </EuiText>
             </EuiFlexItem>
             <EuiFlexItem grow={8}>
               <EuiFlexGroup justifyContent="flexEnd" alignItems="center">

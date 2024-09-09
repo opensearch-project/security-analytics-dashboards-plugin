@@ -144,11 +144,13 @@ export const DetectionRules: React.FC<DetectionRulesProps> = ({
               </EuiTitle>
             }
             body={
-              <p>
-                {detectorType
-                  ? 'There are no applicable detection rules for the selected log type. Consider creating new detection rules.'
-                  : 'Select a log type to be able to select detection rules.'}
-              </p>
+              <EuiText size="s">
+                <p>
+                  {detectorType
+                    ? 'There are no applicable detection rules for the selected log type. Consider creating new detection rules.'
+                    : 'Select a log type to be able to select detection rules.'}
+                </p>
+              </EuiText>
             }
             actions={
               detectorType
