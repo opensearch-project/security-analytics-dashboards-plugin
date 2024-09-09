@@ -1532,10 +1532,10 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     className="euiFlexItem"
                   >
                     <EuiText
-                      size="m"
+                      size="s"
                     >
                       <div
-                        className="euiText euiText--medium"
+                        className="euiText euiText--small"
                       >
                         <h2>
                           Detector details
@@ -2816,10 +2816,10 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                     className="euiFlexItem"
                   >
                     <EuiText
-                      size="m"
+                      size="s"
                     >
                       <div
-                        className="euiText euiText--medium"
+                        className="euiText euiText--small"
                       >
                         <h2>
                           Active rules (2)

@@ -39,7 +39,7 @@ const renderSubTitleText = (subTitleText: string | JSX.Element): JSX.Element | n
 
 const ContentPanel = ({
   title = '',
-  titleSize = 'm',
+  titleSize = 's',
   subTitleText = '',
   bodyStyles = {},
   panelStyles = {},
