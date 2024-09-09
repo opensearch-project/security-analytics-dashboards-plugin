@@ -13,7 +13,7 @@ import {
   EuiFlexItem,
   EuiPanel,
   EuiSpacer,
-  EuiTitle,
+  EuiText,
 } from '@elastic/eui';
 import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
 import { RouteComponentProps } from 'react-router-dom';
@@ -102,9 +102,9 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, notifications }
       <>
         <EuiPanel>
           <PageHeader>
-            <EuiTitle>
-              <h3>Import rule</h3>
-            </EuiTitle>
+            <EuiText size="s">
+              <h1>Import rule</h1>
+            </EuiText>
           </PageHeader>
           <EuiCompressedFilePicker
             id={'filePickerId'}

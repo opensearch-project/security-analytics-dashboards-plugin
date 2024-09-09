@@ -10,7 +10,7 @@ import {
   EuiFilterSelectItem,
   EuiPopover,
   EuiPopoverTitle,
-  EuiFieldSearch,
+  EuiCompressedFieldSearch,
   FilterChecked,
   EuiPopoverFooter,
   EuiButtonGroup,
@@ -182,7 +182,7 @@ export const FilterGroup: React.FC<LogTypeFilterGroupProps> = ({
         panelPaddingSize="none"
       >
         <EuiPopoverTitle paddingSize="s">
-          <EuiFieldSearch compressed onSearch={search} isClearable={true} />
+          <EuiCompressedFieldSearch onSearch={search} isClearable={true} />
         </EuiPopoverTitle>
         <div
           className="ouiFilterSelect__items"

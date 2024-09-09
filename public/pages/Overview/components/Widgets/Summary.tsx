@@ -11,6 +11,7 @@ import {
   EuiLink,
   EuiLinkColor,
   EuiStat,
+  EuiText,
 } from '@elastic/eui';
 import React, { useCallback, useEffect, useState } from 'react';
 import { WidgetContainer } from './WidgetContainer';
@@ -169,12 +170,14 @@ export const Summary: React.FC<SummaryProps> = ({
         <EuiFlexItem>
           {activeAlerts === 0 && totalFindings === 0 ? (
             <EuiEmptyPrompt
-              title={<h2>No alerts and findings found</h2>}
+              title={<EuiText size="s"><h2>No alerts and findings found</h2></EuiText>}
               body={
                 <>
                   <p>
-                    Adjust the time range to see more results or create a <br />
-                    detector to generate findings.
+                    <EuiText size="s">
+                      Adjust the time range to see more results or create a <br/>
+                      detector to generate findings.
+                    </EuiText>
                   </p>
                   <EuiSmallButton
                     href={`#${ROUTES.DETECTORS_CREATE}`}

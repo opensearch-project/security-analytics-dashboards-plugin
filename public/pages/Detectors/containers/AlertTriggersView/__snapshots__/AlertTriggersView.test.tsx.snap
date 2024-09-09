@@ -247,15 +247,17 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
               <div
                 className="euiFlexItem"
               >
-                <EuiTitle
-                  size="m"
+                <EuiText
+                  size="s"
                 >
-                  <h3
-                    className="euiTitle euiTitle--medium"
+                  <div
+                    className="euiText euiText--small"
                   >
-                    Alert triggers (2)
-                  </h3>
-                </EuiTitle>
+                    <h2>
+                      Alert triggers (2)
+                    </h2>
+                  </div>
+                </EuiText>
               </div>
             </EuiFlexItem>
             <EuiFlexItem
@@ -724,9 +726,10 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                   id="some_html_id"
                                   onBlur={[Function]}
                                   onFocus={[Function]}
+                                  size="s"
                                 >
                                   <div
-                                    className="euiText euiText--medium"
+                                    className="euiText euiText--small"
                                     data-test-subj="text-details-group-content-trigger-name"
                                     id="some_html_id"
                                     onBlur={[Function]}
@@ -808,9 +811,10 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                   id="some_html_id"
                                   onBlur={[Function]}
                                   onFocus={[Function]}
+                                  size="s"
                                 >
                                   <div
-                                    className="euiText euiText--medium"
+                                    className="euiText euiText--small"
                                     data-test-subj="text-details-group-content-rule-names"
                                     id="some_html_id"
                                     onBlur={[Function]}
@@ -880,9 +884,10 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                           id="some_html_id"
                                           onBlur={[Function]}
                                           onFocus={[Function]}
+                                          size="s"
                                         >
                                           <div
-                                            className="euiText euiText--medium"
+                                            className="euiText euiText--small"
                                             data-test-subj="text-details-group-content-rule-severities"
                                             id="some_html_id"
                                             onBlur={[Function]}
@@ -941,9 +946,10 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                           id="some_html_id"
                                           onBlur={[Function]}
                                           onFocus={[Function]}
+                                          size="s"
                                         >
                                           <div
-                                            className="euiText euiText--medium"
+                                            className="euiText euiText--small"
                                             data-test-subj="text-details-group-content-tags"
                                             id="some_html_id"
                                             onBlur={[Function]}
@@ -1020,9 +1026,10 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                   id="some_html_id"
                                   onBlur={[Function]}
                                   onFocus={[Function]}
+                                  size="s"
                                 >
                                   <div
-                                    className="euiText euiText--medium"
+                                    className="euiText euiText--small"
                                     data-test-subj="text-details-group-content-trigger-alerts-with-severity"
                                     id="some_html_id"
                                     onBlur={[Function]}
@@ -1086,9 +1093,10 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                   id="some_html_id"
                                   onBlur={[Function]}
                                   onFocus={[Function]}
+                                  size="s"
                                 >
                                   <div
-                                    className="euiText euiText--medium"
+                                    className="euiText euiText--small"
                                     data-test-subj="text-details-group-content-notify-channel"
                                     id="some_html_id"
                                     onBlur={[Function]}
@@ -1495,9 +1503,10 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                   id="some_html_id"
                                   onBlur={[Function]}
                                   onFocus={[Function]}
+                                  size="s"
                                 >
                                   <div
-                                    className="euiText euiText--medium"
+                                    className="euiText euiText--small"
                                     data-test-subj="text-details-group-content-trigger-name"
                                     id="some_html_id"
                                     onBlur={[Function]}
@@ -1579,9 +1588,10 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                   id="some_html_id"
                                   onBlur={[Function]}
                                   onFocus={[Function]}
+                                  size="s"
                                 >
                                   <div
-                                    className="euiText euiText--medium"
+                                    className="euiText euiText--small"
                                     data-test-subj="text-details-group-content-rule-names"
                                     id="some_html_id"
                                     onBlur={[Function]}
@@ -1651,9 +1661,10 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                           id="some_html_id"
                                           onBlur={[Function]}
                                           onFocus={[Function]}
+                                          size="s"
                                         >
                                           <div
-                                            className="euiText euiText--medium"
+                                            className="euiText euiText--small"
                                             data-test-subj="text-details-group-content-rule-severities"
                                             id="some_html_id"
                                             onBlur={[Function]}
@@ -1712,9 +1723,10 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                           id="some_html_id"
                                           onBlur={[Function]}
                                           onFocus={[Function]}
+                                          size="s"
                                         >
                                           <div
-                                            className="euiText euiText--medium"
+                                            className="euiText euiText--small"
                                             data-test-subj="text-details-group-content-tags"
                                             id="some_html_id"
                                             onBlur={[Function]}
@@ -1791,9 +1803,10 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                   id="some_html_id"
                                   onBlur={[Function]}
                                   onFocus={[Function]}
+                                  size="s"
                                 >
                                   <div
-                                    className="euiText euiText--medium"
+                                    className="euiText euiText--small"
                                     data-test-subj="text-details-group-content-trigger-alerts-with-severity"
                                     id="some_html_id"
                                     onBlur={[Function]}
@@ -1857,9 +1870,10 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                                   id="some_html_id"
                                   onBlur={[Function]}
                                   onFocus={[Function]}
+                                  size="s"
                                 >
                                   <div
-                                    className="euiText euiText--medium"
+                                    className="euiText euiText--small"
                                     data-test-subj="text-details-group-content-notify-channel"
                                     id="some_html_id"
                                     onBlur={[Function]}

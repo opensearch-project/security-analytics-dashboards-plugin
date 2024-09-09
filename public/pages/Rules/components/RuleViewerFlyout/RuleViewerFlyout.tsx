@@ -9,7 +9,7 @@ import {
   EuiFlyout,
   EuiFlyoutBody,
   EuiFlyoutHeader,
-  EuiTitle,
+  EuiText,
   EuiSmallButtonIcon,
 } from '@elastic/eui';
 import { ROUTES } from '../../../../utils/constants';
@@ -107,9 +107,9 @@ export const RuleViewerFlyout: React.FC<RuleViewerFlyoutProps> = ({
       <EuiFlyoutHeader hasBorder={true}>
         <EuiFlexGroup alignItems="center">
           <EuiFlexItem>
-            <EuiTitle size="m">
-              <h3>{ruleTableItem.title}</h3>
-            </EuiTitle>
+            <EuiText size="s">
+              <h2>{ruleTableItem.title}</h2>
+            </EuiText>
           </EuiFlexItem>
           {history && (
             <EuiFlexItem grow={false} style={{ marginRight: '50px' }}>

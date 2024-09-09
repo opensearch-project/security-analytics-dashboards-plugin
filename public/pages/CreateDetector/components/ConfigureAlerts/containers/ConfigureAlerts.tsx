@@ -200,9 +200,9 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
               <EuiAccordion
                 id={`alert-condition-${index}`}
                 buttonContent={
-                  <EuiTitle>
-                    <h4>{alertCondition.name}</h4>
-                  </EuiTitle>
+                  <EuiText size="s">
+                    <h3>{alertCondition.name}</h3>
+                  </EuiText>
                 }
                 paddingSize={'none'}
                 initialIsOpen={true}

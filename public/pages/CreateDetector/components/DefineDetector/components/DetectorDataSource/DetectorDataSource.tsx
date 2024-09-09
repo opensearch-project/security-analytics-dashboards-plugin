@@ -12,6 +12,7 @@ import {
   EuiCallOut,
   EuiTextColor,
   EuiTitle,
+  EuiText,
 } from '@elastic/eui';
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
 import { IndexOption } from '../../../../../Detectors/models/interfaces';
@@ -150,9 +151,9 @@ export default class DetectorDataSource extends Component<
     const isInvalid = fieldTouched && detectorIndices.length < MIN_NUM_DATA_SOURCES;
     return (
       <>
-        <EuiTitle size="m">
+        <EuiText size="s">
           <h3>Data source</h3>
-        </EuiTitle>
+        </EuiText>
         <EuiSpacer size={'m'} />
         <EuiCompressedFormRow
           label={<FormFieldHeader headerTitle={'Select indexes/aliases'} />}

@@ -13,13 +13,13 @@ import {
   EuiLink,
   EuiPanel,
   EuiSpacer,
-  EuiSuperDatePicker,
-  EuiTitle,
+  EuiCompressedSuperDatePicker,
   EuiToolTip,
   EuiEmptyPrompt,
   EuiTableSelectionType,
   EuiIcon,
   EuiTabbedContent,
+  EuiText,
 } from '@elastic/eui';
 import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
 import dateMath from '@elastic/datemath';
@@ -240,10 +240,10 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       widgetEmptyMessage: filteredAlerts.length ? undefined : (
         <EuiEmptyPrompt
           body={
-            <p>
+            <EuiText size="s">
               <span style={{ display: 'block' }}>No alerts.</span>Adjust the time range to see more
               results.
-            </p>
+            </EuiText>
           }
         />
       ),
@@ -264,10 +264,10 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       widgetEmptyCorrelationMessage: filteredCorrelationAlerts.length ? undefined : (
         <EuiEmptyPrompt
           body={
-            <p>
+            <EuiText size="s">
               <span style={{ display: 'block' }}>No alerts.</span>Adjust the time range to see more
               results.
-            </p>
+            </EuiText>
           }
         />
       ),
@@ -288,10 +288,10 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       widgetEmptyThreatIntelMessage: filteredAlerts.length ? undefined : (
         <EuiEmptyPrompt
           body={
-            <p>
+            <EuiText size="s">
               <span style={{ display: 'block' }}>No alerts.</span>Adjust the time range to see more
               results.
-            </p>
+            </EuiText>
           }
         />
       ),
@@ -1078,7 +1078,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     ];
 
     const datePicker = (
-      <EuiSuperDatePicker
+      <EuiCompressedSuperDatePicker
         start={dateTimeFilter.startTime}
         end={dateTimeFilter.endTime}
         recentlyUsedRanges={recentlyUsedRanges}
@@ -1120,9 +1120,9 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
             <EuiFlexItem>
               <EuiFlexGroup gutterSize={'s'} justifyContent={'spaceBetween'}>
                 <EuiFlexItem>
-                  <EuiTitle size="m">
+                  <EuiText size="s">
                     <h1>Security alerts</h1>
-                  </EuiTitle>
+                  </EuiText>
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>{datePicker}</EuiFlexItem>
               </EuiFlexGroup>
@@ -1139,12 +1139,14 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
                 <EuiFlexItem>
                   {!alerts || alerts.length === 0 ? (
                     <EuiEmptyPrompt
-                      title={<h2>No alerts</h2>}
+                      title={<EuiText size="s"><h2>No alerts</h2></EuiText>}
                       body={
                         <p>
-                          Adjust the time range to see more results or create alert triggers in your{' '}
-                          <EuiLink href={`${location.pathname}#/detectors`}>detectors</EuiLink> to
-                          generate alerts.
+                          <EuiText size="s">
+                            Adjust the time range to see more results or create alert triggers in your{' '}
+                            <EuiLink href={`${location.pathname}#/detectors`}>detectors</EuiLink> to
+                            generate alerts.
+                          </EuiText>
                         </p>
                       }
                     />
@@ -1160,6 +1162,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
             <ContentPanel title={'Alerts'} actions={[this.getContelPanelActions()]}>
               <EuiTabbedContent
                 tabs={tabs}
+                size="s"
                 onTabClick={({ id }) => this.setState({ selectedTabId: id as AlertTabId })}
                 initialSelectedTab={tabs.find(({ id }) => id === selectedTabId) ?? tabs[0]}
               />

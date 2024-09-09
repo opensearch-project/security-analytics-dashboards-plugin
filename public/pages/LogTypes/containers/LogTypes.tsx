@@ -12,7 +12,6 @@ import {
   EuiPanel,
   EuiSpacer,
   EuiText,
-  EuiTitle,
 } from '@elastic/eui';
 import { BREADCRUMBS, ROUTES } from '../../../utils/constants';
 import { DataSourceProps, LogType } from '../../../../types';
@@ -96,9 +95,9 @@ export const LogTypes: React.FC<LogTypesProps> = ({ history, notifications, data
           <EuiFlexItem>
             <EuiFlexGroup gutterSize={'s'} justifyContent={'spaceBetween'}>
               <EuiFlexItem>
-                <EuiTitle size="m">
+                <EuiText size="s">
                   <h1>Log types</h1>
-                </EuiTitle>
+                </EuiText>
                 <EuiText size="s" color="subdued">
                   Log types describe the data sources to which the detection rules are meant to be
                   applied.
