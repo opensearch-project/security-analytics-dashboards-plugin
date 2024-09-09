@@ -11,6 +11,7 @@ import {
   EuiCompressedFormRow,
   EuiOverlayMask,
   EuiSpacer,
+  EuiText,
 } from '@elastic/eui';
 
 interface DeleteModalProps {
@@ -57,7 +58,7 @@ export default class DeleteModal extends Component<DeleteModalProps, DeleteModal
     return (
       <EuiOverlayMask>
         <EuiConfirmModal
-          title={`Delete ${type}`}
+          title={<EuiText size="s"><h2>`Delete ${type}`</h2></EuiText>}
           onCancel={closeDeleteModal}
           onConfirm={() => {
             onClickDelete();

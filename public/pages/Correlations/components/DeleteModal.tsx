@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiConfirmModal } from '@elastic/eui';
+import { EuiConfirmModal, EuiText } from '@elastic/eui';
 import React from 'react';
 
 export interface DeleteRuleModalProps {
@@ -19,7 +19,7 @@ export const DeleteCorrelationRuleModal: React.FC<DeleteRuleModalProps> = ({
 }) => {
   return (
     <EuiConfirmModal
-      title={`Delete ${title}?`}
+      title={<EuiText size="s"><h2>Delete {title}?</h2></EuiText>}
       onCancel={onCancel}
       onConfirm={onConfirm}
       cancelButtonText="Cancel"
@@ -27,7 +27,7 @@ export const DeleteCorrelationRuleModal: React.FC<DeleteRuleModalProps> = ({
       buttonColor="danger"
       defaultFocusedButton="confirm"
     >
-      <p>Delete the correlation rule permanently? This action cannot be undone.</p>
+      <EuiText size="s">Delete the correlation rule permanently? This action cannot be undone.</EuiText>
     </EuiConfirmModal>
   );
 };

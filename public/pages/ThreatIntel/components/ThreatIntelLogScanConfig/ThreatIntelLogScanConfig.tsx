@@ -162,7 +162,7 @@ export const ThreatIntelLogScanConfig: React.FC<ThreatIntelLogScanConfigProps> =
               anchorPosition={'downLeft'}
               data-test-subj={'detectorsActionsPopover'}
             >
-              <EuiContextMenuPanel items={getActionItems()} />
+              <EuiContextMenuPanel items={getActionItems()} size="s"/>
             </EuiPopover>
           </EuiFlexItem>
         </EuiFlexGroup>

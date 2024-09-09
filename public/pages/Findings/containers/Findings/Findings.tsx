@@ -11,8 +11,8 @@ import {
   EuiFlexItem,
   EuiPanel,
   EuiSpacer,
-  EuiSuperDatePicker,
-  EuiTitle,
+  EuiCompressedSuperDatePicker,
+  EuiText,
   EuiEmptyPrompt,
   EuiLink,
   EuiTabbedContent,
@@ -584,7 +584,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
     ];
 
     const datePicker = (
-      <EuiSuperDatePicker
+      <EuiCompressedSuperDatePicker
         start={dateTimeFilter.startTime}
         end={dateTimeFilter.endTime}
         recentlyUsedRanges={recentlyUsedRanges}
@@ -607,9 +607,9 @@ class Findings extends Component<FindingsProps, FindingsState> {
           <EuiFlexItem>
             <EuiFlexGroup gutterSize={'s'} justifyContent={'spaceBetween'}>
               <EuiFlexItem>
-                <EuiTitle size="m">
+                <EuiText size="s">
                   <h1>Findings</h1>
-                </EuiTitle>
+                </EuiText>
               </EuiFlexItem>
               <EuiFlexItem grow={false}>{datePicker}</EuiFlexItem>
             </EuiFlexGroup>
@@ -625,8 +625,12 @@ class Findings extends Component<FindingsProps, FindingsState> {
               <EuiFlexItem>
                 {!findings || findings.length === 0 ? (
                   <EuiEmptyPrompt
-                    title={<h2>No findings</h2>}
-                    body={this.state.findingStateByTabId[this.state.selectedTabId].emptyPromptBody}
+                    title={<EuiText size="s"><h2>No findings</h2></EuiText>}
+                    body={
+                      <EuiText size="s">
+                        {this.state.findingStateByTabId[this.state.selectedTabId].emptyPromptBody}
+                      </EuiText>
+                    }
                   />
                 ) : (
                   <ChartContainer chartViewId={'findings-view'} loading={loading} />
@@ -642,6 +646,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
           <ContentPanel title={'Findings'}>
             <EuiTabbedContent
               tabs={tabs}
+              size="s"
               initialSelectedTab={tabs.find(({ id }) => id === selectedTabId) ?? tabs[0]}
               onTabClick={(tab) => {
                 this.setState({ selectedTabId: tab.id as FindingTabId });

@@ -88,13 +88,22 @@ exports[`<RuleEditorContainer /> spec renders the component 1`] = `
               className="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow rule-editor-form"
             >
               <PageHeader>
-                <EuiTitle>
-                  <h3
-                    className="euiTitle euiTitle--medium"
+                <EuiText
+                  size="s"
+                >
+                  <div
+                    className="euiText euiText--small"
                   >
-                    Rule title
-                  </h3>
-                </EuiTitle>
+                    <h1>
+                      Rule title
+                    </h1>
+                  </div>
+                </EuiText>
+                <EuiSpacer>
+                  <div
+                    className="euiSpacer euiSpacer--l"
+                  />
+                </EuiSpacer>
               </PageHeader>
               <EuiButtonGroup
                 data-test-subj="change-editor-type"
@@ -316,9 +325,10 @@ exports[`<RuleEditorContainer /> spec renders the component 1`] = `
               <EuiTitle>
                 <EuiText
                   className="euiTitle euiTitle--medium"
+                  size="s"
                 >
                   <div
-                    className="euiText euiText--medium euiTitle euiTitle--medium"
+                    className="euiText euiText--small euiTitle euiTitle--medium"
                   >
                     <h2>
                       Rule overview
@@ -708,9 +718,10 @@ exports[`<RuleEditorContainer /> spec renders the component 1`] = `
               <EuiTitle>
                 <EuiText
                   className="euiTitle euiTitle--medium"
+                  size="s"
                 >
                   <div
-                    className="euiText euiText--medium euiTitle euiTitle--medium"
+                    className="euiText euiText--small euiTitle euiTitle--medium"
                   >
                     <h2>
                       Details
@@ -1707,9 +1718,10 @@ exports[`<RuleEditorContainer /> spec renders the component 1`] = `
               <EuiTitle>
                 <EuiText
                   className="euiTitle euiTitle--medium"
+                  size="s"
                 >
                   <div
-                    className="euiText euiText--medium euiTitle euiTitle--medium"
+                    className="euiText euiText--small euiTitle euiTitle--medium"
                   >
                     <h2>
                       Detection

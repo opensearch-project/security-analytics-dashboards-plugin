@@ -171,7 +171,7 @@ export default class FieldMappingsTable<T extends MappingViewType> extends Compo
           <EuiEmptyPrompt
             style={{ maxWidth: '45em' }}
             body={
-              <EuiText>
+              <EuiText size="s">
                 <p>There are no field mappings.</p>
               </EuiText>
             }

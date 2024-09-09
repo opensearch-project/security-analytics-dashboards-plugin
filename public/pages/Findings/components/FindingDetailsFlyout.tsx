@@ -697,7 +697,7 @@ export default class FindingDetailsFlyout extends Component<
           </EuiFlexGroup>
 
           <EuiSpacer size={'m'} />
-          <EuiTabs>
+          <EuiTabs size="s">
             {FindingFlyoutTabs.map((tab) => {
               return (
                 <EuiTab

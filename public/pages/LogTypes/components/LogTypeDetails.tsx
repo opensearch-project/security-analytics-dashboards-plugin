@@ -40,7 +40,6 @@ export const LogTypeDetails: React.FC<LogTypeDetailsProps> = ({
   return (
     <ContentPanel
       title="Details"
-      titleSize="l"
       actions={
         !isEditMode &&
         logTypeDetails.source.toLocaleLowerCase() !== 'standard' && [

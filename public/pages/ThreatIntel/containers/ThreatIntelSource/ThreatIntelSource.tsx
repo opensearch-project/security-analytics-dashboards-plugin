@@ -254,7 +254,7 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
         />
       </EuiPanel>
       <EuiSpacer />
-      <EuiTabbedContent tabs={tabs} initialSelectedTab={tabs[0]} />
+      <EuiTabbedContent tabs={tabs} initialSelectedTab={tabs[0]} size="s"/>
       {showDeleteModal && (
         <DeleteModal
           type="threat intel source"
