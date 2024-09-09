@@ -23,7 +23,7 @@ Compatible with OpenSearch Dashboards 2.17.0
 * Added check for multi data source support when rendering threat alerts card in all use case workspace ([#1132](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/1132))
 * Made import more specific to avoid importing incorrect modules ([#1136](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/1136))
 * remove import causing error ([#1144](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/1144))
-* Passthrough URL state and other params when updating search query ([#1148](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/1148))
+* Passthrough URL state and other params when updating search query ([#1149](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/1149))
 
 ### Documentation
 * Added v2.17 release notes. ([#1141](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/1141))
