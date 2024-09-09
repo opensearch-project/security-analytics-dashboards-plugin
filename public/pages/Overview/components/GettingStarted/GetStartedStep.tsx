@@ -21,7 +21,7 @@ interface GetStartedStepProps {
 export const GetStartedStep: React.FC<GetStartedStepProps> = ({ buttons, title }) => {
   return (
     <div>
-      <EuiText>
+      <EuiText size="s">
         <p>{title}</p>
       </EuiText>
       <EuiSpacer size="s" />

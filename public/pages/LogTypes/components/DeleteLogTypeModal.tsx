@@ -18,6 +18,7 @@ import {
   EuiModalHeaderTitle,
   EuiOverlayMask,
   EuiSpacer,
+  EuiText,
 } from '@elastic/eui';
 import React from 'react';
 import { useState } from 'react';
@@ -60,7 +61,9 @@ export const DeleteLogTypeModal: React.FC<DeleteLogTypeModalProps> = ({
         <EuiModal onClose={closeModal}>
           <EuiModalHeader>
             <EuiModalHeaderTitle>
-              <h1>This log type can't be deleted</h1>
+              <EuiText size="s">
+                <h2>This log type can't be deleted</h2>
+              </EuiText>
             </EuiModalHeaderTitle>
           </EuiModalHeader>
           <EuiModalBody>
@@ -73,10 +76,12 @@ export const DeleteLogTypeModal: React.FC<DeleteLogTypeModalProps> = ({
               color="warning"
             />
             <EuiSpacer />
-            <p>
-              Only log types that don’t have any associated rules can be deleted. Consider editing
-              log type or deleting associated detection rules.
-            </p>
+            <EuiText size="s">
+              <p>
+                Only log types that don’t have any associated rules can be deleted. Consider editing
+                log type or deleting associated detection rules.
+              </p>
+            </EuiText>
           </EuiModalBody>
           <EuiModalFooter>
             <EuiSmallButton onClick={closeModal} fill>
@@ -86,7 +91,7 @@ export const DeleteLogTypeModal: React.FC<DeleteLogTypeModalProps> = ({
         </EuiModal>
       ) : (
         <EuiConfirmModal
-          title={`Delete log type?`}
+          title={<EuiText size="s"><h2>Delete log type?</h2></EuiText>}
           onCancel={closeModal}
           onConfirm={onConfirmClick}
           cancelButtonText={'Cancel'}
@@ -96,11 +101,18 @@ export const DeleteLogTypeModal: React.FC<DeleteLogTypeModalProps> = ({
           confirmButtonDisabled={confirmDeleteText != logTypeName}
         >
           <EuiForm>
-            <p>The log type will be permanently deleted. This action is irreversible.</p>
-            <EuiSpacer size="s" />
-            <p style={{ marginBottom: '0.3rem' }}>
-              Type <b>{logTypeName}</b> to confirm
+            <p>
+              <EuiText size="s">
+                The log type will be permanently deleted. This action is irreversible.
+              </EuiText>
             </p>
+            <EuiSpacer size="s"/>
+              <p style={{marginBottom: '0.3rem'}}>
+                <EuiText size="s">
+                  Type {<b>{logTypeName}</b>} to confirm
+                </EuiText>
+              </p>
+
             <EuiCompressedFormRow>
               <EuiCompressedFieldText
                 value={confirmDeleteText}

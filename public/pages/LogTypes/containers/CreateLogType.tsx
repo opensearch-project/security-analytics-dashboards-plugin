@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 import { DataStore } from '../../../store/DataStore';
 import { setBreadcrumbs, successNotificationToast } from '../../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { EuiPanel, EuiSpacer, EuiText, EuiTitle } from '@elastic/eui';
+import { EuiPanel, EuiSpacer, EuiText } from '@elastic/eui';
 import { PageHeader } from '../../../components/PageHeader/PageHeader';
 import { getUseUpdatedUx } from '../../../services/utils/constants';
 
@@ -38,9 +38,9 @@ export const CreateLogType: React.FC<CreateLogTypeProps> = ({ history, notificat
   return (
     <EuiPanel>
       <PageHeader appDescriptionControls={[{ description }]}>
-        <EuiTitle>
-          <h3>Create log type</h3>
-        </EuiTitle>
+        <EuiText size="s">
+          <h1>Create log type</h1>
+        </EuiText>
         <EuiText size="s" color="subdued">
           {description}
         </EuiText>

@@ -49,7 +49,15 @@ Object {
                 class="euiModalHeader__title"
                 data-test-subj="confirmModalTitleText"
               >
-                Delete some type
+                <div
+                  class="euiText euiText--small"
+                >
+                  <h2>
+                    \`Delete $
+                    some type
+                    \`
+                  </h2>
+                </div>
               </div>
             </div>
             <div

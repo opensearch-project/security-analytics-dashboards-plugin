@@ -14,6 +14,7 @@ import {
   EuiToolTip,
   EuiEmptyPrompt,
   EuiBadge,
+  EuiText,
 } from '@elastic/eui';
 import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
 import dateMath from '@elastic/datemath';
@@ -103,10 +104,10 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         filteredFindings.length || findings.length ? undefined : (
           <EuiEmptyPrompt
             body={
-              <p>
+              <EuiText size="s">
                 <span style={{ display: 'block' }}>No findings.</span>Adjust the time range to see
                 more results.
-              </p>
+              </EuiText>
             }
           />
         ),

@@ -352,6 +352,7 @@ export default class ConfigureFieldMapping extends Component<
         key={index}
         onClick={() => this.setState({ selectedTabId: tab.id, selectedTabContent: tab.content })}
         isSelected={this.state.selectedTabId === tab.id}
+        size="s"
       >
         {tab.name}
       </EuiTab>
@@ -392,16 +393,18 @@ export default class ConfigureFieldMapping extends Component<
               </EuiTitle>
             }
             body={
-              <p>
-                Automatically mapped fields and additional fields that may
-                <br /> require manual mapping will be shown here. Select log type
-                <br /> for your data source.
-              </p>
+              <EuiText size="s">
+                <p>
+                  Automatically mapped fields and additional fields that may
+                  <br /> require manual mapping will be shown here. Select log type
+                  <br /> for your data source.
+                </p>
+              </EuiText>
             }
           />
         ) : (
           <div style={{ paddingLeft: '30px' }}>
-            <EuiTabs>{this.renderTabs()}</EuiTabs>
+            <EuiTabs size="s">{this.renderTabs()}</EuiTabs>
             {selectedTabContent}
           </div>
         )}

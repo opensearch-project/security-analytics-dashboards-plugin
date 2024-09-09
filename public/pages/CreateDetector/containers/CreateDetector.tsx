@@ -12,7 +12,7 @@ import {
   EuiFlexItem,
   EuiSpacer,
   EuiSteps,
-  EuiTitle,
+  EuiText,
 } from '@elastic/eui';
 import DefineDetector from '../components/DefineDetector/containers/DefineDetector';
 import { createDetectorSteps, PENDING_DETECTOR_ID } from '../utils/constants';
@@ -383,9 +383,9 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
           <EuiFlexItem>
             <>
               <PageHeader>
-                <EuiTitle>
+                <EuiText size="s">
                   <h1>Create detector</h1>
-                </EuiTitle>
+                </EuiText>
                 <EuiSpacer />
               </PageHeader>
               {this.getStepContent()}
