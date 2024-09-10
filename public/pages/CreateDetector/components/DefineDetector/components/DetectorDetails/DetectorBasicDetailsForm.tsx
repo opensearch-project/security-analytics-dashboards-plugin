@@ -4,7 +4,7 @@
  */
 
 import React, { Component } from 'react';
-import { EuiCompressedFormRow, EuiCompressedFieldText, EuiSpacer, EuiTextArea, EuiTitle } from '@elastic/eui';
+import { EuiCompressedFormRow, EuiCompressedFieldText, EuiSpacer, EuiTextArea, EuiTitle, EuiText } from '@elastic/eui';
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
 import {
   getDescriptionErrorMessage,
@@ -74,9 +74,9 @@ export default class DetectorBasicDetailsForm extends Component<
     } = this.state;
     return (
       <>
-        <EuiTitle size="m">
+        <EuiText size="s">
           <h3>Detector details</h3>
-        </EuiTitle>
+        </EuiText>
         <EuiSpacer size={'m'} />
         <EuiCompressedFormRow
           label={<FormFieldHeader headerTitle={'Name'} />}

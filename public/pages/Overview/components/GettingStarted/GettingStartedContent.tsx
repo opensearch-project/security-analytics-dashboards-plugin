@@ -11,7 +11,6 @@ import {
   EuiSpacer,
   EuiSteps,
   EuiText,
-  EuiTitle,
 } from '@elastic/eui';
 import { EuiContainedStepProps } from '@elastic/eui/src/components/steps/steps';
 import {
@@ -190,11 +189,11 @@ export const GettingStartedContent: React.FC<GettingStartedPopupProps> = ({
           },
         ]}
       >
-        <EuiTitle>
-          <h1>Get started with Security analytics</h1>
-        </EuiTitle>
+        <EuiText size="s">
+          <h2>Get started with Security analytics</h2>
+        </EuiText>
         <EuiHorizontalRule />
-        <EuiText>
+        <EuiText size="s">
           <p>
             Generates critical security insights from your event logs.&nbsp;
             <EuiLink href={moreLink} target="_blank">

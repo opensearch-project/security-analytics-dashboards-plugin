@@ -8,7 +8,7 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiSpacer,
-  EuiTitle,
+  EuiText,
   EuiPanel,
   EuiSmallButton,
   EuiInMemoryTable,
@@ -114,9 +114,9 @@ export const CorrelationRules: React.FC<CorrelationRulesProps> = (props: Correla
           <EuiFlexItem>
             <EuiFlexGroup gutterSize={'s'} justifyContent={'spaceBetween'}>
               <EuiFlexItem>
-                <EuiTitle size="m">
+                <EuiText size="s">
                   <h1>Correlation rules</h1>
-                </EuiTitle>
+                </EuiText>
               </EuiFlexItem>
               <EuiFlexItem grow={false}>{createRuleAction}</EuiFlexItem>
             </EuiFlexGroup>
@@ -139,15 +139,17 @@ export const CorrelationRules: React.FC<CorrelationRulesProps> = (props: Correla
             ) : (
               <EuiEmptyPrompt
                 title={
-                  <EuiTitle>
-                    <h1>No correlation rules found</h1>
-                  </EuiTitle>
+                  <EuiText size="s">
+                    <h2>No correlation rules found</h2>
+                  </EuiText>
                 }
                 body={
-                  <p>
-                    Create a correlation rule based on specified fields to generate correlations
-                    across all findings between different log types.
-                  </p>
+                  <EuiText size="s">
+                    <p>
+                      Create a correlation rule based on specified fields to generate correlations
+                      across all findings between different log types.
+                    </p>
+                  </EuiText>
                 }
                 actions={[
                   <EuiSmallButton

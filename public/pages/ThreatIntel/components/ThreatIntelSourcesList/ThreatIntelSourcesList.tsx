@@ -16,6 +16,7 @@ import {
   EuiPanel,
   EuiSpacer,
   EuiTitle,
+  EuiText,
 } from '@elastic/eui';
 import { ROUTES } from '../../../../utils/constants';
 import { ThreatIntelSourceItem } from '../../../../../types';
@@ -96,7 +97,7 @@ export const ThreatIntelSourcesList: React.FC<ThreatIntelSourcesListProps> = ({
       </EuiFlexGroup>
       {threatIntelSources.length === 0 && (
         <EuiEmptyPrompt
-          title={<h3>No threat intel source present</h3>}
+          title={<EuiText size="s"><h2>No threat intel source present</h2></EuiText>}
           actions={[
             <EuiSmallButton
               fill

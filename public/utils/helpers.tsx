@@ -115,7 +115,7 @@ export function createTextDetailsGroup(
             {content ?? DEFAULT_EMPTY_DATA}
           </EuiLink>
         ) : (
-          <EuiText data-test-subj={`text-details-group-content-${dataTestSubj}`}>
+          <EuiText data-test-subj={`text-details-group-content-${dataTestSubj}`} size="s">
             {content ?? DEFAULT_EMPTY_DATA}
           </EuiText>
         )}

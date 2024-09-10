@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiSmallButton, EuiFlexGroup, EuiFlexItem, EuiPanel, EuiSpacer, EuiTitle } from '@elastic/eui';
+import { EuiSmallButton, EuiFlexGroup, EuiFlexItem, EuiPanel, EuiSpacer, EuiText } from '@elastic/eui';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { RulesTable } from '../../components/RulesTable/RulesTable';
@@ -102,9 +102,9 @@ export const Rules: React.FC<RulesProps> = (props) => {
           <EuiFlexItem>
             <EuiFlexGroup gutterSize={'s'} justifyContent={'spaceBetween'}>
               <EuiFlexItem>
-                <EuiTitle size="m">
+                <EuiText size="s">
                   <h1>Detection rules</h1>
-                </EuiTitle>
+                </EuiText>
               </EuiFlexItem>
               <EuiFlexItem>
                 <EuiFlexGroup justifyContent="flexEnd">

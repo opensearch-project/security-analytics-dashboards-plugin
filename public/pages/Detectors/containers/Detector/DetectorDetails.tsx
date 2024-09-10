@@ -14,7 +14,7 @@ import {
   EuiSpacer,
   EuiTab,
   EuiTabs,
-  EuiTitle,
+  EuiText,
   EuiHealth,
 } from '@elastic/eui';
 import React from 'react';
@@ -366,6 +366,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
         data-test-subj={'detectorsActionsPopover'}
       >
         <EuiContextMenuPanel
+          size="s"
           items={[
             <EuiContextMenuItem
               disabled={loading}
@@ -490,9 +491,9 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
             <EuiFlexItem>
               <EuiFlexGroup alignItems="center">
                 <EuiFlexItem grow={false}>
-                  <EuiTitle data-test-subj={'detector-details-detector-name'}>
+                  <EuiText data-test-subj={'detector-details-detector-name'} size="s">
                     <h1>{detector.name}</h1>
-                  </EuiTitle>
+                  </EuiText>
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>
                   <EuiHealth color={statusColor}>{statusText}</EuiHealth>
@@ -515,7 +516,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
           </EuiFlexGroup>
           <EuiSpacer size="xl" />
         </PageHeader>
-        <EuiTabs>{this.renderTabs()}</EuiTabs>
+        <EuiTabs size="s">{this.renderTabs()}</EuiTabs>
         <EuiSpacer size="xl" />
         {selectedTabContent}
       </>

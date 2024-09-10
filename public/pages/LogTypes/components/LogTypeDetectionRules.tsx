@@ -37,7 +37,7 @@ export const LogTypeDetectionRules: React.FC<LogTypeDetectionRulesProps> = ({
         {rules.length === 0 ? (
           <EuiFlexGroup justifyContent="center" alignItems="center" direction="column">
             <EuiFlexItem grow={false}>
-              <EuiText color="subdued">
+              <EuiText color="subdued" size="s">
                 <p>There are no detection rules associated with this log type. </p>
               </EuiText>
             </EuiFlexItem>

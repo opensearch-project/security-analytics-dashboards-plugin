@@ -21,7 +21,7 @@ export const ThreatIntelligence: React.FC<ThreatIntelligenceProps> = ({
         <h3>Threat intelligence feeds</h3>
       </EuiTitle>
 
-      <EuiText>
+      <EuiText size="s">
         <p>
           Match your data source against known malicious IP-addresses. Available for standard log
           types only.

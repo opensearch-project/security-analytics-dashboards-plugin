@@ -16,6 +16,8 @@ import {
   EuiCard,
   EuiPanel,
   EuiStat,
+  EuiText,
+  EuiCompressedSuperDatePicker,
 } from '@elastic/eui';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import {
@@ -193,7 +195,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
   );
 
   const datePicker = (
-    <EuiSuperDatePicker
+    <EuiCompressedSuperDatePicker
       start={dateTimeFilter.startTime}
       end={dateTimeFilter.endTime}
       recentlyUsedRanges={recentlyUsedRanges}
@@ -248,9 +250,9 @@ export const Overview: React.FC<OverviewProps> = (props) => {
         <EuiFlexItem>
           <EuiFlexGroup justifyContent="spaceBetween" gutterSize="s" alignItems="center">
             <EuiFlexItem grow={false}>
-              <EuiTitle size="m">
+              <EuiText size="s">
                 <h1>Overview</h1>
-              </EuiTitle>
+              </EuiText>
             </EuiFlexItem>
             <EuiFlexItem>{gettingStartedBadgeControl}</EuiFlexItem>
             <EuiFlexItem grow={false}>{datePicker}</EuiFlexItem>

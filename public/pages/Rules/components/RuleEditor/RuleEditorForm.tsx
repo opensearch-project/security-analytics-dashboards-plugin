@@ -197,21 +197,24 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
           <Form>
             <EuiPanel className={'rule-editor-form'}>
               <PageHeader appDescriptionControls={subtitleData ? [subtitleData] : undefined}>
-                <EuiTitle>
-                  <h3>{title}</h3>
-                </EuiTitle>
+                <EuiText size="s">
+                  <h1>{title}</h1>
+                </EuiText>
                 {subtitleData && (
                   <>
                     <EuiText size="s" color="subdued">
                       {subtitleData.description}
                     </EuiText>
                     {subtitleData.links && (
-                      <EuiLink href={subtitleData.links.href} target="_blank">
-                        {subtitleData.links.label}
-                      </EuiLink>
+                      <EuiText size="s">
+                        <EuiLink href={subtitleData.links.href} target="_blank">
+                          {subtitleData.links.label}
+                        </EuiLink>
+                      </EuiText>
                     )}
                   </>
                 )}
+                <EuiSpacer />
               </PageHeader>
               <EuiButtonGroup
                 data-test-subj="change-editor-type"
@@ -240,7 +243,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
               {selectedEditorType === 'visual' && (
                 <>
                   <EuiTitle>
-                    <EuiText>
+                    <EuiText size="s">
                       <h2>Rule overview</h2>
                     </EuiText>
                   </EuiTitle>
@@ -323,7 +326,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                   <EuiSpacer size={'xl'} />
 
                   <EuiTitle>
-                    <EuiText>
+                    <EuiText size="s">
                       <h2>Details</h2>
                     </EuiText>
                   </EuiTitle>
@@ -447,7 +450,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                   <EuiSpacer size={'xxl'} />
 
                   <EuiTitle>
-                    <EuiText>
+                    <EuiText size="s">
                       <h2>Detection</h2>
                     </EuiText>
                   </EuiTitle>

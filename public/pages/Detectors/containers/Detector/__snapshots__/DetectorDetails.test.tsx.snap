@@ -316,6 +316,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                   </EuiContextMenuItem>,
                 ]
               }
+              size="s"
             />
           </EuiPopover>,
         },
@@ -342,16 +343,19 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                   <div
                     className="euiFlexItem euiFlexItem--flexGrowZero"
                   >
-                    <EuiTitle
+                    <EuiText
                       data-test-subj="detector-details-detector-name"
+                      size="s"
                     >
-                      <h1
-                        className="euiTitle euiTitle--medium"
+                      <div
+                        className="euiText euiText--small"
                         data-test-subj="detector-details-detector-name"
                       >
-                        detector_name
-                      </h1>
-                    </EuiTitle>
+                        <h1>
+                          detector_name
+                        </h1>
+                      </div>
+                    </EuiText>
                   </div>
                 </EuiFlexItem>
                 <EuiFlexItem
@@ -548,9 +552,11 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
       />
     </EuiSpacer>
   </PageHeader>
-  <EuiTabs>
+  <EuiTabs
+    size="s"
+  >
     <div
-      className="euiTabs"
+      className="euiTabs euiTabs--small"
       role="tablist"
     >
       <EuiTab
@@ -1525,15 +1531,17 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                   <div
                     className="euiFlexItem"
                   >
-                    <EuiTitle
-                      size="m"
+                    <EuiText
+                      size="s"
                     >
-                      <h3
-                        className="euiTitle euiTitle--medium"
+                      <div
+                        className="euiText euiText--small"
                       >
-                        Detector details
-                      </h3>
-                    </EuiTitle>
+                        <h2>
+                          Detector details
+                        </h2>
+                      </div>
+                    </EuiText>
                   </div>
                 </EuiFlexItem>
                 <EuiFlexItem
@@ -1690,9 +1698,10 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                               id="some_html_id"
                               onBlur={[Function]}
                               onFocus={[Function]}
+                              size="s"
                             >
                               <div
-                                className="euiText euiText--medium"
+                                className="euiText euiText--small"
                                 data-test-subj="text-details-group-content-detector-name"
                                 id="some_html_id"
                                 onBlur={[Function]}
@@ -1751,9 +1760,10 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                               id="some_html_id"
                               onBlur={[Function]}
                               onFocus={[Function]}
+                              size="s"
                             >
                               <div
-                                className="euiText euiText--medium"
+                                className="euiText euiText--small"
                                 data-test-subj="text-details-group-content-description"
                                 id="some_html_id"
                                 onBlur={[Function]}
@@ -1812,9 +1822,10 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                               id="some_html_id"
                               onBlur={[Function]}
                               onFocus={[Function]}
+                              size="s"
                             >
                               <div
-                                className="euiText euiText--medium"
+                                className="euiText euiText--small"
                                 data-test-subj="text-details-group-content-detector-schedule"
                                 id="some_html_id"
                                 onBlur={[Function]}
@@ -1888,9 +1899,10 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                               id="some_html_id"
                               onBlur={[Function]}
                               onFocus={[Function]}
+                              size="s"
                             >
                               <div
-                                className="euiText euiText--medium"
+                                className="euiText euiText--small"
                                 data-test-subj="text-details-group-content-data-source"
                                 id="some_html_id"
                                 onBlur={[Function]}
@@ -1957,9 +1969,10 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                               id="some_html_id"
                               onBlur={[Function]}
                               onFocus={[Function]}
+                              size="s"
                             >
                               <div
-                                className="euiText euiText--medium"
+                                className="euiText euiText--small"
                                 data-test-subj="text-details-group-content-log-type"
                                 id="some_html_id"
                                 onBlur={[Function]}
@@ -2018,9 +2031,10 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                               id="some_html_id"
                               onBlur={[Function]}
                               onFocus={[Function]}
+                              size="s"
                             >
                               <div
-                                className="euiText euiText--medium"
+                                className="euiText euiText--small"
                                 data-test-subj="text-details-group-content-detector-dashboard"
                                 id="some_html_id"
                                 onBlur={[Function]}
@@ -2094,9 +2108,10 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                               id="some_html_id"
                               onBlur={[Function]}
                               onFocus={[Function]}
+                              size="s"
                             >
                               <div
-                                className="euiText euiText--medium"
+                                className="euiText euiText--small"
                                 data-test-subj="text-details-group-content-detection-rules"
                                 id="some_html_id"
                                 onBlur={[Function]}
@@ -2155,9 +2170,10 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                               id="some_html_id"
                               onBlur={[Function]}
                               onFocus={[Function]}
+                              size="s"
                             >
                               <div
-                                className="euiText euiText--medium"
+                                className="euiText euiText--small"
                                 data-test-subj="text-details-group-content-created-at"
                                 id="some_html_id"
                                 onBlur={[Function]}
@@ -2216,9 +2232,10 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                               id="some_html_id"
                               onBlur={[Function]}
                               onFocus={[Function]}
+                              size="s"
                             >
                               <div
-                                className="euiText euiText--medium"
+                                className="euiText euiText--small"
                                 data-test-subj="text-details-group-content-last-updated-time"
                                 id="some_html_id"
                                 onBlur={[Function]}
@@ -2279,9 +2296,10 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                       id="some_html_id"
                       onBlur={[Function]}
                       onFocus={[Function]}
+                      size="s"
                     >
                       <div
-                        className="euiText euiText--medium"
+                        className="euiText euiText--small"
                         data-test-subj="text-details-group-content-threat-intelligence"
                         id="some_html_id"
                         onBlur={[Function]}
@@ -2797,15 +2815,17 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                   <div
                     className="euiFlexItem"
                   >
-                    <EuiTitle
-                      size="m"
+                    <EuiText
+                      size="s"
                     >
-                      <h3
-                        className="euiTitle euiTitle--medium"
+                      <div
+                        className="euiText euiText--small"
                       >
-                        Active rules (2)
-                      </h3>
-                    </EuiTitle>
+                        <h2>
+                          Active rules (2)
+                        </h2>
+                      </div>
+                    </EuiText>
                   </div>
                 </EuiFlexItem>
                 <EuiFlexItem
