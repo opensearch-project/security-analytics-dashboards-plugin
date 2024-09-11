@@ -19,6 +19,8 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../utils/helpers';
 import { DEFAULT_EMPTY_DATA } from '../utils/constants';
 import { DataStore } from './DataStore';
+import { RuleSource } from '../../server/models/interfaces';
+import { RuleSeverityPriority, RuleSeverityValue } from '../pages/Rules/utils/constants';
 
 export interface ICorrelationsCache {
   [key: string]: CorrelationRule[];
@@ -275,7 +277,17 @@ export class CorrelationsStore implements ICorrelationsStore {
       const findings = await DataStore.findings.getFindingsByIds(findingIds);
       findings.forEach((f) => {
         const detector = detectorsMap[f.detectorId];
-        const rule = allRules.find((rule) => rule._id === f.queries[0].id);
+        const queryIds = f.queries.map((query) => query.id);
+        const matchedRules = allRules.filter((rule) => queryIds.includes(rule._id));
+        matchedRules.sort((a, b) => {
+          return RuleSeverityPriority[a._source.level as RuleSeverityValue] <
+            RuleSeverityPriority[b._source.level as RuleSeverityValue]
+            ? -1
+            : 1;
+        });
+
+        const rule = allRules.find((rule) => rule._id === matchedRules[0]?._id);
+
         findingsMap[f.id] = {
           ...f,
           id: f.id,
