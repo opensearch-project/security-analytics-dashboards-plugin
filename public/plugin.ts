@@ -19,7 +19,7 @@ import {
   DETECTORS_NAV_ID,
   DETECTION_RULE_NAV_ID,
   FINDINGS_NAV_ID,
-  GETTING_STARTED_NAV_ID,
+  GET_STARTED_NAV_ID,
   LOG_TYPES_NAV_ID,
   OVERVIEW_NAV_ID,
   PLUGIN_NAME,
@@ -122,8 +122,8 @@ export class SecurityAnalyticsPlugin
       });
 
       core.application.register({
-        id: GETTING_STARTED_NAV_ID,
-        title: 'Getting started',
+        id: GET_STARTED_NAV_ID,
+        title: 'Get started',
         order: 1,
         updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
@@ -227,7 +227,7 @@ export class SecurityAnalyticsPlugin
 
       const navlinks = [
         { id: OVERVIEW_NAV_ID, showInAllNavGroup: true },
-        { id: GETTING_STARTED_NAV_ID, showInAllNavGroup: true },
+        { id: GET_STARTED_NAV_ID, showInAllNavGroup: true },
         { id: THREAT_ALERTS_NAV_ID, showInAllNavGroup: true },
         { id: FINDINGS_NAV_ID, showInAllNavGroup: true },
         { id: CORRELATIONS_NAV_ID },

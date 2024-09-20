@@ -7,7 +7,7 @@ import { EuiCardProps, EuiStatProps } from '@elastic/eui';
 import {
   CORRELATIONS_RULE_NAV_ID,
   DETECTORS_NAV_ID,
-  GETTING_STARTED_NAV_ID,
+  GET_STARTED_NAV_ID,
   THREAT_ALERTS_NAV_ID,
   THREAT_INTEL_NAV_ID,
 } from '../../../utils/constants';
@@ -26,7 +26,7 @@ export const getOverviewsCardsProps = (): EuiCardProps[] => [
     description: 'Set up tools and components to get started.',
     selectable: {
       onClick: () => {
-        getApplication().navigateToApp(GETTING_STARTED_NAV_ID);
+        getApplication().navigateToApp(GET_STARTED_NAV_ID);
       },
       children: 'Getting started guide',
       isDisabled: false,
