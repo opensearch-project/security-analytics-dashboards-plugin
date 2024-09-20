@@ -96,6 +96,9 @@ exports[`<Detectors /> spec renders the component 1`] = `
                 data-test-subj="detectorsCreateButton"
                 fill={true}
                 href="#/create-detector"
+                iconGap="s"
+                iconSide="left"
+                iconType="plus"
               >
                 Create detector
               </EuiSmallButton>,
@@ -344,11 +347,17 @@ exports[`<Detectors /> spec renders the component 1`] = `
                               data-test-subj="detectorsCreateButton"
                               fill={true}
                               href="#/create-detector"
+                              iconGap="s"
+                              iconSide="left"
+                              iconType="plus"
                             >
                               <EuiButton
                                 data-test-subj="detectorsCreateButton"
                                 fill={true}
                                 href="#/create-detector"
+                                iconGap="s"
+                                iconSide="left"
+                                iconType="plus"
                                 size="s"
                               >
                                 <EuiButtonDisplay
@@ -357,6 +366,9 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                   element="a"
                                   fill={true}
                                   href="#/create-detector"
+                                  iconGap="s"
+                                  iconSide="left"
+                                  iconType="plus"
                                   isDisabled={false}
                                   rel="noreferrer"
                                   size="s"
@@ -375,8 +387,9 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                   >
                                     <EuiButtonContent
                                       className="euiButton__content"
-                                      iconGap="m"
+                                      iconGap="s"
                                       iconSide="left"
+                                      iconType="plus"
                                       textProps={
                                         Object {
                                           "className": "euiButton__text",
@@ -384,8 +397,16 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                       }
                                     >
                                       <span
-                                        className="euiButtonContent euiButton__content"
+                                        className="euiButtonContent euiButtonContent--smallIconGap euiButton__content"
                                       >
+                                        <EuiIcon
+                                          className="euiButtonContent__icon"
+                                          color="inherit"
+                                          size="m"
+                                          type="plus"
+                                        >
+                                          EuiIconMock
+                                        </EuiIcon>
                                         <span
                                           className="euiButton__text"
                                         >
