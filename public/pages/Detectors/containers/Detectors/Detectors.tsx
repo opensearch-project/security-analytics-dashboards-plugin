@@ -257,12 +257,18 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
         anchorPosition={'downLeft'}
         data-test-subj={'detectorsActionsPopover'}
       >
-        <EuiContextMenuPanel items={this.getActionItems(loadingDetectors, selectedItems)} size="s"/>
+        <EuiContextMenuPanel
+          items={this.getActionItems(loadingDetectors, selectedItems)}
+          size="s"
+        />
       </EuiPopover>,
       <EuiSmallButton
         href={`#${ROUTES.DETECTORS_CREATE}`}
         fill={true}
         data-test-subj={'detectorsCreateButton'}
+        iconType="plus"
+        iconSide="left"
+        iconGap="s"
       >
         Create detector
       </EuiSmallButton>,

@@ -216,6 +216,9 @@ export const Overview: React.FC<OverviewProps> = (props) => {
       href={`#${ROUTES.DETECTORS_CREATE}`}
       fill={true}
       data-test-subj={'detectorsCreateButton'}
+      iconType="plus"
+      iconSide="left"
+      iconGap="s"
     >
       Create detector
     </EuiSmallButton>
