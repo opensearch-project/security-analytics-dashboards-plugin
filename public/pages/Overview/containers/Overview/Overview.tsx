@@ -243,7 +243,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
   };
 
   return (
-    <EuiFlexGroup direction="column">
+    <EuiFlexGroup direction="column" gutterSize={'m'}>
       <PageHeader
         appRightControls={[
           { renderComponent: datePicker },
