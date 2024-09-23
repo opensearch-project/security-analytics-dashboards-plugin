@@ -65,12 +65,14 @@ export const getLogTypesTableSearchConfig = (): Search => {
     box: {
       placeholder: 'Search log types',
       schema: true,
+      compressed: true,
     },
     filters: [
       {
         type: 'field_value_selection',
         field: 'category',
         name: 'Category',
+        compressed: true,
         multiSelect: 'or',
         options: logTypeCategories.map((category) => ({
           value: category,
@@ -80,6 +82,7 @@ export const getLogTypesTableSearchConfig = (): Search => {
         type: 'field_value_selection',
         field: 'source',
         name: 'Source',
+        compressed: true,
         multiSelect: 'or',
         options: ruleSource.map((source: string) => ({
           value: source,
