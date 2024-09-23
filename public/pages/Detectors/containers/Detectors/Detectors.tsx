@@ -19,6 +19,7 @@ import {
   EuiPopover,
   EuiSpacer,
   EuiText,
+  EuiButtonIcon,
 } from '@elastic/eui';
 import { BREADCRUMBS, DEFAULT_EMPTY_DATA, ROUTES } from '../../../../utils/constants';
 import DeleteModal from '../../../../components/DeleteModal';
@@ -231,38 +232,6 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
 
     const actions = [
       <EuiSmallButton
-        iconType={'refresh'}
-        onClick={this.getDetectors}
-        data-test-subj={'detectorsRefreshButton'}
-      >
-        Refresh
-      </EuiSmallButton>,
-      <EuiPopover
-        id={'detectorsActionsPopover'}
-        button={
-          <EuiSmallButton
-            isLoading={loadingDetectors}
-            iconType={'arrowDown'}
-            iconSide={'right'}
-            disabled={!selectedItems.length}
-            onClick={this.openActionsButton}
-            data-test-subj={'detectorsActionsButton'}
-          >
-            Actions
-          </EuiSmallButton>
-        }
-        isOpen={isPopoverOpen}
-        closePopover={this.closeActionsPopover}
-        panelPaddingSize={'none'}
-        anchorPosition={'downLeft'}
-        data-test-subj={'detectorsActionsPopover'}
-      >
-        <EuiContextMenuPanel
-          items={this.getActionItems(loadingDetectors, selectedItems)}
-          size="s"
-        />
-      </EuiPopover>,
-      <EuiSmallButton
         href={`#${ROUTES.DETECTORS_CREATE}`}
         fill={true}
         data-test-subj={'detectorsCreateButton'}
@@ -319,7 +288,46 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
         detectorHits.map((detector) => (detector._source.enabled ? 'Active' : 'Inactive'))
       ),
     ];
+
+    const renderActionsRight = () => {
+      return [
+        <EuiSmallButton
+          iconType={'refresh'}
+          onClick={this.getDetectors}
+          data-test-subj={'detectorsRefreshButton'}
+        >
+          Refresh
+        </EuiSmallButton>,
+        <EuiPopover
+          id={'detectorsActionsPopover'}
+          button={
+            <EuiSmallButton
+              isLoading={loadingDetectors}
+              iconType={'arrowDown'}
+              iconSide={'right'}
+              disabled={!selectedItems.length}
+              onClick={this.openActionsButton}
+              data-test-subj={'detectorsActionsButton'}
+            >
+              Actions
+            </EuiSmallButton>
+          }
+          isOpen={isPopoverOpen}
+          closePopover={this.closeActionsPopover}
+          panelPaddingSize={'none'}
+          anchorPosition={'downLeft'}
+          data-test-subj={'detectorsActionsPopover'}
+        >
+          <EuiContextMenuPanel
+            items={this.getActionItems(loadingDetectors, selectedItems)}
+            size="s"
+          />
+        </EuiPopover>,
+      ];
+    };
+
     const search = {
+      toolsRight: renderActionsRight(),
       box: {
         placeholder: 'Search threat detectors',
         schema: true,
