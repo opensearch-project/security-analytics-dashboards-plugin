@@ -126,6 +126,12 @@ export const ThreatIntelAlertsTable: React.FC<ThreatIntelAlertsTableProps> = ({
     },
   ];
 
+  const search = {
+    box: {
+      compressed: true,
+    },
+  };
+
   return (
     <>
       <EuiInMemoryTable
@@ -133,7 +139,7 @@ export const ThreatIntelAlertsTable: React.FC<ThreatIntelAlertsTableProps> = ({
         items={alerts}
         itemId={(item) => `${item.id}`}
         pagination
-        search
+        search={search}
         selection={itemSelection}
         isSelectable={true}
       />

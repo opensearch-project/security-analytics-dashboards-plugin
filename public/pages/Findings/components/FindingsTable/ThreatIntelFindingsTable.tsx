@@ -68,5 +68,11 @@ export const ThreatIntelFindingsTable: React.FC<ThreatIntelFindingsTableProps> =
     },
   ];
 
-  return <EuiInMemoryTable columns={columns} items={findingItems} pagination search />;
+  const search = {
+    box: {
+      compressed: true,
+    },
+  };
+
+  return <EuiInMemoryTable columns={columns} items={findingItems} pagination search={search} />;
 };

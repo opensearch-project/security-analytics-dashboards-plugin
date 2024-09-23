@@ -938,12 +938,14 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       box: {
         placeholder: 'Search alerts',
         schema: true,
+        compressed: true,
       },
       filters: [
         {
           type: 'field_value_selection',
           field: 'severity',
           name: 'Alert severity',
+          compressed: true,
           options: Array.from(severities).map((severity) => ({
             value: severity,
             name: parseAlertSeverityToOption(severity)?.label || severity,
@@ -954,6 +956,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
           type: 'field_value_selection',
           field: 'state',
           name: 'Status',
+          compressed: true,
           options: Array.from(statuses).map((status) => ({
             value: status,
             name: capitalizeFirstLetter(status) || status,
@@ -967,12 +970,14 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       box: {
         placeholder: 'Search alerts',
         schema: true,
+        compressed: true,
       },
       filters: [
         {
           type: 'field_value_selection',
           field: 'severity',
           name: 'Alert severity',
+          compressed: true,
           options: Array.from(corrSeverities).map((severity) => ({
             value: severity,
             name: parseAlertSeverityToOption(severity)?.label || severity,
@@ -983,6 +988,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
           type: 'field_value_selection',
           field: 'state',
           name: 'Status',
+          compressed: true,
           options: Array.from(corrStatuses).map((status) => ({
             value: status,
             name: capitalizeFirstLetter(status) || status,

@@ -324,12 +324,14 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
         placeholder: 'Search threat detectors',
         schema: true,
         incremental: true,
+        compressed: true,
       },
       filters: [
         {
           type: 'field_value_selection',
           field: 'status',
           name: 'Status',
+          compressed: true,
           options: statuses.map((status) => ({
             value: status,
             name: capitalizeFirstLetter(status),
@@ -340,6 +342,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
           type: 'field_value_selection',
           field: 'logType',
           name: 'Log type',
+          compressed: true,
           options: getLogTypeFilterOptions(),
           multiSelect: 'or',
         } as FieldValueSelectionFilterConfigType,
