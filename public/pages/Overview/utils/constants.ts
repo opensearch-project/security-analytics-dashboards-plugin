@@ -98,7 +98,7 @@ export const getOverviewStatsProps = ({
   return [
     {
       title: alerts,
-      description: 'Total active alerts',
+      description: 'Total active threat alerts',
     },
     {
       title: correlations,
