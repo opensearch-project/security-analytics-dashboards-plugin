@@ -67,7 +67,7 @@ export const getOverviewsCardsProps = (): EuiCardProps[] => [
   },
   {
     title: 'Correlate events',
-    description: 'Detect multi-system threats with correlation rule builder',
+    description: 'Detect multi-system threats with correlation rule builder.',
     selectable: {
       onClick: () => {
         getApplication().navigateToApp(CORRELATIONS_RULE_NAV_ID);
