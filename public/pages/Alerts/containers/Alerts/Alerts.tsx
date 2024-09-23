@@ -1018,38 +1018,8 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         content: (
           <>
             <EuiSpacer size="m" />
-            <EuiPanel>
-              <EuiFlexGroup direction="column">
-                <EuiFlexItem style={{ alignSelf: 'flex-end' }}>
-                  {this.createGroupByControl()}
-                </EuiFlexItem>
-                <EuiFlexItem>
-                  {!alerts || alerts.length === 0 ? (
-                    <EuiEmptyPrompt
-                      title={
-                        <EuiText size="s">
-                          <h2>No alerts</h2>
-                        </EuiText>
-                      }
-                      body={
-                        <p>
-                          <EuiText size="s">
-                            Adjust the time range to see more results or create alert triggers in
-                            your{' '}
-                            <EuiLink href={`${location.pathname}#/detectors`}>detectors</EuiLink> to
-                            generate alerts.
-                          </EuiText>
-                        </p>
-                      }
-                    />
-                  ) : (
-                    <ChartContainer chartViewId={'alerts-view'} loading={loading} />
-                  )}
-                </EuiFlexItem>
-              </EuiFlexGroup>
-            </EuiPanel>
+            {this.getAlertsGraph(alerts, loading)}
             <EuiSpacer size="m" />
-
             <ContentPanel title={'Alerts'} actions={[this.getContelPanelActions()]}>
               <EuiInMemoryTable
                 columns={this.getColumns()}
@@ -1073,36 +1043,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         content: (
           <>
             <EuiSpacer size="m" />
-            <EuiPanel>
-              <EuiFlexGroup direction="column">
-                <EuiFlexItem style={{ alignSelf: 'flex-end' }}>
-                  {this.createGroupByControl()}
-                </EuiFlexItem>
-                <EuiFlexItem>
-                  {!alerts || alerts.length === 0 ? (
-                    <EuiEmptyPrompt
-                      title={
-                        <EuiText size="s">
-                          <h2>No alerts</h2>
-                        </EuiText>
-                      }
-                      body={
-                        <p>
-                          <EuiText size="s">
-                            Adjust the time range to see more results or create alert triggers in
-                            your{' '}
-                            <EuiLink href={`${location.pathname}#/detectors`}>detectors</EuiLink> to
-                            generate alerts.
-                          </EuiText>
-                        </p>
-                      }
-                    />
-                  ) : (
-                    <ChartContainer chartViewId={'alerts-view'} loading={loading} />
-                  )}
-                </EuiFlexItem>
-              </EuiFlexGroup>
-            </EuiPanel>
+            {this.getAlertsGraph(alerts, loading)}
             <EuiSpacer size="m" />
             <ContentPanel title={'Alerts'} actions={[this.getContelPanelActions()]}>
               <ThreatIntelAlertsTable
@@ -1127,36 +1068,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         content: (
           <>
             <EuiSpacer size="m" />
-            <EuiPanel>
-              <EuiFlexGroup direction="column">
-                <EuiFlexItem style={{ alignSelf: 'flex-end' }}>
-                  {this.createGroupByControl()}
-                </EuiFlexItem>
-                <EuiFlexItem>
-                  {!alerts || alerts.length === 0 ? (
-                    <EuiEmptyPrompt
-                      title={
-                        <EuiText size="s">
-                          <h2>No alerts</h2>
-                        </EuiText>
-                      }
-                      body={
-                        <p>
-                          <EuiText size="s">
-                            Adjust the time range to see more results or create alert triggers in
-                            your{' '}
-                            <EuiLink href={`${location.pathname}#/detectors`}>detectors</EuiLink> to
-                            generate alerts.
-                          </EuiText>
-                        </p>
-                      }
-                    />
-                  ) : (
-                    <ChartContainer chartViewId={'alerts-view'} loading={loading} />
-                  )}
-                </EuiFlexItem>
-              </EuiFlexGroup>
-            </EuiPanel>
+            {this.getAlertsGraph(alerts, loading)}
             <EuiSpacer size="m" />
             <ContentPanel title={'Alerts'} actions={[this.getContelPanelActions()]}>
               <EuiInMemoryTable
@@ -1240,6 +1152,38 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
           </EuiFlexItem>
         </EuiFlexGroup>
       </>
+    );
+  }
+
+  private getAlertsGraph(alerts: any[], loading: boolean) {
+    return (
+      <EuiPanel>
+        <EuiFlexGroup direction="column">
+          <EuiFlexItem style={{ alignSelf: 'flex-end' }}>{this.createGroupByControl()}</EuiFlexItem>
+          <EuiFlexItem>
+            {!alerts || alerts.length === 0 ? (
+              <EuiEmptyPrompt
+                title={
+                  <EuiText size="s">
+                    <h2>No alerts</h2>
+                  </EuiText>
+                }
+                body={
+                  <p>
+                    <EuiText size="s">
+                      Adjust the time range to see more results or create alert triggers in your{' '}
+                      <EuiLink href={`${location.pathname}#/detectors`}>detectors</EuiLink> to
+                      generate alerts.
+                    </EuiText>
+                  </p>
+                }
+              />
+            ) : (
+              <ChartContainer chartViewId={'alerts-view'} loading={loading} />
+            )}
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      </EuiPanel>
     );
   }
 }

@@ -565,31 +565,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
         content: (
           <>
             <EuiSpacer size={'m'} />
-            <EuiPanel>
-              <EuiFlexGroup direction="column">
-                <EuiFlexItem style={{ alignSelf: 'flex-end' }}>
-                  {this.createGroupByControl()}
-                </EuiFlexItem>
-                <EuiFlexItem>
-                  {!findings || findings.length === 0 ? (
-                    <EuiEmptyPrompt
-                      title={
-                        <EuiText size="s">
-                          <h2>No findings</h2>
-                        </EuiText>
-                      }
-                      body={
-                        <EuiText size="s">
-                          {this.state.findingStateByTabId[this.state.selectedTabId].emptyPromptBody}
-                        </EuiText>
-                      }
-                    />
-                  ) : (
-                    <ChartContainer chartViewId={'findings-view'} loading={loading} />
-                  )}
-                </EuiFlexItem>
-              </EuiFlexGroup>
-            </EuiPanel>
+            {this.getFindingsGraph(findings, loading)}
             <EuiSpacer size={'m'} />
             <ContentPanel title={'Findings'}>
               <FindingsTable
@@ -624,31 +600,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
         content: (
           <>
             <EuiSpacer size={'m'} />
-            <EuiPanel>
-              <EuiFlexGroup direction="column">
-                <EuiFlexItem style={{ alignSelf: 'flex-end' }}>
-                  {this.createGroupByControl()}
-                </EuiFlexItem>
-                <EuiFlexItem>
-                  {!findings || findings.length === 0 ? (
-                    <EuiEmptyPrompt
-                      title={
-                        <EuiText size="s">
-                          <h2>No findings</h2>
-                        </EuiText>
-                      }
-                      body={
-                        <EuiText size="s">
-                          {this.state.findingStateByTabId[this.state.selectedTabId].emptyPromptBody}
-                        </EuiText>
-                      }
-                    />
-                  ) : (
-                    <ChartContainer chartViewId={'findings-view'} loading={loading} />
-                  )}
-                </EuiFlexItem>
-              </EuiFlexGroup>
-            </EuiPanel>
+            {this.getFindingsGraph(findings, loading)}
             <EuiSpacer size={'m'} />
             <ContentPanel title={'Findings'}>
               <ThreatIntelFindingsTable
@@ -705,6 +657,34 @@ class Findings extends Component<FindingsProps, FindingsState> {
           />
         </EuiFlexItem>
       </EuiFlexGroup>
+    );
+  }
+
+  private getFindingsGraph(findings: ThreatIntelFinding[] | FindingItemType[], loading: boolean) {
+    return (
+      <EuiPanel>
+        <EuiFlexGroup direction="column">
+          <EuiFlexItem style={{ alignSelf: 'flex-end' }}>{this.createGroupByControl()}</EuiFlexItem>
+          <EuiFlexItem>
+            {!findings || findings.length === 0 ? (
+              <EuiEmptyPrompt
+                title={
+                  <EuiText size="s">
+                    <h2>No findings</h2>
+                  </EuiText>
+                }
+                body={
+                  <EuiText size="s">
+                    {this.state.findingStateByTabId[this.state.selectedTabId].emptyPromptBody}
+                  </EuiText>
+                }
+              />
+            ) : (
+              <ChartContainer chartViewId={'findings-view'} loading={loading} />
+            )}
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      </EuiPanel>
     );
   }
 }
