@@ -186,21 +186,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
   };
 
   getActionItems = (loading: boolean, selectedItems: DetectorHit[]) => {
-    const actionItems = [
-      <EuiContextMenuItem
-        key={'Delete'}
-        icon={'empty'}
-        disabled={selectedItems.length === 0 || loading}
-        onClick={() => {
-          this.closeActionsPopover();
-          this.openDeleteModal();
-        }}
-        data-test-subj={'deleteButton'}
-      >
-        Delete
-      </EuiContextMenuItem>,
-    ];
-
+    const actionItems = [];
     if (selectedItems.length === 1) {
       actionItems.push(
         <EuiContextMenuItem
@@ -289,6 +275,26 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
       ),
     ];
 
+    const renderActionsLeft = (loading: boolean, selectedItems: DetectorHit[]) => {
+      return [
+        <EuiSmallButton
+          color={'danger'}
+          iconType={'trash'}
+          key={'Delete'}
+          disabled={selectedItems.length === 0 || loading}
+          onClick={() => {
+            this.closeActionsPopover();
+            this.openDeleteModal();
+          }}
+          data-test-subj={'deleteButton'}
+        >
+          {selectedItems.length > 0
+            ? `Delete ${selectedItems.length} detectors`
+            : 'Delete detectors'}
+        </EuiSmallButton>,
+      ];
+    };
+
     const renderActionsRight = () => {
       return [
         <EuiSmallButton
@@ -305,7 +311,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
               isLoading={loadingDetectors}
               iconType={'arrowDown'}
               iconSide={'right'}
-              disabled={!selectedItems.length}
+              disabled={selectedItems.length !== 1}
               onClick={this.openActionsButton}
               data-test-subj={'detectorsActionsButton'}
             >
@@ -327,6 +333,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
     };
 
     const search = {
+      toolsLeft: renderActionsLeft(loadingDetectors, selectedItems),
       toolsRight: renderActionsRight(),
       box: {
         placeholder: 'Search threat detectors',
