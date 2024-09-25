@@ -53,7 +53,7 @@ const ContentPanel = ({
       <EuiFlexItem>
         {typeof title === 'string' ? (
           <EuiText size={titleSize}>
-            <h2>{title}</h2>
+            <h3>{title}</h3>
           </EuiText>
         ) : (
           title
