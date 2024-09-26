@@ -261,7 +261,6 @@ export const Overview: React.FC<OverviewProps> = (props) => {
             <EuiFlexItem grow={false}>{datePicker}</EuiFlexItem>
             <EuiFlexItem grow={false}>{createDetectorAction}</EuiFlexItem>
           </EuiFlexGroup>
-          <EuiSpacer size={'m'} />
         </EuiFlexItem>
       </PageHeader>
       {getUseUpdatedUx() && (

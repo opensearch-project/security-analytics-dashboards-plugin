@@ -1127,7 +1127,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
             onAcknowledge={this.onAcknowledgeCorrelationAlert}
           />
         )}
-        <EuiFlexGroup direction="column">
+        <EuiFlexGroup direction="column" gutterSize={'m'}>
           <PageHeader
             appRightControls={[
               {
@@ -1144,7 +1144,6 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>{datePicker}</EuiFlexItem>
               </EuiFlexGroup>
-              <EuiSpacer size={'m'} />
             </EuiFlexItem>
           </PageHeader>
 

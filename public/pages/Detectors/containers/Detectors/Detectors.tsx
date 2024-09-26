@@ -371,7 +371,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
       },
     };
     return (
-      <EuiFlexGroup direction="column">
+      <EuiFlexGroup direction="column" gutterSize={'m'}>
         <PageHeader
           appRightControls={actions.map((action) => ({
             renderComponent: action,
@@ -396,7 +396,6 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
                 </EuiFlexGroup>
               </EuiFlexItem>
             </EuiFlexGroup>
-            <EuiSpacer size={'m'} />
           </EuiFlexItem>
         </PageHeader>
 

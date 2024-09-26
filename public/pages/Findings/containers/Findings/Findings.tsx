@@ -625,7 +625,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
     );
 
     return (
-      <EuiFlexGroup direction="column">
+      <EuiFlexGroup direction="column" gutterSize={'m'}>
         <PageHeader
           appRightControls={[
             {
@@ -642,7 +642,6 @@ class Findings extends Component<FindingsProps, FindingsState> {
               </EuiFlexItem>
               <EuiFlexItem grow={false}>{datePicker}</EuiFlexItem>
             </EuiFlexGroup>
-            <EuiSpacer size={'m'} />
           </EuiFlexItem>
         </PageHeader>
 
