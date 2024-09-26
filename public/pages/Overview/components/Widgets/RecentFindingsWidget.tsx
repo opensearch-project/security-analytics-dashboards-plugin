@@ -53,27 +53,12 @@ export const RecentFindingsWidget: React.FC<RecentFindingsWidgetProps> = ({
   loading = false,
 }) => {
   const [findingItems, setFindingItems] = useState<OverviewFindingItem[]>([]);
-  const [widgetEmptyMessage, setWidgetEmptyMessage] = useState<React.ReactNode | undefined>(
-    undefined
-  );
 
   useEffect(() => {
     items.sort((a, b) => {
       return b.time - a.time;
     });
     setFindingItems(items.slice(0, 20));
-    setWidgetEmptyMessage(
-      items.length > 0 ? undefined : (
-        <EuiEmptyPrompt
-          body={
-            <EuiText size="s">
-              <span style={{ display: 'block' }}>No recent findings.</span>Adjust the time range to
-              see more results.
-            </EuiText>
-          }
-        />
-      )
-    );
   }, [items]);
 
   const actions = React.useMemo(() => {
@@ -83,14 +68,28 @@ export const RecentFindingsWidget: React.FC<RecentFindingsWidgetProps> = ({
 
   return (
     <WidgetContainer title={'Recent detection rule findings'} actions={actions}>
-      <TableWidget
-        columns={columns}
-        items={findingItems}
-        sorting={{ sort: { field: 'time', direction: SortDirection.DESC } }}
-        loading={loading}
-        message={widgetEmptyMessage}
-        className={widgetEmptyMessage ? 'sa-overview-widget-empty' : undefined}
-      />
+      {findingItems.length === 0 ? (
+        <EuiEmptyPrompt
+          style={{ position: 'relative' }}
+          body={
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <p style={{ position: 'absolute', top: 'calc(50% - 20px)' }}>
+                <EuiText size="s">
+                  <span style={{ display: 'block' }}>No recent findings.</span>Adjust the time range
+                  to see more results.
+                </EuiText>
+              </p>
+            </div>
+          }
+        />
+      ) : (
+        <TableWidget
+          columns={columns}
+          items={findingItems}
+          sorting={{ sort: { field: 'time', direction: SortDirection.DESC } }}
+          loading={loading}
+        />
+      )}
     </WidgetContainer>
   );
 };
