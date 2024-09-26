@@ -144,14 +144,14 @@ jobs:
           CYPRESS_CACHE_FOLDER: ${{ matrix.cypress_cache_folder }}
 
       # Screenshots are only captured on failure, will change this once we do visual regression tests
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: cypress-screenshots-${{ matrix.os }}
           path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/cypress/screenshots
 
       # Test run video was always captured, so this action uses "always()" condition
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: cypress-videos-${{ matrix.os }}
