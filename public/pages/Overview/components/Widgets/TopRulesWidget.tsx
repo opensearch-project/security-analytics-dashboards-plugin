@@ -40,10 +40,10 @@ export const TopRulesWidget: React.FC<TopRulesWidgetProps> = ({ findings, loadin
         <EuiEmptyPrompt
           style={{ position: 'relative' }}
           body={
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <p style={{position: 'absolute', top: 'calc(50% - 20px)'}}>
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '32px' }}>
+              <p style={{ position: 'absolute', top: 'calc(50% - 20px)' }}>
                 <EuiText size="s">
-                  <span style={{display: 'block'}}>No findings with detection rules.</span>Adjust
+                  <span style={{ display: 'block' }}>No findings with detection rules.</span>Adjust
                   the time range to see more results.
                 </EuiText>
               </p>
@@ -51,7 +51,7 @@ export const TopRulesWidget: React.FC<TopRulesWidgetProps> = ({ findings, loadin
           }
         />
       ) : (
-        <ChartContainer chartViewId={'top-rules-view'} loading={loading}/>
+        <ChartContainer chartViewId={'top-rules-view'} loading={loading} />
       )}
     </WidgetContainer>
   );

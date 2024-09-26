@@ -65,7 +65,7 @@ export const RecentAlertsWidget: React.FC<RecentAlertsWidgetProps> = ({
         <EuiEmptyPrompt
           style={{ position: 'relative' }}
           body={
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '32px' }}>
               <p style={{ position: 'absolute', top: 'calc(50% - 20px)' }}>
                 <EuiText size="s">
                   <span style={{ display: 'block' }}>No recent alerts.</span>Adjust the time range

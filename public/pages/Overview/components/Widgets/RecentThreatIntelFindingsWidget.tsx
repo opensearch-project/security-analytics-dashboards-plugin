@@ -81,7 +81,7 @@ export const RecentThreatIntelFindingsWidget: React.FC<RecentThreatIntelFindings
         <EuiEmptyPrompt
           style={{ position: 'relative' }}
           body={
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '32px' }}>
               <p style={{ position: 'absolute', top: 'calc(50% - 20px)' }}>
                 <EuiText size="s">
                   <span style={{ display: 'block' }}>No recent findings.</span>Adjust the time range
