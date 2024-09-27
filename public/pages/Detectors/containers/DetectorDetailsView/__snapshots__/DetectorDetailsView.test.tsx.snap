@@ -418,8 +418,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
         className=""
         style={
           Object {
-            "paddingLeft": "0px",
-            "paddingRight": "0px",
+            "padding": "16px",
           }
         }
       >
@@ -427,8 +426,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
           className="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
           style={
             Object {
-              "paddingLeft": "0px",
-              "paddingRight": "0px",
+              "padding": "16px",
             }
           }
         >
@@ -459,9 +457,9 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                     <div
                       className="euiText euiText--small"
                     >
-                      <h2>
+                      <h3>
                         Detector details
-                      </h2>
+                      </h3>
                     </div>
                   </EuiText>
                 </div>
@@ -1252,13 +1250,6 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
       className="euiSpacer euiSpacer--m"
     />
   </EuiSpacer>
-  <EuiSpacer
-    size="m"
-  >
-    <div
-      className="euiSpacer euiSpacer--m"
-    />
-  </EuiSpacer>
   <DetectorRulesView
     detector={
       Object {
@@ -1477,8 +1468,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
         className=""
         style={
           Object {
-            "paddingLeft": "0px",
-            "paddingRight": "0px",
+            "padding": "16px",
           }
         }
       >
@@ -1486,8 +1476,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
           className="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
           style={
             Object {
-              "paddingLeft": "0px",
-              "paddingRight": "0px",
+              "padding": "16px",
             }
           }
         >
@@ -1518,9 +1507,9 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                     <div
                       className="euiText euiText--small"
                     >
-                      <h2>
+                      <h3>
                         Active rules (2)
-                      </h2>
+                      </h3>
                     </div>
                   </EuiText>
                 </div>
@@ -1686,11 +1675,13 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                 search={
                   Object {
                     "box": Object {
+                      "compressed": true,
                       "placeholder": "Search rules",
                       "schema": true,
                     },
                     "filters": Array [
                       Object {
+                        "compressed": true,
                         "field": "category",
                         "multiSelect": "or",
                         "name": "Log type",
@@ -1698,6 +1689,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                         "type": "field_value_selection",
                       },
                       Object {
+                        "compressed": true,
                         "field": "level",
                         "multiSelect": "or",
                         "name": "Rule severity",
@@ -1751,6 +1743,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                         "type": "field_value_selection",
                       },
                       Object {
+                        "compressed": true,
                         "field": "source",
                         "multiSelect": "or",
                         "name": "Source",
@@ -1774,6 +1767,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                   <EuiSearchBar
                     box={
                       Object {
+                        "compressed": true,
                         "placeholder": "Search rules",
                         "schema": Object {
                           "fields": Object {
@@ -1800,6 +1794,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                     filters={
                       Array [
                         Object {
+                          "compressed": true,
                           "field": "category",
                           "multiSelect": "or",
                           "name": "Log type",
@@ -1807,6 +1802,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                           "type": "field_value_selection",
                         },
                         Object {
+                          "compressed": true,
                           "field": "level",
                           "multiSelect": "or",
                           "name": "Rule severity",
@@ -1860,6 +1856,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                           "type": "field_value_selection",
                         },
                         Object {
+                          "compressed": true,
                           "field": "source",
                           "multiSelect": "or",
                           "name": "Source",
@@ -1893,6 +1890,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                             className="euiFlexItem euiSearchBar__searchHolder"
                           >
                             <EuiSearchBox
+                              compressed={true}
                               incremental={false}
                               isInvalid={false}
                               onSearch={[Function]}
@@ -1901,7 +1899,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                             >
                               <EuiFieldSearch
                                 aria-label="This is a search bar. After typing your query, hit enter to filter the results lower in the page."
-                                compressed={false}
+                                compressed={true}
                                 defaultValue=""
                                 fullWidth={true}
                                 incremental={false}
@@ -1913,13 +1911,13 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                 placeholder="Search rules"
                               >
                                 <EuiFormControlLayout
-                                  compressed={false}
+                                  compressed={true}
                                   fullWidth={true}
                                   icon="search"
                                   isLoading={false}
                                 >
                                   <div
-                                    className="euiFormControlLayout euiFormControlLayout--fullWidth"
+                                    className="euiFormControlLayout euiFormControlLayout--fullWidth euiFormControlLayout--compressed"
                                   >
                                     <div
                                       className="euiFormControlLayout__childrenWrapper"
@@ -1929,7 +1927,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                       >
                                         <input
                                           aria-label="This is a search bar. After typing your query, hit enter to filter the results lower in the page."
-                                          className="euiFieldSearch euiFieldSearch--fullWidth"
+                                          className="euiFieldSearch euiFieldSearch--fullWidth euiFieldSearch--compressed"
                                           defaultValue=""
                                           onKeyUp={[Function]}
                                           placeholder="Search rules"
@@ -1937,7 +1935,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                         />
                                       </EuiValidatableControl>
                                       <EuiFormControlLayoutIcons
-                                        compressed={false}
+                                        compressed={true}
                                         icon="search"
                                         isLoading={false}
                                       >
@@ -1945,7 +1943,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                           className="euiFormControlLayoutIcons"
                                         >
                                           <EuiFormControlLayoutCustomIcon
-                                            size="m"
+                                            size="s"
                                             type="search"
                                           >
                                             <span
@@ -1954,7 +1952,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                               <EuiIcon
                                                 aria-hidden="true"
                                                 className="euiFormControlLayoutCustomIcon__icon"
-                                                size="m"
+                                                size="s"
                                                 type="search"
                                               >
                                                 EuiIconMock
@@ -1981,6 +1979,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                               filters={
                                 Array [
                                   Object {
+                                    "compressed": true,
                                     "field": "category",
                                     "multiSelect": "or",
                                     "name": "Log type",
@@ -1988,6 +1987,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                     "type": "field_value_selection",
                                   },
                                   Object {
+                                    "compressed": true,
                                     "field": "level",
                                     "multiSelect": "or",
                                     "name": "Rule severity",
@@ -2041,6 +2041,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                     "type": "field_value_selection",
                                   },
                                   Object {
+                                    "compressed": true,
                                     "field": "source",
                                     "multiSelect": "or",
                                     "name": "Source",
@@ -2084,7 +2085,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                   <FieldValueSelectionFilter
                                     config={
                                       Object {
-                                        "compressed": undefined,
+                                        "compressed": true,
                                         "field": "category",
                                         "multiSelect": "or",
                                         "name": "Log type",
@@ -2123,6 +2124,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                           iconSide="right"
                                           iconType="arrowDown"
                                           onClick={[Function]}
+                                          size="s"
                                         >
                                           Log type
                                         </EuiFilterButton>
@@ -2149,6 +2151,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                             iconSide="right"
                                             iconType="arrowDown"
                                             onClick={[Function]}
+                                            size="s"
                                           >
                                             <EuiButtonEmpty
                                               className="euiFilterButton euiFilterButton--hasIcon"
@@ -2156,6 +2159,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                               iconSide="right"
                                               iconType="arrowDown"
                                               onClick={[Function]}
+                                              size="s"
                                               textProps={
                                                 Object {
                                                   "className": "",
@@ -2164,7 +2168,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                               type="button"
                                             >
                                               <button
-                                                className="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
+                                                className="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton--hasIcon"
                                                 disabled={false}
                                                 onClick={[Function]}
                                                 type="button"
@@ -2215,7 +2219,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                   <FieldValueSelectionFilter
                                     config={
                                       Object {
-                                        "compressed": undefined,
+                                        "compressed": true,
                                         "field": "level",
                                         "multiSelect": "or",
                                         "name": "Rule severity",
@@ -2300,6 +2304,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                           iconSide="right"
                                           iconType="arrowDown"
                                           onClick={[Function]}
+                                          size="s"
                                         >
                                           Rule severity
                                         </EuiFilterButton>
@@ -2326,6 +2331,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                             iconSide="right"
                                             iconType="arrowDown"
                                             onClick={[Function]}
+                                            size="s"
                                           >
                                             <EuiButtonEmpty
                                               className="euiFilterButton euiFilterButton--hasIcon"
@@ -2333,6 +2339,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                               iconSide="right"
                                               iconType="arrowDown"
                                               onClick={[Function]}
+                                              size="s"
                                               textProps={
                                                 Object {
                                                   "className": "",
@@ -2341,7 +2348,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                               type="button"
                                             >
                                               <button
-                                                className="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
+                                                className="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton--hasIcon"
                                                 disabled={false}
                                                 onClick={[Function]}
                                                 type="button"
@@ -2392,7 +2399,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                   <FieldValueSelectionFilter
                                     config={
                                       Object {
-                                        "compressed": undefined,
+                                        "compressed": true,
                                         "field": "source",
                                         "multiSelect": "or",
                                         "name": "Source",
@@ -2438,6 +2445,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                           iconSide="right"
                                           iconType="arrowDown"
                                           onClick={[Function]}
+                                          size="s"
                                         >
                                           Source
                                         </EuiFilterButton>
@@ -2464,6 +2472,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                             iconSide="right"
                                             iconType="arrowDown"
                                             onClick={[Function]}
+                                            size="s"
                                           >
                                             <EuiButtonEmpty
                                               className="euiFilterButton euiFilterButton--hasIcon"
@@ -2471,6 +2480,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                               iconSide="right"
                                               iconType="arrowDown"
                                               onClick={[Function]}
+                                              size="s"
                                               textProps={
                                                 Object {
                                                   "className": "",
@@ -2479,7 +2489,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                               type="button"
                                             >
                                               <button
-                                                className="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
+                                                className="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton--hasIcon"
                                                 disabled={false}
                                                 onClick={[Function]}
                                                 type="button"
