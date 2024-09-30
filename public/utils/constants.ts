@@ -79,7 +79,7 @@ export const getNotificationDetailsHref = (channelId: string) =>
   `notifications-dashboards#/channels-details/${channelId}`;
 
 export const BREADCRUMBS = Object.freeze({
-  SECURITY_ANALYTICS: { text: 'Security Analytics', href: '#/' },
+  SECURITY_ANALYTICS: { text: 'Security Analytics', href: `#${ROUTES.OVERVIEW}` },
   OVERVIEW: { text: 'Overview', href: `#${ROUTES.OVERVIEW}` },
   GETTING_STARTED: { text: 'Getting started', href: `#${ROUTES.GETTING_STARTED}` },
   FINDINGS: { text: 'Findings', href: `#${ROUTES.FINDINGS}` },
