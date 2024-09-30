@@ -16,7 +16,7 @@ import { TableWidget } from './TableWidget';
 import { WidgetContainer } from './WidgetContainer';
 import { renderTime } from '../../../../utils/helpers';
 import { ThreatIntelFinding } from '../../../../../types';
-import { getApplication } from '../../../../services/utils/constants';
+import { getApplication, getUseUpdatedUx } from '../../../../services/utils/constants';
 import { IocLabel, ThreatIntelIocType } from '../../../../../common/constants';
 
 const columns: EuiBasicTableColumn<ThreatIntelFinding>[] = [
@@ -78,17 +78,16 @@ export const RecentThreatIntelFindingsWidget: React.FC<RecentThreatIntelFindings
     );
   }, [items]);
 
-  const threatIntelFindingsUrl = `${getApplication().getUrlForApp(FINDINGS_NAV_ID, {
-    path: `#${ROUTES.FINDINGS}`,
-  })}?detectionType=${FindingTabId.ThreatIntel}`;
-  const actions = React.useMemo(
-    () => [
-      <EuiSmallButton onClick={() => getApplication().navigateToUrl(threatIntelFindingsUrl)}>
+  const actions = React.useMemo(() => {
+    const baseUrl = getUseUpdatedUx() ? getApplication().getUrlForApp(FINDINGS_NAV_ID) : '';
+    return [
+      <EuiSmallButton
+        href={`${baseUrl}#${ROUTES.FINDINGS}?detectionType=${FindingTabId.ThreatIntel}`}
+      >
         View all
       </EuiSmallButton>,
-    ],
-    []
-  );
+    ];
+  }, []);
 
   return (
     <WidgetContainer title={'Recent threat intel findings'} actions={actions}>
