@@ -134,7 +134,7 @@ export class SecurityAnalyticsPlugin
       core.application.register({
         id: THREAT_ALERTS_NAV_ID,
         title: 'Threat alerts',
-        order: 9070,
+        order: 300,
         category: DEFAULT_APP_CATEGORIES.investigate,
         updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
@@ -145,7 +145,7 @@ export class SecurityAnalyticsPlugin
       core.application.register({
         id: FINDINGS_NAV_ID,
         title: 'Findings',
-        order: 9080,
+        order: 400,
         category: DEFAULT_APP_CATEGORIES.investigate,
         updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
@@ -156,7 +156,7 @@ export class SecurityAnalyticsPlugin
       core.application.register({
         id: CORRELATIONS_NAV_ID,
         title: 'Correlations',
-        order: 9080,
+        order: 500,
         category: DEFAULT_APP_CATEGORIES.investigate,
         updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
@@ -167,7 +167,7 @@ export class SecurityAnalyticsPlugin
       core.application.register({
         id: DETECTORS_NAV_ID,
         title: 'Threat detectors',
-        order: 9080,
+        order: 600,
         category: DEFAULT_APP_CATEGORIES.configure,
         updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
@@ -178,7 +178,7 @@ export class SecurityAnalyticsPlugin
       core.application.register({
         id: DETECTION_RULE_NAV_ID,
         title: 'Detection rules',
-        order: 9080,
+        order: 700,
         category: DEFAULT_APP_CATEGORIES.configure,
         updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
@@ -189,7 +189,7 @@ export class SecurityAnalyticsPlugin
       core.application.register({
         id: CORRELATIONS_RULE_NAV_ID,
         title: 'Correlation rules',
-        order: 9080,
+        order: 800,
         category: DEFAULT_APP_CATEGORIES.configure,
         updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
@@ -200,7 +200,7 @@ export class SecurityAnalyticsPlugin
       core.application.register({
         id: THREAT_INTEL_NAV_ID,
         title: 'Threat intelligence',
-        order: 9080,
+        order: 900,
         category: DEFAULT_APP_CATEGORIES.configure,
         updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
@@ -211,7 +211,7 @@ export class SecurityAnalyticsPlugin
       core.application.register({
         id: LOG_TYPES_NAV_ID,
         title: 'Log types',
-        order: 9080,
+        order: 1000,
         category: DEFAULT_APP_CATEGORIES.configure,
         updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
@@ -230,13 +230,13 @@ export class SecurityAnalyticsPlugin
         { id: GETTING_STARTED_NAV_ID, showInAllNavGroup: true },
         { id: THREAT_ALERTS_NAV_ID, showInAllNavGroup: true },
         { id: FINDINGS_NAV_ID, showInAllNavGroup: true },
-        { id: CORRELATIONS_NAV_ID },
-        { id: PLUGIN_NAME, category: DEFAULT_APP_CATEGORIES.configure, title: 'Threat detection' },
-        { id: DETECTORS_NAV_ID, parentNavLinkId: PLUGIN_NAME },
-        { id: DETECTION_RULE_NAV_ID, parentNavLinkId: PLUGIN_NAME },
-        { id: CORRELATIONS_RULE_NAV_ID },
-        { id: THREAT_INTEL_NAV_ID },
-        { id: LOG_TYPES_NAV_ID },
+        { id: CORRELATIONS_NAV_ID, showInAllNavGroup: true },
+        { id: PLUGIN_NAME, category: DEFAULT_APP_CATEGORIES.configure, title: 'Threat detection', showInAllNavGroup: true, order: 600 },
+        { id: DETECTORS_NAV_ID, parentNavLinkId: PLUGIN_NAME, showInAllNavGroup: true },
+        { id: DETECTION_RULE_NAV_ID, parentNavLinkId: PLUGIN_NAME, showInAllNavGroup: true },
+        { id: CORRELATIONS_RULE_NAV_ID, showInAllNavGroup: true },
+        { id: THREAT_INTEL_NAV_ID, showInAllNavGroup: true },
+        { id: LOG_TYPES_NAV_ID, showInAllNavGroup: true },
       ];
 
       core.chrome.navGroup.addNavLinksToGroup(DEFAULT_NAV_GROUPS['security-analytics'], navlinks);
