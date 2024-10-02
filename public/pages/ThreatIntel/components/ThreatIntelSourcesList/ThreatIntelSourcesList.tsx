@@ -34,7 +34,6 @@ export const ThreatIntelSourcesList: React.FC<ThreatIntelSourcesListProps> = ({
 }) => {
   return (
     <EuiPanel>
-      <EuiSpacer size="m" />
       <EuiFlexGroup>
         <EuiFlexItem>
           <EuiTitle size="s">
@@ -97,7 +96,11 @@ export const ThreatIntelSourcesList: React.FC<ThreatIntelSourcesListProps> = ({
       </EuiFlexGroup>
       {threatIntelSources.length === 0 && (
         <EuiEmptyPrompt
-          title={<EuiText size="s"><h2>No threat intel source present</h2></EuiText>}
+          title={
+            <EuiText size="s">
+              <h2>No threat intel source present</h2>
+            </EuiText>
+          }
           actions={[
             <EuiSmallButton
               fill
