@@ -42,7 +42,6 @@ export class DetectorDetailsView extends React.Component<
     } = this.props;
     const detectorRules = (
       <>
-        <EuiSpacer size="m" />
         <DetectorRulesView
           {...this.props}
           detector={detector}

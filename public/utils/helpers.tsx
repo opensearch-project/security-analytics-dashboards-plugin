@@ -14,6 +14,7 @@ import {
   EuiText,
   EuiBadge,
   euiPaletteColorBlind,
+  EuiEmptyPrompt,
 } from '@elastic/eui';
 import moment from 'moment';
 import { PeriodSchedule } from '../../models/interfaces';
@@ -702,6 +703,24 @@ export function registerThreatAlertsCard() {
       ),
     }),
   });
+}
+
+export function getEuiEmptyPrompt(message: string) {
+  return (
+    <EuiEmptyPrompt
+      style={{ position: 'relative' }}
+      body={
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '32px' }}>
+          <p style={{ position: 'absolute', top: 'calc(50% - 20px)' }}>
+            <EuiText size="s">
+              <p style={{ margin: 0 }}>{message}</p>
+              <p style={{ margin: 0 }}>Adjust the time range to see more results.</p>
+            </EuiText>
+          </p>
+        </div>
+      }
+    />
+  );
 }
 
 export function initializeServices(coreStart: CoreStart, indexPattern: CoreIndexPatternsService) {

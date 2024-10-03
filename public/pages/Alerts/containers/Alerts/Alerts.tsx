@@ -938,12 +938,14 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       box: {
         placeholder: 'Search alerts',
         schema: true,
+        compressed: true,
       },
       filters: [
         {
           type: 'field_value_selection',
           field: 'severity',
           name: 'Alert severity',
+          compressed: true,
           options: Array.from(severities).map((severity) => ({
             value: severity,
             name: parseAlertSeverityToOption(severity)?.label || severity,
@@ -954,6 +956,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
           type: 'field_value_selection',
           field: 'state',
           name: 'Status',
+          compressed: true,
           options: Array.from(statuses).map((status) => ({
             value: status,
             name: capitalizeFirstLetter(status) || status,
@@ -967,12 +970,14 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       box: {
         placeholder: 'Search alerts',
         schema: true,
+        compressed: true,
       },
       filters: [
         {
           type: 'field_value_selection',
           field: 'severity',
           name: 'Alert severity',
+          compressed: true,
           options: Array.from(corrSeverities).map((severity) => ({
             value: severity,
             name: parseAlertSeverityToOption(severity)?.label || severity,
@@ -983,6 +988,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
           type: 'field_value_selection',
           field: 'state',
           name: 'Status',
+          compressed: true,
           options: Array.from(corrStatuses).map((status) => ({
             value: status,
             name: capitalizeFirstLetter(status) || status,
@@ -1018,18 +1024,22 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         content: (
           <>
             <EuiSpacer size="m" />
-            <EuiInMemoryTable
-              columns={this.getColumns()}
-              items={alertsFiltered ? filteredDetectionRuleAlerts : detectionRuleAlerts}
-              itemId={(item) => `${item.id}`}
-              isSelectable={true}
-              pagination
-              search={search}
-              sorting={sorting}
-              selection={selection}
-              loading={loading}
-              message={widgetEmptyMessage}
-            />
+            {this.getAlertsGraph(alerts, loading)}
+            <EuiSpacer size="m" />
+            <ContentPanel title={'Alerts'} actions={[this.getContelPanelActions()]}>
+              <EuiInMemoryTable
+                columns={this.getColumns()}
+                items={alertsFiltered ? filteredDetectionRuleAlerts : detectionRuleAlerts}
+                itemId={(item) => `${item.id}`}
+                isSelectable={true}
+                pagination
+                search={search}
+                sorting={sorting}
+                selection={selection}
+                loading={loading}
+                message={widgetEmptyMessage}
+              />
+            </ContentPanel>
           </>
         ),
       },
@@ -1039,11 +1049,15 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         content: (
           <>
             <EuiSpacer size="m" />
-            <ThreatIntelAlertsTable
-              alerts={alertsFiltered ? filteredThreatIntelAlerts : threatIntelAlerts}
-              onAlertStateChange={this.onThreatIntelAlertStateChange}
-              onSelectionChange={this.onThreatIntelAlertSelectionChange}
-            />
+            {this.getAlertsGraph(alerts, loading)}
+            <EuiSpacer size="m" />
+            <ContentPanel title={'Alerts'} actions={[this.getContelPanelActions()]}>
+              <ThreatIntelAlertsTable
+                alerts={alertsFiltered ? filteredThreatIntelAlerts : threatIntelAlerts}
+                onAlertStateChange={this.onThreatIntelAlertStateChange}
+                onSelectionChange={this.onThreatIntelAlertSelectionChange}
+              />
+            </ContentPanel>
           </>
         ),
       },
@@ -1060,18 +1074,22 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         content: (
           <>
             <EuiSpacer size="m" />
-            <EuiInMemoryTable
-              columns={this.getCorrelationColumns()}
-              items={alertsFiltered ? filteredCorrelationAlerts : correlationAlerts}
-              itemId={(item) => `${item.id}`}
-              isSelectable={true}
-              pagination
-              search={correlationSearch}
-              sorting={sorting}
-              selection={correlationSelection}
-              loading={loading}
-              message={widgetEmptyCorrelationMessage}
-            />
+            {this.getAlertsGraph(alerts, loading)}
+            <EuiSpacer size="m" />
+            <ContentPanel title={'Alerts'} actions={[this.getContelPanelActions()]}>
+              <EuiInMemoryTable
+                columns={this.getCorrelationColumns()}
+                items={alertsFiltered ? filteredCorrelationAlerts : correlationAlerts}
+                itemId={(item) => `${item.id}`}
+                isSelectable={true}
+                pagination
+                search={correlationSearch}
+                sorting={sorting}
+                selection={correlationSelection}
+                loading={loading}
+                message={widgetEmptyCorrelationMessage}
+              />
+            </ContentPanel>
           </>
         ),
       },
@@ -1109,7 +1127,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
             onAcknowledge={this.onAcknowledgeCorrelationAlert}
           />
         )}
-        <EuiFlexGroup direction="column">
+        <EuiFlexGroup direction="column" gutterSize={'m'}>
           <PageHeader
             appRightControls={[
               {
@@ -1126,50 +1144,51 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>{datePicker}</EuiFlexItem>
               </EuiFlexGroup>
-              <EuiSpacer size={'m'} />
             </EuiFlexItem>
           </PageHeader>
 
           <EuiFlexItem>
-            <EuiPanel>
-              <EuiFlexGroup direction="column">
-                <EuiFlexItem style={{ alignSelf: 'flex-end' }}>
-                  {this.createGroupByControl()}
-                </EuiFlexItem>
-                <EuiFlexItem>
-                  {!alerts || alerts.length === 0 ? (
-                    <EuiEmptyPrompt
-                      title={<EuiText size="s"><h2>No alerts</h2></EuiText>}
-                      body={
-                        <p>
-                          <EuiText size="s">
-                            Adjust the time range to see more results or create alert triggers in your{' '}
-                            <EuiLink href={`${location.pathname}#/detectors`}>detectors</EuiLink> to
-                            generate alerts.
-                          </EuiText>
-                        </p>
-                      }
-                    />
-                  ) : (
-                    <ChartContainer chartViewId={'alerts-view'} loading={loading} />
-                  )}
-                </EuiFlexItem>
-              </EuiFlexGroup>
-            </EuiPanel>
-            <EuiSpacer size="xxl" />
-          </EuiFlexItem>
-          <EuiFlexItem>
-            <ContentPanel title={'Alerts'} actions={[this.getContelPanelActions()]}>
-              <EuiTabbedContent
-                tabs={tabs}
-                size="s"
-                onTabClick={({ id }) => this.setState({ selectedTabId: id as AlertTabId })}
-                initialSelectedTab={tabs.find(({ id }) => id === selectedTabId) ?? tabs[0]}
-              />
-            </ContentPanel>
+            <EuiTabbedContent
+              tabs={tabs}
+              size="s"
+              onTabClick={({ id }) => this.setState({ selectedTabId: id as AlertTabId })}
+              initialSelectedTab={tabs.find(({ id }) => id === selectedTabId) ?? tabs[0]}
+            />
           </EuiFlexItem>
         </EuiFlexGroup>
       </>
+    );
+  }
+
+  private getAlertsGraph(alerts: any[], loading: boolean) {
+    return (
+      <EuiPanel>
+        <EuiFlexGroup direction="column">
+          <EuiFlexItem style={{ alignSelf: 'flex-end' }}>{this.createGroupByControl()}</EuiFlexItem>
+          <EuiFlexItem>
+            {!alerts || alerts.length === 0 ? (
+              <EuiEmptyPrompt
+                title={
+                  <EuiText size="s">
+                    <h2>No alerts</h2>
+                  </EuiText>
+                }
+                body={
+                  <p>
+                    <EuiText size="s">
+                      Adjust the time range to see more results or create alert triggers in your{' '}
+                      <EuiLink href={`${location.pathname}#/detectors`}>detectors</EuiLink> to
+                      generate alerts.
+                    </EuiText>
+                  </p>
+                }
+              />
+            ) : (
+              <ChartContainer chartViewId={'alerts-view'} loading={loading} />
+            )}
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      </EuiPanel>
     );
   }
 }

@@ -107,12 +107,14 @@ export const getRulesTableSearchConfig = (): Search => {
     box: {
       placeholder: 'Search rules',
       schema: true,
+      compressed: true,
     },
     filters: [
       {
         type: 'field_value_selection',
         field: 'category',
         name: 'Log type',
+        compressed: true,
         multiSelect: 'or',
         options: getLogTypeFilterOptions(),
       },
@@ -120,6 +122,7 @@ export const getRulesTableSearchConfig = (): Search => {
         type: 'field_value_selection',
         field: 'level',
         name: 'Rule severity',
+        compressed: true,
         multiSelect: 'or',
         options: ruleSeverity,
       },
@@ -127,6 +130,7 @@ export const getRulesTableSearchConfig = (): Search => {
         type: 'field_value_selection',
         field: 'source',
         name: 'Source',
+        compressed: true,
         multiSelect: 'or',
         options: ruleSource.map((source: string) => ({
           value: source,

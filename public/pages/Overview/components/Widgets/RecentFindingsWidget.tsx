@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiBasicTableColumn, EuiSmallButton, EuiEmptyPrompt, EuiText } from '@elastic/eui';
+import { EuiBasicTableColumn, EuiSmallButton } from '@elastic/eui';
 import { FINDINGS_NAV_ID, ROUTES, SortDirection } from '../../../../utils/constants';
 import React, { useEffect, useState } from 'react';
 import { TableWidget } from './TableWidget';
 import { WidgetContainer } from './WidgetContainer';
-import { renderTime, getSeverityBadge } from '../../../../utils/helpers';
+import { renderTime, getSeverityBadge, getEuiEmptyPrompt } from '../../../../utils/helpers';
 import { OverviewFindingItem } from '../../../../../types';
 import { getApplication, getUseUpdatedUx } from '../../../../services/utils/constants';
 
@@ -53,27 +53,12 @@ export const RecentFindingsWidget: React.FC<RecentFindingsWidgetProps> = ({
   loading = false,
 }) => {
   const [findingItems, setFindingItems] = useState<OverviewFindingItem[]>([]);
-  const [widgetEmptyMessage, setWidgetEmptyMessage] = useState<React.ReactNode | undefined>(
-    undefined
-  );
 
   useEffect(() => {
     items.sort((a, b) => {
       return b.time - a.time;
     });
     setFindingItems(items.slice(0, 20));
-    setWidgetEmptyMessage(
-      items.length > 0 ? undefined : (
-        <EuiEmptyPrompt
-          body={
-            <EuiText size="s">
-              <span style={{ display: 'block' }}>No recent findings.</span>Adjust the time range to
-              see more results.
-            </EuiText>
-          }
-        />
-      )
-    );
   }, [items]);
 
   const actions = React.useMemo(() => {
@@ -83,14 +68,16 @@ export const RecentFindingsWidget: React.FC<RecentFindingsWidgetProps> = ({
 
   return (
     <WidgetContainer title={'Recent detection rule findings'} actions={actions}>
-      <TableWidget
-        columns={columns}
-        items={findingItems}
-        sorting={{ sort: { field: 'time', direction: SortDirection.DESC } }}
-        loading={loading}
-        message={widgetEmptyMessage}
-        className={widgetEmptyMessage ? 'sa-overview-widget-empty' : undefined}
-      />
+      {findingItems.length === 0 ? (
+        getEuiEmptyPrompt('No recent findings.')
+      ) : (
+        <TableWidget
+          columns={columns}
+          items={findingItems}
+          sorting={{ sort: { field: 'time', direction: SortDirection.DESC } }}
+          loading={loading}
+        />
+      )}
     </WidgetContainer>
   );
 };

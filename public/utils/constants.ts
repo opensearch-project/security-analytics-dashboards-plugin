@@ -23,7 +23,7 @@ export const OS_NOTIFICATION_PLUGIN = 'opensearch-notifications';
 
 export const DEFAULT_EMPTY_DATA = '-';
 export const OVERVIEW_NAV_ID = `sa_overview`;
-export const GETTING_STARTED_NAV_ID = `getting_started`;
+export const GET_STARTED_NAV_ID = `get_started`;
 export const THREAT_ALERTS_NAV_ID = `threat_alerts`;
 export const FINDINGS_NAV_ID = `findings`;
 export const CORRELATIONS_NAV_ID = `correlations`;
@@ -81,7 +81,7 @@ export const getNotificationDetailsHref = (channelId: string) =>
 export const BREADCRUMBS = Object.freeze({
   SECURITY_ANALYTICS: { text: 'Security Analytics', href: `#${ROUTES.OVERVIEW}` },
   OVERVIEW: { text: 'Overview', href: `#${ROUTES.OVERVIEW}` },
-  GETTING_STARTED: { text: 'Getting started', href: `#${ROUTES.GETTING_STARTED}` },
+  GETTING_STARTED: { text: 'Get started', href: `#${ROUTES.GETTING_STARTED}` },
   FINDINGS: { text: 'Findings', href: `#${ROUTES.FINDINGS}` },
   DETECTORS: { text: 'Threat detectors', href: `#${ROUTES.DETECTORS}` },
   DETECTORS_CREATE: { text: 'Create detector', href: `#${ROUTES.DETECTORS_CREATE}` },
