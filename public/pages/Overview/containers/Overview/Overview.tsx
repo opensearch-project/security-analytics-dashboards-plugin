@@ -216,6 +216,9 @@ export const Overview: React.FC<OverviewProps> = (props) => {
       href={`#${ROUTES.DETECTORS_CREATE}`}
       fill={true}
       data-test-subj={'detectorsCreateButton'}
+      iconType="plus"
+      iconSide="left"
+      iconGap="s"
     >
       Create detector
     </EuiSmallButton>
@@ -240,7 +243,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
   };
 
   return (
-    <EuiFlexGroup direction="column">
+    <EuiFlexGroup direction="column" gutterSize={'m'}>
       <PageHeader
         appRightControls={[
           { renderComponent: datePicker },
@@ -258,7 +261,6 @@ export const Overview: React.FC<OverviewProps> = (props) => {
             <EuiFlexItem grow={false}>{datePicker}</EuiFlexItem>
             <EuiFlexItem grow={false}>{createDetectorAction}</EuiFlexItem>
           </EuiFlexGroup>
-          <EuiSpacer size={'m'} />
         </EuiFlexItem>
       </PageHeader>
       {getUseUpdatedUx() && (

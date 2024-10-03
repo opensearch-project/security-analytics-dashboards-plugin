@@ -386,7 +386,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
                 <EuiText size="s">
                   <h1>Create detector</h1>
                 </EuiText>
-                <EuiSpacer />
+                <EuiSpacer size={'m'} />
               </PageHeader>
               {this.getStepContent()}
             </>

@@ -109,7 +109,7 @@ export const CorrelationRules: React.FC<CorrelationRulesProps> = (props: Correla
   return (
     <>
       {isDeleteModalVisible && deleteModal ? deleteModal : null}
-      <EuiFlexGroup direction="column">
+      <EuiFlexGroup direction="column" gutterSize={'m'}>
         <PageHeader appRightControls={[{ renderComponent: createRuleAction }]}>
           <EuiFlexItem>
             <EuiFlexGroup gutterSize={'s'} justifyContent={'spaceBetween'}>
@@ -120,7 +120,6 @@ export const CorrelationRules: React.FC<CorrelationRulesProps> = (props: Correla
               </EuiFlexItem>
               <EuiFlexItem grow={false}>{createRuleAction}</EuiFlexItem>
             </EuiFlexGroup>
-            <EuiSpacer size={'m'} />
           </EuiFlexItem>
         </PageHeader>
         <EuiFlexItem>

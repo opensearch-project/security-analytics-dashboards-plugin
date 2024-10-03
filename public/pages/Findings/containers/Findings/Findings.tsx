@@ -564,22 +564,26 @@ class Findings extends Component<FindingsProps, FindingsState> {
         ),
         content: (
           <>
-            <EuiSpacer />
-            <FindingsTable
-              {...this.props}
-              history={this.props.history}
-              findings={findings as FindingItemType[]}
-              loading={loading}
-              rules={rules}
-              startTime={dateTimeFilter.startTime}
-              endTime={dateTimeFilter.endTime}
-              onRefresh={this.onRefresh}
-              notificationChannels={parseNotificationChannelsToOptions(notificationChannels)}
-              refreshNotificationChannels={this.getNotificationChannels}
-              onFindingsFiltered={this.onFindingsFiltered}
-              hasNotificationsPlugin={getIsNotificationPluginInstalled()}
-              correlationService={this.props.correlationService}
-            />
+            <EuiSpacer size={'m'} />
+            {this.getFindingsGraph(findings, loading)}
+            <EuiSpacer size={'m'} />
+            <ContentPanel title={'Findings'}>
+              <FindingsTable
+                {...this.props}
+                history={this.props.history}
+                findings={findings as FindingItemType[]}
+                loading={loading}
+                rules={rules}
+                startTime={dateTimeFilter.startTime}
+                endTime={dateTimeFilter.endTime}
+                onRefresh={this.onRefresh}
+                notificationChannels={parseNotificationChannelsToOptions(notificationChannels)}
+                refreshNotificationChannels={this.getNotificationChannels}
+                onFindingsFiltered={this.onFindingsFiltered}
+                hasNotificationsPlugin={getIsNotificationPluginInstalled()}
+                correlationService={this.props.correlationService}
+              />
+            </ContentPanel>
           </>
         ),
       },
@@ -595,10 +599,14 @@ class Findings extends Component<FindingsProps, FindingsState> {
         ),
         content: (
           <>
-            <EuiSpacer />
-            <ThreatIntelFindingsTable
-              findingItems={findingStateByTabId[FindingTabId.ThreatIntel].findings}
-            />
+            <EuiSpacer size={'m'} />
+            {this.getFindingsGraph(findings, loading)}
+            <EuiSpacer size={'m'} />
+            <ContentPanel title={'Findings'}>
+              <ThreatIntelFindingsTable
+                findingItems={findingStateByTabId[FindingTabId.ThreatIntel].findings}
+              />
+            </ContentPanel>
           </>
         ),
       },
@@ -617,7 +625,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
     );
 
     return (
-      <EuiFlexGroup direction="column">
+      <EuiFlexGroup direction="column" gutterSize={'m'}>
         <PageHeader
           appRightControls={[
             {
@@ -634,52 +642,48 @@ class Findings extends Component<FindingsProps, FindingsState> {
               </EuiFlexItem>
               <EuiFlexItem grow={false}>{datePicker}</EuiFlexItem>
             </EuiFlexGroup>
-            <EuiSpacer size={'m'} />
           </EuiFlexItem>
         </PageHeader>
-        <EuiFlexItem>
-          <EuiPanel>
-            <EuiFlexGroup direction="column">
-              <EuiFlexItem style={{ alignSelf: 'flex-end' }}>
-                {this.createGroupByControl()}
-              </EuiFlexItem>
-              <EuiFlexItem>
-                {!findings || findings.length === 0 ? (
-                  <EuiEmptyPrompt
-                    title={
-                      <EuiText size="s">
-                        <h2>No findings</h2>
-                      </EuiText>
-                    }
-                    body={
-                      <EuiText size="s">
-                        {this.state.findingStateByTabId[this.state.selectedTabId].emptyPromptBody}
-                      </EuiText>
-                    }
-                  />
-                ) : (
-                  <ChartContainer chartViewId={'findings-view'} loading={loading} />
-                )}
-              </EuiFlexItem>
-            </EuiFlexGroup>
-          </EuiPanel>
-
-          <EuiSpacer size={'xxl'} />
-        </EuiFlexItem>
 
         <EuiFlexItem>
-          <ContentPanel title={'Findings'}>
-            <EuiTabbedContent
-              tabs={tabs}
-              size="s"
-              initialSelectedTab={tabs.find(({ id }) => id === selectedTabId) ?? tabs[0]}
-              onTabClick={(tab) => {
-                this.setState({ selectedTabId: tab.id as FindingTabId });
-              }}
-            />
-          </ContentPanel>
+          <EuiTabbedContent
+            tabs={tabs}
+            size="s"
+            initialSelectedTab={tabs.find(({ id }) => id === selectedTabId) ?? tabs[0]}
+            onTabClick={(tab) => {
+              this.setState({ selectedTabId: tab.id as FindingTabId });
+            }}
+          />
         </EuiFlexItem>
       </EuiFlexGroup>
+    );
+  }
+
+  private getFindingsGraph(findings: ThreatIntelFinding[] | FindingItemType[], loading: boolean) {
+    return (
+      <EuiPanel>
+        <EuiFlexGroup direction="column">
+          <EuiFlexItem style={{ alignSelf: 'flex-end' }}>{this.createGroupByControl()}</EuiFlexItem>
+          <EuiFlexItem>
+            {!findings || findings.length === 0 ? (
+              <EuiEmptyPrompt
+                title={
+                  <EuiText size="s">
+                    <h2>No findings</h2>
+                  </EuiText>
+                }
+                body={
+                  <EuiText size="s">
+                    {this.state.findingStateByTabId[this.state.selectedTabId].emptyPromptBody}
+                  </EuiText>
+                }
+              />
+            ) : (
+              <ChartContainer chartViewId={'findings-view'} loading={loading} />
+            )}
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      </EuiPanel>
     );
   }
 }
