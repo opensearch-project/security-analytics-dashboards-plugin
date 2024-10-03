@@ -212,8 +212,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
       className=""
       style={
         Object {
-          "paddingLeft": "0px",
-          "paddingRight": "0px",
+          "padding": "16px",
         }
       }
     >
@@ -221,8 +220,7 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
         className="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
         style={
           Object {
-            "paddingLeft": "0px",
-            "paddingRight": "0px",
+            "padding": "16px",
           }
         }
       >
@@ -253,9 +251,9 @@ exports[`<AlertTriggersView /> spec renders the component 1`] = `
                   <div
                     className="euiText euiText--small"
                   >
-                    <h2>
+                    <h3>
                       Alert triggers (2)
-                    </h2>
+                    </h3>
                   </div>
                 </EuiText>
               </div>

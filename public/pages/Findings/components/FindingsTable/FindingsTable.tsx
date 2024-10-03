@@ -271,12 +271,14 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
       box: {
         placeholder: 'Search findings',
         schema: true,
+        compressed: true,
       },
       filters: [
         {
           type: 'field_value_selection',
           field: 'ruleSeverity',
           name: 'Severity',
+          compressed: true,
           options: Array.from(severities).map((severity) => {
             const name =
               parseAlertSeverityToOption(severity)?.label || capitalizeFirstLetter(severity);
@@ -288,6 +290,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
           type: 'field_value_selection',
           field: 'logType',
           name: 'Log type',
+          compressed: true,
           options: Array.from(logTypes).map((type) => ({
             value: type,
             name: formatRuleType(type),
@@ -298,6 +301,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
           type: 'field_value_selection',
           field: 'detectionType',
           name: 'Detection type',
+          compressed: true,
           options: [
             {
               value: 'Detection rules',

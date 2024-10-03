@@ -3,12 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { renderVisualization } from '../../../../utils/helpers';
+import { getEuiEmptyPrompt, renderVisualization } from '../../../../utils/helpers';
 import React, { useEffect } from 'react';
 import { WidgetContainer } from './WidgetContainer';
 import { getTopRulesVisualizationSpec } from '../../utils/helpers';
 import { ChartContainer } from '../../../../components/Charts/ChartContainer';
-import { EuiEmptyPrompt, EuiText } from '@elastic/eui';
 import { OverviewFindingItem } from '../../../../../types';
 
 export interface TopRulesWidgetProps {
@@ -37,21 +36,9 @@ export const TopRulesWidget: React.FC<TopRulesWidgetProps> = ({ findings, loadin
   return (
     <WidgetContainer title="Most frequent detection rules">
       {findings.length === 0 ? (
-        <EuiEmptyPrompt
-          style={{ position: 'relative' }}
-          body={
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <p style={{position: 'absolute', top: 'calc(50% - 20px)'}}>
-                <EuiText size="s">
-                  <span style={{display: 'block'}}>No findings with detection rules.</span>Adjust
-                  the time range to see more results.
-                </EuiText>
-              </p>
-            </div>
-          }
-        />
+        getEuiEmptyPrompt('No findings with detection rules.')
       ) : (
-        <ChartContainer chartViewId={'top-rules-view'} loading={loading}/>
+        <ChartContainer chartViewId={'top-rules-view'} loading={loading} />
       )}
     </WidgetContainer>
   );
