@@ -19,6 +19,7 @@ import {
   EuiPopover,
   EuiSpacer,
   EuiText,
+  EuiButtonIcon,
 } from '@elastic/eui';
 import { BREADCRUMBS, DEFAULT_EMPTY_DATA, ROUTES } from '../../../../utils/constants';
 import DeleteModal from '../../../../components/DeleteModal';
@@ -185,21 +186,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
   };
 
   getActionItems = (loading: boolean, selectedItems: DetectorHit[]) => {
-    const actionItems = [
-      <EuiContextMenuItem
-        key={'Delete'}
-        icon={'empty'}
-        disabled={selectedItems.length === 0 || loading}
-        onClick={() => {
-          this.closeActionsPopover();
-          this.openDeleteModal();
-        }}
-        data-test-subj={'deleteButton'}
-      >
-        Delete
-      </EuiContextMenuItem>,
-    ];
-
+    const actionItems = [];
     if (selectedItems.length === 1) {
       actionItems.push(
         <EuiContextMenuItem
@@ -231,38 +218,12 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
 
     const actions = [
       <EuiSmallButton
-        iconType={'refresh'}
-        onClick={this.getDetectors}
-        data-test-subj={'detectorsRefreshButton'}
-      >
-        Refresh
-      </EuiSmallButton>,
-      <EuiPopover
-        id={'detectorsActionsPopover'}
-        button={
-          <EuiSmallButton
-            isLoading={loadingDetectors}
-            iconType={'arrowDown'}
-            iconSide={'right'}
-            disabled={!selectedItems.length}
-            onClick={this.openActionsButton}
-            data-test-subj={'detectorsActionsButton'}
-          >
-            Actions
-          </EuiSmallButton>
-        }
-        isOpen={isPopoverOpen}
-        closePopover={this.closeActionsPopover}
-        panelPaddingSize={'none'}
-        anchorPosition={'downLeft'}
-        data-test-subj={'detectorsActionsPopover'}
-      >
-        <EuiContextMenuPanel items={this.getActionItems(loadingDetectors, selectedItems)} size="s"/>
-      </EuiPopover>,
-      <EuiSmallButton
         href={`#${ROUTES.DETECTORS_CREATE}`}
         fill={true}
         data-test-subj={'detectorsCreateButton'}
+        iconType="plus"
+        iconSide="left"
+        iconGap="s"
       >
         Create detector
       </EuiSmallButton>,
@@ -313,17 +274,79 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
         detectorHits.map((detector) => (detector._source.enabled ? 'Active' : 'Inactive'))
       ),
     ];
+
+    const renderActionsLeft = (loading: boolean, selectedItems: DetectorHit[]) => {
+      return [
+        <EuiSmallButton
+          color={'danger'}
+          iconType={'trash'}
+          key={'Delete'}
+          disabled={selectedItems.length === 0 || loading}
+          onClick={() => {
+            this.closeActionsPopover();
+            this.openDeleteModal();
+          }}
+          data-test-subj={'deleteButton'}
+        >
+          {selectedItems.length > 0
+            ? `Delete ${selectedItems.length} detectors`
+            : 'Delete detectors'}
+        </EuiSmallButton>,
+      ];
+    };
+
+    const renderActionsRight = () => {
+      return [
+        <EuiSmallButton
+          iconType={'refresh'}
+          onClick={this.getDetectors}
+          data-test-subj={'detectorsRefreshButton'}
+        >
+          Refresh
+        </EuiSmallButton>,
+        <EuiPopover
+          id={'detectorsActionsPopover'}
+          button={
+            <EuiSmallButton
+              isLoading={loadingDetectors}
+              iconType={'arrowDown'}
+              iconSide={'right'}
+              disabled={selectedItems.length !== 1}
+              onClick={this.openActionsButton}
+              data-test-subj={'detectorsActionsButton'}
+            >
+              Actions
+            </EuiSmallButton>
+          }
+          isOpen={isPopoverOpen}
+          closePopover={this.closeActionsPopover}
+          panelPaddingSize={'none'}
+          anchorPosition={'downLeft'}
+          data-test-subj={'detectorsActionsPopover'}
+        >
+          <EuiContextMenuPanel
+            items={this.getActionItems(loadingDetectors, selectedItems)}
+            size="s"
+          />
+        </EuiPopover>,
+      ];
+    };
+
     const search = {
+      toolsLeft: renderActionsLeft(loadingDetectors, selectedItems),
+      toolsRight: renderActionsRight(),
       box: {
         placeholder: 'Search threat detectors',
         schema: true,
         incremental: true,
+        compressed: true,
       },
       filters: [
         {
           type: 'field_value_selection',
           field: 'status',
           name: 'Status',
+          compressed: true,
           options: statuses.map((status) => ({
             value: status,
             name: capitalizeFirstLetter(status),
@@ -334,6 +357,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
           type: 'field_value_selection',
           field: 'logType',
           name: 'Log type',
+          compressed: true,
           options: getLogTypeFilterOptions(),
           multiSelect: 'or',
         } as FieldValueSelectionFilterConfigType,
@@ -347,7 +371,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
       },
     };
     return (
-      <EuiFlexGroup direction="column">
+      <EuiFlexGroup direction="column" gutterSize={'m'}>
         <PageHeader
           appRightControls={actions.map((action) => ({
             renderComponent: action,
@@ -372,7 +396,6 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
                 </EuiFlexGroup>
               </EuiFlexItem>
             </EuiFlexGroup>
-            <EuiSpacer size={'m'} />
           </EuiFlexItem>
         </PageHeader>
 
