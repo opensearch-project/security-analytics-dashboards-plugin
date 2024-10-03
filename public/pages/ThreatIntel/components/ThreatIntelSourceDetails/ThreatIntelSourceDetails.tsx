@@ -333,12 +333,12 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
               </>
             )}
             {type === 'URL_DOWNLOAD' && (
-              <EuiFormRow label="Source URL">
-                <EuiFieldText
+              <EuiCompressedFormRow label="Source URL">
+                <EuiCompressedFieldText
                   readOnly={isReadOnly}
                   value={(sourceItem.source as URLDownloadSource).url_download?.url}
                 />
-              </EuiFormRow>
+              </EuiCompressedFormRow>
             )}
             <EuiCompressedFormRow label="Types of malicious indicators">
               <>
@@ -374,7 +374,12 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
                 <EuiSmallButton onClick={onDiscard}>Discard</EuiSmallButton>
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
-                <EuiSmallButton isLoading={saveInProgress} fill onClick={onSave} disabled={saveDisabled}>
+                <EuiSmallButton
+                  isLoading={saveInProgress}
+                  fill
+                  onClick={onSave}
+                  disabled={saveDisabled}
+                >
                   Save
                 </EuiSmallButton>
               </EuiFlexItem>
