@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiBasicTableColumn, EuiSmallButton, EuiEmptyPrompt, EuiText } from '@elastic/eui';
+import { EuiBasicTableColumn, EuiSmallButton } from '@elastic/eui';
 import { ROUTES, SortDirection } from '../../../../utils/constants';
 import React, { useEffect, useState } from 'react';
 import { TableWidget } from './TableWidget';
 import { WidgetContainer } from './WidgetContainer';
-import { getAlertSeverityBadge, renderTime } from '../../../../utils/helpers';
+import { getAlertSeverityBadge, getEuiEmptyPrompt, renderTime } from '../../../../utils/helpers';
 import { OverviewAlertItem } from '../../../../../types';
 
 const columns: EuiBasicTableColumn<OverviewAlertItem>[] = [
@@ -62,19 +62,7 @@ export const RecentAlertsWidget: React.FC<RecentAlertsWidgetProps> = ({
   return (
     <WidgetContainer title={'Recent threat alerts'} actions={actions}>
       {alertItems.length === 0 ? (
-        <EuiEmptyPrompt
-          style={{ position: 'relative' }}
-          body={
-            <div style={{ display: 'flex', justifyContent: 'center', padding: '32px' }}>
-              <p style={{ position: 'absolute', top: 'calc(50% - 20px)' }}>
-                <EuiText size="s">
-                  <span style={{ display: 'block' }}>No recent alerts.</span>Adjust the time range
-                  to see more results.
-                </EuiText>
-              </p>
-            </div>
-          }
-        />
+        getEuiEmptyPrompt('No recent alerts.')
       ) : (
         <TableWidget
           columns={columns}

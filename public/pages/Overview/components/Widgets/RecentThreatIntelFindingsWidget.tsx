@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiBasicTableColumn, EuiSmallButton, EuiEmptyPrompt, EuiText } from '@elastic/eui';
+import { EuiBasicTableColumn, EuiSmallButton } from '@elastic/eui';
 import {
   DEFAULT_EMPTY_DATA,
   FINDINGS_NAV_ID,
@@ -14,7 +14,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { TableWidget } from './TableWidget';
 import { WidgetContainer } from './WidgetContainer';
-import { renderTime } from '../../../../utils/helpers';
+import { getEuiEmptyPrompt, renderTime } from '../../../../utils/helpers';
 import { ThreatIntelFinding } from '../../../../../types';
 import { getApplication } from '../../../../services/utils/constants';
 import { IocLabel, ThreatIntelIocType } from '../../../../../common/constants';
@@ -78,19 +78,7 @@ export const RecentThreatIntelFindingsWidget: React.FC<RecentThreatIntelFindings
   return (
     <WidgetContainer title={'Recent threat intel findings'} actions={actions}>
       {findingItems.length === 0 ? (
-        <EuiEmptyPrompt
-          style={{ position: 'relative' }}
-          body={
-            <div style={{ display: 'flex', justifyContent: 'center', padding: '32px' }}>
-              <p style={{ position: 'absolute', top: 'calc(50% - 20px)' }}>
-                <EuiText size="s">
-                  <span style={{ display: 'block' }}>No recent findings.</span>Adjust the time range
-                  to see more results.
-                </EuiText>
-              </p>
-            </div>
-          }
-        />
+        getEuiEmptyPrompt('No recent findings.')
       ) : (
         <TableWidget
           columns={columns}
