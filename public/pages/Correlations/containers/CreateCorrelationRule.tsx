@@ -85,7 +85,7 @@ export interface CreateCorrelationRuleProps extends DataSourceProps {
   history: RouteComponentProps<
     any,
     any,
-    { rule: CorrelationRuleModel; isReadOnly: boolean }
+    { rule: CorrelationRule; isReadOnly: boolean }
   >['history'];
   notifications: NotificationsStart | null;
   notificationsService: NotificationsService;
@@ -234,20 +234,20 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
       setNotificationChannels(parsedChannels);
       setLoadingNotifications(false);
     };
+    const setInitialRuleValues = async (ruleId: string) => {
+      const ruleRes = await correlationStore.getCorrelationRule(ruleId);
+      if (ruleRes) {
+        setInitialValues(ruleRes);
+      }
+    };
+    
     if (props.history.location.state?.rule) {
       setAction('Edit');
-      setInitialValues(props.history.location.state?.rule);
+      setInitialRuleValues(props.history.location.state?.rule.id);
     } else if (params.ruleId) {
-      const setInitialRuleValues = async () => {
-        const ruleRes = await correlationStore.getCorrelationRule(params.ruleId);
-        if (ruleRes) {
-          setInitialValues(ruleRes);
-        }
-      };
-
-      setAction('Edit');
-      setInitialRuleValues();
+      setInitialRuleValues(params.ruleId);
     }
+    
     const setupLogTypeOptions = async () => {
       const options = await getLogTypeOptions();
       setLogTypeOptions(options);
@@ -388,7 +388,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
         query.field = '';
       });
     }
-
     // Modify or set default values for trigger if present
     if (values.trigger) {
       // Set default values for ids
