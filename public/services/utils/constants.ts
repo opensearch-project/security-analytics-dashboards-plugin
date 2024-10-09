@@ -36,6 +36,10 @@ export const [getBreadCrumbsSetter, setBreadCrumbsSetter] = createGetterSetter<
   CoreStart['chrome']['setBreadcrumbs']
 >('breadCrumbSetter');
 
+export const [getChrome, setChrome] = createGetterSetter<
+  CoreStart['chrome']
+>('chrome');
+
 export const [getContentManagement, setContentManagement] = createGetterSetter<
   ContentManagementPluginStart
 >('contentManagement');
