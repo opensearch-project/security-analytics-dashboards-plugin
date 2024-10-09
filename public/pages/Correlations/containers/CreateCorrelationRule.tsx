@@ -1080,8 +1080,8 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                             color="danger"
                             onClick={() => {
                               // Clear the trigger values by setting them to an empty object or your initial state
-                              props.setFieldValue('trigger', {}); // Assuming an empty object represents no trigger
-                              setShowForm(false); // Optionally hide the form if that's desired
+                              props.setFieldValue('trigger', {});
+                              setShowForm(false);
                             }}
                           />
                         </EuiCompressedFormRow>
