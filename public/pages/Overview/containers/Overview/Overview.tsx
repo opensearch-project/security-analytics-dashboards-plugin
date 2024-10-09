@@ -104,16 +104,16 @@ export const Overview: React.FC<OverviewProps> = (props) => {
     [saContext?.services, context]
   );
   const currentNavGroup = useObservable(getChrome().navGroup.getCurrentNavGroup$());
-  const isSecurityAnalyticsUesCase = currentNavGroup?.id === SECURITY_ANALYTICS_USE_CASE_ID;
-  
+  const isSecurityAnalyticsUseCase = currentNavGroup?.id === SECURITY_ANALYTICS_USE_CASE_ID;
+
   useEffect(() => {
-    setBreadcrumbs(isSecurityAnalyticsUesCase ? [ BREADCRUMBS.OVERVIEW] : [{...BREADCRUMBS.OVERVIEW, text: 'Security Analytics overview'}]);
+    setBreadcrumbs(isSecurityAnalyticsUseCase ? [ BREADCRUMBS.OVERVIEW] : [{...BREADCRUMBS.OVERVIEW, text: 'Security Analytics overview'}]);
     overviewViewModelActor.registerRefreshHandler(updateState, true /* allowPartialResults */);
     overviewViewModelActor.registerRefreshHandler(
       onLoadingComplete,
       false /* allowPartialResults */
     );
-  }, [isSecurityAnalyticsUesCase]);
+  }, [isSecurityAnalyticsUseCase]);
 
   useEffect(() => {
     const abortController = new AbortController();
