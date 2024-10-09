@@ -85,7 +85,7 @@ export interface CreateCorrelationRuleProps extends DataSourceProps {
   history: RouteComponentProps<
     any,
     any,
-    { rule: CorrelationRule; isReadOnly: boolean }
+    { rule: CorrelationRuleModel; isReadOnly: boolean }
   >['history'];
   notifications: NotificationsStart | null;
   notificationsService: NotificationsService;
