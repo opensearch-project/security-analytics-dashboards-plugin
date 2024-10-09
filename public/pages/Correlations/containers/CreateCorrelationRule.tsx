@@ -234,18 +234,20 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
       setNotificationChannels(parsedChannels);
       setLoadingNotifications(false);
     };
-    const setInitialRuleValues = async (ruleId: string) => {
-      const ruleRes = await correlationStore.getCorrelationRule(ruleId);
-      if (ruleRes) {
-        setInitialValues(ruleRes);
-      }
-    };
     
     if (props.history.location.state?.rule) {
       setAction('Edit');
-      setInitialRuleValues(props.history.location.state?.rule.id);
+      setInitialValues(props.history.location.state?.rule);
     } else if (params.ruleId) {
-      setInitialRuleValues(params.ruleId);
+      const setInitialRuleValues = async () => {
+        const ruleRes = await correlationStore.getCorrelationRule(params.ruleId);
+        if (ruleRes) {
+          setInitialValues(ruleRes);
+        }
+      };
+
+      setAction('Edit');
+      setInitialRuleValues();
     }
     
     const setupLogTypeOptions = async () => {
