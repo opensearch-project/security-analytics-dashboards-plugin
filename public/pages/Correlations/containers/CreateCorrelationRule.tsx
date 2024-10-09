@@ -1078,7 +1078,11 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                             data-test-subj="delete-alert-trigger-icon"
                             iconType="trash"
                             color="danger"
-                            onClick={() => setShowForm(false)}
+                            onClick={() => {
+                              // Clear the trigger values by setting them to an empty object or your initial state
+                              props.setFieldValue('trigger', {}); // Assuming an empty object represents no trigger
+                              setShowForm(false); // Optionally hide the form if that's desired
+                            }}
                           />
                         </EuiCompressedFormRow>
                       </EuiFlexItem>
