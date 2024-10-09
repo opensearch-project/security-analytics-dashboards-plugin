@@ -247,7 +247,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
       setAction('Edit');
       setInitialRuleValues();
     }
-    
     const setupLogTypeOptions = async () => {
       const options = await getLogTypeOptions();
       setLogTypeOptions(options);
@@ -388,7 +387,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
         query.field = '';
       });
     }
-    
+
     // Modify or set default values for trigger if present
     if (values.trigger) {
       // Set default values for ids
