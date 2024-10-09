@@ -42,6 +42,7 @@ import {
   setNavigationUI,
   setApplication,
   setBreadCrumbsSetter,
+  setChrome,
   setContentManagement,
   setDataSourceManagementPlugin,
   setNotifications,
@@ -261,6 +262,7 @@ export class SecurityAnalyticsPlugin
     setNavigationUI(navigation.ui);
     setApplication(core.application);
     setBreadCrumbsSetter(core.chrome.setBreadcrumbs);
+    setChrome(core.chrome);
     setContentManagement(contentManagement);
     setNotifications(core.notifications);
     setSavedObjectsClient(core.savedObjects.client);
