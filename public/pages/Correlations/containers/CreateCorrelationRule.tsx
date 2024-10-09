@@ -234,7 +234,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
       setNotificationChannels(parsedChannels);
       setLoadingNotifications(false);
     };
-    
     if (props.history.location.state?.rule) {
       setAction('Edit');
       setInitialValues(props.history.location.state?.rule);
@@ -245,7 +244,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
           setInitialValues(ruleRes);
         }
       };
-
       setAction('Edit');
       setInitialRuleValues();
     }
@@ -390,6 +388,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
         query.field = '';
       });
     }
+    
     // Modify or set default values for trigger if present
     if (values.trigger) {
       // Set default values for ids
