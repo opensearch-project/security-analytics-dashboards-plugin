@@ -707,6 +707,7 @@ export function registerThreatAlertsCard() {
           detectorService={getBrowserServices().detectorsService}
         />
       ),
+      width: 16,
     }),
   });
 }
