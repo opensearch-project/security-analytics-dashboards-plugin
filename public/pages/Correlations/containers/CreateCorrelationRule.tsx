@@ -244,7 +244,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
           setInitialValues(ruleRes);
         }
       };
-
       setAction('Edit');
       setInitialRuleValues();
     }
@@ -1079,7 +1078,11 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                             data-test-subj="delete-alert-trigger-icon"
                             iconType="trash"
                             color="danger"
-                            onClick={() => setShowForm(false)}
+                            onClick={() => {
+                              // Clear the trigger values by setting them to an empty object or your initial state
+                              props.setFieldValue('trigger', {});
+                              setShowForm(false);
+                            }}
                           />
                         </EuiCompressedFormRow>
                       </EuiFlexItem>
