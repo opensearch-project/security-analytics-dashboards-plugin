@@ -275,6 +275,7 @@ export default class Main extends Component<MainProps, MainState> {
       this.setState({
         selectedDataSource: { ...sources[0] },
       });
+      DataStore.logTypes.getLogTypes();
     }
     dataSourceObservable.next({
       id: this.state.selectedDataSource.id,
