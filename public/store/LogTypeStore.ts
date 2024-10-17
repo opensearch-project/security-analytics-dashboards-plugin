@@ -9,7 +9,11 @@ import LogTypeService from '../services/LogTypeService';
 import { errorNotificationToast } from '../utils/helpers';
 import { DataStore } from './DataStore';
 import { ruleTypes } from '../pages/Rules/utils/constants';
-import { logTypeCategories, logTypesByCategories } from '../utils/constants';
+import {
+  DATA_SOURCE_NOT_SET_ERROR,
+  logTypeCategories,
+  logTypesByCategories,
+} from '../utils/constants';
 import { getLogTypeLabel } from '../pages/LogTypes/utils/helpers';
 
 export class LogTypeStore {
@@ -41,58 +45,72 @@ export class LogTypeStore {
   }
 
   public async getLogTypes(): Promise<LogType[]> {
-    const logTypesRes = await this.service.searchLogTypes();
-    if (logTypesRes.ok) {
-      const logTypes: LogType[] = logTypesRes.response.hits.hits.map((hit) => {
-        return {
-          id: hit._id,
-          ...hit._source,
-          source: hit._source.source.toLowerCase() === 'sigma' ? 'Standard' : hit._source.source,
-        };
-      });
+    try {
+      const logTypesRes = await this.service.searchLogTypes();
+      if (logTypesRes.ok) {
+        const logTypes: LogType[] = logTypesRes.response.hits.hits.map((hit) => {
+          return {
+            id: hit._id,
+            ...hit._source,
+            source: hit._source.source.toLowerCase() === 'sigma' ? 'Standard' : hit._source.source,
+          };
+        });
 
-      ruleTypes.splice(
-        0,
-        ruleTypes.length,
-        ...logTypes
-          .map(({ category, id, name, source }) => ({
-            label: getLogTypeLabel(name),
-            value: name,
-            id,
-            category,
-            isStandard: source === 'Standard',
-          }))
-          .sort((a, b) => {
-            return a.label < b.label ? -1 : a.label > b.label ? 1 : 0;
+        ruleTypes.splice(
+          0,
+          ruleTypes.length,
+          ...logTypes
+            .map(({ category, id, name, source }) => ({
+              label: getLogTypeLabel(name),
+              value: name,
+              id,
+              category,
+              isStandard: source === 'Standard',
+            }))
+            .sort((a, b) => {
+              return a.label < b.label ? -1 : a.label > b.label ? 1 : 0;
+            })
+        );
+
+        // Set log category types
+        for (const key in logTypesByCategories) {
+          delete logTypesByCategories[key];
+        }
+        logTypes.forEach((logType) => {
+          logTypesByCategories[logType.category] = logTypesByCategories[logType.category] || [];
+          logTypesByCategories[logType.category].push(logType);
+        });
+        logTypeCategories.splice(
+          0,
+          logTypeCategories.length,
+          ...Object.keys(logTypesByCategories).sort((a, b) => {
+            if (a === 'Other') {
+              return 1;
+            } else if (b === 'Other') {
+              return -1;
+            } else {
+              return a < b ? -1 : a > b ? 1 : 0;
+            }
           })
-      );
+        );
 
-      // Set log category types
-      for (const key in logTypesByCategories) {
-        delete logTypesByCategories[key];
+        return logTypes;
       }
-      logTypes.forEach((logType) => {
-        logTypesByCategories[logType.category] = logTypesByCategories[logType.category] || [];
-        logTypesByCategories[logType.category].push(logType);
-      });
-      logTypeCategories.splice(
-        0,
-        logTypeCategories.length,
-        ...Object.keys(logTypesByCategories).sort((a, b) => {
-          if (a === 'Other') {
-            return 1;
-          } else if (b === 'Other') {
-            return -1;
-          } else {
-            return a < b ? -1 : a > b ? 1 : 0;
-          }
-        })
-      );
 
-      return logTypes;
+      return [];
+    } catch (error: any) {
+      if (error.message === DATA_SOURCE_NOT_SET_ERROR) {
+        errorNotificationToast(
+          this.notifications,
+          'Fetch',
+          'Log types',
+          'Select valid data source.'
+        );
+        return [];
+      }
+
+      throw error;
     }
-
-    return [];
   }
 
   public async createLogType(logType: LogTypeBase): Promise<boolean> {

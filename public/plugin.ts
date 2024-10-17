@@ -53,7 +53,7 @@ import { BehaviorSubject } from 'rxjs';
 
 export interface SecurityAnalyticsPluginSetupDeps {
   data: DataPublicPluginSetup;
-  dataSourceManagement: DataSourceManagementPluginSetup;
+  dataSourceManagement?: DataSourceManagementPluginSetup;
 }
 export interface SecurityAnalyticsPluginStartDeps {
   data: DataPublicPluginStart;
@@ -232,7 +232,13 @@ export class SecurityAnalyticsPlugin
         { id: THREAT_ALERTS_NAV_ID, showInAllNavGroup: true },
         { id: FINDINGS_NAV_ID, showInAllNavGroup: true },
         { id: CORRELATIONS_NAV_ID, showInAllNavGroup: true },
-        { id: PLUGIN_NAME, category: DEFAULT_APP_CATEGORIES.configure, title: 'Threat detection', showInAllNavGroup: true, order: 600 },
+        {
+          id: PLUGIN_NAME,
+          category: DEFAULT_APP_CATEGORIES.configure,
+          title: 'Threat detection',
+          showInAllNavGroup: true,
+          order: 600,
+        },
         { id: DETECTORS_NAV_ID, parentNavLinkId: PLUGIN_NAME, showInAllNavGroup: true },
         { id: DETECTION_RULE_NAV_ID, parentNavLinkId: PLUGIN_NAME, showInAllNavGroup: true },
         { id: CORRELATIONS_RULE_NAV_ID, showInAllNavGroup: true },
