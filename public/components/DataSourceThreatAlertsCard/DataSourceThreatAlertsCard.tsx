@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   EuiBasicTable,
   EuiBasicTableColumn,
@@ -46,7 +46,13 @@ export const DataSourceThreatAlertsCard: React.FC<DataSourceAlertsCardProps> = (
   getDataSourceMenu,
   detectorService,
 }) => {
-  const DataSourceSelector = getDataSourceMenu?.();
+  const DataSourceSelector = useMemo(() => {
+    if (getDataSourceMenu) {
+      return getDataSourceMenu();
+    }
+
+    return null;
+  }, [getDataSourceMenu]);
   const notifications = getNotifications();
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState<DataSourceOption>({
