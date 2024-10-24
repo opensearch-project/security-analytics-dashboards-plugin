@@ -801,6 +801,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
   };
 
   onAcknowledgeCorrelationAlert = async (selectedItems: CorrelationAlertTableItem[] = []) => {
+    const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
     const { correlationService, notifications } = this.props;
     let successCount = 0;
     try {
@@ -824,6 +825,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     if (successCount)
       successNotificationToast(notifications, 'acknowledged', `${successCount} alerts`);
     this.setState({ selectedCorrelationsAlertItems: [] });
+    await delay(500); // 500 ms because correlationAlert system index update takes a little bit of time
     this.onRefresh();
   };
 
