@@ -234,7 +234,10 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
                       }}
                       onScheduleChange={onIntervalChange}
                       readonly={isReadOnly || !enabled}
-                      scheduleUnitOptions={[defaultIntervalUnitOptions.DAYS]}
+                      scheduleUnitOptions={[
+                        defaultIntervalUnitOptions.HOURS,
+                        defaultIntervalUnitOptions.DAYS,
+                      ]}
                     />
                   </EuiFlexItem>
                   {(!isReadOnly || !enabled) && (

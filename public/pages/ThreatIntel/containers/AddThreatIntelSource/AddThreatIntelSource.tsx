@@ -99,7 +99,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
     interval: {
       start_time: Date.now(),
       period: 1,
-      unit: 'DAYS',
+      unit: defaultIntervalUnitOptions.HOURS.value,
     },
   });
   const [sourceType, setSourceType] = useState<'S3_CUSTOM' | 'IOC_UPLOAD'>('S3_CUSTOM');
@@ -545,7 +545,10 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
                       unit: schedule.interval.unit,
                     },
                   }}
-                  scheduleUnitOptions={[defaultIntervalUnitOptions.DAYS]}
+                  scheduleUnitOptions={[
+                    defaultIntervalUnitOptions.HOURS,
+                    defaultIntervalUnitOptions.DAYS,
+                  ]}
                   onScheduleChange={onIntervalChange}
                 />
                 <EuiSpacer />
