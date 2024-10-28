@@ -60,9 +60,41 @@ export class AlertsStore {
     } while (
       // If we get 10,000 alerts as part of the previous call then there might be more alerts to fetch,
       // hence we make another call until the number of alerts is less then 10,000
-      alertsCount > maxAlertsReturned
+      alertsCount === maxAlertsReturned
     );
 
+    return allAlerts;
+  }
+
+  // Just grab 25 alerts for the analytics all threat alerts card once
+  public async getAlertsForThreatAlertsCard(
+    detectorId: string,
+    detectorName: string,
+    duration?: Duration,
+    onPartialAlertsFetched?: (alerts: AlertResponse[]) => void,
+    alertCount?: number,
+    dataSource?: any
+  ) {
+    let allAlerts: any[] = [];
+    const maxAlertsReturned = alertCount ?? 25;
+    let startIndex = 0;
+
+    const getAlertsRes = await this.service.getAlerts({
+      detector_id: detectorId,
+      startIndex,
+      size: maxAlertsReturned,
+      startTime: duration?.startTime,
+      endTime: duration?.endTime,
+      dataSource,
+    });
+
+    if (getAlertsRes.ok) {
+      const alerts = this.extendAlerts(getAlertsRes.response.alerts, detectorId, detectorName);
+      onPartialAlertsFetched?.(alerts);
+      allAlerts = allAlerts.concat(alerts);
+    } else {
+      errorNotificationToast(this.notifications, 'retrieve', 'alerts', getAlertsRes.error);
+    }
     return allAlerts;
   }
 

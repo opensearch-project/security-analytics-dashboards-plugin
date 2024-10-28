@@ -72,13 +72,11 @@ export const DataSourceThreatAlertsCard: React.FC<DataSourceAlertsCardProps> = (
         });
 
         let alerts: any[] = [];
-        const abortController = new AbortController();
 
         for (let id of detectorIds) {
-          const alertsRes = await DataStore.alerts.getAlertsByDetector(
+          const alertsRes = await DataStore.alerts.getAlertsForThreatAlertsCard(
             id,
             detectors[id].name,
-            abortController.signal,
             undefined,
             undefined,
             25,
