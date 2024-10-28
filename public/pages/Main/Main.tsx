@@ -156,10 +156,6 @@ export default class Main extends Component<MainProps, MainState> {
       };
       dataSourceId = parsedDataSourceId;
       dataSourceLabel = parsedDataSourceLabel || '';
-
-      if (dataSourceId) {
-        dataSourceObservable.next({ id: dataSourceId, label: dataSourceLabel });
-      }
     }
 
     this.state = {
@@ -275,16 +271,16 @@ export default class Main extends Component<MainProps, MainState> {
       this.setState({
         selectedDataSource: { ...sources[0] },
       });
-      DataStore.logTypes.getLogTypes();
+      dataSourceObservable.next(
+        dataSourceInfo.activeDataSource
+      );
     }
-    dataSourceObservable.next({
-      id: this.state.selectedDataSource.id,
-      label: this.state.selectedDataSource.label,
-    });
+
     if (dataSourceLoading) {
       this.setState({ dataSourceLoading: false });
     }
   };
+
 
   setDataSourceMenuReadOnly = (readOnly: boolean) => {
     this.setState({ dataSourceMenuReadOnly: readOnly });
