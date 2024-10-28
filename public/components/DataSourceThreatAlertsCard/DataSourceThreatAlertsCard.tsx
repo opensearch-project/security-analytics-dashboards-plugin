@@ -55,10 +55,7 @@ export const DataSourceThreatAlertsCard: React.FC<DataSourceAlertsCardProps> = (
   }, [getDataSourceMenu]);
   const notifications = getNotifications();
   const [loading, setLoading] = useState(false);
-  const [dataSource, setDataSource] = useState<DataSourceOption>({
-    label: 'Local cluster',
-    id: '',
-  });
+  const [dataSource, setDataSource] = useState<DataSourceOption>();
   const [alerts, setAlerts] = useState<any[]>([]);
 
   const getAlerts = async () => {
