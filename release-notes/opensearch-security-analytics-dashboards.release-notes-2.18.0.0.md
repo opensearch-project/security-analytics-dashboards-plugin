@@ -23,4 +23,4 @@ Compatible with OpenSearch Dashboards 2.18.0
 * make dataSource default cluster for threat alerts card ([#1200](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/1200))
 
 ### Documentation
-* Added 2.18.0 release notes. ([#]())
+* Added 2.18.0 release notes. ([#1205](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/1205))
