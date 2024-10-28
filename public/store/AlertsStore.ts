@@ -20,7 +20,8 @@ export class AlertsStore {
     signal: AbortSignal,
     duration?: Duration,
     onPartialAlertsFetched?: (alerts: AlertResponse[]) => void,
-    alertCount?: number
+    alertCount?: number,
+    dataSource?: any
   ) {
     let allAlerts: any[] = [];
     const maxAlertsReturned = alertCount ?? 10000;
@@ -38,6 +39,7 @@ export class AlertsStore {
         size: maxAlertsReturned,
         startTime: duration?.startTime,
         endTime: duration?.endTime,
+        dataSource,
       });
 
       if (signal.aborted) {
@@ -58,7 +60,7 @@ export class AlertsStore {
     } while (
       // If we get 10,000 alerts as part of the previous call then there might be more alerts to fetch,
       // hence we make another call until the number of alerts is less then 10,000
-      alertsCount === maxAlertsReturned
+      alertsCount > maxAlertsReturned
     );
 
     return allAlerts;
