@@ -28,7 +28,6 @@ import {
 } from '../../utils/helpers';
 import { THREAT_ALERTS_NAV_ID } from '../../utils/constants';
 import {
-  dataSourceInfo,
   getApplication,
   getNotifications,
   getSavedObjectsClient,
