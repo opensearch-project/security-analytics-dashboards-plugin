@@ -60,7 +60,7 @@ export const DataSourceThreatAlertsCard: React.FC<DataSourceAlertsCardProps> = (
 
   const getAlerts = async () => {
     try {
-      const detectorsRes = await detectorService.getDetectors();
+      const detectorsRes = await detectorService.getDetectors(dataSource);
       if (detectorsRes.ok) {
         const detectors: any = {};
         const detectorIds = detectorsRes.response.hits.hits.map((hit: any) => {
@@ -69,16 +69,15 @@ export const DataSourceThreatAlertsCard: React.FC<DataSourceAlertsCardProps> = (
         });
 
         let alerts: any[] = [];
-        const abortController = new AbortController();
 
         for (let id of detectorIds) {
-          const alertsRes = await DataStore.alerts.getAlertsByDetector(
+          const alertsRes = await DataStore.alerts.getAlertsForThreatAlertsCard(
             id,
             detectors[id].name,
-            abortController.signal,
             undefined,
             undefined,
-            25
+            25,
+            dataSource
           );
           alerts = alerts.concat(alertsRes);
         }
@@ -103,7 +102,7 @@ export const DataSourceThreatAlertsCard: React.FC<DataSourceAlertsCardProps> = (
 
   const onDataSourceSelected = useCallback(
     (options: any[]) => {
-      if (dataSource?.id !== undefined && dataSource?.id !== options[0]?.id) {
+      if (dataSource?.id === undefined || dataSource?.id !== options[0]?.id) {
         setDataSource(options[0]);
       }
     },
