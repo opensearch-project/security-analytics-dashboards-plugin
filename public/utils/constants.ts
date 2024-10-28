@@ -316,6 +316,9 @@ const LocalCluster: DataSourceOption = {
   id: '',
 };
 
-export const dataSourceObservable = new BehaviorSubject<DataSourceOption>(LocalCluster);
+// We should use empty object for default value as local cluster may be disabled
+export const dataSourceObservable = new BehaviorSubject<DataSourceOption>({});
 
 export const DATA_SOURCE_NOT_SET_ERROR = 'Data source is not set';
+
+
