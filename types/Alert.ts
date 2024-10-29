@@ -53,6 +53,7 @@ export type GetAlertsParams = {
   startIndex?: number;
   startTime?: number;
   endTime?: number;
+  dataSource?: any;
 } & (
   | {
       detector_id: string;
@@ -105,10 +106,9 @@ export interface CorrelationAlertItem {
   acknowledged_time: string | null;
 }
 
-export interface CorrelationAlertTableItem extends CorrelationAlertItem{
+export interface CorrelationAlertTableItem extends CorrelationAlertItem {
   correlation_rule_categories: string[];
 }
-
 
 export interface AlertResponse extends AlertItem {
   version: number;
