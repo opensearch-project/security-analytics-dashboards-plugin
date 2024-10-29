@@ -30,8 +30,10 @@ export default class DetectorsService implements IDetectorService {
     return response;
   };
 
-  getDetectors = async (): Promise<ServerResponse<SearchDetectorsResponse>> => {
+  getDetectors = async (dataSource?: any): Promise<ServerResponse<SearchDetectorsResponse>> => {
     const url = `..${API.SEARCH_DETECTORS}`;
+    const dataSourceId = dataSource?.id || dataSourceInfo.activeDataSource.id;
+
     const res = (await this.httpClient.post(url, {
       body: JSON.stringify({
         query: {
@@ -39,7 +41,7 @@ export default class DetectorsService implements IDetectorService {
         },
       }),
       query: {
-        dataSourceId: dataSourceInfo.activeDataSource.id,
+        dataSourceId: dataSourceId,
       },
     })) as ServerResponse<SearchDetectorsResponse>;
 

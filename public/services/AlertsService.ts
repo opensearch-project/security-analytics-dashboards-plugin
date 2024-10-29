@@ -30,12 +30,13 @@ export default class AlertsService {
       startIndex,
       startTime,
       endTime,
+      dataSource,
     } = getAlertsParams;
     const baseQuery = {
       sortOrder: sortOrder || 'desc',
       size: size || 10000,
       startIndex: startIndex || 0,
-      dataSourceId: dataSourceInfo.activeDataSource.id,
+      dataSourceId: dataSource?.id || dataSourceInfo.activeDataSource.id,
       startTime,
       endTime,
     };
