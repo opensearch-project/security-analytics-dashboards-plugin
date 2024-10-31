@@ -127,10 +127,15 @@ export default class AlertService extends MDSEnabledClientService {
     response: OpenSearchDashboardsResponseFactory
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<any> | ResponseError>> => {
     try {
-      const params: any = request.query;
-      // Delete the dataSourceId since this query param is not supported by the alerts API
-      delete params['dataSourceId'];
+      const { sortOrder, size, startIndex, startTime, endTime } = request.query;
 
+      const params: any = {
+        sortOrder,
+        size,
+        startIndex,
+        startTime,
+        endTime,
+      };
       const client = this.getClient(request, context);
       const getAlertsResponse: GetAlertsResponse = await client(
         CLIENT_THREAT_INTEL_METHODS.GET_THREAT_INTEL_ALERTS,
@@ -167,11 +172,10 @@ export default class AlertService extends MDSEnabledClientService {
     response: OpenSearchDashboardsResponseFactory
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<any> | ResponseError>> => {
     try {
-      const params: any = request.query;
-      // Delete the dataSourceId since this query param is not supported by the alerts API
-      delete params['dataSourceId'];
-
+      const { state, alert_ids } = request.query;
+      const params: any = { state, alert_ids };
       const client = this.getClient(request, context);
+
       const updateStatusResponse: GetAlertsResponse = await client(
         CLIENT_THREAT_INTEL_METHODS.UPDATE_THREAT_INTEL_ALERTS_STATE,
         params
