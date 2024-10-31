@@ -87,6 +87,7 @@ export function renderApp(
                     <CoreServicesContext.Provider value={coreStart}>
                       <Main
                         {...props}
+                        services={services}
                         landingPage={landingPage}
                         multiDataSourceEnabled={!!depsStart.dataSource}
                         dataSourceManagement={dataSourceManagement}
