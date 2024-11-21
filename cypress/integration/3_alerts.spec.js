@@ -9,7 +9,7 @@ import indexSettings from '../fixtures/sample_windows_index_settings.json';
 import aliasMappings from '../fixtures/sample_alias_mappings.json';
 import indexDoc from '../fixtures/sample_document.json';
 import ruleSettings from '../fixtures/integration_tests/rule/create_windows_usb_rule.json';
-import { createDetector } from '../support/helpers';
+import { createDetector, setupIntercept } from '../support/helpers';
 import { getLogTypeLabel } from '../../public/pages/LogTypes/utils/helpers';
 
 const indexName = 'test-index';
@@ -39,7 +39,7 @@ describe('Alerts', () => {
 
   beforeEach(() => {
     // Visit Alerts table page
-    cy.intercept('/detectors/_search').as('detectorsSearch');
+    setupIntercept(cy, '/detectors/_search', 'detectorsSearch');
     // Visit Detectors page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/alerts`);
     cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
