@@ -17,8 +17,22 @@ import {
   EuiEmptyPrompt,
 } from '@elastic/eui';
 import moment from 'moment';
-import { PeriodSchedule } from '../../models/interfaces';
 import React from 'react';
+import {
+  ChromeBreadcrumb,
+  CoreStart,
+  NotificationsStart,
+  SavedObject,
+} from 'opensearch-dashboards/public';
+import _ from 'lodash';
+import { euiThemeVars } from '@osd/ui-shared-deps/theme';
+import dateMath from '@elastic/datemath';
+import { parse, View } from 'vega/build-es5/vega.js';
+import { compile } from 'vega-lite';
+import { Handler } from 'vega-tooltip';
+import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter/build/vega-interpreter';
+import semver from 'semver';
+import { PeriodSchedule } from '../../models/interfaces';
 import {
   ALERT_SEVERITY_OPTIONS,
   ALERT_SEVERITY_PROPS,
@@ -36,33 +50,27 @@ import {
 } from '../pages/CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { RuleInfo } from '../../server/models/interfaces';
 import {
-  ChromeBreadcrumb,
-  CoreStart,
-  NotificationsStart,
-  SavedObject,
-} from 'opensearch-dashboards/public';
-import {
   AlertsService,
+  CorrelationService,
   FieldMappingService,
   IndexPatternsService,
   IndexService,
   LogTypeService,
   NotificationsService,
   OpenSearchService,
+  DetectorsService,
+  FindingsService,
+  MetricsService,
+  RuleService,
+  SavedObjectService,
+  ThreatIntelService,
 } from '../services';
 import { ruleSeverity, ruleTypes } from '../pages/Rules/utils/constants';
-import _ from 'lodash';
 import { AlertCondition, DateTimeFilter, Duration, LogType } from '../../types';
 import { DataStore } from '../store/DataStore';
 import { LogCategoryOptionView } from '../components/Utility/LogCategoryOption';
 import { getLogTypeLabel } from '../pages/LogTypes/utils/helpers';
-import { euiThemeVars } from '@osd/ui-shared-deps/theme';
-import dateMath from '@elastic/datemath';
 import { IocLabel, ThreatIntelIocType } from '../../common/constants';
-import { parse, View } from 'vega/build-es5/vega.js';
-import { compile } from 'vega-lite';
-import { Handler } from 'vega-tooltip';
-import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter/build/vega-interpreter';
 import {
   getBreadCrumbsSetter,
   getBrowserServices,
@@ -71,16 +79,8 @@ import {
   setBrowserServices,
   getDataSourceManagementPlugin,
 } from '../services/utils/constants';
-import DetectorsService from '../services/DetectorService';
-import CorrelationService from '../services/CorrelationService';
-import FindingsService from '../services/FindingsService';
-import RuleService from '../services/RuleService';
-import SavedObjectService from '../services/SavedObjectService';
-import MetricsService from '../services/MetricsService';
-import ThreatIntelService from '../services/ThreatIntelService';
 import { BrowserServices } from '../models/interfaces';
 import { IndexPatternsService as CoreIndexPatternsService } from '../../../../src/plugins/data/common/index_patterns';
-import semver from 'semver';
 import * as pluginManifest from '../../opensearch_dashboards.json';
 import { DataSourceThreatAlertsCard } from '../components/DataSourceThreatAlertsCard/DataSourceThreatAlertsCard';
 import { DataSourceAttributes } from '../../../../src/plugins/data_source/common/data_sources';
@@ -96,7 +96,7 @@ export const renderTime = (time: number | string) => {
 };
 
 export function createTextDetailsGroup(
-  data: { label: string; content: any; url?: string; target?: string }[]
+  data: Array<{ label: string; content: any; url?: string; target?: string }>
 ) {
   const createFormRow = (
     label: string,
@@ -225,19 +225,17 @@ export async function renderVisualization(spec: any, containerId: string) {
 
   try {
     setDefaultColors(spec);
-    renderVegaSpec(compile({ ...spec, width: 'container', height: 400 }).spec).catch((err: Error) =>
-      console.error(err)
-    );
+    renderVegaSpec(compile({ ...spec, width: 'container', height: 400 }).spec);
   } catch (error) {
-    console.error(error);
+    // No op
   }
 
-  async function renderVegaSpec(spec: {}) {
+  async function renderVegaSpec(compiledSpec: {}) {
     let chartColoredItems: any[] = [];
     const handler = new Handler({
       formatTooltip: (value, sanitize) => {
-        let tooltipData = { ...value };
-        let values = Object.entries(tooltipData);
+        const tooltipData = { ...value };
+        const values = Object.entries(tooltipData);
         if (!values.length) return '';
         const tooltipItem = chartColoredItems.filter((groupItem: any) =>
           _.isEqual(groupItem.tooltip, tooltipData)
@@ -276,18 +274,18 @@ export async function renderVisualization(spec: any, containerId: string) {
         `;
       },
     });
-    view = new View(parse(spec, undefined, { expr: vegaExpressionInterpreter } as any), {
+    view = new View(parse(compiledSpec, undefined, { expr: vegaExpressionInterpreter } as any), {
       renderer: 'canvas', // renderer (canvas or svg)
       container: `#${containerId}`, // parent DOM container
       hover: true, // enable hover processing
     });
     view.tooltip(handler.call);
-    return view.runAsync().then((view: any) => {
-      const items = view.scenegraph().root.items[0].items || [];
+    return view.runAsync().then((updatedView: any) => {
+      const items = updatedView.scenegraph().root.items[0].items || [];
       const groups = items.filter(
         (item: any) => item.name && item.name.match(/^(layer_).*(_marks)$/)
       );
-      for (let item of groups) {
+      for (const item of groups) {
         chartColoredItems = chartColoredItems.concat(item.items);
       }
     });
@@ -335,7 +333,6 @@ export const errorNotificationToast = (
     return;
   }
   const message = `Failed to ${actionName} ${objectName}:`;
-  console.error(message, errorMessage);
   notifications?.toasts.addDanger({
     title: message,
     text: errorMessage,
@@ -392,9 +389,9 @@ export const getSeverityBadge = (severity: string) => {
   );
 };
 
-export function formatToLogTypeOptions(logTypesByCategories: { [category: string]: LogType[] }) {
+export function formatToLogTypeOptions(logTypesByCategory: { [category: string]: LogType[] }) {
   return logTypeCategories.map((category) => {
-    const logTypes = logTypesByCategories[category];
+    const logTypes = logTypesByCategory[category];
     return {
       label: category,
       value: category,
@@ -492,7 +489,10 @@ export async function getDataSources(
 ): Promise<
   | {
       ok: true;
-      dataSources: { label: string; options: { label: string; value: string; index?: string }[] }[];
+      dataSources: Array<{
+        label: string;
+        options: Array<{ label: string; value: string; index?: string }>;
+      }>;
     }
   | { ok: false; error: string }
 > {
@@ -507,7 +507,7 @@ export async function getDataSources(
       );
       const aliasOptions = aliases.map(({ alias, index }) => ({
         label: alias,
-        index: index,
+        index,
         value: alias,
       }));
 
@@ -624,11 +624,11 @@ export function getIsNotificationPluginInstalled(): boolean {
 export async function getFieldsForIndex(
   fieldMappingService: FieldMappingService,
   indexName: string
-): Promise<{ label: string; value: string }[]> {
-  let fields: {
+): Promise<Array<{ label: string; value: string }>> {
+  let fields: Array<{
     label: string;
     value: string;
-  }[] = [];
+  }> = [];
 
   if (indexName) {
     const result = await fieldMappingService.getIndexAliasFields(indexName);

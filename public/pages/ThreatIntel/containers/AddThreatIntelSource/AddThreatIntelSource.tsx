@@ -22,7 +22,7 @@ import {
 import { BREADCRUMBS, ROUTES, defaultIntervalUnitOptions } from '../../../../utils/constants';
 import { Interval } from '../../../CreateDetector/components/DefineDetector/components/DetectorSchedule/Interval';
 import { RouteComponentProps } from 'react-router-dom';
-import ThreatIntelService from '../../../../services/ThreatIntelService';
+import { ThreatIntelService } from '../../../../services';
 import {
   FileUploadSource,
   S3ConnectionSource,

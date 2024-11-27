@@ -16,7 +16,7 @@ import {
 import FieldMappingsTable from '../../../CreateDetector/components/ConfigureFieldMapping/components/RequiredFieldMapping';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { FieldMapping } from '../../../../../models/interfaces';
-import FieldMappingService from '../../../../services/FieldMappingService';
+import { FieldMappingService } from '../../../../services/FieldMappingService';
 import { MappingViewType } from '../../../CreateDetector/components/ConfigureFieldMapping/components/RequiredFieldMapping/FieldMappingsTable';
 import { Detector } from '../../../../../types';
 import { FieldMappingsTableItem } from '../../../CreateDetector/models/interfaces';

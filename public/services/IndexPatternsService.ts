@@ -11,7 +11,7 @@ import {
 import { IndexPatternSavedObjectAttrs } from '../../../../src/plugins/data/common/index_patterns/index_patterns';
 import { SavedObject } from '../../../../src/plugins/data/common';
 
-export default class IndexPatternsService {
+export class IndexPatternsService {
   constructor(private coreIndexPatternsService: CoreIndexPatternsService) {}
 
   async getFieldsForWildcard(options: GetFieldsOptions) {
@@ -23,7 +23,7 @@ export default class IndexPatternsService {
   }
 
   public getIndexPatterns = async (): Promise<
-    SavedObject<IndexPatternSavedObjectAttrs>[] | null | undefined
+    Array<SavedObject<IndexPatternSavedObjectAttrs>> | null | undefined
   > => {
     const indexPatterns = await this.coreIndexPatternsService.getCache();
 

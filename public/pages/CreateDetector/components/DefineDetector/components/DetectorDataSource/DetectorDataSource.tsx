@@ -11,17 +11,15 @@ import {
   EuiSpacer,
   EuiCallOut,
   EuiTextColor,
-  EuiTitle,
   EuiText,
 } from '@elastic/eui';
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
 import { IndexOption } from '../../../../../Detectors/models/interfaces';
 import { MIN_NUM_DATA_SOURCES } from '../../../../../Detectors/utils/constants';
-import IndexService from '../../../../../../services/IndexService';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { getDataSources } from '../../../../../../utils/helpers';
 import _ from 'lodash';
-import { FieldMappingService } from '../../../../../../services';
+import { FieldMappingService, IndexService } from '../../../../../../services';
 import { DataSourceProps } from '../../../../../../../types';
 
 interface DetectorDataSourceProps extends DataSourceProps {

@@ -4,7 +4,7 @@
  */
 
 import { CreateDetectorSteps, CreateDetectorStepValue } from '../../types';
-import MetricsService from '../services/MetricsService';
+import { MetricsService } from '../services';
 
 export class DetectorMetricsManager {
   private static initialCheckpoint = CreateDetectorStepValue[CreateDetectorSteps.notStarted];
@@ -31,7 +31,7 @@ export class DetectorMetricsManager {
           [stepNameForCounter || step]: 1,
         },
       });
-      this.stepsLogged |= stepValue;
+      this.stepsLogged |= stepValue; // eslint-disable-line no-bitwise
     }
   }
 
@@ -40,6 +40,6 @@ export class DetectorMetricsManager {
   }
 
   private metricEmittedForStep(stepValue: number): boolean {
-    return (this.stepsLogged & stepValue) === stepValue;
+    return (this.stepsLogged & stepValue) === stepValue; // eslint-disable-line no-bitwise
   }
 }

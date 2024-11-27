@@ -13,14 +13,14 @@ import { API } from '../../server/utils/constants';
 import { dataSourceInfo } from './utils/constants';
 import { SearchResponse } from '../../server/models/interfaces';
 
-export default class OpenSearchService {
+export class OpenSearchService {
   constructor(
     private httpClient: HttpSetup,
     private savedObjectsClient: SavedObjectsClientContract
   ) {}
 
-  getPlugins = async (): Promise<ServerResponse<{ component: string }[]>> => {
-    let url = `..${API.PLUGINS}`;
+  getPlugins = async (): Promise<ServerResponse<Array<{ component: string }>>> => {
+    const url = `..${API.PLUGINS}`;
     return await this.httpClient.get(url, {
       query: {
         dataSourceId: dataSourceInfo.activeDataSource.id,
@@ -28,7 +28,7 @@ export default class OpenSearchService {
     });
   };
 
-  getIndexPatterns = async (): Promise<SimpleSavedObject<{ title: string }>[]> => {
+  getIndexPatterns = async (): Promise<Array<SimpleSavedObject<{ title: string }>>> => {
     const indexPatterns = await this.savedObjectsClient
       .find<{ title: string }>({
         type: 'index-pattern',
@@ -41,7 +41,7 @@ export default class OpenSearchService {
   };
 
   getDocuments = async (index: string, documentIds: string[]) => {
-    let url = `..${API.DOCUMENT_IDS_QUERY}`;
+    const url = `..${API.DOCUMENT_IDS_QUERY}`;
     const res: ServerResponse<SearchResponse<any>> = await this.httpClient.post(url, {
       query: {
         dataSourceId: dataSourceInfo.activeDataSource.id,

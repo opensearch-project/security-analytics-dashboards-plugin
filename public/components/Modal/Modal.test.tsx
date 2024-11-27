@@ -8,10 +8,9 @@ import { EuiButton, EuiOverlayMask, EuiModal } from '@elastic/eui';
 import { render, fireEvent } from '@testing-library/react';
 import ModalRoot from './ModalRoot';
 import { ModalConsumer, ModalProvider } from './Modal';
-import { SecurityAnalyticsContext, SaContextConsumer } from '../../services';
+import { SecurityAnalyticsContext, SaContextConsumer, MetricsService } from '../../services';
 import services from '../../../test/mocks/services';
 import { MetricsContext } from '../../metrics/MetricsContext';
-import MetricsService from '../../services/MetricsService';
 import httpClientMock from '../../../test/mocks/services/httpClient.mock';
 
 describe('<ModalRoot /> spec', () => {
@@ -28,7 +27,7 @@ describe('<ModalRoot /> spec', () => {
       </SecurityAnalyticsContext.Provider>
     );
 
-    expect(container.firstChild).toBeNull();
+    expect(container.firstChild).to.be.null;
   });
 
   it('renders a modal that can close and open', () => {
@@ -61,14 +60,14 @@ describe('<ModalRoot /> spec', () => {
       </div>
     );
 
-    expect(queryByText('A modal that has interesting text')).toBeNull();
+    expect(queryByText('A modal that has interesting text')).to.be.null;
 
     fireEvent.click(getByTestId('showModal'));
 
-    expect(queryByText('A modal that has interesting text')).not.toBeNull();
+    expect(queryByText('A modal that has interesting text')).not.to.be.null;
 
     fireEvent.click(getByLabelText('Closes this modal window'));
 
-    expect(queryByText('A modal that has interesting text')).toBeNull();
+    expect(queryByText('A modal that has interesting text')).to.be.null;
   });
 });

@@ -15,7 +15,7 @@ import { dataSourceInfo } from './utils/constants';
 import { API } from '../../server/utils/constants';
 import { errorNotificationToast, successNotificationToast } from '../utils/helpers';
 
-export default class ThreatIntelService {
+export class ThreatIntelService {
   constructor(private httpClient: HttpSetup, private notifications: NotificationsStart) {}
 
   addThreatIntelSource = async (

@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { NotificationsStart } from 'opensearch-dashboards/public';
 import {
   CorrelationService,
   DetectorsService,
@@ -11,7 +12,6 @@ import {
   IndexPatternsService,
   OpenSearchService,
 } from '../services';
-import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../utils/helpers';
 import {
   DetectorHit,
@@ -70,8 +70,6 @@ export interface IFindingsStore {
   closeFlyout: () => void;
 }
 
-export interface IFindingsCache {}
-
 /**
  * Findings store
  *
@@ -81,9 +79,9 @@ export interface IFindingsCache {}
  */
 export class FindingsStore implements IFindingsStore {
   constructor(
-    readonly service: FindingsService,
-    readonly detectorsService: DetectorsService,
-    readonly notifications: NotificationsStart,
+    public readonly service: FindingsService,
+    public readonly detectorsService: DetectorsService,
+    public readonly notifications: NotificationsStart,
     private readonly indexPatternsService: IndexPatternsService,
     private readonly correlationService: CorrelationService,
     private readonly opensearchService: OpenSearchService
@@ -142,7 +140,7 @@ export class FindingsStore implements IFindingsStore {
       allFindings = [...extendedFindings];
       let remainingFindings = firstGetFindingsRes.response.total_findings - findingsSize;
       let startIndex = findingsSize + 1;
-      const getFindingsPromises: Promise<ServerResponse<GetFindingsResponse>>[] = [];
+      const getFindingsPromises: Array<Promise<ServerResponse<GetFindingsResponse>>> = [];
 
       while (remainingFindings > 0) {
         if (signal.aborted) {
@@ -194,7 +192,7 @@ export class FindingsStore implements IFindingsStore {
     if (detectorsRes.ok) {
       const detectors = detectorsRes.response.hits.hits;
 
-      for (let detector of detectors) {
+      for (const detector of detectors) {
         const findings = await this.getFindingsPerDetector(
           detector._id,
           detector,
@@ -260,7 +258,7 @@ export class FindingsStore implements IFindingsStore {
         ...finding,
         detectorName: detector._source.name,
         logType: detector._source.detector_type,
-        detector: detector,
+        detector,
         correlations: [],
       };
     });

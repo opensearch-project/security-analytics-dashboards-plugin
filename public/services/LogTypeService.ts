@@ -15,7 +15,7 @@ import {
 import { API } from '../../server/utils/constants';
 import { dataSourceInfo } from './utils/constants';
 
-export default class LogTypeService {
+export class LogTypeService {
   constructor(private httpClient: HttpSetup) {}
 
   createLogType = async (logType: LogTypeBase) => {

@@ -4,18 +4,18 @@
  */
 
 import React from 'react';
-import { DetectorsService } from '../services';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
+import { Toast } from '@opensearch-project/oui/src/eui_components/toast/global_toast_list';
+import { RouteComponentProps } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
+import { DetectorsService } from '../services';
 import { CreateDetectorState } from '../pages/CreateDetector/containers/CreateDetector';
 import { ICalloutProps, resolveType, TCalloutColor } from '../pages/Main/components/Callout';
 import { CreateDetectorResponse, ISavedObjectsService, ServerResponse } from '../../types';
 import { CreateMappingsResponse } from '../../server/models/interfaces';
 import { logTypesWithDashboards, ROUTES } from '../utils/constants';
-import { EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
-import { Toast } from '@opensearch-project/oui/src/eui_components/toast/global_toast_list';
-import { RouteComponentProps } from 'react-router-dom';
 import { DataStore } from './DataStore';
-import { v4 as uuidv4 } from 'uuid';
 
 export interface IDetectorsStore {
   readonly service: DetectorsService;
@@ -38,7 +38,7 @@ export interface IDetectorsStore {
 }
 
 export interface IDetectorsState {
-  pendingRequests: Promise<any>[];
+  pendingRequests: Array<Promise<any>>;
   detectorInput: CreateDetectorState;
 }
 
@@ -141,7 +141,7 @@ export class DetectorsStore implements IDetectorsStore {
       <EuiButton
         color={type}
         onClick={(e: any) => {
-          btnHandler && btnHandler(e);
+          btnHandler?.(e);
           this.hideCallout();
           closeAllToasts();
         }}
@@ -273,8 +273,8 @@ export class DetectorsStore implements IDetectorsStore {
       setTimeout(() => this.hideCallout(), 3000);
 
       return Promise.resolve({
-        detectorId: detectorId,
-        dashboardId: dashboardId,
+        detectorId,
+        dashboardId,
         ok: true,
       });
     }
@@ -290,8 +290,8 @@ export class DetectorsStore implements IDetectorsStore {
   ) => {
     return this.savedObjectsService
       .createSavedObject(detectorName, logType, detectorId, inputIndices)
-      .catch((error: any) => {
-        console.error(error);
+      .catch((_error: any) => {
+        // No op
       });
   };
 

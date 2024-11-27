@@ -77,7 +77,7 @@ export class AlertsStore {
   ) {
     let allAlerts: any[] = [];
     const maxAlertsReturned = alertCount ?? 25;
-    let startIndex = 0;
+    const startIndex = 0;
 
     const getAlertsRes = await this.service.getAlerts({
       detector_id: detectorId,
@@ -152,7 +152,7 @@ export class AlertsStore {
 
       return {
         ...alert,
-        detectorName: detectorName,
+        detectorName,
       };
     });
   }

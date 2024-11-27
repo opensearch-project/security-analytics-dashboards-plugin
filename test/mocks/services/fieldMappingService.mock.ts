@@ -1,4 +1,4 @@
-import FieldMappingService from '../../../public/services/FieldMappingService';
+import { FieldMappingService } from '../../../public/services';
 import httpClientMock from './httpClient.mock';
 
 const fieldMappingService = new FieldMappingService(httpClientMock);

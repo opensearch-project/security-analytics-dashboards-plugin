@@ -9,7 +9,7 @@ import { API } from '../../server/utils/constants';
 import { GetChannelsResponse, GetNotificationConfigsResponse } from '../../types';
 import { dataSourceInfo } from './utils/constants';
 
-export default class NotificationsService {
+export class NotificationsService {
   httpClient: HttpSetup;
 
   constructor(httpClient: HttpSetup) {
@@ -19,7 +19,7 @@ export default class NotificationsService {
   getChannel = async (
     channelId: string
   ): Promise<ServerResponse<GetNotificationConfigsResponse>> => {
-    let url = `..${API.CHANNELS}/${channelId}`;
+    const url = `..${API.CHANNELS}/${channelId}`;
     const response = (await this.httpClient.get(url, {
       query: {
         dataSourceId: dataSourceInfo.activeDataSource.id,
@@ -29,7 +29,7 @@ export default class NotificationsService {
   };
 
   getChannels = async (): Promise<ServerResponse<GetChannelsResponse>> => {
-    let url = `..${API.CHANNELS}`;
+    const url = `..${API.CHANNELS}`;
     const response = (await this.httpClient.get(url, {
       query: {
         dataSourceId: dataSourceInfo.activeDataSource.id,
@@ -38,13 +38,13 @@ export default class NotificationsService {
     return response;
   };
 
-  getServerFeatures = async (): Promise<ServerResponse<Array<string>>> => {
-    let url = `..${API.NOTIFICATION_FEATURES}`;
+  getServerFeatures = async (): Promise<ServerResponse<string[]>> => {
+    const url = `..${API.NOTIFICATION_FEATURES}`;
     const response = (await this.httpClient.get(url, {
       query: {
         dataSourceId: dataSourceInfo.activeDataSource.id,
       },
-    })) as ServerResponse<Array<string>>;
+    })) as ServerResponse<string[]>;
     return response;
   };
 }

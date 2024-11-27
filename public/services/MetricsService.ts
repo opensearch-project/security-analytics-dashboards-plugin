@@ -4,12 +4,12 @@
  */
 
 import { HttpSetup } from 'opensearch-dashboards/public';
+import _ from 'lodash';
 import { MetricsCounter, PartialMetricsCounter } from '../../types';
 import { API, DEFAULT_METRICS_COUNTER } from '../../server/utils/constants';
-import _ from 'lodash';
 import { aggregateMetrics, getSecurityAnalyticsPluginConfig } from '../../common/helpers';
 
-export default class MetricsService {
+export class MetricsService {
   private newMetricsAvailable = false;
   private metricsCounter: MetricsCounter = _.cloneDeep(DEFAULT_METRICS_COUNTER);
   private emitTimer: NodeJS.Timer | undefined = undefined;

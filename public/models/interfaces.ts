@@ -15,10 +15,10 @@ import {
   NotificationsService,
   IndexPatternsService,
   LogTypeService,
+  CorrelationService,
+  MetricsService,
+  ThreatIntelService,
 } from '../services';
-import CorrelationService from '../services/CorrelationService';
-import MetricsService from '../services/MetricsService';
-import ThreatIntelService from '../services/ThreatIntelService';
 
 export interface BrowserServices {
   detectorsService: DetectorsService;
