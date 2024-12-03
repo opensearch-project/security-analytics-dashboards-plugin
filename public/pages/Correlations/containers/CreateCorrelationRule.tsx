@@ -75,7 +75,6 @@ import {
   parseNotificationChannelsToOptions,
 } from '../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { NotificationsCallOut } from '../../../../public/components/NotificationsCallOut';
-import { ExperimentalBanner } from '../components/ExperimentalBanner';
 import uuid from 'uuid';
 import { PageHeader } from '../../../components/PageHeader/PageHeader';
 
@@ -1003,7 +1002,6 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
               </ContentPanel>
               <EuiSpacer size="l" />
               <ContentPanel panelStyles={{ paddingLeft: 10, paddingRight: 10 }} hideHeaderBorder>
-                <ExperimentalBanner />
                 <EuiText size="s">
                   <h2>Alert Trigger </h2>
                 </EuiText>

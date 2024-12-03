@@ -1538,33 +1538,24 @@ exports[`<Alerts /> spec renders the component 1`] = `
                       </ContentPanel>
                     </React.Fragment>,
                     "id": "correlations",
-                    "name": <EuiToolTip
-                      content="This object was created using an experimental feature. It may not appear in view if the feature is discontinued."
-                      delay="regular"
-                      position="top"
+                    "name": <div
+                      style={
+                        Object {
+                          "alignItems": "center",
+                          "display": "flex",
+                        }
+                      }
                     >
-                      <div
+                      <span
                         style={
                           Object {
-                            "alignItems": "center",
-                            "display": "flex",
+                            "marginRight": "4px",
                           }
                         }
                       >
-                        <span
-                          style={
-                            Object {
-                              "marginRight": "4px",
-                            }
-                          }
-                        >
-                          Correlations
-                        </span>
-                        <EuiIcon
-                          type="beaker"
-                        />
-                      </div>
-                    </EuiToolTip>,
+                        Correlations
+                      </span>
+                    </div>,
                   },
                 ]
               }
@@ -1647,44 +1638,24 @@ exports[`<Alerts /> spec renders the component 1`] = `
                         <span
                           className="euiTab__content"
                         >
-                          <EuiToolTip
-                            content="This object was created using an experimental feature. It may not appear in view if the feature is discontinued."
-                            delay="regular"
-                            position="top"
+                          <div
+                            style={
+                              Object {
+                                "alignItems": "center",
+                                "display": "flex",
+                              }
+                            }
                           >
                             <span
-                              className="euiToolTipAnchor"
-                              onKeyUp={[Function]}
-                              onMouseOut={[Function]}
-                              onMouseOver={[Function]}
-                            >
-                              <div
-                                onBlur={[Function]}
-                                onFocus={[Function]}
-                                style={
-                                  Object {
-                                    "alignItems": "center",
-                                    "display": "flex",
-                                  }
+                              style={
+                                Object {
+                                  "marginRight": "4px",
                                 }
-                              >
-                                <span
-                                  style={
-                                    Object {
-                                      "marginRight": "4px",
-                                    }
-                                  }
-                                >
-                                  Correlations
-                                </span>
-                                <EuiIcon
-                                  type="beaker"
-                                >
-                                  EuiIconMock
-                                </EuiIcon>
-                              </div>
+                              }
+                            >
+                              Correlations
                             </span>
-                          </EuiToolTip>
+                          </div>
                         </span>
                       </button>
                     </EuiTab>
