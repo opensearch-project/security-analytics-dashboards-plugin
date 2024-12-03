@@ -40,8 +40,8 @@ import {
   DEFAULT_EMPTY_DATA,
   MAX_RECENTLY_USED_TIME_RANGES,
 } from '../../../../utils/constants';
-import AlertsService from '../../../../services/AlertsService';
-import DetectorService from '../../../../services/DetectorService';
+import { AlertsService } from '../../../../services/AlertsService';
+import { DetectorsService } from '../../../../services/DetectorService';
 import { AlertFlyout } from '../../components/AlertFlyout/AlertFlyout';
 import { CorrelationAlertFlyout } from '../../components/CorrelationAlertFlyout/CorrelationAlertFlyout';
 import {
@@ -85,7 +85,7 @@ type FilterAlertParams =
 
 export interface AlertsProps extends RouteComponentProps, DataSourceProps {
   alertService: AlertsService;
-  detectorService: DetectorService;
+  detectorService: DetectorsService;
   findingService: FindingsService;
   opensearchService: OpenSearchService;
   correlationService: CorrelationService;

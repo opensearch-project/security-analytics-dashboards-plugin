@@ -15,7 +15,6 @@ import {
   EuiTabbedContent,
   EuiTabbedContentTab,
   EuiText,
-  EuiTitle,
 } from '@elastic/eui';
 import React, { MouseEventHandler, useCallback, useEffect, useMemo } from 'react';
 import { BREADCRUMBS, ROUTES } from '../../../../utils/constants';
@@ -30,7 +29,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { ThreatIntelSourcesList } from '../../components/ThreatIntelSourcesList/ThreatIntelSourcesList';
 import { deriveFormModelFromConfig, getThreatIntelNextStepsProps } from '../../utils/helpers';
 import { ThreatIntelOverviewActions } from '../../components/ThreatIntelOverviewActions/ThreatIntelOverviewActions';
-import ThreatIntelService from '../../../../services/ThreatIntelService';
+import { ThreatIntelService } from '../../../../services';
 import { ThreatIntelLogScanConfig } from '../../components/ThreatIntelLogScanConfig/ThreatIntelLogScanConfig';
 import { setBreadcrumbs } from '../../../../utils/helpers';
 import { PageHeader } from '../../../../components/PageHeader/PageHeader';
@@ -237,7 +236,7 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
         </EuiFlexGroup>
       </EuiAccordion>
       <EuiSpacer />
-      <EuiTabbedContent tabs={tabs} initialSelectedTab={tabs[0]} size="s"/>
+      <EuiTabbedContent tabs={tabs} initialSelectedTab={tabs[0]} size="s" />
       {flyoutContent && (
         <EuiFlyout onClose={() => setFlyoutContent(null)}>
           <EuiSpacer />

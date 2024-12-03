@@ -5,7 +5,7 @@
 
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { LogType, LogTypeBase, LogTypeWithRules, RuleItemInfoBase } from '../../types';
-import LogTypeService from '../services/LogTypeService';
+import { LogTypeService } from '../services/LogTypeService';
 import { errorNotificationToast } from '../utils/helpers';
 import { DataStore } from './DataStore';
 import { ruleTypes } from '../pages/Rules/utils/constants';
@@ -73,7 +73,7 @@ export class LogTypeStore {
         );
 
         // Set log category types
-        for (const key in logTypesByCategories) {
+        for (const key of Object.keys(logTypesByCategories)) {
           delete logTypesByCategories[key];
         }
         logTypes.forEach((logType) => {

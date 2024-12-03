@@ -12,7 +12,7 @@ import { IIndexService, ISavedObjectsService, ServerResponse } from '../../types
 import { getSavedObjectConfigs } from '../store/savedObjectsConfig';
 import { logTypesWithDashboards } from '../utils/constants';
 
-export default class SavedObjectService implements ISavedObjectsService {
+export class SavedObjectService implements ISavedObjectsService {
   constructor(
     private savedObjectsClient: SavedObjectsClientContract,
     private readonly indexService: IIndexService
@@ -46,7 +46,7 @@ export default class SavedObjectService implements ISavedObjectsService {
           const detectorReferences = [
             {
               id: detectorId,
-              name: name,
+              name,
               type: 'detector-SA',
             },
           ];
@@ -94,7 +94,7 @@ export default class SavedObjectService implements ISavedObjectsService {
           });
           dashboardReferences.push({
             id: detectorId,
-            name: name,
+            name,
             type: 'detector-SA',
           });
 
@@ -116,7 +116,7 @@ export default class SavedObjectService implements ISavedObjectsService {
             response: dashboardCreationRes,
           });
         } catch (error: any) {
-          console.error('Failed to create dashboard for log type ' + logType);
+          // No-op
         }
       }
     }
@@ -125,7 +125,7 @@ export default class SavedObjectService implements ISavedObjectsService {
   }
 
   public getDashboards = async (): Promise<
-    SimpleSavedObject<{ references: SavedObjectReference[]; id?: string }>[]
+    Array<SimpleSavedObject<{ references: SavedObjectReference[]; id?: string }>>
   > => {
     const dashboards = await this.savedObjectsClient
       .find<{ references: SavedObjectReference[]; id?: string }>({
@@ -155,7 +155,7 @@ export default class SavedObjectService implements ISavedObjectsService {
     return dashboard;
   };
 
-  public async getIndexPatterns(): Promise<SimpleSavedObject<{ title: string }>[]> {
+  public async getIndexPatterns(): Promise<Array<SimpleSavedObject<{ title: string }>>> {
     const indexPatterns = await this.savedObjectsClient
       .find<{ title: string }>({
         type: 'index-pattern',

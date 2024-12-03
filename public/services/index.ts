@@ -4,19 +4,20 @@
  */
 
 import { SecurityAnalyticsContext, SaContextConsumer } from './SecurityAnalyticsContext';
-import DetectorsService from './DetectorService';
-import FindingsService from './FindingsService';
-import OpenSearchService from './OpenSearchService';
-import FieldMappingService from './FieldMappingService';
-import AlertsService from './AlertsService';
-import RuleService from './RuleService';
-import IndexService from './IndexService';
-import NotificationsService from './NotificationsService';
-import IndexPatternsService from './IndexPatternsService';
-import SavedObjectService from './SavedObjectService';
-import CorrelationService from './CorrelationService';
-import LogTypeService from './LogTypeService';
-import ThreatIntelService from './ThreatIntelService';
+import { DetectorsService } from './DetectorService';
+import { FindingsService } from './FindingsService';
+import { OpenSearchService } from './OpenSearchService';
+import { FieldMappingService } from './FieldMappingService';
+import { AlertsService } from './AlertsService';
+import { RuleService } from './RuleService';
+import { IndexService } from './IndexService';
+import { NotificationsService } from './NotificationsService';
+import { IndexPatternsService } from './IndexPatternsService';
+import { SavedObjectService } from './SavedObjectService';
+import { CorrelationService } from './CorrelationService';
+import { LogTypeService } from './LogTypeService';
+import { ThreatIntelService } from './ThreatIntelService';
+import { MetricsService } from './MetricsService';
 
 export {
   SaContextConsumer,
@@ -34,4 +35,5 @@ export {
   SavedObjectService,
   LogTypeService,
   ThreatIntelService,
+  MetricsService,
 };

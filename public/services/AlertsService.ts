@@ -16,7 +16,7 @@ import {
 import { dataSourceInfo } from './utils/constants';
 import { errorNotificationToast } from '../utils/helpers';
 
-export default class AlertsService {
+export class AlertsService {
   constructor(private httpClient: HttpSetup, private notifications: NotificationsStart) {}
 
   getAlerts = async (
@@ -24,7 +24,7 @@ export default class AlertsService {
   ): Promise<ServerResponse<GetAlertsResponse>> => {
     const {
       detectorType,
-      detector_id,
+      detector_id, // eslint-disable-line @typescript-eslint/naming-convention
       size,
       sortOrder,
       startIndex,
@@ -59,9 +59,9 @@ export default class AlertsService {
 
   acknowledgeAlerts = async (
     alertIds: string[],
-    detector_id: string
+    detectorId: string
   ): Promise<ServerResponse<AcknowledgeAlertsResponse>> => {
-    const url = API.ACKNOWLEDGE_ALERTS.replace('{detector_id}', detector_id);
+    const url = API.ACKNOWLEDGE_ALERTS.replace('{detector_id}', detectorId);
     const body = JSON.stringify({ alerts: alertIds });
     return await this.httpClient.post(`..${url}`, {
       body,

@@ -18,7 +18,7 @@
     "cypress:run": "cypress run",
     "osd": "node ../../scripts/osd",
     "opensearch": "node ../../scripts/opensearch",
-    "lint": "node ../../scripts/eslint .",
+    "lint": "node ../../scripts/eslint",
     "plugin-helpers": "node ../../scripts/plugin_helpers",
     "test:jest": "../../node_modules/.bin/jest --config ./test/jest.config.js",
     "test:jest:dev": "../../node_modules/.bin/jest --watch --config ./test/jest.config.js",

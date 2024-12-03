@@ -16,7 +16,7 @@ import { API } from '../../server/utils/constants';
 import { FieldMapping } from '.././../models/interfaces';
 import { dataSourceInfo } from './utils/constants';
 
-export default class FieldMappingService {
+export class FieldMappingService {
   constructor(private readonly httpClient: HttpSetup) {}
 
   getMappingsView = async (
@@ -36,12 +36,12 @@ export default class FieldMappingService {
   };
 
   createMappings = async (
-    index_name: string,
-    rule_topic: string,
+    indexName: string,
+    ruleTopic: string,
     fieldMappings: FieldMapping[]
   ): Promise<ServerResponse<CreateMappingsResponse>> => {
     const url = `..${API.MAPPINGS_BASE}`;
-    const alias_mappings: FieldMappingPropertyMap = {
+    const aliasMappings: FieldMappingPropertyMap = {
       properties: {},
     };
     fieldMappings.forEach((mapping) => {
@@ -49,16 +49,16 @@ export default class FieldMappingService {
         return;
       }
 
-      alias_mappings.properties[mapping.ruleFieldName] = {
+      aliasMappings.properties[mapping.ruleFieldName] = {
         type: 'alias',
         path: mapping.indexFieldName,
       };
     });
     const fieldMappingPayload: CreateMappingBody = {
-      index_name,
-      rule_topic,
+      index_name: indexName,
+      rule_topic: ruleTopic,
       partial: true,
-      alias_mappings,
+      alias_mappings: aliasMappings,
     };
     const params = {
       body: JSON.stringify(fieldMappingPayload),

@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RuleService } from '../services';
-import { load, safeDump } from 'js-yaml';
-import { RuleItemInfoBase, IRulesStore, IRulesCache, Rule } from '../../types';
+import { load, dump } from 'js-yaml';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import _ from 'lodash';
+import { RuleService } from '../services';
+import { RuleItemInfoBase, IRulesStore, IRulesCache, Rule } from '../../types';
 import { errorNotificationToast } from '../utils/helpers';
 import { ruleTypes } from '../pages/Rules/utils/constants';
-import _ from 'lodash';
 
 /**
  * Class is used to make rule's API calls and cache the rules.
@@ -100,10 +100,11 @@ export class RulesStore implements IRulesStore {
    * @returns {Promise<RuleItemInfoBase[]>}
    */
   public async getRules(
-    prePackaged: boolean,
-    terms?: { [key: string]: string[] }
+    ...args: [prePackaged: boolean, terms?: { [key: string]: string[] }, query?: any]
   ): Promise<RuleItemInfoBase[]> {
-    const cacheKey: string = `getRules:${JSON.stringify(arguments)}`;
+    const [prePackaged, inputTerms] = args;
+    let terms = inputTerms;
+    const cacheKey: string = `getRules:${JSON.stringify(args)}`;
 
     if (this.cache[cacheKey]) {
       return this.cache[cacheKey];
@@ -208,9 +209,11 @@ export class RulesStore implements IRulesStore {
       let detectionYaml = '';
 
       try {
-        const detectionJson = load(ruleInfo._source.rule).detection;
-        detectionYaml = safeDump(detectionJson);
-      } catch (_error: any) {}
+        const detectionJson = (load(ruleInfo._source.rule) as any).detection;
+        detectionYaml = dump(detectionJson);
+      } catch (_error: any) {
+        // No op
+      }
 
       return {
         ...ruleInfo,

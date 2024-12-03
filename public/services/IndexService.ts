@@ -10,7 +10,7 @@ import { API } from '../../server/utils/constants';
 import { IIndexService } from '../../types';
 import { dataSourceInfo } from './utils/constants';
 
-export default class IndexService implements IIndexService {
+export class IndexService implements IIndexService {
   httpClient: HttpSetup;
 
   constructor(httpClient: HttpSetup) {

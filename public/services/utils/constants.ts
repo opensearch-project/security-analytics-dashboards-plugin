@@ -4,8 +4,8 @@
  */
 
 import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
-import { createGetterSetter } from '../../../../../src/plugins/opensearch_dashboards_utils/common';
 import { CoreStart, IUiSettingsClient, NotificationsStart } from 'opensearch-dashboards/public';
+import { createGetterSetter } from '../../../../../src/plugins/opensearch_dashboards_utils/common';
 import { NavigationPublicPluginStart } from '../../../../../src/plugins/navigation/public';
 import { ContentManagementPluginStart } from '../../../../../src/plugins/content_management/public';
 import { BrowserServices } from '../../models/interfaces';

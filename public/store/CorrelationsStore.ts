@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { NotificationsStart } from 'opensearch-dashboards/public';
 import {
   AckCorrelationAlertsResponse,
   CorrelationFieldCondition,
@@ -15,11 +16,9 @@ import {
   IRulesStore,
 } from '../../types';
 import { DetectorsService, FindingsService, CorrelationService } from '../services';
-import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../utils/helpers';
 import { DEFAULT_EMPTY_DATA } from '../utils/constants';
 import { DataStore } from './DataStore';
-import { RuleSource } from '../../server/models/interfaces';
 import { RuleSeverityPriority, RuleSeverityValue } from '../pages/Rules/utils/constants';
 
 export interface ICorrelationsCache {
@@ -73,11 +72,11 @@ export class CorrelationsStore implements ICorrelationsStore {
         };
 
         if (queryString) {
-          correlationInput['query'] = queryString;
+          correlationInput.query = queryString;
         }
 
         if (query.field) {
-          correlationInput['field'] = query.field;
+          correlationInput.field = query.field;
         }
 
         return correlationInput;
@@ -107,11 +106,11 @@ export class CorrelationsStore implements ICorrelationsStore {
         };
 
         if (queryString) {
-          correlationInput['query'] = queryString;
+          correlationInput.query = queryString;
         }
 
         if (query.field) {
-          correlationInput['field'] = query.field;
+          correlationInput.field = query.field;
         }
 
         return correlationInput;
@@ -150,7 +149,7 @@ export class CorrelationsStore implements ICorrelationsStore {
         name: hit._source.name,
         time_window: hit._source.time_window || 300000,
         queries,
-        trigger: hit._source?.trigger
+        trigger: hit._source?.trigger,
       };
     }
 
@@ -176,7 +175,7 @@ export class CorrelationsStore implements ICorrelationsStore {
           name: hit._source.name,
           time_window: hit._source.time_window || 300000,
           queries,
-          trigger: hit._source?.trigger
+          trigger: hit._source?.trigger,
         };
       });
     }
@@ -194,10 +193,10 @@ export class CorrelationsStore implements ICorrelationsStore {
     return response.ok;
   }
 
-  public async getCorrelationsCountInWindow(start_time: string, end_time: string): Promise<number> {
+  public async getCorrelationsCountInWindow(startTime: string, endTime: string): Promise<number> {
     const allCorrelationsRes = await this.service.getAllCorrelationsInTimeWindow(
-      start_time,
-      end_time
+      startTime,
+      endTime
     );
 
     if (allCorrelationsRes.ok) {
@@ -208,15 +207,15 @@ export class CorrelationsStore implements ICorrelationsStore {
   }
 
   public async getAllCorrelationsInWindow(
-    start_time: string,
-    end_time: string
-  ): Promise<{ finding1: CorrelationFinding; finding2: CorrelationFinding }[]> {
+    startTime: string,
+    endTime: string
+  ): Promise<Array<{ finding1: CorrelationFinding; finding2: CorrelationFinding }>> {
     const allCorrelationsRes = await this.service.getAllCorrelationsInTimeWindow(
-      start_time,
-      end_time
+      startTime,
+      endTime
     );
 
-    const result: { finding1: CorrelationFinding; finding2: CorrelationFinding }[] = [];
+    const result: Array<{ finding1: CorrelationFinding; finding2: CorrelationFinding }> = [];
 
     if (allCorrelationsRes.ok) {
       const firstTenGrandCorrelations = allCorrelationsRes.response.findings.slice(0, 10000);
@@ -275,7 +274,7 @@ export class CorrelationsStore implements ICorrelationsStore {
       detectorsRes.response.hits.hits.forEach((detector) => {
         detectorsMap[detector._id] = detector;
       });
-      let findingsMap: { [id: string]: CorrelationFinding } = {};
+      const findingsMap: { [id: string]: CorrelationFinding } = {};
       const findings = await DataStore.findings.getFindingsByIds(findingIds);
       findings.forEach((f) => {
         const detector = detectorsMap[f.detectorId];
@@ -288,13 +287,13 @@ export class CorrelationsStore implements ICorrelationsStore {
             : 1;
         });
 
-        const rule = allRules.find((rule) => rule._id === matchedRules[0]?._id);
+        const rule = allRules.find((item) => item._id === matchedRules[0]?._id);
 
         findingsMap[f.id] = {
           ...f,
           id: f.id,
           logType: detector._source.detector_type,
-          detector: detector,
+          detector,
           detectorName: detector._source.name,
           timestamp: new Date(f.timestamp).toLocaleString(),
           detectionRule: rule
@@ -315,13 +314,13 @@ export class CorrelationsStore implements ICorrelationsStore {
 
   public async getCorrelatedFindings(
     findingId: string,
-    detector_type: string,
-    nearby_findings = 20
+    detectorType: string,
+    nearbyFindings = 20
   ): Promise<{ finding: CorrelationFinding; correlatedFindings: CorrelationFinding[] }> {
     const response = await this.service.getCorrelatedFindings(
       findingId,
-      detector_type,
-      nearby_findings
+      detectorType,
+      nearbyFindings
     );
 
     if (response?.ok) {
@@ -350,7 +349,7 @@ export class CorrelationsStore implements ICorrelationsStore {
       finding: {
         ...finding,
         id: findingId,
-        logType: detector_type,
+        logType: detectorType,
         timestamp: '',
         detectionRule: { name: '', severity: 'high' },
       },

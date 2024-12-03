@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { NotificationsStart } from 'opensearch-dashboards/public';
 import { RulesStore } from './RulesStore';
 import { BrowserServices } from '../models/interfaces';
-import { NotificationsStart } from 'opensearch-dashboards/public';
 import { DetectorsStore } from './DetectorsStore';
 import { CorrelationsStore } from './CorrelationsStore';
 import { FindingsStore } from './FindingsStore';

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import MetricsService from '../services/MetricsService';
+import { MetricsService } from '../services';
 import { DetectorMetricsManager } from './DetectorMetricsManager';
 
 export class MetricsContext {

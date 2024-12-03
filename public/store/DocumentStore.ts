@@ -10,7 +10,10 @@ export class DocumentStore {
 
   constructor(private opensearchService: OpenSearchService) {}
 
-  public async getDocuments(index: string, ids: string[]): Promise<{ [id: string]: string }[]> {
+  public async getDocuments(
+    index: string,
+    ids: string[]
+  ): Promise<Array<{ [id: string]: string }>> {
     if (!this.documentsByIndex[index]) {
       this.documentsByIndex[index] = {};
     }

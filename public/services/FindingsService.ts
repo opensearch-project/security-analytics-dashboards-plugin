@@ -15,7 +15,7 @@ import {
 import { dataSourceInfo } from './utils/constants';
 import { errorNotificationToast } from '../utils/helpers';
 
-export default class FindingsService {
+export class FindingsService {
   constructor(private httpClient: HttpSetup, private notifications: NotificationsStart) {}
 
   getFindings = async (

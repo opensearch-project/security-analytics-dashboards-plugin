@@ -4,14 +4,13 @@
  */
 
 import { SimpleSavedObject } from 'opensearch-dashboards/public';
-import { Detector, LogType, ServerResponse } from '../../types';
-import { DetectorInput, PeriodSchedule } from '../../models/interfaces';
-import { DetectorHit } from '../../server/models/interfaces';
 import _ from 'lodash';
 import { euiPaletteColorBlind, euiPaletteForStatus } from '@elastic/eui';
 import { DataSourceOption } from 'src/plugins/data_source_management/public';
 import { BehaviorSubject } from 'rxjs';
-import { i18n } from '@osd/i18n';
+import { DetectorHit } from '../../server/models/interfaces';
+import { DetectorInput, PeriodSchedule } from '../../models/interfaces';
+import { Detector, LogType, ServerResponse } from '../../types';
 
 export const DATE_MATH_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
 export const MAX_RECENTLY_USED_TIME_RANGES = 5;
@@ -221,7 +220,7 @@ export const pendingDashboardCreations: {
   [detectorId: string]: undefined | Promise<void | ServerResponse<SimpleSavedObject<unknown>>>;
 } = {};
 
-export const logTypeCategoryDescription: { name: string; description: string }[] = [
+export const logTypeCategoryDescription: Array<{ name: string; description: string }> = [
   { name: 'Access Management', description: 'User access, authentication, group management' },
   { name: 'Applications', description: 'Application lifecycle, API, and web resources activities' },
   { name: 'Cloud Services', description: 'Services managed by cloud providers' },
@@ -309,16 +308,7 @@ export const ALERT_SEVERITY_PROPS = {
   },
 };
 
-const LocalCluster: DataSourceOption = {
-  label: i18n.translate('dataSource.localCluster', {
-    defaultMessage: 'Local cluster',
-  }),
-  id: '',
-};
-
 // We should use empty object for default value as local cluster may be disabled
 export const dataSourceObservable = new BehaviorSubject<DataSourceOption>({});
 
 export const DATA_SOURCE_NOT_SET_ERROR = 'Data source is not set';
-
-

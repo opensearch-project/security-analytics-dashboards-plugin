@@ -8,10 +8,9 @@ import { EuiButton, EuiOverlayMask, EuiModal } from '@elastic/eui';
 import { render, fireEvent } from '@testing-library/react';
 import ModalRoot from './ModalRoot';
 import { ModalConsumer, ModalProvider } from './Modal';
-import { SecurityAnalyticsContext, SaContextConsumer } from '../../services';
+import { SecurityAnalyticsContext, SaContextConsumer, MetricsService } from '../../services';
 import services from '../../../test/mocks/services';
 import { MetricsContext } from '../../metrics/MetricsContext';
-import MetricsService from '../../services/MetricsService';
 import httpClientMock from '../../../test/mocks/services/httpClient.mock';
 
 describe('<ModalRoot /> spec', () => {

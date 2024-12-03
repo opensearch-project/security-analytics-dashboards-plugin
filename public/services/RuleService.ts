@@ -15,7 +15,7 @@ import { API } from '../../server/utils/constants';
 import { Rule } from '../../types';
 import { dataSourceInfo } from './utils/constants';
 
-export default class RuleService {
+export class RuleService {
   httpClient: HttpSetup;
 
   constructor(httpClient: HttpSetup) {

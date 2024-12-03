@@ -15,28 +15,27 @@ import {
   ICorrelationsService,
   UpdateCorrelationRuleResponse,
   GetCorrelationAlertsResponse,
-  AckCorrelationAlertsResponse
+  AckCorrelationAlertsResponse,
 } from '../../types';
 import { dataSourceInfo } from './utils/constants';
 
-export default class CorrelationService implements ICorrelationsService {
+export class CorrelationService implements ICorrelationsService {
   constructor(private httpClient: HttpSetup) {}
 
   acknowledgeCorrelationAlerts = async (
     body: any
-    ): Promise<ServerResponse<AckCorrelationAlertsResponse>> => {
-      const url = `..${API.ACK_CORRELATION_ALERTS}`;
-  
-      return (await this.httpClient.post(url, {
-        body: JSON.stringify({alertIds: body}),
-        query: {
-          dataSourceId: dataSourceInfo.activeDataSource.id,
-        },
-      })) as ServerResponse<AckCorrelationAlertsResponse>;
-    };
+  ): Promise<ServerResponse<AckCorrelationAlertsResponse>> => {
+    const url = `..${API.ACK_CORRELATION_ALERTS}`;
 
-  getCorrelationAlerts = async (
-  ): Promise<ServerResponse<GetCorrelationAlertsResponse>> => {
+    return (await this.httpClient.post(url, {
+      body: JSON.stringify({ alertIds: body }),
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+      },
+    })) as ServerResponse<AckCorrelationAlertsResponse>;
+  };
+
+  getCorrelationAlerts = async (): Promise<ServerResponse<GetCorrelationAlertsResponse>> => {
     const url = `..${API.GET_CORRELATION_ALERTS}`;
 
     return (await this.httpClient.get(url, {
@@ -48,15 +47,15 @@ export default class CorrelationService implements ICorrelationsService {
 
   getCorrelatedFindings = async (
     finding: string,
-    detector_type: string,
-    nearby_findings: number = 20
+    detectorType: string,
+    nearbyFindings: number = 20
   ): Promise<ServerResponse<GetCorrelationFindingsResponse>> => {
     const url = `..${API.FINDINGS_BASE}/correlate`;
     return (await this.httpClient.get(url, {
       query: {
         finding,
-        detector_type,
-        nearby_findings,
+        detector_type: detectorType,
+        nearby_findings: nearbyFindings,
         dataSourceId: dataSourceInfo.activeDataSource.id,
       },
     })) as ServerResponse<GetCorrelationFindingsResponse>;
@@ -117,14 +116,14 @@ export default class CorrelationService implements ICorrelationsService {
   };
 
   getAllCorrelationsInTimeWindow = async (
-    start_time: string,
-    end_time: string
+    startTime: string,
+    endTime: string
   ): Promise<ServerResponse<GetAllCorrelationsInTimeRangeResponse>> => {
     const url = `..${API.CORRELATIONS}`;
     return (await this.httpClient.get(url, {
       query: {
-        start_time,
-        end_time,
+        start_time: startTime,
+        end_time: endTime,
         dataSourceId: dataSourceInfo.activeDataSource.id,
       },
     })) as ServerResponse<GetAllCorrelationsInTimeRangeResponse>;

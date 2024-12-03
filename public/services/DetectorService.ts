@@ -15,7 +15,7 @@ import { API } from '../../server/utils/constants';
 import { Detector, GetDetectorResponse, IDetectorService } from '../../types';
 import { dataSourceInfo } from './utils/constants';
 
-export default class DetectorsService implements IDetectorService {
+export class DetectorsService implements IDetectorService {
   constructor(private httpClient: HttpSetup) {}
 
   createDetector = async (detector: Detector): Promise<ServerResponse<CreateDetectorResponse>> => {
@@ -41,7 +41,7 @@ export default class DetectorsService implements IDetectorService {
         },
       }),
       query: {
-        dataSourceId: dataSourceId,
+        dataSourceId,
       },
     })) as ServerResponse<SearchDetectorsResponse>;
 

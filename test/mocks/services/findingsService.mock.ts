@@ -1,7 +1,8 @@
 import httpClientMock from './httpClient.mock';
 import { FindingsService } from '../../../public/services';
+import notificationsMock from './notifications';
 
-const findingsService = new FindingsService(httpClientMock);
+const findingsService = new FindingsService(httpClientMock, notificationsMock.NotificationsStart);
 
 Object.assign(findingsService, {
   getFindings: () =>
