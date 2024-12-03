@@ -1064,12 +1064,9 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       {
         id: 'correlations',
         name: (
-          <EuiToolTip content="This object was created using an experimental feature. It may not appear in view if the feature is discontinued.">
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <span style={{ marginRight: '4px' }}>Correlations</span>
-              <EuiIcon type="beaker" />
-            </div>
-          </EuiToolTip>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <span style={{ marginRight: '4px' }}>Correlations</span>
+          </div>
         ),
         content: (
           <>
