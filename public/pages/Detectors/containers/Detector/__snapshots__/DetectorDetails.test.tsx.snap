@@ -226,7 +226,13 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
       "deleteVisualization": [Function],
       "getDashboard": [Function],
       "getDashboards": [Function],
-      "indexService": undefined,
+      "indexService": Object {
+        "getAliases": [MockFunction],
+        "getIndexFields": [MockFunction],
+        "getIndices": [Function],
+        "httpClient": [MockFunction],
+        "updateAliases": [MockFunction],
+      },
       "savedObjectsClient": Object {
         "delete": [MockFunction],
         "get": [MockFunction],
@@ -1042,7 +1048,13 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
         "deleteVisualization": [Function],
         "getDashboard": [Function],
         "getDashboards": [Function],
-        "indexService": undefined,
+        "indexService": Object {
+          "getAliases": [MockFunction],
+          "getIndexFields": [MockFunction],
+          "getIndices": [Function],
+          "httpClient": [MockFunction],
+          "updateAliases": [MockFunction],
+        },
         "savedObjectsClient": Object {
           "delete": [MockFunction],
           "get": [MockFunction],
@@ -1468,7 +1480,13 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
           "deleteVisualization": [Function],
           "getDashboard": [Function],
           "getDashboards": [Function],
-          "indexService": undefined,
+          "indexService": Object {
+            "getAliases": [MockFunction],
+            "getIndexFields": [MockFunction],
+            "getIndices": [Function],
+            "httpClient": [MockFunction],
+            "updateAliases": [MockFunction],
+          },
           "savedObjectsClient": Object {
             "delete": [MockFunction],
             "get": [MockFunction],
@@ -2743,7 +2761,13 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
           "deleteVisualization": [Function],
           "getDashboard": [Function],
           "getDashboards": [Function],
-          "indexService": undefined,
+          "indexService": Object {
+            "getAliases": [MockFunction],
+            "getIndexFields": [MockFunction],
+            "getIndices": [Function],
+            "httpClient": [MockFunction],
+            "updateAliases": [MockFunction],
+          },
           "savedObjectsClient": Object {
             "delete": [MockFunction],
             "get": [MockFunction],

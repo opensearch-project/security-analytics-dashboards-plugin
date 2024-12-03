@@ -11,4 +11,5 @@ export default {
   setIsDetectionInvalid: () => {},
   mode: 'create',
   isInvalid: false,
+  goToYamlEditor: jest.fn(),
 } as DetectionVisualEditorProps;

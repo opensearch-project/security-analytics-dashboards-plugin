@@ -47,7 +47,14 @@ exports[`<Alerts /> spec renders the component 1`] = `
       "getFindings": [Function],
       "getThreatIntelFindings": [Function],
       "httpClient": [MockFunction],
-      "notifications": undefined,
+      "notifications": Object {
+        "toasts": Object {
+          "addDanger": [MockFunction],
+          "addInfo": [MockFunction],
+          "addSuccess": [MockFunction],
+          "addWarning": [MockFunction],
+        },
+      },
     }
   }
   match={[MockFunction]}
@@ -133,7 +140,14 @@ exports[`<Alerts /> spec renders the component 1`] = `
         "getFindings": [Function],
         "getThreatIntelFindings": [Function],
         "httpClient": [MockFunction],
-        "notifications": undefined,
+        "notifications": Object {
+          "toasts": Object {
+            "addDanger": [MockFunction],
+            "addInfo": [MockFunction],
+            "addSuccess": [MockFunction],
+            "addWarning": [MockFunction],
+          },
+        },
       }
     }
     history={

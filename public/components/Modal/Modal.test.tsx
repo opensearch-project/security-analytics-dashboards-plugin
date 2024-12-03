@@ -27,7 +27,7 @@ describe('<ModalRoot /> spec', () => {
       </SecurityAnalyticsContext.Provider>
     );
 
-    expect(container.firstChild).to.be.null;
+    expect(container.firstChild).toBeNull();
   });
 
   it('renders a modal that can close and open', () => {
@@ -60,14 +60,14 @@ describe('<ModalRoot /> spec', () => {
       </div>
     );
 
-    expect(queryByText('A modal that has interesting text')).to.be.null;
+    expect(queryByText('A modal that has interesting text')).toBeNull();
 
     fireEvent.click(getByTestId('showModal'));
 
-    expect(queryByText('A modal that has interesting text')).not.to.be.null;
+    expect(queryByText('A modal that has interesting text')).not.toBeNull();
 
     fireEvent.click(getByLabelText('Closes this modal window'));
 
-    expect(queryByText('A modal that has interesting text')).to.be.null;
+    expect(queryByText('A modal that has interesting text')).toBeNull();
   });
 });
