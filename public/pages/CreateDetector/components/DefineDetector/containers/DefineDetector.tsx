@@ -34,7 +34,6 @@ import { ConfigureFieldMappingProps } from '../../ConfigureFieldMapping/containe
 import { ContentPanel } from '../../../../../components/ContentPanel';
 import { ruleTypes } from '../../../../Rules/utils/constants';
 import { ThreatIntelligence } from '../components/ThreatIntelligence/ThreatIntelligence';
-import { addDetectionType, removeDetectionType } from '../../../../../utils/helpers';
 
 interface DefineDetectorProps extends RouteComponentProps, DataSourceProps {
   detector: Detector;
@@ -146,33 +145,13 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
     const newDetector: Detector = {
       ...this.state.detector,
       detector_type: detectorType,
-      threat_intel_enabled: this.standardLogTypes.has(detectorType),
+      threat_intel_enabled: false,
     };
 
     this.updateDetectorCreationState(newDetector);
     this.context.metrics.detectorMetricsManager.sendMetrics(
       CreateDetectorSteps.logTypeConfigured,
       detectorType
-    );
-  };
-
-  onThreatIntelligenceChanged = (checked: boolean) => {
-    const newTriggers = this.state.detector.triggers.map((trigger) => ({
-      ...trigger,
-      detection_types: checked
-        ? addDetectionType(trigger, 'threat_intel')
-        : removeDetectionType(trigger, 'threat_intel'),
-    }));
-
-    const newDetector: Detector = {
-      ...this.state.detector,
-      threat_intel_enabled: checked,
-      triggers: newTriggers,
-    };
-
-    this.updateDetectorCreationState(newDetector);
-    this.context.metrics.detectorMetricsManager.sendMetrics(
-      CreateDetectorSteps.threatIntelConfigured
     );
   };
 
@@ -194,7 +173,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
       replaceFieldMappings,
     } = this.props;
     const { detector } = this.state;
-    const { name, inputs, detector_type, threat_intel_enabled } = this.props.detector;
+    const { name, inputs, detector_type } = this.props.detector;
     const { description, indices } = inputs[0].detector_input;
     const configureFieldMappingProps: ConfigureFieldMappingProps = {
       ...this.props,
@@ -250,10 +229,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
         <EuiSpacer size={'m'} />
 
         {this.standardLogTypes.has(detector_type) && (
-          <ThreatIntelligence
-            threatIntelChecked={threat_intel_enabled}
-            onThreatIntelChange={this.onThreatIntelligenceChanged}
-          />
+          <ThreatIntelligence history={this.props.history} />
         )}
 
         {logTypesWithDashboards.has(detector_type) ? (

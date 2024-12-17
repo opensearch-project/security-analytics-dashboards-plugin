@@ -70,6 +70,7 @@ import {
   getUseUpdatedUx,
   setBrowserServices,
   getDataSourceManagementPlugin,
+  getApplication,
 } from '../services/utils/constants';
 import DetectorsService from '../services/DetectorService';
 import CorrelationService from '../services/CorrelationService';
@@ -84,6 +85,7 @@ import semver from 'semver';
 import * as pluginManifest from '../../opensearch_dashboards.json';
 import { DataSourceThreatAlertsCard } from '../components/DataSourceThreatAlertsCard/DataSourceThreatAlertsCard';
 import { DataSourceAttributes } from '../../../../src/plugins/data_source/common/data_sources';
+import { RouteComponentProps } from 'react-router-dom';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
@@ -457,19 +459,6 @@ export function getLogTypeCategoryOptions(): any[] {
 }
 
 /**
- * Removes the given detectionType from the list of types inside the given trigger
- * and returns the new list of detectionTypes
- */
-export function removeDetectionType(
-  trigger: AlertCondition,
-  detectionType: 'rules' | 'threat_intel'
-): string[] {
-  const detectionTypes = new Set(trigger.detection_types);
-  detectionTypes.delete(detectionType);
-  return Array.from(detectionTypes);
-}
-
-/**
  * Add the given detectionType to the list of types inside the given trigger
  * and returns the new list of detectionTypes
  */
@@ -770,3 +759,17 @@ export function initializeServices(coreStart: CoreStart, indexPattern: CoreIndex
   setBrowserServices(services);
   DataStore.init(services, coreStart.notifications);
 }
+
+export const navigateToRoute = (
+  history: RouteComponentProps['history'],
+  appId: string,
+  route: string
+) => {
+  const useUpdatedUx = getUseUpdatedUx();
+  if (useUpdatedUx) {
+    const url = getApplication().getUrlForApp(appId, { path: `#${route}` });
+    getApplication().navigateToUrl(url);
+  } else {
+    history.push(route);
+  }
+};

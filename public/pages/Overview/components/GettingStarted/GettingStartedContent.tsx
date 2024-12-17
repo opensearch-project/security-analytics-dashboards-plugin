@@ -4,14 +4,7 @@
  */
 
 import React, { useMemo } from 'react';
-import {
-  EuiHorizontalRule,
-  EuiLink,
-  EuiPanel,
-  EuiSpacer,
-  EuiSteps,
-  EuiText,
-} from '@elastic/eui';
+import { EuiHorizontalRule, EuiLink, EuiPanel, EuiSpacer, EuiSteps, EuiText } from '@elastic/eui';
 import { EuiContainedStepProps } from '@elastic/eui/src/components/steps/steps';
 import {
   BREADCRUMBS,
@@ -26,8 +19,9 @@ import {
 import { RouteComponentProps } from 'react-router-dom';
 import { GetStartedStep } from './GetStartedStep';
 import { moreLink } from '../../utils/constants';
+import { navigateToRoute } from '../../../../utils/helpers';
 import { setBreadcrumbs } from '../../../../utils/helpers';
-import { getApplication, getUseUpdatedUx } from '../../../../services/utils/constants';
+import { getUseUpdatedUx } from '../../../../services/utils/constants';
 import { PageHeader } from '../../../../components/PageHeader/PageHeader';
 
 export interface GettingStartedPopupProps {
@@ -43,15 +37,6 @@ export const GettingStartedContent: React.FC<GettingStartedPopupProps> = ({
   if (useUpdatedUx) {
     setBreadcrumbs([BREADCRUMBS.GETTING_STARTED]);
   }
-  const onActionClick = (appId: string, route: string) => {
-    if (useUpdatedUx) {
-      const url = getApplication().getUrlForApp(appId, { path: `#${route}` });
-      getApplication().navigateToUrl(url);
-    } else {
-      history.push(route);
-    }
-  };
-
   const steps: EuiContainedStepProps[] = useMemo(
     () => [
       {
@@ -66,7 +51,7 @@ export const GettingStartedContent: React.FC<GettingStartedPopupProps> = ({
                 text: 'Create detector',
                 onClick: () => {
                   onStepClicked();
-                  onActionClick(DETECTORS_NAV_ID, ROUTES.DETECTORS_CREATE);
+                  navigateToRoute(history, DETECTORS_NAV_ID, ROUTES.DETECTORS_CREATE);
                 },
                 opts: {
                   fill: true,
@@ -88,7 +73,7 @@ export const GettingStartedContent: React.FC<GettingStartedPopupProps> = ({
                 text: 'Manage threat intelligence sources',
                 onClick: () => {
                   onStepClicked();
-                  onActionClick(THREAT_INTEL_NAV_ID, ROUTES.THREAT_INTEL_OVERVIEW);
+                  navigateToRoute(history, THREAT_INTEL_NAV_ID, ROUTES.THREAT_INTEL_OVERVIEW);
                 },
               },
             ]}
@@ -107,7 +92,7 @@ export const GettingStartedContent: React.FC<GettingStartedPopupProps> = ({
                 text: 'View findings',
                 onClick: () => {
                   onStepClicked();
-                  onActionClick(FINDINGS_NAV_ID, ROUTES.FINDINGS);
+                  navigateToRoute(history, FINDINGS_NAV_ID, ROUTES.FINDINGS);
                 },
               },
             ]}
@@ -124,7 +109,7 @@ export const GettingStartedContent: React.FC<GettingStartedPopupProps> = ({
                 text: 'View alerts',
                 onClick: () => {
                   onStepClicked();
-                  onActionClick(THREAT_ALERTS_NAV_ID, ROUTES.ALERTS);
+                  navigateToRoute(history, THREAT_ALERTS_NAV_ID, ROUTES.ALERTS);
                 },
               },
             ]}
@@ -141,7 +126,7 @@ export const GettingStartedContent: React.FC<GettingStartedPopupProps> = ({
                 text: 'Manage rules',
                 onClick: () => {
                   onStepClicked();
-                  onActionClick(DETECTION_RULE_NAV_ID, ROUTES.RULES);
+                  navigateToRoute(history, DETECTION_RULE_NAV_ID, ROUTES.RULES);
                 },
               },
             ]}
@@ -158,7 +143,7 @@ export const GettingStartedContent: React.FC<GettingStartedPopupProps> = ({
                 text: 'Manage correlation rules',
                 onClick: () => {
                   onStepClicked();
-                  onActionClick(CORRELATIONS_RULE_NAV_ID, ROUTES.CORRELATION_RULES);
+                  navigateToRoute(history, CORRELATIONS_RULE_NAV_ID, ROUTES.CORRELATION_RULES);
                 },
               },
             ]}
