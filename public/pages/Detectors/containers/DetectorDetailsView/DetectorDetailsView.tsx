@@ -10,6 +10,7 @@ import { DetectorRulesView } from '../../components/DetectorRulesView/DetectorRu
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { Detector } from '../../../../../types';
+import { RouteComponentProps } from 'react-router-dom';
 
 export interface DetectorDetailsViewProps {
   detector: Detector;
@@ -21,6 +22,7 @@ export interface DetectorDetailsViewProps {
   editBasicDetails: () => void;
   editDetectorRules: (enabledRules: RuleItem[], allRuleItems: RuleItem[]) => void;
   isEditable?: boolean;
+  history: RouteComponentProps['history'];
 }
 
 export interface DetectorDetailsViewState {}

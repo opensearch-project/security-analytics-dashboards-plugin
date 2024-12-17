@@ -73,6 +73,22 @@ export default class AlertConditionPanel extends Component<
     this.prepareMessage(false /* updateMessage */, true /* onMount */);
   }
 
+  componentDidUpdate(
+    prevProps: Readonly<AlertConditionPanelProps>,
+    _prevState: Readonly<AlertConditionPanelState>
+  ): void {
+    if (prevProps.rulesOptions !== this.props.rulesOptions) {
+      const selectedNames: EuiComboBoxOptionOption<string>[] = [];
+      this.props.alertCondition.ids.forEach((ruleId) => {
+        const rule = this.props.rulesOptions.find((option) => option.id === ruleId);
+        if (rule) {
+          selectedNames.push({ label: rule.name, value: ruleId });
+        }
+      });
+      this.setState({ selectedNames });
+    }
+  }
+
   onDetectionTypeChange(detectionType: 'rules' | 'threat_intel', enabled: boolean) {
     const detectionTypes = new Set(this.props.alertCondition.detection_types);
     enabled ? detectionTypes.add(detectionType) : detectionTypes.delete(detectionType);

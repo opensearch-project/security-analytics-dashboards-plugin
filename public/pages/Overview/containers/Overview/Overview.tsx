@@ -9,9 +9,6 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiPopover,
-  EuiSuperDatePicker,
-  EuiTitle,
-  EuiSpacer,
   EuiSmallButton,
   EuiCard,
   EuiPanel,
@@ -107,7 +104,11 @@ export const Overview: React.FC<OverviewProps> = (props) => {
   const isSecurityAnalyticsUseCase = currentNavGroup?.id === SECURITY_ANALYTICS_USE_CASE_ID;
 
   useEffect(() => {
-    setBreadcrumbs(isSecurityAnalyticsUseCase ? [ BREADCRUMBS.OVERVIEW] : [{...BREADCRUMBS.OVERVIEW, text: 'Security Analytics overview'}]);
+    setBreadcrumbs(
+      isSecurityAnalyticsUseCase
+        ? [BREADCRUMBS.OVERVIEW]
+        : [{ ...BREADCRUMBS.OVERVIEW, text: 'Security Analytics overview' }]
+    );
     overviewViewModelActor.registerRefreshHandler(updateState, true /* allowPartialResults */);
     overviewViewModelActor.registerRefreshHandler(
       onLoadingComplete,
@@ -273,7 +274,13 @@ export const Overview: React.FC<OverviewProps> = (props) => {
             <EuiFlexGroup gutterSize="m">
               {getOverviewsCardsProps().map((p, idx) => (
                 <EuiFlexItem key={idx}>
-                  <EuiCard {...p} layout="vertical" textAlign="left" titleElement='h4' titleSize='s'/>
+                  <EuiCard
+                    {...p}
+                    layout="vertical"
+                    textAlign="left"
+                    titleElement="h4"
+                    titleSize="s"
+                  />
                 </EuiFlexItem>
               ))}
             </EuiFlexGroup>

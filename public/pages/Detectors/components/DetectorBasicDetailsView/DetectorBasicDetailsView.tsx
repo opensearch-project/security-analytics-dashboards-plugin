@@ -3,14 +3,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiSmallButton, EuiSpacer, EuiLink, EuiIcon, EuiText } from '@elastic/eui';
+import { EuiSmallButton, EuiSpacer, EuiLink, EuiIcon, EuiText, EuiCallOut } from '@elastic/eui';
 import React from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
-import { createTextDetailsGroup, parseSchedule } from '../../../../utils/helpers';
+import { createTextDetailsGroup, navigateToRoute, parseSchedule } from '../../../../utils/helpers';
 import moment from 'moment';
-import { DEFAULT_EMPTY_DATA, logTypesWithDashboards } from '../../../../utils/constants';
+import {
+  DEFAULT_EMPTY_DATA,
+  logTypesWithDashboards,
+  ROUTES,
+  THREAT_INTEL_NAV_ID,
+} from '../../../../utils/constants';
 import { Detector } from '../../../../../types';
 import { getLogTypeLabel } from '../../../LogTypes/utils/helpers';
+import { RouteComponentProps } from 'react-router-dom';
 
 export interface DetectorBasicDetailsViewProps {
   detector: Detector;
@@ -20,6 +26,7 @@ export interface DetectorBasicDetailsViewProps {
   last_update_time?: number;
   onEditClicked: () => void;
   isEditable: boolean;
+  history: RouteComponentProps['history'];
 }
 
 export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> = ({
@@ -29,6 +36,7 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
   rulesCanFold,
   children,
   dashboardId,
+  history,
   onEditClicked,
   isEditable = true,
 }) => {
@@ -51,7 +59,10 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
       actions={
         isEditable
           ? [
-              <EuiSmallButton onClick={onEditClicked} data-test-subj={'edit-detector-basic-details'}>
+              <EuiSmallButton
+                onClick={onEditClicked}
+                data-test-subj={'edit-detector-basic-details'}
+              >
                 Edit
               </EuiSmallButton>,
             ]
@@ -101,6 +112,27 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
       {createTextDetailsGroup([
         { label: 'Threat intelligence', content: threat_intel_enabled ? 'Enabled' : 'Disabled' },
       ])}
+      {threat_intel_enabled && (
+        <EuiCallOut
+          size="s"
+          title={
+            <EuiText>
+              <p>
+                To match multiple data sources against known indicators of compromise we recommend
+                to configure logs scan with threat intel sources on the
+                <EuiLink
+                  onClick={() =>
+                    navigateToRoute(history, THREAT_INTEL_NAV_ID, ROUTES.THREAT_INTEL_OVERVIEW)
+                  }
+                >
+                  Threat intelligence
+                </EuiLink>{' '}
+                page and removing threat intel feeds from the detectors.
+              </p>
+            </EuiText>
+          }
+        />
+      )}
       {rulesCanFold ? children : null}
     </ContentPanel>
   );
