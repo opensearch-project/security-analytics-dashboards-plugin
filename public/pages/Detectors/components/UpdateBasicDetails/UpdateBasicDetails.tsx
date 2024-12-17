@@ -295,6 +295,8 @@ export const UpdateDetectorBasicDetails: React.FC<UpdateDetectorBasicDetailsProp
         <EuiSpacer size={'l'} />
 
         <ThreatIntelligence
+          isEdit={true}
+          history={props.history}
           threatIntelChecked={detector.threat_intel_enabled}
           onThreatIntelChange={onThreatIntelFeedToggle}
         />

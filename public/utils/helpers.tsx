@@ -459,6 +459,19 @@ export function getLogTypeCategoryOptions(): any[] {
 }
 
 /**
+ * Removes the given detectionType from the list of types inside the given trigger
+ * and returns the new list of detectionTypes
+ */
+export function removeDetectionType(
+  trigger: AlertCondition,
+  detectionType: 'rules' | 'threat_intel'
+): string[] {
+  const detectionTypes = new Set(trigger.detection_types);
+  detectionTypes.delete(detectionType);
+  return Array.from(detectionTypes);
+}
+
+/**
  * Add the given detectionType to the list of types inside the given trigger
  * and returns the new list of detectionTypes
  */
