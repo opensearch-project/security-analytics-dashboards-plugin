@@ -16,7 +16,6 @@ import {
 } from '../../../../utils/constants';
 import { Detector } from '../../../../../types';
 import { getLogTypeLabel } from '../../../LogTypes/utils/helpers';
-import { RouteComponentProps } from 'react-router-dom';
 
 export interface DetectorBasicDetailsViewProps {
   detector: Detector;
@@ -26,7 +25,6 @@ export interface DetectorBasicDetailsViewProps {
   last_update_time?: number;
   onEditClicked: () => void;
   isEditable: boolean;
-  history: RouteComponentProps['history'];
 }
 
 export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> = ({
@@ -36,7 +34,6 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
   rulesCanFold,
   children,
   dashboardId,
-  history,
   onEditClicked,
   isEditable = true,
 }) => {
