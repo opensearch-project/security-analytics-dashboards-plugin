@@ -1171,17 +1171,20 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
         />
       </EuiSpacer>
       <ThreatIntelligence
+        isEdit={true}
         onThreatIntelChange={[Function]}
       >
-        <EuiTitle
+        <EuiText
           size="m"
         >
-          <h3
-            className="euiTitle euiTitle--medium"
+          <div
+            className="euiText euiText--medium"
           >
-            Threat intelligence feeds
-          </h3>
-        </EuiTitle>
+            <h3>
+              Threat intelligence feeds
+            </h3>
+          </div>
+        </EuiText>
         <EuiText
           size="s"
         >
@@ -1189,41 +1192,46 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
             className="euiText euiText--small"
           >
             <p>
-              Match your data source against known malicious IP-addresses. Available for standard log types only.
+              To match your data source against known indicators of compromise configure logs scan with threat intel sources on the
+               
+              <EuiLink
+                href="#/threat-intel"
+                target="_blank"
+              >
+                <a
+                  className="euiLink euiLink--primary"
+                  href="#/threat-intel"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  Threat intelligence
+                  <EuiIcon
+                    aria-label="External link"
+                    className="euiLink__externalIcon"
+                    size="s"
+                    type="popout"
+                  >
+                    EuiIconMock
+                  </EuiIcon>
+                  <EuiScreenReaderOnly>
+                    <span
+                      className="euiScreenReaderOnly"
+                    >
+                      <EuiI18n
+                        default="(opens in a new tab or window)"
+                        token="euiLink.newTarget.screenReaderOnlyText"
+                      >
+                        (opens in a new tab or window)
+                      </EuiI18n>
+                    </span>
+                  </EuiScreenReaderOnly>
+                </a>
+              </EuiLink>
+               
+              page.
             </p>
           </div>
         </EuiText>
-        <EuiCompressedCheckbox
-          checked={false}
-          compressed={true}
-          disabled={false}
-          id="some_html_id"
-          indeterminate={false}
-          label="Enable threat intelligence-based detection"
-          onChange={[Function]}
-        >
-          <div
-            className="euiCheckbox euiCheckbox--compressed"
-          >
-            <input
-              checked={false}
-              className="euiCheckbox__input"
-              disabled={false}
-              id="some_html_id"
-              onChange={[Function]}
-              type="checkbox"
-            />
-            <div
-              className="euiCheckbox__square"
-            />
-            <label
-              className="euiCheckbox__label"
-              htmlFor="some_html_id"
-            >
-              Enable threat intelligence-based detection
-            </label>
-          </div>
-        </EuiCompressedCheckbox>
       </ThreatIntelligence>
       <EuiSpacer
         size="l"
@@ -1419,15 +1427,17 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
         }
         onDetectorScheduleChange={[Function]}
       >
-        <EuiTitle
+        <EuiText
           size="m"
         >
-          <h3
-            className="euiTitle euiTitle--medium"
+          <div
+            className="euiText euiText--medium"
           >
-            Detector schedule
-          </h3>
-        </EuiTitle>
+            <h3>
+              Detector schedule
+            </h3>
+          </div>
+        </EuiText>
         <EuiSpacer>
           <div
             className="euiSpacer euiSpacer--l"
