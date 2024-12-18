@@ -31,6 +31,7 @@ import {
 } from '../../../../../../../types';
 import { NotificationForm } from '../../../../../../components/Notifications/NotificationForm';
 import { ALERT_SEVERITY_OPTIONS } from '../../../../../../utils/constants';
+import { DEFAULT_MESSAGE_SOURCE } from '../../../../../../components/Commons/Constants';
 
 interface AlertConditionPanelProps extends RouteComponentProps {
   alertCondition: AlertCondition;
@@ -99,6 +100,26 @@ export default class AlertConditionPanel extends Component<
     });
   }
 
+  getTriggerContext = () => {
+    const lineBreakAndTab = '\n\t';
+    const { alertCondition, detector } = this.props;
+    const detectorInput = detector.inputs[0].detector_input;
+    const detectorIndices = `${lineBreakAndTab}${detectorInput.indices.join(
+      `,${lineBreakAndTab}`
+    )}`;
+    return {
+      trigger: {
+        name:alertCondition.name,
+        severity: parseAlertSeverityToOption(alertCondition.severity)?.label || alertCondition.severity
+      },
+      detector: {
+        name: detector.name,
+        description: detectorInput.description,
+        datasources: detectorIndices
+      }
+    };
+  };
+
   // When component mounts, we prepare message but at this point we don't want to emit the
   // trigger changed metric since it is not user initiated. So we use the onMount flag to determine that
   // and pass it downstream accordingly.
@@ -113,7 +134,7 @@ export default class AlertConditionPanel extends Component<
       parseAlertSeverityToOption(alertCondition.severity)?.label || alertCondition.severity
     }`;
     const detectorName = `Threat detector: ${detector.name}`;
-    const defaultSubject = [alertConditionName, alertConditionSeverity, detectorName].join(' - ');
+    const defaultSubject = 'Alerting Notification action';
 
     if (updateMessage || !alertCondition.actions[0]?.subject_template.source)
       this.onMessageSubjectChange(defaultSubject, !onMount);
@@ -157,7 +178,7 @@ export default class AlertConditionPanel extends Component<
       if (alertConditionSelections.length)
         defaultMessageBody =
           defaultMessageBody + lineBreak + lineBreak + alertConditionSelections.join(lineBreak);
-      this.onMessageBodyChange(defaultMessageBody, !onMount);
+      this.onMessageBodyChange(DEFAULT_MESSAGE_SOURCE.MESSAGE_BODY, !onMount);
     }
   };
 
@@ -286,6 +307,7 @@ export default class AlertConditionPanel extends Component<
   };
 
   render() {
+    const context = this.getTriggerContext();
     const {
       alertCondition = getEmptyAlertCondition(),
       allNotificationChannels,
@@ -537,6 +559,9 @@ export default class AlertConditionPanel extends Component<
 
         <NotificationForm
           action={alertCondition.actions[0]}
+          context={{
+            ctx: context,
+          }}
           allNotificationChannels={allNotificationChannels}
           loadingNotifications={loadingNotifications}
           prepareMessage={this.prepareMessage}

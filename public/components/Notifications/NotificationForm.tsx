@@ -15,7 +15,7 @@ import {
   EuiSpacer,
   EuiCompressedSwitch,
   EuiText,
-  EuiCompressedTextArea,
+  EuiCompressedTextArea, EuiCompressedCheckbox, EuiLink,
 } from '@elastic/eui';
 import React, { useState } from 'react';
 import { NOTIFICATIONS_HREF } from '../../utils/constants';
@@ -26,6 +26,8 @@ import {
   TriggerAction,
 } from '../../../types';
 import { getIsNotificationPluginInstalled } from '../../utils/helpers';
+import Mustache from 'mustache';
+import { DEFAULT_MESSAGE_SOURCE } from '../Commons/Constants';
 
 export interface NotificationFormProps {
   allNotificationChannels: NotificationChannelTypeOptions[];
@@ -37,10 +39,12 @@ export interface NotificationFormProps {
   onMessageBodyChange: (message: string) => void;
   onMessageSubjectChange: (subject: string) => void;
   onNotificationToggle?: (enabled: boolean) => void;
+  context: any
 }
 
 export const NotificationForm: React.FC<NotificationFormProps> = ({
   action,
+  context,
   allNotificationChannels,
   loadingNotifications,
   prepareMessage,
@@ -53,6 +57,8 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
   const hasNotificationPlugin = getIsNotificationPluginInstalled();
   const [shouldSendNotification, setShouldSendNotification] = useState(!!action?.destination_id);
   const selectedNotificationChannelOption: NotificationChannelOption[] = [];
+  const onDisplayPreviewChange = (e) => setDisplayPreview(e.target.checked);
+  const [displayPreview, setDisplayPreview] = useState(false);
   if (shouldSendNotification && action?.destination_id) {
     allNotificationChannels.forEach((typeOption) => {
       const matchingChannel = typeOption.options.find(
@@ -60,6 +66,14 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
       );
       if (matchingChannel) selectedNotificationChannelOption.push(matchingChannel);
     });
+  }
+  let preview = '';
+  try {
+    console.log(context)
+    preview = Mustache.render(action?.message_template.source, context);
+  } catch (err) {
+    preview = err.message;
+    console.error('There was an error rendering mustache template', err);
   }
 
   return (
@@ -168,18 +182,27 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
                   />
                 </EuiCompressedFormRow>
               </EuiFlexItem>
-              {prepareMessage && (
-                <EuiFlexItem>
-                  <EuiCompressedFormRow>
-                    <EuiSmallButton
-                      fullWidth={false}
-                      onClick={() => prepareMessage(true /* updateMessage */)}
-                    >
-                      Generate message
-                    </EuiSmallButton>
-                  </EuiCompressedFormRow>
-                </EuiFlexItem>
-              )}
+
+              <EuiFlexItem>
+                <EuiCompressedCheckbox
+                  id={`checked`}
+                  label={'Preview message'}
+                  checked={displayPreview}
+                  onChange={(e) => onDisplayPreviewChange(e)}
+                />
+              </EuiFlexItem>
+              <EuiFlexItem></EuiFlexItem>
+              {displayPreview ? (
+                <EuiCompressedFormRow label="Message preview" style={{ maxWidth: '100%' }}>
+                  <EuiCompressedTextArea
+                    placeholder="Preview of mustache template"
+                    fullWidth
+                    value={preview}
+                    readOnly
+                    className="read-only-text-area"
+                  />
+                </EuiCompressedFormRow>
+              ) : null}
             </EuiFlexGroup>
           </EuiAccordion>
 
