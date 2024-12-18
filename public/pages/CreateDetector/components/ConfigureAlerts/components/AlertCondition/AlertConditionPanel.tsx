@@ -77,10 +77,12 @@ export default class AlertConditionPanel extends Component<
     prevProps: Readonly<AlertConditionPanelProps>,
     _prevState: Readonly<AlertConditionPanelState>
   ): void {
-    if (prevProps.rulesOptions !== this.props.rulesOptions) {
+    const { rulesOptions, alertCondition } = this.props;
+
+    if (prevProps.rulesOptions !== rulesOptions) {
       const selectedNames: EuiComboBoxOptionOption<string>[] = [];
-      this.props.alertCondition.ids.forEach((ruleId) => {
-        const rule = this.props.rulesOptions.find((option) => option.id === ruleId);
+      alertCondition.ids.forEach((ruleId) => {
+        const rule = rulesOptions.find((option) => option.id === ruleId);
         if (rule) {
           selectedNames.push({ label: rule.name, value: ruleId });
         }
