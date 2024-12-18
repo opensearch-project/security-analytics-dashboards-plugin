@@ -773,20 +773,6 @@ export function initializeServices(coreStart: CoreStart, indexPattern: CoreIndex
   DataStore.init(services, coreStart.notifications);
 }
 
-export const navigateToRoute = (
-  history: RouteComponentProps['history'],
-  appId: string,
-  route: string
-) => {
-  const useUpdatedUx = getUseUpdatedUx();
-  if (useUpdatedUx) {
-    const url = getApplication().getUrlForApp(appId, { path: `#${route}` });
-    getApplication().navigateToUrl(url);
-  } else {
-    history.push(route);
-  }
-};
-
 export const buildRouteUrl = (appId: string, route: string) => {
   const useUpdatedUx = getUseUpdatedUx();
   if (useUpdatedUx) {

@@ -11,6 +11,7 @@ import _ from 'lodash';
 import { euiPaletteColorBlind, euiPaletteForStatus } from '@elastic/eui';
 import { DataSourceOption } from 'src/plugins/data_source_management/public';
 import { BehaviorSubject } from 'rxjs';
+import { i18n } from '@osd/i18n';
 
 export const DATE_MATH_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
 export const MAX_RECENTLY_USED_TIME_RANGES = 5;
@@ -306,6 +307,13 @@ export const ALERT_SEVERITY_PROPS = {
     badgeLabel: 'Lowest',
     color: { background: paletteColors[0], text: 'white' },
   },
+};
+
+const LocalCluster: DataSourceOption = {
+  label: i18n.translate('dataSource.localCluster', {
+    defaultMessage: 'Local cluster',
+  }),
+  id: '',
 };
 
 // We should use empty object for default value as local cluster may be disabled
