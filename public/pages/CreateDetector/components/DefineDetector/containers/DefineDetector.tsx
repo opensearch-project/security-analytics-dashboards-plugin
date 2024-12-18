@@ -146,7 +146,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
     const newDetector: Detector = {
       ...this.state.detector,
       detector_type: detectorType,
-      threat_intel_enabled: this.standardLogTypes.has(detectorType),
+      threat_intel_enabled: false,
     };
 
     this.updateDetectorCreationState(newDetector);
@@ -251,6 +251,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
 
         {this.standardLogTypes.has(detector_type) && (
           <ThreatIntelligence
+            isEdit={isEdit}
             threatIntelChecked={threat_intel_enabled}
             onThreatIntelChange={this.onThreatIntelligenceChanged}
           />
