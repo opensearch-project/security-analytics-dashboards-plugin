@@ -320,5 +320,3 @@ const LocalCluster: DataSourceOption = {
 export const dataSourceObservable = new BehaviorSubject<DataSourceOption>({});
 
 export const DATA_SOURCE_NOT_SET_ERROR = 'Data source is not set';
-
-
