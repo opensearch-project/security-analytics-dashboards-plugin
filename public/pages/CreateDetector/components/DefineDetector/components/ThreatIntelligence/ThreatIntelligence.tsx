@@ -3,15 +3,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
-import { EuiCompressedCheckbox, EuiLink, EuiText, EuiTitle, htmlIdGenerator } from '@elastic/eui';
-import { navigateToRoute } from '../../../../../../utils/helpers';
-import { DETECTORS_NAV_ID, ROUTES } from '../../../../../../utils/constants';
-import { RouteComponentProps } from 'react-router-dom';
+import React, { useMemo, useState } from 'react';
+import {
+  EuiCallOut,
+  EuiCompressedCheckbox,
+  EuiLink,
+  EuiSpacer,
+  EuiText,
+  htmlIdGenerator,
+} from '@elastic/eui';
+import { buildRouteUrl } from '../../../../../../utils/helpers';
+import { ROUTES, THREAT_INTEL_NAV_ID } from '../../../../../../utils/constants';
 
 export interface ThreatIntelligenceProps {
   isEdit: boolean;
-  history: RouteComponentProps['history'];
   threatIntelChecked: boolean;
   onThreatIntelChange: (checked: boolean) => void;
 }
@@ -19,10 +24,12 @@ export interface ThreatIntelligenceProps {
 export const ThreatIntelligence: React.FC<ThreatIntelligenceProps> = ({
   threatIntelChecked,
   onThreatIntelChange,
-  history,
   isEdit,
 }) => {
   const [shouldShowEditUI] = useState(isEdit && threatIntelChecked);
+  const threatIntelUrl = useMemo(() => {
+    return buildRouteUrl(THREAT_INTEL_NAV_ID, ROUTES.THREAT_INTEL_OVERVIEW);
+  }, []);
 
   return (
     <>
@@ -35,11 +42,7 @@ export const ThreatIntelligence: React.FC<ThreatIntelligenceProps> = ({
             <p>
               To match your data source against known indicators of compromise configure logs scan
               with threat intel sources on the{' '}
-              <EuiLink
-                onClick={() =>
-                  navigateToRoute(history, DETECTORS_NAV_ID, ROUTES.THREAT_INTEL_OVERVIEW)
-                }
-              >
+              <EuiLink target="_blank" href={threatIntelUrl}>
                 Threat intelligence
               </EuiLink>{' '}
               page.
@@ -49,9 +52,9 @@ export const ThreatIntelligence: React.FC<ThreatIntelligenceProps> = ({
       )}
       {shouldShowEditUI && (
         <>
-          <EuiTitle size="m">
+          <EuiText size="m">
             <h3>Threat intelligence feeds</h3>
-          </EuiTitle>
+          </EuiText>
 
           <EuiText size="s">
             <p>
@@ -59,6 +62,21 @@ export const ThreatIntelligence: React.FC<ThreatIntelligenceProps> = ({
               log types only.
             </p>
           </EuiText>
+          <EuiSpacer size="s" />
+          <EuiCallOut
+            size="s"
+            title={
+              <p>
+                To match your data against known indicators of compromise we recommend configuring
+                scan using the new{' '}
+                <EuiLink target="_blank" href={threatIntelUrl}>
+                  Threat Intelligence
+                </EuiLink>{' '}
+                platform and disabling threat intelligence in the detector.
+              </p>
+            }
+          />
+          <EuiSpacer size="s" />
           <EuiCompressedCheckbox
             id={htmlIdGenerator()()}
             label="Enable threat intelligence-based detection"

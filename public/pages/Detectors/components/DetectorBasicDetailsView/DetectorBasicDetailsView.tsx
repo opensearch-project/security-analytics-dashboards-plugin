@@ -6,7 +6,7 @@
 import { EuiSmallButton, EuiSpacer, EuiLink, EuiIcon, EuiText, EuiCallOut } from '@elastic/eui';
 import React from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
-import { createTextDetailsGroup, navigateToRoute, parseSchedule } from '../../../../utils/helpers';
+import { buildRouteUrl, createTextDetailsGroup, parseSchedule } from '../../../../utils/helpers';
 import moment from 'moment';
 import {
   DEFAULT_EMPTY_DATA,
@@ -116,20 +116,17 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
         <EuiCallOut
           size="s"
           title={
-            <EuiText>
-              <p>
-                To match multiple data sources against known indicators of compromise we recommend
-                to configure logs scan with threat intel sources on the
-                <EuiLink
-                  onClick={() =>
-                    navigateToRoute(history, THREAT_INTEL_NAV_ID, ROUTES.THREAT_INTEL_OVERVIEW)
-                  }
-                >
-                  Threat intelligence
-                </EuiLink>{' '}
-                page and removing threat intel feeds from the detectors.
-              </p>
-            </EuiText>
+            <p>
+              To match your data against known indicators of compromise we recommend configuring
+              scan using the new{' '}
+              <EuiLink
+                target="_blank"
+                href={buildRouteUrl(THREAT_INTEL_NAV_ID, ROUTES.THREAT_INTEL_OVERVIEW)}
+              >
+                Threat Intelligence
+              </EuiLink>{' '}
+              platform and disabling threat intelligence in the detector.
+            </p>
           }
         />
       )}

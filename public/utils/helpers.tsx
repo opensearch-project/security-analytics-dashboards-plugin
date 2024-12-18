@@ -786,3 +786,12 @@ export const navigateToRoute = (
     history.push(route);
   }
 };
+
+export const buildRouteUrl = (appId: string, route: string) => {
+  const useUpdatedUx = getUseUpdatedUx();
+  if (useUpdatedUx) {
+    return getApplication().getUrlForApp(appId, { path: `#${route}` });
+  } else {
+    return `#${route}`;
+  }
+};

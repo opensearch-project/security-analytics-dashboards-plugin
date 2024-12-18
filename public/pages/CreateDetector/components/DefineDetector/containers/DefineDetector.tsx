@@ -252,7 +252,6 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
         {this.standardLogTypes.has(detector_type) && (
           <ThreatIntelligence
             isEdit={isEdit}
-            history={this.props.history}
             threatIntelChecked={threat_intel_enabled}
             onThreatIntelChange={this.onThreatIntelligenceChanged}
           />
