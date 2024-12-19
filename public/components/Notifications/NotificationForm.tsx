@@ -15,7 +15,7 @@ import {
   EuiSpacer,
   EuiCompressedSwitch,
   EuiText,
-  EuiCompressedTextArea, EuiCompressedCheckbox, EuiLink,
+  EuiCompressedTextArea, EuiCompressedCheckbox,
 } from '@elastic/eui';
 import React, { useState } from 'react';
 import { NOTIFICATIONS_HREF } from '../../utils/constants';
@@ -27,7 +27,6 @@ import {
 } from '../../../types';
 import { getIsNotificationPluginInstalled } from '../../utils/helpers';
 import Mustache from 'mustache';
-import { DEFAULT_MESSAGE_SOURCE } from '../Commons/Constants';
 
 export interface NotificationFormProps {
   allNotificationChannels: NotificationChannelTypeOptions[];
@@ -69,8 +68,7 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
   }
   let preview = '';
   try {
-    console.log(context)
-    preview = Mustache.render(action?.message_template.source, context);
+    preview = `${Mustache.render(action?.subject_template.source, context)}\n\n${Mustache.render(action?.message_template.source, context)}`;
   } catch (err) {
     preview = err.message;
     console.error('There was an error rendering mustache template', err);
@@ -191,7 +189,6 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
                   onChange={(e) => onDisplayPreviewChange(e)}
                 />
               </EuiFlexItem>
-              <EuiFlexItem></EuiFlexItem>
               {displayPreview ? (
                 <EuiCompressedFormRow label="Message preview" style={{ maxWidth: '100%' }}>
                   <EuiCompressedTextArea

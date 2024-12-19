@@ -856,9 +856,6 @@ Object {
                       </label>
                     </div>
                   </div>
-                  <div
-                    class="euiFlexItem"
-                  />
                 </div>
               </div>
             </div>
@@ -1722,9 +1719,6 @@ Object {
                     </label>
                   </div>
                 </div>
-                <div
-                  class="euiFlexItem"
-                />
               </div>
             </div>
           </div>

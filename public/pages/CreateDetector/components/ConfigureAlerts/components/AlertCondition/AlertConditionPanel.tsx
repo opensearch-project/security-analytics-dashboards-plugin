@@ -32,6 +32,7 @@ import {
 import { NotificationForm } from '../../../../../../components/Notifications/NotificationForm';
 import { ALERT_SEVERITY_OPTIONS } from '../../../../../../utils/constants';
 import { DEFAULT_MESSAGE_SOURCE } from '../../../../../../components/Commons/Constants';
+import Mustache from 'mustache';
 
 interface AlertConditionPanelProps extends RouteComponentProps {
   alertCondition: AlertCondition;
@@ -134,7 +135,7 @@ export default class AlertConditionPanel extends Component<
       parseAlertSeverityToOption(alertCondition.severity)?.label || alertCondition.severity
     }`;
     const detectorName = `Threat detector: ${detector.name}`;
-    const defaultSubject = 'Alerting Notification action';
+    const defaultSubject = DEFAULT_MESSAGE_SOURCE.MESSAGE_SUBJECT;
 
     if (updateMessage || !alertCondition.actions[0]?.subject_template.source)
       this.onMessageSubjectChange(defaultSubject, !onMount);
