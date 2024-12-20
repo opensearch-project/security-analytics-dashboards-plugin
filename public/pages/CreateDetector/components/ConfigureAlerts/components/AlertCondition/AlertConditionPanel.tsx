@@ -30,9 +30,7 @@ import {
   NotificationChannelTypeOptions,
 } from '../../../../../../../types';
 import { NotificationForm } from '../../../../../../components/Notifications/NotificationForm';
-import { ALERT_SEVERITY_OPTIONS } from '../../../../../../utils/constants';
-import { DEFAULT_MESSAGE_SOURCE } from '../../../../../../components/Commons/Constants';
-import Mustache from 'mustache';
+import { ALERT_SEVERITY_OPTIONS, DEFAULT_MESSAGE_SOURCE } from '../../../../../../utils/constants';
 
 interface AlertConditionPanelProps extends RouteComponentProps {
   alertCondition: AlertCondition;
@@ -110,14 +108,15 @@ export default class AlertConditionPanel extends Component<
     )}`;
     return {
       trigger: {
-        name:alertCondition.name,
-        severity: parseAlertSeverityToOption(alertCondition.severity)?.label || alertCondition.severity
+        name: alertCondition.name,
+        severity:
+          parseAlertSeverityToOption(alertCondition.severity)?.label || alertCondition.severity,
       },
       detector: {
         name: detector.name,
         description: detectorInput.description,
-        datasources: detectorIndices
-      }
+        datasources: detectorIndices,
+      },
     };
   };
 

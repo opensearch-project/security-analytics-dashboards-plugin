@@ -43,6 +43,18 @@ export interface TriggerAction {
   };
 }
 
+export interface TriggerContext {
+  trigger: {
+    name: string;
+    severity: string;
+  };
+  detector: {
+    name: string;
+    description: string;
+    datasources: string;
+  };
+}
+
 /**
  * API interfaces
  */

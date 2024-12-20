@@ -15,7 +15,8 @@ import {
   EuiSpacer,
   EuiCompressedSwitch,
   EuiText,
-  EuiCompressedTextArea, EuiCompressedCheckbox,
+  EuiCompressedTextArea,
+  EuiCompressedCheckbox,
 } from '@elastic/eui';
 import React, { useState } from 'react';
 import { NOTIFICATIONS_HREF } from '../../utils/constants';
@@ -24,6 +25,7 @@ import {
   NotificationChannelOption,
   NotificationChannelTypeOptions,
   TriggerAction,
+  TriggerContext,
 } from '../../../types';
 import { getIsNotificationPluginInstalled } from '../../utils/helpers';
 import Mustache from 'mustache';
@@ -38,7 +40,7 @@ export interface NotificationFormProps {
   onMessageBodyChange: (message: string) => void;
   onMessageSubjectChange: (subject: string) => void;
   onNotificationToggle?: (enabled: boolean) => void;
-  context: any
+  context: TriggerContext;
 }
 
 export const NotificationForm: React.FC<NotificationFormProps> = ({
@@ -68,12 +70,15 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
   }
   let preview = '';
   try {
-    preview = `${Mustache.render(action?.subject_template.source, context)}\n\n${Mustache.render(action?.message_template.source, context)}`;
+    preview = `${Mustache.render(action?.subject_template.source, context)}\n\n${Mustache.render(
+      action?.message_template.source,
+      context
+    )}`;
   } catch (err) {
-    preview = err.message;
+    preview = `There was an error rendering message preview: ${err.message}`;
     console.error('There was an error rendering mustache template', err);
   }
-
+  ``;
   return (
     <>
       <EuiCompressedSwitch
@@ -183,22 +188,23 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
 
               <EuiFlexItem>
                 <EuiCompressedCheckbox
-                  id={`checked`}
-                  label={'Preview message'}
+                  id="notification-message-preview-checkbox"
+                  label="Preview message"
                   checked={displayPreview}
-                  onChange={(e) => onDisplayPreviewChange(e)}
+                  onChange={onDisplayPreviewChange}
                 />
               </EuiFlexItem>
               {displayPreview ? (
-                <EuiCompressedFormRow label="Message preview" style={{ maxWidth: '100%' }}>
-                  <EuiCompressedTextArea
-                    placeholder="Preview of mustache template"
-                    fullWidth
-                    value={preview}
-                    readOnly
-                    className="read-only-text-area"
-                  />
-                </EuiCompressedFormRow>
+                <EuiFlexItem>
+                  <EuiCompressedFormRow label="Message preview" fullWidth>
+                    <EuiCompressedTextArea
+                      placeholder="Preview of mustache template"
+                      fullWidth
+                      value={preview}
+                      readOnly
+                    />
+                  </EuiCompressedFormRow>
+                </EuiFlexItem>
               ) : null}
             </EuiFlexGroup>
           </EuiAccordion>

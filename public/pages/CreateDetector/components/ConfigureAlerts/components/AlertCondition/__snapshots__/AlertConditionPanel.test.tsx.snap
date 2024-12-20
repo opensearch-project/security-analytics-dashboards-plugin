@@ -842,7 +842,7 @@ Object {
                     >
                       <input
                         class="euiCheckbox__input"
-                        id="checked"
+                        id="notification-message-preview-checkbox"
                         type="checkbox"
                       />
                       <div
@@ -850,7 +850,7 @@ Object {
                       />
                       <label
                         class="euiCheckbox__label"
-                        for="checked"
+                        for="notification-message-preview-checkbox"
                       >
                         Preview message
                       </label>
@@ -1705,7 +1705,7 @@ Object {
                   >
                     <input
                       class="euiCheckbox__input"
-                      id="checked"
+                      id="notification-message-preview-checkbox"
                       type="checkbox"
                     />
                     <div
@@ -1713,7 +1713,7 @@ Object {
                     />
                     <label
                       class="euiCheckbox__label"
-                      for="checked"
+                      for="notification-message-preview-checkbox"
                     >
                       Preview message
                     </label>
