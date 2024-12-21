@@ -28,6 +28,7 @@ import {
   Detector,
   NotificationChannelOption,
   NotificationChannelTypeOptions,
+  TriggerContext,
 } from '../../../../../../../types';
 import { NotificationForm } from '../../../../../../components/Notifications/NotificationForm';
 import { ALERT_SEVERITY_OPTIONS, DEFAULT_MESSAGE_SOURCE } from '../../../../../../utils/constants';
@@ -99,7 +100,7 @@ export default class AlertConditionPanel extends Component<
     });
   }
 
-  getTriggerContext = () => {
+  getTriggerContext = (): TriggerContext => {
     const lineBreakAndTab = '\n\t';
     const { alertCondition, detector } = this.props;
     const detectorInput = detector.inputs[0].detector_input;
@@ -107,15 +108,17 @@ export default class AlertConditionPanel extends Component<
       `,${lineBreakAndTab}`
     )}`;
     return {
-      trigger: {
-        name: alertCondition.name,
-        severity:
-          parseAlertSeverityToOption(alertCondition.severity)?.label || alertCondition.severity,
-      },
-      detector: {
-        name: detector.name,
-        description: detectorInput.description,
-        datasources: detectorIndices,
+      ctx: {
+        trigger: {
+          name: alertCondition.name,
+          severity:
+            parseAlertSeverityToOption(alertCondition.severity)?.label || alertCondition.severity,
+        },
+        detector: {
+          name: detector.name,
+          description: detectorInput.description,
+          datasources: detectorIndices,
+        },
       },
     };
   };
@@ -307,7 +310,6 @@ export default class AlertConditionPanel extends Component<
   };
 
   render() {
-    const context = this.getTriggerContext();
     const {
       alertCondition = getEmptyAlertCondition(),
       allNotificationChannels,
@@ -559,9 +561,7 @@ export default class AlertConditionPanel extends Component<
 
         <NotificationForm
           action={alertCondition.actions[0]}
-          context={{
-            ctx: context,
-          }}
+          context={this.getTriggerContext()}
           allNotificationChannels={allNotificationChannels}
           loadingNotifications={loadingNotifications}
           prepareMessage={this.prepareMessage}

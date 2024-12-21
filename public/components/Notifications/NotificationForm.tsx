@@ -18,7 +18,7 @@ import {
   EuiCompressedTextArea,
   EuiCompressedCheckbox,
 } from '@elastic/eui';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { NOTIFICATIONS_HREF } from '../../utils/constants';
 import { NotificationsCallOut } from '../NotificationsCallOut';
 import {
@@ -28,7 +28,7 @@ import {
   TriggerContext,
 } from '../../../types';
 import { getIsNotificationPluginInstalled } from '../../utils/helpers';
-import Mustache from 'mustache';
+import { render } from 'mustache';
 
 export interface NotificationFormProps {
   allNotificationChannels: NotificationChannelTypeOptions[];
@@ -58,8 +58,10 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
   const hasNotificationPlugin = getIsNotificationPluginInstalled();
   const [shouldSendNotification, setShouldSendNotification] = useState(!!action?.destination_id);
   const selectedNotificationChannelOption: NotificationChannelOption[] = [];
-  const onDisplayPreviewChange = (e) => setDisplayPreview(e.target.checked);
   const [displayPreview, setDisplayPreview] = useState(false);
+  const onDisplayPreviewChange = useCallback((e) => setDisplayPreview(e.target.checked), [
+    displayPreview,
+  ]);
   if (shouldSendNotification && action?.destination_id) {
     allNotificationChannels.forEach((typeOption) => {
       const matchingChannel = typeOption.options.find(
@@ -70,7 +72,7 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
   }
   let preview = '';
   try {
-    preview = `${Mustache.render(action?.subject_template.source, context)}\n\n${Mustache.render(
+    preview = `${render(action?.subject_template.source, context)}\n\n${render(
       action?.message_template.source,
       context
     )}`;
@@ -194,7 +196,7 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
                   onChange={onDisplayPreviewChange}
                 />
               </EuiFlexItem>
-              {displayPreview ? (
+              {displayPreview && (
                 <EuiFlexItem>
                   <EuiCompressedFormRow label="Message preview" fullWidth>
                     <EuiCompressedTextArea
@@ -205,7 +207,7 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
                     />
                   </EuiCompressedFormRow>
                 </EuiFlexItem>
-              ) : null}
+              )}
             </EuiFlexGroup>
           </EuiAccordion>
 

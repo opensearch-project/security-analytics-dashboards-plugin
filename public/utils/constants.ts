@@ -321,10 +321,6 @@ export const dataSourceObservable = new BehaviorSubject<DataSourceOption>({});
 
 export const DATA_SOURCE_NOT_SET_ERROR = 'Data source is not set';
 
-/*
- * Copyright OpenSearch Contributors
- * SPDX-License-Identifier: Apache-2.0
- */
 export const DEFAULT_MESSAGE_SOURCE = {
   MESSAGE_BODY: `- Triggered alert condition: {{ctx.trigger.name}}
  - Severity: {{ctx.trigger.severity}}
