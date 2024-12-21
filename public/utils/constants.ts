@@ -320,3 +320,12 @@ const LocalCluster: DataSourceOption = {
 export const dataSourceObservable = new BehaviorSubject<DataSourceOption>({});
 
 export const DATA_SOURCE_NOT_SET_ERROR = 'Data source is not set';
+
+export const DEFAULT_MESSAGE_SOURCE = {
+  MESSAGE_BODY: `- Triggered alert condition: {{ctx.trigger.name}}
+ - Severity: {{ctx.trigger.severity}}
+ - Threat detector: {{ctx.detector.name}}
+ - Description: {{ctx.detector.description}}
+ - Detector data sources: {{ctx.detector.datasources}}`,
+  MESSAGE_SUBJECT: `Triggered alert condition:  {{ctx.trigger.name}} - Severity: {{ctx.trigger.severity}} - Threat detector: {{ctx.detector.name}}`,
+};
