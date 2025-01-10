@@ -4,14 +4,7 @@
  */
 
 import React, { useMemo } from 'react';
-import {
-  EuiHorizontalRule,
-  EuiLink,
-  EuiPanel,
-  EuiSpacer,
-  EuiSteps,
-  EuiText,
-} from '@elastic/eui';
+import { EuiHorizontalRule, EuiLink, EuiPanel, EuiSpacer, EuiSteps, EuiText } from '@elastic/eui';
 import { EuiContainedStepProps } from '@elastic/eui/src/components/steps/steps';
 import {
   BREADCRUMBS,
