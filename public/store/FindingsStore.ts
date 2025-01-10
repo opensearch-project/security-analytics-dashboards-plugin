@@ -132,6 +132,10 @@ export class FindingsStore implements IFindingsStore {
 
     const firstGetFindingsRes = await this.service.getFindings(getFindingsQueryParams);
 
+    if (signal.aborted) {
+      return allFindings;
+    }
+
     if (firstGetFindingsRes.ok) {
       const extendedFindings = this.extendFindings(firstGetFindingsRes.response.findings, detector);
       onPartialFindingsFetched?.(extendedFindings);

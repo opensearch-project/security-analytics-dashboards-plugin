@@ -514,10 +514,10 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
               </EuiFlexGroup>
             </EuiFlexItem>
           </EuiFlexGroup>
-          <EuiSpacer size="xl" />
+          <EuiSpacer size="m" />
         </PageHeader>
         <EuiTabs size="s">{this.renderTabs()}</EuiTabs>
-        <EuiSpacer size="xl" />
+        <EuiSpacer size="m" />
         {selectedTabContent}
       </>
     );

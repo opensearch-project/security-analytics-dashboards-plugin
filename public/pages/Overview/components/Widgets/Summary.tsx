@@ -170,12 +170,16 @@ export const Summary: React.FC<SummaryProps> = ({
         <EuiFlexItem>
           {activeAlerts === 0 && totalFindings === 0 ? (
             <EuiEmptyPrompt
-              title={<EuiText size="s"><h2>No alerts and findings found</h2></EuiText>}
+              title={
+                <EuiText size="s">
+                  <h2>No alerts and findings found</h2>
+                </EuiText>
+              }
               body={
                 <>
                   <p>
                     <EuiText size="s">
-                      Adjust the time range to see more results or create a <br/>
+                      Adjust the time range to see more results or create a <br />
                       detector to generate findings.
                     </EuiText>
                   </p>
@@ -183,6 +187,9 @@ export const Summary: React.FC<SummaryProps> = ({
                     href={`#${ROUTES.DETECTORS_CREATE}`}
                     fill={true}
                     data-test-subj={'detectorsCreateButton'}
+                    iconType="plus"
+                    iconSide="left"
+                    iconGap="s"
                   >
                     Create a detector
                   </EuiSmallButton>

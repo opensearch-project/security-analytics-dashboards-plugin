@@ -25,6 +25,7 @@ import {
   DATE_TIME_FILTER_KEY,
   ROUTES,
   dataSourceObservable,
+  OS_NOTIFICATION_PLUGIN,
 } from '../../utils/constants';
 import { CoreServicesConsumer } from '../../components/core_services';
 import Findings from '../Findings';
@@ -66,9 +67,15 @@ import { ThreatIntelOverview } from '../ThreatIntel/containers/Overview/ThreatIn
 import { AddThreatIntelSource } from '../ThreatIntel/containers/AddThreatIntelSource/AddThreatIntelSource';
 import { ThreatIntelScanConfigForm } from '../ThreatIntel/containers/ScanConfiguration/ThreatIntelScanConfigForm';
 import { ThreatIntelSource } from '../ThreatIntel/containers/ThreatIntelSource/ThreatIntelSource';
-import queryString from 'query-string';
-import { dataSourceFilterFn } from '../../utils/helpers';
+import { parse } from 'query-string';
+import {
+  dataSourceFilterFn,
+  getPlugins,
+  setIsNotificationPluginInstalled,
+} from '../../utils/helpers';
 import { GettingStartedContent } from '../Overview/components/GettingStarted/GettingStartedContent';
+import { BrowserServices } from '../../models/interfaces';
+import { CHANNEL_TYPES } from '../CreateDetector/components/ConfigureAlerts/utils/constants';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -108,6 +115,7 @@ interface MainProps extends RouteComponentProps {
   setActionMenu: AppMountParameters['setHeaderActionMenu'];
   multiDataSourceEnabled: boolean;
   dataSourceManagement?: DataSourceManagementPluginSetup;
+  services: BrowserServices;
 }
 
 interface MainState {
@@ -150,16 +158,12 @@ export default class Main extends Component<MainProps, MainState> {
       const {
         dataSourceId: parsedDataSourceId,
         dataSourceLabel: parsedDataSourceLabel,
-      } = queryString.parse(this.props.location.search) as {
+      } = parse(this.props.location.search, { decode: false }) as {
         dataSourceId: string;
         dataSourceLabel: string;
       };
       dataSourceId = parsedDataSourceId;
       dataSourceLabel = parsedDataSourceLabel || '';
-
-      if (dataSourceId) {
-        dataSourceObservable.next({ id: dataSourceId, label: dataSourceLabel });
-      }
     }
 
     this.state = {
@@ -267,6 +271,7 @@ export default class Main extends Component<MainProps, MainState> {
 
   onDataSourceSelected = (sources: DataSourceOption[]) => {
     const { selectedDataSource: dataSource, dataSourceLoading } = this.state;
+    const { services } = this.props;
     if (
       sources[0] &&
       (dataSource?.id !== sources[0].id || dataSource?.label !== sources[0].label)
@@ -275,11 +280,21 @@ export default class Main extends Component<MainProps, MainState> {
       this.setState({
         selectedDataSource: { ...sources[0] },
       });
+      dataSourceObservable.next(dataSourceInfo.activeDataSource);
+
+      services.notificationsService.getServerFeatures().then((response) => {
+        if (response.ok) {
+          CHANNEL_TYPES.splice(0, CHANNEL_TYPES.length, ...response.response);
+        }
+      });
+
+      getPlugins(services.opensearchService).then((plugins): void => {
+        setIsNotificationPluginInstalled(plugins.includes(OS_NOTIFICATION_PLUGIN));
+      });
+
+      DataStore.logTypes.getLogTypes();
     }
-    dataSourceObservable.next({
-      id: this.state.selectedDataSource.id,
-      label: this.state.selectedDataSource.label,
-    });
+
     if (dataSourceLoading) {
       this.setState({ dataSourceLoading: false });
     }

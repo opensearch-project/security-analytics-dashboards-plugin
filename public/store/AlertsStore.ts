@@ -20,7 +20,8 @@ export class AlertsStore {
     signal: AbortSignal,
     duration?: Duration,
     onPartialAlertsFetched?: (alerts: AlertResponse[]) => void,
-    alertCount?: number
+    alertCount?: number,
+    dataSource?: any
   ) {
     let allAlerts: any[] = [];
     const maxAlertsReturned = alertCount ?? 10000;
@@ -38,6 +39,7 @@ export class AlertsStore {
         size: maxAlertsReturned,
         startTime: duration?.startTime,
         endTime: duration?.endTime,
+        dataSource,
       });
 
       if (signal.aborted) {
@@ -61,6 +63,38 @@ export class AlertsStore {
       alertsCount === maxAlertsReturned
     );
 
+    return allAlerts;
+  }
+
+  // Just grab 25 alerts for the analytics all threat alerts card once
+  public async getAlertsForThreatAlertsCard(
+    detectorId: string,
+    detectorName: string,
+    duration?: Duration,
+    onPartialAlertsFetched?: (alerts: AlertResponse[]) => void,
+    alertCount?: number,
+    dataSource?: any
+  ) {
+    let allAlerts: any[] = [];
+    const maxAlertsReturned = alertCount ?? 25;
+    let startIndex = 0;
+
+    const getAlertsRes = await this.service.getAlerts({
+      detector_id: detectorId,
+      startIndex,
+      size: maxAlertsReturned,
+      startTime: duration?.startTime,
+      endTime: duration?.endTime,
+      dataSource,
+    });
+
+    if (getAlertsRes.ok) {
+      const alerts = this.extendAlerts(getAlertsRes.response.alerts, detectorId, detectorName);
+      onPartialAlertsFetched?.(alerts);
+      allAlerts = allAlerts.concat(alerts);
+    } else {
+      errorNotificationToast(this.notifications, 'retrieve', 'alerts', getAlertsRes.error);
+    }
     return allAlerts;
   }
 

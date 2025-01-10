@@ -14,6 +14,7 @@ import {
   EuiText,
   EuiBadge,
   euiPaletteColorBlind,
+  EuiEmptyPrompt,
 } from '@elastic/eui';
 import moment from 'moment';
 import { PeriodSchedule } from '../../models/interfaces';
@@ -330,6 +331,9 @@ export const errorNotificationToast = (
   errorMessage: string = '',
   displayTime: number = 5000 // 5 seconds; default is 10 seconds
 ) => {
+  if (errorMessage.toLowerCase().includes('no living connections')) {
+    return;
+  }
   const message = `Failed to ${actionName} ${objectName}:`;
   console.error(message, errorMessage);
   notifications?.toasts.addDanger({
@@ -706,8 +710,27 @@ export function registerThreatAlertsCard() {
           detectorService={getBrowserServices().detectorsService}
         />
       ),
+      width: 16,
     }),
   });
+}
+
+export function getEuiEmptyPrompt(message: string) {
+  return (
+    <EuiEmptyPrompt
+      style={{ position: 'relative' }}
+      body={
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '32px' }}>
+          <p style={{ position: 'absolute', top: 'calc(50% - 20px)' }}>
+            <EuiText size="s">
+              <p style={{ margin: 0 }}>{message}</p>
+              <p style={{ margin: 0 }}>Adjust the time range to see more results.</p>
+            </EuiText>
+          </p>
+        </div>
+      }
+    />
+  );
 }
 
 export function initializeServices(coreStart: CoreStart, indexPattern: CoreIndexPatternsService) {

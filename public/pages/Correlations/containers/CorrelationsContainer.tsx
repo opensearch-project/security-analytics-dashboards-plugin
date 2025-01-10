@@ -454,7 +454,11 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
             <h2>No correlations found</h2>
           </EuiText>
         }
-        body={<EuiText size="s"><p>There are no correlated findings in the system.</p></EuiText>}
+        body={
+          <EuiText size="s">
+            <p>There are no correlated findings in the system.</p>
+          </EuiText>
+        }
         actions={[
           <EuiSmallButton fill={true} color="primary" href={`#${ROUTES.CORRELATION_RULE_CREATE}`}>
             Create correlation rule
@@ -548,7 +552,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
             </EuiFlyoutBody>
           </EuiFlyout>
         ) : null}
-        <EuiFlexGroup direction="column">
+        <EuiFlexGroup direction="column" gutterSize={'m'}>
           <PageHeader
             appRightControls={[
               {
@@ -587,7 +591,9 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                   </EuiFilterGroup>
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>
-                  <EuiSmallButtonEmpty onClick={this.resetFilters}>Reset filters</EuiSmallButtonEmpty>
+                  <EuiSmallButtonEmpty onClick={this.resetFilters}>
+                    Reset filters
+                  </EuiSmallButtonEmpty>
                 </EuiFlexItem>
               </EuiFlexGroup>
               <EuiSpacer />

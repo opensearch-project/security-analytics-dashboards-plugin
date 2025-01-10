@@ -3,12 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiCardProps, EuiStatProps } from '@elastic/eui';
+import { EuiCardProps, EuiStatProps, EuiIcon, EuiTextColor } from '@elastic/eui';
+import React from 'react';
 import {
-  CORRELATIONS_RULE_NAV_ID,
   DETECTORS_NAV_ID,
-  GETTING_STARTED_NAV_ID,
-  THREAT_ALERTS_NAV_ID,
+  GET_STARTED_NAV_ID,
   THREAT_INTEL_NAV_ID,
 } from '../../../utils/constants';
 import { getApplication } from '../../../services/utils/constants';
@@ -22,70 +21,44 @@ export const moreLink = 'https://opensearch.org/docs/latest/security-analytics/'
 
 export const getOverviewsCardsProps = (): EuiCardProps[] => [
   {
-    title: 'Configure Security Analytics',
-    description: 'Set up tools and components to get started.',
-    selectable: {
-      onClick: () => {
-        getApplication().navigateToApp(GETTING_STARTED_NAV_ID);
-      },
-      children: 'Getting started guide',
-      isDisabled: false,
+    icon: React.createElement(EuiIcon, { type: 'rocket', size: "l", color: "primary" }),
+    title: '',
+    description: 'Configure Security Analytics tools and components to get started.',
+    onClick: () => {
+      getApplication().navigateToApp(GET_STARTED_NAV_ID);
     },
+    footer: React.createElement(EuiTextColor, { color: 'subdued' }, 'Get started guide'),
+    className: 'usecaseOverviewGettingStartedCard',
   },
   {
-    title: 'Uncover security findings',
+    icon: React.createElement(EuiIcon, { type: 'compass', size: "l", color: "primary" }),
+    title: '',
+    description: 'Explore data to uncover and discover insights.',
+    onClick: () => {
+      getApplication().navigateToApp('discover');
+    },
+    footer: React.createElement(EuiTextColor, { color: 'subdued' }, 'Discover'),
+    className: 'usecaseOverviewGettingStartedCard',
+  },
+  {
+    icon: React.createElement(EuiIcon, { type: 'pulse', size: "l", color: "primary" }),
+    title: '',
     description: 'Identify security threats in your log data with detection rules.',
-    selectable: {
-      onClick: () => {
-        getApplication().navigateToApp(DETECTORS_NAV_ID);
-      },
-      children: 'Threat detectors',
-      isDisabled: false,
+    onClick: () => {
+      getApplication().navigateToApp(DETECTORS_NAV_ID);
     },
+    footer: React.createElement(EuiTextColor, { color: 'subdued' }, 'Threat detection'),
+    className: 'usecaseOverviewGettingStartedCard',
   },
   {
-    title: 'Discover insights',
-    description: 'Explore data to uncover insights.',
-    selectable: {
-      onClick: () => {
-        getApplication().navigateToApp('discover');
-      },
-      children: 'Discover',
-      isDisabled: false,
+    icon: React.createElement(EuiIcon, { type: 'radar', size: "l", color: "primary" }),
+    title: '',
+    description: 'Scan your log data for malicious actors from known indicators of compromise.',
+    onClick: () => {
+      getApplication().navigateToApp(THREAT_INTEL_NAV_ID);
     },
-  },
-  {
-    title: 'Get notified',
-    description: 'Receive timely notifications with detector-driven alerts.',
-    selectable: {
-      onClick: () => {
-        getApplication().navigateToApp(THREAT_ALERTS_NAV_ID);
-      },
-      children: 'Threat alerts',
-      isDisabled: false,
-    },
-  },
-  {
-    title: 'Correlate events',
-    description: 'Detect multi-system threats with correlation rule builder',
-    selectable: {
-      onClick: () => {
-        getApplication().navigateToApp(CORRELATIONS_RULE_NAV_ID);
-      },
-      children: 'Correlation rules',
-      isDisabled: false,
-    },
-  },
-  {
-    title: 'Scan your logs',
-    description: 'Identify malicious actors from known indicators of compromise.',
-    selectable: {
-      onClick: () => {
-        getApplication().navigateToApp(THREAT_INTEL_NAV_ID);
-      },
-      children: ' Threat intelligence',
-      isDisabled: false,
-    },
+    footer: React.createElement(EuiTextColor, { color: 'subdued' }, 'Threat intelligence'),
+    className: 'usecaseOverviewGettingStartedCard',
   },
 ];
 
@@ -98,7 +71,7 @@ export const getOverviewStatsProps = ({
   return [
     {
       title: alerts,
-      description: 'Total active alerts',
+      description: 'Total active threat alerts',
     },
     {
       title: correlations,

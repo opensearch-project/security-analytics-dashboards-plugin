@@ -48,15 +48,12 @@ const ContentPanel = ({
   hideHeaderBorder = false,
   className = '',
 }: ContentPanelProps): JSX.Element => (
-  <EuiPanel
-    style={{ paddingLeft: '0px', paddingRight: '0px', ...panelStyles }}
-    className={className}
-  >
+  <EuiPanel style={{ padding: '16px', ...panelStyles }} className={className}>
     <EuiFlexGroup style={{ padding: '0px 10px' }} justifyContent="spaceBetween" alignItems="center">
       <EuiFlexItem>
         {typeof title === 'string' ? (
           <EuiText size={titleSize}>
-            <h2>{title}</h2>
+            <h3>{title}</h3>
           </EuiText>
         ) : (
           title

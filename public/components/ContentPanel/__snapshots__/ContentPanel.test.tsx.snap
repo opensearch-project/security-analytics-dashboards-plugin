@@ -3,7 +3,7 @@
 exports[`<ContentPanel /> spec renders the component 1`] = `
 <div
   class="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
-  style="padding-left: 0px; padding-right: 0px;"
+  style="padding: 16px;"
 >
   <div
     class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive"
@@ -15,9 +15,9 @@ exports[`<ContentPanel /> spec renders the component 1`] = `
       <div
         class="euiText euiText--small"
       >
-        <h2>
+        <h3>
           Testing
-        </h2>
+        </h3>
       </div>
     </div>
     <div

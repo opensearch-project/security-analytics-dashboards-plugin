@@ -209,9 +209,10 @@ exports[`<Alerts /> spec renders the component 1`] = `
   >
     <EuiFlexGroup
       direction="column"
+      gutterSize="m"
     >
       <div
-        className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionColumn euiFlexGroup--responsive"
+        className="euiFlexGroup euiFlexGroup--gutterMedium euiFlexGroup--directionColumn euiFlexGroup--responsive"
       >
         <PageHeader
           appRightControls={
@@ -818,13 +819,6 @@ exports[`<Alerts /> spec renders the component 1`] = `
                   </EuiFlexItem>
                 </div>
               </EuiFlexGroup>
-              <EuiSpacer
-                size="m"
-              >
-                <div
-                  className="euiSpacer euiSpacer--m"
-                />
-              </EuiSpacer>
             </div>
           </EuiFlexItem>
         </PageHeader>
@@ -832,43 +826,235 @@ exports[`<Alerts /> spec renders the component 1`] = `
           <div
             className="euiFlexItem"
           >
-            <EuiPanel>
-              <div
-                className="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
-              >
-                <EuiFlexGroup
-                  direction="column"
-                >
-                  <div
-                    className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionColumn euiFlexGroup--responsive"
-                  >
-                    <EuiFlexItem
-                      style={
-                        Object {
-                          "alignSelf": "flex-end",
-                        }
-                      }
-                    >
-                      <div
-                        className="euiFlexItem"
-                        style={
-                          Object {
-                            "alignSelf": "flex-end",
-                          }
-                        }
+            <EuiTabbedContent
+              autoFocus="initial"
+              initialSelectedTab={
+                Object {
+                  "content": <React.Fragment>
+                    <EuiSpacer
+                      size="m"
+                    />
+                    <EuiPanel>
+                      <EuiFlexGroup
+                        direction="column"
                       >
-                        <EuiFlexGroup
-                          alignItems="center"
-                          justifyContent="flexEnd"
+                        <EuiFlexItem
+                          style={
+                            Object {
+                              "alignSelf": "flex-end",
+                            }
+                          }
                         >
-                          <div
-                            className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
+                          <EuiFlexGroup
+                            alignItems="center"
+                            justifyContent="flexEnd"
                           >
                             <EuiFlexItem
                               grow={false}
                             >
-                              <div
-                                className="euiFlexItem euiFlexItem--flexGrowZero"
+                              <EuiCompressedSelect
+                                id="alert-vis-groupBy"
+                                onChange={[Function]}
+                                options={
+                                  Array [
+                                    Object {
+                                      "text": "Alert status",
+                                      "value": "status",
+                                    },
+                                    Object {
+                                      "text": "Alert severity",
+                                      "value": "severity",
+                                    },
+                                  ]
+                                }
+                                prepend="Group by"
+                                value="status"
+                              />
+                            </EuiFlexItem>
+                          </EuiFlexGroup>
+                        </EuiFlexItem>
+                        <EuiFlexItem>
+                          <EuiEmptyPrompt
+                            body={
+                              <p>
+                                <EuiText
+                                  size="s"
+                                >
+                                  Adjust the time range to see more results or create alert triggers in your
+                                   
+                                  <EuiLink
+                                    href="/#/detectors"
+                                  >
+                                    detectors
+                                  </EuiLink>
+                                   to generate alerts.
+                                </EuiText>
+                              </p>
+                            }
+                            title={
+                              <EuiText
+                                size="s"
+                              >
+                                <h2>
+                                  No alerts
+                                </h2>
+                              </EuiText>
+                            }
+                          />
+                        </EuiFlexItem>
+                      </EuiFlexGroup>
+                    </EuiPanel>
+                    <EuiSpacer
+                      size="m"
+                    />
+                    <ContentPanel
+                      actions={
+                        Array [
+                          <EuiSmallButton
+                            data-test-subj="acknowledge-button"
+                            disabled={true}
+                            onClick={[Function]}
+                          >
+                            Acknowledge
+                          </EuiSmallButton>,
+                        ]
+                      }
+                      title="Alerts"
+                    >
+                      <EuiInMemoryTable
+                        columns={
+                          Array [
+                            Object {
+                              "dataType": "date",
+                              "field": "start_time",
+                              "name": "Start time",
+                              "render": [Function],
+                              "sortable": true,
+                            },
+                            Object {
+                              "dataType": "string",
+                              "field": "trigger_name",
+                              "name": "Alert trigger name",
+                              "render": [Function],
+                              "sortable": false,
+                            },
+                            Object {
+                              "dataType": "string",
+                              "field": "detectorName",
+                              "name": "Detector",
+                              "render": [Function],
+                              "sortable": true,
+                            },
+                            Object {
+                              "dataType": "string",
+                              "field": "state",
+                              "name": "Status",
+                              "render": [Function],
+                              "sortable": true,
+                            },
+                            Object {
+                              "dataType": "string",
+                              "field": "severity",
+                              "name": "Alert severity",
+                              "render": [Function],
+                              "sortable": true,
+                            },
+                            Object {
+                              "actions": Array [
+                                Object {
+                                  "render": [Function],
+                                },
+                                Object {
+                                  "render": [Function],
+                                },
+                              ],
+                              "name": "Actions",
+                              "sortable": false,
+                            },
+                          ]
+                        }
+                        isSelectable={true}
+                        itemId={[Function]}
+                        items={Array []}
+                        loading={true}
+                        pagination={true}
+                        responsive={true}
+                        search={
+                          Object {
+                            "box": Object {
+                              "compressed": true,
+                              "placeholder": "Search alerts",
+                              "schema": true,
+                            },
+                            "filters": Array [
+                              Object {
+                                "compressed": true,
+                                "field": "severity",
+                                "multiSelect": "or",
+                                "name": "Alert severity",
+                                "options": Array [],
+                                "type": "field_value_selection",
+                              },
+                              Object {
+                                "compressed": true,
+                                "field": "state",
+                                "multiSelect": "or",
+                                "name": "Status",
+                                "options": Array [],
+                                "type": "field_value_selection",
+                              },
+                            ],
+                          }
+                        }
+                        selection={
+                          Object {
+                            "onSelectionChange": [Function],
+                            "selectable": [Function],
+                            "selectableMessage": [Function],
+                          }
+                        }
+                        sorting={
+                          Object {
+                            "sort": Object {
+                              "direction": "dsc",
+                              "field": "start_time",
+                            },
+                          }
+                        }
+                        tableLayout="fixed"
+                      />
+                    </ContentPanel>
+                  </React.Fragment>,
+                  "id": "detection-rules",
+                  "name": "Detection rules",
+                }
+              }
+              onTabClick={[Function]}
+              size="s"
+              tabs={
+                Array [
+                  Object {
+                    "content": <React.Fragment>
+                      <EuiSpacer
+                        size="m"
+                      />
+                      <EuiPanel>
+                        <EuiFlexGroup
+                          direction="column"
+                        >
+                          <EuiFlexItem
+                            style={
+                              Object {
+                                "alignSelf": "flex-end",
+                              }
+                            }
+                          >
+                            <EuiFlexGroup
+                              alignItems="center"
+                              justifyContent="flexEnd"
+                            >
+                              <EuiFlexItem
+                                grow={false}
                               >
                                 <EuiCompressedSelect
                                   id="alert-vis-groupBy"
@@ -887,758 +1073,594 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                   }
                                   prepend="Group by"
                                   value="status"
-                                >
-                                  <EuiSelect
-                                    compressed={true}
-                                    id="alert-vis-groupBy"
-                                    onChange={[Function]}
-                                    options={
-                                      Array [
-                                        Object {
-                                          "text": "Alert status",
-                                          "value": "status",
-                                        },
-                                        Object {
-                                          "text": "Alert severity",
-                                          "value": "severity",
-                                        },
-                                      ]
-                                    }
-                                    prepend="Group by"
-                                    value="status"
+                                />
+                              </EuiFlexItem>
+                            </EuiFlexGroup>
+                          </EuiFlexItem>
+                          <EuiFlexItem>
+                            <EuiEmptyPrompt
+                              body={
+                                <p>
+                                  <EuiText
+                                    size="s"
                                   >
-                                    <EuiFormControlLayout
-                                      compressed={true}
-                                      fullWidth={false}
-                                      icon={
-                                        Object {
-                                          "side": "right",
-                                          "type": "arrowDown",
-                                        }
-                                      }
-                                      inputId="alert-vis-groupBy"
-                                      isLoading={false}
-                                      prepend="Group by"
+                                    Adjust the time range to see more results or create alert triggers in your
+                                     
+                                    <EuiLink
+                                      href="/#/detectors"
                                     >
-                                      <div
-                                        className="euiFormControlLayout euiFormControlLayout--compressed euiFormControlLayout--group"
-                                      >
-                                        <EuiFormLabel
-                                          className="euiFormControlLayout__prepend"
-                                          htmlFor="alert-vis-groupBy"
-                                        >
-                                          <label
-                                            className="euiFormLabel euiFormControlLayout__prepend"
-                                            htmlFor="alert-vis-groupBy"
-                                          >
-                                            Group by
-                                          </label>
-                                        </EuiFormLabel>
-                                        <div
-                                          className="euiFormControlLayout__childrenWrapper"
-                                        >
-                                          <EuiValidatableControl>
-                                            <select
-                                              className="euiSelect euiSelect--compressed euiSelect--inGroup"
-                                              id="alert-vis-groupBy"
-                                              onChange={[Function]}
-                                              onMouseUp={[Function]}
-                                              value="status"
-                                            >
-                                              <option
-                                                key="0"
-                                                value="status"
-                                              >
-                                                Alert status
-                                              </option>
-                                              <option
-                                                key="1"
-                                                value="severity"
-                                              >
-                                                Alert severity
-                                              </option>
-                                            </select>
-                                          </EuiValidatableControl>
-                                          <EuiFormControlLayoutIcons
-                                            compressed={true}
-                                            icon={
-                                              Object {
-                                                "side": "right",
-                                                "type": "arrowDown",
-                                              }
-                                            }
-                                            isLoading={false}
-                                          >
-                                            <div
-                                              className="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
-                                            >
-                                              <EuiFormControlLayoutCustomIcon
-                                                size="s"
-                                                type="arrowDown"
-                                              >
-                                                <span
-                                                  className="euiFormControlLayoutCustomIcon"
-                                                >
-                                                  <EuiIcon
-                                                    aria-hidden="true"
-                                                    className="euiFormControlLayoutCustomIcon__icon"
-                                                    size="s"
-                                                    type="arrowDown"
-                                                  >
-                                                    EuiIconMock
-                                                  </EuiIcon>
-                                                </span>
-                                              </EuiFormControlLayoutCustomIcon>
-                                            </div>
-                                          </EuiFormControlLayoutIcons>
-                                        </div>
-                                      </div>
-                                    </EuiFormControlLayout>
-                                  </EuiSelect>
-                                </EuiCompressedSelect>
-                              </div>
-                            </EuiFlexItem>
-                          </div>
-                        </EuiFlexGroup>
-                      </div>
-                    </EuiFlexItem>
-                    <EuiFlexItem>
-                      <div
-                        className="euiFlexItem"
-                      >
-                        <EuiEmptyPrompt
-                          body={
-                            <p>
-                              <EuiText
-                                size="s"
-                              >
-                                Adjust the time range to see more results or create alert triggers in your
-                                 
-                                <EuiLink
-                                  href="/#/detectors"
-                                >
-                                  detectors
-                                </EuiLink>
-                                 to generate alerts.
-                              </EuiText>
-                            </p>
-                          }
-                          title={
-                            <EuiText
-                              size="s"
-                            >
-                              <h2>
-                                No alerts
-                              </h2>
-                            </EuiText>
-                          }
-                        >
-                          <div
-                            className="euiEmptyPrompt"
-                          >
-                            <EuiTitle
-                              size="m"
-                            >
-                              <EuiText
-                                className="euiTitle euiTitle--medium"
-                                size="s"
-                              >
-                                <div
-                                  className="euiText euiText--small euiTitle euiTitle--medium"
+                                      detectors
+                                    </EuiLink>
+                                     to generate alerts.
+                                  </EuiText>
+                                </p>
+                              }
+                              title={
+                                <EuiText
+                                  size="s"
                                 >
                                   <h2>
                                     No alerts
                                   </h2>
-                                </div>
-                              </EuiText>
-                            </EuiTitle>
-                            <EuiTextColor
-                              color="subdued"
-                            >
-                              <span
-                                className="euiTextColor euiTextColor--subdued"
-                              >
-                                <EuiSpacer
-                                  size="m"
-                                >
-                                  <div
-                                    className="euiSpacer euiSpacer--m"
-                                  />
-                                </EuiSpacer>
-                                <EuiText>
-                                  <div
-                                    className="euiText euiText--medium"
-                                  >
-                                    <p>
-                                      <EuiText
-                                        size="s"
-                                      >
-                                        <div
-                                          className="euiText euiText--small"
-                                        >
-                                          Adjust the time range to see more results or create alert triggers in your
-                                           
-                                          <EuiLink
-                                            href="/#/detectors"
-                                          >
-                                            <a
-                                              className="euiLink euiLink--primary"
-                                              href="/#/detectors"
-                                              rel="noreferrer"
-                                            >
-                                              detectors
-                                            </a>
-                                          </EuiLink>
-                                           to generate alerts.
-                                        </div>
-                                      </EuiText>
-                                    </p>
-                                  </div>
                                 </EuiText>
-                              </span>
-                            </EuiTextColor>
-                          </div>
-                        </EuiEmptyPrompt>
-                      </div>
-                    </EuiFlexItem>
-                  </div>
-                </EuiFlexGroup>
-              </div>
-            </EuiPanel>
-            <EuiSpacer
-              size="xxl"
-            >
-              <div
-                className="euiSpacer euiSpacer--xxl"
-              />
-            </EuiSpacer>
-          </div>
-        </EuiFlexItem>
-        <EuiFlexItem>
-          <div
-            className="euiFlexItem"
-          >
-            <ContentPanel
-              actions={
-                Array [
-                  <EuiSmallButton
-                    data-test-subj="acknowledge-button"
-                    disabled={true}
-                    onClick={[Function]}
-                  >
-                    Acknowledge
-                  </EuiSmallButton>,
-                ]
-              }
-              title="Alerts"
-            >
-              <EuiPanel
-                className=""
-                style={
-                  Object {
-                    "paddingLeft": "0px",
-                    "paddingRight": "0px",
-                  }
-                }
-              >
-                <div
-                  className="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
-                  style={
-                    Object {
-                      "paddingLeft": "0px",
-                      "paddingRight": "0px",
-                    }
-                  }
-                >
-                  <EuiFlexGroup
-                    alignItems="center"
-                    justifyContent="spaceBetween"
-                    style={
-                      Object {
-                        "padding": "0px 10px",
-                      }
-                    }
-                  >
-                    <div
-                      className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive"
-                      style={
-                        Object {
-                          "padding": "0px 10px",
-                        }
-                      }
-                    >
-                      <EuiFlexItem>
-                        <div
-                          className="euiFlexItem"
-                        >
-                          <EuiText
-                            size="s"
-                          >
-                            <div
-                              className="euiText euiText--small"
+                              }
+                            />
+                          </EuiFlexItem>
+                        </EuiFlexGroup>
+                      </EuiPanel>
+                      <EuiSpacer
+                        size="m"
+                      />
+                      <ContentPanel
+                        actions={
+                          Array [
+                            <EuiSmallButton
+                              data-test-subj="acknowledge-button"
+                              disabled={true}
+                              onClick={[Function]}
                             >
-                              <h2>
-                                Alerts
-                              </h2>
-                            </div>
-                          </EuiText>
-                        </div>
-                      </EuiFlexItem>
-                      <EuiFlexItem
-                        grow={false}
+                              Acknowledge
+                            </EuiSmallButton>,
+                          ]
+                        }
+                        title="Alerts"
                       >
-                        <div
-                          className="euiFlexItem euiFlexItem--flexGrowZero"
+                        <EuiInMemoryTable
+                          columns={
+                            Array [
+                              Object {
+                                "dataType": "date",
+                                "field": "start_time",
+                                "name": "Start time",
+                                "render": [Function],
+                                "sortable": true,
+                              },
+                              Object {
+                                "dataType": "string",
+                                "field": "trigger_name",
+                                "name": "Alert trigger name",
+                                "render": [Function],
+                                "sortable": false,
+                              },
+                              Object {
+                                "dataType": "string",
+                                "field": "detectorName",
+                                "name": "Detector",
+                                "render": [Function],
+                                "sortable": true,
+                              },
+                              Object {
+                                "dataType": "string",
+                                "field": "state",
+                                "name": "Status",
+                                "render": [Function],
+                                "sortable": true,
+                              },
+                              Object {
+                                "dataType": "string",
+                                "field": "severity",
+                                "name": "Alert severity",
+                                "render": [Function],
+                                "sortable": true,
+                              },
+                              Object {
+                                "actions": Array [
+                                  Object {
+                                    "render": [Function],
+                                  },
+                                  Object {
+                                    "render": [Function],
+                                  },
+                                ],
+                                "name": "Actions",
+                                "sortable": false,
+                              },
+                            ]
+                          }
+                          isSelectable={true}
+                          itemId={[Function]}
+                          items={Array []}
+                          loading={true}
+                          pagination={true}
+                          responsive={true}
+                          search={
+                            Object {
+                              "box": Object {
+                                "compressed": true,
+                                "placeholder": "Search alerts",
+                                "schema": true,
+                              },
+                              "filters": Array [
+                                Object {
+                                  "compressed": true,
+                                  "field": "severity",
+                                  "multiSelect": "or",
+                                  "name": "Alert severity",
+                                  "options": Array [],
+                                  "type": "field_value_selection",
+                                },
+                                Object {
+                                  "compressed": true,
+                                  "field": "state",
+                                  "multiSelect": "or",
+                                  "name": "Status",
+                                  "options": Array [],
+                                  "type": "field_value_selection",
+                                },
+                              ],
+                            }
+                          }
+                          selection={
+                            Object {
+                              "onSelectionChange": [Function],
+                              "selectable": [Function],
+                              "selectableMessage": [Function],
+                            }
+                          }
+                          sorting={
+                            Object {
+                              "sort": Object {
+                                "direction": "dsc",
+                                "field": "start_time",
+                              },
+                            }
+                          }
+                          tableLayout="fixed"
+                        />
+                      </ContentPanel>
+                    </React.Fragment>,
+                    "id": "detection-rules",
+                    "name": "Detection rules",
+                  },
+                  Object {
+                    "content": <React.Fragment>
+                      <EuiSpacer
+                        size="m"
+                      />
+                      <EuiPanel>
+                        <EuiFlexGroup
+                          direction="column"
                         >
-                          <EuiFlexGroup
-                            alignItems="center"
-                            justifyContent="spaceBetween"
+                          <EuiFlexItem
+                            style={
+                              Object {
+                                "alignSelf": "flex-end",
+                              }
+                            }
                           >
-                            <div
-                              className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive"
+                            <EuiFlexGroup
+                              alignItems="center"
+                              justifyContent="flexEnd"
                             >
                               <EuiFlexItem
-                                key="0"
+                                grow={false}
                               >
-                                <div
-                                  className="euiFlexItem"
-                                >
-                                  <EuiSmallButton
-                                    data-test-subj="acknowledge-button"
-                                    disabled={true}
-                                    onClick={[Function]}
-                                  >
-                                    <EuiButton
-                                      data-test-subj="acknowledge-button"
-                                      disabled={true}
-                                      onClick={[Function]}
-                                      size="s"
-                                    >
-                                      <EuiButtonDisplay
-                                        baseClassName="euiButton"
-                                        data-test-subj="acknowledge-button"
-                                        disabled={true}
-                                        element="button"
-                                        isDisabled={true}
-                                        onClick={[Function]}
-                                        size="s"
-                                        type="button"
-                                      >
-                                        <button
-                                          className="euiButton euiButton--primary euiButton--small euiButton-isDisabled"
-                                          data-test-subj="acknowledge-button"
-                                          disabled={true}
-                                          onClick={[Function]}
-                                          style={
-                                            Object {
-                                              "minWidth": undefined,
-                                            }
-                                          }
-                                          type="button"
-                                        >
-                                          <EuiButtonContent
-                                            className="euiButton__content"
-                                            iconGap="m"
-                                            iconSide="left"
-                                            textProps={
-                                              Object {
-                                                "className": "euiButton__text",
-                                              }
-                                            }
-                                          >
-                                            <span
-                                              className="euiButtonContent euiButton__content"
-                                            >
-                                              <span
-                                                className="euiButton__text"
-                                              >
-                                                Acknowledge
-                                              </span>
-                                            </span>
-                                          </EuiButtonContent>
-                                        </button>
-                                      </EuiButtonDisplay>
-                                    </EuiButton>
-                                  </EuiSmallButton>
-                                </div>
+                                <EuiCompressedSelect
+                                  id="alert-vis-groupBy"
+                                  onChange={[Function]}
+                                  options={
+                                    Array [
+                                      Object {
+                                        "text": "Alert status",
+                                        "value": "status",
+                                      },
+                                      Object {
+                                        "text": "Alert severity",
+                                        "value": "severity",
+                                      },
+                                    ]
+                                  }
+                                  prepend="Group by"
+                                  value="status"
+                                />
                               </EuiFlexItem>
-                            </div>
-                          </EuiFlexGroup>
-                        </div>
-                      </EuiFlexItem>
-                    </div>
-                  </EuiFlexGroup>
-                  <EuiHorizontalRule
-                    margin="xs"
-                  >
-                    <hr
-                      className="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginXSmall"
-                    />
-                  </EuiHorizontalRule>
-                  <div
-                    style={
-                      Object {
-                        "padding": "0px 10px",
-                      }
-                    }
-                  >
-                    <EuiTabbedContent
-                      autoFocus="initial"
-                      initialSelectedTab={
-                        Object {
-                          "content": <React.Fragment>
-                            <EuiSpacer
-                              size="m"
+                            </EuiFlexGroup>
+                          </EuiFlexItem>
+                          <EuiFlexItem>
+                            <EuiEmptyPrompt
+                              body={
+                                <p>
+                                  <EuiText
+                                    size="s"
+                                  >
+                                    Adjust the time range to see more results or create alert triggers in your
+                                     
+                                    <EuiLink
+                                      href="/#/detectors"
+                                    >
+                                      detectors
+                                    </EuiLink>
+                                     to generate alerts.
+                                  </EuiText>
+                                </p>
+                              }
+                              title={
+                                <EuiText
+                                  size="s"
+                                >
+                                  <h2>
+                                    No alerts
+                                  </h2>
+                                </EuiText>
+                              }
                             />
-                            <EuiInMemoryTable
-                              columns={
-                                Array [
-                                  Object {
-                                    "dataType": "date",
-                                    "field": "start_time",
-                                    "name": "Start time",
-                                    "render": [Function],
-                                    "sortable": true,
-                                  },
-                                  Object {
-                                    "dataType": "string",
-                                    "field": "trigger_name",
-                                    "name": "Alert trigger name",
-                                    "render": [Function],
-                                    "sortable": false,
-                                  },
-                                  Object {
-                                    "dataType": "string",
-                                    "field": "detectorName",
-                                    "name": "Detector",
-                                    "render": [Function],
-                                    "sortable": true,
-                                  },
-                                  Object {
-                                    "dataType": "string",
-                                    "field": "state",
-                                    "name": "Status",
-                                    "render": [Function],
-                                    "sortable": true,
-                                  },
-                                  Object {
-                                    "dataType": "string",
-                                    "field": "severity",
-                                    "name": "Alert severity",
-                                    "render": [Function],
-                                    "sortable": true,
-                                  },
-                                  Object {
-                                    "actions": Array [
-                                      Object {
-                                        "render": [Function],
-                                      },
-                                      Object {
-                                        "render": [Function],
-                                      },
-                                    ],
-                                    "name": "Actions",
-                                    "sortable": false,
-                                  },
-                                ]
-                              }
-                              isSelectable={true}
-                              itemId={[Function]}
-                              items={Array []}
-                              loading={true}
-                              pagination={true}
-                              responsive={true}
-                              search={
-                                Object {
-                                  "box": Object {
-                                    "placeholder": "Search alerts",
-                                    "schema": true,
-                                  },
-                                  "filters": Array [
-                                    Object {
-                                      "field": "severity",
-                                      "multiSelect": "or",
-                                      "name": "Alert severity",
-                                      "options": Array [],
-                                      "type": "field_value_selection",
-                                    },
-                                    Object {
-                                      "field": "state",
-                                      "multiSelect": "or",
-                                      "name": "Status",
-                                      "options": Array [],
-                                      "type": "field_value_selection",
-                                    },
-                                  ],
-                                }
-                              }
-                              selection={
-                                Object {
-                                  "onSelectionChange": [Function],
-                                  "selectable": [Function],
-                                  "selectableMessage": [Function],
-                                }
-                              }
-                              sorting={
-                                Object {
-                                  "sort": Object {
-                                    "direction": "dsc",
-                                    "field": "start_time",
-                                  },
-                                }
-                              }
-                              tableLayout="fixed"
-                            />
-                          </React.Fragment>,
-                          "id": "detection-rules",
-                          "name": "Detection rules",
+                          </EuiFlexItem>
+                        </EuiFlexGroup>
+                      </EuiPanel>
+                      <EuiSpacer
+                        size="m"
+                      />
+                      <ContentPanel
+                        actions={
+                          Array [
+                            <EuiSmallButton
+                              data-test-subj="acknowledge-button"
+                              disabled={true}
+                              onClick={[Function]}
+                            >
+                              Acknowledge
+                            </EuiSmallButton>,
+                          ]
                         }
-                      }
-                      onTabClick={[Function]}
-                      size="s"
-                      tabs={
-                        Array [
+                        title="Alerts"
+                      >
+                        <ThreatIntelAlertsTable
+                          alerts={Array []}
+                          onAlertStateChange={[Function]}
+                          onSelectionChange={[Function]}
+                        />
+                      </ContentPanel>
+                    </React.Fragment>,
+                    "id": "threat-intel",
+                    "name": "Threat intel",
+                  },
+                  Object {
+                    "content": <React.Fragment>
+                      <EuiSpacer
+                        size="m"
+                      />
+                      <EuiPanel>
+                        <EuiFlexGroup
+                          direction="column"
+                        >
+                          <EuiFlexItem
+                            style={
+                              Object {
+                                "alignSelf": "flex-end",
+                              }
+                            }
+                          >
+                            <EuiFlexGroup
+                              alignItems="center"
+                              justifyContent="flexEnd"
+                            >
+                              <EuiFlexItem
+                                grow={false}
+                              >
+                                <EuiCompressedSelect
+                                  id="alert-vis-groupBy"
+                                  onChange={[Function]}
+                                  options={
+                                    Array [
+                                      Object {
+                                        "text": "Alert status",
+                                        "value": "status",
+                                      },
+                                      Object {
+                                        "text": "Alert severity",
+                                        "value": "severity",
+                                      },
+                                    ]
+                                  }
+                                  prepend="Group by"
+                                  value="status"
+                                />
+                              </EuiFlexItem>
+                            </EuiFlexGroup>
+                          </EuiFlexItem>
+                          <EuiFlexItem>
+                            <EuiEmptyPrompt
+                              body={
+                                <p>
+                                  <EuiText
+                                    size="s"
+                                  >
+                                    Adjust the time range to see more results or create alert triggers in your
+                                     
+                                    <EuiLink
+                                      href="/#/detectors"
+                                    >
+                                      detectors
+                                    </EuiLink>
+                                     to generate alerts.
+                                  </EuiText>
+                                </p>
+                              }
+                              title={
+                                <EuiText
+                                  size="s"
+                                >
+                                  <h2>
+                                    No alerts
+                                  </h2>
+                                </EuiText>
+                              }
+                            />
+                          </EuiFlexItem>
+                        </EuiFlexGroup>
+                      </EuiPanel>
+                      <EuiSpacer
+                        size="m"
+                      />
+                      <ContentPanel
+                        actions={
+                          Array [
+                            <EuiSmallButton
+                              data-test-subj="acknowledge-button"
+                              disabled={true}
+                              onClick={[Function]}
+                            >
+                              Acknowledge
+                            </EuiSmallButton>,
+                          ]
+                        }
+                        title="Alerts"
+                      >
+                        <EuiInMemoryTable
+                          columns={
+                            Array [
+                              Object {
+                                "dataType": "date",
+                                "field": "start_time",
+                                "name": "Start time",
+                                "render": [Function],
+                                "sortable": true,
+                              },
+                              Object {
+                                "dataType": "string",
+                                "field": "trigger_name",
+                                "name": "Alert trigger name",
+                                "render": [Function],
+                                "sortable": false,
+                              },
+                              Object {
+                                "dataType": "string",
+                                "field": "correlation_rule_name",
+                                "name": "Correlation Rule Name",
+                                "render": [Function],
+                                "sortable": true,
+                              },
+                              Object {
+                                "dataType": "string",
+                                "field": "correlation_rule_categories",
+                                "name": "Log Types",
+                                "render": [Function],
+                                "sortable": false,
+                              },
+                              Object {
+                                "dataType": "string",
+                                "field": "state",
+                                "name": "Status",
+                                "render": [Function],
+                                "sortable": true,
+                              },
+                              Object {
+                                "dataType": "string",
+                                "field": "severity",
+                                "name": "Alert severity",
+                                "render": [Function],
+                                "sortable": true,
+                              },
+                              Object {
+                                "actions": Array [
+                                  Object {
+                                    "render": [Function],
+                                  },
+                                  Object {
+                                    "render": [Function],
+                                  },
+                                ],
+                                "name": "Actions",
+                                "sortable": false,
+                              },
+                            ]
+                          }
+                          isSelectable={true}
+                          itemId={[Function]}
+                          items={Array []}
+                          loading={true}
+                          pagination={true}
+                          responsive={true}
+                          search={
+                            Object {
+                              "box": Object {
+                                "compressed": true,
+                                "placeholder": "Search alerts",
+                                "schema": true,
+                              },
+                              "filters": Array [
+                                Object {
+                                  "compressed": true,
+                                  "field": "severity",
+                                  "multiSelect": "or",
+                                  "name": "Alert severity",
+                                  "options": Array [],
+                                  "type": "field_value_selection",
+                                },
+                                Object {
+                                  "compressed": true,
+                                  "field": "state",
+                                  "multiSelect": "or",
+                                  "name": "Status",
+                                  "options": Array [],
+                                  "type": "field_value_selection",
+                                },
+                              ],
+                            }
+                          }
+                          selection={
+                            Object {
+                              "onSelectionChange": [Function],
+                              "selectable": [Function],
+                              "selectableMessage": [Function],
+                            }
+                          }
+                          sorting={
+                            Object {
+                              "sort": Object {
+                                "direction": "dsc",
+                                "field": "start_time",
+                              },
+                            }
+                          }
+                          tableLayout="fixed"
+                        />
+                      </ContentPanel>
+                    </React.Fragment>,
+                    "id": "correlations",
+                    "name": <EuiToolTip
+                      content="This object was created using an experimental feature. It may not appear in view if the feature is discontinued."
+                      delay="regular"
+                      position="top"
+                    >
+                      <div
+                        style={
                           Object {
-                            "content": <React.Fragment>
-                              <EuiSpacer
-                                size="m"
-                              />
-                              <EuiInMemoryTable
-                                columns={
-                                  Array [
-                                    Object {
-                                      "dataType": "date",
-                                      "field": "start_time",
-                                      "name": "Start time",
-                                      "render": [Function],
-                                      "sortable": true,
-                                    },
-                                    Object {
-                                      "dataType": "string",
-                                      "field": "trigger_name",
-                                      "name": "Alert trigger name",
-                                      "render": [Function],
-                                      "sortable": false,
-                                    },
-                                    Object {
-                                      "dataType": "string",
-                                      "field": "detectorName",
-                                      "name": "Detector",
-                                      "render": [Function],
-                                      "sortable": true,
-                                    },
-                                    Object {
-                                      "dataType": "string",
-                                      "field": "state",
-                                      "name": "Status",
-                                      "render": [Function],
-                                      "sortable": true,
-                                    },
-                                    Object {
-                                      "dataType": "string",
-                                      "field": "severity",
-                                      "name": "Alert severity",
-                                      "render": [Function],
-                                      "sortable": true,
-                                    },
-                                    Object {
-                                      "actions": Array [
-                                        Object {
-                                          "render": [Function],
-                                        },
-                                        Object {
-                                          "render": [Function],
-                                        },
-                                      ],
-                                      "name": "Actions",
-                                      "sortable": false,
-                                    },
-                                  ]
-                                }
-                                isSelectable={true}
-                                itemId={[Function]}
-                                items={Array []}
-                                loading={true}
-                                pagination={true}
-                                responsive={true}
-                                search={
-                                  Object {
-                                    "box": Object {
-                                      "placeholder": "Search alerts",
-                                      "schema": true,
-                                    },
-                                    "filters": Array [
-                                      Object {
-                                        "field": "severity",
-                                        "multiSelect": "or",
-                                        "name": "Alert severity",
-                                        "options": Array [],
-                                        "type": "field_value_selection",
-                                      },
-                                      Object {
-                                        "field": "state",
-                                        "multiSelect": "or",
-                                        "name": "Status",
-                                        "options": Array [],
-                                        "type": "field_value_selection",
-                                      },
-                                    ],
-                                  }
-                                }
-                                selection={
-                                  Object {
-                                    "onSelectionChange": [Function],
-                                    "selectable": [Function],
-                                    "selectableMessage": [Function],
-                                  }
-                                }
-                                sorting={
-                                  Object {
-                                    "sort": Object {
-                                      "direction": "dsc",
-                                      "field": "start_time",
-                                    },
-                                  }
-                                }
-                                tableLayout="fixed"
-                              />
-                            </React.Fragment>,
-                            "id": "detection-rules",
-                            "name": "Detection rules",
-                          },
-                          Object {
-                            "content": <React.Fragment>
-                              <EuiSpacer
-                                size="m"
-                              />
-                              <ThreatIntelAlertsTable
-                                alerts={Array []}
-                                onAlertStateChange={[Function]}
-                                onSelectionChange={[Function]}
-                              />
-                            </React.Fragment>,
-                            "id": "threat-intel",
-                            "name": "Threat intel",
-                          },
-                          Object {
-                            "content": <React.Fragment>
-                              <EuiSpacer
-                                size="m"
-                              />
-                              <EuiInMemoryTable
-                                columns={
-                                  Array [
-                                    Object {
-                                      "dataType": "date",
-                                      "field": "start_time",
-                                      "name": "Start time",
-                                      "render": [Function],
-                                      "sortable": true,
-                                    },
-                                    Object {
-                                      "dataType": "string",
-                                      "field": "trigger_name",
-                                      "name": "Alert trigger name",
-                                      "render": [Function],
-                                      "sortable": false,
-                                    },
-                                    Object {
-                                      "dataType": "string",
-                                      "field": "correlation_rule_name",
-                                      "name": "Correlation Rule Name",
-                                      "render": [Function],
-                                      "sortable": true,
-                                    },
-                                    Object {
-                                      "dataType": "string",
-                                      "field": "correlation_rule_categories",
-                                      "name": "Log Types",
-                                      "render": [Function],
-                                      "sortable": false,
-                                    },
-                                    Object {
-                                      "dataType": "string",
-                                      "field": "state",
-                                      "name": "Status",
-                                      "render": [Function],
-                                      "sortable": true,
-                                    },
-                                    Object {
-                                      "dataType": "string",
-                                      "field": "severity",
-                                      "name": "Alert severity",
-                                      "render": [Function],
-                                      "sortable": true,
-                                    },
-                                    Object {
-                                      "actions": Array [
-                                        Object {
-                                          "render": [Function],
-                                        },
-                                        Object {
-                                          "render": [Function],
-                                        },
-                                      ],
-                                      "name": "Actions",
-                                      "sortable": false,
-                                    },
-                                  ]
-                                }
-                                isSelectable={true}
-                                itemId={[Function]}
-                                items={Array []}
-                                loading={true}
-                                pagination={true}
-                                responsive={true}
-                                search={
-                                  Object {
-                                    "box": Object {
-                                      "placeholder": "Search alerts",
-                                      "schema": true,
-                                    },
-                                    "filters": Array [
-                                      Object {
-                                        "field": "severity",
-                                        "multiSelect": "or",
-                                        "name": "Alert severity",
-                                        "options": Array [],
-                                        "type": "field_value_selection",
-                                      },
-                                      Object {
-                                        "field": "state",
-                                        "multiSelect": "or",
-                                        "name": "Status",
-                                        "options": Array [],
-                                        "type": "field_value_selection",
-                                      },
-                                    ],
-                                  }
-                                }
-                                selection={
-                                  Object {
-                                    "onSelectionChange": [Function],
-                                    "selectable": [Function],
-                                    "selectableMessage": [Function],
-                                  }
-                                }
-                                sorting={
-                                  Object {
-                                    "sort": Object {
-                                      "direction": "dsc",
-                                      "field": "start_time",
-                                    },
-                                  }
-                                }
-                                tableLayout="fixed"
-                              />
-                            </React.Fragment>,
-                            "id": "correlations",
-                            "name": <EuiToolTip
-                              content="This object was created using an experimental feature. It may not appear in view if the feature is discontinued."
-                              delay="regular"
-                              position="top"
+                            "alignItems": "center",
+                            "display": "flex",
+                          }
+                        }
+                      >
+                        <span
+                          style={
+                            Object {
+                              "marginRight": "4px",
+                            }
+                          }
+                        >
+                          Correlations
+                        </span>
+                        <EuiIcon
+                          type="beaker"
+                        />
+                      </div>
+                    </EuiToolTip>,
+                  },
+                ]
+              }
+            >
+              <div>
+                <EuiTabs
+                  onFocus={[Function]}
+                  size="s"
+                >
+                  <div
+                    className="euiTabs euiTabs--small"
+                    onFocus={[Function]}
+                    role="tablist"
+                  >
+                    <EuiTab
+                      aria-controls="some_html_id"
+                      id="detection-rules"
+                      isSelected={true}
+                      key="detection-rules"
+                      onClick={[Function]}
+                    >
+                      <button
+                        aria-controls="some_html_id"
+                        aria-selected={true}
+                        className="euiTab euiTab-isSelected"
+                        disabled={false}
+                        id="detection-rules"
+                        onClick={[Function]}
+                        role="tab"
+                        type="button"
+                      >
+                        <span
+                          className="euiTab__content"
+                        >
+                          Detection rules
+                        </span>
+                      </button>
+                    </EuiTab>
+                    <EuiTab
+                      aria-controls="some_html_id"
+                      id="threat-intel"
+                      isSelected={false}
+                      key="threat-intel"
+                      onClick={[Function]}
+                    >
+                      <button
+                        aria-controls="some_html_id"
+                        aria-selected={false}
+                        className="euiTab"
+                        disabled={false}
+                        id="threat-intel"
+                        onClick={[Function]}
+                        role="tab"
+                        type="button"
+                      >
+                        <span
+                          className="euiTab__content"
+                        >
+                          Threat intel
+                        </span>
+                      </button>
+                    </EuiTab>
+                    <EuiTab
+                      aria-controls="some_html_id"
+                      id="correlations"
+                      isSelected={false}
+                      key="correlations"
+                      onClick={[Function]}
+                    >
+                      <button
+                        aria-controls="some_html_id"
+                        aria-selected={false}
+                        className="euiTab"
+                        disabled={false}
+                        id="correlations"
+                        onClick={[Function]}
+                        role="tab"
+                        type="button"
+                      >
+                        <span
+                          className="euiTab__content"
+                        >
+                          <EuiToolTip
+                            content="This object was created using an experimental feature. It may not appear in view if the feature is discontinued."
+                            delay="regular"
+                            position="top"
+                          >
+                            <span
+                              className="euiToolTipAnchor"
+                              onKeyUp={[Function]}
+                              onMouseOut={[Function]}
+                              onMouseOver={[Function]}
                             >
                               <div
+                                onBlur={[Function]}
+                                onFocus={[Function]}
                                 style={
                                   Object {
                                     "alignItems": "center",
@@ -1657,146 +1679,471 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                 </span>
                                 <EuiIcon
                                   type="beaker"
-                                />
+                                >
+                                  EuiIconMock
+                                </EuiIcon>
                               </div>
-                            </EuiToolTip>,
-                          },
-                        ]
-                      }
+                            </span>
+                          </EuiToolTip>
+                        </span>
+                      </button>
+                    </EuiTab>
+                  </div>
+                </EuiTabs>
+                <div
+                  aria-labelledby="detection-rules"
+                  id="some_html_id"
+                  role="tabpanel"
+                >
+                  <EuiSpacer
+                    size="m"
+                  >
+                    <div
+                      className="euiSpacer euiSpacer--m"
+                    />
+                  </EuiSpacer>
+                  <EuiPanel>
+                    <div
+                      className="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
                     >
-                      <div>
-                        <EuiTabs
-                          onFocus={[Function]}
-                          size="s"
-                        >
-                          <div
-                            className="euiTabs euiTabs--small"
-                            onFocus={[Function]}
-                            role="tablist"
-                          >
-                            <EuiTab
-                              aria-controls="some_html_id"
-                              id="detection-rules"
-                              isSelected={true}
-                              key="detection-rules"
-                              onClick={[Function]}
-                            >
-                              <button
-                                aria-controls="some_html_id"
-                                aria-selected={true}
-                                className="euiTab euiTab-isSelected"
-                                disabled={false}
-                                id="detection-rules"
-                                onClick={[Function]}
-                                role="tab"
-                                type="button"
-                              >
-                                <span
-                                  className="euiTab__content"
-                                >
-                                  Detection rules
-                                </span>
-                              </button>
-                            </EuiTab>
-                            <EuiTab
-                              aria-controls="some_html_id"
-                              id="threat-intel"
-                              isSelected={false}
-                              key="threat-intel"
-                              onClick={[Function]}
-                            >
-                              <button
-                                aria-controls="some_html_id"
-                                aria-selected={false}
-                                className="euiTab"
-                                disabled={false}
-                                id="threat-intel"
-                                onClick={[Function]}
-                                role="tab"
-                                type="button"
-                              >
-                                <span
-                                  className="euiTab__content"
-                                >
-                                  Threat intel
-                                </span>
-                              </button>
-                            </EuiTab>
-                            <EuiTab
-                              aria-controls="some_html_id"
-                              id="correlations"
-                              isSelected={false}
-                              key="correlations"
-                              onClick={[Function]}
-                            >
-                              <button
-                                aria-controls="some_html_id"
-                                aria-selected={false}
-                                className="euiTab"
-                                disabled={false}
-                                id="correlations"
-                                onClick={[Function]}
-                                role="tab"
-                                type="button"
-                              >
-                                <span
-                                  className="euiTab__content"
-                                >
-                                  <EuiToolTip
-                                    content="This object was created using an experimental feature. It may not appear in view if the feature is discontinued."
-                                    delay="regular"
-                                    position="top"
-                                  >
-                                    <span
-                                      className="euiToolTipAnchor"
-                                      onKeyUp={[Function]}
-                                      onMouseOut={[Function]}
-                                      onMouseOver={[Function]}
-                                    >
-                                      <div
-                                        onBlur={[Function]}
-                                        onFocus={[Function]}
-                                        style={
-                                          Object {
-                                            "alignItems": "center",
-                                            "display": "flex",
-                                          }
-                                        }
-                                      >
-                                        <span
-                                          style={
-                                            Object {
-                                              "marginRight": "4px",
-                                            }
-                                          }
-                                        >
-                                          Correlations
-                                        </span>
-                                        <EuiIcon
-                                          type="beaker"
-                                        >
-                                          EuiIconMock
-                                        </EuiIcon>
-                                      </div>
-                                    </span>
-                                  </EuiToolTip>
-                                </span>
-                              </button>
-                            </EuiTab>
-                          </div>
-                        </EuiTabs>
+                      <EuiFlexGroup
+                        direction="column"
+                      >
                         <div
-                          aria-labelledby="detection-rules"
-                          id="some_html_id"
-                          role="tabpanel"
+                          className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionColumn euiFlexGroup--responsive"
                         >
-                          <EuiSpacer
-                            size="m"
+                          <EuiFlexItem
+                            style={
+                              Object {
+                                "alignSelf": "flex-end",
+                              }
+                            }
                           >
                             <div
-                              className="euiSpacer euiSpacer--m"
-                            />
-                          </EuiSpacer>
+                              className="euiFlexItem"
+                              style={
+                                Object {
+                                  "alignSelf": "flex-end",
+                                }
+                              }
+                            >
+                              <EuiFlexGroup
+                                alignItems="center"
+                                justifyContent="flexEnd"
+                              >
+                                <div
+                                  className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
+                                >
+                                  <EuiFlexItem
+                                    grow={false}
+                                  >
+                                    <div
+                                      className="euiFlexItem euiFlexItem--flexGrowZero"
+                                    >
+                                      <EuiCompressedSelect
+                                        id="alert-vis-groupBy"
+                                        onChange={[Function]}
+                                        options={
+                                          Array [
+                                            Object {
+                                              "text": "Alert status",
+                                              "value": "status",
+                                            },
+                                            Object {
+                                              "text": "Alert severity",
+                                              "value": "severity",
+                                            },
+                                          ]
+                                        }
+                                        prepend="Group by"
+                                        value="status"
+                                      >
+                                        <EuiSelect
+                                          compressed={true}
+                                          id="alert-vis-groupBy"
+                                          onChange={[Function]}
+                                          options={
+                                            Array [
+                                              Object {
+                                                "text": "Alert status",
+                                                "value": "status",
+                                              },
+                                              Object {
+                                                "text": "Alert severity",
+                                                "value": "severity",
+                                              },
+                                            ]
+                                          }
+                                          prepend="Group by"
+                                          value="status"
+                                        >
+                                          <EuiFormControlLayout
+                                            compressed={true}
+                                            fullWidth={false}
+                                            icon={
+                                              Object {
+                                                "side": "right",
+                                                "type": "arrowDown",
+                                              }
+                                            }
+                                            inputId="alert-vis-groupBy"
+                                            isLoading={false}
+                                            prepend="Group by"
+                                          >
+                                            <div
+                                              className="euiFormControlLayout euiFormControlLayout--compressed euiFormControlLayout--group"
+                                            >
+                                              <EuiFormLabel
+                                                className="euiFormControlLayout__prepend"
+                                                htmlFor="alert-vis-groupBy"
+                                              >
+                                                <label
+                                                  className="euiFormLabel euiFormControlLayout__prepend"
+                                                  htmlFor="alert-vis-groupBy"
+                                                >
+                                                  Group by
+                                                </label>
+                                              </EuiFormLabel>
+                                              <div
+                                                className="euiFormControlLayout__childrenWrapper"
+                                              >
+                                                <EuiValidatableControl>
+                                                  <select
+                                                    className="euiSelect euiSelect--compressed euiSelect--inGroup"
+                                                    id="alert-vis-groupBy"
+                                                    onChange={[Function]}
+                                                    onMouseUp={[Function]}
+                                                    value="status"
+                                                  >
+                                                    <option
+                                                      key="0"
+                                                      value="status"
+                                                    >
+                                                      Alert status
+                                                    </option>
+                                                    <option
+                                                      key="1"
+                                                      value="severity"
+                                                    >
+                                                      Alert severity
+                                                    </option>
+                                                  </select>
+                                                </EuiValidatableControl>
+                                                <EuiFormControlLayoutIcons
+                                                  compressed={true}
+                                                  icon={
+                                                    Object {
+                                                      "side": "right",
+                                                      "type": "arrowDown",
+                                                    }
+                                                  }
+                                                  isLoading={false}
+                                                >
+                                                  <div
+                                                    className="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
+                                                  >
+                                                    <EuiFormControlLayoutCustomIcon
+                                                      size="s"
+                                                      type="arrowDown"
+                                                    >
+                                                      <span
+                                                        className="euiFormControlLayoutCustomIcon"
+                                                      >
+                                                        <EuiIcon
+                                                          aria-hidden="true"
+                                                          className="euiFormControlLayoutCustomIcon__icon"
+                                                          size="s"
+                                                          type="arrowDown"
+                                                        >
+                                                          EuiIconMock
+                                                        </EuiIcon>
+                                                      </span>
+                                                    </EuiFormControlLayoutCustomIcon>
+                                                  </div>
+                                                </EuiFormControlLayoutIcons>
+                                              </div>
+                                            </div>
+                                          </EuiFormControlLayout>
+                                        </EuiSelect>
+                                      </EuiCompressedSelect>
+                                    </div>
+                                  </EuiFlexItem>
+                                </div>
+                              </EuiFlexGroup>
+                            </div>
+                          </EuiFlexItem>
+                          <EuiFlexItem>
+                            <div
+                              className="euiFlexItem"
+                            >
+                              <EuiEmptyPrompt
+                                body={
+                                  <p>
+                                    <EuiText
+                                      size="s"
+                                    >
+                                      Adjust the time range to see more results or create alert triggers in your
+                                       
+                                      <EuiLink
+                                        href="/#/detectors"
+                                      >
+                                        detectors
+                                      </EuiLink>
+                                       to generate alerts.
+                                    </EuiText>
+                                  </p>
+                                }
+                                title={
+                                  <EuiText
+                                    size="s"
+                                  >
+                                    <h2>
+                                      No alerts
+                                    </h2>
+                                  </EuiText>
+                                }
+                              >
+                                <div
+                                  className="euiEmptyPrompt"
+                                >
+                                  <EuiTitle
+                                    size="m"
+                                  >
+                                    <EuiText
+                                      className="euiTitle euiTitle--medium"
+                                      size="s"
+                                    >
+                                      <div
+                                        className="euiText euiText--small euiTitle euiTitle--medium"
+                                      >
+                                        <h2>
+                                          No alerts
+                                        </h2>
+                                      </div>
+                                    </EuiText>
+                                  </EuiTitle>
+                                  <EuiTextColor
+                                    color="subdued"
+                                  >
+                                    <span
+                                      className="euiTextColor euiTextColor--subdued"
+                                    >
+                                      <EuiSpacer
+                                        size="m"
+                                      >
+                                        <div
+                                          className="euiSpacer euiSpacer--m"
+                                        />
+                                      </EuiSpacer>
+                                      <EuiText>
+                                        <div
+                                          className="euiText euiText--medium"
+                                        >
+                                          <p>
+                                            <EuiText
+                                              size="s"
+                                            >
+                                              <div
+                                                className="euiText euiText--small"
+                                              >
+                                                Adjust the time range to see more results or create alert triggers in your
+                                                 
+                                                <EuiLink
+                                                  href="/#/detectors"
+                                                >
+                                                  <a
+                                                    className="euiLink euiLink--primary"
+                                                    href="/#/detectors"
+                                                    rel="noreferrer"
+                                                  >
+                                                    detectors
+                                                  </a>
+                                                </EuiLink>
+                                                 to generate alerts.
+                                              </div>
+                                            </EuiText>
+                                          </p>
+                                        </div>
+                                      </EuiText>
+                                    </span>
+                                  </EuiTextColor>
+                                </div>
+                              </EuiEmptyPrompt>
+                            </div>
+                          </EuiFlexItem>
+                        </div>
+                      </EuiFlexGroup>
+                    </div>
+                  </EuiPanel>
+                  <EuiSpacer
+                    size="m"
+                  >
+                    <div
+                      className="euiSpacer euiSpacer--m"
+                    />
+                  </EuiSpacer>
+                  <ContentPanel
+                    actions={
+                      Array [
+                        <EuiSmallButton
+                          data-test-subj="acknowledge-button"
+                          disabled={true}
+                          onClick={[Function]}
+                        >
+                          Acknowledge
+                        </EuiSmallButton>,
+                      ]
+                    }
+                    title="Alerts"
+                  >
+                    <EuiPanel
+                      className=""
+                      style={
+                        Object {
+                          "padding": "16px",
+                        }
+                      }
+                    >
+                      <div
+                        className="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
+                        style={
+                          Object {
+                            "padding": "16px",
+                          }
+                        }
+                      >
+                        <EuiFlexGroup
+                          alignItems="center"
+                          justifyContent="spaceBetween"
+                          style={
+                            Object {
+                              "padding": "0px 10px",
+                            }
+                          }
+                        >
+                          <div
+                            className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive"
+                            style={
+                              Object {
+                                "padding": "0px 10px",
+                              }
+                            }
+                          >
+                            <EuiFlexItem>
+                              <div
+                                className="euiFlexItem"
+                              >
+                                <EuiText
+                                  size="s"
+                                >
+                                  <div
+                                    className="euiText euiText--small"
+                                  >
+                                    <h3>
+                                      Alerts
+                                    </h3>
+                                  </div>
+                                </EuiText>
+                              </div>
+                            </EuiFlexItem>
+                            <EuiFlexItem
+                              grow={false}
+                            >
+                              <div
+                                className="euiFlexItem euiFlexItem--flexGrowZero"
+                              >
+                                <EuiFlexGroup
+                                  alignItems="center"
+                                  justifyContent="spaceBetween"
+                                >
+                                  <div
+                                    className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive"
+                                  >
+                                    <EuiFlexItem
+                                      key="0"
+                                    >
+                                      <div
+                                        className="euiFlexItem"
+                                      >
+                                        <EuiSmallButton
+                                          data-test-subj="acknowledge-button"
+                                          disabled={true}
+                                          onClick={[Function]}
+                                        >
+                                          <EuiButton
+                                            data-test-subj="acknowledge-button"
+                                            disabled={true}
+                                            onClick={[Function]}
+                                            size="s"
+                                          >
+                                            <EuiButtonDisplay
+                                              baseClassName="euiButton"
+                                              data-test-subj="acknowledge-button"
+                                              disabled={true}
+                                              element="button"
+                                              isDisabled={true}
+                                              onClick={[Function]}
+                                              size="s"
+                                              type="button"
+                                            >
+                                              <button
+                                                className="euiButton euiButton--primary euiButton--small euiButton-isDisabled"
+                                                data-test-subj="acknowledge-button"
+                                                disabled={true}
+                                                onClick={[Function]}
+                                                style={
+                                                  Object {
+                                                    "minWidth": undefined,
+                                                  }
+                                                }
+                                                type="button"
+                                              >
+                                                <EuiButtonContent
+                                                  className="euiButton__content"
+                                                  iconGap="m"
+                                                  iconSide="left"
+                                                  textProps={
+                                                    Object {
+                                                      "className": "euiButton__text",
+                                                    }
+                                                  }
+                                                >
+                                                  <span
+                                                    className="euiButtonContent euiButton__content"
+                                                  >
+                                                    <span
+                                                      className="euiButton__text"
+                                                    >
+                                                      Acknowledge
+                                                    </span>
+                                                  </span>
+                                                </EuiButtonContent>
+                                              </button>
+                                            </EuiButtonDisplay>
+                                          </EuiButton>
+                                        </EuiSmallButton>
+                                      </div>
+                                    </EuiFlexItem>
+                                  </div>
+                                </EuiFlexGroup>
+                              </div>
+                            </EuiFlexItem>
+                          </div>
+                        </EuiFlexGroup>
+                        <EuiHorizontalRule
+                          margin="xs"
+                        >
+                          <hr
+                            className="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginXSmall"
+                          />
+                        </EuiHorizontalRule>
+                        <div
+                          style={
+                            Object {
+                              "padding": "0px 10px",
+                            }
+                          }
+                        >
                           <EuiInMemoryTable
                             columns={
                               Array [
@@ -1858,11 +2205,13 @@ exports[`<Alerts /> spec renders the component 1`] = `
                             search={
                               Object {
                                 "box": Object {
+                                  "compressed": true,
                                   "placeholder": "Search alerts",
                                   "schema": true,
                                 },
                                 "filters": Array [
                                   Object {
+                                    "compressed": true,
                                     "field": "severity",
                                     "multiSelect": "or",
                                     "name": "Alert severity",
@@ -1870,6 +2219,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                     "type": "field_value_selection",
                                   },
                                   Object {
+                                    "compressed": true,
                                     "field": "state",
                                     "multiSelect": "or",
                                     "name": "Status",
@@ -1900,6 +2250,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                               <EuiSearchBar
                                 box={
                                   Object {
+                                    "compressed": true,
                                     "placeholder": "Search alerts",
                                     "schema": Object {
                                       "fields": Object {
@@ -1926,6 +2277,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                 filters={
                                   Array [
                                     Object {
+                                      "compressed": true,
                                       "field": "severity",
                                       "multiSelect": "or",
                                       "name": "Alert severity",
@@ -1933,6 +2285,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                       "type": "field_value_selection",
                                     },
                                     Object {
+                                      "compressed": true,
                                       "field": "state",
                                       "multiSelect": "or",
                                       "name": "Status",
@@ -1959,6 +2312,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                         className="euiFlexItem euiSearchBar__searchHolder"
                                       >
                                         <EuiSearchBox
+                                          compressed={true}
                                           incremental={false}
                                           isInvalid={false}
                                           onSearch={[Function]}
@@ -1967,7 +2321,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                         >
                                           <EuiFieldSearch
                                             aria-label="This is a search bar. After typing your query, hit enter to filter the results lower in the page."
-                                            compressed={false}
+                                            compressed={true}
                                             defaultValue=""
                                             fullWidth={true}
                                             incremental={false}
@@ -1979,13 +2333,13 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                             placeholder="Search alerts"
                                           >
                                             <EuiFormControlLayout
-                                              compressed={false}
+                                              compressed={true}
                                               fullWidth={true}
                                               icon="search"
                                               isLoading={false}
                                             >
                                               <div
-                                                className="euiFormControlLayout euiFormControlLayout--fullWidth"
+                                                className="euiFormControlLayout euiFormControlLayout--fullWidth euiFormControlLayout--compressed"
                                               >
                                                 <div
                                                   className="euiFormControlLayout__childrenWrapper"
@@ -1995,7 +2349,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                                   >
                                                     <input
                                                       aria-label="This is a search bar. After typing your query, hit enter to filter the results lower in the page."
-                                                      className="euiFieldSearch euiFieldSearch--fullWidth"
+                                                      className="euiFieldSearch euiFieldSearch--fullWidth euiFieldSearch--compressed"
                                                       defaultValue=""
                                                       onKeyUp={[Function]}
                                                       placeholder="Search alerts"
@@ -2003,7 +2357,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                                     />
                                                   </EuiValidatableControl>
                                                   <EuiFormControlLayoutIcons
-                                                    compressed={false}
+                                                    compressed={true}
                                                     icon="search"
                                                     isLoading={false}
                                                   >
@@ -2011,7 +2365,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                                       className="euiFormControlLayoutIcons"
                                                     >
                                                       <EuiFormControlLayoutCustomIcon
-                                                        size="m"
+                                                        size="s"
                                                         type="search"
                                                       >
                                                         <span
@@ -2020,7 +2374,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                                           <EuiIcon
                                                             aria-hidden="true"
                                                             className="euiFormControlLayoutCustomIcon__icon"
-                                                            size="m"
+                                                            size="s"
                                                             type="search"
                                                           >
                                                             EuiIconMock
@@ -2047,6 +2401,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                           filters={
                                             Array [
                                               Object {
+                                                "compressed": true,
                                                 "field": "severity",
                                                 "multiSelect": "or",
                                                 "name": "Alert severity",
@@ -2054,6 +2409,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                                 "type": "field_value_selection",
                                               },
                                               Object {
+                                                "compressed": true,
                                                 "field": "state",
                                                 "multiSelect": "or",
                                                 "name": "Status",
@@ -2090,7 +2446,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                               <FieldValueSelectionFilter
                                                 config={
                                                   Object {
-                                                    "compressed": undefined,
+                                                    "compressed": true,
                                                     "field": "severity",
                                                     "multiSelect": "or",
                                                     "name": "Alert severity",
@@ -2129,6 +2485,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                                       iconSide="right"
                                                       iconType="arrowDown"
                                                       onClick={[Function]}
+                                                      size="s"
                                                     >
                                                       Alert severity
                                                     </EuiFilterButton>
@@ -2155,6 +2512,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                                         iconSide="right"
                                                         iconType="arrowDown"
                                                         onClick={[Function]}
+                                                        size="s"
                                                       >
                                                         <EuiButtonEmpty
                                                           className="euiFilterButton euiFilterButton--hasIcon"
@@ -2162,6 +2520,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                                           iconSide="right"
                                                           iconType="arrowDown"
                                                           onClick={[Function]}
+                                                          size="s"
                                                           textProps={
                                                             Object {
                                                               "className": "",
@@ -2170,7 +2529,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                                           type="button"
                                                         >
                                                           <button
-                                                            className="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
+                                                            className="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton--hasIcon"
                                                             disabled={false}
                                                             onClick={[Function]}
                                                             type="button"
@@ -2221,7 +2580,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                               <FieldValueSelectionFilter
                                                 config={
                                                   Object {
-                                                    "compressed": undefined,
+                                                    "compressed": true,
                                                     "field": "state",
                                                     "multiSelect": "or",
                                                     "name": "Status",
@@ -2260,6 +2619,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                                       iconSide="right"
                                                       iconType="arrowDown"
                                                       onClick={[Function]}
+                                                      size="s"
                                                     >
                                                       Status
                                                     </EuiFilterButton>
@@ -2286,6 +2646,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                                         iconSide="right"
                                                         iconType="arrowDown"
                                                         onClick={[Function]}
+                                                        size="s"
                                                       >
                                                         <EuiButtonEmpty
                                                           className="euiFilterButton euiFilterButton--hasIcon"
@@ -2293,6 +2654,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                                           iconSide="right"
                                                           iconType="arrowDown"
                                                           onClick={[Function]}
+                                                          size="s"
                                                           textProps={
                                                             Object {
                                                               "className": "",
@@ -2301,7 +2663,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                                                           type="button"
                                                         >
                                                           <button
-                                                            className="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
+                                                            className="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton--hasIcon"
                                                             disabled={false}
                                                             onClick={[Function]}
                                                             type="button"
@@ -3102,11 +3464,11 @@ exports[`<Alerts /> spec renders the component 1`] = `
                           </EuiInMemoryTable>
                         </div>
                       </div>
-                    </EuiTabbedContent>
-                  </div>
+                    </EuiPanel>
+                  </ContentPanel>
                 </div>
-              </EuiPanel>
-            </ContentPanel>
+              </div>
+            </EuiTabbedContent>
           </div>
         </EuiFlexItem>
       </div>

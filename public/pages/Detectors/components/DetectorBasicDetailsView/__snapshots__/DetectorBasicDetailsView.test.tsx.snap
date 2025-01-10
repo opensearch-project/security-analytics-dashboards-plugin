@@ -7,7 +7,7 @@ Object {
     <div>
       <div
         class="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
-        style="padding-left: 0px; padding-right: 0px;"
+        style="padding: 16px;"
       >
         <div
           class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive"
@@ -19,9 +19,9 @@ Object {
             <div
               class="euiText euiText--small"
             >
-              <h2>
+              <h3>
                 Detector details
-              </h2>
+              </h3>
             </div>
           </div>
           <div
@@ -392,7 +392,7 @@ Object {
   "container": <div>
     <div
       class="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
-      style="padding-left: 0px; padding-right: 0px;"
+      style="padding: 16px;"
     >
       <div
         class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive"
@@ -404,9 +404,9 @@ Object {
           <div
             class="euiText euiText--small"
           >
-            <h2>
+            <h3>
               Detector details
-            </h2>
+            </h3>
           </div>
         </div>
         <div

@@ -13,14 +13,14 @@ Object {
             class="euiFlexItem euiSearchBar__searchHolder"
           >
             <div
-              class="euiFormControlLayout euiFormControlLayout--fullWidth"
+              class="euiFormControlLayout euiFormControlLayout--fullWidth euiFormControlLayout--compressed"
             >
               <div
                 class="euiFormControlLayout__childrenWrapper"
               >
                 <input
                   aria-label="This is a search bar. After typing your query, hit enter to filter the results lower in the page."
-                  class="euiFieldSearch euiFieldSearch--fullWidth"
+                  class="euiFieldSearch euiFieldSearch--fullWidth euiFieldSearch--compressed"
                   placeholder="Search rules"
                   type="search"
                   value=""
@@ -51,7 +51,7 @@ Object {
                   class="euiPopover__anchor"
                 >
                   <button
-                    class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
+                    class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton--hasIcon"
                     type="button"
                   >
                     <span
@@ -81,7 +81,7 @@ Object {
                   class="euiPopover__anchor"
                 >
                   <button
-                    class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
+                    class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton--hasIcon"
                     type="button"
                   >
                     <span
@@ -111,7 +111,7 @@ Object {
                   class="euiPopover__anchor"
                 >
                   <button
-                    class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
+                    class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton--hasIcon"
                     type="button"
                   >
                     <span
@@ -353,14 +353,14 @@ Object {
           class="euiFlexItem euiSearchBar__searchHolder"
         >
           <div
-            class="euiFormControlLayout euiFormControlLayout--fullWidth"
+            class="euiFormControlLayout euiFormControlLayout--fullWidth euiFormControlLayout--compressed"
           >
             <div
               class="euiFormControlLayout__childrenWrapper"
             >
               <input
                 aria-label="This is a search bar. After typing your query, hit enter to filter the results lower in the page."
-                class="euiFieldSearch euiFieldSearch--fullWidth"
+                class="euiFieldSearch euiFieldSearch--fullWidth euiFieldSearch--compressed"
                 placeholder="Search rules"
                 type="search"
                 value=""
@@ -391,7 +391,7 @@ Object {
                 class="euiPopover__anchor"
               >
                 <button
-                  class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
+                  class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton--hasIcon"
                   type="button"
                 >
                   <span
@@ -421,7 +421,7 @@ Object {
                 class="euiPopover__anchor"
               >
                 <button
-                  class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
+                  class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton--hasIcon"
                   type="button"
                 >
                   <span
@@ -451,7 +451,7 @@ Object {
                 class="euiPopover__anchor"
               >
                 <button
-                  class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
+                  class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton--hasIcon"
                   type="button"
                 >
                   <span

@@ -39,8 +39,10 @@ import { OverviewProps, OverviewState, OverviewViewModel } from '../../../../../
 import { setBreadcrumbs } from '../../../../utils/helpers';
 import { PageHeader } from '../../../../components/PageHeader/PageHeader';
 import { getOverviewStatsProps, getOverviewsCardsProps } from '../../utils/constants';
-import { getUseUpdatedUx } from '../../../../services/utils/constants';
+import { getChrome, getUseUpdatedUx } from '../../../../services/utils/constants';
 import { RecentThreatIntelFindingsWidget } from '../../components/Widgets/RecentThreatIntelFindingsWidget';
+import { useObservable } from 'react-use';
+import { SECURITY_ANALYTICS_USE_CASE_ID } from '../../../../../../../src/core/public';
 
 export const Overview: React.FC<OverviewProps> = (props) => {
   const {
@@ -101,15 +103,17 @@ export const Overview: React.FC<OverviewProps> = (props) => {
     () => new OverviewViewModelActor(saContext?.services, context?.notifications!),
     [saContext?.services, context]
   );
+  const currentNavGroup = useObservable(getChrome().navGroup.getCurrentNavGroup$());
+  const isSecurityAnalyticsUseCase = currentNavGroup?.id === SECURITY_ANALYTICS_USE_CASE_ID;
 
   useEffect(() => {
-    setBreadcrumbs([BREADCRUMBS.OVERVIEW]);
+    setBreadcrumbs(isSecurityAnalyticsUseCase ? [ BREADCRUMBS.OVERVIEW] : [{...BREADCRUMBS.OVERVIEW, text: 'Security Analytics overview'}]);
     overviewViewModelActor.registerRefreshHandler(updateState, true /* allowPartialResults */);
     overviewViewModelActor.registerRefreshHandler(
       onLoadingComplete,
       false /* allowPartialResults */
     );
-  }, []);
+  }, [isSecurityAnalyticsUseCase]);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -216,6 +220,9 @@ export const Overview: React.FC<OverviewProps> = (props) => {
       href={`#${ROUTES.DETECTORS_CREATE}`}
       fill={true}
       data-test-subj={'detectorsCreateButton'}
+      iconType="plus"
+      iconSide="left"
+      iconGap="s"
     >
       Create detector
     </EuiSmallButton>
@@ -240,7 +247,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
   };
 
   return (
-    <EuiFlexGroup direction="column">
+    <EuiFlexGroup direction="column" gutterSize={'m'}>
       <PageHeader
         appRightControls={[
           { renderComponent: datePicker },
@@ -258,7 +265,6 @@ export const Overview: React.FC<OverviewProps> = (props) => {
             <EuiFlexItem grow={false}>{datePicker}</EuiFlexItem>
             <EuiFlexItem grow={false}>{createDetectorAction}</EuiFlexItem>
           </EuiFlexGroup>
-          <EuiSpacer size={'m'} />
         </EuiFlexItem>
       </PageHeader>
       {getUseUpdatedUx() && (
@@ -267,7 +273,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
             <EuiFlexGroup gutterSize="m">
               {getOverviewsCardsProps().map((p, idx) => (
                 <EuiFlexItem key={idx}>
-                  <EuiCard {...p} layout="vertical" textAlign="left" />
+                  <EuiCard {...p} layout="vertical" textAlign="left" titleElement='h4' titleSize='s'/>
                 </EuiFlexItem>
               ))}
             </EuiFlexGroup>

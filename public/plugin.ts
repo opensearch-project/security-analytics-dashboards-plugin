@@ -19,7 +19,7 @@ import {
   DETECTORS_NAV_ID,
   DETECTION_RULE_NAV_ID,
   FINDINGS_NAV_ID,
-  GETTING_STARTED_NAV_ID,
+  GET_STARTED_NAV_ID,
   LOG_TYPES_NAV_ID,
   OVERVIEW_NAV_ID,
   PLUGIN_NAME,
@@ -42,6 +42,7 @@ import {
   setNavigationUI,
   setApplication,
   setBreadCrumbsSetter,
+  setChrome,
   setContentManagement,
   setDataSourceManagementPlugin,
   setNotifications,
@@ -52,7 +53,7 @@ import { BehaviorSubject } from 'rxjs';
 
 export interface SecurityAnalyticsPluginSetupDeps {
   data: DataPublicPluginSetup;
-  dataSourceManagement: DataSourceManagementPluginSetup;
+  dataSourceManagement?: DataSourceManagementPluginSetup;
 }
 export interface SecurityAnalyticsPluginStartDeps {
   data: DataPublicPluginStart;
@@ -74,10 +75,19 @@ export class SecurityAnalyticsPlugin
   ) {}
 
   private updateDefaultRouteOfManagementApplications: AppUpdater = () => {
-    const hash = `#/?dataSourceId=${dataSourceObservable.value?.id || ''}`;
+    const dataSourceValue = dataSourceObservable.value?.id;
+    let hash = `#/`;
+    /***
+     When data source value is undefined,
+     it means the data source picker has not determined which data source to use(local or default data source)
+     so we should not append any data source id into hash to avoid impacting the data source picker.
+     **/
+    if (dataSourceValue !== undefined) {
+      hash = `#/?dataSourceId=${dataSourceValue}`;
+    }
     return {
-      defaultPath: hash,
-    };
+      defaultPath: hash
+    }
   };
 
   private appStateUpdater = new BehaviorSubject<AppUpdater>(
@@ -122,8 +132,8 @@ export class SecurityAnalyticsPlugin
       });
 
       core.application.register({
-        id: GETTING_STARTED_NAV_ID,
-        title: 'Getting started',
+        id: GET_STARTED_NAV_ID,
+        title: 'Get started',
         order: 1,
         updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
@@ -134,7 +144,7 @@ export class SecurityAnalyticsPlugin
       core.application.register({
         id: THREAT_ALERTS_NAV_ID,
         title: 'Threat alerts',
-        order: 9070,
+        order: 300,
         category: DEFAULT_APP_CATEGORIES.investigate,
         updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
@@ -145,7 +155,7 @@ export class SecurityAnalyticsPlugin
       core.application.register({
         id: FINDINGS_NAV_ID,
         title: 'Findings',
-        order: 9080,
+        order: 400,
         category: DEFAULT_APP_CATEGORIES.investigate,
         updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
@@ -156,7 +166,7 @@ export class SecurityAnalyticsPlugin
       core.application.register({
         id: CORRELATIONS_NAV_ID,
         title: 'Correlations',
-        order: 9080,
+        order: 500,
         category: DEFAULT_APP_CATEGORIES.investigate,
         updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
@@ -167,7 +177,7 @@ export class SecurityAnalyticsPlugin
       core.application.register({
         id: DETECTORS_NAV_ID,
         title: 'Threat detectors',
-        order: 9080,
+        order: 600,
         category: DEFAULT_APP_CATEGORIES.configure,
         updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
@@ -178,7 +188,7 @@ export class SecurityAnalyticsPlugin
       core.application.register({
         id: DETECTION_RULE_NAV_ID,
         title: 'Detection rules',
-        order: 9080,
+        order: 700,
         category: DEFAULT_APP_CATEGORIES.configure,
         updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
@@ -189,7 +199,7 @@ export class SecurityAnalyticsPlugin
       core.application.register({
         id: CORRELATIONS_RULE_NAV_ID,
         title: 'Correlation rules',
-        order: 9080,
+        order: 800,
         category: DEFAULT_APP_CATEGORIES.configure,
         updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
@@ -200,7 +210,7 @@ export class SecurityAnalyticsPlugin
       core.application.register({
         id: THREAT_INTEL_NAV_ID,
         title: 'Threat intelligence',
-        order: 9080,
+        order: 900,
         category: DEFAULT_APP_CATEGORIES.configure,
         updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
@@ -211,7 +221,7 @@ export class SecurityAnalyticsPlugin
       core.application.register({
         id: LOG_TYPES_NAV_ID,
         title: 'Log types',
-        order: 9080,
+        order: 1000,
         category: DEFAULT_APP_CATEGORIES.configure,
         updater$: this.appStateUpdater,
         mount: async (params: AppMountParameters) => {
@@ -227,16 +237,22 @@ export class SecurityAnalyticsPlugin
 
       const navlinks = [
         { id: OVERVIEW_NAV_ID, showInAllNavGroup: true },
-        { id: GETTING_STARTED_NAV_ID, showInAllNavGroup: true },
+        { id: GET_STARTED_NAV_ID, showInAllNavGroup: true },
         { id: THREAT_ALERTS_NAV_ID, showInAllNavGroup: true },
         { id: FINDINGS_NAV_ID, showInAllNavGroup: true },
-        { id: CORRELATIONS_NAV_ID },
-        { id: PLUGIN_NAME, category: DEFAULT_APP_CATEGORIES.configure, title: 'Threat detection' },
-        { id: DETECTORS_NAV_ID, parentNavLinkId: PLUGIN_NAME },
-        { id: DETECTION_RULE_NAV_ID, parentNavLinkId: PLUGIN_NAME },
-        { id: CORRELATIONS_RULE_NAV_ID },
-        { id: THREAT_INTEL_NAV_ID },
-        { id: LOG_TYPES_NAV_ID },
+        { id: CORRELATIONS_NAV_ID, showInAllNavGroup: true },
+        {
+          id: PLUGIN_NAME,
+          category: DEFAULT_APP_CATEGORIES.configure,
+          title: 'Threat detection',
+          showInAllNavGroup: true,
+          order: 600,
+        },
+        { id: DETECTORS_NAV_ID, parentNavLinkId: PLUGIN_NAME, showInAllNavGroup: true },
+        { id: DETECTION_RULE_NAV_ID, parentNavLinkId: PLUGIN_NAME, showInAllNavGroup: true },
+        { id: CORRELATIONS_RULE_NAV_ID, showInAllNavGroup: true },
+        { id: THREAT_INTEL_NAV_ID, showInAllNavGroup: true },
+        { id: LOG_TYPES_NAV_ID, showInAllNavGroup: true },
       ];
 
       core.chrome.navGroup.addNavLinksToGroup(DEFAULT_NAV_GROUPS['security-analytics'], navlinks);
@@ -261,6 +277,7 @@ export class SecurityAnalyticsPlugin
     setNavigationUI(navigation.ui);
     setApplication(core.application);
     setBreadCrumbsSetter(core.chrome.setBreadcrumbs);
+    setChrome(core.chrome);
     setContentManagement(contentManagement);
     setNotifications(core.notifications);
     setSavedObjectsClient(core.savedObjects.client);

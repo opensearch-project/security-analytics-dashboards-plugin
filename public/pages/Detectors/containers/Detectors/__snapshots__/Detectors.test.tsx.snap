@@ -33,69 +33,22 @@ exports[`<Detectors /> spec renders the component 1`] = `
 >
   <EuiFlexGroup
     direction="column"
+    gutterSize="m"
   >
     <div
-      className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionColumn euiFlexGroup--responsive"
+      className="euiFlexGroup euiFlexGroup--gutterMedium euiFlexGroup--directionColumn euiFlexGroup--responsive"
     >
       <PageHeader
         appRightControls={
           Array [
             Object {
               "renderComponent": <EuiSmallButton
-                data-test-subj="detectorsRefreshButton"
-                iconType="refresh"
-                onClick={[Function]}
-              >
-                Refresh
-              </EuiSmallButton>,
-            },
-            Object {
-              "renderComponent": <EuiPopover
-                anchorPosition="downLeft"
-                button={
-                  <EuiSmallButton
-                    data-test-subj="detectorsActionsButton"
-                    disabled={true}
-                    iconSide="right"
-                    iconType="arrowDown"
-                    isLoading={false}
-                    onClick={[Function]}
-                  >
-                    Actions
-                  </EuiSmallButton>
-                }
-                closePopover={[Function]}
-                data-test-subj="detectorsActionsPopover"
-                display="inlineBlock"
-                hasArrow={true}
-                id="detectorsActionsPopover"
-                isOpen={false}
-                ownFocus={true}
-                panelPaddingSize="none"
-              >
-                <EuiContextMenuPanel
-                  hasFocus={true}
-                  items={
-                    Array [
-                      <EuiContextMenuItem
-                        data-test-subj="deleteButton"
-                        disabled={true}
-                        icon="empty"
-                        onClick={[Function]}
-                      >
-                        Delete
-                      </EuiContextMenuItem>,
-                    ]
-                  }
-                  size="s"
-                />
-              </EuiPopover>,
-            },
-            Object {
-              "renderComponent": <EuiSmallButton
                 data-test-subj="detectorsCreateButton"
                 fill={true}
                 href="#/create-detector"
+                iconGap="s"
+                iconSide="left"
+                iconType="plus"
               >
                 Create detector
               </EuiSmallButton>,
@@ -146,209 +99,20 @@ exports[`<Detectors /> spec renders the component 1`] = `
                             className="euiFlexItem euiFlexItem--flexGrowZero"
                           >
                             <EuiSmallButton
-                              data-test-subj="detectorsRefreshButton"
-                              iconType="refresh"
-                              onClick={[Function]}
-                            >
-                              <EuiButton
-                                data-test-subj="detectorsRefreshButton"
-                                iconType="refresh"
-                                onClick={[Function]}
-                                size="s"
-                              >
-                                <EuiButtonDisplay
-                                  baseClassName="euiButton"
-                                  data-test-subj="detectorsRefreshButton"
-                                  disabled={false}
-                                  element="button"
-                                  iconType="refresh"
-                                  isDisabled={false}
-                                  onClick={[Function]}
-                                  size="s"
-                                  type="button"
-                                >
-                                  <button
-                                    className="euiButton euiButton--primary euiButton--small"
-                                    data-test-subj="detectorsRefreshButton"
-                                    disabled={false}
-                                    onClick={[Function]}
-                                    style={
-                                      Object {
-                                        "minWidth": undefined,
-                                      }
-                                    }
-                                    type="button"
-                                  >
-                                    <EuiButtonContent
-                                      className="euiButton__content"
-                                      iconGap="m"
-                                      iconSide="left"
-                                      iconType="refresh"
-                                      textProps={
-                                        Object {
-                                          "className": "euiButton__text",
-                                        }
-                                      }
-                                    >
-                                      <span
-                                        className="euiButtonContent euiButton__content"
-                                      >
-                                        <EuiIcon
-                                          className="euiButtonContent__icon"
-                                          color="inherit"
-                                          size="m"
-                                          type="refresh"
-                                        >
-                                          EuiIconMock
-                                        </EuiIcon>
-                                        <span
-                                          className="euiButton__text"
-                                        >
-                                          Refresh
-                                        </span>
-                                      </span>
-                                    </EuiButtonContent>
-                                  </button>
-                                </EuiButtonDisplay>
-                              </EuiButton>
-                            </EuiSmallButton>
-                          </div>
-                        </EuiFlexItem>
-                        <EuiFlexItem
-                          grow={false}
-                          key="1"
-                        >
-                          <div
-                            className="euiFlexItem euiFlexItem--flexGrowZero"
-                          >
-                            <EuiPopover
-                              anchorPosition="downLeft"
-                              button={
-                                <EuiSmallButton
-                                  data-test-subj="detectorsActionsButton"
-                                  disabled={true}
-                                  iconSide="right"
-                                  iconType="arrowDown"
-                                  isLoading={false}
-                                  onClick={[Function]}
-                                >
-                                  Actions
-                                </EuiSmallButton>
-                              }
-                              closePopover={[Function]}
-                              data-test-subj="detectorsActionsPopover"
-                              display="inlineBlock"
-                              hasArrow={true}
-                              id="detectorsActionsPopover"
-                              isOpen={false}
-                              ownFocus={true}
-                              panelPaddingSize="none"
-                            >
-                              <div
-                                className="euiPopover euiPopover--anchorDownLeft"
-                                data-test-subj="detectorsActionsPopover"
-                                id="detectorsActionsPopover"
-                              >
-                                <div
-                                  className="euiPopover__anchor"
-                                >
-                                  <EuiSmallButton
-                                    data-test-subj="detectorsActionsButton"
-                                    disabled={true}
-                                    iconSide="right"
-                                    iconType="arrowDown"
-                                    isLoading={false}
-                                    onClick={[Function]}
-                                  >
-                                    <EuiButton
-                                      data-test-subj="detectorsActionsButton"
-                                      disabled={true}
-                                      iconSide="right"
-                                      iconType="arrowDown"
-                                      isLoading={false}
-                                      onClick={[Function]}
-                                      size="s"
-                                    >
-                                      <EuiButtonDisplay
-                                        baseClassName="euiButton"
-                                        data-test-subj="detectorsActionsButton"
-                                        disabled={true}
-                                        element="button"
-                                        iconSide="right"
-                                        iconType="arrowDown"
-                                        isDisabled={true}
-                                        isLoading={false}
-                                        onClick={[Function]}
-                                        size="s"
-                                        type="button"
-                                      >
-                                        <button
-                                          className="euiButton euiButton--primary euiButton--small euiButton-isDisabled"
-                                          data-test-subj="detectorsActionsButton"
-                                          disabled={true}
-                                          onClick={[Function]}
-                                          style={
-                                            Object {
-                                              "minWidth": undefined,
-                                            }
-                                          }
-                                          type="button"
-                                        >
-                                          <EuiButtonContent
-                                            className="euiButton__content"
-                                            iconGap="m"
-                                            iconSide="right"
-                                            iconType="arrowDown"
-                                            isLoading={false}
-                                            textProps={
-                                              Object {
-                                                "className": "euiButton__text",
-                                              }
-                                            }
-                                          >
-                                            <span
-                                              className="euiButtonContent euiButtonContent--iconRight euiButton__content"
-                                            >
-                                              <EuiIcon
-                                                className="euiButtonContent__icon"
-                                                color="inherit"
-                                                size="m"
-                                                type="arrowDown"
-                                              >
-                                                EuiIconMock
-                                              </EuiIcon>
-                                              <span
-                                                className="euiButton__text"
-                                              >
-                                                Actions
-                                              </span>
-                                            </span>
-                                          </EuiButtonContent>
-                                        </button>
-                                      </EuiButtonDisplay>
-                                    </EuiButton>
-                                  </EuiSmallButton>
-                                </div>
-                              </div>
-                            </EuiPopover>
-                          </div>
-                        </EuiFlexItem>
-                        <EuiFlexItem
-                          grow={false}
-                          key="2"
-                        >
-                          <div
-                            className="euiFlexItem euiFlexItem--flexGrowZero"
-                          >
-                            <EuiSmallButton
                               data-test-subj="detectorsCreateButton"
                               fill={true}
                               href="#/create-detector"
+                              iconGap="s"
+                              iconSide="left"
+                              iconType="plus"
                             >
                               <EuiButton
                                 data-test-subj="detectorsCreateButton"
                                 fill={true}
                                 href="#/create-detector"
+                                iconGap="s"
+                                iconSide="left"
+                                iconType="plus"
                                 size="s"
                               >
                                 <EuiButtonDisplay
@@ -357,6 +121,9 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                   element="a"
                                   fill={true}
                                   href="#/create-detector"
+                                  iconGap="s"
+                                  iconSide="left"
+                                  iconType="plus"
                                   isDisabled={false}
                                   rel="noreferrer"
                                   size="s"
@@ -375,8 +142,9 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                   >
                                     <EuiButtonContent
                                       className="euiButton__content"
-                                      iconGap="m"
+                                      iconGap="s"
                                       iconSide="left"
+                                      iconType="plus"
                                       textProps={
                                         Object {
                                           "className": "euiButton__text",
@@ -384,8 +152,16 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                       }
                                     >
                                       <span
-                                        className="euiButtonContent euiButton__content"
+                                        className="euiButtonContent euiButtonContent--smallIconGap euiButton__content"
                                       >
+                                        <EuiIcon
+                                          className="euiButtonContent__icon"
+                                          color="inherit"
+                                          size="m"
+                                          type="plus"
+                                        >
+                                          EuiIconMock
+                                        </EuiIcon>
                                         <span
                                           className="euiButton__text"
                                         >
@@ -405,13 +181,6 @@ exports[`<Detectors /> spec renders the component 1`] = `
                 </EuiFlexItem>
               </div>
             </EuiFlexGroup>
-            <EuiSpacer
-              size="m"
-            >
-              <div
-                className="euiSpacer euiSpacer--m"
-              />
-            </EuiSpacer>
           </div>
         </EuiFlexItem>
       </PageHeader>
@@ -689,12 +458,14 @@ exports[`<Detectors /> spec renders the component 1`] = `
                 search={
                   Object {
                     "box": Object {
+                      "compressed": true,
                       "incremental": true,
                       "placeholder": "Search threat detectors",
                       "schema": true,
                     },
                     "filters": Array [
                       Object {
+                        "compressed": true,
                         "field": "status",
                         "multiSelect": "or",
                         "name": "Status",
@@ -707,12 +478,62 @@ exports[`<Detectors /> spec renders the component 1`] = `
                         "type": "field_value_selection",
                       },
                       Object {
+                        "compressed": true,
                         "field": "logType",
                         "multiSelect": "or",
                         "name": "Log type",
                         "options": Array [],
                         "type": "field_value_selection",
                       },
+                    ],
+                    "toolsLeft": Array [
+                      <EuiSmallButton
+                        color="danger"
+                        data-test-subj="deleteButton"
+                        disabled={true}
+                        iconType="trash"
+                        onClick={[Function]}
+                      >
+                        Delete detectors
+                      </EuiSmallButton>,
+                    ],
+                    "toolsRight": Array [
+                      <EuiSmallButton
+                        data-test-subj="detectorsRefreshButton"
+                        iconType="refresh"
+                        onClick={[Function]}
+                      >
+                        Refresh
+                      </EuiSmallButton>,
+                      <EuiPopover
+                        anchorPosition="downLeft"
+                        button={
+                          <EuiSmallButton
+                            data-test-subj="detectorsActionsButton"
+                            disabled={true}
+                            iconSide="right"
+                            iconType="arrowDown"
+                            isLoading={false}
+                            onClick={[Function]}
+                          >
+                            Actions
+                          </EuiSmallButton>
+                        }
+                        closePopover={[Function]}
+                        data-test-subj="detectorsActionsPopover"
+                        display="inlineBlock"
+                        hasArrow={true}
+                        id="detectorsActionsPopover"
+                        isOpen={false}
+                        ownFocus={true}
+                        panelPaddingSize="none"
+                      >
+                        <EuiContextMenuPanel
+                          hasFocus={true}
+                          items={Array []}
+                          size="s"
+                        />
+                      </EuiPopover>,
                     ],
                   }
                 }
@@ -735,6 +556,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                   <EuiSearchBar
                     box={
                       Object {
+                        "compressed": true,
                         "incremental": true,
                         "placeholder": "Search threat detectors",
                         "schema": Object {
@@ -762,6 +584,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                     filters={
                       Array [
                         Object {
+                          "compressed": true,
                           "field": "status",
                           "multiSelect": "or",
                           "name": "Status",
@@ -774,6 +597,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                           "type": "field_value_selection",
                         },
                         Object {
+                          "compressed": true,
                           "field": "logType",
                           "multiSelect": "or",
                           "name": "Log type",
@@ -783,6 +607,59 @@ exports[`<Detectors /> spec renders the component 1`] = `
                       ]
                     }
                     onChange={[Function]}
+                    toolsLeft={
+                      Array [
+                        <EuiSmallButton
+                          color="danger"
+                          data-test-subj="deleteButton"
+                          disabled={true}
+                          iconType="trash"
+                          onClick={[Function]}
+                        >
+                          Delete detectors
+                        </EuiSmallButton>,
+                      ]
+                    }
+                    toolsRight={
+                      Array [
+                        <EuiSmallButton
+                          data-test-subj="detectorsRefreshButton"
+                          iconType="refresh"
+                          onClick={[Function]}
+                        >
+                          Refresh
+                        </EuiSmallButton>,
+                        <EuiPopover
+                          anchorPosition="downLeft"
+                          button={
+                            <EuiSmallButton
+                              data-test-subj="detectorsActionsButton"
+                              disabled={true}
+                              iconSide="right"
+                              iconType="arrowDown"
+                              isLoading={false}
+                              onClick={[Function]}
+                            >
+                              Actions
+                            </EuiSmallButton>
+                          }
+                          closePopover={[Function]}
+                          data-test-subj="detectorsActionsPopover"
+                          display="inlineBlock"
+                          hasArrow={true}
+                          id="detectorsActionsPopover"
+                          isOpen={false}
+                          ownFocus={true}
+                          panelPaddingSize="none"
+                        >
+                          <EuiContextMenuPanel
+                            hasFocus={true}
+                            items={Array []}
+                            size="s"
+                          />
+                        </EuiPopover>,
+                      ]
+                    }
                   >
                     <EuiFlexGroup
                       alignItems="center"
@@ -793,6 +670,88 @@ exports[`<Detectors /> spec renders the component 1`] = `
                         className="euiFlexGroup euiFlexGroup--gutterMedium euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow euiFlexGroup--responsive euiFlexGroup--wrap"
                       >
                         <EuiFlexItem
+                          grow={false}
+                          key="Delete"
+                        >
+                          <div
+                            className="euiFlexItem euiFlexItem--flexGrowZero"
+                          >
+                            <EuiSmallButton
+                              color="danger"
+                              data-test-subj="deleteButton"
+                              disabled={true}
+                              iconType="trash"
+                              key="Delete"
+                              onClick={[Function]}
+                            >
+                              <EuiButton
+                                color="danger"
+                                data-test-subj="deleteButton"
+                                disabled={true}
+                                iconType="trash"
+                                onClick={[Function]}
+                                size="s"
+                              >
+                                <EuiButtonDisplay
+                                  baseClassName="euiButton"
+                                  color="danger"
+                                  data-test-subj="deleteButton"
+                                  disabled={true}
+                                  element="button"
+                                  iconType="trash"
+                                  isDisabled={true}
+                                  onClick={[Function]}
+                                  size="s"
+                                  type="button"
+                                >
+                                  <button
+                                    className="euiButton euiButton--danger euiButton--small euiButton-isDisabled"
+                                    data-test-subj="deleteButton"
+                                    disabled={true}
+                                    onClick={[Function]}
+                                    style={
+                                      Object {
+                                        "minWidth": undefined,
+                                      }
+                                    }
+                                    type="button"
+                                  >
+                                    <EuiButtonContent
+                                      className="euiButton__content"
+                                      iconGap="m"
+                                      iconSide="left"
+                                      iconType="trash"
+                                      textProps={
+                                        Object {
+                                          "className": "euiButton__text",
+                                        }
+                                      }
+                                    >
+                                      <span
+                                        className="euiButtonContent euiButton__content"
+                                      >
+                                        <EuiIcon
+                                          className="euiButtonContent__icon"
+                                          color="inherit"
+                                          size="m"
+                                          type="trash"
+                                        >
+                                          EuiIconMock
+                                        </EuiIcon>
+                                        <span
+                                          className="euiButton__text"
+                                        >
+                                          Delete detectors
+                                        </span>
+                                      </span>
+                                    </EuiButtonContent>
+                                  </button>
+                                </EuiButtonDisplay>
+                              </EuiButton>
+                            </EuiSmallButton>
+                          </div>
+                        </EuiFlexItem>
+                        <EuiFlexItem
                           className="euiSearchBar__searchHolder"
                           grow={true}
                         >
@@ -800,6 +759,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                             className="euiFlexItem euiSearchBar__searchHolder"
                           >
                             <EuiSearchBox
+                              compressed={true}
                               incremental={true}
                               isInvalid={false}
                               onSearch={[Function]}
@@ -808,7 +768,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                             >
                               <EuiFieldSearch
                                 aria-label="This is a search bar. As you type, the results lower in the page will automatically filter."
-                                compressed={false}
+                                compressed={true}
                                 defaultValue=""
                                 fullWidth={true}
                                 incremental={true}
@@ -820,13 +780,13 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                 placeholder="Search threat detectors"
                               >
                                 <EuiFormControlLayout
-                                  compressed={false}
+                                  compressed={true}
                                   fullWidth={true}
                                   icon="search"
                                   isLoading={false}
                                 >
                                   <div
-                                    className="euiFormControlLayout euiFormControlLayout--fullWidth"
+                                    className="euiFormControlLayout euiFormControlLayout--fullWidth euiFormControlLayout--compressed"
                                   >
                                     <div
                                       className="euiFormControlLayout__childrenWrapper"
@@ -836,7 +796,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                       >
                                         <input
                                           aria-label="This is a search bar. As you type, the results lower in the page will automatically filter."
-                                          className="euiFieldSearch euiFieldSearch--fullWidth"
+                                          className="euiFieldSearch euiFieldSearch--fullWidth euiFieldSearch--compressed"
                                           defaultValue=""
                                           onKeyUp={[Function]}
                                           placeholder="Search threat detectors"
@@ -844,7 +804,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                         />
                                       </EuiValidatableControl>
                                       <EuiFormControlLayoutIcons
-                                        compressed={false}
+                                        compressed={true}
                                         icon="search"
                                         isLoading={false}
                                       >
@@ -852,7 +812,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                           className="euiFormControlLayoutIcons"
                                         >
                                           <EuiFormControlLayoutCustomIcon
-                                            size="m"
+                                            size="s"
                                             type="search"
                                           >
                                             <span
@@ -861,7 +821,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                               <EuiIcon
                                                 aria-hidden="true"
                                                 className="euiFormControlLayoutCustomIcon__icon"
-                                                size="m"
+                                                size="s"
                                                 type="search"
                                               >
                                                 EuiIconMock
@@ -888,6 +848,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                               filters={
                                 Array [
                                   Object {
+                                    "compressed": true,
                                     "field": "status",
                                     "multiSelect": "or",
                                     "name": "Status",
@@ -900,6 +861,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                     "type": "field_value_selection",
                                   },
                                   Object {
+                                    "compressed": true,
                                     "field": "logType",
                                     "multiSelect": "or",
                                     "name": "Log type",
@@ -936,7 +898,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                   <FieldValueSelectionFilter
                                     config={
                                       Object {
-                                        "compressed": undefined,
+                                        "compressed": true,
                                         "field": "status",
                                         "multiSelect": "or",
                                         "name": "Status",
@@ -980,6 +942,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                           iconSide="right"
                                           iconType="arrowDown"
                                           onClick={[Function]}
+                                          size="s"
                                         >
                                           Status
                                         </EuiFilterButton>
@@ -1006,6 +969,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                             iconSide="right"
                                             iconType="arrowDown"
                                             onClick={[Function]}
+                                            size="s"
                                           >
                                             <EuiButtonEmpty
                                               className="euiFilterButton euiFilterButton--hasIcon"
@@ -1013,6 +977,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                               iconSide="right"
                                               iconType="arrowDown"
                                               onClick={[Function]}
+                                              size="s"
                                               textProps={
                                                 Object {
                                                   "className": "",
@@ -1021,7 +986,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                               type="button"
                                             >
                                               <button
-                                                className="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
+                                                className="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton--hasIcon"
                                                 disabled={false}
                                                 onClick={[Function]}
                                                 type="button"
@@ -1072,7 +1037,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                   <FieldValueSelectionFilter
                                     config={
                                       Object {
-                                        "compressed": undefined,
+                                        "compressed": true,
                                         "field": "logType",
                                         "multiSelect": "or",
                                         "name": "Log type",
@@ -1111,6 +1076,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                           iconSide="right"
                                           iconType="arrowDown"
                                           onClick={[Function]}
+                                          size="s"
                                         >
                                           Log type
                                         </EuiFilterButton>
@@ -1137,6 +1103,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                             iconSide="right"
                                             iconType="arrowDown"
                                             onClick={[Function]}
+                                            size="s"
                                           >
                                             <EuiButtonEmpty
                                               className="euiFilterButton euiFilterButton--hasIcon"
@@ -1144,6 +1111,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                               iconSide="right"
                                               iconType="arrowDown"
                                               onClick={[Function]}
+                                              size="s"
                                               textProps={
                                                 Object {
                                                   "className": "",
@@ -1152,7 +1120,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                               type="button"
                                             >
                                               <button
-                                                className="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
+                                                className="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton--hasIcon"
                                                 disabled={false}
                                                 onClick={[Function]}
                                                 type="button"
@@ -1203,6 +1171,199 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                 </div>
                               </EuiFilterGroup>
                             </EuiSearchFilters>
+                          </div>
+                        </EuiFlexItem>
+                        <EuiFlexItem
+                          grow={false}
+                        >
+                          <div
+                            className="euiFlexItem euiFlexItem--flexGrowZero"
+                          >
+                            <EuiSmallButton
+                              data-test-subj="detectorsRefreshButton"
+                              iconType="refresh"
+                              onClick={[Function]}
+                            >
+                              <EuiButton
+                                data-test-subj="detectorsRefreshButton"
+                                iconType="refresh"
+                                onClick={[Function]}
+                                size="s"
+                              >
+                                <EuiButtonDisplay
+                                  baseClassName="euiButton"
+                                  data-test-subj="detectorsRefreshButton"
+                                  disabled={false}
+                                  element="button"
+                                  iconType="refresh"
+                                  isDisabled={false}
+                                  onClick={[Function]}
+                                  size="s"
+                                  type="button"
+                                >
+                                  <button
+                                    className="euiButton euiButton--primary euiButton--small"
+                                    data-test-subj="detectorsRefreshButton"
+                                    disabled={false}
+                                    onClick={[Function]}
+                                    style={
+                                      Object {
+                                        "minWidth": undefined,
+                                      }
+                                    }
+                                    type="button"
+                                  >
+                                    <EuiButtonContent
+                                      className="euiButton__content"
+                                      iconGap="m"
+                                      iconSide="left"
+                                      iconType="refresh"
+                                      textProps={
+                                        Object {
+                                          "className": "euiButton__text",
+                                        }
+                                      }
+                                    >
+                                      <span
+                                        className="euiButtonContent euiButton__content"
+                                      >
+                                        <EuiIcon
+                                          className="euiButtonContent__icon"
+                                          color="inherit"
+                                          size="m"
+                                          type="refresh"
+                                        >
+                                          EuiIconMock
+                                        </EuiIcon>
+                                        <span
+                                          className="euiButton__text"
+                                        >
+                                          Refresh
+                                        </span>
+                                      </span>
+                                    </EuiButtonContent>
+                                  </button>
+                                </EuiButtonDisplay>
+                              </EuiButton>
+                            </EuiSmallButton>
+                          </div>
+                        </EuiFlexItem>
+                        <EuiFlexItem
+                          grow={false}
+                        >
+                          <div
+                            className="euiFlexItem euiFlexItem--flexGrowZero"
+                          >
+                            <EuiPopover
+                              anchorPosition="downLeft"
+                              button={
+                                <EuiSmallButton
+                                  data-test-subj="detectorsActionsButton"
+                                  disabled={true}
+                                  iconSide="right"
+                                  iconType="arrowDown"
+                                  isLoading={false}
+                                  onClick={[Function]}
+                                >
+                                  Actions
+                                </EuiSmallButton>
+                              }
+                              closePopover={[Function]}
+                              data-test-subj="detectorsActionsPopover"
+                              display="inlineBlock"
+                              hasArrow={true}
+                              id="detectorsActionsPopover"
+                              isOpen={false}
+                              ownFocus={true}
+                              panelPaddingSize="none"
+                            >
+                              <div
+                                className="euiPopover euiPopover--anchorDownLeft"
+                                data-test-subj="detectorsActionsPopover"
+                                id="detectorsActionsPopover"
+                              >
+                                <div
+                                  className="euiPopover__anchor"
+                                >
+                                  <EuiSmallButton
+                                    data-test-subj="detectorsActionsButton"
+                                    disabled={true}
+                                    iconSide="right"
+                                    iconType="arrowDown"
+                                    isLoading={false}
+                                    onClick={[Function]}
+                                  >
+                                    <EuiButton
+                                      data-test-subj="detectorsActionsButton"
+                                      disabled={true}
+                                      iconSide="right"
+                                      iconType="arrowDown"
+                                      isLoading={false}
+                                      onClick={[Function]}
+                                      size="s"
+                                    >
+                                      <EuiButtonDisplay
+                                        baseClassName="euiButton"
+                                        data-test-subj="detectorsActionsButton"
+                                        disabled={true}
+                                        element="button"
+                                        iconSide="right"
+                                        iconType="arrowDown"
+                                        isDisabled={true}
+                                        isLoading={false}
+                                        onClick={[Function]}
+                                        size="s"
+                                        type="button"
+                                      >
+                                        <button
+                                          className="euiButton euiButton--primary euiButton--small euiButton-isDisabled"
+                                          data-test-subj="detectorsActionsButton"
+                                          disabled={true}
+                                          onClick={[Function]}
+                                          style={
+                                            Object {
+                                              "minWidth": undefined,
+                                            }
+                                          }
+                                          type="button"
+                                        >
+                                          <EuiButtonContent
+                                            className="euiButton__content"
+                                            iconGap="m"
+                                            iconSide="right"
+                                            iconType="arrowDown"
+                                            isLoading={false}
+                                            textProps={
+                                              Object {
+                                                "className": "euiButton__text",
+                                              }
+                                            }
+                                          >
+                                            <span
+                                              className="euiButtonContent euiButtonContent--iconRight euiButton__content"
+                                            >
+                                              <EuiIcon
+                                                className="euiButtonContent__icon"
+                                                color="inherit"
+                                                size="m"
+                                                type="arrowDown"
+                                              >
+                                                EuiIconMock
+                                              </EuiIcon>
+                                              <span
+                                                className="euiButton__text"
+                                              >
+                                                Actions
+                                              </span>
+                                            </span>
+                                          </EuiButtonContent>
+                                        </button>
+                                      </EuiButtonDisplay>
+                                    </EuiButton>
+                                  </EuiSmallButton>
+                                </div>
+                              </div>
+                            </EuiPopover>
                           </div>
                         </EuiFlexItem>
                       </div>
