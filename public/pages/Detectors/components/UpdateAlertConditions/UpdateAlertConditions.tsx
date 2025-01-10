@@ -19,7 +19,12 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast, successNotificationToast } from '../../../../utils/helpers';
 import { ServerResponse } from '../../../../../server/models/types';
 import { DataStore } from '../../../../store/DataStore';
-import { Detector, DetectorCreationStep, DetectorResponse } from '../../../../../types';
+import {
+  Detector,
+  DetectorCreationStep,
+  DetectorResponse,
+  RuleItemInfoBase,
+} from '../../../../../types';
 
 export interface UpdateAlertConditionsProps
   extends RouteComponentProps<any, any, { detectorHit: DetectorHit }> {
@@ -86,6 +91,11 @@ export default class UpdateAlertConditions extends Component<
         }
       }
       const terms = { 'rule.category': [detector.detector_type.toLowerCase()] };
+      const enabledRules = new Set(
+        detector.inputs[0].detector_input.custom_rules
+          .map((rule) => rule.id)
+          .concat(detector.inputs[0].detector_input.pre_packaged_rules.map((rule) => rule.id))
+      );
 
       const customRules = await DataStore.rules.getCustomRules(terms);
       const prePackagedRules = await DataStore.rules.getPrePackagedRules(terms);
@@ -93,27 +103,23 @@ export default class UpdateAlertConditions extends Component<
       const allRules: { [id: string]: RuleSource } = {};
       const rulesOptions = new Set<RuleOptions>();
 
-      prePackagedRules.forEach((hit) => {
-        allRules[hit._id] = hit._source;
-        const rule = allRules[hit._id];
-        rulesOptions.add({
-          name: rule.title,
-          id: hit._id,
-          severity: rule.level,
-          tags: rule.tags.map((tag) => tag.value),
+      const processRules = (rules: RuleItemInfoBase[]) => {
+        rules.forEach((hit) => {
+          allRules[hit._id] = hit._source;
+          if (enabledRules.has(hit._id)) {
+            const rule = allRules[hit._id];
+            rulesOptions.add({
+              name: rule.title,
+              id: hit._id,
+              severity: rule.level,
+              tags: rule.tags.map((tag) => tag.value),
+            });
+          }
         });
-      });
+      };
 
-      customRules.forEach((hit) => {
-        allRules[hit._id] = hit._source;
-        const rule = allRules[hit._id];
-        rulesOptions.add({
-          name: rule.title,
-          id: hit._id,
-          severity: rule.level,
-          tags: rule.tags.map((tag) => tag.value),
-        });
-      });
+      processRules(prePackagedRules);
+      processRules(customRules);
 
       this.setState({ rules: allRules, rulesOptions: Array.from(rulesOptions) });
     } catch (e: any) {
