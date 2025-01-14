@@ -28,6 +28,7 @@ import {
 import {
   BREADCRUMBS,
   DEFAULT_DATE_RANGE,
+  DEFAULT_EMPTY_DATA,
   FindingTabId,
   MAX_RECENTLY_USED_TIME_RANGES,
 } from '../../../../utils/constants';
@@ -49,6 +50,7 @@ import {
   renderVisualization,
   getDuration,
   getIsNotificationPluginInstalled,
+  isThreatIntelQuery,
 } from '../../../../utils/helpers';
 import { RuleSource } from '../../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
@@ -65,6 +67,7 @@ import {
   ThreatIntelFindingsGroupByType,
 } from '../../../../../types';
 import { ThreatIntelFindingsTable } from '../../components/FindingsTable/ThreatIntelFindingsTable';
+import { RuleSeverityValue, RuleSeverityPriority } from '../../../Rules/utils/constants';
 
 interface FindingsProps extends RouteComponentProps, DataSourceProps {
   detectorService: DetectorsService;
@@ -436,7 +439,8 @@ class Findings extends Component<FindingsProps, FindingsState> {
         const ruleLevel =
           finding.detectionType === 'Threat intelligence'
             ? 'high'
-            : (findingsState as DetectionRulesFindingsState).rules[finding.queries[0].id].level;
+            : (findingsState as DetectionRulesFindingsState).rules[finding.queries[0].id]?.level ||
+              DEFAULT_EMPTY_DATA;
         visData.push({
           finding: 1,
           time: findingTime.getTime(),
@@ -521,13 +525,30 @@ class Findings extends Component<FindingsProps, FindingsState> {
     } = this.props;
     if (selectedTabId === FindingTabId.DetectionRules && Object.keys(rules).length > 0) {
       findings = findings.map((finding: any) => {
-        const rule = rules[finding.queries[0].id];
-        if (rule) {
-          finding['ruleName'] = rule.title;
-          finding['ruleSeverity'] =
-            rule.level === 'critical' ? rule.level : finding['ruleSeverity'] || rule.level;
-          finding['tags'] = rule.tags;
-        }
+        const matchedRules: RuleSource[] = [];
+        finding.queries.forEach((query: any) => {
+          if (rules[query.id]) {
+            matchedRules.push(rules[query.id]);
+          }
+        });
+
+        matchedRules.sort((a, b) => {
+          return RuleSeverityPriority[a.level as RuleSeverityValue] <
+            RuleSeverityPriority[b.level as RuleSeverityValue]
+            ? -1
+            : 1;
+        });
+
+        finding['ruleName'] =
+          matchedRules[0]?.title ||
+          (finding.queries.find(({ id }) => isThreatIntelQuery(id))
+            ? 'Threat intel'
+            : DEFAULT_EMPTY_DATA);
+        finding['ruleSeverity'] =
+          matchedRules[0]?.level === 'critical'
+            ? 'critical'
+            : finding['ruleSeverity'] || matchedRules[0]?.level || DEFAULT_EMPTY_DATA;
+        finding['tags'] = matchedRules[0]?.tags || [];
         return finding;
       });
     }
