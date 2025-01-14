@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { EuiSpacer, EuiTitle } from '@elastic/eui';
+import { EuiSpacer, EuiText } from '@elastic/eui';
 import { PeriodSchedule } from '../../../../../../../models/interfaces';
 import { Interval } from './Interval';
 import { Detector } from '../../../../../../../types';
@@ -23,9 +23,9 @@ export class DetectorSchedule extends React.Component<DetectorScheduleProps> {
   render() {
     return (
       <>
-        <EuiTitle size="m">
+        <EuiText size="m">
           <h3>Detector schedule</h3>
-        </EuiTitle>
+        </EuiText>
         <EuiSpacer />
         <Interval
           schedule={this.props.detector.schedule}
