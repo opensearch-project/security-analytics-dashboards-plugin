@@ -58,7 +58,6 @@ export const ROUTES = Object.freeze({
   EDIT_FIELD_MAPPINGS: '/edit-field-mappings',
   EDIT_DETECTOR_ALERT_TRIGGERS: '/edit-alert-triggers',
   CORRELATIONS: '/correlations',
-  CORRELATIONS_UPD: '/correlations-upd',
   CORRELATION_RULES: '/correlations/rules',
   CORRELATION_RULE_CREATE: '/correlations/create-rule',
   CORRELATION_RULE_EDIT: '/correlations/rule',
@@ -106,7 +105,6 @@ export const BREADCRUMBS = Object.freeze({
   RULES_DUPLICATE: { text: 'Duplicate rule', href: `#${ROUTES.RULES_DUPLICATE}` },
   RULES_IMPORT: { text: 'Import rule', href: `#${ROUTES.RULES_IMPORT}` },
   CORRELATIONS: { text: 'Correlations', href: `#${ROUTES.CORRELATIONS}` },
-  CORRELATIONS_UPD: { text: 'Correlations Updated', href: `#${ROUTES.CORRELATIONS_UPD}` },
   CORRELATION_RULES: { text: 'Correlation rules', href: `#${ROUTES.CORRELATION_RULES}` },
   CORRELATIONS_RULE_CREATE: (action: string) => ({
     text: `${action} correlation rule`,
