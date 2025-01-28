@@ -733,7 +733,6 @@ export class CorrelationsUpd extends React.Component<CorrelationsProps, Correlat
 
             // TODO -- GET THE RESOURCES FROM findings and correlatedFindings AND DISPLAY IN THE RESOURCES COLUMN.'
             // TODO -- GETTING THE EXACT RESOURCE IS NOT FEASIBLE WITH THE CURRENT DATA MODEL, BUT FIND A WAY TO REPRSENT THE OBJECTS.
-            console.log('CORRELATED FINDINGS: ', correlatedFindingsResponse);
 
             if (
               correlatedFindingsResponse.correlatedFindings &&
@@ -743,7 +742,6 @@ export class CorrelationsUpd extends React.Component<CorrelationsProps, Correlat
               const correlationRuleId = correlatedFindingsResponse.correlatedFindings[0].rules[0];
               const correlationRuleObj =
                 (await DataStore.correlations.getCorrelationRule(correlationRuleId)) || '';
-              console.log('CORRELATION RULE: ', correlationRuleObj);
               alertsSeverity = correlationRuleMapsAlerts[correlationRuleId];
               if (correlationRuleObj) {
                 correlationRule = correlationRuleObj.name;
