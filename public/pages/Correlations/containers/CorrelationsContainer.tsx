@@ -138,6 +138,7 @@ interface CorrelationsState {
   isFlyoutOpen: boolean;
   selectedTableRow: CorrelationsTableData | null;
   searchTerm: string;
+  flyoutGraphData: CorrelationGraphData;
 }
 
 export const renderTime = (time: number | string) => {
@@ -175,6 +176,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       isFlyoutOpen: false,
       selectedTableRow: null,
       searchTerm: '',
+      flyoutGraphData: { ...emptyGraphData },
     };
   }
 
@@ -528,7 +530,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     this.setState({
       isFlyoutOpen: true,
       selectedTableRow: correlationTableRow,
-      graphData: newGraphData,
+      flyoutGraphData: newGraphData,
     });
   };
 
@@ -536,7 +538,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     this.setState({
       isFlyoutOpen: false,
       selectedTableRow: null,
-      graphData: {
+      flyoutGraphData: {
         graph: { nodes: [], edges: [] },
         events: { click: this.onNodeClick },
       },
@@ -1268,7 +1270,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
   };
 
   private renderTableFlyout = () => {
-    const { isFlyoutOpen, selectedTableRow, graphData } = this.state;
+    const { isFlyoutOpen, selectedTableRow, flyoutGraphData } = this.state;
 
     if (!isFlyoutOpen || !selectedTableRow) {
       return null;
@@ -1356,14 +1358,14 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
               {selectedTableRow.correlatedFindings && (
                 <CorrelationGraph
                   loadingData={this.state.loadingGraphData}
-                  graph={graphData.graph}
+                  graph={flyoutGraphData.graph}
                   options={{
                     ...graphRenderOptions,
                     height: '300px',
                     width: '100%',
                     autoResize: true,
                   }}
-                  events={graphData.events}
+                  events={flyoutGraphData.events}
                   getNetwork={this.setNetwork}
                 />
               )}
