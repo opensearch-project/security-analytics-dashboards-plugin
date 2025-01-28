@@ -48,6 +48,7 @@ import { DataStore } from '../../store/DataStore';
 import { CreateCorrelationRule } from '../Correlations/containers/CreateCorrelationRule';
 import { CorrelationRules } from '../Correlations/containers/CorrelationRules';
 import { Correlations } from '../Correlations/containers/CorrelationsContainer';
+import { CorrelationsUpd } from '../Correlations/containers/CorrelationsContainerUpd';
 import { LogTypes } from '../LogTypes/containers/LogTypes';
 import { LogType } from '../LogTypes/containers/LogType';
 import { CreateLogType } from '../LogTypes/containers/CreateLogType';
@@ -85,6 +86,7 @@ enum Navigation {
   Overview = 'Overview',
   Alerts = 'Alerts',
   Correlations = 'Correlations',
+  CorrelationsUpd = 'Correlations Updated',
   CorrelationRules = 'Correlation rules',
   LogTypes = 'Log types',
   ThreatIntel = 'Threat Intelligence',
@@ -415,6 +417,44 @@ export default class Main extends Component<MainProps, MainState> {
               );
             },
             isSelected: selectedNavItemId === Navigation.Correlations,
+            forceOpen: true,
+            items: [
+              {
+                name: Navigation.CorrelationRules,
+                id: Navigation.CorrelationRules,
+                onClick: () => {
+                  this.setState({ selectedNavItemId: Navigation.CorrelationRules });
+                  history.push(ROUTES.CORRELATION_RULES);
+                },
+                isSelected: selectedNavItemId === Navigation.CorrelationRules,
+              },
+            ],
+          },
+          {
+            name: Navigation.CorrelationsUpd,
+            id: Navigation.CorrelationsUpd,
+            onClick: () => {
+              this.setState({ selectedNavItemId: Navigation.CorrelationsUpd });
+              history.push(ROUTES.CORRELATIONS_UPD);
+            },
+            renderItem: (props: any) => {
+              return (
+                <EuiFlexGroup alignItems="center" gutterSize="xs">
+                  <EuiFlexItem grow={false}>
+                    <span
+                      className={props.className}
+                      onClick={() => {
+                        this.setState({ selectedNavItemId: Navigation.CorrelationsUpd });
+                        history.push(ROUTES.CORRELATIONS_UPD);
+                      }}
+                    >
+                      {props.children}
+                    </span>
+                  </EuiFlexItem>
+                </EuiFlexGroup>
+              );
+            },
+            isSelected: selectedNavItemId === Navigation.CorrelationsUpd,
             forceOpen: true,
             items: [
               {
@@ -765,6 +805,26 @@ export default class Main extends Component<MainProps, MainState> {
                                             onMount={() =>
                                               this.setState({
                                                 selectedNavItemId: Navigation.Correlations,
+                                              })
+                                            }
+                                            dateTimeFilter={this.state.dateTimeFilter}
+                                            setDateTimeFilter={this.setDateTimeFilter}
+                                            dataSource={selectedDataSource}
+                                            notifications={core?.notifications}
+                                          />
+                                        );
+                                      }}
+                                    />
+                                    <Route
+                                      path={`${ROUTES.CORRELATIONS_UPD}`}
+                                      render={(props: RouteComponentProps<any, any, any>) => {
+                                        return (
+                                          <CorrelationsUpd
+                                            {...props}
+                                            history={props.history}
+                                            onMount={() =>
+                                              this.setState({
+                                                selectedNavItemId: Navigation.CorrelationsUpd,
                                               })
                                             }
                                             dateTimeFilter={this.state.dateTimeFilter}
