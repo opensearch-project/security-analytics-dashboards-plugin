@@ -1287,6 +1287,48 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         field: 'mitreTactic',
         name: 'Mitre Tactic',
         sortable: true,
+        render: (mitreTactic: string[]) => {
+          if (!mitreTactic || mitreTactic.length === 0) return DEFAULT_EMPTY_DATA;
+          const MAX_DISPLAY = 2;
+          const remainingCount =
+            mitreTactic.length > MAX_DISPLAY ? mitreTactic.length - MAX_DISPLAY : 0;
+          const displayedmitreTactic = mitreTactic.slice(0, MAX_DISPLAY).map((logType) => {
+            const label = logType;
+            return <EuiBadge>{label}</EuiBadge>;
+          });
+          const tooltipContent = (
+            <>
+              {mitreTactic.slice(MAX_DISPLAY).map((logType) => {
+                const label = logType;
+                return (
+                  <div style={{ display: 'flex', flexDirection: 'column', padding: '4px' }}>
+                    <EuiBadge>{label}</EuiBadge>
+                  </div>
+                );
+              })}
+            </>
+          );
+          return (
+            <span
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: '4px',
+                whiteSpace: 'normal',
+                flexWrap: 'wrap',
+                width: '100%',
+              }}
+            >
+              {displayedmitreTactic}
+              {remainingCount > 0 && (
+                <EuiToolTip content={tooltipContent} position="top">
+                  <EuiBadge>{`+${remainingCount} more`}</EuiBadge>
+                </EuiToolTip>
+              )}
+            </span>
+          );
+        },
       },
       {
         field: 'detectionRule',
