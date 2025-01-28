@@ -115,6 +115,7 @@ interface CorrelationsTableData {
   logTypes: string[];
   findingsSeverity: string[];
   correlatedFindings: CorrelationFinding[];
+  resources: string[];
 }
 
 interface FlyoutTableData {
@@ -717,6 +718,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         const logTypes = new Set<string>();
         const findingsSeverity: string[] = [];
         let alertsSeverity: string[] = [];
+        const resources: string[] = [];
 
         for (const finding of findingGroup) {
           findingsSeverity.push(finding.detectionRule.severity);
@@ -741,6 +743,11 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
               alertsSeverity = correlationRuleMapsAlerts[correlationRuleId];
               if (correlationRuleObj) {
                 correlationRule = correlationRuleObj.name;
+                correlationRuleObj.queries.map((query) => {
+                  query.conditions.map((condition) => {
+                    resources.push(condition.name + ': ' + condition.value);
+                  });
+                });
               }
             }
           }
@@ -754,6 +761,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
           alertSeverity: alertsSeverity,
           findingsSeverity: findingsSeverity,
           correlatedFindings: findingGroup,
+          resources: resources,
         });
       }
 
@@ -884,7 +892,8 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         row.alertSeverity.some((severity) =>
           alertSeverityMap[severity].toLowerCase().includes(searchLower)
         ) ||
-        row.findingsSeverity.some((severity) => severity.toLowerCase().includes(searchLower));
+        row.findingsSeverity.some((severity) => severity.toLowerCase().includes(searchLower)) ||
+        row.resources.some((resource) => resource.toLowerCase().includes(searchLower));
       return logTypeMatch && severityMatch && searchMatch;
     });
   };
@@ -1103,6 +1112,57 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
               }}
             >
               {displayedSeverities}
+              {remainingCount > 0 && (
+                <EuiToolTip content={tooltipContent} position="top">
+                  <EuiBadge>{`+${remainingCount} more`}</EuiBadge>
+                </EuiToolTip>
+              )}
+            </span>
+          );
+        },
+      },
+      {
+        field: 'resources',
+        name: 'Resources',
+        sortable: true,
+        render: (resources: string[]) => {
+          if (!resources || resources.length === 0) return DEFAULT_EMPTY_DATA;
+          const MAX_DISPLAY = 2;
+          const remainingCount =
+            resources.length > MAX_DISPLAY ? resources.length - MAX_DISPLAY : 0;
+          const displayedResources = resources.slice(0, MAX_DISPLAY).map((resource) => {
+            return (
+              <EuiBadge style={{ backgroundColor: '#fff', border: '1px solid #d3dae6' }}>
+                {resource}
+              </EuiBadge>
+            );
+          });
+
+          const tooltipContent = (
+            <>
+              {resources.slice(MAX_DISPLAY).map((resource) => {
+                return (
+                  <div style={{ display: 'flex', flexDirection: 'column', padding: '4px' }}>
+                    <EuiBadge>{resource}</EuiBadge>
+                  </div>
+                );
+              })}
+            </>
+          );
+
+          return (
+            <span
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: '4px',
+                whiteSpace: 'normal',
+                flexWrap: 'wrap',
+                width: '100%',
+              }}
+            >
+              {displayedResources}
               {remainingCount > 0 && (
                 <EuiToolTip content={tooltipContent} position="top">
                   <EuiBadge>{`+${remainingCount} more`}</EuiBadge>
