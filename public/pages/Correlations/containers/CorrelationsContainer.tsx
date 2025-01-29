@@ -40,11 +40,6 @@ import {
   EuiFilterGroup,
   EuiHorizontalRule,
   EuiButtonGroup,
-  EuiBasicTableColumn,
-  EuiToolTip,
-  EuiInMemoryTable,
-  EuiTextColor,
-  EuiLink,
   EuiFieldSearch,
 } from '@elastic/eui';
 import { FilterItem, FilterGroup } from '../components/FilterGroup';
@@ -65,27 +60,17 @@ import { Network } from 'react-graph-vis';
 import { getLogTypeLabel } from '../../LogTypes/utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import {
-  capitalizeFirstLetter,
   errorNotificationToast,
   renderVisualization,
   setBreadcrumbs,
 } from '../../../utils/helpers';
 import { PageHeader } from '../../../components/PageHeader/PageHeader';
 import { ChartContainer } from '../../../components/Charts/ChartContainer';
-import {
-  addInteractiveLegends,
-  DateOpts,
-  defaultDateFormat,
-  defaultScaleDomain,
-  defaultTimeUnit,
-  getChartTimeUnit,
-  getDomainRange,
-  getTimeTooltip,
-  getVisualizationSpec,
-  getXAxis,
-  getYAxis,
-} from '../../Overview/utils/helpers';
+import { getChartTimeUnit, getDomainRange } from '../../Overview/utils/helpers';
 import { debounce } from 'lodash';
+import { CorrelationsTable } from './CorrelationsTable';
+import { CorrelationsTableFlyout } from './CorrelationsTableFlyout';
+import { getCorrelatedFindingsVisualizationSpec } from '../utils/helpers';
 
 interface CorrelationsProps
   extends RouteComponentProps<
@@ -105,7 +90,7 @@ interface SpecificFindingCorrelations {
   correlatedFindings: CorrelationFinding[];
 }
 
-interface CorrelationsTableData {
+export interface CorrelationsTableData {
   id: string;
   startTime: number;
   correlationRule: string;
@@ -114,13 +99,6 @@ interface CorrelationsTableData {
   findingsSeverity: string[];
   correlatedFindings: CorrelationFinding[];
   resources: string[];
-}
-
-interface FlyoutTableData {
-  timestamp: string;
-  mitreTactic: string[];
-  detectionRule: string;
-  severity: string;
 }
 
 interface CorrelationsState {
@@ -757,36 +735,13 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       this.setState({
         correlationsTableData: tableData,
       });
-    } catch (error) {}
-  };
-
-  private getCorrelatedFindingsVisualizationSpec = (
-    visualizationData: any[],
-    dateOpts: DateOpts = {
-      timeUnit: defaultTimeUnit,
-      dateFormat: defaultDateFormat,
-      domain: defaultScaleDomain,
+    } catch (error) {
+      errorNotificationToast(
+        this.props.notifications,
+        'fetch and connect correlations',
+        error.message
+      );
     }
-  ) => {
-    return getVisualizationSpec('Correlated Findings data overview', visualizationData, [
-      addInteractiveLegends({
-        mark: {
-          type: 'bar',
-          clip: true,
-        },
-        encoding: {
-          tooltip: [getYAxis('correlatedFinding', 'Correlated Findings'), getTimeTooltip(dateOpts)],
-          x: getXAxis(dateOpts),
-          y: getYAxis('correlatedFinding', 'Count'),
-          color: {
-            field: 'title',
-            legend: {
-              title: 'Legend',
-            },
-          },
-        },
-      }),
-    ]);
   };
 
   private generateVisualizationSpec = (connectedFindings: CorrelationFinding[][]) => {
@@ -807,7 +762,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
 
     const chartTimeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
 
-    return this.getCorrelatedFindingsVisualizationSpec(visData, {
+    return getCorrelatedFindingsVisualizationSpec(visData, {
       timeUnit: chartTimeUnits.timeUnit,
       dateFormat: chartTimeUnits.dateFormat,
       domain: getDomainRange(
@@ -909,299 +864,12 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
   };
 
   private renderCorrelationsTable = () => {
-    const alertSeverityMap: { [key: string]: string } = {
-      '1': 'critical',
-      '2': 'high',
-      '3': 'medium',
-      '4': 'low',
-      '5': 'informational',
-    };
-
-    const columns: EuiBasicTableColumn<CorrelationsTableData>[] = [
-      {
-        field: 'startTime',
-        name: 'Start Time',
-        sortable: true,
-        dataType: 'date',
-        render: (startTime: number) => {
-          return new Date(startTime).toLocaleString();
-        },
-      },
-      {
-        field: 'correlationRule',
-        name: 'Correlation Rule',
-        sortable: true,
-        render: (name: string) => name || DEFAULT_EMPTY_DATA,
-      },
-      {
-        field: 'logTypes',
-        name: 'Log Types',
-        sortable: true,
-        render: (logTypes: string[]) => {
-          if (!logTypes || logTypes.length === 0) return DEFAULT_EMPTY_DATA;
-          const MAX_DISPLAY = 2;
-          const remainingCount = logTypes.length > MAX_DISPLAY ? logTypes.length - MAX_DISPLAY : 0;
-          const displayedLogTypes = logTypes.slice(0, MAX_DISPLAY).map((logType) => {
-            const label = logType;
-            return <EuiBadge>{label}</EuiBadge>;
-          });
-          const tooltipContent = (
-            <>
-              {logTypes.slice(MAX_DISPLAY).map((logType) => {
-                const label = logType;
-                return (
-                  <div style={{ display: 'flex', flexDirection: 'column', padding: '4px' }}>
-                    <EuiBadge>{label}</EuiBadge>
-                  </div>
-                );
-              })}
-            </>
-          );
-          return (
-            <span
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: '4px',
-                whiteSpace: 'normal',
-                flexWrap: 'wrap',
-                width: '100%',
-              }}
-            >
-              {displayedLogTypes}
-              {remainingCount > 0 && (
-                <EuiToolTip content={tooltipContent} position="top">
-                  <EuiBadge>{`+${remainingCount} more`}</EuiBadge>
-                </EuiToolTip>
-              )}
-            </span>
-          );
-        },
-      },
-      {
-        field: 'alertSeverity',
-        name: 'Alert Severity',
-        sortable: true,
-        render: (alertSeverity: string[]) => {
-          if (!alertSeverity || alertSeverity.length === 0) return DEFAULT_EMPTY_DATA;
-          const MAX_DISPLAY = 2;
-          const remainingCount =
-            alertSeverity.length > MAX_DISPLAY ? alertSeverity.length - MAX_DISPLAY : 0;
-          const displayedSeverities = alertSeverity.slice(0, MAX_DISPLAY).map((severity) => {
-            const label = alertSeverityMap[severity];
-            const { background, text } = getSeverityColor(label);
-            return (
-              <EuiBadge key={severity} style={{ backgroundColor: background, color: text }}>
-                {label}
-              </EuiBadge>
-            );
-          });
-
-          const tooltipContent = (
-            <>
-              {alertSeverity.slice(MAX_DISPLAY).map((severity) => {
-                const label = alertSeverityMap[severity];
-                const { background, text } = getSeverityColor(label);
-                return (
-                  <div style={{ display: 'flex', flexDirection: 'column', padding: '4px' }}>
-                    <EuiBadge key={severity} style={{ backgroundColor: background, color: text }}>
-                      {label}
-                    </EuiBadge>
-                  </div>
-                );
-              })}
-            </>
-          );
-
-          return (
-            <span
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: '4px',
-                whiteSpace: 'normal',
-                flexWrap: 'wrap',
-                width: '100%',
-              }}
-            >
-              {displayedSeverities}
-              {remainingCount > 0 && (
-                <EuiToolTip content={tooltipContent} position="top">
-                  <EuiBadge>{`+${remainingCount} more`}</EuiBadge>
-                </EuiToolTip>
-              )}
-            </span>
-          );
-        },
-      },
-      {
-        field: 'findingsSeverity',
-        name: 'Findings Severity',
-        sortable: true,
-        render: (findingsSeverity: string[]) => {
-          if (!findingsSeverity || findingsSeverity.length === 0) return DEFAULT_EMPTY_DATA;
-          const MAX_DISPLAY = 2;
-          const remainingCount =
-            findingsSeverity.length > MAX_DISPLAY ? findingsSeverity.length - MAX_DISPLAY : 0;
-          const displayedSeverities = findingsSeverity.slice(0, MAX_DISPLAY).map((severity) => {
-            const label = getSeverityLabel(severity);
-            const { background, text } = getSeverityColor(label);
-            return (
-              <EuiBadge key={severity} style={{ backgroundColor: background, color: text }}>
-                {label}
-              </EuiBadge>
-            );
-          });
-
-          const tooltipContent = (
-            <div
-              style={{
-                maxWidth: '300px',
-                maxHeight: '400px',
-                overflow: 'auto',
-              }}
-            >
-              {findingsSeverity.slice(MAX_DISPLAY).map((severity) => {
-                const label = getSeverityLabel(severity);
-                const { background, text } = getSeverityColor(label);
-                return (
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      padding: '4px',
-                      width: '100%',
-                    }}
-                  >
-                    <EuiBadge key={severity} style={{ backgroundColor: background, color: text }}>
-                      {label}
-                    </EuiBadge>
-                  </div>
-                );
-              })}
-            </div>
-          );
-
-          return (
-            <span
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: '4px',
-                whiteSpace: 'normal',
-                flexWrap: 'wrap',
-                width: '100%',
-              }}
-            >
-              {displayedSeverities}
-              {remainingCount > 0 && (
-                <EuiToolTip content={tooltipContent} position="top">
-                  <EuiBadge>{`+${remainingCount} more`}</EuiBadge>
-                </EuiToolTip>
-              )}
-            </span>
-          );
-        },
-      },
-      {
-        field: 'resources',
-        name: 'Resources',
-        sortable: true,
-        render: (resources: string[]) => {
-          if (!resources || resources.length === 0) return DEFAULT_EMPTY_DATA;
-          const MAX_DISPLAY = 2;
-          const remainingCount =
-            resources.length > MAX_DISPLAY ? resources.length - MAX_DISPLAY : 0;
-          const displayedResources = resources.slice(0, MAX_DISPLAY).map((resource) => {
-            return (
-              <EuiBadge style={{ backgroundColor: '#fff', border: '1px solid #d3dae6' }}>
-                {resource}
-              </EuiBadge>
-            );
-          });
-
-          const tooltipContent = (
-            <>
-              {resources.slice(MAX_DISPLAY).map((resource) => {
-                return (
-                  <div style={{ display: 'flex', flexDirection: 'column', padding: '4px' }}>
-                    <EuiBadge>{resource}</EuiBadge>
-                  </div>
-                );
-              })}
-            </>
-          );
-
-          return (
-            <span
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: '4px',
-                whiteSpace: 'normal',
-                flexWrap: 'wrap',
-                width: '100%',
-              }}
-            >
-              {displayedResources}
-              {remainingCount > 0 && (
-                <EuiToolTip content={tooltipContent} position="top">
-                  <EuiBadge>{`+${remainingCount} more`}</EuiBadge>
-                </EuiToolTip>
-              )}
-            </span>
-          );
-        },
-      },
-      {
-        field: 'actions',
-        name: 'Actions',
-        render: (_, correlationTableRow: CorrelationsTableData) => {
-          return (
-            <EuiToolTip content={'View details'}>
-              <EuiSmallButtonIcon
-                aria-label={'View details'}
-                data-test-subj={`view-details-icon`}
-                iconType={'inspect'}
-                onClick={() => {
-                  this.openTableFlyout(correlationTableRow);
-                }}
-              />
-            </EuiToolTip>
-          );
-        },
-      },
-    ];
-
-    const getRowProps = (item: any) => {
-      return {
-        'data-test-subj': `row-${item.id}`,
-        key: item.id,
-        className: 'euiTableRow',
-      };
-    };
-
     const filteredTableData = this.getFilteredTableData(this.state.correlationsTableData);
 
     return (
       <>
         {this.renderCorrelatedFindingsChart()}
-
-        <EuiInMemoryTable
-          items={filteredTableData}
-          rowProps={getRowProps}
-          columns={columns}
-          pagination={{
-            initialPageSize: 5,
-            pageSizeOptions: [5, 10, 20],
-          }}
-          responsive={true}
-          tableLayout="auto"
-        />
+        <CorrelationsTable tableData={filteredTableData} onViewDetails={this.openTableFlyout} />
       </>
     );
   };
@@ -1250,200 +918,6 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       }
     }
     return pairs;
-  };
-
-  private renderTableFlyout = () => {
-    const { isFlyoutOpen, selectedTableRow, flyoutGraphData } = this.state;
-
-    if (!isFlyoutOpen || !selectedTableRow) {
-      return null;
-    }
-
-    const findingsTableColumns: EuiBasicTableColumn<FlyoutTableData>[] = [
-      {
-        field: 'timestamp',
-        name: 'Time',
-        render: (timestamp: string) => new Date(timestamp).toLocaleString(),
-        sortable: true,
-      },
-      {
-        field: 'mitreTactic',
-        name: 'Mitre Tactic',
-        sortable: true,
-        render: (mitreTactic: string[]) => {
-          if (!mitreTactic || mitreTactic.length === 0) return DEFAULT_EMPTY_DATA;
-          const MAX_DISPLAY = 2;
-          const remainingCount =
-            mitreTactic.length > MAX_DISPLAY ? mitreTactic.length - MAX_DISPLAY : 0;
-          const displayedmitreTactic = mitreTactic.slice(0, MAX_DISPLAY).map((logType) => {
-            const label = logType;
-            return <EuiBadge>{label}</EuiBadge>;
-          });
-          const tooltipContent = (
-            <>
-              {mitreTactic.slice(MAX_DISPLAY).map((logType) => {
-                const label = logType;
-                return (
-                  <div style={{ display: 'flex', flexDirection: 'column', padding: '4px' }}>
-                    <EuiBadge>{label}</EuiBadge>
-                  </div>
-                );
-              })}
-            </>
-          );
-          return (
-            <span
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: '4px',
-                whiteSpace: 'normal',
-                flexWrap: 'wrap',
-                width: '100%',
-              }}
-            >
-              {displayedmitreTactic}
-              {remainingCount > 0 && (
-                <EuiToolTip content={tooltipContent} position="top">
-                  <EuiBadge>{`+${remainingCount} more`}</EuiBadge>
-                </EuiToolTip>
-              )}
-            </span>
-          );
-        },
-      },
-      {
-        field: 'detectionRule',
-        name: 'Detection Rule',
-        sortable: true,
-      },
-      {
-        field: 'severity',
-        name: 'Severity',
-        render: (ruleSeverity: string) => {
-          const severity = capitalizeFirstLetter(ruleSeverity) || DEFAULT_EMPTY_DATA;
-          const { background, text } = getSeverityColor(severity);
-
-          return (
-            <EuiBadge color={background} style={{ color: text }}>
-              {severity}
-            </EuiBadge>
-          );
-        },
-      },
-    ];
-
-    const flyoutTableData: FlyoutTableData[] = [];
-
-    selectedTableRow.correlatedFindings.map((correlatedFinding) => {
-      flyoutTableData.push({
-        timestamp: correlatedFinding.timestamp,
-        mitreTactic:
-          correlatedFinding.detectionRule.tags?.map((mitreTactic) => mitreTactic.value) || [],
-        detectionRule: correlatedFinding.detectionRule.name,
-        severity: correlatedFinding.detectionRule.severity,
-      });
-    });
-
-    return (
-      <EuiFlyout ownFocus onClose={this.closeTableFlyout} size="l" aria-labelledby="flyoutTitle">
-        <EuiFlyoutHeader hasBorder>
-          <EuiTitle size="m">
-            <h2 id="flyoutTitle">Correlation Details</h2>
-          </EuiTitle>
-          <EuiSpacer />
-          <EuiFlexGroup>
-            <EuiFlexItem>
-              <EuiText>
-                <p>
-                  <EuiTextColor color="subdued">Time</EuiTextColor>
-                  <br />
-                  {new Date(selectedTableRow.startTime).toLocaleString()}
-                </p>
-              </EuiText>
-            </EuiFlexItem>
-            <EuiFlexItem>
-              <EuiText>
-                <p>
-                  <EuiTextColor color="subdued">Correlation Rule</EuiTextColor>
-                  <br />
-                  {selectedTableRow.correlationRule}
-                </p>
-              </EuiText>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-        </EuiFlyoutHeader>
-        <EuiFlyoutBody>
-          <div style={{ height: '100%', overflowY: 'auto' }}>
-            <EuiPanel>
-              <EuiTitle>
-                <h3>Correlated Findings</h3>
-              </EuiTitle>
-              {selectedTableRow.correlatedFindings && (
-                <CorrelationGraph
-                  loadingData={this.state.loadingGraphData}
-                  graph={flyoutGraphData.graph}
-                  options={{
-                    ...graphRenderOptions,
-                    height: '300px',
-                    width: '100%',
-                    autoResize: true,
-                  }}
-                  events={flyoutGraphData.events}
-                  getNetwork={this.setNetwork}
-                />
-              )}
-            </EuiPanel>
-            <EuiSpacer />
-            <EuiTitle size="xs">
-              <h3>Findings</h3>
-            </EuiTitle>
-            <EuiInMemoryTable
-              items={flyoutTableData || []}
-              columns={findingsTableColumns}
-              pagination={{
-                initialPageSize: 5,
-                pageSizeOptions: [5, 10, 20],
-              }}
-              sorting={true}
-            />
-            <EuiSpacer size="l" />
-            <EuiPanel>
-              <EuiTitle>
-                <h3>Observed MITRE Attack Tactics</h3>
-              </EuiTitle>
-              <EuiSpacer size="m" />
-              <EuiFlexGroup wrap responsive={false} gutterSize="m">
-                {Array.from(
-                  new Set(
-                    selectedTableRow.correlatedFindings.flatMap(
-                      (finding) => finding.detectionRule.tags?.map((tag) => tag.value) || []
-                    )
-                  )
-                ).map((tactic, i) => {
-                  const link = `https://attack.mitre.org/techniques/${tactic
-                    .split('.')
-                    .slice(1)
-                    .join('/')
-                    .toUpperCase()}`;
-
-                  return (
-                    <EuiFlexItem grow={false} key={i}>
-                      <EuiBadge color={'#DDD'}>
-                        <EuiLink href={link} target="_blank">
-                          {tactic}
-                        </EuiLink>
-                      </EuiBadge>
-                    </EuiFlexItem>
-                  );
-                })}
-              </EuiFlexGroup>
-            </EuiPanel>
-          </div>
-        </EuiFlyoutBody>
-      </EuiFlyout>
-    );
   };
 
   render() {
@@ -1518,7 +992,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                       timestamp={finding.timestamp}
                       detectionRule={finding.detectionRule}
                       correlationData={{
-                        score: finding.correlationScore || 'N/A',
+                        score: finding.correlationScore || DEFAULT_EMPTY_DATA,
                         onInspect: this.onFindingInspect,
                       }}
                       finding={finding}
@@ -1603,7 +1077,16 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
             </EuiPanel>
           </EuiFlexItem>
         </EuiFlexGroup>
-        {this.renderTableFlyout()}
+        {this.state.isFlyoutOpen && (
+          <CorrelationsTableFlyout
+            isFlyoutOpen={this.state.isFlyoutOpen}
+            selectedTableRow={this.state.selectedTableRow}
+            flyoutGraphData={this.state.flyoutGraphData}
+            loadingGraphData={this.state.loadingGraphData}
+            onClose={this.closeTableFlyout}
+            setNetwork={this.setNetwork}
+          />
+        )}
       </>
     );
   }

@@ -4,10 +4,31 @@
  */
 
 import React from 'react';
-import { EuiBasicTableColumn, EuiBadge, EuiToolTip, EuiSmallButtonIcon, EuiLink } from '@elastic/eui';
+import {
+  EuiBasicTableColumn,
+  EuiBadge,
+  EuiToolTip,
+  EuiSmallButtonIcon,
+  EuiLink,
+  EuiFlexItem,
+  EuiFlexGroup,
+} from '@elastic/eui';
 import { CorrelationRule, CorrelationRuleQuery, CorrelationRuleTableItem } from '../../../../types';
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
 import { formatRuleType, getLogTypeFilterOptions } from '../../../utils/helpers';
+import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
+import { getSeverityColor, getSeverityLabel } from './constants';
+import {
+  addInteractiveLegends,
+  DateOpts,
+  defaultDateFormat,
+  defaultScaleDomain,
+  defaultTimeUnit,
+  getTimeTooltip,
+  getVisualizationSpec,
+  getXAxis,
+  getYAxis,
+} from '../../Overview/utils/helpers';
 
 export const getCorrelationRulesTableColumns = (
   onRuleNameClick: (rule: CorrelationRule) => void,
@@ -70,6 +91,141 @@ export const getCorrelationRulesTableColumns = (
   ];
 };
 
+export const displayBadges = (inputList: string[]) => {
+  if (!inputList || inputList.length === 0) return DEFAULT_EMPTY_DATA;
+  const MAX_DISPLAY = 2;
+  const remainingCount = inputList.length > MAX_DISPLAY ? inputList.length - MAX_DISPLAY : 0;
+  const displayedInputList = inputList.slice(0, MAX_DISPLAY).map((input) => {
+    const label = input;
+    return <EuiBadge>{label}</EuiBadge>;
+  });
+  const tooltipContent = (
+    <>
+      {inputList.slice(MAX_DISPLAY).map((input) => {
+        const label = input;
+        return (
+          <EuiFlexItem grow={true}>
+            <EuiBadge>{label}</EuiBadge>
+          </EuiFlexItem>
+        );
+      })}
+    </>
+  );
+  return (
+    <EuiFlexGroup
+      wrap
+      gutterSize="s"
+      alignItems="center"
+      style={{
+        padding: '4px 0px',
+      }}
+    >
+      {displayedInputList}
+      {remainingCount > 0 && (
+        <EuiFlexItem grow={true}>
+          <EuiToolTip content={tooltipContent} position="top">
+            <EuiBadge>{`+${remainingCount} more`}</EuiBadge>
+          </EuiToolTip>
+        </EuiFlexItem>
+      )}
+    </EuiFlexGroup>
+  );
+};
+
+export const displaySeveritiesBadges = (severities: string[]) => {
+  if (!severities || severities.length === 0) return DEFAULT_EMPTY_DATA;
+  const MAX_DISPLAY = 2;
+  const remainingCount = severities.length > MAX_DISPLAY ? severities.length - MAX_DISPLAY : 0;
+  const displayedSeverities = severities.slice(0, MAX_DISPLAY).map((severity) => {
+    const label = getSeverityLabel(severity);
+    const { background, text } = getSeverityColor(label);
+    return (
+      <EuiBadge key={severity} style={{ backgroundColor: background, color: text }}>
+        {label}
+      </EuiBadge>
+    );
+  });
+
+  const tooltipContent = (
+    <EuiFlexGroup direction="column" gutterSize="none">
+      {severities.slice(MAX_DISPLAY).map((severity) => {
+        const label = getSeverityLabel(severity);
+        const { background, text } = getSeverityColor(label);
+        return (
+          <EuiFlexItem grow={true} style={{ padding: '4px', width: '100%' }}>
+            <EuiBadge key={severity} style={{ backgroundColor: background, color: text }}>
+              {label}
+            </EuiBadge>
+          </EuiFlexItem>
+        );
+      })}
+    </EuiFlexGroup>
+  );
+
+  return (
+    <EuiFlexGroup
+      wrap
+      gutterSize="s"
+      alignItems="center"
+      style={{
+        padding: '4px 0px',
+      }}
+    >
+      {displayedSeverities}
+      {remainingCount > 0 && (
+        <EuiFlexItem grow={true}>
+          <EuiToolTip content={tooltipContent} position="top">
+            <EuiBadge>{`+${remainingCount} more`}</EuiBadge>
+          </EuiToolTip>
+        </EuiFlexItem>
+      )}
+    </EuiFlexGroup>
+  );
+};
+
+export const displayResourcesBadges = (resources: string[]) => {
+  if (!resources || resources.length === 0) return DEFAULT_EMPTY_DATA;
+  const MAX_DISPLAY = 2;
+  const remainingCount = resources.length > MAX_DISPLAY ? resources.length - MAX_DISPLAY : 0;
+  const displayedresources = resources.slice(0, MAX_DISPLAY).map((resources) => {
+    const label = resources;
+    return <EuiBadge>{label}</EuiBadge>;
+  });
+  const tooltipContent = (
+    <>
+      {resources.slice(MAX_DISPLAY).map((resources) => {
+        const label = resources;
+        return (
+          <EuiFlexItem grow={true}>
+            <EuiBadge style={{ backgroundColor: '#fff', border: '1px solid #d3dae6' }}>
+              {label}
+            </EuiBadge>
+          </EuiFlexItem>
+        );
+      })}
+    </>
+  );
+  return (
+    <EuiFlexGroup
+      wrap
+      gutterSize="s"
+      alignItems="center"
+      style={{
+        padding: '4px 0px',
+      }}
+    >
+      {displayedresources}
+      {remainingCount > 0 && (
+        <EuiFlexItem grow={true}>
+          <EuiToolTip content={tooltipContent} position="top">
+            <EuiBadge>{`+${remainingCount} more`}</EuiBadge>
+          </EuiToolTip>
+        </EuiFlexItem>
+      )}
+    </EuiFlexGroup>
+  );
+};
+
 export const getCorrelationRulesTableSearchConfig = (): Search => {
   return {
     box: {
@@ -86,4 +242,33 @@ export const getCorrelationRulesTableSearchConfig = (): Search => {
       },
     ],
   };
+};
+
+export const getCorrelatedFindingsVisualizationSpec = (
+  visualizationData: any[],
+  dateOpts: DateOpts = {
+    timeUnit: defaultTimeUnit,
+    dateFormat: defaultDateFormat,
+    domain: defaultScaleDomain,
+  }
+) => {
+  return getVisualizationSpec('Correlated Findings data overview', visualizationData, [
+    addInteractiveLegends({
+      mark: {
+        type: 'bar',
+        clip: true,
+      },
+      encoding: {
+        tooltip: [getYAxis('correlatedFinding', 'Correlated Findings'), getTimeTooltip(dateOpts)],
+        x: getXAxis(dateOpts),
+        y: getYAxis('correlatedFinding', 'Count'),
+        color: {
+          field: 'title',
+          legend: {
+            title: 'Legend',
+          },
+        },
+      },
+    }),
+  ]);
 };
