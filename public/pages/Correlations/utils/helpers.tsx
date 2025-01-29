@@ -13,7 +13,12 @@ import {
   EuiFlexItem,
   EuiFlexGroup,
 } from '@elastic/eui';
-import { CorrelationRule, CorrelationRuleQuery, CorrelationRuleTableItem } from '../../../../types';
+import {
+  CorrelationFinding,
+  CorrelationRule,
+  CorrelationRuleQuery,
+  CorrelationRuleTableItem,
+} from '../../../../types';
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
 import { formatRuleType, getLogTypeFilterOptions } from '../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
@@ -271,4 +276,62 @@ export const getCorrelatedFindingsVisualizationSpec = (
       },
     }),
   ]);
+};
+
+export const mapConnectedCorrelations = (
+  correlations: {
+    finding1: CorrelationFinding;
+    finding2: CorrelationFinding;
+  }[]
+) => {
+  const connectionsMap = new Map<string, Set<string>>();
+  const findingsMap = new Map<string, CorrelationFinding>();
+
+  correlations.forEach((correlation) => {
+    const { finding1, finding2 } = correlation;
+
+    findingsMap.set(finding1.id, finding1);
+    findingsMap.set(finding2.id, finding2);
+
+    if (!connectionsMap.has(finding1.id)) {
+      connectionsMap.set(finding1.id, new Set<string>());
+    }
+    connectionsMap.get(finding1.id)!.add(finding2.id);
+
+    if (!connectionsMap.has(finding2.id)) {
+      connectionsMap.set(finding2.id, new Set<string>());
+    }
+    connectionsMap.get(finding2.id)!.add(finding1.id);
+  });
+
+  const visited = new Set<string>();
+  const connectedGroups: CorrelationFinding[][] = [];
+
+  function depthFirstSearch(findingId: string, currentGroup: CorrelationFinding[]) {
+    // Get all the connected correlated findings for the given finding
+    visited.add(findingId);
+    const finding = findingsMap.get(findingId);
+    if (finding) {
+      currentGroup.push(finding);
+    }
+
+    const connections = connectionsMap.get(findingId) || new Set<string>();
+    connections.forEach((connectedId) => {
+      if (!visited.has(connectedId)) {
+        depthFirstSearch(connectedId, currentGroup);
+      }
+    });
+  }
+
+  connectionsMap.forEach((_, findingId) => {
+    if (!visited.has(findingId)) {
+      const currentGroup: CorrelationFinding[] = [];
+      depthFirstSearch(findingId, currentGroup);
+      if (currentGroup.length > 0) {
+        connectedGroups.push(currentGroup);
+      }
+    }
+  });
+
+  return connectedGroups;
 };
