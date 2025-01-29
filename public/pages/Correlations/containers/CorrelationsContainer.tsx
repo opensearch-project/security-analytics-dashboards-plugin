@@ -51,6 +51,7 @@ import { FilterItem, FilterGroup } from '../components/FilterGroup';
 import {
   BREADCRUMBS,
   DEFAULT_DATE_RANGE,
+  DEFAULT_EMPTY_DATA,
   MAX_RECENTLY_USED_TIME_RANGES,
   ROUTES,
 } from '../../../utils/constants';
@@ -70,7 +71,6 @@ import {
   setBreadcrumbs,
 } from '../../../utils/helpers';
 import { PageHeader } from '../../../components/PageHeader/PageHeader';
-import moment from 'moment';
 import { ChartContainer } from '../../../components/Charts/ChartContainer';
 import {
   addInteractiveLegends,
@@ -86,8 +86,6 @@ import {
   getYAxis,
 } from '../../Overview/utils/helpers';
 import { debounce } from 'lodash';
-
-export const DEFAULT_EMPTY_DATA = '-';
 
 interface CorrelationsProps
   extends RouteComponentProps<
@@ -140,12 +138,6 @@ interface CorrelationsState {
   searchTerm: string;
   flyoutGraphData: CorrelationGraphData;
 }
-
-export const renderTime = (time: number | string) => {
-  const momentTime = moment(time);
-  if (time && momentTime.isValid()) return momentTime.format('MM/DD/YY h:mm a');
-  return DEFAULT_EMPTY_DATA;
-};
 
 export interface CorrelationsTableProps {
   finding: FindingItemType;
@@ -480,12 +472,9 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         logTypeFilterOptions: items,
       },
       () => {
-        // If there's specific finding info, update the graph
         if (this.state.specificFindingInfo) {
           this.updateGraphDataState(this.state.specificFindingInfo);
         }
-        // Force update to refresh the table with new filters
-        this.forceUpdate();
       }
     );
   };
@@ -496,12 +485,9 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         severityFilterOptions: items,
       },
       () => {
-        // If there's specific finding info, update the graph
         if (this.state.specificFindingInfo) {
           this.updateGraphDataState(this.state.specificFindingInfo);
         }
-        // Force update to refresh the table with new filters
-        this.forceUpdate();
       }
     );
   };
@@ -653,7 +639,8 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     const visited = new Set<string>();
     const connectedGroups: CorrelationFinding[][] = [];
 
-    function dfs(findingId: string, currentGroup: CorrelationFinding[]) {
+    function depthFirstSearch(findingId: string, currentGroup: CorrelationFinding[]) {
+      // Get all the connected correlated findings for the given finding
       visited.add(findingId);
       const finding = findingsMap.get(findingId);
       if (finding) {
@@ -663,7 +650,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       const connections = connectionsMap.get(findingId) || new Set<string>();
       connections.forEach((connectedId) => {
         if (!visited.has(connectedId)) {
-          dfs(connectedId, currentGroup);
+          depthFirstSearch(connectedId, currentGroup);
         }
       });
     }
@@ -671,7 +658,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     connectionsMap.forEach((_, findingId) => {
       if (!visited.has(findingId)) {
         const currentGroup: CorrelationFinding[] = [];
-        dfs(findingId, currentGroup);
+        depthFirstSearch(findingId, currentGroup);
         if (currentGroup.length > 0) {
           connectedGroups.push(currentGroup);
         }
@@ -695,7 +682,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
 
       const connectedFindings = this.mapConnectedCorrelations(allCorrelations);
 
-      this.setState({ connectedFindings: connectedFindings });
+      this.setState({ connectedFindings });
 
       const tableData: CorrelationsTableData[] = [];
 
@@ -770,9 +757,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       this.setState({
         correlationsTableData: tableData,
       });
-    } catch (error) {
-      console.error('Failed to fetch correlation rules:', error);
-    }
+    } catch (error) {}
   };
 
   private getCorrelatedFindingsVisualizationSpec = (
@@ -901,9 +886,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
   };
 
   private debouncedSearch = debounce((searchTerm: string) => {
-    this.setState({ searchTerm }, () => {
-      this.forceUpdate();
-    });
+    this.setState({ searchTerm });
   }, 300);
 
   private renderSearchBar = () => {
@@ -937,7 +920,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     const columns: EuiBasicTableColumn<CorrelationsTableData>[] = [
       {
         field: 'startTime',
-        name: 'Start time',
+        name: 'Start Time',
         sortable: true,
         dataType: 'date',
         render: (startTime: number) => {
@@ -948,7 +931,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         field: 'correlationRule',
         name: 'Correlation Rule',
         sortable: true,
-        render: (name: string) => name || 'N/A',
+        render: (name: string) => name || DEFAULT_EMPTY_DATA,
       },
       {
         field: 'logTypes',
@@ -1426,41 +1409,41 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
               sorting={true}
             />
             <EuiSpacer size="l" />
-            <EuiFlexGroup wrap responsive={false} gutterSize="m">
-              {Array.from(
-                new Set(
-                  selectedTableRow.correlatedFindings.flatMap(
-                    (finding) => finding.detectionRule.tags?.map((tag) => tag.value) || []
+            <EuiPanel>
+              <EuiTitle>
+                <h3>Observed MITRE Attack Tactics</h3>
+              </EuiTitle>
+              <EuiSpacer size="m" />
+              <EuiFlexGroup wrap responsive={false} gutterSize="m">
+                {Array.from(
+                  new Set(
+                    selectedTableRow.correlatedFindings.flatMap(
+                      (finding) => finding.detectionRule.tags?.map((tag) => tag.value) || []
+                    )
                   )
-                )
-              ).map((tactic, i) => {
-                const link = `https://attack.mitre.org/techniques/${tactic
-                  .split('.')
-                  .slice(1)
-                  .join('/')
-                  .toUpperCase()}`;
+                ).map((tactic, i) => {
+                  const link = `https://attack.mitre.org/techniques/${tactic
+                    .split('.')
+                    .slice(1)
+                    .join('/')
+                    .toUpperCase()}`;
 
-                return (
-                  <EuiFlexItem grow={false} key={i}>
-                    <EuiBadge color={'#DDD'}>
-                      <EuiLink href={link} target="_blank">
-                        {tactic}
-                      </EuiLink>
-                    </EuiBadge>
-                  </EuiFlexItem>
-                );
-              })}
-            </EuiFlexGroup>
+                  return (
+                    <EuiFlexItem grow={false} key={i}>
+                      <EuiBadge color={'#DDD'}>
+                        <EuiLink href={link} target="_blank">
+                          {tactic}
+                        </EuiLink>
+                      </EuiBadge>
+                    </EuiFlexItem>
+                  );
+                })}
+              </EuiFlexGroup>
+            </EuiPanel>
           </div>
         </EuiFlyoutBody>
       </EuiFlyout>
     );
-  };
-
-  toggleView = () => {
-    this.setState((prevState) => ({
-      isGraphView: !prevState.isGraphView,
-    }));
   };
 
   render() {
