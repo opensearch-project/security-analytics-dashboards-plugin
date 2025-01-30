@@ -807,7 +807,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
   };
 
   private renderCorrelationsTable = (loadingData: boolean) => {
-    if (loadingData) {
+    if (this.state.correlationsTableData.length && loadingData) {
       return (
         <div style={{ margin: '0px 47%', height: 800, paddingTop: 384 }}>
           <EuiLoadingChart size="xl" className="chart-view-container-loading" />
@@ -817,11 +817,29 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
 
     const filteredTableData = this.getFilteredTableData(this.state.correlationsTableData);
 
-    return (
+    return filteredTableData.length > 0 ? (
       <>
         {this.renderCorrelatedFindingsChart()}
         <CorrelationsTable tableData={filteredTableData} onViewDetails={this.openTableFlyout} />
       </>
+    ) : (
+      <EuiEmptyPrompt
+        title={
+          <EuiText size="s">
+            <h2>No correlations found</h2>
+          </EuiText>
+        }
+        body={
+          <EuiText size="s">
+            <p>There are no correlated findings in the system.</p>
+          </EuiText>
+        }
+        actions={[
+          <EuiSmallButton fill={true} color="primary" href={`#${ROUTES.CORRELATION_RULE_CREATE}`}>
+            Create correlation rule
+          </EuiSmallButton>,
+        ]}
+      />
     );
   };
 
