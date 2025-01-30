@@ -38,7 +38,7 @@ interface CorrelationsTableFlyoutProps {
   isFlyoutOpen: boolean;
   selectedTableRow: CorrelationsTableData | null;
   flyoutGraphData: CorrelationGraphData;
-  loadingGraphData: boolean;
+  loadingTableData: boolean;
   onClose: () => void;
   setNetwork: (network: any) => void;
 }
@@ -47,7 +47,7 @@ export const CorrelationsTableFlyout: React.FC<CorrelationsTableFlyoutProps> = (
   isFlyoutOpen,
   selectedTableRow,
   flyoutGraphData,
-  loadingGraphData,
+  loadingTableData,
   onClose,
   setNetwork,
 }) => {
@@ -121,7 +121,7 @@ export const CorrelationsTableFlyout: React.FC<CorrelationsTableFlyoutProps> = (
               <p>
                 <EuiTextColor color="subdued">Alert</EuiTextColor>
                 <br />
-                {selectedTableRow.correlationRuleObj?.trigger?.name}
+                {selectedTableRow.correlationRuleObj?.trigger?.name || DEFAULT_EMPTY_DATA}
               </p>
             </EuiText>
           </EuiFlexItem>
@@ -144,7 +144,7 @@ export const CorrelationsTableFlyout: React.FC<CorrelationsTableFlyoutProps> = (
             </EuiTitle>
             {selectedTableRow.correlatedFindings && (
               <CorrelationGraph
-                loadingData={loadingGraphData}
+                loadingData={loadingTableData}
                 graph={flyoutGraphData.graph}
                 options={{
                   ...graphRenderOptions,

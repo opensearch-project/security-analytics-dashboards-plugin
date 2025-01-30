@@ -111,6 +111,7 @@ interface CorrelationsState {
   logTypeFilterOptions: FilterItem[];
   severityFilterOptions: FilterItem[];
   loadingGraphData: boolean;
+  loadingTableData: boolean;
   isGraphView: boolean;
   correlationsTableData: CorrelationsTableData[];
   connectedFindings: CorrelationFinding[][];
@@ -132,6 +133,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       severityFilterOptions: [...defaultSeverityFilterItemOptions],
       specificFindingInfo: undefined,
       loadingGraphData: false,
+      loadingTableData: false,
       isGraphView: false,
       correlationsTableData: [],
       connectedFindings: [],
@@ -588,6 +590,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       const startTime = start?.valueOf() || Date.now();
       const endTime = end?.valueOf() || Date.now();
 
+      this.setState({ loadingTableData: true });
       let allCorrelations = await DataStore.correlations.getAllCorrelationsInWindow(
         startTime.toString(),
         endTime.toString()
@@ -655,6 +658,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
             }
           }
         }
+        this.setState({ loadingTableData: false });
 
         tableData.push({
           id: `${startTime}_${findingGroup[0]?.id}`,
@@ -1018,7 +1022,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
               <EuiSpacer />
               {this.state.isGraphView
                 ? this.renderCorrelationsGraph(this.state.loadingGraphData)
-                : this.renderCorrelationsTable(this.state.loadingGraphData)}
+                : this.renderCorrelationsTable(this.state.loadingTableData)}
             </EuiPanel>
           </EuiFlexItem>
         </EuiFlexGroup>
@@ -1027,7 +1031,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
             isFlyoutOpen={this.state.isFlyoutOpen}
             selectedTableRow={this.state.selectedTableRow}
             flyoutGraphData={this.state.flyoutGraphData}
-            loadingGraphData={this.state.loadingGraphData}
+            loadingTableData={this.state.loadingTableData}
             onClose={this.closeTableFlyout}
             setNetwork={this.setNetwork}
           />
