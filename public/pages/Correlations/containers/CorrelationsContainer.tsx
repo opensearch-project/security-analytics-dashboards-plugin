@@ -659,7 +659,6 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
             }
           }
         }
-        this.setState({ loadingTableData: false });
 
         tableData.push({
           id: `${startTime}_${findingGroup[0]?.id}`,
@@ -676,6 +675,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
 
       this.setState({
         correlationsTableData: tableData,
+        loadingTableData: false,
       });
     } catch (error) {
       this.setState({ loadingTableData: false });
@@ -807,7 +807,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
   };
 
   private renderCorrelationsTable = (loadingData: boolean) => {
-    if (this.state.correlationsTableData.length && loadingData) {
+    if (loadingData) {
       return (
         <div style={{ margin: '0px 47%', height: 800, paddingTop: 384 }}>
           <EuiLoadingChart size="xl" className="chart-view-container-loading" />
@@ -817,29 +817,10 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
 
     const filteredTableData = this.getFilteredTableData(this.state.correlationsTableData);
 
-    return filteredTableData.length > 0 ? (
+    return (
       <>
-        {this.renderCorrelatedFindingsChart()}
         <CorrelationsTable tableData={filteredTableData} onViewDetails={this.openTableFlyout} />
       </>
-    ) : (
-      <EuiEmptyPrompt
-        title={
-          <EuiText size="s">
-            <h2>No correlations found</h2>
-          </EuiText>
-        }
-        body={
-          <EuiText size="s">
-            <p>There are no correlated findings in the system.</p>
-          </EuiText>
-        }
-        actions={[
-          <EuiSmallButton fill={true} color="primary" href={`#${ROUTES.CORRELATION_RULE_CREATE}`}>
-            Create correlation rule
-          </EuiSmallButton>,
-        ]}
-      />
     );
   };
 
@@ -1040,9 +1021,14 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                 </EuiFlexItem>
               </EuiFlexGroup>
               <EuiSpacer />
-              {this.state.isGraphView
-                ? this.renderCorrelationsGraph(this.state.loadingGraphData)
-                : this.renderCorrelationsTable(this.state.loadingTableData)}
+              {this.state.isGraphView ? (
+                this.renderCorrelationsGraph(this.state.loadingGraphData)
+              ) : (
+                <>
+                  {this.renderCorrelatedFindingsChart()}
+                  {this.renderCorrelationsTable(this.state.loadingTableData)}
+                </>
+              )}
             </EuiPanel>
           </EuiFlexItem>
         </EuiFlexGroup>
