@@ -5,6 +5,7 @@
 import {
   CorrelationFinding,
   CorrelationGraphData,
+  CorrelationRule,
   DataSourceProps,
   DateTimeFilter,
   FindingItemType,
@@ -41,6 +42,7 @@ import {
   EuiHorizontalRule,
   EuiButtonGroup,
   EuiFieldSearch,
+  EuiLoadingChart,
 } from '@elastic/eui';
 import { FilterItem, FilterGroup } from '../components/FilterGroup';
 import {
@@ -99,6 +101,7 @@ export interface CorrelationsTableData {
   findingsSeverity: string[];
   correlatedFindings: CorrelationFinding[];
   resources: string[];
+  correlationRuleObj: CorrelationRule | null;
 }
 
 interface CorrelationsState {
@@ -108,24 +111,13 @@ interface CorrelationsState {
   logTypeFilterOptions: FilterItem[];
   severityFilterOptions: FilterItem[];
   loadingGraphData: boolean;
-  isGraphView: Boolean;
+  isGraphView: boolean;
   correlationsTableData: CorrelationsTableData[];
   connectedFindings: CorrelationFinding[][];
   isFlyoutOpen: boolean;
   selectedTableRow: CorrelationsTableData | null;
   searchTerm: string;
   flyoutGraphData: CorrelationGraphData;
-}
-
-export interface CorrelationsTableProps {
-  finding: FindingItemType;
-  correlatedFindings: CorrelationFinding[];
-  history: RouteComponentProps['history'];
-  isLoading: boolean;
-  filterOptions: {
-    logTypes: Set<string>;
-    ruleSeverity: Set<string>;
-  };
 }
 
 export class Correlations extends React.Component<CorrelationsProps, CorrelationsState> {
@@ -140,7 +132,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       severityFilterOptions: [...defaultSeverityFilterItemOptions],
       specificFindingInfo: undefined,
       loadingGraphData: false,
-      isGraphView: true,
+      isGraphView: false,
       correlationsTableData: [],
       connectedFindings: [],
       isFlyoutOpen: false,
@@ -440,8 +432,9 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       });
   };
 
-  private onRefresh = () => {
+  private onRefresh = async () => {
     this.updateState();
+    this.fetchCorrelationsTableData();
   };
 
   onLogTypeFilterChange = (items: FilterItem[]) => {
@@ -628,6 +621,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         const findingsSeverity: string[] = [];
         let alertsSeverity: string[] = [];
         const resources: string[] = [];
+        let correlationRuleObj: CorrelationRule | null = null;
 
         for (const finding of findingGroup) {
           findingsSeverity.push(finding.detectionRule.severity);
@@ -647,8 +641,8 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
               correlatedFindingsResponse.correlatedFindings[0].rules
             ) {
               const correlationRuleId = correlatedFindingsResponse.correlatedFindings[0].rules[0];
-              const correlationRuleObj =
-                (await DataStore.correlations.getCorrelationRule(correlationRuleId)) || '';
+              correlationRuleObj =
+                (await DataStore.correlations.getCorrelationRule(correlationRuleId)) || null;
               alertsSeverity = correlationRuleMapsAlerts[correlationRuleId];
               if (correlationRuleObj) {
                 correlationRule = correlationRuleObj.name;
@@ -671,6 +665,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
           findingsSeverity: findingsSeverity,
           correlatedFindings: findingGroup,
           resources: resources,
+          correlationRuleObj: correlationRuleObj,
         });
       }
 
@@ -805,7 +800,15 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     );
   };
 
-  private renderCorrelationsTable = () => {
+  private renderCorrelationsTable = (loadingData: boolean) => {
+    if (loadingData) {
+      return (
+        <div style={{ margin: '0px 47%', height: 800, paddingTop: 384 }}>
+          <EuiLoadingChart size="xl" className="chart-view-container-loading" />
+        </div>
+      );
+    }
+
     const filteredTableData = this.getFilteredTableData(this.state.correlationsTableData);
 
     return (
@@ -996,14 +999,14 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                     legend="View type"
                     options={[
                       {
-                        id: 'graph',
-                        label: 'Graph',
-                        iconType: 'visNetwork',
-                      },
-                      {
                         id: 'table',
                         label: 'Table',
                         iconType: 'tableOfContents',
+                      },
+                      {
+                        id: 'graph',
+                        label: 'Graph',
+                        iconType: 'visNetwork',
                       },
                     ]}
                     idSelected={this.state.isGraphView ? 'graph' : 'table'}
@@ -1015,7 +1018,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
               <EuiSpacer />
               {this.state.isGraphView
                 ? this.renderCorrelationsGraph(this.state.loadingGraphData)
-                : this.renderCorrelationsTable()}
+                : this.renderCorrelationsTable(this.state.loadingGraphData)}
             </EuiPanel>
           </EuiFlexItem>
         </EuiFlexGroup>

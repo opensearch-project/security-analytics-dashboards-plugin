@@ -119,6 +119,15 @@ export const CorrelationsTableFlyout: React.FC<CorrelationsTableFlyoutProps> = (
           <EuiFlexItem>
             <EuiText>
               <p>
+                <EuiTextColor color="subdued">Alert</EuiTextColor>
+                <br />
+                {selectedTableRow.correlationRuleObj?.trigger?.name}
+              </p>
+            </EuiText>
+          </EuiFlexItem>
+          <EuiFlexItem>
+            <EuiText>
+              <p>
                 <EuiTextColor color="subdued">Correlation Rule</EuiTextColor>
                 <br />
                 {selectedTableRow.correlationRule}
