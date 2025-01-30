@@ -182,6 +182,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       prevProps.dateTimeFilter !== this.props.dateTimeFilter
     ) {
       this.updateState();
+      this.fetchCorrelationsTableData();
     }
   }
 
@@ -677,6 +678,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         correlationsTableData: tableData,
       });
     } catch (error) {
+      this.setState({ loadingTableData: false });
       errorNotificationToast(
         this.props.notifications,
         'fetch and connect correlations',
