@@ -148,7 +148,7 @@ export const CorrelationsTableFlyout: React.FC<CorrelationsTableFlyoutProps> = (
                 graph={flyoutGraphData.graph}
                 options={{
                   ...graphRenderOptions,
-                  height: '300px',
+                  height: '400px',
                   width: '100%',
                   autoResize: true,
                 }}
