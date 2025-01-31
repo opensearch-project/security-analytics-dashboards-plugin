@@ -42,7 +42,6 @@ import {
   EuiHorizontalRule,
   EuiButtonGroup,
   EuiFieldSearch,
-  EuiLoadingChart,
 } from '@elastic/eui';
 import { FilterItem, FilterGroup } from '../components/FilterGroup';
 import {
@@ -61,18 +60,11 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { Network } from 'react-graph-vis';
 import { getLogTypeLabel } from '../../LogTypes/utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import {
-  errorNotificationToast,
-  renderVisualization,
-  setBreadcrumbs,
-} from '../../../utils/helpers';
+import { errorNotificationToast, setBreadcrumbs } from '../../../utils/helpers';
 import { PageHeader } from '../../../components/PageHeader/PageHeader';
-import { ChartContainer } from '../../../components/Charts/ChartContainer';
-import { getChartTimeUnit, getDomainRange } from '../../Overview/utils/helpers';
 import { debounce } from 'lodash';
-import { CorrelationsTable } from './CorrelationsTable';
-import { CorrelationsTableFlyout } from './CorrelationsTableFlyout';
-import { getCorrelatedFindingsVisualizationSpec, mapConnectedCorrelations } from '../utils/helpers';
+import { CorrelationsTableView } from './CorrelationsTableView';
+import { mapConnectedCorrelations } from '../utils/helpers';
 
 interface CorrelationsProps
   extends RouteComponentProps<
@@ -115,10 +107,7 @@ interface CorrelationsState {
   isGraphView: boolean;
   correlationsTableData: CorrelationsTableData[];
   connectedFindings: CorrelationFinding[][];
-  isFlyoutOpen: boolean;
-  selectedTableRow: CorrelationsTableData | null;
   searchTerm: string;
-  flyoutGraphData: CorrelationGraphData;
 }
 
 export class Correlations extends React.Component<CorrelationsProps, CorrelationsState> {
@@ -137,10 +126,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       isGraphView: false,
       correlationsTableData: [],
       connectedFindings: [],
-      isFlyoutOpen: false,
-      selectedTableRow: null,
       searchTerm: '',
-      flyoutGraphData: { ...emptyGraphData },
     };
   }
 
@@ -470,41 +456,6 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     this.setState({ specificFindingInfo: undefined });
   };
 
-  private openTableFlyout = (correlationTableRow: CorrelationsTableData) => {
-    let newGraphData: CorrelationGraphData = {
-      graph: {
-        nodes: [],
-        edges: [],
-      },
-      events: {
-        click: this.onNodeClick,
-      },
-    };
-
-    if (correlationTableRow.correlatedFindings) {
-      const correlationPairs = this.getCorrelationPairs(correlationTableRow.correlatedFindings);
-      newGraphData = this.prepareGraphData(correlationPairs);
-    }
-
-    // Set all required state at once
-    this.setState({
-      isFlyoutOpen: true,
-      selectedTableRow: correlationTableRow,
-      flyoutGraphData: newGraphData,
-    });
-  };
-
-  private closeTableFlyout = () => {
-    this.setState({
-      isFlyoutOpen: false,
-      selectedTableRow: null,
-      flyoutGraphData: {
-        graph: { nodes: [], edges: [] },
-        events: { click: this.onNodeClick },
-      },
-    });
-  };
-
   onFindingInspect = async (id: string, logType: string) => {
     // get finding data and set the specificFindingInfo
     const specificFindingInfo = await DataStore.correlations.getCorrelatedFindings(id, logType);
@@ -687,102 +638,6 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     }
   };
 
-  private generateVisualizationSpec = (connectedFindings: CorrelationFinding[][]) => {
-    const visData = connectedFindings.map((correlatedFindings) => {
-      return {
-        title: 'Correlated Findings',
-        correlatedFinding: correlatedFindings.length,
-        time: correlatedFindings[0].timestamp,
-      };
-    });
-
-    const {
-      dateTimeFilter = {
-        startTime: DEFAULT_DATE_RANGE.start,
-        endTime: DEFAULT_DATE_RANGE.end,
-      },
-    } = this.props;
-
-    const chartTimeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
-
-    return getCorrelatedFindingsVisualizationSpec(visData, {
-      timeUnit: chartTimeUnits.timeUnit,
-      dateFormat: chartTimeUnits.dateFormat,
-      domain: getDomainRange(
-        [dateTimeFilter.startTime, dateTimeFilter.endTime],
-        chartTimeUnits.timeUnit.unit
-      ),
-    });
-  };
-
-  private renderCorrelatedFindingsChart = () => {
-    renderVisualization(
-      this.generateVisualizationSpec(this.state.connectedFindings),
-      'correlated-findings-view'
-    );
-
-    return (
-      <>
-        <EuiPanel>
-          <EuiFlexGroup direction="column" gutterSize="m">
-            <EuiFlexItem>
-              <EuiFlexGroup justifyContent="spaceBetween">
-                <EuiFlexItem grow={false}>
-                  <EuiTitle size="s">
-                    <h3>Correlated Findings</h3>
-                  </EuiTitle>
-                </EuiFlexItem>
-              </EuiFlexGroup>
-            </EuiFlexItem>
-            <EuiFlexItem>
-              <ChartContainer chartViewId={'correlated-findings-view'} />
-            </EuiFlexItem>
-          </EuiFlexGroup>
-        </EuiPanel>
-        <EuiSpacer />
-      </>
-    );
-  };
-
-  private getFilteredTableData = (tableData: CorrelationsTableData[]): CorrelationsTableData[] => {
-    const { logTypeFilterOptions, severityFilterOptions } = this.state;
-    const alertSeverityMap: { [key: string]: string } = {
-      '1': 'critical',
-      '2': 'high',
-      '3': 'medium',
-      '4': 'low',
-      '5': 'informational',
-    };
-
-    const selectedLogTypes = logTypeFilterOptions
-      .filter((item) => item.checked === 'on' && item.visible)
-      .map((item) => item.id);
-
-    const selectedSeverities = severityFilterOptions
-      .filter((item) => item.checked === 'on' && item.visible)
-      .map((item) => item.id.toLowerCase());
-
-    return tableData.filter((row) => {
-      const logTypeMatch = row.logTypes.some((logType) => selectedLogTypes.includes(logType));
-
-      const severityMatch = row.alertSeverity.some((severity) =>
-        selectedSeverities.includes(alertSeverityMap[severity])
-      );
-
-      const searchLower = this.state.searchTerm.toLowerCase();
-      const searchMatch =
-        this.state.searchTerm === '' ||
-        row.correlationRule?.toLowerCase().includes(searchLower) ||
-        row.logTypes.some((type) => type.toLowerCase().includes(searchLower)) ||
-        row.alertSeverity.some((severity) =>
-          alertSeverityMap[severity].toLowerCase().includes(searchLower)
-        ) ||
-        row.findingsSeverity.some((severity) => severity.toLowerCase().includes(searchLower)) ||
-        row.resources.some((resource) => resource.toLowerCase().includes(searchLower));
-      return logTypeMatch && severityMatch && searchMatch;
-    });
-  };
-
   private debouncedSearch = debounce((searchTerm: string) => {
     this.setState({ searchTerm });
   }, 300);
@@ -804,70 +659,6 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         aria-label="Search correlations"
       />
     );
-  };
-
-  private renderCorrelationsTable = (loadingData: boolean) => {
-    if (loadingData) {
-      return (
-        <div style={{ margin: '0px 47%', height: 800, paddingTop: 384 }}>
-          <EuiLoadingChart size="xl" className="chart-view-container-loading" />
-        </div>
-      );
-    }
-
-    const filteredTableData = this.getFilteredTableData(this.state.correlationsTableData);
-
-    return (
-      <>
-        <CorrelationsTable tableData={filteredTableData} onViewDetails={this.openTableFlyout} />
-      </>
-    );
-  };
-
-  private prepareGraphData = (correlationPairs: CorrelationFinding[][] | [any, any][]) => {
-    const createdEdges = new Set<string>();
-    const createdNodes = new Set<string>();
-    const graphData: CorrelationGraphData = {
-      graph: {
-        nodes: [],
-        edges: [],
-      },
-      events: {
-        click: this.onNodeClick,
-      },
-    };
-
-    correlationPairs.forEach((correlation: CorrelationFinding[]) => {
-      const possibleCombination1 = `${correlation[0].id}:${correlation[1].id}`;
-      const possibleCombination2 = `${correlation[1].id}:${correlation[0].id}`;
-
-      if (createdEdges.has(possibleCombination1) || createdEdges.has(possibleCombination2)) {
-        return;
-      }
-
-      if (!createdNodes.has(correlation[0].id)) {
-        this.addNode(graphData.graph.nodes, correlation[0]);
-        createdNodes.add(correlation[0].id);
-      }
-      if (!createdNodes.has(correlation[1].id)) {
-        this.addNode(graphData.graph.nodes, correlation[1]);
-        createdNodes.add(correlation[1].id);
-      }
-      this.addEdge(graphData.graph.edges, correlation[0], correlation[1]);
-      createdEdges.add(possibleCombination1);
-    });
-
-    return graphData;
-  };
-
-  private getCorrelationPairs = (correlatedFindings: any[]) => {
-    const pairs: [any, any][] = [];
-    for (let i = 0; i < correlatedFindings.length; i++) {
-      for (let j = i + 1; j < correlatedFindings.length; j++) {
-        pairs.push([correlatedFindings[i], correlatedFindings[j]]);
-      }
-    }
-    return pairs;
   };
 
   render() {
@@ -1025,23 +816,24 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                 this.renderCorrelationsGraph(this.state.loadingGraphData)
               ) : (
                 <>
-                  {this.renderCorrelatedFindingsChart()}
-                  {this.renderCorrelationsTable(this.state.loadingTableData)}
+                  <CorrelationsTableView
+                    correlationsTableData={this.state.correlationsTableData}
+                    connectedFindings={this.state.connectedFindings}
+                    loadingTableData={this.state.loadingTableData}
+                    logTypeFilterOptions={this.state.logTypeFilterOptions}
+                    severityFilterOptions={this.state.severityFilterOptions}
+                    searchTerm={this.state.searchTerm}
+                    addNode={this.addNode}
+                    addEdge={this.addEdge}
+                    onNodeClick={this.onNodeClick}
+                    setNetwork={this.setNetwork}
+                    createNodeTooltip={this.createNodeTooltip}
+                  />
                 </>
               )}
             </EuiPanel>
           </EuiFlexItem>
         </EuiFlexGroup>
-        {this.state.isFlyoutOpen && (
-          <CorrelationsTableFlyout
-            isFlyoutOpen={this.state.isFlyoutOpen}
-            selectedTableRow={this.state.selectedTableRow}
-            flyoutGraphData={this.state.flyoutGraphData}
-            loadingTableData={this.state.loadingTableData}
-            onClose={this.closeTableFlyout}
-            setNetwork={this.setNetwork}
-          />
-        )}
       </>
     );
   }

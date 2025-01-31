@@ -36,10 +36,10 @@ export const graphRenderOptions = {
     enabled: true,
     barnesHut: {
       gravitationalConstant: -7000,
-      centralGravity: 0.9,
+      centralGravity: 0.5,
       springConstant: 0.01,
       springLength: 125,
-      damping: 0.07,
+      damping: 0.1,
     },
     stabilization: {
       enabled: true,

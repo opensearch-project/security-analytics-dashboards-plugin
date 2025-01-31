@@ -14,12 +14,12 @@ import { displayBadges, displaySeveritiesBadges, displayResourcesBadges } from '
 import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 
 interface CorrelationsTableProps {
-  tableData: CorrelationsTableData[];
+  correlationsTableData: CorrelationsTableData[];
   onViewDetails: (row: CorrelationsTableData) => void;
 }
 
 export const CorrelationsTable: React.FC<CorrelationsTableProps> = ({
-  tableData,
+  correlationsTableData,
   onViewDetails,
 }) => {
   const alertSeverityMap: { [key: string]: string } = {
@@ -99,7 +99,7 @@ export const CorrelationsTable: React.FC<CorrelationsTableProps> = ({
 
   return (
     <EuiInMemoryTable
-      items={tableData}
+      items={correlationsTableData}
       rowProps={getRowProps}
       columns={columns}
       pagination={{
