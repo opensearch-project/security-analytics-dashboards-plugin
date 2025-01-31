@@ -590,11 +590,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
               findingGroup[0].id,
               findingGroup[0]?.detector._source?.detector_type
             );
-            if (
-              correlatedFindingsResponse.correlatedFindings &&
-              correlatedFindingsResponse.correlatedFindings[0] &&
-              correlatedFindingsResponse.correlatedFindings[0].rules
-            ) {
+            if (correlatedFindingsResponse?.correlatedFindings[0]?.rules) {
               const correlationRuleId = correlatedFindingsResponse.correlatedFindings[0].rules[0];
               correlationRuleObj =
                 (await DataStore.correlations.getCorrelationRule(correlationRuleId)) || null;
