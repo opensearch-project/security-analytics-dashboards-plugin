@@ -70,6 +70,7 @@ import {
   getUseUpdatedUx,
   setBrowserServices,
   getDataSourceManagementPlugin,
+  getApplication,
 } from '../services/utils/constants';
 import DetectorsService from '../services/DetectorService';
 import CorrelationService from '../services/CorrelationService';
@@ -84,6 +85,7 @@ import semver from 'semver';
 import * as pluginManifest from '../../opensearch_dashboards.json';
 import { DataSourceThreatAlertsCard } from '../components/DataSourceThreatAlertsCard/DataSourceThreatAlertsCard';
 import { DataSourceAttributes } from '../../../../src/plugins/data_source/common/data_sources';
+import { RouteComponentProps } from 'react-router-dom';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
@@ -770,3 +772,12 @@ export function initializeServices(coreStart: CoreStart, indexPattern: CoreIndex
   setBrowserServices(services);
   DataStore.init(services, coreStart.notifications);
 }
+
+export const buildRouteUrl = (appId: string, route: string) => {
+  const useUpdatedUx = getUseUpdatedUx();
+  if (useUpdatedUx) {
+    return getApplication().getUrlForApp(appId, { path: `#${route}` });
+  } else {
+    return `#${route}`;
+  }
+};

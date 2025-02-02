@@ -16,16 +16,19 @@ import {
   EuiCompressedSwitch,
   EuiText,
   EuiCompressedTextArea,
+  EuiCompressedCheckbox,
 } from '@elastic/eui';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { NOTIFICATIONS_HREF } from '../../utils/constants';
 import { NotificationsCallOut } from '../NotificationsCallOut';
 import {
   NotificationChannelOption,
   NotificationChannelTypeOptions,
   TriggerAction,
+  TriggerContext,
 } from '../../../types';
 import { getIsNotificationPluginInstalled } from '../../utils/helpers';
+import { render } from 'mustache';
 
 export interface NotificationFormProps {
   allNotificationChannels: NotificationChannelTypeOptions[];
@@ -37,10 +40,12 @@ export interface NotificationFormProps {
   onMessageBodyChange: (message: string) => void;
   onMessageSubjectChange: (subject: string) => void;
   onNotificationToggle?: (enabled: boolean) => void;
+  context: TriggerContext;
 }
 
 export const NotificationForm: React.FC<NotificationFormProps> = ({
   action,
+  context,
   allNotificationChannels,
   loadingNotifications,
   prepareMessage,
@@ -53,6 +58,10 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
   const hasNotificationPlugin = getIsNotificationPluginInstalled();
   const [shouldSendNotification, setShouldSendNotification] = useState(!!action?.destination_id);
   const selectedNotificationChannelOption: NotificationChannelOption[] = [];
+  const [displayPreview, setDisplayPreview] = useState(false);
+  const onDisplayPreviewChange = useCallback((e) => setDisplayPreview(e.target.checked), [
+    displayPreview,
+  ]);
   if (shouldSendNotification && action?.destination_id) {
     allNotificationChannels.forEach((typeOption) => {
       const matchingChannel = typeOption.options.find(
@@ -61,7 +70,17 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
       if (matchingChannel) selectedNotificationChannelOption.push(matchingChannel);
     });
   }
-
+  let preview = '';
+  try {
+    preview = `${render(action?.subject_template.source, context)}\n\n${render(
+      action?.message_template.source,
+      context
+    )}`;
+  } catch (err) {
+    preview = `There was an error rendering message preview: ${err.message}`;
+    console.error('There was an error rendering mustache template', err);
+  }
+  ``;
   return (
     <>
       <EuiCompressedSwitch
@@ -168,15 +187,24 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
                   />
                 </EuiCompressedFormRow>
               </EuiFlexItem>
-              {prepareMessage && (
+
+              <EuiFlexItem>
+                <EuiCompressedCheckbox
+                  id="notification-message-preview-checkbox"
+                  label="Preview message"
+                  checked={displayPreview}
+                  onChange={onDisplayPreviewChange}
+                />
+              </EuiFlexItem>
+              {displayPreview && (
                 <EuiFlexItem>
-                  <EuiCompressedFormRow>
-                    <EuiSmallButton
-                      fullWidth={false}
-                      onClick={() => prepareMessage(true /* updateMessage */)}
-                    >
-                      Generate message
-                    </EuiSmallButton>
+                  <EuiCompressedFormRow label="Message preview" fullWidth>
+                    <EuiCompressedTextArea
+                      placeholder="Preview of mustache template"
+                      fullWidth
+                      value={preview}
+                      readOnly
+                    />
                   </EuiCompressedFormRow>
                 </EuiFlexItem>
               )}

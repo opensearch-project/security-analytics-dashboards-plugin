@@ -28,9 +28,10 @@ import {
   Detector,
   NotificationChannelOption,
   NotificationChannelTypeOptions,
+  TriggerContext,
 } from '../../../../../../../types';
 import { NotificationForm } from '../../../../../../components/Notifications/NotificationForm';
-import { ALERT_SEVERITY_OPTIONS } from '../../../../../../utils/constants';
+import { ALERT_SEVERITY_OPTIONS, DEFAULT_MESSAGE_SOURCE } from '../../../../../../utils/constants';
 
 interface AlertConditionPanelProps extends RouteComponentProps {
   alertCondition: AlertCondition;
@@ -73,6 +74,24 @@ export default class AlertConditionPanel extends Component<
     this.prepareMessage(false /* updateMessage */, true /* onMount */);
   }
 
+  componentDidUpdate(
+    prevProps: Readonly<AlertConditionPanelProps>,
+    _prevState: Readonly<AlertConditionPanelState>
+  ): void {
+    const { rulesOptions, alertCondition } = this.props;
+
+    if (prevProps.rulesOptions !== rulesOptions) {
+      const selectedNames: EuiComboBoxOptionOption<string>[] = [];
+      alertCondition.ids.forEach((ruleId) => {
+        const rule = rulesOptions.find((option) => option.id === ruleId);
+        if (rule) {
+          selectedNames.push({ label: rule.name, value: ruleId });
+        }
+      });
+      this.setState({ selectedNames });
+    }
+  }
+
   onDetectionTypeChange(detectionType: 'rules' | 'threat_intel', enabled: boolean) {
     const detectionTypes = new Set(this.props.alertCondition.detection_types);
     enabled ? detectionTypes.add(detectionType) : detectionTypes.delete(detectionType);
@@ -80,6 +99,29 @@ export default class AlertConditionPanel extends Component<
       detection_types: Array.from(detectionTypes),
     });
   }
+
+  getTriggerContext = (): TriggerContext => {
+    const lineBreakAndTab = '\n\t';
+    const { alertCondition, detector } = this.props;
+    const detectorInput = detector.inputs[0].detector_input;
+    const detectorIndices = `${lineBreakAndTab}${detectorInput.indices.join(
+      `,${lineBreakAndTab}`
+    )}`;
+    return {
+      ctx: {
+        trigger: {
+          name: alertCondition.name,
+          severity:
+            parseAlertSeverityToOption(alertCondition.severity)?.label || alertCondition.severity,
+        },
+        detector: {
+          name: detector.name,
+          description: detectorInput.description,
+          datasources: detectorIndices,
+        },
+      },
+    };
+  };
 
   // When component mounts, we prepare message but at this point we don't want to emit the
   // trigger changed metric since it is not user initiated. So we use the onMount flag to determine that
@@ -95,7 +137,7 @@ export default class AlertConditionPanel extends Component<
       parseAlertSeverityToOption(alertCondition.severity)?.label || alertCondition.severity
     }`;
     const detectorName = `Threat detector: ${detector.name}`;
-    const defaultSubject = [alertConditionName, alertConditionSeverity, detectorName].join(' - ');
+    const defaultSubject = DEFAULT_MESSAGE_SOURCE.MESSAGE_SUBJECT;
 
     if (updateMessage || !alertCondition.actions[0]?.subject_template.source)
       this.onMessageSubjectChange(defaultSubject, !onMount);
@@ -139,7 +181,7 @@ export default class AlertConditionPanel extends Component<
       if (alertConditionSelections.length)
         defaultMessageBody =
           defaultMessageBody + lineBreak + lineBreak + alertConditionSelections.join(lineBreak);
-      this.onMessageBodyChange(defaultMessageBody, !onMount);
+      this.onMessageBodyChange(DEFAULT_MESSAGE_SOURCE.MESSAGE_BODY, !onMount);
     }
   };
 
@@ -519,6 +561,7 @@ export default class AlertConditionPanel extends Component<
 
         <NotificationForm
           action={alertCondition.actions[0]}
+          context={this.getTriggerContext()}
           allNotificationChannels={allNotificationChannels}
           loadingNotifications={loadingNotifications}
           prepareMessage={this.prepareMessage}

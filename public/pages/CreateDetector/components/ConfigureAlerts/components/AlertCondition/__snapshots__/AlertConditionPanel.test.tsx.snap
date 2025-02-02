@@ -838,28 +838,22 @@ Object {
                     class="euiFlexItem"
                   >
                     <div
-                      class="euiFormRow euiFormRow--compressed"
-                      id="some_html_id-row"
+                      class="euiCheckbox euiCheckbox--compressed"
                     >
+                      <input
+                        class="euiCheckbox__input"
+                        id="notification-message-preview-checkbox"
+                        type="checkbox"
+                      />
                       <div
-                        class="euiFormRow__fieldWrapper"
+                        class="euiCheckbox__square"
+                      />
+                      <label
+                        class="euiCheckbox__label"
+                        for="notification-message-preview-checkbox"
                       >
-                        <button
-                          class="euiButton euiButton--primary euiButton--small"
-                          id="some_html_id"
-                          type="button"
-                        >
-                          <span
-                            class="euiButtonContent euiButton__content"
-                          >
-                            <span
-                              class="euiButton__text"
-                            >
-                              Generate message
-                            </span>
-                          </span>
-                        </button>
-                      </div>
+                        Preview message
+                      </label>
                     </div>
                   </div>
                 </div>
@@ -1707,28 +1701,22 @@ Object {
                   class="euiFlexItem"
                 >
                   <div
-                    class="euiFormRow euiFormRow--compressed"
-                    id="some_html_id-row"
+                    class="euiCheckbox euiCheckbox--compressed"
                   >
+                    <input
+                      class="euiCheckbox__input"
+                      id="notification-message-preview-checkbox"
+                      type="checkbox"
+                    />
                     <div
-                      class="euiFormRow__fieldWrapper"
+                      class="euiCheckbox__square"
+                    />
+                    <label
+                      class="euiCheckbox__label"
+                      for="notification-message-preview-checkbox"
                     >
-                      <button
-                        class="euiButton euiButton--primary euiButton--small"
-                        id="some_html_id"
-                        type="button"
-                      >
-                        <span
-                          class="euiButtonContent euiButton__content"
-                        >
-                          <span
-                            class="euiButton__text"
-                          >
-                            Generate message
-                          </span>
-                        </span>
-                      </button>
-                    </div>
+                      Preview message
+                    </label>
                   </div>
                 </div>
               </div>
