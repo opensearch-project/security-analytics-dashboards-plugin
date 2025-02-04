@@ -12,4 +12,4 @@ Compatible with OpenSearch Dashboards 2.19.0
 * Updating Preview Message functionality while setting notifications in detector alerts ([#1241](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/1241))
 
 ### Documentation
-* Added 2.19.0 release notes. ([#]())
+* Added 2.19.0 release notes. ([#1256](https://github.com/opensearch-project/security-analytics-dashboards-plugin/pull/1256))
