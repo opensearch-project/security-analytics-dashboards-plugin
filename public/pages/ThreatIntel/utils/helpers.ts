@@ -17,10 +17,21 @@ import {
   ThreatIntelSourceItem,
   ThreatIntelSourcePayloadBase,
   ThreatIntelAlertTriggerAction,
+  CustomSchemaFileUploadSource,
+  ThreatIntelSourceFormInputErrorKeys,
+  ThreatIntelSourceItemErrorCheckState,
 } from '../../../../types';
 import { AlertSeverity } from '../../Alerts/utils/constants';
 import _ from 'lodash';
-import { ThreatIntelIocType } from '../../../../common/constants';
+import { IOC_UPLOAD_MAX_FILE_SIZE } from './constants';
+import {
+  validateName,
+  THREAT_INTEL_SOURCE_NAME_REGEX,
+  validateDescription,
+  THREAT_INTEL_SOURCE_DESCRIPTION_REGEX,
+} from '../../../utils/validation';
+import { PeriodSchedule } from '../../../../models/interfaces';
+import { ThreatIntelIocSourceType } from '../../../../common/constants';
 
 export function getEmptyScanConfigFormModel(triggerName: string): ThreatIntelScanConfigFormModel {
   return {
@@ -124,6 +135,15 @@ export function getEmptyIocFileUploadSource(): FileUploadSource {
   };
 }
 
+export function getEmptyCustomSchemaIocFileUploadSource(): CustomSchemaFileUploadSource {
+  return {
+    custom_schema_ioc_upload: {
+      file_name: '',
+      iocs: '',
+    },
+  };
+}
+
 export function getEmptyThreatIntelSourcePayloadBase(): ThreatIntelSourcePayloadBase {
   return {
     name: '',
@@ -175,7 +195,7 @@ export function deriveFormModelFromConfig(
 export function configFormModelToMonitorPayload(
   formModel: ThreatIntelScanConfigFormModel
 ): ThreatIntelMonitorPayload {
-  const fieldAliasesByIocType: { [k in ThreatIntelIocType]?: IocFieldAliases } = {};
+  const fieldAliasesByIocType: { [k: string]: IocFieldAliases } = {};
 
   formModel.logSources.forEach((source) => {
     Object.entries(source.iocConfigMap).forEach(([iocType, iocConfig]) => {
@@ -183,16 +203,15 @@ export function configFormModelToMonitorPayload(
         return;
       }
 
-      if (!fieldAliasesByIocType[iocType as ThreatIntelIocType]) {
-        fieldAliasesByIocType[iocType as ThreatIntelIocType] = {
-          ioc_type: iocType as ThreatIntelIocType,
+      if (!fieldAliasesByIocType[iocType]) {
+        fieldAliasesByIocType[iocType] = {
+          ioc_type: iocType,
           index_to_fields_map: {
             [source.name]: iocConfig.fieldAliases,
           },
         };
       } else {
-        fieldAliasesByIocType[iocType as ThreatIntelIocType]!.index_to_fields_map[source.name] =
-          iocConfig.fieldAliases;
+        fieldAliasesByIocType[iocType]!.index_to_fields_map[source.name] = iocConfig.fieldAliases;
       }
     });
   });
@@ -212,7 +231,7 @@ export function readIocsFromFile(
     readResponse: { ok: true; sourceData: FileUploadSource } | { ok: false; errorMessage: string }
   ) => void
 ) {
-  if (file.size > 512000) {
+  if (file.size > IOC_UPLOAD_MAX_FILE_SIZE) {
     return onRead({ ok: false, errorMessage: 'File size should be less then 500KB.' });
   }
 
@@ -272,3 +291,85 @@ export function threatIntelSourceItemToBasePayload(
     enabled_for_scan,
   };
 }
+
+export const validateCustomSchema = (value: string) => {
+  if (!value) {
+    return 'Custom schema cannot be empty.';
+  }
+
+  try {
+    JSON.parse(value);
+  } catch (err: any) {
+    return err.message;
+  }
+};
+
+export const validateSourceName = (name: string) => {
+  let error;
+  if (!name) {
+    error = 'Name is required.';
+  } else if (name.length > 128) {
+    error = 'Max length can be 128.';
+  } else {
+    const isValid = validateName(name, THREAT_INTEL_SOURCE_NAME_REGEX);
+    if (!isValid) {
+      error = 'Invalid name.';
+    }
+  }
+
+  return error;
+};
+
+export const validateSourceDescription = (description: string) => {
+  let error;
+  const isValid = validateDescription(description, THREAT_INTEL_SOURCE_DESCRIPTION_REGEX);
+  if (!isValid) {
+    error = 'Invalid name.';
+  }
+
+  return error;
+};
+
+export const validateS3ConfigField = (value: string) => {
+  if (!value) {
+    return `Required.`;
+  }
+};
+
+export const validateSchedule = (schedule: PeriodSchedule) => {
+  return !schedule.period.interval || Number.isNaN(schedule.period.interval)
+    ? 'Invalid schedule.'
+    : '';
+};
+
+export const hasErrorInThreatIntelSourceFormInputs = (
+  errors: { [key: string]: any },
+  state: ThreatIntelSourceItemErrorCheckState
+): boolean => {
+  const { enabled, hasCustomIocSchema, type } = state;
+
+  for (let key of Object.keys(errors)) {
+    if (
+      (type !== ThreatIntelIocSourceType.S3_CUSTOM &&
+        key === ThreatIntelSourceFormInputErrorKeys.s3) ||
+      (type !== ThreatIntelIocSourceType.IOC_UPLOAD &&
+        key === ThreatIntelSourceFormInputErrorKeys.fileUpload) ||
+      (!enabled && key === ThreatIntelSourceFormInputErrorKeys.schedule) ||
+      (key === 'customSchema' && !hasCustomIocSchema)
+    ) {
+      continue;
+    }
+
+    if (typeof errors[key] === 'string' && !!errors[key]) {
+      return true;
+    }
+
+    if (typeof errors[key] === 'object') {
+      if (hasErrorInThreatIntelSourceFormInputs(errors[key], state)) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+};

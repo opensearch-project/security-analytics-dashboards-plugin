@@ -23,10 +23,8 @@ import React, { useEffect, useState } from 'react';
 import { ThreatIntelAlert, ThreatIntelFinding } from '../../../../../types';
 import { DescriptionGroup } from '../../../../components/Utility/DescriptionGroup';
 import { capitalize } from 'lodash';
-import { renderTime } from '../../../../utils/helpers';
-import { IocLabel } from '../../../../../common/constants';
+import { renderIoCType, renderTime } from '../../../../utils/helpers';
 import { DataStore } from '../../../../store/DataStore';
-import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
 import { ContentPanel } from '../../../../components/ContentPanel';
 
 export interface ThreatIntelAlertFlyoutProps {
@@ -84,17 +82,16 @@ export const ThreatIntelAlertFlyout: React.FC<ThreatIntelAlertFlyoutProps> = ({
         name: 'Finding ID',
         sortable: true,
         dataType: 'string',
-        render: (id: string, finding: ThreatIntelFinding) =>
-          (
-            <EuiLink
-              onClick={() => {
-                DataStore.findings.openThreatIntelFindingFlyout(finding, backButton);
-              }}
-              data-test-subj={'finding-details-flyout-button'}
-            >
-              {id.length > 7 ? `${id.slice(0, 7)}...` : id}
-            </EuiLink>
-          ) || DEFAULT_EMPTY_DATA,
+        render: (id: string, finding: ThreatIntelFinding) => (
+          <EuiLink
+            onClick={() => {
+              DataStore.findings.openThreatIntelFindingFlyout(finding, backButton);
+            }}
+            data-test-subj={'finding-details-flyout-button'}
+          >
+            {id.length > 7 ? `${id.slice(0, 7)}...` : id}
+          </EuiLink>
+        ),
       },
       {
         field: 'ioc_feed_ids',
@@ -123,7 +120,7 @@ export const ThreatIntelAlertFlyout: React.FC<ThreatIntelAlertFlyoutProps> = ({
       <EuiFlyoutHeader hasBorder={true}>
         <EuiFlexGroup justifyContent="spaceBetween">
           <EuiFlexItem grow={2}>
-            <EuiText size='s'>
+            <EuiText size="s">
               <h2>Alert details</h2>
             </EuiText>
           </EuiFlexItem>
@@ -173,7 +170,7 @@ export const ThreatIntelAlertFlyout: React.FC<ThreatIntelAlertFlyoutProps> = ({
           listItems={[
             { title: 'Start time', description: renderTime(alertItem.start_time) },
             { title: 'Last updated time', description: renderTime(alertItem.last_updated_time) },
-            { title: 'Indicator type', description: IocLabel[alertItem.ioc_type] },
+            { title: 'Indicator type', description: renderIoCType(alertItem.ioc_type) },
           ]}
         />
         <EuiSpacer />

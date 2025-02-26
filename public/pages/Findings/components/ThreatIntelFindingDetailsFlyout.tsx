@@ -29,8 +29,7 @@ import {
   ThreatIntelIocData,
 } from '../../../../types';
 import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
-import { renderTime } from '../../../utils/helpers';
-import { IocLabel } from '../../../../common/constants';
+import { renderIoCType, renderTime } from '../../../utils/helpers';
 import { DescriptionGroup } from '../../../components/Utility/DescriptionGroup';
 
 interface ThreatIntelFindingDetailsFlyoutState {
@@ -239,7 +238,7 @@ export class ThreatIntelFindingDetailsFlyout extends React.Component<
             listItems={[
               { title: 'Finding ID', description: id || DEFAULT_EMPTY_DATA },
               { title: 'Finding time', description: renderTime(timestamp) || DEFAULT_EMPTY_DATA },
-              { title: 'Indicator type', description: IocLabel[ioc_type] || DEFAULT_EMPTY_DATA },
+              { title: 'Indicator type', description: renderIoCType(ioc_type) },
             ]}
           />
           <EuiSpacer />

@@ -21,7 +21,7 @@ import {
 import { ROUTES } from '../../../../utils/constants';
 import { ThreatIntelSourceItem } from '../../../../../types';
 import { RouteComponentProps } from 'react-router-dom';
-import { IocLabel } from '../../../../../common/constants';
+import { renderIoCType } from '../../../../utils/helpers';
 
 export interface ThreatIntelSourcesListProps {
   threatIntelSources: ThreatIntelSourceItem[];
@@ -87,7 +87,7 @@ export const ThreatIntelSourcesList: React.FC<ThreatIntelSourcesListProps> = ({
                 }
               >
                 {source.ioc_types.map((iocType) => (
-                  <EuiBadge key={iocType}>{IocLabel[iocType]}</EuiBadge>
+                  <EuiBadge key={iocType}>{renderIoCType(iocType)}</EuiBadge>
                 ))}
               </EuiCard>
             </EuiFlexItem>

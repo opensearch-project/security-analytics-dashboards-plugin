@@ -25,13 +25,14 @@ import {
 import { DescriptionGroup } from '../../../../components/Utility/DescriptionGroup';
 import { IoCsTable } from '../../components/IoCsTable/IoCsTable';
 import { ThreatIntelSourceDetails } from '../../components/ThreatIntelSourceDetails/ThreatIntelSourceDetails';
-import { IocLabel } from '../../../../../common/constants';
+import { ThreatIntelIocSourceType } from '../../../../../common/constants';
 import { ThreatIntelService } from '../../../../services';
 import {
   errorNotificationToast,
   parseSchedule,
   renderTime,
   setBreadcrumbs,
+  renderIoCType,
 } from '../../../../utils/helpers';
 import DeleteModal from '../../../../components/DeleteModal';
 import { NotificationsStart } from 'opensearch-dashboards/public';
@@ -154,7 +155,7 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
     enabled,
     enabled_for_scan,
   } = source;
-  const schedule = type === 'S3_CUSTOM' ? source.schedule : undefined;
+  const schedule = type === ThreatIntelIocSourceType.S3_CUSTOM ? source.schedule : undefined;
   const showActivateControls = 'enabled_for_scan' in source;
 
   const headerControls = [];
@@ -249,12 +250,15 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
               title: 'Last updated',
               description: renderTime(last_update_time),
             },
-            { title: 'Ioc types', description: ioc_types.map((ioc) => IocLabel[ioc]).join(', ') },
+            {
+              title: 'Ioc types',
+              description: ioc_types.map((ioc) => renderIoCType(ioc)).join(', '),
+            },
           ]}
         />
       </EuiPanel>
       <EuiSpacer />
-      <EuiTabbedContent tabs={tabs} initialSelectedTab={tabs[0]} size="s"/>
+      <EuiTabbedContent tabs={tabs} initialSelectedTab={tabs[0]} size="s" />
       {showDeleteModal && (
         <DeleteModal
           type="threat intel source"

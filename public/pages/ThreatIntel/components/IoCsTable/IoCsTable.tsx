@@ -15,8 +15,7 @@ import {
   EuiSearchBar,
 } from '@elastic/eui';
 import { ThreatIntelIocData } from '../../../../../types';
-import { renderTime } from '../../../../utils/helpers';
-import { IocLabel, ThreatIntelIocType } from '../../../../../common/constants';
+import { renderIoCType, renderTime } from '../../../../utils/helpers';
 import { ThreatIntelService } from '../../../../services';
 
 export interface IoCsTableProps {
@@ -48,7 +47,7 @@ export const IoCsTable: React.FC<IoCsTableProps> = ({
     {
       name: 'Type',
       field: 'type',
-      render: (type: string) => IocLabel[type as ThreatIntelIocType],
+      render: (type: string) => renderIoCType(type),
     },
     {
       name: 'IoC matches',

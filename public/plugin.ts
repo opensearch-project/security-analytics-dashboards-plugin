@@ -86,8 +86,8 @@ export class SecurityAnalyticsPlugin
       hash = `#/?dataSourceId=${dataSourceValue}`;
     }
     return {
-      defaultPath: hash
-    }
+      defaultPath: hash,
+    };
   };
 
   private appStateUpdater = new BehaviorSubject<AppUpdater>(
@@ -281,7 +281,7 @@ export class SecurityAnalyticsPlugin
     setContentManagement(contentManagement);
     setNotifications(core.notifications);
     setSavedObjectsClient(core.savedObjects.client);
-    initializeServices(core, data.indexPatterns);
+    initializeServices(core, data.indexPatterns, data.search);
     registerThreatAlertsCard();
 
     return {};

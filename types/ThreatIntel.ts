@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ThreatIntelIocType } from '../common/constants';
+import { ThreatIntelIocSourceType } from '../common/constants';
 import { PeriodSchedule } from '../models/interfaces';
 import { AlertSeverity } from '../public/pages/Alerts/utils/constants';
 import { ALERT_STATE } from '../public/utils/constants';
@@ -52,6 +52,13 @@ export interface FileUploadSource {
   };
 }
 
+export interface CustomSchemaFileUploadSource {
+  custom_schema_ioc_upload: {
+    file_name: string;
+    iocs: string;
+  };
+}
+
 export interface URLDownloadSource {
   url_download: {
     url: string;
@@ -65,11 +72,11 @@ export interface ThreatIntelSourcePayloadBase {
   store_type: 'OS';
   enabled: boolean;
   enabled_for_scan: boolean;
-  ioc_types: ThreatIntelIocType[];
+  ioc_types: string[];
 }
 
 export interface ThreatIntelS3CustomSourcePayload extends ThreatIntelSourcePayloadBase {
-  type: 'S3_CUSTOM';
+  type: ThreatIntelIocSourceType.S3_CUSTOM;
   schedule: {
     interval: {
       start_time: number;
@@ -78,15 +85,27 @@ export interface ThreatIntelS3CustomSourcePayload extends ThreatIntelSourcePaylo
     };
   };
   source: S3ConnectionSource;
+  ioc_schema?: {
+    json_path_schema: object;
+  };
 }
 
 export interface ThreatIntelIocUploadSourcePayload extends ThreatIntelSourcePayloadBase {
-  type: 'IOC_UPLOAD';
+  type: ThreatIntelIocSourceType.IOC_UPLOAD;
   source: FileUploadSource;
 }
 
+export interface ThreatIntelCustomSchemaIocUploadSourcePayload
+  extends ThreatIntelSourcePayloadBase {
+  type: ThreatIntelIocSourceType.IOC_UPLOAD;
+  source: CustomSchemaFileUploadSource;
+  ioc_schema: {
+    json_path_schema: object;
+  };
+}
+
 export interface ThreatIntelURLDownloadSourceInfo extends ThreatIntelSourcePayloadBase {
-  type: 'URL_DOWNLOAD';
+  type: ThreatIntelIocSourceType.URL_DOWNLOAD;
   schedule: {
     interval: {
       start_time: number;
@@ -100,7 +119,8 @@ export interface ThreatIntelURLDownloadSourceInfo extends ThreatIntelSourcePaylo
 export type ThreatIntelSourcePayload =
   | ThreatIntelS3CustomSourcePayload
   | ThreatIntelIocUploadSourcePayload
-  | ThreatIntelURLDownloadSourceInfo;
+  | ThreatIntelURLDownloadSourceInfo
+  | ThreatIntelCustomSchemaIocUploadSourcePayload;
 
 export interface LogSourceIocConfig {
   enabled: boolean;
@@ -108,7 +128,7 @@ export interface LogSourceIocConfig {
 }
 
 export type ThreatIntelIocConfigMap = {
-  [k in ThreatIntelIocType]?: LogSourceIocConfig;
+  [k: string]: LogSourceIocConfig;
 };
 
 export interface ThreatIntelLogSource {
@@ -138,7 +158,7 @@ export type ThreatIntelScanConfigFormModel = Omit<
 export interface ThreatIntelIocData {
   id: string;
   name: string;
-  type: ThreatIntelIocType;
+  type: string;
   value: string;
   severity: string;
   created: number;
@@ -187,7 +207,7 @@ export interface ThreatIntelSourceGetHit {
 }
 
 export interface IocFieldAliases {
-  ioc_type: ThreatIntelIocType;
+  ioc_type: string;
   index_to_fields_map: {
     [index: string]: string[];
   };
@@ -238,7 +258,7 @@ export interface ThreatIntelFindingHit {
     monitor_id: string;
     monitor_name: string;
     ioc_value: any;
-    ioc_type: ThreatIntelIocType;
+    ioc_type: string;
     timestamp: number;
     execution_id: string;
   };
@@ -264,7 +284,7 @@ export interface ThreatIntelAlert {
   state: keyof typeof ALERT_STATE;
   error_message: string;
   ioc_value: string;
-  ioc_type: ThreatIntelIocType;
+  ioc_type: string;
   severity: string;
   finding_ids: string[];
   acknowledged_time: number;
@@ -301,4 +321,48 @@ export interface GetThreatIntelAlertsParams {
   size?: number;
   startIndex?: number;
   searchString?: string;
+}
+
+export type ThreatIntelSourceItemErrorCheckState = Pick<
+  ThreatIntelSourceItem,
+  'type' | 'enabled'
+> & {
+  hasCustomIocSchema: boolean;
+};
+
+export enum ThreatIntelSourceFormInputErrorKeys {
+  s3 = 's3',
+  fileUpload = 'fileUpload',
+  schedule = 'schedule',
+}
+
+export interface ThreatIntelSourceFormInputErrors {
+  name?: string;
+  description?: string;
+  [ThreatIntelSourceFormInputErrorKeys.s3]?: Partial<
+    {
+      [field in keyof S3ConnectionSource['s3']]: string;
+    }
+  > & { customSchema?: string };
+  [ThreatIntelSourceFormInputErrorKeys.fileUpload]?: {
+    file?: string;
+    customSchema?: string;
+  };
+  [ThreatIntelSourceFormInputErrorKeys.schedule]?: string;
+}
+
+export interface ThreatIntelSourceFormInputFieldsTouched {
+  name?: boolean;
+  description?: boolean;
+  s3?: {
+    [field in keyof S3ConnectionSource['s3']]: boolean;
+  };
+  iocFileUpload?: {
+    file?: boolean;
+  };
+  customSchemaIocFileUpload?: {
+    file?: boolean;
+  };
+  schedule?: boolean;
+  customSchema?: boolean;
 }

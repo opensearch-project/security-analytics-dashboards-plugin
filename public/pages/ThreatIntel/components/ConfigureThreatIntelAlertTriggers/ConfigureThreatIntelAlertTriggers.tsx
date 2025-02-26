@@ -12,13 +12,12 @@ import {
 } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { NotificationsService } from '../../../../services';
 import { EuiSmallButton, EuiPanel, EuiSpacer, EuiTitle } from '@elastic/eui';
-import { ThreatIntelIocType } from '../../../../../common/constants';
 import { getEmptyThreatIntelAlertTrigger } from '../../utils/helpers';
 
 export interface ConfigureThreatIntelAlertTriggersProps {
   alertTriggers: ThreatIntelAlertTrigger[];
   notificationsService: NotificationsService;
-  enabledIocTypes: ThreatIntelIocType[];
+  enabledIocTypes: string[];
   logSources: string[];
   getNextTriggerName: () => string;
   updateTriggers: (alertTriggers: ThreatIntelAlertTrigger[]) => void;
