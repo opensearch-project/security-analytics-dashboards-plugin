@@ -113,8 +113,10 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
       shouldDisableSave = false;
     }
 
-    setSaveDisabled(shouldDisableSave || !iocSchema || !!validateCustomSchema(iocSchema));
-  }, [fileUploadSource, customSchemaFileUploadSource, isReadOnly, type, iocSchema]);
+    setSaveDisabled(
+      shouldDisableSave || (hasCustomIocSchema && (!iocSchema || !!validateCustomSchema(iocSchema)))
+    );
+  }, [fileUploadSource, customSchemaFileUploadSource, isReadOnly, type, iocSchema, inputErrors]);
 
   const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const name = event.target.value;
