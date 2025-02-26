@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiFieldText, EuiFormRow } from '@elastic/eui';
+import { EuiCompressedFieldText, EuiCompressedFormRow } from '@elastic/eui';
 import React from 'react';
 import {
   ThreatIntelSourceFileUploader,
@@ -28,9 +28,9 @@ export const ThreatIntelSourceDetailsFileUploader: React.FC<ThreatIntelSourceDet
   return (
     <>
       {isReadOnly && (
-        <EuiFormRow label="Uploaded file">
-          <EuiFieldText readOnly={isReadOnly} value={fileName} icon={'download'} />
-        </EuiFormRow>
+        <EuiCompressedFormRow label="Uploaded file">
+          <EuiCompressedFieldText readOnly={isReadOnly} value={fileName} icon={'download'} />
+        </EuiCompressedFormRow>
       )}
       {!isReadOnly && (
         <ThreatIntelSourceFileUploader

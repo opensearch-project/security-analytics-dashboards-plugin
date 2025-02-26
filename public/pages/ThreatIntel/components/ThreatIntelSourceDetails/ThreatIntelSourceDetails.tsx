@@ -7,9 +7,7 @@ import React, { useEffect, useState } from 'react';
 import {
   EuiBottomBar,
   EuiSmallButton,
-  EuiCompressedCheckboxGroup,
   EuiCompressedFieldText,
-  EuiCompressedFilePicker,
   EuiCodeEditor,
   EuiFlexGroup,
   EuiFlexItem,

@@ -56,6 +56,8 @@ import {
   IOC_UPLOAD_MAX_FILE_SIZE,
 } from '../../utils/constants';
 import { ThreatIntelSourceFileUploader } from '../../components/ThreatIntelSourceFileUploader/ThreatIntelSourceFileUploader';
+import { setBreadcrumbs } from '../../../../utils/helpers';
+import { PageHeader } from '../../../../components/PageHeader/PageHeader';
 
 export interface AddThreatIntelSourceProps extends RouteComponentProps {
   threatIntelService: ThreatIntelService;
@@ -353,7 +355,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
         };
         if (useCustomSchemaByType.S3_CUSTOM) {
           payload.ioc_schema = {
-            json_path_schema: JSON.parse(customSchema),
+            json_path_schema: parseCustomSchema(),
           };
         }
         break;

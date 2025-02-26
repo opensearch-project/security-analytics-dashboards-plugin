@@ -3,7 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiFilePicker, EuiFilePickerProps, EuiFormRow, EuiSpacer, EuiText } from '@elastic/eui';
+import {
+  EuiCompressedFilePicker,
+  EuiFilePickerProps,
+  EuiCompressedFormRow,
+  EuiSpacer,
+  EuiText,
+} from '@elastic/eui';
 import React from 'react';
 
 export interface ThreatIntelSourceFileUploaderProps {
@@ -31,13 +37,13 @@ export const ThreatIntelSourceFileUploader: React.FC<ThreatIntelSourceFileUpload
           <EuiSpacer />
         </>
       )}
-      <EuiFormRow
+      <EuiCompressedFormRow
         label={formLabel}
         helpText={formHelperText}
         isInvalid={!!uploaderError}
         error={uploaderError}
       >
-        <EuiFilePicker
+        <EuiCompressedFilePicker
           id={'filePickerId'}
           fullWidth
           initialPromptText="Select or drag and drop a file"
@@ -48,7 +54,7 @@ export const ThreatIntelSourceFileUploader: React.FC<ThreatIntelSourceFileUpload
           isInvalid={!!uploaderError}
           data-test-subj="import_ioc_file"
         />
-      </EuiFormRow>
+      </EuiCompressedFormRow>
       <EuiSpacer />
     </>
   );
