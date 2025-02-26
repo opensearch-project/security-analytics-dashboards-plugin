@@ -14,7 +14,6 @@ import {
 } from '@elastic/eui';
 import { ThreatIntelAlertTrigger, ThreatIntelAlertTriggerAction } from '../../../../../types';
 import React, { useCallback } from 'react';
-import { IocLabel, ThreatIntelIocType } from '../../../../../common/constants';
 import {
   DescriptionGroup,
   DescriptionGroupProps,
@@ -23,6 +22,7 @@ import { getThreatIntelALertSeverityLabel } from '../../utils/helpers';
 import { AlertSeverity } from '../../../Alerts/utils/constants';
 import { ConfigActionButton } from '../Utility/ConfigActionButton';
 import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
+import { renderIoCType } from '../../../../utils/helpers';
 
 export interface ThreatIntelAlertTriggersProps {
   triggers: ThreatIntelAlertTrigger[];
@@ -100,7 +100,7 @@ export const ThreatIntelAlertTriggersFlyout: React.FC<ThreatIntelAlertTriggersPr
         const iocTriggerCondition =
           ioc_types.length === 0
             ? 'All types of indicators'
-            : ioc_types.map((iocType) => IocLabel[iocType as ThreatIntelIocType]).join(', ');
+            : ioc_types.map((iocType) => renderIoCType(iocType)).join(', ');
 
         return (
           <EuiAccordion

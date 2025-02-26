@@ -26,12 +26,12 @@ import {
 import React, { useState } from 'react';
 import { ThreatIntelScanConfig } from '../../../../../types';
 import { deriveFormModelFromConfig } from '../../utils/helpers';
-import { IocLabel, ThreatIntelIocType } from '../../../../../common/constants';
 import { Interval } from '../../../CreateDetector/components/DefineDetector/components/DetectorSchedule/Interval';
 import { ThreatIntelLogSourcesFlyout } from '../ThreatIntelLogSourcesFlyout/ThreatIntelLogSourcesFlyout';
 import { ThreatIntelAlertTriggersFlyout } from '../ThreatIntelAlertTriggersFlyout/ThreatIntelAlertTriggersFlyout';
 import DeleteModal from '../../../../components/DeleteModal';
 import { ThreatIntelService } from '../../../../services';
+import { renderIoCType } from '../../../../utils/helpers';
 
 export interface ThreatIntelLogScanConfigProps {
   scanConfig?: ThreatIntelScanConfig;
@@ -162,7 +162,7 @@ export const ThreatIntelLogScanConfig: React.FC<ThreatIntelLogScanConfigProps> =
               anchorPosition={'downLeft'}
               data-test-subj={'detectorsActionsPopover'}
             >
-              <EuiContextMenuPanel items={getActionItems()} size="s"/>
+              <EuiContextMenuPanel items={getActionItems()} size="s" />
             </EuiPopover>
           </EuiFlexItem>
         </EuiFlexGroup>
@@ -200,7 +200,7 @@ export const ThreatIntelLogScanConfig: React.FC<ThreatIntelLogScanConfigProps> =
                             {
                               title: source.name,
                               description: Object.keys(source.iocConfigMap)
-                                .map((iocType) => IocLabel[iocType as ThreatIntelIocType])
+                                .map((iocType) => renderIoCType(iocType))
                                 .join(', '),
                             },
                           ]}
@@ -282,9 +282,7 @@ export const ThreatIntelLogScanConfig: React.FC<ThreatIntelLogScanConfigProps> =
                     const iocTriggerCondition =
                       ioc_types.length === 0
                         ? 'All types of indicators'
-                        : ioc_types
-                            .map((iocType) => IocLabel[iocType as ThreatIntelIocType])
-                            .join(', ');
+                        : ioc_types.map((iocType) => renderIoCType(iocType)).join(', ');
 
                     return (
                       <EuiFlexItem key={name}>

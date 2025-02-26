@@ -10,6 +10,7 @@ import {
   EuiCompressedCheckboxGroup,
   EuiCompressedFieldText,
   EuiCompressedFilePicker,
+  EuiCodeEditor,
   EuiFlexGroup,
   EuiFlexItem,
   EuiFormLabel,
@@ -22,19 +23,31 @@ import {
 } from '@elastic/eui';
 import { Interval } from '../../../CreateDetector/components/DefineDetector/components/DetectorSchedule/Interval';
 import {
+  CustomSchemaFileUploadSource,
   FileUploadSource,
   S3ConnectionSource,
+  ThreatIntelCustomSchemaIocUploadSourcePayload,
   ThreatIntelS3CustomSourcePayload,
   ThreatIntelSourceItem,
   ThreatIntelSourcePayload,
   URLDownloadSource,
+  ThreatIntelSourceFormInputErrors,
 } from '../../../../../types';
 import { defaultIntervalUnitOptions } from '../../../../utils/constants';
-import { readIocsFromFile, threatIntelSourceItemToBasePayload } from '../../utils/helpers';
+import {
+  hasErrorInThreatIntelSourceFormInputs,
+  readIocsFromFile,
+  threatIntelSourceItemToBasePayload,
+  validateCustomSchema,
+  validateS3ConfigField,
+  validateSourceDescription,
+  validateSourceName,
+} from '../../utils/helpers';
 import { ThreatIntelService } from '../../../../services';
-import { ThreatIntelIocType } from '../../../../../common/constants';
+import { ThreatIntelIocSourceType } from '../../../../../common/constants';
 import { PeriodSchedule } from '../../../../../models/interfaces';
-import { checkboxes } from '../../utils/constants';
+import { IOC_UPLOAD_MAX_FILE_SIZE } from '../../utils/constants';
+import { ThreatIntelSourceDetailsFileUploader } from './ThreatIntelSourceDetailsFileUploader';
 
 export interface ThreatIntelSourceDetailsProps {
   sourceItem: ThreatIntelSourceItem;
@@ -55,32 +68,63 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
   const [fileUploadSource, setFileUploadSource] = useState<FileUploadSource>(
     sourceItem.source as FileUploadSource
   );
-  const { id, description, name, ioc_types, enabled, type } = sourceItemState;
+  const [customSchemaFileUploadSource, setCustomSchemaFileUploadSource] = useState<
+    CustomSchemaFileUploadSource
+  >(sourceItem.source as CustomSchemaFileUploadSource);
+  const { id, description, name, enabled, type } = sourceItemState;
+  const hasCustomIocSchema = 'ioc_schema' in sourceItemState && !!sourceItemState['ioc_schema'];
+  const [iocSchema, setIocSchema] = useState<string | undefined>(
+    hasCustomIocSchema
+      ? JSON.stringify(sourceItemState.ioc_schema?.json_path_schema, null, 4)
+      : undefined
+  );
   const [schedule, setSchedule] = useState<ThreatIntelS3CustomSourcePayload['schedule']>(
     (sourceItem as ThreatIntelS3CustomSourcePayload).schedule
   );
-  const [fileError, setFileError] = useState('');
   const [saveInProgress, setSaveInProgress] = useState(false);
   const [saveDisabled, setSaveDisabled] = useState(false);
-  const [checkboxIdToSelectedMap, setCheckboxIdToSelectedMap] = useState<Record<string, boolean>>(
-    () => {
-      const newCheckboxIdToSelectedMap: any = {};
-      ioc_types.forEach((ioc_type) => {
-        newCheckboxIdToSelectedMap[ioc_type] = true;
-      });
-      return newCheckboxIdToSelectedMap;
-    }
-  );
+  const [inputErrors, setInputErrors] = useState<ThreatIntelSourceFormInputErrors>({});
+
+  const setFieldError = (fieldErrors: ThreatIntelSourceFormInputErrors) => {
+    setInputErrors({
+      ...inputErrors,
+      ...fieldErrors,
+    });
+  };
 
   useEffect(() => {
-    if (!isReadOnly && type === 'IOC_UPLOAD' && fileUploadSource.ioc_upload.iocs.length === 0) {
-      setSaveDisabled(true);
-    } else if (type === 'IOC_UPLOAD' && fileUploadSource.ioc_upload.iocs.length > 0) {
-      setSaveDisabled(false);
+    let shouldDisableSave = false;
+    if (
+      !isReadOnly &&
+      ((type === ThreatIntelIocSourceType.IOC_UPLOAD &&
+        fileUploadSource.ioc_upload?.iocs.length === 0 &&
+        customSchemaFileUploadSource.custom_schema_ioc_upload?.iocs.length === 0) ||
+        hasErrorInThreatIntelSourceFormInputs(inputErrors, {
+          enabled,
+          hasCustomIocSchema,
+          type,
+        }))
+    ) {
+      shouldDisableSave = true;
+    } else if (
+      (!isReadOnly &&
+        type === ThreatIntelIocSourceType.IOC_UPLOAD &&
+        fileUploadSource.ioc_upload?.iocs.length > 0) ||
+      customSchemaFileUploadSource.custom_schema_ioc_upload?.iocs.length > 0
+    ) {
+      shouldDisableSave = false;
     }
-  }, [fileUploadSource, isReadOnly, type]);
+
+    setSaveDisabled(shouldDisableSave || !iocSchema || !!validateCustomSchema(iocSchema));
+  }, [fileUploadSource, customSchemaFileUploadSource, isReadOnly, type, iocSchema]);
 
   const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const name = event.target.value;
+    const nameError = validateSourceName(name);
+    setFieldError({
+      name: nameError || '',
+    });
+
     setSourceItemState({
       ...sourceItemState,
       name: event.target.value,
@@ -89,6 +133,10 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
   };
 
   const onDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const descriptionError = validateSourceDescription(event.target.value);
+    setFieldError({
+      description: descriptionError || '',
+    });
     setSourceItemState({
       ...sourceItemState,
       description: event.target.value,
@@ -96,22 +144,19 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
   };
 
   const onS3DataChange = (field: keyof S3ConnectionSource['s3'], value: string) => {
+    const error = validateS3ConfigField(value);
+    setFieldError({
+      s3: {
+        ...inputErrors.s3,
+        [field]: error || '',
+      },
+    });
     setS3ConnectionDetails({
       s3: {
         ...s3ConnectionDetails.s3,
         [field]: value,
       },
     });
-  };
-
-  const onIocTypesChange = (optionId: string) => {
-    const newCheckboxIdToSelectedMap = {
-      ...checkboxIdToSelectedMap,
-      ...{
-        [optionId]: !checkboxIdToSelectedMap[optionId],
-      },
-    };
-    setCheckboxIdToSelectedMap(newCheckboxIdToSelectedMap);
   };
 
   const onRefreshSwitchChange = (checked: boolean) => {
@@ -121,16 +166,60 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
     });
   };
 
-  const onFileChange = (files: FileList | null) => {
-    setFileError('');
+  const onIocUploadFileChange = (files: FileList | null) => {
+    setFieldError({
+      fileUpload: {
+        ...inputErrors.fileUpload,
+        file: files?.length === 0 ? 'File required.' : '',
+      },
+    });
     if (!!files?.item(0)) {
       readIocsFromFile(files[0], (response) => {
         if (response.ok) {
           setFileUploadSource(response.sourceData);
         } else {
-          setFileError(response.errorMessage);
+          setFieldError({
+            fileUpload: {
+              ...inputErrors.fileUpload,
+              file: response.errorMessage,
+            },
+          });
         }
       });
+    }
+  };
+
+  const onCustomSchemaIocUploadFileChange = (files: FileList | null) => {
+    setFieldError({
+      fileUpload: {
+        ...inputErrors.fileUpload,
+        file: files?.length === 0 ? 'File required.' : '',
+      },
+    });
+
+    if (!!files?.item(0)) {
+      const file = files[0];
+
+      if (file.size > IOC_UPLOAD_MAX_FILE_SIZE) {
+        setFieldError({
+          fileUpload: {
+            ...inputErrors.fileUpload,
+            file: 'File size should be less then 500KB.',
+          },
+        });
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.readAsText(file);
+      reader.onload = function () {
+        setCustomSchemaFileUploadSource({
+          custom_schema_ioc_upload: {
+            file_name: files[0].name,
+            iocs: reader.result?.toString() || '',
+          },
+        });
+      };
     }
   };
 
@@ -149,33 +238,44 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
 
     const payloadBase = {
       ...threatIntelSourceItemToBasePayload(sourceItemState),
-      ioc_types: Object.entries(checkboxIdToSelectedMap)
-        .filter(([ioc, checked]) => checked)
-        .map(([ioc]) => ioc as ThreatIntelIocType),
+      ioc_types: [],
     };
 
-    const payload: ThreatIntelSourcePayload =
-      sourceItemState.type === 'S3_CUSTOM'
-        ? {
-            ...payloadBase,
-            type: 'S3_CUSTOM',
-            schedule: {
-              ...sourceItemState.schedule,
-              interval: {
-                ...sourceItemState.schedule.interval,
-                start_time: Date.now(),
-              },
-            },
-            source: s3ConnectionDetails,
-          }
-        : {
-            ...payloadBase,
-            type: 'IOC_UPLOAD',
-            source: fileUploadSource,
-            enabled: false,
-          };
+    let payload: ThreatIntelSourcePayload;
+    switch (sourceItemState.type) {
+      case ThreatIntelIocSourceType.IOC_UPLOAD:
+        payload = {
+          ...payloadBase,
+          type: ThreatIntelIocSourceType.IOC_UPLOAD,
+          source: fileUploadSource,
+          enabled: false,
+          ioc_schema: iocSchema ? { json_path_schema: JSON.parse(iocSchema) } : undefined,
+        };
 
-    if (sourceItem.type === 'IOC_UPLOAD') {
+        if (hasCustomIocSchema) {
+          (payload as ThreatIntelCustomSchemaIocUploadSourcePayload).source = customSchemaFileUploadSource;
+        }
+        break;
+
+      case ThreatIntelIocSourceType.S3_CUSTOM:
+      default:
+        payload = {
+          ...payloadBase,
+          type: ThreatIntelIocSourceType.S3_CUSTOM,
+          schedule: {
+            ...sourceItemState.schedule,
+            interval: {
+              ...sourceItemState.schedule.interval,
+              start_time: Date.now(),
+            },
+          },
+          source: s3ConnectionDetails,
+          ioc_schema: iocSchema ? { json_path_schema: JSON.parse(iocSchema) } : undefined,
+        };
+        break;
+    }
+
+    if (sourceItem.type === ThreatIntelIocSourceType.IOC_UPLOAD) {
       delete (payload as any)['schedule'];
     }
 
@@ -189,12 +289,37 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
     });
   };
 
+  const onCustomSchemaChange = (value: string) => {
+    const customSchemaError = validateCustomSchema(value);
+    if (type === ThreatIntelIocSourceType.IOC_UPLOAD) {
+      setFieldError({
+        fileUpload: {
+          ...inputErrors['fileUpload'],
+          customSchema: customSchemaError || '',
+        },
+      });
+    } else if (type === ThreatIntelIocSourceType.S3_CUSTOM) {
+      setFieldError({
+        s3: {
+          ...inputErrors['s3'],
+          customSchema: customSchemaError || '',
+        },
+      });
+    }
+    setIocSchema(value);
+  };
+
   const onDiscard = () => {
-    setFileError('');
+    setFieldError({});
     setIsReadOnly(true);
     setSourceItemState(sourceItem);
     setS3ConnectionDetails(sourceItem.source as S3ConnectionSource);
     setFileUploadSource(sourceItem.source as FileUploadSource);
+    setIocSchema(
+      hasCustomIocSchema
+        ? JSON.stringify(sourceItemState.ioc_schema?.json_path_schema, null, 4)
+        : undefined
+    );
   };
 
   return (
@@ -219,7 +344,7 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
               />
             </EuiCompressedFormRow>
             <EuiSpacer />
-            {type === 'S3_CUSTOM' && schedule && (
+            {type === ThreatIntelIocSourceType.S3_CUSTOM && schedule && (
               <>
                 <EuiFormLabel>Download schedule</EuiFormLabel>
                 <EuiSpacer size="xs" />
@@ -292,50 +417,32 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
                     value={s3ConnectionDetails.s3.region}
                   />
                 </EuiCompressedFormRow>
-                <EuiSpacer />
               </>
             )}
-            {type === 'IOC_UPLOAD' && (
-              <>
-                {isReadOnly && (
-                  <EuiCompressedFormRow label="Uploaded file">
-                    <EuiCompressedFieldText
-                      readOnly={isReadOnly}
-                      value={fileUploadSource.ioc_upload?.file_name}
-                      icon={'download'}
-                    />
-                  </EuiCompressedFormRow>
-                )}
-                {!isReadOnly && (
-                  <>
-                    <EuiCompressedFormRow
-                      label="Upload file"
-                      helpText={
-                        <>
-                          <p>Accepted format: JSON (.json) based on STIX spec.</p>
-                          <p>Maximum size: 500 kB. </p>
-                        </>
-                      }
-                      isInvalid={!!fileError}
-                      error={fileError}
-                    >
-                      <EuiCompressedFilePicker
-                        id={'filePickerId'}
-                        fullWidth
-                        initialPromptText="Select or drag and drop a file"
-                        onChange={onFileChange}
-                        display={'large'}
-                        multiple={false}
-                        aria-label="ioc file picker"
-                        isInvalid={!!fileError}
-                        data-test-subj="import_ioc_file"
-                      />
-                    </EuiCompressedFormRow>
-                  </>
-                )}
-              </>
-            )}
-            {type === 'URL_DOWNLOAD' && (
+            {type === ThreatIntelIocSourceType.IOC_UPLOAD &&
+              (hasCustomIocSchema ? (
+                <ThreatIntelSourceDetailsFileUploader
+                  isReadOnly={isReadOnly}
+                  fileName={customSchemaFileUploadSource.custom_schema_ioc_upload?.file_name}
+                  fileError={inputErrors['fileUpload']?.file || ''}
+                  helperText={<p>Maximum size: 500 kB. </p>}
+                  onFileUploadChange={onCustomSchemaIocUploadFileChange}
+                />
+              ) : (
+                <ThreatIntelSourceDetailsFileUploader
+                  isReadOnly={isReadOnly}
+                  fileName={fileUploadSource.ioc_upload?.file_name}
+                  fileError={inputErrors['fileUpload']?.file || ''}
+                  helperText={
+                    <>
+                      <p>Accepted format: JSON (.json) based on STIX spec.</p>
+                      <p>Maximum size: 500 kB. </p>
+                    </>
+                  }
+                  onFileUploadChange={onIocUploadFileChange}
+                />
+              ))}
+            {type === ThreatIntelIocSourceType.URL_DOWNLOAD && (
               <EuiCompressedFormRow label="Source URL">
                 <EuiCompressedFieldText
                   readOnly={isReadOnly}
@@ -343,20 +450,25 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
                 />
               </EuiCompressedFormRow>
             )}
-            <EuiCompressedFormRow label="Types of malicious indicators">
+            {hasCustomIocSchema && (
               <>
-                <EuiSpacer size="s" />
-                <EuiCompressedCheckboxGroup
-                  options={checkboxes}
-                  idToSelectedMap={checkboxIdToSelectedMap}
-                  onChange={onIocTypesChange}
-                  disabled={isReadOnly}
-                />
+                <EuiSpacer size="m" />
+                <EuiCompressedFormRow label="Ioc schema">
+                  <EuiCodeEditor
+                    mode="json"
+                    width="600px"
+                    value={iocSchema}
+                    onChange={onCustomSchemaChange}
+                    data-test-subj={'threat_intel_source_ioc_custom_schema'}
+                    maxLines={20}
+                    readOnly={isReadOnly}
+                  />
+                </EuiCompressedFormRow>
               </>
-            </EuiCompressedFormRow>
+            )}
             <EuiSpacer />
           </EuiFlexItem>
-          {type !== 'URL_DOWNLOAD' && (
+          {type !== ThreatIntelIocSourceType.URL_DOWNLOAD && (
             <EuiFlexItem grow={false}>
               <EuiSmallButton
                 style={{ visibility: isReadOnly ? 'visible' : 'hidden' }}

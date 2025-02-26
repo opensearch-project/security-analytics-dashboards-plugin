@@ -303,6 +303,10 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
     setConfigureInProgress(false);
   };
 
+  const isNextDisabled = () => {
+    return !stepDataValid[currentStep] || configureScanFormInputs.logSources.length === 0;
+  };
+
   return (
     <>
       <EuiFlexGroup>
@@ -348,7 +352,7 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
 
         {currentStep === ConfigureThreatIntelScanStep.SelectLogSources && (
           <EuiFlexItem grow={false}>
-            <EuiSmallButton fill={true} onClick={onNextClick} disabled={!stepDataValid[currentStep]}>
+            <EuiSmallButton fill={true} onClick={onNextClick} disabled={isNextDisabled()}>
               Next
             </EuiSmallButton>
           </EuiFlexItem>

@@ -7,9 +7,7 @@ import React, { useEffect, useState } from 'react';
 import {
   EuiSmallButton,
   EuiCheckableCard,
-  EuiCompressedCheckboxGroup,
   EuiCompressedFieldText,
-  EuiCompressedFilePicker,
   EuiFlexGroup,
   EuiFlexItem,
   EuiFormLabel,
@@ -18,71 +16,46 @@ import {
   EuiSpacer,
   EuiCompressedSwitch,
   EuiText,
+  EuiCompressedCheckbox,
+  EuiCodeEditor,
+  EuiLink,
 } from '@elastic/eui';
 import { BREADCRUMBS, ROUTES, defaultIntervalUnitOptions } from '../../../../utils/constants';
 import { Interval } from '../../../CreateDetector/components/DefineDetector/components/DetectorSchedule/Interval';
 import { RouteComponentProps } from 'react-router-dom';
 import ThreatIntelService from '../../../../services/ThreatIntelService';
 import {
+  CustomSchemaFileUploadSource,
   FileUploadSource,
   S3ConnectionSource,
   ThreatIntelS3CustomSourcePayload,
   ThreatIntelSourcePayload,
   ThreatIntelSourcePayloadBase,
+  ThreatIntelSourceFormInputErrors as AddThreatIntelSourceFormInputErrors,
+  ThreatIntelSourceFormInputFieldsTouched,
 } from '../../../../../types';
 import {
+  getEmptyCustomSchemaIocFileUploadSource,
   getEmptyIocFileUploadSource,
   getEmptyS3ConnectionSource,
   getEmptyThreatIntelSourcePayloadBase,
+  hasErrorInThreatIntelSourceFormInputs,
   readIocsFromFile,
+  validateCustomSchema,
+  validateS3ConfigField,
+  validateSchedule,
+  validateSourceDescription,
+  validateSourceName,
 } from '../../utils/helpers';
-import { ThreatIntelIocType } from '../../../../../common/constants';
 import { PeriodSchedule } from '../../../../../models/interfaces';
-import { checkboxes } from '../../utils/constants';
+import { ThreatIntelIocSourceType } from '../../../../../common/constants';
 import {
-  THREAT_INTEL_SOURCE_DESCRIPTION_REGEX,
-  THREAT_INTEL_SOURCE_NAME_REGEX,
-  validateDescription,
-  validateName,
-} from '../../../../utils/validation';
-import { setBreadcrumbs } from '../../../../utils/helpers';
-import { PageHeader } from '../../../../components/PageHeader/PageHeader';
-
-enum ErrorKeys {
-  s3 = 's3',
-  fileUpload = 'fileUpload',
-  schedule = 'schedule',
-}
-
-interface AddThreatIntelSourceFormInputErrors {
-  name?: string;
-  description?: string;
-  [ErrorKeys.s3]?: Partial<
-    {
-      [field in keyof S3ConnectionSource['s3']]: string;
-    }
-  >;
-  [ErrorKeys.fileUpload]?: {
-    file?: string;
-  };
-  [ErrorKeys.schedule]?: string;
-  ioc_types?: string;
-}
-
-interface AddThreatIntelSourceFormInputTouched {
-  name?: boolean;
-  description?: boolean;
-  s3?: Partial<
-    {
-      [field in keyof S3ConnectionSource['s3']]: boolean;
-    }
-  >;
-  fileUpload?: {
-    file?: boolean;
-  };
-  schedule?: boolean;
-  ioc_types?: boolean;
-}
+  CUSTOM_SCHEMA_PLACEHOLDER,
+  defaultInputTouched,
+  IOC_SCHEMA_CODE_EDITOR_MAX_LINES,
+  IOC_UPLOAD_MAX_FILE_SIZE,
+} from '../../utils/constants';
+import { ThreatIntelSourceFileUploader } from '../../components/ThreatIntelSourceFileUploader/ThreatIntelSourceFileUploader';
 
 export interface AddThreatIntelSourceProps extends RouteComponentProps {
   threatIntelService: ThreatIntelService;
@@ -102,19 +75,32 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
       unit: defaultIntervalUnitOptions.HOURS.value,
     },
   });
-  const [sourceType, setSourceType] = useState<'S3_CUSTOM' | 'IOC_UPLOAD'>('S3_CUSTOM');
+  const [sourceType, setSourceType] = useState<ThreatIntelIocSourceType>(
+    ThreatIntelIocSourceType.S3_CUSTOM
+  );
   const [s3ConnectionDetails, setS3ConnectionDetails] = useState<S3ConnectionSource>(
     getEmptyS3ConnectionSource()
   );
   const [fileUploadSource, setFileUploadSource] = useState<FileUploadSource>(
     getEmptyIocFileUploadSource()
   );
+  const [customSchemaFileUploadSource, setCustomSchemaFileUploadSource] = useState<
+    CustomSchemaFileUploadSource
+  >(getEmptyCustomSchemaIocFileUploadSource());
   const [submitInProgress, setSubmitInProgress] = useState(false);
-  const [checkboxIdToSelectedMap, setCheckboxIdToSelectedMap] = useState<Record<string, boolean>>(
-    {}
-  );
-  const [inputTouched, setInputTouched] = useState<AddThreatIntelSourceFormInputTouched>({});
+  const [inputTouched, setInputTouched] = useState<ThreatIntelSourceFormInputFieldsTouched>({
+    ...defaultInputTouched,
+  });
   const [inputErrors, setInputErrors] = useState<AddThreatIntelSourceFormInputErrors>({});
+  const [useCustomSchemaByType, setUseCustomSchemaByType] = useState<
+    { [k in ThreatIntelIocSourceType.S3_CUSTOM | ThreatIntelIocSourceType.IOC_UPLOAD]: boolean }
+  >({
+    [ThreatIntelIocSourceType.S3_CUSTOM]: false,
+    [ThreatIntelIocSourceType.IOC_UPLOAD]: false,
+  });
+  const [customSchema, setCustomSchema] = useState(
+    JSON.stringify(CUSTOM_SCHEMA_PLACEHOLDER, null, 4)
+  );
 
   const setFieldError = (fieldErrors: AddThreatIntelSourceFormInputErrors) => {
     setInputErrors({
@@ -122,7 +108,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
       ...fieldErrors,
     });
   };
-  const setFieldTouched = (fieldsTouched: AddThreatIntelSourceFormInputTouched) => {
+  const setFieldTouched = (fieldsTouched: ThreatIntelSourceFormInputFieldsTouched) => {
     setInputTouched({
       ...inputTouched,
       ...fieldsTouched,
@@ -133,25 +119,6 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
     setBreadcrumbs([BREADCRUMBS.THREAT_INTEL_OVERVIEW, BREADCRUMBS.THREAT_INTEL_ADD_CUSTOM_SOURCE]);
   }, []);
 
-  const validateIocTypes = (iocTypeMap: Record<string, boolean>) => {
-    return !Object.values(iocTypeMap).some((val) => val)
-      ? 'At least one ioc type should be selected.'
-      : '';
-  };
-  const onIocTypesChange = (optionId: string) => {
-    const newCheckboxIdToSelectedMap = {
-      ...checkboxIdToSelectedMap,
-      ...{
-        [optionId]: !checkboxIdToSelectedMap[optionId],
-      },
-    };
-    setFieldError({
-      ioc_types: validateIocTypes(newCheckboxIdToSelectedMap),
-    });
-    setFieldTouched({ ioc_types: true });
-    setCheckboxIdToSelectedMap(newCheckboxIdToSelectedMap);
-  };
-
   const onRefreshSwitchChange = (checked: boolean) => {
     setSource({
       ...source,
@@ -159,21 +126,6 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
     });
   };
 
-  const validateSourceName = (name: string) => {
-    let error;
-    if (!name) {
-      error = 'Name is required.';
-    } else if (name.length > 128) {
-      error = 'Max length can be 128.';
-    } else {
-      const isValid = validateName(name, THREAT_INTEL_SOURCE_NAME_REGEX);
-      if (!isValid) {
-        error = 'Invalid name.';
-      }
-    }
-
-    return error;
-  };
   const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const name = event.target.value;
     const nameError = validateSourceName(name);
@@ -188,15 +140,6 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
     setFieldTouched({ name: true });
   };
 
-  const validateSourceDescription = (description: string) => {
-    let error;
-    const isValid = validateDescription(description, THREAT_INTEL_SOURCE_DESCRIPTION_REGEX);
-    if (!isValid) {
-      error = 'Invalid name.';
-    }
-
-    return error;
-  };
   const onDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const descriptionError = validateSourceDescription(event.target.value);
     setFieldError({
@@ -210,11 +153,6 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
     setFieldTouched({ description: true });
   };
 
-  const validateS3ConfigField = (value: string) => {
-    if (!value) {
-      return `Required.`;
-    }
-  };
   const onS3DataChange = (field: keyof S3ConnectionSource['s3'], value: string) => {
     const error = validateS3ConfigField(value);
     setFieldError({
@@ -229,19 +167,14 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
         [field]: value,
       },
     });
-    setFieldTouched({ s3: { ...inputTouched.s3, [field]: true } });
+    setFieldTouched({ s3: { ...(inputTouched.s3 as any), [field]: true } });
   };
 
-  const validateSchedule = (schedule: PeriodSchedule) => {
-    setFieldError({
-      schedule:
-        !schedule.period.interval || Number.isNaN(schedule.period.interval)
-          ? 'Invalid schedule.'
-          : '',
-    });
-  };
   const onIntervalChange = (schedule: PeriodSchedule) => {
-    validateSchedule(schedule);
+    const error = validateSchedule(schedule);
+    setFieldError({
+      schedule: error,
+    });
     setSchedule({
       interval: {
         start_time: Date.now(),
@@ -252,7 +185,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
     setFieldTouched({ schedule: true });
   };
 
-  const onFileChange = (files: FileList | null) => {
+  const onIocUploadFileChange = (files: FileList | null) => {
     setFieldError({
       fileUpload: {
         ...inputErrors.fileUpload,
@@ -273,71 +206,158 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
         }
       });
     }
-    setFieldTouched({ fileUpload: { file: true } });
+    setFieldTouched({ iocFileUpload: { file: true } });
   };
 
-  const hasError = (errors: { [key: string]: any }): boolean => {
-    for (let key of Object.keys(errors)) {
-      if (
-        (sourceType !== 'S3_CUSTOM' && key === ErrorKeys.s3) ||
-        (sourceType !== 'IOC_UPLOAD' && key === ErrorKeys.fileUpload) ||
-        (!source.enabled && key === ErrorKeys.schedule)
-      ) {
-        continue;
+  const onCustomSchemaIoCUploadFileChange = (files: FileList | null) => {
+    setFieldError({
+      fileUpload: {
+        ...inputErrors.fileUpload,
+        file: files?.length === 0 ? 'File required.' : '',
+      },
+    });
+    if (!!files?.item(0)) {
+      const file = files[0];
+
+      if (file.size > IOC_UPLOAD_MAX_FILE_SIZE) {
+        setFieldError({
+          fileUpload: {
+            ...inputErrors.fileUpload,
+            file: 'File size should be less then 500KB.',
+          },
+        });
+        return;
       }
 
-      if (typeof errors[key] === 'string' && !!errors[key]) {
-        return true;
-      }
-
-      if (typeof errors[key] === 'object') {
-        if (hasError(errors[key])) {
-          return true;
-        }
-      }
+      const reader = new FileReader();
+      reader.readAsText(file);
+      reader.onload = function () {
+        setCustomSchemaFileUploadSource({
+          custom_schema_ioc_upload: {
+            file_name: files[0].name,
+            iocs: reader.result?.toString() || '',
+          },
+        });
+      };
     }
+    setFieldTouched({ customSchemaIocFileUpload: { file: true } });
+  };
 
-    return false;
+  const onCustomSchemaChange = (value: string) => {
+    const customSchemaError = validateCustomSchema(value);
+    if (sourceType === ThreatIntelIocSourceType.IOC_UPLOAD) {
+      setFieldError({
+        fileUpload: {
+          ...inputErrors['fileUpload'],
+          customSchema: customSchemaError || '',
+        },
+      });
+    } else if (sourceType === ThreatIntelIocSourceType.S3_CUSTOM) {
+      setFieldError({
+        s3: {
+          ...inputErrors['s3'],
+          customSchema: customSchemaError || '',
+        },
+      });
+    }
+    setCustomSchema(value);
+    setFieldTouched({
+      customSchema: true,
+    });
   };
 
   const shouldEnableSubmit = () => {
-    const { name, s3, fileUpload, ioc_types } = inputTouched;
+    const { name, s3, iocFileUpload, customSchemaIocFileUpload, customSchema } = inputTouched;
     const reqFieldsTouched =
       name &&
-      ioc_types &&
-      ((sourceType === 'IOC_UPLOAD' && fileUpload?.file) ||
-        (sourceType === 'S3_CUSTOM' && s3 && Object.values(s3).every((val) => val)));
-    return reqFieldsTouched && !hasError(inputErrors);
+      ((sourceType === ThreatIntelIocSourceType.IOC_UPLOAD &&
+        (useCustomSchemaByType.IOC_UPLOAD
+          ? customSchemaIocFileUpload?.file && customSchema
+          : iocFileUpload?.file)) ||
+        (sourceType === ThreatIntelIocSourceType.S3_CUSTOM &&
+          s3 &&
+          Object.values(s3).every((val) => val) &&
+          (!useCustomSchemaByType.S3_CUSTOM || customSchema)));
+    return (
+      reqFieldsTouched &&
+      !hasErrorInThreatIntelSourceFormInputs(inputErrors, {
+        type: sourceType,
+        enabled: source.enabled,
+        hasCustomIocSchema:
+          (sourceType === ThreatIntelIocSourceType.S3_CUSTOM && useCustomSchemaByType.S3_CUSTOM) ||
+          (sourceType === ThreatIntelIocSourceType.IOC_UPLOAD && useCustomSchemaByType.IOC_UPLOAD),
+      })
+    );
+  };
+
+  const parseCustomSchema = () => {
+    try {
+      const parsedSchema: Record<string, any> = {};
+      const schemaObj = JSON.parse(customSchema);
+      Object.entries(schemaObj).forEach(([key, val]: [string, any]) => {
+        if (
+          typeof val?.json_path !== 'string' ||
+          val.json_path.includes('[place your JSON path here]')
+        ) {
+          return;
+        }
+
+        parsedSchema[key] = val;
+      });
+
+      return parsedSchema;
+    } catch (err: any) {
+      return {};
+    }
   };
 
   const onSubmit = () => {
     setSubmitInProgress(true);
-    const payload: ThreatIntelSourcePayload =
-      sourceType === 'S3_CUSTOM'
-        ? {
-            ...source,
-            type: 'S3_CUSTOM',
-            schedule: {
-              ...schedule,
-              interval: {
-                ...schedule.interval,
-                start_time: Date.now(),
-              },
+    let payload: ThreatIntelSourcePayload;
+    switch (sourceType) {
+      case ThreatIntelIocSourceType.IOC_UPLOAD:
+        payload = {
+          ...source,
+          type: ThreatIntelIocSourceType.IOC_UPLOAD,
+          ioc_types: [],
+          source: fileUploadSource,
+          enabled: false,
+        };
+
+        if (useCustomSchemaByType.IOC_UPLOAD) {
+          payload = {
+            ...payload,
+            source: customSchemaFileUploadSource,
+            ioc_schema: {
+              json_path_schema: parseCustomSchema(),
             },
-            ioc_types: Object.entries(checkboxIdToSelectedMap)
-              .filter(([ioc, checked]) => checked)
-              .map(([ioc]) => ioc as ThreatIntelIocType),
-            source: s3ConnectionDetails,
-          }
-        : {
-            ...source,
-            type: 'IOC_UPLOAD',
-            ioc_types: Object.entries(checkboxIdToSelectedMap)
-              .filter(([ioc, checked]) => checked)
-              .map(([ioc]) => ioc as ThreatIntelIocType),
-            source: fileUploadSource,
-            enabled: false,
           };
+        }
+
+        break;
+
+      case ThreatIntelIocSourceType.S3_CUSTOM:
+      default:
+        payload = {
+          ...source,
+          type: ThreatIntelIocSourceType.S3_CUSTOM,
+          schedule: {
+            ...schedule,
+            interval: {
+              ...schedule.interval,
+              start_time: Date.now(),
+            },
+          },
+          ioc_types: [],
+          source: s3ConnectionDetails,
+        };
+        if (useCustomSchemaByType.S3_CUSTOM) {
+          payload.ioc_schema = {
+            json_path_schema: JSON.parse(customSchema),
+          };
+        }
+        break;
+    }
 
     threatIntelService.addThreatIntelSource(payload).then((res) => {
       setSubmitInProgress(false);
@@ -348,6 +368,20 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
         });
       }
     });
+  };
+
+  const showCustomSchemaEditor =
+    (sourceType === ThreatIntelIocSourceType.IOC_UPLOAD && useCustomSchemaByType.IOC_UPLOAD) ||
+    (sourceType === ThreatIntelIocSourceType.S3_CUSTOM && useCustomSchemaByType.S3_CUSTOM);
+
+  const getCustomSchemaError = () => {
+    if (sourceType === ThreatIntelIocSourceType.IOC_UPLOAD) {
+      return inputErrors['fileUpload']?.customSchema;
+    } else if (sourceType === ThreatIntelIocSourceType.S3_CUSTOM) {
+      return inputErrors['s3']?.customSchema;
+    }
+
+    return '';
   };
 
   return (
@@ -427,9 +461,9 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
                 </>
               }
               checkableType="radio"
-              checked={sourceType === 'S3_CUSTOM'}
+              checked={sourceType === ThreatIntelIocSourceType.S3_CUSTOM}
               onChange={() => {
-                setSourceType('S3_CUSTOM');
+                setSourceType(ThreatIntelIocSourceType.S3_CUSTOM);
               }}
             />
           </EuiFlexItem>
@@ -443,20 +477,20 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
                     <h4>Local file upload</h4>
                   </EuiText>
                   <EuiText size="s">
-                    <p>Upload your own threat intel IoCs using a local file.</p>
+                    <p>Upload your own threat intel IoCs using a local file in STIX2 format.</p>
                   </EuiText>
                 </>
               }
               checkableType="radio"
-              checked={sourceType === 'IOC_UPLOAD'}
+              checked={sourceType === ThreatIntelIocSourceType.IOC_UPLOAD}
               onChange={() => {
-                setSourceType('IOC_UPLOAD');
+                setSourceType(ThreatIntelIocSourceType.IOC_UPLOAD);
               }}
             />
           </EuiFlexItem>
         </EuiFlexGroup>
         <EuiSpacer />
-        {sourceType === 'S3_CUSTOM' && (
+        {sourceType === ThreatIntelIocSourceType.S3_CUSTOM && (
           <>
             <EuiText size="s">
               <h2>Connection details</h2>
@@ -470,7 +504,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
                   </EuiFormLabel>
                   <EuiText color="subdued" size="xs">
                     <span>
-                      The Amazon Resource Name for an IAM role in Amazon Web Services (AWS)
+                      The ARN of the IAM role that gives OpenSearch permission to read the S3 bucket
                     </span>
                   </EuiText>
                 </>
@@ -487,7 +521,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
             </EuiCompressedFormRow>
             <EuiSpacer />
             <EuiCompressedFormRow
-              label="S3 bucket directory"
+              label="S3 bucket"
               isInvalid={!!inputErrors.s3?.bucket_name}
               error={inputErrors.s3?.bucket_name}
             >
@@ -505,7 +539,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
               error={inputErrors.s3?.object_key}
             >
               <EuiCompressedFieldText
-                placeholder="Object key"
+                placeholder="File name"
                 onChange={(event) => onS3DataChange('object_key', event.target.value)}
                 onBlur={(event) => onS3DataChange('object_key', event.target.value)}
                 value={s3ConnectionDetails.s3.object_key}
@@ -535,7 +569,7 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
               onChange={(event) => onRefreshSwitchChange(event.target.checked)}
             />
             <EuiSpacer />
-            {source.enabled && sourceType === 'S3_CUSTOM' && (
+            {source.enabled && sourceType === ThreatIntelIocSourceType.S3_CUSTOM && (
               <>
                 <Interval
                   label="Download new data every"
@@ -554,58 +588,99 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
                 <EuiSpacer />
               </>
             )}
-          </>
-        )}
-        {sourceType === 'IOC_UPLOAD' && (
-          <>
             <EuiText size="s">
-              <h2>Upload a file</h2>
+              <h2>Schema</h2>
             </EuiText>
-            <EuiSpacer />
-            <EuiCompressedFormRow
-              label="File"
-              helpText={
-                <>
-                  <p>Accepted format: JSON (.json) based on STIX spec.</p>
-                  <p>Maximum size: 500 kB. </p>
-                </>
-              }
-              isInvalid={!!inputErrors.fileUpload?.file}
-              error={inputErrors.fileUpload?.file}
-            >
-              <EuiCompressedFilePicker
-                id={'filePickerId'}
-                fullWidth
-                initialPromptText="Select or drag and drop a file"
-                onChange={onFileChange}
-                display={'large'}
-                multiple={false}
-                aria-label="ioc file picker"
-                isInvalid={!!inputErrors.fileUpload?.file}
-                data-test-subj="import_ioc_file"
+            <EuiSpacer size="m" />
+            <EuiCompressedFormRow>
+              <EuiCompressedCheckbox
+                id="threat-intel-source-custom-schema"
+                onChange={(e) => {
+                  setUseCustomSchemaByType({
+                    ...useCustomSchemaByType,
+                    [ThreatIntelIocSourceType.S3_CUSTOM]: e.target.checked,
+                  });
+                }}
+                checked={useCustomSchemaByType.S3_CUSTOM}
+                label="Use custom schema"
               />
             </EuiCompressedFormRow>
-            <EuiSpacer />
+            <EuiSpacer size="s" />
           </>
         )}
-        <EuiText size="s">
-          <h2>Types of malicious indicators</h2>
-        </EuiText>
-        <EuiText color="subdued" size="s">
-          <p>
-            Select at least one IoC type to select from the{' '}
-            {sourceType === 'IOC_UPLOAD' ? 'uploaded file' : 'S3 bucket'}.
-          </p>
-        </EuiText>
-        <EuiSpacer size="m" />
-        <EuiCompressedFormRow isInvalid={!!inputErrors.ioc_types} error={inputErrors.ioc_types}>
-          <EuiCompressedCheckboxGroup
-            options={checkboxes}
-            idToSelectedMap={checkboxIdToSelectedMap}
-            onChange={onIocTypesChange}
-          />
-        </EuiCompressedFormRow>
-        <EuiSpacer />
+        {sourceType === ThreatIntelIocSourceType.IOC_UPLOAD && (
+          <>
+            <EuiCompressedCheckbox
+              id="threat-intel-source-custom-schema"
+              onChange={(e) => {
+                setUseCustomSchemaByType({
+                  ...useCustomSchemaByType,
+                  [ThreatIntelIocSourceType.IOC_UPLOAD]: e.target.checked,
+                });
+                setFieldError({
+                  ...inputErrors,
+                  fileUpload: {
+                    file: '',
+                  },
+                });
+              }}
+              checked={useCustomSchemaByType.IOC_UPLOAD}
+              label="Use custom schema"
+            />
+            {useCustomSchemaByType.IOC_UPLOAD && (
+              <ThreatIntelSourceFileUploader
+                showHeader
+                onFileUploadChange={onCustomSchemaIoCUploadFileChange}
+                formLabel="File"
+                formHelperText={<p>Maximum size: 500 kB. </p>}
+                uploaderError={inputErrors.fileUpload?.file}
+              />
+            )}
+            {!useCustomSchemaByType.IOC_UPLOAD && (
+              <ThreatIntelSourceFileUploader
+                showHeader
+                onFileUploadChange={onIocUploadFileChange}
+                formLabel="File"
+                formHelperText={
+                  <>
+                    <p>Accepted format: JSON (.json) based on STIX spec.</p>
+                    <p>Maximum size: 500 kB. </p>
+                  </>
+                }
+                uploaderError={inputErrors.fileUpload?.file}
+              />
+            )}
+          </>
+        )}
+        {showCustomSchemaEditor && (
+          <>
+            <EuiCompressedFormRow
+              label="Ioc Schema"
+              isInvalid={!!getCustomSchemaError()}
+              error={getCustomSchemaError()}
+            >
+              <>
+                <EuiText size="xs">
+                  <p>
+                    Learn more about JsonPath{' '}
+                    <EuiLink href="https://goessner.net/articles/JsonPath/" target="_blank">
+                      here.
+                    </EuiLink>
+                  </p>
+                </EuiText>
+                <EuiSpacer size="s" />
+                <EuiCodeEditor
+                  mode="json"
+                  width="600px"
+                  value={customSchema}
+                  onChange={onCustomSchemaChange}
+                  data-test-subj={'threat_intel_source_ioc_custom_schema'}
+                  maxLines={IOC_SCHEMA_CODE_EDITOR_MAX_LINES}
+                />
+              </>
+            </EuiCompressedFormRow>
+          </>
+        )}
       </EuiPanel>
       <EuiSpacer />
       <EuiFlexGroup justifyContent="flexEnd">

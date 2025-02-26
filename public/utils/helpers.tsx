@@ -58,7 +58,6 @@ import { LogCategoryOptionView } from '../components/Utility/LogCategoryOption';
 import { getLogTypeLabel } from '../pages/LogTypes/utils/helpers';
 import { euiThemeVars } from '@osd/ui-shared-deps/theme';
 import dateMath from '@elastic/datemath';
-import { IocLabel, ThreatIntelIocType } from '../../common/constants';
 import { parse, View } from 'vega/build-es5/vega.js';
 import { compile } from 'vega-lite';
 import { Handler } from 'vega-tooltip';
@@ -647,8 +646,9 @@ export async function getFieldsForIndex(
   return fields;
 }
 
-export function renderIoCType(iocType: ThreatIntelIocType) {
-  return IocLabel[iocType] || DEFAULT_EMPTY_DATA;
+export function renderIoCType(iocType: string) {
+  const val = _.capitalize(iocType) || DEFAULT_EMPTY_DATA;
+  return val;
 }
 
 export function setBreadcrumbs(crumbs: ChromeBreadcrumb[]) {

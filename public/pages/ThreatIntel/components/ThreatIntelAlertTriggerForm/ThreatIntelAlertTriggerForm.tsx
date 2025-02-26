@@ -15,17 +15,17 @@ import {
 import { NotificationChannelTypeOptions, ThreatIntelAlertTrigger } from '../../../../../types';
 import React from 'react';
 import { NotificationForm } from '../../../../components/Notifications/NotificationForm';
-import { ThreatIntelIocType } from '../../../../../common/constants';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { AlertSeverity } from '../../../Alerts/utils/constants';
 import { getEmptyThreatIntelAlertTriggerAction } from '../../utils/helpers';
+import { renderIoCType } from '../../../../utils/helpers';
 import { ALERT_SEVERITY_OPTIONS } from '../../../../utils/constants';
 
 export interface ThreatIntelAlertTriggerProps {
   allNotificationChannels: NotificationChannelTypeOptions[];
   loadingNotifications: boolean;
   trigger: ThreatIntelAlertTrigger;
-  enabledIocTypes: ThreatIntelIocType[];
+  enabledIocTypes: string[];
   logSources: string[];
   onDeleteTrgger: () => void;
   refreshNotificationChannels: () => void;
@@ -122,12 +122,18 @@ export const ThreatIntelAlertTriggerForm: React.FC<ThreatIntelAlertTriggerProps>
         <EuiCompressedFormRow label="Indicator type(s)">
           <EuiCompressedComboBox
             placeholder="Any"
-            options={enabledIocTypes.map((ioc) => ({ label: ioc }))}
-            selectedOptions={trigger.ioc_types.map((iocType) => ({ label: iocType }))}
+            options={enabledIocTypes.map((iocType) => ({
+              label: renderIoCType(iocType),
+              value: iocType,
+            }))}
+            selectedOptions={trigger.ioc_types.map((iocType) => ({
+              label: renderIoCType(iocType),
+              value: iocType,
+            }))}
             onChange={(options) => {
               updateTrigger({
                 ...trigger,
-                ioc_types: options.map(({ label }) => label),
+                ioc_types: options.map(({ value }) => value!),
               });
             }}
           />
