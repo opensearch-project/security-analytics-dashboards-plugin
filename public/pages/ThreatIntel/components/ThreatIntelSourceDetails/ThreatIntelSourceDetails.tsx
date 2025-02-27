@@ -82,6 +82,7 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
   const [saveInProgress, setSaveInProgress] = useState(false);
   const [saveDisabled, setSaveDisabled] = useState(false);
   const [inputErrors, setInputErrors] = useState<ThreatIntelSourceFormInputErrors>({});
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
   const setFieldError = (fieldErrors: ThreatIntelSourceFormInputErrors) => {
     setInputErrors({
@@ -94,9 +95,9 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
     let shouldDisableSave = false;
     if (
       !isReadOnly &&
-      ((type === ThreatIntelIocSourceType.IOC_UPLOAD &&
-        fileUploadSource.ioc_upload?.iocs.length === 0 &&
-        customSchemaFileUploadSource.custom_schema_ioc_upload?.iocs.length === 0) ||
+      ((type === ThreatIntelIocSourceType.IOC_UPLOAD && !uploadedFile) ||
+        (fileUploadSource.ioc_upload?.iocs.length === 0 &&
+          customSchemaFileUploadSource.custom_schema_ioc_upload?.iocs.length === 0) ||
         hasErrorInThreatIntelSourceFormInputs(inputErrors, {
           enabled,
           hasCustomIocSchema,
@@ -174,6 +175,7 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
       },
     });
     if (!!files?.item(0)) {
+      setUploadedFile(files[0]);
       readIocsFromFile(files[0], (response) => {
         if (response.ok) {
           setFileUploadSource(response.sourceData);
@@ -186,6 +188,8 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
           });
         }
       });
+    } else {
+      setUploadedFile(null);
     }
   };
 
@@ -213,6 +217,7 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
       const reader = new FileReader();
       reader.readAsText(file);
       reader.onload = function () {
+        setUploadedFile(files[0]);
         setCustomSchemaFileUploadSource({
           custom_schema_ioc_upload: {
             file_name: files[0].name,
@@ -220,6 +225,8 @@ export const ThreatIntelSourceDetails: React.FC<ThreatIntelSourceDetailsProps> =
           },
         });
       };
+    } else {
+      setUploadedFile(null);
     }
   };
 
