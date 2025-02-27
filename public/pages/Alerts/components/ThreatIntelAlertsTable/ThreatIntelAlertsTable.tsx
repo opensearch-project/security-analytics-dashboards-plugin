@@ -16,7 +16,6 @@ import { renderIoCType, renderTime } from '../../../../utils/helpers';
 import { ALERT_STATE, DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { DISABLE_ACKNOWLEDGED_ALERT_HELP_TEXT } from '../../utils/constants';
-import { ThreatIntelIocType } from '../../../../../common/constants';
 import {
   ThreatIntelAlertFlyout,
   ThreatIntelAlertFlyoutProps,
@@ -55,13 +54,17 @@ export const ThreatIntelAlertsTable: React.FC<ThreatIntelAlertsTableProps> = ({
       render: (startTime: number) => renderTime(startTime),
     },
     {
+      field: 'trigger_name',
+      name: 'Alert trigger name',
+    },
+    {
       field: 'ioc_value',
       name: 'Indicator of compromise',
     },
     {
       field: 'ioc_type',
       name: 'Indicator type',
-      render: (iocType: ThreatIntelIocType) => renderIoCType(iocType),
+      render: (iocType: string) => renderIoCType(iocType),
     },
     { field: 'state', name: 'Status', render: (state: string) => state || DEFAULT_EMPTY_DATA },
     {
