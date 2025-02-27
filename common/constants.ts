@@ -5,16 +5,8 @@
 
 export const DEFAULT_RULE_UUID = '25b9c01c-350d-4b95-bed1-836d04a4f324';
 
-export enum ThreatIntelIocType {
-  Domain = 'domain-name',
-  FileHash = 'hashes',
-  IPV4 = 'ipv4-addr',
-  IPV6 = 'ipv6-addr',
+export enum ThreatIntelIocSourceType {
+  S3_CUSTOM = 'S3_CUSTOM',
+  IOC_UPLOAD = 'IOC_UPLOAD',
+  URL_DOWNLOAD = 'URL_DOWNLOAD',
 }
-
-export const IocLabel: { [k in ThreatIntelIocType]: string } = {
-  [ThreatIntelIocType.IPV4]: 'IPV4-Address',
-  [ThreatIntelIocType.IPV6]: 'IPV6-Address',
-  [ThreatIntelIocType.Domain]: 'Domains',
-  [ThreatIntelIocType.FileHash]: 'File hash',
-};
