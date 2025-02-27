@@ -58,7 +58,6 @@ import { LogCategoryOptionView } from '../components/Utility/LogCategoryOption';
 import { getLogTypeLabel } from '../pages/LogTypes/utils/helpers';
 import { euiThemeVars } from '@osd/ui-shared-deps/theme';
 import dateMath from '@elastic/datemath';
-import { IocLabel, ThreatIntelIocType } from '../../common/constants';
 import { parse, View } from 'vega/build-es5/vega.js';
 import { compile } from 'vega-lite';
 import { Handler } from 'vega-tooltip';
@@ -85,7 +84,7 @@ import semver from 'semver';
 import * as pluginManifest from '../../opensearch_dashboards.json';
 import { DataSourceThreatAlertsCard } from '../components/DataSourceThreatAlertsCard/DataSourceThreatAlertsCard';
 import { DataSourceAttributes } from '../../../../src/plugins/data_source/common/data_sources';
-import { RouteComponentProps } from 'react-router-dom';
+import { ISearchStart } from '../../../../src/plugins/data/public';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
@@ -647,8 +646,9 @@ export async function getFieldsForIndex(
   return fields;
 }
 
-export function renderIoCType(iocType: ThreatIntelIocType) {
-  return IocLabel[iocType] || DEFAULT_EMPTY_DATA;
+export function renderIoCType(iocType: string) {
+  const val = _.capitalize(iocType) || DEFAULT_EMPTY_DATA;
+  return val;
 }
 
 export function setBreadcrumbs(crumbs: ChromeBreadcrumb[]) {
@@ -735,14 +735,18 @@ export function getEuiEmptyPrompt(message: string) {
   );
 }
 
-export function initializeServices(coreStart: CoreStart, indexPattern: CoreIndexPatternsService) {
+export function initializeServices(
+  coreStart: CoreStart,
+  indexPattern: CoreIndexPatternsService,
+  search: ISearchStart
+) {
   const { http, savedObjects } = coreStart;
 
   const detectorsService = new DetectorsService(http);
   const correlationsService = new CorrelationService(http);
   const indexService = new IndexService(http);
   const findingsService = new FindingsService(http, coreStart.notifications);
-  const opensearchService = new OpenSearchService(http, savedObjects.client);
+  const opensearchService = new OpenSearchService(http, savedObjects.client, search);
   const fieldMappingService = new FieldMappingService(http);
   const alertsService = new AlertsService(http, coreStart.notifications);
   const ruleService = new RuleService(http);

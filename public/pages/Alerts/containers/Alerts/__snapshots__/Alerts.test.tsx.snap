@@ -65,6 +65,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
     OpenSearchService {
       "getDocuments": [Function],
       "getIndexPatterns": [Function],
+      "getIocTypes": [Function],
       "getPlugins": [Function],
       "httpClient": [MockFunction],
       "savedObjectsClient": Object {
@@ -74,6 +75,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
         "post": [MockFunction],
         "put": [MockFunction],
       },
+      "search": undefined,
     }
   }
   ruleService={
@@ -185,6 +187,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
       OpenSearchService {
         "getDocuments": [Function],
         "getIndexPatterns": [Function],
+        "getIocTypes": [Function],
         "getPlugins": [Function],
         "httpClient": [MockFunction],
         "savedObjectsClient": Object {
@@ -194,6 +197,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
           "post": [MockFunction],
           "put": [MockFunction],
         },
+        "search": undefined,
       }
     }
     ruleService={
