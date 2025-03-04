@@ -127,9 +127,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ matrix.cypress_cache_folder }}
-          key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
+          key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/package.json') }}
           restore-keys: |
-            cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
+            cypress-cache-v2-${{ runner.os }}-${{ hashFiles('OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/package.json') }}
 
       # for now just chrome, use matrix to do all browsers later
       - name: Cypress tests
