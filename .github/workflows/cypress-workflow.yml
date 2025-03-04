@@ -8,7 +8,7 @@ on:
       - "*"
 env:
   OPENSEARCH_DASHBOARDS_VERSION: 'main'
-  OPENSEARCH_VERSION: '3.0.0-SNAPSHOT'
+  OPENSEARCH_VERSION: '3.0.0-alpha1-SNAPSHOT'
   SECURITY_ANALYTICS_BRANCH: 'main'
   GRADLE_VERSION: '7.6.1'
 jobs:
@@ -33,7 +33,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           # TODO: Parse this from security analytics plugin (https://github.com/opensearch-project/security-analytics/issues/170)
-          java-version: 11
+          java-version: 21
 
       - name: Enable longer filenames
         if: ${{ matrix.os == 'windows-latest' }}
@@ -45,11 +45,6 @@ jobs:
           path: security-analytics
           repository: opensearch-project/security-analytics
           ref: ${{ env.SECURITY_ANALYTICS_BRANCH }}
-
-      - name: Set up Gradle
-        uses: gradle/gradle-build-action@v2
-        with:
-          gradle-version: ${{ env.GRADLE_VERSION }}
 
       - name: Run opensearch with plugin
         run: |
@@ -124,12 +119,12 @@ jobs:
 
       - name: Cache Cypress
         id: cache-cypress
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ${{ matrix.cypress_cache_folder }}
-          key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
+          key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/package.json') }}
           restore-keys: |
-            cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
+            cypress-cache-v2-${{ runner.os }}-${{ hashFiles('OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/package.json') }}
 
       # for now just chrome, use matrix to do all browsers later
       - name: Cypress tests

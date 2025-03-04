@@ -1,6 +1,6 @@
 {
   "name": "opensearch_security_analytics_dashboards",
-  "version": "3.0.0.0",
+  "version": "3.0.0.0-alpha1",
   "description": "OpenSearch Dashboards plugin for Security Analytics",
   "main": "index.js",
   "license": "Apache-2.0",
@@ -14,8 +14,8 @@
     "url": "https://github.com/opensearch-project/security-analytics-dashboards-plugin"
   },
   "scripts": {
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
+    "cypress:open": ".cypress open",
+    "cypress:run": ".cypress run",
     "osd": "node ../../scripts/osd",
     "opensearch": "node ../../scripts/opensearch",
     "lint": "node ../../scripts/eslint .",
