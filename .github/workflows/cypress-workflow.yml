@@ -33,7 +33,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           # TODO: Parse this from security analytics plugin (https://github.com/opensearch-project/security-analytics/issues/170)
-          java-version: 11
+          java-version: 21
 
       - name: Enable longer filenames
         if: ${{ matrix.os == 'windows-latest' }}
@@ -45,11 +45,6 @@ jobs:
           path: security-analytics
           repository: opensearch-project/security-analytics
           ref: ${{ env.SECURITY_ANALYTICS_BRANCH }}
-
-      - name: Set up Gradle
-        uses: gradle/gradle-build-action@v2
-        with:
-          gradle-version: ${{ env.GRADLE_VERSION }}
 
       - name: Run opensearch with plugin
         run: |
