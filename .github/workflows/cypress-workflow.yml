@@ -10,28 +10,38 @@ env:
   OPENSEARCH_DASHBOARDS_VERSION: 'main'
   OPENSEARCH_VERSION: '3.0.0-alpha1-SNAPSHOT'
   SECURITY_ANALYTICS_BRANCH: 'main'
-  GRADLE_VERSION: '7.6.1'
 jobs:
   tests:
-    name: Run Cypress E2E tests
     strategy:
+      # This setting says that all jobs should finish, even if one fails
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
         include:
           - os: windows-latest
+            os_build_args: -x integTest -x jacocoTestReport
+            working_directory: X:\
+            os_java_options: -Xmx4096M
             cypress_cache_folder: ~/AppData/Local/Cypress/Cache
           - os: ubuntu-latest
+            os_build_args: -x integTest -x jacocoTestReport
+            jest_test_args: --coverage
             cypress_cache_folder: ~/.cache/Cypress
-    runs-on: ${{ matrix.os }}
     env:
       # prevents extra Cypress installation progress messages
       CI: 1
       # avoid warnings like "tput: No value for $TERM and no -T specified"
       TERM: xterm
+      WORKING_DIR: ${{ matrix.working_directory }}.
+
+    name: Run Cypress E2E tests on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
     steps:
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
+          distribution: temurin # Temurin is a distribution of adoptium
           # TODO: Parse this from security analytics plugin (https://github.com/opensearch-project/security-analytics/issues/170)
           java-version: 21
 
@@ -39,19 +49,22 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' }}
         run: git config --system core.longpaths true
 
-      - name: Checkout security analytics
+      - name: Checkout security analytics backend
         uses: actions/checkout@v2
         with:
           path: security-analytics
           repository: opensearch-project/security-analytics
           ref: ${{ env.SECURITY_ANALYTICS_BRANCH }}
 
-      - name: Run opensearch with plugin
+      - name: Run OpenSearch with plugin
         run: |
           cd security-analytics
           ./gradlew run -Dopensearch.version=${{ env.OPENSEARCH_VERSION }} &
           sleep 300
         shell: bash
+        env:
+          _JAVA_OPTIONS: ${{ matrix.os_java_options }}
+
 
       - name: Checkout OpenSearch-Dashboards
         uses: actions/checkout@v2
@@ -122,12 +135,10 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ matrix.cypress_cache_folder }}
-          key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/package.json') }}
-          restore-keys: |
-            cypress-cache-v2-${{ runner.os }}-${{ hashFiles('OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/package.json') }}
+          key: cypress-cache-v4-${{ runner.os }}-${{ hashFiles('OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/package.json') }}
 
       # for now just chrome, use matrix to do all browsers later
-      - name: Cypress tests
+      - name: Run cypress tests
         uses: cypress-io/github-action@v5
         with:
           working-directory: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
