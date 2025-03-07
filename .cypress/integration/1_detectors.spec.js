@@ -207,16 +207,22 @@ describe('Detectors', () => {
     // Create test index
     cy.createIndex(cypressIndexDns, sample_dns_index_settings).then(() =>
       cy
-        .request('POST', '_plugins/_security_analytics/rules/_search?prePackaged=true', {
-          from: 0,
-          size: 5000,
-          query: {
-            nested: {
-              path: 'rule',
-              query: { bool: { must: [{ match: { 'rule.category': 'dns' } }] } },
+        .request(
+          'POST',
+          `${Cypress.env(
+            'opensearch_url'
+          )}/_plugins/_security_analytics/rules/_search?pre_packaged=true`,
+          {
+            from: 0,
+            size: 5000,
+            query: {
+              nested: {
+                path: 'rule',
+                query: { bool: { must: [{ match: { 'rule.category': 'dns' } }] } },
+              },
             },
-          },
-        })
+          }
+        )
         .should('have.property', 'status', 200)
     );
 
