@@ -53,7 +53,7 @@ jobs:
       - name: Run OpenSearch with plugin
         run: |
           cd security-analytics
-          ./gradlew run -Dopensearch.version=${{ env.OPENSEARCH_VERSION }} &
+          ./gradlew run -Dopensearch.version=${{ env.OPENSEARCH_VERSION }} -x jacocoTestReport &
           sleep 300
         shell: bash
 
