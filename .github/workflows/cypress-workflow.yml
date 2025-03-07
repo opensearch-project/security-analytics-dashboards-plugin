@@ -10,6 +10,7 @@ env:
   OPENSEARCH_DASHBOARDS_VERSION: 'main'
   OPENSEARCH_VERSION: '3.0.0-alpha1-SNAPSHOT'
   SECURITY_ANALYTICS_BRANCH: 'main'
+  GRADLE_VERSION: '7.6.1'
 jobs:
   tests:
     strategy:
@@ -49,6 +50,11 @@ jobs:
           path: security-analytics
           repository: opensearch-project/security-analytics
           ref: ${{ env.SECURITY_ANALYTICS_BRANCH }}
+
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: ${{ env.GRADLE_VERSION }}
 
       - name: Run OpenSearch with plugin
         run: |
