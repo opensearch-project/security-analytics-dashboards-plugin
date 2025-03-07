@@ -19,13 +19,10 @@ jobs:
         os: [ubuntu-latest, windows-latest]
         include:
           - os: windows-latest
-            os_build_args: -x integTest -x jacocoTestReport
             working_directory: X:\
             os_java_options: -Xmx4096M
             cypress_cache_folder: ~/AppData/Local/Cypress/Cache
           - os: ubuntu-latest
-            os_build_args: -x integTest -x jacocoTestReport
-            jest_test_args: --coverage
             cypress_cache_folder: ~/.cache/Cypress
     env:
       # prevents extra Cypress installation progress messages
