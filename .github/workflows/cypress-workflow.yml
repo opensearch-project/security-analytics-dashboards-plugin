@@ -19,7 +19,6 @@ jobs:
         os: [ubuntu-latest, windows-latest]
         include:
           - os: windows-latest
-            os_java_options: -Xmx4096M
             cypress_cache_folder: ~/AppData/Local/Cypress/Cache
           - os: ubuntu-latest
             cypress_cache_folder: ~/.cache/Cypress
@@ -28,14 +27,13 @@ jobs:
       CI: 1
       # avoid warnings like "tput: No value for $TERM and no -T specified"
       TERM: xterm
-      WORKING_DIR: ${{ matrix.working_directory }}.
 
     name: Run Cypress E2E tests on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Set up JDK
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v4
         with:
           distribution: temurin # Temurin is a distribution of adoptium
           # TODO: Parse this from security analytics plugin (https://github.com/opensearch-project/security-analytics/issues/170)
@@ -58,9 +56,6 @@ jobs:
           ./gradlew run -Dopensearch.version=${{ env.OPENSEARCH_VERSION }} &
           sleep 300
         shell: bash
-        env:
-          _JAVA_OPTIONS: ${{ matrix.os_java_options }}
-
 
       - name: Checkout OpenSearch-Dashboards
         uses: actions/checkout@v2
@@ -107,7 +102,7 @@ jobs:
       # Window is slow so wait longer
       - name: Sleep until OSD server starts - windows
         if: ${{ matrix.os == 'windows-latest' }}
-        run: Start-Sleep -s 450
+        run: Start-Sleep -s 600
         shell: powershell
 
       - name: Sleep until OSD server starts - non-windows
