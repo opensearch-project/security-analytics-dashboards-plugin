@@ -99,7 +99,10 @@ jobs:
       - name: Run OpenSearch-Dashboards server
         run: |
           cd OpenSearch-Dashboards
-          yarn start --no-base-path --no-watch --server.host="0.0.0.0" &
+          yarn start --no-base-path --no-watch --server.host="0.0.0.0" --opensearch.requestTimeout=120000 &
+          timeout 900 bash -c 'while [[ "$(curl -s http://localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do echo sleeping 5; sleep 5; done'
+          curl -sk localhost:5601/api/status | jq
+          netstat -anp tcp | grep LISTEN | grep 5601 || netstat -ntlp | grep 5601
         shell: bash
 
       # Window is slow so wait longer
@@ -132,7 +135,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ matrix.cypress_cache_folder }}
-          key: cypress-cache-v4-${{ runner.os }}-${{ hashFiles('OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/package.json') }}
+          key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/package.json') }}
 
       # for now just chrome, use matrix to do all browsers later
       - name: Run cypress tests
@@ -142,7 +145,6 @@ jobs:
           command: yarn run cypress run
           wait-on: 'http://localhost:5601'
           wait-on-timeout: 300
-          browser: chrome
         env:
           CYPRESS_CACHE_FOLDER: ${{ matrix.cypress_cache_folder }}
 
