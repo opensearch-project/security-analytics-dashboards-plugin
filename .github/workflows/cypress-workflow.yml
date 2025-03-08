@@ -20,7 +20,10 @@ jobs:
         os: [ubuntu-latest, windows-latest]
         include:
           - os: windows-latest
+            os_build_args: -x integTest
             cypress_cache_folder: ~/AppData/Local/Cypress/Cache
+            working_directory: X:\
+            os_java_options: -Xmx4096M
           - os: ubuntu-latest
             cypress_cache_folder: ~/.cache/Cypress
     env:
