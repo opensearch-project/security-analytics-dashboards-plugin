@@ -16,6 +16,8 @@ import {
   EuiEmptyPrompt,
   EuiLink,
   EuiTabbedContent,
+  euiPaletteColorBlind,
+  euiPaletteForStatus,
 } from '@elastic/eui';
 import FindingsTable from '../../components/FindingsTable';
 import {
@@ -46,7 +48,7 @@ import {
 import {
   createSelectComponent,
   errorNotificationToast,
-  renderVisualization,
+  // renderVisualization,
   getDuration,
   getIsNotificationPluginInstalled,
   setBreadcrumbs,
@@ -54,7 +56,7 @@ import {
 } from '../../../../utils/helpers';
 import { RuleSource } from '../../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { ChartContainer } from '../../../../components/Charts/ChartContainer';
+// import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 import { DataStore } from '../../../../store/DataStore';
 import { DurationRange } from '@elastic/eui/src/components/date_picker/types';
 import {
@@ -69,6 +71,21 @@ import {
 import { ThreatIntelFindingsTable } from '../../components/FindingsTable/ThreatIntelFindingsTable';
 import { PageHeader } from '../../../../components/PageHeader/PageHeader';
 import { RuleSeverityValue, RuleSeverityPriority } from '../../../Rules/utils/constants';
+import {
+  Chart,
+  CategoryScale,
+  LinearScale,
+  BarController,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  TimeScale,
+} from 'chart.js';
+import { DateTime } from 'luxon';
+import 'chartjs-adapter-luxon';
+import datemath from '@elastic/datemath';
+// import { AdapterLuxon } from 'chartjs-adapter-luxon';
 
 interface FindingsProps extends RouteComponentProps, DataSourceProps {
   detectorService: DetectorsService;
@@ -133,11 +150,73 @@ export const groupByOptionsByTabId = {
   [FindingTabId.ThreatIntel]: [{ text: 'Indicator type', value: 'indicatorType' }],
 };
 
+// Define color schemes
+const severityColors = {
+  Critical: '#FF0000',
+  High: '#FF8C00',
+  Medium: '#FFD700',
+  Low: '#90EE90',
+  Informational: '#87CEEB',
+};
+
+const logTypeColors = {
+  Error: '#DC143C',
+  Warning: '#FFA500',
+  Info: '#4682B4',
+  // Add more log types as needed
+};
+
+const sampleData: FindingVisualizationData[] = [
+  {
+    time: new Date('2023-01-01').getTime(),
+    logType: 'Error',
+    ruleSeverity: 'Critical',
+    finding: 1,
+  },
+  {
+    time: new Date('2023-01-01').getTime(),
+    logType: 'Warning',
+    ruleSeverity: 'High',
+    finding: 1,
+  },
+  {
+    time: new Date('2023-01-02').getTime(),
+    logType: 'Error',
+    ruleSeverity: 'Medium',
+    finding: 1,
+  },
+  {
+    time: new Date('2023-01-01').getTime(),
+    logType: 'Warning',
+    ruleSeverity: 'Low',
+    finding: 1,
+  },
+  // ... more data points
+];
+
+// Initialize the chart and controls
+// document.addEventListener('DOMContentLoaded', () => {
+//   createGroupingControls(sampleData, 'myChart');
+//   createStackedBarChart(sampleData, 'logType'); // Default grouping by logType
+// });
+
 class Findings extends Component<FindingsProps, FindingsState> {
   private abortGetFindingsControllers: AbortController[] = [];
 
   constructor(props: FindingsProps) {
     super(props);
+
+    // Register the required components
+    Chart.register(
+      CategoryScale,
+      LinearScale,
+      BarController,
+      BarElement,
+      Title,
+      Tooltip,
+      Legend,
+      TimeScale
+    );
 
     const {
       dateTimeFilter = {
@@ -219,7 +298,9 @@ class Findings extends Component<FindingsProps, FindingsState> {
     ) {
       this.onRefresh();
     } else if (this.shouldUpdateVisualization(prevState)) {
-      renderVisualization(this.generateVisualizationSpec(), 'findings-view');
+      // renderVisualization(this.generateVisualizationSpec(), 'findings-view');
+      const data = this.generateVisualizationData();
+      this.createStackedBarChart(data.visData, data.groupBy);
     }
   }
 
@@ -239,7 +320,9 @@ class Findings extends Component<FindingsProps, FindingsState> {
     } else if (this.state.selectedTabId === FindingTabId.ThreatIntel) {
       await this.getThreatIntelFindings();
     }
-    renderVisualization(this.generateVisualizationSpec(), 'findings-view');
+    // renderVisualization(this.generateVisualizationSpec(), 'findings-view');
+    const data = this.generateVisualizationData();
+    this.createStackedBarChart(data.visData, data.groupBy);
   };
 
   setStateForTab<T extends FindingTabId, F extends keyof FindingsState['findingStateByTabId'][T]>(
@@ -419,6 +502,55 @@ class Findings extends Component<FindingsProps, FindingsState> {
       });
   };
 
+  generateVisualizationData() {
+    const visData: (FindingVisualizationData | ThreatIntelFindingVisualizationData)[] = [];
+    const { selectedTabId, findingStateByTabId } = this.state;
+
+    const findingsState =
+      selectedTabId === FindingTabId.DetectionRules
+        ? findingStateByTabId[FindingTabId.DetectionRules]
+        : findingStateByTabId[FindingTabId.ThreatIntel];
+    const groupBy = findingsState.groupBy;
+
+    if (selectedTabId === FindingTabId.DetectionRules) {
+      (findingsState.filteredFindings as FindingItemType[]).forEach((finding: FindingItemType) => {
+        const findingTime = new Date(finding.timestamp);
+        findingTime.setMilliseconds(0);
+        findingTime.setSeconds(0);
+        finding.detectionType === 'Threat intelligence';
+        const ruleLevel =
+          finding.detectionType === 'Threat intelligence'
+            ? 'high'
+            : (findingsState as DetectionRulesFindingsState).rules[finding.queries[0].id]?.level ||
+              DEFAULT_EMPTY_DATA;
+        visData.push({
+          finding: 1,
+          time: findingTime.getTime(),
+          logType: finding.detector._source.detector_type,
+          ruleSeverity:
+            ruleLevel === 'critical' ? ruleLevel : (finding as any)['ruleSeverity'] || ruleLevel,
+        });
+      });
+    } else {
+      (findingsState.findings as ThreatIntelFinding[]).forEach((finding) => {
+        const findingTime = new Date(finding.timestamp);
+        findingTime.setMilliseconds(0);
+        findingTime.setSeconds(0);
+
+        visData.push({
+          finding: 1,
+          time: findingTime.getTime(),
+          indicatorType: finding.ioc_type,
+        });
+      });
+    }
+
+    return {
+      visData,
+      groupBy,
+    };
+  }
+
   generateVisualizationSpec() {
     const visData: (FindingVisualizationData | ThreatIntelFindingVisualizationData)[] = [];
     const { selectedTabId, findingStateByTabId } = this.state;
@@ -506,6 +638,179 @@ class Findings extends Component<FindingsProps, FindingsState> {
     });
   };
 
+  private logTypeColorPalette = euiPaletteColorBlind();
+  private ruleSeverityColorPalette = euiPaletteForStatus(5);
+
+  createStackedBarChart(
+    data: (FindingVisualizationData | ThreatIntelFindingVisualizationData)[],
+    groupBy: string,
+    container: string = 'myChart'
+  ) {
+    // Calculate the time difference in milliseconds
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+    } = this.props;
+    const start = datemath.parse(dateTimeFilter.startTime);
+    const end = datemath.parse(dateTimeFilter.endTime);
+    const startTime = DateTime.fromISO(this.props.dateTimeFilter?.startTime);
+    const endTime = DateTime.fromISO(this.props.dateTimeFilter?.endTime);
+    const diffInHours = end?.diff(start, 'hour') || 0;
+
+    // Determine the appropriate time unit and format based on the range
+    let timeUnit: 'hour' | 'day' | 'week' | 'month';
+    let displayFormat: string;
+    let tickLimit: number;
+    let stepSize: number;
+
+    if (diffInHours <= 24) {
+      // Last 24 hours - show hourly ticks
+      timeUnit = 'hour';
+      displayFormat = 'HH:mm';
+      tickLimit = 24;
+      stepSize = 1; // Show every hour
+    } else if (diffInHours <= 72) {
+      // Last 3 days - show every 3 hours
+      timeUnit = 'hour';
+      displayFormat = 'MMM D HH:mm';
+      tickLimit = 24;
+      stepSize = 3; // Show every 3 hours
+    } else if (diffInHours <= 168) {
+      // Last week - show daily ticks
+      timeUnit = 'day';
+      displayFormat = 'MMM D';
+      tickLimit = 7;
+      stepSize = 6; // Show every 6 hours
+    } else {
+      // More than a week - show weekly ticks
+      timeUnit = 'week';
+      displayFormat = 'MMM D';
+      tickLimit = 10;
+      stepSize = 12; // Show every 12 hours
+    }
+    // Destroy existing chart if it exists
+    const existingChart = Chart.getChart(container);
+    if (existingChart) {
+      existingChart.destroy();
+    }
+
+    // Group data by the selected field
+    const uniqueGroups = [...new Set(data.map((item) => (item as any)[groupBy]))];
+
+    // Group data by time periods
+    const timeLabels = [...new Set(data.map((item) => item.time))]
+      .sort((a, b) => a - b)
+      .map((time) => new Date(time).toLocaleString());
+
+    // Create datasets for each group
+    const datasets = uniqueGroups.map((group, idx) => {
+      const color =
+        groupBy === 'ruleSeverity'
+          ? this.ruleSeverityColorPalette[idx % this.ruleSeverityColorPalette.length]
+          : this.logTypeColorPalette[idx % this.logTypeColorPalette.length];
+
+      return {
+        label: group,
+        data: data
+          .filter((item: any) => item[groupBy] === group)
+          .map((item) => ({
+            x: DateTime.fromMillis(item.time).toJSDate(), // Convert to JavaScript Date object
+            y: item.finding,
+          })),
+        backgroundColor: color,
+        borderColor: color,
+        borderWidth: 1,
+      };
+    });
+
+    const ctx = document.getElementById(container) as HTMLCanvasElement;
+    if (!ctx) {
+      return;
+    }
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        // labels: timeLabels,
+        datasets: datasets,
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: {
+            type: 'time',
+            time: {
+              unit: timeUnit, // or 'hour', 'day', etc.
+              displayFormats: {
+                minute: 'HH:mm',
+                hour: 'HH:mm',
+                day: 'MMM d',
+                week: 'MMM d',
+                month: 'MMM yyyy',
+                quarter: 'MMM yyyy',
+                year: 'yyyy',
+              },
+              tooltipFormat: 'PPp', // Format for tooltip,
+            },
+            bounds: 'ticks',
+            offset: true,
+            ticks: {
+              source: 'auto',
+              autoSkip: true,
+              maxRotation: 45,
+              maxTicksLimit: tickLimit, // Adjust this to show more/fewer labels
+              // major: {
+              //   enabled: true
+              // },
+              callback: function (value) {
+                // Format the tick label
+                return DateTime.fromMillis(value).toFormat(displayFormat); // or any Luxon format
+              },
+            },
+            min: startTime.toMillis(), // this.props.dateTimeFilter ? DateTime.fromISO(this.props.dateTimeFilter.startTime).toMillis() : undefined, // Add start time
+            max: endTime.toMillis(), //this.props.dateTimeFilter ? DateTime.fromISO(this.props.dateTimeFilter.endTime).toMillis() : undefined,    // Add end time
+            stacked: true,
+            title: {
+              display: true,
+              text: 'Time',
+            },
+          },
+          y: {
+            stacked: true,
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Count',
+            },
+          },
+        },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function (context: any) {
+                const label = context.dataset.label || '';
+                const value = context.parsed.y;
+                const timeLabel = context.label;
+                return `${groupBy === 'ruleSeverity' ? 'Severity' : 'Log Type'}: ${label}
+  Count: ${value}
+  Time: ${timeLabel}`;
+              },
+            },
+          },
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: `Logs Grouped by ${groupBy === 'ruleSeverity' ? 'Severity' : 'Log Type'}`,
+          },
+        },
+      },
+    });
+  }
+
   render() {
     const {
       loading,
@@ -541,7 +846,7 @@ class Findings extends Component<FindingsProps, FindingsState> {
 
         finding['ruleName'] =
           matchedRules[0]?.title ||
-          (finding.queries.find(({ id }) => isThreatIntelQuery(id))
+          (finding.queries.find(({ id }: any) => isThreatIntelQuery(id))
             ? 'Threat intel'
             : DEFAULT_EMPTY_DATA);
         finding['ruleSeverity'] =
@@ -679,7 +984,10 @@ class Findings extends Component<FindingsProps, FindingsState> {
                 }
               />
             ) : (
-              <ChartContainer chartViewId={'findings-view'} loading={loading} />
+              // <ChartContainer chartViewId={'findings-view'} loading={loading} />
+              <div id="chart-container">
+                <canvas id="myChart"></canvas>
+              </div>
             )}
           </EuiFlexItem>
         </EuiFlexGroup>
