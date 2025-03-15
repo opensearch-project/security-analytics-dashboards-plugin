@@ -16,19 +16,12 @@ import {
 import React, { useCallback, useEffect, useState } from 'react';
 import { WidgetContainer } from './WidgetContainer';
 import { summaryGroupByOptions } from '../../utils/constants';
-import {
-  getChartTimeUnit,
-  getDomainRange,
-  getOverviewVisualizationSpec,
-  getTimeWithMinPrecision,
-  TimeUnit,
-} from '../../utils/helpers';
-import { createSelectComponent, renderVisualization } from '../../../../utils/helpers';
+import { TimeUnit } from '../../utils/helpers';
+import { createSelectComponent } from '../../../../utils/helpers';
 import { ROUTES } from '../../../../utils/constants';
-import { ChartContainer } from '../../../../components/Charts/ChartContainer';
-import { getLogTypeLabel } from '../../../LogTypes/utils/helpers';
 import { OverviewAlertItem, OverviewFindingItem } from '../../../../../types';
 import { getUseUpdatedUx } from '../../../../services/utils/constants';
+import { createBarAndLineChartWrapper } from '../../../../utils/chartUtils';
 
 export interface SummaryProps {
   findings: OverviewFindingItem[];
@@ -39,12 +32,7 @@ export interface SummaryProps {
   timeUnit: TimeUnit;
 }
 
-export interface SummaryData {
-  time: number;
-  alert: number;
-  finding: number;
-  logType?: string;
-}
+export const SUMMARY_VIEW_CHART = 'summary-view';
 
 export const Summary: React.FC<SummaryProps> = ({
   alerts,
@@ -54,7 +42,8 @@ export const Summary: React.FC<SummaryProps> = ({
   loading = false,
 }) => {
   const [groupBy, setGroupBy] = useState('');
-  const [summaryData, setSummaryData] = useState<SummaryData[]>([]);
+  const [alertsVisData, setAlertsVisData] = useState<any[]>([]);
+  const [findingsVisData, setFindingsVisData] = useState<any[]>([]);
   const [activeAlerts, setActiveAlerts] = useState<undefined | number>(undefined);
   const [totalFindings, setTotalFindings] = useState<undefined | number>(undefined);
 
@@ -76,51 +65,44 @@ export const Summary: React.FC<SummaryProps> = ({
     [onGroupByChange]
   );
 
-  const generateVisualizationSpec = useCallback(
-    (summaryData, groupBy) => {
-      const chartTimeUnits = getChartTimeUnit(startTime, endTime);
-      return getOverviewVisualizationSpec(summaryData, groupBy, {
-        timeUnit: chartTimeUnits.timeUnit,
-        dateFormat: chartTimeUnits.dateFormat,
-        domain: getDomainRange([startTime, endTime], chartTimeUnits.timeUnit.unit),
-      });
-    },
-    [startTime, endTime]
-  );
-
   useEffect(() => {
-    const summaryData: SummaryData[] = [];
+    const alertsVisData: any[] = [];
     let activeAlerts = 0;
     alerts.forEach((alert) => {
       if (!alert.acknowledged) {
         activeAlerts++;
       }
 
-      summaryData.push({
-        time: getTimeWithMinPrecision(alert.time),
+      alertsVisData.push({
+        time: alert.time,
         alert: 1,
         finding: 0,
-        logType: getLogTypeLabel(alert.logType),
+        logType: alert.logType,
       });
     });
 
+    const findingsVisData: any[] = [];
     findings.forEach((finding) => {
-      summaryData.push({
-        time: getTimeWithMinPrecision(finding.time),
+      findingsVisData.push({
+        time: finding.time,
         alert: 0,
         finding: 1,
-        logType: getLogTypeLabel(finding.logType),
+        logType: finding.logType,
       });
     });
 
     setActiveAlerts(activeAlerts);
     setTotalFindings(findings.length);
-    setSummaryData(summaryData);
+    setAlertsVisData(alertsVisData);
+    setFindingsVisData(findingsVisData);
   }, [alerts, findings]);
 
   useEffect(() => {
-    renderVisualization(generateVisualizationSpec(summaryData, groupBy), 'summary-view');
-  }, [summaryData, groupBy]);
+    createBarAndLineChartWrapper(alertsVisData, findingsVisData, groupBy, SUMMARY_VIEW_CHART, {
+      startTime,
+      endTime,
+    });
+  }, [alertsVisData, findingsVisData, groupBy]);
 
   const createStatComponent = useCallback(
     (description: string, urlData: { url: string; color: EuiLinkColor }, stat?: number) => (
@@ -197,7 +179,9 @@ export const Summary: React.FC<SummaryProps> = ({
               }
             />
           ) : (
-            <ChartContainer chartViewId={'summary-view'} loading={loading} />
+            <div id="chart-container">
+              <canvas id={SUMMARY_VIEW_CHART}></canvas>
+            </div>
           )}
         </EuiFlexItem>
       </EuiFlexGroup>
