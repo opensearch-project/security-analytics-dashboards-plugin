@@ -85,6 +85,8 @@
   },
   "dependencies": {
     "formik": "^2.2.6",
-    "react-graph-vis": "^1.0.7"
+    "react-graph-vis": "^1.0.7",
+    "chart.js": "^4.4.8",
+    "chartjs-adapter-moment": "^1.0.1"
   }
 }

@@ -58,10 +58,6 @@ import { LogCategoryOptionView } from '../components/Utility/LogCategoryOption';
 import { getLogTypeLabel } from '../pages/LogTypes/utils/helpers';
 import { euiThemeVars } from '@osd/ui-shared-deps/theme';
 import dateMath from '@elastic/datemath';
-import { parse, View } from 'vega/build-es5/vega.js';
-import { compile } from 'vega-lite';
-import { Handler } from 'vega-tooltip';
-import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter/build/vega-interpreter';
 import {
   getBreadCrumbsSetter,
   getBrowserServices,
@@ -219,80 +215,6 @@ export function getUpdatedEnabledRuleIds(
   }
 
   return newEnabledIds;
-}
-
-export async function renderVisualization(spec: any, containerId: string) {
-  let view;
-
-  try {
-    setDefaultColors(spec);
-    renderVegaSpec(compile({ ...spec, width: 'container', height: 400 }).spec).catch((err: Error) =>
-      console.error(err)
-    );
-  } catch (error) {
-    console.error(error);
-  }
-
-  async function renderVegaSpec(spec: {}) {
-    let chartColoredItems: any[] = [];
-    const handler = new Handler({
-      formatTooltip: (value, sanitize) => {
-        let tooltipData = { ...value };
-        let values = Object.entries(tooltipData);
-        if (!values.length) return '';
-        const tooltipItem = chartColoredItems.filter((groupItem: any) =>
-          _.isEqual(groupItem.tooltip, tooltipData)
-        );
-        const color = tooltipItem.length
-          ? tooltipItem[0].fill || tooltipItem[0].stroke
-          : 'transparent';
-
-        const firstItem = values.pop() || ['', ''];
-
-        let rowData = '';
-        values.forEach((item: any) => {
-          rowData += `
-            <tr>
-              <td>${sanitize(item[0])}</td>
-              <td>${sanitize(item[1])}</td>
-            </tr>
-          `;
-        });
-
-        return `
-          <div class="vg-tooltip-innerContainer">
-            <div class="vg-tooltip-header">
-              <table>
-                <tr>
-                  <td><div class="vg-tooltip-color" style="background-color: ${color}"></div></td>
-                  <td>${sanitize(firstItem[0])}</td>
-                  <td>${sanitize(firstItem[1])}</td>
-                </tr>
-              </table>
-            </div>
-            <div class="vg-tooltip-body">
-             <table>${rowData}</table>
-            </div>
-          </div>
-        `;
-      },
-    });
-    view = new View(parse(spec, undefined, { expr: vegaExpressionInterpreter } as any), {
-      renderer: 'canvas', // renderer (canvas or svg)
-      container: `#${containerId}`, // parent DOM container
-      hover: true, // enable hover processing
-    });
-    view.tooltip(handler.call);
-    return view.runAsync().then((view: any) => {
-      const items = view.scenegraph().root.items[0].items || [];
-      const groups = items.filter(
-        (item: any) => item.name && item.name.match(/^(layer_).*(_marks)$/)
-      );
-      for (let item of groups) {
-        chartColoredItems = chartColoredItems.concat(item.items);
-      }
-    });
-  }
 }
 
 export function createSelectComponent(

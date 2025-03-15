@@ -181,34 +181,6 @@ describe('helper utilities spec', () => {
     });
   });
 
-  describe('tests getVisualizationSpec function', () => {
-    const result = getVisualizationSpec(description, data, [layer]);
-    it(' - snapshot test', () => {
-      expect(result).toMatchSnapshot('should match visualization spec');
-    });
-  });
-
-  describe('tests getOverviewVisualizationSpec function', () => {
-    const result = getOverviewVisualizationSpec([], '', dateOpts);
-    it(' - snapshot test', () => {
-      expect(result).toMatchSnapshot('should match overview spec');
-    });
-  });
-
-  describe('tests getFindingsVisualizationSpec function', () => {
-    const result = getFindingsVisualizationSpec([], '', dateOpts);
-    it(' - snapshot test', () => {
-      expect(result).toMatchSnapshot('should match findings spec');
-    });
-  });
-
-  describe('tests getAlertsVisualizationSpec function', () => {
-    const result = getAlertsVisualizationSpec([], '', dateOpts);
-    it(' - snapshot test', () => {
-      expect(result).toMatchSnapshot('should match alerts spec');
-    });
-  });
-
   describe('tests getTimeWithMinPrecision function', () => {
     const result = getTimeWithMinPrecision('2022/12/01 01:01:01');
     it(' - test should be with ms and seconds eq to 0', () => {
