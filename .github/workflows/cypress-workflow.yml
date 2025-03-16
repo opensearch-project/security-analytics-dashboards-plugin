@@ -13,25 +13,33 @@ env:
   GRADLE_VERSION: '7.6.1'
 jobs:
   tests:
-    name: Run Cypress E2E tests
     strategy:
+      # This setting says that all jobs should finish, even if one fails
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
         include:
           - os: windows-latest
+            os_build_args: -x integTest
             cypress_cache_folder: ~/AppData/Local/Cypress/Cache
+            working_directory: X:\
+            os_java_options: -Xmx4096M
           - os: ubuntu-latest
             cypress_cache_folder: ~/.cache/Cypress
-    runs-on: ${{ matrix.os }}
     env:
       # prevents extra Cypress installation progress messages
       CI: 1
       # avoid warnings like "tput: No value for $TERM and no -T specified"
       TERM: xterm
+
+    name: Run Cypress E2E tests on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
     steps:
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v4
         with:
+          distribution: temurin # Temurin is a distribution of adoptium
           # TODO: Parse this from security analytics plugin (https://github.com/opensearch-project/security-analytics/issues/170)
           java-version: 21
 
@@ -39,17 +47,22 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' }}
         run: git config --system core.longpaths true
 
-      - name: Checkout security analytics
+      - name: Checkout security analytics backend
         uses: actions/checkout@v2
         with:
           path: security-analytics
           repository: opensearch-project/security-analytics
           ref: ${{ env.SECURITY_ANALYTICS_BRANCH }}
 
-      - name: Run opensearch with plugin
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: ${{ env.GRADLE_VERSION }}
+
+      - name: Run OpenSearch with plugin
         run: |
           cd security-analytics
-          ./gradlew run -Dopensearch.version=${{ env.OPENSEARCH_VERSION }} &
+          ./gradlew run -Dopensearch.version=${{ env.OPENSEARCH_VERSION }} -x jacocoTestReport &
           sleep 300
         shell: bash
 
@@ -89,13 +102,16 @@ jobs:
       - name: Run OpenSearch-Dashboards server
         run: |
           cd OpenSearch-Dashboards
-          yarn start --no-base-path --no-watch --server.host="0.0.0.0" &
+          yarn start --no-base-path --no-watch --server.host="0.0.0.0" --opensearch.requestTimeout=120000 &
+          timeout 900 bash -c 'while [[ "$(curl -s http://localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do echo sleeping 5; sleep 5; done'
+          curl -sk localhost:5601/api/status | jq
+          netstat -anp tcp | grep LISTEN | grep 5601 || netstat -ntlp | grep 5601
         shell: bash
 
       # Window is slow so wait longer
       - name: Sleep until OSD server starts - windows
         if: ${{ matrix.os == 'windows-latest' }}
-        run: Start-Sleep -s 450
+        run: Start-Sleep -s 600
         shell: powershell
 
       - name: Sleep until OSD server starts - non-windows
@@ -123,18 +139,15 @@ jobs:
         with:
           path: ${{ matrix.cypress_cache_folder }}
           key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/package.json') }}
-          restore-keys: |
-            cypress-cache-v2-${{ runner.os }}-${{ hashFiles('OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/package.json') }}
 
       # for now just chrome, use matrix to do all browsers later
-      - name: Cypress tests
+      - name: Run cypress tests
         uses: cypress-io/github-action@v5
         with:
           working-directory: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
           command: yarn run cypress run
           wait-on: 'http://localhost:5601'
           wait-on-timeout: 300
-          browser: chrome
         env:
           CYPRESS_CACHE_FOLDER: ${{ matrix.cypress_cache_folder }}
 
