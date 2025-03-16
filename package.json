@@ -82,13 +82,16 @@
     "jest-environment-jsdom": "^27.5.1",
     "lint-staged": "^10.2.0",
     "string.prototype.replaceall": "1.0.7",
-    "ts-loader": "^6.2.1"
+    "ts-loader": "^6.2.1",
+    "@types/chart.js": "^2.9.37"
   },
   "engines": {
     "yarn": "^1.21.1"
   },
   "dependencies": {
     "formik": "^2.2.6",
-    "react-graph-vis": "^1.0.7"
+    "react-graph-vis": "^1.0.7",
+    "chart.js": "^4.4.8",
+    "chartjs-adapter-moment": "^1.0.1"
   }
 }
