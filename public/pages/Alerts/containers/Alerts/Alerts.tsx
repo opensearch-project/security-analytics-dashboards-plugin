@@ -17,7 +17,6 @@ import {
   EuiToolTip,
   EuiEmptyPrompt,
   EuiTableSelectionType,
-  EuiIcon,
   EuiTabbedContent,
   EuiText,
 } from '@elastic/eui';
@@ -25,12 +24,7 @@ import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components
 import dateMath from '@elastic/datemath';
 import React, { Component } from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
-import {
-  getAlertsVisualizationSpec,
-  getChartTimeUnit,
-  getDomainRange,
-  TimeUnit,
-} from '../../../Overview/utils/helpers';
+import { getChartTimeUnit, TimeUnit } from '../../../Overview/utils/helpers';
 import moment from 'moment';
 import {
   ALERT_STATE,
@@ -58,13 +52,11 @@ import {
   errorNotificationToast,
   getDuration,
   renderTime,
-  renderVisualization,
   setBreadcrumbs,
   successNotificationToast,
 } from '../../../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { match, RouteComponentProps, withRouter } from 'react-router-dom';
-import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 import {
   AlertItem,
   CorrelationAlertTableItem,
@@ -77,6 +69,7 @@ import { DurationRange } from '@elastic/eui/src/components/date_picker/types';
 import { DataStore } from '../../../../store/DataStore';
 import { ThreatIntelAlertsTable } from '../../components/ThreatIntelAlertsTable/ThreatIntelAlertsTable';
 import { PageHeader } from '../../../../components/PageHeader/PageHeader';
+// import { createBarChartWrapper } from '../../../../utils/chartUtils';
 
 type FilterAlertParams =
   | { alerts: AlertItem[]; timeField: 'last_notification_time' }
@@ -121,10 +114,12 @@ export interface AlertsState {
   selectedTabId: AlertTabId;
 }
 
-const groupByOptions = [
+export const alertsGroupByOptions = [
   { text: 'Alert status', value: 'status' },
   { text: 'Alert severity', value: 'severity' },
 ];
+
+const ALERTS_VIEW_CHART = 'alerts-view';
 
 export class Alerts extends Component<AlertsProps, AlertsState> {
   private abortControllers: AbortController[] = [];
@@ -248,7 +243,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         />
       ),
     });
-    renderVisualization(this.generateVisualizationSpec(filteredAlerts), 'alerts-view');
+    // this.getChart(this.getVisData(filteredAlerts));
   };
 
   filterCorrelationAlerts = () => {
@@ -272,7 +267,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         />
       ),
     });
-    renderVisualization(this.generateVisualizationSpec(filteredCorrelationAlerts), 'alerts-view');
+    // this.getChart(this.getVisData(filteredCorrelationAlerts));
   };
 
   filterThreatIntelAlerts = () => {
@@ -296,28 +291,19 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         />
       ),
     });
-    renderVisualization(this.generateVisualizationSpec(filteredAlerts), 'alerts-view');
+    // this.getChart(this.getVisData(filteredAlerts));
   };
 
   private renderVisAsPerTab() {
     switch (this.state.selectedTabId) {
       case AlertTabId.DetectionRules:
-        renderVisualization(
-          this.generateVisualizationSpec(this.state.filteredAlerts),
-          'alerts-view'
-        );
+        // this.getChart(this.getVisData(this.state.filteredAlerts));
         break;
       case AlertTabId.Correlations:
-        renderVisualization(
-          this.generateVisualizationSpec(this.state.filteredCorrelationAlerts),
-          'alerts-view'
-        );
+        // this.getChart(this.getVisData(this.state.filteredCorrelationAlerts));
         break;
       case AlertTabId.ThreatIntel:
-        renderVisualization(
-          this.generateVisualizationSpec(this.state.filteredThreatIntelAlerts),
-          'alerts-view'
-        );
+        // this.getChart(this.getVisData(this.state.filteredThreatIntelAlerts));
         break;
     }
   }
@@ -518,39 +504,28 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     this.setState({ flyoutCorrelationData: alertItem ? { alertItem } : undefined });
   }
 
-  generateVisualizationSpec(alerts: (AlertItem | CorrelationAlertTableItem | ThreatIntelAlert)[]) {
-    const visData = alerts.map((alert) => {
+  // getChart(data: any) {
+  //   createBarChartWrapper(data, this.state.groupBy, ALERTS_VIEW_CHART, this.props.dateTimeFilter);
+  // }
+
+  getVisData(alerts: (AlertItem | CorrelationAlertTableItem | ThreatIntelAlert)[]) {
+    return alerts.map((alert) => {
       const time = new Date(alert.start_time);
       time.setMilliseconds(0);
       time.setSeconds(0);
 
       return {
         alert: 1,
-        time,
+        time: time.getTime(),
         status: alert.state,
         severity: parseAlertSeverityToOption(alert.severity)?.label || alert.severity,
       };
-    });
-    const {
-      dateTimeFilter = {
-        startTime: DEFAULT_DATE_RANGE.start,
-        endTime: DEFAULT_DATE_RANGE.end,
-      },
-    } = this.props;
-    const chartTimeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
-    return getAlertsVisualizationSpec(visData, this.state.groupBy, {
-      timeUnit: chartTimeUnits.timeUnit,
-      dateFormat: chartTimeUnits.dateFormat,
-      domain: getDomainRange(
-        [dateTimeFilter.startTime, dateTimeFilter.endTime],
-        chartTimeUnits.timeUnit.unit
-      ),
     });
   }
 
   createGroupByControl(): React.ReactNode {
     return createSelectComponent(
-      groupByOptions,
+      alertsGroupByOptions,
       this.state.groupBy,
       'alert-vis-groupBy',
       (event) => {
@@ -1024,8 +999,8 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         content: (
           <>
             <EuiSpacer size="m" />
-            {this.getAlertsGraph(alerts, loading)}
-            <EuiSpacer size="m" />
+            {/*{this.getAlertsGraph(alerts, loading)}*/}
+            {/*<EuiSpacer size="m" />*/}
             <ContentPanel title={'Alerts'} actions={[this.getContelPanelActions()]}>
               <EuiInMemoryTable
                 columns={this.getColumns()}
@@ -1049,8 +1024,8 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         content: (
           <>
             <EuiSpacer size="m" />
-            {this.getAlertsGraph(alerts, loading)}
-            <EuiSpacer size="m" />
+            {/*{this.getAlertsGraph(alerts, loading)}*/}
+            {/*<EuiSpacer size="m" />*/}
             <ContentPanel title={'Alerts'} actions={[this.getContelPanelActions()]}>
               <ThreatIntelAlertsTable
                 alerts={alertsFiltered ? filteredThreatIntelAlerts : threatIntelAlerts}
@@ -1071,8 +1046,8 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         content: (
           <>
             <EuiSpacer size="m" />
-            {this.getAlertsGraph(alerts, loading)}
-            <EuiSpacer size="m" />
+            {/*{this.getAlertsGraph(alerts, loading)}*/}
+            {/*<EuiSpacer size="m" />*/}
             <ContentPanel title={'Alerts'} actions={[this.getContelPanelActions()]}>
               <EuiInMemoryTable
                 columns={this.getCorrelationColumns()}
@@ -1181,7 +1156,9 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
                 }
               />
             ) : (
-              <ChartContainer chartViewId={'alerts-view'} loading={loading} />
+              <div id="chart-container">
+                <canvas id={ALERTS_VIEW_CHART}></canvas>
+              </div>
             )}
           </EuiFlexItem>
         </EuiFlexGroup>
