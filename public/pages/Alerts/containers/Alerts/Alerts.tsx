@@ -69,7 +69,7 @@ import { DurationRange } from '@elastic/eui/src/components/date_picker/types';
 import { DataStore } from '../../../../store/DataStore';
 import { ThreatIntelAlertsTable } from '../../components/ThreatIntelAlertsTable/ThreatIntelAlertsTable';
 import { PageHeader } from '../../../../components/PageHeader/PageHeader';
-import { createBarChartWrapper } from '../../../../utils/chartUtils';
+// import { createBarChartWrapper } from '../../../../utils/chartUtils';
 
 type FilterAlertParams =
   | { alerts: AlertItem[]; timeField: 'last_notification_time' }
@@ -243,7 +243,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         />
       ),
     });
-    this.getChart(this.getVisData(filteredAlerts));
+    // this.getChart(this.getVisData(filteredAlerts));
   };
 
   filterCorrelationAlerts = () => {
@@ -267,7 +267,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         />
       ),
     });
-    this.getChart(this.getVisData(filteredCorrelationAlerts));
+    // this.getChart(this.getVisData(filteredCorrelationAlerts));
   };
 
   filterThreatIntelAlerts = () => {
@@ -291,19 +291,19 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         />
       ),
     });
-    this.getChart(this.getVisData(filteredAlerts));
+    // this.getChart(this.getVisData(filteredAlerts));
   };
 
   private renderVisAsPerTab() {
     switch (this.state.selectedTabId) {
       case AlertTabId.DetectionRules:
-        this.getChart(this.getVisData(this.state.filteredAlerts));
+        // this.getChart(this.getVisData(this.state.filteredAlerts));
         break;
       case AlertTabId.Correlations:
-        this.getChart(this.getVisData(this.state.filteredCorrelationAlerts));
+        // this.getChart(this.getVisData(this.state.filteredCorrelationAlerts));
         break;
       case AlertTabId.ThreatIntel:
-        this.getChart(this.getVisData(this.state.filteredThreatIntelAlerts));
+        // this.getChart(this.getVisData(this.state.filteredThreatIntelAlerts));
         break;
     }
   }
@@ -504,9 +504,9 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     this.setState({ flyoutCorrelationData: alertItem ? { alertItem } : undefined });
   }
 
-  getChart(data: any) {
-    createBarChartWrapper(data, this.state.groupBy, ALERTS_VIEW_CHART, this.props.dateTimeFilter);
-  }
+  // getChart(data: any) {
+  //   createBarChartWrapper(data, this.state.groupBy, ALERTS_VIEW_CHART, this.props.dateTimeFilter);
+  // }
 
   getVisData(alerts: (AlertItem | CorrelationAlertTableItem | ThreatIntelAlert)[]) {
     return alerts.map((alert) => {
@@ -999,8 +999,8 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         content: (
           <>
             <EuiSpacer size="m" />
-            {this.getAlertsGraph(alerts, loading)}
-            <EuiSpacer size="m" />
+            {/*{this.getAlertsGraph(alerts, loading)}*/}
+            {/*<EuiSpacer size="m" />*/}
             <ContentPanel title={'Alerts'} actions={[this.getContelPanelActions()]}>
               <EuiInMemoryTable
                 columns={this.getColumns()}
@@ -1024,8 +1024,8 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         content: (
           <>
             <EuiSpacer size="m" />
-            {this.getAlertsGraph(alerts, loading)}
-            <EuiSpacer size="m" />
+            {/*{this.getAlertsGraph(alerts, loading)}*/}
+            {/*<EuiSpacer size="m" />*/}
             <ContentPanel title={'Alerts'} actions={[this.getContelPanelActions()]}>
               <ThreatIntelAlertsTable
                 alerts={alertsFiltered ? filteredThreatIntelAlerts : threatIntelAlerts}
@@ -1046,8 +1046,8 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         content: (
           <>
             <EuiSpacer size="m" />
-            {this.getAlertsGraph(alerts, loading)}
-            <EuiSpacer size="m" />
+            {/*{this.getAlertsGraph(alerts, loading)}*/}
+            {/*<EuiSpacer size="m" />*/}
             <ContentPanel title={'Alerts'} actions={[this.getContelPanelActions()]}>
               <EuiInMemoryTable
                 columns={this.getCorrelationColumns()}

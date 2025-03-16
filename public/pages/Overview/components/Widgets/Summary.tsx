@@ -21,7 +21,7 @@ import { createSelectComponent } from '../../../../utils/helpers';
 import { ROUTES } from '../../../../utils/constants';
 import { OverviewAlertItem, OverviewFindingItem } from '../../../../../types';
 import { getUseUpdatedUx } from '../../../../services/utils/constants';
-import { createBarAndLineChartWrapper } from '../../../../utils/chartUtils';
+// import { createBarAndLineChartWrapper } from '../../../../utils/chartUtils';
 
 export interface SummaryProps {
   findings: OverviewFindingItem[];
@@ -97,12 +97,12 @@ export const Summary: React.FC<SummaryProps> = ({
     setFindingsVisData(findingsVisData);
   }, [alerts, findings]);
 
-  useEffect(() => {
-    createBarAndLineChartWrapper(alertsVisData, findingsVisData, groupBy, SUMMARY_VIEW_CHART, {
-      startTime,
-      endTime,
-    });
-  }, [alertsVisData, findingsVisData, groupBy]);
+  // useEffect(() => {
+  //   createBarAndLineChartWrapper(alertsVisData, findingsVisData, groupBy, SUMMARY_VIEW_CHART, {
+  //     startTime,
+  //     endTime,
+  //   });
+  // }, [alertsVisData, findingsVisData, groupBy]);
 
   const createStatComponent = useCallback(
     (description: string, urlData: { url: string; color: EuiLinkColor }, stat?: number) => (
@@ -149,41 +149,41 @@ export const Summary: React.FC<SummaryProps> = ({
             )}
           </EuiFlexItem>
         )}
-        <EuiFlexItem>
-          {activeAlerts === 0 && totalFindings === 0 ? (
-            <EuiEmptyPrompt
-              title={
-                <EuiText size="s">
-                  <h2>No alerts and findings found</h2>
-                </EuiText>
-              }
-              body={
-                <>
-                  <p>
-                    <EuiText size="s">
-                      Adjust the time range to see more results or create a <br />
-                      detector to generate findings.
-                    </EuiText>
-                  </p>
-                  <EuiSmallButton
-                    href={`#${ROUTES.DETECTORS_CREATE}`}
-                    fill={true}
-                    data-test-subj={'detectorsCreateButton'}
-                    iconType="plus"
-                    iconSide="left"
-                    iconGap="s"
-                  >
-                    Create a detector
-                  </EuiSmallButton>
-                </>
-              }
-            />
-          ) : (
-            <div id="chart-container">
-              <canvas id={SUMMARY_VIEW_CHART}></canvas>
-            </div>
-          )}
-        </EuiFlexItem>
+        {/*<EuiFlexItem>*/}
+        {/*  {activeAlerts === 0 && totalFindings === 0 ? (*/}
+        {/*    <EuiEmptyPrompt*/}
+        {/*      title={*/}
+        {/*        <EuiText size="s">*/}
+        {/*          <h2>No alerts and findings found</h2>*/}
+        {/*        </EuiText>*/}
+        {/*      }*/}
+        {/*      body={*/}
+        {/*        <>*/}
+        {/*          <p>*/}
+        {/*            <EuiText size="s">*/}
+        {/*              Adjust the time range to see more results or create a <br />*/}
+        {/*              detector to generate findings.*/}
+        {/*            </EuiText>*/}
+        {/*          </p>*/}
+        {/*          <EuiSmallButton*/}
+        {/*            href={`#${ROUTES.DETECTORS_CREATE}`}*/}
+        {/*            fill={true}*/}
+        {/*            data-test-subj={'detectorsCreateButton'}*/}
+        {/*            iconType="plus"*/}
+        {/*            iconSide="left"*/}
+        {/*            iconGap="s"*/}
+        {/*          >*/}
+        {/*            Create a detector*/}
+        {/*          </EuiSmallButton>*/}
+        {/*        </>*/}
+        {/*      }*/}
+        {/*    />*/}
+        {/*  ) : (*/}
+        {/*    <div id="chart-container">*/}
+        {/*      <canvas id={SUMMARY_VIEW_CHART}></canvas>*/}
+        {/*    </div>*/}
+        {/*  )}*/}
+        {/*</EuiFlexItem>*/}
       </EuiFlexGroup>
     </WidgetContainer>
   );

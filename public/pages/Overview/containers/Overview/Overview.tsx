@@ -313,7 +313,7 @@ export const Overview: React.FC<OverviewProps> = (props) => {
         <EuiFlexGrid columns={2} gutterSize="m">
           <RecentAlertsWidget items={state.overviewViewModel.alerts} loading={loading} />
           <RecentFindingsWidget items={state.overviewViewModel.findings} loading={loading} />
-          <TopRulesWidget findings={state.overviewViewModel.findings} loading={loading} />
+          {/*<TopRulesWidget findings={state.overviewViewModel.findings} loading={loading} />*/}
           <RecentThreatIntelFindingsWidget
             items={state.overviewViewModel.threatIntelFindings}
             loading={loading}

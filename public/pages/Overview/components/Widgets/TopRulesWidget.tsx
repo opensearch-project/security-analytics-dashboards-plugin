@@ -7,7 +7,7 @@ import { getEuiEmptyPrompt } from '../../../../utils/helpers';
 import React, { useEffect } from 'react';
 import { WidgetContainer } from './WidgetContainer';
 import { OverviewFindingItem } from '../../../../../types';
-import { createDoughnutChartWrapper } from '../../../../utils/chartUtils';
+// import { createDoughnutChartWrapper } from '../../../../utils/chartUtils';
 
 export interface TopRulesWidgetProps {
   findings: OverviewFindingItem[];
@@ -30,7 +30,7 @@ export const TopRulesWidget: React.FC<TopRulesWidgetProps> = ({ findings, loadin
         ruleName,
         count: rulesCount[ruleName],
       }));
-      createDoughnutChartWrapper(visualizationData, TOP_RULES_VIEW_CHART);
+      // createDoughnutChartWrapper(visualizationData, TOP_RULES_VIEW_CHART);
     }
   }, [findings]);
 

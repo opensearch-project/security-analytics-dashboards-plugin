@@ -61,7 +61,7 @@ import {
 import { ThreatIntelFindingsTable } from '../../components/FindingsTable/ThreatIntelFindingsTable';
 import { PageHeader } from '../../../../components/PageHeader/PageHeader';
 import { RuleSeverityValue, RuleSeverityPriority } from '../../../Rules/utils/constants';
-import { createBarChartWrapper } from '../../../../utils/chartUtils';
+// import { createBarChartWrapper } from '../../../../utils/chartUtils';
 
 interface FindingsProps extends RouteComponentProps, DataSourceProps {
   detectorService: DetectorsService;
@@ -213,10 +213,11 @@ class Findings extends Component<FindingsProps, FindingsState> {
       this.state.selectedTabId !== prevState.selectedTabId
     ) {
       this.onRefresh();
-    } else if (this.shouldUpdateVisualization(prevState)) {
-      const data = this.generateVisualizationData();
-      this.createStackedBarChart(data.visData, data.groupBy);
     }
+    // else if (this.shouldUpdateVisualization(prevState)) {
+    //   const data = this.generateVisualizationData();
+    //   this.createStackedBarChart(data.visData, data.groupBy);
+    // }
   }
 
   componentDidMount = async () => {
@@ -235,8 +236,8 @@ class Findings extends Component<FindingsProps, FindingsState> {
     } else if (this.state.selectedTabId === FindingTabId.ThreatIntel) {
       await this.getThreatIntelFindings();
     }
-    const data = this.generateVisualizationData();
-    this.createStackedBarChart(data.visData, data.groupBy);
+    // const data = this.generateVisualizationData();
+    // this.createStackedBarChart(data.visData, data.groupBy);
   };
 
   setStateForTab<T extends FindingTabId, F extends keyof FindingsState['findingStateByTabId'][T]>(
@@ -489,20 +490,20 @@ class Findings extends Component<FindingsProps, FindingsState> {
     });
   };
 
-  createStackedBarChart(
-    data: (FindingVisualizationData | ThreatIntelFindingVisualizationData)[],
-    groupBy: string
-  ) {
-    // Calculate the time difference in milliseconds
-    const {
-      dateTimeFilter = {
-        startTime: DEFAULT_DATE_RANGE.start,
-        endTime: DEFAULT_DATE_RANGE.end,
-      },
-    } = this.props;
-
-    createBarChartWrapper(data, groupBy, FINDINGS_VIEW_CHART, dateTimeFilter);
-  }
+  // createStackedBarChart(
+  //   data: (FindingVisualizationData | ThreatIntelFindingVisualizationData)[],
+  //   groupBy: string
+  // ) {
+  //   // Calculate the time difference in milliseconds
+  //   const {
+  //     dateTimeFilter = {
+  //       startTime: DEFAULT_DATE_RANGE.start,
+  //       endTime: DEFAULT_DATE_RANGE.end,
+  //     },
+  //   } = this.props;
+  //
+  //   createBarChartWrapper(data, groupBy, FINDINGS_VIEW_CHART, dateTimeFilter);
+  // }
 
   render() {
     const {
@@ -563,8 +564,8 @@ class Findings extends Component<FindingsProps, FindingsState> {
         content: (
           <>
             <EuiSpacer size={'m'} />
-            {this.getFindingsGraph(findings, loading)}
-            <EuiSpacer size={'m'} />
+            {/*{this.getFindingsGraph(findings, loading)}*/}
+            {/*<EuiSpacer size={'m'} />*/}
             <ContentPanel title={'Findings'}>
               <FindingsTable
                 {...this.props}
@@ -598,8 +599,8 @@ class Findings extends Component<FindingsProps, FindingsState> {
         content: (
           <>
             <EuiSpacer size={'m'} />
-            {this.getFindingsGraph(findings, loading)}
-            <EuiSpacer size={'m'} />
+            {/*{this.getFindingsGraph(findings, loading)}*/}
+            {/*<EuiSpacer size={'m'} />*/}
             <ContentPanel title={'Findings'}>
               <ThreatIntelFindingsTable
                 findingItems={findingStateByTabId[FindingTabId.ThreatIntel].findings}
