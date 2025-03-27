@@ -63,8 +63,7 @@ Cypress.Commands.add(
     }
     Cypress.log({ message: `Select combobox items: ${items.join(' | ')}` });
     items.map((item) => {
-      cy.wrap(subject).type(item);
-      cy.get(`[title="${item}"]`).click({ force: true });
+      cy.wrap(subject).type(item + '{downarrow}{enter}');
     });
   }
 );
