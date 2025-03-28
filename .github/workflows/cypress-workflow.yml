@@ -15,9 +15,9 @@ jobs:
   tests:
     name: Run Cypress E2E tests
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        fail-fast: false
 	include:
           - os: windows-latest
             cypress_cache_folder: ~/AppData/Local/Cypress/Cache
