@@ -18,7 +18,7 @@ const cypressIndexDns = 'cypress-index-dns';
 const cypressIndexWindows = 'cypress-index-windows';
 const detectorName = 'test detector';
 const cypressLogTypeDns = 'dns';
-const creationFailedMessage = 'Create detector failed.';
+const creationFailedMessage = 'Invalid field mappings.';
 
 const cypressDNSRule = dns_name_rule_data.title;
 
