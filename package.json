@@ -1,6 +1,6 @@
 {
   "name": "opensearch_security_analytics_dashboards",
-  "version": "3.0.0.0-alpha1",
+  "version": "3.0.0.0-beta1",
   "description": "OpenSearch Dashboards plugin for Security Analytics",
   "main": "index.js",
   "license": "Apache-2.0",
