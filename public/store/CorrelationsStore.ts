@@ -150,7 +150,7 @@ export class CorrelationsStore implements ICorrelationsStore {
         name: hit._source.name,
         time_window: hit._source.time_window || 300000,
         queries,
-        trigger: hit._source?.trigger
+        trigger: hit._source?.trigger,
       };
     }
 
@@ -176,7 +176,7 @@ export class CorrelationsStore implements ICorrelationsStore {
           name: hit._source.name,
           time_window: hit._source.time_window || 300000,
           queries,
-          trigger: hit._source?.trigger
+          trigger: hit._source?.trigger,
         };
       });
     }
