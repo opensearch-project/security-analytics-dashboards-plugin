@@ -298,16 +298,16 @@ export const Overview: React.FC<OverviewProps> = (props) => {
           </EuiFlexItem>
         </>
       )}
-      <EuiFlexItem>
-        <Summary
-          alerts={state.overviewViewModel.alerts}
-          findings={state.overviewViewModel.findings}
-          startTime={dateTimeFilter.startTime}
-          endTime={dateTimeFilter.endTime}
-          timeUnit={timeUnit}
-          loading={loading}
-        />
-      </EuiFlexItem>
+      {/*<EuiFlexItem>*/}
+      {/*  <Summary*/}
+      {/*    alerts={state.overviewViewModel.alerts}*/}
+      {/*    findings={state.overviewViewModel.findings}*/}
+      {/*    startTime={dateTimeFilter.startTime}*/}
+      {/*    endTime={dateTimeFilter.endTime}*/}
+      {/*    timeUnit={timeUnit}*/}
+      {/*    loading={loading}*/}
+      {/*  />*/}
+      {/*</EuiFlexItem>*/}
 
       <EuiFlexItem>
         <EuiFlexGrid columns={2} gutterSize="m">
