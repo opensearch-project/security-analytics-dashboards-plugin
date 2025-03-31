@@ -4,8 +4,8 @@ module.exports = defineConfig({
   viewportHeight: 900,
   viewportWidth: 1440,
   defaultCommandTimeout: 60000,
-  requestTimeout: 600000,
-  responseTimeout: 600000,
+  requestTimeout: 300000,
+  responseTimeout: 300000,
   env: {
     opensearch_url: 'localhost:9200',
     opensearch_dashboards: 'localhost:5601',
