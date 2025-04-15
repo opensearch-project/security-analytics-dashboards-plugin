@@ -103,15 +103,18 @@ const validateAutomaticFieldMappingsPanel = (mappings) =>
   });
 
 const validatePendingFieldMappingsPanel = (mappings) => {
-  cy.get('.editFieldMappings').within(() => {
-    // Pending field mappings
-    cy.getElementByText('.euiText', 'Pending field mappings')
-      .parents('.euiPanel')
-      .within(() => {
-        cy.getElementByTestSubject('pending-mapped-fields-table')
-          .find('.euiBasicTable')
-          .validateTable(mappings);
-      });
+  cy.get('.editFieldMappings').each(($element) => {
+    cy.wrap($element).within(() => {
+      // Pending field mappings
+      cy.getElementByText('.euiText', 'Pending field mappings')
+        .parents('.euiPanel')
+        .first()
+        .within(() => {
+          cy.getElementByTestSubject('pending-mapped-fields-table')
+            .find('.euiBasicTable')
+            .validateTable(mappings);
+        });
+    });
   });
 };
 
@@ -312,7 +315,7 @@ describe('Detectors', () => {
         .blur()
         .parentsUntil('.euiFormRow__fieldWrapper')
         .siblings()
-        .contains('Select an input source.');
+        .contains('Select an input source for the detector.');
 
       getDataSourceField().selectComboboxItem(cypressIndexDns);
       getDataSourceField()

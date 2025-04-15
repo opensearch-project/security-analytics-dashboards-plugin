@@ -2,10 +2,10 @@ name: Cypress integration tests workflow
 on:
   pull_request:
     branches:
-      - "*"
+      - '*'
   push:
     branches:
-      - "*"
+      - '*'
 env:
   OPENSEARCH_DASHBOARDS_VERSION: 'main'
   OPENSEARCH_VERSION: '3.0.0-beta1-SNAPSHOT'
@@ -135,7 +135,7 @@ jobs:
           command: yarn run cypress run
           wait-on: 'http://localhost:5601'
           wait-on-timeout: 300
-          browser: chrome
+          browser: firefox
         env:
           CYPRESS_CACHE_FOLDER: ${{ matrix.cypress_cache_folder }}
 
