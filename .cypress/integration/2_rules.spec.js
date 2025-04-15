@@ -288,7 +288,8 @@ describe('Rules', () => {
 
     it('...should validate log type field', () => {
       getLogTypeField().should('be.empty');
-      getLogTypeField().focus().blur();
+      cy.get('[data-test-subj="comboBoxInput"]').first().click();
+      cy.get('[data-test-subj="comboBoxInput"]').eq(1).click();
       getLogTypeField().containsError('Log type is required');
 
       getLogTypeField().selectComboboxItem(getLogTypeLabel(SAMPLE_RULE.logType));
@@ -296,8 +297,8 @@ describe('Rules', () => {
     });
 
     it('...should validate rule level field', () => {
-      getRuleLevelField().should('be.empty');
-      getRuleLevelField().focus().blur();
+      cy.get('[data-test-subj="comboBoxInput"]').eq(1).click();
+      cy.get('[data-test-subj="comboBoxInput"]').first().click();
       getRuleLevelField().containsError('Rule level is required');
 
       getRuleLevelField().selectComboboxItem(SAMPLE_RULE.severity);
@@ -309,7 +310,8 @@ describe('Rules', () => {
       getRuleStatusField().focus().blur().shouldNotHaveError();
 
       getRuleStatusField().clearCombobox();
-      getRuleStatusField().focus().blur();
+      cy.get('[data-test-subj="comboBoxInput"]').eq(2).click();
+      cy.get('[data-test-subj="comboBoxInput"]').first().click();
       getRuleStatusField().containsError('Rule status is required');
     });
 
