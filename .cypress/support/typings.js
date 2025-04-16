@@ -9,7 +9,7 @@ Cypress.Commands.add(
     prevSubject: true,
   },
   (subject, text) => {
-    return cy.get(subject).clear().ospType(text).realPress('Enter');
+    return cy.get(subject).clear().ospType(text).type('{enter}');
   }
 );
 
@@ -34,7 +34,7 @@ Cypress.Commands.add(
     prevSubject: true,
   },
   (subject, text) => {
-    return cy.get(subject).wait(10).focus().realType(text);
+    return cy.get(subject).wait(10).focus().type(text);
   }
 );
 

@@ -226,16 +226,15 @@ Cypress.Commands.add(
         const length = data.length;
         length && cy.get($tr).should('have.length', length);
 
-        cy.get($tr).within(($tr) => {
-          data.map((rowData) => {
-            rowData.forEach((tdData) => {
-              if (typeof tdData === 'string') {
-                tdData && cy.get($tr).find('td').contains(`${tdData}`);
-              } else {
-                // if rule is an object then use path
-                tdData && cy.get($tr).find('td').contains(`${tdData.path}`);
+        data.forEach((rowData) => {
+          rowData.forEach((tdData) => {
+            if (typeof tdData === 'string') {
+              if (tdData) {
+                cy.get($tr).contains(tdData).should('exist').and('be.visible');
               }
-            });
+            } else if (tdData && tdData.path) {
+              cy.get($tr).contains(tdData.path).should('exist').and('be.visible');
+            }
           });
         });
       });
