@@ -98,7 +98,9 @@ jobs:
 
       - name: Sleep until OSD server starts - non-windows
         if: ${{ matrix.os != 'windows-latest' }}
-        run: sleep 450
+        run: |
+          export NODE_OPTIONS=--max_old_space_size=8192
+          sleep 450
         shell: bash
 
       - name: Install Cypress
@@ -112,7 +114,6 @@ jobs:
       - name: Get Cypress version
         id: cypress_version
         run: |
-          export NODE_OPTIONS=--max_old_space_size=8192
           cd OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
           echo "::set-output name=cypress_version::$(cat ./package.json | jq '.dependencies.cypress' | tr -d '"')"
 
