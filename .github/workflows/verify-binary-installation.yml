@@ -35,12 +35,11 @@ jobs:
         shell: bash
 
       - name: Run Opensearch
-        uses: derek-ho/start-opensearch@v2
+        uses: derek-ho/start-opensearch@v6
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           security-enabled: false
-        env:
-          JAVA_HOME: ${{env.JAVA_HOME}}
+          jdk-version: 21
 
       - name: Run Dashboard
         id: setup-dashboards
