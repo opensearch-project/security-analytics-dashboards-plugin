@@ -2,7 +2,7 @@ name: 'Install Dashboards with Plugin via Binary'
 
 on: [push, pull_request]
 env:
-  OPENSEARCH_VERSION: '3.0.0'
+  OPENSEARCH_VERSION: '3.1.0'
   CI: 1
   # avoid warnings like "tput: No value for $TERM and no -T specified"
   TERM: xterm
@@ -20,6 +20,12 @@ jobs:
       - name: Checkout Branch
         uses: actions/checkout@v3
 
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: temurin # Temurin is a distribution of adoptium
+          java-version: 21
+
       - name: Set env
         run: |
           opensearch_version=$(node -p "require('./opensearch_dashboards.json').opensearchDashboardsVersion")
@@ -33,6 +39,8 @@ jobs:
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           security-enabled: false
+        env:
+          JAVA_HOME: ${{env.JAVA_HOME}}
 
       - name: Run Dashboard
         id: setup-dashboards
@@ -52,4 +60,3 @@ jobs:
         run: |
           timeout 300 bash -c 'while [[ "$(curl http://localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
         shell: bash
-
