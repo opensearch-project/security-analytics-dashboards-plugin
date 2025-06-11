@@ -34,7 +34,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           # TODO: Parse this from security analytics plugin (https://github.com/opensearch-project/security-analytics/issues/170)
-          java-version: 21
+          java-version: 17
 
       - name: Enable longer filenames
         if: ${{ matrix.os == 'windows-latest' }}
