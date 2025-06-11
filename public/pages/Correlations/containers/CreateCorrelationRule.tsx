@@ -906,6 +906,12 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
             props.resetForm();
           }
 
+          useEffect(() => {
+            if (trigger?.id) {
+              setShowForm(true);
+            }
+          }, [trigger?.id]);
+
           return (
             <Form>
               <ContentPanel
@@ -1010,15 +1016,17 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                   <p>Get an alert on the correlation between the findings.</p>
                 </EuiText>
                 <EuiSpacer size="m" />
-                <EuiCompressedFormRow>
-                  <EuiFlexGroup>
-                    <EuiFlexItem grow={false}>
-                      <EuiSmallButton onClick={() => setShowForm(!showForm)}>
-                        Add Alert Trigger
-                      </EuiSmallButton>
-                    </EuiFlexItem>
-                  </EuiFlexGroup>
-                </EuiCompressedFormRow>
+                {!showForm && (
+                  <EuiCompressedFormRow>
+                    <EuiFlexGroup>
+                      <EuiFlexItem grow={false}>
+                        <EuiSmallButton onClick={() => setShowForm(!showForm)}>
+                          Add Alert Trigger
+                        </EuiSmallButton>
+                      </EuiFlexItem>
+                    </EuiFlexGroup>
+                  </EuiCompressedFormRow>
+                )}
                 {showForm && (
                   <>
                     <EuiSpacer size="m" />
