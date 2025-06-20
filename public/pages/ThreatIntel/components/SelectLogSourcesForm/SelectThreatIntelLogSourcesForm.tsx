@@ -24,7 +24,7 @@ import { LogSourceIocConfig, ThreatIntelLogSource } from '../../../../../types';
 import { Interval } from '../../../CreateDetector/components/DefineDetector/components/DetectorSchedule/Interval';
 import { getDataSources, getFieldsForIndex, renderIoCType } from '../../../../utils/helpers';
 import { useContext } from 'react';
-import { SecurityAnalyticsContext } from '../../../../services';
+import { SecurityAnalyticsContext, ThreatIntelService } from '../../../../services';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { IndexOption } from '../../../Detectors/models/interfaces';
 import { PeriodSchedule } from '../../../../../models/interfaces';
@@ -35,6 +35,7 @@ export interface SelectThreatIntelLogSourcesProps {
   notifications: NotificationsStart;
   updateSources: (sources: ThreatIntelLogSource[]) => void;
   updateSchedule: (schedule: PeriodSchedule) => void;
+  threatIntelService: ThreatIntelService;
 }
 
 export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesProps> = ({
@@ -43,6 +44,7 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
   schedule,
   updateSources,
   updateSchedule,
+  threatIntelService,
 }) => {
   const saContext = useContext(SecurityAnalyticsContext);
   const [loadingLogSourceOptions, setLoadingLogSourceOptions] = useState(false);
@@ -97,9 +99,17 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
     };
 
     const loadIocTypes = async () => {
-      if (saContext) {
-        const iocTypesRes: string[] = await saContext.services.opensearchService.getIocTypes();
-        setIocTypes(iocTypesRes);
+      const res = await threatIntelService.searchThreatIntelSource();
+      if (res.ok) {
+        const uniqueIocTypes = new Set<string>();
+
+        res.response.forEach((threatIntelSource: { ioc_types: any[] }) => {
+          if (threatIntelSource.ioc_types && Array.isArray(threatIntelSource.ioc_types)) {
+            threatIntelSource.ioc_types.forEach((iocType) => uniqueIocTypes.add(iocType));
+          }
+        });
+
+        setIocTypes(Array.from(uniqueIocTypes));
       }
     };
 
