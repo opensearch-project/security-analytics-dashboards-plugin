@@ -3,20 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import React from 'react';
-import {
-  EuiLoadingChart,
-  EuiPanel,
-  EuiFlexGroup,
-  EuiFlexItem,
-  EuiTitle,
-  EuiSpacer,
-  EuiEmptyPrompt,
-  EuiSmallButton,
-  EuiText,
-} from '@elastic/eui';
-import { ChartContainer } from '../../../components/Charts/ChartContainer';
+import { EuiLoadingChart } from '@elastic/eui';
 import { DEFAULT_DATE_RANGE, ROUTES } from '../../../utils/constants';
-import { renderVisualization } from '../../../utils/helpers';
 import { getChartTimeUnit, getDomainRange } from '../../Overview/utils/helpers';
 import { getCorrelatedFindingsVisualizationSpec } from '../utils/helpers';
 import { CorrelationsTableData } from './CorrelationsContainer';
@@ -157,52 +145,6 @@ export class CorrelationsTableView extends React.Component<
     );
   };
 
-  private renderCorrelatedFindingsChart = () => {
-    renderVisualization(
-      this.generateVisualizationSpec(this.props.connectedFindings),
-      'correlated-findings-view'
-    );
-    return this.props.connectedFindings.length > 0 ? (
-      <>
-        <EuiPanel>
-          <EuiFlexGroup direction="column" gutterSize="m">
-            <EuiFlexItem>
-              <EuiFlexGroup justifyContent="spaceBetween">
-                <EuiFlexItem grow={false}>
-                  <EuiTitle size="s">
-                    <h3>Correlated Findings</h3>
-                  </EuiTitle>
-                </EuiFlexItem>
-              </EuiFlexGroup>
-            </EuiFlexItem>
-            <EuiFlexItem>
-              <ChartContainer chartViewId="correlated-findings-view" />
-            </EuiFlexItem>
-          </EuiFlexGroup>
-        </EuiPanel>
-        <EuiSpacer />
-      </>
-    ) : (
-      <EuiEmptyPrompt
-        title={
-          <EuiText size="s">
-            <h2>No correlations found</h2>
-          </EuiText>
-        }
-        body={
-          <EuiText size="s">
-            <p>There are no correlated findings in the system.</p>
-          </EuiText>
-        }
-        actions={[
-          <EuiSmallButton fill={true} color="primary" href={`#${ROUTES.CORRELATION_RULE_CREATE}`}>
-            Create correlation rule
-          </EuiSmallButton>,
-        ]}
-      />
-    );
-  };
-
   private getFilteredTableData = (tableData: CorrelationsTableData[]): CorrelationsTableData[] => {
     const { logTypeFilterOptions, severityFilterOptions, searchTerm } = this.props;
     const alertSeverityMap: { [key: string]: string } = {
@@ -284,7 +226,7 @@ export class CorrelationsTableView extends React.Component<
   render() {
     return (
       <>
-        {this.renderCorrelatedFindingsChart()}
+        {/* {this.renderCorrelatedFindingsChart()} */}
         {this.renderCorrelationsTable(this.props.loadingTableData)}
         {this.state.isFlyoutOpen && (
           <CorrelationsTableFlyout
