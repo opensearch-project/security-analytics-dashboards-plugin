@@ -249,6 +249,7 @@ export const ThreatIntelScanConfigForm: React.FC<ThreatIntelScanConfigFormProps>
             notifications={notifications}
             updateSources={onSourcesChange}
             updateSchedule={onScheduleChange}
+            threatIntelService={threatIntelService}
           />
         );
       case ConfigureThreatIntelScanStep.SetupAlertTriggers:

@@ -961,6 +961,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                 }
               }
               onTabClick={[Function]}
+              preserveTabContent={false}
               size="s"
               tabs={
                 Array [
