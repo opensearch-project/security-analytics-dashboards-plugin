@@ -2,17 +2,19 @@ name: Cypress integration tests workflow
 on:
   pull_request:
     branches:
-      - "*"
+      - '*'
   push:
     branches:
-      - "*"
+      - '*'
 env:
   OPENSEARCH_DASHBOARDS_VERSION: '2.x'
   SECURITY_ANALYTICS_BRANCH: '2.x'
+  GRADLE_VERSION: '7.6.1'
 jobs:
   tests:
     name: Run Cypress E2E tests
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
         include:
@@ -117,22 +119,22 @@ jobs:
 
       - name: Cache Cypress
         id: cache-cypress
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ${{ matrix.cypress_cache_folder }}
-          key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
+          key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/package.json') }}
           restore-keys: |
-            cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
+            cypress-cache-v2-${{ runner.os }}-${{ hashFiles('OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/package.json') }}
 
       # for now just chrome, use matrix to do all browsers later
       - name: Cypress tests
         uses: cypress-io/github-action@v5
         with:
           working-directory: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
-          command: yarn run cypress run
+          command: yarn run cypress run --browser firefox
           wait-on: 'http://localhost:5601'
           wait-on-timeout: 300
-          browser: chrome
+          browser: firefox
         env:
           CYPRESS_CACHE_FOLDER: ${{ matrix.cypress_cache_folder }}
 
