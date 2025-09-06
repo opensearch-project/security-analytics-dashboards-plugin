@@ -9,9 +9,6 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiPopover,
-  EuiSuperDatePicker,
-  EuiTitle,
-  EuiSpacer,
   EuiSmallButton,
   EuiCard,
   EuiPanel,
@@ -301,22 +298,22 @@ export const Overview: React.FC<OverviewProps> = (props) => {
           </EuiFlexItem>
         </>
       )}
-      <EuiFlexItem>
-        <Summary
-          alerts={state.overviewViewModel.alerts}
-          findings={state.overviewViewModel.findings}
-          startTime={dateTimeFilter.startTime}
-          endTime={dateTimeFilter.endTime}
-          timeUnit={timeUnit}
-          loading={loading}
-        />
-      </EuiFlexItem>
+      {/*<EuiFlexItem>*/}
+      {/*  <Summary*/}
+      {/*    alerts={state.overviewViewModel.alerts}*/}
+      {/*    findings={state.overviewViewModel.findings}*/}
+      {/*    startTime={dateTimeFilter.startTime}*/}
+      {/*    endTime={dateTimeFilter.endTime}*/}
+      {/*    timeUnit={timeUnit}*/}
+      {/*    loading={loading}*/}
+      {/*  />*/}
+      {/*</EuiFlexItem>*/}
 
       <EuiFlexItem>
         <EuiFlexGrid columns={2} gutterSize="m">
           <RecentAlertsWidget items={state.overviewViewModel.alerts} loading={loading} />
           <RecentFindingsWidget items={state.overviewViewModel.findings} loading={loading} />
-          <TopRulesWidget findings={state.overviewViewModel.findings} loading={loading} />
+          {/*<TopRulesWidget findings={state.overviewViewModel.findings} loading={loading} />*/}
           <RecentThreatIntelFindingsWidget
             items={state.overviewViewModel.threatIntelFindings}
             loading={loading}

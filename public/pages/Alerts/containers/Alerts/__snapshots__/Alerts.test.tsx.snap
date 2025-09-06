@@ -65,6 +65,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
     OpenSearchService {
       "getDocuments": [Function],
       "getIndexPatterns": [Function],
+      "getIocTypes": [Function],
       "getPlugins": [Function],
       "httpClient": [MockFunction],
       "savedObjectsClient": Object {
@@ -74,6 +75,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
         "post": [MockFunction],
         "put": [MockFunction],
       },
+      "search": undefined,
     }
   }
   ruleService={
@@ -185,6 +187,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
       OpenSearchService {
         "getDocuments": [Function],
         "getIndexPatterns": [Function],
+        "getIocTypes": [Function],
         "getPlugins": [Function],
         "httpClient": [MockFunction],
         "savedObjectsClient": Object {
@@ -194,6 +197,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
           "post": [MockFunction],
           "put": [MockFunction],
         },
+        "search": undefined,
       }
     }
     ruleService={
@@ -834,79 +838,6 @@ exports[`<Alerts /> spec renders the component 1`] = `
                     <EuiSpacer
                       size="m"
                     />
-                    <EuiPanel>
-                      <EuiFlexGroup
-                        direction="column"
-                      >
-                        <EuiFlexItem
-                          style={
-                            Object {
-                              "alignSelf": "flex-end",
-                            }
-                          }
-                        >
-                          <EuiFlexGroup
-                            alignItems="center"
-                            justifyContent="flexEnd"
-                          >
-                            <EuiFlexItem
-                              grow={false}
-                            >
-                              <EuiCompressedSelect
-                                id="alert-vis-groupBy"
-                                onChange={[Function]}
-                                options={
-                                  Array [
-                                    Object {
-                                      "text": "Alert status",
-                                      "value": "status",
-                                    },
-                                    Object {
-                                      "text": "Alert severity",
-                                      "value": "severity",
-                                    },
-                                  ]
-                                }
-                                prepend="Group by"
-                                value="status"
-                              />
-                            </EuiFlexItem>
-                          </EuiFlexGroup>
-                        </EuiFlexItem>
-                        <EuiFlexItem>
-                          <EuiEmptyPrompt
-                            body={
-                              <p>
-                                <EuiText
-                                  size="s"
-                                >
-                                  Adjust the time range to see more results or create alert triggers in your
-                                   
-                                  <EuiLink
-                                    href="/#/detectors"
-                                  >
-                                    detectors
-                                  </EuiLink>
-                                   to generate alerts.
-                                </EuiText>
-                              </p>
-                            }
-                            title={
-                              <EuiText
-                                size="s"
-                              >
-                                <h2>
-                                  No alerts
-                                </h2>
-                              </EuiText>
-                            }
-                          />
-                        </EuiFlexItem>
-                      </EuiFlexGroup>
-                    </EuiPanel>
-                    <EuiSpacer
-                      size="m"
-                    />
                     <ContentPanel
                       actions={
                         Array [
@@ -1030,84 +961,12 @@ exports[`<Alerts /> spec renders the component 1`] = `
                 }
               }
               onTabClick={[Function]}
+              preserveTabContent={false}
               size="s"
               tabs={
                 Array [
                   Object {
                     "content": <React.Fragment>
-                      <EuiSpacer
-                        size="m"
-                      />
-                      <EuiPanel>
-                        <EuiFlexGroup
-                          direction="column"
-                        >
-                          <EuiFlexItem
-                            style={
-                              Object {
-                                "alignSelf": "flex-end",
-                              }
-                            }
-                          >
-                            <EuiFlexGroup
-                              alignItems="center"
-                              justifyContent="flexEnd"
-                            >
-                              <EuiFlexItem
-                                grow={false}
-                              >
-                                <EuiCompressedSelect
-                                  id="alert-vis-groupBy"
-                                  onChange={[Function]}
-                                  options={
-                                    Array [
-                                      Object {
-                                        "text": "Alert status",
-                                        "value": "status",
-                                      },
-                                      Object {
-                                        "text": "Alert severity",
-                                        "value": "severity",
-                                      },
-                                    ]
-                                  }
-                                  prepend="Group by"
-                                  value="status"
-                                />
-                              </EuiFlexItem>
-                            </EuiFlexGroup>
-                          </EuiFlexItem>
-                          <EuiFlexItem>
-                            <EuiEmptyPrompt
-                              body={
-                                <p>
-                                  <EuiText
-                                    size="s"
-                                  >
-                                    Adjust the time range to see more results or create alert triggers in your
-                                     
-                                    <EuiLink
-                                      href="/#/detectors"
-                                    >
-                                      detectors
-                                    </EuiLink>
-                                     to generate alerts.
-                                  </EuiText>
-                                </p>
-                              }
-                              title={
-                                <EuiText
-                                  size="s"
-                                >
-                                  <h2>
-                                    No alerts
-                                  </h2>
-                                </EuiText>
-                              }
-                            />
-                          </EuiFlexItem>
-                        </EuiFlexGroup>
-                      </EuiPanel>
                       <EuiSpacer
                         size="m"
                       />
@@ -1237,79 +1096,6 @@ exports[`<Alerts /> spec renders the component 1`] = `
                       <EuiSpacer
                         size="m"
                       />
-                      <EuiPanel>
-                        <EuiFlexGroup
-                          direction="column"
-                        >
-                          <EuiFlexItem
-                            style={
-                              Object {
-                                "alignSelf": "flex-end",
-                              }
-                            }
-                          >
-                            <EuiFlexGroup
-                              alignItems="center"
-                              justifyContent="flexEnd"
-                            >
-                              <EuiFlexItem
-                                grow={false}
-                              >
-                                <EuiCompressedSelect
-                                  id="alert-vis-groupBy"
-                                  onChange={[Function]}
-                                  options={
-                                    Array [
-                                      Object {
-                                        "text": "Alert status",
-                                        "value": "status",
-                                      },
-                                      Object {
-                                        "text": "Alert severity",
-                                        "value": "severity",
-                                      },
-                                    ]
-                                  }
-                                  prepend="Group by"
-                                  value="status"
-                                />
-                              </EuiFlexItem>
-                            </EuiFlexGroup>
-                          </EuiFlexItem>
-                          <EuiFlexItem>
-                            <EuiEmptyPrompt
-                              body={
-                                <p>
-                                  <EuiText
-                                    size="s"
-                                  >
-                                    Adjust the time range to see more results or create alert triggers in your
-                                     
-                                    <EuiLink
-                                      href="/#/detectors"
-                                    >
-                                      detectors
-                                    </EuiLink>
-                                     to generate alerts.
-                                  </EuiText>
-                                </p>
-                              }
-                              title={
-                                <EuiText
-                                  size="s"
-                                >
-                                  <h2>
-                                    No alerts
-                                  </h2>
-                                </EuiText>
-                              }
-                            />
-                          </EuiFlexItem>
-                        </EuiFlexGroup>
-                      </EuiPanel>
-                      <EuiSpacer
-                        size="m"
-                      />
                       <ContentPanel
                         actions={
                           Array [
@@ -1336,79 +1122,6 @@ exports[`<Alerts /> spec renders the component 1`] = `
                   },
                   Object {
                     "content": <React.Fragment>
-                      <EuiSpacer
-                        size="m"
-                      />
-                      <EuiPanel>
-                        <EuiFlexGroup
-                          direction="column"
-                        >
-                          <EuiFlexItem
-                            style={
-                              Object {
-                                "alignSelf": "flex-end",
-                              }
-                            }
-                          >
-                            <EuiFlexGroup
-                              alignItems="center"
-                              justifyContent="flexEnd"
-                            >
-                              <EuiFlexItem
-                                grow={false}
-                              >
-                                <EuiCompressedSelect
-                                  id="alert-vis-groupBy"
-                                  onChange={[Function]}
-                                  options={
-                                    Array [
-                                      Object {
-                                        "text": "Alert status",
-                                        "value": "status",
-                                      },
-                                      Object {
-                                        "text": "Alert severity",
-                                        "value": "severity",
-                                      },
-                                    ]
-                                  }
-                                  prepend="Group by"
-                                  value="status"
-                                />
-                              </EuiFlexItem>
-                            </EuiFlexGroup>
-                          </EuiFlexItem>
-                          <EuiFlexItem>
-                            <EuiEmptyPrompt
-                              body={
-                                <p>
-                                  <EuiText
-                                    size="s"
-                                  >
-                                    Adjust the time range to see more results or create alert triggers in your
-                                     
-                                    <EuiLink
-                                      href="/#/detectors"
-                                    >
-                                      detectors
-                                    </EuiLink>
-                                     to generate alerts.
-                                  </EuiText>
-                                </p>
-                              }
-                              title={
-                                <EuiText
-                                  size="s"
-                                >
-                                  <h2>
-                                    No alerts
-                                  </h2>
-                                </EuiText>
-                              }
-                            />
-                          </EuiFlexItem>
-                        </EuiFlexGroup>
-                      </EuiPanel>
                       <EuiSpacer
                         size="m"
                       />
@@ -1666,286 +1379,6 @@ exports[`<Alerts /> spec renders the component 1`] = `
                   id="some_html_id"
                   role="tabpanel"
                 >
-                  <EuiSpacer
-                    size="m"
-                  >
-                    <div
-                      className="euiSpacer euiSpacer--m"
-                    />
-                  </EuiSpacer>
-                  <EuiPanel>
-                    <div
-                      className="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
-                    >
-                      <EuiFlexGroup
-                        direction="column"
-                      >
-                        <div
-                          className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionColumn euiFlexGroup--responsive"
-                        >
-                          <EuiFlexItem
-                            style={
-                              Object {
-                                "alignSelf": "flex-end",
-                              }
-                            }
-                          >
-                            <div
-                              className="euiFlexItem"
-                              style={
-                                Object {
-                                  "alignSelf": "flex-end",
-                                }
-                              }
-                            >
-                              <EuiFlexGroup
-                                alignItems="center"
-                                justifyContent="flexEnd"
-                              >
-                                <div
-                                  className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
-                                >
-                                  <EuiFlexItem
-                                    grow={false}
-                                  >
-                                    <div
-                                      className="euiFlexItem euiFlexItem--flexGrowZero"
-                                    >
-                                      <EuiCompressedSelect
-                                        id="alert-vis-groupBy"
-                                        onChange={[Function]}
-                                        options={
-                                          Array [
-                                            Object {
-                                              "text": "Alert status",
-                                              "value": "status",
-                                            },
-                                            Object {
-                                              "text": "Alert severity",
-                                              "value": "severity",
-                                            },
-                                          ]
-                                        }
-                                        prepend="Group by"
-                                        value="status"
-                                      >
-                                        <EuiSelect
-                                          compressed={true}
-                                          id="alert-vis-groupBy"
-                                          onChange={[Function]}
-                                          options={
-                                            Array [
-                                              Object {
-                                                "text": "Alert status",
-                                                "value": "status",
-                                              },
-                                              Object {
-                                                "text": "Alert severity",
-                                                "value": "severity",
-                                              },
-                                            ]
-                                          }
-                                          prepend="Group by"
-                                          value="status"
-                                        >
-                                          <EuiFormControlLayout
-                                            compressed={true}
-                                            fullWidth={false}
-                                            icon={
-                                              Object {
-                                                "side": "right",
-                                                "type": "arrowDown",
-                                              }
-                                            }
-                                            inputId="alert-vis-groupBy"
-                                            isLoading={false}
-                                            prepend="Group by"
-                                          >
-                                            <div
-                                              className="euiFormControlLayout euiFormControlLayout--compressed euiFormControlLayout--group"
-                                            >
-                                              <EuiFormLabel
-                                                className="euiFormControlLayout__prepend"
-                                                htmlFor="alert-vis-groupBy"
-                                              >
-                                                <label
-                                                  className="euiFormLabel euiFormControlLayout__prepend"
-                                                  htmlFor="alert-vis-groupBy"
-                                                >
-                                                  Group by
-                                                </label>
-                                              </EuiFormLabel>
-                                              <div
-                                                className="euiFormControlLayout__childrenWrapper"
-                                              >
-                                                <EuiValidatableControl>
-                                                  <select
-                                                    className="euiSelect euiSelect--compressed euiSelect--inGroup"
-                                                    id="alert-vis-groupBy"
-                                                    onChange={[Function]}
-                                                    onMouseUp={[Function]}
-                                                    value="status"
-                                                  >
-                                                    <option
-                                                      key="0"
-                                                      value="status"
-                                                    >
-                                                      Alert status
-                                                    </option>
-                                                    <option
-                                                      key="1"
-                                                      value="severity"
-                                                    >
-                                                      Alert severity
-                                                    </option>
-                                                  </select>
-                                                </EuiValidatableControl>
-                                                <EuiFormControlLayoutIcons
-                                                  compressed={true}
-                                                  icon={
-                                                    Object {
-                                                      "side": "right",
-                                                      "type": "arrowDown",
-                                                    }
-                                                  }
-                                                  isLoading={false}
-                                                >
-                                                  <div
-                                                    className="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
-                                                  >
-                                                    <EuiFormControlLayoutCustomIcon
-                                                      size="s"
-                                                      type="arrowDown"
-                                                    >
-                                                      <span
-                                                        className="euiFormControlLayoutCustomIcon"
-                                                      >
-                                                        <EuiIcon
-                                                          aria-hidden="true"
-                                                          className="euiFormControlLayoutCustomIcon__icon"
-                                                          size="s"
-                                                          type="arrowDown"
-                                                        >
-                                                          EuiIconMock
-                                                        </EuiIcon>
-                                                      </span>
-                                                    </EuiFormControlLayoutCustomIcon>
-                                                  </div>
-                                                </EuiFormControlLayoutIcons>
-                                              </div>
-                                            </div>
-                                          </EuiFormControlLayout>
-                                        </EuiSelect>
-                                      </EuiCompressedSelect>
-                                    </div>
-                                  </EuiFlexItem>
-                                </div>
-                              </EuiFlexGroup>
-                            </div>
-                          </EuiFlexItem>
-                          <EuiFlexItem>
-                            <div
-                              className="euiFlexItem"
-                            >
-                              <EuiEmptyPrompt
-                                body={
-                                  <p>
-                                    <EuiText
-                                      size="s"
-                                    >
-                                      Adjust the time range to see more results or create alert triggers in your
-                                       
-                                      <EuiLink
-                                        href="/#/detectors"
-                                      >
-                                        detectors
-                                      </EuiLink>
-                                       to generate alerts.
-                                    </EuiText>
-                                  </p>
-                                }
-                                title={
-                                  <EuiText
-                                    size="s"
-                                  >
-                                    <h2>
-                                      No alerts
-                                    </h2>
-                                  </EuiText>
-                                }
-                              >
-                                <div
-                                  className="euiEmptyPrompt"
-                                >
-                                  <EuiTitle
-                                    size="m"
-                                  >
-                                    <EuiText
-                                      className="euiTitle euiTitle--medium"
-                                      size="s"
-                                    >
-                                      <div
-                                        className="euiText euiText--small euiTitle euiTitle--medium"
-                                      >
-                                        <h2>
-                                          No alerts
-                                        </h2>
-                                      </div>
-                                    </EuiText>
-                                  </EuiTitle>
-                                  <EuiTextColor
-                                    color="subdued"
-                                  >
-                                    <span
-                                      className="euiTextColor euiTextColor--subdued"
-                                    >
-                                      <EuiSpacer
-                                        size="m"
-                                      >
-                                        <div
-                                          className="euiSpacer euiSpacer--m"
-                                        />
-                                      </EuiSpacer>
-                                      <EuiText>
-                                        <div
-                                          className="euiText euiText--medium"
-                                        >
-                                          <p>
-                                            <EuiText
-                                              size="s"
-                                            >
-                                              <div
-                                                className="euiText euiText--small"
-                                              >
-                                                Adjust the time range to see more results or create alert triggers in your
-                                                 
-                                                <EuiLink
-                                                  href="/#/detectors"
-                                                >
-                                                  <a
-                                                    className="euiLink euiLink--primary"
-                                                    href="/#/detectors"
-                                                    rel="noreferrer"
-                                                  >
-                                                    detectors
-                                                  </a>
-                                                </EuiLink>
-                                                 to generate alerts.
-                                              </div>
-                                            </EuiText>
-                                          </p>
-                                        </div>
-                                      </EuiText>
-                                    </span>
-                                  </EuiTextColor>
-                                </div>
-                              </EuiEmptyPrompt>
-                            </div>
-                          </EuiFlexItem>
-                        </div>
-                      </EuiFlexGroup>
-                    </div>
-                  </EuiPanel>
                   <EuiSpacer
                     size="m"
                   >

@@ -19,13 +19,12 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import { IocLabel, ThreatIntelIocType } from '../../../../../common/constants';
 import React, { useCallback, useEffect, useState } from 'react';
 import { LogSourceIocConfig, ThreatIntelLogSource } from '../../../../../types';
 import { Interval } from '../../../CreateDetector/components/DefineDetector/components/DetectorSchedule/Interval';
-import { getDataSources, getFieldsForIndex } from '../../../../utils/helpers';
+import { getDataSources, getFieldsForIndex, renderIoCType } from '../../../../utils/helpers';
 import { useContext } from 'react';
-import { SecurityAnalyticsContext } from '../../../../services';
+import { SecurityAnalyticsContext, ThreatIntelService } from '../../../../services';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { IndexOption } from '../../../Detectors/models/interfaces';
 import { PeriodSchedule } from '../../../../../models/interfaces';
@@ -36,6 +35,7 @@ export interface SelectThreatIntelLogSourcesProps {
   notifications: NotificationsStart;
   updateSources: (sources: ThreatIntelLogSource[]) => void;
   updateSchedule: (schedule: PeriodSchedule) => void;
+  threatIntelService: ThreatIntelService;
 }
 
 export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesProps> = ({
@@ -44,6 +44,7 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
   schedule,
   updateSources,
   updateSchedule,
+  threatIntelService,
 }) => {
   const saContext = useContext(SecurityAnalyticsContext);
   const [loadingLogSourceOptions, setLoadingLogSourceOptions] = useState(false);
@@ -54,17 +55,30 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
   const [iocInfoWithAddFieldOpen, setIocInfoWithAddFieldOpen] = useState<
     { sourceName: string; ioc: string; selectedFields: string[] } | undefined
   >(undefined);
+  const [iocTypes, setIocTypes] = useState<string[]>([]);
 
   const getLogFields = useCallback(
-    async (indexName: string) => {
-      if (saContext && !fieldsByIndexName[indexName]) {
-        getFieldsForIndex(saContext.services.fieldMappingService, indexName).then((fields) => {
-          setFieldsByIndexName({
-            ...fieldsByIndexName,
-            [indexName]: fields,
-          });
-        });
-      }
+    async (indices: string[]) => {
+      const newFieldsByIndexName = {
+        ...fieldsByIndexName,
+      };
+      const getFieldsRequests: Promise<{ label: string; value: string }[]>[] = [];
+      const indicesWithRequest: string[] = [];
+      indices.forEach(async (indexName) => {
+        if (saContext && !fieldsByIndexName[indexName]) {
+          getFieldsRequests.push(
+            getFieldsForIndex(saContext.services.fieldMappingService, indexName)
+          );
+          indicesWithRequest.push(indexName);
+        }
+      });
+
+      const getFieldsResponses = await Promise.all(getFieldsRequests);
+      indicesWithRequest.forEach((indexName, idx) => {
+        newFieldsByIndexName[indexName] = getFieldsResponses[idx];
+      });
+
+      setFieldsByIndexName(newFieldsByIndexName);
     },
     [saContext, fieldsByIndexName]
   );
@@ -84,28 +98,39 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
       }
     };
 
+    const loadIocTypes = async () => {
+      const res = await threatIntelService.searchThreatIntelSource();
+      if (res.ok) {
+        const uniqueIocTypes = new Set<string>();
+
+        res.response.forEach((threatIntelSource: { ioc_types: any[] }) => {
+          if (threatIntelSource.ioc_types && Array.isArray(threatIntelSource.ioc_types)) {
+            threatIntelSource.ioc_types.forEach((iocType) => uniqueIocTypes.add(iocType));
+          }
+        });
+
+        setIocTypes(Array.from(uniqueIocTypes));
+      }
+    };
+
     getLogSourceOptions();
+    loadIocTypes();
   }, [saContext]);
 
   useEffect(() => {
     const selectedSourcesByName: Map<string, ThreatIntelLogSource> = new Map();
     sources.forEach((source) => {
       selectedSourcesByName.set(source.name, source);
-      getLogFields(source.name);
     });
+    getLogFields(sources.map(({ name }) => name));
     setSelectedSourcesMap(selectedSourcesByName);
   }, [sources]);
 
-  const onIocToggle = (
-    source: ThreatIntelLogSource,
-    toggledIoc: ThreatIntelIocType,
-    enabled: boolean
-  ) => {
+  const onIocToggle = (source: ThreatIntelLogSource, toggledIoc: string, enabled: boolean) => {
     const newSelectedSourcesMap = new Map(selectedSourcesMap);
     newSelectedSourcesMap.get(source.name)!.iocConfigMap = {
       ...source.iocConfigMap,
       [toggledIoc]: {
-        fieldAliases: [],
         ...source.iocConfigMap[toggledIoc],
         enabled,
       },
@@ -115,21 +140,20 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
     updateSources?.(Array.from(newSelectedSourcesMap.values()));
   };
 
-  const onFieldAliasRemove = (
-    source: ThreatIntelLogSource,
-    ioc: ThreatIntelIocType,
-    alias: string
-  ) => {
+  const onFieldAliasRemove = (source: ThreatIntelLogSource, ioc: string, alias: string) => {
     const aliasesSet = new Set(source.iocConfigMap[ioc]?.fieldAliases || []);
     aliasesSet.delete(alias);
 
     updateAliases(source, ioc, Array.from(aliasesSet));
   };
 
-  const onFieldAliasesAdd = (source: ThreatIntelLogSource, ioc: ThreatIntelIocType) => {
+  const onFieldAliasesAdd = (source: ThreatIntelLogSource, ioc: string) => {
     const newFieldAliasesSet = new Set([...(source.iocConfigMap[ioc]?.fieldAliases || [])]);
-    iocInfoWithAddFieldOpen?.selectedFields.forEach((field) => newFieldAliasesSet.add(field));
-    updateAliases(source, ioc, Array.from(newFieldAliasesSet));
+    if (iocInfoWithAddFieldOpen && iocInfoWithAddFieldOpen.selectedFields.length > 0) {
+      iocInfoWithAddFieldOpen.selectedFields.forEach((field) => newFieldAliasesSet.add(field));
+      updateAliases(source, ioc, Array.from(newFieldAliasesSet));
+    }
+
     setIocInfoWithAddFieldOpen(undefined);
   };
 
@@ -140,11 +164,7 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
     });
   };
 
-  const updateAliases = (
-    source: ThreatIntelLogSource,
-    ioc: ThreatIntelIocType,
-    fieldAliases: string[]
-  ) => {
+  const updateAliases = (source: ThreatIntelLogSource, ioc: string, fieldAliases: string[]) => {
     const newSelectedSourcesMap = new Map(selectedSourcesMap);
     newSelectedSourcesMap.get(source.name)!.iocConfigMap = {
       ...source.iocConfigMap,
@@ -171,8 +191,9 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
           iocConfigMap: {},
         });
       }
-      getLogFields(label);
     });
+
+    getLogFields(options.map(({ label }) => label));
 
     setSelectedSourcesMap(newSelectedSourcesMap);
     updateSources?.(Array.from(newSelectedSourcesMap.values()));
@@ -213,11 +234,22 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
         />
       </EuiCompressedFormRow>
       <EuiSpacer size="xxl" />
-      <EuiTitle size="s">
-        <h4>Select fields to scan</h4>
-      </EuiTitle>
+      <EuiFlexGroup gutterSize="none" justifyContent="flexStart" alignItems="center">
+        <EuiFlexItem grow={false}>
+          <EuiTitle size="s">
+            <h4>Select fields to scan</h4>
+          </EuiTitle>
+        </EuiFlexItem>
+        {sources.length > 0 && (
+          <EuiFlexItem>
+            <EuiText size="s">
+              <i>&nbsp; - Required</i>
+            </EuiText>
+          </EuiFlexItem>
+        )}
+      </EuiFlexGroup>
       <EuiText color="subdued">
-        <p>Add log fields that map to at least one IoC type to perform threat intel scan.</p>
+        <p>Map at least one IoC type with a log field to perform threat intel scan.</p>
       </EuiText>
       <EuiSpacer />
 
@@ -233,10 +265,6 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
           const fieldOptionsSet = new Set(
             (fieldsByIndexName[name] || []).map(({ label }) => label)
           );
-          Object.values(ThreatIntelIocType).forEach((iocType) => {
-            const selectedFields = iocConfigMap[iocType as ThreatIntelIocType]?.fieldAliases || [];
-            selectedFields.forEach((f) => fieldOptionsSet.delete(f));
-          });
 
           return (
             <>
@@ -248,11 +276,11 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
                 paddingSize="l"
               >
                 <div style={{ marginTop: -20 }}>
-                  {Object.values(ThreatIntelIocType).map((iocType) => {
-                    const iocEnabled = iocConfigMap[iocType as ThreatIntelIocType]?.enabled;
-                    const [ioc, config]: [ThreatIntelIocType, LogSourceIocConfig] = [
-                      iocType as ThreatIntelIocType,
-                      iocConfigMap[iocType as ThreatIntelIocType] ?? {
+                  {iocTypes.map((iocType) => {
+                    const iocEnabled = iocConfigMap[iocType]?.enabled;
+                    const [ioc, config]: [string, LogSourceIocConfig] = [
+                      iocType,
+                      iocConfigMap[iocType] ?? {
                         enabled: false,
                         fieldAliases: [],
                       },
@@ -270,7 +298,7 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
                               />
                             </EuiFlexItem>
                             <EuiFlexItem grow={false}>
-                              <EuiText>{IocLabel[ioc]}</EuiText>
+                              <EuiText>{renderIoCType(ioc)}</EuiText>
                             </EuiFlexItem>
                           </EuiFlexGroup>
                         </EuiFlexItem>
@@ -332,7 +360,9 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
                                     />
                                   </EuiFlexItem>
                                   <EuiFlexItem grow={false}>
-                                    <EuiSmallButtonEmpty onClick={() => onFieldAliasesAdd(source, ioc)}>
+                                    <EuiSmallButtonEmpty
+                                      onClick={() => onFieldAliasesAdd(source, ioc)}
+                                    >
                                       Done
                                     </EuiSmallButtonEmpty>
                                   </EuiFlexItem>

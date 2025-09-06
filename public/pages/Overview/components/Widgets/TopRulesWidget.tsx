@@ -3,12 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { getEuiEmptyPrompt, renderVisualization } from '../../../../utils/helpers';
+import { getEuiEmptyPrompt } from '../../../../utils/helpers';
 import React, { useEffect } from 'react';
 import { WidgetContainer } from './WidgetContainer';
-import { getTopRulesVisualizationSpec } from '../../utils/helpers';
-import { ChartContainer } from '../../../../components/Charts/ChartContainer';
 import { OverviewFindingItem } from '../../../../../types';
+// import { createDoughnutChartWrapper } from '../../../../utils/chartUtils';
 
 export interface TopRulesWidgetProps {
   findings: OverviewFindingItem[];
@@ -16,6 +15,8 @@ export interface TopRulesWidgetProps {
 }
 
 type RulesCount = { [ruleName: string]: number };
+
+export const TOP_RULES_VIEW_CHART = 'top-rules-view';
 
 export const TopRulesWidget: React.FC<TopRulesWidgetProps> = ({ findings, loading = false }) => {
   useEffect(() => {
@@ -29,7 +30,7 @@ export const TopRulesWidget: React.FC<TopRulesWidgetProps> = ({ findings, loadin
         ruleName,
         count: rulesCount[ruleName],
       }));
-      renderVisualization(getTopRulesVisualizationSpec(visualizationData), 'top-rules-view');
+      // createDoughnutChartWrapper(visualizationData, TOP_RULES_VIEW_CHART);
     }
   }, [findings]);
 
@@ -38,7 +39,9 @@ export const TopRulesWidget: React.FC<TopRulesWidgetProps> = ({ findings, loadin
       {findings.length === 0 ? (
         getEuiEmptyPrompt('No findings with detection rules.')
       ) : (
-        <ChartContainer chartViewId={'top-rules-view'} loading={loading} />
+        <div id="chart-container">
+          <canvas id={TOP_RULES_VIEW_CHART}></canvas>
+        </div>
       )}
     </WidgetContainer>
   );

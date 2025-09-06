@@ -4,7 +4,7 @@
  */
 
 import { RuleService } from '../services';
-import { load, safeDump } from 'js-yaml';
+import { load, dump } from 'js-yaml';
 import { RuleItemInfoBase, IRulesStore, IRulesCache, Rule } from '../../types';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast } from '../utils/helpers';
@@ -209,7 +209,7 @@ export class RulesStore implements IRulesStore {
 
       try {
         const detectionJson = load(ruleInfo._source.rule).detection;
-        detectionYaml = safeDump(detectionJson);
+        detectionYaml = dump(detectionJson);
       } catch (_error: any) {}
 
       return {

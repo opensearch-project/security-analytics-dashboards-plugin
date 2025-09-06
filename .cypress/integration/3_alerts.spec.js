@@ -280,7 +280,7 @@ describe('Alerts', () => {
     // Press the "Acknowledge" button
     cy.get('[data-test-subj="acknowledge-button"]').click({ force: true });
 
-    cy.wait(10000)
+    cy.wait(10000);
 
     // Wait for acknowledge API to finish executing
     cy.contains('Acknowledged');
@@ -319,7 +319,7 @@ describe('Alerts', () => {
 
     cy.wait(10000);
     cy.get('tbody > tr').filter(`:contains(${alertName})`).should('have.length', 3);
-    
+
     cy.get('tbody > tr')
       // Click the "Acknowledge" icon button in the first row
       .first()

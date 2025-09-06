@@ -103,15 +103,18 @@ const validateAutomaticFieldMappingsPanel = (mappings) =>
   });
 
 const validatePendingFieldMappingsPanel = (mappings) => {
-  cy.get('.editFieldMappings').within(() => {
-    // Pending field mappings
-    cy.getElementByText('.euiText', 'Pending field mappings')
-      .parents('.euiPanel')
-      .within(() => {
-        cy.getElementByTestSubject('pending-mapped-fields-table')
-          .find('.euiBasicTable')
-          .validateTable(mappings);
-      });
+  cy.get('.editFieldMappings').each(($element) => {
+    cy.wrap($element).within(() => {
+      // Pending field mappings
+      cy.getElementByText('.euiText', 'Pending field mappings')
+        .parents('.euiPanel')
+        .first()
+        .within(() => {
+          cy.getElementByTestSubject('pending-mapped-fields-table')
+            .find('.euiBasicTable')
+            .validateTable(mappings);
+        });
+    });
   });
 };
 
@@ -207,16 +210,22 @@ describe('Detectors', () => {
     // Create test index
     cy.createIndex(cypressIndexDns, sample_dns_index_settings).then(() =>
       cy
-        .request('POST', '_plugins/_security_analytics/rules/_search?prePackaged=true', {
-          from: 0,
-          size: 5000,
-          query: {
-            nested: {
-              path: 'rule',
-              query: { bool: { must: [{ match: { 'rule.category': 'dns' } }] } },
+        .request(
+          'POST',
+          `${Cypress.env(
+            'opensearch_url'
+          )}/_plugins/_security_analytics/rules/_search?pre_packaged=true`,
+          {
+            from: 0,
+            size: 5000,
+            query: {
+              nested: {
+                path: 'rule',
+                query: { bool: { must: [{ match: { 'rule.category': 'dns' } }] } },
+              },
             },
-          },
-        })
+          }
+        )
         .should('have.property', 'status', 200)
     );
 
@@ -306,7 +315,7 @@ describe('Detectors', () => {
         .blur()
         .parentsUntil('.euiFormRow__fieldWrapper')
         .siblings()
-        .contains('Select an input source.');
+        .contains('Select an input source for the detector.');
 
       getDataSourceField().selectComboboxItem(cypressIndexDns);
       getDataSourceField()

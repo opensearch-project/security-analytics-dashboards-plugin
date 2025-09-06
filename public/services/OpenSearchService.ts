@@ -12,11 +12,14 @@ import { ServerResponse } from '../../server/models/types';
 import { API } from '../../server/utils/constants';
 import { dataSourceInfo } from './utils/constants';
 import { SearchResponse } from '../../server/models/interfaces';
+import { ISearchStart } from '../../../../src/plugins/data/public';
+import { map } from 'rxjs/operators';
 
 export default class OpenSearchService {
   constructor(
     private httpClient: HttpSetup,
-    private savedObjectsClient: SavedObjectsClientContract
+    private savedObjectsClient: SavedObjectsClientContract,
+    private search: ISearchStart
   ) {}
 
   getPlugins = async (): Promise<ServerResponse<{ component: string }[]>> => {
@@ -60,5 +63,40 @@ export default class OpenSearchService {
     }
 
     return [];
+  };
+
+  getIocTypes = async () => {
+    const buildSearchRequest = () => ({
+      params: {
+        ignoreUnavailable: true,
+        expand_wildcards: 'all',
+        index: '.opensearch-sap-ioc*',
+        body: {
+          size: 0,
+          aggs: {
+            distinct_types: {
+              terms: {
+                field: 'type',
+                size: 2147483647,
+              },
+            },
+          },
+        },
+      },
+      dataSourceId: dataSourceInfo.activeDataSource.id,
+    });
+
+    const searchResponseToArray = (response: any) => {
+      const { rawResponse } = response;
+      return rawResponse.aggregations
+        ? rawResponse.aggregations.distinct_types.buckets.map((bucket: { key: any }) => bucket.key)
+        : [];
+    };
+
+    return this.search
+      .getDefaultSearchInterceptor()
+      .search(buildSearchRequest())
+      .pipe(map(searchResponseToArray))
+      .toPromise();
   };
 }
