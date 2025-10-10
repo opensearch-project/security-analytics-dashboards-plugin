@@ -36,7 +36,9 @@ describe('Detectors store specs', () => {
       {
         pendingRequests: [Promise.resolve()],
         detectorInput: {
-          detector: { detector_type: 'test_detector_type' } as typeof DetectorMock,
+          detector: {
+            detector_type: 'test_detector_type',
+          } as typeof DetectorMock,
         } as CreateDetectorState,
       },
       browserHistoryMock
@@ -75,7 +77,9 @@ describe('Detectors store specs', () => {
           }),
         ],
         detectorInput: {
-          detector: { detector_type: 'test_detector_type' } as typeof DetectorMock,
+          detector: {
+            detector_type: 'test_detector_type',
+          } as typeof DetectorMock,
         } as CreateDetectorState,
       },
       browserHistoryMock
@@ -93,7 +97,9 @@ describe('Detectors store specs', () => {
           }),
         ],
         detectorInput: {
-          detector: { detector_type: 'test_detector_type' } as typeof DetectorMock,
+          detector: {
+            detector_type: 'test_detector_type',
+          } as typeof DetectorMock,
         } as CreateDetectorState,
       },
       browserHistoryMock

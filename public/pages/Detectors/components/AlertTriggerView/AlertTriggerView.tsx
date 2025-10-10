@@ -72,10 +72,16 @@ export const AlertTriggerView: React.FC<AlertTriggerViewProps> = ({
             </EuiTitle>
             <EuiSpacer size={'s'} />
             {createTextDetailsGroup([
-              { label: 'Rule names', content: conditionRuleNames.join('\n') || 'Any rule' },
+              {
+                label: 'Rule names',
+                content: conditionRuleNames.join('\n') || 'Any rule',
+              },
             ])}
             {createTextDetailsGroup([
-              { label: 'Rule severities', content: sev_levels.join('\n') || 'Any severity' },
+              {
+                label: 'Rule severities',
+                content: sev_levels.join('\n') || 'Any severity',
+              },
               { label: 'Tags', content: tags.join('\n') || 'Any tag' },
             ])}
           </>
@@ -88,7 +94,10 @@ export const AlertTriggerView: React.FC<AlertTriggerViewProps> = ({
             </EuiTitle>
             <EuiSpacer size={'s'} />
             {createTextDetailsGroup([
-              { label: 'IoC match', content: 'Any match in threat intelligence feed' },
+              {
+                label: 'IoC match',
+                content: 'Any match in threat intelligence feed',
+              },
             ])}
           </>
         )}

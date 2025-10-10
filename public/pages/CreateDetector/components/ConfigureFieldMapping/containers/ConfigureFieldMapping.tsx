@@ -350,7 +350,12 @@ export default class ConfigureFieldMapping extends Component<
     return this.state.tabs.map((tab, index) => (
       <EuiTab
         key={index}
-        onClick={() => this.setState({ selectedTabId: tab.id, selectedTabContent: tab.content })}
+        onClick={() =>
+          this.setState({
+            selectedTabId: tab.id,
+            selectedTabContent: tab.content,
+          })
+        }
         isSelected={this.state.selectedTabId === tab.id}
         size="s"
       >

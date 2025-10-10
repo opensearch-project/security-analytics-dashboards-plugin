@@ -5,7 +5,14 @@
 
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { EuiSmallButton, EuiFlexGroup, EuiFlexItem, EuiSpacer, EuiTitle, EuiText } from '@elastic/eui';
+import {
+  EuiSmallButton,
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiSpacer,
+  EuiTitle,
+  EuiText,
+} from '@elastic/eui';
 import { FieldMapping } from '../../../../../models/interfaces';
 import FieldMappingService from '../../../../services/FieldMappingService';
 import { DetectorHit, SearchDetectorsResponse } from '../../../../../server/models/interfaces';
@@ -81,7 +88,10 @@ export default class UpdateFieldMappings extends Component<
         history.replace({
           pathname: `${ROUTES.EDIT_FIELD_MAPPINGS}/${detectorId}`,
           state: {
-            detectorHit: { ...detectorHit, _source: { ...detectorHit._source, ...detector } },
+            detectorHit: {
+              ...detectorHit,
+              _source: { ...detectorHit._source, ...detector },
+            },
           },
         });
 
@@ -151,7 +161,10 @@ export default class UpdateFieldMappings extends Component<
     history.replace({
       pathname: `${ROUTES.DETECTOR_DETAILS}/${this.state.detectorId}`,
       state: {
-        detectorHit: { ...detectorHit, _source: { ...detectorHit._source, ...detector } },
+        detectorHit: {
+          ...detectorHit,
+          _source: { ...detectorHit._source, ...detector },
+        },
       },
     });
   };

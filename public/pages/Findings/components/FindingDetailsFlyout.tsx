@@ -308,7 +308,10 @@ export default class FindingDetailsFlyout extends Component<
 
               <EuiSpacer size={'m'} />
 
-              <EuiCompressedFormRow label={'Tags'} data-test-subj={'finding-details-flyout-rule-tags'}>
+              <EuiCompressedFormRow
+                label={'Tags'}
+                data-test-subj={'finding-details-flyout-rule-tags'}
+              >
                 <EuiText>{this.renderTags(rule.tags) || DEFAULT_EMPTY_DATA}</EuiText>
               </EuiCompressedFormRow>
             </EuiPanel>
@@ -365,7 +368,10 @@ export default class FindingDetailsFlyout extends Component<
     const relatedDocuments: FindingDocumentItem[] = [];
     document_list.forEach((documentInfo) => {
       if (documentInfo.found && relatedDocIdsSet.has(documentInfo.id)) {
-        relatedDocuments.push({ ...documentInfo, itemIdx: relatedDocuments.length });
+        relatedDocuments.push({
+          ...documentInfo,
+          itemIdx: relatedDocuments.length,
+        });
       }
     });
 
@@ -420,7 +426,10 @@ export default class FindingDetailsFlyout extends Component<
                 if (indexPatternId) {
                   window.open(`discover#/context/${indexPatternId}/${id}`, '_blank');
                 } else {
-                  this.setState({ ...this.state, isCreateIndexPatternModalVisible: true });
+                  this.setState({
+                    ...this.state,
+                    isCreateIndexPatternModalVisible: true,
+                  });
                 }
               }}
             />
@@ -459,7 +468,10 @@ export default class FindingDetailsFlyout extends Component<
           <h3>Documents ({relatedDocuments.length})</h3>
         </EuiTitle>
         <EuiSpacer />
-        <EuiCompressedFormRow label={'Index'} data-test-subj={`finding-details-flyout-rule-document-index`}>
+        <EuiCompressedFormRow
+          label={'Index'}
+          data-test-subj={`finding-details-flyout-rule-document-index`}
+        >
           <EuiText size="s">{index || DEFAULT_EMPTY_DATA}</EuiText>
         </EuiCompressedFormRow>
         <EuiSpacer />
@@ -485,7 +497,12 @@ export default class FindingDetailsFlyout extends Component<
       return (
         <EuiModal
           style={{ width: 800 }}
-          onClose={() => this.setState({ ...this.state, isCreateIndexPatternModalVisible: false })}
+          onClose={() =>
+            this.setState({
+              ...this.state,
+              isCreateIndexPatternModalVisible: false,
+            })
+          }
         >
           <EuiModalHeader>
             <EuiModalHeaderTitle>
@@ -500,7 +517,10 @@ export default class FindingDetailsFlyout extends Component<
                 name: this.props.finding.index + '*',
               }}
               close={() =>
-                this.setState({ ...this.state, isCreateIndexPatternModalVisible: false })
+                this.setState({
+                  ...this.state,
+                  isCreateIndexPatternModalVisible: false,
+                })
               }
               created={(indexPatternId) => {
                 this.setState(
@@ -600,7 +620,10 @@ export default class FindingDetailsFlyout extends Component<
             </EuiText>
             <EuiSpacer size={'l'} />
             {createTextDetailsGroup([
-              { label: 'Field', content: threatIntelQueryData['field'] || DEFAULT_EMPTY_DATA },
+              {
+                label: 'Field',
+                content: threatIntelQueryData['field'] || DEFAULT_EMPTY_DATA,
+              },
               {
                 label: 'Feed name',
                 content: threatIntelQueryData['feedName'] || DEFAULT_EMPTY_DATA,

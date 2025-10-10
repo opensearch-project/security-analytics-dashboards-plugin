@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PluginInitializerContext } from "../../../src/core/public";
-import { SecurityAnalyticsPlugin} from "./plugin";
+import { PluginInitializerContext } from '../../../src/core/public';
+import { SecurityAnalyticsPlugin } from './plugin';
 
 export interface SecurityAnalyticsPluginSetup {}
 export interface SecurityAnalyticsPluginStart {}

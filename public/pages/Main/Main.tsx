@@ -404,7 +404,9 @@ export default class Main extends Component<MainProps, MainState> {
                     <span
                       className={props.className}
                       onClick={() => {
-                        this.setState({ selectedNavItemId: Navigation.Correlations });
+                        this.setState({
+                          selectedNavItemId: Navigation.Correlations,
+                        });
                         history.push(ROUTES.CORRELATIONS);
                       }}
                     >
@@ -421,7 +423,9 @@ export default class Main extends Component<MainProps, MainState> {
                 name: Navigation.CorrelationRules,
                 id: Navigation.CorrelationRules,
                 onClick: () => {
-                  this.setState({ selectedNavItemId: Navigation.CorrelationRules });
+                  this.setState({
+                    selectedNavItemId: Navigation.CorrelationRules,
+                  });
                   history.push(ROUTES.CORRELATION_RULES);
                 },
                 isSelected: selectedNavItemId === Navigation.CorrelationRules,

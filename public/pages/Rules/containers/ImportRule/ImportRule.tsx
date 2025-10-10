@@ -68,7 +68,9 @@ export const ImportRule: React.FC<ImportRuleProps> = ({ history, notifications }
             status: jsonContent.status || '',
             author: jsonContent.author || '',
             references:
-              jsonContent.references?.map((reference: string) => ({ value: reference })) || [],
+              jsonContent.references?.map((reference: string) => ({
+                value: reference,
+              })) || [],
             tags: jsonContent.tags?.map((tag: string) => ({ value: tag })) || [],
             log_source: jsonContent.logsource || {},
             detection: detectionYaml,

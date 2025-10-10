@@ -66,7 +66,11 @@ export const ThreatIntelAlertsTable: React.FC<ThreatIntelAlertsTableProps> = ({
       name: 'Indicator type',
       render: (iocType: string) => renderIoCType(iocType),
     },
-    { field: 'state', name: 'Status', render: (state: string) => state || DEFAULT_EMPTY_DATA },
+    {
+      field: 'state',
+      name: 'Status',
+      render: (state: string) => state || DEFAULT_EMPTY_DATA,
+    },
     {
       field: 'severity',
       name: 'Severity',

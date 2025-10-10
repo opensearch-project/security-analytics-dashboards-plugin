@@ -45,7 +45,10 @@ export const FieldMappingsView: React.FC<FieldMappingsViewProps> = ({
     () =>
       isEditable
         ? [
-            <EuiSmallButton onClick={editFieldMappings} data-test-subj={'edit-detector-field-mappings'}>
+            <EuiSmallButton
+              onClick={editFieldMappings}
+              data-test-subj={'edit-detector-field-mappings'}
+            >
               Edit
             </EuiSmallButton>,
           ]

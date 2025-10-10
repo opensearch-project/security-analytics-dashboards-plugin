@@ -21,7 +21,6 @@ import {
 import { MDSEnabledClientService } from './MDSEnabledClientService';
 
 export default class CorrelationService extends MDSEnabledClientService {
-
   acknowledgeCorrelationAlerts = async (
     context: RequestHandlerContext,
     request: OpenSearchDashboardsRequest,
@@ -61,7 +60,7 @@ export default class CorrelationService extends MDSEnabledClientService {
     try {
       const client = this.getClient(request, context);
       const getCorrelationAlertsResp = await client(
-        CLIENT_CORRELATION_METHODS.GET_CORRELATION_ALERTS,
+        CLIENT_CORRELATION_METHODS.GET_CORRELATION_ALERTS
       );
       return response.custom({
         statusCode: 200,
@@ -260,7 +259,10 @@ export default class CorrelationService extends MDSEnabledClientService {
   > => {
     try {
       const { start_time, end_time } = request.query;
-      const params: any = { start_timestamp: start_time, end_timestamp: end_time };
+      const params: any = {
+        start_timestamp: start_time,
+        end_timestamp: end_time,
+      };
       const client = this.getClient(request, context);
       const getCorrelationsResponse: GetAllCorrelationsInTimeRangeResponse = await client(
         CLIENT_CORRELATION_METHODS.GET_ALL_CORRELATIONS,

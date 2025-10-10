@@ -22,7 +22,9 @@ export interface CreateLogTypeProps extends RouteComponentProps {
 }
 
 export const CreateLogType: React.FC<CreateLogTypeProps> = ({ history, notifications }) => {
-  const [logTypeDetails, setLogTypeDetails] = useState<LogTypeBase>({ ...defaultLogType });
+  const [logTypeDetails, setLogTypeDetails] = useState<LogTypeBase>({
+    ...defaultLogType,
+  });
 
   useEffect(() => {
     if (getUseUpdatedUx()) {

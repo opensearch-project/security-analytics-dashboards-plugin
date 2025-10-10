@@ -46,7 +46,9 @@ export const LogTypeDetailsTab: React.FC<LogTypeDetailsTabProps> = ({
   return (
     <ContentPanel
       title="Details"
-      actions={!isEditMode && [<EuiSmallButton onClick={() => setIsEditMode(true)}>Edit</EuiSmallButton>]}
+      actions={
+        !isEditMode && [<EuiSmallButton onClick={() => setIsEditMode(true)}>Edit</EuiSmallButton>]
+      }
     >
       <EuiDescriptionList
         type="column"

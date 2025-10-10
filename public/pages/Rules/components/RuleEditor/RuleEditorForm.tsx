@@ -397,7 +397,10 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                       isInvalid={(validateOnMount || props.touched.level) && !!props.errors?.level}
                       placeholder="Select a rule level"
                       data-test-subj={'rule_severity_dropdown'}
-                      options={ruleSeverity.map(({ name, value }) => ({ label: name, value }))}
+                      options={ruleSeverity.map(({ name, value }) => ({
+                        label: name,
+                        value,
+                      }))}
                       singleSelection={{ asPlainText: true }}
                       onChange={(e) => {
                         props.handleChange('level')(e[0]?.value ? e[0].value : '');
@@ -433,7 +436,10 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                       }
                       placeholder="Select a rule status"
                       data-test-subj={'rule_status_dropdown'}
-                      options={ruleStatus.map((type: string) => ({ value: type, label: type }))}
+                      options={ruleStatus.map((type: string) => ({
+                        value: type,
+                        label: type,
+                      }))}
                       singleSelection={{ asPlainText: true }}
                       onChange={(e) => {
                         props.handleChange('status')(e[0]?.value ? e[0].value : '');
@@ -441,7 +447,12 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                       onBlur={props.handleBlur('status')}
                       selectedOptions={
                         props.values.status
-                          ? [{ value: props.values.status, label: props.values.status }]
+                          ? [
+                              {
+                                value: props.values.status,
+                                label: props.values.status,
+                              },
+                            ]
                           : []
                       }
                     />

@@ -76,8 +76,8 @@ export const DetectorsWidget: React.FC<DetectorsWidgetProps> = ({
       <EuiEmptyPrompt
         body={
           <p>
-            <span style={{ display: 'block' }}>No security detectors.</span>Create a detector to
-            generate findings.
+            <span style={{ display: 'block' }}>No security detectors.</span>
+            Create a detector to generate findings.
           </p>
         }
         actions={[

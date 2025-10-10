@@ -58,7 +58,10 @@ export default class ThreatIntelService extends MDSEnabledClientService {
     response: OpenSearchDashboardsResponseFactory
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<any> | ResponseError>> => {
     try {
-      const params: any = { body: request.body, sourceId: request.params.sourceId };
+      const params: any = {
+        body: request.body,
+        sourceId: request.params.sourceId,
+      };
       const client = this.getClient(request, context);
       const { _id, source_config }: any = await client(
         CLIENT_THREAT_INTEL_METHODS.UPDATE_THREAT_INTEL_SOURCE,
@@ -290,7 +293,10 @@ export default class ThreatIntelService extends MDSEnabledClientService {
     response: OpenSearchDashboardsResponseFactory
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<any> | ResponseError>> => {
     try {
-      const params = { body: request.body, monitorId: request.params.monitorId };
+      const params = {
+        body: request.body,
+        monitorId: request.params.monitorId,
+      };
       const client = this.getClient(request, context);
       const updateMonitorRes: any = await client(
         CLIENT_THREAT_INTEL_METHODS.UPDATE_THREAT_INTEL_MONITOR,

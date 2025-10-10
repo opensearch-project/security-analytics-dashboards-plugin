@@ -95,7 +95,9 @@ export const AddThreatIntelSource: React.FC<AddThreatIntelSourceProps> = ({
   });
   const [inputErrors, setInputErrors] = useState<AddThreatIntelSourceFormInputErrors>({});
   const [useCustomSchemaByType, setUseCustomSchemaByType] = useState<
-    { [k in ThreatIntelIocSourceType.S3_CUSTOM | ThreatIntelIocSourceType.IOC_UPLOAD]: boolean }
+    {
+      [k in ThreatIntelIocSourceType.S3_CUSTOM | ThreatIntelIocSourceType.IOC_UPLOAD]: boolean;
+    }
   >({
     [ThreatIntelIocSourceType.S3_CUSTOM]: false,
     [ThreatIntelIocSourceType.IOC_UPLOAD]: false,

@@ -60,7 +60,9 @@ export const mapYamlObjectToRule = (obj: any): Rule => {
     description: obj.description,
     tags: obj.tags ? obj.tags.map((tag: string) => ({ value: tag })) : undefined,
     false_positives: obj.falsepositives
-      ? obj.falsepositives.map((falsePositive: string) => ({ value: falsePositive }))
+      ? obj.falsepositives.map((falsePositive: string) => ({
+          value: falsePositive,
+        }))
       : undefined,
     level: obj.level,
     status: obj.status,

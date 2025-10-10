@@ -244,7 +244,10 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
 
         <EuiSpacer size={'m'} />
 
-        <EuiSmallButton disabled={triggers.length >= MAX_ALERT_CONDITIONS} onClick={this.addCondition}>
+        <EuiSmallButton
+          disabled={triggers.length >= MAX_ALERT_CONDITIONS}
+          onClick={this.addCondition}
+        >
           {triggers.length > 0 ? 'Add another alert trigger' : 'Add alert triggers'}
         </EuiSmallButton>
       </>

@@ -121,7 +121,10 @@ export default class UpdateAlertConditions extends Component<
       processRules(prePackagedRules);
       processRules(customRules);
 
-      this.setState({ rules: allRules, rulesOptions: Array.from(rulesOptions) });
+      this.setState({
+        rules: allRules,
+        rulesOptions: Array.from(rulesOptions),
+      });
     } catch (e: any) {
       errorNotificationToast(this.props.notifications, 'retrieve', 'rules', e);
     }
@@ -176,7 +179,10 @@ export default class UpdateAlertConditions extends Component<
       state: {
         detectorHit: {
           ...detectorHit,
-          _source: { ...(detectorHit._source as DetectorResponse), ...detector },
+          _source: {
+            ...(detectorHit._source as DetectorResponse),
+            ...detector,
+          },
         },
       },
     });

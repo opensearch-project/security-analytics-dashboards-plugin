@@ -4,7 +4,13 @@
  */
 
 import React, { useState } from 'react';
-import { EuiCompressedFormRow, EuiText, EuiCompressedComboBox, EuiComboBoxOptionOption, EuiSpacer } from '@elastic/eui';
+import {
+  EuiCompressedFormRow,
+  EuiText,
+  EuiCompressedComboBox,
+  EuiComboBoxOptionOption,
+  EuiSpacer,
+} from '@elastic/eui';
 
 export interface RuleTagsComboBoxProps {
   onCreateOption: (

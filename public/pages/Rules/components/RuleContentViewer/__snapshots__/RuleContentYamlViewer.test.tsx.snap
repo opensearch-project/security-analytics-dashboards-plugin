@@ -262,13 +262,37 @@ exports[`<RuleContentYamlViewer /> spec renders the component 1`] = `
         >
           -
         </span>
-         
+         https
         <span
-          class="token string"
+          class="token punctuation"
         >
-          'https://securelist.com/operation-tunnelsnake-and-moriya-rootkit/101831'
+          :
         </span>
-        
+        //securelist.com/operation
+        <span
+          class="token punctuation"
+        >
+          -
+        </span>
+        tunnelsnake
+        <span
+          class="token punctuation"
+        >
+          -
+        </span>
+        and
+        <span
+          class="token punctuation"
+        >
+          -
+        </span>
+        moriya
+        <span
+          class="token punctuation"
+        >
+          -
+        </span>
+        rootkit/101831
 
       </span>
       <span

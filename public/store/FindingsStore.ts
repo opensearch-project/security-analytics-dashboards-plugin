@@ -90,7 +90,9 @@ export class FindingsStore implements IFindingsStore {
   ) {}
 
   public getFinding = async (findingId: string): Promise<Finding | undefined> => {
-    const getFindingRes = await this.service.getFindings({ findingIds: [findingId] });
+    const getFindingRes = await this.service.getFindings({
+      findingIds: [findingId],
+    });
 
     if (getFindingRes.ok) {
       return getFindingRes.response.findings[0] || undefined;

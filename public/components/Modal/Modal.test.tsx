@@ -18,7 +18,10 @@ describe('<ModalRoot /> spec', () => {
   it('renders nothing when not used', () => {
     const { container } = render(
       <SecurityAnalyticsContext.Provider
-        value={{ services, metrics: new MetricsContext(new MetricsService(httpClientMock)) }}
+        value={{
+          services,
+          metrics: new MetricsContext(new MetricsService(httpClientMock)),
+        }}
       >
         <ModalProvider>
           <SaContextConsumer>
@@ -40,7 +43,10 @@ describe('<ModalRoot /> spec', () => {
     const { queryByText, getByTestId, getByLabelText } = render(
       <div>
         <SecurityAnalyticsContext.Provider
-          value={{ services, metrics: new MetricsContext(new MetricsService(httpClientMock)) }}
+          value={{
+            services,
+            metrics: new MetricsContext(new MetricsService(httpClientMock)),
+          }}
         >
           <ModalProvider>
             <SaContextConsumer>

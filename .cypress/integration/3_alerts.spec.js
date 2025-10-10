@@ -56,13 +56,17 @@ describe('Alerts', () => {
     cy.get('[class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"]').click({
       force: true,
     });
-    cy.get('[data-test-subj="superDatePickerCommonlyUsed_Today"]').click({ force: true });
+    cy.get('[data-test-subj="superDatePickerCommonlyUsed_Today"]').click({
+      force: true,
+    });
   });
 
   it('are generated', () => {
     setupIntercept(cy, '/_security_analytics/alerts', 'getAlerts', 'GET');
     // Refresh the table
-    cy.get('[data-test-subj="superDatePickerApplyTimeButton"]').click({ force: true });
+    cy.get('[data-test-subj="superDatePickerApplyTimeButton"]').click({
+      force: true,
+    });
     cy.wait('@getAlerts').should('have.property', 'state', 'Complete');
 
     cy.wait(10000);
@@ -129,7 +133,9 @@ describe('Alerts', () => {
       });
 
       // Close the flyout
-      cy.get('[data-test-subj="alert-details-flyout-close-button"]').click({ force: true });
+      cy.get('[data-test-subj="alert-details-flyout-close-button"]').click({
+        force: true,
+      });
     });
 
     // Confirm flyout has been closed
@@ -247,7 +253,9 @@ describe('Alerts', () => {
         });
 
       // Press the "back" button
-      cy.get('[data-test-subj="finding-details-flyout-back-button"]').click({ force: true });
+      cy.get('[data-test-subj="finding-details-flyout-back-button"]').click({
+        force: true,
+      });
     });
 
     // Confirm finding details flyout closed

@@ -294,7 +294,9 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
                               <EuiIcon
                                 type={'checkInCircleEmpty'}
                                 color="success"
-                                style={{ visibility: iocEnabled ? 'visible' : 'hidden' }}
+                                style={{
+                                  visibility: iocEnabled ? 'visible' : 'hidden',
+                                }}
                               />
                             </EuiFlexItem>
                             <EuiFlexItem grow={false}>

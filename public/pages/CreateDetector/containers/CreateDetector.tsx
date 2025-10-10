@@ -237,7 +237,9 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
           {
             detector_input: {
               ...this.state.detector.inputs[0].detector_input,
-              pre_packaged_rules: prePackagedRules.map((rule) => ({ id: rule._id })),
+              pre_packaged_rules: prePackagedRules.map((rule) => ({
+                id: rule._id,
+              })),
               custom_rules: customRules.map((rule) => ({ id: rule._id })),
             },
           },

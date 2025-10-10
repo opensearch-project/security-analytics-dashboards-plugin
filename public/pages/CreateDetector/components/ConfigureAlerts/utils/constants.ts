@@ -14,7 +14,12 @@ export const RULE_SEVERITY_OPTIONS = {
   HIGH: { id: '2', value: 'high', label: 'High', text: 'High' },
   MEDIUM: { id: '3', value: 'medium', label: 'Medium', text: 'Medium' },
   LOW: { id: '4', value: 'low', label: 'Low', text: 'Low' },
-  INFORMATIONAL: { id: '5', value: 'informational', label: 'Info', text: 'Info' },
+  INFORMATIONAL: {
+    id: '5',
+    value: 'informational',
+    label: 'Info',
+    text: 'Info',
+  },
 };
 
 export const MIN_NUM_NOTIFICATION_CHANNELS = 1;

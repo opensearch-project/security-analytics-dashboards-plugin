@@ -145,7 +145,11 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
                 DataStore.findings.openFlyout(
                   {
                     ...finding,
-                    detector: { _id: detector.id as string, _index: '', _source: detector },
+                    detector: {
+                      _id: detector.id as string,
+                      _index: '',
+                      _source: detector,
+                    },
                     ruleName: rule.title,
                     ruleSeverity:
                       rule.level === 'critical'
@@ -203,7 +207,7 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
         <EuiFlyoutHeader hasBorder={true}>
           <EuiFlexGroup justifyContent="spaceBetween">
             <EuiFlexItem grow={2}>
-              <EuiText size='s'>
+              <EuiText size="s">
                 <h2>Alert details</h2>
               </EuiText>
             </EuiFlexItem>
@@ -246,7 +250,10 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
           ])}
           {createTextDetailsGroup([
             { label: 'Start time', content: renderTime(start_time) },
-            { label: 'Last updated time', content: renderTime(last_notification_time) },
+            {
+              label: 'Last updated time',
+              content: renderTime(last_notification_time),
+            },
             {
               label: 'Detector',
               content: detector.name,

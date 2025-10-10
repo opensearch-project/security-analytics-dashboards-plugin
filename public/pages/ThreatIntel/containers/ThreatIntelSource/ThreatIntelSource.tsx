@@ -200,7 +200,9 @@ export const ThreatIntelSource: React.FC<ThreatIntelSource> = ({
   return (
     <>
       <PageHeader
-        appRightControls={headerControls.map((control) => ({ renderComponent: control }))}
+        appRightControls={headerControls.map((control) => ({
+          renderComponent: control,
+        }))}
       >
         <EuiFlexGroup alignItems="flexStart">
           <EuiFlexItem>

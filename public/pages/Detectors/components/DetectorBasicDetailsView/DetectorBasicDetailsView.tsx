@@ -86,7 +86,10 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
             </>
           ),
         },
-        { label: 'Log type', content: getLogTypeLabel(detector_type.toLowerCase()) },
+        {
+          label: 'Log type',
+          content: getLogTypeLabel(detector_type.toLowerCase()),
+        },
         {
           label: 'Detector dashboard',
           content: dashboardId ? (
@@ -104,10 +107,16 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
       {createTextDetailsGroup([
         { label: 'Detection rules', content: totalSelected },
         { label: 'Created at', content: createdAt || DEFAULT_EMPTY_DATA },
-        { label: 'Last updated time', content: lastUpdated || DEFAULT_EMPTY_DATA },
+        {
+          label: 'Last updated time',
+          content: lastUpdated || DEFAULT_EMPTY_DATA,
+        },
       ])}
       {createTextDetailsGroup([
-        { label: 'Threat intelligence', content: threat_intel_enabled ? 'Enabled' : 'Disabled' },
+        {
+          label: 'Threat intelligence',
+          content: threat_intel_enabled ? 'Enabled' : 'Disabled',
+        },
       ])}
       {threat_intel_enabled && (
         <EuiCallOut

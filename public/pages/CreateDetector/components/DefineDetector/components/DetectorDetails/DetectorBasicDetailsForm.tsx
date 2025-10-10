@@ -4,7 +4,14 @@
  */
 
 import React, { Component } from 'react';
-import { EuiCompressedFormRow, EuiCompressedFieldText, EuiSpacer, EuiTextArea, EuiTitle, EuiText } from '@elastic/eui';
+import {
+  EuiCompressedFormRow,
+  EuiCompressedFieldText,
+  EuiSpacer,
+  EuiTextArea,
+  EuiTitle,
+  EuiText,
+} from '@elastic/eui';
 import { FormFieldHeader } from '../../../../../../components/FormFieldHeader/FormFieldHeader';
 import {
   getDescriptionErrorMessage,

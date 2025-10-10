@@ -11,11 +11,10 @@ export const ExperimentalBanner = () => {
     <>
       <EuiCallOut title="Experimental Feature" iconType="beaker">
         <p>
-        The alerts on correlations feature is experimental and should not be used in a production environment. Any generated alerts and created indexes  in will be impacted if the feature is deactivated. For more information see&nbsp;
-          <EuiLink
-            href="https://opensearch.org/docs/2.4/security-analytics/index/"
-            target="_blank"
-          >
+          The alerts on correlations feature is experimental and should not be used in a production
+          environment. Any generated alerts and created indexes in will be impacted if the feature
+          is deactivated. For more information see&nbsp;
+          <EuiLink href="https://opensearch.org/docs/2.4/security-analytics/index/" target="_blank">
             Security Analytics documentation
           </EuiLink>
           . To leave feedback, visit&nbsp;

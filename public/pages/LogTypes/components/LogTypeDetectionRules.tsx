@@ -7,7 +7,14 @@ import React, { useState, useCallback } from 'react';
 import { RulesTable } from '../../Rules/components/RulesTable/RulesTable';
 import { RuleTableItem } from '../../Rules/utils/helpers';
 import { ContentPanel } from '../../../components/ContentPanel';
-import { EuiSmallButton, EuiFlexGroup, EuiFlexItem, EuiIcon, EuiSpacer, EuiText } from '@elastic/eui';
+import {
+  EuiSmallButton,
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiIcon,
+  EuiSpacer,
+  EuiText,
+} from '@elastic/eui';
 import { RuleViewerFlyout } from '../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
 
 export interface LogTypeDetectionRulesProps {

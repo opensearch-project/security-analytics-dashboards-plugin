@@ -82,7 +82,9 @@ export const RecentThreatIntelFindingsWidget: React.FC<RecentThreatIntelFindings
         <TableWidget
           columns={columns}
           items={findingItems}
-          sorting={{ sort: { field: 'timestamp', direction: SortDirection.DESC } }}
+          sorting={{
+            sort: { field: 'timestamp', direction: SortDirection.DESC },
+          }}
           loading={loading}
         />
       )}

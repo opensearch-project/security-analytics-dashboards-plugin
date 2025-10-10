@@ -248,8 +248,16 @@ export class SecurityAnalyticsPlugin
           showInAllNavGroup: true,
           order: 600,
         },
-        { id: DETECTORS_NAV_ID, parentNavLinkId: PLUGIN_NAME, showInAllNavGroup: true },
-        { id: DETECTION_RULE_NAV_ID, parentNavLinkId: PLUGIN_NAME, showInAllNavGroup: true },
+        {
+          id: DETECTORS_NAV_ID,
+          parentNavLinkId: PLUGIN_NAME,
+          showInAllNavGroup: true,
+        },
+        {
+          id: DETECTION_RULE_NAV_ID,
+          parentNavLinkId: PLUGIN_NAME,
+          showInAllNavGroup: true,
+        },
         { id: CORRELATIONS_RULE_NAV_ID, showInAllNavGroup: true },
         { id: THREAT_INTEL_NAV_ID, showInAllNavGroup: true },
         { id: LOG_TYPES_NAV_ID, showInAllNavGroup: true },

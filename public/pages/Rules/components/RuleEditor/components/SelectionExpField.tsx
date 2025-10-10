@@ -77,7 +77,10 @@ export const SelectionExpField: React.FC<SelectionExpFieldProps> = ({
           counter++;
         } else {
           const currentIndex = idx - counter;
-          expressions[currentIndex] = { ...expressions[currentIndex], name: val };
+          expressions[currentIndex] = {
+            ...expressions[currentIndex],
+            name: val,
+          };
         }
       });
     } else {
