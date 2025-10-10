@@ -95,7 +95,10 @@ export const LogType: React.FC<LogTypeProps> = ({ notifications, history }) => {
       }
 
       setBreadcrumbs([BREADCRUMBS.DETECTORS, BREADCRUMBS.LOG_TYPES, { text: details.name }]);
-      const logTypeItem = { ...details, detectionRulesCount: details.detectionRules.length };
+      const logTypeItem = {
+        ...details,
+        detectionRulesCount: details.detectionRules.length,
+      };
       updateRules(logTypeItem, logTypeItem);
     };
 
@@ -143,7 +146,11 @@ export const LogType: React.FC<LogTypeProps> = ({ notifications, history }) => {
 
   const deleteAction = (
     <EuiToolTip content="Delete" position="bottom">
-      <EuiSmallButtonIcon iconType={'trash'} color="danger" onClick={() => setShowDeleteModal(true)} />
+      <EuiSmallButtonIcon
+        iconType={'trash'}
+        color="danger"
+        onClick={() => setShowDeleteModal(true)}
+      />
     </EuiToolTip>
   );
 
@@ -184,7 +191,10 @@ export const LogType: React.FC<LogTypeProps> = ({ notifications, history }) => {
           <EuiFlexItem>
             <EuiDescriptionList
               listItems={[
-                { title: 'Detection rules', description: logTypeDetails.detectionRulesCount },
+                {
+                  title: 'Detection rules',
+                  description: logTypeDetails.detectionRulesCount,
+                },
               ]}
             />
           </EuiFlexItem>

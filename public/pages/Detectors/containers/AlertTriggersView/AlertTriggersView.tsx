@@ -54,7 +54,9 @@ export const AlertTriggersView: React.FC<AlertTriggersViewProps> = ({
       // Retrieve the custom rules.
       const customRuleIds = detector.inputs[0].detector_input.custom_rules.map((rule) => rule.id);
       if (customRuleIds.length > 0) {
-        const customRules = await DataStore.rules.getCustomRules({ _id: customRuleIds });
+        const customRules = await DataStore.rules.getCustomRules({
+          _id: customRuleIds,
+        });
 
         customRules.forEach((rule) => (parseRules[rule._id] = rule));
       }

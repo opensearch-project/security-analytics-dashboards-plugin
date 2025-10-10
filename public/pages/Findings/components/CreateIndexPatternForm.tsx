@@ -45,7 +45,10 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
   indexPatternsService,
 }) => {
   const [timeFields, setTimeFields] = useState<string[]>([]);
-  const [createdIndex, setCreatedIndex] = useState<{ id?: string; title: string }>();
+  const [createdIndex, setCreatedIndex] = useState<{
+    id?: string;
+    title: string;
+  }>();
 
   const getTimeFields = useCallback(
     async (name: string): Promise<string[]> => {
@@ -171,7 +174,10 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
               isInvalid={props.touched.timeField && !!props.errors.timeField}
               placeholder="Select a time field"
               data-test-subj={'index_pattern_time_field_dropdown'}
-              options={timeFields.map((field: string) => ({ value: field, label: field }))}
+              options={timeFields.map((field: string) => ({
+                value: field,
+                label: field,
+              }))}
               singleSelection={{ asPlainText: true }}
               onChange={(e) => {
                 props.handleChange('timeField')(e[0]?.value ? e[0].value : '');
@@ -179,7 +185,12 @@ export const CreateIndexPatternForm: React.FC<CreateIndexPatternFormProps> = ({
               onBlur={props.handleBlur('timeField')}
               selectedOptions={
                 props.values.timeField
-                  ? [{ value: props.values.timeField, label: props.values.timeField }]
+                  ? [
+                      {
+                        value: props.values.timeField,
+                        label: props.values.timeField,
+                      },
+                    ]
                   : []
               }
             />

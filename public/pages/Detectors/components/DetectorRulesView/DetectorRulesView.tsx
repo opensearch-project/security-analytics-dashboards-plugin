@@ -33,7 +33,10 @@ const mapRuleItemToRuleTableItem = (ruleItem: RuleItem): RuleTableItem => {
     description: ruleItem.description,
     source: ruleItem.library,
     ruleId: ruleItem.id,
-    ruleInfo: { ...ruleItem.ruleInfo, prePackaged: ruleItem.library === 'Standard' },
+    ruleInfo: {
+      ...ruleItem.ruleInfo,
+      prePackaged: ruleItem.library === 'Standard',
+    },
   };
 };
 

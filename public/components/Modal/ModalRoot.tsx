@@ -19,7 +19,10 @@ const ModalRoot: React.SFC<ModalRootProps> = ({ services }) => (
       props,
       onClose,
     }: {
-      component: ComponentType<{ onClose: () => void; services: BrowserServices }> | null;
+      component: ComponentType<{
+        onClose: () => void;
+        services: BrowserServices;
+      }> | null;
       props: object;
       onClose: () => void;
     }) => (Komponent ? <Komponent {...props} onClose={onClose} services={services} /> : null)}

@@ -138,7 +138,10 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
     const updatedSelectedItems: DetectorHit[] = this.state.detectorHits.filter((hit) =>
       selectedItemIds.has(hit._id)
     );
-    this.setState({ loadingDetectors: false, selectedItems: updatedSelectedItems });
+    this.setState({
+      loadingDetectors: false,
+      selectedItems: updatedSelectedItems,
+    });
   };
 
   onClickDelete = async () => {

@@ -228,7 +228,10 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
 
   filterDeletectionRuleAlerts = () => {
     const { alerts } = this.state;
-    const filteredAlerts = this.filterAlerts({ alerts, timeField: 'last_notification_time' });
+    const filteredAlerts = this.filterAlerts({
+      alerts,
+      timeField: 'last_notification_time',
+    });
     this.setState({
       alertsFiltered: true,
       filteredAlerts: filteredAlerts as AlertItem[],
@@ -501,7 +504,9 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
   }
 
   setCorrelationFlyout(alertItem?: CorrelationAlertTableItem): void {
-    this.setState({ flyoutCorrelationData: alertItem ? { alertItem } : undefined });
+    this.setState({
+      flyoutCorrelationData: alertItem ? { alertItem } : undefined,
+    });
   }
 
   // getChart(data: any) {

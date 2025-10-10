@@ -12,7 +12,9 @@ const defaultDataSourceContext: DataSourceContextType = {
   setDataSourceMenuReadOnly: (viewOnly) => {},
 };
 
-const DataSourceContext = createContext<DataSourceContextType>({ ...defaultDataSourceContext });
+const DataSourceContext = createContext<DataSourceContextType>({
+  ...defaultDataSourceContext,
+});
 
 const DataSourceContextConsumer = DataSourceContext.Consumer;
 

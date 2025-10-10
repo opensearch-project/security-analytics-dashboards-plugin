@@ -19,7 +19,11 @@ export const DeleteCorrelationRuleModal: React.FC<DeleteRuleModalProps> = ({
 }) => {
   return (
     <EuiConfirmModal
-      title={<EuiText size="s"><h2>Delete {title}?</h2></EuiText>}
+      title={
+        <EuiText size="s">
+          <h2>Delete {title}?</h2>
+        </EuiText>
+      }
       onCancel={onCancel}
       onConfirm={onConfirm}
       cancelButtonText="Cancel"
@@ -27,7 +31,9 @@ export const DeleteCorrelationRuleModal: React.FC<DeleteRuleModalProps> = ({
       buttonColor="danger"
       defaultFocusedButton="confirm"
     >
-      <EuiText size="s">Delete the correlation rule permanently? This action cannot be undone.</EuiText>
+      <EuiText size="s">
+        Delete the correlation rule permanently? This action cannot be undone.
+      </EuiText>
     </EuiConfirmModal>
   );
 };

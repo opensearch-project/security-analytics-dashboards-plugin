@@ -221,7 +221,9 @@ describe('Detectors', () => {
             query: {
               nested: {
                 path: 'rule',
-                query: { bool: { must: [{ match: { 'rule.category': 'dns' } }] } },
+                query: {
+                  bool: { must: [{ match: { 'rule.category': 'dns' } }] },
+                },
               },
             },
           }
@@ -530,7 +532,9 @@ describe('Detectors', () => {
         .click({ force: true })
         .then(() => {
           setupIntercept(cy, '/detectors', 'detectors');
-          cy.getElementByText('.euiContextMenuItem', 'Delete').click({ force: true });
+          cy.getElementByText('.euiContextMenuItem', 'Delete').click({
+            force: true,
+          });
           cy.wait('@detectors').then(() => {
             cy.contains('There are no existing detectors');
           });

@@ -79,12 +79,18 @@ export const getNotificationDetailsHref = (channelId: string) =>
   `notifications-dashboards#/channels-details/${channelId}`;
 
 export const BREADCRUMBS = Object.freeze({
-  SECURITY_ANALYTICS: { text: 'Security Analytics', href: `#${ROUTES.OVERVIEW}` },
+  SECURITY_ANALYTICS: {
+    text: 'Security Analytics',
+    href: `#${ROUTES.OVERVIEW}`,
+  },
   OVERVIEW: { text: 'Overview', href: `#${ROUTES.OVERVIEW}` },
   GETTING_STARTED: { text: 'Get started', href: `#${ROUTES.GETTING_STARTED}` },
   FINDINGS: { text: 'Findings', href: `#${ROUTES.FINDINGS}` },
   DETECTORS: { text: 'Threat detectors', href: `#${ROUTES.DETECTORS}` },
-  DETECTORS_CREATE: { text: 'Create detector', href: `#${ROUTES.DETECTORS_CREATE}` },
+  DETECTORS_CREATE: {
+    text: 'Create detector',
+    href: `#${ROUTES.DETECTORS_CREATE}`,
+  },
   EDIT_DETECTOR_DETAILS: { text: 'Edit detector details' },
   DETECTORS_DETAILS: (name: string, detectorId: string) => ({
     text: `${name}`,
@@ -96,23 +102,38 @@ export const BREADCRUMBS = Object.freeze({
   }),
   RULES: { text: 'Detection rules', href: `#${ROUTES.RULES}` },
   ALERTS: { text: 'Threat alerts', href: `#${ROUTES.ALERTS}` },
-  RULES_CREATE: { text: 'Create detection rule', href: `#${ROUTES.RULES_CREATE}` },
+  RULES_CREATE: {
+    text: 'Create detection rule',
+    href: `#${ROUTES.RULES_CREATE}`,
+  },
   RULES_EDIT: { text: 'Edit rule', href: `#${ROUTES.RULES_EDIT}` },
   RULE_EDIT_DETAILS: (name: string) => ({
     text: `${name}`,
     href: `#${ROUTES.RULES_EDIT}`,
   }),
-  RULES_DUPLICATE: { text: 'Duplicate rule', href: `#${ROUTES.RULES_DUPLICATE}` },
+  RULES_DUPLICATE: {
+    text: 'Duplicate rule',
+    href: `#${ROUTES.RULES_DUPLICATE}`,
+  },
   RULES_IMPORT: { text: 'Import rule', href: `#${ROUTES.RULES_IMPORT}` },
   CORRELATIONS: { text: 'Correlations', href: `#${ROUTES.CORRELATIONS}` },
-  CORRELATION_RULES: { text: 'Correlation rules', href: `#${ROUTES.CORRELATION_RULES}` },
+  CORRELATION_RULES: {
+    text: 'Correlation rules',
+    href: `#${ROUTES.CORRELATION_RULES}`,
+  },
   CORRELATIONS_RULE_CREATE: (action: string) => ({
     text: `${action} correlation rule`,
     href: `#${ROUTES.CORRELATION_RULE_CREATE}`,
   }),
   LOG_TYPES: { text: 'Log types', href: `#${ROUTES.LOG_TYPES}` },
-  LOG_TYPE_CREATE: { text: 'Create log type', href: `#${ROUTES.LOG_TYPES_CREATE}` },
-  THREAT_INTEL_OVERVIEW: { text: 'Threat intelligence', href: `#${ROUTES.THREAT_INTEL_OVERVIEW}` },
+  LOG_TYPE_CREATE: {
+    text: 'Create log type',
+    href: `#${ROUTES.LOG_TYPES_CREATE}`,
+  },
+  THREAT_INTEL_OVERVIEW: {
+    text: 'Threat intelligence',
+    href: `#${ROUTES.THREAT_INTEL_OVERVIEW}`,
+  },
   THREAT_INTEL_ADD_CUSTOM_SOURCE: {
     text: 'Add threat intel source',
     href: `#${ROUTES.THREAT_INTEL_ADD_CUSTOM_SOURCE}`,
@@ -221,11 +242,26 @@ export const pendingDashboardCreations: {
   [detectorId: string]: undefined | Promise<void | ServerResponse<SimpleSavedObject<unknown>>>;
 } = {};
 
-export const logTypeCategoryDescription: { name: string; description: string }[] = [
-  { name: 'Access Management', description: 'User access, authentication, group management' },
-  { name: 'Applications', description: 'Application lifecycle, API, and web resources activities' },
-  { name: 'Cloud Services', description: 'Services managed by cloud providers' },
-  { name: 'Network Activity', description: 'DNS, HTTP, Email, SSH, FTP, DHCP, RDP' },
+export const logTypeCategoryDescription: {
+  name: string;
+  description: string;
+}[] = [
+  {
+    name: 'Access Management',
+    description: 'User access, authentication, group management',
+  },
+  {
+    name: 'Applications',
+    description: 'Application lifecycle, API, and web resources activities',
+  },
+  {
+    name: 'Cloud Services',
+    description: 'Services managed by cloud providers',
+  },
+  {
+    name: 'Network Activity',
+    description: 'DNS, HTTP, Email, SSH, FTP, DHCP, RDP',
+  },
   { name: 'System Activity', description: 'System monitoring logs' },
   { name: 'Other', description: 'Logs not covered in other categories' },
 ];

@@ -7,7 +7,7 @@ on:
     branches:
       - "*"
 env:
-  OPENSEARCH_DASHBOARDS_VERSION: 'main'
+  OPENSEARCH_DASHBOARDS_VERSION: "main"
 jobs:
   Get-CI-Image-Tag:
     uses: opensearch-project/opensearch-build/.github/workflows/get-ci-image-tag.yml@main
@@ -71,8 +71,8 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version-file: './OpenSearch-Dashboards/.nvmrc'
-          registry-url: 'https://registry.npmjs.org'
+          node-version-file: "./OpenSearch-Dashboards/.nvmrc"
+          registry-url: "https://registry.npmjs.org"
       - name: Install Yarn
         # Need to use bash to avoid having a windows/linux specific step
         shell: bash

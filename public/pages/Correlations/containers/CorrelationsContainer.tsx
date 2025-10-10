@@ -292,7 +292,10 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         };
       }
     );
-    this.setState({ specificFindingInfo: correlatedFindingsInfo, loadingGraphData: false });
+    this.setState({
+      specificFindingInfo: correlatedFindingsInfo,
+      loadingGraphData: false,
+    });
     this.updateGraphDataState(correlatedFindingsInfo);
   };
 
@@ -373,7 +376,13 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
   private createNodeTooltip = ({ detectionRule, timestamp, logType }: CorrelationFinding) => {
     const { text, background } = getSeverityColor(detectionRule.severity);
     const tooltipContent = (
-      <div style={{ backgroundColor: '#535353', color: '#ffffff', padding: '15px' }}>
+      <div
+        style={{
+          backgroundColor: '#535353',
+          color: '#ffffff',
+          padding: '15px',
+        }}
+      >
         <EuiFlexGroup alignItems="center" justifyContent="flexStart" gutterSize="s">
           <EuiFlexItem grow={false}>
             <EuiBadge style={{ color: text }} color={background}>

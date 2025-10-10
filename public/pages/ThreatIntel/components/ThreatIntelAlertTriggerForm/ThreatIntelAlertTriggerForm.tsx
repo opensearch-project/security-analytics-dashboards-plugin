@@ -143,7 +143,9 @@ export const ThreatIntelAlertTriggerForm: React.FC<ThreatIntelAlertTriggerProps>
           <EuiCompressedComboBox
             placeholder="Any"
             options={logSources.map((logSource) => ({ label: logSource }))}
-            selectedOptions={trigger.data_sources.map((source) => ({ label: source }))}
+            selectedOptions={trigger.data_sources.map((source) => ({
+              label: source,
+            }))}
             onChange={(options) => {
               updateTrigger({
                 ...trigger,

@@ -400,7 +400,10 @@ export class DetectionVisualEditor extends React.Component<
   };
 
   private updateCondition = (value: string) => {
-    const detectionObj: DetectionObject = { ...this.state.detectionObj, condition: value };
+    const detectionObj: DetectionObject = {
+      ...this.state.detectionObj,
+      condition: value,
+    };
     this.setState(
       {
         detectionObj,
@@ -512,9 +515,15 @@ export class DetectionVisualEditor extends React.Component<
                         placeholder="Enter selection name"
                         data-test-subj={'selection_name'}
                         onChange={(e) =>
-                          this.updateSelection(selectionIdx, { name: e.target.value })
+                          this.updateSelection(selectionIdx, {
+                            name: e.target.value,
+                          })
                         }
-                        onBlur={(e) => this.updateSelection(selectionIdx, { name: e.target.value })}
+                        onBlur={(e) =>
+                          this.updateSelection(selectionIdx, {
+                            name: e.target.value,
+                          })
+                        }
                         value={selection.name}
                       />
                     </EuiCompressedFormRow>
@@ -574,7 +583,9 @@ export class DetectionVisualEditor extends React.Component<
                                 onClick={() => {
                                   const newData = [...selection.data];
                                   newData.splice(idx, 1);
-                                  this.updateSelection(selectionIdx, { data: newData });
+                                  this.updateSelection(selectionIdx, {
+                                    data: newData,
+                                  });
                                 }}
                               />
                             </EuiToolTip>
@@ -622,7 +633,12 @@ export class DetectionVisualEditor extends React.Component<
                                 onBlur={() => {}}
                                 selectedOptions={
                                   datum.modifier
-                                    ? [{ value: datum.modifier, label: datum.modifier }]
+                                    ? [
+                                        {
+                                          value: datum.modifier,
+                                          label: datum.modifier,
+                                        },
+                                      ]
                                     : [detectionModifierOptions[0]]
                                 }
                               />

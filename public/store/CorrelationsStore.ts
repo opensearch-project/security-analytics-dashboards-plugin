@@ -216,7 +216,10 @@ export class CorrelationsStore implements ICorrelationsStore {
       end_time
     );
 
-    const result: { finding1: CorrelationFinding; finding2: CorrelationFinding }[] = [];
+    const result: {
+      finding1: CorrelationFinding;
+      finding2: CorrelationFinding;
+    }[] = [];
 
     if (allCorrelationsRes.ok) {
       const firstTenGrandCorrelations = allCorrelationsRes.response.findings.slice(0, 10000);
@@ -317,7 +320,10 @@ export class CorrelationsStore implements ICorrelationsStore {
     findingId: string,
     detector_type: string,
     nearby_findings = 20
-  ): Promise<{ finding: CorrelationFinding; correlatedFindings: CorrelationFinding[] }> {
+  ): Promise<{
+    finding: CorrelationFinding;
+    correlatedFindings: CorrelationFinding[];
+  }> {
     const response = await this.service.getCorrelatedFindings(
       findingId,
       detector_type,

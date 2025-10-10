@@ -160,17 +160,32 @@ export const ThreatIntelAlertFlyout: React.FC<ThreatIntelAlertFlyoutProps> = ({
       <EuiFlyoutBody>
         <DescriptionGroup
           listItems={[
-            { title: 'Alert trigger name', description: alertItem.trigger_name },
+            {
+              title: 'Alert trigger name',
+              description: alertItem.trigger_name,
+            },
             { title: 'Alert status', description: alertState },
-            { title: 'Alert severity', description: capitalize(alertItem.severity) },
+            {
+              title: 'Alert severity',
+              description: capitalize(alertItem.severity),
+            },
           ]}
         />
         <EuiSpacer size="m" />
         <DescriptionGroup
           listItems={[
-            { title: 'Start time', description: renderTime(alertItem.start_time) },
-            { title: 'Last updated time', description: renderTime(alertItem.last_updated_time) },
-            { title: 'Indicator type', description: renderIoCType(alertItem.ioc_type) },
+            {
+              title: 'Start time',
+              description: renderTime(alertItem.start_time),
+            },
+            {
+              title: 'Last updated time',
+              description: renderTime(alertItem.last_updated_time),
+            },
+            {
+              title: 'Indicator type',
+              description: renderIoCType(alertItem.ioc_type),
+            },
           ]}
         />
         <EuiSpacer />

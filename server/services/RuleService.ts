@@ -218,7 +218,11 @@ export default class RulesService extends MDSEnabledClientService {
       }
 
       const ruleYamlPayload = dump(jsonPayload);
-      const params: UpdateRuleParams = { body: ruleYamlPayload, category, ruleId };
+      const params: UpdateRuleParams = {
+        body: ruleYamlPayload,
+        category,
+        ruleId,
+      };
       const client = this.getClient(request, context);
       const createRuleResponse: UpdateRuleResponse = await client(
         CLIENT_RULE_METHODS.UPDATE_RULE,

@@ -36,9 +36,15 @@ export class Daily extends React.Component<DailyProps, DailyState> {
 
   onTimeSelect = (date: Moment) => {
     if (date) {
-      this.setState({ selectedTime: date.hours(), invalidTimeMessage: undefined });
+      this.setState({
+        selectedTime: date.hours(),
+        invalidTimeMessage: undefined,
+      });
     } else {
-      this.setState({ invalidTimeMessage: 'Invalid time selected.', selectedTime: undefined });
+      this.setState({
+        invalidTimeMessage: 'Invalid time selected.',
+        selectedTime: undefined,
+      });
     }
   };
 
@@ -46,7 +52,10 @@ export class Daily extends React.Component<DailyProps, DailyState> {
     this.setState(
       options.length > 0
         ? { selectedTimeZone: options[0].label, invalidTimeMessage: undefined }
-        : { invalidTimeZoneMessage: 'Select a timezone.', selectedTimeZone: undefined }
+        : {
+            invalidTimeZoneMessage: 'Select a timezone.',
+            selectedTimeZone: undefined,
+          }
     );
   };
 

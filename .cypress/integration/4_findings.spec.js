@@ -71,7 +71,9 @@ describe('Findings', () => {
     cy.contains('Rule details');
 
     // Close Flyout
-    cy.get('.euiFlexItem--flexGrowZero > .euiButtonIcon').click({ force: true });
+    cy.get('.euiFlexItem--flexGrowZero > .euiButtonIcon').click({
+      force: true,
+    });
   });
 
   it('displays finding details flyout when user clicks on Finding ID', () => {
@@ -88,7 +90,9 @@ describe('Findings', () => {
     cy.contains('Rule details');
 
     // Close Flyout
-    cy.get('.euiFlexItem--flexGrowZero > .euiButtonIcon').click({ force: true });
+    cy.get('.euiFlexItem--flexGrowZero > .euiButtonIcon').click({
+      force: true,
+    });
   });
 
   // TODO: this one triggers a button handler which goes throw condition and therefor is flaky
@@ -119,7 +123,9 @@ describe('Findings', () => {
     cy.contains('cypress-test-windows* has been successfully created');
 
     // Close Flyout
-    cy.get('.euiFlexItem--flexGrowZero > .euiButtonIcon').click({ force: true });
+    cy.get('.euiFlexItem--flexGrowZero > .euiButtonIcon').click({
+      force: true,
+    });
   });
 
   it('allows user to view details about rules that were triggered', () => {
@@ -131,7 +137,9 @@ describe('Findings', () => {
 
     // open rule details inside flyout
     cy.get('button', { timeout: 1000 });
-    cy.get(`[data-test-subj="finding-details-flyout-rule-accordion-0"]`).click({ force: true });
+    cy.get(`[data-test-subj="finding-details-flyout-rule-accordion-0"]`).click({
+      force: true,
+    });
 
     // Confirm content
     cy.contains('Documents');

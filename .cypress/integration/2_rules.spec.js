@@ -52,7 +52,9 @@ const checkRulesFlyout = () => {
   cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
 
   // Click the rule link to open the details flyout
-  cy.get(`[data-test-subj="rule_link_${SAMPLE_RULE.name}"]`).click({ force: true });
+  cy.get(`[data-test-subj="rule_link_${SAMPLE_RULE.name}"]`).click({
+    force: true,
+  });
 
   // Confirm the flyout contains the expected values
   cy.get(`[data-test-subj="rule_flyout_${SAMPLE_RULE.name}"]`)
@@ -108,7 +110,7 @@ const checkRulesFlyout = () => {
       // More flexible YAML validation
       cy.get('[data-test-subj="rule_flyout_yaml_rule"]').then(($yaml) => {
         const yamlContent = $yaml.text();
-        
+
         // Check essential fields exist without strict line-by-line matching
         expect(yamlContent).to.include('id:');
         expect(yamlContent).to.include(`product: ${SAMPLE_RULE.logType}`);
@@ -493,39 +495,39 @@ describe('Rules', () => {
       });
     });
 
-   it('...can be created', () => {
-    getCreateButton().click({ force: true });
+    it('...can be created', () => {
+      getCreateButton().click({ force: true });
 
-    fillCreateForm();
+      fillCreateForm();
 
-    // Switch to YAML editor
-    cy.get('[data-test-subj="change-editor-type"] label:nth-child(2)').click({
-      force: true,
+      // Switch to YAML editor
+      cy.get('[data-test-subj="change-editor-type"] label:nth-child(2)').click({
+        force: true,
+      });
+
+      // Flexible YAML validation
+      cy.get('[data-test-subj="rule_yaml_editor"]').then(($editor) => {
+        const yamlContent = $editor.text();
+        expect(yamlContent).to.include(SAMPLE_RULE.references);
+      });
+
+      setupIntercept(cy, '/rules/_search', 'getRules');
+      submitRule();
+
+      // Wait for the success toast
+      cy.get('.euiToast').contains('successfully created', { timeout: 10000 });
+
+      cy.wait('@getRules');
+
+      cy.waitForPageLoad('rules', {
+        contains: 'Detection rules',
+      });
+
+      // Additional wait to ensure rule is searchable
+      cy.wait(2000);
+
+      checkRulesFlyout();
     });
-
-    // Flexible YAML validation
-    cy.get('[data-test-subj="rule_yaml_editor"]').then(($editor) => {
-      const yamlContent = $editor.text();
-      expect(yamlContent).to.include(SAMPLE_RULE.references);
-    });
-
-    setupIntercept(cy, '/rules/_search', 'getRules');
-    submitRule();
-
-    // Wait for the success toast
-    cy.get('.euiToast').contains('successfully created', { timeout: 10000 });
-
-    cy.wait('@getRules');
-
-    cy.waitForPageLoad('rules', {
-      contains: 'Detection rules',
-    });
-
-    // Additional wait to ensure rule is searchable
-    cy.wait(2000);
-
-    checkRulesFlyout();
-  });
 
     it('...can be edited', () => {
       cy.waitForPageLoad('rules', {
@@ -533,7 +535,9 @@ describe('Rules', () => {
       });
 
       cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
-      cy.get(`[data-test-subj="rule_link_${SAMPLE_RULE.name}"]`).click({ force: true });
+      cy.get(`[data-test-subj="rule_link_${SAMPLE_RULE.name}"]`).click({
+        force: true,
+      });
 
       cy.get(`[data-test-subj="rule_flyout_${SAMPLE_RULE.name}"]`)
         .find('button')
@@ -590,7 +594,9 @@ describe('Rules', () => {
       cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
 
       // Click the rule link to open the details flyout
-      cy.get(`[data-test-subj="rule_link_${SAMPLE_RULE.name}"]`).click({ force: true });
+      cy.get(`[data-test-subj="rule_link_${SAMPLE_RULE.name}"]`).click({
+        force: true,
+      });
 
       cy.get(`[data-test-subj="rule_flyout_${SAMPLE_RULE.name}"]`)
         .find('button')

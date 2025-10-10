@@ -20,7 +20,9 @@ import {
   vpcFlowLogsVisualizationConfigs,
 } from './config/savedObjects/vpc-flow-logs';
 
-const savedObjectsConfigsByLogType: { [logType: string]: DashboardCreationConfig } = {
+const savedObjectsConfigsByLogType: {
+  [logType: string]: DashboardCreationConfig;
+} = {
   network: {
     'index-pattern': vpcFlowLogsIndexPatternConfig,
     visualizations: vpcFlowLogsVisualizationConfigs,

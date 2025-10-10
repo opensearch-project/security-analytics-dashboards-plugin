@@ -82,7 +82,9 @@ export default class AlertsService {
       endTime,
     };
 
-    const res = await this.httpClient.get(`..${API.THREAT_INTEL_BASE}/alerts`, { query });
+    const res = await this.httpClient.get(`..${API.THREAT_INTEL_BASE}/alerts`, {
+      query,
+    });
 
     if (!res.ok) {
       errorNotificationToast(this.notifications, 'get', 'alerts', res.error);

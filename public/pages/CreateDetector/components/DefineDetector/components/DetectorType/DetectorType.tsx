@@ -104,7 +104,14 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
               this.onChange(e[0]?.value || '');
             }}
             selectedOptions={
-              detectorType ? [{ value: detectorType, label: getLogTypeLabel(detectorType) }] : []
+              detectorType
+                ? [
+                    {
+                      value: detectorType,
+                      label: getLogTypeLabel(detectorType),
+                    },
+                  ]
+                : []
             }
           />
         </EuiCompressedFormRow>

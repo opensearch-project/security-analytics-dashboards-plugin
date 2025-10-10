@@ -91,7 +91,11 @@ export const DeleteLogTypeModal: React.FC<DeleteLogTypeModalProps> = ({
         </EuiModal>
       ) : (
         <EuiConfirmModal
-          title={<EuiText size="s"><h2>Delete log type?</h2></EuiText>}
+          title={
+            <EuiText size="s">
+              <h2>Delete log type?</h2>
+            </EuiText>
+          }
           onCancel={closeModal}
           onConfirm={onConfirmClick}
           cancelButtonText={'Cancel'}
@@ -106,12 +110,10 @@ export const DeleteLogTypeModal: React.FC<DeleteLogTypeModalProps> = ({
                 The log type will be permanently deleted. This action is irreversible.
               </EuiText>
             </p>
-            <EuiSpacer size="s"/>
-              <p style={{marginBottom: '0.3rem'}}>
-                <EuiText size="s">
-                  Type {<b>{logTypeName}</b>} to confirm
-                </EuiText>
-              </p>
+            <EuiSpacer size="s" />
+            <p style={{ marginBottom: '0.3rem' }}>
+              <EuiText size="s">Type {<b>{logTypeName}</b>} to confirm</EuiText>
+            </p>
 
             <EuiCompressedFormRow>
               <EuiCompressedFieldText

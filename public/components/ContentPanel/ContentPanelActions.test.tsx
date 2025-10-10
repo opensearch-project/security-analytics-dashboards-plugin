@@ -25,7 +25,10 @@ describe('<ContentPanelActions /> spec', () => {
   it('passes rest of props to button', () => {
     const spy = jest.fn();
     const actions = [
-      { text: 'ContentPanelActions', buttonProps: { onClick: spy, disabled: true } },
+      {
+        text: 'ContentPanelActions',
+        buttonProps: { onClick: spy, disabled: true },
+      },
     ];
     const { getByTestId } = render(<ContentPanelActions actions={actions} />);
     fireEvent.click(getByTestId('ContentPanelActionsButton'));

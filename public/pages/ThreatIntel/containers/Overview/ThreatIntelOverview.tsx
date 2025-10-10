@@ -237,7 +237,7 @@ export const ThreatIntelOverview: React.FC<ThreatIntelOverviewProps> = ({
         </EuiFlexGroup>
       </EuiAccordion>
       <EuiSpacer />
-      <EuiTabbedContent tabs={tabs} initialSelectedTab={tabs[0]} size="s"/>
+      <EuiTabbedContent tabs={tabs} initialSelectedTab={tabs[0]} size="s" />
       {flyoutContent && (
         <EuiFlyout onClose={() => setFlyoutContent(null)}>
           <EuiSpacer />

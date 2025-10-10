@@ -237,14 +237,20 @@ export class ThreatIntelFindingDetailsFlyout extends React.Component<
           <DescriptionGroup
             listItems={[
               { title: 'Finding ID', description: id || DEFAULT_EMPTY_DATA },
-              { title: 'Finding time', description: renderTime(timestamp) || DEFAULT_EMPTY_DATA },
+              {
+                title: 'Finding time',
+                description: renderTime(timestamp) || DEFAULT_EMPTY_DATA,
+              },
               { title: 'Indicator type', description: renderIoCType(ioc_type) },
             ]}
           />
           <EuiSpacer />
           <DescriptionGroup
             listItems={[
-              { title: 'Indicator of Compromise', description: ioc_value || DEFAULT_EMPTY_DATA },
+              {
+                title: 'Indicator of Compromise',
+                description: ioc_value || DEFAULT_EMPTY_DATA,
+              },
             ]}
           />
           <EuiSpacer />

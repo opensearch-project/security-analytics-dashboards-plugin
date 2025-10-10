@@ -187,7 +187,9 @@ export const DataSourceThreatAlertsCard: React.FC<DataSourceAlertsCardProps> = (
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
           <EuiLink
-            href={getApplication().getUrlForApp(THREAT_ALERTS_NAV_ID, { path: '#/dashboard' })}
+            href={getApplication().getUrlForApp(THREAT_ALERTS_NAV_ID, {
+              path: '#/dashboard',
+            })}
             target="_blank"
           >
             <EuiText size="s" className="eui-displayInline">

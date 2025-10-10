@@ -116,7 +116,11 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
   };
 
   closeFlyout = (refreshPage: boolean = false) => {
-    this.setState({ flyout: undefined, flyoutOpen: false, selectedFinding: undefined });
+    this.setState({
+      flyout: undefined,
+      flyoutOpen: false,
+      selectedFinding: undefined,
+    });
     if (refreshPage) this.props.onRefresh();
   };
 

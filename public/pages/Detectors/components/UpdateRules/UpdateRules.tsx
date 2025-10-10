@@ -33,7 +33,11 @@ export interface UpdateDetectorRulesProps
   extends RouteComponentProps<
     any,
     any,
-    { detectorHit: DetectorHit; enabledRules?: RuleItem[]; allRules?: RuleItem[] }
+    {
+      detectorHit: DetectorHit;
+      enabledRules?: RuleItem[];
+      allRules?: RuleItem[];
+    }
   > {
   notifications: NotificationsStart;
 }
@@ -61,7 +65,10 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
         const detectorHit = response.response.hits.hits.find(
           (detectorHit) => detectorHit._id === detectorId
         ) as DetectorHit;
-        const newDetector = { ...detectorHit._source, id: detectorId } as Detector;
+        const newDetector = {
+          ...detectorHit._source,
+          id: detectorId,
+        } as Detector;
         setDetector(newDetector);
 
         setBreadcrumbs([
@@ -157,7 +164,10 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
 
   const onAllRulesToggle = async (isActive: boolean) => {
     setFieldMappingsIsVisible(true);
-    const customRules: RuleItem[] = customRuleItems.map((rule) => ({ ...rule, active: isActive }));
+    const customRules: RuleItem[] = customRuleItems.map((rule) => ({
+      ...rule,
+      active: isActive,
+    }));
     const prePackagedRules: RuleItem[] = prePackagedRuleItems.map((rule) => ({
       ...rule,
       active: isActive,
@@ -241,7 +251,10 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
       category: ruleItem.logType,
       description: ruleItem.description,
       source: ruleItem.library,
-      ruleInfo: { ...ruleItem.ruleInfo, prePackaged: ruleItem.library === 'Standard' },
+      ruleInfo: {
+        ...ruleItem.ruleInfo,
+        prePackaged: ruleItem.library === 'Standard',
+      },
       ruleId: ruleItem.id,
     }));
   };

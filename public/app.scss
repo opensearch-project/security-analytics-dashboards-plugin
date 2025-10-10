@@ -5,9 +5,9 @@
 
 // Copies over styling from eui library to be used in custom classes
 // Core
-$euiColorPrimary: #006BB4 !default;
+$euiColorPrimary: #006bb4 !default;
 $euiColorDarkestShade: #343741 !default;
-$euiColorGhost: #FFF !default;
+$euiColorGhost: #fff !default;
 $euiColorInk: #000 !default;
 $euiTextColor: $euiColorDarkestShade !default;
 
@@ -45,7 +45,12 @@ $euiTextColor: $euiColorDarkestShade !default;
 }
 
 .euiLoadingContent__singleLineBackground {
-  background: linear-gradient(137deg, #d3dae6 45%, #bac0ca 50%, #d3dae6 55%) !important;
+  background: linear-gradient(
+    137deg,
+    #d3dae6 45%,
+    #bac0ca 50%,
+    #d3dae6 55%
+  ) !important;
 }
 
 .refresh-button {
@@ -64,10 +69,20 @@ $euiTextColor: $euiColorDarkestShade !default;
 .vg-tooltip {
   background-color: #404040 !important;
   border-radius: 4px !important;
-  color: #FFFFFF !important;
+  color: #ffffff !important;
   border: none !important;
   padding: 0 !important;
-  font-family: "Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol" !important;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Helvetica,
+    Arial,
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol" !important;
   font-weight: 600 !important;
   font-size: 12px !important;
 

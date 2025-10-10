@@ -35,7 +35,10 @@ export const RulesTable: React.FC<RulesTableProps> = ({
       search={getRulesTableSearchConfig()}
       pagination={{ ...pagination, pageSizeOptions: [10, 25, 50] }}
       onTableChange={(nextValues: CriteriaWithPagination<any>) =>
-        setPagination({ pageIndex: nextValues.page.index, pageSize: nextValues.page.size })
+        setPagination({
+          pageIndex: nextValues.page.index,
+          pageSize: nextValues.page.size,
+        })
       }
       sorting={true}
     />

@@ -214,7 +214,9 @@ export default class EditFieldMappings extends Component<
                 </EuiTitle>
               </div>
             }
-            buttonProps={{ style: { paddingLeft: '10px', paddingRight: '10px' } }}
+            buttonProps={{
+              style: { paddingLeft: '10px', paddingRight: '10px' },
+            }}
             id={'mappedFieldsAccordion'}
             initialIsOpen={
               initialIsOpen !== undefined ? initialIsOpen : unmappedRuleFields.length === 0

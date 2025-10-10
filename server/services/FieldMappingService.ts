@@ -37,7 +37,10 @@ export default class FieldMappingService extends MDSEnabledClientService {
   > => {
     try {
       const client = this.getClient(request, context);
-      const { indexName, ruleTopic } = request.query as { indexName: string; ruleTopic?: string };
+      const { indexName, ruleTopic } = request.query as {
+        indexName: string;
+        ruleTopic?: string;
+      };
       const params: GetFieldMapingsViewParams = {
         indexName,
         ruleTopic,
@@ -77,7 +80,9 @@ export default class FieldMappingService extends MDSEnabledClientService {
     IOpenSearchDashboardsResponse<ServerResponse<CreateMappingsResponse> | ResponseError>
   > => {
     try {
-      const params: CreateMappingsParams = { body: request.body as CreateMappingBody };
+      const params: CreateMappingsParams = {
+        body: request.body as CreateMappingBody,
+      };
       const client = this.getClient(request, context);
       const getDetectorResponse: CreateMappingsResponse = await client(
         CLIENT_FIELD_MAPPINGS_METHODS.CREATE_MAPPINGS,

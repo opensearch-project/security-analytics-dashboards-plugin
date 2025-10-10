@@ -33,7 +33,9 @@ export default class FindingsService extends MDSEnabledClientService {
     IOpenSearchDashboardsResponse<ServerResponse<GetFindingsResponse> | ResponseError>
   > => {
     try {
-      const params: GetFindingsParams & DataSourceRequestParams = { ...request.query };
+      const params: GetFindingsParams & DataSourceRequestParams = {
+        ...request.query,
+      };
       const client = this.getClient(request, context);
       // Delete the dataSourceId since this query param is not supported by the finding API
       delete params['dataSourceId'];
@@ -85,7 +87,9 @@ export default class FindingsService extends MDSEnabledClientService {
     IOpenSearchDashboardsResponse<ServerResponse<GetThreatIntelFindingsResponse> | ResponseError>
   > => {
     try {
-      const params: GetThreatIntelFindingsParams & DataSourceRequestParams = { ...request.query };
+      const params: GetThreatIntelFindingsParams & DataSourceRequestParams = {
+        ...request.query,
+      };
       const client = this.getClient(request, context);
       // Delete the dataSourceId since this query param is not supported by the finding API
       delete params['dataSourceId'];

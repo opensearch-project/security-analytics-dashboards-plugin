@@ -7,42 +7,42 @@ template: |
 
 # Setting the formatting and sorting for the release notes body
 name-template: Version (set version here)
-change-template: '* $TITLE ([#$NUMBER]($URL))'
+change-template: "* $TITLE ([#$NUMBER]($URL))"
 sort-by: merged_at
 sort-direction: ascending
 replacers:
-  - search: '##'
-    replace: '###'
+  - search: "##"
+    replace: "###"
 
 # Organizing the tagged PRs into unified OpenSearch categories
 categories:
-  - title: 'Breaking changes'
+  - title: "Breaking changes"
     labels:
-      - 'breaking change'
-  - title: 'Features'
+      - "breaking change"
+  - title: "Features"
     labels:
-      - 'feature'
-  - title: 'Enhancements'
+      - "feature"
+  - title: "Enhancements"
     labels:
-      - 'enhancement'
-      - 'action'
-      - 'API'
-  - title: 'Bug Fixes'
+      - "enhancement"
+      - "action"
+      - "API"
+  - title: "Bug Fixes"
     labels:
-      - 'bug'
-  - title: 'Infrastructure'
+      - "bug"
+  - title: "Infrastructure"
     labels:
-      - 'infra'
-      - 'testing'
-      - 'CI/CD'
-      - 'dependencies'
-  - title: 'Documentation'
+      - "infra"
+      - "testing"
+      - "CI/CD"
+      - "dependencies"
+  - title: "Documentation"
     labels:
-      - 'documentation'
-  - title: 'Maintenance'
+      - "documentation"
+  - title: "Maintenance"
     labels:
-      - 'version support'
-      - 'backwards-compatibility'
-  - title: 'Refactoring'
+      - "version support"
+      - "backwards-compatibility"
+  - title: "Refactoring"
     labels:
-      - 'refactor'
+      - "refactor"

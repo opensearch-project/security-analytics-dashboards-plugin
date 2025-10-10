@@ -606,5 +606,10 @@ const getGroupByText = (groupByValue: string) => {
     ...groupByOptionsByTabId[FindingTabId.ThreatIntel],
     ...summaryGroupByOptions,
   ];
-  return allOptions.filter((item) => item.value === groupByValue)[0] || { text: '-', value: '-' };
+  return (
+    allOptions.filter((item) => item.value === groupByValue)[0] || {
+      text: '-',
+      value: '-',
+    }
+  );
 };

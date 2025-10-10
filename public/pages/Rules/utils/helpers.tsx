@@ -40,7 +40,9 @@ export const getRulesTableColumns = (
   columnsToHide: RulesTableColumnFields[] = []
 ): EuiBasicTableColumn<RuleTableItem>[] => {
   const fields: RulesTableColumnFields[] = ['title', 'level', 'category', 'source', 'description'];
-  const tableColumnByField: { [field: string]: EuiBasicTableColumn<RuleTableItem> } = {
+  const tableColumnByField: {
+    [field: string]: EuiBasicTableColumn<RuleTableItem>;
+  } = {
     title: {
       field: 'title',
       name: 'Rule name',

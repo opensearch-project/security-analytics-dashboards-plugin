@@ -26,7 +26,10 @@ export default class OpenSearchService extends MDSEnabledClientService {
     IOpenSearchDashboardsResponse<ServerResponse<SearchResponse<any>> | ResponseError>
   > => {
     try {
-      const { index, documentIds } = request.body as { index: string; documentIds: string[] };
+      const { index, documentIds } = request.body as {
+        index: string;
+        documentIds: string[];
+      };
       const body = {
         query: {
           terms: {
@@ -34,7 +37,10 @@ export default class OpenSearchService extends MDSEnabledClientService {
           },
         },
       };
-      const params: DocumentIdsQueryParams = { index, body: JSON.stringify(body) };
+      const params: DocumentIdsQueryParams = {
+        index,
+        body: JSON.stringify(body),
+      };
       const client = this.getClient(request, context);
       const searchResponse: SearchResponse<any> = await client('search', params);
       return response.custom({
@@ -87,7 +93,10 @@ export default class OpenSearchService extends MDSEnabledClientService {
         },
       };
 
-      const params: TimeRangeQueryParams = { index, body: JSON.stringify(body) };
+      const params: TimeRangeQueryParams = {
+        index,
+        body: JSON.stringify(body),
+      };
       const client = this.getClient(request, context);
       const searchResponse: SearchResponse<any> = await client('search', params);
       return response.custom({

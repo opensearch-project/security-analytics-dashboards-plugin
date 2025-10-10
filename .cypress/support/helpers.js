@@ -25,7 +25,9 @@ Cypress.Commands.add('getInputByPlaceholder', (placeholder) => {
 });
 
 Cypress.Commands.add('getComboboxByPlaceholder', (placeholder) => {
-  Cypress.log({ message: `Get combobox element by placeholder: ${placeholder}` });
+  Cypress.log({
+    message: `Get combobox element by placeholder: ${placeholder}`,
+  });
   return cy
     .getElementByText('.euiComboBoxPlaceholder', placeholder)
     .siblings('.euiComboBox__input')
@@ -142,7 +144,9 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add('validateDetailsItem', (label, value) => {
-  Cypress.log({ message: `Validate details item by label: ${label} and value: ${value}` });
+  Cypress.log({
+    message: `Validate details item by label: ${label} and value: ${value}`,
+  });
   return cy.getElementByText('.euiFlexItem label', label).parent().siblings().contains(value);
 });
 

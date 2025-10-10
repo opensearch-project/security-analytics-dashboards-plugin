@@ -145,7 +145,10 @@ export interface ICorrelationsStore {
     finding: string,
     detector_type: string,
     nearby_findings?: number
-  ): Promise<{ finding: CorrelationFinding; correlatedFindings: CorrelationFinding[] }>;
+  ): Promise<{
+    finding: CorrelationFinding;
+    correlatedFindings: CorrelationFinding[];
+  }>;
   createCorrelationRule(correlationRule: CorrelationRule): void;
   updateCorrelationRule(correlationRule: CorrelationRule): void;
   deleteCorrelationRule(ruleId: string): Promise<boolean>;

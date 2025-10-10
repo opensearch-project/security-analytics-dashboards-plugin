@@ -232,7 +232,10 @@ export function readIocsFromFile(
   ) => void
 ) {
   if (file.size > IOC_UPLOAD_MAX_FILE_SIZE) {
-    return onRead({ ok: false, errorMessage: 'File size should be less then 500KB.' });
+    return onRead({
+      ok: false,
+      errorMessage: 'File size should be less then 500KB.',
+    });
   }
 
   const reader = new FileReader();

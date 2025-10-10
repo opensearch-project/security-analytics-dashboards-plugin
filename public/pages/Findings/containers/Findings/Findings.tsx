@@ -245,7 +245,11 @@ class Findings extends Component<FindingsProps, FindingsState> {
       tabId,
       field,
       value,
-    }: { tabId: T; field: F; value: FindingsState['findingStateByTabId'][T][F] },
+    }: {
+      tabId: T;
+      field: F;
+      value: FindingsState['findingStateByTabId'][T][F];
+    },
     otherState?: Partial<Pick<FindingsState, keyof Omit<FindingsState, 'findingStateByTabId'>>>
   ) {
     this.setState({

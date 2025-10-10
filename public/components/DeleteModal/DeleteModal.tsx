@@ -58,7 +58,11 @@ export default class DeleteModal extends Component<DeleteModalProps, DeleteModal
     return (
       <EuiOverlayMask>
         <EuiConfirmModal
-          title={<EuiText size="s"><h2>`Delete ${type}`</h2></EuiText>}
+          title={
+            <EuiText size="s">
+              <h2>`Delete ${type}`</h2>
+            </EuiText>
+          }
           onCancel={closeDeleteModal}
           onConfirm={() => {
             onClickDelete();
@@ -76,7 +80,9 @@ export default class DeleteModal extends Component<DeleteModalProps, DeleteModal
             </p>
             <EuiSpacer size="s" />
             {!!confirmation && (
-              <EuiCompressedFormRow helpText={`To confirm deletion, type "${DEFAULT_DELETION_TEXT}".`}>
+              <EuiCompressedFormRow
+                helpText={`To confirm deletion, type "${DEFAULT_DELETION_TEXT}".`}
+              >
                 <EuiCompressedFieldText
                   value={confirmDeleteText}
                   placeholder={DEFAULT_DELETION_TEXT}

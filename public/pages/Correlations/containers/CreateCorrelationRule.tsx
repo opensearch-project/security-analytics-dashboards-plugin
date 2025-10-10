@@ -661,7 +661,12 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                             )}
                             selectedOptions={
                               condition.name
-                                ? [{ value: condition.name, label: condition.name }]
+                                ? [
+                                    {
+                                      value: condition.name,
+                                      label: condition.name,
+                                    },
+                                  ]
                                 : []
                             }
                             onCreateOption={(e) => {
@@ -887,7 +892,9 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                   errors.queries = Array(values.queries.length).fill(null);
                 }
 
-                (errors.queries as Array<{ field: string }>)[idx] = { field: 'Field is required.' };
+                (errors.queries as Array<{ field: string }>)[idx] = {
+                  field: 'Field is required.',
+                };
               }
             });
           }

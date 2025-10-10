@@ -415,7 +415,10 @@ export async function getDataSources(
 ): Promise<
   | {
       ok: true;
-      dataSources: { label: string; options: { label: string; value: string; index?: string }[] }[];
+      dataSources: {
+        label: string;
+        options: { label: string; value: string; index?: string }[];
+      }[];
     }
   | { ok: false; error: string }
 > {
@@ -601,7 +604,12 @@ export function getBadgeText(severity: string) {
 }
 
 export function getAlertSeverityColor(severity: string) {
-  return ALERT_SEVERITY_PROPS[severity]?.color || { background: 'white', text: 'black' };
+  return (
+    ALERT_SEVERITY_PROPS[severity]?.color || {
+      background: 'white',
+      text: 'black',
+    }
+  );
 }
 
 export function getAlertSeverityBadge(severity: string) {

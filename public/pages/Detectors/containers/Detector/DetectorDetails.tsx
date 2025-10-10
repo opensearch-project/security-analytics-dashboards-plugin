@@ -444,7 +444,12 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     return this.state.tabs.map((tab, index) => (
       <EuiTab
         key={index}
-        onClick={() => this.setState({ selectedTabId: tab.id, selectedTabContent: tab.content })}
+        onClick={() =>
+          this.setState({
+            selectedTabId: tab.id,
+            selectedTabContent: tab.content,
+          })
+        }
         isSelected={this.state.selectedTabId === tab.id}
       >
         {tab.name}
@@ -479,11 +484,15 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
       <>
         <PageHeader
           appBadgeControls={[
-            { renderComponent: <EuiHealth color={statusColor}>{statusText}</EuiHealth> },
+            {
+              renderComponent: <EuiHealth color={statusColor}>{statusText}</EuiHealth>,
+            },
           ]}
           appRightControls={
             !creatingDetector && !createFailed
-              ? this.createHeaderActions().map((action) => ({ renderComponent: action }))
+              ? this.createHeaderActions().map((action) => ({
+                  renderComponent: action,
+                }))
               : undefined
           }
         >
