@@ -60,7 +60,7 @@ import { euiThemeVars } from '@osd/ui-shared-deps/theme';
 import dateMath from '@elastic/datemath';
 import { IocLabel, ThreatIntelIocType } from '../../common/constants';
 import { parse, View } from 'vega/build-es5/vega.js';
-import { compile } from 'vega-lite';
+import { compile } from 'vega-lite-next';
 import { Handler } from 'vega-tooltip';
 import { expressionInterpreter as vegaExpressionInterpreter } from 'vega-interpreter/build/vega-interpreter';
 import {

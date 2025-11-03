@@ -4,7 +4,7 @@
  */
 
 import { euiPaletteColorBlind, euiPaletteForStatus } from '@elastic/eui';
-import { TopLevelSpec } from 'vega-lite';
+import { TopLevelSpec } from 'vega-lite-next';
 import { SummaryData } from '../components/Widgets/Summary';
 import dateMath from '@elastic/datemath';
 import _ from 'lodash';
