@@ -22,7 +22,7 @@ import {
 } from '../models/interfaces';
 import { CLIENT_RULE_METHODS } from '../utils/constants';
 import { ServerResponse } from '../models/types';
-import { load, safeDump } from 'js-yaml';
+import { load, dump } from 'js-yaml';
 import moment from 'moment';
 import { Rule } from '../../types';
 import { DEFAULT_RULE_UUID } from '../../common/constants';
@@ -75,7 +75,7 @@ export default class RulesService extends MDSEnabledClientService {
       if (false_positives.length > 0) {
         jsonPayload['falsepositives'] = false_positives.map((falsePos) => falsePos.value);
       }
-      const ruleYamlPayload = safeDump(jsonPayload);
+      const ruleYamlPayload = dump(jsonPayload);
 
       const params: CreateRuleParams = {
         body: ruleYamlPayload,
@@ -217,7 +217,7 @@ export default class RulesService extends MDSEnabledClientService {
         jsonPayload['falsepositives'] = false_positives.map((falsePos) => falsePos.value);
       }
 
-      const ruleYamlPayload = safeDump(jsonPayload);
+      const ruleYamlPayload = dump(jsonPayload);
       const params: UpdateRuleParams = { body: ruleYamlPayload, category, ruleId };
       const client = this.getClient(request, context);
       const createRuleResponse: UpdateRuleResponse = await client(
