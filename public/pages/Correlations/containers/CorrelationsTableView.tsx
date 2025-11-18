@@ -155,20 +155,27 @@ export class CorrelationsTableView extends React.Component<
       '5': 'informational',
     };
 
+    // If no filters are selected, include all
     const selectedLogTypes = logTypeFilterOptions
-      .filter((item) => item.checked === 'on' && item.visible)
+      .filter((item) => item.checked === 'on')
       .map((item) => item.id);
 
     const selectedSeverities = severityFilterOptions
-      .filter((item) => item.checked === 'on' && item.visible)
+      .filter((item) => item.checked === 'on')
       .map((item) => item.id.toLowerCase());
 
     return tableData.filter((row) => {
-      const logTypeMatch = row.logTypes?.some((logType) => selectedLogTypes.includes(logType));
+      const logTypeMatch =
+        selectedLogTypes.length === 0 ||
+        !row.logTypes?.length ||
+        row.logTypes.some((logType) => selectedLogTypes.includes(logType));
 
-      const severityMatch = row.alertSeverity?.some((severity) =>
-        selectedSeverities.includes(alertSeverityMap[severity])
-      );
+      const severityMatch =
+        selectedSeverities.length === 0 ||
+        !row.alertSeverity?.length ||
+        row.alertSeverity.some((severity) =>
+          selectedSeverities.includes(alertSeverityMap[severity])
+        );
 
       const searchLower = searchTerm.toLowerCase();
       const searchMatch =

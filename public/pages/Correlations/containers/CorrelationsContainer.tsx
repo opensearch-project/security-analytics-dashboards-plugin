@@ -583,26 +583,42 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
           logTypes.add(finding.logType);
         }
 
-        // Call the APIs only if correlationRule has not been found yet to avoid repeated API calls.
         if (correlationRule === '') {
           if (findingGroup[0] && findingGroup[0].detector && findingGroup[0].detector._source) {
-            const correlatedFindingsResponse = await DataStore.correlations.getCorrelatedFindings(
-              findingGroup[0].id,
-              findingGroup[0]?.detector._source?.detector_type
-            );
-            if (correlatedFindingsResponse?.correlatedFindings[0]?.rules) {
-              const correlationRuleId = correlatedFindingsResponse.correlatedFindings[0].rules[0];
-              correlationRuleObj =
-                (await DataStore.correlations.getCorrelationRule(correlationRuleId)) || null;
-              alertsSeverity = correlationRuleMapsAlerts[correlationRuleId];
-              if (correlationRuleObj) {
-                correlationRule = correlationRuleObj.name;
-                correlationRuleObj.queries.map((query) => {
-                  query.conditions.map((condition) => {
-                    resources.push(condition.name + ': ' + condition.value);
-                  });
-                });
+            try {
+              const correlatedFindingsResponse = await DataStore.correlations.getCorrelatedFindings(
+                findingGroup[0].id,
+                findingGroup[0]?.detector._source?.detector_type
+              );
+
+              if (correlatedFindingsResponse?.correlatedFindings[0]?.rules) {
+                const correlationRuleId = correlatedFindingsResponse.correlatedFindings[0].rules[0];
+                correlationRuleObj =
+                  (await DataStore.correlations.getCorrelationRule(correlationRuleId)) || null;
+                alertsSeverity = correlationRuleMapsAlerts[correlationRuleId] || []; // ✅ Default to empty array
+
+                if (correlationRuleObj) {
+                  correlationRule = correlationRuleObj.name;
+
+                  if (correlationRuleObj.queries && Array.isArray(correlationRuleObj.queries)) {
+                    correlationRuleObj.queries.forEach((query) => {
+                      if (query.conditions && Array.isArray(query.conditions)) {
+                        query.conditions.forEach((condition) => {
+                          if (condition.name && condition.value) {
+                            resources.push(condition.name + ': ' + condition.value);
+                          }
+                        });
+                      }
+                    });
+                  }
+                }
               }
+            } catch (error) {
+              console.error(
+                'Error fetching correlation details for finding:',
+                findingGroup[0].id,
+                error
+              );
             }
           }
         }
@@ -625,6 +641,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         loadingTableData: false,
       });
     } catch (error) {
+      console.error('Error in fetchCorrelationsTableData:', error);
       this.setState({ loadingTableData: false });
       errorNotificationToast(
         this.props.notifications,
