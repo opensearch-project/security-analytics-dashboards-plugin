@@ -222,9 +222,9 @@ export class CorrelationsTableView extends React.Component<
       .map((item) => item.id.toLowerCase());
 
     return tableData.filter((row) => {
-      const logTypeMatch = row.logTypes.some((logType) => selectedLogTypes.includes(logType));
+      const logTypeMatch = row.logTypes?.some((logType) => selectedLogTypes.includes(logType));
 
-      const severityMatch = row.alertSeverity.some((severity) =>
+      const severityMatch = row.alertSeverity?.some((severity) =>
         selectedSeverities.includes(alertSeverityMap[severity])
       );
 
@@ -232,12 +232,12 @@ export class CorrelationsTableView extends React.Component<
       const searchMatch =
         searchTerm === '' ||
         row.correlationRule?.toLowerCase().includes(searchLower) ||
-        row.logTypes.some((type) => type.toLowerCase().includes(searchLower)) ||
-        row.alertSeverity.some((severity) =>
+        row.logTypes?.some((type) => type.toLowerCase().includes(searchLower)) ||
+        row.alertSeverity?.some((severity) =>
           alertSeverityMap[severity].toLowerCase().includes(searchLower)
         ) ||
-        row.findingsSeverity.some((severity) => severity.toLowerCase().includes(searchLower)) ||
-        row.resources.some((resource) => resource.toLowerCase().includes(searchLower));
+        row.findingsSeverity?.some((severity) => severity.toLowerCase().includes(searchLower)) ||
+        row.resources?.some((resource) => resource.toLowerCase().includes(searchLower));
       return logTypeMatch && severityMatch && searchMatch;
     });
   };

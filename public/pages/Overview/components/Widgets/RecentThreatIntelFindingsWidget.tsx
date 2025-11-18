@@ -38,9 +38,17 @@ const columns: EuiBasicTableColumn<ThreatIntelFinding>[] = [
     name: 'Threat intel source',
     field: 'ioc_feed_ids',
     render: (ioc_feed_ids: ThreatIntelFinding['ioc_feed_ids']) => {
-      return (
-        <span>{ioc_feed_ids.map((ids) => ids.feed_name).join(', ') || DEFAULT_EMPTY_DATA}</span>
-      );
+      // Add defensive checks for undefined/null array and nested properties
+      if (!ioc_feed_ids || !Array.isArray(ioc_feed_ids) || ioc_feed_ids.length === 0) {
+        return <span>{DEFAULT_EMPTY_DATA}</span>;
+      }
+
+      const feedNames = ioc_feed_ids
+        .map((ids) => ids?.feed_name)
+        .filter((name) => name) // Remove undefined/null values
+        .join(', ');
+
+      return <span>{feedNames || DEFAULT_EMPTY_DATA}</span>;
     },
   },
 ];
