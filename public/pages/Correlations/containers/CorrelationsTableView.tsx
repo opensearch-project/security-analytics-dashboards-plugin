@@ -157,11 +157,11 @@ export class CorrelationsTableView extends React.Component<
 
     // If no filters are selected, include all
     const selectedLogTypes = logTypeFilterOptions
-      .filter((item) => item.checked === 'on')
+      .filter((item) => item.checked === 'on' && item.visible)
       .map((item) => item.id);
 
     const selectedSeverities = severityFilterOptions
-      .filter((item) => item.checked === 'on')
+      .filter((item) => item.checked === 'on' && item.visible)
       .map((item) => item.id.toLowerCase());
 
     return tableData.filter((row) => {
