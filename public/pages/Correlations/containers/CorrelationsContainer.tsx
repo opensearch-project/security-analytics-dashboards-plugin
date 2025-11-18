@@ -595,7 +595,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                 const correlationRuleId = correlatedFindingsResponse.correlatedFindings[0].rules[0];
                 correlationRuleObj =
                   (await DataStore.correlations.getCorrelationRule(correlationRuleId)) || null;
-                alertsSeverity = correlationRuleMapsAlerts[correlationRuleId] || []; // ✅ Default to empty array
+                alertsSeverity = correlationRuleMapsAlerts[correlationRuleId] || [];
 
                 if (correlationRuleObj) {
                   correlationRule = correlationRuleObj.name;
@@ -641,7 +641,6 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
         loadingTableData: false,
       });
     } catch (error) {
-      console.error('Error in fetchCorrelationsTableData:', error);
       this.setState({ loadingTableData: false });
       errorNotificationToast(
         this.props.notifications,
