@@ -208,14 +208,18 @@ export class RulesStore implements IRulesStore {
       let detectionYaml = '';
 
       try {
-        const detectionJson = load(ruleInfo._source.rule).detection;
+        const detectionJson = load(
+          typeof ruleInfo._source.rule === 'string'
+            ? ruleInfo._source.rule
+            : ruleInfo._source.rule.rule
+        ).detection;
         detectionYaml = dump(detectionJson);
       } catch (_error: any) {}
 
       return {
         ...ruleInfo,
         _source: {
-          ...ruleInfo._source,
+          ...(typeof ruleInfo._source.rule === 'string' ? ruleInfo._source : ruleInfo._source.rule),
           detection: detectionYaml,
         },
       };

@@ -6,6 +6,7 @@
 import { HttpSetup } from 'opensearch-dashboards/public';
 import { ServerResponse } from '../../server/models/types';
 import {
+  CreateRuleRequest,
   CreateRuleResponse,
   DeleteRuleResponse,
   GetRulesResponse,
@@ -35,8 +36,9 @@ export default class RuleService {
 
   createRule = async (rule: Rule): Promise<ServerResponse<CreateRuleResponse>> => {
     const url = `..${API.RULES_BASE}`;
+    const ruleBody: CreateRuleRequest = { rule: rule };
     return (await this.httpClient.post(url, {
-      body: JSON.stringify(rule),
+      body: JSON.stringify(ruleBody),
       query: {
         dataSourceId: dataSourceInfo.activeDataSource.id,
       },
