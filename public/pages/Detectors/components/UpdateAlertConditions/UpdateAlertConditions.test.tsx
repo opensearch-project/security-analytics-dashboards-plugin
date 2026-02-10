@@ -7,7 +7,7 @@ import React from 'react';
 import props from '../../../../../test/mocks/Detectors/components/UpdateAlertConditions/UpdateAlertConditions.mock';
 import { expect } from '@jest/globals';
 import UpdateAlertConditions from './UpdateAlertConditions';
-import { act } from 'react-dom/test-utils';
+import { act } from '@testing-library/react';
 import { mount } from 'enzyme';
 import { coreContextMock } from '../../../../../test/mocks/useContext.mock';
 

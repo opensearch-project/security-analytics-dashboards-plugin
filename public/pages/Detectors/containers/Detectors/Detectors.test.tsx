@@ -6,7 +6,7 @@
 import React from 'react';
 import props from '../../../../../test/mocks/Detectors/containers/Detectors/Detectors.mock';
 import { expect } from '@jest/globals';
-import { act } from 'react-dom/test-utils';
+import { act } from '@testing-library/react';
 import { mount } from 'enzyme';
 import Detectors from './Detectors';
 import { coreContextMock } from '../../../../../test/mocks/useContext.mock';

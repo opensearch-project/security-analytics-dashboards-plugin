@@ -9,7 +9,7 @@ import { expect } from '@jest/globals';
 import { AlertTriggersView } from './AlertTriggersView';
 import { ReactWrapper, mount } from 'enzyme';
 import { mockContexts } from '../../../../../test/mocks/useContext.mock';
-import { act } from 'react-dom/test-utils';
+import { act } from '@testing-library/react';
 
 describe('<AlertTriggersView /> spec', () => {
   it('renders the component', async () => {

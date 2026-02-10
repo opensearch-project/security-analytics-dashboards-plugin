@@ -8,7 +8,7 @@ import '@testing-library/jest-dom/extend-expect';
 import { configure } from '@testing-library/react';
 import Enzyme from 'enzyme';
 // @ts-ignore
-import Adapter from 'enzyme-adapter-react-16';
+import Adapter from '@cfaester/enzyme-adapter-react-18';
 import { mockContexts } from './mocks/useContext.mock';
 import { DataStore } from '../public/store/DataStore';
 import services from './mocks/services';
@@ -93,8 +93,8 @@ jest.mock('react', () => {
 /**
  * Mocks the vega view renderer
  */
-jest.mock('vega/build-es5/vega.js', () => {
-  const vega = jest.requireActual('vega/build-es5/vega.js');
+jest.mock('vega/build/vega.js', () => {
+  const vega = jest.requireActual('vega/build/vega.js');
   return {
     ...vega,
     View: jest.fn().mockReturnValue({

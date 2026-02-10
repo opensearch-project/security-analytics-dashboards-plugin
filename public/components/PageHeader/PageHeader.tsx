@@ -11,6 +11,7 @@ import {
 import { getApplication, getNavigationUI, getUseUpdatedUx } from '../../services/utils/constants';
 
 export interface PageHeaderProps {
+  children?: React.ReactNode;
   appRightControls?: TopNavControlData[];
   appBadgeControls?: TopNavControlData[];
   appDescriptionControls?: TopNavControlDescriptionData[];
