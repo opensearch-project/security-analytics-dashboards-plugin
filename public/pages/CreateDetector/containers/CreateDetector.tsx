@@ -182,7 +182,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     this.props.metrics.detectorMetricsManager.sendMetrics(CreateDetectorSteps.createClicked);
 
     // navigate to detector details
-    this.props.history.push(`${ROUTES.DETECTOR_DETAILS}/${PENDING_DETECTOR_ID}`);
+    this.props.history.push(`${ROUTES.DETECTOR_DETAILS}/${createDetectorRes.response._id}`);
   };
 
   onNextClick = () => {
