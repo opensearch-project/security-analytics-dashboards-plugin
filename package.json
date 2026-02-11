@@ -28,7 +28,7 @@
     "postinstall": "node -e \"const { execSync } = require('child_process');const { INIT_CWD, PWD = process.cwd() } = process.env; if (INIT_CWD?.startsWith?.(PWD)) {try {execSync('husky install');} catch (e) {}}\""
   },
   "resolutions": {
-    "@types/react": "^16.9.8",
+    "@types/react": "^18.2.0",
     "**/@types/angular": "1.6.50",
     "**/@types/jest": "^29.3.1",
     "**/@types/react-dom": "^16.9.8",
@@ -70,7 +70,7 @@
     "@elastic/eslint-import-resolver-kibana": "link:../../packages/osd-eslint-import-resolver-opensearch-dashboards",
     "@testing-library/dom": "^8.11.3",
     "@testing-library/user-event": "^14.4.3",
-    "@types/react-dom": "^16.9.8",
+    "@types/react-dom": "^18.2.0",
     "@types/react-router-dom": "^5.3.2",
     "@types/vis": "^4.21.21",
     "cypress": "^13.6.0",
