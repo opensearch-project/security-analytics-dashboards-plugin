@@ -14,6 +14,7 @@ import {
 } from '../../types';
 import { dataSourceInfo } from './utils/constants';
 import { errorNotificationToast } from '../utils/helpers';
+import { THREAT_INTEL_ENABLED } from '../utils/constants';
 
 export default class FindingsService {
   constructor(private httpClient: HttpSetup, private notifications: NotificationsStart) {}
@@ -38,6 +39,16 @@ export default class FindingsService {
   getThreatIntelFindings = async (
     getFindingsParams: GetThreatIntelFindingsParams
   ): Promise<ServerResponse<GetThreatIntelFindingsResponse>> => {
+    if (!THREAT_INTEL_ENABLED) {
+      return {
+        ok: true,
+        response: {
+          total_findings: 0,
+          ioc_findings: [],
+        },
+      };
+    }
+
     const query = {
       sortOrder: 'desc',
       size: 10000,

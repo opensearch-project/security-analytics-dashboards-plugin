@@ -83,6 +83,7 @@ export default class ConfigureAlerts extends Component<ConfigureAlertsProps, Con
 
     isEdit &&
       setBreadcrumbs([
+        BREADCRUMBS.DETECTION,
         BREADCRUMBS.DETECTORS,
         BREADCRUMBS.DETECTORS_DETAILS(name, id),
         {

@@ -15,8 +15,13 @@ import {
   NotificationsService,
   IndexPatternsService,
   LogTypeService,
+  IntegrationService,
+  PoliciesService,
+  DecodersService,
+  KVDBsService,
 } from '../services';
 import CorrelationService from '../services/CorrelationService';
+import LogTestService from '../services/LogTestService';
 import MetricsService from '../services/MetricsService';
 import ThreatIntelService from '../services/ThreatIntelService';
 
@@ -32,7 +37,12 @@ export interface BrowserServices {
   notificationsService: NotificationsService;
   savedObjectsService: ISavedObjectsService;
   indexPatternsService: IndexPatternsService;
+  integrationService: IntegrationService;
+  policiesService: PoliciesService;
   logTypeService: LogTypeService;
+  decodersService: DecodersService;
+  kvdbsService: KVDBsService;
+  logTestService: LogTestService;
   metricsService: MetricsService;
   threatIntelService: ThreatIntelService;
 }

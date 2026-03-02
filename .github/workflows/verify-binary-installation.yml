@@ -1,6 +1,10 @@
 name: 'Install Dashboards with Plugin via Binary'
 
-on: [push, pull_request]
+on:
+  pull_request:
+    branches:
+      - "*"
+    types: [opened, synchronize, reopened, ready_for_review]
 env:
   OPENSEARCH_VERSION: '3.1.0'
   CI: 1
@@ -16,6 +20,7 @@ jobs:
         os: [ubuntu-latest]
         # TODO: add windows support when OSD core is stable on windows
     runs-on: ${{ matrix.os }}
+    if: github.event.pull_request.draft == false
     steps:
       - name: Checkout Branch
         uses: actions/checkout@v3

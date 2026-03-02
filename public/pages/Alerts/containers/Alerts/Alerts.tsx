@@ -33,6 +33,7 @@ import {
   DEFAULT_DATE_RANGE,
   DEFAULT_EMPTY_DATA,
   MAX_RECENTLY_USED_TIME_RANGES,
+  THREAT_INTEL_ENABLED,
 } from '../../../../utils/constants';
 import AlertsService from '../../../../services/AlertsService';
 import DetectorService from '../../../../services/DetectorService';
@@ -135,6 +136,11 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     } = props;
     const timeUnits = getChartTimeUnit(dateTimeFilter.startTime, dateTimeFilter.endTime);
     const searchParams = new URLSearchParams(props.location.search);
+    const selectedTabFromUrl = searchParams.get('detectionType') as AlertTabId | null;
+    const selectedTabId =
+      selectedTabFromUrl === AlertTabId.ThreatIntel && !THREAT_INTEL_ENABLED
+        ? AlertTabId.DetectionRules
+        : selectedTabFromUrl ?? AlertTabId.DetectionRules;
     this.state = {
       loading: true,
       groupBy: 'status',
@@ -152,7 +158,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       dateFormat: timeUnits.dateFormat,
       widgetEmptyMessage: undefined,
       widgetEmptyCorrelationMessage: undefined,
-      selectedTabId: (searchParams.get('detectionType') as AlertTabId) ?? AlertTabId.DetectionRules,
+      selectedTabId,
       threatIntelAlerts: [],
       filteredThreatIntelAlerts: [],
     };
@@ -323,7 +329,9 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         break;
 
       case AlertTabId.ThreatIntel:
-        this.getThreatIntelAlerts(abortController.signal);
+        if (THREAT_INTEL_ENABLED) {
+          this.getThreatIntelAlerts(abortController.signal);
+        }
         break;
     }
   }
@@ -436,7 +444,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       },
       {
         field: 'correlation_rule_categories',
-        name: 'Log Types',
+        name: 'Integrations', // replace log types to integrations by Wazuh
         sortable: false,
         dataType: 'string',
         render: (correlationRuleCategories: string[]) =>
@@ -535,7 +543,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
   }
 
   componentDidMount(): void {
-    setBreadcrumbs([BREADCRUMBS.ALERTS]);
+    setBreadcrumbs([BREADCRUMBS.INSIGHTS, BREADCRUMBS.ALERTS]);
     this.onRefresh();
   }
 
@@ -1018,24 +1026,25 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
           </>
         ),
       },
-      {
-        id: 'threat-intel',
-        name: 'Threat intel',
-        content: (
-          <>
-            <EuiSpacer size="m" />
-            {/*{this.getAlertsGraph(alerts, loading)}*/}
-            {/*<EuiSpacer size="m" />*/}
-            <ContentPanel title={'Alerts'} actions={[this.getContelPanelActions()]}>
-              <ThreatIntelAlertsTable
-                alerts={alertsFiltered ? filteredThreatIntelAlerts : threatIntelAlerts}
-                onAlertStateChange={this.onThreatIntelAlertStateChange}
-                onSelectionChange={this.onThreatIntelAlertSelectionChange}
-              />
-            </ContentPanel>
-          </>
-        ),
-      },
+      // disable threat intel tab for Wazuh
+      // {
+      //   id: 'threat-intel',
+      //   name: 'Threat intel',
+      //   content: (
+      //     <>
+      //       <EuiSpacer size="m" />
+      //       {/*{this.getAlertsGraph(alerts, loading)}*/}
+      //       {/*<EuiSpacer size="m" />*/}
+      //       <ContentPanel title={'Alerts'} actions={[this.getContelPanelActions()]}>
+      //         <ThreatIntelAlertsTable
+      //           alerts={alertsFiltered ? filteredThreatIntelAlerts : threatIntelAlerts}
+      //           onAlertStateChange={this.onThreatIntelAlertStateChange}
+      //           onSelectionChange={this.onThreatIntelAlertSelectionChange}
+      //         />
+      //       </ContentPanel>
+      //     </>
+      //   ),
+      // },
       {
         id: 'correlations',
         name: (
@@ -1107,7 +1116,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
               },
             ]}
           >
-            <EuiFlexItem>
+            <EuiFlexItem grow={false}>
               <EuiFlexGroup gutterSize={'s'} justifyContent={'spaceBetween'}>
                 <EuiFlexItem>
                   <EuiText size="s">

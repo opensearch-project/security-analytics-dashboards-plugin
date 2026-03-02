@@ -2,10 +2,8 @@ name: Cypress integration tests workflow
 on:
   pull_request:
     branches:
-      - '*'
-  push:
-    branches:
-      - '*'
+      - "*"
+    types: [opened, synchronize, reopened, ready_for_review]
 env:
   OPENSEARCH_DASHBOARDS_VERSION: 'main'
   OPENSEARCH_VERSION: '3.1.0-SNAPSHOT'
@@ -17,10 +15,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        # os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
         include:
-          - os: windows-latest
-            cypress_cache_folder: ~/AppData/Local/Cypress/Cache
+          # - os: windows-latest
+          #   cypress_cache_folder: ~/AppData/Local/Cypress/Cache
           - os: ubuntu-latest
             cypress_cache_folder: ~/.cache/Cypress
     runs-on: ${{ matrix.os }}
@@ -29,6 +28,7 @@ jobs:
       CI: 1
       # avoid warnings like "tput: No value for $TERM and no -T specified"
       TERM: xterm
+    if: github.event.pull_request.draft == false
     steps:
       - name: Set up JDK
         uses: actions/setup-java@v1

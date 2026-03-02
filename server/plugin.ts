@@ -23,7 +23,11 @@ import {
   setupAlertsRoutes,
   setupNotificationsRoutes,
   setupLogTypeRoutes,
+  setupIntegrationRoutes,
+  setupPoliciesRoutes,
   setupRulesRoutes,
+  setupDecodersRoutes,
+  setupKVDBsRoutes,
 } from './routes';
 import { setupMetricsRoutes } from './routes/MetricsRoutes';
 import {
@@ -37,13 +41,19 @@ import {
   NotificationsService,
   CorrelationService,
 } from './services';
+import { IntegrationService } from './services/IntegrationService';
+import { PoliciesService } from './services/PoliciesService';
 import { LogTypeService } from './services/LogTypeService';
+import { KVDBsService } from './services/KVDBsService';
 import MetricsService from './services/MetricsService';
 import { SecurityAnalyticsPluginConfigType } from '../config';
 import { DataSourcePluginSetup } from 'src/plugins/data_source/server';
 import { securityAnalyticsPlugin } from './clusters/securityAnalyticsPlugin';
 import ThreatIntelService from './services/ThreatIntelService';
 import { setupThreatIntelRoutes } from './routes/ThreatIntel';
+import { DecodersService } from './services/DecodersService';
+import { setupLogTestRoutes } from './routes/LogTestRoutes';
+import { LogTestService } from './services/LogTestService';
 
 export interface SecurityAnalyticsPluginDependencies {
   dataSource?: DataSourcePluginSetup;
@@ -78,8 +88,13 @@ export class SecurityAnalyticsPlugin
       rulesService: new RulesService(securityAnalyticsClient, dataSourceEnabled),
       notificationsService: new NotificationsService(securityAnalyticsClient, dataSourceEnabled),
       logTypeService: new LogTypeService(securityAnalyticsClient, dataSourceEnabled),
+      integrationService: new IntegrationService(securityAnalyticsClient, dataSourceEnabled),
+      policiesService: new PoliciesService(securityAnalyticsClient, dataSourceEnabled),
+      kvdbsService: new KVDBsService(securityAnalyticsClient, false),
+      logTestService: new LogTestService(securityAnalyticsClient, false),
       metricsService: new MetricsService(),
       threatIntelService: new ThreatIntelService(securityAnalyticsClient, dataSourceEnabled),
+      decodersService: new DecodersService(securityAnalyticsClient),
     };
 
     // Create router
@@ -96,8 +111,13 @@ export class SecurityAnalyticsPlugin
     setupRulesRoutes(services, router);
     setupNotificationsRoutes(services, router);
     setupLogTypeRoutes(services, router);
+    setupIntegrationRoutes(services, router);
+    setupPoliciesRoutes(services, router);
+    setupKVDBsRoutes(services, router);
+    setupLogTestRoutes(services, router);
     setupMetricsRoutes(services, router);
     setupThreatIntelRoutes(services, router);
+    setupDecodersRoutes(services, router);
 
     // @ts-ignore
     const config$ = this.initializerContext.config.create();

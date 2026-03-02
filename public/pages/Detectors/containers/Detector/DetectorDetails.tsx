@@ -23,7 +23,8 @@ import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR_HIT, ROUTES } from '../../../../uti
 import { DetectorHit } from '../../../../../server/models/interfaces';
 import { DetectorDetailsView } from '../DetectorDetailsView/DetectorDetailsView';
 import { FieldMappingsView } from '../../components/FieldMappingsView/FieldMappingsView';
-import { AlertTriggersView } from '../AlertTriggersView/AlertTriggersView';
+// Wazuh: hide Alert triggers tab in detector details.
+// import { AlertTriggersView } from '../AlertTriggersView/AlertTriggersView';
 import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
 import { DetectorsService, IndexPatternsService } from '../../../../services';
 import { errorNotificationToast, setBreadcrumbs } from '../../../../utils/helpers';
@@ -65,7 +66,8 @@ export interface DetectorDetailsState {
 enum TabId {
   DetectorDetails = 'detector-config-tab',
   FieldMappings = 'field-mappings-tab',
-  AlertTriggers = 'alert-triggers-tab',
+  // Wazuh: hide Alert triggers tab in detector details.
+  // AlertTriggers = 'alert-triggers-tab',
 }
 
 export class DetectorDetails extends React.Component<DetectorDetailsProps, DetectorDetailsState> {
@@ -98,12 +100,13 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     });
   };
 
-  editAlertTriggers = () => {
-    this.props.history.push({
-      pathname: `${ROUTES.EDIT_DETECTOR_ALERT_TRIGGERS}/${this.state.detectorId}`,
-      state: { detectorHit: this.detectorHit },
-    });
-  };
+  // Wazuh: hide Alert triggers tab in detector details.
+  // editAlertTriggers = () => {
+  //   this.props.history.push({
+  //     pathname: `${ROUTES.EDIT_DETECTOR_ALERT_TRIGGERS}/${this.state.detectorId}`,
+  //     state: { detectorHit: this.detectorHit },
+  //   });
+  // };
 
   private getTabs() {
     const { detectorId, createFailed } = this.state;
@@ -138,18 +141,19 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
           />
         ),
       },
-      {
-        id: TabId.AlertTriggers,
-        name: 'Alert triggers',
-        content: (
-          <AlertTriggersView
-            {...this.props}
-            detector={this.detectorHit._source}
-            editAlertTriggers={this.editAlertTriggers}
-            isEditable={isEditable}
-          />
-        ),
-      },
+      // Wazuh: hide Alert triggers tab in detector details.
+      // {
+      //   id: TabId.AlertTriggers,
+      //   name: 'Alert triggers',
+      //   content: (
+      //     <AlertTriggersView
+      //       {...this.props}
+      //       detector={this.detectorHit._source}
+      //       editAlertTriggers={this.editAlertTriggers}
+      //       isEditable={isEditable}
+      //     />
+      //   ),
+      // },
     ];
     this.setState({ tabs: tabs, selectedTabContent: tabs[0].content });
   }
@@ -199,6 +203,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
       });
 
       setBreadcrumbs([
+        BREADCRUMBS.DETECTION,
         BREADCRUMBS.DETECTORS,
         BREADCRUMBS.DETECTORS_DETAILS(detector.name, PENDING_DETECTOR_ID),
       ]);
@@ -368,15 +373,16 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
         <EuiContextMenuPanel
           size="s"
           items={[
-            <EuiContextMenuItem
-              disabled={loading}
-              key={'ViewAlerts'}
-              icon={'empty'}
-              onClick={this.onViewAlertsClick}
-              data-test-subj={'viewAlertsButton'}
-            >
-              View Alerts
-            </EuiContextMenuItem>,
+            // Wazuh: hide "View alerts" action in detector details.
+            // <EuiContextMenuItem
+            //   disabled={loading}
+            //   key={'ViewAlerts'}
+            //   icon={'empty'}
+            //   onClick={this.onViewAlertsClick}
+            //   data-test-subj={'viewAlertsButton'}
+            // >
+            //   View Alerts
+            // </EuiContextMenuItem>,
             <EuiContextMenuItem
               disabled={loading}
               key={'ViewFindings'}
@@ -432,9 +438,10 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     ];
   }
 
-  onViewAlertsClick = () => {
-    this.props.history.push(`${ROUTES.ALERTS}/${this.state.detectorId}`);
-  };
+  // Wazuh: hide "View alerts" action in detector details.
+  // onViewAlertsClick = () => {
+  //   this.props.history.push(`${ROUTES.ALERTS}/${this.state.detectorId}`);
+  // };
 
   onViewFindingsClick = () => {
     this.props.history.push(`${ROUTES.FINDINGS}/${this.state.detectorId}`);

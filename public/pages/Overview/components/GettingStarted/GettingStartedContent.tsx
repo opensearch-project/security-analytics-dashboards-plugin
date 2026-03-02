@@ -12,9 +12,9 @@ import {
   DETECTION_RULE_NAV_ID,
   FINDINGS_NAV_ID,
   ROUTES,
-  THREAT_ALERTS_NAV_ID,
-  THREAT_INTEL_NAV_ID,
-  CORRELATIONS_RULE_NAV_ID,
+  // Wazuh: hide Alerts and Correlation rules steps.
+  // THREAT_ALERTS_NAV_ID,
+  // CORRELATIONS_RULE_NAV_ID,
 } from '../../../../utils/constants';
 import { RouteComponentProps } from 'react-router-dom';
 import { GetStartedStep } from './GetStartedStep';
@@ -52,7 +52,9 @@ export const GettingStartedContent: React.FC<GettingStartedPopupProps> = ({
         children: (
           <GetStartedStep
             title={
-              'Identify security findings and threats from your log data with detection rules. Additionally, you can set up alerts based on rule conditions.'
+              // Wazuh: hide alerts messaging in getting started content.
+              // 'Identify security findings and threats from your log data with detection rules. Additionally, you can set up alerts based on rule conditions.'
+              'Identify security findings and threats from your log data with detection rules.'
             }
             buttons={[
               {
@@ -69,7 +71,7 @@ export const GettingStartedContent: React.FC<GettingStartedPopupProps> = ({
           />
         ),
       },
-      {
+      /* {
         title: 'Set up threat intelligence analytics',
         children: (
           <GetStartedStep
@@ -87,7 +89,7 @@ export const GettingStartedContent: React.FC<GettingStartedPopupProps> = ({
             ]}
           />
         ),
-      },
+      }, */
       {
         title: 'Discover security findings',
         children: (
@@ -107,23 +109,24 @@ export const GettingStartedContent: React.FC<GettingStartedPopupProps> = ({
           />
         ),
       },
-      {
-        title: 'View security alerts',
-        children: (
-          <GetStartedStep
-            title={'View alerts based on conditions you have specified from your detectors.'}
-            buttons={[
-              {
-                text: 'View alerts',
-                onClick: () => {
-                  onStepClicked();
-                  onActionClick(THREAT_ALERTS_NAV_ID, ROUTES.ALERTS);
-                },
-              },
-            ]}
-          />
-        ),
-      },
+      // Wazuh: hide View alerts step.
+      // {
+      //   title: 'View security alerts',
+      //   children: (
+      //     <GetStartedStep
+      //       title={'View alerts based on conditions you have specified from your detectors.'}
+      //       buttons={[
+      //         {
+      //           text: 'View alerts',
+      //           onClick: () => {
+      //             onStepClicked();
+      //             onActionClick(THREAT_ALERTS_NAV_ID, ROUTES.ALERTS);
+      //           },
+      //         },
+      //       ]}
+      //     />
+      //   ),
+      // },
       {
         title: 'Create custom rules for detectors',
         children: (
@@ -141,23 +144,24 @@ export const GettingStartedContent: React.FC<GettingStartedPopupProps> = ({
           />
         ),
       },
-      {
-        title: 'Set up correlation rules',
-        children: (
-          <GetStartedStep
-            title={'Correlate events across multiple log types to identify potential threats.'}
-            buttons={[
-              {
-                text: 'Manage correlation rules',
-                onClick: () => {
-                  onStepClicked();
-                  onActionClick(CORRELATIONS_RULE_NAV_ID, ROUTES.CORRELATION_RULES);
-                },
-              },
-            ]}
-          />
-        ),
-      },
+      // Wazuh: hide Correlation rules step.
+      // {
+      //   title: 'Set up correlation rules',
+      //   children: (
+      //     <GetStartedStep
+      //       title={'Correlate events across multiple log types to identify potential threats.'}
+      //       buttons={[
+      //         {
+      //           text: 'Manage correlation rules',
+      //           onClick: () => {
+      //             onStepClicked();
+      //             onActionClick(CORRELATIONS_RULE_NAV_ID, ROUTES.CORRELATION_RULES);
+      //           },
+      //         },
+      //       ]}
+      //     />
+      //   ),
+      // },
     ],
     [onStepClicked]
   );

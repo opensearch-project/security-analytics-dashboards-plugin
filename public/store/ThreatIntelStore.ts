@@ -5,6 +5,7 @@
 
 import { Duration, ThreatIntelFinding } from '../../types';
 import { FindingsService } from '../services';
+import { THREAT_INTEL_ENABLED } from '../utils/constants';
 
 export class ThreatIntelStore {
   constructor(private findingsService: FindingsService) {}
@@ -14,6 +15,10 @@ export class ThreatIntelStore {
     duration?: Duration,
     onPartialFindingsFetched?: (findings: ThreatIntelFinding[]) => void
   ) {
+    if (!THREAT_INTEL_ENABLED) {
+      return [];
+    }
+
     let start = 0;
     const size = 10000;
     let remaining = 10000;
@@ -57,6 +62,10 @@ export class ThreatIntelStore {
   }
 
   public async getThreatIntelFindingsByIds(findingIds: string[]) {
+    if (!THREAT_INTEL_ENABLED) {
+      return [];
+    }
+
     const res = await this.findingsService.getThreatIntelFindings({
       findingIds: findingIds.join(','),
     });

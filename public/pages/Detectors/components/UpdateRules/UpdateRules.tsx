@@ -65,6 +65,7 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
         setDetector(newDetector);
 
         setBreadcrumbs([
+          BREADCRUMBS.DETECTION,
           BREADCRUMBS.DETECTORS,
           BREADCRUMBS.DETECTORS_DETAILS(detectorHit._source.name, detectorHit._id),
           {

@@ -15,6 +15,7 @@ import {
 } from '../../types';
 import { dataSourceInfo } from './utils/constants';
 import { errorNotificationToast } from '../utils/helpers';
+import { THREAT_INTEL_ENABLED } from '../utils/constants';
 
 export default class AlertsService {
   constructor(private httpClient: HttpSetup, private notifications: NotificationsStart) {}
@@ -72,6 +73,16 @@ export default class AlertsService {
   getThreatIntelAlerts = async (
     getAlertsParams: GetThreatIntelAlertsParams
   ): Promise<ServerResponse<GetThreatIntelAlertsResponse>> => {
+    if (!THREAT_INTEL_ENABLED) {
+      return {
+        ok: true,
+        response: {
+          total_alerts: 0,
+          alerts: [],
+        },
+      };
+    }
+
     const { size, sortOrder, startIndex, startTime, endTime } = getAlertsParams;
     const query = {
       sortOrder: sortOrder || 'desc',
@@ -95,6 +106,10 @@ export default class AlertsService {
     state: 'ACKNOWLEDGED' | 'COMPLETED',
     alertIds: string[]
   ): Promise<ServerResponse<AcknowledgeAlertsResponse>> => {
+    if (!THREAT_INTEL_ENABLED) {
+      return { ok: true, response: {} };
+    }
+
     const url = `${API.THREAT_INTEL_BASE}/alerts/status`;
     return await this.httpClient.put(`..${url}`, {
       query: {

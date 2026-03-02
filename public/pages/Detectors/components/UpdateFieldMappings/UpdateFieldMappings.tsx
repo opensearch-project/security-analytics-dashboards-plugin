@@ -73,6 +73,7 @@ export default class UpdateFieldMappings extends Component<
         detector.detector_type = detector.detector_type.toLowerCase();
 
         setBreadcrumbs([
+          BREADCRUMBS.DETECTION,
           BREADCRUMBS.DETECTORS,
           BREADCRUMBS.DETECTORS_DETAILS(detectorHit._source.name, detectorHit._id),
           BREADCRUMBS.EDIT_DETECTOR_DETAILS,

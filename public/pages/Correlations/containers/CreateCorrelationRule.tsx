@@ -178,7 +178,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
 
         const invalidlogType = !query.logType;
         if (invalidlogType) {
-          error = `Invalid log type for query ${index + 1}`;
+          error = `Invalid integration for query ${index + 1}`; // Changed Log Type to Integration by Wazuh
           return true;
         }
 
@@ -590,7 +590,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                   </EuiCompressedFormRow>
                   <EuiSpacer size="m" />
                   <EuiCompressedFormRow
-                    label={<EuiText size={'s'}>Log type</EuiText>}
+                    label={<EuiText size={'s'}>Integration</EuiText>} // Changed Log Type to Integration by Wazuh
                     isInvalid={isInvalidInputForQuery('logType')}
                     error={
                       (formikErrors.queries?.[queryIdx] as FormikErrors<CorrelationRuleQuery>)
@@ -599,7 +599,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
                   >
                     <EuiCompressedComboBox
                       isInvalid={isInvalidInputForQuery('logType')}
-                      placeholder="Select a log type"
+                      placeholder="Select an integration" // Changed Log Type to Integration by Wazuh
                       data-test-subj={'rule_type_dropdown'}
                       options={logTypeOptions}
                       singleSelection={{ asPlainText: true }}
@@ -833,7 +833,7 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
 
   useEffect(() => {
     setBreadcrumbs([
-      BREADCRUMBS.CORRELATIONS,
+      BREADCRUMBS.DETECTION,
       BREADCRUMBS.CORRELATION_RULES,
       BREADCRUMBS.CORRELATIONS_RULE_CREATE(action),
     ]);

@@ -48,7 +48,7 @@ export const CorrelationsTable: React.FC<CorrelationsTableProps> = ({
     },
     {
       field: 'logTypes',
-      name: 'Log Types',
+      name: 'Integrations', // Changed from Log Types to Integrations by Wazuh
       sortable: true,
       render: (logTypes: string[]) => displayBadges(logTypes),
     },

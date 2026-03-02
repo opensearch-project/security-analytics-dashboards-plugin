@@ -46,33 +46,41 @@ export const DataSourceMenuWrapper: React.FC<DataSourceMenuWrapperProps> = ({
   >();
 
   const readonlyDataSourcePaths = [
-    ROUTES.EDIT_DETECTOR_ALERT_TRIGGERS,
+    // Wazuh: hide Alert triggers edit route.
+    // ROUTES.EDIT_DETECTOR_ALERT_TRIGGERS,
     ROUTES.EDIT_DETECTOR_DETAILS,
     ROUTES.EDIT_DETECTOR_RULES,
     ROUTES.EDIT_FIELD_MAPPINGS,
     ROUTES.RULES_EDIT,
-    ROUTES.CORRELATION_RULE_EDIT,
+    // Wazuh: hide Correlation rules edit route.
+    // ROUTES.CORRELATION_RULE_EDIT,
     ROUTES.DETECTOR_DETAILS,
     `${ROUTES.LOG_TYPES}/:logTypeId`,
-    `${ROUTES.ALERTS}/:detectorId`,
+    // Wazuh: hide Alerts route.
+    // `${ROUTES.ALERTS}/:detectorId`,
     `${ROUTES.FINDINGS}/:detectorId`,
     `${ROUTES.THREAT_INTEL_SOURCE_DETAILS}/:sourceId`,
     ROUTES.THREAT_INTEL_EDIT_SCAN_CONFIG,
+    ROUTES.DECODERS_CREATE,
   ];
 
   const pathToParentMap = {
-    [ROUTES.EDIT_DETECTOR_ALERT_TRIGGERS]: ROUTES.DETECTORS,
+    // Wazuh: hide Alert triggers edit route.
+    // [ROUTES.EDIT_DETECTOR_ALERT_TRIGGERS]: ROUTES.DETECTORS,
     [ROUTES.EDIT_DETECTOR_DETAILS]: ROUTES.DETECTORS,
     [ROUTES.EDIT_DETECTOR_RULES]: ROUTES.DETECTORS,
     [ROUTES.EDIT_FIELD_MAPPINGS]: ROUTES.DETECTORS,
     [ROUTES.RULES_EDIT]: ROUTES.RULES,
-    [ROUTES.CORRELATION_RULE_EDIT]: ROUTES.CORRELATION_RULES,
+    // Wazuh: hide Correlation rules edit route.
+    // [ROUTES.CORRELATION_RULE_EDIT]: ROUTES.CORRELATION_RULES,
     [ROUTES.DETECTOR_DETAILS]: ROUTES.DETECTORS,
     [`${ROUTES.LOG_TYPES}/:logTypeId`]: ROUTES.LOG_TYPES,
-    [`${ROUTES.ALERTS}/:detectorId`]: ROUTES.ALERTS,
+    // Wazuh: hide Alerts route.
+    // [`${ROUTES.ALERTS}/:detectorId`]: ROUTES.ALERTS,
     [`${ROUTES.FINDINGS}/:detectorId`]: ROUTES.FINDINGS,
     [`${ROUTES.THREAT_INTEL_SOURCE_DETAILS}/:sourceId`]: ROUTES.THREAT_INTEL_OVERVIEW,
     [ROUTES.THREAT_INTEL_EDIT_SCAN_CONFIG]: ROUTES.THREAT_INTEL_OVERVIEW,
+    [ROUTES.DECODERS_CREATE]: ROUTES.DECODERS,
   };
 
   const matchedPath = matchPath(location.pathname, {
@@ -114,7 +122,7 @@ export const DataSourceMenuWrapper: React.FC<DataSourceMenuWrapperProps> = ({
         }}
       />
       <Route
-        path={[ROUTES.DETECTORS_CREATE]}
+        path={[ROUTES.DETECTORS_CREATE, ROUTES.DECODERS_CREATE]}
         render={() => {
           return dataSourceMenuReadOnly ? (
             <DataSourceMenuViewComponent
@@ -148,17 +156,20 @@ export const DataSourceMenuWrapper: React.FC<DataSourceMenuWrapperProps> = ({
         path={[
           ROUTES.OVERVIEW,
           ROUTES.DETECTORS,
-          ROUTES.ALERTS,
+          // Wazuh: hide Alerts route.
+          // ROUTES.ALERTS,
           ROUTES.FINDINGS,
           ROUTES.LOG_TYPES,
           ROUTES.RULES,
-          ROUTES.CORRELATIONS,
-          ROUTES.CORRELATION_RULES,
+          // Wazuh: hide Correlations routes.
+          // ROUTES.CORRELATIONS,
+          // ROUTES.CORRELATION_RULES,
           ROUTES.RULES_CREATE,
           ROUTES.RULES_IMPORT,
           ROUTES.RULES_DUPLICATE,
           ROUTES.LOG_TYPES_CREATE,
-          ROUTES.CORRELATION_RULE_CREATE,
+          // Wazuh: hide Correlation rules create route.
+          // ROUTES.CORRELATION_RULE_CREATE,
           ROUTES.GETTING_STARTED,
           ROUTES.ROOT,
         ]}

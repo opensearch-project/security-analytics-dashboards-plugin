@@ -28,18 +28,19 @@ export const CreateLogType: React.FC<CreateLogTypeProps> = ({ history, notificat
     if (getUseUpdatedUx()) {
       setBreadcrumbs([BREADCRUMBS.LOG_TYPES, BREADCRUMBS.LOG_TYPE_CREATE]);
     } else {
-      setBreadcrumbs([BREADCRUMBS.DETECTORS, BREADCRUMBS.LOG_TYPES, BREADCRUMBS.LOG_TYPE_CREATE]);
+      setBreadcrumbs([BREADCRUMBS.DETECTION, BREADCRUMBS.DETECTORS, BREADCRUMBS.LOG_TYPES, BREADCRUMBS.LOG_TYPE_CREATE]);
     }
   }, [getUseUpdatedUx()]);
 
   const description =
-    'Create log type to categorize and identify detection rules for your data sources.';
+    'Create integration to categorize and identify detection rules for your data sources.'; // Replace Log Type is replaced with Integration by Wazuh
 
   return (
     <EuiPanel>
       <PageHeader appDescriptionControls={[{ description }]}>
         <EuiText size="s">
-          <h1>Create log type</h1>
+          {/* Log Type is replaced with Integration by Wazuh */}
+          <h1>Create integration</h1>
         </EuiText>
         <EuiText size="s" color="subdued">
           {description}
@@ -49,14 +50,14 @@ export const CreateLogType: React.FC<CreateLogTypeProps> = ({ history, notificat
       <LogTypeForm
         logTypeDetails={{ ...logTypeDetails, id: '', detectionRulesCount: 0 }}
         isEditMode={true}
-        confirmButtonText={'Create log type'}
+        confirmButtonText={'Create integration'} // Replace Log Type to Integration by Wazuh
         notifications={notifications}
         setLogTypeDetails={setLogTypeDetails}
         onCancel={() => history.push(ROUTES.LOG_TYPES)}
         onConfirm={async () => {
           const success = await DataStore.logTypes.createLogType(logTypeDetails);
           if (success) {
-            successNotificationToast(notifications, 'created', `log type ${logTypeDetails.name}`);
+            successNotificationToast(notifications, 'created', `integration ${logTypeDetails.name}`); // Replace Log Type to Integration by Wazuh
             history.push(ROUTES.LOG_TYPES);
           }
         }}

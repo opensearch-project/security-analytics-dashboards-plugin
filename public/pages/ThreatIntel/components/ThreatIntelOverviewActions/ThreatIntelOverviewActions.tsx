@@ -7,9 +7,12 @@ import React, { useState } from 'react';
 import { EuiSmallButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 import { StatusWithIndicator } from '../../../../components/Utility/StatusWithIndicator';
 import { RouteComponentProps } from 'react-router-dom';
-import { AlertTabId, FindingTabId, ROUTES } from '../../../../utils/constants';
+import { FindingTabId, ROUTES } from '../../../../utils/constants';
+// Wazuh: hide alerts actions from threat intel overview.
+// import { AlertTabId } from '../../../../utils/constants';
 import { ThreatIntelScanConfig } from '../../../../../types';
-import { ConfigureThreatIntelScanStep } from '../../utils/constants';
+// Wazuh: hide alert triggers setup in threat intel overview.
+// import { ConfigureThreatIntelScanStep } from '../../utils/constants';
 
 export interface ThreatIntelOverviewActionsProps {
   sourceCount: number;
@@ -32,7 +35,8 @@ export const ThreatIntelOverviewActions: React.FC<ThreatIntelOverviewActionsProp
 }) => {
   const scanIsSetup = !!scanConfig;
   const scanRunning = scanIsSetup && scanConfig.enabled;
-  const alertTriggerSetup = scanIsSetup && scanConfig.triggers.length > 0;
+  // Wazuh: hide alert triggers setup in threat intel overview.
+  // const alertTriggerSetup = scanIsSetup && scanConfig.triggers.length > 0;
   const [togglingScan, setTogglingScan] = useState(false);
 
   let status: React.ReactNode = null;
@@ -63,35 +67,35 @@ export const ThreatIntelOverviewActions: React.FC<ThreatIntelOverviewActionsProp
         });
       },
     });
-
-    if (!alertTriggerSetup) {
-      actions.push({
-        label: 'Set up alerts',
-        disabled: false,
-        fill: true,
-        onClick: () => {
-          history.push({
-            pathname: ROUTES.THREAT_INTEL_EDIT_SCAN_CONFIG,
-            state: {
-              scanConfig,
-              step: ConfigureThreatIntelScanStep.SetupAlertTriggers,
-            },
-          });
-        },
-      });
-    } else {
-      actions.push({
-        label: 'View alerts',
-        disabled: false,
-        fill: false,
-        onClick: () => {
-          history.push({
-            pathname: ROUTES.ALERTS,
-            search: `?detectionType=${AlertTabId.ThreatIntel}`,
-          });
-        },
-      });
-    }
+    // Wazuh: hide alert triggers setup and View alerts actions.
+    // if (!alertTriggerSetup) {
+    //   actions.push({
+    //     label: 'Set up alerts',
+    //     disabled: false,
+    //     fill: true,
+    //     onClick: () => {
+    //       history.push({
+    //         pathname: ROUTES.THREAT_INTEL_EDIT_SCAN_CONFIG,
+    //         state: {
+    //           scanConfig,
+    //           step: ConfigureThreatIntelScanStep.SetupAlertTriggers,
+    //         },
+    //       });
+    //     },
+    //   });
+    // } else {
+    //   actions.push({
+    //     label: 'View alerts',
+    //     disabled: false,
+    //     fill: false,
+    //     onClick: () => {
+    //       history.push({
+    //         pathname: ROUTES.ALERTS,
+    //         search: `?detectionType=${AlertTabId.ThreatIntel}`,
+    //       });
+    //     },
+    //   });
+    // }
   } else {
     status = statusByScanState['stopped'];
     actions.push({

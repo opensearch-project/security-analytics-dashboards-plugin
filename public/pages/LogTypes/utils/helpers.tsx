@@ -63,7 +63,7 @@ export const getLogTypesTableColumns = (
 export const getLogTypesTableSearchConfig = (): Search => {
   return {
     box: {
-      placeholder: 'Search log types',
+      placeholder: 'Search integrations',
       schema: true,
       compressed: true,
     },

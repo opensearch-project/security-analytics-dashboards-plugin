@@ -383,7 +383,7 @@ export class DetectionVisualEditor extends React.Component<
 
   private validateCondition = (value: string) => {
     const { errors } = this.state;
-    value = value.trim();
+    value = String(value).trim(); // Wazuh: ensure value is string
     delete errors.fields['condition'];
     if (!value) {
       errors.fields['condition'] = 'Condition is required';
@@ -823,7 +823,7 @@ export class DetectionVisualEditor extends React.Component<
             mode="yaml"
             width="600px"
             height="50px"
-            value={this.state.detectionObj.condition}
+            value={String(this.state.detectionObj.condition)}
             onChange={(value) => this.updateCondition(value)}
             onBlur={(e) => {
               this.updateCondition(this.state.detectionObj.condition);

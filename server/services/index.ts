@@ -12,6 +12,7 @@ import FieldMappingService from './FieldMappingService';
 import AlertService from './AlertService';
 import RulesService from './RuleService';
 import NotificationsService from './NotificationsService';
+import { KVDBsService } from './KVDBsService';
 
 export {
   DetectorService,
@@ -23,4 +24,5 @@ export {
   AlertService,
   RulesService,
   NotificationsService,
+  KVDBsService,
 };

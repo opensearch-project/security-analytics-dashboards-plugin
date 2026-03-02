@@ -52,7 +52,7 @@ export const LogTypeDetailsTab: React.FC<LogTypeDetailsTabProps> = ({
         type="column"
         listItems={[
           {
-            title: 'Log type',
+            title: 'Integration', // Replace Log type to Integration by Wazuh
             description: (
               <>
                 <EuiCompressedFormRow label="Name">
@@ -64,7 +64,7 @@ export const LogTypeDetailsTab: React.FC<LogTypeDetailsTabProps> = ({
                         name: e.target.value,
                       })
                     }
-                    placeholder="Enter name for log type"
+                    placeholder="Enter name for integration" // Replace Log type to Integration by Wazuh
                     disabled={!isEditMode || !!logTypeDetails.detectionRulesCount}
                   />
                 </EuiCompressedFormRow>
@@ -78,7 +78,7 @@ export const LogTypeDetailsTab: React.FC<LogTypeDetailsTabProps> = ({
                         description: e.target.value,
                       })
                     }
-                    placeholder="Description of the log type"
+                    placeholder="Description of the integration" // Replace Log type to Integration by Wazuh
                     disabled={!isEditMode}
                   />
                 </EuiCompressedFormRow>

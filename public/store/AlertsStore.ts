@@ -7,6 +7,7 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { AlertsService } from '../services';
 import { errorNotificationToast } from '../utils/helpers';
 import { AlertResponse, Duration, ThreatIntelAlert } from '../../types';
+import { THREAT_INTEL_ENABLED } from '../utils/constants';
 
 export class AlertsStore {
   constructor(
@@ -103,6 +104,10 @@ export class AlertsStore {
     duration: Duration,
     onPartialAlertsFetched?: (alerts: ThreatIntelAlert[]) => void
   ) {
+    if (!THREAT_INTEL_ENABLED) {
+      return [];
+    }
+
     let allAlerts: any[] = [];
     const maxAlertsReturned = 10000;
     let startIndex = 0;

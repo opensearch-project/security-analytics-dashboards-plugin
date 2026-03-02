@@ -177,7 +177,7 @@ export class AlertFlyout extends React.Component<AlertFlyoutProps, AlertFlyoutSt
       },
       {
         field: 'queries',
-        name: 'Log type',
+        name: 'Integration', // Changed from Log Types to Integrations by Wazuh
         sortable: true,
         dataType: 'string',
         render: () => formatRuleType(detector.detector_type),

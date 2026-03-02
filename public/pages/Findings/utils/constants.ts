@@ -5,10 +5,12 @@
 
 export enum FindingFlyoutTabId {
   DETAILS = 'Details',
-  CORRELATIONS = 'Correlations',
+  // Wazuh: hide Correlations tab in finding details flyout.
+  // CORRELATIONS = 'Correlations',
 }
 
 export const FindingFlyoutTabs = [
   { id: FindingFlyoutTabId.DETAILS, name: 'Details' },
-  { id: FindingFlyoutTabId.CORRELATIONS, name: 'Correlations' },
+  // Wazuh: hide Correlations tab in finding details flyout.
+  // { id: FindingFlyoutTabId.CORRELATIONS, name: 'Correlations' },
 ];

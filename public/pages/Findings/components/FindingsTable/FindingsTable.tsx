@@ -29,38 +29,44 @@ import {
   DetectorsService,
   OpenSearchService,
   IndexPatternsService,
-  CorrelationService,
 } from '../../../../services';
-import CreateAlertFlyout from '../CreateAlertFlyout';
+// Wazuh: hide Create Alert flow in findings table.
+// import CreateAlertFlyout from '../CreateAlertFlyout';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { RuleSource } from '../../../../../server/models/interfaces';
 import { DataStore } from '../../../../store/DataStore';
 import { getSeverityColor } from '../../../Correlations/utils/constants';
-import { Finding, FindingItemType, NotificationChannelTypeOptions } from '../../../../../types';
+// Wazuh: hide Create Alert flow in findings table.
+// import { Finding, FindingItemType, NotificationChannelTypeOptions } from '../../../../../types';
+import { FindingItemType } from '../../../../../types';
 
 interface FindingsTableProps extends RouteComponentProps {
   detectorService: DetectorsService;
   opensearchService: OpenSearchService;
   findings: FindingItemType[];
-  notificationChannels: NotificationChannelTypeOptions[];
-  refreshNotificationChannels: () => void;
+  // Wazuh: hide Create Alert flow in findings table.
+  // notificationChannels: NotificationChannelTypeOptions[];
+  // refreshNotificationChannels: () => void;
   loading: boolean;
   rules: { [id: string]: RuleSource };
   startTime: string;
   endTime: string;
   onRefresh: () => void;
   onFindingsFiltered: (findings: FindingItemType[]) => void;
-  hasNotificationsPlugin: boolean;
+  // Wazuh: hide Create Alert flow in findings table.
+  // hasNotificationsPlugin: boolean;
   indexPatternsService: IndexPatternsService;
-  correlationService: CorrelationService;
+  // Wazuh: hide Create Alert flow in findings table.
+  // correlationService: CorrelationService;
 }
 
 interface FindingsTableState {
   findingsFiltered: boolean;
   filteredFindings: FindingItemType[];
-  flyout: object | undefined;
-  flyoutOpen: boolean;
-  selectedFinding?: Finding;
+  // Wazuh: hide Create Alert flow in findings table.
+  // flyout: object | undefined;
+  // flyoutOpen: boolean;
+  // selectedFinding?: Finding;
   widgetEmptyMessage: React.ReactNode | undefined;
 }
 
@@ -70,9 +76,10 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
     this.state = {
       findingsFiltered: false,
       filteredFindings: [],
-      flyout: undefined,
-      flyoutOpen: false,
-      selectedFinding: undefined,
+      // Wazuh: hide Create Alert flow in findings table.
+      // flyout: undefined,
+      // flyoutOpen: false,
+      // selectedFinding: undefined,
       widgetEmptyMessage: undefined,
     };
   }
@@ -115,51 +122,54 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
     this.props.onFindingsFiltered(filteredFindings);
   };
 
-  closeFlyout = (refreshPage: boolean = false) => {
-    this.setState({ flyout: undefined, flyoutOpen: false, selectedFinding: undefined });
-    if (refreshPage) this.props.onRefresh();
-  };
+  // Wazuh: hide Create Alert flow in findings table.
+  // closeFlyout = (refreshPage: boolean = false) => {
+  //   this.setState({ flyout: undefined, flyoutOpen: false, selectedFinding: undefined });
+  //   if (refreshPage) this.props.onRefresh();
+  // };
 
-  renderCreateAlertFlyout = (finding: FindingItemType) => {
-    if (this.state.flyoutOpen) this.closeFlyout();
-    else {
-      const ruleOptions = finding.queries
-        .filter(({ id }) => !isThreatIntelQuery(id))
-        .map((query) => {
-          const rule = this.props.rules[query.id];
-          return {
-            name: rule.title,
-            id: query.id,
-            severity: rule.level,
-            tags: rule.tags.map((tag: any) => tag.value),
-          };
-        });
-      this.setState({
-        flyout: (
-          <CreateAlertFlyout
-            {...this.props}
-            finding={finding}
-            closeFlyout={this.closeFlyout}
-            notificationChannels={this.props.notificationChannels}
-            allRules={this.props.rules}
-            refreshNotificationChannels={this.props.refreshNotificationChannels}
-            rulesOptions={ruleOptions}
-            hasNotificationPlugin={this.props.hasNotificationsPlugin}
-          />
-        ),
-        flyoutOpen: true,
-        selectedFinding: finding,
-      });
-    }
-  };
+// Wazuh: hide Create Alert flow in findings table.
+  // renderCreateAlertFlyout = (finding: FindingItemType) => {
+  //   if (this.state.flyoutOpen) this.closeFlyout();
+  //   else {
+  //     const ruleOptions = finding.queries
+  //       .filter(({ id }) => !isThreatIntelQuery(id))
+  //       .map((query) => {
+  //         const rule = this.props.rules[query.id];
+  //         return {
+  //           name: rule.title,
+  //           id: query.id,
+  //           severity: rule.level,
+  //           tags: rule.tags.map((tag: any) => tag.value),
+  //         };
+  //       });
+  //     this.setState({
+  //       flyout: (
+  //         <CreateAlertFlyout
+  //           {...this.props}
+  //           finding={finding}
+  //           closeFlyout={this.closeFlyout}
+  //           notificationChannels={this.props.notificationChannels}
+  //           allRules={this.props.rules}
+  //           refreshNotificationChannels={this.props.refreshNotificationChannels}
+  //           rulesOptions={ruleOptions}
+  //           hasNotificationPlugin={this.props.hasNotificationsPlugin}
+  //         />
+  //       ),
+  //       flyoutOpen: true,
+  //       selectedFinding: finding,
+  //     });
+  //   }
+  // };
 
   render() {
     const { findings, loading, rules } = this.props;
     const {
       findingsFiltered,
       filteredFindings,
-      flyout,
-      flyoutOpen,
+      // Wazuh: hide Create Alert flow in findings table.
+      // flyout,
+      // flyoutOpen,
       widgetEmptyMessage,
     } = this.state;
 
@@ -217,7 +227,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
       },
       {
         field: 'logType',
-        name: 'Log type',
+        name: 'Integration', // replace log types to integrations by Wazuh
         sortable: true,
         dataType: 'string',
         render: (logType: string) => formatRuleType(logType),
@@ -240,17 +250,18 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
               </EuiToolTip>
             ),
           },
-          {
-            render: (finding) => (
-              <EuiToolTip content={'Create alert'}>
-                <EuiSmallButtonIcon
-                  aria-label={'Create alert'}
-                  iconType={'bell'}
-                  onClick={() => this.renderCreateAlertFlyout(finding)}
-                />
-              </EuiToolTip>
-            ),
-          },
+          // {
+            // Wazuh: hide Create Alert action in findings table.
+            // render: (finding) => (
+            //   <EuiToolTip content={'Create alert'}>
+            //     <EuiSmallButtonIcon
+            //       aria-label={'Create alert'}
+            //       iconType={'bell'}
+            //       onClick={() => this.renderCreateAlertFlyout(finding)}
+            //     />
+            //   </EuiToolTip>
+            // ),
+          // },
         ],
       },
     ];
@@ -289,7 +300,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
         {
           type: 'field_value_selection',
           field: 'logType',
-          name: 'Log type',
+          name: 'Integration', // replace log types to integrations by Wazuh
           compressed: true,
           options: Array.from(logTypes).map((type) => ({
             value: type,
@@ -306,10 +317,6 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
             {
               value: 'Detection rules',
               name: 'Detection rules',
-            },
-            {
-              value: 'Threat intelligence',
-              name: 'Threat intelligence',
             },
           ],
           multiSelect: 'or',
@@ -337,7 +344,8 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
           loading={loading}
           message={widgetEmptyMessage}
         />
-        {flyoutOpen && flyout}
+        {/* Wazuh: hide Create Alert flyout in findings table. */}
+        {/* {flyoutOpen && flyout} */}
       </div>
     );
   }

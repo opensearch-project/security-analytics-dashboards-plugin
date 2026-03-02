@@ -52,7 +52,7 @@ export const Rules: React.FC<RulesProps> = (props) => {
   }, [DataStore.rules.getAllRules]);
 
   useEffect(() => {
-    setBreadcrumbs([BREADCRUMBS.RULES]);
+    setBreadcrumbs([BREADCRUMBS.DETECTION, BREADCRUMBS.RULES]);
   }, []);
 
   useEffect(() => {
@@ -106,7 +106,7 @@ export const Rules: React.FC<RulesProps> = (props) => {
             renderComponent: action,
           }))}
         >
-          <EuiFlexItem>
+          <EuiFlexItem grow={false}>
             <EuiFlexGroup gutterSize={'s'} justifyContent={'spaceBetween'}>
               <EuiFlexItem>
                 <EuiText size="s">

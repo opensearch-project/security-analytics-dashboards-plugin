@@ -3,13 +3,12 @@ on:
   pull_request:
     branches:
       - "*"
-  push:
-    branches:
-      - "*"
+    types: [opened, synchronize, reopened, ready_for_review]
 env:
   OPENSEARCH_DASHBOARDS_VERSION: 'main'
 jobs:
   Get-CI-Image-Tag:
+    if: github.event.pull_request.draft == false
     uses: opensearch-project/opensearch-build/.github/workflows/get-ci-image-tag.yml@main
     with:
       product: opensearch-dashboards
@@ -27,7 +26,7 @@ jobs:
       image: ${{ needs.Get-CI-Image-Tag.outputs.ci-image-version-linux }}
       # need to switch to root so that github actions can install runner binary on container without permission issues.
       options: --user root
-
+    if: github.event.pull_request.draft == false
     steps:
       - name: Checkout OpenSearch-Dashboards
         uses: actions/checkout@v2
@@ -51,46 +50,47 @@ jobs:
         if: ${{ matrix.os == 'ubuntu-latest' }}
         uses: codecov/codecov-action@v1
 
-  tests-windows:
-    name: Run Tests Windows
-    strategy:
-      matrix:
-        os: [windows-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-      # Enable longer filenames for windows
-      - name: Enable longer filenames
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: git config --system core.longpaths true
-      - name: Checkout OpenSearch-Dashboards
-        uses: actions/checkout@v2
-        with:
-          repository: opensearch-project/OpenSearch-Dashboards
-          ref: ${{ env.OPENSEARCH_DASHBOARDS_VERSION }}
-          path: OpenSearch-Dashboards
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: './OpenSearch-Dashboards/.nvmrc'
-          registry-url: 'https://registry.npmjs.org'
-      - name: Install Yarn
-        # Need to use bash to avoid having a windows/linux specific step
-        shell: bash
-        run: |
-          YARN_VERSION=$(node -p "require('./OpenSearch-Dashboards/package.json').engines.yarn")
-          echo "Installing yarn@$YARN_VERSION"
-          npm i -g yarn@$YARN_VERSION
-      - run: node -v
-      - run: yarn -v
-      - name: Checkout Security Analytics Dashboards plugin
-        uses: actions/checkout@v2
-        with:
-          path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
-      - name: Bootstrap plugin/OpenSearch-Dashboards
-        run: |
-          cd OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
-          yarn osd bootstrap --single-version=loose
-      - name: Run tests
-        run: |
-          cd OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
-          yarn run test:jest --coverage
+  ### Commented because Windows is not currently supported by Wazuh dashboard
+  # tests-windows:
+  #   name: Run Tests Windows
+  #   strategy:
+  #     matrix:
+  #       os: [windows-latest]
+  #   runs-on: ${{ matrix.os }}
+  #   steps:
+  #     # Enable longer filenames for windows
+  #     - name: Enable longer filenames
+  #       if: ${{ matrix.os == 'windows-latest' }}
+  #       run: git config --system core.longpaths true
+  #     - name: Checkout OpenSearch-Dashboards
+  #       uses: actions/checkout@v2
+  #       with:
+  #         repository: opensearch-project/OpenSearch-Dashboards
+  #         ref: ${{ env.OPENSEARCH_DASHBOARDS_VERSION }}
+  #         path: OpenSearch-Dashboards
+  #     - name: Setup Node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version-file: './OpenSearch-Dashboards/.nvmrc'
+  #         registry-url: 'https://registry.npmjs.org'
+  #     - name: Install Yarn
+  #       # Need to use bash to avoid having a windows/linux specific step
+  #       shell: bash
+  #       run: |
+  #         YARN_VERSION=$(node -p "require('./OpenSearch-Dashboards/package.json').engines.yarn")
+  #         echo "Installing yarn@$YARN_VERSION"
+  #         npm i -g yarn@$YARN_VERSION
+  #     - run: node -v
+  #     - run: yarn -v
+  #     - name: Checkout Security Analytics Dashboards plugin
+  #       uses: actions/checkout@v2
+  #       with:
+  #         path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
+  #     - name: Bootstrap plugin/OpenSearch-Dashboards
+  #       run: |
+  #         cd OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
+  #         yarn osd bootstrap --single-version=loose
+  #     - name: Run tests
+  #       run: |
+  #         cd OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
+  #         yarn run test:jest --coverage

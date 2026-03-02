@@ -149,7 +149,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
   }
 
   async componentDidMount(): Promise<void> {
-    setBreadcrumbs([BREADCRUMBS.CORRELATIONS]);
+    setBreadcrumbs([BREADCRUMBS.INSIGHTS, BREADCRUMBS.CORRELATIONS]);
     this.updateState(true /* onMount */);
     this.props.onMount();
     this.fetchCorrelationsTableData();
@@ -766,7 +766,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
               },
             ]}
           >
-            <EuiFlexItem>
+            <EuiFlexItem grow={false}>
               <EuiFlexGroup>
                 <EuiFlexItem>
                   <EuiText size="s">
@@ -784,7 +784,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                 <EuiFlexItem grow={false}>
                   <EuiFilterGroup>
                     <FilterGroup
-                      groupName="Log types"
+                      groupName="Integrations" // Log Types renamed to Integrations by Wazuh
                       items={this.state.logTypeFilterOptions}
                       hasGroupOptions={true}
                       hasFooter={true}

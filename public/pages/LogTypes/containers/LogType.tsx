@@ -90,11 +90,11 @@ export const LogType: React.FC<LogTypeProps> = ({ notifications, history }) => {
       const details = await DataStore.logTypes.getLogType(logTypeId);
 
       if (!details) {
-        setInfoText('Log type not found!');
+        setInfoText('Integration not found!'); // Replace Log Type to Integration by Wazuh
         return;
       }
 
-      setBreadcrumbs([BREADCRUMBS.DETECTORS, BREADCRUMBS.LOG_TYPES, { text: details.name }]);
+      setBreadcrumbs([BREADCRUMBS.DETECTION, BREADCRUMBS.DETECTORS, BREADCRUMBS.LOG_TYPES, { text: details.name }]);
       const logTypeItem = { ...details, detectionRulesCount: details.detectionRules.length };
       updateRules(logTypeItem, logTypeItem);
     };
@@ -134,10 +134,10 @@ export const LogType: React.FC<LogTypeProps> = ({ notifications, history }) => {
   const deleteLogType = async () => {
     const deleteSucceeded = await DataStore.logTypes.deleteLogType(logTypeDetails!.id);
     if (deleteSucceeded) {
-      successNotificationToast(notifications, 'deleted', 'log type');
+      successNotificationToast(notifications, 'deleted', 'integration'); // Replace Log Type to Integration by Wazuh
       history.push(ROUTES.LOG_TYPES);
     } else {
-      errorNotificationToast(notifications, 'delete', 'log type');
+      errorNotificationToast(notifications, 'delete', 'integration'); // Replace Log Type to Integration by Wazuh
     }
   };
 

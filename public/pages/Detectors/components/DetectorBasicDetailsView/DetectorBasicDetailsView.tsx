@@ -3,19 +3,26 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiSmallButton, EuiSpacer, EuiLink, EuiIcon, EuiText, EuiCallOut } from '@elastic/eui';
-import React from 'react';
-import { ContentPanel } from '../../../../components/ContentPanel';
-import { buildRouteUrl, createTextDetailsGroup, parseSchedule } from '../../../../utils/helpers';
-import moment from 'moment';
+import {
+  EuiSmallButton,
+  EuiSpacer,
+  EuiLink,
+  EuiIcon,
+  EuiText,
+} from "@elastic/eui";
+import React from "react";
+import { ContentPanel } from "../../../../components/ContentPanel";
+import {
+  createTextDetailsGroup,
+  parseSchedule,
+} from "../../../../utils/helpers";
+import moment from "moment";
 import {
   DEFAULT_EMPTY_DATA,
   logTypesWithDashboards,
-  ROUTES,
-  THREAT_INTEL_NAV_ID,
-} from '../../../../utils/constants';
-import { Detector } from '../../../../../types';
-import { getLogTypeLabel } from '../../../LogTypes/utils/helpers';
+} from "../../../../utils/constants";
+import { Detector } from "../../../../../types";
+import { getLogTypeLabel } from "../../../LogTypes/utils/helpers";
 
 export interface DetectorBasicDetailsViewProps {
   detector: Detector;
@@ -27,7 +34,9 @@ export interface DetectorBasicDetailsViewProps {
   isEditable: boolean;
 }
 
-export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> = ({
+export const DetectorBasicDetailsView: React.FC<
+  DetectorBasicDetailsViewProps
+> = ({
   detector,
   enabled_time,
   last_update_time,
@@ -37,11 +46,13 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
   onEditClicked,
   isEditable = true,
 }) => {
-  const { name, detector_type, inputs, schedule, threat_intel_enabled } = detector;
+  const { name, detector_type, inputs, schedule } = detector;
   const detectorSchedule = parseSchedule(schedule);
-  const createdAt = enabled_time ? moment(enabled_time).format('YYYY-MM-DDTHH:mm') : undefined;
+  const createdAt = enabled_time
+    ? moment(enabled_time).format("YYYY-MM-DDTHH:mm")
+    : undefined;
   const lastUpdated = last_update_time
-    ? moment(last_update_time).format('YYYY-MM-DDTHH:mm')
+    ? moment(last_update_time).format("YYYY-MM-DDTHH:mm")
     : undefined;
   const totalSelected = detector.inputs.reduce((sum, inputObj) => {
     return (
@@ -52,13 +63,13 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
   }, 0);
   return (
     <ContentPanel
-      title={'Detector details'}
+      title={"Detector details"}
       actions={
         isEditable
           ? [
               <EuiSmallButton
                 onClick={onEditClicked}
-                data-test-subj={'edit-detector-basic-details'}
+                data-test-subj={"edit-detector-basic-details"}
               >
                 Edit
               </EuiSmallButton>,
@@ -66,18 +77,18 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
           : null
       }
     >
-      <EuiSpacer size={'l'} />
+      <EuiSpacer size={"l"} />
       {createTextDetailsGroup([
-        { label: 'Detector name', content: name },
+        { label: "Detector name", content: name },
         {
-          label: 'Description',
+          label: "Description",
           content: inputs[0].detector_input.description || DEFAULT_EMPTY_DATA,
         },
-        { label: 'Detector schedule', content: detectorSchedule },
+        { label: "Detector schedule", content: detectorSchedule },
       ])}
       {createTextDetailsGroup([
         {
-          label: 'Data source',
+          label: "Data source",
           content: (
             <>
               {inputs[0].detector_input.indices.map((ind: string) => (
@@ -86,47 +97,36 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
             </>
           ),
         },
-        { label: 'Log type', content: getLogTypeLabel(detector_type.toLowerCase()) },
         {
-          label: 'Detector dashboard',
+          label: "Integration",
+          content: getLogTypeLabel(detector_type.toLowerCase()),
+        }, // Changed Log Type to Integration by Wazuh
+        {
+          label: "Detector dashboard",
           content: dashboardId ? (
-            <EuiLink onClick={() => window.open(`dashboards#/view/${dashboardId}`, '_blank')}>
+            <EuiLink
+              onClick={() =>
+                window.open(`dashboards#/view/${dashboardId}`, "_blank")
+              }
+            >
               {`${name} summary`}
-              <EuiIcon type={'popout'} />
+              <EuiIcon type={"popout"} />
             </EuiLink>
           ) : !logTypesWithDashboards.has(detector_type) ? (
-            'Not available for this log type'
+            "Not available for this integration" // Changed Log Type to Integration by Wazuh
           ) : (
-            '-'
+            "-"
           ),
         },
       ])}
       {createTextDetailsGroup([
-        { label: 'Detection rules', content: totalSelected },
-        { label: 'Created at', content: createdAt || DEFAULT_EMPTY_DATA },
-        { label: 'Last updated time', content: lastUpdated || DEFAULT_EMPTY_DATA },
+        { label: "Detection rules", content: totalSelected },
+        { label: "Created at", content: createdAt || DEFAULT_EMPTY_DATA },
+        {
+          label: "Last updated time",
+          content: lastUpdated || DEFAULT_EMPTY_DATA,
+        },
       ])}
-      {createTextDetailsGroup([
-        { label: 'Threat intelligence', content: threat_intel_enabled ? 'Enabled' : 'Disabled' },
-      ])}
-      {threat_intel_enabled && (
-        <EuiCallOut
-          size="s"
-          title={
-            <p>
-              To match your data against known indicators of compromise we recommend configuring
-              scan using the new{' '}
-              <EuiLink
-                target="_blank"
-                href={buildRouteUrl(THREAT_INTEL_NAV_ID, ROUTES.THREAT_INTEL_OVERVIEW)}
-              >
-                Threat Intelligence
-              </EuiLink>{' '}
-              platform and disabling threat intelligence in the detector.
-            </p>
-          }
-        />
-      )}
       {rulesCanFold ? children : null}
     </ContentPanel>
   );

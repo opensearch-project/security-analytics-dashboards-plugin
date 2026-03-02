@@ -75,7 +75,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                         className="euiText euiText--small"
                       >
                         <h1>
-                          Threat detectors
+                          Detectors
                         </h1>
                       </div>
                     </EuiText>
@@ -211,7 +211,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                     Object {
                       "dataType": "string",
                       "field": "logType",
-                      "name": "Log type",
+                      "name": "Integration",
                       "render": [Function],
                       "sortable": true,
                     },
@@ -481,7 +481,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                         "compressed": true,
                         "field": "logType",
                         "multiSelect": "or",
-                        "name": "Log type",
+                        "name": "Integration",
                         "options": Array [],
                         "type": "field_value_selection",
                       },
@@ -600,7 +600,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                           "compressed": true,
                           "field": "logType",
                           "multiSelect": "or",
-                          "name": "Log type",
+                          "name": "Integration",
                           "options": Array [],
                           "type": "field_value_selection",
                         },
@@ -864,7 +864,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                     "compressed": true,
                                     "field": "logType",
                                     "multiSelect": "or",
-                                    "name": "Log type",
+                                    "name": "Integration",
                                     "options": Array [],
                                     "type": "field_value_selection",
                                   },
@@ -1040,7 +1040,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                         "compressed": true,
                                         "field": "logType",
                                         "multiSelect": "or",
-                                        "name": "Log type",
+                                        "name": "Integration",
                                         "options": Array [],
                                         "type": "field_value_selection",
                                       }
@@ -1078,7 +1078,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                           onClick={[Function]}
                                           size="s"
                                         >
-                                          Log type
+                                          Integration
                                         </EuiFilterButton>
                                       }
                                       closePopover={[Function]}
@@ -1153,10 +1153,10 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                                     >
                                                       <span
                                                         className="euiFilterButton__textShift"
-                                                        data-text="Log type"
-                                                        title="Log type"
+                                                        data-text="Integration"
+                                                        title="Integration"
                                                       >
-                                                        Log type
+                                                        Integration
                                                       </span>
                                                     </span>
                                                   </span>
@@ -1395,7 +1395,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                         Object {
                           "dataType": "string",
                           "field": "logType",
-                          "name": "Log type",
+                          "name": "Integration",
                           "render": [Function],
                           "sortable": true,
                         },
@@ -1754,7 +1754,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                             "isSortAscending": undefined,
                                             "isSorted": false,
                                             "key": "_data_s_logType_2",
-                                            "name": "Log type",
+                                            "name": "Integration",
                                             "onSort": [Function],
                                           },
                                           Object {
@@ -2099,15 +2099,15 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                                 values={
                                                   Object {
                                                     "description": undefined,
-                                                    "innerText": "Log type",
+                                                    "innerText": "Integration",
                                                   }
                                                 }
                                               >
                                                 <span
                                                   className="euiTableCellContent__text"
-                                                  title="Log type"
+                                                  title="Integration"
                                                 >
-                                                  Log type
+                                                  Integration
                                                 </span>
                                               </EuiI18n>
                                             </EuiInnerText>
@@ -2380,7 +2380,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                       key="_data_column_logType_detector_id_1_2"
                                       mobileOptions={
                                         Object {
-                                          "header": "Log type",
+                                          "header": "Integration",
                                           "render": undefined,
                                         }
                                       }
@@ -2398,7 +2398,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                         <div
                                           className="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
                                         >
-                                          Log type
+                                          Integration
                                         </div>
                                         <div
                                           className="euiTableCellContent euiTableCellContent--overflowingContent"

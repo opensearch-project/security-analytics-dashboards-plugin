@@ -97,7 +97,7 @@ exports[`<RuleContentViewer /> spec renders the component 1`] = `
         <label
           class="euiFormLabel"
         >
-          Log Type
+          Integration
         </label>
         <div
           class="euiText euiText--small"

@@ -147,9 +147,9 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
         }
 
         if (!values.logType) {
-          errors.logType = 'Log type is required';
+          errors.logType = 'Integration is required'; // Replace Log type to Integration by Wazuh
         } else if (!ruleTypes.some((type) => type.value === values.logType)) {
-          errors.logType = `Invalid log type`;
+          errors.logType = `Invalid integration`; // Replace Log type to Integration by Wazuh
         }
 
         if (!values.detection) {
@@ -175,11 +175,11 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
         if (!validateTags(values.tags)) {
           errors.tags = `Tags must start with '${TAGS_PREFIX}'`;
         }
-
         return errors;
       }}
       onSubmit={(values, { setSubmitting }) => {
-        if (isDetectionInvalid) {
+        // Wazuh: fixed to prevent submission when it's visual editor to yaml works correctly
+        if (isDetectionInvalid && selectedEditorType === 'visual') {
           return;
         }
 
@@ -338,7 +338,8 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                       <EuiCompressedFormRow
                         label={
                           <EuiText size={'s'}>
-                            <strong>Log type</strong>
+                            {/* Replace Log type to Integration by Wazuh */}
+                            <strong>Integration</strong>
                           </EuiText>
                         }
                         isInvalid={
@@ -350,7 +351,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                           isInvalid={
                             (validateOnMount || props.touched.logType) && !!props.errors?.logType
                           }
-                          placeholder="Select a log type"
+                          placeholder="Select an integration" // Replace Log type to Integration by Wazuh
                           data-test-subj={'rule_type_dropdown'}
                           options={logTypeOptions}
                           singleSelection={{ asPlainText: true }}
@@ -364,7 +365,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                               ? [
                                   {
                                     value: props.values.logType,
-                                    label: getLogTypeLabel(props.values.logType),
+                                  label: getLogTypeLabel(String(props.values.logType)),
                                   },
                                 ]
                               : []
@@ -374,7 +375,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     </EuiFlexItem>
                     <EuiFlexItem grow={false} style={{ marginTop: 36 }}>
                       <EuiSmallButton
-                        href={'opensearch_security_analytics_dashboards#/log-types'}
+                        href={`opensearch_security_analytics_dashboards#/log-types`}
                         target="_blank"
                       >
                         Manage <EuiIcon type={'popout'} />
@@ -441,7 +442,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                       onBlur={props.handleBlur('status')}
                       selectedOptions={
                         props.values.status
-                          ? [{ value: props.values.status, label: props.values.status }]
+                          ? [{ value: props.values.status, label: String(props.values.status) }]
                           : []
                       }
                     />

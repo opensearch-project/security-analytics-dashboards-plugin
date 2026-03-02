@@ -31,7 +31,16 @@ export const DETECTORS_NAV_ID = `detectors`;
 export const DETECTION_RULE_NAV_ID = `detection_rules`;
 export const CORRELATIONS_RULE_NAV_ID = `correlation_rules`;
 export const THREAT_INTEL_NAV_ID = `threat_intelligence`;
+export const INTEGRATIONS_NAV_ID = `sa-integrations`;
 export const LOG_TYPES_NAV_ID = `log_types`;
+export const INSIGHTS_NAV_ID = 'insights_nav';
+export const DETECTION_NAV_ID = 'detection_nav';
+export const NORMALIZATION_NAV_ID = 'normalization';
+export const DECODERS_NAV_ID = 'decoders';
+export const KVDBS_NAV_ID = 'kvdbs';
+export const LOG_TEST_NAV_ID = 'log_test';
+// Wazuh: Threat intelligence app/endpoints are not available.
+export const THREAT_INTEL_ENABLED = false;
 
 export let isDarkMode: boolean = false;
 
@@ -61,6 +70,9 @@ export const ROUTES = Object.freeze({
   CORRELATION_RULES: '/correlations/rules',
   CORRELATION_RULE_CREATE: '/correlations/create-rule',
   CORRELATION_RULE_EDIT: '/correlations/rule',
+  INTEGRATIONS: '/integrations',
+  INTEGRATIONS_CREATE: '/create-integration',
+  PROMOTE: '/promote',
   LOG_TYPES: '/log-types',
   LOG_TYPES_CREATE: '/create-log-type',
   THREAT_INTEL_OVERVIEW: '/threat-intel',
@@ -68,6 +80,15 @@ export const ROUTES = Object.freeze({
   THREAT_INTEL_CREATE_SCAN_CONFIG: '/create-scan-config',
   THREAT_INTEL_EDIT_SCAN_CONFIG: '/edit-scan-config',
   THREAT_INTEL_SOURCE_DETAILS: '/threat-intel-source',
+  // Wazuh
+  NORMALIZATION: '/normalization',
+  DECODERS: '/decoders',
+  DECODERS_CREATE: '/create-decoder',
+  DECODERS_EDIT: '/edit-decoder',
+  KVDBS: '/kvdbs',
+  KVDBS_CREATE: '/create-kvdb',
+  KVDBS_EDIT: '/edit-kvdb',
+  LOG_TEST: '/log-test',
 
   get LANDING_PAGE(): string {
     return this.OVERVIEW;
@@ -79,12 +100,18 @@ export const getNotificationDetailsHref = (channelId: string) =>
   `notifications-dashboards#/channels-details/${channelId}`;
 
 export const BREADCRUMBS = Object.freeze({
-  SECURITY_ANALYTICS: { text: 'Security Analytics', href: `#${ROUTES.OVERVIEW}` },
+  SECURITY_ANALYTICS: {
+    text: 'Security Analytics',
+    href: `#${ROUTES.OVERVIEW}`,
+  },
   OVERVIEW: { text: 'Overview', href: `#${ROUTES.OVERVIEW}` },
   GETTING_STARTED: { text: 'Get started', href: `#${ROUTES.GETTING_STARTED}` },
   FINDINGS: { text: 'Findings', href: `#${ROUTES.FINDINGS}` },
-  DETECTORS: { text: 'Threat detectors', href: `#${ROUTES.DETECTORS}` },
-  DETECTORS_CREATE: { text: 'Create detector', href: `#${ROUTES.DETECTORS_CREATE}` },
+  DETECTORS: { text: 'Detectors', href: `#${ROUTES.DETECTORS}` },
+  DETECTORS_CREATE: {
+    text: 'Create detector',
+    href: `#${ROUTES.DETECTORS_CREATE}`,
+  },
   EDIT_DETECTOR_DETAILS: { text: 'Edit detector details' },
   DETECTORS_DETAILS: (name: string, detectorId: string) => ({
     text: `${name}`,
@@ -95,24 +122,53 @@ export const BREADCRUMBS = Object.freeze({
     href: `#${ROUTES.EDIT_DETECTOR_DETAILS}/${detectorId}`,
   }),
   RULES: { text: 'Detection rules', href: `#${ROUTES.RULES}` },
-  ALERTS: { text: 'Threat alerts', href: `#${ROUTES.ALERTS}` },
-  RULES_CREATE: { text: 'Create detection rule', href: `#${ROUTES.RULES_CREATE}` },
+  ALERTS: { text: 'Alerts', href: `#${ROUTES.ALERTS}` },
+  RULES_CREATE: {
+    text: 'Create detection rule',
+    href: `#${ROUTES.RULES_CREATE}`,
+  },
   RULES_EDIT: { text: 'Edit rule', href: `#${ROUTES.RULES_EDIT}` },
   RULE_EDIT_DETAILS: (name: string) => ({
     text: `${name}`,
     href: `#${ROUTES.RULES_EDIT}`,
   }),
-  RULES_DUPLICATE: { text: 'Duplicate rule', href: `#${ROUTES.RULES_DUPLICATE}` },
+  RULES_DUPLICATE: {
+    text: 'Duplicate rule',
+    href: `#${ROUTES.RULES_DUPLICATE}`,
+  },
   RULES_IMPORT: { text: 'Import rule', href: `#${ROUTES.RULES_IMPORT}` },
   CORRELATIONS: { text: 'Correlations', href: `#${ROUTES.CORRELATIONS}` },
-  CORRELATION_RULES: { text: 'Correlation rules', href: `#${ROUTES.CORRELATION_RULES}` },
+  CORRELATION_RULES: {
+    text: 'Correlation rules',
+    href: `#${ROUTES.CORRELATION_RULES}`,
+  },
   CORRELATIONS_RULE_CREATE: (action: string) => ({
     text: `${action} correlation rule`,
     href: `#${ROUTES.CORRELATION_RULE_CREATE}`,
   }),
-  LOG_TYPES: { text: 'Log types', href: `#${ROUTES.LOG_TYPES}` },
-  LOG_TYPE_CREATE: { text: 'Create log type', href: `#${ROUTES.LOG_TYPES_CREATE}` },
-  THREAT_INTEL_OVERVIEW: { text: 'Threat intelligence', href: `#${ROUTES.THREAT_INTEL_OVERVIEW}` },
+  LOG_TYPES: { text: 'Integrations', href: `#${ROUTES.LOG_TYPES}` }, // Replace Log Types with Integrations by Wazuh
+  LOG_TYPE_CREATE: {
+    text: 'Create integration',
+    href: `#${ROUTES.LOG_TYPES_CREATE}`,
+  }, // Replace Log Type with Integration by Wazuh
+  NORMALIZATION: { text: 'Normalization' },
+  INTEGRATIONS: { text: 'Integrations', href: `#${ROUTES.INTEGRATIONS}` }, // Replace Log Types with Integrations by Wazuh
+  INTEGRATIONS_CREATE: {
+    text: 'Create integration',
+    href: `#${ROUTES.INTEGRATIONS_CREATE}`,
+  }, // Replace Log Type with Integration by Wazuh
+  PROMOTE: { text: 'Promote', href: `#${ROUTES.PROMOTE}` },
+  DECODERS: { text: 'Decoders', href: `#${ROUTES.DECODERS}` },
+  DECODERS_CREATE: { text: 'Create', href: `#${ROUTES.DECODERS_CREATE}` },
+  DECODERS_EDIT: { text: 'Edit' },
+  KVDBS: { text: 'KVDBs', href: `#${ROUTES.KVDBS}` },
+  KVDBS_CREATE: { text: 'Create', href: `#${ROUTES.KVDBS_CREATE}` },
+  KVDBS_EDIT: { text: 'Edit' },
+  LOG_TEST: { text: 'Log test', href: `#${ROUTES.LOG_TEST}` },
+  THREAT_INTEL_OVERVIEW: {
+    text: 'Threat intelligence',
+    href: `#${ROUTES.THREAT_INTEL_OVERVIEW}`,
+  },
   THREAT_INTEL_ADD_CUSTOM_SOURCE: {
     text: 'Add threat intel source',
     href: `#${ROUTES.THREAT_INTEL_ADD_CUSTOM_SOURCE}`,
@@ -129,6 +185,8 @@ export const BREADCRUMBS = Object.freeze({
     text: `${name}`,
     href: `#${ROUTES.THREAT_INTEL_SOURCE_DETAILS}/${id}`,
   }),
+  INSIGHTS: { text: 'Insights' },
+  DETECTION: { text: 'Detection' },
 });
 
 export enum SortDirection {
@@ -221,14 +279,76 @@ export const pendingDashboardCreations: {
   [detectorId: string]: undefined | Promise<void | ServerResponse<SimpleSavedObject<unknown>>>;
 } = {};
 
-export const logTypeCategoryDescription: { name: string; description: string }[] = [
-  { name: 'Access Management', description: 'User access, authentication, group management' },
-  { name: 'Applications', description: 'Application lifecycle, API, and web resources activities' },
-  { name: 'Cloud Services', description: 'Services managed by cloud providers' },
-  { name: 'Network Activity', description: 'DNS, HTTP, Email, SSH, FTP, DHCP, RDP' },
+export const logTypeCategoryDescription: {
+  name: string;
+  description: string;
+}[] = [
+  {
+    name: 'Access Management',
+    description: 'User access, authentication, group management',
+  },
+  {
+    name: 'Applications',
+    description: 'Application lifecycle, API, and web resources activities',
+  },
+  {
+    name: 'Cloud Services',
+    description: 'Services managed by cloud providers',
+  },
+  {
+    name: 'Network Activity',
+    description: 'DNS, HTTP, Email, SSH, FTP, DHCP, RDP',
+  },
   { name: 'System Activity', description: 'System monitoring logs' },
   { name: 'Other', description: 'Logs not covered in other categories' },
 ];
+
+/* Wazuh: Replaced log types with integrations categories. */
+export const integrationCategories: {
+  label: string;
+  value: string;
+  description: string;
+}[] = [
+  {
+    label: 'Access Management',
+    value: 'access-management',
+    description: 'User access, authentication, group management',
+  },
+  {
+    label: 'Applications',
+    value: 'applications',
+    description: 'Application lifecycle, API, and web resources activities',
+  },
+  {
+    label: 'Cloud Services',
+    value: 'cloud-services',
+    description: 'Services managed by cloud providers',
+  },
+  {
+    label: 'Network Activity',
+    value: 'network-activity',
+    description: 'DNS, HTTP, Email, SSH, FTP, DHCP, RDP',
+  },
+  {
+    label: 'System Activity',
+    value: 'system-activity',
+    description: 'System monitoring logs',
+  },
+  {
+    label: 'Security',
+    value: 'security',
+    description: 'Security-related logs and events',
+  },
+  {
+    label: 'Other',
+    value: 'other',
+    description: 'Logs not covered in other categories',
+  },
+];
+
+export const integrationsByCategories: { [category: string]: Integration[] } = {};
+
+export const integrationCategoryFilters: string[] = integrationCategories.map(({ value }) => value);
 
 export const logTypeCategories: string[] = [];
 export const logTypesByCategories: { [category: string]: LogType[] } = {};

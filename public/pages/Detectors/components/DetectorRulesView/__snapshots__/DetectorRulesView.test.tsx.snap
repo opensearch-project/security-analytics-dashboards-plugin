@@ -383,7 +383,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                   },
                   Object {
                     "field": "category",
-                    "name": "Log type",
+                    "name": "Integration",
                     "render": [Function],
                     "sortable": true,
                     "truncateText": true,
@@ -431,7 +431,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                       "compressed": true,
                       "field": "category",
                       "multiSelect": "or",
-                      "name": "Log type",
+                      "name": "Integration",
                       "options": Array [],
                       "type": "field_value_selection",
                     },
@@ -544,7 +544,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                         "compressed": true,
                         "field": "category",
                         "multiSelect": "or",
-                        "name": "Log type",
+                        "name": "Integration",
                         "options": Array [],
                         "type": "field_value_selection",
                       },
@@ -729,7 +729,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                   "compressed": true,
                                   "field": "category",
                                   "multiSelect": "or",
-                                  "name": "Log type",
+                                  "name": "Integration",
                                   "options": Array [],
                                   "type": "field_value_selection",
                                 },
@@ -835,7 +835,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                       "compressed": true,
                                       "field": "category",
                                       "multiSelect": "or",
-                                      "name": "Log type",
+                                      "name": "Integration",
                                       "options": Array [],
                                       "type": "field_value_selection",
                                     }
@@ -873,7 +873,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                         onClick={[Function]}
                                         size="s"
                                       >
-                                        Log type
+                                        Integration
                                       </EuiFilterButton>
                                     }
                                     closePopover={[Function]}
@@ -948,10 +948,10 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                                   >
                                                     <span
                                                       className="euiFilterButton__textShift"
-                                                      data-text="Log type"
-                                                      title="Log type"
+                                                      data-text="Integration"
+                                                      title="Integration"
                                                     >
-                                                      Log type
+                                                      Integration
                                                     </span>
                                                   </span>
                                                 </span>
@@ -1320,7 +1320,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                       },
                       Object {
                         "field": "category",
-                        "name": "Log type",
+                        "name": "Integration",
                         "render": [Function],
                         "sortable": true,
                         "truncateText": true,
@@ -1417,7 +1417,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                           "isSortAscending": undefined,
                                           "isSorted": false,
                                           "key": "_data_s_category_2",
-                                          "name": "Log type",
+                                          "name": "Integration",
                                           "onSort": [Function],
                                         },
                                         Object {
@@ -1705,15 +1705,15 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                               values={
                                                 Object {
                                                   "description": undefined,
-                                                  "innerText": "Log type",
+                                                  "innerText": "Integration",
                                                 }
                                               }
                                             >
                                               <span
                                                 className="euiTableCellContent__text"
-                                                title="Log type"
+                                                title="Integration"
                                               >
-                                                Log type
+                                                Integration
                                               </span>
                                             </EuiI18n>
                                           </EuiInnerText>

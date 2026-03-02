@@ -67,7 +67,8 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
               <EuiText data-test-subj={'rule_flyout_rule_name'} size="s">{ruleData.title}</EuiText>
             </EuiFlexItem>
             <EuiFlexItem>
-              <EuiFormLabel>Log Type</EuiFormLabel>
+              {/* Replace Log type to Integration by Wazuh */}
+              <EuiFormLabel>Integration</EuiFormLabel>
               <EuiText data-test-subj={'rule_flyout_rule_log_type'} size="s">
                 {getLogTypeLabel(ruleData.category)}
               </EuiText>

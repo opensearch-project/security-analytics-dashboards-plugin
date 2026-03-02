@@ -857,7 +857,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                       fullWidth={true}
                       hasChildLabel={true}
                       hasEmptyLabelSpace={false}
-                      label="Log type"
+                      label="Integration"
                       labelType="label"
                     >
                       <div
@@ -877,7 +877,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                               className="euiFormLabel euiFormRow__label"
                               htmlFor="some_html_id"
                             >
-                              Log type
+                              Integration
                             </label>
                           </EuiFormLabel>
                         </div>
@@ -885,7 +885,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                           className="euiFormRow__fieldWrapper"
                         >
                           <EuiText
-                            data-test-subj="text-details-group-content-log-type"
+                            data-test-subj="text-details-group-content-integration"
                             id="some_html_id"
                             onBlur={[Function]}
                             onFocus={[Function]}
@@ -893,7 +893,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                           >
                             <div
                               className="euiText euiText--small"
-                              data-test-subj="text-details-group-content-log-type"
+                              data-test-subj="text-details-group-content-integration"
                               id="some_html_id"
                               onBlur={[Function]}
                               onFocus={[Function]}
@@ -960,7 +960,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                               onBlur={[Function]}
                               onFocus={[Function]}
                             >
-                              Not available for this log type
+                              Not available for this integration
                             </div>
                           </EuiText>
                         </div>
@@ -1171,66 +1171,6 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                 </EuiFlexItem>
               </div>
             </EuiFlexGroup>
-            <EuiSpacer
-              size="l"
-            >
-              <div
-                className="euiSpacer euiSpacer--l"
-              />
-            </EuiSpacer>
-            <EuiCompressedFormRow
-              describedByIds={Array []}
-              display="rowCompressed"
-              fullWidth={true}
-              hasChildLabel={true}
-              hasEmptyLabelSpace={false}
-              label="Threat intelligence"
-              labelType="label"
-            >
-              <div
-                className="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
-                id="some_html_id-row"
-              >
-                <div
-                  className="euiFormRow__labelWrapper"
-                >
-                  <EuiFormLabel
-                    className="euiFormRow__label"
-                    htmlFor="some_html_id"
-                    isFocused={false}
-                    type="label"
-                  >
-                    <label
-                      className="euiFormLabel euiFormRow__label"
-                      htmlFor="some_html_id"
-                    >
-                      Threat intelligence
-                    </label>
-                  </EuiFormLabel>
-                </div>
-                <div
-                  className="euiFormRow__fieldWrapper"
-                >
-                  <EuiText
-                    data-test-subj="text-details-group-content-threat-intelligence"
-                    id="some_html_id"
-                    onBlur={[Function]}
-                    onFocus={[Function]}
-                    size="s"
-                  >
-                    <div
-                      className="euiText euiText--small"
-                      data-test-subj="text-details-group-content-threat-intelligence"
-                      id="some_html_id"
-                      onBlur={[Function]}
-                      onFocus={[Function]}
-                    >
-                      Disabled
-                    </div>
-                  </EuiText>
-                </div>
-              </div>
-            </EuiCompressedFormRow>
             <EuiSpacer
               size="l"
             >
@@ -1636,7 +1576,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                     },
                     Object {
                       "field": "category",
-                      "name": "Log type",
+                      "name": "Integration",
                       "render": [Function],
                       "sortable": true,
                       "truncateText": true,
@@ -1684,7 +1624,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                         "compressed": true,
                         "field": "category",
                         "multiSelect": "or",
-                        "name": "Log type",
+                        "name": "Integration",
                         "options": Array [],
                         "type": "field_value_selection",
                       },
@@ -1797,7 +1737,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                           "compressed": true,
                           "field": "category",
                           "multiSelect": "or",
-                          "name": "Log type",
+                          "name": "Integration",
                           "options": Array [],
                           "type": "field_value_selection",
                         },
@@ -1982,7 +1922,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                     "compressed": true,
                                     "field": "category",
                                     "multiSelect": "or",
-                                    "name": "Log type",
+                                    "name": "Integration",
                                     "options": Array [],
                                     "type": "field_value_selection",
                                   },
@@ -2088,7 +2028,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                         "compressed": true,
                                         "field": "category",
                                         "multiSelect": "or",
-                                        "name": "Log type",
+                                        "name": "Integration",
                                         "options": Array [],
                                         "type": "field_value_selection",
                                       }
@@ -2126,7 +2066,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                           onClick={[Function]}
                                           size="s"
                                         >
-                                          Log type
+                                          Integration
                                         </EuiFilterButton>
                                       }
                                       closePopover={[Function]}
@@ -2201,10 +2141,10 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                                     >
                                                       <span
                                                         className="euiFilterButton__textShift"
-                                                        data-text="Log type"
-                                                        title="Log type"
+                                                        data-text="Integration"
+                                                        title="Integration"
                                                       >
-                                                        Log type
+                                                        Integration
                                                       </span>
                                                     </span>
                                                   </span>
@@ -2573,7 +2513,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                         },
                         Object {
                           "field": "category",
-                          "name": "Log type",
+                          "name": "Integration",
                           "render": [Function],
                           "sortable": true,
                           "truncateText": true,
@@ -2670,7 +2610,7 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                             "isSortAscending": undefined,
                                             "isSorted": false,
                                             "key": "_data_s_category_2",
-                                            "name": "Log type",
+                                            "name": "Integration",
                                             "onSort": [Function],
                                           },
                                           Object {
@@ -2958,15 +2898,15 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                                                 values={
                                                   Object {
                                                     "description": undefined,
-                                                    "innerText": "Log type",
+                                                    "innerText": "Integration",
                                                   }
                                                 }
                                               >
                                                 <span
                                                   className="euiTableCellContent__text"
-                                                  title="Log type"
+                                                  title="Integration"
                                                 >
-                                                  Log type
+                                                  Integration
                                                 </span>
                                               </EuiI18n>
                                             </EuiInnerText>

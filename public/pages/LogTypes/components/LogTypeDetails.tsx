@@ -32,7 +32,8 @@ export const LogTypeDetails: React.FC<LogTypeDetailsProps> = ({
   const onUpdateLogType = async () => {
     const success = await DataStore.logTypes.updateLogType(logTypeDetails);
     if (success) {
-      successNotificationToast(notifications, 'updated', `log type ${logTypeDetails.name}`);
+      // Replace Log Type to Integration by Wazuh
+      successNotificationToast(notifications, 'updated', `integration ${logTypeDetails.name}`);
       setIsEditMode(false);
     }
   };
@@ -51,7 +52,7 @@ export const LogTypeDetails: React.FC<LogTypeDetailsProps> = ({
         type="column"
         listItems={[
           {
-            title: 'Log type',
+            title: 'Integration', // Replace Log type to Integration by Wazuh
             description: (
               <LogTypeForm
                 logTypeDetails={logTypeDetails}

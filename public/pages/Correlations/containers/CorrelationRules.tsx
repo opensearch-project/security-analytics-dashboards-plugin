@@ -47,11 +47,14 @@ export const CorrelationRules: React.FC<CorrelationRulesProps> = (props: Correla
   }, [DataStore.correlations.getCorrelationRules]);
 
   useEffect(() => {
-    if (getUseUpdatedUx()) {
-      setBreadcrumbs([BREADCRUMBS.CORRELATION_RULES]);
-    } else {
-      setBreadcrumbs([BREADCRUMBS.CORRELATIONS, BREADCRUMBS.CORRELATION_RULES]);
-    }
+    // Wazuh Customization: Breadcrumbs for Correlation Rules
+    setBreadcrumbs([BREADCRUMBS.DETECTION, BREADCRUMBS.CORRELATION_RULES]);
+
+    // if (getUseUpdatedUx()) {
+    //   setBreadcrumbs([BREADCRUMBS.DETECTION, BREADCRUMBS.CORRELATION_RULES]);
+    // } else {
+    //   setBreadcrumbs([BREADCRUMBS.DETECTION, BREADCRUMBS.CORRELATION_RULES]);
+    // }
   }, [getUseUpdatedUx()]);
 
   useEffect(() => {
@@ -111,7 +114,7 @@ export const CorrelationRules: React.FC<CorrelationRulesProps> = (props: Correla
       {isDeleteModalVisible && deleteModal ? deleteModal : null}
       <EuiFlexGroup direction="column" gutterSize={'m'}>
         <PageHeader appRightControls={[{ renderComponent: createRuleAction }]}>
-          <EuiFlexItem>
+          <EuiFlexItem grow={false}>
             <EuiFlexGroup gutterSize={'s'} justifyContent={'spaceBetween'}>
               <EuiFlexItem>
                 <EuiText size="s">
@@ -144,9 +147,10 @@ export const CorrelationRules: React.FC<CorrelationRulesProps> = (props: Correla
                 }
                 body={
                   <EuiText size="s">
+                    {/* Replace log types with integrations by Wazuh */}
                     <p>
                       Create a correlation rule based on specified fields to generate correlations
-                      across all findings between different log types.
+                      across all findings between different integrations.
                     </p>
                   </EuiText>
                 }

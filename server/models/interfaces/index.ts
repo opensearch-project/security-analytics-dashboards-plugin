@@ -13,10 +13,15 @@ import {
   CorrelationService,
 } from '../../services';
 import AlertService from '../../services/AlertService';
+import { DecodersService } from '../../services/DecodersService';
+import { PoliciesService } from '../../services/PoliciesService';
+import { IntegrationService } from '../../services/IntegrationService';
 import { LogTypeService } from '../../services/LogTypeService';
 import MetricsService from '../../services/MetricsService';
 import RulesService from '../../services/RuleService';
 import ThreatIntelService from '../../services/ThreatIntelService';
+import { KVDBsService } from '../../services/KVDBsService';
+import { LogTestService } from '../../services/LogTestService';
 
 export interface SecurityAnalyticsApi {
   readonly DETECTORS_BASE: string;
@@ -39,10 +44,15 @@ export interface SecurityAnalyticsApi {
   readonly UPDATE_ALIASES: string;
   readonly CORRELATIONS: string;
   readonly LOGTYPE_BASE: string;
+  readonly INTEGRATION_BASE: string;
+  readonly POLICIES_BASE: string;
+  readonly KVDBS_BASE: string;
+  readonly LOG_TEST_BASE: string;
   readonly METRICS: string;
   readonly GET_CORRELATION_ALERTS: string;
   readonly ACK_CORRELATION_ALERTS: string;
   readonly THREAT_INTEL_BASE: string;
+  readonly DECODERS_BASE: string;
 }
 
 export interface NodeServices {
@@ -55,9 +65,14 @@ export interface NodeServices {
   alertService: AlertService;
   rulesService: RulesService;
   notificationsService: NotificationsService;
+  policiesService: PoliciesService;
+  integrationService: IntegrationService;
   logTypeService: LogTypeService;
+  kvdbsService: KVDBsService;
   metricsService: MetricsService;
   threatIntelService: ThreatIntelService;
+  decodersService: DecodersService;
+  logTestService: LogTestService;
 }
 
 export interface GetIndicesResponse {

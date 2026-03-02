@@ -298,9 +298,11 @@ exports[`<Alerts /> spec renders the component 1`] = `
             ]
           }
         >
-          <EuiFlexItem>
+          <EuiFlexItem
+            grow={false}
+          >
             <div
-              className="euiFlexItem"
+              className="euiFlexItem euiFlexItem--flexGrowZero"
             >
               <EuiFlexGroup
                 gutterSize="s"
@@ -1110,35 +1112,6 @@ exports[`<Alerts /> spec renders the component 1`] = `
                         }
                         title="Alerts"
                       >
-                        <ThreatIntelAlertsTable
-                          alerts={Array []}
-                          onAlertStateChange={[Function]}
-                          onSelectionChange={[Function]}
-                        />
-                      </ContentPanel>
-                    </React.Fragment>,
-                    "id": "threat-intel",
-                    "name": "Threat intel",
-                  },
-                  Object {
-                    "content": <React.Fragment>
-                      <EuiSpacer
-                        size="m"
-                      />
-                      <ContentPanel
-                        actions={
-                          Array [
-                            <EuiSmallButton
-                              data-test-subj="acknowledge-button"
-                              disabled={true}
-                              onClick={[Function]}
-                            >
-                              Acknowledge
-                            </EuiSmallButton>,
-                          ]
-                        }
-                        title="Alerts"
-                      >
                         <EuiInMemoryTable
                           columns={
                             Array [
@@ -1166,7 +1139,7 @@ exports[`<Alerts /> spec renders the component 1`] = `
                               Object {
                                 "dataType": "string",
                                 "field": "correlation_rule_categories",
-                                "name": "Log Types",
+                                "name": "Integrations",
                                 "render": [Function],
                                 "sortable": false,
                               },
@@ -1304,30 +1277,6 @@ exports[`<Alerts /> spec renders the component 1`] = `
                           className="euiTab__content"
                         >
                           Detection rules
-                        </span>
-                      </button>
-                    </EuiTab>
-                    <EuiTab
-                      aria-controls="some_html_id"
-                      id="threat-intel"
-                      isSelected={false}
-                      key="threat-intel"
-                      onClick={[Function]}
-                    >
-                      <button
-                        aria-controls="some_html_id"
-                        aria-selected={false}
-                        className="euiTab"
-                        disabled={false}
-                        id="threat-intel"
-                        onClick={[Function]}
-                        role="tab"
-                        type="button"
-                      >
-                        <span
-                          className="euiTab__content"
-                        >
-                          Threat intel
                         </span>
                       </button>
                     </EuiTab>

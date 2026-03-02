@@ -34,11 +34,16 @@ export const API: SecurityAnalyticsApi = {
   ACKNOWLEDGE_ALERTS: `${BASE_API_PATH}/detectors/{detector_id}/_acknowledge/alerts`,
   UPDATE_ALIASES: `${BASE_API_PATH}/update_aliases`,
   CORRELATIONS: `${BASE_API_PATH}/correlations`,
+  INTEGRATION_BASE: `${BASE_API_PATH}/integrations`,
   LOGTYPE_BASE: `${BASE_API_PATH}/logtype`,
+  KVDBS_BASE: `${BASE_API_PATH}/kvdbs`,
+  LOG_TEST_BASE: `${BASE_API_PATH}/logtest`,
   METRICS: `/api/security_analytics/stats`,
   GET_CORRELATION_ALERTS: `${BASE_API_PATH}/correlationAlerts`,
   ACK_CORRELATION_ALERTS: `${BASE_API_PATH}/_acknowledge/correlationAlerts`,
   THREAT_INTEL_BASE: `${BASE_API_PATH}/threat_intel`,
+  DECODERS_BASE: `${BASE_API_PATH}/decoders`,
+  POLICIES_BASE: `${BASE_API_PATH}/policies`,
 };
 
 /**
@@ -90,11 +95,25 @@ export const METHOD_NAMES = {
   GET_CHANNElS: 'getChannels',
   GET_FEATURES: 'getFeatures',
 
+  // Wazuh: Integration methods
+  SEARCH_INTEGRATIONS: 'search',
+  CREATE_INTEGRATION: 'createIntegration',
+  UPDATE_INTEGRATION: 'updateIntegration',
+  DELETE_INTEGRATION: 'deleteIntegration',
+  PROMOTE_INTEGRATION: 'promoteIntegration',
+  GET_PROMOTE_BY_SPACE: 'getPromoteBySpace',
+
+  // Wazuh: Policy methods
+  UPDATE_POLICY: 'updatePolicy',
+
   // LogType methods
   SEARCH_LOGTYPES: 'searchLogTypes',
   CREATE_LOGTYPE: 'createLogType',
   UPDATE_LOGTYPE: 'updateLogType',
   DELETE_LOGTYPE: 'deleteLogType',
+
+  // LogTest methods
+  TEST_LOG: 'executeLogtest',
 
   // Threat intel methods
   ADD_THREAT_INTEL_SOURCE: 'addThreatIntelSource',
@@ -111,6 +130,16 @@ export const METHOD_NAMES = {
   GET_THREAT_INTEL_FINDINGS: 'getThreatIntelFindings',
   GET_THREAT_INTEL_ALERTS: 'getThreatIntelAlerts',
   UPDATE_THREAT_INTEL_ALERTS_STATE: 'updateThreatIntelAlertsStatus',
+
+  // Decoder methods
+  CREATE_DECODER: 'createDecoder',
+  UPDATE_DECODER: 'updateDecoder',
+  DELETE_DECODER: 'deleteDecoder',
+
+  // KVDB methods
+  CREATE_KVDB: 'createKvdb',
+  UPDATE_KVDB: 'updateKvdb',
+  DELETE_KVDB: 'deleteKvdb',
 };
 
 /**
@@ -171,6 +200,25 @@ export const CLIENT_LOGTYPE_METHODS = {
   DELETE_LOGTYPE: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.DELETE_LOGTYPE}`,
 };
 
+// Wazuh
+export const CLIENT_INTEGRATION_METHODS = {
+  SEARCH_INTEGRATIONS: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.SEARCH_INTEGRATIONS}`,
+  CREATE_INTEGRATION: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.CREATE_INTEGRATION}`,
+  UPDATE_INTEGRATION: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.UPDATE_INTEGRATION}`,
+  DELETE_INTEGRATION: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.DELETE_INTEGRATION}`,
+  PROMOTE_INTEGRATION: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.PROMOTE_INTEGRATION}`,
+  GET_PROMOTE_BY_SPACE: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.GET_PROMOTE_BY_SPACE}`,
+};
+
+// Wazuh
+export const CLIENT_POLICY_METHODS = {
+  UPDATE_POLICY: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.UPDATE_POLICY}`,
+};
+
+export const CLIENT_LOG_TEST_METHODS = {
+  TEST_LOG: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.TEST_LOG}`,
+};
+
 export const CLIENT_THREAT_INTEL_METHODS = {
   ADD_THREAT_INTEL_SOURCE: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.ADD_THREAT_INTEL_SOURCE}`,
   UPDATE_THREAT_INTEL_SOURCE: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.UPDATE_THREAT_INTEL_SOURCE}`,
@@ -188,6 +236,18 @@ export const CLIENT_THREAT_INTEL_METHODS = {
   UPDATE_THREAT_INTEL_ALERTS_STATE: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.UPDATE_THREAT_INTEL_ALERTS_STATE}`,
 };
 
+export const CLIENT_DECODER_METHODS = {
+  CREATE_DECODER: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.CREATE_DECODER}`,
+  UPDATE_DECODER: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.UPDATE_DECODER}`,
+  DELETE_DECODER: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.DELETE_DECODER}`,
+};
+
+export const CLIENT_KVDB_METHODS = {
+  CREATE_KVDB: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.CREATE_KVDB}`,
+  UPDATE_KVDB: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.UPDATE_KVDB}`,
+  DELETE_KVDB: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.DELETE_KVDB}`,
+};
+
 export const DEFAULT_METRICS_COUNTER: MetricsCounter = {
   CreateDetector: {
     [CreateDetectorSteps.started]: 0,
@@ -200,3 +260,5 @@ export const DEFAULT_METRICS_COUNTER: MetricsCounter = {
     [CreateDetectorSteps.createClicked]: 0,
   },
 };
+
+export const CONTENT_MANAGER_BASE_PATH = '/_plugins/_content_manager';

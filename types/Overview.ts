@@ -19,9 +19,11 @@ export interface DateTimeFilter {
 export interface OverviewViewModel {
   detectors: DetectorHit[];
   findings: OverviewFindingItem[];
-  alerts: OverviewAlertItem[];
+  // Wazuh: hide alerts and correlations from overview view model.
+  // alerts: OverviewAlertItem[];
   threatIntelFindings: ThreatIntelFinding[];
-  correlations: number;
+  // Wazuh: hide alerts and correlations from overview view model.
+  // correlations: number;
 }
 
 export type OverviewViewModelRefreshHandler = (
@@ -72,7 +74,8 @@ export interface OverviewDetectorItem {
 
 export type TableWidgetItem =
   | OverviewFindingItem
-  | OverviewAlertItem
+  // Wazuh: hide alerts in overview table widget union.
+  // | OverviewAlertItem
   | OverviewDetectorItem
   | ThreatIntelFinding;
 

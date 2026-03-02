@@ -16,35 +16,28 @@ import {
 import React, { useCallback, useEffect, useState } from 'react';
 import { WidgetContainer } from './WidgetContainer';
 import { summaryGroupByOptions } from '../../utils/constants';
-import { TimeUnit } from '../../utils/helpers';
 import { createSelectComponent } from '../../../../utils/helpers';
 import { ROUTES } from '../../../../utils/constants';
-import { OverviewAlertItem, OverviewFindingItem } from '../../../../../types';
+import { OverviewFindingItem } from '../../../../../types';
+// Wazuh: hide alerts in summary widget.
+// import { OverviewAlertItem } from '../../../../../types';
 import { getUseUpdatedUx } from '../../../../services/utils/constants';
 // import { createBarAndLineChartWrapper } from '../../../../utils/chartUtils';
 
 export interface SummaryProps {
   findings: OverviewFindingItem[];
-  alerts: OverviewAlertItem[];
-  loading?: boolean;
-  startTime: string;
-  endTime: string;
-  timeUnit: TimeUnit;
+  // Wazuh: hide alerts in summary widget.
+  // alerts: OverviewAlertItem[];
 }
 
 export const SUMMARY_VIEW_CHART = 'summary-view';
 
-export const Summary: React.FC<SummaryProps> = ({
-  alerts,
-  findings,
-  startTime,
-  endTime,
-  loading = false,
-}) => {
+export const Summary: React.FC<SummaryProps> = ({ findings }) => {
   const [groupBy, setGroupBy] = useState('');
-  const [alertsVisData, setAlertsVisData] = useState<any[]>([]);
-  const [findingsVisData, setFindingsVisData] = useState<any[]>([]);
-  const [activeAlerts, setActiveAlerts] = useState<undefined | number>(undefined);
+  // Wazuh: hide alerts in summary widget.
+  // const [alertsVisData, setAlertsVisData] = useState<any[]>([]);
+  // Wazuh: hide alerts in summary widget.
+  // const [activeAlerts, setActiveAlerts] = useState<undefined | number>(undefined);
   const [totalFindings, setTotalFindings] = useState<undefined | number>(undefined);
 
   const onGroupByChange = useCallback((event) => {
@@ -66,35 +59,38 @@ export const Summary: React.FC<SummaryProps> = ({
   );
 
   useEffect(() => {
-    const alertsVisData: any[] = [];
-    let activeAlerts = 0;
-    alerts.forEach((alert) => {
-      if (!alert.acknowledged) {
-        activeAlerts++;
-      }
+    // Wazuh: hide alerts in summary widget.
+    // const alertsVisData: any[] = [];
+    // let activeAlerts = 0;
+    // alerts.forEach((alert) => {
+    //   if (!alert.acknowledged) {
+    //     activeAlerts++;
+    //   }
+    //
+    //   alertsVisData.push({
+    //     time: alert.time,
+    //     alert: 1,
+    //     finding: 0,
+    //     logType: alert.logType,
+    //   });
+    // });
 
-      alertsVisData.push({
-        time: alert.time,
-        alert: 1,
-        finding: 0,
-        logType: alert.logType,
-      });
-    });
+    // Wazuh: hide alerts in summary widget.
+    // const findingsVisData: any[] = [];
+    // findings.forEach((finding) => {
+    //   findingsVisData.push({
+    //     time: finding.time,
+    //     alert: 0,
+    //     finding: 1,
+    //     logType: finding.logType,
+    //   });
+    // });
 
-    const findingsVisData: any[] = [];
-    findings.forEach((finding) => {
-      findingsVisData.push({
-        time: finding.time,
-        alert: 0,
-        finding: 1,
-        logType: finding.logType,
-      });
-    });
-
-    setActiveAlerts(activeAlerts);
+    // setActiveAlerts(activeAlerts);
     setTotalFindings(findings.length);
-    setAlertsVisData(alertsVisData);
-    setFindingsVisData(findingsVisData);
+    // Wazuh: hide alerts in summary widget.
+    // setAlertsVisData(alertsVisData);
+    // setFindingsVisData(findingsVisData);
   }, [alerts, findings]);
 
   // useEffect(() => {
@@ -129,17 +125,20 @@ export const Summary: React.FC<SummaryProps> = ({
   );
 
   return (
-    <WidgetContainer title="Findings and alert count" actions={createVisualizationActions(groupBy)}>
+    <WidgetContainer title="Findings count" actions={createVisualizationActions(groupBy)}>
+      {/* Wazuh: hide alerts in summary title. */}
+      {/* <WidgetContainer title="Findings and alert count" actions={createVisualizationActions(groupBy)}> */}
       <EuiFlexGroup gutterSize="s" direction="column">
         {!getUseUpdatedUx() && (
           <EuiFlexItem>
-            {activeAlerts === 0 && totalFindings === 0 ? null : (
+            {totalFindings === 0 ? null : (
               <EuiFlexGroup gutterSize="xl">
-                {createStatComponent(
+                {/* Wazuh: hide alerts in summary widget. */}
+                {/* {createStatComponent(
                   'Total active alerts',
                   { url: ROUTES.ALERTS, color: 'danger' },
                   activeAlerts
-                )}
+                )} */}
                 {createStatComponent(
                   'Total findings',
                   { url: ROUTES.FINDINGS, color: 'primary' },
@@ -150,11 +149,13 @@ export const Summary: React.FC<SummaryProps> = ({
           </EuiFlexItem>
         )}
         <EuiFlexItem>
-          {activeAlerts === 0 && totalFindings === 0 ? (
+          {totalFindings === 0 ? (
             <EuiEmptyPrompt
               title={
                 <EuiText size="s">
-                  <h2>No alerts and findings found</h2>
+                  <h2>No findings found</h2>
+                  {/* Wazuh: hide alerts in empty prompt copy. */}
+                  {/* <h2>No alerts and findings found</h2> */}
                 </EuiText>
               }
               body={

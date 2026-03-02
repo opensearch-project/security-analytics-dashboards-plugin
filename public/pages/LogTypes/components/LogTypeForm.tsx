@@ -112,7 +112,7 @@ export const LogTypeForm: React.FC<LogTypeFormProps> = ({
             setLogTypeDetails(newLogType);
             updateErrors(newLogType);
           }}
-          placeholder="Description of the log type"
+          placeholder="Description of the integration" // Replace Log Type with Integration by Wazuh
           readOnly={!isEditMode}
         />
       </EuiCompressedFormRow>

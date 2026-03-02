@@ -21,7 +21,7 @@ import { DetectorSchedule } from '../components/DetectorSchedule/DetectorSchedul
 import { RuleItem } from '../components/DetectionRules/types/interfaces';
 import { CreateDetectorRulesState } from '../components/DetectionRules/DetectionRules';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { logTypesWithDashboards } from '../../../../../utils/constants';
+import { logTypesWithDashboards, THREAT_INTEL_ENABLED } from '../../../../../utils/constants';
 import {
   CreateDetectorSteps,
   DataSourceProps,
@@ -249,7 +249,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
 
         <EuiSpacer size={'m'} />
 
-        {this.standardLogTypes.has(detector_type) && (
+        {THREAT_INTEL_ENABLED && this.standardLogTypes.has(detector_type) && (
           <ThreatIntelligence
             isEdit={isEdit}
             threatIntelChecked={threat_intel_enabled}

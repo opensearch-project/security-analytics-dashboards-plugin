@@ -62,14 +62,15 @@ export const DeleteLogTypeModal: React.FC<DeleteLogTypeModalProps> = ({
           <EuiModalHeader>
             <EuiModalHeaderTitle>
               <EuiText size="s">
-                <h2>This log type can't be deleted</h2>
+                {/* log type replaced by integration */}
+                <h2>This integration can't be deleted</h2>
               </EuiText>
             </EuiModalHeaderTitle>
           </EuiModalHeader>
           <EuiModalBody>
             <EuiCallOut
               size="s"
-              title={`This log type is associated with ${detectionRulesCount} detection ${
+              title={`This integration is associated with ${detectionRulesCount} detection ${
                 detectionRulesCount > 1 ? 'rules' : 'rule'
               }.`}
               iconType={'iInCircle'}
@@ -78,8 +79,8 @@ export const DeleteLogTypeModal: React.FC<DeleteLogTypeModalProps> = ({
             <EuiSpacer />
             <EuiText size="s">
               <p>
-                Only log types that don’t have any associated rules can be deleted. Consider editing
-                log type or deleting associated detection rules.
+                Only integrations that don’t have any associated rules can be deleted. Consider editing
+                integration or deleting associated detection rules.
               </p>
             </EuiText>
           </EuiModalBody>
@@ -91,11 +92,11 @@ export const DeleteLogTypeModal: React.FC<DeleteLogTypeModalProps> = ({
         </EuiModal>
       ) : (
         <EuiConfirmModal
-          title={<EuiText size="s"><h2>Delete log type?</h2></EuiText>}
+          title={<EuiText size="s"><h2>Delete integration?</h2></EuiText>}
           onCancel={closeModal}
           onConfirm={onConfirmClick}
           cancelButtonText={'Cancel'}
-          confirmButtonText={`Delete log type`}
+          confirmButtonText={`Delete integration`}
           buttonColor={'danger'}
           defaultFocusedButton="confirm"
           confirmButtonDisabled={confirmDeleteText != logTypeName}
@@ -103,7 +104,7 @@ export const DeleteLogTypeModal: React.FC<DeleteLogTypeModalProps> = ({
           <EuiForm>
             <p>
               <EuiText size="s">
-                The log type will be permanently deleted. This action is irreversible.
+                The integration will be permanently deleted. This action is irreversible.
               </EuiText>
             </p>
             <EuiSpacer size="s"/>

@@ -50,7 +50,7 @@ export const getCorrelationRulesTableColumns = (
       ),
     },
     {
-      name: 'Log types',
+      name: 'Integrations', // Changed from Log Types to Integrations by Wazuh
       field: 'logTypes',
       render: (logTypes: string, ruleItem: CorrelationRule) => {
         const badges = [
@@ -234,14 +234,14 @@ export const displayResourcesBadges = (resources: string[]) => {
 export const getCorrelationRulesTableSearchConfig = (): Search => {
   return {
     box: {
-      placeholder: 'Search by rule name, log type',
+      placeholder: 'Search by rule name, integration', // Changed Log Type to Integration by Wazuh
       schema: true,
     },
     filters: [
       {
         type: 'field_value_selection',
         field: 'logTypes',
-        name: 'Log Types',
+        name: 'Integrations', // Changed from Log Types to Integrations by Wazuh
         multiSelect: 'or',
         options: getLogTypeFilterOptions(),
       },

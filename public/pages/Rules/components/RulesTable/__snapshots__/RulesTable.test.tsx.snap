@@ -63,10 +63,10 @@ Object {
                       >
                         <span
                           class="euiFilterButton__textShift"
-                          data-text="Log type"
-                          title="Log type"
+                          data-text="Integration"
+                          title="Integration"
                         >
-                          Log type
+                          Integration
                         </span>
                       </span>
                     </span>
@@ -266,9 +266,9 @@ Object {
                       >
                         <span
                           class="euiTableCellContent__text"
-                          title="Log type"
+                          title="Integration"
                         >
-                          Log type
+                          Integration
                         </span>
                       </span>
                     </button>
@@ -403,10 +403,10 @@ Object {
                     >
                       <span
                         class="euiFilterButton__textShift"
-                        data-text="Log type"
-                        title="Log type"
+                        data-text="Integration"
+                        title="Integration"
                       >
-                        Log type
+                        Integration
                       </span>
                     </span>
                   </span>
@@ -606,9 +606,9 @@ Object {
                     >
                       <span
                         class="euiTableCellContent__text"
-                        title="Log type"
+                        title="Integration"
                       >
-                        Log type
+                        Integration
                       </span>
                     </span>
                   </button>

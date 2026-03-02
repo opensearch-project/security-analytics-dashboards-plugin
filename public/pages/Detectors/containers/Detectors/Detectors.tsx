@@ -68,7 +68,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
   }
 
   async componentDidMount() {
-    setBreadcrumbs([BREADCRUMBS.DETECTORS]);
+    setBreadcrumbs([BREADCRUMBS.DETECTION, BREADCRUMBS.DETECTORS]);
     await this.getDetectors();
   }
 
@@ -247,7 +247,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
       },
       {
         field: 'logType',
-        name: 'Log type',
+        name: 'Integration', // replace log type to integration by Wazuh
         sortable: true,
         dataType: 'string',
         render: (logType: string) => formatRuleType(logType),
@@ -356,7 +356,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
         {
           type: 'field_value_selection',
           field: 'logType',
-          name: 'Log type',
+          name: 'Integration', // replace log type to integration by Wazuh
           compressed: true,
           options: getLogTypeFilterOptions(),
           multiSelect: 'or',
@@ -381,7 +381,8 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
             <EuiFlexGroup>
               <EuiFlexItem>
                 <EuiText size="s">
-                  <h1>Threat detectors</h1>
+                  {/* Wazuh modification: Changed page title to "Detectors" */}
+                  <h1>Detectors</h1>
                 </EuiText>
               </EuiFlexItem>
               <EuiFlexItem>

@@ -156,7 +156,7 @@ export const CorrelationsTable: React.FC<CorrelationsTableProps> = ({
     },
     {
       field: 'logType',
-      name: 'Log type',
+      name: 'Integration', // Changed from Log Types to Integrations by Wazuh
       sortable: true,
       render: (category: string) =>
         // TODO: This formatting may need some refactoring depending on the response payload
@@ -202,7 +202,7 @@ export const CorrelationsTable: React.FC<CorrelationsTableProps> = ({
       {
         type: 'field_value_selection',
         field: 'logType',
-        name: 'Log type',
+        name: 'Integration', // Changed from Log Types to Integrations by Wazuh
         options: Array.from(logTypes).map((type) => ({
           value: type,
           name: formatRuleType(type),

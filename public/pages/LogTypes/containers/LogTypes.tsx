@@ -43,7 +43,8 @@ export const LogTypes: React.FC<LogTypesProps> = ({ history, notifications, data
   const deleteLogType = async (id: string) => {
     const deleteSucceeded = await DataStore.logTypes.deleteLogType(id);
     if (deleteSucceeded) {
-      successNotificationToast(notifications, 'deleted', 'log type');
+      // Replace Log Type to Integration by Wazuh
+      successNotificationToast(notifications, 'deleted', 'integration');
       getLogTypes();
     }
   };
@@ -52,7 +53,7 @@ export const LogTypes: React.FC<LogTypesProps> = ({ history, notifications, data
     if (getUseUpdatedUx()) {
       setBreadcrumbs([BREADCRUMBS.LOG_TYPES]);
     } else {
-      setBreadcrumbs([BREADCRUMBS.DETECTORS, BREADCRUMBS.LOG_TYPES]);
+      setBreadcrumbs([BREADCRUMBS.DETECTION, BREADCRUMBS.DETECTORS, BREADCRUMBS.LOG_TYPES]);
     }
   }, [getUseUpdatedUx()]);
 
@@ -72,9 +73,10 @@ export const LogTypes: React.FC<LogTypesProps> = ({ history, notifications, data
     setDeletionDetails({ detectionRulesCount: rules.length });
   };
 
+  // Replace Log Type to Integration by Wazuh
   const createLogTypeAction = (
     <EuiSmallButton fill={true} onClick={() => history.push(ROUTES.LOG_TYPES_CREATE)}>
-      Create log type
+      Create integration
     </EuiSmallButton>
   );
 
@@ -96,10 +98,11 @@ export const LogTypes: React.FC<LogTypesProps> = ({ history, notifications, data
             <EuiFlexGroup gutterSize={'s'} justifyContent={'spaceBetween'}>
               <EuiFlexItem>
                 <EuiText size="s">
-                  <h1>Log types</h1>
+                  {/* Replace Log Types to Integrations by Wazuh */}
+                  <h1>Integrations</h1>
                 </EuiText>
                 <EuiText size="s" color="subdued">
-                  Log types describe the data sources to which the detection rules are meant to be
+                  Integrations describe the data sources to which the detection rules are meant to be
                   applied.
                 </EuiText>
               </EuiFlexItem>

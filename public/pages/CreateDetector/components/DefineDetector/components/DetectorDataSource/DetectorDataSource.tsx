@@ -197,8 +197,9 @@ export default class DetectorDataSource extends Component<
               data-test-subj={'define-detector-diff-log-types-warning'}
             >
               <EuiTextColor color={'default'}>
+                {/* Replace log types with integrations by Wazuh */}
                 To avoid issues with field mappings, we recommend creating separate detectors for
-                different log types.
+                different integrations.
               </EuiTextColor>
             </EuiCallOut>
           </>
