@@ -121,7 +121,7 @@ describe('Alerts', () => {
       // Confirm alert findings contain expected values
       cy.get('tbody > tr').should(($tr) => {
         expect($tr, `timestamp`).to.contain(date);
-        expect($tr, `detection`).to.contain('Detection rules');
+        expect($tr, `detection`).to.contain('Rules'); // Wazuh: rename 'Detection rules' to 'Rules'
         expect($tr, `detector name`).to.contain(testDetector.name);
         expect($tr, `log type`).to.contain(
           `System Activity: ${getLogTypeLabel(testDetector.detector_type)}`
@@ -150,7 +150,7 @@ describe('Alerts', () => {
     cy.get('[data-test-subj="alert-details-flyout"]').within(() => {
       // Wait for findings table to finish loading
       cy.wait(3000);
-      cy.contains('Detection rules');
+      cy.contains('Rules'); // Wazuh: rename 'Detection rules' to 'Rules'
 
       // Click the details button for the first finding
       cy.get('tbody > tr')

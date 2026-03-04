@@ -45,7 +45,7 @@ export default class FindingsService extends MDSEnabledClientService {
       getFindingsResponse.findings.forEach((finding: any) => {
         const types: string[] = [];
         if (!finding.queries.every((query: any) => query.id.startsWith('threat_intel_'))) {
-          types.push('Detection rules');
+          types.push('Rules'); // Wazuh: rename 'Detection rules' to 'Rules'
         }
         if (finding.queries.some((query: any) => query.id.startsWith('threat_intel_'))) {
           types.push('Threat intelligence');

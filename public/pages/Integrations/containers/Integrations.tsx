@@ -9,16 +9,16 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiInMemoryTable,
-  EuiPanel,
   EuiSpacer,
   EuiText,
+  EuiCard,
   EuiContextMenuItem,
   EuiContextMenuPanel,
   EuiPopover,
   EuiConfirmModal,
 } from '@elastic/eui';
 import { BREADCRUMBS, ROUTES } from '../../../utils/constants';
-import { DataSourceProps, IntegrationBase } from '../../../../types';
+import { DataSourceProps } from '../../../../types';
 import { DataStore } from '../../../store/DataStore';
 import {
   getIntegrationsTableColumns,
@@ -38,6 +38,7 @@ import { PolicyInfoCard } from '../components/PolicyInfo';
 import { actionIsAllowedOnSpace, getSpacesAllowAction } from '../../../../common/helpers';
 import { RearrangeIntegrations } from '../components/RearrangeIntegrations';
 import { useSpaceSelector } from '../../../hooks/useSpaceSelector';
+import { EditPolicy } from '../components/EditPolicy';
 
 export interface IntegrationsProps extends RouteComponentProps, DataSourceProps {
   notifications: NotificationsStart;
@@ -69,6 +70,7 @@ export const Integrations: React.FC<IntegrationsProps> = ({
   const [selectedItems, setSelectedItems] = useState<IntegrationTableItem[]>([]);
   const [itemForAction, setItemForAction] = useState<ItemForAction | null>(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
+  const [policyRefresh, setPolicyRefresh] = useState(0);
   const loadIntegrations = useCallback(async () => {
     setLoading(true);
 
@@ -131,6 +133,12 @@ export const Integrations: React.FC<IntegrationsProps> = ({
     spaceFilter,
     SPACE_ACTIONS.REARRANGE_INTEGRATIONS
   );
+  const onEditPolicy = () => {
+    setItemForAction({
+      action: SPACE_ACTIONS.EDIT_POLICY,
+    });
+    setIsPopoverOpen(false);
+  };
 
   const deleteSelectedIntegrations = useCallback(async () => {
     setLoading(true);
@@ -345,6 +353,14 @@ export const Integrations: React.FC<IntegrationsProps> = ({
               notifications={notifications}
             />
           )}
+          {itemForAction.action === SPACE_ACTIONS.EDIT_POLICY && (
+            <EditPolicy
+              space={spaceFilter}
+              notifications={notifications}
+              onClose={() => setItemForAction(null)}
+              onSuccess={() => setPolicyRefresh((prevState) => prevState + 1)}
+            />
+          )}
         </>
       )}
       {itemForAction?.action === DELETE_SELECTED_ACTION && (
@@ -381,23 +397,27 @@ export const Integrations: React.FC<IntegrationsProps> = ({
           <EuiFlexGroup alignItems="center" justifyContent={'spaceBetween'}>
             <EuiFlexItem>
               <EuiText size="s">
-                <h1>Integrations</h1>
+                <h1>Overview</h1>
               </EuiText>
               <EuiText size="s" color="subdued">
-                Integrations describe the data sources to which the detection rules are meant to be
-                applied.
+                Integrations describe the data sources to which the rules are meant to be applied.
               </EuiText>
               <EuiSpacer size="s"></EuiSpacer>
-              <PolicyInfoCard space={spaceFilter} notifications={notifications} />
             </EuiFlexItem>
-            {/* <EuiFlexItem grow={false}>{createIntegrationAction}</EuiFlexItem> */}
             <EuiFlexItem grow={false}>{spaceSelector}</EuiFlexItem>
             <EuiFlexItem grow={false}>{actionsButton}</EuiFlexItem>
           </EuiFlexGroup>
-          <EuiSpacer size={'m'} />
+          <EuiSpacer size={'s'} />
         </EuiFlexItem>
       </PageHeader>
-      <EuiPanel>
+      <PolicyInfoCard
+        space={spaceFilter}
+        notifications={notifications}
+        onEditPolicy={onEditPolicy}
+        refresh={policyRefresh}
+      />
+      <EuiSpacer size={'m'} />
+      <EuiCard textAlign="left" paddingSize="m" title="Integrations">
         <EuiInMemoryTable
           itemId={'id'}
           items={integrations}
@@ -417,7 +437,7 @@ export const Integrations: React.FC<IntegrationsProps> = ({
           sorting={true}
           loading={loading}
         />
-      </EuiPanel>
+      </EuiCard>
     </>
   );
 };

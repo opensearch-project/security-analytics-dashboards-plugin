@@ -35,9 +35,11 @@ export const TopRulesWidget: React.FC<TopRulesWidgetProps> = ({ findings, loadin
   }, [findings]);
 
   return (
-    <WidgetContainer title="Most frequent detection rules">
+    <WidgetContainer title="Most frequent rules">
+      {' '}
+      {/* Wazuh: rename 'detection rules' to 'rules' */}
       {findings.length === 0 ? (
-        getEuiEmptyPrompt('No findings with detection rules.')
+        getEuiEmptyPrompt('No findings with rules.') // Wazuh: rename 'detection rules' to 'rules'
       ) : (
         <div id="chart-container">
           <canvas id={TOP_RULES_VIEW_CHART}></canvas>

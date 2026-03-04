@@ -137,7 +137,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
 
   fillDetailsForm(detectorName, dataSource, expectFailure);
 
-  cy.getElementByText('.euiAccordion .euiTitle', 'Selected detection rules (14)')
+  cy.getElementByText('.euiAccordion .euiTitle', 'Selected rules (14)') // Wazuh: rename 'Detection rules' to 'Rules'
     .click({ force: true, timeout: 5000 })
     .then(() => cy.contains('.euiTable .euiTableRow', getLogTypeLabel(cypressLogTypeDns)));
 
@@ -184,7 +184,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
             cy.validateDetailsItem('Detector name', detectorName);
             cy.validateDetailsItem('Description', '-');
             cy.validateDetailsItem('Detector schedule', 'Every 1 minute');
-            cy.validateDetailsItem('Detection rules', '14');
+            cy.validateDetailsItem('Rules', '14'); // Wazuh: rename 'Detection rules' to 'Rules'
             cy.validateDetailsItem('Detector dashboard', 'Not available for this log type');
 
             cy.wait(5000); // waiting for the page to be reloaded after pushing detector id into route
@@ -418,7 +418,7 @@ describe('Detectors', () => {
       openDetectorDetails(detectorName);
 
       editDetectorDetails(detectorName, 'Active rules');
-      cy.getElementByText('.euiText', 'Detection rules (14)');
+      cy.getElementByText('.euiText', 'Rules (14)'); // Wazuh: rename 'Detection rules' to 'Rules'
 
       cy.getInputByPlaceholder('Search...').type(`${cypressDNSRule}`).pressEnterKey();
 
@@ -428,7 +428,7 @@ describe('Detectors', () => {
         .find('.euiTableCellContent button')
         .click();
 
-      cy.getElementByText('.euiText', 'Detection rules (13)');
+      cy.getElementByText('.euiText', 'Rules (13)'); // Wazuh: rename 'Detection rules' to 'Rules'
       cy.getElementByText('button', 'Save changes').click({ force: true });
       cy.urlShouldContain('detector-details').then(() => {
         cy.getElementByText('.euiText', detectorName);

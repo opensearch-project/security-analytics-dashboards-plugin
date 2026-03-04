@@ -110,7 +110,7 @@ export const DetectorRulesView: React.FC<DetectorRulesViewProps> = (props) => {
     });
   }, [saContext?.services, props.detector]);
 
-  const getDetectionRulesTitle = () => `View detection rules`;
+  const getDetectionRulesTitle = () => `View rules`; // Wazuh: rename 'View detection rules' to 'View rules'
 
   const onShowRuleDetails = (rule: RuleTableItem) => {
     setFlyoutData(() => rule);

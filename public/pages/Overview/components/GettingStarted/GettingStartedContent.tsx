@@ -54,7 +54,7 @@ export const GettingStartedContent: React.FC<GettingStartedPopupProps> = ({
             title={
               // Wazuh: hide alerts messaging in getting started content.
               // 'Identify security findings and threats from your log data with detection rules. Additionally, you can set up alerts based on rule conditions.'
-              'Identify security findings and threats from your log data with detection rules.'
+              'Identify security findings and threats from your log data with rules.' // Wazuh: rename 'detection rules' to 'rules'
             }
             buttons={[
               {

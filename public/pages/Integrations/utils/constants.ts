@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import { IntegrationBase } from '../../../../types';
-
 export const integrationDetailsTabs = [
   {
     id: 'details',
@@ -23,18 +21,6 @@ export const integrationDetailsTabs = [
     name: 'KVDBs',
   },
 ];
-
-export const defaultIntegration: IntegrationBase = {
-  document: {
-    title: '',
-    description: '',
-    source: 'Custom', // TODO: research if we need this field
-    tags: null,
-    category: '',
-    author: '',
-    references: [],
-  },
-};
 
 export const integrationLabels: { [value: string]: string } = {
   cloudtrail: 'AWS Cloudtrail',

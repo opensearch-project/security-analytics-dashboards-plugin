@@ -6,7 +6,6 @@
 import { HttpSetup } from 'opensearch-dashboards/public';
 import { ServerResponse } from '../../server/models/types';
 import {
-  CreateRuleRequest,
   CreateRuleResponse,
   DeleteRuleResponse,
   GetRulesResponse,
@@ -23,37 +22,45 @@ export default class RuleService {
     this.httpClient = httpClient;
   }
 
-  getRules = async (prePackaged: boolean, body: any): Promise<ServerResponse<GetRulesResponse>> => {
+  // Wazuh: added space parameter to getRules API
+  getRules = async (
+    prePackaged: boolean,
+    body: any,
+    space?: string
+  ): Promise<ServerResponse<GetRulesResponse>> => {
     const url = `..${API.RULES_BASE}/_search`;
     return (await this.httpClient.post(url, {
       query: {
         prePackaged,
+        ...(space !== undefined && { space }),
         dataSourceId: dataSourceInfo.activeDataSource.id,
       },
       body: JSON.stringify(body),
     })) as ServerResponse<GetRulesResponse>;
   };
 
-  createRule = async (rule: Rule): Promise<ServerResponse<CreateRuleResponse>> => {
+  // Wazuh: added integrationId parameter to createRule
+  createRule = async (rule: {
+    document: Rule;
+    integrationId: string;
+  }): Promise<ServerResponse<CreateRuleResponse>> => {
     const url = `..${API.RULES_BASE}`;
-    const ruleBody: CreateRuleRequest = { rule: rule };
     return (await this.httpClient.post(url, {
-      body: JSON.stringify(ruleBody),
+      body: JSON.stringify(rule),
       query: {
         dataSourceId: dataSourceInfo.activeDataSource.id,
       },
     })) as ServerResponse<CreateRuleResponse>;
   };
 
+  // Wazuh: removed category parameter from updateRule API
   updateRule = async (
     ruleId: string,
-    category: string,
-    rule: Rule
+    rule: { document: Rule }
   ): Promise<ServerResponse<UpdateRuleResponse>> => {
     const url = `..${API.RULES_BASE}/${ruleId}`;
     return (await this.httpClient.put(url, {
       query: {
-        category,
         dataSourceId: dataSourceInfo.activeDataSource.id,
       },
       body: JSON.stringify(rule),

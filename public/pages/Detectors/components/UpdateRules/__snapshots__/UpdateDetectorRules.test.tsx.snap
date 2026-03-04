@@ -29,7 +29,7 @@ Object {
                 class="euiText euiText--small"
               >
                 <h3>
-                  Detection rules (0)
+                  Rules (0)
                 </h3>
               </div>
             </div>
@@ -408,7 +408,7 @@ Object {
               class="euiText euiText--small"
             >
               <h3>
-                Detection rules (0)
+                Rules (0)
               </h3>
             </div>
           </div>

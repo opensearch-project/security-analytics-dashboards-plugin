@@ -25,6 +25,9 @@ export interface PolicyDocument {
   references: [string];
   root_decoder: string;
   title: string;
+  enabled: boolean;
+  index_unclassified_events: boolean;
+  index_discarded_events: boolean;
 }
 
 export interface PolicySource {

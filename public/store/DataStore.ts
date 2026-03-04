@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RulesStore } from './RulesStore';
+import { RulesStore } from './WazuhRulesStore'; // Wazuh: use WazuhRulesStore instead of RulesStore
 import { BrowserServices } from '../models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { DetectorsStore } from './DetectorsStore';

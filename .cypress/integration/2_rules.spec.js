@@ -203,7 +203,7 @@ describe('Rules', () => {
 
       // Check that correct page is showing
       cy.waitForPageLoad('rules', {
-        contains: 'Detection rules',
+        contains: 'Rules', // Wazuh: rename 'Detection rules' to 'Rules'
       });
 
       getCreateButton().click({ force: true });
@@ -496,7 +496,7 @@ describe('Rules', () => {
 
       // Check that correct page is showing
       cy.waitForPageLoad('rules', {
-        contains: 'Detection rules',
+        contains: 'Rules', // Wazuh: rename 'Detection rules' to 'Rules'
       });
     });
 
@@ -520,7 +520,7 @@ describe('Rules', () => {
       cy.wait('@getRules');
 
       cy.waitForPageLoad('rules', {
-        contains: 'Detection rules',
+        contains: 'Rules', // Wazuh: rename 'Detection rules' to 'Rules'
       });
 
       checkRulesFlyout();
@@ -528,7 +528,7 @@ describe('Rules', () => {
 
     it('...can be edited', () => {
       cy.waitForPageLoad('rules', {
-        contains: 'Detection rules',
+        contains: 'Rules', // Wazuh: rename 'Detection rules' to 'Rules'
       });
 
       cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
@@ -568,7 +568,7 @@ describe('Rules', () => {
       submitRule();
 
       cy.waitForPageLoad('rules', {
-        contains: 'Detection rules',
+        contains: 'Rules', // Wazuh: rename 'Detection rules' to 'Rules'
       });
 
       cy.wait('@getRules');

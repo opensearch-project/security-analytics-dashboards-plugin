@@ -343,7 +343,7 @@ export class PoliciesService extends MDSEnabledClientService {
         statusCode: 200,
         body: {
           ok: false,
-          error: error.message,
+          error: error?.body?.message || error.message,
         },
       });
     }

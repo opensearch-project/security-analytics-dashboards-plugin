@@ -17,7 +17,21 @@ export function setupIntegrationRoutes(services: NodeServices, router: IRouter) 
     {
       path: API.INTEGRATION_BASE,
       validate: {
-        body: schema.any(),
+        body: schema.object({
+          document: schema.object({
+            author: schema.string(),
+            category: schema.string(),
+            description: schema.string({ defaultValue: '' }),
+            documentation: schema.string({ defaultValue: '' }),
+            references: schema.arrayOf(schema.string(), { defaultValue: [] }),
+            tags: schema.nullable(
+              schema.object({
+                correlation_id: schema.number(),
+              })
+            ),
+            title: schema.string(),
+          }),
+        }),
         query: createQueryValidationSchema(),
       },
     },
@@ -42,7 +56,25 @@ export function setupIntegrationRoutes(services: NodeServices, router: IRouter) 
         params: schema.object({
           integrationId: schema.string(),
         }),
-        body: schema.any(),
+        body: schema.object({
+          document: schema.object({
+            author: schema.string(),
+            category: schema.string(),
+            decoders: schema.arrayOf(schema.string(), { defaultValue: [] }),
+            description: schema.string({ defaultValue: '' }),
+            documentation: schema.string({ defaultValue: '' }),
+            enabled: schema.boolean({ defaultValue: false }), // TODO: adapt if this can be configured by user in UI
+            kvdbs: schema.arrayOf(schema.string(), { defaultValue: [] }),
+            references: schema.arrayOf(schema.string(), { defaultValue: [] }),
+            rules: schema.arrayOf(schema.string(), { defaultValue: [] }),
+            tags: schema.nullable(
+              schema.object({
+                correlation_id: schema.number(),
+              })
+            ),
+            title: schema.string(),
+          }),
+        }),
         query: createQueryValidationSchema(),
       },
     },

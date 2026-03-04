@@ -5,10 +5,10 @@
 
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import {
+  CreateIntegrationRequestBody,
   GetPromote,
   GetPromoteBySpaceResponse,
   Integration,
-  IntegrationBase,
   IntegrationWithRules,
   PromoteIntegrationRequestBody,
   RuleItemInfoBase,
@@ -143,7 +143,7 @@ export class IntegrationStore {
     }
   }
 
-  public async createIntegration(integration: IntegrationBase): Promise<boolean> {
+  public async createIntegration(integration: CreateIntegrationRequestBody): Promise<boolean> {
     const createRes = await this.service.createIntegration(integration);
 
     if (!createRes.ok) {
@@ -212,7 +212,12 @@ export class IntegrationStore {
   public async promoteIntegration(data: PromoteIntegrationRequestBody) {
     const promoteRes = await this.service.promoteIntegration(data);
     if (!promoteRes.ok) {
-      errorNotificationToast(this.notifications, 'promote', 'integration', promoteRes.error);
+      errorNotificationToast(
+        this.notifications,
+        'promote',
+        'integration',
+        promoteRes?.error?.message || promoteRes.error
+      );
     }
 
     return promoteRes.ok;
@@ -242,7 +247,7 @@ export class IntegrationStore {
     hasKVDBs: boolean;
   }): string {
     const relatedEntities = [
-      hasRules ? 'detection rules' : null,
+      hasRules ? 'rules' : null,
       hasDecoders ? 'decoders' : null,
       hasKVDBs ? 'KVDBs' : null,
     ].filter(Boolean) as string[];

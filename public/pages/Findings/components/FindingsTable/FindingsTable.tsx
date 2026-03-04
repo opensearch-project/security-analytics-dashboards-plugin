@@ -25,11 +25,7 @@ import {
   renderTime,
 } from '../../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
-import {
-  DetectorsService,
-  OpenSearchService,
-  IndexPatternsService,
-} from '../../../../services';
+import { DetectorsService, OpenSearchService, IndexPatternsService } from '../../../../services';
 // Wazuh: hide Create Alert flow in findings table.
 // import CreateAlertFlyout from '../CreateAlertFlyout';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
@@ -128,7 +124,7 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
   //   if (refreshPage) this.props.onRefresh();
   // };
 
-// Wazuh: hide Create Alert flow in findings table.
+  // Wazuh: hide Create Alert flow in findings table.
   // renderCreateAlertFlyout = (finding: FindingItemType) => {
   //   if (this.state.flyoutOpen) this.closeFlyout();
   //   else {
@@ -251,16 +247,16 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
             ),
           },
           // {
-            // Wazuh: hide Create Alert action in findings table.
-            // render: (finding) => (
-            //   <EuiToolTip content={'Create alert'}>
-            //     <EuiSmallButtonIcon
-            //       aria-label={'Create alert'}
-            //       iconType={'bell'}
-            //       onClick={() => this.renderCreateAlertFlyout(finding)}
-            //     />
-            //   </EuiToolTip>
-            // ),
+          // Wazuh: hide Create Alert action in findings table.
+          // render: (finding) => (
+          //   <EuiToolTip content={'Create alert'}>
+          //     <EuiSmallButtonIcon
+          //       aria-label={'Create alert'}
+          //       iconType={'bell'}
+          //       onClick={() => this.renderCreateAlertFlyout(finding)}
+          //     />
+          //   </EuiToolTip>
+          // ),
           // },
         ],
       },
@@ -315,8 +311,8 @@ export default class FindingsTable extends Component<FindingsTableProps, Finding
           compressed: true,
           options: [
             {
-              value: 'Detection rules',
-              name: 'Detection rules',
+              value: 'Rules', // Wazuh: rename 'Detection rules' to 'Rules'
+              name: 'Rules', // Wazuh: rename 'Detection rules' to 'Rules'
             },
           ],
           multiSelect: 'or',

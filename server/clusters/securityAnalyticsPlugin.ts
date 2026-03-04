@@ -19,6 +19,7 @@ import { addPoliciesMethods } from './addPoliciesMethods';
 import { addDecoderMethods } from './addDecoderMethods';
 import { addKVDBsMethods } from './addKVDBsMethods';
 import { addLogTestMethods } from './addLogTestMethods';
+import { addWazuhRulesMethods } from './addWazuhRuleMethods';
 
 export function securityAnalyticsPlugin(Client: any, config: any, components: any) {
   const createAction = components.clientAction.factory;
@@ -41,4 +42,5 @@ export function securityAnalyticsPlugin(Client: any, config: any, components: an
   addDecoderMethods(securityAnalytics, createAction);
   addKVDBsMethods(securityAnalytics, createAction);
   addLogTestMethods(securityAnalytics, createAction);
+  addWazuhRulesMethods(securityAnalytics, createAction);
 }

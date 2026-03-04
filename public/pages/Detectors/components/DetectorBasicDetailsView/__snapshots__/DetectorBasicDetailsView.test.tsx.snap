@@ -276,7 +276,7 @@ Object {
                     class="euiFormLabel euiFormRow__label"
                     for="some_html_id"
                   >
-                    Detection rules
+                    Rules
                   </label>
                 </div>
                 <div
@@ -632,7 +632,7 @@ Object {
                   class="euiFormLabel euiFormRow__label"
                   for="some_html_id"
                 >
-                  Detection rules
+                  Rules
                 </label>
               </div>
               <div

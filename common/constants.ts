@@ -4,7 +4,9 @@
  */
 
 import { wazuh } from '../package.json';
+import { IntegrationDocumentCreate } from '../types';
 import { i18n } from '@osd/i18n';
+import { PromoteSpaces } from '../types';
 
 export const DEFAULT_RULE_UUID = '25b9c01c-350d-4b95-bed1-836d04a4f324';
 
@@ -64,6 +66,7 @@ export const SPACE_ACTIONS = {
   PROMOTE: 'promote',
   DEFINE_ROOT_DECODER: 'define_root_decoder',
   REARRANGE_INTEGRATIONS: 'rearrange_integrations',
+  EDIT_POLICY: 'edit_policy',
 };
 
 export const AllowedActionsBySpace = {
@@ -74,14 +77,26 @@ export const AllowedActionsBySpace = {
     SPACE_ACTIONS.PROMOTE,
     SPACE_ACTIONS.DEFINE_ROOT_DECODER,
     SPACE_ACTIONS.REARRANGE_INTEGRATIONS,
+    SPACE_ACTIONS.EDIT_POLICY,
   ],
   [SpaceTypes.TEST.value]: [SPACE_ACTIONS.PROMOTE],
   [SpaceTypes.CUSTOM.value]: [],
   [SpaceTypes.STANDARD.value]: [],
 };
 
-export const UserSpacesOrder = [
+export const UserSpacesOrder: PromoteSpaces[] = [
   SpaceTypes.DRAFT.value,
   SpaceTypes.TEST.value,
   SpaceTypes.CUSTOM.value,
 ];
+
+export const defaultIntegration: { document: IntegrationDocumentCreate } = {
+  document: {
+    title: '',
+    description: '',
+    documentation: '',
+    tags: null,
+    category: '',
+    author: '',
+  },
+};

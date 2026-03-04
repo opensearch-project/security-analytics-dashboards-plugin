@@ -74,12 +74,12 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
     return (
       <>
         <EuiText size="s">
-          <h3>Detection rules</h3>
+          <h3>Rules</h3> {/* Wazuh: rename 'Detection rules' to 'Rules' */}
         </EuiText>
         <EuiText size="s">
           {/* Replace log type with integration by Wazuh */}
           <p>
-            The detection rules are automatically populated based on your selected integration. Threat
+            The rules are automatically populated based on your selected integration. Threat
             intelligence based detection can be enabled for standard integrations.{' '}
           </p>
         </EuiText>

@@ -16,6 +16,8 @@ interface IntegrationComboBoxProps {
   onChange: (options: IntegrationOption[]) => void;
   resourceName: string;
   'data-test-subj'?: string;
+  isInvalid?: boolean;
+  error?: string;
 }
 
 export const IntegrationComboBox: React.FC<IntegrationComboBoxProps> = ({
@@ -25,6 +27,8 @@ export const IntegrationComboBox: React.FC<IntegrationComboBoxProps> = ({
   onChange,
   resourceName,
   'data-test-subj': dataTestSubj,
+  isInvalid,
+  error,
 }) => {
   const selectedOption = options.find((o) => o.id === selectedId);
 
@@ -38,6 +42,8 @@ export const IntegrationComboBox: React.FC<IntegrationComboBoxProps> = ({
           </div>
         }
         fullWidth={true}
+        isInvalid={isInvalid}
+        error={error}
       >
         <EuiCompressedComboBox
           placeholder="Select integration"
@@ -47,6 +53,7 @@ export const IntegrationComboBox: React.FC<IntegrationComboBoxProps> = ({
           onChange={onChange}
           isLoading={isLoading}
           isDisabled={isLoading || options.length === 0}
+          isInvalid={isInvalid}
           selectedOptions={
             selectedOption
               ? [

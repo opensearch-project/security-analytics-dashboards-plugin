@@ -16,6 +16,7 @@ import AlertService from '../../services/AlertService';
 import { DecodersService } from '../../services/DecodersService';
 import { PoliciesService } from '../../services/PoliciesService';
 import { IntegrationService } from '../../services/IntegrationService';
+import WazuhRuleService from '../../services/WazuhRuleService';
 import { LogTypeService } from '../../services/LogTypeService';
 import MetricsService from '../../services/MetricsService';
 import RulesService from '../../services/RuleService';
@@ -67,6 +68,7 @@ export interface NodeServices {
   notificationsService: NotificationsService;
   policiesService: PoliciesService;
   integrationService: IntegrationService;
+  wazuhRulesService: WazuhRuleService;
   logTypeService: LogTypeService;
   kvdbsService: KVDBsService;
   metricsService: MetricsService;

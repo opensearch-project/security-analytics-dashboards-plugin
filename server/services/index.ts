@@ -13,6 +13,7 @@ import AlertService from './AlertService';
 import RulesService from './RuleService';
 import NotificationsService from './NotificationsService';
 import { KVDBsService } from './KVDBsService';
+import WazuhRulesService from './WazuhRuleService';
 
 export {
   DetectorService,
@@ -23,6 +24,7 @@ export {
   OpenSearchService,
   AlertService,
   RulesService,
+  WazuhRulesService,
   NotificationsService,
   KVDBsService,
 };

@@ -11,12 +11,13 @@ import {
   EuiOverlayMask,
   EuiSpacer,
   EuiText,
-  EuiTextColor,
   EuiAccordion,
 } from '@elastic/eui';
 import React, { useState, useMemo } from 'react';
 import { GetPromoteBySpaceResponse, PromoteChangeGroup, PromoteSpaces } from '../../../../types';
-import { getNextSpace } from '../utils/helpers';
+import { getNextSpace } from '../../../../common/helpers';
+import { PromoteChangeDiff } from './PromoteChangeDiff';
+import { PROMOTE_ENTITIES_LABELS, PROMOTE_ENTITIES_ORDER } from '../../../utils/constants';
 
 export interface PromoteBySpaceModalProps {
   promote: GetPromoteBySpaceResponse['response'];
@@ -45,11 +46,9 @@ const PromoteEntity: React.FC<{
       id={`promote-${label}`}
       buttonContent={`${label} (${data.promote.changes[entity].length})`}
     >
-      <div>
+      <div style={{ marginLeft: '2rem' }}>
         {memoizedData.map(({ id, name, operation }, i) => (
-          <EuiText size="s">
-            {name || id} <EuiTextColor color="subdued">({operation})</EuiTextColor>
-          </EuiText>
+          <PromoteChangeDiff key={`${id}-${i}`} name={name || id} operation={operation} />
         ))}
       </div>
     </EuiAccordion>
@@ -98,13 +97,20 @@ export const PromoteBySpaceModal: React.FC<PromoteBySpaceModalProps> = ({
             </EuiText>
           </p>
 
-          <PromoteEntity label="Integrations" entity="integrations" data={promote} />
-          <EuiSpacer size="s" />
-          <PromoteEntity label="Decoders" entity="decoders" data={promote} />
-          <EuiSpacer size="s" />
-          <PromoteEntity label="KVDBs" entity="kvdbs" data={promote} />
-          <EuiSpacer size="m" />
+          {PROMOTE_ENTITIES_ORDER.map((entity) => {
+            const label = PROMOTE_ENTITIES_LABELS[entity];
+            if (promote?.promote.changes[entity].length > 0) {
+              return (
+                <React.Fragment key={entity}>
+                  <PromoteEntity label={label} entity={entity} data={promote} />
+                  <EuiSpacer size="m" />
+                </React.Fragment>
+              );
+            }
+            return null;
+          })}
 
+          <EuiSpacer size="m" />
           <p style={{ marginBottom: '0.3rem' }}>
             <EuiText size="s">Type {<b>{expectedConfirmActionText}</b>} to confirm</EuiText>
           </p>

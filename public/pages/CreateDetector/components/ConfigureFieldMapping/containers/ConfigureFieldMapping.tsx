@@ -173,7 +173,8 @@ export default class ConfigureFieldMapping extends Component<
             <EuiText style={{ padding: '10px 0px' }} size="s">
               <p>
                 To generate accurate findings, we recommend to review the following field mappings
-                between the detection rules fields and the data source fields.
+                between the rules fields and the data source fields.{' '}
+                {/* Wazuh: rename 'detection rules' to 'rules' */}
               </p>
             </EuiText>
             <FieldMappingsTable<MappingViewType.Edit>
@@ -198,7 +199,8 @@ export default class ConfigureFieldMapping extends Component<
             <EuiText style={{ padding: '10px 0px' }} size="s">
               <p>
                 To generate accurate findings, we recommend mapping all the fields of interest in
-                your data source to the detection rules fields.
+                your data source to the rules fields.{' '}
+                {/* Wazuh: rename 'detection rules' to 'rules' */}
               </p>
             </EuiText>
             {pendingCount > 0 && (
@@ -373,7 +375,7 @@ export default class ConfigureFieldMapping extends Component<
             </EuiTitle>
             <EuiText size="s" color="subdued">
               To perform threat detection the field names from your data source have to be mapped to
-              detection rules field names.
+              rules field names. {/* Wazuh: rename 'detection rules' to 'rules' */}
             </EuiText>
           </>
         }

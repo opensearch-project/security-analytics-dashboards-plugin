@@ -40,6 +40,7 @@ import {
   RulesService,
   NotificationsService,
   CorrelationService,
+  WazuhRulesService,
 } from './services';
 import { IntegrationService } from './services/IntegrationService';
 import { PoliciesService } from './services/PoliciesService';
@@ -89,6 +90,7 @@ export class SecurityAnalyticsPlugin
       notificationsService: new NotificationsService(securityAnalyticsClient, dataSourceEnabled),
       logTypeService: new LogTypeService(securityAnalyticsClient, dataSourceEnabled),
       integrationService: new IntegrationService(securityAnalyticsClient, dataSourceEnabled),
+      wazuhRulesService: new WazuhRulesService(securityAnalyticsClient),
       policiesService: new PoliciesService(securityAnalyticsClient, dataSourceEnabled),
       kvdbsService: new KVDBsService(securityAnalyticsClient, false),
       logTestService: new LogTestService(securityAnalyticsClient, false),

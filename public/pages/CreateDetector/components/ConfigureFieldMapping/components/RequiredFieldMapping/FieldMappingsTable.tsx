@@ -85,7 +85,7 @@ export default class FieldMappingsTable<T extends MappingViewType> extends Compo
     const columns: EuiBasicTableColumn<FieldMappingsTableItem>[] = [
       {
         field: 'ruleFieldName',
-        name: 'Detection rule field',
+        name: 'Rule field', // Wazuh: rename 'Detection rule' to 'Rule'
         dataType: 'string',
         width: '25%',
         render: (ruleFieldName: string) => ruleFieldName || DEFAULT_EMPTY_DATA,

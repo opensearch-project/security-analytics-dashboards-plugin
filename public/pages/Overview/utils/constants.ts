@@ -23,7 +23,7 @@ export const moreLink = 'https://opensearch.org/docs/latest/security-analytics/'
 export const getOverviewsCardsProps = (): EuiCardProps[] => {
   const cards: EuiCardProps[] = [
     {
-      icon: React.createElement(EuiIcon, { type: 'rocket', size: "l", color: "primary" }),
+      icon: React.createElement(EuiIcon, { type: 'rocket', size: 'l', color: 'primary' }),
       title: '',
       description: 'Configure Security Analytics tools and components to get started.',
       onClick: () => {
@@ -33,7 +33,7 @@ export const getOverviewsCardsProps = (): EuiCardProps[] => {
       className: 'usecaseOverviewGettingStartedCard',
     },
     {
-      icon: React.createElement(EuiIcon, { type: 'compass', size: "l", color: "primary" }),
+      icon: React.createElement(EuiIcon, { type: 'compass', size: 'l', color: 'primary' }),
       title: '',
       description: 'Explore data to uncover and discover insights.',
       onClick: () => {
@@ -43,9 +43,9 @@ export const getOverviewsCardsProps = (): EuiCardProps[] => {
       className: 'usecaseOverviewGettingStartedCard',
     },
     {
-      icon: React.createElement(EuiIcon, { type: 'pulse', size: "l", color: "primary" }),
+      icon: React.createElement(EuiIcon, { type: 'pulse', size: 'l', color: 'primary' }),
       title: '',
-      description: 'Identify security threats in your log data with detection rules.',
+      description: 'Identify security threats in your log data with rules.', // Wazuh: rename 'detection rules' to 'rules'
       onClick: () => {
         getApplication().navigateToApp(DETECTORS_NAV_ID);
       },
@@ -56,7 +56,7 @@ export const getOverviewsCardsProps = (): EuiCardProps[] => {
 
   if (THREAT_INTEL_ENABLED) {
     cards.push({
-      icon: React.createElement(EuiIcon, { type: 'radar', size: "l", color: "primary" }),
+      icon: React.createElement(EuiIcon, { type: 'radar', size: 'l', color: 'primary' }),
       title: '',
       description: 'Scan your log data for malicious actors from known indicators of compromise.',
       onClick: () => {
@@ -89,7 +89,7 @@ export const getOverviewStatsProps = ({
     // },
     {
       title: ruleFindings,
-      description: 'Detection rule findings',
+      description: 'Rule findings', // Wazuh: rename 'Detection rule' to 'Rule'
     },
   ];
 

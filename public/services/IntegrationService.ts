@@ -5,6 +5,7 @@
 
 import { HttpSetup } from 'opensearch-dashboards/public';
 import {
+  CreateIntegrationRequestBody,
   CreateIntegrationResponse,
   DeleteIntegrationResponse,
   GetPromote,
@@ -22,7 +23,7 @@ import { dataSourceInfo } from './utils/constants';
 export default class IntegrationService {
   constructor(private httpClient: HttpSetup) {}
 
-  createIntegration = async (integration: IntegrationBase) => {
+  createIntegration = async (integration: CreateIntegrationRequestBody) => {
     const url = `..${API.INTEGRATION_BASE}`;
     const response = (await this.httpClient.post(url, {
       body: JSON.stringify(integration),

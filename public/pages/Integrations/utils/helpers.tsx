@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { EuiLink, EuiPanel } from '@elastic/eui';
-import { Integration } from '../../../../types';
+import { Integration, PromoteSpaces } from '../../../../types';
 import { SPACE_ACTIONS, UserSpacesOrder } from '../../../../common/constants';
 import { capitalize, startCase } from 'lodash';
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
@@ -248,14 +248,6 @@ export const withModal = (options) =>
     },
     () => options
   );
-
-export const getNextSpace = (space: string) => {
-  const currentIndex = UserSpacesOrder.indexOf(space);
-  if (currentIndex === -1 || currentIndex === UserSpacesOrder.length - 1) {
-    return null; // No next space available
-  }
-  return UserSpacesOrder[currentIndex + 1];
-};
 
 type useAsyncActionRunOnStartDependenciesReturns<T> = {
   data: T | null;

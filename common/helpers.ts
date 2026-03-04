@@ -5,11 +5,11 @@
 
 import _ from 'lodash';
 import { DEFAULT_METRICS_COUNTER } from '../server/utils/constants';
-import { MetricsCounter, PartialMetricsCounter, Space } from '../types';
+import { MetricsCounter, PartialMetricsCounter, PromoteSpaces, Space } from '../types';
 import { SecurityAnalyticsPluginConfigType } from '../config';
 import { Get, Set } from '../../../src/plugins/opensearch_dashboards_utils/common';
 // Wazuh
-import { AllowedActionsBySpace, SpaceTypes } from './constants';
+import { AllowedActionsBySpace, SpaceTypes, UserSpacesOrder } from './constants';
 
 export function aggregateMetrics(
   metrics: PartialMetricsCounter,
@@ -89,3 +89,11 @@ export function getSpacesAllowAction(action: string): Space[] {
     .filter(([_, allowedActions]) => allowedActions.includes(action))
     .map(([space]) => space) as Space[];
 }
+
+export const getNextSpace = (space: PromoteSpaces) => {
+  const currentIndex = UserSpacesOrder.indexOf(space);
+  if (currentIndex === -1 || currentIndex === UserSpacesOrder.length - 1) {
+    return null; // No next space available
+  }
+  return UserSpacesOrder[currentIndex + 1];
+};

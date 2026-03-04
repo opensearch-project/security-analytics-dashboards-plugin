@@ -28,7 +28,7 @@ export const THREAT_ALERTS_NAV_ID = `threat_alerts`;
 export const FINDINGS_NAV_ID = `findings`;
 export const CORRELATIONS_NAV_ID = `correlations`;
 export const DETECTORS_NAV_ID = `detectors`;
-export const DETECTION_RULE_NAV_ID = `detection_rules`;
+export const DETECTION_RULE_NAV_ID = `rules`; // Wazuh: rename 'Detection rules' to 'Rules'.
 export const CORRELATIONS_RULE_NAV_ID = `correlation_rules`;
 export const THREAT_INTEL_NAV_ID = `threat_intelligence`;
 export const INTEGRATIONS_NAV_ID = `sa-integrations`;
@@ -91,7 +91,7 @@ export const ROUTES = Object.freeze({
   LOG_TEST: '/log-test',
 
   get LANDING_PAGE(): string {
-    return this.OVERVIEW;
+    return this.INTEGRATIONS;
   },
 });
 
@@ -102,7 +102,7 @@ export const getNotificationDetailsHref = (channelId: string) =>
 export const BREADCRUMBS = Object.freeze({
   SECURITY_ANALYTICS: {
     text: 'Security Analytics',
-    href: `#${ROUTES.OVERVIEW}`,
+    href: `#${ROUTES.INTEGRATIONS}`,
   },
   OVERVIEW: { text: 'Overview', href: `#${ROUTES.OVERVIEW}` },
   GETTING_STARTED: { text: 'Get started', href: `#${ROUTES.GETTING_STARTED}` },
@@ -121,10 +121,10 @@ export const BREADCRUMBS = Object.freeze({
     text: `${name}`,
     href: `#${ROUTES.EDIT_DETECTOR_DETAILS}/${detectorId}`,
   }),
-  RULES: { text: 'Detection rules', href: `#${ROUTES.RULES}` },
+  RULES: { text: 'Rules', href: `#${ROUTES.RULES}` }, // Wazuh: rename 'Detection rules' to 'Rules'.
   ALERTS: { text: 'Alerts', href: `#${ROUTES.ALERTS}` },
   RULES_CREATE: {
-    text: 'Create detection rule',
+    text: 'Create rule', // Wazuh: rename 'detection rule' to 'rule'
     href: `#${ROUTES.RULES_CREATE}`,
   },
   RULES_EDIT: { text: 'Edit rule', href: `#${ROUTES.RULES_EDIT}` },
@@ -152,7 +152,7 @@ export const BREADCRUMBS = Object.freeze({
     href: `#${ROUTES.LOG_TYPES_CREATE}`,
   }, // Replace Log Type with Integration by Wazuh
   NORMALIZATION: { text: 'Normalization' },
-  INTEGRATIONS: { text: 'Integrations', href: `#${ROUTES.INTEGRATIONS}` }, // Replace Log Types with Integrations by Wazuh
+  INTEGRATIONS: { text: 'Overview', href: `#${ROUTES.INTEGRATIONS}` }, // Replace Log Types with Integrations by Wazuh
   INTEGRATIONS_CREATE: {
     text: 'Create integration',
     href: `#${ROUTES.INTEGRATIONS_CREATE}`,
@@ -448,4 +448,23 @@ export const DEFAULT_MESSAGE_SOURCE = {
  - Description: {{ctx.detector.description}}
  - Detector data sources: {{ctx.detector.datasources}}`,
   MESSAGE_SUBJECT: `Triggered alert condition:  {{ctx.trigger.name}} - Severity: {{ctx.trigger.severity}} - Threat detector: {{ctx.detector.name}}`,
+};
+
+// Wazuh: promotions order
+export const PROMOTE_ENTITIES_ORDER = [
+  'policy',
+  'integrations',
+  'decoders',
+  'kvdbs',
+  'filters',
+  'rules',
+] as const;
+
+export const PROMOTE_ENTITIES_LABELS: Record<string, string> = {
+  policy: 'Policy',
+  integrations: 'Integrations',
+  decoders: 'Decoders',
+  kvdbs: 'KVDBs',
+  filters: 'Filters',
+  rules: 'Rules',
 };

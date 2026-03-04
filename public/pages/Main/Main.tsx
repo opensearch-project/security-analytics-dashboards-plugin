@@ -25,7 +25,8 @@ import {
   dataSourceObservable,
   OS_NOTIFICATION_PLUGIN,
   THREAT_INTEL_ENABLED,
-  OVERVIEW_NAV_ID,
+  // Wazuh: hide Overview app in navigation.
+  // OVERVIEW_NAV_ID,
   FINDINGS_NAV_ID,
   // Wazuh: hide Alerts app in navigation.
   // THREAT_ALERTS_NAV_ID,
@@ -36,15 +37,16 @@ import {
   // Wazuh: hide Correlation rules app in navigation.
   // CORRELATIONS_RULE_NAV_ID,
   LOG_TYPES_NAV_ID,
+  INTEGRATIONS_NAV_ID,
   DECODERS_NAV_ID,
   KVDBS_NAV_ID,
-  INTEGRATIONS_NAV_ID,
+  OVERVIEW_NAV_ID,
   LOG_TEST_NAV_ID,
 } from '../../utils/constants';
 import { CoreServicesConsumer } from '../../components/core_services';
 import Findings from '../Findings';
 import Detectors from '../Detectors';
-import Overview from '../Overview';
+// import Overview from '../Overview';
 import CreateDetector from '../CreateDetector/containers/CreateDetector';
 // Wazuh: hide Alerts app and routes.
 // import Alerts from "../Alerts";
@@ -54,11 +56,13 @@ import { UpdateDetectorRules } from '../Detectors/components/UpdateRules/UpdateR
 import UpdateFieldMappings from '../Detectors/components/UpdateFieldMappings/UpdateFieldMappings';
 // Wazuh: hide Alert triggers edit route.
 // import UpdateAlertConditions from "../Detectors/components/UpdateAlertConditions/UpdateAlertConditions";
-import { Rules } from '../Rules/containers/Rules/Rules';
-import { CreateRule } from '../Rules/containers/CreateRule/CreateRule';
-import { EditRule } from '../Rules/containers/EditRule/EditRule';
-import { ImportRule } from '../Rules/containers/ImportRule/ImportRule';
-import { DuplicateRule } from '../Rules/containers/DuplicateRule/DuplicateRule';
+// Wazuh: use wazuh rules
+// import { Rules } from '../Rules/containers/Rules/Rules';
+// import { CreateRule } from '../Rules/containers/CreateRule/CreateRule';
+// import { EditRule } from '../Rules/containers/EditRule/EditRule';
+// import { ImportRule } from '../Rules/containers/ImportRule/ImportRule';
+// import { DuplicateRule } from '../Rules/containers/DuplicateRule/DuplicateRule';
+import { Rules, CreateRule, EditRule } from '../WazuhRules';
 import Callout, { ICalloutProps } from './components/Callout';
 import { DataStore } from '../../store/DataStore';
 // Wazuh: hide Correlations and Correlation rules routes.
@@ -97,7 +101,7 @@ import {
   getPlugins,
   setIsNotificationPluginInstalled,
 } from '../../utils/helpers';
-import { GettingStartedContent } from '../Overview/components/GettingStarted/GettingStartedContent';
+// import { GettingStartedContent } from '../Overview/components/GettingStarted/GettingStartedContent';
 import { BrowserServices } from '../../models/interfaces';
 import { CHANNEL_TYPES } from '../CreateDetector/components/ConfigureAlerts/utils/constants';
 import { PromoteIntegration } from '../Integrations/containers/PromoteIntegration';
@@ -107,7 +111,7 @@ enum Navigation {
   SecurityAnalytics = 'Security Analytics',
   Findings = 'Findings',
   Detectors = 'Detectors',
-  Rules = 'Detection rules',
+  Rules = 'Rules', // Wazuh: rename 'Detection rules' to 'Rules'
   Overview = 'Overview',
   // Wazuh: hide Alerts/Correlations navigation items.
   // Alerts = "Alerts",
@@ -177,7 +181,7 @@ interface MainState {
  */
 
 const navItemIdByRoute: { [route: string]: Navigation } = {
-  [ROUTES.OVERVIEW]: Navigation.Overview,
+  // [ROUTES.OVERVIEW]: Navigation.Overview,
   [ROUTES.FINDINGS]: Navigation.Findings,
   // Wazuh: hide Alerts route mapping.
   // [ROUTES.ALERTS]: Navigation.Alerts,
@@ -185,7 +189,7 @@ const navItemIdByRoute: { [route: string]: Navigation } = {
   [ROUTES.RULES]: Navigation.Rules,
   // Wazuh: hide Log types and add Wazuh integrations route mapping.
   // [ROUTES.LOG_TYPES]: Navigation.LogTypes,
-  [ROUTES.INTEGRATIONS]: Navigation.Integrations,
+  [ROUTES.INTEGRATIONS]: Navigation.Overview,
   [ROUTES.DECODERS]: Navigation.Decoders,
   [ROUTES.KVDBS]: Navigation.KVDBS,
   [ROUTES.LOG_TEST]: Navigation.LogTest,
@@ -220,7 +224,7 @@ export default class Main extends Component<MainProps, MainState> {
 
     this.state = {
       getStartedDismissedOnce: false,
-      selectedNavItemId: Navigation.Overview,
+      selectedNavItemId: Navigation.Overview, // Navigation.Integrations
       dateTimeFilter: defaultDateTimeFilter,
       showFlyoutData: null,
       /**
@@ -377,6 +381,7 @@ export default class Main extends Component<MainProps, MainState> {
           );
         },
         items: [
+          /****
           {
             name: Navigation.Overview,
             id: Navigation.Overview,
@@ -390,6 +395,7 @@ export default class Main extends Component<MainProps, MainState> {
             },
             isSelected: selectedNavItemId === Navigation.Overview,
           },
+          */
           ...(THREAT_INTEL_ENABLED
             ? [
                 {
@@ -405,6 +411,22 @@ export default class Main extends Component<MainProps, MainState> {
                 },
               ]
             : []),
+          {
+            name: Navigation.Overview,
+            id: Navigation.Overview,
+            onClick: () => {
+              // this.setState({ selectedNavItemId: Navigation.Integrations });
+              // history.push(ROUTES.INTEGRATIONS);
+              // Wazuh: navigate to app so this is highlighted in the sidebar menu (old)
+              getApplication().navigateToApp(INTEGRATIONS_NAV_ID, {
+                path: generateAppPath(ROUTES.INTEGRATIONS),
+              });
+              if (history.location.pathname !== ROUTES.INTEGRATIONS) {
+                history.push(ROUTES.INTEGRATIONS);
+              }
+            },
+            isSelected: selectedNavItemId === Navigation.Overview,
+          },
           {
             name: Navigation.Findings,
             id: Navigation.Findings,
@@ -459,22 +481,6 @@ export default class Main extends Component<MainProps, MainState> {
           //     },
           //   ],
           // },
-          {
-            name: Navigation.Integrations,
-            id: Navigation.Integrations,
-            onClick: () => {
-              // this.setState({ selectedNavItemId: Navigation.Integrations });
-              // history.push(ROUTES.INTEGRATIONS);
-              // Wazuh: navigate to app so this is highlighted in the sidebar menu (old)
-              getApplication().navigateToApp(INTEGRATIONS_NAV_ID, {
-                path: generateAppPath(ROUTES.INTEGRATIONS),
-              });
-              if (history.location.pathname !== ROUTES.INTEGRATIONS) {
-                history.push(ROUTES.INTEGRATIONS);
-              }
-            },
-            isSelected: selectedNavItemId === Navigation.Integrations,
-          },
           /**** Wazuh Replace LogTypes entry for Wazuh integrations 
           {
             name: Navigation.LogTypes,
@@ -709,9 +715,8 @@ export default class Main extends Component<MainProps, MainState> {
                                       path={ROUTES.RULES}
                                       render={(props: RouteComponentProps) => (
                                         <Rules
-                                          {...props}
+                                          history={props.history} // Wazuh: use wazuh rules component
                                           notifications={core?.notifications}
-                                          dataSource={selectedDataSource}
                                         />
                                       )}
                                     />
@@ -732,9 +737,8 @@ export default class Main extends Component<MainProps, MainState> {
                                           props.history.replace(ROUTES.RULES);
                                           return (
                                             <Rules
-                                              {...props}
+                                              history={props.history} // Wazuh: use wazuh rules component
                                               notifications={core?.notifications}
-                                              dataSource={selectedDataSource}
                                             />
                                           );
                                         }
@@ -748,16 +752,16 @@ export default class Main extends Component<MainProps, MainState> {
                                         );
                                       }}
                                     />
-                                    <Route
+                                    {/* Wazuh: hide Rules duplicate and import routes. * /}
+                                    {/* <Route
                                       path={ROUTES.RULES_DUPLICATE}
                                       render={(props: RouteComponentProps<any, any, any>) => {
                                         if (!props.location.state?.ruleItem) {
                                           props.history.replace(ROUTES.RULES);
                                           return (
                                             <Rules
-                                              {...props}
+                                              history={props.history}
                                               notifications={core?.notifications}
-                                              dataSource={selectedDataSource}
                                             />
                                           );
                                         }
@@ -780,8 +784,8 @@ export default class Main extends Component<MainProps, MainState> {
                                           notifications={core?.notifications}
                                         />
                                       )}
-                                    />
-                                    <Route
+                                    /> */}
+                                    {/* <Route
                                       path={ROUTES.OVERVIEW}
                                       render={(props: RouteComponentProps) => (
                                         <Overview
@@ -807,7 +811,7 @@ export default class Main extends Component<MainProps, MainState> {
                                           />
                                         )}
                                       />
-                                    )}
+                                    )} */}
                                     {/* Wazuh: hide Alerts route. */}
                                     {/* <Route
                                       path={`${ROUTES.ALERTS}/:detectorId?`}
