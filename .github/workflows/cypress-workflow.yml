@@ -49,8 +49,14 @@ jobs:
       - name: Run opensearch with plugin
         run: |
           cd security-analytics
-          ./gradlew run &
-          sleep 300
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            # On Windows, the JaCoCo coverage plugin produces a broken JVM agent path (Git Bash path mangling).
+            # Setting tests.rest.cluster tricks build.gradle into skipping the coverage plugin entirely.
+            ./gradlew run -x integTest -x jacocoTestReport -Dtests.rest.cluster=localhost:9200 -Dtests.cluster=localhost:9200 -Dtests.clustername=opensearch &
+          else
+            ./gradlew run -x integTest -x jacocoTestReport &
+          fi
+          timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9200)" != "200" ]]; do sleep 5; done'
         shell: bash
 
       - name: Checkout OpenSearch-Dashboards
@@ -131,10 +137,9 @@ jobs:
         uses: cypress-io/github-action@v5
         with:
           working-directory: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
-          command: yarn run cypress run --browser firefox
+          command: yarn run cypress run --browser electron
           wait-on: 'http://localhost:5601'
           wait-on-timeout: 300
-          browser: firefox
         env:
           CYPRESS_CACHE_FOLDER: ${{ matrix.cypress_cache_folder }}
 
@@ -143,11 +148,11 @@ jobs:
         if: failure()
         with:
           name: cypress-screenshots-${{ matrix.os }}
-          path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/cypress/screenshots
+          path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/.cypress/screenshots
 
       # Test run video was always captured, so this action uses "always()" condition
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: cypress-videos-${{ matrix.os }}
-          path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/cypress/videos
+          path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/.cypress/videos

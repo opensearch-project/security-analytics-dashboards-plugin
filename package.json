@@ -15,7 +15,7 @@
   },
   "scripts": {
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
+    "cypress:run": "cypress run --browser electron",
     "osd": "node ../../scripts/osd",
     "opensearch": "node ../../scripts/opensearch",
     "lint": "node ../../scripts/eslint .",

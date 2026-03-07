@@ -33,7 +33,7 @@ module.exports = {
     '!<rootDir>/coverage/**',
     '!<rootDir>/scripts/**',
     '!<rootDir>/build/**',
-    '!<rootDir>/cypress/**',
+    '!<rootDir>/.cypress/**',
     '!**/vendor/**',
   ],
   clearMocks: true,

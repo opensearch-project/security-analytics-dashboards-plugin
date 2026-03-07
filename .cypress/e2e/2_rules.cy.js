@@ -41,7 +41,7 @@ const YAML_RULE_LINES = [
   `level: ${SAMPLE_RULE.severity.toLowerCase()}`,
   `status: ${SAMPLE_RULE.status}`,
   `references:`,
-  `- '${SAMPLE_RULE.references}'`,
+  `- ${SAMPLE_RULE.references}`,
   `author: ${SAMPLE_RULE.author}`,
   `detection:`,
   ...SAMPLE_RULE.detectionLine,
@@ -138,7 +138,9 @@ const getNameField = () => cy.getFieldByLabel('Rule name');
 const getRuleStatusField = () => cy.getFieldByLabel('Rule Status');
 const getDescriptionField = () => cy.getFieldByLabel('Description - optional');
 const getAuthorField = () => cy.getFieldByLabel('Author');
-const getLogTypeField = () => cy.getFieldByLabel('Log type');
+const getLogTypeField = () =>
+  // This log type dropdown is populated asynchronously. Adding short wait to reduce flakiness.
+  cy.getFieldByLabel('Log type').click().wait(5000);
 const getRuleLevelField = () => cy.getFieldByLabel('Rule level (severity)');
 const getSelectionPanelByIndex = (index) =>
   cy.get(`[data-test-subj="detection-visual-editor-${index}"]`);
@@ -576,7 +578,7 @@ describe('Rules', () => {
 
     it('...can be imported with log type', () => {
       getImportButton().click({ force: true });
-      getImportRuleFilePicker().selectFile('./cypress/fixtures/sample_aws_s3_rule_to_import.yml');
+      getImportRuleFilePicker().selectFile('./.cypress/fixtures/sample_aws_s3_rule_to_import.yml');
       // Check that AWS S3 log type is set.
       cy.contains('AWS S3');
     });
