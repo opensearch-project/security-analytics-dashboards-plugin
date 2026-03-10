@@ -8,7 +8,7 @@ import notificationsStartMock from '../../test/mocks/services/notifications/Noti
 import services from '../../test/mocks/services';
 import { RulesStore } from './RulesStore';
 import { expect } from '@jest/globals';
-import * as rulesResponseMock from '../../cypress/fixtures/sample_rule.json';
+import * as rulesResponseMock from '../../.cypress/fixtures/sample_rule.json';
 describe('Rules store specs', () => {
   Object.assign(services, {
     ruleService: {

@@ -18,7 +18,7 @@
 // the project's config changing)
 
 // TODO: yarn osd bootstrap fails when trying to add below package as a dependency..
-// const wp = require("@cypress/webpack-preprocessor");
+// const wp = require("@.cypress/webpack-preprocessor");
 //
 /**
  * @type {Cypress.PluginConfig}
