@@ -107,9 +107,19 @@ const SelectRootDecoderForm: React.FC<SelectRootDecoderFormProps> = ({
   );
 
   const updatePolicy = async () => {
-    const [success] = await DataStore.policies.updatePolicy(policyDocumentData.id, {
-      ...policyDocumentData,
+    const [success] = await DataStore.policies.updatePolicy(space, {
+      title: policyDocumentData.title,
       root_decoder: selected,
+      integrations: policyDocumentData.integrations,
+      filters: policyDocumentData.filters ?? [],
+      enrichments: policyDocumentData.enrichments,
+      enabled: policyDocumentData.enabled,
+      index_unclassified_events: policyDocumentData.index_unclassified_events,
+      index_discarded_events: policyDocumentData.index_discarded_events,
+      author: policyDocumentData.author,
+      description: policyDocumentData.description,
+      documentation: policyDocumentData.documentation,
+      references: policyDocumentData.references,
     });
     if (success) {
       successNotificationToast(notifications, 'updated', `[${space}] policy`);

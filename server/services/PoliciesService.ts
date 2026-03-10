@@ -316,17 +316,18 @@ export class PoliciesService extends MDSEnabledClientService {
 
   updatePolicy = async (
     context: RequestHandlerContext,
-    request: OpenSearchDashboardsRequest<{ policyId: string }, {}, UpdatePolicyRequestBody>,
+    request: OpenSearchDashboardsRequest<{ space: string }, {}, UpdatePolicyRequestBody>,
     response: OpenSearchDashboardsResponseFactory
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<GetPolicyResponse> | ResponseError>> => {
     try {
-      const { policyId } = request.params;
+      const { space } = request.params;
       const { body } = request;
 
       const client = this.getClient(request, context);
       const updatePolicyResponse = await client(CLIENT_POLICY_METHODS.UPDATE_POLICY, {
+        space,
         body: {
-          resource: { ...body, id: policyId },
+          resource: body,
         },
       });
 

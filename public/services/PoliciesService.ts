@@ -8,9 +8,9 @@ import { API } from '../../server/utils/constants';
 import { ServerResponse } from '../../server/models/types';
 import {
   GetPolicyResponse,
-  PolicyDocument,
   SearchPoliciesResponse,
   SearchPolicyOptions,
+  UpdatePolicyRequestBody,
   UpdatePolicyResponse,
 } from '../../types';
 
@@ -41,10 +41,10 @@ export default class PoliciesService {
   };
 
   updatePolicy = async (
-    policyId: string,
-    policyDocumentData: PolicyDocument
+    space: string,
+    policyDocumentData: UpdatePolicyRequestBody
   ): Promise<ServerResponse<UpdatePolicyResponse>> => {
-    const url = `..${API.POLICIES_BASE}/${policyId}`;
+    const url = `..${API.POLICIES_BASE}/${space}`;
 
     return (await this.httpClient.put(url, {
       body: JSON.stringify(policyDocumentData),

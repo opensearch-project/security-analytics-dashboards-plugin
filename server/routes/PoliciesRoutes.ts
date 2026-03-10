@@ -42,14 +42,11 @@ export function setupPoliciesRoutes(services: NodeServices, router: IRouter) {
 
   router.put(
     {
-      path: `${API.POLICIES_BASE}/{policyId}`,
+      path: `${API.POLICIES_BASE}/{space}`,
       validate: {
         params: schema.object({
-          policyId: schema.string(),
+          space: schema.oneOf([schema.literal('draft'), schema.literal('standard')]),
         }),
-        // query: createQueryValidationSchema({
-        //   space: schema.maybe(schema.string()),
-        // }),
         body: schema.object({
           author: schema.string(),
           enabled: schema.boolean({ defaultValue: false }),
@@ -63,9 +60,6 @@ export function setupPoliciesRoutes(services: NodeServices, router: IRouter) {
           references: schema.arrayOf(schema.string(), { defaultValue: [] }),
           title: schema.string(),
           root_decoder: schema.string({ defaultValue: '' }),
-          date: schema.string(),
-          modified: schema.string(),
-          id: schema.string(),
         }),
       },
     },

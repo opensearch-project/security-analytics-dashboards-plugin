@@ -67,6 +67,8 @@ export const SPACE_ACTIONS = {
   DEFINE_ROOT_DECODER: 'define_root_decoder',
   REARRANGE_INTEGRATIONS: 'rearrange_integrations',
   EDIT_POLICY: 'edit_policy',
+  EDIT_POLICY_INDEXING_SETTINGS: 'edit_policy_indexing_settings',
+  EDIT_POLICY_ENRICHMENTS: 'edit_enrichments',
 };
 
 export const AllowedActionsBySpace = {
@@ -78,10 +80,15 @@ export const AllowedActionsBySpace = {
     SPACE_ACTIONS.DEFINE_ROOT_DECODER,
     SPACE_ACTIONS.REARRANGE_INTEGRATIONS,
     SPACE_ACTIONS.EDIT_POLICY,
+    SPACE_ACTIONS.EDIT_POLICY_INDEXING_SETTINGS,
+    SPACE_ACTIONS.EDIT_POLICY_ENRICHMENTS,
   ],
   [SpaceTypes.TEST.value]: [SPACE_ACTIONS.PROMOTE],
   [SpaceTypes.CUSTOM.value]: [],
-  [SpaceTypes.STANDARD.value]: [],
+  [SpaceTypes.STANDARD.value]: [
+    SPACE_ACTIONS.EDIT_POLICY_ENRICHMENTS,
+    SPACE_ACTIONS.EDIT_POLICY_INDEXING_SETTINGS,
+  ],
 };
 
 export const UserSpacesOrder: PromoteSpaces[] = [

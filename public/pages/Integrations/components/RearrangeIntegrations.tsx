@@ -187,10 +187,20 @@ const RearrangeIntegrationsBody: React.FC<RearrangeIntegrationsViewProps> = ({
     );
 
     const payload = {
-      ...policyDocumentData,
+      title: policyDocumentData.title,
+      root_decoder: policyDocumentData.root_decoder,
       integrations: validIntegrations.map(({ id }) => id),
+      filters: policyDocumentData.filters ?? [],
+      enrichments: policyDocumentData.enrichments,
+      enabled: policyDocumentData.enabled,
+      index_unclassified_events: policyDocumentData.index_unclassified_events,
+      index_discarded_events: policyDocumentData.index_discarded_events,
+      author: policyDocumentData.author,
+      description: policyDocumentData.description,
+      documentation: policyDocumentData.documentation,
+      references: policyDocumentData.references,
     };
-    const [success] = await DataStore.policies.updatePolicy(policyDocumentData.id, payload);
+    const [success] = await DataStore.policies.updatePolicy(space, payload);
 
     if (success) {
       successNotificationToast(notifications, 'updated', `[${space}] policy`);
