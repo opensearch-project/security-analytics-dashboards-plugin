@@ -80,12 +80,19 @@ export function createNullableGetterSetter<T>(): [Get<T | undefined>, Set<T>] {
 }
 
 // Wazuh
-export function actionIsAllowedOnSpace(space: Space, action: string): Boolean {
-  return AllowedActionsBySpace?.[SpaceTypes[space.toUpperCase()]?.value]?.includes(action);
+export function actionIsAllowedOnSpace(
+  space: Space,
+  action: string,
+  allowedActionsBySpace = AllowedActionsBySpace
+): Boolean {
+  return allowedActionsBySpace?.[SpaceTypes[space.toUpperCase()]?.value]?.includes(action);
 }
 
-export function getSpacesAllowAction(action: string): Space[] {
-  return Object.entries(AllowedActionsBySpace)
+export function getSpacesAllowAction(
+  action: string,
+  allowedActionsBySpace = AllowedActionsBySpace
+): Space[] {
+  return Object.entries(allowedActionsBySpace)
     .filter(([_, allowedActions]) => allowedActions.includes(action))
     .map(([space]) => space) as Space[];
 }

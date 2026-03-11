@@ -3,6 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
+export const OVERVIEW_TAB = {
+  INTEGRATIONS: 'integrations',
+  FILTERS: 'filters',
+} as const;
+
+export type OverviewTabId = typeof OVERVIEW_TAB[keyof typeof OVERVIEW_TAB];
+
 export const integrationDetailsTabs = [
   {
     id: 'details',

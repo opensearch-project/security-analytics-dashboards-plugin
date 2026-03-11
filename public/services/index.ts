@@ -21,6 +21,7 @@ import LogTypeService from './LogTypeService';
 import ThreatIntelService from './ThreatIntelService';
 import DecodersService from './DecodersService';
 import KVDBsService from './KVDBsService';
+import FiltersService from './FiltersService';
 
 export {
   SaContextConsumer,
@@ -42,4 +43,5 @@ export {
   DecodersService,
   ThreatIntelService,
   KVDBsService,
+  FiltersService,
 };

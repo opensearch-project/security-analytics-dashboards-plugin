@@ -91,6 +91,13 @@ export const AllowedActionsBySpace = {
   ],
 };
 
+export const FiltersAllowedActionsBySpace = {
+  [SpaceTypes.DRAFT.value]: [SPACE_ACTIONS.CREATE, SPACE_ACTIONS.EDIT, SPACE_ACTIONS.DELETE],
+  [SpaceTypes.TEST.value]: [],
+  [SpaceTypes.CUSTOM.value]: [],
+  [SpaceTypes.STANDARD.value]: [SPACE_ACTIONS.CREATE, SPACE_ACTIONS.EDIT, SPACE_ACTIONS.DELETE],
+};
+
 export const UserSpacesOrder: PromoteSpaces[] = [
   SpaceTypes.DRAFT.value,
   SpaceTypes.TEST.value,

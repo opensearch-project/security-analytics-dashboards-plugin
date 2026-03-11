@@ -126,7 +126,9 @@ export const getIntegrationsTableColumns = ({
   },
 ];
 
-export const getIntegrationsTableSearchConfig = (): Search => {
+export const getIntegrationsTableSearchConfig = (options?: {
+  toolsRight?: React.ReactNode[];
+}): Search => {
   return {
     box: {
       placeholder: 'Search integrations',
@@ -145,6 +147,7 @@ export const getIntegrationsTableSearchConfig = (): Search => {
         })),
       },
     ],
+    toolsRight: options?.toolsRight,
   };
 };
 

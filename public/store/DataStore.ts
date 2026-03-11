@@ -16,6 +16,7 @@ import { DocumentStore } from './DocumentStore';
 import { IntegrationStore } from './IntegrationStore';
 import { DecodersStore } from './DecodersStore';
 import { KVDBsStore } from './KVDBsStore';
+import { FiltersStore } from './FiltersStore';
 import { PoliciesStore } from './PoliciesStore';
 import { LogTestStore } from './LogTestStore';
 
@@ -29,6 +30,7 @@ export class DataStore {
   public static policies: PoliciesStore;
   public static decoders: DecodersStore;
   public static kvdbs: KVDBsStore;
+  public static filters: FiltersStore;
   public static logTests: LogTestStore;
   public static alerts: AlertsStore;
   public static threatIntel: ThreatIntelStore;
@@ -67,6 +69,7 @@ export class DataStore {
     DataStore.decoders = new DecodersStore(services.decodersService, notifications);
 
     DataStore.kvdbs = new KVDBsStore(services.kvdbsService, notifications);
+    DataStore.filters = new FiltersStore(services.filtersService, notifications);
 
     DataStore.logTests = new LogTestStore(services.logTestService, notifications);
 

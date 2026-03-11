@@ -23,6 +23,7 @@ import RulesService from '../../services/RuleService';
 import ThreatIntelService from '../../services/ThreatIntelService';
 import { KVDBsService } from '../../services/KVDBsService';
 import { LogTestService } from '../../services/LogTestService';
+import { FiltersService } from '../../services/FiltersService';
 
 export interface SecurityAnalyticsApi {
   readonly DETECTORS_BASE: string;
@@ -48,6 +49,7 @@ export interface SecurityAnalyticsApi {
   readonly INTEGRATION_BASE: string;
   readonly POLICIES_BASE: string;
   readonly KVDBS_BASE: string;
+  readonly FILTERS_BASE: string;
   readonly LOG_TEST_BASE: string;
   readonly METRICS: string;
   readonly GET_CORRELATION_ALERTS: string;
@@ -71,6 +73,7 @@ export interface NodeServices {
   wazuhRulesService: WazuhRuleService;
   logTypeService: LogTypeService;
   kvdbsService: KVDBsService;
+  filtersService: FiltersService;
   metricsService: MetricsService;
   threatIntelService: ThreatIntelService;
   decodersService: DecodersService;

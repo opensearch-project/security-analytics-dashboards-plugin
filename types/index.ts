@@ -19,6 +19,7 @@ export * from './Integrations';
 export * from './Policies';
 export * from './LogTypes';
 export * from './KVDBs';
+export * from './Filters';
 export * from './Metrics';
 export * from './SecurityAnalyticsContext';
 export * from './DataSourceContext';

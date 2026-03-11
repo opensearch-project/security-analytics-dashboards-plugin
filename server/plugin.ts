@@ -28,6 +28,7 @@ import {
   setupRulesRoutes,
   setupDecodersRoutes,
   setupKVDBsRoutes,
+  setupFiltersRoutes,
 } from './routes';
 import { setupMetricsRoutes } from './routes/MetricsRoutes';
 import {
@@ -46,6 +47,7 @@ import { IntegrationService } from './services/IntegrationService';
 import { PoliciesService } from './services/PoliciesService';
 import { LogTypeService } from './services/LogTypeService';
 import { KVDBsService } from './services/KVDBsService';
+import { FiltersService } from './services/FiltersService';
 import MetricsService from './services/MetricsService';
 import { SecurityAnalyticsPluginConfigType } from '../config';
 import { DataSourcePluginSetup } from 'src/plugins/data_source/server';
@@ -93,6 +95,7 @@ export class SecurityAnalyticsPlugin
       wazuhRulesService: new WazuhRulesService(securityAnalyticsClient),
       policiesService: new PoliciesService(securityAnalyticsClient, dataSourceEnabled),
       kvdbsService: new KVDBsService(securityAnalyticsClient, false),
+      filtersService: new FiltersService(securityAnalyticsClient, false),
       logTestService: new LogTestService(securityAnalyticsClient, false),
       metricsService: new MetricsService(),
       threatIntelService: new ThreatIntelService(securityAnalyticsClient, dataSourceEnabled),
@@ -116,6 +119,7 @@ export class SecurityAnalyticsPlugin
     setupIntegrationRoutes(services, router);
     setupPoliciesRoutes(services, router);
     setupKVDBsRoutes(services, router);
+    setupFiltersRoutes(services, router);
     setupLogTestRoutes(services, router);
     setupMetricsRoutes(services, router);
     setupThreatIntelRoutes(services, router);

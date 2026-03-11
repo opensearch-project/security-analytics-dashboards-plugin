@@ -106,6 +106,7 @@ import { BrowserServices } from '../../models/interfaces';
 import { CHANNEL_TYPES } from '../CreateDetector/components/ConfigureAlerts/utils/constants';
 import { PromoteIntegration } from '../Integrations/containers/PromoteIntegration';
 import { DecoderFormPage } from '../Decoders/containers/DecoderFormPage';
+import { FilterFormPage } from '../Filters/containers/FilterFormPage';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
@@ -155,6 +156,8 @@ const HIDDEN_NAV_ROUTES: string[] = [
   ROUTES.DECODERS_EDIT,
   ROUTES.KVDBS_CREATE,
   ROUTES.KVDBS_EDIT,
+  ROUTES.FILTERS_CREATE,
+  ROUTES.FILTERS_EDIT,
 ];
 
 interface MainProps extends RouteComponentProps {
@@ -190,6 +193,7 @@ const navItemIdByRoute: { [route: string]: Navigation } = {
   // Wazuh: hide Log types and add Wazuh integrations route mapping.
   // [ROUTES.LOG_TYPES]: Navigation.LogTypes,
   [ROUTES.INTEGRATIONS]: Navigation.Overview,
+  [ROUTES.FILTERS]: Navigation.Overview,
   [ROUTES.DECODERS]: Navigation.Decoders,
   [ROUTES.KVDBS]: Navigation.KVDBS,
   [ROUTES.LOG_TEST]: Navigation.LogTest,
@@ -1073,6 +1077,44 @@ export default class Main extends Component<MainProps, MainState> {
                                     />
                                     <Route
                                       path={`${ROUTES.INTEGRATIONS}`}
+                                      render={(props: RouteComponentProps<any, any, any>) => {
+                                        return (
+                                          <Integrations
+                                            notifications={core?.notifications}
+                                            {...props}
+                                            dataSource={selectedDataSource}
+                                          />
+                                        );
+                                      }}
+                                    />
+                                    <Route
+                                      path={ROUTES.FILTERS_CREATE}
+                                      render={(props: RouteComponentProps) => (
+                                        <FilterFormPage
+                                          {...props}
+                                          notifications={core?.notifications}
+                                          action="create"
+                                          history={props.history}
+                                        />
+                                      )}
+                                    />
+                                    <Route
+                                      path={`${ROUTES.FILTERS_EDIT}/:id`}
+                                      render={(
+                                        props: RouteComponentProps<{
+                                          id: string;
+                                        }>
+                                      ) => (
+                                        <FilterFormPage
+                                          {...props}
+                                          notifications={core?.notifications}
+                                          action="edit"
+                                          history={props.history}
+                                        />
+                                      )}
+                                    />
+                                    <Route
+                                      path={ROUTES.FILTERS}
                                       render={(props: RouteComponentProps<any, any, any>) => {
                                         return (
                                           <Integrations

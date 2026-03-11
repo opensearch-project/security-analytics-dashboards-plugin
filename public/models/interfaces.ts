@@ -19,6 +19,7 @@ import {
   PoliciesService,
   DecodersService,
   KVDBsService,
+  FiltersService,
 } from '../services';
 import CorrelationService from '../services/CorrelationService';
 import LogTestService from '../services/LogTestService';
@@ -42,6 +43,7 @@ export interface BrowserServices {
   logTypeService: LogTypeService;
   decodersService: DecodersService;
   kvdbsService: KVDBsService;
+  filtersService: FiltersService;
   logTestService: LogTestService;
   metricsService: MetricsService;
   threatIntelService: ThreatIntelService;

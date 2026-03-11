@@ -52,6 +52,7 @@ import {
   IntegrationService,
   PoliciesService,
   KVDBsService,
+  FiltersService,
   NotificationsService,
   OpenSearchService,
 } from "../services";
@@ -766,6 +767,7 @@ export function initializeServices(
   const policiesService = new PoliciesService(http);
   const decodersService = new DecodersService(http);
   const kvdbsService = new KVDBsService(http);
+  const filtersService = new FiltersService(http);
   const logTestService = new LogTestService(http);
   const metricsService = new MetricsService(http);
   const threatIntelService = new ThreatIntelService(
@@ -790,6 +792,7 @@ export function initializeServices(
     policiesService,
     decodersService,
     kvdbsService,
+    filtersService,
     logTestService,
     metricsService,
     threatIntelService,

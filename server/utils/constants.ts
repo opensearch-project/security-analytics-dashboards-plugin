@@ -37,6 +37,7 @@ export const API: SecurityAnalyticsApi = {
   INTEGRATION_BASE: `${BASE_API_PATH}/integrations`,
   LOGTYPE_BASE: `${BASE_API_PATH}/logtype`,
   KVDBS_BASE: `${BASE_API_PATH}/kvdbs`,
+  FILTERS_BASE: `${BASE_API_PATH}/filters`,
   LOG_TEST_BASE: `${BASE_API_PATH}/logtest`,
   METRICS: `/api/security_analytics/stats`,
   GET_CORRELATION_ALERTS: `${BASE_API_PATH}/correlationAlerts`,
@@ -147,6 +148,11 @@ export const METHOD_NAMES = {
   CREATE_KVDB: 'createKvdb',
   UPDATE_KVDB: 'updateKvdb',
   DELETE_KVDB: 'deleteKvdb',
+
+  // Filter methods
+  CREATE_FILTER: 'createFilter',
+  UPDATE_FILTER: 'updateFilter',
+  DELETE_FILTER: 'deleteFilter',
 };
 
 /**
@@ -254,6 +260,12 @@ export const CLIENT_KVDB_METHODS = {
   CREATE_KVDB: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.CREATE_KVDB}`,
   UPDATE_KVDB: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.UPDATE_KVDB}`,
   DELETE_KVDB: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.DELETE_KVDB}`,
+};
+
+export const CLIENT_FILTER_METHODS = {
+  CREATE_FILTER: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.CREATE_FILTER}`,
+  UPDATE_FILTER: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.UPDATE_FILTER}`,
+  DELETE_FILTER: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.DELETE_FILTER}`,
 };
 
 export const DEFAULT_METRICS_COUNTER: MetricsCounter = {

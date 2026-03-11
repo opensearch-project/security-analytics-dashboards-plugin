@@ -26,6 +26,9 @@ export const INTEGRATION_AUTHOR_REGEX = new RegExp(/^.{2,50}$/);
 // numbers 0-9, hyphens, dot, and underscores.
 export const DETECTION_NAME_REGEX = new RegExp(/^[a-zA-Z0-9_.-]{1,50}$/);
 
+// Filter name pattern: filter/<name>/<version> where name is lowercase alphanumeric with hyphens/underscores.
+export const FILTER_NAME_REGEX = new RegExp(/^filter\/[a-z0-9_-]+\/[a-z0-9_-]+$/);
+
 // This regex pattern support MIN to MAX character limit, capital and lowercase letters,
 // numbers 0-9, hyphens, dot, and underscores.
 export const THREAT_INTEL_SOURCE_NAME_REGEX = new RegExp(/^[a-zA-Z0-9 _-]{1,128}$/);
