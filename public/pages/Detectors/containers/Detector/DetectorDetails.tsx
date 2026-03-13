@@ -16,35 +16,46 @@ import {
   EuiTabs,
   EuiText,
   EuiHealth,
-} from '@elastic/eui';
-import React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
-import { BREADCRUMBS, EMPTY_DEFAULT_DETECTOR_HIT, ROUTES } from '../../../../utils/constants';
-import { DetectorHit } from '../../../../../server/models/interfaces';
-import { DetectorDetailsView } from '../DetectorDetailsView/DetectorDetailsView';
-import { FieldMappingsView } from '../../components/FieldMappingsView/FieldMappingsView';
+} from "@elastic/eui";
+import React from "react";
+import { RouteComponentProps } from "react-router-dom";
+import {
+  BREADCRUMBS,
+  EMPTY_DEFAULT_DETECTOR_HIT,
+  ROUTES,
+} from "../../../../utils/constants";
+import { DetectorHit } from "../../../../../server/models/interfaces";
+import { DetectorDetailsView } from "../DetectorDetailsView/DetectorDetailsView";
+import { FieldMappingsView } from "../../components/FieldMappingsView/FieldMappingsView";
 // Wazuh: hide Alert triggers tab in detector details.
 // import { AlertTriggersView } from '../AlertTriggersView/AlertTriggersView';
-import { RuleItem } from '../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
-import { DetectorsService, IndexPatternsService } from '../../../../services';
-import { errorNotificationToast, setBreadcrumbs } from '../../../../utils/helpers';
-import { NotificationsStart, SimpleSavedObject } from 'opensearch-dashboards/public';
-import { ISavedObjectsService, ServerResponse } from '../../../../../types';
-import { PENDING_DETECTOR_ID } from '../../../CreateDetector/utils/constants';
-import { DataStore } from '../../../../store/DataStore';
-import { PageHeader } from '../../../../components/PageHeader/PageHeader';
+import { RuleItem } from "../../../CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces";
+import { DetectorsService, IndexPatternsService } from "../../../../services";
+import {
+  errorNotificationToast,
+  setBreadcrumbs,
+} from "../../../../utils/helpers";
+import {
+  NotificationsStart,
+  SimpleSavedObject,
+} from "opensearch-dashboards/public";
+import { ISavedObjectsService, ServerResponse } from "../../../../../types";
+import { PENDING_DETECTOR_ID } from "../../../CreateDetector/utils/constants";
+import { DataStore } from "../../../../store/DataStore";
+import { PageHeader } from "../../../../components/PageHeader/PageHeader";
 
-export interface DetectorDetailsProps
-  extends RouteComponentProps<
-    {},
-    any,
-    {
-      detectorHit: DetectorHit;
-      createDashboardPromise?: Promise<void | ServerResponse<SimpleSavedObject<unknown>>>;
-      enabledRules?: RuleItem[];
-      allRules?: RuleItem[];
-    }
-  > {
+export interface DetectorDetailsProps extends RouteComponentProps<
+  {},
+  any,
+  {
+    detectorHit: DetectorHit;
+    createDashboardPromise?: Promise<void | ServerResponse<
+      SimpleSavedObject<unknown>
+    >>;
+    enabledRules?: RuleItem[];
+    allRules?: RuleItem[];
+  }
+> {
   detectorService: DetectorsService;
   notifications: NotificationsStart;
   savedObjectsService: ISavedObjectsService;
@@ -64,13 +75,16 @@ export interface DetectorDetailsState {
 }
 
 enum TabId {
-  DetectorDetails = 'detector-config-tab',
-  FieldMappings = 'field-mappings-tab',
+  DetectorDetails = "detector-config-tab",
+  FieldMappings = "field-mappings-tab",
   // Wazuh: hide Alert triggers tab in detector details.
   // AlertTriggers = 'alert-triggers-tab',
 }
 
-export class DetectorDetails extends React.Component<DetectorDetailsProps, DetectorDetailsState> {
+export class DetectorDetails extends React.Component<
+  DetectorDetailsProps,
+  DetectorDetailsState
+> {
   private get detectorHit(): DetectorHit {
     return this.state.detectorHit;
   }
@@ -115,7 +129,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     const tabs = [
       {
         id: TabId.DetectorDetails,
-        name: 'Detector configuration',
+        name: "Detector configuration",
         content: (
           <DetectorDetailsView
             {...this.props}
@@ -129,19 +143,19 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
           />
         ),
       },
-      {
-        id: TabId.FieldMappings,
-        name: 'Field mappings',
-        content: (
-          <FieldMappingsView
-            {...this.props}
-            detector={this.detectorHit._source}
-            editFieldMappings={this.editFieldMappings}
-            isEditable={isEditable}
-          />
-        ),
-      },
-      // Wazuh: hide Alert triggers tab in detector details.
+      // Wazuh: hide Alert triggers and Field mappings tabs in detector details.
+      // {
+      //   id: TabId.FieldMappings,
+      //   name: 'Field mappings',
+      //   content: (
+      //     <FieldMappingsView
+      //       {...this.props}
+      //       detector={this.detectorHit._source}
+      //       editFieldMappings={this.editFieldMappings}
+      //       isEditable={isEditable}
+      //     />
+      //   ),
+      // },
       // {
       //   id: TabId.AlertTriggers,
       //   name: 'Alert triggers',
@@ -160,7 +174,10 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
 
   constructor(props: DetectorDetailsProps) {
     super(props);
-    const detectorId = props.location.pathname.replace(`${ROUTES.DETECTOR_DETAILS}/`, '');
+    const detectorId = props.location.pathname.replace(
+      `${ROUTES.DETECTOR_DETAILS}/`,
+      "",
+    );
     const state = DataStore.detectors.getState();
     const detector = state?.detectorInput?.detector;
 
@@ -208,7 +225,8 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
         BREADCRUMBS.DETECTORS_DETAILS(detector.name, PENDING_DETECTOR_ID),
       ]);
 
-      const pendingResponse = await DataStore.detectors.resolvePendingCreationRequest();
+      const pendingResponse =
+        await DataStore.detectors.resolvePendingCreationRequest();
 
       if (pendingResponse.ok) {
         const { detectorId, dashboardId } = pendingResponse;
@@ -221,9 +239,11 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
             },
             () => {
               DataStore.detectors.deleteState();
-              this.props.history.push(`${ROUTES.DETECTOR_DETAILS}/${detectorId}`);
+              this.props.history.push(
+                `${ROUTES.DETECTOR_DETAILS}/${detectorId}`,
+              );
               this.getDetector();
-            }
+            },
           );
       } else {
         this.setState({ createFailed: true });
@@ -245,7 +265,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
       const response = await detectorService.getDetectors();
       if (response.ok) {
         const detector = response.response.hits.hits.find(
-          (detectorHit) => detectorHit._id === detectorId
+          (detectorHit) => detectorHit._id === detectorId,
         ) as DetectorHit;
 
         this.detectorHit = {
@@ -260,15 +280,21 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
           BREADCRUMBS.DETECTORS_DETAILS(detector._source.name, detector._id),
         ]);
 
-        const dashboard = await this.props.savedObjectsService.getDashboard(detectorId);
+        const dashboard =
+          await this.props.savedObjectsService.getDashboard(detectorId);
         if (dashboard?.id) {
           this.setState({ dashboardId: dashboard.id });
         }
       } else {
-        errorNotificationToast(notifications, 'retrieve', 'detector', response.error);
+        errorNotificationToast(
+          notifications,
+          "retrieve",
+          "detector",
+          response.error,
+        );
       }
     } catch (e: any) {
-      errorNotificationToast(notifications, 'retrieve', 'detector', e);
+      errorNotificationToast(notifications, "retrieve", "detector", e);
     }
 
     this.getTabs();
@@ -289,32 +315,39 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     const { detectorService, notifications } = this.props;
     const detectorId = this.detectorHit._id;
     try {
-      const dashboard = await this.props.savedObjectsService.getDashboard(detectorId);
+      const dashboard =
+        await this.props.savedObjectsService.getDashboard(detectorId);
       if (dashboard) {
         // delete dashboard
         dashboard.references?.map(async (ref) => {
-          if (ref.type === 'visualization') {
+          if (ref.type === "visualization") {
             await this.props.savedObjectsService.deleteVisualization(ref.id);
           }
         });
         await this.props.savedObjectsService.deleteDashboard(dashboard.id);
       }
 
-      const index = await this.props.indexPatternsService.getIndexPattern(detectorId);
+      const index =
+        await this.props.indexPatternsService.getIndexPattern(detectorId);
       if (index) {
         await this.props.indexPatternsService.deleteIndexPattern(index.id);
       }
 
       const deleteRes = await detectorService.deleteDetector(detectorId);
       if (!deleteRes.ok) {
-        errorNotificationToast(notifications, 'delete', 'detector', deleteRes.error);
+        errorNotificationToast(
+          notifications,
+          "delete",
+          "detector",
+          deleteRes.error,
+        );
       } else {
         DataStore.detectors.deleteState();
         DataStore.detectors.clearNotifications();
         this.props.history.push(ROUTES.DETECTORS);
       }
     } catch (e: any) {
-      errorNotificationToast(notifications, 'delete', 'detector', e);
+      errorNotificationToast(notifications, "delete", "detector", e);
     }
     this.setState({ loading: false });
   };
@@ -339,10 +372,15 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
           },
         };
       } else {
-        errorNotificationToast(notifications, 'update', 'detector', updateRes.error);
+        errorNotificationToast(
+          notifications,
+          "update",
+          "detector",
+          updateRes.error,
+        );
       }
     } catch (e: any) {
-      errorNotificationToast(notifications, 'update', 'detector', e);
+      errorNotificationToast(notifications, "update", "detector", e);
     }
     this.setState({ loading: false });
   };
@@ -352,23 +390,23 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     const { isActionsMenuOpen } = this.state;
     return [
       <EuiPopover
-        id={'detectorsActionsPopover'}
+        id={"detectorsActionsPopover"}
         button={
           <EuiSmallButton
             isLoading={loading}
-            iconType={'arrowDown'}
-            iconSide={'right'}
+            iconType={"arrowDown"}
+            iconSide={"right"}
             onClick={this.toggleActionsMenu}
-            data-test-subj={'detectorsActionsButton'}
+            data-test-subj={"detectorsActionsButton"}
           >
             Actions
           </EuiSmallButton>
         }
         isOpen={isActionsMenuOpen}
         closePopover={this.closeActionsPopover}
-        panelPaddingSize={'none'}
-        anchorPosition={'downLeft'}
-        data-test-subj={'detectorsActionsPopover'}
+        panelPaddingSize={"none"}
+        anchorPosition={"downLeft"}
+        data-test-subj={"detectorsActionsPopover"}
       >
         <EuiContextMenuPanel
           size="s"
@@ -385,10 +423,10 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
             // </EuiContextMenuItem>,
             <EuiContextMenuItem
               disabled={loading}
-              key={'ViewFindings'}
-              icon={'empty'}
+              key={"ViewFindings"}
+              icon={"empty"}
               onClick={this.onViewFindingsClick}
-              data-test-subj={'viewFindingsButton'}
+              data-test-subj={"viewFindingsButton"}
             >
               View Findings
             </EuiContextMenuItem>,
@@ -396,12 +434,15 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
               {this.state.dashboardId ? (
                 <EuiContextMenuItem
                   disabled={loading}
-                  key={'ViewDashboard'}
-                  icon={'empty'}
+                  key={"ViewDashboard"}
+                  icon={"empty"}
                   onClick={() =>
-                    window.open(`dashboards#/view/${this.state.dashboardId}`, '_blank')
+                    window.open(
+                      `dashboards#/view/${this.state.dashboardId}`,
+                      "_blank",
+                    )
                   }
-                  data-test-subj={'viewDashboard'}
+                  data-test-subj={"viewDashboard"}
                 >
                   View detector dashboard
                 </EuiContextMenuItem>
@@ -410,25 +451,25 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
             <EuiHorizontalRule margin="xs" />,
             <EuiContextMenuItem
               disabled={loading}
-              key={'Toggle detector'}
-              icon={'empty'}
+              key={"Toggle detector"}
+              icon={"empty"}
               onClick={() => {
                 this.closeActionsPopover();
                 this.toggleDetector();
               }}
-              data-test-subj={'deleteButton'}
+              data-test-subj={"deleteButton"}
             >
-              {`${this.detectorHit._source.enabled ? 'Stop' : 'Start'} detector`}
+              {`${this.detectorHit._source.enabled ? "Stop" : "Start"} detector`}
             </EuiContextMenuItem>,
             <EuiContextMenuItem
               disabled={loading}
-              key={'Delete'}
-              icon={'empty'}
+              key={"Delete"}
+              icon={"empty"}
               onClick={() => {
                 this.closeActionsPopover();
                 this.onDelete();
               }}
-              data-test-subj={'editButton'}
+              data-test-subj={"editButton"}
             >
               Delete
             </EuiContextMenuItem>,
@@ -451,7 +492,12 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     return this.state.tabs.map((tab, index) => (
       <EuiTab
         key={index}
-        onClick={() => this.setState({ selectedTabId: tab.id, selectedTabContent: tab.content })}
+        onClick={() =>
+          this.setState({
+            selectedTabId: tab.id,
+            selectedTabContent: tab.content,
+          })
+        }
         isSelected={this.state.selectedTabId === tab.id}
       >
         {tab.name}
@@ -464,21 +510,21 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     const { selectedTabContent, detectorId, createFailed } = this.state;
     const creatingDetector: boolean = detectorId === PENDING_DETECTOR_ID;
 
-    let statusColor = 'primary';
-    let statusText = 'Initializing';
+    let statusColor = "primary";
+    let statusText = "Initializing";
 
     if (creatingDetector) {
       if (createFailed) {
-        statusColor = 'danger';
-        statusText = 'Failed';
+        statusColor = "danger";
+        statusText = "Failed";
       }
     } else {
       if (detector.enabled) {
-        statusColor = 'success';
-        statusText = 'Active';
+        statusColor = "success";
+        statusText = "Active";
       } else {
-        statusColor = 'subdued';
-        statusText = 'Inactive';
+        statusColor = "subdued";
+        statusText = "Inactive";
       }
     }
 
@@ -486,11 +532,17 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
       <>
         <PageHeader
           appBadgeControls={[
-            { renderComponent: <EuiHealth color={statusColor}>{statusText}</EuiHealth> },
+            {
+              renderComponent: (
+                <EuiHealth color={statusColor}>{statusText}</EuiHealth>
+              ),
+            },
           ]}
           appRightControls={
             !creatingDetector && !createFailed
-              ? this.createHeaderActions().map((action) => ({ renderComponent: action }))
+              ? this.createHeaderActions().map((action) => ({
+                  renderComponent: action,
+                }))
               : undefined
           }
         >
@@ -498,7 +550,10 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
             <EuiFlexItem>
               <EuiFlexGroup alignItems="center">
                 <EuiFlexItem grow={false}>
-                  <EuiText data-test-subj={'detector-details-detector-name'} size="s">
+                  <EuiText
+                    data-test-subj={"detector-details-detector-name"}
+                    size="s"
+                  >
                     <h1>{detector.name}</h1>
                   </EuiText>
                 </EuiFlexItem>
@@ -511,11 +566,14 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
               <EuiFlexGroup justifyContent="flexEnd" alignItems="center">
                 {!creatingDetector && !createFailed
                   ? this.createHeaderActions().map(
-                      (action: React.ReactNode, idx: number): React.ReactNode => (
+                      (
+                        action: React.ReactNode,
+                        idx: number,
+                      ): React.ReactNode => (
                         <EuiFlexItem key={idx} grow={false}>
                           {action}
                         </EuiFlexItem>
-                      )
+                      ),
                     )
                   : null}
               </EuiFlexGroup>

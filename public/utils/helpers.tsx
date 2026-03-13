@@ -87,7 +87,7 @@ import * as pluginManifest from "../../opensearch_dashboards.json";
 import { DataSourceThreatAlertsCard } from "../components/DataSourceThreatAlertsCard/DataSourceThreatAlertsCard";
 import { DataSourceAttributes } from "../../../../src/plugins/data_source/common/data_sources";
 import { ISearchStart } from "../../../../src/plugins/data/public";
-import LogTestService from '../services/LogTestService';
+import LogTestService from "../services/LogTestService";
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
@@ -323,7 +323,7 @@ export const formatRuleType = (matchingRuleType: string) => {
     return `${logType.category}: ${getLogTypeLabel(logType.value)}`;
   }
 
-  return DEFAULT_EMPTY_DATA;
+  return matchingRuleType || DEFAULT_EMPTY_DATA; // Wazuh: in case of not in logtype, return original value
 };
 
 export const getSeverityBadge = (severity: string) => {
@@ -359,6 +359,22 @@ export function formatToLogTypeOptions(logTypesByCategories: {
 export async function getLogTypeOptions() {
   await DataStore.logTypes.getLogTypes();
   return formatToLogTypeOptions(logTypesByCategories);
+}
+
+/**
+ * Returns Integration ComboBox options filtered by space and ordered alphabetically.
+ */
+
+export async function getIntegrationOptionsBySpace(
+  space: string,
+): Promise<{ value: string; label: string }[]> {
+  const integrations = await DataStore.integrations.getIntegrations(space);
+  return integrations
+    .map(({ document: { title } }) => ({
+      value: title,
+      label: title,
+    }))
+    .sort((a, b) => (a.label < b.label ? -1 : a.label > b.label ? 1 : 0));
 }
 
 export function getLogTypeFilterOptions() {

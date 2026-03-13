@@ -24,6 +24,7 @@ import { Rule } from '../../types';
 
 const RULES_INDEX = '.cti-rules';
 const STANDARD_SPACE_TERM = { term: { 'space.name': 'standard' } };
+const CUSTOM_SPACE_TERM = { term: { 'space.name': 'custom' } };
 
 export default class WazuhRulesService {
   constructor(private osDriver: ILegacyCustomClusterClient) {}
@@ -37,7 +38,7 @@ export default class WazuhRulesService {
     const bool: any = space
       ? { filter: [{ term: { 'space.name': space } }] }
       : prePackaged === false
-      ? { must_not: [STANDARD_SPACE_TERM] }
+      ? { filter: [CUSTOM_SPACE_TERM] }
       : { filter: [STANDARD_SPACE_TERM] };
 
     if (incomingQuery && !incomingQuery.match_all) {

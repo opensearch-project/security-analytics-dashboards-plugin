@@ -3,25 +3,28 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { Component } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
-import { EuiSpacer, EuiCallOut } from '@elastic/eui';
-import { PeriodSchedule } from '../../../../../../models/interfaces';
-import DetectorBasicDetailsForm from '../components/DetectorDetails';
-import DetectorDataSource from '../components/DetectorDataSource';
-import DetectorType from '../components/DetectorType';
-import { EuiComboBoxOptionOption } from '@opensearch-project/oui';
+import React, { Component } from "react";
+import { RouteComponentProps } from "react-router-dom";
+import { EuiSpacer, EuiCallOut } from "@elastic/eui";
+import { PeriodSchedule } from "../../../../../../models/interfaces";
+import DetectorBasicDetailsForm from "../components/DetectorDetails";
+import DetectorDataSource from "../components/DetectorDataSource";
+import DetectorType from "../../../../WazuhCreateDetector/components/DefineDetector/components/DetectorType";
+import { EuiComboBoxOptionOption } from "@opensearch-project/oui";
 import {
   FieldMappingService,
   IndexService,
   SecurityAnalyticsContext,
-} from '../../../../../services';
-import { MIN_NUM_DATA_SOURCES } from '../../../../Detectors/utils/constants';
-import { DetectorSchedule } from '../components/DetectorSchedule/DetectorSchedule';
-import { RuleItem } from '../components/DetectionRules/types/interfaces';
-import { CreateDetectorRulesState } from '../components/DetectionRules/DetectionRules';
-import { NotificationsStart } from 'opensearch-dashboards/public';
-import { logTypesWithDashboards, THREAT_INTEL_ENABLED } from '../../../../../utils/constants';
+} from "../../../../../services";
+import { MIN_NUM_DATA_SOURCES } from "../../../../Detectors/utils/constants";
+import { DetectorSchedule } from "../components/DetectorSchedule/DetectorSchedule";
+import { RuleItem } from "../components/DetectionRules/types/interfaces";
+import { CreateDetectorRulesState } from "../components/DetectionRules/DetectionRules";
+import { NotificationsStart } from "opensearch-dashboards/public";
+import {
+  logTypesWithDashboards,
+  THREAT_INTEL_ENABLED,
+} from "../../../../../utils/constants";
 import {
   CreateDetectorSteps,
   DataSourceProps,
@@ -29,12 +32,15 @@ import {
   DetectorCreationStep,
   FieldMapping,
   SecurityAnalyticsContextType,
-} from '../../../../../../types';
-import { ConfigureFieldMappingProps } from '../../ConfigureFieldMapping/containers/ConfigureFieldMapping';
-import { ContentPanel } from '../../../../../components/ContentPanel';
-import { ruleTypes } from '../../../../Rules/utils/constants';
-import { ThreatIntelligence } from '../components/ThreatIntelligence/ThreatIntelligence';
-import { addDetectionType, removeDetectionType } from '../../../../../utils/helpers';
+} from "../../../../../../types";
+import { ConfigureFieldMappingProps } from "../../ConfigureFieldMapping/containers/ConfigureFieldMapping";
+import { ContentPanel } from "../../../../../components/ContentPanel";
+import { ruleTypes } from "../../../../Rules/utils/constants";
+import { ThreatIntelligence } from "../components/ThreatIntelligence/ThreatIntelligence";
+import {
+  addDetectionType,
+  removeDetectionType,
+} from "../../../../../utils/helpers";
 
 interface DefineDetectorProps extends RouteComponentProps, DataSourceProps {
   detector: Detector;
@@ -51,18 +57,24 @@ interface DefineDetectorProps extends RouteComponentProps, DataSourceProps {
   onRuleToggle: (changedItem: RuleItem, isActive: boolean) => void;
   onAllRulesToggle: (enabled: boolean) => void;
   replaceFieldMappings: (mappings: FieldMapping[]) => void;
+  onSpaceChange?: (space: string) => void;
 }
 
 interface DefineDetectorState {
   detector: Detector;
 }
 
-export default class DefineDetector extends Component<DefineDetectorProps, DefineDetectorState> {
+export default class DefineDetector extends Component<
+  DefineDetectorProps,
+  DefineDetectorState
+> {
   public static contextType?:
     | React.Context<SecurityAnalyticsContextType | null>
     | undefined = SecurityAnalyticsContext;
   private standardLogTypes = new Set(
-    ruleTypes.filter((ruleType) => ruleType.isStandard).map(({ value }) => value)
+    ruleTypes
+      .filter((ruleType) => ruleType.isStandard)
+      .map(({ value }) => value),
   );
 
   constructor(props: DefineDetectorProps) {
@@ -75,7 +87,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
   componentDidUpdate(
     prevProps: Readonly<DefineDetectorProps>,
     prevState: Readonly<DefineDetectorState>,
-    snapshot?: any
+    snapshot?: any,
   ) {
     if (prevProps.detector !== this.props.detector) {
       this.setState({
@@ -88,11 +100,15 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
     const isDataValid =
       !!detector.name &&
       !!detector.detector_type &&
-      detector.inputs[0].detector_input.indices.length >= MIN_NUM_DATA_SOURCES &&
+      detector.inputs[0].detector_input.indices.length >=
+        MIN_NUM_DATA_SOURCES &&
       !!detector.schedule.period.interval;
 
     this.props.changeDetector(detector);
-    this.props.updateDataValidState(DetectorCreationStep.DEFINE_DETECTOR, isDataValid);
+    this.props.updateDataValidState(
+      DetectorCreationStep.DEFINE_DETECTOR,
+      isDataValid,
+    );
   }
 
   onDetectorNameChange = (detectorName: string) => {
@@ -121,8 +137,12 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
     this.updateDetectorCreationState(newDetector);
   };
 
-  onDetectorInputIndicesChange = (selectedOptions: EuiComboBoxOptionOption<string>[]) => {
-    const detectorIndices = selectedOptions.map((selectedOption) => selectedOption.label);
+  onDetectorInputIndicesChange = (
+    selectedOptions: EuiComboBoxOptionOption<string>[],
+  ) => {
+    const detectorIndices = selectedOptions.map(
+      (selectedOption) => selectedOption.label,
+    );
 
     const { inputs } = this.state.detector;
     const newDetector: Detector = {
@@ -139,7 +159,9 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
     };
 
     this.updateDetectorCreationState(newDetector);
-    this.context.metrics.detectorMetricsManager.sendMetrics(CreateDetectorSteps.sourceSelected);
+    this.context.metrics.detectorMetricsManager.sendMetrics(
+      CreateDetectorSteps.sourceSelected,
+    );
   };
 
   onDetectorTypeChange = (detectorType: string) => {
@@ -152,7 +174,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
     this.updateDetectorCreationState(newDetector);
     this.context.metrics.detectorMetricsManager.sendMetrics(
       CreateDetectorSteps.logTypeConfigured,
-      detectorType
+      detectorType,
     );
   };
 
@@ -160,8 +182,8 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
     const newTriggers = this.state.detector.triggers.map((trigger) => ({
       ...trigger,
       detection_types: checked
-        ? addDetectionType(trigger, 'threat_intel')
-        : removeDetectionType(trigger, 'threat_intel'),
+        ? addDetectionType(trigger, "threat_intel")
+        : removeDetectionType(trigger, "threat_intel"),
     }));
 
     const newDetector: Detector = {
@@ -172,7 +194,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
 
     this.updateDetectorCreationState(newDetector);
     this.context.metrics.detectorMetricsManager.sendMetrics(
-      CreateDetectorSteps.threatIntelConfigured
+      CreateDetectorSteps.threatIntelConfigured,
     );
   };
 
@@ -194,7 +216,8 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
       replaceFieldMappings,
     } = this.props;
     const { detector } = this.state;
-    const { name, inputs, detector_type, threat_intel_enabled } = this.props.detector;
+    const { name, inputs, detector_type, threat_intel_enabled } =
+      this.props.detector;
     const { description, indices } = inputs[0].detector_input;
     const configureFieldMappingProps: ConfigureFieldMappingProps = {
       ...this.props,
@@ -209,22 +232,24 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
 
     return (
       <ContentPanel
-        title={`${isEdit ? 'Edit' : 'Define'} detector`}
+        title={`${isEdit ? "Edit" : "Define"} detector`}
         subTitleText={
-          'Configure your detector to identify relevant security findings and potential threats from your log data.'
+          "Configure your detector to identify relevant security findings and potential threats from your log data."
         }
       >
-        <EuiSpacer size={'m'} />
+        <EuiSpacer size={"m"} />
 
         <DetectorBasicDetailsForm
           {...this.props}
           detectorName={name}
           detectorDescription={description}
           onDetectorNameChange={this.onDetectorNameChange}
-          onDetectorInputDescriptionChange={this.onDetectorInputDescriptionChange}
+          onDetectorInputDescriptionChange={
+            this.onDetectorInputDescriptionChange
+          }
         />
 
-        <EuiSpacer size={'m'} />
+        <EuiSpacer size={"m"} />
 
         <DetectorDataSource
           {...this.props}
@@ -234,7 +259,7 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
           onDetectorInputIndicesChange={this.onDetectorInputIndicesChange}
         />
 
-        <EuiSpacer size={'l'} />
+        <EuiSpacer size={"l"} />
 
         <DetectorType
           detectorType={detector_type}
@@ -245,9 +270,10 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
           onAllRulesToggle={this.props.onAllRulesToggle}
           onPageChange={this.props.onPageChange}
           onRuleToggle={this.props.onRuleToggle}
+          onSpaceChange={this.props.onSpaceChange}
         />
 
-        <EuiSpacer size={'m'} />
+        <EuiSpacer size={"m"} />
 
         {THREAT_INTEL_ENABLED && this.standardLogTypes.has(detector_type) && (
           <ThreatIntelligence
@@ -260,19 +286,21 @@ export default class DefineDetector extends Component<DefineDetectorProps, Defin
         {logTypesWithDashboards.has(detector_type) ? (
           <>
             <EuiCallOut
-              title={'Detector dashboard will be created to visualize insights for this detector'}
+              title={
+                "Detector dashboard will be created to visualize insights for this detector"
+              }
             >
               <p>
-                A detector dashboard will be automatically created to provide insights for this
-                detector.
+                A detector dashboard will be automatically created to provide
+                insights for this detector.
               </p>
             </EuiCallOut>
 
-            <EuiSpacer size={'m'} />
+            <EuiSpacer size={"m"} />
           </>
         ) : null}
 
-        <EuiSpacer size={'m'} />
+        <EuiSpacer size={"m"} />
 
         <DetectorSchedule
           detector={detector}
