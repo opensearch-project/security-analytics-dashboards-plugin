@@ -69,7 +69,7 @@ export const RuleEditorContainer: React.FC<RuleEditorProps> = ({
         mode === 'create' ? 'create' : 'update',
         'rule',
         result.message ??
-          `The rule ${values.name} has been ${
+          `The rule ${values.metadata.title} has been ${
             mode === 'create' ? 'created' : 'updated'
           } successfully.`
       );

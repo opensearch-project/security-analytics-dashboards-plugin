@@ -20,6 +20,7 @@ import {
   EuiTitle,
   EuiPanel,
   EuiLink,
+  EuiSwitch,
 } from '@elastic/eui';
 import { FieldTextArray } from '../../../Rules/components/RuleEditor/components/FieldTextArray';
 import { ruleSeverity, ruleStatus } from '../../../Rules/utils/constants';
@@ -34,9 +35,11 @@ import {
 } from '../../../../utils/validation';
 import { RuleEditorFormModel } from './RuleEditorFormModel';
 import { FormSubmissionErrorToastNotification } from '../../../Rules/components/RuleEditor/FormSubmitionErrorToastNotification';
-import { YamlRuleEditorComponent } from '../../../Rules/components/RuleEditor/components/YamlRuleEditorComponent/YamlRuleEditorComponent';
+import { YamlRuleEditorComponent } from './components/YamlRuleEditorComponent/YamlRuleEditorComponent';
 import { mapFormToRule, mapRuleToForm } from './mappers';
 import { DetectionVisualEditor } from '../../../Rules/components/RuleEditor/DetectionVisualEditor';
+import { MitreVisualEditor } from './components/MitreVisualEditor/MitreVisualEditor';
+import { ComplianceVisualEditor } from './components/ComplianceVisualEditor/ComplianceVisualEditor';
 import { getSeverityLabel } from '../../../Correlations/utils/constants';
 import { PageHeader } from '../../../../components/PageHeader/PageHeader';
 import { TopNavControlLinkData } from '../../../../../../../src/plugins/navigation/public';
@@ -109,17 +112,20 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
       validate={(values) => {
         const errors: FormikErrors<RuleEditorFormModel> = {};
 
-        if (!values.name) {
-          errors.name = 'Rule name is required';
-        } else if (!validateName(values.name, RULE_NAME_REGEX)) {
-          errors.name = 'Invalid rule name.';
+        if (!values.metadata.title) {
+          errors.metadata = { ...(errors.metadata ?? {}), title: 'Rule name is required' };
+        } else if (!validateName(values.metadata.title, RULE_NAME_REGEX)) {
+          errors.metadata = { ...(errors.metadata ?? {}), title: 'Invalid rule name.' };
         }
 
         if (
-          values.description &&
-          !validateDescription(values.description, RULE_DESCRIPTION_REGEX)
+          values.metadata.description &&
+          !validateDescription(values.metadata.description, RULE_DESCRIPTION_REGEX)
         ) {
-          errors.description = detectionRuleDescriptionError;
+          errors.metadata = {
+            ...(errors.metadata ?? {}),
+            description: detectionRuleDescriptionError,
+          };
         }
 
         if (!values.integration) {
@@ -136,8 +142,8 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
           errors.level = `Invalid rule level. Should be one of critical, high, medium, low, informational`;
         }
 
-        if (!validateName(values.author, AUTHOR_REGEX)) {
-          errors.author = 'Invalid author.';
+        if (!validateName(values.metadata.author, AUTHOR_REGEX)) {
+          errors.metadata = { ...(errors.metadata ?? {}), author: 'Invalid author.' };
         }
 
         if (!values.status) {
@@ -152,7 +158,6 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
         return errors;
       }}
       onSubmit={(values, { setSubmitting }) => {
-        // Wazuh: fixed to prevent submission when it's visual editor to yaml works correctly
         if (isDetectionInvalid && selectedEditorType === 'visual') {
           return;
         }
@@ -197,8 +202,12 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
               <YamlRuleEditorComponent
                 rule={mapFormToRule(props.values)}
                 isInvalid={Object.keys(props.errors).length > 0}
-                errors={Object.keys(props.errors).map(
-                  (key) => props.errors[key as keyof RuleEditorFormModel] as string
+                errors={Object.values(props.errors).flatMap((v) =>
+                  typeof v === 'string'
+                    ? [v]
+                    : v && typeof v === 'object'
+                    ? Object.values(v).filter((x) => typeof x === 'string')
+                    : []
                 )}
                 change={(e) => {
                   const formState = mapRuleToForm(e);
@@ -223,19 +232,25 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                       <strong>Rule name</strong>
                     </EuiText>
                   }
-                  isInvalid={(validateOnMount || props.touched.name) && !!props.errors?.name}
-                  error={props.errors.name}
+                  isInvalid={
+                    (validateOnMount || props.touched.metadata?.title) &&
+                    !!props.errors?.metadata?.title
+                  }
+                  error={props.errors?.metadata?.title}
                   helpText={detectionRuleNameError}
                 >
                   <EuiCompressedFieldText
-                    isInvalid={(validateOnMount || props.touched.name) && !!props.errors?.name}
+                    isInvalid={
+                      (validateOnMount || props.touched.metadata?.title) &&
+                      !!props.errors?.metadata?.title
+                    }
                     placeholder="My custom rule"
                     data-test-subj={'rule_name_field'}
                     onChange={(e) => {
-                      props.handleChange('name')(e);
+                      props.handleChange('metadata.title')(e);
                     }}
-                    onBlur={props.handleBlur('name')}
-                    value={props.values.name}
+                    onBlur={props.handleBlur('metadata.title')}
+                    value={props.values.metadata.title}
                   />
                 </EuiCompressedFormRow>
 
@@ -249,17 +264,18 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     </EuiText>
                   }
                   isInvalid={
-                    (validateOnMount || props.touched.description) && !!props.errors?.description
+                    (validateOnMount || props.touched.metadata?.description) &&
+                    !!props.errors?.metadata?.description
                   }
-                  error={props.errors.description}
+                  error={props.errors?.metadata?.description}
                 >
                   <EuiCompressedFieldText
                     data-test-subj={'rule_description_field'}
                     onChange={(e) => {
-                      props.handleChange('description')(e.target.value);
+                      props.handleChange('metadata.description')(e.target.value);
                     }}
-                    onBlur={props.handleBlur('description')}
-                    value={props.values.description}
+                    onBlur={props.handleBlur('metadata.description')}
+                    value={props.values.metadata.description}
                     placeholder={'Detects ...'}
                   />
                 </EuiCompressedFormRow>
@@ -273,18 +289,24 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     </EuiText>
                   }
                   helpText="Combine multiple authors separated with a comma"
-                  isInvalid={(validateOnMount || props.touched.author) && !!props.errors?.author}
-                  error={props.errors.author}
+                  isInvalid={
+                    (validateOnMount || props.touched.metadata?.author) &&
+                    !!props.errors?.metadata?.author
+                  }
+                  error={props.errors?.metadata?.author}
                 >
                   <EuiCompressedFieldText
-                    isInvalid={(validateOnMount || props.touched.author) && !!props.errors?.author}
+                    isInvalid={
+                      (validateOnMount || props.touched.metadata?.author) &&
+                      !!props.errors?.metadata?.author
+                    }
                     placeholder="Enter author name"
                     data-test-subj={'rule_author_field'}
                     onChange={(e) => {
-                      props.handleChange('author')(e);
+                      props.handleChange('metadata.author')(e);
                     }}
-                    onBlur={props.handleBlur('author')}
-                    value={props.values.author}
+                    onBlur={props.handleBlur('metadata.author')}
+                    value={props.values.metadata.author}
                   />
                 </EuiCompressedFormRow>
 
@@ -311,7 +333,11 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                     onChange={(selected) => {
                       const option = selected[0] ?? null;
                       setIntegrationId(option?.id ?? '');
-                      props.setFieldValue('integration', option?.label ?? '', true);
+                      props.setFieldValue(
+                        'integration',
+                        option?.value ?? option?.label ?? '',
+                        true
+                      );
                       props.setFieldTouched('integration', true, false);
                     }}
                   />
@@ -390,6 +416,23 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                   />
                 </EuiCompressedFormRow>
 
+                <EuiSpacer />
+
+                <EuiCompressedFormRow
+                  label={
+                    <EuiText size={'s'}>
+                      <strong>Enabled</strong>
+                    </EuiText>
+                  }
+                >
+                  <EuiSwitch
+                    label={props.values.enabled ? 'Rule is enabled' : 'Rule is disabled'}
+                    checked={props.values.enabled}
+                    onChange={(e) => props.setFieldValue('enabled', e.target.checked)}
+                    data-test-subj={'rule_enabled_toggle'}
+                  />
+                </EuiCompressedFormRow>
+
                 <EuiSpacer size={'xxl'} />
 
                 <EuiTitle>
@@ -419,6 +462,38 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                   onChange={(detection: string) => {
                     props.handleChange('detection')(detection);
                   }}
+                />
+
+                <EuiSpacer size="xl" />
+
+                <EuiTitle size="xxs">
+                  <EuiText size="s">
+                    <h3>MITRE ATT&CK</h3>
+                  </EuiText>
+                </EuiTitle>
+                <EuiText size="xs" color="subdued">
+                  Map this rule to MITRE ATT&CK tactics, techniques and subtechniques.
+                </EuiText>
+                <EuiSpacer size="s" />
+                <MitreVisualEditor
+                  mitreYml={props.values.mitre || ''}
+                  onChange={(value) => props.setFieldValue('mitre', value)}
+                />
+
+                <EuiSpacer size="xl" />
+
+                <EuiTitle size="xxs">
+                  <EuiText size="s">
+                    <h3>Compliance</h3>
+                  </EuiText>
+                </EuiTitle>
+                <EuiText size="xs">
+                  Map this rule to compliance frameworks (PCI DSS, GDPR, HIPAA, etc.).
+                </EuiText>
+                <EuiSpacer size="s" />
+                <ComplianceVisualEditor
+                  complianceYml={props.values.compliance || ''}
+                  onChange={(value) => props.setFieldValue('compliance', value)}
                 />
 
                 <EuiSpacer size={'xl'} />
@@ -481,18 +556,69 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                           </>
                         }
                         addButtonName="Add URL"
-                        fields={props.values.references}
-                        error={props.errors.references}
+                        fields={props.values.metadata.references}
+                        error={props.errors?.metadata?.references}
                         isInvalid={
-                          (validateOnMount || props.touched.references) &&
-                          !!props.errors?.references
+                          (validateOnMount || props.touched.metadata?.references) &&
+                          !!props.errors?.metadata?.references
                         }
                         onChange={(references) => {
-                          props.touched.references = true;
-                          props.setFieldValue('references', references);
+                          props.setFieldTouched('metadata.references', true, false);
+                          props.setFieldValue('metadata.references', references);
                         }}
                         data-test-subj={'rule_references_field'}
                       />
+
+                      <FieldTextArray
+                        name="supports"
+                        placeholder={'Support (e.g. 2.1.0)'}
+                        label={
+                          <>
+                            <EuiText size={'m'}>
+                              <strong>Supports </strong>
+                              <i>- optional</i>
+                            </EuiText>
+
+                            <EuiSpacer size={'m'} />
+
+                            <EuiText size={'xs'}>
+                              <strong>Support</strong>
+                            </EuiText>
+                          </>
+                        }
+                        addButtonName="Add support"
+                        fields={props.values.metadata.supports}
+                        error={props.errors?.metadata?.supports}
+                        isInvalid={
+                          (validateOnMount || props.touched.metadata?.supports) &&
+                          !!props.errors?.metadata?.supports
+                        }
+                        onChange={(supports) => {
+                          props.setFieldTouched('metadata.supports', true, false);
+                          props.setFieldValue('metadata.supports', supports);
+                        }}
+                        data-test-subj={'rule_supports_field'}
+                      />
+
+                      <EuiCompressedFormRow
+                        label={
+                          <EuiText size={'s'}>
+                            <strong>Documentation </strong>
+                            <i>- optional</i>
+                          </EuiText>
+                        }
+                      >
+                        <EuiCompressedFieldText
+                          placeholder="https://documentation.example.com"
+                          data-test-subj={'rule_documentation_field'}
+                          value={props.values.metadata.documentation}
+                          onChange={(e) => {
+                            props.setFieldValue('metadata.documentation', e.target.value);
+                            props.setFieldTouched('metadata.documentation', true, false);
+                          }}
+                          onBlur={props.handleBlur('metadata.documentation')}
+                        />
+                      </EuiCompressedFormRow>
 
                       <FieldTextArray
                         name="false_positives"

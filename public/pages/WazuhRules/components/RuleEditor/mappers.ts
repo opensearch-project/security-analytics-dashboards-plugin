@@ -8,32 +8,47 @@ import { getLogTypeFromLogSource } from '../../utils/helpers';
 import { RuleEditorFormModel, ruleEditorStateDefaultValue } from './RuleEditorFormModel';
 
 export const mapFormToRule = (formState: RuleEditorFormModel): Rule => {
-  const references = formState.references.map((ref) => ({ value: ref }));
-  const refs = references.map((r) => r.value);
-  return {
+  const logSource = { ...(formState.log_source ?? {}) };
+  if (!logSource.product && formState.integration) {
+    logSource.product = formState.integration;
+  }
+
+  const title = formState.metadata.title;
+  const description = formState.metadata.description;
+  const author = formState.metadata.author;
+  const references = formState.metadata.references;
+  const documentation = formState.metadata.documentation;
+  const supports = formState.metadata.supports;
+
+  const rule: any = {
     id: formState.id,
     category: formState.integration,
-    title: formState.name,
-    description: formState.description,
     status: formState.status,
-    author: formState.author,
-    references,
+    title,
+    description,
+    author,
+    references: references.map((ref) => ({ value: ref })),
     tags: formState.tags.map((tag) => ({ value: tag })),
-    log_source: formState.log_source,
+    log_source: logSource,
     detection: formState.detection,
     level: formState.level,
     false_positives: formState.falsePositives.map((falsePositive) => ({
       value: falsePositive,
     })),
     metadata: {
-      title: formState.name,
-      author: formState.author,
-      description: formState.description,
-      references: refs,
-      documentation: '',
-      supports: [],
+      title,
+      author,
+      description,
+      references,
+      documentation,
+      supports,
     },
+    mitre: formState.mitre,
+    compliance: formState.compliance,
+    enabled: formState.enabled,
   };
+
+  return rule as Rule;
 };
 
 export const mapRuleToForm = (rule: Rule): RuleEditorFormModel => {
@@ -43,20 +58,37 @@ export const mapRuleToForm = (rule: Rule): RuleEditorFormModel => {
   const author = rule.metadata?.author ?? rule.author;
   const refs = rule.metadata?.references ?? rule.references?.map((r) => r.value) ?? [];
 
+  const metadataTitle = rule.metadata?.title ?? rule.title;
+  const metadataDescription = rule.metadata?.description ?? rule.description;
+  const metadataAuthor = rule.metadata?.author ?? rule.author;
+  const metadataReferences = rule.metadata?.references?.length
+    ? rule.metadata.references
+    : rule.references?.map((r) => r.value);
+
+  const metadataDocumentation = rule.metadata?.documentation ?? '';
+  const metadataSupports = rule.metadata?.supports ?? [];
+
   return {
     id: rule.id,
     log_source: rule.log_source,
     integration: logType || '',
-    name: title,
-    description,
     status: rule.status,
-    author,
-    references: refs.length ? refs : ruleEditorStateDefaultValue.references,
-    tags: rule.tags?.length ? rule.tags.map((tag) => tag.value) : ruleEditorStateDefaultValue.tags,
+    tags: rule.tags ? rule.tags.map((tag) => tag.value) : ruleEditorStateDefaultValue.tags,
     detection: rule.detection,
     level: rule.level,
     falsePositives: rule.false_positives?.length
       ? rule.false_positives.map((fp) => fp.value)
       : ruleEditorStateDefaultValue.falsePositives,
+    mitre: rule.mitre,
+    compliance: rule.compliance,
+    enabled: rule.enabled ?? true,
+    metadata: {
+      title: metadataTitle,
+      description: metadataDescription,
+      author: metadataAuthor,
+      references: metadataReferences ?? ruleEditorStateDefaultValue.metadata.references,
+      supports: metadataSupports ?? ruleEditorStateDefaultValue.metadata.supports,
+      documentation: metadataDocumentation ?? ruleEditorStateDefaultValue.metadata.documentation,
+    },
   };
 };

@@ -26,6 +26,9 @@ export interface Rule {
   references: Array<{ value: string }>;
   author: string;
   detection: string;
+  mitre: string;
+  compliance: string;
+  enabled: boolean;
   /** Normalized metadata for API payload (document.metadata.*). When present, used by buildRuleResource. */
   metadata?: RuleMetadata;
 }

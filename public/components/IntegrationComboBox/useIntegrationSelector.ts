@@ -38,9 +38,9 @@ export function useIntegrationSelector({
         if (!cancelled) {
           setOptions(
             result.map((option: any) => ({
-              value: option._source.document.metadata?.title ?? '',
-              label: option._source.document.metadata?.title ?? '',
-              id: option._id,
+              value: String(option?._source?.document?.metadata?.title ?? ''),
+              label: String(option?._source?.document?.metadata?.title ?? ''),
+              id: String(option?._id ?? ''),
             }))
           );
         }

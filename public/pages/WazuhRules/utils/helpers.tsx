@@ -35,14 +35,18 @@ export function validateRule(
 ): boolean {
   const invalidFields = [];
 
-  if (!rule.title || !validateName(rule.title, RULE_NAME_REGEX)) invalidFields.push('Rule name');
-  if (!validateDescription(rule.description, RULE_DESCRIPTION_REGEX)) {
+  const title = (rule.metadata?.title ?? (rule as any).title ?? '') as string;
+  const description = (rule.metadata?.description ?? (rule as any).description ?? '') as string;
+  const author = (rule.metadata?.author ?? (rule as any).author ?? '') as string;
+
+  if (!title || !validateName(title, RULE_NAME_REGEX)) invalidFields.push('Rule name');
+  if (!validateDescription(description, RULE_DESCRIPTION_REGEX)) {
     invalidFields.push('Description');
   }
   if (!rule.category) invalidFields.push('Integration');
   if (!rule.detection) invalidFields.push('Detection');
   if (!rule.level) invalidFields.push('Rule level');
-  if (!validateName(rule.author, AUTHOR_REGEX)) invalidFields.push('Author');
+  if (!validateName(author, AUTHOR_REGEX)) invalidFields.push('Author');
   if (!rule.status) invalidFields.push('Rule status');
 
   if (rule.detection) {

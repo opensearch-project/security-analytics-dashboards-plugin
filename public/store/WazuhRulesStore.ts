@@ -235,9 +235,20 @@ export class RulesStore implements IWazuhRulesStore {
     return { total, items };
   }
 
+  private toYamlString(value: unknown): string {
+    if (!value) return '';
+    if (typeof value === 'string') return value;
+    try {
+      return dump(value);
+    } catch {
+      return '';
+    }
+  }
+
   private mapToRuleItem(hit: any, prePackaged: boolean): RuleItemInfoBase {
     const doc = hit._source?.document ?? {};
     const logsource = doc.logsource ?? {};
+    const meta = doc.metadata ?? {};
 
     return {
       ...hit,
@@ -246,18 +257,24 @@ export class RulesStore implements IWazuhRulesStore {
       space: this.normalizeSpace(hit._source?.space),
       _source: {
         id: hit._source?.document?.id ?? hit._id,
-        title: doc.title ?? doc.metadata?.title ?? '',
+        title: meta.title || doc.title || '',
         level: doc.level ?? '',
         category: logsource.category ?? logsource.product ?? logsource.service ?? '',
-        description: doc.description ?? doc.metadata?.description ?? '',
-        author: doc.author ?? doc.metadata?.author ?? '',
+        description: meta.description || doc.description || '',
+        author: meta.author || doc.author || '',
         status: doc.status ?? '',
         detection: doc.detection ? dump(doc.detection) : '',
-        references: (doc.references ?? doc.metadata?.references ?? []).map((r: string) => ({ value: r })),
-        tags: (doc.tags ?? doc.metadata?.tags ?? []).map((t: string) => ({ value: t })),
-        false_positives: (doc.falsepositives ?? doc.metadata?.false_positives ?? []).map((fp: string) => ({ value: fp })),
+        references: (meta.references ?? doc.references ?? []).map((r: string) => ({ value: r })),
+        tags: (doc.tags ?? meta.tags ?? []).map((t: string) => ({ value: t })),
+        false_positives: (doc.falsepositives ?? meta.false_positives ?? []).map((fp: string) => ({
+          value: fp,
+        })),
         log_source: logsource,
-        last_update_time: doc.modified ?? doc.metadata?.modified ?? doc.date ?? '',
+        last_update_time: meta.modified || doc.modified || meta.date || doc.date || '',
+        metadata: meta,
+        enabled: doc.enabled ?? true,
+        mitre: this.toYamlString(doc.mitre),
+        compliance: this.toYamlString(doc.compliance),
         rule: '',
         queries: [],
         query_field_names: [],

@@ -14,7 +14,7 @@ import {
   EuiText,
 } from '@elastic/eui';
 import { RuleTableItem } from '../../utils/helpers';
-import { RuleContentViewer } from '../../../Rules/components/RuleContentViewer/RuleContentViewer';
+import { RuleContentViewer } from '../RuleContentViewer/RuleContentViewer';
 
 export interface RuleViewerFlyoutProps {
   ruleTableItem: RuleTableItem;
