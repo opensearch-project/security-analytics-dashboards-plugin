@@ -44,7 +44,7 @@ import {
 const DEFAULT_PAGE_SIZE = 25;
 
 const SORT_FIELD_TO_OS: Record<string, string | undefined> = {
-  title: 'document.title',
+  title: 'document.metadata.title',
   level: 'document.level',
   category: 'document.logsource.category',
 };
@@ -207,7 +207,10 @@ export const Rules: React.FC<RulesProps> = ({ history, notifications }) => {
             type: 'icon',
             icon: 'pencil',
             onClick: (item: RuleTableItem) =>
-              history.push({ pathname: ROUTES.RULES_EDIT, state: { ruleItem: item.ruleInfo } }),
+              history.push({
+                pathname: ROUTES.RULES_EDIT,
+                state: { ruleItem: item.ruleInfo },
+              }),
             available: () => spaceFilter === SpaceTypes.DRAFT.value,
           },
           {
@@ -251,8 +254,8 @@ export const Rules: React.FC<RulesProps> = ({ history, notifications }) => {
         !isDraftSpace
           ? `Cannot delete rules in the ${spaceFilter} space.`
           : selectedItems.length === 0
-          ? 'Select rules to delete'
-          : undefined
+            ? 'Select rules to delete'
+            : undefined
       }
     >
       Delete selected ({selectedItems.length})

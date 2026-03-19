@@ -10,14 +10,9 @@ export interface FilterDocument {
   check: string;
   enabled: boolean;
   metadata?: {
+    title?: string;
     description?: string;
-    author?: {
-      name?: string;
-      email?: string;
-      date?: string;
-      modified?: string;
-      url?: string;
-    };
+    author?: string | { name?: string };
   };
 }
 
@@ -52,8 +47,14 @@ export interface FilterResource {
   check: string;
   type: string;
   metadata?: {
+    title?: string;
+    author?: string;
+    date?: string;
+    modified?: string;
     description?: string;
-    author?: { name?: string; email?: string; url?: string };
+    references?: string[];
+    documentation?: string;
+    supports?: string[];
   };
 }
 

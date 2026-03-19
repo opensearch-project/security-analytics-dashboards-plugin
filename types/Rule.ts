@@ -5,6 +5,9 @@
 
 import { RuleService } from '../public/services';
 import { NotificationsStart } from 'opensearch-dashboards/public';
+import { CatalogResourceMetadata } from './ResourceMetadata';
+
+export interface RuleMetadata extends CatalogResourceMetadata {}
 
 export interface Rule {
   id: string;
@@ -23,6 +26,8 @@ export interface Rule {
   references: Array<{ value: string }>;
   author: string;
   detection: string;
+  /** Normalized metadata for API payload (document.metadata.*). When present, used by buildRuleResource. */
+  metadata?: RuleMetadata;
 }
 
 export type RuleSource = Rule & {
@@ -44,7 +49,10 @@ export interface DetectorRuleInfo {
   id: string;
 }
 
-export type RuleItemInfoBase = RuleInfo & { prePackaged: boolean; space?: string }; // Wazuh: added space field
+export type RuleItemInfoBase = RuleInfo & {
+  prePackaged: boolean;
+  space?: string;
+}; // Wazuh: added space field
 
 /**
  * API Interfaces
@@ -129,7 +137,12 @@ export interface IRulesStore {
 
   // Wazuh: search rules with pagination and sorting
   searchRules: (
-    params: { query?: any; from?: number; size?: number; sort?: Array<Record<string, any>> },
+    params: {
+      query?: any;
+      from?: number;
+      size?: number;
+      sort?: Array<Record<string, any>>;
+    },
     space: string
   ) => Promise<{ total: number; items: RuleItemInfoBase[] }>;
 }

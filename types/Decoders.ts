@@ -3,27 +3,27 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-export interface DecoderDocumentAuthor {
-  name?: string;
-  email?: string;
-  url?: string;
-  date?: string;
-}
+import { CatalogResourceMetadata } from './ResourceMetadata';
 
-export interface DecoderDocumentMetadata {
-  title?: string;
+/**
+ * Decoder-specific metadata that extends the common resource metadata.
+ * Includes additional fields: module, compatibility, versions.
+ */
+export interface DecoderMetadata extends CatalogResourceMetadata {
   module?: string;
   compatibility?: string;
   versions?: string;
-  description?: string;
-  author?: DecoderDocumentAuthor;
 }
 
 export interface DecoderDocument {
   id: string;
   name: string;
-  metadata?: DecoderDocumentMetadata;
-  space?: string;
+  enabled?: boolean;
+  metadata: DecoderMetadata;
+  definitions?: Record<string, unknown>;
+  check?: Record<string, unknown>;
+  parents?: string[];
+  normalize?: Record<string, unknown>;
 }
 
 export interface DecoderSource {

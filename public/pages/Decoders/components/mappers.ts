@@ -1,22 +1,11 @@
 import { dump } from 'js-yaml';
-import { DecoderDocument } from '../../../../types/Decoders';
+import { DecoderDocument, DecoderMetadata } from '../../../../types/Decoders';
 
 export interface DecoderFormModel {
   id?: string;
   name: string;
   enabled?: boolean;
-  metadata?: {
-    author?: {
-      date?: string;
-      name?: string;
-    };
-    compatibility?: string;
-    description?: string;
-    module?: string;
-    references?: string[];
-    title?: string;
-    versions?: string[];
-  };
+  metadata?: Partial<DecoderMetadata>;
   normalize?: any[];
   description?: string;
   source?: string;
@@ -35,7 +24,12 @@ export const decoderFormDefaultValue: DecoderFormModel = {
   metadata: {
     title: 'Placeholder Decoder',
     description: 'This is a placeholder decoder. Please update the fields accordingly.',
-    author: { name: 'User' },
+    author: 'User',
+    date: new Date().toISOString().split('T')[0],
+    modified: new Date().toISOString().split('T')[0],
+    references: [],
+    documentation: '',
+    supports: [],
   },
 };
 

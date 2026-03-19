@@ -20,7 +20,6 @@ import {
   IntegrationBase,
   PromoteIntegrationRequestBody,
   PromoteIntegrationResponse,
-  PromoteOperations,
   PromoteSpaces,
   SearchIntegrationsResponse,
   UpdateIntegrationParams,
@@ -28,16 +27,13 @@ import {
 } from '../../types';
 import { CLIENT_INTEGRATION_METHODS } from '../utils/constants';
 import { MDSEnabledClientService } from './MDSEnabledClientService';
-import { get } from 'lodash';
-import { getNextSpace } from '../../common/helpers';
+import { get, sortBy } from 'lodash';
 
-// TODO: this should be moved to a common file and imported instead
 const INTEGRATIONS_INDEX = '.cti-integrations';
 const DECODERS_INDEX = '.cti-decoders';
 const KVDBS_INDEX = '.cti-kvdbs';
-const RULES_INDEX = '.cti-rules';
-const POLICIES_INDEX = '.cti-policies';
 const FILTERS_INDEX = '.engine-filters';
+const POLICIES_INDEX = '.cti-policies';
 
 export class IntegrationService extends MDSEnabledClientService {
   createIntegration = async (
@@ -126,7 +122,9 @@ export class IntegrationService extends MDSEnabledClientService {
     IOpenSearchDashboardsResponse<ServerResponse<UpdateIntegrationResponse> | ResponseError>
   > => {
     try {
-      const { document } = request.body;
+      const {
+        document: { id, date, modified, ...document },
+      } = request.body;
       const { integrationId } = request.params;
       const params: UpdateIntegrationParams = {
         body: { resource: document },
@@ -159,7 +157,7 @@ export class IntegrationService extends MDSEnabledClientService {
 
   resolvePromoteEntity = async (
     client: any,
-    promoteEntityData: { id: string; operation: PromoteOperations }[],
+    promoteEntityData: { id: string }[],
     {
       index,
       space,
@@ -172,12 +170,8 @@ export class IntegrationService extends MDSEnabledClientService {
       idProp: string;
     }
   ) => {
-    const idsFromSpace = promoteEntityData.filter(({ operation }) =>
-      ['add', 'update'].includes(operation)
-    );
-    const idsToSpace = promoteEntityData.filter(({ operation }) => ['remove'].includes(operation));
+    const ids = promoteEntityData.map(({ id }) => id.replace(/^\w_/, '')); // TODO: this removes the `d_` prefix of the ids
 
-    const toSpace = getNextSpace(space);
     // TODO: This should paginate the results
     const searchResponse: SearchIntegrationsResponse = await client('search', {
       index,
@@ -186,52 +180,23 @@ export class IntegrationService extends MDSEnabledClientService {
         _source: [nameProp, idProp],
         query: {
           bool: {
-            should: [
+            must: [
               {
-                bool: {
-                  must: [
-                    {
-                      terms: {
-                        [idProp]: idsFromSpace,
-                      },
-                    },
-                    {
-                      term: {
-                        'space.name': space,
-                      },
-                    },
-                  ],
+                terms: {
+                  [idProp]: ids,
                 },
               },
-              // This part of the query is to get the name of the entities that are going to be removed from the space, so we need to look into the space we are promoting to, as they are not present in the current space
-              ...(idsToSpace.length > 0
-                ? [
-                    {
-                      bool: {
-                        must: [
-                          {
-                            terms: {
-                              [idProp]: idsToSpace,
-                            },
-                          },
-                          {
-                            term: {
-                              'space.name': toSpace,
-                            },
-                          },
-                        ],
-                      },
-                    },
-                  ]
-                : []),
+              {
+                term: {
+                  'space.name': space,
+                },
+              },
             ],
-            minimum_should_match: 1,
           },
         },
       },
     });
 
-    // This assumes the ids are kept for documents in different spaces, if for some reason different entities have the same id, we should change this to map correctly the items related to the current space and the next space.
     return Object.fromEntries(
       searchResponse.hits.hits.map(({ _source }) => [get(_source, idProp), get(_source, nameProp)])
     );
@@ -253,10 +218,12 @@ export class IntegrationService extends MDSEnabledClientService {
         params
       );
 
-      const availablePromotions = {
+      const availablePromotions: Record<string, Record<string, string>> = {
         integrations: {},
         decoders: {},
         kvdbs: {},
+        filters: {},
+        policy: {},
       };
 
       //
@@ -267,7 +234,7 @@ export class IntegrationService extends MDSEnabledClientService {
           {
             index: INTEGRATIONS_INDEX,
             space,
-            nameProp: 'document.title',
+            nameProp: 'document.metadata.title',
             idProp: 'document.id',
           }
         );
@@ -293,33 +260,7 @@ export class IntegrationService extends MDSEnabledClientService {
           {
             index: KVDBS_INDEX,
             space,
-            nameProp: 'document.title',
-            idProp: 'document.id',
-          }
-        );
-      }
-
-      if (promoteSpace.changes.policy.length > 0) {
-        availablePromotions['policy'] = await this.resolvePromoteEntity(
-          client,
-          promoteSpace.changes.policy,
-          {
-            index: POLICIES_INDEX,
-            space,
-            nameProp: 'space.name',
-            idProp: 'document.id',
-          }
-        );
-      }
-
-      if (promoteSpace.changes.rules.length > 0) {
-        availablePromotions['rules'] = await this.resolvePromoteEntity(
-          client,
-          promoteSpace.changes.rules,
-          {
-            index: RULES_INDEX,
-            space,
-            nameProp: 'document.title',
+            nameProp: 'document.metadata.title',
             idProp: 'document.id',
           }
         );
@@ -332,7 +273,20 @@ export class IntegrationService extends MDSEnabledClientService {
           {
             index: FILTERS_INDEX,
             space,
-            nameProp: 'document.name',
+            nameProp: 'document.metadata.title',
+            idProp: 'document.id',
+          }
+        );
+      }
+
+      if (promoteSpace.changes.policy.length > 0) {
+        availablePromotions['policy'] = await this.resolvePromoteEntity(
+          client,
+          promoteSpace.changes.policy,
+          {
+            index: POLICIES_INDEX,
+            space,
+            nameProp: 'document.metadata.title',
             idProp: 'document.id',
           }
         );

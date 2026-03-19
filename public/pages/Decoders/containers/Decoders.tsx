@@ -165,7 +165,7 @@ export const Decoders: React.FC<DecodersProps> = ({ history, notifications }) =>
         name: 'Integration',
       },
       {
-        field: 'document.metadata.author.name',
+        field: 'document.metadata.author',
         name: 'Author',
         sortable: true,
         render: (value: string) => formatCellValue(value),
@@ -229,8 +229,8 @@ export const Decoders: React.FC<DecodersProps> = ({ history, notifications }) =>
         spaceFilter !== SpaceTypes.DRAFT.value
           ? `Cannot delete decoders in the ${spaceFilter} space.`
           : selectedItems.length === 0
-          ? 'Select decoders to delete'
-          : undefined
+            ? 'Select decoders to delete'
+            : undefined
       }
     >
       Delete selected ({selectedItems.length})

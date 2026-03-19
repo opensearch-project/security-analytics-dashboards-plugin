@@ -74,11 +74,22 @@ export default class IntegrationService {
 
   updateIntegration = async (
     integrationId: string,
-    integration: IntegrationBase
+    integration:
+      | IntegrationBase
+      | {
+          id?: string;
+          document: IntegrationBase['document'];
+          space: IntegrationBase['space'];
+        }
   ): Promise<ServerResponse<UpdateIntegrationResponse>> => {
     const url = `..${API.INTEGRATION_BASE}/${integrationId}`;
+    // Route schema expects only { document, space }; strip id and other extra fields
+    const payload = {
+      document: integration.document,
+      space: integration.space,
+    };
     const response = (await this.httpClient.put(url, {
-      body: JSON.stringify(integration),
+      body: JSON.stringify(payload),
       query: {
         dataSourceId: dataSourceInfo.activeDataSource.id,
       },

@@ -9,6 +9,41 @@ import { NodeServices } from '../models/interfaces';
 import { API } from '../utils/constants';
 import { createQueryValidationSchema } from '../utils/helpers';
 
+const decoderMetadataSchema = schema.object({
+  title: schema.string(),
+  author: schema.string(),
+  date: schema.maybe(schema.string()),
+  modified: schema.maybe(schema.string()),
+  description: schema.maybe(schema.string()),
+  references: schema.maybe(schema.arrayOf(schema.string())),
+  documentation: schema.maybe(schema.string()),
+  supports: schema.maybe(schema.arrayOf(schema.string())),
+  module: schema.maybe(schema.string()),
+  compatibility: schema.maybe(schema.string()),
+  versions: schema.maybe(schema.string()),
+});
+
+const decoderDocumentSchema = schema.object({
+  id: schema.maybe(schema.string()),
+  name: schema.string(),
+  enabled: schema.maybe(schema.boolean()),
+  metadata: decoderMetadataSchema,
+  definitions: schema.maybe(schema.any()),
+  check: schema.maybe(schema.any()),
+  parents: schema.maybe(schema.arrayOf(schema.string())),
+  normalize: schema.maybe(schema.any()),
+  decoder: schema.maybe(schema.any()),
+  // Legacy/decoder-specific fields from form
+  description: schema.maybe(schema.string()),
+  source: schema.maybe(schema.string()),
+  program_name: schema.maybe(schema.string()),
+  order: schema.maybe(schema.number()),
+  fields: schema.maybe(schema.any()),
+  parent: schema.maybe(schema.string()),
+  regex: schema.maybe(schema.string()),
+  prematch: schema.maybe(schema.string()),
+});
+
 export function setupDecodersRoutes(services: NodeServices, router: IRouter) {
   const { decodersService } = services;
 
@@ -45,7 +80,7 @@ export function setupDecodersRoutes(services: NodeServices, router: IRouter) {
       path: `${API.DECODERS_BASE}`,
       validate: {
         body: schema.object({
-          document: schema.any(),
+          document: decoderDocumentSchema,
           integrationId: schema.string(),
         }),
         query: createQueryValidationSchema({
@@ -64,7 +99,7 @@ export function setupDecodersRoutes(services: NodeServices, router: IRouter) {
           decoderId: schema.string(),
         }),
         body: schema.object({
-          document: schema.any(),
+          document: decoderDocumentSchema,
         }),
         query: createQueryValidationSchema({
           space: schema.maybe(schema.string()),

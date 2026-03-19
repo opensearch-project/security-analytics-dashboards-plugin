@@ -3,19 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { DataStore } from "../../../store/DataStore";
-import { DecoderTableItem } from "../../Integrations/components/IntegrationDecoders";
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { DataStore } from '../../../store/DataStore';
+import { DecoderTableItem } from '../../Integrations/components/IntegrationDecoders';
 
 export interface useIntegrationDecodersParams {
   decoderIds: string[];
   space: string;
 }
 
-export function useIntegrationDecoders({
-  decoderIds,
-  space,
-}: useIntegrationDecodersParams) {
+export function useIntegrationDecoders({ decoderIds, space }: useIntegrationDecodersParams) {
   const [items, setItems] = useState<DecoderTableItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [reloadTrigger, setReloadTrigger] = useState(0);
@@ -34,9 +31,9 @@ export function useIntegrationDecoders({
         {
           query: { ids: { values: decoderIds } },
           size: Math.min(decoderIds.length, 10000),
-          _source: { includes: ["document", "space"] },
+          _source: { includes: ['document', 'space'] },
         },
-        space,
+        space
       )
       .then((response) => {
         if (!cancelled) {
@@ -45,8 +42,8 @@ export function useIntegrationDecoders({
               id: item.id,
               name: item.document?.name,
               title: item.document?.metadata?.title,
-              author: item.document?.metadata?.author.name,
-            })),
+              author: item.document?.metadata?.author,
+            }))
           );
         }
       })

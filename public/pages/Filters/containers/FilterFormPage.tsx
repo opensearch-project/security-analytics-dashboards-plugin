@@ -49,7 +49,7 @@ const FILTER_ACTION = {
   CREATE: 'create',
   EDIT: 'edit',
 } as const;
-type FilterAction = typeof FILTER_ACTION[keyof typeof FILTER_ACTION];
+type FilterAction = (typeof FILTER_ACTION)[keyof typeof FILTER_ACTION];
 
 const actionLabels: Record<FilterAction, string> = {
   create: 'Create',
@@ -126,13 +126,19 @@ export const FilterFormPage: React.FC<FilterFormPageProps> = ({
       const space = spaceFilter || 'draft';
       try {
         if (action === FILTER_ACTION.CREATE) {
-          const result = await DataStore.filters.createFilter({ space, resource });
+          const result = await DataStore.filters.createFilter({
+            space,
+            resource,
+          });
           if (result) {
             successNotificationToast(notifications, 'created', 'filter', result.message);
             history.push(ROUTES.FILTERS);
           }
         } else if (filterId) {
-          const result = await DataStore.filters.updateFilter(filterId, { space, resource });
+          const result = await DataStore.filters.updateFilter(filterId, {
+            space,
+            resource,
+          });
           if (result) {
             successNotificationToast(notifications, 'updated', 'filter', result.message);
             history.push(ROUTES.FILTERS);
@@ -276,7 +282,7 @@ export const FilterFormPage: React.FC<FilterFormPageProps> = ({
                 <EuiCompressedFormRow
                   label={
                     <>
-                      {'Author name - '}
+                      {'Author - '}
                       <em>optional</em>
                     </>
                   }
@@ -284,42 +290,8 @@ export const FilterFormPage: React.FC<FilterFormPageProps> = ({
                 >
                   <EuiCompressedFieldText
                     placeholder="Wazuh, Inc."
-                    value={values.authorName}
-                    onChange={(e) => setFieldValue('authorName', e.target.value)}
-                  />
-                </EuiCompressedFormRow>
-                <EuiSpacer size="m" />
-
-                <EuiCompressedFormRow
-                  label={
-                    <>
-                      {'Author email - '}
-                      <em>optional</em>
-                    </>
-                  }
-                  fullWidth
-                >
-                  <EuiCompressedFieldText
-                    placeholder="info@wazuh.com"
-                    value={values.authorEmail}
-                    onChange={(e) => setFieldValue('authorEmail', e.target.value)}
-                  />
-                </EuiCompressedFormRow>
-                <EuiSpacer size="m" />
-
-                <EuiCompressedFormRow
-                  label={
-                    <>
-                      {'Author URL - '}
-                      <em>optional</em>
-                    </>
-                  }
-                  fullWidth
-                >
-                  <EuiCompressedFieldText
-                    placeholder="https://wazuh.com"
-                    value={values.authorUrl}
-                    onChange={(e) => setFieldValue('authorUrl', e.target.value)}
+                    value={values.author}
+                    onChange={(e) => setFieldValue('author', e.target.value)}
                   />
                 </EuiCompressedFormRow>
               </EuiPanel>

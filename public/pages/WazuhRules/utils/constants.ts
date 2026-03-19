@@ -4,15 +4,15 @@
  */
 
 const RULE_KEYWORD_SEARCH_FIELDS = [
-  'document.title',
-  'document.author',
+  'document.metadata.title',
+  'document.metadata.author',
   'document.level',
   'document.logsource.category',
   'document.logsource.product',
   'document.logsource.service',
 ];
 
-const RULE_TEXT_SEARCH_FIELDS = ['document.description'];
+const RULE_TEXT_SEARCH_FIELDS = ['document.metadata.description'];
 
 const escapeWildcard = (str: string) => str.replace(/[*?]/g, '\\$&');
 

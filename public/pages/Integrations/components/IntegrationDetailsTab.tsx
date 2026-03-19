@@ -64,13 +64,16 @@ export const IntegrationDetailsTab: React.FC<IntegrationDetailsTabProps> = ({
               <>
                 <EuiCompressedFormRow label="Title">
                   <EuiCompressedFieldText
-                    value={integrationDetails?.document.title}
+                    value={integrationDetails?.document.metadata?.title}
                     onChange={(e) =>
                       setIntegrationDetails({
                         ...integrationDetails!,
                         document: {
                           ...integrationDetails.document,
-                          title: e.target.value,
+                          metadata: {
+                            ...integrationDetails.document.metadata,
+                            title: e.target.value,
+                          },
                         },
                       })
                     }
@@ -81,13 +84,16 @@ export const IntegrationDetailsTab: React.FC<IntegrationDetailsTabProps> = ({
                 <EuiSpacer />
                 <EuiCompressedFormRow label="Description">
                   <EuiCompressedTextArea
-                    value={integrationDetails?.document.description}
+                    value={integrationDetails?.document.metadata?.description}
                     onChange={(e) =>
                       setIntegrationDetails({
                         ...integrationDetails!,
                         document: {
                           ...integrationDetails.document,
-                          description: e.target.value,
+                          metadata: {
+                            ...integrationDetails.document.metadata,
+                            description: e.target.value,
+                          },
                         },
                       })
                     }

@@ -34,12 +34,14 @@ const detailsMapLabels: { [key: string]: string } = {
   'document.id': 'ID',
   'document.name': 'Name',
   'integration.title': 'Integration',
-  'document.title': 'Title',
-  'document.author': 'Author',
+  'document.metadata.title': 'Title',
+  'document.metadata.author': 'Author',
   'document.enabled': 'Enabled',
-  'document.metadata.author.url': 'URL',
-  'document.references': 'References',
-  'document.date': 'Date',
+  'document.metadata.references': 'References',
+  'document.metadata.documentation': 'Documentation',
+  'document.metadata.supports': 'Supports',
+  'document.metadata.date': 'Date',
+  'document.metadata.modified': 'Modified',
   space: 'Space',
 };
 
@@ -51,15 +53,18 @@ export const KVDBDetailsFlyout: React.FC<KVDBDetailsFlyoutProps> = ({ kvdb, onCl
   };
   const document = kvdb.document ?? { id: '' };
 
+  const metadata = document.metadata;
   const kvdbData = {
     'document.id': document.id || kvdb.id,
     'integration.title': kvdb.integration?.title,
-    'document.title': document.title,
-    'document.date': document.date,
-    'document.author': document.author,
+    'document.metadata.title': metadata?.title,
+    'document.metadata.date': metadata?.date,
+    'document.metadata.author': metadata?.author,
     'document.enabled': document.enabled,
-    'document.references': document.references,
-    'document.metadata.author.url': document.metadata?.author?.url,
+    'document.metadata.references': metadata?.references,
+    'document.metadata.documentation': metadata?.documentation,
+    'document.metadata.supports': metadata?.supports,
+    'document.metadata.modified': metadata?.modified,
     space: kvdb?.space?.name,
   };
 
@@ -69,11 +74,14 @@ export const KVDBDetailsFlyout: React.FC<KVDBDetailsFlyoutProps> = ({ kvdb, onCl
         {[
           'document.id',
           'integration.title',
-          'document.title',
-          ['document.date', 'date'],
-          'document.author',
+          'document.metadata.title',
+          ['document.metadata.date', 'date'],
+          ['document.metadata.modified', 'date'],
+          'document.metadata.author',
           ['document.enabled', 'boolean_yesno'],
-          ['document.references', 'url'],
+          ['document.metadata.references', 'url'],
+          ['document.metadata.documentation', 'url'],
+          'document.metadata.supports',
           'space',
         ].map((item) => {
           const [field, type] = typeof item === 'string' ? [item, 'text'] : item;
@@ -88,20 +96,6 @@ export const KVDBDetailsFlyout: React.FC<KVDBDetailsFlyoutProps> = ({ kvdb, onCl
           );
         })}
       </EuiFlexGrid>
-      {document.metadata?.author?.url && (
-        <>
-          <EuiSpacer />
-          <EuiFlexGrid columns={2}>
-            <EuiFlexItem>
-              <Metadata
-                label={detailsMapLabels['document.metadata.author.url']}
-                value={document.metadata.author.url}
-                type="url"
-              />
-            </EuiFlexItem>
-          </EuiFlexGrid>
-        </>
-      )}
       {document.content && (
         <>
           <EuiSpacer />
@@ -125,7 +119,7 @@ export const KVDBDetailsFlyout: React.FC<KVDBDetailsFlyoutProps> = ({ kvdb, onCl
         <EuiFlexGroup alignItems="center">
           <EuiFlexItem>
             <EuiText size="s">
-              <h2>{document.title ? `KVDB details - ${document.title}` : 'KVDB details'}</h2>
+              <h2>{metadata?.title ? `KVDB details - ${metadata.title}` : 'KVDB details'}</h2>
             </EuiText>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>

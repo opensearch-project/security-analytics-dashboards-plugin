@@ -15,10 +15,10 @@ import {
   EuiBadge,
   euiPaletteColorBlind,
   EuiEmptyPrompt,
-} from "@elastic/eui";
-import moment from "moment";
-import { PeriodSchedule } from "../../models/interfaces";
-import React from "react";
+} from '@elastic/eui';
+import moment from 'moment';
+import { PeriodSchedule } from '../../models/interfaces';
+import React from 'react';
 import {
   ALERT_SEVERITY_OPTIONS,
   ALERT_SEVERITY_PROPS,
@@ -30,18 +30,18 @@ import {
   logTypeCategoryDescription,
   logTypesByCategories,
   scheduleUnitText,
-} from "./constants";
+} from './constants';
 import {
   RuleItem,
   RuleItemInfo,
-} from "../pages/CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces";
-import { RuleInfo } from "../../server/models/interfaces";
+} from '../pages/CreateDetector/components/DefineDetector/components/DetectionRules/types/interfaces';
+import { RuleInfo } from '../../server/models/interfaces';
 import {
   ChromeBreadcrumb,
   CoreStart,
   NotificationsStart,
   SavedObject,
-} from "opensearch-dashboards/public";
+} from 'opensearch-dashboards/public';
 import {
   AlertsService,
   DecodersService,
@@ -55,15 +55,15 @@ import {
   FiltersService,
   NotificationsService,
   OpenSearchService,
-} from "../services";
-import { ruleSeverity, ruleTypes } from "../pages/Rules/utils/constants";
-import _ from "lodash";
-import { AlertCondition, DateTimeFilter, Duration, LogType } from "../../types";
-import { DataStore } from "../store/DataStore";
-import { LogCategoryOptionView } from "../components/Utility/LogCategoryOption";
-import { getLogTypeLabel } from "../pages/LogTypes/utils/helpers";
-import { euiThemeVars } from "@osd/ui-shared-deps/theme";
-import dateMath from "@elastic/datemath";
+} from '../services';
+import { ruleSeverity, ruleTypes } from '../pages/Rules/utils/constants';
+import _ from 'lodash';
+import { AlertCondition, DateTimeFilter, Duration, LogType } from '../../types';
+import { DataStore } from '../store/DataStore';
+import { LogCategoryOptionView } from '../components/Utility/LogCategoryOption';
+import { getLogTypeLabel } from '../pages/LogTypes/utils/helpers';
+import { euiThemeVars } from '@osd/ui-shared-deps/theme';
+import dateMath from '@elastic/datemath';
 import {
   getBreadCrumbsSetter,
   getBrowserServices,
@@ -72,22 +72,22 @@ import {
   setBrowserServices,
   getDataSourceManagementPlugin,
   getApplication,
-} from "../services/utils/constants";
-import DetectorsService from "../services/DetectorService";
-import CorrelationService from "../services/CorrelationService";
-import FindingsService from "../services/FindingsService";
-import RuleService from "../services/RuleService";
-import SavedObjectService from "../services/SavedObjectService";
-import MetricsService from "../services/MetricsService";
-import ThreatIntelService from "../services/ThreatIntelService";
-import { BrowserServices } from "../models/interfaces";
-import { IndexPatternsService as CoreIndexPatternsService } from "../../../../src/plugins/data/common/index_patterns";
-import semver from "semver";
-import * as pluginManifest from "../../opensearch_dashboards.json";
-import { DataSourceThreatAlertsCard } from "../components/DataSourceThreatAlertsCard/DataSourceThreatAlertsCard";
-import { DataSourceAttributes } from "../../../../src/plugins/data_source/common/data_sources";
-import { ISearchStart } from "../../../../src/plugins/data/public";
-import LogTestService from "../services/LogTestService";
+} from '../services/utils/constants';
+import DetectorsService from '../services/DetectorService';
+import CorrelationService from '../services/CorrelationService';
+import FindingsService from '../services/FindingsService';
+import RuleService from '../services/RuleService';
+import SavedObjectService from '../services/SavedObjectService';
+import MetricsService from '../services/MetricsService';
+import ThreatIntelService from '../services/ThreatIntelService';
+import { BrowserServices } from '../models/interfaces';
+import { IndexPatternsService as CoreIndexPatternsService } from '../../../../src/plugins/data/common/index_patterns';
+import semver from 'semver';
+import * as pluginManifest from '../../opensearch_dashboards.json';
+import { DataSourceThreatAlertsCard } from '../components/DataSourceThreatAlertsCard/DataSourceThreatAlertsCard';
+import { DataSourceAttributes } from '../../../../src/plugins/data_source/common/data_sources';
+import { ISearchStart } from '../../../../src/plugins/data/public';
+import LogTestService from '../services/LogTestService';
 
 export const parseStringsToOptions = (strings: string[]) => {
   return strings.map((str) => ({ id: str, label: str }));
@@ -95,20 +95,20 @@ export const parseStringsToOptions = (strings: string[]) => {
 
 export const renderTime = (time: number | string) => {
   const momentTime = moment(time);
-  if (time && momentTime.isValid()) return momentTime.format("MM/DD/YY h:mm a");
+  if (time && momentTime.isValid()) return momentTime.format('MM/DD/YY h:mm a');
   return DEFAULT_EMPTY_DATA;
 };
 
 export function createTextDetailsGroup(
-  data: { label: string; content: any; url?: string; target?: string }[],
+  data: { label: string; content: any; url?: string; target?: string }[]
 ) {
   const createFormRow = (
     label: string,
     content: string,
     url?: string,
-    target: string = "_self",
+    target: string = '_self'
   ) => {
-    const dataTestSubj = label.toLowerCase().replace(/ /g, "-");
+    const dataTestSubj = label.toLowerCase().replace(/ /g, '-');
     return (
       <EuiCompressedFormRow fullWidth label={label}>
         {url ? (
@@ -120,10 +120,7 @@ export function createTextDetailsGroup(
             {content ?? DEFAULT_EMPTY_DATA}
           </EuiLink>
         ) : (
-          <EuiText
-            data-test-subj={`text-details-group-content-${dataTestSubj}`}
-            size="s"
-          >
+          <EuiText data-test-subj={`text-details-group-content-${dataTestSubj}`} size="s">
             {content ?? DEFAULT_EMPTY_DATA}
           </EuiText>
         )}
@@ -133,18 +130,13 @@ export function createTextDetailsGroup(
   return data.length <= 1 ? (
     !data.length ? null : (
       <>
-        {createFormRow(
-          data[0].label,
-          data[0].content,
-          data[0].url,
-          data[0].target,
-        )}
-        <EuiSpacer size={"l"} />
+        {createFormRow(data[0].label, data[0].content, data[0].url, data[0].target)}
+        <EuiSpacer size={'l'} />
       </>
     )
   ) : (
     <>
-      <EuiFlexGroup className={"detailsFormRow"}>
+      <EuiFlexGroup className={'detailsFormRow'}>
         {data.map(({ label, content, url, target }, index) => {
           return (
             <EuiFlexItem key={index} grow={true}>
@@ -153,16 +145,12 @@ export function createTextDetailsGroup(
           );
         })}
       </EuiFlexGroup>
-      <EuiSpacer size={"l"} />
+      <EuiSpacer size={'l'} />
     </>
   );
 }
 
-export const pluralize = (
-  count: number,
-  singular: string,
-  plural = singular + "s",
-) => {
+export const pluralize = (count: number, singular: string, plural = singular + 's') => {
   return [1, -1].includes(Number(count)) ? singular : plural;
 };
 
@@ -174,7 +162,7 @@ export function translateToRuleItems(
   prePackagedRules: RuleInfo[],
   customRules: RuleInfo[],
   detectorType: string,
-  isEnabled: (rule: RuleInfo) => boolean,
+  isEnabled: (rule: RuleInfo) => boolean
 ) {
   let ruleItemInfos: RuleItemInfo[] = prePackagedRules.map((rule) => ({
     ...rule,
@@ -187,7 +175,7 @@ export function translateToRuleItems(
       ...rule,
       enabled: isEnabled(rule),
       prePackaged: false,
-    })),
+    }))
   );
 
   return ruleItemInfosToItems(detectorType, ruleItemInfos);
@@ -195,14 +183,14 @@ export function translateToRuleItems(
 
 export function ruleItemInfosToItems(
   detectorType: string,
-  ruleItemsInfo: RuleItemInfo[],
+  ruleItemsInfo: RuleItemInfo[]
 ): RuleItem[] {
   if (ruleItemsInfo) {
     return ruleItemsInfo.map((itemInfo) => ({
       id: itemInfo._id,
       active: itemInfo.enabled,
       description: itemInfo._source.description,
-      library: itemInfo.prePackaged ? "Standard" : "Custom",
+      library: itemInfo.prePackaged ? 'Standard' : 'Custom',
       logType: detectorType.toLowerCase(),
       name: itemInfo._source.title,
       severity: itemInfo._source.level,
@@ -216,7 +204,7 @@ export function ruleItemInfosToItems(
 export function getUpdatedEnabledRuleIds(
   existingEnabledIds: Set<string>,
   ruleId: string,
-  isActive: boolean,
+  isActive: boolean
 ) {
   let newEnabledIds;
   // 1. not enabled previously
@@ -240,7 +228,7 @@ export function createSelectComponent(
   options: EuiSelectOption[],
   value: string,
   id: string,
-  onChange: React.ChangeEventHandler<HTMLSelectElement>,
+  onChange: React.ChangeEventHandler<HTMLSelectElement>
 ) {
   return (
     <EuiFlexGroup justifyContent="flexEnd" alignItems="center">
@@ -259,7 +247,7 @@ export function createSelectComponent(
 
 export const capitalizeFirstLetter = (str: string) => {
   if (!str) {
-    return "";
+    return '';
   }
 
   return `${str.charAt(0).toUpperCase()}${str.slice(1).toLowerCase()}`;
@@ -270,17 +258,18 @@ export const errorNotificationToast = (
   notifications: NotificationsStart | null,
   actionName: string,
   objectName: string,
-  errorMessage: string = "",
-  displayTime: number = 5000, // 5 seconds; default is 10 seconds
+  errorMessage: string = '',
+  displayTime: number = 5000 // 5 seconds; default is 10 seconds
 ) => {
-  if (errorMessage.toLowerCase().includes("no living connections")) {
+  const msg = typeof errorMessage === 'string' ? errorMessage : String(errorMessage ?? '');
+  if (msg.toLowerCase().includes('no living connections')) {
     return;
   }
   const message = `Failed to ${actionName} ${objectName}:`;
-  console.error(message, errorMessage);
+  console.error(message, msg);
   notifications?.toasts.addDanger({
     title: message,
-    text: errorMessage,
+    text: msg,
     toastLifeTimeMs: displayTime,
   });
 };
@@ -290,8 +279,8 @@ export const successNotificationToast = (
   notifications: NotificationsStart | null,
   actionName: string,
   objectName: string,
-  successMessage: string = "",
-  displayTime: number = 5000, // 5 seconds; default is 10 seconds
+  successMessage: string = '',
+  displayTime: number = 5000 // 5 seconds; default is 10 seconds
 ) => {
   notifications?.toasts.addSuccess({
     title: `Successfully ${actionName} ${objectName}`,
@@ -315,8 +304,7 @@ export const getPlugins = async (opensearchService: OpenSearchService) => {
 
 export const formatRuleType = (matchingRuleType: string) => {
   const logType = ruleTypes.find(
-    (ruleType) =>
-      ruleType.value.toLowerCase() === matchingRuleType.toLowerCase(),
+    (ruleType) => ruleType.value.toLowerCase() === matchingRuleType.toLowerCase()
   );
 
   if (logType) {
@@ -329,18 +317,13 @@ export const formatRuleType = (matchingRuleType: string) => {
 export const getSeverityBadge = (severity: string) => {
   const severityLevel = ruleSeverity.find((sev) => sev.value === severity);
   return (
-    <EuiBadge
-      color={severityLevel?.color.background}
-      style={{ color: severityLevel?.color.text }}
-    >
+    <EuiBadge color={severityLevel?.color.background} style={{ color: severityLevel?.color.text }}>
       {severityLevel?.name || DEFAULT_EMPTY_DATA}
     </EuiBadge>
   );
 };
 
-export function formatToLogTypeOptions(logTypesByCategories: {
-  [category: string]: LogType[];
-}) {
+export function formatToLogTypeOptions(logTypesByCategories: { [category: string]: LogType[] }) {
   return logTypeCategories.map((category) => {
     const logTypes = logTypesByCategories[category];
     return {
@@ -363,17 +346,20 @@ export async function getLogTypeOptions() {
 
 /**
  * Returns Integration ComboBox options filtered by space and ordered alphabetically.
+ * [Wazuh custom] Uses document.metadata?.title for normalized metadata structure (issue #117)
  */
 
 export async function getIntegrationOptionsBySpace(
-  space: string,
+  space: string
 ): Promise<{ value: string; label: string }[]> {
   const integrations = await DataStore.integrations.getIntegrations(space);
+  // [Wazuh custom] Use metadata object instead of document.title
   return integrations
-    .map(({ document: { title } }) => ({
-      value: title,
-      label: title,
+    .map(({ document: { metadata } }) => ({
+      value: metadata?.title ?? '',
+      label: metadata?.title ?? '',
     }))
+    .filter((opt) => opt.label)
     .sort((a, b) => (a.label < b.label ? -1 : a.label > b.label ? 1 : 0));
 }
 
@@ -386,7 +372,7 @@ export function getLogTypeFilterOptions() {
     for (let i = 0; i < logTypes.length; i++) {
       if (i === 0) {
         options.push({
-          value: logTypes.map((logType) => logType.value).join(" or "),
+          value: logTypes.map((logType) => logType.value).join(' or '),
           view: <LogCategoryOptionView categoryName={categoryName} />,
         });
       }
@@ -394,10 +380,7 @@ export function getLogTypeFilterOptions() {
       options.push({
         value: logTypes[i].value,
         view: (
-          <span
-            className="euiFlexItem euiFilterSelectItem__content"
-            style={{ paddingLeft: 20 }}
-          >
+          <span className="euiFlexItem euiFilterSelectItem__content" style={{ paddingLeft: 20 }}>
             {getLogTypeLabel(logTypes[i].label)}
           </span>
         ),
@@ -444,7 +427,7 @@ export function getIntegrationCategoryOptions(): any[] {
  */
 export function removeDetectionType(
   trigger: AlertCondition,
-  detectionType: "rules" | "threat_intel",
+  detectionType: 'rules' | 'threat_intel'
 ): string[] {
   const detectionTypes = new Set(trigger.detection_types);
   detectionTypes.delete(detectionType);
@@ -457,7 +440,7 @@ export function removeDetectionType(
  */
 export function addDetectionType(
   trigger: AlertCondition,
-  detectionType: "rules" | "threat_intel",
+  detectionType: 'rules' | 'threat_intel'
 ): string[] {
   const detectionTypes = new Set(trigger.detection_types);
   detectionTypes.add(detectionType);
@@ -465,12 +448,12 @@ export function addDetectionType(
 }
 
 export function isThreatIntelQuery(queryId: string) {
-  return queryId?.startsWith("threat_intel_");
+  return queryId?.startsWith('threat_intel_');
 }
 
 export async function getDataSources(
   indexService: IndexService,
-  notifications: any,
+  notifications: any
 ): Promise<
   | {
       ok: true;
@@ -488,7 +471,7 @@ export async function getDataSources(
 
     if (aliasesResponse.ok) {
       const aliases = aliasesResponse.response.aliases.filter(
-        ({ index }) => !index.startsWith("."),
+        ({ index }) => !index.startsWith('.')
       );
       const aliasOptions = aliases.map(({ alias, index }) => ({
         label: alias,
@@ -497,16 +480,11 @@ export async function getDataSources(
       }));
 
       dataSourceOptions.push({
-        label: "Aliases",
+        label: 'Aliases',
         options: aliasOptions,
       });
     } else {
-      errorNotificationToast(
-        notifications,
-        "retrieve",
-        "aliases",
-        aliasesResponse.error,
-      );
+      errorNotificationToast(notifications, 'retrieve', 'aliases', aliasesResponse.error);
       return { ok: false, error: aliasesResponse.error };
     }
 
@@ -531,20 +509,18 @@ export async function getDataSources(
             dataStreamsSet.add(dsName);
             dataStreamOptions.push({ label: dsName, value: dsName });
           }
-        } else if (!index.startsWith(".")) {
+        } else if (!index.startsWith('.')) {
           indexOptions.push({ label: index, value: index });
         }
       });
 
       if (dataStreamOptions.length > 0) {
-        const aliasGroup = dataSourceOptions.find(
-          (group) => group.label === "Aliases",
-        );
+        const aliasGroup = dataSourceOptions.find((group) => group.label === 'Aliases');
         if (aliasGroup) {
           aliasGroup.options.push(...dataStreamOptions);
         } else {
           dataSourceOptions.push({
-            label: "Aliases",
+            label: 'Aliases',
             options: dataStreamOptions,
           });
         }
@@ -552,7 +528,7 @@ export async function getDataSources(
 
       if (indexOptions.length > 0) {
         dataSourceOptions.push({
-          label: "Indexes",
+          label: 'Indexes',
           options: indexOptions,
         });
       }
@@ -565,7 +541,7 @@ export async function getDataSources(
       dataSources: dataSourceOptions,
     };
   } catch (error: any) {
-    errorNotificationToast(notifications, "retrieve", "indices", error);
+    errorNotificationToast(notifications, 'retrieve', 'indices', error);
 
     return {
       ok: false,
@@ -581,30 +557,25 @@ function setDefaultColors(spec: any) {
   const setValue = getValueSetter(spec.config);
 
   // Default category coloring to the OpenSearch color scheme
-  setValue(euiPaletteColorBlind(), "range", "category");
+  setValue(euiPaletteColorBlind(), 'range', 'category');
 
   // Vega-Lite: set default color, works for fill and strike --  config: { mark:  { color: '#54B399' }}
-  setValue(defaultColorForVisualizations, "mark", "color");
+  setValue(defaultColorForVisualizations, 'mark', 'color');
   // By default text marks should use theme-aware text color
-  setValue(euiThemeVars.euiTextColor, "text", "fill");
+  setValue(euiThemeVars.euiTextColor, 'text', 'fill');
 
   // provide right colors for light and dark themes
-  setValue(euiThemeVars.euiColorDarkestShade, "title", "color");
-  setValue(euiThemeVars.euiColorDarkShade, "style", "guide-label", "fill");
-  setValue(euiThemeVars.euiColorDarkestShade, "style", "guide-title", "fill");
-  setValue(euiThemeVars.euiColorDarkestShade, "style", "group-title", "fill");
-  setValue(
-    euiThemeVars.euiColorDarkestShade,
-    "style",
-    "group-subtitle",
-    "fill",
-  );
-  setValue(euiThemeVars.euiColorChartLines, "axis", "tickColor");
-  setValue(euiThemeVars.euiColorChartLines, "axis", "domainColor");
-  setValue(euiThemeVars.euiColorChartLines, "axis", "gridColor");
-  setValue("transparent", "background");
-  setValue(euiThemeVars.euiColorDarkestShade, "legend", "titleColor");
-  setValue(euiThemeVars.euiColorDarkShade, "legend", "labelColor");
+  setValue(euiThemeVars.euiColorDarkestShade, 'title', 'color');
+  setValue(euiThemeVars.euiColorDarkShade, 'style', 'guide-label', 'fill');
+  setValue(euiThemeVars.euiColorDarkestShade, 'style', 'guide-title', 'fill');
+  setValue(euiThemeVars.euiColorDarkestShade, 'style', 'group-title', 'fill');
+  setValue(euiThemeVars.euiColorDarkestShade, 'style', 'group-subtitle', 'fill');
+  setValue(euiThemeVars.euiColorChartLines, 'axis', 'tickColor');
+  setValue(euiThemeVars.euiColorChartLines, 'axis', 'domainColor');
+  setValue(euiThemeVars.euiColorChartLines, 'axis', 'gridColor');
+  setValue('transparent', 'background');
+  setValue(euiThemeVars.euiColorDarkestShade, 'legend', 'titleColor');
+  setValue(euiThemeVars.euiColorDarkShade, 'legend', 'labelColor');
 }
 
 /**
@@ -652,7 +623,7 @@ export function getIsNotificationPluginInstalled(): boolean {
 
 export async function getFieldsForIndex(
   fieldMappingService: FieldMappingService,
-  indexName: string,
+  indexName: string
 ): Promise<{ label: string; value: string }[]> {
   let fields: {
     label: string;
@@ -680,25 +651,17 @@ export function renderIoCType(iocType: string) {
 }
 
 export function setBreadcrumbs(crumbs: ChromeBreadcrumb[]) {
-  getBreadCrumbsSetter()(
-    getUseUpdatedUx() ? crumbs : [BREADCRUMBS.SECURITY_ANALYTICS, ...crumbs],
-  );
+  getBreadCrumbsSetter()(getUseUpdatedUx() ? crumbs : [BREADCRUMBS.SECURITY_ANALYTICS, ...crumbs]);
 }
 
-export function dataSourceFilterFn(
-  dataSource: SavedObject<DataSourceAttributes>,
-) {
+export function dataSourceFilterFn(dataSource: SavedObject<DataSourceAttributes>) {
   try {
-    const dataSourceVersion = dataSource?.attributes?.dataSourceVersion || "";
+    const dataSourceVersion = dataSource?.attributes?.dataSourceVersion || '';
     const installedPlugins = dataSource?.attributes?.installedPlugins || [];
     return (
       pluginManifest.requiredOSDataSourcePlugins.every((plugin) =>
-        installedPlugins.includes(plugin),
-      ) &&
-      semver.satisfies(
-        dataSourceVersion,
-        pluginManifest.supportedOSDataSourceVersions,
-      )
+        installedPlugins.includes(plugin)
+      ) && semver.satisfies(dataSourceVersion, pluginManifest.supportedOSDataSourceVersions)
     );
   } catch (error: any) {
     // Filter out invalid data source
@@ -707,7 +670,7 @@ export function dataSourceFilterFn(
 }
 
 export function getSeverityText(severity: string) {
-  return _.get(_.find(ALERT_SEVERITY_OPTIONS, { value: severity }), "text");
+  return _.get(_.find(ALERT_SEVERITY_OPTIONS, { value: severity }), 'text');
 }
 
 export function getBadgeText(severity: string) {
@@ -717,8 +680,8 @@ export function getBadgeText(severity: string) {
 export function getAlertSeverityColor(severity: string) {
   return (
     ALERT_SEVERITY_PROPS[severity]?.color || {
-      background: "white",
-      text: "black",
+      background: 'white',
+      text: 'black',
     }
   );
 }
@@ -728,7 +691,7 @@ export function getAlertSeverityBadge(severity: string) {
   return (
     <EuiBadge
       color={severityColor.background}
-      style={{ padding: "1px 5px", color: severityColor.text }}
+      style={{ padding: '1px 5px', color: severityColor.text }}
     >
       {getBadgeText(severity)}
     </EuiBadge>
@@ -736,22 +699,20 @@ export function getAlertSeverityBadge(severity: string) {
 }
 
 export const getTruncatedText = (text: string, textLength: number = 14) => {
-  return `${text.slice(0, textLength)}${text.length > textLength ? "..." : ""}`;
+  return `${text.slice(0, textLength)}${text.length > textLength ? '...' : ''}`;
 };
 
 export function registerThreatAlertsCard() {
   getContentManagement().registerContentProvider({
     id: `analytics_all_recent_threat_alerts_card_content`,
-    getTargetArea: () => "all_overview/service_cards",
+    getTargetArea: () => 'all_overview/service_cards',
     getContent: () => ({
-      id: "analytics_all_recent_threat_alerts_card",
-      kind: "custom",
+      id: 'analytics_all_recent_threat_alerts_card',
+      kind: 'custom',
       order: 20,
       render: () => (
         <DataSourceThreatAlertsCard
-          getDataSourceMenu={
-            getDataSourceManagementPlugin()?.ui.getDataSourceMenu
-          }
+          getDataSourceMenu={getDataSourceManagementPlugin()?.ui.getDataSourceMenu}
           detectorService={getBrowserServices().detectorsService}
         />
       ),
@@ -763,17 +724,13 @@ export function registerThreatAlertsCard() {
 export function getEuiEmptyPrompt(message: string) {
   return (
     <EuiEmptyPrompt
-      style={{ position: "relative" }}
+      style={{ position: 'relative' }}
       body={
-        <div
-          style={{ display: "flex", justifyContent: "center", padding: "32px" }}
-        >
-          <p style={{ position: "absolute", top: "calc(50% - 20px)" }}>
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '32px' }}>
+          <p style={{ position: 'absolute', top: 'calc(50% - 20px)' }}>
             <EuiText size="s">
               <p style={{ margin: 0 }}>{message}</p>
-              <p style={{ margin: 0 }}>
-                Adjust the time range to see more results.
-              </p>
+              <p style={{ margin: 0 }}>Adjust the time range to see more results.</p>
             </EuiText>
           </p>
         </div>
@@ -785,7 +742,7 @@ export function getEuiEmptyPrompt(message: string) {
 export function initializeServices(
   coreStart: CoreStart,
   indexPattern: CoreIndexPatternsService,
-  search: ISearchStart,
+  search: ISearchStart
 ) {
   const { http, savedObjects } = coreStart;
 
@@ -793,19 +750,12 @@ export function initializeServices(
   const correlationsService = new CorrelationService(http);
   const indexService = new IndexService(http);
   const findingsService = new FindingsService(http, coreStart.notifications);
-  const opensearchService = new OpenSearchService(
-    http,
-    savedObjects.client,
-    search,
-  );
+  const opensearchService = new OpenSearchService(http, savedObjects.client, search);
   const fieldMappingService = new FieldMappingService(http);
   const alertsService = new AlertsService(http, coreStart.notifications);
   const ruleService = new RuleService(http);
   const notificationsService = new NotificationsService(http);
-  const savedObjectsService = new SavedObjectService(
-    savedObjects.client,
-    indexService,
-  );
+  const savedObjectsService = new SavedObjectService(savedObjects.client, indexService);
   const indexPatternsService = new IndexPatternsService(indexPattern);
   const logTypeService = new LogTypeService(http);
   const integrationService = new IntegrationService(http);
@@ -815,10 +765,7 @@ export function initializeServices(
   const filtersService = new FiltersService(http);
   const logTestService = new LogTestService(http);
   const metricsService = new MetricsService(http);
-  const threatIntelService = new ThreatIntelService(
-    http,
-    coreStart.notifications,
-  );
+  const threatIntelService = new ThreatIntelService(http, coreStart.notifications);
 
   const services: BrowserServices = {
     detectorsService,
@@ -857,47 +804,35 @@ export const buildRouteUrl = (appId: string, route: string) => {
 
 /** Wazuh custom plugin helper function to format various value types into a display friendly string. */
 export const formatCellValue = (value: unknown) => {
-  if (value === null || value === undefined || value === "") {
+  if (value === null || value === undefined || value === '') {
     return DEFAULT_EMPTY_DATA;
   }
-  if (
-    typeof value === "string" ||
-    typeof value === "number" ||
-    typeof value === "boolean"
-  ) {
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
     return String(value);
   }
   if (Array.isArray(value)) {
     const formatted = value
       .map((entry) => {
         if (entry === null || entry === undefined) {
-          return "";
+          return '';
         }
-        if (
-          typeof entry === "string" ||
-          typeof entry === "number" ||
-          typeof entry === "boolean"
-        ) {
+        if (typeof entry === 'string' || typeof entry === 'number' || typeof entry === 'boolean') {
           return String(entry);
         }
-        if (
-          typeof entry === "object" &&
-          "name" in entry &&
-          typeof entry.name === "string"
-        ) {
+        if (typeof entry === 'object' && 'name' in entry && typeof entry.name === 'string') {
           return entry.name;
         }
         return JSON.stringify(entry);
       })
       .filter(Boolean)
-      .join(", ");
+      .join(', ');
     return formatted || DEFAULT_EMPTY_DATA;
   }
-  if (typeof value === "object") {
-    if ("name" in value && typeof value.name === "string") {
+  if (typeof value === 'object') {
+    if ('name' in value && typeof value.name === 'string') {
       return value.name;
     }
-    if ("value" in value && typeof value.value === "string") {
+    if ('value' in value && typeof value.value === 'string') {
       return value.value;
     }
     return JSON.stringify(value);

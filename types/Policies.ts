@@ -4,6 +4,7 @@
  */
 
 import { IntegrationBase } from './Integrations';
+import { PolicyMetadata } from './ResourceMetadata';
 
 export interface PolicySpace {
   name: string;
@@ -15,21 +16,15 @@ export interface PolicyHash {
 }
 
 export interface PolicyDocument {
-  author: string;
-  date: string;
-  description: string;
-  documentation: string;
   id: string;
-  integrations: string[];
-  filters: string[];
-  modified: string;
-  references: string[];
   root_decoder: string;
-  title: string;
-  enabled: boolean;
-  index_unclassified_events: boolean;
-  index_discarded_events: boolean;
-  enrichments: string[];
+  integrations: string[];
+  filters?: string[];
+  enrichments?: string[];
+  enabled?: boolean;
+  index_unclassified_events?: boolean;
+  index_discarded_events?: boolean;
+  metadata: PolicyMetadata;
 }
 
 export interface PolicySource {
@@ -60,20 +55,7 @@ export interface GetPolicyResponse {
   item?: PolicyItem;
 }
 
-export interface UpdatePolicyRequestBody {
-  title?: string;
-  root_decoder?: string | null;
-  integrations?: string[];
-  filters?: string[];
-  enrichments?: string[];
-  enabled: boolean;
-  index_unclassified_events: boolean;
-  index_discarded_events: boolean;
-  author?: string;
-  description?: string;
-  documentation?: string;
-  references?: string[];
-}
+export interface UpdatePolicyRequestBody {}
 
 export interface UpdatePolicyResponse {
   ok: boolean;

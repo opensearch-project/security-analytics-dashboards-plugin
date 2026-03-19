@@ -3,12 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
+import { IntegrationBase } from '../../../../types';
+
 export const OVERVIEW_TAB = {
   INTEGRATIONS: 'integrations',
   FILTERS: 'filters',
 } as const;
 
-export type OverviewTabId = typeof OVERVIEW_TAB[keyof typeof OVERVIEW_TAB];
+export type OverviewTabId = (typeof OVERVIEW_TAB)[keyof typeof OVERVIEW_TAB];
 
 export const integrationDetailsTabs = [
   {
@@ -28,6 +30,27 @@ export const integrationDetailsTabs = [
     name: 'KVDBs',
   },
 ];
+
+export const defaultIntegration: IntegrationBase = {
+  document: {
+    id: '',
+    category: '',
+    metadata: {
+      title: '',
+      author: '',
+      date: '',
+      modified: '',
+      description: '',
+      references: [],
+      documentation: '',
+      supports: [],
+    },
+    tags: null,
+  },
+  space: {
+    name: '',
+  },
+};
 
 export const integrationLabels: { [value: string]: string } = {
   cloudtrail: 'AWS Cloudtrail',

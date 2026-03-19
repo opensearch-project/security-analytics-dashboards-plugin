@@ -3,33 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
+import { CatalogResourceMetadata } from './ResourceMetadata';
+
+export interface KVDBMetadata extends CatalogResourceMetadata {}
+
 export interface KVDBDocument {
   id: string;
-  title?: string;
-  name?: string;
-  author?: string;
+  metadata: KVDBMetadata;
   enabled?: boolean;
-  description?: string;
-  documentation?: string;
-  references?: string[] | string;
-  date?: string;
   content?: Record<string, unknown>;
-  metadata?: {
-    author?: {
-      url?: string;
-      name?: string;
-      email?: string;
-      date?: string;
-    };
-  };
 }
 
 export interface KVDBResource {
-  title: string;
-  author: string;
-  description?: string;
-  documentation?: string;
-  references?: string[];
+  metadata: KVDBMetadata;
   enabled?: boolean;
   content?: Record<string, unknown>;
 }
@@ -42,7 +28,7 @@ export interface KVDBSource {
 export interface KVDBIntegrationSource {
   document?: {
     id?: string;
-    title?: string;
+    metadata?: { title?: string };
     kvdbs?: string[] | string;
   };
 }

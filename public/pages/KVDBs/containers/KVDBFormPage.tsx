@@ -48,7 +48,7 @@ const KVDB_ACTION = {
   EDIT: 'edit',
 } as const;
 
-type KVDBAction = typeof KVDB_ACTION[keyof typeof KVDB_ACTION];
+type KVDBAction = (typeof KVDB_ACTION)[keyof typeof KVDB_ACTION];
 
 const actionLabels: Record<KVDBAction, string> = {
   create: 'Create',
@@ -88,7 +88,7 @@ export const KVDBFormPage: React.FC<KVDBFormPageProps> = (props) => {
           BREADCRUMBS.NORMALIZATION,
           BREADCRUMBS.KVDBS,
           BREADCRUMBS.KVDBS_EDIT,
-          { text: item?.document?.title || kvdbId },
+          { text: item?.document?.metadata?.title || kvdbId },
         ]);
       } catch {
         errorNotificationToast(
@@ -185,26 +185,24 @@ export const KVDBFormPage: React.FC<KVDBFormPageProps> = (props) => {
       if (k) keyCounts[k] = (keyCounts[k] ?? 0) + 1;
     });
 
-    const contentErrors = values.contentEntries.map(
-      (entry): FormikErrors<ContentEntry> => {
-        const entryErrors: FormikErrors<ContentEntry> = {};
+    const contentErrors = values.contentEntries.map((entry): FormikErrors<ContentEntry> => {
+      const entryErrors: FormikErrors<ContentEntry> = {};
 
-        if (entry.key.trim() && keyCounts[entry.key.trim()] > 1) {
-          entryErrors.key = 'Duplicate key';
-        }
-
-        const trimmed = entry.value.trim();
-        if (trimmed[0] === '{' || trimmed[0] === '[') {
-          try {
-            JSON.parse(trimmed);
-          } catch {
-            entryErrors.value = 'Invalid JSON';
-          }
-        }
-
-        return entryErrors;
+      if (entry.key.trim() && keyCounts[entry.key.trim()] > 1) {
+        entryErrors.key = 'Duplicate key';
       }
-    );
+
+      const trimmed = entry.value.trim();
+      if (trimmed[0] === '{' || trimmed[0] === '[') {
+        try {
+          JSON.parse(trimmed);
+        } catch {
+          entryErrors.value = 'Invalid JSON';
+        }
+      }
+
+      return entryErrors;
+    });
 
     if (contentErrors.some((e) => Object.keys(e).length > 0)) {
       errors.contentEntries = contentErrors as any;

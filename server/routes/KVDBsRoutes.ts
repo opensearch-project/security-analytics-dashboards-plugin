@@ -9,22 +9,23 @@ import { NodeServices } from '../models/interfaces';
 import { API } from '../utils/constants';
 import { createQueryValidationSchema } from '../utils/helpers';
 
-const kvdbCreateResourceSchema = schema.object({
+const kvdbMetadataSchema = schema.object({
   title: schema.string(),
   author: schema.string(),
   description: schema.maybe(schema.string()),
   documentation: schema.maybe(schema.string()),
   references: schema.maybe(schema.arrayOf(schema.string())),
+  supports: schema.maybe(schema.arrayOf(schema.string())),
+});
+
+const kvdbCreateResourceSchema = schema.object({
+  metadata: kvdbMetadataSchema,
   enabled: schema.maybe(schema.boolean()),
   content: schema.any(),
 });
 
 const kvdbUpdateResourceSchema = schema.object({
-  title: schema.string(),
-  author: schema.string(),
-  description: schema.string(),
-  documentation: schema.string(),
-  references: schema.arrayOf(schema.string()),
+  metadata: kvdbMetadataSchema,
   enabled: schema.maybe(schema.boolean()),
   content: schema.any(),
 });

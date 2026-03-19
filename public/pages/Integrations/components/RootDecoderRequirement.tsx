@@ -67,9 +67,9 @@ const SelectRootDecoderForm: React.FC<SelectRootDecoderFormProps> = ({
 
       const isNewSearch = currentSearch !== state.data?.search;
 
-      const prevItems = isNewSearch ? [] : state.data?.items ?? [];
+      const prevItems = isNewSearch ? [] : (state.data?.items ?? []);
       const size = itemsPerPage;
-      const from = isNewSearch ? 0 : state.data?.nextFrom ?? 0;
+      const from = isNewSearch ? 0 : (state.data?.nextFrom ?? 0);
       const query = buildDecodersSearchQuery(currentSearch); // FIXME: this query does not match with the format of the decoders name, it can not find a substring in the name, it needs to be an exact match, we need to change the query builder to make it work with the name field or change the search field to be the keyword version of the name
       const response = await DataStore.decoders.searchDecoders(
         {
@@ -108,7 +108,13 @@ const SelectRootDecoderForm: React.FC<SelectRootDecoderFormProps> = ({
 
   const updatePolicy = async () => {
     const [success] = await DataStore.policies.updatePolicy(space, {
-      title: policyDocumentData.title,
+      metadata: {
+        title: policyDocumentData.metadata?.title ?? '',
+        author: policyDocumentData.metadata?.author ?? '',
+        description: policyDocumentData.metadata?.description ?? '',
+        documentation: policyDocumentData.metadata?.documentation ?? '',
+        references: policyDocumentData.metadata?.references ?? [],
+      },
       root_decoder: selected,
       integrations: policyDocumentData.integrations,
       filters: policyDocumentData.filters ?? [],
@@ -116,10 +122,6 @@ const SelectRootDecoderForm: React.FC<SelectRootDecoderFormProps> = ({
       enabled: policyDocumentData.enabled,
       index_unclassified_events: policyDocumentData.index_unclassified_events,
       index_discarded_events: policyDocumentData.index_discarded_events,
-      author: policyDocumentData.author,
-      description: policyDocumentData.description,
-      documentation: policyDocumentData.documentation,
-      references: policyDocumentData.references,
     });
     if (success) {
       successNotificationToast(notifications, 'updated', `[${space}] policy`);
@@ -286,7 +288,10 @@ export const withRootDecoderRequirementGuard: (Component: React.FC) => React.FC 
         rootDecoder = await DataStore.decoders.getDecoder(rootDecoderId, space);
       }
 
-      return { ok: !Boolean(rootDecoder), data: { policyDocumentData, rootDecoder } };
+      return {
+        ok: !Boolean(rootDecoder),
+        data: { policyDocumentData, rootDecoder },
+      };
     } catch (error) {
       return { ok: false, data: { error } };
     }

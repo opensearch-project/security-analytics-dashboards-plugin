@@ -13,24 +13,39 @@ import { AllowedActionsBySpace, SPACE_ACTIONS } from '../../common/constants';
 export function setupIntegrationRoutes(services: NodeServices, router: IRouter) {
   const { integrationService } = services;
 
+  const integrationMetadataSchema = schema.object({
+    title: schema.string(),
+    author: schema.string(),
+    date: schema.string({ defaultValue: '' }),
+    modified: schema.string({ defaultValue: '' }),
+    description: schema.string({ defaultValue: '' }),
+    references: schema.arrayOf(schema.string(), { defaultValue: [] }),
+    documentation: schema.string({ defaultValue: '' }),
+    supports: schema.arrayOf(schema.string(), { defaultValue: [] }),
+  });
+
+  const spaceSchema = schema.object({
+    name: schema.string({ defaultValue: '' }),
+  });
+
   router.post(
     {
       path: API.INTEGRATION_BASE,
       validate: {
         body: schema.object({
           document: schema.object({
-            author: schema.string(),
+            id: schema.string({ defaultValue: '' }),
             category: schema.string(),
-            description: schema.string({ defaultValue: '' }),
-            documentation: schema.string({ defaultValue: '' }),
-            references: schema.arrayOf(schema.string(), { defaultValue: [] }),
+            metadata: integrationMetadataSchema,
             tags: schema.nullable(
               schema.object({
                 correlation_id: schema.number(),
               })
             ),
-            title: schema.string(),
           }),
+          space: spaceSchema,
+          id: schema.maybe(schema.string()),
+          detectionRulesCount: schema.maybe(schema.number()),
         }),
         query: createQueryValidationSchema(),
       },
@@ -57,23 +72,25 @@ export function setupIntegrationRoutes(services: NodeServices, router: IRouter) 
           integrationId: schema.string(),
         }),
         body: schema.object({
+          id: schema.maybe(schema.string()),
+          detectionRulesCount: schema.maybe(schema.number()),
+          decodersCount: schema.maybe(schema.number()),
+          kvdbsCount: schema.maybe(schema.number()),
           document: schema.object({
-            author: schema.string(),
+            id: schema.string({ defaultValue: '' }),
             category: schema.string(),
+            metadata: integrationMetadataSchema,
             decoders: schema.arrayOf(schema.string(), { defaultValue: [] }),
-            description: schema.string({ defaultValue: '' }),
-            documentation: schema.string({ defaultValue: '' }),
             enabled: schema.boolean({ defaultValue: false }), // TODO: adapt if this can be configured by user in UI
             kvdbs: schema.arrayOf(schema.string(), { defaultValue: [] }),
-            references: schema.arrayOf(schema.string(), { defaultValue: [] }),
             rules: schema.arrayOf(schema.string(), { defaultValue: [] }),
             tags: schema.nullable(
               schema.object({
                 correlation_id: schema.number(),
               })
             ),
-            title: schema.string(),
           }),
+          space: schema.maybe(spaceSchema),
         }),
         query: createQueryValidationSchema(),
       },

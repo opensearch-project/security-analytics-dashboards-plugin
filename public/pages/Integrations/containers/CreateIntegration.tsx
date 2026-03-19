@@ -5,8 +5,8 @@
 
 import React from 'react';
 import { IntegrationForm } from '../components/IntegrationForm';
-import { CreateIntegrationRequestBody, IntegrationDocumentCreate } from '../../../../types';
-import { defaultIntegration } from '../../../../common/constants';
+import { IntegrationBase, IntegrationItem } from '../../../../types';
+import { defaultIntegration } from '../utils/constants';
 import { RouteComponentProps } from 'react-router-dom';
 import { BREADCRUMBS, ROUTES } from '../../../utils/constants';
 import { DataStore } from '../../../store/DataStore';
@@ -20,33 +20,20 @@ export interface CreateIntegrationProps extends RouteComponentProps {
 }
 
 export const CreateIntegration: React.FC<CreateIntegrationProps> = ({ history, notifications }) => {
-  const integrationDetails: CreateIntegrationRequestBody = { ...defaultIntegration };
+  const integrationDetails: IntegrationBase = { ...defaultIntegration };
 
   setBreadcrumbs([BREADCRUMBS.INTEGRATIONS, BREADCRUMBS.INTEGRATIONS_CREATE]);
 
-  const description = 'Create integration to categorize and identify rules for your data sources.'; // Replace Log Type is replaced with Integration by Wazuh
+  const description =
+    'Create integration to categorize and identify detection rules for your data sources.'; // Replace Log Type is replaced with Integration by Wazuh
 
-  const onCreateIntegration = async (integrationData: CreateIntegrationRequestBody) => {
-    const { document } = integrationData;
-    const integrationDocumentBody: IntegrationDocumentCreate = Object.fromEntries(
-      [
-        'author',
-        'category',
-        'description',
-        'documentation',
-        'references',
-        'tags',
-        'title',
-      ].map((field) => [field, document[field as keyof typeof integrationData.document]])
-    ) as IntegrationDocumentCreate;
-    const success = await DataStore.integrations.createIntegration({
-      document: integrationDocumentBody,
-    });
+  const onCreateIntegration = async (integrationData: IntegrationItem) => {
+    const success = await DataStore.integrations.createIntegration(integrationData);
     if (success) {
       successNotificationToast(
         notifications,
         'created',
-        `integration ${integrationData.document.title}`
+        `integration ${integrationData.document.metadata?.title ?? ''}`
       );
       history.push(ROUTES.INTEGRATIONS);
     }
@@ -67,6 +54,7 @@ export const CreateIntegration: React.FC<CreateIntegrationProps> = ({ history, n
       <IntegrationForm
         integrationDetails={{
           ...integrationDetails,
+          id: '',
           detectionRulesCount: 0,
         }}
         isEditMode={true}

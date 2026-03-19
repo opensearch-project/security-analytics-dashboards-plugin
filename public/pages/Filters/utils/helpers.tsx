@@ -21,7 +21,7 @@ export interface FilterTableItem {
 
 export const toFilterTableItem = (item: FilterItem): FilterTableItem => ({
   id: item.id,
-  name: item.document?.name ?? '',
+  name: item.document?.metadata?.title ?? item.document?.name ?? '',
   type: item.document?.type ?? '',
   enabled: item.document?.enabled ?? false,
   spaceName: item.space?.name ?? '',

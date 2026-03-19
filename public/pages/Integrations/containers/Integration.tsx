@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { RouteComponentProps, useLocation, useParams } from 'react-router-dom';
 import { IntegrationItem, Space } from '../../../../types';
 import { SPACE_ACTIONS } from '../../../../common/constants';
@@ -32,8 +32,8 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { IntegrationDetectionRules } from '../components/IntegrationDetectionRules';
 import { IntegrationDecoders } from '../components/IntegrationDecoders';
 import { IntegrationKVDBs } from '../components/IntegrationKVDBs';
+import { RuleTableItem } from '../../Rules/utils/helpers';
 import { DeleteIntegrationModal } from '../components/DeleteIntegrationModal';
-import { useIntegrationRules } from '../../WazuhRules/hooks/useIntegrationRules';
 import {
   errorNotificationToast,
   setBreadcrumbs,
@@ -67,12 +67,43 @@ export const Integration: React.FC<IntegrationProps> = ({ notifications, history
   >(undefined);
 
   const [isEditMode, setIsEditMode] = useState(false);
+  const [rules, setRules] = useState<RuleTableItem[]>([]);
+  const [loadingRules, setLoadingRules] = useState(true);
 
   useEffect(() => {
     return () => {
       isMountedRef.current = false;
     };
   }, []);
+
+  const updateRules = useCallback(
+    async (details: IntegrationItem, intialDetails: IntegrationItem) => {
+      const rulesRes = await DataStore.rules.getAllRules({
+        'rule.category': [details.document.metadata?.title?.toLowerCase() ?? ''],
+      });
+      const ruleItems = rulesRes.map((rule) => ({
+        title: rule._source.title,
+        level: rule._source.level,
+        category: rule._source.category,
+        description: rule._source.description,
+        source: rule.prePackaged ? 'Standard' : 'Custom',
+        ruleInfo: rule,
+        ruleId: rule._id,
+      }));
+      setRules(ruleItems);
+      setLoadingRules(false);
+      const rulesCount = details?.document?.rules?.length ?? 0;
+      setIntegrationDetails({
+        ...details,
+        detectionRulesCount: rulesCount,
+      });
+      setInitialIntegrationDetails({
+        ...intialDetails,
+        detectionRulesCount: rulesCount,
+      });
+    },
+    []
+  );
 
   useEffect(() => {
     const getIntegrationDetails = async () => {
@@ -87,7 +118,7 @@ export const Integration: React.FC<IntegrationProps> = ({ notifications, history
         return;
       }
 
-      setBreadcrumbs([BREADCRUMBS.INTEGRATIONS, { text: details.document.title }]);
+      setBreadcrumbs([BREADCRUMBS.INTEGRATIONS, { text: details.document.metadata?.title ?? '' }]);
       const integrationItem = {
         ...details,
         detectionRulesCount: details.document?.rules?.length ?? 0,
@@ -96,18 +127,20 @@ export const Integration: React.FC<IntegrationProps> = ({ notifications, history
       };
       setIntegrationDetails(integrationItem);
       setInitialIntegrationDetails(integrationItem);
+      updateRules(integrationItem, integrationItem);
     };
 
     getIntegrationDetails();
-  }, [integrationId]);
+  }, [integrationId, updateRules]);
 
-  const { items: rules, loading: loadingRules, refresh: refreshRules } = useIntegrationRules({
-    space: integrationDetails?.space?.name ?? '',
-  });
+  const refreshRules = useCallback(() => {
+    updateRules(integrationDetails!, initialIntegrationDetails!);
+  }, [integrationDetails]);
 
-  const decoderIds = useMemo(() => integrationDetails?.document.decoders ?? [], [
-    integrationDetails,
-  ]);
+  const decoderIds = useMemo(
+    () => integrationDetails?.document.decoders ?? [],
+    [integrationDetails]
+  );
   const {
     items: decoderItems,
     loading: loadingDecoders,
@@ -118,7 +151,11 @@ export const Integration: React.FC<IntegrationProps> = ({ notifications, history
   });
 
   const kvdbIds = useMemo(() => integrationDetails?.document.kvdbs ?? [], [integrationDetails]);
-  const { items: kvdbItems, loading: loadingKvdbs, refresh: refreshKvdbs } = useIntegrationKVDBs({
+  const {
+    items: kvdbItems,
+    loading: loadingKvdbs,
+    refresh: refreshKvdbs,
+  } = useIntegrationKVDBs({
     kvdbIds,
   });
 
@@ -319,7 +356,7 @@ export const Integration: React.FC<IntegrationProps> = ({ notifications, history
       {showDeleteModal && (
         <DeleteIntegrationModal
           integrationId={integrationDetails.id}
-          integrationName={integrationDetails.document.title}
+          integrationName={integrationDetails.document.metadata?.title ?? ''}
           detectionRulesCount={integrationDetails.detectionRulesCount} // TODO: refactor to avoid passing this prop
           decodersCount={integrationDetails.decodersCount}
           kvdbsCount={integrationDetails.kvdbsCount}
@@ -331,7 +368,7 @@ export const Integration: React.FC<IntegrationProps> = ({ notifications, history
         <EuiFlexGroup>
           <EuiFlexItem>
             <EuiTitle>
-              <h1>{integrationDetails.document.title}</h1>
+              <h1>{integrationDetails.document.metadata?.title}</h1>
             </EuiTitle>
           </EuiFlexItem>
           <EuiFlexItem>
@@ -348,7 +385,7 @@ export const Integration: React.FC<IntegrationProps> = ({ notifications, history
           listItems={[
             {
               title: 'Description',
-              description: integrationDetails.document.description,
+              description: integrationDetails.document.metadata?.description ?? '',
             },
           ]}
         />

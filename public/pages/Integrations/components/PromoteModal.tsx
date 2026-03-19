@@ -28,7 +28,7 @@ export interface PromoteBySpaceModalProps {
 
 const PromoteEntity: React.FC<{
   label: string;
-  entity: Exclude<PromoteChangeGroup, 'policy' | 'filters'>;
+  entity: PromoteChangeGroup;
   data: GetPromoteBySpaceResponse['response'];
 }> = ({ label, data, entity }) => {
   const memoizedData = useMemo(
@@ -99,7 +99,7 @@ export const PromoteBySpaceModal: React.FC<PromoteBySpaceModalProps> = ({
 
           {PROMOTE_ENTITIES_ORDER.map((entity) => {
             const label = PROMOTE_ENTITIES_LABELS[entity];
-            if (promote?.promote.changes[entity].length > 0) {
+            if ((promote?.promote?.changes?.[entity]?.length ?? 0) > 0) {
               return (
                 <React.Fragment key={entity}>
                   <PromoteEntity label={label} entity={entity} data={promote} />

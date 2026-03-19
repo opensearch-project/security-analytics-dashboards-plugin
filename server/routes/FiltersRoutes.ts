@@ -16,14 +16,14 @@ const filterResourceSchema = schema.object({
   type: schema.maybe(schema.string()),
   metadata: schema.maybe(
     schema.object({
+      title: schema.maybe(schema.string()),
       description: schema.maybe(schema.string()),
-      author: schema.maybe(
-        schema.object({
-          name: schema.maybe(schema.string()),
-          email: schema.maybe(schema.string()),
-          url: schema.maybe(schema.string()),
-        })
-      ),
+      author: schema.maybe(schema.string()),
+      date: schema.maybe(schema.string()),
+      modified: schema.maybe(schema.string()),
+      references: schema.maybe(schema.arrayOf(schema.string())),
+      documentation: schema.maybe(schema.string()),
+      supports: schema.maybe(schema.arrayOf(schema.string())),
     })
   ),
 });

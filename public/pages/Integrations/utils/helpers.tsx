@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { EuiLink, EuiPanel } from '@elastic/eui';
-import { Integration, PromoteSpaces } from '../../../../types';
+import { Integration } from '../../../../types';
 import { SPACE_ACTIONS, UserSpacesOrder } from '../../../../common/constants';
 import { capitalize, startCase } from 'lodash';
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
@@ -34,13 +34,13 @@ export const mapPolicyToIntegrationTableItems = (
     .filter((source): source is IntegrationBase & { _id: string } => Boolean(source && source._id))
     .map((source) => ({
       id: source._id,
-      title: source.document.title,
-      description: source.document.description,
+      title: source.document.metadata?.title ?? '',
+      description: source.document.metadata?.description,
       category: source.document.category,
       space: source.space.name,
       decoders: source.document.decoders,
       kvdbs: source.document.kvdbs,
-      rules: (source.document as any).rules,
+      rules: source.document.rules,
     }));
 };
 
@@ -155,69 +155,73 @@ export const getIntegrationLabel = (name: string) => {
   return !name ? DEFAULT_EMPTY_DATA : integrationLabels[name.toLowerCase()] || startCase(name);
 };
 
-export const withGuardAsync = (
-  condition: (props: any) => Promise<{ ok: boolean; data: any }>,
-  ComponentFulfillsCondition: React.FC,
-  ComponentLoadingResolution: null | React.FC = null,
-  options: { rerunOn?: (props) => any[] }
-) => (WrappedComponent: React.FC) => (props: any) => {
-  const [loading, setLoading] = useState(true);
-  const [fulfillsCondition, setFulfillsCondition] = useState({
-    ok: false,
-    data: {},
-  });
+export const withGuardAsync =
+  (
+    condition: (props: any) => Promise<{ ok: boolean; data: any }>,
+    ComponentFulfillsCondition: React.FC,
+    ComponentLoadingResolution: null | React.FC = null,
+    options: { rerunOn?: (props) => any[] }
+  ) =>
+  (WrappedComponent: React.FC) =>
+  (props: any) => {
+    const [loading, setLoading] = useState(true);
+    const [fulfillsCondition, setFulfillsCondition] = useState({
+      ok: false,
+      data: {},
+    });
 
-  const execCondition = async () => {
-    try {
-      setLoading(true);
-      setFulfillsCondition({ ok: false, data: {} });
-      setFulfillsCondition(await condition({ ...props, check: execCondition }));
-    } catch (error) {
-      setFulfillsCondition({ ok: false, data: { error } });
-    } finally {
-      setLoading(false);
+    const execCondition = async () => {
+      try {
+        setLoading(true);
+        setFulfillsCondition({ ok: false, data: {} });
+        setFulfillsCondition(await condition({ ...props, check: execCondition }));
+      } catch (error) {
+        setFulfillsCondition({ ok: false, data: { error } });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const dependenciesRun = options?.rerunOn ? options.rerunOn(props) : [];
+
+    useEffect(() => {
+      execCondition();
+    }, dependenciesRun);
+
+    if (loading) {
+      return ComponentLoadingResolution ? <ComponentLoadingResolution {...props} /> : null;
     }
+
+    return fulfillsCondition.ok ? (
+      <ComponentFulfillsCondition
+        {...props}
+        {...(fulfillsCondition?.data ?? {})}
+        check={execCondition}
+      />
+    ) : (
+      <WrappedComponent {...props} {...(fulfillsCondition?.data ?? {})} check={execCondition} />
+    );
   };
 
-  const dependenciesRun = options?.rerunOn ? options.rerunOn(props) : [];
+export const withGuard =
+  (condition: (props: any) => boolean, ComponentFulfillsCondition: React.FC) =>
+  (WrappedComponent: React.FC) =>
+  (props: any) => {
+    return condition(props) ? (
+      <ComponentFulfillsCondition {...props} />
+    ) : (
+      <WrappedComponent {...props} />
+    );
+  };
 
-  useEffect(() => {
-    execCondition();
-  }, dependenciesRun);
-
-  if (loading) {
-    return ComponentLoadingResolution ? <ComponentLoadingResolution {...props} /> : null;
-  }
-
-  return fulfillsCondition.ok ? (
-    <ComponentFulfillsCondition
-      {...props}
-      {...(fulfillsCondition?.data ?? {})}
-      check={execCondition}
-    />
-  ) : (
-    <WrappedComponent {...props} {...(fulfillsCondition?.data ?? {})} check={execCondition} />
+export const withWrapComponent =
+  (WrapComponent, mapWrapComponentProps = () => {}) =>
+  (WrappedComponent) =>
+  (props) => (
+    <WrapComponent {...props} {...(mapWrapComponentProps ? mapWrapComponentProps(props) : {})}>
+      <WrappedComponent {...props}></WrappedComponent>
+    </WrapComponent>
   );
-};
-
-export const withGuard = (
-  condition: (props: any) => boolean,
-  ComponentFulfillsCondition: React.FC
-) => (WrappedComponent: React.FC) => (props: any) => {
-  return condition(props) ? (
-    <ComponentFulfillsCondition {...props} />
-  ) : (
-    <WrappedComponent {...props} />
-  );
-};
-
-export const withWrapComponent = (WrapComponent, mapWrapComponentProps = () => {}) => (
-  WrappedComponent
-) => (props) => (
-  <WrapComponent {...props} {...(mapWrapComponentProps ? mapWrapComponentProps(props) : {})}>
-    <WrappedComponent {...props}></WrappedComponent>
-  </WrapComponent>
-);
 
 export const withModal = (options) =>
   withWrapComponent(
@@ -252,6 +256,14 @@ export const withModal = (options) =>
     () => options
   );
 
+export const getNextSpace = (space: string) => {
+  const currentIndex = UserSpacesOrder.indexOf(space);
+  if (currentIndex === -1 || currentIndex === UserSpacesOrder.length - 1) {
+    return null; // No next space available
+  }
+  return UserSpacesOrder[currentIndex + 1];
+};
+
 type useAsyncActionRunOnStartDependenciesReturns<T> = {
   data: T | null;
   error: Error | null;
@@ -271,7 +283,9 @@ type useAsyncActionRunOnStartDependencies = any[];
 export function useAsyncActionRunOnStart<T>(
   action: useAsyncActionRunOnStartAction<T>,
   dependencies: useAsyncActionRunOnStartDependencies = [],
-  { refreshDataOnPreRun }: { refreshDataOnPreRun: boolean } = { refreshDataOnPreRun: true }
+  { refreshDataOnPreRun }: { refreshDataOnPreRun: boolean } = {
+    refreshDataOnPreRun: true,
+  }
 ): useAsyncActionRunOnStartDependenciesReturns<T> {
   const [running, setRunning] = useState(true);
   const [data, setData] = useState<T | null>(null);

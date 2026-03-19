@@ -158,19 +158,19 @@ export class DecodersService {
               'document.decoders': decoderIds,
             },
           },
-          _source: ['document.title', 'document.decoders'],
+          _source: ['document.metadata.title', 'document.decoders'],
         },
       });
 
       const hits = integrationResponse?.hits?.hits ?? [];
       hits.forEach((hit: any) => {
-        const title = hit?._source?.document?.title;
+        const title = hit?._source?.document?.metadata?.title;
         const decoderRefs = hit?._source?.document?.decoders;
         const decoderList = Array.isArray(decoderRefs)
           ? decoderRefs
           : decoderRefs
-          ? [decoderRefs]
-          : [];
+            ? [decoderRefs]
+            : [];
         decoderList.forEach((decoderId: string) => {
           if (!integrations.has(decoderId)) {
             integrations.set(decoderId, []);
@@ -224,7 +224,7 @@ export class DecodersService {
       const total =
         typeof searchResponse?.hits?.total === 'number'
           ? searchResponse.hits.total
-          : searchResponse?.hits?.total?.value ?? items.length;
+          : (searchResponse?.hits?.total?.value ?? items.length);
 
       return response.custom({
         statusCode: 200,
