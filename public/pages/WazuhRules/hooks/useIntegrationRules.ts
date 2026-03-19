@@ -18,13 +18,13 @@ const toRuleTableItem = (rule: RuleItemInfoBase): RuleTableItem => ({
   ruleId: rule._id,
 });
 
-export function useIntegrationRules({ space }: { space: string }) {
+export function useIntegrationRules({ ruleIds, space }: { ruleIds: string[]; space: string }) {
   const [items, setItems] = useState<RuleTableItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [reloadTrigger, setReloadTrigger] = useState(0);
 
   useEffect(() => {
-    if (!space) {
+    if (!space || ruleIds.length === 0) {
       setItems([]);
       return;
     }
@@ -33,7 +33,10 @@ export function useIntegrationRules({ space }: { space: string }) {
     setLoading(true);
 
     DataStore.rules
-      .searchRules({ size: 5000 }, space)
+      .searchRules(
+        { size: Math.min(ruleIds.length, 5000), query: { terms: { 'document.id': ruleIds } } },
+        space
+      )
       .then((response) => {
         if (!cancelled) {
           setItems(response.items.map(toRuleTableItem));
@@ -53,7 +56,7 @@ export function useIntegrationRules({ space }: { space: string }) {
     return () => {
       cancelled = true;
     };
-  }, [space, reloadTrigger]);
+  }, [ruleIds, space, reloadTrigger]);
 
   const refresh = useCallback(() => {
     setReloadTrigger((prev) => prev + 1);

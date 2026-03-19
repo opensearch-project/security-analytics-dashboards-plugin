@@ -29,7 +29,7 @@ export function useIntegrationDecoders({ decoderIds, space }: useIntegrationDeco
     DataStore.decoders
       .searchDecoders(
         {
-          query: { ids: { values: decoderIds } },
+          query: { terms: { 'document.id': decoderIds } },
           size: Math.min(decoderIds.length, 10000),
           _source: { includes: ['document', 'space'] },
         },

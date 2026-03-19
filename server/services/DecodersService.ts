@@ -214,12 +214,12 @@ export class DecodersService {
       });
 
       const hits = searchResponse?.hits?.hits ?? [];
-      const decoderIds = hits.map((hit: any) => hit._id);
+      const decoderIds = hits.map((hit: any) => hit._source?.document?.id ?? hit._id);
       const integrationMap = await this.fetchIntegrationMap(client, decoderIds);
       const items: DecoderItem[] = hits.map((hit: any) => ({
         id: hit._id,
         ...hit._source,
-        integrations: integrationMap.get(hit._id) ?? [],
+        integrations: integrationMap.get(hit._source?.document?.id ?? hit._id) ?? [],
       }));
       const total =
         typeof searchResponse?.hits?.total === 'number'
@@ -277,11 +277,12 @@ export class DecodersService {
         });
       }
 
-      const integrationMap = await this.fetchIntegrationMap(client, [hit._id]);
+      const docId = hit._source?.document?.id ?? hit._id;
+      const integrationMap = await this.fetchIntegrationMap(client, [docId]);
       const item: DecoderItem = {
         id: hit._id,
         ...hit._source,
-        integrations: integrationMap.get(hit._id) ?? [],
+        integrations: integrationMap.get(docId) ?? [],
       };
 
       return response.custom({

@@ -9,9 +9,10 @@ import { KVDBItem } from '../../../../types';
 
 export interface useIntegrationKVDBsParams {
   kvdbIds: string[];
+  space: string;
 }
 
-export function useIntegrationKVDBs({ kvdbIds }: useIntegrationKVDBsParams) {
+export function useIntegrationKVDBs({ kvdbIds, space }: useIntegrationKVDBsParams) {
   const [items, setItems] = useState<KVDBItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [reloadTrigger, setReloadTrigger] = useState(0);
@@ -25,9 +26,19 @@ export function useIntegrationKVDBs({ kvdbIds }: useIntegrationKVDBsParams) {
     let cancelled = false;
     setLoading(true);
 
+    const query: any = { terms: { 'document.id': kvdbIds } };
+    const wrappedQuery = space
+      ? {
+          bool: {
+            must: [query],
+            filter: [{ term: { 'space.name': space } }],
+          },
+        }
+      : query;
+
     DataStore.kvdbs
       .searchKVDBs({
-        query: { terms: { 'document.id': kvdbIds } },
+        query: wrappedQuery,
         size: Math.min(kvdbIds.length, 10000),
         track_total_hits: true,
       })
@@ -50,7 +61,7 @@ export function useIntegrationKVDBs({ kvdbIds }: useIntegrationKVDBsParams) {
     return () => {
       cancelled = true;
     };
-  }, [kvdbIds, reloadTrigger]);
+  }, [kvdbIds, space, reloadTrigger]);
 
   const refresh = useCallback(() => {
     setReloadTrigger((prev) => prev + 1);
