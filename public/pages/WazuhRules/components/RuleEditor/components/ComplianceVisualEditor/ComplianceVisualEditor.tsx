@@ -3,54 +3,62 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import React, { useEffect } from 'react';
-import { EuiCodeEditor } from '@elastic/eui';
-
-const COMPLIANCE_EXAMPLE = `pci_dss:
-  - ""
-gdpr:
-  - ""
-cmmc:
-  - ""
-nist_800_53:
-  - ""
-nist_800_171:
-  - ""
-hipaa:
-  - ""
-iso_27001:
-  - ""
-nis2:
-  - ""
-tsc:
-  - ""
-fedramp:
-  - ""
-`;
+import React, { useState } from 'react';
+import { EuiFlexGroup, EuiFlexItem, EuiText, EuiSpacer } from '@elastic/eui';
+import { FieldTextArray } from '../../../../../Rules/components/RuleEditor/components/FieldTextArray';
+import {
+  ComplianceKey,
+  ComplianceState,
+  ComplianceFramework,
+  COMPLIANCE_FRAMEWORKS,
+  parseComplianceYml,
+  dumpComplianceYml,
+} from '../../../../utils/compliance';
 
 export interface ComplianceVisualEditorProps {
   complianceYml: string;
   onChange: (yml: string) => void;
 }
 
+const makeLabel = (framework: ComplianceFramework) => (
+  <>
+    <EuiFlexGroup gutterSize="s" alignItems="baseline" responsive={false}>
+      <EuiFlexItem grow={false}>
+        <EuiText size="s">
+          <strong>{framework.label}</strong>
+        </EuiText>
+      </EuiFlexItem>
+    </EuiFlexGroup>
+    <EuiSpacer size="xs" />
+  </>
+);
+
 export const ComplianceVisualEditor: React.FC<ComplianceVisualEditorProps> = ({
   complianceYml,
   onChange,
 }) => {
-  useEffect(() => {
-    if (!complianceYml) {
-      onChange(COMPLIANCE_EXAMPLE);
-    }
-  }, []);
+  const [state, setState] = useState<ComplianceState>(() => parseComplianceYml(complianceYml));
+
+  const handleChange = (key: ComplianceKey) => (items: string[]) => {
+    const newState = { ...state, [key]: items };
+    setState(newState);
+    onChange(dumpComplianceYml(newState));
+  };
 
   return (
-    <EuiCodeEditor
-      mode="yaml"
-      width="600px"
-      height="200px"
-      value={complianceYml || COMPLIANCE_EXAMPLE}
-      onChange={onChange}
-      setOptions={{ fontSize: '12px' }}
-    />
+    <>
+      {COMPLIANCE_FRAMEWORKS.map((framework, idx) => (
+        <React.Fragment key={framework.key}>
+          <FieldTextArray
+            name={`compliance_${framework.key}`}
+            label={makeLabel(framework)}
+            fields={state[framework.key]}
+            addButtonName={framework.addButtonName}
+            placeholder={framework.placeholder}
+            onChange={handleChange(framework.key)}
+          />
+        </React.Fragment>
+      ))}
+    </>
   );
 };
