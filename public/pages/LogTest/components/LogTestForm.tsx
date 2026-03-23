@@ -25,11 +25,17 @@ const TRACE_LEVEL_OPTIONS: Array<{ value: LogTestTraceLevel; text: string }> = [
   { value: 'ALL', text: 'All' },
 ];
 
+export interface LogTestSpaceOption {
+  id: string;
+  label: string;
+}
+
 export interface LogTestFormData {
   queue: number | undefined;
   location: string;
   event: string;
   traceLevel: LogTestTraceLevel;
+  space: string;
   metadataFields: MetadataEntry[];
 }
 
@@ -37,6 +43,7 @@ export interface LogTestFormErrors {
   queue?: string;
   location?: string;
   event?: string;
+  space?: string;
 }
 
 export interface LogTestFormProps {
@@ -44,6 +51,7 @@ export interface LogTestFormProps {
   errors: LogTestFormErrors;
   onFormChange: (field: keyof LogTestFormData, value: any) => void;
   onMetadataFieldsChange: (fields: MetadataEntry[]) => void;
+  spaceOptions: LogTestSpaceOption[];
   disabled?: boolean;
 }
 
@@ -52,8 +60,13 @@ export const LogTestForm: React.FC<LogTestFormProps> = ({
   errors,
   onFormChange,
   onMetadataFieldsChange,
+  spaceOptions,
   disabled = false,
 }) => {
+  const spaceSelectOptions = [
+    ...spaceOptions.map((option) => ({ value: option.id, text: option.label })),
+  ];
+
   return (
     <>
       <EuiFlexGroup gutterSize="m" wrap>
@@ -104,6 +117,18 @@ export const LogTestForm: React.FC<LogTestFormProps> = ({
               value={formData.traceLevel}
               onChange={(e) => onFormChange('traceLevel', e.target.value as LogTestTraceLevel)}
               disabled={disabled}
+              fullWidth
+            />
+          </EuiFormRow>
+        </EuiFlexItem>
+        <EuiFlexItem style={{ minWidth: '280px' }}>
+          <EuiFormRow label="Space" isInvalid={!!errors.space} error={errors.space} fullWidth>
+            <EuiSelect
+              options={spaceSelectOptions}
+              value={formData.space}
+              onChange={(e) => onFormChange('space', e.target.value)}
+              isInvalid={!!errors.space}
+              disabled={disabled || spaceSelectOptions.length === 0}
               fullWidth
             />
           </EuiFormRow>

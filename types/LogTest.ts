@@ -11,6 +11,7 @@ export interface LogTestRequestBody {
   metadata?: Record<string, string | number | object>;
   event: string;
   trace_level?: LogTestTraceLevel;
+  space: string;
 }
 
 export interface LogTestAssetTrace {
@@ -19,9 +20,20 @@ export interface LogTestAssetTrace {
   traces: string[];
 }
 
+export interface LogTestMatchedRule {
+  id?: string;
+  rule_id?: string;
+  name?: string;
+  title?: string;
+  level?: string;
+  severity?: string;
+  [key: string]: unknown;
+}
+
 export interface LogTestResult {
   output: object;
   asset_traces?: LogTestAssetTrace[];
+  matched_rules?: LogTestMatchedRule[];
 }
 
 export interface LogTestResponse {
@@ -31,5 +43,4 @@ export interface LogTestResponse {
 
 export interface LogTestApiRequest {
   document: LogTestRequestBody;
-  integrationId: string;
 }

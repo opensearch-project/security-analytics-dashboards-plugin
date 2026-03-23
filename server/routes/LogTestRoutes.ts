@@ -10,33 +10,31 @@ import { API } from '../utils/constants';
 import { createQueryValidationSchema } from '../utils/helpers';
 
 export function setupLogTestRoutes(services: NodeServices, router: IRouter) {
-    const { logTestService } = services;
+  const { logTestService } = services;
 
-    router.post(
-        {
-            path: API.LOG_TEST_BASE,
-            validate: {
-                body: schema.object({
-                    document: schema.object({
-                        queue: schema.number(),
-                        location: schema.string(),
-                        metadata: schema.maybe(
-                            schema.recordOf(schema.string(), schema.any())
-                        ),
-                        event: schema.string(),
-                        trace_level: schema.maybe(
-                            schema.oneOf([
-                                schema.literal('NONE'),
-                                schema.literal('ASSET_ONLY'),
-                                schema.literal('ALL'),
-                            ])
-                        ),
-                    }),
-                    integrationId: schema.string(),
-                }),
-                query: createQueryValidationSchema(),
-            },
-        },
-        logTestService.logTest
-    );
+  router.post(
+    {
+      path: API.LOG_TEST_BASE,
+      validate: {
+        body: schema.object({
+          document: schema.object({
+            queue: schema.number(),
+            location: schema.string(),
+            metadata: schema.maybe(schema.recordOf(schema.string(), schema.any())),
+            event: schema.string(),
+            trace_level: schema.maybe(
+              schema.oneOf([
+                schema.literal('NONE'),
+                schema.literal('ASSET_ONLY'),
+                schema.literal('ALL'),
+              ])
+            ),
+            space: schema.string(),
+          }),
+        }),
+        query: createQueryValidationSchema(),
+      },
+    },
+    logTestService.logTest
+  );
 }

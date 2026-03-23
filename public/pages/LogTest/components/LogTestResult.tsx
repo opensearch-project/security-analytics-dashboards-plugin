@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import {
   EuiText,
   EuiCodeBlock,
@@ -18,6 +18,7 @@ import {
 import {
   LogTestResponse,
   LogTestAssetTrace,
+  LogTestMatchedRule,
   LogTestResult as LogTestResultType,
 } from '../../../../types';
 
@@ -61,6 +62,38 @@ const AssetTraceItem: React.FC<{ trace: LogTestAssetTrace; index: number }> = ({
   );
 };
 
+const MatchedRuleItem: React.FC<{ rule: LogTestMatchedRule; index: number }> = ({
+  rule,
+  index,
+}) => {
+  const ruleId = rule.id ?? rule.rule_id ?? '';
+  const ruleName = rule.title ?? rule.name ?? ruleId ?? `Rule ${index + 1}`;
+  const level = rule.level ?? rule.severity ?? '';
+
+  return (
+    <EuiAccordion
+      id={`matched-rule-${index}`}
+      buttonContent={
+        <EuiFlexGroup alignItems="center" gutterSize="s">
+          <EuiFlexItem grow={false}>
+            <EuiBadge color="hollow">{level || 'Level not available'}</EuiBadge>
+          </EuiFlexItem>
+          <EuiFlexItem>
+            <EuiText size="s">
+              <strong>{ruleName}</strong>
+            </EuiText>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      }
+      paddingSize="s"
+    >
+      <EuiCodeBlock language="json" paddingSize="s" fontSize="s" isCopyable overflowHeight={220}>
+        {JSON.stringify(rule, null, 2)}
+      </EuiCodeBlock>
+    </EuiAccordion>
+  );
+};
+
 export const LogTestResult: React.FC<LogTestResultProps> = ({ result }) => {
   const parsedMessage: LogTestResultType = useMemo(() => {
     if (!result?.message) return null;
@@ -81,6 +114,7 @@ export const LogTestResult: React.FC<LogTestResultProps> = ({ result }) => {
   }, [parsedMessage?.output]);
 
   const hasAssetTraces = parsedMessage?.asset_traces?.length > 0;
+  const hasMatchedRules = parsedMessage?.matched_rules?.length > 0;
 
   return (
     <>
@@ -127,6 +161,24 @@ export const LogTestResult: React.FC<LogTestResultProps> = ({ result }) => {
               <React.Fragment key={`${trace.asset}-${index}`}>
                 {index > 0 && <EuiSpacer size="s" />}
                 <AssetTraceItem trace={trace} index={index} />
+              </React.Fragment>
+            ))}
+          </EuiPanel>
+        </>
+      )}
+
+      {hasMatchedRules && (
+        <>
+          <EuiSpacer size="l" />
+          <EuiText size="s">
+            <h4>Matched Rules</h4>
+          </EuiText>
+          <EuiSpacer size="s" />
+          <EuiPanel paddingSize="m">
+            {parsedMessage.matched_rules!.map((rule, index) => (
+              <React.Fragment key={`${rule.id ?? rule.rule_id ?? 'rule'}-${index}`}>
+                {index > 0 && <EuiSpacer size="s" />}
+                <MatchedRuleItem rule={rule} index={index} />
               </React.Fragment>
             ))}
           </EuiPanel>

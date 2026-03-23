@@ -66,7 +66,7 @@ export const MetadataFieldsEditor: React.FC<MetadataFieldsEditorProps> = ({
         return (
           <React.Fragment key={index}>
             {index > 0 && <EuiSpacer size="s" />}
-            <EuiFlexGroup gutterSize="s" alignItems="start">
+            <EuiFlexGroup gutterSize="s">
               <EuiFlexItem style={{ maxWidth: '400px' }}>
                 <EuiComboBox
                   singleSelection={{ asPlainText: true }}
