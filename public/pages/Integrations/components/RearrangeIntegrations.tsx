@@ -204,8 +204,18 @@ const RearrangeIntegrationsBody: React.FC<RearrangeIntegrationsViewProps> = ({
       latestIntegrationIds.has(id)
     );
 
+    // Remove unnecessary fields from payload
+    const {
+      id,
+      metadata: { date, modified, ...payloadMetadata },
+      ...policyPayload
+    } = policyDocumentData;
+
     const payload = {
-      ...policyDocumentData,
+      ...policyPayload,
+      metadata: {
+        ...payloadMetadata,
+      },
       integrations: validIntegrations.map(({ id }) => id),
     };
     const [success] = await DataStore.policies.updatePolicy(space, payload);

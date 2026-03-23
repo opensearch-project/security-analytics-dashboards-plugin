@@ -46,6 +46,7 @@ export function setupPoliciesRoutes(services: NodeServices, router: IRouter) {
     description: schema.string({ defaultValue: '' }),
     documentation: schema.string({ defaultValue: '' }),
     references: schema.arrayOf(schema.string(), { defaultValue: [] }),
+    compatibility: schema.arrayOf(schema.string(), { defaultValue: [] }),
   });
 
   router.put(
