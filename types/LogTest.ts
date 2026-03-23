@@ -6,30 +6,30 @@
 export type LogTestTraceLevel = 'NONE' | 'ASSET_ONLY' | 'ALL';
 
 export interface LogTestRequestBody {
-    queue: number;
-    location: string;
-    agent_metadata?: Record<string, object>;
-    event: string;
-    trace_level?: LogTestTraceLevel;
+  queue: number;
+  location: string;
+  metadata?: Record<string, string | number | object>;
+  event: string;
+  trace_level?: LogTestTraceLevel;
 }
 
 export interface LogTestAssetTrace {
-    asset: string;
-    success: boolean;
-    traces: string[];
+  asset: string;
+  success: boolean;
+  traces: string[];
 }
 
 export interface LogTestResult {
-    output: string;
-    asset_traces?: LogTestAssetTrace[];
+  output: object;
+  asset_traces?: LogTestAssetTrace[];
 }
 
 export interface LogTestResponse {
-    status: string;
-    message: string;
+  status: string;
+  message: LogTestResult;
 }
 
 export interface LogTestApiRequest {
-    document: LogTestRequestBody;
-    integrationId: string;
+  document: LogTestRequestBody;
+  integrationId: string;
 }
