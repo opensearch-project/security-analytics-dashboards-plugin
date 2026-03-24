@@ -34,8 +34,8 @@ export const integrationDetailsTabs = [
 export const defaultIntegration: IntegrationBase = {
   document: {
     id: '',
-    category: '',
     enabled: true,
+    category: '',
     metadata: {
       title: '',
       author: '',

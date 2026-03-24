@@ -46,6 +46,29 @@ export class IntegrationStore {
     return `${entities.slice(0, -1).join(', ')}, and ${entities[entities.length - 1]}`;
   }
 
+  /** Same role as KVDBsStore.getErrorMessage: string / Http body / thrown errors. */
+  private getErrorMessage(error: unknown, fallback: string): string {
+    if (typeof error === 'string') {
+      return error;
+    }
+    if (error instanceof Error) {
+      return error.message || fallback;
+    }
+    if (error && typeof error === 'object') {
+      const e = error as { message?: string; body?: { message?: string } };
+      const msg = e.body?.message ?? e.message;
+      if (typeof msg === 'string' && msg.length > 0) {
+        return msg;
+      }
+      try {
+        return JSON.stringify(error);
+      } catch {
+        return fallback;
+      }
+    }
+    return fallback;
+  }
+
   public async getIntegration(
     id: string,
     spaceFilter?: string | null
@@ -150,18 +173,29 @@ export class IntegrationStore {
   }
 
   public async createIntegration(integration: IntegrationBase): Promise<boolean> {
-    const createRes = await this.service.createIntegration(integration);
+    try {
+      const createRes = await this.service.createIntegration(integration);
 
-    if (!createRes.ok) {
+      if (!createRes.ok) {
+        errorNotificationToast(
+          this.notifications,
+          'create',
+          'integration',
+          this.getErrorMessage(createRes.error, 'Failed to create integration.')
+        );
+        return false;
+      }
+
+      return true;
+    } catch (error: unknown) {
       errorNotificationToast(
         this.notifications,
         'create',
         'integration',
-        createRes?.error?.message || createRes.error // TODO: I am not sure about the error structure here
+        this.getErrorMessage(error, 'An unexpected error occurred.')
       );
+      return false;
     }
-
-    return createRes.ok;
   }
 
   public async updateIntegration(integrationId: string, document: Integration): Promise<boolean> {
@@ -169,24 +203,23 @@ export class IntegrationStore {
       const updateRes = await this.service.updateIntegration(integrationId, document);
 
       if (!updateRes.ok) {
-        const errorMsg =
-          typeof updateRes.error === 'string'
-            ? updateRes.error
-            : ((updateRes.error as { message?: string })?.message ??
-              JSON.stringify(updateRes.error));
-        errorNotificationToast(this.notifications, 'update', 'integration', errorMsg);
+        errorNotificationToast(
+          this.notifications,
+          'update',
+          'integration',
+          this.getErrorMessage(updateRes.error, 'Failed to update integration.')
+        );
         return false;
       }
 
       return true;
     } catch (error: unknown) {
-      const errorMsg =
-        error instanceof Error
-          ? error.message
-          : ((error as { body?: { message?: string }; message?: string })?.body?.message ??
-            (error as { message?: string })?.message ??
-            'An unexpected error occurred.');
-      errorNotificationToast(this.notifications, 'update', 'integration', errorMsg);
+      errorNotificationToast(
+        this.notifications,
+        'update',
+        'integration',
+        this.getErrorMessage(error, 'An unexpected error occurred.')
+      );
       return false;
     }
   }
@@ -200,21 +233,17 @@ export class IntegrationStore {
           this.notifications,
           'delete',
           'integration',
-          deleteRes.error.message || 'Error occurred while deleting integration.'
+          this.getErrorMessage(deleteRes.error, 'Error occurred while deleting integration.')
         );
       }
 
       return { ok: deleteRes.ok, error: deleteRes.error || null };
-    } catch (e: any) {
-      errorNotificationToast(
-        this.notifications,
-        'delete',
-        'integration',
-        e?.message || 'An unexpected error occurred.'
-      );
+    } catch (e: unknown) {
+      const msg = this.getErrorMessage(e, 'An unexpected error occurred.');
+      errorNotificationToast(this.notifications, 'delete', 'integration', msg);
       return {
         ok: false,
-        error: { message: e?.message || 'An unexpected error occurred.' },
+        error: { message: msg },
       };
     }
   }

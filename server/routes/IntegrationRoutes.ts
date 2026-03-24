@@ -37,6 +37,7 @@ export function setupIntegrationRoutes(services: NodeServices, router: IRouter) 
             id: schema.string({ defaultValue: '' }),
             category: schema.string(),
             metadata: integrationMetadataSchema,
+            enabled: schema.boolean({ defaultValue: false }),
             tags: schema.nullable(
               schema.object({
                 correlation_id: schema.number(),
