@@ -34,15 +34,15 @@ const INITIAL_FORM_DATA: LogTestFormData = {
   location: '',
   event: '',
   traceLevel: 'NONE',
-  space: '',
+  space: SpaceTypes.STANDARD.value,
   metadataFields: [],
 };
 
 const INITIAL_ERRORS: LogTestFormErrors = {};
 
 const spaceOptions: LogTestSpaceOption[] = [
-  { id: SpaceTypes.TEST.value, label: SpaceTypes.TEST.label },
   { id: SpaceTypes.STANDARD.value, label: SpaceTypes.STANDARD.label },
+  { id: SpaceTypes.TEST.value, label: SpaceTypes.TEST.label },
 ];
 
 export const LogTest: React.FC<RouteComponentProps> = () => {
@@ -61,10 +61,6 @@ export const LogTest: React.FC<RouteComponentProps> = () => {
     // if (formData.queue === undefined || formData.queue < 1 || formData.queue > 255) {
     //     newErrors.queue = 'Queue is required and must be a number between 1 and 255';
     // }
-
-    if (!formData.location.trim()) {
-      newErrors.location = 'Location is required';
-    }
 
     if (!formData.event.trim()) {
       newErrors.event = 'Log event is required';
@@ -85,17 +81,13 @@ export const LogTest: React.FC<RouteComponentProps> = () => {
 
     setIsLoading(true);
 
-    const metadata = buildMetadataObject(formData.metadataFields);
-
     const result = await DataStore.logTests.executeLogTest({
       document: {
         queue: 1, // temporary hardcoded queue value
-        location: formData.location.trim(),
+        location: String(formData.location ?? '').trim(),
         event: formData.event.trim(),
         trace_level: formData.traceLevel,
-        ...{
-          metadata,
-        },
+        metadata: buildMetadataObject(formData.metadataFields),
         space: formData.space,
       },
     });

@@ -17,6 +17,17 @@ import {
 import { METADATA_FIELDS } from '../constants';
 import { MetadataEntry } from '../utils';
 
+const UNIQUE_METADATA_FIELDS = (() => {
+  const seen = new Set<string>();
+  return METADATA_FIELDS.filter((f) => {
+    if (seen.has(f.key)) {
+      return false;
+    }
+    seen.add(f.key);
+    return true;
+  });
+})();
+
 export interface MetadataFieldsEditorProps {
   entries: MetadataEntry[];
   onChange: (entries: MetadataEntry[]) => void;
@@ -29,7 +40,8 @@ export const MetadataFieldsEditor: React.FC<MetadataFieldsEditorProps> = ({
   disabled = false,
 }) => {
   const selectedKeys = entries.map((e) => e.key);
-  const allFieldsSelected = selectedKeys.filter(Boolean).length >= METADATA_FIELDS.length;
+  const allFieldsSelected =
+    selectedKeys.filter(Boolean).length >= UNIQUE_METADATA_FIELDS.length;
 
   const handleKeyChange = (index: number, newKey: string) => {
     const updated = entries.map((entry, i) => (i === index ? { key: newKey, value: '' } : entry));
@@ -54,14 +66,14 @@ export const MetadataFieldsEditor: React.FC<MetadataFieldsEditorProps> = ({
   return (
     <>
       {entries.map((entry, index) => {
-        const fieldDef = METADATA_FIELDS.find((f) => f.key === entry.key);
+        const fieldDef = UNIQUE_METADATA_FIELDS.find((f) => f.key === entry.key);
         const isNumber = fieldDef?.type === 'number';
 
-        const availableOptions = METADATA_FIELDS.filter(
+        const availableOptions = UNIQUE_METADATA_FIELDS.filter(
           (f) => !selectedKeys.includes(f.key) || f.key === entry.key
-        ).map((f) => ({ label: f.key }));
+        ).map((f) => ({ label: f.key, value: f.key }));
 
-        const selectedOption = entry.key ? [{ label: entry.key }] : [];
+        const selectedOption = entry.key ? [{ label: entry.key, value: entry.key }] : [];
 
         return (
           <React.Fragment key={index}>
@@ -72,7 +84,10 @@ export const MetadataFieldsEditor: React.FC<MetadataFieldsEditorProps> = ({
                   singleSelection={{ asPlainText: true }}
                   options={availableOptions}
                   selectedOptions={selectedOption}
-                  onChange={(selected) => handleKeyChange(index, selected[0]?.label ?? '')}
+                  onChange={(selected) => {
+                    const opt = selected[0];
+                    handleKeyChange(index, opt?.value ?? opt?.label ?? '');
+                  }}
                   placeholder="Select a field..."
                   isDisabled={disabled}
                   isClearable={false}

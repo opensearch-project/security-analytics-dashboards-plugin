@@ -41,7 +41,6 @@ export interface LogTestFormData {
 
 export interface LogTestFormErrors {
   queue?: string;
-  location?: string;
   event?: string;
   space?: string;
 }
@@ -93,18 +92,32 @@ export const LogTestForm: React.FC<LogTestFormProps> = ({
                         />
                     </EuiFormRow>
                 </EuiFlexItem> */}
+        <EuiFlexItem style={{ minWidth: '280px' }}>
+          <EuiFormRow label="Space" isInvalid={!!errors.space} error={errors.space} fullWidth>
+            <EuiSelect
+              options={spaceSelectOptions}
+              value={formData.space}
+              onChange={(e) => onFormChange('space', e.target.value)}
+              isInvalid={!!errors.space}
+              disabled={disabled || spaceSelectOptions.length === 0}
+              fullWidth
+            />
+          </EuiFormRow>
+        </EuiFlexItem>
         <EuiFlexItem style={{ minWidth: '300px' }}>
-          <EuiFormRow
-            label="Location"
-            isInvalid={!!errors.location}
-            error={errors.location}
+          <EuiFormRow 
+          label={
+            <>
+              {'Location - '}
+              <em>optional</em>
+            </>
+           } 
             fullWidth
           >
             <EuiFieldText
               value={formData.location}
               onChange={(e) => onFormChange('location', e.target.value)}
               placeholder="/var/log/auth.log"
-              isInvalid={!!errors.location}
               disabled={disabled}
               fullWidth
             />
@@ -117,18 +130,6 @@ export const LogTestForm: React.FC<LogTestFormProps> = ({
               value={formData.traceLevel}
               onChange={(e) => onFormChange('traceLevel', e.target.value as LogTestTraceLevel)}
               disabled={disabled}
-              fullWidth
-            />
-          </EuiFormRow>
-        </EuiFlexItem>
-        <EuiFlexItem style={{ minWidth: '280px' }}>
-          <EuiFormRow label="Space" isInvalid={!!errors.space} error={errors.space} fullWidth>
-            <EuiSelect
-              options={spaceSelectOptions}
-              value={formData.space}
-              onChange={(e) => onFormChange('space', e.target.value)}
-              isInvalid={!!errors.space}
-              disabled={disabled || spaceSelectOptions.length === 0}
               fullWidth
             />
           </EuiFormRow>
