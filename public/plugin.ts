@@ -169,21 +169,22 @@ export class SecurityAnalyticsPlugin
       },
     });
 
-    core.application.register({
-      id: FINDINGS_NAV_ID,
-      title: 'Findings',
-      order: 7001,
-      category: {
-        id: 'security_analytics',
-        label: 'Security Analytics',
-        order: 550,
-        euiIconType: 'securityAnalyticsApp',
-      },
-      updater$: this.appStateUpdater,
-      mount: async (params: AppMountParameters) => {
-        return mountWrapper(params, ROUTES.FINDINGS);
-      },
-    });
+    // Wazuh: hide Findings app from the Security Analytics navigation.
+    // core.application.register({
+    //   id: FINDINGS_NAV_ID,
+    //   title: 'Findings',
+    //   order: 7001,
+    //   category: {
+    //     id: 'security_analytics',
+    //     label: 'Security Analytics',
+    //     order: 550,
+    //     euiIconType: 'securityAnalyticsApp',
+    //   },
+    //   updater$: this.appStateUpdater,
+    //   mount: async (params: AppMountParameters) => {
+    //     return mountWrapper(params, ROUTES.FINDINGS);
+    //   },
+    // });
 
     // Wazuh: hide Alerts app from the Security Analytics navigation.
     // core.application.register({
@@ -364,7 +365,7 @@ export class SecurityAnalyticsPlugin
         // { id: THREAT_ALERTS_NAV_ID, parentNavLinkId: INSIGHTS_NAV_ID, showInAllNavGroup: true },
         // { id: FINDINGS_NAV_ID, parentNavLinkId: INSIGHTS_NAV_ID, showInAllNavGroup: true },
         // { id: CORRELATIONS_NAV_ID, parentNavLinkId: INSIGHTS_NAV_ID, showInAllNavGroup: true },
-        { id: FINDINGS_NAV_ID, showInAllNavGroup: true, order: 7001 },
+        // { id: FINDINGS_NAV_ID, showInAllNavGroup: true, order: 7001 },
         { id: LOG_TYPES_NAV_ID, showInAllNavGroup: true, order: 7004 },
         {
           id: NORMALIZATION_NAV_ID,

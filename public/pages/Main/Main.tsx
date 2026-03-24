@@ -110,7 +110,8 @@ import { FilterFormPage } from '../Filters/containers/FilterFormPage';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
-  Findings = 'Findings',
+   // Wazuh: hide Findings navigation items.
+  // Findings = 'Findings',
   Detectors = 'Detectors',
   Rules = 'Rules', // Wazuh: rename 'Detection rules' to 'Rules'
   Overview = 'Overview',
@@ -185,7 +186,8 @@ interface MainState {
 
 const navItemIdByRoute: { [route: string]: Navigation } = {
   // [ROUTES.OVERVIEW]: Navigation.Overview,
-  [ROUTES.FINDINGS]: Navigation.Findings,
+    // Wazuh: hide Findings route mapping.
+  // [ROUTES.FINDINGS]: Navigation.Findings,
   // Wazuh: hide Alerts route mapping.
   // [ROUTES.ALERTS]: Navigation.Alerts,
   [ROUTES.DETECTORS]: Navigation.Detectors,
@@ -431,19 +433,20 @@ export default class Main extends Component<MainProps, MainState> {
             },
             isSelected: selectedNavItemId === Navigation.Overview,
           },
-          {
-            name: Navigation.Findings,
-            id: Navigation.Findings,
-            onClick: () => {
-              // this.setState({ selectedNavItemId: Navigation.Findings });
-              // history.push(ROUTES.FINDINGS);
-              // Wazuh: navigate to app so this is highlighted in the sidebar menu (old)
-              getApplication().navigateToApp(FINDINGS_NAV_ID, {
-                path: generateAppPath(ROUTES.FINDINGS),
-              });
-            },
-            isSelected: selectedNavItemId === Navigation.Findings,
-          },
+          // Wazuh: hide Findings nav item.
+          // {
+          //   name: Navigation.Findings,
+          //   id: Navigation.Findings,
+          //   onClick: () => {
+          //     // this.setState({ selectedNavItemId: Navigation.Findings });
+          //     // history.push(ROUTES.FINDINGS);
+          //     // Wazuh: navigate to app so this is highlighted in the sidebar menu (old)
+          //     getApplication().navigateToApp(FINDINGS_NAV_ID, {
+          //       path: generateAppPath(ROUTES.FINDINGS),
+          //     });
+          //   },
+          //   isSelected: selectedNavItemId === Navigation.Findings,
+          // },
           // Wazuh: hide Insights category and Alerts/Correlations nav items.
           // {
           //   name: Navigation.Insights,

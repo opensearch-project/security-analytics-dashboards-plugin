@@ -27,6 +27,7 @@ All notable changes to the Wazuh ML Commons project will be documented in this f
 ### Removed
 
 - Removed Threat Intelligence section entirely [#11](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/11) [#20](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/20)
+- Removed Findings app from the Security Analytics plugins [#132](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/132)
 
 ### Fixed
 
