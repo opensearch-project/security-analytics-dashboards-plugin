@@ -171,42 +171,6 @@ export const IntegrationForm: React.FC<IntegrationFormProps> = ({
           )}
         </EuiCompressedFormRow>
         <EuiSpacer />
-        <EuiCompressedFormRow
-          label={
-            isEditMode ? (
-              <>
-                {'Description - '}
-                <em>optional</em>
-              </>
-            ) : (
-              'Description'
-            )
-          }
-        >
-          {isEditMode ? (
-            <EuiCompressedTextArea
-              value={editingIntegration?.document?.metadata?.description}
-              onChange={(e) => {
-                const newIntegration = {
-                  ...editingIntegration!,
-                  document: {
-                    ...editingIntegration!.document,
-                    metadata: {
-                      ...editingIntegration!.document.metadata,
-                      description: e.target.value,
-                    },
-                  },
-                };
-                setEditingIntegration(newIntegration);
-                updateErrors(newIntegration);
-              }}
-              placeholder="Description of the integration"
-            />
-          ) : (
-            <ReadOnlyField value={integrationDetails?.document?.metadata?.description} isTextArea />
-          )}
-        </EuiCompressedFormRow>
-        <EuiSpacer />
         <EuiCompressedFormRow label="Category" isInvalid={!!categoryError} error={categoryError}>
           {isEditMode ? (
             <EuiCompressedSuperSelect
@@ -259,6 +223,43 @@ export const IntegrationForm: React.FC<IntegrationFormProps> = ({
             <ReadOnlyField value={integrationDetails?.document.metadata?.author} />
           )}
         </EuiCompressedFormRow>
+        <EuiSpacer />
+        <EuiCompressedFormRow
+          label={
+            isEditMode ? (
+              <>
+                {'Description - '}
+                <em>optional</em>
+              </>
+            ) : (
+              'Description'
+            )
+          }
+        >
+          {isEditMode ? (
+            <EuiCompressedTextArea
+              value={editingIntegration?.document?.metadata?.description}
+              onChange={(e) => {
+                const newIntegration = {
+                  ...editingIntegration!,
+                  document: {
+                    ...editingIntegration!.document,
+                    metadata: {
+                      ...editingIntegration!.document.metadata,
+                      description: e.target.value,
+                    },
+                  },
+                };
+                setEditingIntegration(newIntegration);
+                updateErrors(newIntegration);
+              }}
+              placeholder="Description of the integration"
+            />
+          ) : (
+            <ReadOnlyField value={integrationDetails?.document?.metadata?.description} isTextArea />
+          )}
+        </EuiCompressedFormRow>
+        <EuiSpacer />
         <EuiCompressedFormRow
           label={
             isEditMode ? (
@@ -340,6 +341,51 @@ export const IntegrationForm: React.FC<IntegrationFormProps> = ({
               <EuiSpacer />
             </>
           )
+        )}
+        <EuiSpacer />
+        {isEditMode ? (
+          <FormFieldArray
+            label={
+              <>
+                {'Supports - '}
+                <em>optional</em>
+              </>
+            }
+            values={editingIntegration?.document?.metadata?.supports || []}
+            readOnly={false}
+            addButtonLabel="Add support"
+            onChange={(supports) => {
+              const newIntegration = {
+                ...editingIntegration!,
+                document: {
+                  ...editingIntegration!.document,
+                  metadata: {
+                    ...editingIntegration!.document.metadata,
+                    supports,
+                  },
+                },
+              };
+              setEditingIntegration(newIntegration);
+              updateErrors(newIntegration);
+            }}
+          />
+        ) : (
+          (integrationDetails?.document?.metadata?.supports?.length ?? 0) > 0 && (
+              <>
+                <EuiCompressedFormRow label="Supports">
+                  <EuiText size="s">
+                    <ul style={{ paddingLeft: '20px', marginBottom: 0 }}>
+                      {integrationDetails.document.metadata.supports.map(
+                        (entry: string, index: number) => (
+                          <li key={index}>{entry || '-'}</li>
+                        )
+                      )}
+                    </ul>
+                  </EuiText>
+                </EuiCompressedFormRow>
+                <EuiSpacer />
+              </>
+            )
         )}
       </div>
       {isEditMode ? (

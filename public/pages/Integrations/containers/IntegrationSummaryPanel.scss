@@ -1,0 +1,88 @@
+/*
+ * Copyright Wazuh Inc.
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
+/* 4-column grid. Narrow: ID full width; Date|Modified cols 3–4 aligned with Decoders|KVDBs below. Wide: ID spans cols 1–2; Date|Modified share row with ID. */
+.integration-details-summary-panel {
+  container-type: inline-size;
+  container-name: integration-details-sum;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: 24px;
+  row-gap: 16px;
+  align-items: start;
+}
+
+.integration-details-summary-panel__id {
+  grid-row: 1;
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+.integration-details-summary-panel__date {
+  grid-row: 2;
+  grid-column: 3;
+}
+
+.integration-details-summary-panel__modified {
+  grid-row: 2;
+  grid-column: 4;
+}
+
+.integration-details-summary-panel__space {
+  grid-row: 3;
+  grid-column: 1;
+}
+
+.integration-details-summary-panel__rules {
+  grid-row: 3;
+  grid-column: 2;
+}
+
+.integration-details-summary-panel__decoders {
+  grid-row: 3;
+  grid-column: 3;
+}
+
+.integration-details-summary-panel__kvdbs {
+  grid-row: 3;
+  grid-column: 4;
+}
+
+@container integration-details-sum (min-width: 768px) {
+  .integration-details-summary-panel__id {
+    grid-row: 1;
+    grid-column: 1 / 3;
+  }
+
+  .integration-details-summary-panel__date {
+    grid-row: 1;
+    grid-column: 3;
+  }
+
+  .integration-details-summary-panel__modified {
+    grid-row: 1;
+    grid-column: 4;
+  }
+
+  .integration-details-summary-panel__space {
+    grid-row: 2;
+    grid-column: 1;
+  }
+
+  .integration-details-summary-panel__rules {
+    grid-row: 2;
+    grid-column: 2;
+  }
+
+  .integration-details-summary-panel__decoders {
+    grid-row: 2;
+    grid-column: 3;
+  }
+
+  .integration-details-summary-panel__kvdbs {
+    grid-row: 2;
+    grid-column: 4;
+  }
+}

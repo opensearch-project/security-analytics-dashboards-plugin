@@ -372,14 +372,7 @@ const EditForm: React.FC<{}> = withPolicyGuard({
             renderBooleanValue(policyDetails.index_discarded_events)
           )}
         </EuiCompressedFormRow>
-        <EuiCompressedFormRow
-          label={
-            <>
-              {'Root Decoder - '}
-              <em>optional</em>
-            </>
-          }
-        >
+        <EuiCompressedFormRow label="Root Decoder">
           {canEditPolicy ? (
             <EuiComboBox
               placeholder="Search and select a decoder"

@@ -35,6 +35,7 @@ export const defaultIntegration: IntegrationBase = {
   document: {
     id: '',
     category: '',
+    enabled: true,
     metadata: {
       title: '',
       author: '',

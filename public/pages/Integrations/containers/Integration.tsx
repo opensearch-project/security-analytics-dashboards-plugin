@@ -13,11 +13,13 @@ import {
   EuiDescriptionList,
   EuiFlexGroup,
   EuiFlexItem,
+  EuiHealth,
   EuiLoadingSpinner,
   EuiPanel,
   EuiSpacer,
   EuiTab,
   EuiTabs,
+  EuiText,
   EuiTitle,
   EuiPopover,
   EuiContextMenuPanel,
@@ -42,6 +44,13 @@ import { PageHeader } from '../../../components/PageHeader/PageHeader';
 import { useIntegrationDecoders } from '../../Decoders/hooks/useIntegrationDecoders';
 import { useIntegrationKVDBs } from '../../KVDBs/hooks/useIntegrationKVDBs';
 import { useIntegrationRules } from '../../WazuhRules/hooks/useIntegrationRules';
+import moment from 'moment';
+
+const formatIntegrationMetadataDate = (value?: string) => {
+  if (!value?.trim()) return '';
+  const m = moment(value);
+  return m.isValid() ? m.format('MM/DD/YY') : value;
+};
 
 export interface IntegrationProps extends RouteComponentProps {
   notifications: NotificationsStart;
@@ -67,6 +76,7 @@ export const Integration: React.FC<IntegrationProps> = ({ notifications, history
   >(undefined);
 
   const [isEditMode, setIsEditMode] = useState(false);
+  const [togglingEnabled, setTogglingEnabled] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -191,16 +201,44 @@ export const Integration: React.FC<IntegrationProps> = ({ notifications, history
     setIsActionsMenuOpen(false);
   };
 
+  const toggleIntegrationEnabled = async (checked: boolean) => {
+    if (!integrationDetails) {
+      return;
+    }
+    setTogglingEnabled(true);
+    const next: IntegrationItem = {
+      ...integrationDetails,
+      document: {
+        ...integrationDetails.document,
+        enabled: checked,
+      },
+    };
+    const success = await DataStore.integrations.updateIntegration(integrationDetails.id, next);
+    if (success) {
+      setIntegrationDetails(next);
+      setInitialIntegrationDetails(next);
+      successNotificationToast(
+        notifications,
+        'updated',
+        `integration ${next.document.metadata?.title ?? ''}`
+      );
+    }
+    setTogglingEnabled(false);
+  };
+
   const spaceName = (integrationDetails?.space.name ?? '') as Space;
   const isCreateDisabled = !actionIsAllowedOnSpace(spaceName, SPACE_ACTIONS.CREATE);
   const isEditDisabled = !actionIsAllowedOnSpace(spaceName, SPACE_ACTIONS.EDIT);
   const isDeleteDisabled = !actionIsAllowedOnSpace(spaceName, SPACE_ACTIONS.DELETE);
+
+  const integrationEnabled = integrationDetails?.document.enabled === true;
 
   const actionsButton = (
     <EuiPopover
       id={'integrationsActionsPopover'}
       button={
         <EuiSmallButton
+          isLoading={togglingEnabled}
           iconType={'arrowDown'}
           iconSide={'right'}
           onClick={toggleActionsMenu}
@@ -277,6 +315,24 @@ export const Integration: React.FC<IntegrationProps> = ({ notifications, history
           </EuiContextMenuItem>,
           <EuiHorizontalRule margin="xs" />,
           <EuiContextMenuItem
+            key={'toggleIntegrationEnabled'}
+            disabled={isEditDisabled || togglingEnabled}
+            onClick={() => {
+              closeActionsPopover();
+              toggleIntegrationEnabled(!integrationEnabled);
+            }}
+            data-test-subj={'integrationEnableDisableMenuItem'}
+            toolTipContent={
+              isEditDisabled
+                ? `Integration can only be edited in the spaces: ${getSpacesAllowAction(
+                    SPACE_ACTIONS.EDIT
+                  ).join(', ')}`
+                : undefined
+            }
+          >
+            {integrationEnabled ? 'Disable' : 'Enable'}
+          </EuiContextMenuItem>,
+          <EuiContextMenuItem
             key={'Edit'}
             onClick={() => {
               closeActionsPopover();
@@ -335,12 +391,32 @@ export const Integration: React.FC<IntegrationProps> = ({ notifications, history
           onConfirm={deleteIntegration}
         />
       )}
-      <PageHeader appRightControls={[{ renderComponent: actionsButton }]}>
-        <EuiFlexGroup>
+      <PageHeader
+        appBadgeControls={[
+          {
+            renderComponent: (
+              <EuiHealth color={integrationEnabled ? 'success' : 'subdued'}>
+                {integrationEnabled ? 'Enabled' : 'Disabled'}
+              </EuiHealth>
+            ),
+          },
+        ]}
+        appRightControls={[{ renderComponent: actionsButton }]}
+      >
+        <EuiFlexGroup alignItems="center" justifyContent="spaceBetween">
           <EuiFlexItem>
-            <EuiTitle>
-              <h1>{integrationDetails.document.metadata?.title}</h1>
-            </EuiTitle>
+            <EuiFlexGroup alignItems="center" responsive={false} wrap>
+              <EuiFlexItem grow={false}>
+                <EuiText data-test-subj="integration-detail-title" size="s">
+                  <h1>{integrationDetails.document.metadata?.title}</h1>
+                </EuiText>
+              </EuiFlexItem>
+              <EuiFlexItem grow={false}>
+                <EuiHealth color={integrationEnabled ? 'success' : 'subdued'}>
+                  {integrationEnabled ? 'Enabled' : 'Disabled'}
+                </EuiHealth>
+              </EuiFlexItem>
+            </EuiFlexGroup>
           </EuiFlexItem>
           <EuiFlexItem>
             <EuiFlexGroup justifyContent="flexEnd" alignItems="center">
@@ -352,52 +428,46 @@ export const Integration: React.FC<IntegrationProps> = ({ notifications, history
       </PageHeader>
       <EuiSpacer />
       <EuiPanel grow={false}>
-        <EuiDescriptionList
-          listItems={[
-            {
-              title: 'Description',
-              description: integrationDetails.document.metadata?.description ?? '',
-            },
-          ]}
-        />
-        <EuiSpacer />
-        <EuiFlexGroup>
-          <EuiFlexItem>
-            <EuiDescriptionList
-              listItems={[{ title: 'ID', description: integrationDetails.document.id }]}
-            />
-          </EuiFlexItem>
-          <EuiFlexItem>
+        <div className="integration-details-summary-panel">
+          <div className="integration-details-summary-panel__id">
             <EuiDescriptionList
               listItems={[
                 {
-                  title: 'Rules',
-                  description: integrationDetails.detectionRulesCount,
+                  title: 'ID',
+                  description: (
+                    <span style={{ overflowWrap: 'anywhere' }}>
+                      {integrationDetails.document.id}
+                    </span>
+                  ),
                 },
               ]}
             />
-          </EuiFlexItem>
-          <EuiFlexItem>
+          </div>
+          <div className="integration-details-summary-panel__date">
             <EuiDescriptionList
               listItems={[
                 {
-                  title: 'Decoders',
-                  description: integrationDetails.decodersCount,
+                  title: 'Date',
+                  description: formatIntegrationMetadataDate(
+                    integrationDetails.document.metadata?.date
+                  ),
                 },
               ]}
             />
-          </EuiFlexItem>
-          <EuiFlexItem>
+          </div>
+          <div className="integration-details-summary-panel__modified">
             <EuiDescriptionList
               listItems={[
                 {
-                  title: 'KVDBs',
-                  description: integrationDetails.kvdbsCount,
+                  title: 'Modified',
+                  description: formatIntegrationMetadataDate(
+                    integrationDetails.document.metadata?.modified
+                  ),
                 },
               ]}
             />
-          </EuiFlexItem>
-          <EuiFlexItem>
+          </div>
+          <div className="integration-details-summary-panel__space">
             <EuiDescriptionList
               listItems={[
                 {
@@ -406,8 +476,38 @@ export const Integration: React.FC<IntegrationProps> = ({ notifications, history
                 },
               ]}
             />
-          </EuiFlexItem>
-        </EuiFlexGroup>
+          </div>
+          <div className="integration-details-summary-panel__rules">
+            <EuiDescriptionList
+              listItems={[
+                {
+                  title: 'Rules',
+                  description: integrationDetails.detectionRulesCount,
+                },
+              ]}
+            />
+          </div>
+          <div className="integration-details-summary-panel__decoders">
+            <EuiDescriptionList
+              listItems={[
+                {
+                  title: 'Decoders',
+                  description: integrationDetails.decodersCount,
+                },
+              ]}
+            />
+          </div>
+          <div className="integration-details-summary-panel__kvdbs">
+            <EuiDescriptionList
+              listItems={[
+                {
+                  title: 'KVDBs',
+                  description: integrationDetails.kvdbsCount,
+                },
+              ]}
+            />
+          </div>
+        </div>
       </EuiPanel>
       <EuiSpacer />
       <EuiTabs size="s">

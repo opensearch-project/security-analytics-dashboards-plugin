@@ -7,12 +7,18 @@ import React, { useState, useEffect } from 'react';
 import { EuiLink, EuiPanel } from '@elastic/eui';
 import { Integration } from '../../../../types';
 import { SPACE_ACTIONS, UserSpacesOrder } from '../../../../common/constants';
-import { capitalize, startCase } from 'lodash';
+import { startCase } from 'lodash';
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
-import { DEFAULT_EMPTY_DATA, integrationCategoryFilters } from '../../../utils/constants';
+import { DEFAULT_EMPTY_DATA, integrationCategories } from '../../../utils/constants';
+import { getIntegrationCategoryFilterOptions } from '../../../utils/helpers';
 import { integrationLabels } from './constants';
 import { actionIsAllowedOnSpace } from '../../../../common/helpers';
 import { IntegrationBase, PolicyItem } from '../../../../types';
+
+const getIntegrationCategoryFilterDisplayName = (value: string): string => {
+  const match = integrationCategories.find((c) => c.value === value);
+  return match?.label ?? startCase(value.replace(/-/g, ' '));
+};
 
 export interface IntegrationTableItem {
   id: string;
@@ -75,11 +81,13 @@ export const getIntegrationsTableColumns = ({
     field: 'category',
     name: 'Category',
     truncateText: false,
+    render: (category: string) => getIntegrationCategoryFilterDisplayName(category ?? ''),
   },
   {
-    field: 'space',
-    name: 'Space',
-    render: (spaceName: string) => capitalize(spaceName),
+    field: 'rules',
+    name: 'Rules',
+    sortable: true,
+    render: (rules: any[]) => rules?.length ?? 0,
   },
   {
     field: 'decoders',
@@ -92,12 +100,6 @@ export const getIntegrationsTableColumns = ({
     name: 'KVDBs',
     sortable: true,
     render: (kvdbs: string[]) => kvdbs?.length ?? 0,
-  },
-  {
-    field: 'rules',
-    name: 'Rules',
-    sortable: true,
-    render: (rules: any[]) => rules?.length ?? 0,
   },
   {
     name: 'Actions',
@@ -142,9 +144,7 @@ export const getIntegrationsTableSearchConfig = (options?: {
         name: 'Category',
         compressed: true,
         multiSelect: 'or',
-        options: integrationCategoryFilters.map((category) => ({
-          value: category,
-        })),
+        options: getIntegrationCategoryFilterOptions(false),
       },
     ],
     toolsRight: options?.toolsRight,

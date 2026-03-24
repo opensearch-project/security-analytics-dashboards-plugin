@@ -406,18 +406,29 @@ export function getLogTypeCategoryOptions(): any[] {
   }));
 }
 
-export function getIntegrationCategoryOptions(): any[] {
-  return integrationCategories.map(({ label, description, value }) => ({
-    value: value,
+export function getIntegrationCategoryOptions(displayDescription: boolean = true): any[] {
+  return integrationCategories.map(({ label, value, description  }) => ({
+    value,
     inputDisplay: label,
     dropdownDisplay: (
       <>
         <strong>{label}</strong>
-        <EuiText size="s" color="subdued">
-          <p className="ouiTextColor--subdued">{description}</p>
-        </EuiText>
+        {displayDescription ? (
+          <EuiText size="s" color="subdued">
+            <p className="ouiTextColor--subdued">{description}</p>
+          </EuiText>
+        ) : null}
       </>
     ),
+  }));
+}
+
+/** Search bar filter options: same content as SuperSelect dropdown (`view` for EuiInMemoryTable filters). */
+export function getIntegrationCategoryFilterOptions(displayDescription: boolean = true): any[] {
+  return getIntegrationCategoryOptions(displayDescription).map((opt) => ({
+    value: opt.value,
+    name: opt.inputDisplay,
+    view: opt.dropdownDisplay,
   }));
 }
 
