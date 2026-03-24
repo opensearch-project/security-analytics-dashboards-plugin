@@ -42,7 +42,7 @@ export const RuleEditorContainer: React.FC<RuleEditorProps> = ({
   subtitleData,
 }) => {
   const initialRuleValue = rule
-    ? { ...mapRuleToForm(rule), id: ruleEditorStateDefaultValue.id }
+    ? { ...mapRuleToForm(rule) }
     : ruleEditorStateDefaultValue;
 
   const onSubmit = async (values: RuleEditorFormModel, integrationId: string) => {

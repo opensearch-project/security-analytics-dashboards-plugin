@@ -30,7 +30,7 @@ export interface RuleEditorFormModel {
 }
 
 export const ruleEditorStateDefaultValue: RuleEditorFormModel = {
-  id: DEFAULT_RULE_UUID,
+  id: '',
   log_source: {},
   integration: '',
   status: ruleStatus[0],

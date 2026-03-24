@@ -21,6 +21,7 @@ import {
   EuiPanel,
   EuiLink,
   EuiSwitch,
+  EuiToolTip,
 } from '@elastic/eui';
 import { FieldTextArray } from '../../../Rules/components/RuleEditor/components/FieldTextArray';
 import { ruleSeverity, ruleStatus } from '../../../Rules/utils/constants';
@@ -199,21 +200,50 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
             <EuiSpacer size="xl" />
 
             {selectedEditorType === 'yaml' && (
-              <YamlRuleEditorComponent
-                rule={mapFormToRule(props.values)}
-                isInvalid={Object.keys(props.errors).length > 0}
-                errors={Object.values(props.errors).flatMap((v) =>
-                  typeof v === 'string'
-                    ? [v]
-                    : v && typeof v === 'object'
-                    ? Object.values(v).filter((x) => typeof x === 'string')
-                    : []
+              <>
+                {mode === 'create' && (
+                  <>
+                    <IntegrationComboBox
+                      options={integrationOptions}
+                      selectedId={integrationId}
+                      isLoading={loadingIntegrations}
+                      data-test-subj={'rule_integration_dropdown'}
+                      resourceName="rules"
+                      isInvalid={
+                        (validateOnMount || props.touched.integration) &&
+                        !!props.errors?.integration
+                      }
+                      error={props.errors.integration}
+                      onChange={(selected) => {
+                        const option = selected[0] ?? null;
+                        setIntegrationId(option?.id ?? '');
+                        props.setFieldValue(
+                          'integration',
+                          option?.value ?? option?.label ?? '',
+                          true
+                        );
+                        props.setFieldTouched('integration', true, false);
+                      }}
+                    />
+                    <EuiSpacer size="xl" />
+                  </>
                 )}
-                change={(e) => {
-                  const formState = mapRuleToForm(e);
-                  props.setValues(formState);
-                }}
-              ></YamlRuleEditorComponent>
+                <YamlRuleEditorComponent
+                  rule={mapFormToRule(props.values)}
+                  isInvalid={Object.keys(props.errors).length > 0}
+                  errors={Object.values(props.errors).flatMap((v) =>
+                    typeof v === 'string'
+                      ? [v]
+                      : v && typeof v === 'object'
+                      ? Object.values(v).filter((x) => typeof x === 'string')
+                      : []
+                  )}
+                  change={(e) => {
+                    const formState = mapRuleToForm(e);
+                    props.setValues(formState);
+                  }}
+                />
+              </>
             )}
             <FormSubmissionErrorToastNotification notifications={notifications} />
             {selectedEditorType === 'visual' && (
@@ -622,18 +652,12 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
                       <FieldTextArray
                         name="false_positives"
-                        placeholder={'format?'}
+                        placeholder={'False positive when...'}
                         label={
                           <>
                             <EuiText size={'m'}>
                               <strong>False positive cases </strong>
                               <i>- optional</i>
-                            </EuiText>
-
-                            <EuiSpacer size={'m'} />
-
-                            <EuiText size={'xs'}>
-                              <strong>Description</strong>
                             </EuiText>
                           </>
                         }
@@ -664,13 +688,34 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
               <EuiSmallButton onClick={cancel}>Cancel</EuiSmallButton>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
-              <EuiSmallButton
-                onClick={() => props.handleSubmit()}
-                data-test-subj={'submit_rule_form_button'}
-                fill
+              <EuiToolTip
+                content={
+                  <>
+                    <p>
+                      {mode === 'create' && !integrationId
+                        ? 'Select an integration to enable creating the rule'
+                        : ''}
+                    </p>
+                    <p>
+                      {Object.keys(props.errors).length > 0
+                        ? 'Please fix the errors in the form to proceed'
+                        : ''}
+                    </p>
+                  </>
+                }
+                position="top"
               >
-                {mode === 'create' ? 'Create rule' : 'Save changes'}
-              </EuiSmallButton>
+                <EuiSmallButton
+                  disabled={
+                    (mode === 'create' && !integrationId) || Object.keys(props.errors).length > 0
+                  }
+                  onClick={() => props.handleSubmit()}
+                  data-test-subj={'submit_rule_form_button'}
+                  fill
+                >
+                  {mode === 'create' ? 'Create rule' : 'Save changes'}
+                </EuiSmallButton>
+              </EuiToolTip>
             </EuiFlexItem>
           </EuiFlexGroup>
         </Form>

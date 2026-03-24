@@ -22,21 +22,41 @@ import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
 import { RuleItemInfoBase } from '../../../../../types';
 import { getLogTypeLabel } from '../../../LogTypes/utils/helpers';
 import { RuleContentYamlViewer } from './RuleContentYamlViewer';
+import { MITRE_SECTIONS, parseMitreYml } from '../../utils/mitre';
+import { COMPLIANCE_FRAMEWORKS, COMPLIANCE_KEYS, parseComplianceYml } from '../../utils/compliance';
 
 export interface RuleContentViewerProps {
   rule: RuleItemInfoBase;
 }
 
 const editorTypes = [
-  {
-    id: 'visual',
-    label: 'Visual',
-  },
-  {
-    id: 'yaml',
-    label: 'YAML',
-  },
+  { id: 'visual', label: 'Visual' },
+  { id: 'yaml', label: 'YAML' },
 ];
+
+interface BadgeGroupProps {
+  label: string;
+  values: string[];
+}
+
+const BadgeGroup: React.FC<BadgeGroupProps> = ({ label, values }) => {
+  if (!values.length) return null;
+  return (
+    <div>
+      <EuiText size="xs" color="subdued">
+        <strong>{label}</strong>
+      </EuiText>
+      <EuiSpacer size="xs" />
+      <EuiFlexGroup gutterSize="xs" wrap responsive={false}>
+        {values.map((v, i) => (
+          <EuiFlexItem grow={false} key={i}>
+            <EuiBadge>{v}</EuiBadge>
+          </EuiFlexItem>
+        ))}
+      </EuiFlexGroup>
+    </div>
+  );
+};
 
 export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
   rule: { prePackaged, _source: ruleData, _id: ruleId },
@@ -46,19 +66,31 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
   }
   const [selectedEditorType, setSelectedEditorType] = useState('visual');
 
-  const onEditorTypeChange = (optionId: string) => {
-    setSelectedEditorType(optionId);
-  };
+  const mitreData = parseMitreYml(ruleData.mitre);
+  const hasMitre = MITRE_SECTIONS.some((s) => mitreData[s.field].length > 0);
+
+  const complianceData = parseComplianceYml(ruleData.compliance);
+  const hasCompliance = COMPLIANCE_KEYS.some((k) => complianceData[k].length > 0);
 
   return (
     <EuiModalBody>
-      <EuiButtonGroup
-        data-test-subj="change-editor-type"
-        legend="This is editor type selector"
-        options={editorTypes}
-        idSelected={selectedEditorType}
-        onChange={(id) => onEditorTypeChange(id)}
-      />
+      <EuiFlexGroup alignItems="center">
+        <EuiFlexItem>
+          <EuiButtonGroup
+            data-test-subj="change-editor-type"
+            legend="This is editor type selector"
+            options={editorTypes}
+            idSelected={selectedEditorType}
+            onChange={(id) => setSelectedEditorType(id)}
+            />
+        </EuiFlexItem>
+        <EuiFlexItem>
+            <div data-test-subj={'rule_flyout_rule_enabled'}>
+              <EuiHealth color={ruleData.enabled !== false ? 'success' : 'subdued'}>
+                {ruleData.enabled !== false ? 'Enabled' : 'Disabled'}                </EuiHealth>
+            </div>
+        </EuiFlexItem>
+      </EuiFlexGroup>
       <EuiSpacer size="xl" />
       {selectedEditorType === 'visual' && (
         <>
@@ -113,7 +145,7 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
                   >
                     {ruleData.metadata.supports.map((support: string, i: number) => (
                       <EuiFlexItem grow={false} key={i}>
-                        <EuiBadge color={'#DDD'}>{support}</EuiBadge>
+                        <EuiBadge>{support}</EuiBadge>
                       </EuiFlexItem>
                     ))}
                   </EuiFlexGroup>
@@ -147,31 +179,14 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
               </div>
             </EuiFlexItem>
             <EuiFlexItem>
-              <EuiFormLabel>Enabled</EuiFormLabel>
-              <div data-test-subj={'rule_flyout_rule_enabled'}>
-                <EuiHealth color={ruleData.enabled !== false ? 'success' : 'subdued'}>
-                  {ruleData.enabled !== false ? 'Enabled' : 'Disabled'}
-                </EuiHealth>
-              </div>
+              <EuiFormLabel>Date</EuiFormLabel>
+              <EuiText size="s">{ruleData.metadata?.date || DEFAULT_EMPTY_DATA}</EuiText>
             </EuiFlexItem>
           </EuiFlexGroup>
 
           <EuiSpacer />
 
           <EuiFlexGroup>
-            {prePackaged && (
-              <EuiFlexItem>
-                <EuiFormLabel>License</EuiFormLabel>
-                <EuiText size="s">
-                  <EuiLink
-                    target={'_blank'}
-                    href={'https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'}
-                  >
-                    Detection Rule License (DLR)
-                  </EuiLink>
-                </EuiText>
-              </EuiFlexItem>
-            )}
             <EuiFlexItem>
               <EuiFormLabel>Last Updated</EuiFormLabel>
               <EuiText size="s">{ruleData.last_update_time || DEFAULT_EMPTY_DATA}</EuiText>
@@ -207,7 +222,7 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
 
                 return (
                   <EuiFlexItem grow={false} key={i}>
-                    <EuiBadge color={'#DDD'}>{tagComponent}</EuiBadge>
+                    <EuiBadge>{tagComponent}</EuiBadge>
                   </EuiFlexItem>
                 );
               })}
@@ -218,12 +233,54 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
 
           <EuiSpacer />
 
-          <EuiFlexGroup>
-            <EuiFlexItem>
+          {hasMitre && (
+            <>
+              <EuiSpacer />
+              <EuiFormLabel>MITRE ATT&CK</EuiFormLabel>
+              <EuiSpacer size="s" />
+              <EuiFlexGroup
+                direction="column"
+                gutterSize="s"
+                data-test-subj={'rule_flyout_rule_mitre'}
+              >
+                {MITRE_SECTIONS.map((section) => (
+                  <EuiFlexItem key={section.field}>
+                    <BadgeGroup label={section.title} values={mitreData[section.field]} />
+                  </EuiFlexItem>
+                ))}
+              </EuiFlexGroup>
+            </>
+          )}
+
+          {hasCompliance && (
+            <>
+              <EuiSpacer />
+              <EuiFormLabel>Compliance</EuiFormLabel>
+              <EuiSpacer size="s" />
+              <EuiFlexGroup
+                direction="column"
+                gutterSize="s"
+                data-test-subj={'rule_flyout_rule_compliance'}
+              >
+                {COMPLIANCE_FRAMEWORKS.map((framework) =>
+                  complianceData[framework.key].length > 0 ? (
+                    <EuiFlexItem key={framework.key}>
+                      <BadgeGroup label={framework.label} values={complianceData[framework.key]} />
+                    </EuiFlexItem>
+                  ) : null
+                )}
+              </EuiFlexGroup>
+            </>
+          )}
+
+          <EuiSpacer />
+
+          <EuiFlexGroup direction="column">
+            <EuiFlexItem >
               <EuiFormLabel>References</EuiFormLabel>
               {ruleData.references.length > 0 ? (
                 ruleData.references.map((reference: any, i: number) => (
-                  <div key={i} className="eui-textTruncate">
+                  <div key={i} style={{ wordBreak: 'break-all' }}>
                     <EuiText size="s">
                       <EuiLink
                         href={reference.value}
@@ -262,28 +319,6 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
               {ruleData.detection}
             </EuiCodeBlock>
           </EuiCompressedFormRow>
-
-          {ruleData.mitre ? (
-            <>
-              <EuiSpacer />
-              <EuiCompressedFormRow label="MITRE ATT&CK" fullWidth>
-                <EuiCodeBlock language="yaml" data-test-subj={'rule_flyout_rule_mitre'}>
-                  {ruleData.mitre}
-                </EuiCodeBlock>
-              </EuiCompressedFormRow>
-            </>
-          ) : null}
-
-          {ruleData.compliance ? (
-            <>
-              <EuiSpacer />
-              <EuiCompressedFormRow label="Compliance" fullWidth>
-                <EuiCodeBlock language="yaml" data-test-subj={'rule_flyout_rule_compliance'}>
-                  {ruleData.compliance}
-                </EuiCodeBlock>
-              </EuiCompressedFormRow>
-            </>
-          ) : null}
         </>
       )}
       {selectedEditorType === 'yaml' && (
