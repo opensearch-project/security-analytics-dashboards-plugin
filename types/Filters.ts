@@ -13,6 +13,11 @@ export interface FilterDocument {
     title?: string;
     description?: string;
     author?: string | { name?: string };
+    date?: string;
+    modified?: string;
+    references?: string[];
+    documentation?: string;
+    supports?: string[];
   };
 }
 

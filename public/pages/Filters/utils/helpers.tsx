@@ -9,6 +9,7 @@ import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
 import { FilterItem } from '../../../../types';
 import { FiltersAllowedActionsBySpace, SPACE_ACTIONS } from '../../../../common/constants';
 import { actionIsAllowedOnSpace } from '../../../../common/helpers';
+import { FILTER_TYPE_OPTIONS } from './constants';
 
 export interface FilterTableItem {
   id: string;
@@ -52,12 +53,6 @@ export const getFiltersTableColumns = (
     name: 'Enabled',
     sortable: true,
     render: (enabled: boolean) => (enabled ? 'Yes' : 'No'),
-  },
-  {
-    field: 'spaceName',
-    name: 'Space',
-    render: (spaceName: string) =>
-      spaceName ? spaceName.charAt(0).toUpperCase() + spaceName.slice(1) : '',
   },
   {
     name: 'Actions',
@@ -111,7 +106,7 @@ export const getFiltersTableSearchConfig = (
         name: 'Type',
         compressed: true,
         multiSelect: 'or',
-        options: types.map((type) => ({ value: type })),
+        options: FILTER_TYPE_OPTIONS.map((option) => ({ value: option.value, name: option.text })),
       },
     ],
     toolsRight: options?.toolsRight,

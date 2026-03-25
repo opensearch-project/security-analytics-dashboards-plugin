@@ -5,6 +5,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import {
+  EuiButtonIcon,
   EuiCompressedFieldText,
   EuiCompressedFormRow,
   EuiCompressedSelect,
@@ -14,11 +15,13 @@ import {
   EuiFlexItem,
   EuiLoadingSpinner,
   EuiPanel,
+  EuiPopover,
   EuiSmallButton,
   EuiSpacer,
   EuiText,
   EuiToolTip,
 } from '@elastic/eui';
+import { FormFieldArray } from '../../../components/FormFieldArray';
 import { Form, Formik, FormikErrors } from 'formik';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { RouteComponentProps } from 'react-router-dom';
@@ -39,17 +42,13 @@ import {
   mapFilterToForm,
   mapFormToFilterResource,
 } from '../utils/mappers';
-
-const FILTER_TYPE_OPTIONS = [
-  { value: 'pre-filter', text: 'Pre-filter' },
-  { value: 'post-filter', text: 'Post-filter' },
-];
+import { FILTER_TYPE_OPTIONS } from '../utils/constants';
 
 const FILTER_ACTION = {
   CREATE: 'create',
   EDIT: 'edit',
 } as const;
-type FilterAction = (typeof FILTER_ACTION)[keyof typeof FILTER_ACTION];
+type FilterAction = typeof FILTER_ACTION[keyof typeof FILTER_ACTION];
 
 const actionLabels: Record<FilterAction, string> = {
   create: 'Create',
@@ -72,6 +71,7 @@ export const FilterFormPage: React.FC<FilterFormPageProps> = ({
   const filterId = match.params.id;
   const [isLoading, setIsLoading] = useState(false);
   const [initialValue, setInitialValue] = useState<FilterFormModel>(filterFormDefaultValue);
+  const [typePopoverOpen, setTypePopoverOpen] = useState(false);
   const { spaceFilter } = useSpaceSelector();
 
   // load existing filter when editing
@@ -117,6 +117,7 @@ export const FilterFormPage: React.FC<FilterFormPageProps> = ({
     }
     if (!values.type) errors.type = 'Type is required';
     if (!values.check.trim()) errors.check = 'Check expression is required';
+    if (!values.author.trim()) errors.author = 'Author is required';
     return errors;
   }, []);
 
@@ -152,7 +153,7 @@ export const FilterFormPage: React.FC<FilterFormPageProps> = ({
   );
 
   const isSubmitDisabled = (errors: FormikErrors<FilterFormModel>) =>
-    !!(errors.name || errors.type || errors.check);
+    !!(errors.name || errors.type || errors.check || errors.author);
 
   return (
     <>
@@ -190,8 +191,8 @@ export const FilterFormPage: React.FC<FilterFormPageProps> = ({
                   </EuiText>
                   <EuiText size="s" color="subdued">
                     {action === FILTER_ACTION.CREATE
-                      ? 'Create a new event filter.'
-                      : 'Edit the filter configuration.'}
+                      ? <>Create a new event filter in the <strong>{spaceFilter || 'draft'}</strong> space.</>
+                      : <>Edit the filter configuration in the <strong>{spaceFilter || 'draft'}</strong> space.</>}
                   </EuiText>
                   <EuiSpacer />
                 </PageHeader>
@@ -218,7 +219,47 @@ export const FilterFormPage: React.FC<FilterFormPageProps> = ({
                 <EuiSpacer size="m" />
 
                 <EuiCompressedFormRow
-                  label={'Type'}
+                  label={
+                    <EuiFlexGroup gutterSize="xs" alignItems="center" responsive={false}>
+                      <EuiFlexItem grow={false}>Type</EuiFlexItem>
+                      <EuiFlexItem grow={false}>
+                        <EuiPopover
+                          button={
+                            <EuiButtonIcon
+                              iconType="iInCircle"
+                              aria-label="Filter type information"
+                              onClick={() => setTypePopoverOpen(!typePopoverOpen)}
+                              color="primary"
+                              size="xs"
+                            />
+                          }
+                          isOpen={typePopoverOpen}
+                          closePopover={() => setTypePopoverOpen(false)}
+                          anchorPosition="downRight"
+                        >
+                          <div style={{ width: '300px' }}>
+                            <EuiText size="s">
+                              <strong>Filter types</strong>
+                            </EuiText>
+                            <EuiSpacer size="s" />
+                            <div style={{ paddingLeft: '16px' }}>
+                              <EuiText size="xs">
+                                <p>
+                                  <strong>Pre-filter:</strong> Processed before input is passed to the space decoder tree.
+                                </p>
+                              </EuiText>
+                              <EuiSpacer size="s" />
+                              <EuiText size="xs">
+                                <p>
+                                  <strong>Post-filter:</strong> Processed after event is normalized by the space decoder tree, and enriched.
+                                </p>
+                              </EuiText>
+                            </div>
+                          </div>
+                        </EuiPopover>
+                      </EuiFlexItem>
+                    </EuiFlexGroup>
+                  }
                   fullWidth
                   isInvalid={!!errors.type && touched.type}
                   error={errors.type}
@@ -262,6 +303,23 @@ export const FilterFormPage: React.FC<FilterFormPageProps> = ({
                 <EuiSpacer size="l" />
 
                 <EuiCompressedFormRow
+                  label={'Author'}
+                  fullWidth
+                  isInvalid={!!errors.author && touched.author}
+                  error={errors.author}
+                >
+                  <EuiCompressedFieldText
+                    placeholder="Enter author name"
+                    value={values.author}
+                    onChange={(e) => setFieldValue('author', e.target.value)}
+                    onBlur={() => setFieldTouched('author')}
+                    isInvalid={!!errors.author && touched.author}
+                  />
+                </EuiCompressedFormRow>
+                
+                <EuiSpacer size="m" />
+
+                <EuiCompressedFormRow
                   label={
                     <>
                       {'Description - '}
@@ -282,18 +340,44 @@ export const FilterFormPage: React.FC<FilterFormPageProps> = ({
                 <EuiCompressedFormRow
                   label={
                     <>
-                      {'Author - '}
+                      {'Documentation - '}
                       <em>optional</em>
                     </>
                   }
                   fullWidth
                 >
                   <EuiCompressedFieldText
-                    placeholder="Wazuh, Inc."
-                    value={values.author}
-                    onChange={(e) => setFieldValue('author', e.target.value)}
+                    placeholder="Enter documentation URL"
+                    value={values.documentation}
+                    onChange={(e) => setFieldValue('documentation', e.target.value)}
                   />
                 </EuiCompressedFormRow>
+                <EuiSpacer size="m" />
+
+                <FormFieldArray
+                  label={
+                    <>
+                      {'References - '}
+                      <em>optional</em>
+                    </>
+                  }
+                  values={values.references}
+                  placeholder="https://example.com/reference"
+                  addButtonLabel="Add reference"
+                  onChange={(references) => setFieldValue('references', references)}
+                />
+
+                <FormFieldArray
+                  label={
+                    <>
+                      {'Supports - '}
+                      <em>optional</em>
+                    </>
+                  }
+                  values={values.supports}
+                  addButtonLabel="Add support"
+                  onChange={(supports) => setFieldValue('supports', supports)}
+                />
               </EuiPanel>
 
               <EuiSpacer size="xl" />

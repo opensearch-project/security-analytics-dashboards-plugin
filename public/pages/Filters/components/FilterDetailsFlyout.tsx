@@ -18,8 +18,8 @@ import {
   EuiSmallButtonIcon,
   EuiSpacer,
   EuiText,
+  EuiHealth,
 } from '@elastic/eui';
-import { get } from 'lodash';
 import { FilterItem } from '../../../../types';
 import { Metadata } from '../../KVDBs/components/Metadata';
 
@@ -27,18 +27,6 @@ interface FilterDetailsFlyoutProps {
   filter: FilterItem;
   onClose: () => void;
 }
-
-const detailsMapLabels: { [key: string]: string } = {
-  'document.id': 'ID',
-  'document.name': 'Name',
-  'document.type': 'Type',
-  'document.check': 'Check',
-  'document.enabled': 'Enabled',
-  'document.metadata.description': 'Description',
-  'document.metadata.author': 'Author',
-  'space.name': 'Space',
-  'hash.sha256': 'SHA256',
-};
 
 const editorType = {
   visual: 'visual',
@@ -63,42 +51,41 @@ export const FilterDetailsFlyout: React.FC<FilterDetailsFlyoutProps> = ({ filter
     enabled: false,
   };
 
-  const filterData = {
-    'document.id': document.id || filter.id,
-    'document.name': document.name,
-    'document.type': document.type,
-    'document.check': document.check,
-    'document.enabled': document.enabled,
-    'document.metadata.description': document.metadata?.description,
-    'document.metadata.author': getAuthorDisplay(document.metadata?.author),
-    'space.name': filter.space?.name,
-    'hash.sha256': filter.hash?.sha256,
-  };
+  const metadata = document.metadata ?? {};
+  const references = metadata.references ?? [];
+  const supports = metadata.supports ?? [];
+
+  const fields: Array<{
+    label: string;
+    value: any;
+    type?: 'text' | 'date' | 'url';
+  }> = [
+    { label: 'Name', value: document.name },
+    { label: 'Type', value: document.type },
+    { label: 'Description', value: metadata.description },
+    { label: 'Author', value: getAuthorDisplay(metadata.author) },
+    { label: 'Documentation', value: metadata.documentation, type: 'url' },
+    { label: 'Supports', value: supports },
+    { label: 'Created', value: metadata.date, type: 'date' },
+    { label: 'Modified', value: metadata.modified, type: 'date' },
+    { label: 'Space', value: filter.space?.name },
+    { label: 'ID', value: document.id || filter.id },
+    { label: 'SHA256', value: filter.hash?.sha256 },
+    { label: 'Check', value: document.check },
+    { label: 'References', value: references, type: 'url' },
+  ];
 
   const visualTab = (
     <EuiFlexGrid columns={2}>
-      {[
-        'document.id',
-        'document.name',
-        'document.type',
-        'document.check',
-        ['document.enabled', 'boolean_yesno'],
-        'document.metadata.description',
-        'document.metadata.author',
-        'space.name',
-        'hash.sha256',
-      ].map((item) => {
-        const [field, type] = typeof item === 'string' ? [item, 'text'] : item;
-        return (
-          <EuiFlexItem key={field}>
-            <Metadata
-              label={<EuiFormLabel>{detailsMapLabels[field]}</EuiFormLabel>}
-              value={get(filterData, field)}
-              type={type as 'text' | 'date' | 'boolean_yesno' | 'url'}
-            />
-          </EuiFlexItem>
-        );
-      })}
+      {fields.map(({ label, value, type = 'text' }) => (
+        <EuiFlexItem key={label}>
+          <Metadata
+            label={<EuiFormLabel>{label}</EuiFormLabel>}
+            value={value}
+            type={type}
+          />
+        </EuiFlexItem>
+      ))}
     </EuiFlexGrid>
   );
 
@@ -131,16 +118,27 @@ export const FilterDetailsFlyout: React.FC<FilterDetailsFlyoutProps> = ({ filter
       </EuiFlyoutHeader>
       <EuiFlyoutBody>
         <EuiModalBody>
-          <EuiButtonGroup
-            data-test-subj="change-editor-type"
-            legend="This is editor type selector"
-            options={[
-              { id: editorType.visual, label: 'Visual' },
-              { id: editorType.json, label: 'JSON' },
-            ]}
-            idSelected={selectedEditorType}
-            onChange={(id) => setSelectedEditorType(id)}
-          />
+          <EuiFlexGroup alignItems="center">
+            <EuiFlexItem>
+              <EuiButtonGroup
+                data-test-subj="change-editor-type"
+                legend="This is editor type selector"
+                options={[
+                  { id: editorType.visual, label: 'Visual' },
+                  { id: editorType.json, label: 'JSON' },
+                ]}
+                idSelected={selectedEditorType}
+                onChange={(id) => setSelectedEditorType(id)}
+              />
+            </EuiFlexItem>
+            <EuiFlexItem>
+              <div data-test-subj={'filter_flyout_enabled'}>
+                <EuiHealth color={document.enabled !== false ? 'success' : 'subdued'}>
+                  {document.enabled !== false ? 'Enabled' : 'Disabled'}
+                </EuiHealth>
+              </div>
+            </EuiFlexItem>
+          </EuiFlexGroup>
           <EuiSpacer size="xl" />
           {selectedEditorType === editorType.visual ? visualTab : jsonTab}
         </EuiModalBody>

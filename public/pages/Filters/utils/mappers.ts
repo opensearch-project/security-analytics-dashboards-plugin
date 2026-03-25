@@ -10,8 +10,11 @@ export interface FilterFormModel {
   type: string;
   check: string;
   enabled: boolean;
-  description: string;
   author: string;
+  description: string;
+  documentation: string;
+  references: string[];
+  supports: string[];
 }
 
 export const filterFormDefaultValue: FilterFormModel = {
@@ -19,8 +22,11 @@ export const filterFormDefaultValue: FilterFormModel = {
   type: 'pre-filter',
   check: '',
   enabled: true,
-  description: '',
   author: '',
+  description: '',
+  documentation: '',
+  references: [],
+  supports: [],
 };
 
 export const mapFilterToForm = (document: FilterDocument): FilterFormModel => {
@@ -30,8 +36,11 @@ export const mapFilterToForm = (document: FilterDocument): FilterFormModel => {
     type: document.type ?? '',
     check: document.check ?? '',
     enabled: document.enabled ?? true,
+    author: typeof author === 'string' ? author : author?.name ?? '',
     description: document.metadata?.description ?? '',
-    author: typeof author === 'string' ? author : (author?.name ?? ''),
+    documentation: document.metadata?.documentation ?? '',
+    references: document.metadata?.references ?? [],
+    supports: document.metadata?.supports ?? [],
   };
 };
 
@@ -48,9 +57,9 @@ export const mapFormToFilterResource = (values: FilterFormModel): FilterResource
       date: now,
       modified: now,
       description: values.description || '',
-      references: [],
-      documentation: '',
-      supports: [],
+      documentation: values.documentation || '',
+      references: values.references,
+      supports: values.supports,
     },
   };
 };
