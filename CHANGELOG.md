@@ -22,7 +22,7 @@ All notable changes to the Wazuh ML Commons project will be documented in this f
 - Hide Alerts/Correlations and Correlation rules from the Security Analytics navigation, leaving Findings at the root level [#8004](https://github.com/wazuh/wazuh-dashboard-plugins/pull/8004)
 - Changed the management of rules [#96](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/96) [#125](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/125)
 - Renamed Dectection rules to rules [#96](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/96)
-- Updated Detectors management feature [#111](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/111)
+- Updated Detectors management feature [#111](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/111) [#134](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/134)
 
 ### Removed
 

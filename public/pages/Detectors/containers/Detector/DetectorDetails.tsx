@@ -421,15 +421,15 @@ export class DetectorDetails extends React.Component<
             // >
             //   View Alerts
             // </EuiContextMenuItem>,
-            <EuiContextMenuItem
-              disabled={loading}
-              key={"ViewFindings"}
-              icon={"empty"}
-              onClick={this.onViewFindingsClick}
-              data-test-subj={"viewFindingsButton"}
-            >
-              View Findings
-            </EuiContextMenuItem>,
+            // <EuiContextMenuItem
+            //   disabled={loading}
+            //   key={"ViewFindings"}
+            //   icon={"empty"}
+            //   onClick={this.onViewFindingsClick}
+            //   data-test-subj={"viewFindingsButton"}
+            // >
+            //   View Findings
+            // </EuiContextMenuItem>,
             <>
               {this.state.dashboardId ? (
                 <EuiContextMenuItem
@@ -448,7 +448,7 @@ export class DetectorDetails extends React.Component<
                 </EuiContextMenuItem>
               ) : null}
             </>,
-            <EuiHorizontalRule margin="xs" />,
+            // <EuiHorizontalRule margin="xs" />,
             <EuiContextMenuItem
               disabled={loading}
               key={"Toggle detector"}
