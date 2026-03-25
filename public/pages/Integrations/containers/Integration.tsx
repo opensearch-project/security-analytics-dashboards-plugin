@@ -44,13 +44,7 @@ import { PageHeader } from '../../../components/PageHeader/PageHeader';
 import { useIntegrationDecoders } from '../../Decoders/hooks/useIntegrationDecoders';
 import { useIntegrationKVDBs } from '../../KVDBs/hooks/useIntegrationKVDBs';
 import { useIntegrationRules } from '../../WazuhRules/hooks/useIntegrationRules';
-import moment from 'moment';
-
-const formatIntegrationMetadataDate = (value?: string) => {
-  if (!value?.trim()) return '';
-  const m = moment(value);
-  return m.isValid() ? m.format('MM/DD/YY') : value;
-};
+import { formatIntegrationMetadataDate } from '../utils/helpers';
 
 export interface IntegrationProps extends RouteComponentProps {
   notifications: NotificationsStart;

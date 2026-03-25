@@ -15,6 +15,15 @@ import { integrationLabels } from './constants';
 import { actionIsAllowedOnSpace } from '../../../../common/helpers';
 import { IntegrationBase, PolicyItem } from '../../../../types';
 
+import moment from 'moment';
+
+/** Integration/policy metadata dates often arrive as ISO strings; show as MM/DD/YY. */
+export const formatIntegrationMetadataDate = (value?: string) => {
+  if (!value?.trim()) return '';
+  const m = moment(value);
+  return m.isValid() ? m.format('MM/DD/YY') : value;
+};
+
 const getIntegrationCategoryFilterDisplayName = (value: string): string => {
   const match = integrationCategories.find((c) => c.value === value);
   return match?.label ?? startCase(value.replace(/-/g, ' '));

@@ -59,6 +59,10 @@ export const SpaceTypes = {
   },
 } as const;
 
+export const SPACE_SELECTOR_LABEL = i18n.translate('securityAnalytics.spaceSelector.label', {
+  defaultMessage: 'Space:',
+});
+
 export const SPACE_ACTIONS = {
   CREATE: 'create',
   EDIT: 'edit',

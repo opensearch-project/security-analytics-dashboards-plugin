@@ -97,6 +97,12 @@ export function getSpacesAllowAction(
     .map(([space]) => space) as Space[];
 }
 
+/** Localized label for a space value (from {@link SpaceTypes}). */
+export function getSpaceTypeLabel(space: Space): string {
+  const key = space.toUpperCase() as keyof typeof SpaceTypes;
+  return SpaceTypes[key]?.label ?? space;
+}
+
 export const getNextSpace = (space: PromoteSpaces) => {
   const currentIndex = UserSpacesOrder.indexOf(space);
   if (currentIndex === -1 || currentIndex === UserSpacesOrder.length - 1) {

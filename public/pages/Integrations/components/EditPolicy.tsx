@@ -20,9 +20,11 @@ import {
   EuiFilterSelectItem,
   EuiOverlayMask,
   EuiConfirmModal,
+  EuiSpacer,
+  EuiHorizontalRule
 } from '@elastic/eui';
 
-import { withPolicyGuard } from './PolicyInfo';
+import { withPolicyGuard } from './PolicyGuard';
 import { DecoderSource, PolicyDocument, Space } from '../../../../types';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { DataStore } from '../../../store/DataStore';
@@ -31,7 +33,7 @@ import { FormFieldArray } from '../../../components/FormFieldArray';
 import { INTEGRATION_AUTHOR_REGEX, validateName } from '../../../utils/validation';
 import { buildDecodersSearchQuery } from '../../Decoders/utils/constants';
 import { SPACE_ACTIONS } from '../../../../common/constants';
-import { actionIsAllowedOnSpace } from '../../../../common/helpers';
+import { actionIsAllowedOnSpace, getSpaceTypeLabel } from '../../../../common/helpers';
 import { ALLOWED_ENRICHMENTS, ENRICHMENT_LABELS, EnrichmentType } from '../constants/enrichments';
 
 const DECODER_SEARCH_SIZE = 25;
@@ -100,6 +102,7 @@ const EditForm: React.FC<{}> = withPolicyGuard({
   );
 
   const [isEnrichmentPopoverOpen, setIsEnrichmentPopoverOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   // Flag to determine if the space allows editing non-enrichments fields
   const canEditPolicy = actionIsAllowedOnSpace(space, SPACE_ACTIONS.EDIT_POLICY);
@@ -193,18 +196,10 @@ const EditForm: React.FC<{}> = withPolicyGuard({
     }
   };
 
-  const onConfirm = async () => {
-    const payload = sanitizatePolicy(policyDetails);
-    const [ok] = await DataStore.policies.updatePolicy(space, payload);
-
-    if (ok) {
-      successNotificationToast(notifications, 'updated', `[${space}] space`);
-      if (onSuccess) onSuccess();
-      onClose();
+  const onConfirmClicked = useCallback(async () => {
+    if (isSaving) {
+      return;
     }
-  };
-
-  const onConfirmClicked = useCallback(() => {
     const { titleInvalid, authorInvalid } = updateErrors(policyDetails);
 
     if (titleInvalid || authorInvalid) {
@@ -215,12 +210,31 @@ const EditForm: React.FC<{}> = withPolicyGuard({
       });
       return;
     }
-    onConfirm();
-  }, [onConfirm, notifications, policyDetails]);
+
+    setIsSaving(true);
+    try {
+      const payload = sanitizatePolicy(policyDetails);
+      const [ok] = await DataStore.policies.updatePolicy(space, payload);
+
+      if (ok) {
+        successNotificationToast(notifications, 'updated', `[${space}] space`);
+        if (onSuccess) onSuccess();
+        onClose();
+      } else {
+        setIsSaving(false);
+      }
+    } catch {
+      setIsSaving(false);
+    }
+  }, [isSaving, notifications, onClose, onSuccess, policyDetails, space]);
 
   return (
     <>
       <EuiFlyoutBody>
+        <EuiText size="s">
+          <h3>Details</h3>
+        </EuiText>
+        <EuiSpacer size="s" />
         <EuiCompressedFormRow label="Title" isInvalid={!!titleError} error={titleError}>
           {canEditPolicy ? (
             <EuiCompressedFieldText
@@ -315,10 +329,14 @@ const EditForm: React.FC<{}> = withPolicyGuard({
             renderTextValue(policyDetails.metadata?.documentation)
           )}
         </EuiCompressedFormRow>
-        <EuiCompressedFormRow label={!canEditToggles ? 'Enabled' : undefined}>
+        <EuiHorizontalRule />
+        <EuiText size="s">
+          <h3>Settings</h3>
+        </EuiText>
+        <EuiSpacer size="s" />
+        <EuiCompressedFormRow label={'Status'}>
           {canEditToggles ? (
             <EuiSwitch
-              label="Enabled"
               compressed
               checked={policyDetails.enabled || false}
               onChange={(e) => {
@@ -332,44 +350,6 @@ const EditForm: React.FC<{}> = withPolicyGuard({
             />
           ) : (
             renderBooleanValue(policyDetails.enabled)
-          )}
-        </EuiCompressedFormRow>
-        <EuiCompressedFormRow label={!canEditToggles ? 'Index unclassified events' : undefined}>
-          {canEditToggles ? (
-            <EuiSwitch
-              label="Index unclassified events"
-              compressed
-              checked={policyDetails.index_unclassified_events || false}
-              onChange={(e) => {
-                const newPolicy = {
-                  ...policyDetails,
-                  index_unclassified_events: e.target.checked,
-                };
-                setPolicyDetails(newPolicy);
-                updateErrors(newPolicy);
-              }}
-            />
-          ) : (
-            renderBooleanValue(policyDetails.index_unclassified_events)
-          )}
-        </EuiCompressedFormRow>
-        <EuiCompressedFormRow label={!canEditToggles ? 'Index discarded events' : undefined}>
-          {canEditToggles ? (
-            <EuiSwitch
-              label="Index discarded events"
-              compressed
-              checked={policyDetails.index_discarded_events || false}
-              onChange={(e) => {
-                const newPolicy = {
-                  ...policyDetails,
-                  index_discarded_events: e.target.checked,
-                };
-                setPolicyDetails(newPolicy);
-                updateErrors(newPolicy);
-              }}
-            />
-          ) : (
-            renderBooleanValue(policyDetails.index_discarded_events)
           )}
         </EuiCompressedFormRow>
         <EuiCompressedFormRow label="Root Decoder">
@@ -397,6 +377,50 @@ const EditForm: React.FC<{}> = withPolicyGuard({
           ) : (
             renderTextValue(rootDecoder?.document?.name)
           )}
+        </EuiCompressedFormRow>
+        <EuiCompressedFormRow>
+          <EuiFlexGroup>
+            <EuiFlexItem>
+              <EuiCompressedFormRow label={'Index unclassified events'}>
+                {canEditToggles ? (
+                  <EuiSwitch
+                    compressed
+                    checked={policyDetails.index_unclassified_events || false}
+                    onChange={(e) => {
+                      const newPolicy = {
+                        ...policyDetails,
+                        index_unclassified_events: e.target.checked,
+                      };
+                      setPolicyDetails(newPolicy);
+                      updateErrors(newPolicy);
+                    }}
+                  />
+                ) : (
+                  renderBooleanValue(policyDetails.index_unclassified_events)
+                )}
+              </EuiCompressedFormRow>
+            </EuiFlexItem>
+            <EuiFlexItem>
+              <EuiCompressedFormRow label={'Index discarded events'}>
+                {canEditToggles ? (
+                  <EuiSwitch
+                    compressed
+                    checked={policyDetails.index_discarded_events || false}
+                    onChange={(e) => {
+                      const newPolicy = {
+                        ...policyDetails,
+                        index_discarded_events: e.target.checked,
+                      };
+                      setPolicyDetails(newPolicy);
+                      updateErrors(newPolicy);
+                    }}
+                  />
+                ) : (
+                  renderBooleanValue(policyDetails.index_discarded_events)
+                )}
+              </EuiCompressedFormRow>
+            </EuiFlexItem>
+          </EuiFlexGroup>
         </EuiCompressedFormRow>
         <EuiCompressedFormRow
           label={
@@ -472,7 +496,12 @@ const EditForm: React.FC<{}> = withPolicyGuard({
             <EuiButtonEmpty onClick={onFlyoutClose}>Cancel</EuiButtonEmpty>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton fill onClick={onConfirmClicked} isDisabled={!hasChanges}>
+            <EuiButton
+              fill
+              onClick={onConfirmClicked}
+              isDisabled={!hasChanges || isSaving}
+              isLoading={isSaving}
+            >
               Save
             </EuiButton>
           </EuiFlexItem>
@@ -495,6 +524,7 @@ export const EditPolicy: React.FC<EditPolicyProps> = ({
   space,
   notifications,
 }) => {
+  const editSpaceTitle = `Edit ${getSpaceTypeLabel(space)}`;
   const [canClose, setCanClose] = useState(true);
   const [canNotCloseIsOpen, setCanNotCloseIsOpen] = useState(false);
   const onFlyoutClose = function () {
@@ -510,7 +540,7 @@ export const EditPolicy: React.FC<EditPolicyProps> = ({
       <EuiFlyout onClose={onFlyoutClose} ownFocus size="s">
         <EuiFlyoutHeader hasBorder={true}>
           <EuiText size="s">
-            <h2>Edit space details</h2>
+            <h2>{editSpaceTitle}</h2>
           </EuiText>
         </EuiFlyoutHeader>
         <EditForm

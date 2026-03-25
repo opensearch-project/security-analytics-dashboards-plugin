@@ -14,7 +14,11 @@ import {
   EuiSpacer,
   EuiText,
 } from "@elastic/eui";
-import { PLUGIN_VERSION_SHORT, SpaceTypes } from "../../../common/constants";
+import {
+  PLUGIN_VERSION_SHORT,
+  SPACE_SELECTOR_LABEL,
+  SpaceTypes,
+} from "../../../common/constants";
 
 interface SpaceSelectorProps {
   selectedSpace: string;
@@ -39,9 +43,15 @@ export const SpaceSelector: React.FC<SpaceSelectorProps> = ({
   return (
     <EuiFlexGroup gutterSize="s" alignItems="center">
       <EuiFlexItem grow={false}>
+        <EuiText size="s" style={{ whiteSpace: "nowrap" }}>
+          {SPACE_SELECTOR_LABEL}
+        </EuiText>
+      </EuiFlexItem>
+      <EuiFlexItem grow={false}>
         <EuiButtonGroup
           data-test-subj="space-selector"
           legend="Space selector"
+          color="primary"
           options={visibleSpaceTypes.map((spaceType) => ({
             id: spaceType.value,
             label: spaceType.label,

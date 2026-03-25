@@ -22,7 +22,7 @@ import {
 import { get } from 'lodash';
 import { compose } from 'redux';
 import { RearrangeItems, RearrangeItemsProps } from './Rearrange';
-import { withPolicyGuard } from './PolicyInfo';
+import { withPolicyGuard } from './PolicyGuard';
 import { Space } from '../../../../types';
 import { DataStore } from '../../../store/DataStore';
 import { successNotificationToast } from '../../../utils/helpers';
