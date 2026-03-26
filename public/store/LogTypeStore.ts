@@ -16,18 +16,29 @@ import {
 } from '../utils/constants';
 import { getLogTypeLabel } from '../pages/LogTypes/utils/helpers';
 
+/** Indexer stores lifecycle as `space`; UI model keeps `source` (Sigma → Standard). */
+function mapLogTypeFromHit(hit: {
+  _id: string;
+  _source: LogTypeBase & { space?: string };
+}): LogType {
+  const src = hit._source;
+  const { space, source: _, ...rest } = src;
+  const raw = typeof space === 'string' ? space : '';
+  const source = raw.toLowerCase() === 'sigma' ? 'Standard' : raw;
+  return {
+    id: hit._id,
+    ...rest,
+    source,
+  };
+}
+
 export class LogTypeStore {
   constructor(private service: LogTypeService, private notifications: NotificationsStart) {}
 
   public async getLogType(id: string): Promise<LogTypeWithRules | undefined> {
     const logTypesRes = await this.service.searchLogTypes(id);
     if (logTypesRes.ok) {
-      const logTypes: LogType[] = logTypesRes.response.hits.hits.map((hit) => {
-        return {
-          id: hit._id,
-          ...hit._source,
-        };
-      });
+      const logTypes: LogType[] = logTypesRes.response.hits.hits.map((hit) => mapLogTypeFromHit(hit));
 
       let detectionRules: RuleItemInfoBase[] = [];
 
@@ -48,13 +59,7 @@ export class LogTypeStore {
     try {
       const logTypesRes = await this.service.searchLogTypes();
       if (logTypesRes.ok) {
-        const logTypes: LogType[] = logTypesRes.response.hits.hits.map((hit) => {
-          return {
-            id: hit._id,
-            ...hit._source,
-            source: hit._source.source.toLowerCase() === 'sigma' ? 'Standard' : hit._source.source,
-          };
-        });
+        const logTypes: LogType[] = logTypesRes.response.hits.hits.map((hit) => mapLogTypeFromHit(hit));
 
         ruleTypes.splice(
           0,
