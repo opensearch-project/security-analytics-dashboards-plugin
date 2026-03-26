@@ -11,12 +11,12 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiFormLabel,
-  EuiHealth,
   EuiLink,
   EuiModalBody,
   EuiSpacer,
   EuiText,
 } from '@elastic/eui';
+import { EnabledHealth } from '../../../../components/Utility/EnabledHealth';
 import React, { useState } from 'react';
 import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
 import { RuleItemInfoBase } from '../../../../../types';
@@ -82,13 +82,10 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
             options={editorTypes}
             idSelected={selectedEditorType}
             onChange={(id) => setSelectedEditorType(id)}
-            />
+          />
         </EuiFlexItem>
         <EuiFlexItem>
-            <div data-test-subj={'rule_flyout_rule_enabled'}>
-              <EuiHealth color={ruleData.enabled !== false ? 'success' : 'subdued'}>
-                {ruleData.enabled !== false ? 'Enabled' : 'Disabled'}                </EuiHealth>
-            </div>
+          <EnabledHealth enabled={ruleData.enabled} data-test-subj="rule_flyout_enabled" />
         </EuiFlexItem>
       </EuiFlexGroup>
       <EuiSpacer size="xl" />
@@ -276,7 +273,7 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
           <EuiSpacer />
 
           <EuiFlexGroup direction="column">
-            <EuiFlexItem >
+            <EuiFlexItem>
               <EuiFormLabel>References</EuiFormLabel>
               {ruleData.references.length > 0 ? (
                 ruleData.references.map((reference: any, i: number) => (

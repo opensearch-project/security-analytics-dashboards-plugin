@@ -86,7 +86,7 @@ export const Metadata: React.FC<{
         <strong>{label}</strong>
       </div>
       <div style={label ? { marginTop: "4px" } : {}}>
-        {typeof value === "undefined" || value === ""
+        {typeof value === "undefined" || value === "" || (Array.isArray(value) && value.length === 0)
           ? DEFAULT_EMPTY_DATA
           : Array.isArray(value)
             ? value.map((v, i) => (

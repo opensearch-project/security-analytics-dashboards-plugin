@@ -18,10 +18,10 @@ import {
   EuiSmallButtonIcon,
   EuiSpacer,
   EuiText,
-  EuiHealth,
 } from '@elastic/eui';
 import { FilterItem } from '../../../../types';
 import { Metadata } from '../../KVDBs/components/Metadata';
+import { EnabledHealth } from '../../../components/Utility/EnabledHealth';
 
 interface FilterDetailsFlyoutProps {
   filter: FilterItem;
@@ -79,11 +79,7 @@ export const FilterDetailsFlyout: React.FC<FilterDetailsFlyoutProps> = ({ filter
     <EuiFlexGrid columns={2}>
       {fields.map(({ label, value, type = 'text' }) => (
         <EuiFlexItem key={label}>
-          <Metadata
-            label={<EuiFormLabel>{label}</EuiFormLabel>}
-            value={value}
-            type={type}
-          />
+          <Metadata label={<EuiFormLabel>{label}</EuiFormLabel>} value={value} type={type} />
         </EuiFlexItem>
       ))}
     </EuiFlexGrid>
@@ -132,11 +128,7 @@ export const FilterDetailsFlyout: React.FC<FilterDetailsFlyoutProps> = ({ filter
               />
             </EuiFlexItem>
             <EuiFlexItem>
-              <div data-test-subj={'filter_flyout_enabled'}>
-                <EuiHealth color={document.enabled !== false ? 'success' : 'subdued'}>
-                  {document.enabled !== false ? 'Enabled' : 'Disabled'}
-                </EuiHealth>
-              </div>
+              <EnabledHealth enabled={document.enabled} data-test-subj="filter_flyout_enabled" />
             </EuiFlexItem>
           </EuiFlexGroup>
           <EuiSpacer size="xl" />

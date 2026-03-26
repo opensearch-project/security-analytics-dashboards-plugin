@@ -24,6 +24,7 @@ import { get } from 'lodash';
 import { KVDBItem } from '../../../../types';
 import { Metadata } from './Metadata';
 import { AssetViewer } from './AssetViewer';
+import { EnabledHealth } from '../../../components/Utility/EnabledHealth';
 
 interface KVDBDetailsFlyoutProps {
   kvdb: KVDBItem;
@@ -36,7 +37,7 @@ const detailsMapLabels: { [key: string]: string } = {
   'integration.title': 'Integration',
   'document.metadata.title': 'Title',
   'document.metadata.author': 'Author',
-  'document.enabled': 'Enabled',
+  'document.metadata.description': 'Description',
   'document.metadata.references': 'References',
   'document.metadata.documentation': 'Documentation',
   'document.metadata.supports': 'Supports',
@@ -60,7 +61,7 @@ export const KVDBDetailsFlyout: React.FC<KVDBDetailsFlyoutProps> = ({ kvdb, onCl
     'document.metadata.title': metadata?.title,
     'document.metadata.date': metadata?.date,
     'document.metadata.author': metadata?.author,
-    'document.enabled': document.enabled,
+    'document.metadata.description': metadata?.description,
     'document.metadata.references': metadata?.references,
     'document.metadata.documentation': metadata?.documentation,
     'document.metadata.supports': metadata?.supports,
@@ -78,7 +79,7 @@ export const KVDBDetailsFlyout: React.FC<KVDBDetailsFlyoutProps> = ({ kvdb, onCl
           ['document.metadata.date', 'date'],
           ['document.metadata.modified', 'date'],
           'document.metadata.author',
-          ['document.enabled', 'boolean_yesno'],
+          'document.metadata.description',
           ['document.metadata.references', 'url'],
           ['document.metadata.documentation', 'url'],
           'document.metadata.supports',
@@ -136,22 +137,29 @@ export const KVDBDetailsFlyout: React.FC<KVDBDetailsFlyoutProps> = ({ kvdb, onCl
       </EuiFlyoutHeader>
       <EuiFlyoutBody>
         <EuiModalBody>
-          <EuiButtonGroup
-            data-test-subj="change-editor-type"
-            legend="This is editor type selector"
-            options={[
-              {
-                id: 'visual',
-                label: 'Visual',
-              },
-              {
-                id: 'json',
-                label: 'JSON',
-              },
-            ]}
-            idSelected={selectedEditorType}
-            onChange={(id) => onEditorTypeChange(id)}
-          />
+          <EuiFlexGroup alignItems="center">
+            <EuiFlexItem>
+              <EuiButtonGroup
+                data-test-subj="change-editor-type"
+                legend="This is editor type selector"
+                options={[
+                  {
+                    id: 'visual',
+                    label: 'Visual',
+                  },
+                  {
+                    id: 'json',
+                    label: 'JSON',
+                  },
+                ]}
+                idSelected={selectedEditorType}
+                onChange={(id) => onEditorTypeChange(id)}
+              />
+            </EuiFlexItem>
+            <EuiFlexItem>
+              <EnabledHealth enabled={document.enabled} data-test-subj="kvdb_flyout_enabled" />
+            </EuiFlexItem>
+          </EuiFlexGroup>
           <EuiSpacer size="xl" />
           {selectedEditorType === 'visual' ? visualTab : jsonTab}
         </EuiModalBody>

@@ -16,6 +16,7 @@ import {
   EuiText,
   EuiButtonGroup,
 } from '@elastic/eui';
+import { EnabledHealth } from '../../../../components/Utility/EnabledHealth';
 import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
 import React, { useState } from 'react';
 import { RuleContentYamlViewer } from './RuleContentYamlViewer';
@@ -64,7 +65,9 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
           <EuiFlexGroup justifyContent="flexEnd">
             <EuiFlexItem>
               <EuiFormLabel>Rule Name</EuiFormLabel>
-              <EuiText data-test-subj={'rule_flyout_rule_name'} size="s">{ruleData.title}</EuiText>
+              <EuiText data-test-subj={'rule_flyout_rule_name'} size="s">
+                {ruleData.title}
+              </EuiText>
             </EuiFlexItem>
             <EuiFlexItem>
               {/* Replace Log type to Integration by Wazuh */}
@@ -194,9 +197,7 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
             {ruleData.false_positives.length > 0 ? (
               ruleData.false_positives.map((falsepositive: any, i: number) => (
                 <div key={i}>
-                  <EuiText size="s">
-                    {falsepositive.value}
-                  </EuiText>
+                  <EuiText size="s">{falsepositive.value}</EuiText>
                   <EuiSpacer />
                 </div>
               ))

@@ -12,6 +12,7 @@ export interface KVDBFormModel {
   description: string;
   documentation: string;
   references: string[];
+  supports: string[];
   enabled: boolean;
   contentEntries: ContentEntry[];
 }
@@ -22,6 +23,7 @@ export const kvdbFormDefaultValue: KVDBFormModel = {
   description: '',
   documentation: '',
   references: [],
+  supports: [],
   enabled: true,
   contentEntries: [],
 };
@@ -44,12 +46,16 @@ export const mapKVDBToForm = (document: KVDBDocument): KVDBFormModel => {
     }
   }
 
+  const supportsRaw = metadata?.supports;
+  const supports = Array.isArray(supportsRaw) ? supportsRaw : supportsRaw ? [supportsRaw] : [];
+
   return {
     title: metadata?.title || '',
     author: metadata?.author || '',
     description: metadata?.description || '',
     documentation: metadata?.documentation || '',
     references,
+    supports,
     enabled: document.enabled ?? true,
     contentEntries,
   };
@@ -90,7 +96,7 @@ export const mapFormToKVDBResource = (values: KVDBFormModel): KVDBResource => {
       description: values.description,
       documentation: values.documentation,
       references: values.references,
-      supports: [],
+      supports: values.supports,
     },
     enabled: values.enabled,
     content: entriesToContentObject(values.contentEntries),
