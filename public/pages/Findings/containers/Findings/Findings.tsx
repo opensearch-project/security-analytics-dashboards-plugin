@@ -248,16 +248,16 @@ class Findings extends Component<FindingsProps, FindingsState> {
     }: { tabId: T; field: F; value: FindingsState['findingStateByTabId'][T][F] },
     otherState?: Partial<Pick<FindingsState, keyof Omit<FindingsState, 'findingStateByTabId'>>>
   ) {
-    this.setState({
+    this.setState((prevState) => ({
       ...(otherState as any),
       findingStateByTabId: {
-        ...this.state.findingStateByTabId,
+        ...prevState.findingStateByTabId,
         [tabId]: {
-          ...this.state.findingStateByTabId[tabId],
+          ...prevState.findingStateByTabId[tabId],
           [field]: value,
         },
       },
-    });
+    }));
   }
 
   onStreamingFindings = async (findings: FindingItemType[]) => {
