@@ -28,6 +28,7 @@ import {
 import { CLIENT_INTEGRATION_METHODS } from '../utils/constants';
 import { MDSEnabledClientService } from './MDSEnabledClientService';
 import { get, sortBy } from 'lodash';
+import { getNextSpace } from '../../common/helpers';
 
 const INTEGRATIONS_INDEX = '.cti-integrations';
 const DECODERS_INDEX = '.cti-decoders';
@@ -169,38 +170,65 @@ export class IntegrationService extends MDSEnabledClientService {
       space: PromoteSpaces;
       nameProp: string;
       idProp: string;
-    }
+    },
+    targetSpace: PromoteSpaces | null = null
   ) => {
     const ids = promoteEntityData.map(({ id }) => id.replace(/^\w_/, '')); // TODO: this removes the `d_` prefix of the ids
 
-    // TODO: This should paginate the results
-    const searchResponse: SearchIntegrationsResponse = await client('search', {
-      index,
-      body: {
-        size: 10000,
-        _source: [nameProp, idProp],
-        query: {
-          bool: {
-            must: [
-              {
-                terms: {
-                  [idProp]: ids,
+    const searchEntityByIdsAndSpace = async (idsToSearch: string[], searchSpace: PromoteSpaces) => {
+      if (idsToSearch.length === 0) {
+        return {};
+      }
+
+      // TODO: This should paginate the results
+      const searchResponse: SearchIntegrationsResponse = await client('search', {
+        index,
+        body: {
+          size: 10000,
+          _source: [nameProp, idProp],
+          query: {
+            bool: {
+              must: [
+                {
+                  terms: {
+                    [idProp]: idsToSearch,
+                  },
                 },
-              },
-              {
-                term: {
-                  'space.name': space,
+                {
+                  term: {
+                    'space.name': searchSpace,
+                  },
                 },
-              },
-            ],
+              ],
+            },
           },
         },
-      },
-    });
+      });
 
-    return Object.fromEntries(
-      searchResponse.hits.hits.map(({ _source }) => [get(_source, idProp), get(_source, nameProp)])
-    );
+      return Object.fromEntries(
+        searchResponse.hits.hits.map(({ _source }) => [
+          get(_source, idProp),
+          get(_source, nameProp),
+        ])
+      );
+    };
+
+    const entitiesInCurrentSpace = await searchEntityByIdsAndSpace(ids, space);
+
+    if (!targetSpace) {
+      return entitiesInCurrentSpace;
+    }
+
+    const unresolvedIds = ids.filter((id) => !entitiesInCurrentSpace[id]);
+    if (unresolvedIds.length === 0) {
+      return entitiesInCurrentSpace;
+    }
+
+    const entitiesInTargetSpace = await searchEntityByIdsAndSpace(unresolvedIds, targetSpace);
+    return {
+      ...entitiesInTargetSpace,
+      ...entitiesInCurrentSpace,
+    };
   };
 
   getPromoteBySpace = async (
@@ -218,6 +246,7 @@ export class IntegrationService extends MDSEnabledClientService {
         CLIENT_INTEGRATION_METHODS.GET_PROMOTE_BY_SPACE,
         params
       );
+      const targetSpace = getNextSpace(space);
 
       const availablePromotions: Record<string, Record<string, string>> = {
         integrations: {},
@@ -238,7 +267,8 @@ export class IntegrationService extends MDSEnabledClientService {
             space,
             nameProp: 'document.metadata.title',
             idProp: 'document.id',
-          }
+          },
+          targetSpace
         );
       }
 
@@ -251,7 +281,8 @@ export class IntegrationService extends MDSEnabledClientService {
             space,
             nameProp: 'document.name',
             idProp: 'document.id',
-          }
+          },
+          targetSpace
         );
       }
 
@@ -264,7 +295,8 @@ export class IntegrationService extends MDSEnabledClientService {
             space,
             nameProp: 'document.metadata.title',
             idProp: 'document.id',
-          }
+          },
+          targetSpace
         );
       }
 
@@ -277,7 +309,8 @@ export class IntegrationService extends MDSEnabledClientService {
             space,
             nameProp: 'document.metadata.title',
             idProp: 'document.id',
-          }
+          },
+          targetSpace
         );
       }
 
@@ -290,7 +323,8 @@ export class IntegrationService extends MDSEnabledClientService {
             space,
             nameProp: 'document.metadata.title',
             idProp: 'document.id',
-          }
+          },
+          targetSpace
         );
       }
 
@@ -303,7 +337,8 @@ export class IntegrationService extends MDSEnabledClientService {
             space,
             nameProp: 'document.metadata.title',
             idProp: 'document.id',
-          }
+          },
+          targetSpace
         );
       }
 
