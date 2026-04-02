@@ -82,11 +82,6 @@ export const getIntegrationsTableColumns = ({
     },
   },
   {
-    field: 'description',
-    name: 'Description',
-    truncateText: false,
-  },
-  {
     field: 'category',
     name: 'Category',
     truncateText: false,
