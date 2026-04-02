@@ -249,9 +249,11 @@ export class RulesStore implements IWazuhRulesStore {
     const doc = hit._source?.document ?? {};
     const logsource = doc.logsource ?? {};
     const meta = doc.metadata ?? {};
+    const integration = hit.integration || null;
 
     return {
       ...hit,
+      integration,
       _id: hit._source?.document?.id ?? hit._id,
       prePackaged,
       space: this.normalizeSpace(hit._source?.space),

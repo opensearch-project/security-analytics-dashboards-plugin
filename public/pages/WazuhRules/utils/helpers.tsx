@@ -6,7 +6,7 @@
 import { EuiBreadcrumb } from '@elastic/eui';
 import { dump, load } from 'js-yaml';
 import { NotificationsStart } from 'opensearch-dashboards/public';
-import { Rule, RuleItemInfoBase } from '../../../../types';
+import { IntegrationBase, Rule, RuleItemInfoBase } from '../../../../types';
 import { BREADCRUMBS } from '../../../utils/constants';
 import { errorNotificationToast } from '../../../utils/helpers';
 import {
@@ -26,6 +26,7 @@ export interface RuleTableItem {
   description: string;
   ruleInfo: RuleItemInfoBase;
   ruleId: string;
+  integration?: IntegrationBase;
 }
 
 export function validateRule(

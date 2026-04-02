@@ -60,9 +60,8 @@ const BadgeGroup: React.FC<BadgeGroupProps> = ({ label, values }) => {
   );
 };
 
-export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
-  rule: { prePackaged, _source: ruleData, _id: ruleId },
-}) => {
+export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({ rule }) => {
+  const { prePackaged, _source: ruleData, _id: ruleId } = rule;
   if (!ruleData.id) {
     ruleData.id = ruleId;
   }
@@ -103,7 +102,9 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
             <EuiFlexItem>
               <EuiFormLabel>Integration</EuiFormLabel>
               <EuiText data-test-subj={'rule_flyout_rule_log_type'} size="s">
-                {getLogTypeLabel(ruleData.category)}
+                {rule.integration && typeof rule.integration.document?.metadata?.title === 'string'
+                  ? rule.integration.document?.metadata?.title
+                  : '-' }
               </EuiText>
             </EuiFlexItem>
           </EuiFlexGroup>

@@ -55,7 +55,8 @@ export interface DetectorRuleInfo {
 export type RuleItemInfoBase = RuleInfo & {
   prePackaged: boolean;
   space?: string;
-}; // Wazuh: added space field
+  integration?: any;
+}; // Wazuh: added space & integration fields
 
 /**
  * API Interfaces
