@@ -5,9 +5,6 @@
 
 const KEYWORD_SEARCH_FIELDS = [
   'document.name',
-  'document.metadata.module',
-  'document.metadata.compatibility',
-  'document.metadata.versions',
   'document.metadata.author',
 ];
 

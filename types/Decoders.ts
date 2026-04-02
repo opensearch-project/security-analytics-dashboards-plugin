@@ -5,15 +5,7 @@
 
 import { CatalogResourceMetadata } from './ResourceMetadata';
 
-/**
- * Decoder-specific metadata that extends the common resource metadata.
- * Includes additional fields: module, compatibility, versions.
- */
-export interface DecoderMetadata extends CatalogResourceMetadata {
-  module?: string;
-  compatibility?: string;
-  versions?: string;
-}
+export type DecoderMetadata = CatalogResourceMetadata;
 
 export interface DecoderDocument {
   id: string;

@@ -20,8 +20,10 @@ import {
   EuiText,
 } from '@elastic/eui';
 import { FilterItem } from '../../../../types';
-import { Metadata } from '../../KVDBs/components/Metadata';
+import { Metadata } from '../../../components/Utility/Metadata';
 import { EnabledHealth } from '../../../components/Utility/EnabledHealth';
+import { BadgeGroup } from '../../../components/Utility/BadgeGroup';
+import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 
 interface FilterDetailsFlyoutProps {
   filter: FilterItem;
@@ -61,17 +63,17 @@ export const FilterDetailsFlyout: React.FC<FilterDetailsFlyoutProps> = ({ filter
     type?: 'text' | 'date' | 'url';
   }> = [
     { label: 'Name', value: document.name },
+    { label: 'Space', value: filter.space?.name },
     { label: 'Type', value: document.type },
-    { label: 'Description', value: metadata.description },
     { label: 'Author', value: getAuthorDisplay(metadata.author) },
-    { label: 'Documentation', value: metadata.documentation, type: 'url' },
-    { label: 'Supports', value: supports },
+    { label: 'ID', value: document.id || filter.id },
+    { label: 'Description', value: metadata.description },
     { label: 'Created', value: metadata.date, type: 'date' },
     { label: 'Modified', value: metadata.modified, type: 'date' },
-    { label: 'Space', value: filter.space?.name },
-    { label: 'ID', value: document.id || filter.id },
-    { label: 'SHA256', value: filter.hash?.sha256 },
+    { label: 'Supports', value: <BadgeGroup emptyValue={DEFAULT_EMPTY_DATA} values={supports} /> },
     { label: 'Check', value: document.check },
+    { label: 'Documentation', value: metadata.documentation, type: 'url' },
+    { label: 'SHA256', value: filter.hash?.sha256 },
     { label: 'References', value: references, type: 'url' },
   ];
 

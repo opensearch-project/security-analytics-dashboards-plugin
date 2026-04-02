@@ -8,6 +8,7 @@ import {
   EuiButtonGroup,
   EuiCodeBlock,
   EuiCompressedFormRow,
+  EuiFlexGrid,
   EuiFlexGroup,
   EuiFlexItem,
   EuiFormLabel,
@@ -20,7 +21,8 @@ import { EnabledHealth } from '../../../../components/Utility/EnabledHealth';
 import React, { useState } from 'react';
 import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
 import { RuleItemInfoBase } from '../../../../../types';
-import { getLogTypeLabel } from '../../../LogTypes/utils/helpers';
+import { Metadata } from '../../../../components/Utility/Metadata';
+import { BadgeGroup } from '../../../../components/Utility/BadgeGroup';
 import { getSeverityBadge } from '../../../../utils/helpers';
 import { RuleContentYamlViewer } from './RuleContentYamlViewer';
 import { MITRE_SECTIONS, parseMitreYml } from '../../utils/mitre';
@@ -36,32 +38,9 @@ const editorTypes = [
   { id: 'json', label: 'JSON' },
 ];
 
-interface BadgeGroupProps {
-  label: string;
-  values: string[];
-}
-
-const BadgeGroup: React.FC<BadgeGroupProps> = ({ label, values }) => {
-  if (!values.length) return null;
-  return (
-    <div>
-      <EuiText size="xs" color="subdued">
-        <strong>{label}</strong>
-      </EuiText>
-      <EuiSpacer size="xs" />
-      <EuiFlexGroup gutterSize="xs" wrap responsive={false}>
-        {values.map((v, i) => (
-          <EuiFlexItem grow={false} key={i}>
-            <EuiBadge>{v}</EuiBadge>
-          </EuiFlexItem>
-        ))}
-      </EuiFlexGroup>
-    </div>
-  );
-};
-
-export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({ rule }) => {
-  const { prePackaged, _source: ruleData, _id: ruleId } = rule;
+export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
+  rule: { prePackaged, _source: ruleData, _id: ruleId, integration, space },
+}) => {
   if (!ruleData.id) {
     ruleData.id = ruleId;
   }
@@ -72,6 +51,26 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({ rule }) =>
 
   const complianceData = parseComplianceYml(ruleData.compliance);
   const hasCompliance = COMPLIANCE_KEYS.some((k) => complianceData[k].length > 0);
+
+  const metadataFields: Array<{
+    label: string;
+    value: any;
+    type?: 'text' | 'date' | 'url';
+  }> = [
+    { label: 'Space', value: space },
+    { label: 'Integration', value: integration?.document?.metadata?.title },
+    { label: 'Title', value: ruleData.title },
+    { label: 'ID', value: ruleData.id },
+    { label: 'Author', value: ruleData.author },
+    { label: 'Description', value: ruleData.description },
+    { label: 'Date', value: ruleData.metadata?.date, type: 'date' },
+    { label: 'Modified', value: ruleData.last_update_time, type: 'date' },
+    { label: 'Rule level', value: getSeverityBadge(ruleData.level) },
+    { label: 'Rule status', value: ruleData.status },
+    { label: 'Documentation', value: ruleData.metadata?.documentation, type: 'url' },
+    { label: 'Supports', value: <BadgeGroup emptyValue={DEFAULT_EMPTY_DATA} values={ruleData.metadata?.supports} /> },
+    { label: 'References', value: ruleData.references?.map((r: any) => r.value), type: 'url' },
+  ];
 
   return (
     <EuiModalBody>
@@ -92,107 +91,17 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({ rule }) =>
       <EuiSpacer size="xl" />
       {selectedEditorType === 'visual' && (
         <>
-          <EuiFlexGroup>
-            <EuiFlexItem>
-              <EuiFormLabel>Rule Name</EuiFormLabel>
-              <EuiText data-test-subj={'rule_flyout_rule_name'} size="s">
-                {ruleData.title}
-              </EuiText>
-            </EuiFlexItem>
-            <EuiFlexItem>
-              <EuiFormLabel>Integration</EuiFormLabel>
-              <EuiText data-test-subj={'rule_flyout_rule_log_type'} size="s">
-                {rule.integration && typeof rule.integration.document?.metadata?.title === 'string'
-                  ? rule.integration.document?.metadata?.title
-                  : '-' }
-              </EuiText>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-
-          <EuiSpacer />
-
-          <EuiFlexGroup>
-            <EuiFlexItem>
-              <EuiFormLabel>Description</EuiFormLabel>
-              <EuiText data-test-subj={'rule_flyout_rule_description'} size="s">
-                {ruleData.description || DEFAULT_EMPTY_DATA}
-              </EuiText>
-            </EuiFlexItem>
-            <EuiFlexItem data-test-subj={'rule_flyout_rule_author'}>
-              <EuiFormLabel>Author</EuiFormLabel>
-              <EuiText size="s">{ruleData.author}</EuiText>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-
-          <EuiSpacer />
-
-          <EuiFlexGroup>
-            <EuiFlexItem>
-              <EuiFormLabel>Documentation</EuiFormLabel>
-              <EuiText size="s" data-test-subj={'rule_flyout_rule_documentation'}>
-                {ruleData.metadata?.documentation || DEFAULT_EMPTY_DATA}
-              </EuiText>
-            </EuiFlexItem>
-            <EuiFlexItem>
-              <EuiFormLabel>Supports</EuiFormLabel>
-              <div data-test-subj={'rule_flyout_rule_supports'}>
-                {ruleData.metadata?.supports?.length ? (
-                  <EuiFlexGroup
-                    direction="row"
-                    wrap
-                    gutterSize="s"
-                    data-test-subj={'rule_flyout_rule_supports_list'}
-                  >
-                    {ruleData.metadata.supports.map((support: string, i: number) => (
-                      <EuiFlexItem grow={false} key={i}>
-                        <EuiBadge>{support}</EuiBadge>
-                      </EuiFlexItem>
-                    ))}
-                  </EuiFlexGroup>
-                ) : (
-                  <div>{DEFAULT_EMPTY_DATA}</div>
-                )}
-              </div>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-
-          <EuiSpacer />
-
-          <EuiFlexGroup>
-            <EuiFlexItem data-test-subj={'rule_flyout_rule_source'}>
-              <EuiFormLabel>Space</EuiFormLabel>
-              <EuiText size="s">{prePackaged ? 'Standard' : 'Custom'}</EuiText>
-            </EuiFlexItem>
-            <EuiFlexItem data-test-subj={'rule_flyout_rule_severity'}>
-              <EuiFormLabel>Rule level</EuiFormLabel>
-              <div>{getSeverityBadge(ruleData.level)}</div>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-
-          <EuiSpacer />
-
-          <EuiFlexGroup>
-            <EuiFlexItem>
-              <EuiFormLabel>Rule Status</EuiFormLabel>
-              <div data-test-subj={'rule_flyout_rule_status'}>
-                <EuiText size="s">{ruleData.status}</EuiText>
-              </div>
-            </EuiFlexItem>
-            <EuiFlexItem>
-              <EuiFormLabel>Date</EuiFormLabel>
-              <EuiText size="s">{ruleData.metadata?.date || DEFAULT_EMPTY_DATA}</EuiText>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-
-          <EuiSpacer />
-
-          <EuiFlexGroup>
-            <EuiFlexItem>
-              <EuiFormLabel>Modified</EuiFormLabel>
-              <EuiText size="s">{ruleData.last_update_time || DEFAULT_EMPTY_DATA}</EuiText>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-
+          <EuiFlexGrid columns={2}>
+            {metadataFields.map(({ label, value, type = 'text' }) => (
+              <EuiFlexItem key={label}>
+                <Metadata
+                  label={<EuiFormLabel>{label}</EuiFormLabel>}
+                  value={value}
+                  type={type}
+                />
+              </EuiFlexItem>
+            ))}
+          </EuiFlexGrid>
           {hasMitre && (
             <>
               <EuiSpacer />
@@ -211,7 +120,6 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({ rule }) =>
               </EuiFlexGroup>
             </>
           )}
-
           {hasCompliance && (
             <>
               <EuiSpacer />
@@ -232,7 +140,6 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({ rule }) =>
               </EuiFlexGroup>
             </>
           )}
-
           <EuiSpacer />
           <EuiFormLabel>Tags</EuiFormLabel>
           <EuiSpacer size="s" />
@@ -267,47 +174,20 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({ rule }) =>
           ) : (
             <div>{DEFAULT_EMPTY_DATA}</div>
           )}
-
           <EuiSpacer />
-          <EuiFlexGroup direction="column">
-            <EuiFlexItem>
-              <EuiFormLabel>References</EuiFormLabel>
-              {ruleData.references.length > 0 ? (
-                ruleData.references.map((reference: any, i: number) => (
-                  <div key={i} style={{ wordBreak: 'break-all' }}>
-                    <EuiText size="s">
-                      <EuiLink
-                        href={reference.value}
-                        target="_blank"
-                        data-test-subj={'rule_flyout_rule_references'}
-                      >
-                        {reference.value}
-                      </EuiLink>
-                    </EuiText>
-                  </div>
-                ))
-              ) : (
-                <div>{DEFAULT_EMPTY_DATA}</div>
-              )}
-            </EuiFlexItem>
-            <EuiFlexItem>
-              <EuiFormLabel>False positive cases</EuiFormLabel>
-              <div data-test-subj={'rule_flyout_rule_false_positives'}>
-                {ruleData.false_positives.length > 0 ? (
-                  ruleData.false_positives.map((falsepositive: any, i: number) => (
-                    <EuiText size="s" key={i}>
-                      {falsepositive.value}
-                    </EuiText>
-                  ))
-                ) : (
-                  <div>{DEFAULT_EMPTY_DATA}</div>
-                )}
-              </div>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-
+          <EuiFormLabel>False positive cases</EuiFormLabel>
+          <div data-test-subj={'rule_flyout_rule_false_positives'}>
+            {ruleData.false_positives.length > 0 ? (
+              ruleData.false_positives.map((falsepositive: any, i: number) => (
+                <EuiText size="s" key={i}>
+                  {falsepositive.value}
+                </EuiText>
+              ))
+            ) : (
+              <div>{DEFAULT_EMPTY_DATA}</div>
+            )}
+          </div>
           <EuiSpacer />
-
           <EuiCompressedFormRow label="Detection" fullWidth>
             <EuiCodeBlock language="yaml" data-test-subj={'rule_flyout_rule_detection'}>
               {ruleData.detection}

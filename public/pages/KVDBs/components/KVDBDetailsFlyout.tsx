@@ -22,9 +22,11 @@ import {
 } from '@elastic/eui';
 import { get } from 'lodash';
 import { KVDBItem } from '../../../../types';
-import { Metadata } from './Metadata';
 import { AssetViewer } from './AssetViewer';
+import { Metadata } from '../../../components/Utility/Metadata';
+import { BadgeGroup } from '../../../components/Utility/BadgeGroup';
 import { EnabledHealth } from '../../../components/Utility/EnabledHealth';
+import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 
 interface KVDBDetailsFlyoutProps {
   kvdb: KVDBItem;
@@ -65,6 +67,7 @@ export const KVDBDetailsFlyout: React.FC<KVDBDetailsFlyoutProps> = ({ kvdb, onCl
     'document.metadata.references': metadata?.references,
     'document.metadata.documentation': metadata?.documentation,
     'document.metadata.supports': metadata?.supports,
+    'document.metadata.supports': <BadgeGroup emptyValue={DEFAULT_EMPTY_DATA} values={metadata?.supports} /> ,
     'document.metadata.modified': metadata?.modified,
     space: kvdb?.space?.name,
   };
@@ -73,17 +76,17 @@ export const KVDBDetailsFlyout: React.FC<KVDBDetailsFlyoutProps> = ({ kvdb, onCl
     <>
       <EuiFlexGrid columns={2}>
         {[
-          'document.id',
+          'space',
           'integration.title',
           'document.metadata.title',
-          ['document.metadata.date', 'date'],
-          ['document.metadata.modified', 'date'],
+          'document.id',
           'document.metadata.author',
           'document.metadata.description',
-          ['document.metadata.references', 'url'],
+          ['document.metadata.date', 'date'],
+          ['document.metadata.modified', 'date'],
           ['document.metadata.documentation', 'url'],
+          ['document.metadata.references', 'url'],
           'document.metadata.supports',
-          'space',
         ].map((item) => {
           const [field, type] = typeof item === 'string' ? [item, 'text'] : item;
           return (

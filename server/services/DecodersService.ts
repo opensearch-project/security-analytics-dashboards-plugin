@@ -242,7 +242,7 @@ export class DecodersService {
         statusCode: 200,
         body: {
           ok: false,
-          error: error.message,
+          error: error.body?.message || error.message,
         },
       });
     }
@@ -300,7 +300,7 @@ export class DecodersService {
         statusCode: 200,
         body: {
           ok: false,
-          error: error.message,
+          error: error.body?.message || error.message,
         },
       });
     }
@@ -348,7 +348,7 @@ export class DecodersService {
         statusCode: 200,
         body: {
           ok: false,
-          error: error.body.message || error.message,
+          error: error.body?.message || error.message,
         },
       });
     }
@@ -397,7 +397,7 @@ export class DecodersService {
         statusCode: 200,
         body: {
           ok: false,
-          error: error.body.message || error.message,
+          error: error.body?.message || error.message,
         },
       });
     }
@@ -428,7 +428,7 @@ export class DecodersService {
         statusCode: 200,
         body: {
           ok: false,
-          error: error.message,
+          error: error.body?.message || error.message,
         },
       });
     }
@@ -476,7 +476,7 @@ export class DecodersService {
         statusCode: 200,
         body: {
           ok: false,
-          error: error.message,
+          error: error.body?.message || error.message,
         },
       });
     }

@@ -24,7 +24,10 @@ import {
 import { DecoderItem } from '../../../../types';
 import { DataStore } from '../../../store/DataStore';
 import { EnabledHealth } from '../../../components/Utility/EnabledHealth';
-import { Metadata } from '../../KVDBs/components/Metadata';
+import { Metadata } from '../../../components/Utility/Metadata';
+import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
+import { BadgeGroup } from '../../../components/Utility/BadgeGroup';
+
 
 interface DecoderDetailsFlyoutProps {
   decoderId: string;
@@ -106,19 +109,17 @@ export const DecoderDetailsFlyout: React.FC<DecoderDetailsFlyoutProps> = ({
     value: any;
     type?: 'text' | 'date' | 'url';
   }> = [
-    { label: 'ID', value: decoder?.document?.id },
+    { label: 'Space', value: decoder?.space },
     { label: 'Integration', value: decoder?.integrations },
     { label: 'Title', value: decoder?.document?.metadata?.title },
-    { label: 'Module', value: decoder?.document?.metadata?.module },
-    { label: 'Compatibility', value: decoder?.document?.metadata?.compatibility },
-    { label: 'Versions', value: decoder?.document?.metadata?.versions },
+    { label: 'ID', value: decoder?.document?.id },
     { label: 'Author', value: decoder?.document?.metadata?.author },
     { label: 'Description', value: decoder?.document?.metadata?.description },
     { label: 'Date', value: decoder?.document?.metadata?.date, type: 'date' },
     { label: 'Modified', value: decoder?.document?.metadata?.modified, type: 'date' },
-    { label: 'References', value: decoder?.document?.metadata?.references, type: 'url' },
     { label: 'Documentation', value: decoder?.document?.metadata?.documentation, type: 'url' },
-    { label: 'Supports', value: decoder?.document?.metadata?.supports },
+    { label: 'References', value: decoder?.document?.metadata?.references, type: 'url' },
+    { label: 'Supports', value: <BadgeGroup emptyValue={DEFAULT_EMPTY_DATA} values={decoder?.document?.metadata?.supports} /> },
   ];
 
   const detailsContent = (
