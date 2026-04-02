@@ -737,27 +737,15 @@ export default class Main extends Component<MainProps, MainState> {
                                         />
                                       )}
                                     />
+                                    {/* Wazuh: use rule id in route, instead of state */}
                                     <Route
-                                      path={ROUTES.RULES_EDIT}
-                                      render={(props: RouteComponentProps<any, any, any>) => {
-                                        if (!props.location.state?.ruleItem) {
-                                          props.history.replace(ROUTES.RULES);
-                                          return (
-                                            <Rules
-                                              history={props.history} // Wazuh: use wazuh rules component
-                                              notifications={core?.notifications}
-                                            />
-                                          );
-                                        }
-
-                                        return (
-                                          <EditRule
-                                            services={services}
-                                            {...props}
-                                            notifications={core?.notifications}
-                                          />
-                                        );
-                                      }}
+                                      path={`${ROUTES.RULES_EDIT}/:id`}
+                                      render={(props: RouteComponentProps<{ id: string }>) => (
+                                        <EditRule
+                                          {...props}
+                                          notifications={core?.notifications}
+                                        />
+                                      )}
                                     />
                                     {/* Wazuh: hide Rules duplicate and import routes. * /}
                                     {/* <Route

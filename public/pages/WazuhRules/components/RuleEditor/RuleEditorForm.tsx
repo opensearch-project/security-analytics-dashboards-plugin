@@ -87,6 +87,13 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
   const [isDetectionInvalid, setIsDetectionInvalid] = useState(false);
   const [integrationId, setIntegrationId] = useState('');
 
+  const hasAdditionalDetails =
+    initialValue.tags.length > 0 ||
+    initialValue.metadata.references.length > 0 ||
+    initialValue.metadata.supports.length > 0 ||
+    !!initialValue.metadata.documentation ||
+    initialValue.falsePositives.length > 0;
+
   const { loading: loadingIntegrations, options: integrationOptions } = useIntegrationSelector({
     notifications: notifications!,
     enabled: mode === 'create',
@@ -496,42 +503,54 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
 
                 <EuiSpacer size="xl" />
 
-                <EuiTitle size="xxs">
-                  <EuiText size="s">
-                    <h3>MITRE ATT&CK</h3>
-                  </EuiText>
-                </EuiTitle>
-                <EuiText size="xs" color="subdued">
-                  Map this rule to MITRE ATT&CK tactics, techniques and subtechniques.
-                </EuiText>
-                <EuiSpacer size="s" />
-                <MitreVisualEditor
-                  mitreYml={props.values.mitre || ''}
-                  onChange={(value) => props.setFieldValue('mitre', value)}
-                />
+                <EuiAccordion
+                  id="mitre-attack"
+                  initialIsOpen={!!props.values.mitre}
+                  buttonContent={
+                    <>
+                      MITRE ATT&CK <i>- optional</i>
+                      <EuiText size="xs" color="subdued">
+                        Map this rule to MITRE ATT&CK tactics, techniques and subtechniques.
+                      </EuiText>
+                    </>
+                  }
+                  paddingSize="l"
+                >
+                  <EuiSpacer size="s" />
+                  <MitreVisualEditor
+                    mitreYml={props.values.mitre || ''}
+                    onChange={(value) => props.setFieldValue('mitre', value)}
+                  />
+                </EuiAccordion>
 
                 <EuiSpacer size="xl" />
 
-                <EuiTitle size="xxs">
-                  <EuiText size="s">
-                    <h3>Compliance</h3>
-                  </EuiText>
-                </EuiTitle>
-                <EuiText size="xs">
-                  Map this rule to compliance frameworks (PCI DSS, GDPR, HIPAA, etc.).
-                </EuiText>
-                <EuiSpacer size="s" />
-                <ComplianceVisualEditor
-                  complianceYml={props.values.compliance || ''}
-                  onChange={(value) => props.setFieldValue('compliance', value)}
-                />
+                <EuiAccordion
+                  id="compliance"
+                  initialIsOpen={!!props.values.compliance}
+                  buttonContent={
+                    <>
+                      Compliance <i>- optional</i>
+                      <EuiText size="xs" color="subdued">
+                        Map this rule to compliance frameworks (PCI DSS, GDPR, HIPAA, etc.).
+                      </EuiText>
+                    </>
+                  }
+                  paddingSize="l"
+                >
+                  <EuiSpacer size="s" />
+                  <ComplianceVisualEditor
+                    complianceYml={props.values.compliance || ''}
+                    onChange={(value) => props.setFieldValue('compliance', value)}
+                  />
+                </EuiAccordion>
 
                 <EuiSpacer size={'xl'} />
 
                 <div style={{ maxWidth: 1000 }}>
                   <EuiAccordion
                     id={'additional-details'}
-                    initialIsOpen={true}
+                    initialIsOpen={hasAdditionalDetails}
                     buttonContent={
                       <>
                         Additional details <i>- optional</i>
@@ -676,6 +695,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                       />
                     </div>
                   </EuiAccordion>
+                  <EuiSpacer size={'m'} />
                 </div>
               </>
             )}
