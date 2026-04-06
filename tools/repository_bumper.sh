@@ -11,12 +11,13 @@ REPO_PATH=$(git rev-parse --show-toplevel 2>/dev/null)
 DATE_TIME=$(date "+%Y-%m-%d_%H-%M-%S-%3N")
 LOG_FILE="${SCRIPT_PATH}/repository_bumper_${DATE_TIME}.log"
 PACKAGE_JSON="${REPO_PATH}/package.json"
-WAZUH_DASHBOARD_SECURITY_ANALYTICS_WORKFLOW_FILE="${REPO_PATH}/.github/workflows/5_builderpackage_security_analytics_plugin.yml"
 VERSION_FILE="${REPO_PATH}/VERSION.json"
 VERSION=""
 REVISION="00"
 TAG=false
 CURRENT_VERSION=""
+# When --set-as-main: skip replacing branch refs (e.g. main) in workflows; set in parse_arguments()
+skip_urls="no"
 
 # --- Helper Functions ---
 
@@ -37,6 +38,7 @@ usage() {
   echo "  --stage STAGE       Specify the stage (e.g., alpha0, beta1, rc2, etc.)"
   echo "                      Required if --tag is not used"
   echo "  --tag               Generate a tag"
+  echo "  --set-as-main       Bump version values only; keep branch defaults (e.g. main) unchanged"
   echo "  --help              Display this help message"
   echo ""
   echo "Example:"
@@ -218,6 +220,10 @@ parse_arguments() {
       TAG=true
       shift
       ;;
+    --set-as-main)
+      set_as_main="yes"
+      shift 1
+      ;;
     --help)
       usage
       exit 0
@@ -229,6 +235,12 @@ parse_arguments() {
       ;;
     esac
   done
+
+  if [[ -n "$set_as_main" ]]; then
+      skip_urls="yes"
+  else
+      skip_urls="no"
+  fi
 }
 
 # Function to validate input parameters
@@ -446,37 +458,27 @@ update_package_json() {
   fi
 }
 
-update_manual_build_workflow() {
-  local WORKFLOW_FILE="$WAZUH_DASHBOARD_SECURITY_ANALYTICS_WORKFLOW_FILE"
-  if [ -f "$WORKFLOW_FILE" ]; then
-    log "Processing $WORKFLOW_FILE"
-    local modified=false
-    # Update version in manual build workflow
-    # on:
-    #   workflow_call:
-    #     inputs:
-    #       reference:
-    #         required: true
-    #         type: string
-    #         description: Source code reference (branch, tag or commit SHA)
-    #         default: 4.13.0
-    # Update the default value for the reference input
-    if [[ "$CURRENT_VERSION" != "$VERSION" ]]; then
-      log "Attempting to update default reference to $VERSION in $WORKFLOW_FILE"
-      # Note: This sed command assumes a specific formatting and might be fragile.
-      # It looks for the line starting with "default:" and replaces the version value
-      # Ensure to escape special characters if necessary
-      sed_inplace "s/^\\([[:space:]]*default:[[:space:]]*\\)$CURRENT_VERSION/\\1$VERSION/" "$WORKFLOW_FILE"
-      modified=true
-    fi
-
-    if [[ $modified == true ]]; then
-      log "Successfully updated $WORKFLOW_FILE with new default reference: $VERSION"
-    fi
-  else
-    log "WARNING: $WORKFLOW_FILE not found. Skipping update."
+# Replace "main" in default: reference inputs (5_* workflows only) when not in --set-as-main mode.
+update_branch_reference_defaults() {
+  if [[ "$skip_urls" == "yes" ]]; then
+    log "skip_urls is yes (--set-as-main): leaving workflow branch defaults unchanged"
+    return 0
   fi
-  log "Updating $WAZUH_DASHBOARD_SECURITY_ANALYTICS_WORKFLOW_FILE workflow..."
+
+  local bump_string="$VERSION"
+  local files=(
+    "${REPO_PATH}/.github/workflows/5_builderpackage_security_analytics_plugin.yml"
+    "${REPO_PATH}/.github/workflows/5_builderprecompiled_base-dev-environment.yml"
+  )
+  local f
+  for f in "${files[@]}"; do
+    if [ ! -f "$f" ]; then
+      log "WARNING: $f not found. Skipping main→${bump_string} default update."
+      continue
+    fi
+    log "Replacing default: main with default: ${bump_string} in $f (where applicable)"
+    sed_inplace "s/^\\([[:space:]]*default:[[:space:]]*\\)main\\([[:space:]]*\\)$/\\1${bump_string}\\2/" "$f"
+  done
 }
 
 # Function to update specFile URL in docker/imposter/wazuh-config.yml
@@ -566,7 +568,7 @@ main() {
   update_root_version_json
   update_package_json
   update_changelog
-  update_manual_build_workflow
+  update_branch_reference_defaults
 
   # Update docker/imposter/wazuh-config.yml
 #   log "Updating docker/imposter/wazuh-config.yml..."

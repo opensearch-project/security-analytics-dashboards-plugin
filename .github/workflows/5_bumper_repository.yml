@@ -5,23 +5,28 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Target version (e.g. 4.12.0)'
-        default: ''
+        description: "Target version (e.g. 4.12.0)"
+        default: ""
         required: false
         type: string
       stage:
-        description: 'Version stage (e.g. alpha0)'
-        default: ''
+        description: "Version stage (e.g. alpha0)"
+        default: ""
         required: false
         type: string
       issue-link:
-        description: 'Issue link in format https://github.com/wazuh/<REPO>/issues/<ISSUE-NUMBER>'
+        description: "Issue link in format https://github.com/wazuh/<REPO>/issues/<ISSUE-NUMBER>"
         required: true
         type: string
       id:
-        description: 'Optional identifier for the run'
+        description: "Optional identifier for the run"
         required: false
         type: string
+      set_as_main:
+        description: "Enable main branch mode: bump version values only, keep branch references pointing to main"
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   bump:
@@ -76,6 +81,7 @@ jobs:
         env:
           VERSION: ${{ inputs.version }}
           STAGE: ${{ inputs.stage }}
+          set_as_main: ${{ inputs.set_as_main }}
         run: |
           script_params=""
           version=${{ env.VERSION }}
@@ -86,6 +92,10 @@ jobs:
             script_params="--version ${version} --stage ${stage}"
           elif [[ -z "$version" && -n "$stage" ]]; then
             script_params="--stage ${stage}"
+          fi
+
+          if [[ "$set_as_main" == "true" ]]; then
+            script_params="${script_params} --set-as-main"
           fi
 
           issue_number=$(echo "${{ inputs.issue-link }}" | awk -F'/' '{print $NF}')
@@ -102,7 +112,17 @@ jobs:
           echo "Running bump script"
           bash ${{ env.BUMP_SCRIPT_PATH }} ${{ steps.vars.outputs.script_params }}
 
+      - name: Detect if bump produced changes
+        id: bump_changes
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Commit and push changes
+        if: steps.bump_changes.outputs.has_changes == 'true'
         run: |
           git add .
           git commit -m "feat: bump ${{ github.ref_name }}"
@@ -110,6 +130,7 @@ jobs:
 
       - name: Create pull request
         id: create_pr
+        if: steps.bump_changes.outputs.has_changes == 'true'
         run: |
           gh auth setup-git
           PR_URL=$(gh pr create \
@@ -122,6 +143,7 @@ jobs:
           echo "pull_request_url=${PR_URL}" >> $GITHUB_OUTPUT
 
       - name: Merge pull request
+        if: steps.bump_changes.outputs.has_changes == 'true'
         run: |
           # Any checks for the PR are bypassed since the branch is expected to be functional (i.e. the bump process does not introduce any bugs)
           gh pr merge "${{ steps.create_pr.outputs.pull_request_url }}" --merge
@@ -130,6 +152,10 @@ jobs:
         run: |
           echo "Bump complete."
           echo "Branch: ${{ steps.vars.outputs.branch_name }}"
-          echo "PR: https://github.com/${{ github.repository }}/pull/${{ steps.create_pr.outputs.pull_request_number }}"
+          if [[ "${{ steps.bump_changes.outputs.has_changes }}" == "true" ]]; then
+            echo "PR: ${{ steps.create_pr.outputs.pull_request_url }}"
+          else
+            echo "No file changes from bumper (no PR created)."
+          fi
           echo "Bumper scripts logs:"
           cat ${BUMP_LOG_PATH}/repository_bumper*log
