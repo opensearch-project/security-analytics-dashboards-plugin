@@ -56,7 +56,7 @@ export const getRulesColumns = (
     },
     {
       field: 'library',
-      name: 'Source',
+      name: 'Space',
       width: '10%',
       render: (library: string) => capitalizeFirstLetter(library),
     },

@@ -67,7 +67,9 @@ export const KVDBDetailsFlyout: React.FC<KVDBDetailsFlyoutProps> = ({ kvdb, onCl
     'document.metadata.references': metadata?.references,
     'document.metadata.documentation': metadata?.documentation,
     'document.metadata.supports': metadata?.supports,
-    'document.metadata.supports': <BadgeGroup emptyValue={DEFAULT_EMPTY_DATA} values={metadata?.supports} /> ,
+    'document.metadata.supports': (
+      <BadgeGroup emptyValue={DEFAULT_EMPTY_DATA} values={metadata?.supports} />
+    ),
     'document.metadata.modified': metadata?.modified,
     space: kvdb?.space?.name,
   };

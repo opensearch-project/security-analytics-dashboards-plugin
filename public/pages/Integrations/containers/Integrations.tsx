@@ -76,12 +76,11 @@ export const Integrations: React.FC<IntegrationsProps> = ({
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
   const [isOverviewActionsOpen, setIsOverviewActionsOpen] = useState<boolean>(false);
   const [policyRefresh, setPolicyRefresh] = useState(0);
-  const initialTab: OverviewTabId =
+  // This trusts the changes in the history location causes a rerender in the componnet
+  const selectedTab =
     history.location.pathname === ROUTES.FILTERS ? OVERVIEW_TAB.FILTERS : OVERVIEW_TAB.INTEGRATIONS;
-  const [selectedTab, setSelectedTab] = useState<OverviewTabId>(initialTab);
 
   const onTabChange = (tab: OverviewTabId) => {
-    setSelectedTab(tab);
     const path = tab === OVERVIEW_TAB.FILTERS ? ROUTES.FILTERS : ROUTES.INTEGRATIONS;
     history.replace(path + history.location.search);
   };
@@ -463,11 +462,7 @@ export const Integrations: React.FC<IntegrationsProps> = ({
           <EuiSpacer size={'s'} />
         </EuiFlexItem>
       </PageHeader>
-      <PolicyInfoCard
-        space={spaceFilter}
-        notifications={notifications}
-        refresh={policyRefresh}
-      />
+      <PolicyInfoCard space={spaceFilter} notifications={notifications} refresh={policyRefresh} />
       <EuiSpacer size={'m'} />
       <EuiCard
         textAlign="left"

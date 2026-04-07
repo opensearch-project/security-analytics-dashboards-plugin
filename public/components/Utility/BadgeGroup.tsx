@@ -4,13 +4,7 @@
  */
 
 import React from 'react';
-import {
-  EuiBadge,
-  EuiFlexGroup,
-  EuiFlexItem,
-  EuiSpacer,
-  EuiText,
-} from '@elastic/eui';
+import { EuiBadge, EuiFlexGroup, EuiFlexItem, EuiSpacer, EuiText } from '@elastic/eui';
 import { DEFAULT_EMPTY_DATA } from '../../utils/constants';
 
 interface BadgeGroupProps {
@@ -23,21 +17,22 @@ export const BadgeGroup: React.FC<BadgeGroupProps> = ({ label, values, emptyValu
   if (!values?.length) return emptyValue;
   return (
     <div>
-      {label ?
+      {label ? (
         <EuiText size="xs" color="subdued">
           <strong>{label}</strong>
-        </EuiText> : null
-      }
+        </EuiText>
+      ) : null}
       <EuiSpacer size="xs" />
       <EuiFlexGroup gutterSize="xs" wrap responsive={false}>
-        {values?.length ?
+        {values?.length ? (
           values.map((v, i) => (
             <EuiFlexItem grow={false} key={i}>
               <EuiBadge>{v}</EuiBadge>
             </EuiFlexItem>
-          )) : <EuiFlexItem grow={false}>
-            {DEFAULT_EMPTY_DATA}
-          </EuiFlexItem>}
+          ))
+        ) : (
+          <EuiFlexItem grow={false}>{DEFAULT_EMPTY_DATA}</EuiFlexItem>
+        )}
       </EuiFlexGroup>
     </div>
   );

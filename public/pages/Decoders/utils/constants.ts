@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-const KEYWORD_SEARCH_FIELDS = [
-  'document.name',
-  'document.metadata.author',
-];
+const KEYWORD_SEARCH_FIELDS = ['document.name', 'document.metadata.author'];
 
 const TEXT_SEARCH_FIELDS = ['document.metadata.title', 'document.metadata.description'];
 

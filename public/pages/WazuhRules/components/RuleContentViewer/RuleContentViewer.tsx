@@ -68,7 +68,10 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
     { label: 'Rule level', value: getSeverityBadge(ruleData.level) },
     { label: 'Rule status', value: ruleData.status },
     { label: 'Documentation', value: ruleData.metadata?.documentation, type: 'url' },
-    { label: 'Supports', value: <BadgeGroup emptyValue={DEFAULT_EMPTY_DATA} values={ruleData.metadata?.supports} /> },
+    {
+      label: 'Supports',
+      value: <BadgeGroup emptyValue={DEFAULT_EMPTY_DATA} values={ruleData.metadata?.supports} />,
+    },
     { label: 'References', value: ruleData.references?.map((r: any) => r.value), type: 'url' },
   ];
 
@@ -94,11 +97,7 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
           <EuiFlexGrid columns={2}>
             {metadataFields.map(({ label, value, type = 'text' }) => (
               <EuiFlexItem key={label}>
-                <Metadata
-                  label={<EuiFormLabel>{label}</EuiFormLabel>}
-                  value={value}
-                  type={type}
-                />
+                <Metadata label={<EuiFormLabel>{label}</EuiFormLabel>} value={value} type={type} />
               </EuiFlexItem>
             ))}
           </EuiFlexGrid>
@@ -145,23 +144,23 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
           <EuiSpacer size="s" />
           {ruleData.tags.length > 0 ? (
             <EuiFlexGroup
-            direction="row"
-            wrap
-            gutterSize="s"
-            data-test-subj={'rule_flyout_rule_tags'}
+              direction="row"
+              wrap
+              gutterSize="s"
+              data-test-subj={'rule_flyout_rule_tags'}
             >
               {ruleData.tags.map((tag: { value: string }, i: number) => (
                 <EuiFlexItem grow={false} key={i}>
                   <EuiBadge>
                     {tag.value.match(/attack\.t[0-9]+/) ? (
                       <EuiLink
-                      href={`https://attack.mitre.org/techniques/${tag.value
-                        .split('.')
-                        .slice(1)
-                        .join('/')
-                        .toUpperCase()}`}
+                        href={`https://attack.mitre.org/techniques/${tag.value
+                          .split('.')
+                          .slice(1)
+                          .join('/')
+                          .toUpperCase()}`}
                         target="_blank"
-                        >
+                      >
                         {tag.value}
                       </EuiLink>
                     ) : (

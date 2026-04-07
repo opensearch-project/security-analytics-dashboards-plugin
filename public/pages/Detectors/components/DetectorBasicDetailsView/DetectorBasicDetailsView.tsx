@@ -20,6 +20,7 @@ export interface DetectorBasicDetailsViewProps {
   last_update_time?: number;
   onEditClicked: () => void;
   isEditable: boolean;
+  space?: string; // Wazuh
 }
 
 export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> = ({
@@ -31,6 +32,7 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
   dashboardId,
   onEditClicked,
   isEditable = true,
+  space, // Wazuh
 }) => {
   const { name, detector_type, inputs, schedule } = detector;
   const detectorSchedule = parseSchedule(schedule);
@@ -65,10 +67,14 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
       {createTextDetailsGroup([
         { label: 'Detector name', content: name },
         {
-          label: 'Description',
-          content: inputs[0].detector_input.description || DEFAULT_EMPTY_DATA,
+          label: 'Integration', // Wazuh: reorganize props
+          content: getLogTypeLabel(detector_type.toLowerCase()),
+        }, // Changed Log Type to Integration by Wazuh
+        {
+          // Wazuh: add space
+          label: 'Space',
+          content: space,
         },
-        { label: 'Detector schedule', content: detectorSchedule },
       ])}
       {createTextDetailsGroup([
         {
@@ -81,10 +87,7 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
             </>
           ),
         },
-        {
-          label: 'Integration',
-          content: getLogTypeLabel(detector_type.toLowerCase()),
-        }, // Changed Log Type to Integration by Wazuh
+        { label: 'Detector schedule', content: detectorSchedule }, // Wazuh: reorganize props
         {
           label: 'Detector dashboard',
           content: dashboardId ? (
@@ -105,6 +108,13 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
         {
           label: 'Last updated time',
           content: lastUpdated || DEFAULT_EMPTY_DATA,
+        },
+      ])}
+      {createTextDetailsGroup([
+        {
+          // Wazuh: reorganize props
+          label: 'Description',
+          content: inputs[0].detector_input.description || DEFAULT_EMPTY_DATA,
         },
       ])}
       {rulesCanFold ? children : null}

@@ -86,6 +86,7 @@ export const WazuhUpdateDetectorBasicDetails: React.FC<WazuhUpdateDetectorBasicD
   const [loadingRules, setLoadingRules] = useState(false);
 
   const getSpaceForDetectorType = async (detectorType: string): Promise<string> => {
+    // FIXME: this seems to be broken if there are integration with the same name in custom and standard space
     const standardOptions = await getIntegrationOptionsBySpace(SpaceTypes.STANDARD.value);
     if (standardOptions.some((opt) => opt.value === detectorType)) {
       return SpaceTypes.STANDARD.value;
@@ -501,7 +502,7 @@ export const WazuhUpdateDetectorBasicDetails: React.FC<WazuhUpdateDetectorBasicD
 
         <EuiSpacer size="m" />
 
-        <ConfigureFieldMapping
+        {/* <ConfigureFieldMapping
           {...props}
           isEdit={true}
           detector={detector}
@@ -512,7 +513,7 @@ export const WazuhUpdateDetectorBasicDetails: React.FC<WazuhUpdateDetectorBasicD
           replaceFieldMappings={replaceFieldMappings}
         />
 
-        <EuiSpacer size="l" />
+        <EuiSpacer size="l" /> */}
 
         <ThreatIntelligence
           isEdit={true}

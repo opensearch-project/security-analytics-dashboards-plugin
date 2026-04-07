@@ -28,7 +28,6 @@ import { Metadata } from '../../../components/Utility/Metadata';
 import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 import { BadgeGroup } from '../../../components/Utility/BadgeGroup';
 
-
 interface DecoderDetailsFlyoutProps {
   decoderId: string;
   space?: string;
@@ -119,18 +118,22 @@ export const DecoderDetailsFlyout: React.FC<DecoderDetailsFlyoutProps> = ({
     { label: 'Modified', value: decoder?.document?.metadata?.modified, type: 'date' },
     { label: 'Documentation', value: decoder?.document?.metadata?.documentation, type: 'url' },
     { label: 'References', value: decoder?.document?.metadata?.references, type: 'url' },
-    { label: 'Supports', value: <BadgeGroup emptyValue={DEFAULT_EMPTY_DATA} values={decoder?.document?.metadata?.supports} /> },
+    {
+      label: 'Supports',
+      value: (
+        <BadgeGroup
+          emptyValue={DEFAULT_EMPTY_DATA}
+          values={decoder?.document?.metadata?.supports}
+        />
+      ),
+    },
   ];
 
   const detailsContent = (
     <EuiFlexGrid columns={2}>
       {fields.map(({ label, value, type = 'text' }) => (
         <EuiFlexItem key={label}>
-          <Metadata
-            label={<EuiFormLabel>{label}</EuiFormLabel>}
-            value={value}
-            type={type}
-          />
+          <Metadata label={<EuiFormLabel>{label}</EuiFormLabel>} value={value} type={type} />
         </EuiFlexItem>
       ))}
     </EuiFlexGrid>

@@ -110,7 +110,7 @@ import { FilterFormPage } from '../Filters/containers/FilterFormPage';
 
 enum Navigation {
   SecurityAnalytics = 'Security Analytics',
-   // Wazuh: hide Findings navigation items.
+  // Wazuh: hide Findings navigation items.
   // Findings = 'Findings',
   Detectors = 'Detectors',
   Rules = 'Rules', // Wazuh: rename 'Detection rules' to 'Rules'
@@ -186,7 +186,7 @@ interface MainState {
 
 const navItemIdByRoute: { [route: string]: Navigation } = {
   // [ROUTES.OVERVIEW]: Navigation.Overview,
-    // Wazuh: hide Findings route mapping.
+  // Wazuh: hide Findings route mapping.
   // [ROUTES.FINDINGS]: Navigation.Findings,
   // Wazuh: hide Alerts route mapping.
   // [ROUTES.ALERTS]: Navigation.Alerts,
@@ -559,6 +559,10 @@ export default class Main extends Component<MainProps, MainState> {
                   getApplication().navigateToApp(DETECTORS_NAV_ID, {
                     path: generateAppPath(ROUTES.DETECTORS),
                   });
+                  // This fixes a navigation problem when viewing the detector details and using the sidebar menu to navigate to Detectors
+                  if (history.location.pathname !== ROUTES.DETECTORS) {
+                    history.push(ROUTES.DETECTORS);
+                  }
                 },
                 isSelected: selectedNavItemId === Navigation.Detectors,
               },
@@ -741,10 +745,7 @@ export default class Main extends Component<MainProps, MainState> {
                                     <Route
                                       path={`${ROUTES.RULES_EDIT}/:id`}
                                       render={(props: RouteComponentProps<{ id: string }>) => (
-                                        <EditRule
-                                          {...props}
-                                          notifications={core?.notifications}
-                                        />
+                                        <EditRule {...props} notifications={core?.notifications} />
                                       )}
                                     />
                                     {/* Wazuh: hide Rules duplicate and import routes. * /}

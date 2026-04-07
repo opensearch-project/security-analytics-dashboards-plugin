@@ -370,17 +370,14 @@ export function getLogTypeFilterOptions() {
     const logTypes = categoryData.options;
 
     for (let i = 0; i < logTypes.length; i++) {
-      if (i === 0) {
-        options.push({
-          value: logTypes.map((logType) => logType.value).join(' or '),
-          view: <LogCategoryOptionView categoryName={categoryName} />,
-        });
-      }
-
+      // Wazuh: add the category name in front of log type label for better context in filter options, e.g. "Security: Audit logs"
       options.push({
         value: logTypes[i].value,
         view: (
           <span className="euiFlexItem euiFilterSelectItem__content" style={{ paddingLeft: 20 }}>
+            <EuiText size="s" color="subdued" style={{ display: 'block' }}>
+              {categoryName}
+            </EuiText>
             {getLogTypeLabel(logTypes[i].label)}
           </span>
         ),
@@ -407,7 +404,7 @@ export function getLogTypeCategoryOptions(): any[] {
 }
 
 export function getIntegrationCategoryOptions(displayDescription: boolean = true): any[] {
-  return integrationCategories.map(({ label, value, description  }) => ({
+  return integrationCategories.map(({ label, value, description }) => ({
     value,
     inputDisplay: label,
     dropdownDisplay: (

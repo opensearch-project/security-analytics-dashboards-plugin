@@ -21,6 +21,7 @@ export interface DetectorDetailsViewProps {
   editBasicDetails: () => void;
   editDetectorRules: (enabledRules: RuleItem[], allRuleItems: RuleItem[]) => void;
   isEditable?: boolean;
+  space?: string; // Wazuh
 }
 
 export interface DetectorDetailsViewState {}
@@ -63,6 +64,7 @@ export class DetectorDetailsView extends React.Component<
           dashboardId={dashboardId}
           onEditClicked={editBasicDetails}
           isEditable={isEditable}
+          space={this.props.space} // Wazuh
         >
           {rulesCanFold ? detectorRules : null}
         </DetectorBasicDetailsView>

@@ -210,8 +210,7 @@ export const Rules: React.FC<RulesProps> = ({ history, notifications }) => {
             description: 'Edit rule',
             type: 'icon',
             icon: 'pencil',
-            onClick: (item: RuleTableItem) =>
-              history.push(`${ROUTES.RULES_EDIT}/${item.ruleId}`),
+            onClick: (item: RuleTableItem) => history.push(`${ROUTES.RULES_EDIT}/${item.ruleId}`),
             available: () => spaceFilter === SpaceTypes.DRAFT.value,
           },
           {
@@ -255,8 +254,8 @@ export const Rules: React.FC<RulesProps> = ({ history, notifications }) => {
         !isDraftSpace
           ? `Cannot delete rules in the ${spaceFilter} space.`
           : selectedItems.length === 0
-            ? 'Select rules to delete'
-            : undefined
+          ? 'Select rules to delete'
+          : undefined
       }
     >
       Delete selected ({selectedItems.length})

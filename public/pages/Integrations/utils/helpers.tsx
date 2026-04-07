@@ -159,73 +159,69 @@ export const getIntegrationLabel = (name: string) => {
   return !name ? DEFAULT_EMPTY_DATA : integrationLabels[name.toLowerCase()] || startCase(name);
 };
 
-export const withGuardAsync =
-  (
-    condition: (props: any) => Promise<{ ok: boolean; data: any }>,
-    ComponentFulfillsCondition: React.FC,
-    ComponentLoadingResolution: null | React.FC = null,
-    options: { rerunOn?: (props) => any[] }
-  ) =>
-  (WrappedComponent: React.FC) =>
-  (props: any) => {
-    const [loading, setLoading] = useState(true);
-    const [fulfillsCondition, setFulfillsCondition] = useState({
-      ok: false,
-      data: {},
-    });
+export const withGuardAsync = (
+  condition: (props: any) => Promise<{ ok: boolean; data: any }>,
+  ComponentFulfillsCondition: React.FC,
+  ComponentLoadingResolution: null | React.FC = null,
+  options: { rerunOn?: (props) => any[] }
+) => (WrappedComponent: React.FC) => (props: any) => {
+  const [loading, setLoading] = useState(true);
+  const [fulfillsCondition, setFulfillsCondition] = useState({
+    ok: false,
+    data: {},
+  });
 
-    const execCondition = async () => {
-      try {
-        setLoading(true);
-        setFulfillsCondition({ ok: false, data: {} });
-        setFulfillsCondition(await condition({ ...props, check: execCondition }));
-      } catch (error) {
-        setFulfillsCondition({ ok: false, data: { error } });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const dependenciesRun = options?.rerunOn ? options.rerunOn(props) : [];
-
-    useEffect(() => {
-      execCondition();
-    }, dependenciesRun);
-
-    if (loading) {
-      return ComponentLoadingResolution ? <ComponentLoadingResolution {...props} /> : null;
+  const execCondition = async () => {
+    try {
+      setLoading(true);
+      setFulfillsCondition({ ok: false, data: {} });
+      setFulfillsCondition(await condition({ ...props, check: execCondition }));
+    } catch (error) {
+      setFulfillsCondition({ ok: false, data: { error } });
+    } finally {
+      setLoading(false);
     }
-
-    return fulfillsCondition.ok ? (
-      <ComponentFulfillsCondition
-        {...props}
-        {...(fulfillsCondition?.data ?? {})}
-        check={execCondition}
-      />
-    ) : (
-      <WrappedComponent {...props} {...(fulfillsCondition?.data ?? {})} check={execCondition} />
-    );
   };
 
-export const withGuard =
-  (condition: (props: any) => boolean, ComponentFulfillsCondition: React.FC) =>
-  (WrappedComponent: React.FC) =>
-  (props: any) => {
-    return condition(props) ? (
-      <ComponentFulfillsCondition {...props} />
-    ) : (
-      <WrappedComponent {...props} />
-    );
-  };
+  const dependenciesRun = options?.rerunOn ? options.rerunOn(props) : [];
 
-export const withWrapComponent =
-  (WrapComponent, mapWrapComponentProps = () => {}) =>
-  (WrappedComponent) =>
-  (props) => (
-    <WrapComponent {...props} {...(mapWrapComponentProps ? mapWrapComponentProps(props) : {})}>
-      <WrappedComponent {...props}></WrappedComponent>
-    </WrapComponent>
+  useEffect(() => {
+    execCondition();
+  }, dependenciesRun);
+
+  if (loading) {
+    return ComponentLoadingResolution ? <ComponentLoadingResolution {...props} /> : null;
+  }
+
+  return fulfillsCondition.ok ? (
+    <ComponentFulfillsCondition
+      {...props}
+      {...(fulfillsCondition?.data ?? {})}
+      check={execCondition}
+    />
+  ) : (
+    <WrappedComponent {...props} {...(fulfillsCondition?.data ?? {})} check={execCondition} />
   );
+};
+
+export const withGuard = (
+  condition: (props: any) => boolean,
+  ComponentFulfillsCondition: React.FC
+) => (WrappedComponent: React.FC) => (props: any) => {
+  return condition(props) ? (
+    <ComponentFulfillsCondition {...props} />
+  ) : (
+    <WrappedComponent {...props} />
+  );
+};
+
+export const withWrapComponent = (WrapComponent, mapWrapComponentProps = () => {}) => (
+  WrappedComponent
+) => (props) => (
+  <WrapComponent {...props} {...(mapWrapComponentProps ? mapWrapComponentProps(props) : {})}>
+    <WrappedComponent {...props}></WrappedComponent>
+  </WrapComponent>
+);
 
 export const withModal = (options) =>
   withWrapComponent(

@@ -169,8 +169,8 @@ export class DecodersService {
         const decoderList = Array.isArray(decoderRefs)
           ? decoderRefs
           : decoderRefs
-            ? [decoderRefs]
-            : [];
+          ? [decoderRefs]
+          : [];
         decoderList.forEach((decoderId: string) => {
           if (!integrations.has(decoderId)) {
             integrations.set(decoderId, []);
@@ -224,7 +224,7 @@ export class DecodersService {
       const total =
         typeof searchResponse?.hits?.total === 'number'
           ? searchResponse.hits.total
-          : (searchResponse?.hits?.total?.value ?? items.length);
+          : searchResponse?.hits?.total?.value ?? items.length;
 
       return response.custom({
         statusCode: 200,

@@ -112,29 +112,11 @@ export const getRulesTableSearchConfig = (): Search => {
     filters: [
       {
         type: 'field_value_selection',
-        field: 'category',
-        name: 'Integration', // replace log type to integration by Wazuh
-        compressed: true,
-        multiSelect: 'or',
-        options: getLogTypeFilterOptions(),
-      },
-      {
-        type: 'field_value_selection',
         field: 'level',
         name: 'Rule severity',
         compressed: true,
         multiSelect: 'or',
         options: ruleSeverity,
-      },
-      {
-        type: 'field_value_selection',
-        field: 'source',
-        name: 'Space', // Wazuh: replace to Space
-        compressed: true,
-        multiSelect: 'or',
-        options: ruleSource.map((source: string) => ({
-          value: source,
-        })),
       },
     ],
   };

@@ -64,6 +64,11 @@ export interface DetectorHit {
   _id: string;
 }
 
+// Wazuh
+export type DetectorHitWithSpace = DetectorHit & {
+  space: string;
+};
+
 export type DetectorResponse = Detector & {
   last_update_time: number;
   enabled_time: number;

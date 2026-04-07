@@ -134,7 +134,7 @@ export default class WazuhRulesService {
               document: {
                 metadata: integrationHit._source.document.metadata,
                 id: integrationHit._source.document.id,
-              }
+              },
             });
           }
         });
