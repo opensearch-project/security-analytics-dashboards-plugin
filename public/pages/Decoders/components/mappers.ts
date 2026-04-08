@@ -17,6 +17,7 @@ export interface DecoderFormModel {
   prematch?: string;
   decoder?: any;
   check?: any;
+  parents?: string[];
 }
 
 export const decoderFormDefaultValue: DecoderFormModel = {
@@ -54,6 +55,7 @@ export const mapDecoderToForm = (decoder: any): DecoderFormModel => {
   if (decoder.prematch !== undefined) result.prematch = decoder.prematch;
   if (decoder.decoder !== undefined) result.decoder = decoder.decoder;
   if (decoder.check !== undefined) result.check = decoder.check;
+  if (decoder.parents !== undefined) result.parents = decoder.parents;
 
   return result as DecoderFormModel;
 };
@@ -77,6 +79,7 @@ export const mapFormToDecoder = (formState: DecoderFormModel): DecoderDocument =
   if (formState.prematch !== undefined) result.prematch = formState.prematch;
   if (formState.decoder !== undefined) result.decoder = formState.decoder;
   if (formState.check !== undefined) result.check = formState.check;
+  if (formState.parents !== undefined) result.parents = formState.parents;
 
   return result as DecoderDocument;
 };
