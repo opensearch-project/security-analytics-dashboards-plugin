@@ -30,7 +30,8 @@ import { PageHeader } from '../../../components/PageHeader/PageHeader';
 import { formatCellValue, setBreadcrumbs } from '../../../utils/helpers';
 import { buildDecodersSearchQuery } from '../utils/constants';
 import { DecoderDetailsFlyout } from '../components/DecoderDetailsFlyout';
-import { SpaceTypes } from '../../../../common/constants';
+import { SPACE_ACTIONS } from '../../../../common/constants';
+import { actionIsAllowedOnSpace } from '../../../../common/helpers';
 import { useSpaceSelector } from '../../../hooks/useSpaceSelector';
 import {
   DELETE_ACTION,
@@ -186,7 +187,7 @@ export const Decoders: React.FC<DecodersProps> = ({ history, notifications }) =>
             type: 'icon',
             icon: 'pencil',
             onClick: (item: DecoderDocument) => history.push(`${ROUTES.DECODERS_EDIT}/${item.id}`),
-            available: () => spaceFilter === SpaceTypes.DRAFT.value,
+            available: () => actionIsAllowedOnSpace(spaceFilter, SPACE_ACTIONS.EDIT),
           },
           {
             name: 'Delete',
@@ -195,7 +196,7 @@ export const Decoders: React.FC<DecodersProps> = ({ history, notifications }) =>
             icon: 'trash',
             onClick: (item: DecoderItem) =>
               setItemForAction({ action: DELETE_ACTION, id: item.id }),
-            // available: () => spaceFilter === SpaceTypes.DRAFT.value,
+            available: () => actionIsAllowedOnSpace(spaceFilter, SPACE_ACTIONS.DELETE),
           },
         ],
       },
@@ -208,9 +209,9 @@ export const Decoders: React.FC<DecodersProps> = ({ history, notifications }) =>
       key="create"
       icon="plusInCircle"
       href={`#${ROUTES.DECODERS_CREATE}`}
-      disabled={spaceFilter !== SpaceTypes.DRAFT.value}
+      disabled={!actionIsAllowedOnSpace(spaceFilter, SPACE_ACTIONS.CREATE)}
       toolTipContent={
-        spaceFilter !== SpaceTypes.DRAFT.value
+        !actionIsAllowedOnSpace(spaceFilter, SPACE_ACTIONS.CREATE)
           ? `Cannot create decoders in the ${spaceFilter} space.`
           : undefined
       }
@@ -224,13 +225,15 @@ export const Decoders: React.FC<DecodersProps> = ({ history, notifications }) =>
         setItemForAction({ action: DELETE_SELECTED_ACTION });
         setIsPopoverOpen(false);
       }}
-      disabled={selectedItems.length === 0 || spaceFilter !== SpaceTypes.DRAFT.value}
+      disabled={
+        selectedItems.length === 0 || !actionIsAllowedOnSpace(spaceFilter, SPACE_ACTIONS.DELETE)
+      }
       toolTipContent={
-        spaceFilter !== SpaceTypes.DRAFT.value
+        !actionIsAllowedOnSpace(spaceFilter, SPACE_ACTIONS.DELETE)
           ? `Cannot delete decoders in the ${spaceFilter} space.`
           : selectedItems.length === 0
-            ? 'Select decoders to delete'
-            : undefined
+          ? 'Select decoders to delete'
+          : undefined
       }
     >
       Delete selected ({selectedItems.length})
