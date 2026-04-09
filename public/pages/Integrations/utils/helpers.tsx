@@ -11,7 +11,6 @@ import { startCase } from 'lodash';
 import { Search } from '@opensearch-project/oui/src/eui_components/basic_table';
 import { DEFAULT_EMPTY_DATA, integrationCategories } from '../../../utils/constants';
 import { getIntegrationCategoryFilterOptions } from '../../../utils/helpers';
-import { integrationLabels } from './constants';
 import { actionIsAllowedOnSpace } from '../../../../common/helpers';
 import { IntegrationBase, PolicyItem } from '../../../../types';
 
@@ -78,7 +77,7 @@ export const getIntegrationsTableColumns = ({
     name: 'Title',
     sortable: true,
     render: (name: string, item: Integration) => {
-      return <EuiLink onClick={() => showDetails(item.id)}>{getIntegrationLabel(name)}</EuiLink>;
+      return <EuiLink onClick={() => showDetails(item.id)}>{name}</EuiLink>;
     },
   },
   {
@@ -153,10 +152,6 @@ export const getIntegrationsTableSearchConfig = (options?: {
     ],
     toolsRight: options?.toolsRight,
   };
-};
-
-export const getIntegrationLabel = (name: string) => {
-  return !name ? DEFAULT_EMPTY_DATA : integrationLabels[name.toLowerCase()] || startCase(name);
 };
 
 export const withGuardAsync = (

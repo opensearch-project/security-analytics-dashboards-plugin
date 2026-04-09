@@ -159,7 +159,7 @@ export class SecurityAnalyticsPlugin
       order: 7000,
       category: {
         id: 'security_analytics',
-        label: 'Security Analytics',
+        label: 'Security analytics',
         order: 550,
         euiIconType: 'securityAnalyticsApp',
       },
@@ -226,7 +226,7 @@ export class SecurityAnalyticsPlugin
       order: 7006,
       category: {
         id: 'security_analytics',
-        label: 'Security Analytics',
+        label: 'Security analytics',
         order: 550,
         euiIconType: 'securityAnalyticsApp',
       },
@@ -241,7 +241,7 @@ export class SecurityAnalyticsPlugin
       order: 7007,
       category: {
         id: 'security_analytics',
-        label: 'Security Analytics',
+        label: 'Security analytics',
         order: 550,
         euiIconType: 'securityAnalyticsApp',
       },
@@ -257,7 +257,7 @@ export class SecurityAnalyticsPlugin
       order: 7011,
       category: {
         id: 'security_analytics',
-        label: 'Security Analytics',
+        label: 'Security analytics',
         order: 550,
         euiIconType: 'securityAnalyticsApp',
       },
@@ -273,7 +273,7 @@ export class SecurityAnalyticsPlugin
       order: 7009,
       category: {
         id: 'security_analytics',
-        label: 'Security Analytics',
+        label: 'Security analytics',
         order: 550,
         euiIconType: 'securityAnalyticsApp',
       },
@@ -289,7 +289,7 @@ export class SecurityAnalyticsPlugin
       order: 7010,
       category: {
         id: 'security_analytics',
-        label: 'Security Analytics',
+        label: 'Security analytics',
         order: 550,
         euiIconType: 'securityAnalyticsApp',
       },

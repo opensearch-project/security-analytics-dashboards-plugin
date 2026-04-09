@@ -10,7 +10,7 @@ export const OVERVIEW_TAB = {
   FILTERS: 'filters',
 } as const;
 
-export type OverviewTabId = (typeof OVERVIEW_TAB)[keyof typeof OVERVIEW_TAB];
+export type OverviewTabId = typeof OVERVIEW_TAB[keyof typeof OVERVIEW_TAB];
 
 export const integrationDetailsTabs = [
   {
@@ -51,22 +51,4 @@ export const defaultIntegration: IntegrationBase = {
   space: {
     name: '',
   },
-};
-
-export const integrationLabels: { [value: string]: string } = {
-  cloudtrail: 'AWS Cloudtrail',
-  dns: 'DNS',
-  vpcflow: 'VPC Flow',
-  ad_ldap: 'AD/LDAP',
-  apache_access: 'Apache Access',
-  m365: 'Microsoft 365',
-  okta: 'Okta',
-  waf: 'WAF',
-  s3: 'AWS S3',
-  github: 'Github',
-  gworkspace: 'Google Workspace',
-  windows: 'Microsoft Windows',
-  network: 'Network',
-  linux: 'Linux System Logs',
-  azure: 'Microsoft Azure',
 };
