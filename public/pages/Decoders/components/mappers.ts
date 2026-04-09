@@ -35,27 +35,47 @@ export const decoderFormDefaultValue: DecoderFormModel = {
   },
 };
 
+const rootDecoderFields: (keyof DecoderFormModel)[] = [
+  'id',
+  'name',
+  'enabled',
+  'metadata',
+  'normalize',
+  'description',
+  'source',
+  'program_name',
+  'order',
+  'fields',
+  'parent',
+  'regex',
+  'prematch',
+  'decoder',
+  'check',
+  'parents',
+];
+
 // Convert from DecoderDocument (API) to DecoderFormModel (form)
 export const mapDecoderToForm = (decoder: any): DecoderFormModel => {
   const result: any = {
     name: decoder.name || '',
   };
 
-  if (decoder.id !== undefined) result.id = decoder.id;
-  if (decoder.enabled !== undefined) result.enabled = decoder.enabled;
-  if (decoder.metadata !== undefined) result.metadata = decoder.metadata;
-  if (decoder.normalize !== undefined) result.normalize = decoder.normalize;
-  if (decoder.description !== undefined) result.description = decoder.description;
-  if (decoder.source !== undefined) result.source = decoder.source;
-  if (decoder.program_name !== undefined) result.program_name = decoder.program_name;
-  if (decoder.order !== undefined) result.order = decoder.order;
-  if (decoder.fields !== undefined) result.fields = decoder.fields;
-  if (decoder.parent !== undefined) result.parent = decoder.parent;
-  if (decoder.regex !== undefined) result.regex = decoder.regex;
-  if (decoder.prematch !== undefined) result.prematch = decoder.prematch;
-  if (decoder.decoder !== undefined) result.decoder = decoder.decoder;
-  if (decoder.check !== undefined) result.check = decoder.check;
-  if (decoder.parents !== undefined) result.parents = decoder.parents;
+  // TODO: avoid selecting props and allow to send all the data and handle it in the backend, this is to make sure we don't miss any new fields added in the future, but for now we want to be explicit about which fields we are using in the form.
+  rootDecoderFields
+    .filter((key) => key !== 'name')
+    .forEach((field) => {
+      if (decoder[field] !== undefined) {
+        result[field] = decoder[field];
+      }
+    });
+
+  Object.keys(decoder)
+    .filter((key) => /parse\|\S+/.test(key))
+    .forEach((key) => {
+      if (decoder[key as keyof DecoderFormModel] !== undefined) {
+        result[key] = decoder[key as keyof DecoderFormModel];
+      }
+    });
 
   return result as DecoderFormModel;
 };
@@ -64,22 +84,20 @@ export const mapDecoderToForm = (decoder: any): DecoderFormModel => {
 export const mapFormToDecoder = (formState: DecoderFormModel): DecoderDocument => {
   const result: any = {};
 
-  if (formState.id !== undefined) result.id = formState.id;
-  if (formState.name !== undefined) result.name = formState.name;
-  if (formState.enabled !== undefined) result.enabled = formState.enabled;
-  if (formState.metadata !== undefined) result.metadata = formState.metadata;
-  if (formState.normalize !== undefined) result.normalize = formState.normalize;
-  if (formState.description !== undefined) result.description = formState.description;
-  if (formState.source !== undefined) result.source = formState.source;
-  if (formState.program_name !== undefined) result.program_name = formState.program_name;
-  if (formState.order !== undefined) result.order = formState.order;
-  if (formState.fields !== undefined) result.fields = formState.fields;
-  if (formState.parent !== undefined) result.parent = formState.parent;
-  if (formState.regex !== undefined) result.regex = formState.regex;
-  if (formState.prematch !== undefined) result.prematch = formState.prematch;
-  if (formState.decoder !== undefined) result.decoder = formState.decoder;
-  if (formState.check !== undefined) result.check = formState.check;
-  if (formState.parents !== undefined) result.parents = formState.parents;
+  // TODO: avoid selecting props and allow to send all the data and handle it in the backend, this is to make sure we don't miss any new fields added in the future, but for now we want to be explicit about which fields we are using in the form.
+  rootDecoderFields.forEach((field) => {
+    if (formState[field as keyof DecoderFormModel] !== undefined) {
+      result[field] = formState[field as keyof DecoderFormModel];
+    }
+  });
+
+  Object.keys(formState)
+    .filter((key) => /parse\|\S+/.test(key))
+    .forEach((key) => {
+      if (formState[key as keyof DecoderFormModel] !== undefined) {
+        result[key] = formState[key as keyof DecoderFormModel];
+      }
+    });
 
   return result as DecoderDocument;
 };

@@ -23,26 +23,33 @@ const decoderMetadataSchema = schema.object({
   versions: schema.maybe(schema.string()),
 });
 
-const decoderDocumentSchema = schema.object({
-  id: schema.maybe(schema.string()),
-  name: schema.string(),
-  enabled: schema.maybe(schema.boolean()),
-  metadata: decoderMetadataSchema,
-  definitions: schema.maybe(schema.any()),
-  check: schema.maybe(schema.any()),
-  parents: schema.maybe(schema.arrayOf(schema.string())),
-  normalize: schema.maybe(schema.any()),
-  decoder: schema.maybe(schema.any()),
-  // Legacy/decoder-specific fields from form
-  description: schema.maybe(schema.string()),
-  source: schema.maybe(schema.string()),
-  program_name: schema.maybe(schema.string()),
-  order: schema.maybe(schema.number()),
-  fields: schema.maybe(schema.any()),
-  parent: schema.maybe(schema.string()),
-  regex: schema.maybe(schema.string()),
-  prematch: schema.maybe(schema.string()),
-});
+const decoderDocumentSchema = schema.object(
+  {
+    id: schema.maybe(schema.string()),
+    name: schema.string(),
+    enabled: schema.maybe(schema.boolean()),
+    metadata: decoderMetadataSchema,
+    definitions: schema.maybe(schema.any()),
+    check: schema.maybe(schema.any()),
+    parents: schema.maybe(schema.arrayOf(schema.string())),
+    normalize: schema.maybe(schema.any()),
+    decoder: schema.maybe(schema.any()),
+    // Legacy/decoder-specific fields from form
+    description: schema.maybe(schema.string()),
+    source: schema.maybe(schema.string()),
+    program_name: schema.maybe(schema.string()),
+    order: schema.maybe(schema.number()),
+    fields: schema.maybe(schema.any()),
+    parent: schema.maybe(schema.string()),
+    regex: schema.maybe(schema.string()),
+    prematch: schema.maybe(schema.string()),
+  },
+  {
+    // WORKAROUND: This allows us to accept additional fields in the decoder document such as the parse|anything or other wrong fields. The engine should thrown an error for unknown fields.
+    // This could be enhanced with a custom validation function that checks the known and the parse|anything dynamic field if we want the validation in the dashboard endpoint instead of the engine.
+    unknowns: 'allow',
+  }
+);
 
 export function setupDecodersRoutes(services: NodeServices, router: IRouter) {
   const { decodersService } = services;
