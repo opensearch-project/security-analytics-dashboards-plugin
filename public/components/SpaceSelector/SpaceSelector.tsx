@@ -43,7 +43,7 @@ export const SpaceSelector: React.FC<SpaceSelectorProps> = ({
   return (
     <EuiFlexGroup gutterSize="s" alignItems="center">
       <EuiFlexItem grow={false}>
-        <EuiText size="s" style={{ whiteSpace: "nowrap" }}>
+        <EuiText size="s" style={{ whiteSpace: "nowrap", fontWeight: 500 }}>
           {SPACE_SELECTOR_LABEL}
         </EuiText>
       </EuiFlexItem>

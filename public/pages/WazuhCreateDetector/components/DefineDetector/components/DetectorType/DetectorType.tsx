@@ -116,11 +116,6 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
 
         <EuiFlexGroup alignItems="center" gutterSize="s">
           <EuiFlexItem grow={false}>
-            <EuiText size="s">
-              <strong>Space</strong>
-            </EuiText>
-          </EuiFlexItem>
-          <EuiFlexItem grow={false}>
             <SpaceSelector
               selectedSpace={selectedSpace}
               onSpaceChange={this.onSpaceChange}

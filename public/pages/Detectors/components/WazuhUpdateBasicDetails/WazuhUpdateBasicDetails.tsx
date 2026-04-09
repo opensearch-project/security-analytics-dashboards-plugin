@@ -443,11 +443,6 @@ export const WazuhUpdateDetectorBasicDetails: React.FC<WazuhUpdateDetectorBasicD
 
         <EuiFlexGroup alignItems="center" gutterSize="s">
           <EuiFlexItem grow={false}>
-            <EuiText size="s">
-              <strong>Space</strong>
-            </EuiText>
-          </EuiFlexItem>
-          <EuiFlexItem grow={false}>
             <SpaceSelector
               selectedSpace={selectedSpace}
               onSpaceChange={onSpaceChange}
