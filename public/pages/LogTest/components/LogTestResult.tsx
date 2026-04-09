@@ -20,6 +20,7 @@ import {
   LogTestAssetTrace,
   LogTestMatchedRule,
   LogTestResult as LogTestResultType,
+  LogTestValidationError,
 } from '../../../../types';
 
 export interface LogTestResultProps {
@@ -94,6 +95,51 @@ const MatchedRuleItem: React.FC<{ rule: LogTestMatchedRule; index: number }> = (
   );
 };
 
+const ValidationErrorItem: React.FC<{ error: LogTestValidationError; index: number }> = ({
+  error,
+  index,
+}) => {
+  const listItems = Object.entries(error)
+    .filter(([, value]) => value != null)
+    .map(([key, value]) => ({
+      title: <span style={{ textTransform: 'capitalize' }}>{key}</span>,
+      description: String(value),
+    }));
+
+  return (
+    <EuiAccordion
+      id={`validation-error-${index}`}
+      initialIsOpen={false}
+      buttonContent={
+        <EuiFlexGroup alignItems="center" gutterSize="s">
+          <EuiFlexItem grow={false}>
+            <EuiBadge color="danger">{error.kind}</EuiBadge>
+          </EuiFlexItem>
+          <EuiFlexItem>
+            <EuiText size="s">
+              <code>{error.path}</code>
+            </EuiText>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      }
+      paddingSize="none"
+    >
+      <div style={{ padding: '8px 12px 4px' }}>
+        <EuiPanel color="subdued" paddingSize="s" hasShadow={false} hasBorder={false}>
+          <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr', rowGap: 8 }}>
+            {listItems.map(({ title, description }, i) => (
+              <React.Fragment key={i}>
+                <EuiText size="s"><strong>{title}</strong></EuiText>
+                <EuiText size="s">{description}</EuiText>
+              </React.Fragment>
+            ))}
+          </div>
+        </EuiPanel>
+      </div>
+    </EuiAccordion>
+  );
+};
+
 export const LogTestResult: React.FC<LogTestResultProps> = ({ result }) => {
   const parsedMessage: LogTestResultType = useMemo(() => {
     if (!result?.message) return null;
@@ -115,6 +161,7 @@ export const LogTestResult: React.FC<LogTestResultProps> = ({ result }) => {
 
   const hasAssetTraces = parsedMessage?.asset_traces?.length > 0;
   const hasMatchedRules = parsedMessage?.matched_rules?.length > 0;
+  const hasValidation = parsedMessage?.validation != null;
 
   return (
     <>
@@ -152,18 +199,26 @@ export const LogTestResult: React.FC<LogTestResultProps> = ({ result }) => {
       {hasAssetTraces && (
         <>
           <EuiSpacer size="l" />
-          <EuiText size="s">
-            <h4>Asset Traces</h4>
-          </EuiText>
-          <EuiSpacer size="s" />
-          <EuiPanel paddingSize="m">
-            {parsedMessage.asset_traces!.map((trace, index) => (
-              <React.Fragment key={`${trace.asset}-${index}`}>
-                {index > 0 && <EuiSpacer size="s" />}
-                <AssetTraceItem trace={trace} index={index} />
-              </React.Fragment>
-            ))}
-          </EuiPanel>
+          <EuiAccordion
+            id="asset-traces-section"
+            initialIsOpen={false}
+            buttonContent={
+              <EuiText size="s">
+                <h4>Asset Traces</h4>
+              </EuiText>
+            }
+            paddingSize="s"
+          >
+            <EuiSpacer size="s" />
+            <EuiPanel paddingSize="m">
+              {parsedMessage.asset_traces!.map((trace, index) => (
+                <React.Fragment key={`${trace.asset}-${index}`}>
+                  {index > 0 && <EuiSpacer size="s" />}
+                  <AssetTraceItem trace={trace} index={index} />
+                </React.Fragment>
+              ))}
+            </EuiPanel>
+          </EuiAccordion>
         </>
       )}
 
@@ -182,6 +237,43 @@ export const LogTestResult: React.FC<LogTestResultProps> = ({ result }) => {
               </React.Fragment>
             ))}
           </EuiPanel>
+        </>
+      )}
+
+      {hasValidation && !parsedMessage.validation!.valid && (
+        <>
+          <EuiSpacer size="l" />
+          <EuiAccordion
+            id="validation-section"
+            initialIsOpen
+            buttonContent={
+              <EuiFlexGroup alignItems="center" gutterSize="s">
+                <EuiFlexItem>
+                  <EuiText size="s">
+                    <h4>Validation</h4>
+                  </EuiText>
+                </EuiFlexItem>
+                <EuiFlexItem grow={false}>
+                  <EuiBadge color="danger">Failed</EuiBadge>
+                </EuiFlexItem>
+              </EuiFlexGroup>
+            }
+            paddingSize="s"
+          >
+            {parsedMessage.validation!.errors.length > 0 && (
+              <>
+                <EuiSpacer size="s" />
+                <EuiPanel paddingSize="m">
+                  {parsedMessage.validation!.errors.map((error, index) => (
+                    <React.Fragment key={`${error.path}-${error.kind}-${index}`}>
+                      {index > 0 && <EuiSpacer size="s" />}
+                      <ValidationErrorItem error={error} index={index} />
+                    </React.Fragment>
+                  ))}
+                </EuiPanel>
+              </>
+            )}
+          </EuiAccordion>
         </>
       )}
     </>
