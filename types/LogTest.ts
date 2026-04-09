@@ -30,10 +30,24 @@ export interface LogTestMatchedRule {
   [key: string]: unknown;
 }
 
+export interface LogTestValidationError {
+  path: string;
+  kind: 'unknown_field' | 'invalid_type' | 'temporary_field_not_allowed';
+  expected?: string | null;
+  actual?: string | null;
+  [key: string]: unknown;
+}
+
+export interface LogTestValidation {
+  valid: boolean;
+  errors: LogTestValidationError[];
+}
+
 export interface LogTestResult {
   output: object;
   asset_traces?: LogTestAssetTrace[];
   matched_rules?: LogTestMatchedRule[];
+  validation?: LogTestValidation;
 }
 
 export interface LogTestResponse {
