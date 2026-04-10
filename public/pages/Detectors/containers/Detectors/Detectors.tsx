@@ -104,7 +104,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
           .filter(Boolean);
 
         const uniqueRuleIds = Array.from(new Set(detectorRuleForSpaceMapping));
-        const rules = await DataStore.rules.getAllRules({ _id: uniqueRuleIds });
+        const rules = await DataStore.rules.getAllRules({ 'document.id': uniqueRuleIds });
 
         const detectors = res.response.hits.hits.map((detector, index) => {
           const { custom_rules, pre_packaged_rules } = detector._source.inputs[0].detector_input;
@@ -120,7 +120,9 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
             custom: 'Custom',
           };
 
-          const space = mapper[spaceRule?.space];
+          // Fallback: if the rule is not found, infer space from the detector structure itself.
+          const space =
+            mapper[spaceRule?.space] ?? (custom_rules.length > 0 ? mapper.custom : mapper.standard);
 
           return {
             ...detector,

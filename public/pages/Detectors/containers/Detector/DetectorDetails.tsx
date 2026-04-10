@@ -252,7 +252,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
       )?.id;
 
       if (ruleForMapping) {
-        const rules = await DataStore.rules.getAllRules({ _id: [ruleForMapping] });
+        const rules = await DataStore.rules.getAllRules({ 'document.id': [ruleForMapping] });
 
         const spaceRule = rules?.find?.((rule) => rule._id === ruleForMapping);
 
@@ -260,7 +260,10 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
           standard: 'Standard',
           custom: 'Custom',
         };
-        return mapper[spaceRule?.space];
+        // Fallback: if the rule is not found with rules datastore, infer space from the detector structure itself.
+        return (
+          mapper[spaceRule?.space] ?? (custom_rules.length > 0 ? mapper.custom : mapper.standard)
+        );
       }
     } catch {}
   }

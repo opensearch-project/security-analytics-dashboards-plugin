@@ -108,6 +108,12 @@ export class RulesStore implements IWazuhRulesStore {
     let query: object;
     if (terms?.['_id']) {
       query = { ids: { values: terms['_id'] } };
+    } else if (terms?.['document.id']) {
+      query = {
+        terms: {
+          'document.id': terms['document.id'],
+        },
+      };
     } else if (terms?.['rule.category']) {
       const categories = terms['rule.category'].map((c) => c.toLowerCase());
       query = {
