@@ -18,6 +18,7 @@ export interface DecoderFormModel {
   decoder?: any;
   check?: any;
   parents?: string[];
+  definitions?: string[];
 }
 
 export const decoderFormDefaultValue: DecoderFormModel = {
@@ -52,6 +53,7 @@ const rootDecoderFields: (keyof DecoderFormModel)[] = [
   'decoder',
   'check',
   'parents',
+  'definitions'
 ];
 
 // Convert from DecoderDocument (API) to DecoderFormModel (form)
@@ -70,7 +72,7 @@ export const mapDecoderToForm = (decoder: any): DecoderFormModel => {
     });
 
   Object.keys(decoder)
-    .filter((key) => /parse\|\S+/.test(key))
+    .filter((key) => /^parse\|\S+$/.test(key))
     .forEach((key) => {
       if (decoder[key as keyof DecoderFormModel] !== undefined) {
         result[key] = decoder[key as keyof DecoderFormModel];
@@ -92,7 +94,7 @@ export const mapFormToDecoder = (formState: DecoderFormModel): DecoderDocument =
   });
 
   Object.keys(formState)
-    .filter((key) => /parse\|\S+/.test(key))
+    .filter((key) => /^parse\|\S+$/.test(key))
     .forEach((key) => {
       if (formState[key as keyof DecoderFormModel] !== undefined) {
         result[key] = formState[key as keyof DecoderFormModel];
