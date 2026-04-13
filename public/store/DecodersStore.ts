@@ -45,7 +45,7 @@ export class DecodersStore {
     return { ...response.response, items };
   }
 
-  public async getDecoder(decoderId: string, space?: string): Promise<DecoderItem | undefined> {
+  public async getDecoder(decoderId: string, space: string): Promise<DecoderItem | undefined> {
     const response = await this.service.getDecoder(decoderId, space);
     if (!response.ok) {
       if (

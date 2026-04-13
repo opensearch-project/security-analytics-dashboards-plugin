@@ -262,7 +262,7 @@ export class DecodersService {
         index: DECODERS_INDEX,
         body: {
           size: 1,
-          query: this.applySpaceFilter({ ids: { values: [decoderId] } }, space, searchFields),
+          query: this.applySpaceFilter({ term: { 'document.id': decoderId } }, space, searchFields),
         },
       });
 

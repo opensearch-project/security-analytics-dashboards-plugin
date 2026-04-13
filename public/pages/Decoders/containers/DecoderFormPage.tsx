@@ -44,6 +44,7 @@ const editorTypes = [
 type DecoderFormPageProps = {
   notifications: NotificationsStart;
   history: RouteComponentProps['history'];
+  location?: RouteComponentProps['location'];
   action: 'create' | 'edit';
   id?: string;
   match: { params: { id: string } };
@@ -57,6 +58,7 @@ const actionLabels: Record<string, string> = {
 export const DecoderFormPage: React.FC<DecoderFormPageProps> = (props) => {
   const { notifications, history, action } = props;
   const idDecoder = props.match.params.id;
+  const spaceDecoder = new URLSearchParams(props.location?.search).get('space') ?? '';
   const [isLoading, setIsLoading] = useState(false);
   const [selectedEditorType, setSelectedEditorType] = useState('yaml');
   const [integrationType, setIntegrationType] = useState<string>('');
@@ -72,7 +74,7 @@ export const DecoderFormPage: React.FC<DecoderFormPageProps> = (props) => {
       if (idDecoder) {
         setIsLoading(true);
         try {
-          const response = await DataStore.decoders.getDecoder(idDecoder);
+          const response = await DataStore.decoders.getDecoder(idDecoder, spaceDecoder);
           setDecoder(response?.document);
           setIntegrationType(response?.integrations?.[0] || '');
           if (response?.document) {

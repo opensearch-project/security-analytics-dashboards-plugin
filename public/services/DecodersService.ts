@@ -51,9 +51,14 @@ export default class DecodersService {
     });
   };
 
-  getDecoder = async (decoderId: string): Promise<ServerResponse<GetDecoderResponse>> => {
+  getDecoder = async (
+    decoderId: string,
+    space: string
+  ): Promise<ServerResponse<GetDecoderResponse>> => {
     const url = `${this.baseUrl}/${decoderId}`;
-    return (await this.httpClient.get(url, {})) as ServerResponse<GetDecoderResponse>;
+    const normalizedSpace = this.normalizeSpace(space);
+    const query = normalizedSpace ? { space: normalizedSpace } : {};
+    return (await this.httpClient.get(url, { query })) as ServerResponse<GetDecoderResponse>;
   };
 
   createDecoder = async (body: {

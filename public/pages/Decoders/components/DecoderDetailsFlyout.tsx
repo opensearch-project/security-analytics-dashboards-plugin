@@ -30,7 +30,7 @@ import { BadgeGroup } from '../../../components/Utility/BadgeGroup';
 
 interface DecoderDetailsFlyoutProps {
   decoderId: string;
-  space?: string;
+  space: string;
   onClose: () => void;
 }
 

@@ -39,7 +39,7 @@ export function useIntegrationDecoders({ decoderIds, space }: useIntegrationDeco
         if (!cancelled) {
           setItems(
             response.items.map((item) => ({
-              id: item.id,
+              id: item.document.id,
               name: item.document?.name,
               title: item.document?.metadata?.title,
               author: item.document?.metadata?.author,
