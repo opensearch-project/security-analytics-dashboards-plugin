@@ -38,56 +38,84 @@ export default class DecodersService {
     return undefined;
   }
 
+  private parseHttpError(error: any): string {
+    return error?.body?.message || error?.body?.error || error?.message || 'Unknown error';
+  }
+
   searchDecoders = async (
     body: any,
     space?: string
   ): Promise<ServerResponse<SearchDecodersResponse>> => {
-    const url = `${this.baseUrl}/_search`;
-    const normalizedSpace = this.normalizeSpace(space);
-    const query = normalizedSpace ? { space: normalizedSpace } : {};
-    return await this.httpClient.post(url, {
-      query,
-      body: JSON.stringify(body),
-    });
+    try {
+      const url = `${this.baseUrl}/_search`;
+      const normalizedSpace = this.normalizeSpace(space);
+      const query = normalizedSpace ? { space: normalizedSpace } : {};
+      return await this.httpClient.post(url, {
+        query,
+        body: JSON.stringify(body),
+      });
+    } catch (error: any) {
+      return { ok: false, error: this.parseHttpError(error) };
+    }
   };
 
   getDecoder = async (
     decoderId: string,
     space: string
   ): Promise<ServerResponse<GetDecoderResponse>> => {
-    const url = `${this.baseUrl}/${decoderId}`;
-    const normalizedSpace = this.normalizeSpace(space);
-    const query = normalizedSpace ? { space: normalizedSpace } : {};
-    return (await this.httpClient.get(url, { query })) as ServerResponse<GetDecoderResponse>;
+    try {
+      const url = `${this.baseUrl}/${decoderId}`;
+      const normalizedSpace = this.normalizeSpace(space);
+      const query = normalizedSpace ? { space: normalizedSpace } : {};
+      return (await this.httpClient.get(url, { query })) as ServerResponse<GetDecoderResponse>;
+    } catch (error: any) {
+      return { ok: false, error: this.parseHttpError(error) };
+    }
   };
 
   createDecoder = async (body: {
     document: any;
     integrationId: string;
   }): Promise<ServerResponse<CUDDecoderResponse>> => {
-    const url = `${this.baseUrl}`;
-    return await this.httpClient.post(url, {
-      body: JSON.stringify(body),
-    });
+    try {
+      const url = `${this.baseUrl}`;
+      return await this.httpClient.post(url, {
+        body: JSON.stringify(body),
+      });
+    } catch (error: any) {
+      return { ok: false, error: this.parseHttpError(error) };
+    }
   };
 
   updateDecoder = async (
     decoderId: string,
     body: { document: any }
   ): Promise<ServerResponse<CUDDecoderResponse>> => {
-    const url = `${this.baseUrl}/${decoderId}`;
-    return await this.httpClient.put(url, {
-      body: JSON.stringify(body),
-    });
+    try {
+      const url = `${this.baseUrl}/${decoderId}`;
+      return await this.httpClient.put(url, {
+        body: JSON.stringify(body),
+      });
+    } catch (error: any) {
+      return { ok: false, error: this.parseHttpError(error) };
+    }
   };
 
   deleteDecoder = async (decoderId: string): Promise<ServerResponse<CUDDecoderResponse>> => {
-    const url = `${this.baseUrl}/${decoderId}`;
-    return await this.httpClient.delete(url, {});
+    try {
+      const url = `${this.baseUrl}/${decoderId}`;
+      return await this.httpClient.delete(url, {});
+    } catch (error: any) {
+      return { ok: false, error: this.parseHttpError(error) };
+    }
   };
 
   getDraftIntegrations = async (): Promise<ServerResponse<any>> => {
-    const url = `${this.baseUrl}/integrations/draft`;
-    return await this.httpClient.get(url, {});
+    try {
+      const url = `${this.baseUrl}/integrations/draft`;
+      return await this.httpClient.get(url, {});
+    } catch (error: any) {
+      return { ok: false, error: this.parseHttpError(error) };
+    }
   };
 }
