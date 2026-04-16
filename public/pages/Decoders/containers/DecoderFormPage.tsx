@@ -129,20 +129,29 @@ export const DecoderFormPage: React.FC<DecoderFormPageProps> = (props) => {
         return;
       }
 
-      const result = await DataStore.decoders.createDecoder({
-        document: values,
-        integrationId: integrationType,
-      });
+      try {
+        const result = await DataStore.decoders.createDecoder({
+          document: values,
+          integrationId: integrationType,
+        });
 
-      if (result) {
-        successNotificationToast(
+        if (result) {
+          successNotificationToast(
+            notifications,
+            'create',
+            'decoder',
+            result.message || `The decoder ${values.name} has been created successfully.`
+          );
+
+          history.push(`${ROUTES.DECODERS}`);
+        }
+      } catch (error: any) {
+        errorNotificationToast(
           notifications,
           'create',
           'decoder',
-          result.message || `The decoder ${values.name} has been created successfully.`
+          error?.message || 'An unexpected error occurred while creating the decoder.'
         );
-
-        history.push(`${ROUTES.DECODERS}`);
       }
     },
     [integrationType, notifications, history]
@@ -155,19 +164,28 @@ export const DecoderFormPage: React.FC<DecoderFormPageProps> = (props) => {
         return;
       }
 
-      const result = await DataStore.decoders.updateDecoder(idDecoder, {
-        document: values,
-      });
+      try {
+        const result = await DataStore.decoders.updateDecoder(idDecoder, {
+          document: values,
+        });
 
-      if (result) {
-        successNotificationToast(
+        if (result) {
+          successNotificationToast(
+            notifications,
+            'update',
+            'decoder',
+            result.message || `The decoder ${values.name} has been updated successfully.`
+          );
+
+          history.push(`${ROUTES.DECODERS}`);
+        }
+      } catch (error: any) {
+        errorNotificationToast(
           notifications,
           'update',
           'decoder',
-          result.message || `The decoder ${values.name} has been updated successfully.`
+          error?.message || 'An unexpected error occurred while updating the decoder.'
         );
-
-        history.push(`${ROUTES.DECODERS}`);
       }
     },
     [notifications, history]
