@@ -50,4 +50,9 @@ export default class PoliciesService {
       body: JSON.stringify(policyDocumentData),
     })) as ServerResponse<UpdatePolicyResponse>;
   };
+
+  deleteSpace = async (space: string): Promise<ServerResponse<null>> => {
+    const url = `..${API.SPACES_BASE}/${space}`;
+    return (await this.httpClient.delete(url)) as ServerResponse<null>;
+  };
 }

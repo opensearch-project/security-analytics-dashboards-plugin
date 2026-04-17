@@ -82,4 +82,13 @@ export class PoliciesStore {
     }
     return [response.ok, response.response];
   }
+
+  public async deleteSpace(space: string): Promise<boolean> {
+    const response = await this.service.deleteSpace(space);
+    if (!response.ok) {
+      errorNotificationToast(this.notifications, 'clear', 'space', response.error);
+      return false;
+    }
+    return true;
+  }
 }

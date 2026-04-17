@@ -49,6 +49,7 @@ export interface IntegrationsProps extends RouteComponentProps, DataSourceProps 
 }
 
 const DELETE_SELECTED_ACTION = 'delete_selected' as const;
+const CLEAR_SPACE_ACTION = 'clear_space' as const;
 
 type ItemForAction =
   | {
@@ -60,6 +61,9 @@ type ItemForAction =
     }
   | {
       action: typeof DELETE_SELECTED_ACTION;
+    }
+  | {
+      action: typeof CLEAR_SPACE_ACTION;
     };
 
 export const Integrations: React.FC<IntegrationsProps> = ({
@@ -75,6 +79,7 @@ export const Integrations: React.FC<IntegrationsProps> = ({
   const [itemForAction, setItemForAction] = useState<ItemForAction | null>(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
   const [isOverviewActionsOpen, setIsOverviewActionsOpen] = useState<boolean>(false);
+  const [isClearingSpace, setIsClearingSpace] = useState<boolean>(false);
   const [policyRefresh, setPolicyRefresh] = useState(0);
   // This trusts the changes in the history location causes a rerender in the componnet
   const selectedTab =
@@ -158,6 +163,25 @@ export const Integrations: React.FC<IntegrationsProps> = ({
       ...getSpacesAllowAction(SPACE_ACTIONS.EDIT_POLICY_INDEXING_SETTINGS),
     ])
   );
+  const isClearSpaceDisabled = !actionIsAllowedOnSpace(spaceFilter, SPACE_ACTIONS.CLEAR_SPACE);
+
+  const clearSpace = useCallback(async () => {
+    setIsClearingSpace(true);
+    try {
+      const ok = await DataStore.policies.deleteSpace(spaceFilter);
+      if (ok) {
+        successNotificationToast(notifications, 'cleared', 'space');
+        setPolicyRefresh((prev) => prev + 1);
+        await loadIntegrations();
+      }
+    } finally {
+      if (isMountedRef.current) {
+        setIsClearingSpace(false);
+        setItemForAction(null);
+      }
+    }
+  }, [spaceFilter, loadIntegrations, notifications]);
+
   const onEditPolicy = () => {
     setItemForAction({ action: SPACE_ACTIONS.EDIT_POLICY });
     setIsPopoverOpen(false);
@@ -266,6 +290,25 @@ export const Integrations: React.FC<IntegrationsProps> = ({
       data-test-subj="overviewEditSpaceDetails"
     >
       Edit
+    </EuiContextMenuItem>,
+    <EuiContextMenuItem
+      key="clear-space"
+      icon="trash"
+      onClick={() => {
+        setItemForAction({ action: CLEAR_SPACE_ACTION });
+        setIsOverviewActionsOpen(false);
+      }}
+      disabled={isClearSpaceDisabled}
+      toolTipContent={
+        isClearSpaceDisabled
+          ? `Clear space is only available in the spaces: ${getSpacesAllowAction(
+              SPACE_ACTIONS.CLEAR_SPACE
+            ).join(', ')}`
+          : undefined
+      }
+      data-test-subj="overviewClearSpace"
+    >
+      Clear space
     </EuiContextMenuItem>,
   ];
   overviewActionsMenuItems.push(
@@ -417,6 +460,24 @@ export const Integrations: React.FC<IntegrationsProps> = ({
             />
           )}
         </>
+      )}
+      {itemForAction?.action === CLEAR_SPACE_ACTION && (
+        <EuiConfirmModal
+          title="Clear draft space"
+          onCancel={() => setItemForAction(null)}
+          onConfirm={clearSpace}
+          cancelButtonText="Cancel"
+          confirmButtonText="Clear space"
+          buttonColor="danger"
+          defaultFocusedButton="cancel"
+          isLoading={isClearingSpace}
+        >
+          <p>
+            This will reset the <strong>draft</strong> space to its initial state, removing all
+            integrations, rules, decoders, KVDBs, and filters.
+          </p>
+          <p>Detectors will not be affected. This action cannot be undone.</p>
+        </EuiConfirmModal>
       )}
       {itemForAction?.action === DELETE_SELECTED_ACTION && (
         <EuiConfirmModal

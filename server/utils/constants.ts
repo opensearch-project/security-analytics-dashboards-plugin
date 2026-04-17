@@ -45,6 +45,7 @@ export const API: SecurityAnalyticsApi = {
   THREAT_INTEL_BASE: `${BASE_API_PATH}/threat_intel`,
   DECODERS_BASE: `${BASE_API_PATH}/decoders`,
   POLICIES_BASE: `${BASE_API_PATH}/policies`,
+  SPACES_BASE: `${BASE_API_PATH}/spaces`,
 };
 
 /**
@@ -139,6 +140,9 @@ export const METHOD_NAMES = {
   GET_THREAT_INTEL_ALERTS: 'getThreatIntelAlerts',
   UPDATE_THREAT_INTEL_ALERTS_STATE: 'updateThreatIntelAlertsStatus',
 
+  // Space methods
+  DELETE_SPACE: 'deleteSpace',
+
   // Decoder methods
   CREATE_DECODER: 'createDecoder',
   UPDATE_DECODER: 'updateDecoder',
@@ -227,6 +231,7 @@ export const CLIENT_INTEGRATION_METHODS = {
 // Wazuh
 export const CLIENT_POLICY_METHODS = {
   UPDATE_POLICY: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.UPDATE_POLICY}`,
+  DELETE_SPACE: `${PLUGIN_PROPERTY_NAME}.${METHOD_NAMES.DELETE_SPACE}`,
 };
 
 export const CLIENT_LOG_TEST_METHODS = {

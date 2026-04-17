@@ -70,4 +70,16 @@ export function setupPoliciesRoutes(services: NodeServices, router: IRouter) {
     },
     policiesService.updatePolicy
   );
+
+  router.delete(
+    {
+      path: `${API.SPACES_BASE}/{space}`,
+      validate: {
+        params: schema.object({
+          space: schema.string(),
+        }),
+      },
+    },
+    policiesService.deleteSpace
+  );
 }

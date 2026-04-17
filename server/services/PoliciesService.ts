@@ -349,4 +349,34 @@ export class PoliciesService extends MDSEnabledClientService {
       });
     }
   };
+
+  deleteSpace = async (
+    context: RequestHandlerContext,
+    request: OpenSearchDashboardsRequest<{ space: string }>,
+    response: OpenSearchDashboardsResponseFactory
+  ): Promise<IOpenSearchDashboardsResponse<ServerResponse<null> | ResponseError>> => {
+    try {
+      const { space } = request.params;
+      const client = this.getClient(request, context);
+
+      await client(CLIENT_POLICY_METHODS.DELETE_SPACE, { space });
+
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: true,
+          response: null,
+        },
+      });
+    } catch (error: any) {
+      console.error('Security Analytics - PoliciesService - deleteSpace:', error);
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: false,
+          error: error.body?.message || error.message,
+        },
+      });
+    }
+  };
 }

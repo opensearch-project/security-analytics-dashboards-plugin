@@ -56,6 +56,7 @@ export interface SecurityAnalyticsApi {
   readonly ACK_CORRELATION_ALERTS: string;
   readonly THREAT_INTEL_BASE: string;
   readonly DECODERS_BASE: string;
+  readonly SPACES_BASE: string;
 }
 
 export interface NodeServices {

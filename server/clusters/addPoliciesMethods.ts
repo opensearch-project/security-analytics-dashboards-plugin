@@ -14,4 +14,18 @@ export function addPoliciesMethods(securityAnalytics: any, createAction: any): v
     needBody: true,
     method: 'PUT',
   });
+
+  securityAnalytics[METHOD_NAMES.DELETE_SPACE] = createAction({
+    url: {
+      fmt: `${BASE_PATH}/space/<%=space%>`,
+      req: {
+        space: {
+          type: 'string',
+          required: true,
+        },
+      },
+    },
+    needBody: false,
+    method: 'DELETE',
+  });
 }
