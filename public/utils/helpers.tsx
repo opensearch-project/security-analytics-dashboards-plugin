@@ -308,7 +308,7 @@ export const formatRuleType = (matchingRuleType: string) => {
   );
 
   if (logType) {
-    return `${logType.category}: ${getLogTypeLabel(logType.value)}`;
+    return logType.value; // Wazuh: remove category from label
   }
 
   return matchingRuleType || DEFAULT_EMPTY_DATA; // Wazuh: in case of not in logtype, return original value
