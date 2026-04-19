@@ -3,7 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   EuiBasicTable,
   EuiBasicTableColumn,
@@ -18,24 +24,32 @@ import {
   EuiSmallButton,
   EuiSpacer,
   EuiText,
-} from '@elastic/eui';
-import { NotificationsStart } from 'opensearch-dashboards/public';
-import { RouteComponentProps } from 'react-router-dom';
-import { KVDBItem } from '../../../../types';
-import { DataStore } from '../../../store/DataStore';
-import { BREADCRUMBS, DEFAULT_EMPTY_DATA, ROUTES } from '../../../utils/constants';
-import { PageHeader } from '../../../components/PageHeader/PageHeader';
-import { formatCellValue, setBreadcrumbs } from '../../../utils/helpers';
-import { KVDBS_PAGE_SIZE, KVDBS_SEARCH_SCHEMA, KVDBS_SORT_FIELD } from '../utils/constants';
-import { KVDBDetailsFlyout } from '../components/KVDBDetailsFlyout';
-import { SPACE_ACTIONS, SpaceTypes } from '../../../../common/constants';
-import { actionIsAllowedOnSpace } from '../../../../common/helpers';
-import { useSpaceSelector } from '../../../hooks/useSpaceSelector';
+} from "@elastic/eui";
+import { NotificationsStart } from "opensearch-dashboards/public";
+import { RouteComponentProps } from "react-router-dom";
+import { KVDBItem } from "../../../../types";
+import { DataStore } from "../../../store/DataStore";
+import {
+  BREADCRUMBS,
+  DEFAULT_EMPTY_DATA,
+  ROUTES,
+} from "../../../utils/constants";
+import { PageHeader } from "../../../components/PageHeader/PageHeader";
+import { formatCellValue, setBreadcrumbs } from "../../../utils/helpers";
+import {
+  KVDBS_PAGE_SIZE,
+  KVDBS_SEARCH_SCHEMA,
+  KVDBS_SORT_FIELD,
+} from "../utils/constants";
+import { KVDBDetailsFlyout } from "../components/KVDBDetailsFlyout";
+import { SPACE_ACTIONS, SpaceTypes } from "../../../../common/constants";
+import { actionIsAllowedOnSpace } from "../../../../common/helpers";
+import { useSpaceSelector } from "../../../hooks/useSpaceSelector";
 import {
   DELETE_ACTION,
   DELETE_SELECTED_ACTION,
   useDeleteItems,
-} from '../../../hooks/useDeleteItems';
+} from "../../../hooks/useDeleteItems";
 
 interface KVDBsProps extends RouteComponentProps {
   notifications: NotificationsStart;
@@ -49,17 +63,24 @@ export const KVDBs: React.FC<KVDBsProps> = ({ history, notifications }) => {
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(KVDBS_PAGE_SIZE);
   const [sortField, setSortField] = useState(KVDBS_SORT_FIELD);
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [searchQuery, setSearchQuery] = useState<any>(null);
   const [selectedKVDB, setSelectedKVDB] = useState<KVDBItem | null>(null);
   const { component: spaceSelector, spaceFilter } = useSpaceSelector({
+    isLoading: loading,
     onSpaceChange: () => setPageIndex(0),
   });
   const [actionsPopoverOpen, setActionsPopoverOpen] = useState<boolean>(false);
   const [selectedItems, setSelectedItems] = useState<KVDBItem[]>([]);
 
-  const isCreateActionDisabled = !actionIsAllowedOnSpace(spaceFilter, SPACE_ACTIONS.CREATE);
-  const isDeleteActionAllowed = actionIsAllowedOnSpace(spaceFilter, SPACE_ACTIONS.DELETE);
+  const isCreateActionDisabled = !actionIsAllowedOnSpace(
+    spaceFilter,
+    SPACE_ACTIONS.CREATE,
+  );
+  const isDeleteActionAllowed = actionIsAllowedOnSpace(
+    spaceFilter,
+    SPACE_ACTIONS.DELETE,
+  );
 
   useEffect(() => {
     return () => {
@@ -72,7 +93,9 @@ export const KVDBs: React.FC<KVDBsProps> = ({ history, notifications }) => {
   }, []);
 
   const buildQuery = useCallback(() => {
-    let query = searchQuery ? EuiSearchBar.Query.toESQuery(searchQuery) : { match_all: {} };
+    let query = searchQuery
+      ? EuiSearchBar.Query.toESQuery(searchQuery)
+      : { match_all: {} };
     if (!query || Object.keys(query).length === 0) {
       query = { match_all: {} };
     }
@@ -80,7 +103,7 @@ export const KVDBs: React.FC<KVDBsProps> = ({ history, notifications }) => {
     if (spaceFilter) {
       query = {
         bool: {
-          must: [query, { term: { 'space.name': spaceFilter } }],
+          must: [query, { term: { "space.name": spaceFilter } }],
         },
       };
     }
@@ -90,7 +113,9 @@ export const KVDBs: React.FC<KVDBsProps> = ({ history, notifications }) => {
 
   const fetchKVDBs = useCallback(async () => {
     setLoading(true);
-    const sort = sortField ? [{ [sortField]: { order: sortDirection } }] : undefined;
+    const sort = sortField
+      ? [{ [sortField]: { order: sortDirection } }]
+      : undefined;
 
     try {
       const response = await DataStore.kvdbs.searchKVDBs({
@@ -122,8 +147,8 @@ export const KVDBs: React.FC<KVDBsProps> = ({ history, notifications }) => {
     deleteOne: (id) => DataStore.kvdbs.deleteKVDB(id),
     reload: fetchKVDBs,
     notifications,
-    entityName: 'KVDB',
-    entityNamePlural: 'KVDBs',
+    entityName: "KVDB",
+    entityNamePlural: "KVDBs",
     isMountedRef,
   });
 
@@ -135,7 +160,7 @@ export const KVDBs: React.FC<KVDBsProps> = ({ history, notifications }) => {
 
     if (sort) {
       setSortField(sort.field || KVDBS_SORT_FIELD);
-      setSortDirection(sort.direction || 'asc');
+      setSortDirection(sort.direction || "asc");
     }
   };
 
@@ -151,7 +176,7 @@ export const KVDBs: React.FC<KVDBsProps> = ({ history, notifications }) => {
       totalItemCount,
       pageSizeOptions: [10, 25, 50, 100],
     }),
-    [pageIndex, pageSize, totalItemCount]
+    [pageIndex, pageSize, totalItemCount],
   );
 
   const sorting = useMemo(
@@ -161,7 +186,7 @@ export const KVDBs: React.FC<KVDBsProps> = ({ history, notifications }) => {
         direction: sortDirection,
       },
     }),
-    [sortField, sortDirection]
+    [sortField, sortDirection],
   );
 
   const menuItems = [
@@ -171,7 +196,9 @@ export const KVDBs: React.FC<KVDBsProps> = ({ history, notifications }) => {
       href={`#${ROUTES.KVDBS_CREATE}`}
       disabled={isCreateActionDisabled}
       toolTipContent={
-        isCreateActionDisabled ? `Cannot create KVDBs in the ${spaceFilter} space.` : undefined
+        isCreateActionDisabled
+          ? `Cannot create KVDBs in the ${spaceFilter} space.`
+          : undefined
       }
     >
       Create
@@ -188,7 +215,7 @@ export const KVDBs: React.FC<KVDBsProps> = ({ history, notifications }) => {
         !isDeleteActionAllowed
           ? `Cannot delete KVDBs in the ${spaceFilter} space.`
           : selectedItems.length === 0
-            ? 'Select KVDBs to delete'
+            ? "Select KVDBs to delete"
             : undefined
       }
     >
@@ -199,62 +226,69 @@ export const KVDBs: React.FC<KVDBsProps> = ({ history, notifications }) => {
   const columns: Array<EuiBasicTableColumn<KVDBItem>> = useMemo(
     () => [
       {
-        field: 'document.metadata.title',
-        name: 'Title',
+        field: "document.metadata.title",
+        name: "Title",
         sortable: true,
-        dataType: 'string',
+        dataType: "string",
         render: (value: string) => formatCellValue(value),
       },
       {
-        field: 'integration.title',
-        name: 'Integration',
-        dataType: 'string',
+        field: "integration.title",
+        name: "Integration",
+        dataType: "string",
         render: (value: string) => formatCellValue(value),
       },
       {
-        field: 'document.metadata.author',
-        name: 'Author',
+        field: "document.metadata.author",
+        name: "Author",
         sortable: true,
         render: (value: string) => formatCellValue(value),
       },
       {
-        name: 'Actions',
-        align: 'right',
+        name: "Actions",
+        align: "right",
         actions: [
           {
-            name: 'View',
-            description: 'View KVDB details',
-            type: 'icon',
-            icon: 'inspect',
+            name: "View",
+            description: "View KVDB details",
+            type: "icon",
+            icon: "inspect",
             onClick: (item: KVDBItem) => setSelectedKVDB(item),
           },
           {
-            name: 'Edit',
-            description: 'Edit KVDB',
-            type: 'icon',
-            icon: 'pencil',
-            onClick: (item: KVDBItem) => history.push(`${ROUTES.KVDBS_EDIT}/${item.id}`),
-            available: () => actionIsAllowedOnSpace(spaceFilter, SPACE_ACTIONS.EDIT),
+            name: "Edit",
+            description: "Edit KVDB",
+            type: "icon",
+            icon: "pencil",
+            onClick: (item: KVDBItem) =>
+              history.push(`${ROUTES.KVDBS_EDIT}/${item.id}`),
+            available: () =>
+              actionIsAllowedOnSpace(spaceFilter, SPACE_ACTIONS.EDIT),
           },
           {
-            name: 'Delete',
-            description: 'Delete KVDB',
-            type: 'icon',
-            icon: 'trash',
-            color: 'danger',
-            onClick: (item: KVDBItem) => setItemForAction({ action: DELETE_ACTION, id: item.id }),
-            available: () => actionIsAllowedOnSpace(spaceFilter, SPACE_ACTIONS.DELETE),
+            name: "Delete",
+            description: "Delete KVDB",
+            type: "icon",
+            icon: "trash",
+            color: "danger",
+            onClick: (item: KVDBItem) =>
+              setItemForAction({ action: DELETE_ACTION, id: item.id }),
+            available: () =>
+              actionIsAllowedOnSpace(spaceFilter, SPACE_ACTIONS.DELETE),
           },
         ],
       },
     ],
-    [spaceFilter, history]
+    [spaceFilter, history],
   );
 
   return (
     <EuiFlexGroup direction="column" gutterSize="m">
       {selectedKVDB && (
-        <KVDBDetailsFlyout kvdb={selectedKVDB} onClose={() => setSelectedKVDB(null)} />
+        <KVDBDetailsFlyout
+          kvdb={selectedKVDB}
+          onClose={() => setSelectedKVDB(null)}
+        />
       )}
       {itemForAction?.action === DELETE_ACTION && (
         <EuiConfirmModal
@@ -266,27 +300,36 @@ export const KVDBs: React.FC<KVDBsProps> = ({ history, notifications }) => {
           buttonColor="danger"
           defaultFocusedButton="cancel"
         >
-          <p>Are you sure you want to delete this KVDB? This action cannot be undone.</p>
+          <p>
+            Are you sure you want to delete this KVDB? This action cannot be
+            undone.
+          </p>
         </EuiConfirmModal>
       )}
       {itemForAction?.action === DELETE_SELECTED_ACTION && (
         <EuiConfirmModal
-          title={`Delete ${selectedItems.length} KVDB${selectedItems.length !== 1 ? 's' : ''}`}
+          title={`Delete ${selectedItems.length} KVDB${selectedItems.length !== 1 ? "s" : ""}`}
           onCancel={() => setItemForAction(null)}
-          onConfirm={() => confirmDeleteSelected(selectedItems, () => setSelectedItems([]))}
+          onConfirm={() =>
+            confirmDeleteSelected(selectedItems, () => setSelectedItems([]))
+          }
           cancelButtonText="Cancel"
           confirmButtonText="Delete"
           buttonColor="danger"
           defaultFocusedButton="cancel"
         >
           <p>{`Are you sure you want to delete ${selectedItems.length} KVDB${
-            selectedItems.length !== 1 ? 's' : ''
+            selectedItems.length !== 1 ? "s" : ""
           }? This action cannot be undone.`}</p>
         </EuiConfirmModal>
       )}
       <EuiFlexItem grow={false}>
         <PageHeader>
-          <EuiFlexGroup gutterSize="s" justifyContent="spaceBetween" alignItems="center">
+          <EuiFlexGroup
+            gutterSize="s"
+            justifyContent="spaceBetween"
+            alignItems="center"
+          >
             <EuiFlexItem>
               <EuiText size="s">
                 <h1>KVDBs</h1>
@@ -324,7 +367,7 @@ export const KVDBs: React.FC<KVDBsProps> = ({ history, notifications }) => {
             <EuiFlexItem>
               <EuiSearchBar
                 box={{
-                  placeholder: 'Search KVDBs',
+                  placeholder: "Search KVDBs",
                   incremental: true,
                   compressed: true,
                   schema: true,
