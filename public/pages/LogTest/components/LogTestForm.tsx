@@ -9,11 +9,11 @@ import {
   EuiFlexItem,
   EuiFormRow,
   EuiFieldText,
-  EuiFieldNumber,
   EuiTextArea,
   EuiAccordion,
   EuiSpacer,
   EuiSelect,
+  EuiTitle,
 } from '@elastic/eui';
 import { LogTestTraceLevel } from '../../../../types';
 import { MetadataEntry } from '../utils';
@@ -28,6 +28,13 @@ const TRACE_LEVEL_OPTIONS: Array<{ value: LogTestTraceLevel; text: string }> = [
 export interface LogTestSpaceOption {
   id: string;
   label: string;
+  disabled?: boolean;
+  title?: string;
+}
+
+export interface LogTestIntegrationOption {
+  id: string;
+  label: string;
 }
 
 export interface LogTestFormData {
@@ -37,12 +44,14 @@ export interface LogTestFormData {
   traceLevel: LogTestTraceLevel;
   space: string;
   metadataFields: MetadataEntry[];
+  integration: string;
 }
 
 export interface LogTestFormErrors {
   queue?: string;
   event?: string;
   space?: string;
+  integration?: string;
 }
 
 export interface LogTestFormProps {
@@ -51,6 +60,7 @@ export interface LogTestFormProps {
   onFormChange: (field: keyof LogTestFormData, value: any) => void;
   onMetadataFieldsChange: (fields: MetadataEntry[]) => void;
   spaceOptions: LogTestSpaceOption[];
+  integrationOptions: LogTestIntegrationOption[];
   disabled?: boolean;
 }
 
@@ -60,38 +70,33 @@ export const LogTestForm: React.FC<LogTestFormProps> = ({
   onFormChange,
   onMetadataFieldsChange,
   spaceOptions,
+  integrationOptions,
   disabled = false,
 }) => {
   const spaceSelectOptions = [
-    ...spaceOptions.map((option) => ({ value: option.id, text: option.label })),
+    ...spaceOptions.map((option) => ({
+      value: option.id,
+      text: option.label,
+      disabled: option.disabled,
+      title: option.title,
+    })),
+  ];
+
+  const integrationSelectOptions = [
+    { value: '', text: 'Select an integration' },
+    ...integrationOptions.map((option) => ({
+      value: option.id,
+      text: option.label,
+    })),
   ];
 
   return (
     <>
+      <EuiTitle size="xs">
+        <h3>Normalization</h3>
+      </EuiTitle>
+      <EuiSpacer size="s" />
       <EuiFlexGroup gutterSize="m" wrap>
-        {/* <EuiFlexItem style={{ minWidth: '300px' }}>
-                    <EuiFormRow
-                        label="Queue"
-                        isInvalid={!!errors.queue}
-                        error={errors.queue}
-                        fullWidth
-                    >
-                        <EuiFieldNumber
-                            value={formData.queue ?? ''}
-                            onChange={(e) =>
-                                onFormChange(
-                                    'queue',
-                                    e.target.value ? Number(e.target.value) : undefined
-                                )
-                            }
-                            min={1}
-                            max={255}
-                            isInvalid={!!errors.queue}
-                            disabled={disabled}
-                            fullWidth
-                        />
-                    </EuiFormRow>
-                </EuiFlexItem> */}
         <EuiFlexItem style={{ minWidth: '280px' }}>
           <EuiFormRow label="Space" isInvalid={!!errors.space} error={errors.space} fullWidth>
             <EuiSelect
@@ -105,13 +110,13 @@ export const LogTestForm: React.FC<LogTestFormProps> = ({
           </EuiFormRow>
         </EuiFlexItem>
         <EuiFlexItem style={{ minWidth: '300px' }}>
-          <EuiFormRow 
-          label={
-            <>
-              {'Location - '}
-              <em>optional</em>
-            </>
-           } 
+          <EuiFormRow
+            label={
+              <>
+                {'Location - '}
+                <em>optional</em>
+              </>
+            }
             fullWidth
           >
             <EuiFieldText
@@ -148,7 +153,37 @@ export const LogTestForm: React.FC<LogTestFormProps> = ({
           disabled={disabled}
         />
       </EuiAccordion>
-      <EuiSpacer size="m" />
+
+      <EuiSpacer size="l" />
+
+      <EuiTitle size="xs">
+        <h3>Detection</h3>
+      </EuiTitle>
+      <EuiSpacer size="s" />
+      <EuiFlexGroup gutterSize="m">
+        <EuiFlexItem style={{ minWidth: '300px' }}>
+          <EuiFormRow
+            label={
+              <>
+                {'Integration - '}
+                <em>optional</em>
+              </>
+            }
+            fullWidth
+          >
+            <EuiSelect
+              options={integrationSelectOptions}
+              value={formData.integration}
+              onChange={(e) => onFormChange('integration', e.target.value)}
+              disabled={disabled || integrationSelectOptions.length <= 1}
+              fullWidth
+            />
+          </EuiFormRow>
+        </EuiFlexItem>
+      </EuiFlexGroup>
+
+      <EuiSpacer size="l" />
+
       <EuiFormRow label="Log event" isInvalid={!!errors.event} error={errors.event} fullWidth>
         <EuiTextArea
           placeholder="Enter log data to test..."

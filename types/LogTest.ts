@@ -12,22 +12,13 @@ export interface LogTestRequestBody {
   event: string;
   trace_level?: LogTestTraceLevel;
   space: string;
+  integration?: string;
 }
 
 export interface LogTestAssetTrace {
   asset: string;
   success: boolean;
   traces: string[];
-}
-
-export interface LogTestMatchedRule {
-  id?: string;
-  rule_id?: string;
-  name?: string;
-  title?: string;
-  level?: string;
-  severity?: string;
-  [key: string]: unknown;
 }
 
 export interface LogTestValidationError {
@@ -43,16 +34,40 @@ export interface LogTestValidation {
   errors: LogTestValidationError[];
 }
 
-export interface LogTestResult {
+export interface LogTestNormalizationResult {
   output: object;
   asset_traces?: LogTestAssetTrace[];
-  matched_rules?: LogTestMatchedRule[];
   validation?: LogTestValidation;
+}
+
+export type LogTestDetectionStatus = 'success' | 'skipped' | 'error';
+
+export interface LogTestDetectionRuleMatch {
+  rule: {
+    id: string;
+    title: string;
+    level: string;
+    tags: string[];
+  };
+  matched_conditions: string[];
+}
+
+export interface LogTestDetectionResult {
+  status: LogTestDetectionStatus;
+  rules_evaluated?: number;
+  rules_matched?: number;
+  matches?: LogTestDetectionRuleMatch[];
+  reason?: string;
+}
+
+export interface LogTestResponseMessage {
+  normalization: LogTestNormalizationResult;
+  detection: LogTestDetectionResult;
 }
 
 export interface LogTestResponse {
   status: string;
-  message: LogTestResult;
+  message: LogTestResponseMessage;
 }
 
 export interface LogTestApiRequest {

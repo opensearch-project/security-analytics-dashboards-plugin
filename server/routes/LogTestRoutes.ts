@@ -20,21 +20,24 @@ export function setupLogTestRoutes(services: NodeServices, router: IRouter) {
           document: schema.object({
             queue: schema.number(),
             location: schema.string(),
-            metadata: schema.maybe(schema.recordOf(schema.string(), schema.any())),
+            metadata: schema.maybe(
+              schema.recordOf(schema.string(), schema.any()),
+            ),
             event: schema.string(),
             trace_level: schema.maybe(
               schema.oneOf([
                 schema.literal('NONE'),
                 schema.literal('ASSET_ONLY'),
                 schema.literal('ALL'),
-              ])
+              ]),
             ),
             space: schema.string(),
+            integration: schema.maybe(schema.string()),
           }),
         }),
         query: createQueryValidationSchema(),
       },
     },
-    logTestService.logTest
+    logTestService.logTest,
   );
 }
