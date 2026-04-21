@@ -17,18 +17,15 @@ import {
   GetRulesParams,
   GetRulesResponse,
 } from '../models/interfaces';
-import { CLIENT_RULE_METHODS } from '../utils/constants';
+import { CLIENT_RULE_METHODS, CONTENT_INDICES } from '../utils/constants';
 import { ServerResponse } from '../models/types';
 import { load } from 'js-yaml';
 import { Rule } from '../../types';
-
-const INTEGRATIONS_INDEX = '.cti-integrations';
-const RULES_INDEX = '.cti-rules';
 const STANDARD_SPACE_TERM = { term: { 'space.name': 'standard' } };
 const CUSTOM_SPACE_TERM = { term: { 'space.name': 'custom' } };
 
 export default class WazuhRulesService {
-  constructor(private osDriver: ILegacyCustomClusterClient) {}
+  constructor(private osDriver: ILegacyCustomClusterClient) { }
 
   private getClient(request: OpenSearchDashboardsRequest) {
     return this.osDriver.asScoped(request).callAsCurrentUser;
@@ -39,8 +36,8 @@ export default class WazuhRulesService {
     const bool: any = space
       ? { filter: [{ term: { 'space.name': space } }] }
       : prePackaged === false
-      ? { filter: [CUSTOM_SPACE_TERM] }
-      : { filter: [STANDARD_SPACE_TERM] };
+        ? { filter: [CUSTOM_SPACE_TERM] }
+        : { filter: [STANDARD_SPACE_TERM] };
 
     if (incomingQuery && !incomingQuery.match_all) {
       bool.must = [incomingQuery];
@@ -103,7 +100,7 @@ export default class WazuhRulesService {
 
     try {
       const integrationResponse = await client('search', {
-        index: INTEGRATIONS_INDEX,
+        index: CONTENT_INDICES.INTEGRATIONS,
         body: {
           size: 10000,
           query: {
@@ -167,7 +164,7 @@ export default class WazuhRulesService {
       };
       if (sort) searchBody.sort = sort;
       const searchResponse = await client('search', {
-        index: RULES_INDEX,
+        index: CONTENT_INDICES.RULES,
         body: searchBody,
       });
 

@@ -18,10 +18,8 @@ import {
   UpdatePolicyRequestBody,
 } from '../../types';
 import { MDSEnabledClientService } from './MDSEnabledClientService';
-import { CLIENT_POLICY_METHODS } from '../utils/constants';
+import { CLIENT_POLICY_METHODS, CONTENT_INDICES } from '../utils/constants';
 
-const POLICIES_INDEX = '.cti-policies';
-const INTEGRATIONS_INDEX = '.cti-integrations';
 const SPACE_FIELD_CANDIDATES = [
   'space.keyword',
   'space',
@@ -51,7 +49,7 @@ export class PoliciesService extends MDSEnabledClientService {
       this.spaceFieldCapsPromise = (async () => {
         try {
           const fieldCapsResponse = await client('fieldCaps', {
-            index: POLICIES_INDEX,
+            index: CONTENT_INDICES.POLICIES,
             fields: SPACE_FIELD_CANDIDATES,
           });
           const fields = fieldCapsResponse?.fields ?? {};
@@ -164,7 +162,7 @@ export class PoliciesService extends MDSEnabledClientService {
 
     try {
       const integrationResponse = await client('search', {
-        index: INTEGRATIONS_INDEX,
+        index: CONTENT_INDICES.INTEGRATIONS,
         body: {
           size: 10000,
           query: query,

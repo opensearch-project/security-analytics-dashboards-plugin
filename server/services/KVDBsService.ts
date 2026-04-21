@@ -19,11 +19,8 @@ import {
   KVDBSearchResponse,
   UpdateKVDBPayload,
 } from '../../types';
-import { CLIENT_KVDB_METHODS } from '../utils/constants';
+import { CLIENT_KVDB_METHODS, CONTENT_INDICES } from '../utils/constants';
 import { MDSEnabledClientService } from './MDSEnabledClientService';
-
-const KVDBS_INDEX = '.cti-kvdbs';
-const INTEGRATIONS_INDEX = '.cti-integrations';
 
 export class KVDBsService extends MDSEnabledClientService {
   searchKVDBs = async (
@@ -35,7 +32,7 @@ export class KVDBsService extends MDSEnabledClientService {
       const body = request.body ?? { query: { match_all: {} } };
       const client = this.getClient(request, context);
       const searchResponse: KVDBSearchResponse = await client('search', {
-        index: KVDBS_INDEX,
+        index: CONTENT_INDICES.KVDBS,
         body: JSON.stringify(body),
       });
 
@@ -79,7 +76,7 @@ export class KVDBsService extends MDSEnabledClientService {
 
       const client = this.getClient(request, context);
       const searchResponse: KVDBIntegrationsSearchResponse = await client('search', {
-        index: INTEGRATIONS_INDEX,
+        index: CONTENT_INDICES.INTEGRATIONS,
         body: JSON.stringify({
           size: kvdbIds.length,
           query: {

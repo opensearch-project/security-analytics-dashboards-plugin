@@ -287,3 +287,12 @@ export const DEFAULT_METRICS_COUNTER: MetricsCounter = {
 };
 
 export const CONTENT_MANAGER_BASE_PATH = '/_plugins/_content_manager';
+
+export const CONTENT_INDICES = {
+  POLICIES: '.wazuh-threatintel-policies',
+  INTEGRATIONS: 'wazuh-threatintel-integrations',
+  DECODERS: 'wazuh-threatintel-decoders',
+  KVDBS: 'wazuh-threatintel-kvdbs',
+  FILTERS: 'wazuh-threatintel-filters',
+  RULES: 'wazuh-threatintel-rules',
+};

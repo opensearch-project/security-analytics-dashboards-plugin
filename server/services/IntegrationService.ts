@@ -25,17 +25,10 @@ import {
   UpdateIntegrationParams,
   UpdateIntegrationResponse,
 } from '../../types';
-import { CLIENT_INTEGRATION_METHODS } from '../utils/constants';
+import { CLIENT_INTEGRATION_METHODS, CONTENT_INDICES } from '../utils/constants';
 import { MDSEnabledClientService } from './MDSEnabledClientService';
 import { get, sortBy } from 'lodash';
 import { getNextSpace } from '../../common/helpers';
-
-const INTEGRATIONS_INDEX = '.cti-integrations';
-const DECODERS_INDEX = '.cti-decoders';
-const KVDBS_INDEX = '.cti-kvdbs';
-const FILTERS_INDEX = '.engine-filters';
-const POLICIES_INDEX = '.cti-policies';
-const RULES_INDEX = '.cti-rules';
 
 export class IntegrationService extends MDSEnabledClientService {
   createIntegration = async (
@@ -87,7 +80,7 @@ export class IntegrationService extends MDSEnabledClientService {
         // CLIENT_INTEGRATION_METHODS.SEARCH_INTEGRATIONS,
         'search',
         {
-          index: INTEGRATIONS_INDEX,
+          index: CONTENT_INDICES.INTEGRATIONS,
           body: {
             size: 10000,
             query: query ?? {
@@ -263,7 +256,7 @@ export class IntegrationService extends MDSEnabledClientService {
           client,
           promoteSpace.changes.integrations,
           {
-            index: INTEGRATIONS_INDEX,
+            index: CONTENT_INDICES.INTEGRATIONS,
             space,
             nameProp: 'document.metadata.title',
             idProp: 'document.id',
@@ -277,7 +270,7 @@ export class IntegrationService extends MDSEnabledClientService {
           client,
           promoteSpace.changes.decoders,
           {
-            index: DECODERS_INDEX,
+            index: CONTENT_INDICES.DECODERS,
             space,
             nameProp: 'document.name',
             idProp: 'document.id',
@@ -291,7 +284,7 @@ export class IntegrationService extends MDSEnabledClientService {
           client,
           promoteSpace.changes.kvdbs,
           {
-            index: KVDBS_INDEX,
+            index: CONTENT_INDICES.KVDBS,
             space,
             nameProp: 'document.metadata.title',
             idProp: 'document.id',
@@ -305,7 +298,7 @@ export class IntegrationService extends MDSEnabledClientService {
           client,
           promoteSpace.changes.filters,
           {
-            index: FILTERS_INDEX,
+            index: CONTENT_INDICES.FILTERS,
             space,
             nameProp: 'document.metadata.title',
             idProp: 'document.id',
@@ -319,7 +312,7 @@ export class IntegrationService extends MDSEnabledClientService {
           client,
           promoteSpace.changes.policy,
           {
-            index: POLICIES_INDEX,
+            index: CONTENT_INDICES.POLICIES,
             space,
             nameProp: 'document.metadata.title',
             idProp: 'document.id',
@@ -333,7 +326,7 @@ export class IntegrationService extends MDSEnabledClientService {
           client,
           promoteSpace.changes.rules,
           {
-            index: RULES_INDEX,
+            index: CONTENT_INDICES.RULES,
             space,
             nameProp: 'document.metadata.title',
             idProp: 'document.id',

@@ -19,9 +19,7 @@ import {
   CUDFilterResponse,
 } from '../../types';
 import { MDSEnabledClientService } from './MDSEnabledClientService';
-import { CLIENT_FILTER_METHODS } from '../utils/constants';
-
-const FILTERS_INDEX = '.engine-filters';
+import { CLIENT_FILTER_METHODS, CONTENT_INDICES } from '../utils/constants';
 
 export class FiltersService extends MDSEnabledClientService {
   searchFilters = async (
@@ -35,7 +33,7 @@ export class FiltersService extends MDSEnabledClientService {
       const body = request.body ?? { query: { match_all: {} } };
       const client = this.getClient(request, context);
       const searchResponse: FilterSearchResponse = await client('search', {
-        index: FILTERS_INDEX,
+        index: CONTENT_INDICES.FILTERS,
         body: JSON.stringify(body),
       });
 
