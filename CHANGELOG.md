@@ -38,3 +38,4 @@ All notable changes to the Wazuh ML Commons project will be documented in this f
 - Fixed detection rule editor causing blank screen [#44](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/44)
 - Fixed data source didn't include data stream aliases for detector creation [#116](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/116)
 - Fixed decoders form not handling request errors properly [#194](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/194)
+- Fixed float numbers ending in .0 in the Decoders yaml editor being transformed into integers [#200](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/200)

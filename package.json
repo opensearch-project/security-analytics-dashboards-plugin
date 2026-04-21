@@ -78,6 +78,7 @@
     "@elastic/eslint-import-resolver-kibana": "link:../../packages/osd-eslint-import-resolver-opensearch-dashboards",
     "@testing-library/dom": "^8.11.3",
     "@testing-library/user-event": "^14.4.3",
+    "@types/chart.js": "^2.9.37",
     "@types/react-dom": "^16.9.8",
     "@types/react-router-dom": "^5.3.2",
     "@types/vis": "^4.21.21",
@@ -91,16 +92,17 @@
     "jest-environment-jsdom": "^27.5.1",
     "lint-staged": "^10.2.0",
     "string.prototype.replaceall": "1.0.7",
-    "ts-loader": "^6.2.1",
-    "@types/chart.js": "^2.9.37"
+    "ts-loader": "^6.2.1"
   },
   "engines": {
     "yarn": "^1.21.1"
   },
   "dependencies": {
-    "formik": "^2.2.6",
-    "react-graph-vis": "^1.0.7",
     "chart.js": "^4.4.8",
-    "chartjs-adapter-moment": "^1.0.1"
+    "chartjs-adapter-moment": "^1.0.1",
+    "formik": "^2.2.6",
+    "lossless-json": "4.3.0",
+    "react-graph-vis": "^1.0.7",
+    "yaml": "2.8.3"
   }
 }

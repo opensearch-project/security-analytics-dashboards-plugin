@@ -310,11 +310,11 @@ export class DecodersService {
     response: OpenSearchDashboardsResponseFactory
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<{ id: string }> | ResponseError>> => {
     try {
-      const body = request.body as { document: any; integrationId: string };
+      const body = request.body as { documentJson: string; integrationId: string };
       const client = this.getClient(request);
 
-      const { document: decoderDocument, integrationId } = body;
-      if (!decoderDocument) {
+      const { documentJson, integrationId } = body;
+      if (!documentJson) {
         return response.custom({
           statusCode: 200,
           body: {
@@ -325,10 +325,7 @@ export class DecodersService {
       }
 
       const createBody = {
-        body: {
-          resource: decoderDocument,
-          integration: integrationId,
-        },
+        body: `{"resource":${documentJson},"integration":"${integrationId}"}`,
       };
 
       const createResponse = await client(CLIENT_DECODER_METHODS.CREATE_DECODER, createBody);
@@ -359,11 +356,11 @@ export class DecodersService {
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<null> | ResponseError>> => {
     try {
       const { decoderId } = request.params;
-      const body = request.body as { document: any };
+      const body = request.body as { documentJson: string };
       const client = this.getClient(request);
 
-      const { document: decoderDocument } = body;
-      if (!decoderDocument) {
+      const { documentJson } = body;
+      if (!documentJson) {
         return response.custom({
           statusCode: 200,
           body: {
@@ -374,10 +371,8 @@ export class DecodersService {
       }
 
       const updateBody = {
-        body: {
-          resource: decoderDocument,
-        },
-        decoderId: decoderId,
+        body: `{"resource":${documentJson}}`,
+        decoderId,
       };
 
       const responseRequest = await client(CLIENT_DECODER_METHODS.UPDATE_DECODER, updateBody);

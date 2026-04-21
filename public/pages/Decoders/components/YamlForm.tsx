@@ -1,36 +1,26 @@
 import React, { useRef, useState } from 'react';
-import { DecoderDocument } from '../../../../types';
 import { EuiCompressedFormRow, EuiCodeEditor, EuiSpacer, EuiText, EuiCallOut } from '@elastic/eui';
 import FormFieldHeader from '../../../components/FormFieldHeader';
 import { YamlEditorState } from '../../Rules/components/RuleEditor/components/YamlRuleEditorComponent/YamlRuleEditorComponent';
-import { load } from 'js-yaml';
-import {
-  DecoderFormModel,
-  mapDecoderToYamlObject,
-  mapYamlObjectToDecoder,
-  mapYamlObjectToYamlString,
-} from './mappers';
 
 interface YamlFormProps {
-  decoder?: DecoderDocument;
-  change: React.Dispatch<DecoderFormModel>;
+  rawDecoder: string;
+  change: React.Dispatch<string>;
   isInvalid: boolean;
   errors?: string[];
   parseDebounceMs?: number;
 }
 
 export const YamlForm: React.FC<YamlFormProps> = ({
-  decoder,
+  rawDecoder,
   change,
   isInvalid,
   errors,
   parseDebounceMs = 500,
 }) => {
-  const yamlObject = mapDecoderToYamlObject(decoder);
-
   const [state, setState] = useState<YamlEditorState>({
     errors: null,
-    value: mapYamlObjectToYamlString(yamlObject),
+    value: rawDecoder ?? '',
   });
 
   const isFocusedRef = useRef(false);
@@ -47,9 +37,7 @@ export const YamlForm: React.FC<YamlFormProps> = ({
       return;
     }
     try {
-      const yamlObject = load(value);
-      const parsedDecoder = mapYamlObjectToDecoder(yamlObject);
-      change(parsedDecoder);
+      change(value);
       setState((prev) => ({ ...prev, errors: null }));
     } catch (err) {
       setState((prev) => ({ ...prev, errors: ['Invalid YAML'] }));

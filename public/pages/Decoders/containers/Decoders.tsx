@@ -24,7 +24,7 @@ import {
   EuiConfirmModal,
 } from '@elastic/eui';
 import { DataStore } from '../../../store/DataStore';
-import { DecoderDocument, DecoderItem } from '../../../../types';
+import { DecoderItem } from '../../../../types';
 import { BREADCRUMBS, ROUTES } from '../../../utils/constants';
 import { PageHeader } from '../../../components/PageHeader/PageHeader';
 import { formatCellValue, setBreadcrumbs } from '../../../utils/helpers';

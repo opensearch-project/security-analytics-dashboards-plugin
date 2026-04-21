@@ -7,6 +7,7 @@ import { HttpSetup } from 'opensearch-dashboards/public';
 import { API } from '../../server/utils/constants';
 import { ServerResponse } from '../../server/models/types';
 import { CUDDecoderResponse, GetDecoderResponse, SearchDecodersResponse } from '../../types';
+import { parse as LosslessParse, stringify as LosslessStringify } from 'lossless-json';
 
 export default class DecodersService {
   private readonly httpClient: HttpSetup;
@@ -59,19 +60,25 @@ export default class DecodersService {
     }
   };
 
-  getDecoder = async (
-    decoderId: string,
-    space: string
-  ): Promise<ServerResponse<GetDecoderResponse>> => {
-    try {
-      const url = `${this.baseUrl}/${decoderId}`;
-      const normalizedSpace = this.normalizeSpace(space);
-      const query = normalizedSpace ? { space: normalizedSpace } : {};
-      return (await this.httpClient.get(url, { query })) as ServerResponse<GetDecoderResponse>;
-    } catch (error: any) {
-      return { ok: false, error: this.parseHttpError(error) };
-    }
-  };
+getDecoder = async (
+  decoderId: string,
+  space: string
+): Promise<ServerResponse<GetDecoderResponse>> => {
+  try {
+    const url = `${this.baseUrl}/${decoderId}`;
+    const normalizedSpace = this.normalizeSpace(space);
+    const query = normalizedSpace ? `?space=${normalizedSpace}` : '';
+    const response = await fetch(`${url}${query}`, {
+      headers: {
+        'osd-xsrf': 'true',
+      },
+    });
+    const text = await response.text();
+    return LosslessParse(text) as ServerResponse<GetDecoderResponse>;
+  } catch (error: any) {
+    return { ok: false, error: this.parseHttpError(error) };
+  }
+};
 
   createDecoder = async (body: {
     document: any;
@@ -80,7 +87,10 @@ export default class DecodersService {
     try {
       const url = `${this.baseUrl}`;
       return await this.httpClient.post(url, {
-        body: JSON.stringify(body),
+        body: JSON.stringify({
+          documentJson: LosslessStringify(body.document),
+          integrationId: body.integrationId,
+        }),
       });
     } catch (error: any) {
       return { ok: false, error: this.parseHttpError(error) };
@@ -94,7 +104,9 @@ export default class DecodersService {
     try {
       const url = `${this.baseUrl}/${decoderId}`;
       return await this.httpClient.put(url, {
-        body: JSON.stringify(body),
+        body: JSON.stringify({
+          documentJson: LosslessStringify(body.document),
+        }),
       });
     } catch (error: any) {
       return { ok: false, error: this.parseHttpError(error) };

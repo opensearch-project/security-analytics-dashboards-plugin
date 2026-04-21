@@ -9,6 +9,10 @@ import { NodeServices } from '../models/interfaces';
 import { API } from '../utils/constants';
 import { createQueryValidationSchema } from '../utils/helpers';
 
+/*
+FIXME: These schemas are no longer used to validate the create and update endpoints, 
+      we should create new validation here or validate the decoder in the server endpoint.
+
 const decoderMetadataSchema = schema.object({
   title: schema.string(),
   author: schema.string(),
@@ -50,6 +54,7 @@ const decoderDocumentSchema = schema.object(
     unknowns: 'allow',
   }
 );
+*/
 
 export function setupDecodersRoutes(services: NodeServices, router: IRouter) {
   const { decodersService } = services;
@@ -86,10 +91,7 @@ export function setupDecodersRoutes(services: NodeServices, router: IRouter) {
     {
       path: `${API.DECODERS_BASE}`,
       validate: {
-        body: schema.object({
-          document: decoderDocumentSchema,
-          integrationId: schema.string(),
-        }),
+        body: schema.any(),
         query: createQueryValidationSchema({
           space: schema.maybe(schema.string()),
         }),
@@ -105,9 +107,7 @@ export function setupDecodersRoutes(services: NodeServices, router: IRouter) {
         params: schema.object({
           decoderId: schema.string(),
         }),
-        body: schema.object({
-          document: decoderDocumentSchema,
-        }),
+        body: schema.any(),
         query: createQueryValidationSchema({
           space: schema.maybe(schema.string()),
         }),
