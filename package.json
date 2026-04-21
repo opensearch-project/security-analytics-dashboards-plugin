@@ -50,7 +50,8 @@
     "async": "^3.2.3",
     "json5": "^2.2.3",
     "@babel/core": "^7.20.12",
-    "@babel/traverse": "^7.20.12"
+    "@babel/traverse": "^7.20.12",
+    "picomatch": "^2.3.2"
   },
   "devDependencies": {
     "@elastic/elastic-eslint-config-kibana": "link:../../packages/opensearch-eslint-config-opensearch-dashboards",
