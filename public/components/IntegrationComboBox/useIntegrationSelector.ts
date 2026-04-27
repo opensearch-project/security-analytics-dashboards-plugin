@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { DataStore } from '../../store/DataStore';
 import { errorNotificationToast } from '../../utils/helpers';
@@ -25,6 +25,7 @@ export function useIntegrationSelector({
 }: UseIntegrationSelectorParams) {
   const [loading, setLoading] = useState(false);
   const [options, setOptions] = useState<IntegrationOption[]>([]);
+  const [refreshCount, setRefreshCount] = useState(0);
 
   useEffect(() => {
     if (!enabled) return;
@@ -64,7 +65,9 @@ export function useIntegrationSelector({
     return () => {
       cancelled = true;
     };
-  }, [notifications, enabled]);
+  }, [notifications, enabled, refreshCount]);
 
-  return { loading, options };
+  const refresh = useCallback(() => setRefreshCount((c) => c + 1), []);
+
+  return { loading, options, refresh };
 }

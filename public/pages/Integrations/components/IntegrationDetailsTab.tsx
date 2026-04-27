@@ -104,7 +104,12 @@ export const IntegrationDetailsTab: React.FC<IntegrationDetailsTabProps> = ({
                 {isEditMode ? (
                   <>
                     <EuiBottomBar>
-                      <EuiFlexGroup gutterSize="s" justifyContent="flexEnd">
+                      <EuiFlexGroup
+                        gutterSize="s"
+                        justifyContent="flexEnd"
+                        alignItems="center"
+                        responsive={false}
+                      >
                         <EuiFlexItem grow={false}>
                           <EuiButtonEmpty
                             color="ghost"
@@ -120,7 +125,7 @@ export const IntegrationDetailsTab: React.FC<IntegrationDetailsTabProps> = ({
                         </EuiFlexItem>
                         <EuiFlexItem grow={false}>
                           <EuiButton color="primary" fill size="s" onClick={onUpdateIntegration}>
-                            Update
+                            Edit integration
                           </EuiButton>
                         </EuiFlexItem>
                       </EuiFlexGroup>

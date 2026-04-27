@@ -10,13 +10,15 @@ import {
 } from '../../../utils/helpers';
 import { BREADCRUMBS, ROUTES } from '../../../utils/constants';
 import {
+  EuiBottomBar,
+  EuiButton,
+  EuiButtonEmpty,
   EuiPanel,
   EuiText,
   EuiSpacer,
   EuiButtonGroup,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiSmallButton,
   EuiToolTip,
   EuiLoadingSpinner,
 } from '@elastic/eui';
@@ -60,10 +62,13 @@ export const DecoderFormPage: React.FC<DecoderFormPageProps> = (props) => {
   const [integrationType, setIntegrationType] = useState<string>('');
   const [rawDecoder, setRawDecoder] = useState<string>(decoderFormDefaultValue);
   const [decoder, setDecoder] = useState<DecoderDocument>();
+  const [hasYamlErrors, setHasYamlErrors] = useState(false);
 
-  const { loading: loadingIntegrations, options: integrationTypeOptions } = useIntegrationSelector({
-    notifications,
-  });
+  const {
+    loading: loadingIntegrations,
+    options: integrationTypeOptions,
+    refresh: refreshIntegrations,
+  } = useIntegrationSelector({ notifications });
 
   useEffect(() => {
     const fetchDecoder = async () => {
@@ -110,6 +115,14 @@ export const DecoderFormPage: React.FC<DecoderFormPageProps> = (props) => {
   const onChange = useCallback((options: Array<{ id?: string }>) => {
     setIntegrationType(options[0]?.id || '');
   }, []);
+
+  const onIntegrationCreateSuccess = useCallback(
+    (newOption: { id: string }) => {
+      refreshIntegrations();
+      setIntegrationType(newOption.id);
+    },
+    [refreshIntegrations]
+  );
 
   const createDecoder = useCallback(
     async (values: DecoderDocument) => {
@@ -254,7 +267,7 @@ export const DecoderFormPage: React.FC<DecoderFormPageProps> = (props) => {
         >
           {(props) => (
             <Form>
-              <EuiPanel className={'rule-editor-form'}>
+              <EuiPanel className={'rule-editor-form'} style={{ paddingBottom: '60px' }}>
                 <PageHeader appDescriptionControls={false}>
                   <EuiText size="s">
                     <h1>{actionLabels[action]}</h1>
@@ -266,7 +279,7 @@ export const DecoderFormPage: React.FC<DecoderFormPageProps> = (props) => {
                       : 'Edit the decoder to update the normalization of logs from your selected integration.'}
                   </EuiText>
 
-                  <EuiSpacer />
+                  <EuiSpacer size="m" />
                 </PageHeader>
 
                 <EuiButtonGroup
@@ -277,7 +290,7 @@ export const DecoderFormPage: React.FC<DecoderFormPageProps> = (props) => {
                   onChange={(id) => setSelectedEditorType(id)}
                 />
 
-                <EuiSpacer size="xl" />
+                <EuiSpacer size="m" />
 
                 {action === 'create' && (
                   <>
@@ -288,8 +301,10 @@ export const DecoderFormPage: React.FC<DecoderFormPageProps> = (props) => {
                       onChange={onChange}
                       resourceName="decoders"
                       data-test-subj="integration_dropdown"
+                      notifications={notifications}
+                      onCreateSuccess={onIntegrationCreateSuccess}
                     />
-                    <EuiSpacer size="xl" />
+                    <EuiSpacer size="m" />
                   </>
                 )}
 
@@ -303,44 +318,64 @@ export const DecoderFormPage: React.FC<DecoderFormPageProps> = (props) => {
                     change={(e) => {
                       props.setValues({ rawDecoder: e });
                     }}
+                    onErrors={(errors) => setHasYamlErrors(errors !== null && errors.length > 0)}
                   />
                 )}
               </EuiPanel>
 
-              <EuiSpacer size="xl" />
-
-              <EuiFlexGroup justifyContent="flexEnd">
-                <EuiFlexItem grow={false}>
-                  <EuiSmallButton href={`#${ROUTES.DECODERS}`}>Cancel</EuiSmallButton>
-                </EuiFlexItem>
-                <EuiFlexItem grow={false}>
-                  <EuiToolTip
-                    content={
-                      <>
-                        <p>
-                          {!integrationType
-                            ? 'Select an integration to enable creating the decoder'
-                            : ''}
-                        </p>
-                        <p>
-                          {Object.keys(props.errors).length > 0
-                            ? 'Please fix the errors in the form to proceed'
-                            : ''}
-                        </p>
-                      </>
-                    }
-                    position="top"
-                  >
-                    <EuiSmallButton
-                      disabled={!integrationType || Object.keys(props.errors).length > 0}
-                      onClick={() => props.handleSubmit()}
-                      fill
+              <EuiBottomBar>
+                <EuiFlexGroup
+                  gutterSize="s"
+                  justifyContent="flexEnd"
+                  alignItems="center"
+                  responsive={false}
+                >
+                  <EuiFlexItem grow={false}>
+                    <EuiButtonEmpty
+                      color="ghost"
+                      size="s"
+                      iconType="cross"
+                      href={`#${ROUTES.DECODERS}`}
                     >
-                      {actionLabels[action]} decoder
-                    </EuiSmallButton>
-                  </EuiToolTip>
-                </EuiFlexItem>
-              </EuiFlexGroup>
+                      Cancel
+                    </EuiButtonEmpty>
+                  </EuiFlexItem>
+                  <EuiFlexItem grow={false}>
+                    <EuiToolTip
+                      content={
+                        <>
+                          <p>
+                            {!integrationType
+                              ? 'Select an integration to enable creating the decoder'
+                              : ''}
+                          </p>
+                          <p>
+                            {Object.keys(props.errors).length > 0 || hasYamlErrors
+                              ? 'Please fix the errors in the form to proceed'
+                              : ''}
+                          </p>
+                        </>
+                      }
+                      position="top"
+                    >
+                      <EuiButton
+                        color="primary"
+                        fill
+                        iconType="check"
+                        size="s"
+                        disabled={
+                          !integrationType ||
+                          Object.keys(props.errors).length > 0 ||
+                          hasYamlErrors
+                        }
+                        onClick={() => props.handleSubmit()}
+                      >
+                        {actionLabels[action]} decoder
+                      </EuiButton>
+                    </EuiToolTip>
+                  </EuiFlexItem>
+                </EuiFlexGroup>
+              </EuiBottomBar>
             </Form>
           )}
         </Formik>

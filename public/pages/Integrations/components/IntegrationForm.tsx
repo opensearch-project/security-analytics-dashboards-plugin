@@ -4,6 +4,7 @@
  */
 
 import {
+  EuiToolTip,
   EuiBottomBar,
   EuiButton,
   EuiButtonEmpty,
@@ -18,7 +19,14 @@ import {
   EuiText,
 } from '@elastic/eui';
 import { IntegrationItem } from '../../../../types';
-import React, { useEffect, useMemo, useCallback } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+  useImperativeHandle,
+  forwardRef,
+} from 'react';
 import {
   INTEGRATION_AUTHOR_REGEX,
   LOG_TYPE_NAME_REGEX,
@@ -26,6 +34,7 @@ import {
 } from '../../../utils/validation';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { useState } from 'react';
+import { isEqual } from 'lodash';
 import { getIntegrationCategoryOptions } from '../../../utils/helpers';
 import { FormFieldArray } from '../../../components/FormFieldArray';
 
@@ -54,6 +63,10 @@ const ReadOnlyField: React.FC<ReadOnlyFieldProps> = ({
   </EuiText>
 );
 
+export interface IntegrationFormHandle {
+  submit: () => void;
+}
+
 export interface IntegrationFormProps {
   integrationDetails: IntegrationItem;
   isEditMode: boolean;
@@ -61,24 +74,24 @@ export interface IntegrationFormProps {
   notifications: NotificationsStart;
   onCancel: () => void;
   onConfirm: (integrationData: IntegrationItem) => void;
+  hideBottomBar?: boolean;
+  onDirtyChange?: (isDirty: boolean) => void;
 }
 
-export const IntegrationForm: React.FC<IntegrationFormProps> = ({
-  integrationDetails,
-  isEditMode,
-  confirmButtonText,
-  notifications,
-  onCancel,
-  onConfirm,
-}) => {
- 
-  /*The enabled field is only shown when creating a new integration
-  * When editing, the enabled property is changed using the Actions button
-  */
+export const IntegrationForm = forwardRef<IntegrationFormHandle, IntegrationFormProps>(
+  function IntegrationForm(
+    { integrationDetails, isEditMode, confirmButtonText, notifications, onCancel, onConfirm, hideBottomBar = false, onDirtyChange },
+    ref
+  ) {
+
+  const hasMountedRef = useRef(false);
+  const initialIntegrationRef = useRef(integrationDetails);
+  const onDirtyChangeRef = useRef(onDirtyChange);
+  useEffect(() => { onDirtyChangeRef.current = onDirtyChange; });
+
   const showEnabledField = isEditMode && !integrationDetails.id;
   const [titleError, setTitleError] = useState('');
   const [categoryError, setCategoryError] = useState('');
-  const [categoryTouched, setCategoryTouched] = useState(false);
   const [authorError, setAuthorError] = useState('');
   const [editingIntegration, setEditingIntegration] = useState<IntegrationItem>(integrationDetails);
 
@@ -88,11 +101,20 @@ export const IntegrationForm: React.FC<IntegrationFormProps> = ({
     }
   }, [isEditMode, integrationDetails]);
 
-  const updateErrors = (details: IntegrationItem, onSubmit = false) => {
+  useEffect(() => {
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true;
+      return;
+    }
+    const isDirty = !isEqual(editingIntegration, initialIntegrationRef.current);
+    onDirtyChangeRef.current?.(isDirty);
+  }, [editingIntegration]);
+
+  const updateErrors = (details: IntegrationItem) => {
     const metadata = details.document.metadata;
     const titleInvalid = !validateName(metadata?.title, LOG_TYPE_NAME_REGEX, false);
     const authorInvalid = !validateName(metadata?.author, INTEGRATION_AUTHOR_REGEX, false);
-    const categoryInvalid = (categoryTouched || onSubmit) && !details.document.category;
+    const categoryInvalid = !details.document.category;
     setTitleError(titleInvalid ? 'Invalid title' : '');
     setCategoryError(categoryInvalid ? 'Select category to assign' : '');
     setAuthorError(authorInvalid ? 'Invalid author' : '');
@@ -119,7 +141,7 @@ export const IntegrationForm: React.FC<IntegrationFormProps> = ({
   );
 
   const onConfirmClicked = useCallback(() => {
-    const { titleInvalid, categoryInvalid, authorInvalid } = updateErrors(editingIntegration, true);
+    const { titleInvalid, categoryInvalid, authorInvalid } = updateErrors(editingIntegration);
 
     if (titleInvalid || categoryInvalid || authorInvalid) {
       notifications?.toasts.addDanger({
@@ -136,14 +158,21 @@ export const IntegrationForm: React.FC<IntegrationFormProps> = ({
     setEditingIntegration(integrationDetails);
     setTitleError('');
     setCategoryError('');
-    setCategoryTouched(false);
     setAuthorError('');
     onCancel();
   }, [integrationDetails, onCancel]);
 
+  useImperativeHandle(ref, () => ({ submit: onConfirmClicked }), [onConfirmClicked]);
+  
+  const missingFields: string[] = [];
+  if (!editingIntegration.document.metadata?.title) missingFields.push('Title');
+  if (!editingIntegration.document.category) missingFields.push('Category');
+  if (!editingIntegration.document.metadata?.author) missingFields.push('Author');
+  const isSubmitDisabled = missingFields.length > 0;
+
   return (
     <>
-      <div style={{ paddingBottom: isEditMode ? '60px' : '0' }}>
+      <div style={{ paddingBottom: isEditMode && !hideBottomBar ? '60px' : '0' }}>
         <EuiCompressedFormRow
           label="Title"
           helpText={
@@ -190,7 +219,6 @@ export const IntegrationForm: React.FC<IntegrationFormProps> = ({
                     category: value,
                   },
                 };
-                setCategoryTouched(true);
                 setEditingIntegration(newIntegration);
                 updateErrors(newIntegration);
               }}
@@ -418,22 +446,44 @@ export const IntegrationForm: React.FC<IntegrationFormProps> = ({
             )
         )}
       </div>
-      {isEditMode ? (
+      {isEditMode && !hideBottomBar ? (
         <EuiBottomBar>
-          <EuiFlexGroup gutterSize="s" justifyContent="flexEnd">
+          <EuiFlexGroup gutterSize="s" justifyContent="flexEnd" alignItems="center" responsive={false}>
             <EuiFlexItem grow={false}>
               <EuiButtonEmpty color="ghost" size="s" iconType="cross" onClick={onCancelClicked}>
                 Cancel
               </EuiButtonEmpty>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
-              <EuiButton color="primary" fill iconType="check" size="s" onClick={onConfirmClicked}>
-                {confirmButtonText}
-              </EuiButton>
+              <EuiToolTip
+                content={
+                  isSubmitDisabled && missingFields.length > 0
+                    ? (
+                        <span>
+                          Complete the following required fields: {missingFields.join(', ')}
+                        </span>
+                      )
+                    : undefined
+                }
+                position="top"
+                delay="regular"
+                display="block"
+              >
+                <EuiButton
+                  color="primary"
+                  fill
+                  iconType="check"
+                  size="s"
+                  onClick={onConfirmClicked}
+                  disabled={isSubmitDisabled}
+                >
+                  {confirmButtonText}
+                </EuiButton>
+              </EuiToolTip>
             </EuiFlexItem>
           </EuiFlexGroup>
         </EuiBottomBar>
       ) : null}
     </>
   );
-};
+});

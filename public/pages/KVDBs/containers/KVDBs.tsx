@@ -53,6 +53,7 @@ export const KVDBs: React.FC<KVDBsProps> = ({ history, notifications }) => {
   const [searchQuery, setSearchQuery] = useState<any>(null);
   const [selectedKVDB, setSelectedKVDB] = useState<KVDBItem | null>(null);
   const { component: spaceSelector, spaceFilter } = useSpaceSelector({
+    isLoading: loading,
     onSpaceChange: () => setPageIndex(0),
   });
   const [actionsPopoverOpen, setActionsPopoverOpen] = useState<boolean>(false);

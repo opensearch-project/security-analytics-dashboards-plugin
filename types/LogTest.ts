@@ -34,8 +34,17 @@ export interface LogTestValidation {
   errors: LogTestValidationError[];
 }
 
+export type LogTestNormalizationStatus = 'success' | 'error';
+
+export interface LogTestNormalizationError {
+  message: string;
+  code: string;
+}
+
 export interface LogTestNormalizationResult {
-  output: object;
+  status?: LogTestNormalizationStatus;
+  output?: object;
+  error?: LogTestNormalizationError;
   asset_traces?: LogTestAssetTrace[];
   validation?: LogTestValidation;
 }

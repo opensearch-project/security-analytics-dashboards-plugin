@@ -27,6 +27,15 @@ import { getSeverityBadge } from '../../../../utils/helpers';
 import { RuleContentYamlViewer } from './RuleContentYamlViewer';
 import { MITRE_SECTIONS, parseMitreYml } from '../../utils/mitre';
 import { COMPLIANCE_FRAMEWORKS, COMPLIANCE_KEYS, parseComplianceYml } from '../../utils/compliance';
+import { load } from 'js-yaml';
+
+function safeLoadYaml(yamlStr: string): unknown {
+  try {
+    return load(yamlStr);
+  } catch {
+    return yamlStr;
+  }
+}
 
 export interface RuleContentViewerProps {
   rule: RuleItemInfoBase;
@@ -201,7 +210,15 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
       )}
       {selectedEditorType === 'json' && (
         <EuiCodeBlock language="json" isCopyable>
-          {JSON.stringify(ruleData, null, 2)}
+          {JSON.stringify(
+            {
+              ...ruleData,
+              mitre: ruleData.mitre ? safeLoadYaml(ruleData.mitre) : undefined,
+              compliance: ruleData.compliance ? safeLoadYaml(ruleData.compliance) : undefined,
+            },
+            null,
+            2
+          )}
         </EuiCodeBlock>
       )}
     </EuiModalBody>

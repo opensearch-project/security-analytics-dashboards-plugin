@@ -55,8 +55,8 @@ export interface SearchIntegrationsResponse {
 export interface CreateIntegrationRequestBody extends IntegrationBase {}
 
 export interface CreateIntegrationResponse {
-  _id: string;
-  integration: IntegrationBase;
+  message: string;
+  status: number;
 }
 
 export interface UpdateIntegrationParams {

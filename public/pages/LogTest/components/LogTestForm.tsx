@@ -14,10 +14,12 @@ import {
   EuiSpacer,
   EuiSelect,
   EuiTitle,
+  EuiCallOut,
 } from '@elastic/eui';
 import { LogTestTraceLevel } from '../../../../types';
 import { MetadataEntry } from '../utils';
 import { MetadataFieldsEditor } from './MetadataFieldsEditor';
+import { SpaceSelector } from '../../../components/SpaceSelector/SpaceSelector';
 
 const TRACE_LEVEL_OPTIONS: Array<{ value: LogTestTraceLevel; text: string }> = [
   { value: 'NONE', text: 'None' },
@@ -25,12 +27,7 @@ const TRACE_LEVEL_OPTIONS: Array<{ value: LogTestTraceLevel; text: string }> = [
   { value: 'ALL', text: 'All' },
 ];
 
-export interface LogTestSpaceOption {
-  id: string;
-  label: string;
-  disabled?: boolean;
-  title?: string;
-}
+const LOG_TEST_SPACE_OPTIONS = ['test', 'custom', 'standard'];
 
 export interface LogTestIntegrationOption {
   id: string;
@@ -59,8 +56,8 @@ export interface LogTestFormProps {
   errors: LogTestFormErrors;
   onFormChange: (field: keyof LogTestFormData, value: any) => void;
   onMetadataFieldsChange: (fields: MetadataEntry[]) => void;
-  spaceOptions: LogTestSpaceOption[];
   integrationOptions: LogTestIntegrationOption[];
+  disabledSpaces?: string[];
   disabled?: boolean;
 }
 
@@ -69,18 +66,10 @@ export const LogTestForm: React.FC<LogTestFormProps> = ({
   errors,
   onFormChange,
   onMetadataFieldsChange,
-  spaceOptions,
   integrationOptions,
+  disabledSpaces = [],
   disabled = false,
 }) => {
-  const spaceSelectOptions = [
-    ...spaceOptions.map((option) => ({
-      value: option.id,
-      text: option.label,
-      disabled: option.disabled,
-      title: option.title,
-    })),
-  ];
 
   const integrationSelectOptions = [
     { value: '', text: 'Select an integration' },
@@ -96,19 +85,22 @@ export const LogTestForm: React.FC<LogTestFormProps> = ({
         <h3>Normalization</h3>
       </EuiTitle>
       <EuiSpacer size="s" />
+      <SpaceSelector
+        selectedSpace={formData.space}
+        onSpaceChange={(id) => onFormChange('space', id)}
+        isDisabled={disabled}
+        allowedSpaces={LOG_TEST_SPACE_OPTIONS}
+      />
+      {disabledSpaces.includes(formData.space) && (
+        <>
+          <EuiSpacer size="s" />
+          <EuiCallOut size="s" color="warning" iconType="alert"
+            title="This space is disabled. Log test execution will fail."
+          />
+        </>
+      )}
+      <EuiSpacer size="m" />
       <EuiFlexGroup gutterSize="m" wrap>
-        <EuiFlexItem style={{ minWidth: '280px' }}>
-          <EuiFormRow label="Space" isInvalid={!!errors.space} error={errors.space} fullWidth>
-            <EuiSelect
-              options={spaceSelectOptions}
-              value={formData.space}
-              onChange={(e) => onFormChange('space', e.target.value)}
-              isInvalid={!!errors.space}
-              disabled={disabled || spaceSelectOptions.length === 0}
-              fullWidth
-            />
-          </EuiFormRow>
-        </EuiFlexItem>
         <EuiFlexItem style={{ minWidth: '300px' }}>
           <EuiFormRow
             label={
@@ -184,7 +176,11 @@ export const LogTestForm: React.FC<LogTestFormProps> = ({
 
       <EuiSpacer size="l" />
 
-      <EuiFormRow label="Log event" isInvalid={!!errors.event} error={errors.event} fullWidth>
+      <EuiTitle size="xs">
+        <h3>Log event</h3>
+      </EuiTitle>
+      <EuiSpacer size="s" />
+      <EuiFormRow isInvalid={!!errors.event} error={errors.event} fullWidth>
         <EuiTextArea
           placeholder="Enter log data to test..."
           value={formData.event}

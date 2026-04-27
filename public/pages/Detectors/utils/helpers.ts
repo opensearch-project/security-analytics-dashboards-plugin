@@ -4,7 +4,19 @@
  */
 
 import { DetectorHit } from '../../../../server/models/interfaces';
-import { FieldMappingsTableItem } from '../../../../types';
+import { Detector, FieldMappingsTableItem } from '../../../../types';
+import { validateName } from '../../../utils/validation';
+import { MIN_NUM_DATA_SOURCES } from './constants';
+
+/* Wazuh: Add isDetectorFormValid function */
+export function isDetectorFormValid(detector: Detector): boolean {
+  return (
+    validateName(detector.name) &&
+    detector.inputs[0].detector_input.indices.length >= MIN_NUM_DATA_SOURCES &&
+    !!detector.detector_type
+  );
+}
+/* End Wazuh */
 
 export function getDetectorIds(detectors: DetectorHit[]) {
   return detectors.map((detector) => detector._id).join(', ');

@@ -17,6 +17,8 @@ import {
   SecurityAnalyticsContext,
 } from "../../../../../services";
 import { MIN_NUM_DATA_SOURCES } from "../../../../Detectors/utils/constants";
+// Wazuh: import validateName from validation.ts
+import { validateName } from "../../../../../utils/validation";
 import { DetectorSchedule } from "../components/DetectorSchedule/DetectorSchedule";
 import { RuleItem } from "../components/DetectionRules/types/interfaces";
 import { CreateDetectorRulesState } from "../components/DetectionRules/DetectionRules";
@@ -96,9 +98,11 @@ export default class DefineDetector extends Component<
     }
   }
 
+  // Wazuh: validateName added to prevent enabling the button on invalid names
   updateDetectorCreationState(detector: Detector) {
     const isDataValid =
       !!detector.name &&
+      validateName(detector.name) &&
       !!detector.detector_type &&
       detector.inputs[0].detector_input.indices.length >=
         MIN_NUM_DATA_SOURCES &&

@@ -95,10 +95,9 @@ export const DecoderDetailsFlyout: React.FC<DecoderDetailsFlyoutProps> = ({
   }, [decoderId, space]);
 
   const decoderJson = useMemo(() => {
-    if (!decoder) return "";
+    if (!decoder) return '';
     try {
-      const rawYaml =
-        typeof decoder.decoder === 'string' ? decoder.decoder : null;
+      const rawYaml = typeof decoder.decoder === 'string' ? decoder.decoder : null;
       if (rawYaml) {
         const losslessDoc = mapYamlToLosslessDecoder(rawYaml);
         return LosslessStringify(losslessDoc, null, 2) ?? '';

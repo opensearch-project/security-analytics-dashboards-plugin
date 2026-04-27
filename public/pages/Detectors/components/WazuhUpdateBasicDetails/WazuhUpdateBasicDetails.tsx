@@ -4,7 +4,9 @@
  */
 
 import {
-  EuiSmallButton,
+  EuiBottomBar,
+  EuiButton,
+  EuiButtonEmpty,
   EuiComboBoxOptionOption,
   EuiFlexGroup,
   EuiFlexItem,
@@ -13,7 +15,6 @@ import {
   EuiTitle,
   EuiCompressedComboBox,
   EuiCompressedFormRow,
-  EuiText,
 } from '@elastic/eui';
 import { PeriodSchedule } from '../../../../../models/interfaces';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
@@ -32,6 +33,7 @@ import {
   setBreadcrumbs,
   successNotificationToast,
 } from '../../../../utils/helpers';
+import { isDetectorFormValid } from '../../utils/helpers';
 import { FieldMapping, Detector } from '../../../../../types';
 import { ThreatIntelligence } from '../../../CreateDetector/components/DefineDetector/components/ThreatIntelligence/ThreatIntelligence';
 import { PageHeader } from '../../../../components/PageHeader/PageHeader';
@@ -411,6 +413,8 @@ export const WazuhUpdateDetectorBasicDetails: React.FC<WazuhUpdateDetectorBasicD
 
   const integrationIsInvalid = integrationTouched && !detector.detector_type;
 
+  const isFormValid = isDetectorFormValid(detector);
+
   return (
     <>
       <PageHeader>
@@ -419,7 +423,7 @@ export const WazuhUpdateDetectorBasicDetails: React.FC<WazuhUpdateDetectorBasicD
         </EuiTitle>
         <EuiSpacer size="xl" />
       </PageHeader>
-      <EuiPanel>
+      <EuiPanel style={{ paddingBottom: '60px' }}>
         <DetectorBasicDetailsForm
           isEdit={true}
           detectorName={name}
@@ -522,26 +526,40 @@ export const WazuhUpdateDetectorBasicDetails: React.FC<WazuhUpdateDetectorBasicD
         <EuiSpacer size="l" />
       </EuiPanel>
 
-      <EuiSpacer />
-
-      <EuiFlexGroup justifyContent="flexEnd">
-        <EuiFlexItem grow={false}>
-          <EuiSmallButton onClick={onCancel} disabled={loading}>
-            Cancel
-          </EuiSmallButton>
-        </EuiFlexItem>
-        <EuiFlexItem grow={false}>
-          <EuiSmallButton
-            onClick={onSave}
-            fill={true}
-            disabled={loading || submitting}
-            isLoading={submitting}
-            data-test-subj={'save-basic-details-edits'}
-          >
-            Save changes
-          </EuiSmallButton>
-        </EuiFlexItem>
-      </EuiFlexGroup>
+      <EuiBottomBar>
+        <EuiFlexGroup
+          gutterSize="s"
+          justifyContent="flexEnd"
+          alignItems="center"
+          responsive={false}
+        >
+          <EuiFlexItem grow={false}>
+            <EuiButtonEmpty
+              color="ghost"
+              size="s"
+              iconType="cross"
+              onClick={onCancel}
+              disabled={loading}
+            >
+              Cancel
+            </EuiButtonEmpty>
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>
+            <EuiButton
+              color="primary"
+              fill
+              iconType="check"
+              size="s"
+              onClick={onSave}
+              disabled={loading || submitting || !isFormValid}
+              isLoading={submitting}
+              data-test-subj={'save-basic-details-edits'}
+            >
+              Edit detector
+            </EuiButton>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      </EuiBottomBar>
     </>
   );
 };

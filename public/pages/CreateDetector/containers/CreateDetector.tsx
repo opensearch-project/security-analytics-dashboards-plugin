@@ -6,6 +6,9 @@
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import {
+  EuiBottomBar,
+  EuiButton,
+  EuiButtonEmpty,
   EuiSmallButton,
   EuiSmallButtonEmpty,
   EuiFlexGroup,
@@ -434,7 +437,7 @@ export default class CreateDetector extends Component<
       this.createStepsMetadata(currentStep);
 
     return (
-      <form onSubmit={this.onCreateClick}>
+      <form onSubmit={this.onCreateClick} style={{ paddingBottom: '60px' }}>
         <EuiFlexGroup>
           <EuiFlexItem grow={false}>
             <EuiSteps steps={steps} titleSize={"xs"} />
@@ -452,15 +455,17 @@ export default class CreateDetector extends Component<
           </EuiFlexItem>
         </EuiFlexGroup>
 
-        <EuiFlexGroup alignItems={"center"} justifyContent={"flexEnd"}>
+        {/* Wazuh: Original Cancel and Create buttons replaced by standardized
+        EuiBottomBar for UI consistency.*/}
+        {/* Wazuh: hide Configure Alerts step in detector creation wizard. */}
+        {/* <EuiFlexGroup alignItems={"center"} justifyContent={"flexEnd"}>
           <EuiFlexItem grow={false}>
             <EuiSmallButtonEmpty href={`#${ROUTES.DETECTORS}`}>
               Cancel
             </EuiSmallButtonEmpty>
           </EuiFlexItem>
 
-          {/* Wazuh: hide Configure Alerts step in detector creation wizard. */}
-          {/* {currentStep > DetectorCreationStep.DEFINE_DETECTOR && (
+          {currentStep > DetectorCreationStep.DEFINE_DETECTOR && (
             <EuiFlexItem grow={false}>
               <EuiSmallButton disabled={creatingDetector} onClick={this.onPreviousClick}>
                 Back
@@ -491,7 +496,7 @@ export default class CreateDetector extends Component<
                 Create detector
               </EuiSmallButton>
             </EuiFlexItem>
-          )} */}
+          )}
 
           <EuiFlexItem grow={false}>
             <EuiSmallButton
@@ -506,7 +511,35 @@ export default class CreateDetector extends Component<
               Create detector
             </EuiSmallButton>
           </EuiFlexItem>
-        </EuiFlexGroup>
+        </EuiFlexGroup> */}
+
+        <EuiBottomBar>
+          <EuiFlexGroup
+            gutterSize="s"
+            justifyContent="flexEnd"
+            alignItems="center"
+            responsive={false}
+          >
+            <EuiFlexItem grow={false}>
+              <EuiButtonEmpty color="ghost" size="s" iconType="cross" href={`#${ROUTES.DETECTORS}`}>
+                Cancel
+              </EuiButtonEmpty>
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <EuiButton
+                color="primary"
+                fill
+                iconType="check"
+                size="s"
+                disabled={creatingDetector || !stepDataValid[DetectorCreationStep.DEFINE_DETECTOR]}
+                isLoading={creatingDetector}
+                onClick={this.onCreateClick}
+              >
+                Create detector
+              </EuiButton>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+        </EuiBottomBar>
       </form>
     );
   }

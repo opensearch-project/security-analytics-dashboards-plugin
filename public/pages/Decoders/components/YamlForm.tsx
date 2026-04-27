@@ -9,6 +9,7 @@ interface YamlFormProps {
   isInvalid: boolean;
   errors?: string[];
   parseDebounceMs?: number;
+  onErrors?: (errors: string[] | null) => void;
 }
 
 export const YamlForm: React.FC<YamlFormProps> = ({
@@ -17,6 +18,7 @@ export const YamlForm: React.FC<YamlFormProps> = ({
   isInvalid,
   errors,
   parseDebounceMs = 500,
+  onErrors,
 }) => {
   const [state, setState] = useState<YamlEditorState>({
     errors: null,
@@ -33,14 +35,19 @@ export const YamlForm: React.FC<YamlFormProps> = ({
 
   const tryParseAndNotify = (value: string) => {
     if (!value || value.trim() === '') {
-      setState((prev) => ({ ...prev, errors: ['Decoder cannot be empty'] }));
+      const localErrors = ['Decoder cannot be empty'];
+      setState((prev) => ({ ...prev, errors: localErrors }));
+      onErrors?.(localErrors);
       return;
     }
     try {
       change(value);
       setState((prev) => ({ ...prev, errors: null }));
+      onErrors?.(null);
     } catch (err) {
-      setState((prev) => ({ ...prev, errors: ['Invalid YAML'] }));
+      const localErrors = ['Invalid YAML'];
+      setState((prev) => ({ ...prev, errors: localErrors }));
+      onErrors?.(localErrors);
       console.warn('Security Analytics - Decoder Editor - Yaml load', err);
     }
   };
@@ -85,13 +92,11 @@ export const YamlForm: React.FC<YamlFormProps> = ({
   return (
     <>
       {renderErrors()}
-      <EuiSpacer size="s" />
       <EuiCompressedFormRow
         label={<FormFieldHeader headerTitle={'Define decoder in YAML'} />}
         fullWidth={true}
       >
         <>
-          <EuiSpacer />
           <EuiText size="s" color="subdued">
             Use the YAML editor to define a custom decoder.
           </EuiText>

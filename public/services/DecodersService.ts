@@ -60,25 +60,25 @@ export default class DecodersService {
     }
   };
 
-getDecoder = async (
-  decoderId: string,
-  space: string
-): Promise<ServerResponse<GetDecoderResponse>> => {
-  try {
-    const url = `${this.baseUrl}/${decoderId}`;
-    const normalizedSpace = this.normalizeSpace(space);
-    const query = normalizedSpace ? `?space=${normalizedSpace}` : '';
-    const response = await fetch(`${url}${query}`, {
-      headers: {
-        'osd-xsrf': 'true',
-      },
-    });
-    const text = await response.text();
-    return LosslessParse(text) as ServerResponse<GetDecoderResponse>;
-  } catch (error: any) {
-    return { ok: false, error: this.parseHttpError(error) };
-  }
-};
+  getDecoder = async (
+    decoderId: string,
+    space: string
+  ): Promise<ServerResponse<GetDecoderResponse>> => {
+    try {
+      const url = `${this.baseUrl}/${decoderId}`;
+      const normalizedSpace = this.normalizeSpace(space);
+      const query = normalizedSpace ? `?space=${normalizedSpace}` : '';
+      const response = await fetch(`${url}${query}`, {
+        headers: {
+          'osd-xsrf': 'true',
+        },
+      });
+      const text = await response.text();
+      return LosslessParse(text) as ServerResponse<GetDecoderResponse>;
+    } catch (error: any) {
+      return { ok: false, error: this.parseHttpError(error) };
+    }
+  };
 
   createDecoder = async (body: {
     document: any;

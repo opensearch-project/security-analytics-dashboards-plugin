@@ -25,7 +25,6 @@ import {
   LogTestForm,
   LogTestFormData,
   LogTestFormErrors,
-  LogTestSpaceOption,
   LogTestIntegrationOption,
 } from '../components/LogTestForm';
 import { LogTestResult } from '../components/LogTestResult';
@@ -43,9 +42,10 @@ const INITIAL_FORM_DATA: LogTestFormData = {
 
 const INITIAL_ERRORS: LogTestFormErrors = {};
 
-const INITIAL_SPACE_OPTIONS: LogTestSpaceOption[] = [
-  { id: SpaceTypes.STANDARD.value, label: SpaceTypes.STANDARD.label },
-  { id: SpaceTypes.TEST.value, label: SpaceTypes.TEST.label },
+const INITIAL_SPACE_OPTIONS = [
+  { id: SpaceTypes.TEST.value },
+  { id: SpaceTypes.CUSTOM.value },
+  { id: SpaceTypes.STANDARD.value },
 ];
 
 interface SpaceCacheEntry {
@@ -105,12 +105,6 @@ export const LogTest: React.FC<LogTestProps> = ({ notifications }) => {
 
     const cache: SpaceCache = Object.fromEntries(entries);
     setSpaceCache(cache);
-    setFormData((prev) => {
-      if (cache[prev.space]?.enabled) return prev;
-      const firstEnabledId = INITIAL_SPACE_OPTIONS.find((o) => cache[o.id]?.enabled)?.id;
-      if (!firstEnabledId || firstEnabledId === prev.space) return prev;
-      return { ...prev, space: firstEnabledId, integration: '' };
-    });
     return cache;
   }, [notifications]);
 
@@ -123,18 +117,8 @@ export const LogTest: React.FC<LogTestProps> = ({ notifications }) => {
     setFormData((prev) => (prev.integration ? { ...prev, integration: '' } : prev));
   }, [formData.space]);
 
-  const spaceOptions = useMemo<LogTestSpaceOption[]>(
-    () =>
-      INITIAL_SPACE_OPTIONS.map((option) => {
-        const isEnabled = spaceCache[option.id]?.enabled ?? false;
-        return {
-          ...option,
-          disabled: !isEnabled,
-          title: !isEnabled
-            ? `The "${option.label}" space is disabled , please enable it`
-            : undefined,
-        };
-      }),
+  const disabledSpaces = useMemo(
+    () => INITIAL_SPACE_OPTIONS.filter((o) => spaceCache[o.id]?.enabled === false).map((o) => o.id),
     [spaceCache]
   );
 
@@ -229,8 +213,8 @@ export const LogTest: React.FC<LogTestProps> = ({ notifications }) => {
             errors={errors}
             onFormChange={handleFormChange}
             onMetadataFieldsChange={handleMetadataFieldsChange}
-            spaceOptions={spaceOptions}
             integrationOptions={integrationOptions}
+            disabledSpaces={disabledSpaces}
             disabled={isLoading}
           />
 

@@ -28,8 +28,8 @@ export const CreateIntegration: React.FC<CreateIntegrationProps> = ({ history, n
     'Create an integration to group and manage rules, decoders, and KVDBs.';
 
   const onCreateIntegration = async (integrationData: IntegrationItem) => {
-    const success = await DataStore.integrations.createIntegration(integrationData);
-    if (success) {
+    const [ok] = await DataStore.integrations.createIntegration(integrationData);
+    if (ok) {
       successNotificationToast(
         notifications,
         'created',

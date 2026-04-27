@@ -77,6 +77,7 @@ export const Rules: React.FC<RulesProps> = ({ history, notifications }) => {
   const [sortField, setSortField] = useState<string>('title');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const { component: spaceSelector, spaceFilter } = useSpaceSelector({
+    isLoading: loading,
     onSpaceChange: () => setPageIndex(0),
   });
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);

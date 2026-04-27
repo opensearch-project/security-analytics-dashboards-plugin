@@ -168,9 +168,10 @@ export class IntegrationStore {
     }
   }
 
-  public async createIntegration(integration: IntegrationBase): Promise<boolean> {
+  public async createIntegration(integration: IntegrationBase): Promise<[boolean, string]> {
     try {
-      const createRes = await this.service.createIntegration(integration);
+      const { document, space } = integration;
+      const createRes = await this.service.createIntegration({ document, space });
 
       if (!createRes.ok) {
         errorNotificationToast(
@@ -179,10 +180,10 @@ export class IntegrationStore {
           'integration',
           this.getErrorMessage(createRes.error, 'Failed to create integration.')
         );
-        return false;
+        return [false, ''];
       }
 
-      return true;
+      return [true, createRes.response.message];
     } catch (error: unknown) {
       errorNotificationToast(
         this.notifications,
@@ -190,7 +191,7 @@ export class IntegrationStore {
         'integration',
         this.getErrorMessage(error, 'An unexpected error occurred.')
       );
-      return false;
+      return [false, ''];
     }
   }
 

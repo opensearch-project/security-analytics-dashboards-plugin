@@ -73,13 +73,15 @@ export const Integrations: React.FC<IntegrationsProps> = ({
 }) => {
   const isMountedRef = useRef(true);
   const [integrations, setIntegrations] = useState<IntegrationTableItem[]>([]);
-  const { component: spaceSelector, spaceFilter } = useSpaceSelector();
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedItems, setSelectedItems] = useState<IntegrationTableItem[]>([]);
   const [itemForAction, setItemForAction] = useState<ItemForAction | null>(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
   const [isOverviewActionsOpen, setIsOverviewActionsOpen] = useState<boolean>(false);
   const [isClearingSpace, setIsClearingSpace] = useState<boolean>(false);
+  const { component: spaceSelector, spaceFilter } = useSpaceSelector({
+    isLoading: loading || isClearingSpace,
+  });
   const [policyRefresh, setPolicyRefresh] = useState(0);
   // This trusts the changes in the history location causes a rerender in the componnet
   const selectedTab =

@@ -21,23 +21,24 @@ import { CLIENT_RULE_METHODS, CONTENT_INDICES } from '../utils/constants';
 import { ServerResponse } from '../models/types';
 import { load } from 'js-yaml';
 import { Rule } from '../../types';
-const STANDARD_SPACE_TERM = { term: { 'space.name': 'standard' } };
-const CUSTOM_SPACE_TERM = { term: { 'space.name': 'custom' } };
+import { SpaceTypes } from '../../common/constants';
 
 export default class WazuhRulesService {
-  constructor(private osDriver: ILegacyCustomClusterClient) { }
+  constructor(private osDriver: ILegacyCustomClusterClient) {}
 
   private getClient(request: OpenSearchDashboardsRequest) {
     return this.osDriver.asScoped(request).callAsCurrentUser;
   }
 
+  private getSpaceFromPrePackaged(prePackaged: boolean): string {
+    return prePackaged === false ? SpaceTypes.CUSTOM.value : SpaceTypes.STANDARD.value;
+  }
+
   private buildQuery(prePackaged: boolean, incomingQuery?: any, space?: string) {
     // When an explicit space is provided it takes precedence over the prePackaged binary model
-    const bool: any = space
-      ? { filter: [{ term: { 'space.name': space } }] }
-      : prePackaged === false
-        ? { filter: [CUSTOM_SPACE_TERM] }
-        : { filter: [STANDARD_SPACE_TERM] };
+    const bool: any = {
+      filter: [{ term: { 'space.name': space ?? this.getSpaceFromPrePackaged(prePackaged) } }],
+    };
 
     if (incomingQuery && !incomingQuery.match_all) {
       bool.must = [incomingQuery];
@@ -170,7 +171,11 @@ export default class WazuhRulesService {
 
       const ruleHits = searchResponse?.hits?.hits || [];
       const ruleIds = ruleHits.map((hit: any) => hit._source?.document?.id || hit.document?.id);
-      const integrationMap = await this.fetchIntegrationMap(client, ruleIds, space);
+      const integrationMap = await this.fetchIntegrationMap(
+        client,
+        ruleIds,
+        space ?? this.getSpaceFromPrePackaged(prePackaged)
+      );
       const enrichedHits = ruleHits.map((hit: any) => ({
         ...hit,
         integration: integrationMap.get(hit._source?.document?.id || hit.document?.id) || null,
@@ -225,10 +230,6 @@ export default class WazuhRulesService {
         },
       });
 
-      return response.custom({
-        statusCode: 200,
-        body: { ok: true, response: createResponse },
-      });
       return response.custom({
         statusCode: 200,
         body: { ok: true, response: createResponse },
