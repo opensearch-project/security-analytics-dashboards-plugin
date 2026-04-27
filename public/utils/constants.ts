@@ -467,7 +467,7 @@ export const PROMOTE_ENTITIES_ORDER = [
 ] as const;
 
 export const PROMOTE_ENTITIES_LABELS: Record<string, string> = {
-  policy: 'Policy',
+  policy: 'Space',
   integrations: 'Integrations',
   decoders: 'Decoders',
   kvdbs: 'KVDBs',
