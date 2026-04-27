@@ -265,10 +265,10 @@ export const errorNotificationToast = (
     return;
   }
   const message = `Failed to ${actionName} ${objectName}:`;
-  console.error(message, msg);
+  console.error(message, errorMessage);
   notifications?.toasts.addDanger({
     title: message,
-    text: msg,
+    text: errorMessage,
     toastLifeTimeMs: displayTime,
   });
 };
