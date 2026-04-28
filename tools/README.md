@@ -47,12 +47,11 @@ This script automates the process of updating the version and stage in the Wazuh
    - If the version changes (major, minor, or patch), it resets the revision to `00`.
    - If the version is the same, it increments the revision.
 4. **Updates the files**:
+   - `CHANGELOG.md`: Changes the `version` and `revision` in the version header.
    - `VERSION.json`: Changes the `version` and `stage` fields.
    - `package.json`: Changes the `version` and `revision` fields inside the `wazuh` object.
    - `.github/workflows/5_builderpackage_security_analytics_plugin.yml`: Updates the default value of the `reference` input.
    - `.github/workflows/5_builderprecompiled_base-dev-environment.yml`: Updates the default value of the `reference` input.
-   - `docker/imposter/wazuh-config.yml`: Updates the specFile URL with the new version.
-   - `docker/imposter/api-info/api_info.json`: Updates the API version information.
 5. **Handles branch reference replacements**:
    - If `--set-as-main` is used, branch references to `main` are preserved.
    - Otherwise, `main` references in supported workflow fields are replaced with the target version.
