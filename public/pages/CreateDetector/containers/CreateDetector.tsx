@@ -185,16 +185,16 @@ export default class CreateDetector extends Component<
     const createDetectorPromise =
       this.props.services.detectorsService.createDetector(detector);
 
-    this.setState({ creatingDetector: false }, () => {
-      // set detector pending state, this will be used in detector details page
-      DataStore.detectors.setState(
-        {
-          pendingRequests: [fieldsMappingPromise, createDetectorPromise],
-          detectorInput: { ...this.state },
-        },
-        this.props.history,
-      );
-    });
+    // set detector pending state, this will be used in detector details page
+    DataStore.detectors.setState(
+      {
+        pendingRequests: [fieldsMappingPromise, createDetectorPromise],
+        detectorInput: { ...this.state },
+      },
+      this.props.history,
+    );
+
+    this.setState({ creatingDetector: false });
 
     this.props.metrics.detectorMetricsManager.sendMetrics(
       CreateDetectorSteps.createClicked,

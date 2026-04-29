@@ -238,6 +238,10 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
 
   async componentDidMount() {
     const state = DataStore.detectors.getState();
+    if (!state && this.state.detectorId === PENDING_DETECTOR_ID) {
+      this.props.history.push(ROUTES.DETECTORS);
+      return;
+    }
     state ? this.getPendingDetector() : this.getDetector();
   }
 
@@ -245,7 +249,12 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   async getDetectorSpace(detector: DetectorHit) {
     try {
       // Wazuh: get the integration "space" to assign the detector
-      const { custom_rules, pre_packaged_rules } = detector._source.inputs[0].detector_input;
+      const detectorInputContainer: any = detector?._source ?? detector;
+      const detectorInput = detectorInputContainer?.inputs?.[0]?.detector_input;
+      if (!detectorInput) {
+        return;
+      }
+      const { custom_rules, pre_packaged_rules } = detectorInput;
       // Take the first one rule to extrapolate the space
       const ruleForMapping = [...custom_rules, ...pre_packaged_rules].find(
         ({ id }) => typeof id !== 'undefined'
@@ -273,11 +282,15 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
     const { detectorService, notifications } = this.props;
     try {
       const { detectorId } = this.state;
-      const response = await detectorService.getDetectors();
+      // GET by id (read-your-own-writes consistent), avoids eventual-consistency
+      // miss right after creation that occurs with search.
+      const response = await detectorService.getDetectorWithId(detectorId);
       if (response.ok) {
-        const detector = response.response.hits.hits.find(
-          (detectorHit) => detectorHit._id === detectorId
-        ) as DetectorHit;
+        const detector = {
+          _id: response.response._id,
+          _index: '',
+          _source: response.response.detector,
+        } as DetectorHit;
 
         const space = await this.getDetectorSpace(detector);
 
