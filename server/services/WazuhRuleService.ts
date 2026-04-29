@@ -73,12 +73,10 @@ export default class WazuhRulesService {
       resource.falsepositives = rule.false_positives.map((fp) => fp.value);
 
     const metadata: Record<string, any> = {
-      title: rule.metadata?.title || rule.title,
-      author: rule.metadata?.author || rule.author,
-      description: rule.metadata?.description || rule.description,
-      references: rule.metadata?.references?.length
-        ? rule.metadata.references
-        : rule.references?.map((r) => r.value) ?? [],
+      title: rule.metadata?.title,
+      author: rule.metadata?.author,
+      description: rule.metadata?.description,
+      references: rule.metadata?.references?.length ? rule.metadata.references : [],
     };
     if (rule.metadata?.date) metadata.date = rule.metadata.date;
     if (rule.metadata?.modified) metadata.modified = rule.metadata.modified;

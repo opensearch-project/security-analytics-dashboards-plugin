@@ -12,8 +12,8 @@ import { RuleInfo } from '../../../../../server/models/interfaces';
 import { errorNotificationToast, translateToRuleItems } from '../../../../utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { RulesTable } from '../../../Rules/components/RulesTable/RulesTable';
-import { RuleTableItem } from '../../../Rules/utils/helpers';
-import { RuleViewerFlyout } from '../../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
+import { RuleTableItem } from '../../../WazuhRules/utils/helpers';
+import { RuleViewerFlyout } from '../../../WazuhRules/components/RuleViewerFlyout/RuleViewerFlyout';
 import { DataStore } from '../../../../store/DataStore';
 import { Detector } from '../../../../../types';
 

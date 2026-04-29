@@ -68,12 +68,12 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
   }> = [
     { label: 'Space', value: space },
     { label: 'Integration', value: integration?.document?.metadata?.title },
-    { label: 'Title', value: ruleData.title },
+    { label: 'Title', value: ruleData.metadata?.title },
     { label: 'ID', value: ruleData.id },
-    { label: 'Author', value: ruleData.author },
-    { label: 'Description', value: ruleData.description },
+    { label: 'Author', value: ruleData.metadata?.author },
+    { label: 'Description', value: ruleData.metadata?.description },
     { label: 'Date', value: ruleData.metadata?.date, type: 'date' },
-    { label: 'Modified', value: ruleData.last_update_time, type: 'date' },
+    { label: 'Modified', value: ruleData.metadata?.modified, type: 'date' },
     { label: 'Rule level', value: getSeverityBadge(ruleData.level) },
     { label: 'Rule status', value: ruleData.status },
     { label: 'Documentation', value: ruleData.metadata?.documentation, type: 'url' },
@@ -81,7 +81,7 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
       label: 'Supports',
       value: <BadgeGroup emptyValue={DEFAULT_EMPTY_DATA} values={ruleData.metadata?.supports} />,
     },
-    { label: 'References', value: ruleData.references?.map((r: any) => r.value), type: 'url' },
+    { label: 'References', value: ruleData.metadata?.references?.map((r: any) => r), type: 'url' },
   ];
 
   return (

@@ -36,9 +36,9 @@ export function validateRule(
 ): boolean {
   const invalidFields = [];
 
-  const title = (rule.metadata?.title ?? (rule as any).title ?? '') as string;
-  const description = (rule.metadata?.description ?? (rule as any).description ?? '') as string;
-  const author = (rule.metadata?.author ?? (rule as any).author ?? '') as string;
+  const title = rule.metadata?.title as string;
+  const description = rule.metadata?.description as string;
+  const author = rule.metadata?.author as string;
 
   if (!title || !validateName(title, RULE_NAME_REGEX)) invalidFields.push('Rule name');
   if (!validateDescription(description, RULE_DESCRIPTION_REGEX)) {

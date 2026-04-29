@@ -42,7 +42,7 @@ export const EditRule: React.FC<EditRuleProps> = ({ history, match, notification
         if (!getUseUpdatedUx()) {
           setRulesRelatedBreadCrumb(BREADCRUMBS.RULES_EDIT, setBreadcrumbs);
         } else {
-          setBreadcrumbs([BREADCRUMBS.RULE_EDIT_DETAILS(item._source.title)]);
+          setBreadcrumbs([BREADCRUMBS.RULE_EDIT_DETAILS(item._source.metadata?.title ?? '-')]);
         }
 
         setRule(item._source);

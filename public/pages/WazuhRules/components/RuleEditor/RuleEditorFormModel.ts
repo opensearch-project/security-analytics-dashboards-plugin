@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import { DEFAULT_RULE_UUID } from '../../../../../common/constants';
-import { Rule } from '../../../../../types';
 import { ruleStatus } from '../../../Rules/utils/constants';
 
 export interface RuleEditorFormModel {

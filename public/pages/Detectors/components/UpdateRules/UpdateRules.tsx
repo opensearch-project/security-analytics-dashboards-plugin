@@ -11,7 +11,7 @@ import {
   EuiFlexItem,
   EuiSpacer,
   EuiTitle,
-  EuiSmallButton
+  EuiSmallButton,
 } from '@elastic/eui';
 import {
   DetectorHit,
@@ -31,8 +31,8 @@ import {
   setBreadcrumbs,
   successNotificationToast,
 } from '../../../../utils/helpers';
-import { RuleTableItem } from '../../../Rules/utils/helpers';
-import { RuleViewerFlyout } from '../../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
+import { RuleTableItem } from '../../../WazuhRules/utils/helpers';
+import { RuleViewerFlyout } from '../../../WazuhRules/components/RuleViewerFlyout/RuleViewerFlyout';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { DataStore } from '../../../../store/DataStore';
 import ReviewFieldMappings from '../ReviewFieldMappings/ReviewFieldMappings';
@@ -100,15 +100,16 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
       const allRules = await DataStore.rules.getAllRules({
         'rule.category': [detector.detector_type.toLowerCase()],
       });
-
       const prePackagedRules = allRules?.filter((rule) => rule.prePackaged);
       const prePackagedRuleItems = prePackagedRules?.map((rule) => ({
-        name: rule._source.title,
+        // Wazuh: Remove duplicated fields in metadata and root: title.
+        name: rule._source.metadata?.title ?? '',
         id: rule._id,
         severity: rule._source.level,
         logType: rule._source.category,
         library: 'Standard',
-        description: rule._source.description,
+        // Wazuh: Remove duplicated fields in metadata and root: description.
+        description: rule._source.metadata?.description ?? '',
         active: enabledRuleIds.includes(rule._id),
         ruleInfo: rule,
       }));
@@ -116,12 +117,14 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
 
       const customRules = allRules?.filter((rule) => !rule.prePackaged);
       const customRuleItems = customRules?.map((rule) => ({
-        name: rule._source.title,
+        // Wazuh: Remove duplicated fields in metadata and root: title.
+        name: rule._source.metadata?.title ?? '',
         id: rule._id,
         severity: rule._source.level,
         logType: rule._source.category,
         library: 'Custom',
-        description: rule._source.description,
+        // Wazuh: Remove duplicated fields in metadata and root: description.
+        description: rule._source.metadata?.description ?? '',
         active: enabledRuleIds.includes(rule._id),
         ruleInfo: rule,
       }));

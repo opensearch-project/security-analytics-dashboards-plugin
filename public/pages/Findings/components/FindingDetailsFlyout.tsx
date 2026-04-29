@@ -42,7 +42,7 @@ import {
 } from '../../../utils/helpers';
 import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 import { Query } from '../models/interfaces';
-import { RuleViewerFlyout } from '../../Rules/components/RuleViewerFlyout/RuleViewerFlyout';
+import { RuleViewerFlyout } from '../../WazuhRules/components/RuleViewerFlyout/RuleViewerFlyout';
 import { RuleSource } from '../../../../server/models/interfaces';
 import { RuleTableItem } from '../../Rules/utils/helpers';
 import { CreateIndexPatternForm } from './CreateIndexPatternForm';
@@ -221,15 +221,16 @@ export default class FindingDetailsFlyout extends Component<
     );
   };
 
+  // Wazuh: Remove duplicated fields in metadata and root: title, description.
   showRuleDetails = (fullRule: any, ruleId: string) => {
     this.setState({
       ...this.state,
       ruleViewerFlyoutData: {
         ruleId: ruleId,
-        title: fullRule.title,
+        title: fullRule.metadata?.title,
         level: fullRule.level,
         category: fullRule.category,
-        description: fullRule.description,
+        description: fullRule.metadata?.description,
         source: fullRule.source,
         ruleInfo: {
           _source: fullRule,
@@ -266,7 +267,8 @@ export default class FindingDetailsFlyout extends Component<
             buttonClassName="euiAccordionForm__button"
             buttonContent={
               <div data-test-subj={'finding-details-flyout-rule-accordion-button'}>
-                <EuiText size={'s'}>{fullRule.title}</EuiText>
+                {/* Wazuh: Remove duplicated fields in metadata and root: title. */}
+                <EuiText size={'s'}>{fullRule.metadata?.title ?? DEFAULT_EMPTY_DATA}</EuiText>
                 <EuiText size={'s'} color={'subdued'}>
                   Severity: {severity}
                 </EuiText>
@@ -279,11 +281,14 @@ export default class FindingDetailsFlyout extends Component<
               <EuiFlexGroup>
                 <EuiFlexItem>
                   <EuiCompressedFormRow label={'Rule name'}>
+                    {/* Wazuh: Remove duplicated fields in metadata and root: title. */}
                     <EuiLink
                       onClick={() => this.showRuleDetails(fullRule, rule.id)}
-                      data-test-subj={`finding-details-flyout-${fullRule.title}-details`}
+                      data-test-subj={`finding-details-flyout-${
+                        fullRule.metadata?.title ?? ''
+                      }-details`}
                     >
-                      {fullRule.title || DEFAULT_EMPTY_DATA}
+                      {fullRule.metadata?.title || DEFAULT_EMPTY_DATA}
                     </EuiLink>
                   </EuiCompressedFormRow>
                 </EuiFlexItem>
@@ -311,12 +316,16 @@ export default class FindingDetailsFlyout extends Component<
                 label={'Description'}
                 data-test-subj={'finding-details-flyout-rule-description'}
               >
-                <EuiText>{fullRule.description || DEFAULT_EMPTY_DATA}</EuiText>
+                {/* Wazuh: Remove duplicated fields in metadata and root: description */}
+                <EuiText>{fullRule.metadata?.description || DEFAULT_EMPTY_DATA}</EuiText>
               </EuiCompressedFormRow>
 
               <EuiSpacer size={'m'} />
 
-              <EuiCompressedFormRow label={'Tags'} data-test-subj={'finding-details-flyout-rule-tags'}>
+              <EuiCompressedFormRow
+                label={'Tags'}
+                data-test-subj={'finding-details-flyout-rule-tags'}
+              >
                 <EuiText>{this.renderTags(rule.tags) || DEFAULT_EMPTY_DATA}</EuiText>
               </EuiCompressedFormRow>
             </EuiPanel>
@@ -467,7 +476,10 @@ export default class FindingDetailsFlyout extends Component<
           <h3>Documents ({relatedDocuments.length})</h3>
         </EuiTitle>
         <EuiSpacer />
-        <EuiCompressedFormRow label={'Index'} data-test-subj={`finding-details-flyout-rule-document-index`}>
+        <EuiCompressedFormRow
+          label={'Index'}
+          data-test-subj={`finding-details-flyout-rule-document-index`}
+        >
           <EuiText size="s">{index || DEFAULT_EMPTY_DATA}</EuiText>
         </EuiCompressedFormRow>
         <EuiSpacer />

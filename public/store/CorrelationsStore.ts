@@ -299,7 +299,8 @@ export class CorrelationsStore implements ICorrelationsStore {
           timestamp: new Date(f.timestamp).toLocaleString(),
           detectionRule: rule
             ? {
-                name: rule._source.title,
+                // Wazuh: Remove duplicated fields in metadata and root: title.
+                name: rule._source.metadata?.title ?? '',
                 severity: rule._source.level,
                 tags: rule._source.tags,
               }

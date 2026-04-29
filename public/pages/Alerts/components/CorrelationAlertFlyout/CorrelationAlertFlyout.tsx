@@ -150,7 +150,8 @@ import {
                   {
                     ...finding,
                     detector: { _id: finding.detector_id as string, _index: '' },
-                    ruleName: rule?.title || '',
+                    // Wazuh: Remove duplicated fields in metadata and root: title.
+                    ruleName: rule?.metadata?.title || '',
                     ruleSeverity: rule?.level === 'critical' ? rule.level : finding['ruleSeverity'] || rule?.level,
                   },
                   [...this.state.findingItems, finding],

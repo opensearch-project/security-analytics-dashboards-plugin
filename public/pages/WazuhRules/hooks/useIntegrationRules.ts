@@ -9,11 +9,11 @@ import { RuleItemInfoBase } from '../../../../types';
 import { RuleTableItem } from '../utils/helpers';
 
 const toRuleTableItem = (rule: RuleItemInfoBase): RuleTableItem => ({
-  title: rule._source.title,
+  title: rule._source.metadata?.title ?? '',
   level: rule._source.level,
   category: rule._source.category,
   source: rule.prePackaged ? 'Standard' : 'Custom',
-  description: rule._source.description,
+  description: rule._source.metadata?.description ?? '',
   ruleInfo: rule,
   ruleId: rule._id,
 });

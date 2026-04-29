@@ -41,7 +41,8 @@ export const AlertTriggerView: React.FC<AlertTriggerViewProps> = ({
   const notificationChannel = notificationChannels.find(
     (channel) => !!notificationChannelId && channel.config_id === notificationChannelId
   );
-  const conditionRuleNames = ids.map((ruleId) => rules[ruleId]?._source.title);
+  // Wazuh: Remove duplicated fields in metadata and root: title.
+  const conditionRuleNames = ids.map((ruleId) => rules[ruleId]?._source.metadata?.title);
   const ruleDetectionTypeEnabled = detection_types.includes('rules');
   const threatIntelDetectionTypeEnabled = detection_types.includes('threat_intel');
   return (
