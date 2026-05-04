@@ -16,6 +16,7 @@ import {
   EuiFlexItem,
   EuiCompressedFormRow,
   EuiCompressedFieldText,
+  EuiCompressedFieldNumber,
   EuiCompressedComboBox,
   EuiPanel,
   EuiCompressedRadioGroup,
@@ -87,7 +88,17 @@ const detectionModifierOptions = [
   { value: 'endswith', label: 'endswith' },
   { value: 'startswith', label: 'startswith' },
   { value: 'cidr', label: 'cidr' },
+  { value: 'base64offset', label: 'base64offset' },
+  { value: 'wide', label: 'wide' },
+  { value: 'windash', label: 'windash' },
+  { value: 're', label: 're' },
+  { value: 'lt', label: 'lt' },
+  { value: 'lte', label: 'lte' },
+  { value: 'gt', label: 'gt' },
+  { value: 'gte', label: 'gte' },
 ];
+
+const NUMERIC_MODIFIERS = new Set(['lt', 'lte', 'gt', 'gte']);
 
 const defaultDetectionObj: DetectionObject = {
   condition: 'Selection_1',
@@ -257,7 +268,13 @@ export class DetectionVisualEditor extends React.Component<
           selectionMaps = datum.values[0] || '';
         } else if (datum.field) {
           const key = `${datum.field}${datum.modifier ? `|${datum.modifier}` : ''}`;
-          selectionMaps[key] = datum.values;
+          if (NUMERIC_MODIFIERS.has(datum.modifier ?? '')) {
+            const raw = datum.values[0];
+            const parsed = Number(raw);
+            selectionMaps[key] = !isNaN(parsed) ? parsed : raw;
+          } else {
+            selectionMaps[key] = datum.values;
+          }
         } else {
           selectionMaps = datum.values;
         }
@@ -288,8 +305,15 @@ export class DetectionVisualEditor extends React.Component<
         if ('values' in data) {
           const valueId = `value_${selIdx}_${idx}`;
           delete errors.fields[valueId];
-          if (data.values.length === 1 && !data.values[0]) {
+          if (data.values.length === 1 && !String(data.values[0]).trim()) {
             errors.fields[valueId] = 'Value is required';
+          } else if (NUMERIC_MODIFIERS.has(data.modifier ?? '')) {
+            const raw = String(data.values[0]).trim();
+            const isValidNumber = !isNaN(Number(raw)) && raw !== '';
+            if (!isValidNumber) {
+              errors.fields[valueId] =
+                'This modifier requires a numeric value (e.g. 42, 3.14)';
+            }
           }
           errors.touched[valueId] = true;
         }
@@ -554,6 +578,7 @@ export class DetectionVisualEditor extends React.Component<
                   const radioGroupOptions = this.createRadioGroupOptions(selectionIdx, idx);
                   const fieldName = `field_${selectionIdx}_${idx}`;
                   const valueId = `value_${selectionIdx}_${idx}`;
+                  const isNumeric = NUMERIC_MODIFIERS.has(datum.modifier ?? '');
                   return (
                     <div key={`Map-${idx}`} className={'detection-visual-editor-accordion-wrapper'}>
                       {idx > 0 && <EuiSpacer />}
@@ -632,19 +657,45 @@ export class DetectionVisualEditor extends React.Component<
 
                         <EuiSpacer size="m" />
 
-                        <EuiCompressedRadioGroup
-                          options={radioGroupOptions}
-                          idSelected={datum.selectedRadioId || radioGroupOptions[0].id}
-                          onChange={(id) => {
-                            this.updateDatumInState(selectionIdx, idx, {
-                              selectedRadioId: id as SelectionMapValueRadioId,
-                            });
-                          }}
-                        />
+                        {/* Hide Value/List toggle for numeric modifiers — they only accept a scalar */}
+                        {!isNumeric && (
+                          <>
+                            <EuiCompressedRadioGroup
+                              options={radioGroupOptions}
+                              idSelected={datum.selectedRadioId || radioGroupOptions[0].id}
+                              onChange={(id) => {
+                                this.updateDatumInState(selectionIdx, idx, {
+                                  selectedRadioId: id as SelectionMapValueRadioId,
+                                });
+                              }}
+                            />
+                            <EuiSpacer size="m" />
+                          </>
+                        )}
 
-                        <EuiSpacer size="m" />
-
-                        {datum.selectedRadioId?.includes('list') ? (
+                        {isNumeric ? (
+                          <EuiCompressedFormRow
+                            isInvalid={errors.touched[valueId] && !!errors.fields[valueId]}
+                            error={errors.fields[valueId]}
+                          >
+                            <EuiCompressedFieldNumber
+                              isInvalid={errors.touched[valueId] && !!errors.fields[valueId]}
+                              placeholder="Numeric value"
+                              data-test-subj={'selection_field_value'}
+                              onChange={(e) => {
+                                this.updateDatumInState(selectionIdx, idx, {
+                                  values: [e.target.value, ...datum.values.slice(1)],
+                                });
+                              }}
+                              onBlur={(e) => {
+                                this.updateDatumInState(selectionIdx, idx, {
+                                  values: [e.target.value, ...datum.values.slice(1)],
+                                });
+                              }}
+                              value={datum.values[0] as string}
+                            />
+                          </EuiCompressedFormRow>
+                        ) : datum.selectedRadioId?.includes('list') ? (
                           <>
                             <EuiFlexGroup>
                               <EuiFlexItem grow={false}>

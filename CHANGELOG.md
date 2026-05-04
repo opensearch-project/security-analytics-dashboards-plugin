@@ -14,6 +14,7 @@ All notable changes to the Wazuh ML Commons project will be documented in this f
 - Added space persistence when navigate [#63](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/63)
 - Added Filters management feature [#108](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/108) [#137](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/137) [#204](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/204) [#208](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/208) [#214](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/214) 
 - Added clear space action to the Overview actions button [#186](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/186) 
+- Added modifiers in the dropdown inside the rule creation and edition form [#259](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/259)
 
 ### Changed
 
