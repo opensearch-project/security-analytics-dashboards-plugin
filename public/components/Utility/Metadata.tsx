@@ -8,10 +8,14 @@ import { EuiLink } from '@elastic/eui';
 import moment from 'moment';
 import { DEFAULT_EMPTY_DATA } from '../../utils/constants';
 
-type MetadataFieldType = 'text' | 'number' | 'date' | 'url' | 'boolean' | 'boolean_yesno';
+export type MetadataFieldType = 'raw' | 'text' | 'number' | 'date' | 'url' | 'boolean' | 'boolean_yesno';
+
+export const MetadataFieldRaw: React.FC<{ value: string | number }> = ({ value }) => {
+  return <>{value}</>;
+};
 
 export const MetadataFieldText: React.FC<{ value: string | number }> = ({ value }) => {
-  return <>{value}</>;
+  return <>{String(value)}</>;
 };
 
 export const MetadataFieldURL: React.FC<{ value: string | number }> = ({ value }) => {
@@ -61,6 +65,7 @@ const mapFieldRenderers: {
   number: MetadataFieldText,
   date: MetadataFieldDate,
   url: MetadataFieldURL,
+  raw: MetadataFieldRaw
 };
 
 export const Metadata: React.FC<{
