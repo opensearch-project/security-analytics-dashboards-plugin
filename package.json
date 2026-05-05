@@ -57,7 +57,8 @@
     "micromatch": "^4.0.8",
     "ws": "^7.5.10",
     "elliptic": "^6.6.1",
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.1.0",
+    "brace-expansion": "^5.0.5"
   },
   "devDependencies": {
     "@babel/plugin-transform-class-properties": "^7.22.9",
