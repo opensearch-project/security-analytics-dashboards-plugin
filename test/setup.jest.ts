@@ -93,8 +93,8 @@ jest.mock('react', () => {
 /**
  * Mocks the vega view renderer
  */
-jest.mock('vega/build-es5/vega.js', () => {
-  const vega = jest.requireActual('vega/build-es5/vega.js');
+jest.mock('vega/build/vega.js', () => {
+  const vega = jest.requireActual('vega/build/vega.js');
   return {
     ...vega,
     View: jest.fn().mockReturnValue({
