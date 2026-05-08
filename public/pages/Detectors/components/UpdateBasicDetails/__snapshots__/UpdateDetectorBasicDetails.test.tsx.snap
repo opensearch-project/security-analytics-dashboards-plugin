@@ -825,10 +825,6 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                       "label": "Aliases",
                       "options": Array [],
                     },
-                    Object {
-                      "label": "Indices",
-                      "options": Array [],
-                    },
                   ]
                 }
                 placeholder="Select an input source for the detector."

@@ -213,7 +213,23 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
   notifications={
     Object {
       "toasts": Object {
-        "addDanger": [MockFunction],
+        "addDanger": [MockFunction] {
+          "calls": Array [
+            Array [
+              Object {
+                "text": [TypeError: detectorService.getDetectorWithId is not a function],
+                "title": "Failed to retrieve detector:",
+                "toastLifeTimeMs": 5000,
+              },
+            ],
+          ],
+          "results": Array [
+            Object {
+              "type": "return",
+              "value": undefined,
+            },
+          ],
+        },
         "addInfo": [MockFunction],
         "addSuccess": [MockFunction],
         "addWarning": [MockFunction],
@@ -278,18 +294,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
               hasFocus={true}
               items={
                 Array [
-                  <EuiContextMenuItem
-                    data-test-subj="viewFindingsButton"
-                    disabled={false}
-                    icon="empty"
-                    onClick={[Function]}
-                  >
-                    View Findings
-                  </EuiContextMenuItem>,
                   <React.Fragment />,
-                  <EuiHorizontalRule
-                    margin="xs"
-                  />,
                   <EuiContextMenuItem
                     data-test-subj="deleteButton"
                     disabled={false}
@@ -343,9 +348,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         className="euiText euiText--small"
                         data-test-subj="detector-details-detector-name"
                       >
-                        <h1>
-                          detector_name
-                        </h1>
+                        <h1 />
                       </div>
                     </EuiText>
                   </div>
@@ -568,26 +571,6 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
             className="euiTab__content"
           >
             Detector configuration
-          </span>
-        </button>
-      </EuiTab>
-      <EuiTab
-        isSelected={false}
-        key="1"
-        onClick={[Function]}
-      >
-        <button
-          aria-selected={false}
-          className="euiTab"
-          disabled={false}
-          onClick={[Function]}
-          role="tab"
-          type="button"
-        >
-          <span
-            className="euiTab__content"
-          >
-            Field mappings
           </span>
         </button>
       </EuiTab>
@@ -846,7 +829,23 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
     notifications={
       Object {
         "toasts": Object {
-          "addDanger": [MockFunction],
+          "addDanger": [MockFunction] {
+            "calls": Array [
+              Array [
+                Object {
+                  "text": [TypeError: detectorService.getDetectorWithId is not a function],
+                  "title": "Failed to retrieve detector:",
+                  "toastLifeTimeMs": 5000,
+                },
+              ],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": undefined,
+              },
+            ],
+          },
           "addInfo": [MockFunction],
           "addSuccess": [MockFunction],
           "addWarning": [MockFunction],
@@ -1116,7 +1115,23 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
       notifications={
         Object {
           "toasts": Object {
-            "addDanger": [MockFunction],
+            "addDanger": [MockFunction] {
+              "calls": Array [
+                Array [
+                  Object {
+                    "text": [TypeError: detectorService.getDetectorWithId is not a function],
+                    "title": "Failed to retrieve detector:",
+                    "toastLifeTimeMs": 5000,
+                  },
+                ],
+              ],
+              "results": Array [
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+              ],
+            },
             "addInfo": [MockFunction],
             "addSuccess": [MockFunction],
             "addWarning": [MockFunction],
@@ -1386,7 +1401,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
-                        label="Description"
+                        label="Integration"
                         labelType="label"
                       >
                         <div
@@ -1406,7 +1421,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                 className="euiFormLabel euiFormRow__label"
                                 htmlFor="some_html_id"
                               >
-                                Description
+                                Integration
                               </label>
                             </EuiFormLabel>
                           </div>
@@ -1414,7 +1429,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             className="euiFormRow__fieldWrapper"
                           >
                             <EuiText
-                              data-test-subj="text-details-group-content-description"
+                              data-test-subj="text-details-group-content-integration"
                               id="some_html_id"
                               onBlur={[Function]}
                               onFocus={[Function]}
@@ -1422,12 +1437,12 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             >
                               <div
                                 className="euiText euiText--small"
-                                data-test-subj="text-details-group-content-description"
+                                data-test-subj="text-details-group-content-integration"
                                 id="some_html_id"
                                 onBlur={[Function]}
                                 onFocus={[Function]}
                               >
-                                -
+                                Network
                               </div>
                             </EuiText>
                           </div>
@@ -1448,7 +1463,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
-                        label="Detector schedule"
+                        label="Space"
                         labelType="label"
                       >
                         <div
@@ -1468,7 +1483,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                 className="euiFormLabel euiFormRow__label"
                                 htmlFor="some_html_id"
                               >
-                                Detector schedule
+                                Space
                               </label>
                             </EuiFormLabel>
                           </div>
@@ -1476,7 +1491,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             className="euiFormRow__fieldWrapper"
                           >
                             <EuiText
-                              data-test-subj="text-details-group-content-detector-schedule"
+                              data-test-subj="text-details-group-content-space"
                               id="some_html_id"
                               onBlur={[Function]}
                               onFocus={[Function]}
@@ -1484,12 +1499,12 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             >
                               <div
                                 className="euiText euiText--small"
-                                data-test-subj="text-details-group-content-detector-schedule"
+                                data-test-subj="text-details-group-content-space"
                                 id="some_html_id"
                                 onBlur={[Function]}
                                 onFocus={[Function]}
                               >
-                                Every 1 minute
+                                -
                               </div>
                             </EuiText>
                           </div>
@@ -1585,7 +1600,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
-                        label="Integration"
+                        label="Detector schedule"
                         labelType="label"
                       >
                         <div
@@ -1605,7 +1620,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                 className="euiFormLabel euiFormRow__label"
                                 htmlFor="some_html_id"
                               >
-                                Integration
+                                Detector schedule
                               </label>
                             </EuiFormLabel>
                           </div>
@@ -1613,7 +1628,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             className="euiFormRow__fieldWrapper"
                           >
                             <EuiText
-                              data-test-subj="text-details-group-content-integration"
+                              data-test-subj="text-details-group-content-detector-schedule"
                               id="some_html_id"
                               onBlur={[Function]}
                               onFocus={[Function]}
@@ -1621,12 +1636,12 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             >
                               <div
                                 className="euiText euiText--small"
-                                data-test-subj="text-details-group-content-integration"
+                                data-test-subj="text-details-group-content-detector-schedule"
                                 id="some_html_id"
                                 onBlur={[Function]}
                                 onFocus={[Function]}
                               >
-                                Network
+                                Every 1 minute
                               </div>
                             </EuiText>
                           </div>
@@ -1688,7 +1703,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                 onBlur={[Function]}
                                 onFocus={[Function]}
                               >
-                                Not available for this integration
+                                -
                               </div>
                             </EuiText>
                           </div>
@@ -1724,7 +1739,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         fullWidth={true}
                         hasChildLabel={true}
                         hasEmptyLabelSpace={false}
-                        label="Detection rules"
+                        label="Rules"
                         labelType="label"
                       >
                         <div
@@ -1744,7 +1759,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                 className="euiFormLabel euiFormRow__label"
                                 htmlFor="some_html_id"
                               >
-                                Detection rules
+                                Rules
                               </label>
                             </EuiFormLabel>
                           </div>
@@ -1752,7 +1767,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             className="euiFormRow__fieldWrapper"
                           >
                             <EuiText
-                              data-test-subj="text-details-group-content-detection-rules"
+                              data-test-subj="text-details-group-content-rules"
                               id="some_html_id"
                               onBlur={[Function]}
                               onFocus={[Function]}
@@ -1760,7 +1775,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                             >
                               <div
                                 className="euiText euiText--small"
-                                data-test-subj="text-details-group-content-detection-rules"
+                                data-test-subj="text-details-group-content-rules"
                                 id="some_html_id"
                                 onBlur={[Function]}
                                 onFocus={[Function]}
@@ -1899,6 +1914,66 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                   </EuiFlexItem>
                 </div>
               </EuiFlexGroup>
+              <EuiSpacer
+                size="l"
+              >
+                <div
+                  className="euiSpacer euiSpacer--l"
+                />
+              </EuiSpacer>
+              <EuiCompressedFormRow
+                describedByIds={Array []}
+                display="rowCompressed"
+                fullWidth={true}
+                hasChildLabel={true}
+                hasEmptyLabelSpace={false}
+                label="Description"
+                labelType="label"
+              >
+                <div
+                  className="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
+                  id="some_html_id-row"
+                >
+                  <div
+                    className="euiFormRow__labelWrapper"
+                  >
+                    <EuiFormLabel
+                      className="euiFormRow__label"
+                      htmlFor="some_html_id"
+                      isFocused={false}
+                      type="label"
+                    >
+                      <label
+                        className="euiFormLabel euiFormRow__label"
+                        htmlFor="some_html_id"
+                      >
+                        Description
+                      </label>
+                    </EuiFormLabel>
+                  </div>
+                  <div
+                    className="euiFormRow__fieldWrapper"
+                  >
+                    <EuiText
+                      data-test-subj="text-details-group-content-description"
+                      id="some_html_id"
+                      onBlur={[Function]}
+                      onFocus={[Function]}
+                      size="s"
+                    >
+                      <div
+                        className="euiText euiText--small"
+                        data-test-subj="text-details-group-content-description"
+                        id="some_html_id"
+                        onBlur={[Function]}
+                        onFocus={[Function]}
+                      >
+                        -
+                      </div>
+                    </EuiText>
+                  </div>
+                </div>
+              </EuiCompressedFormRow>
               <EuiSpacer
                 size="l"
               >
@@ -2164,7 +2239,23 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
       notifications={
         Object {
           "toasts": Object {
-            "addDanger": [MockFunction],
+            "addDanger": [MockFunction] {
+              "calls": Array [
+                Array [
+                  Object {
+                    "text": [TypeError: detectorService.getDetectorWithId is not a function],
+                    "title": "Failed to retrieve detector:",
+                    "toastLifeTimeMs": 5000,
+                  },
+                ],
+              ],
+              "results": Array [
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+              ],
+            },
             "addInfo": [MockFunction],
             "addSuccess": [MockFunction],
             "addWarning": [MockFunction],
@@ -2382,7 +2473,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                       },
                       Object {
                         "field": "source",
-                        "name": "Source",
+                        "name": "Space",
                         "sortable": true,
                         "truncateText": true,
                         "width": "10%",
@@ -2418,14 +2509,6 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                         "schema": true,
                       },
                       "filters": Array [
-                        Object {
-                          "compressed": true,
-                          "field": "category",
-                          "multiSelect": "or",
-                          "name": "Integration",
-                          "options": Array [],
-                          "type": "field_value_selection",
-                        },
                         Object {
                           "compressed": true,
                           "field": "level",
@@ -2480,21 +2563,6 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                           ],
                           "type": "field_value_selection",
                         },
-                        Object {
-                          "compressed": true,
-                          "field": "source",
-                          "multiSelect": "or",
-                          "name": "Source",
-                          "options": Array [
-                            Object {
-                              "value": "Standard",
-                            },
-                            Object {
-                              "value": "Custom",
-                            },
-                          ],
-                          "type": "field_value_selection",
-                        },
                       ],
                     }
                   }
@@ -2531,14 +2599,6 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                       }
                       filters={
                         Array [
-                          Object {
-                            "compressed": true,
-                            "field": "category",
-                            "multiSelect": "or",
-                            "name": "Integration",
-                            "options": Array [],
-                            "type": "field_value_selection",
-                          },
                           Object {
                             "compressed": true,
                             "field": "level",
@@ -2589,21 +2649,6 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                 "name": "Informational",
                                 "priority": "5",
                                 "value": "informational",
-                              },
-                            ],
-                            "type": "field_value_selection",
-                          },
-                          Object {
-                            "compressed": true,
-                            "field": "source",
-                            "multiSelect": "or",
-                            "name": "Source",
-                            "options": Array [
-                              Object {
-                                "value": "Standard",
-                              },
-                              Object {
-                                "value": "Custom",
                               },
                             ],
                             "type": "field_value_selection",
@@ -2718,14 +2763,6 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                   Array [
                                     Object {
                                       "compressed": true,
-                                      "field": "category",
-                                      "multiSelect": "or",
-                                      "name": "Integration",
-                                      "options": Array [],
-                                      "type": "field_value_selection",
-                                    },
-                                    Object {
-                                      "compressed": true,
                                       "field": "level",
                                       "multiSelect": "or",
                                       "name": "Rule severity",
@@ -2778,21 +2815,6 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                       ],
                                       "type": "field_value_selection",
                                     },
-                                    Object {
-                                      "compressed": true,
-                                      "field": "source",
-                                      "multiSelect": "or",
-                                      "name": "Source",
-                                      "options": Array [
-                                        Object {
-                                          "value": "Standard",
-                                        },
-                                        Object {
-                                          "value": "Custom",
-                                        },
-                                      ],
-                                      "type": "field_value_selection",
-                                    },
                                   ]
                                 }
                                 onChange={[Function]}
@@ -2820,140 +2842,6 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                   <div
                                     className="euiFilterGroup"
                                   >
-                                    <FieldValueSelectionFilter
-                                      config={
-                                        Object {
-                                          "compressed": true,
-                                          "field": "category",
-                                          "multiSelect": "or",
-                                          "name": "Integration",
-                                          "options": Array [],
-                                          "type": "field_value_selection",
-                                        }
-                                      }
-                                      index={0}
-                                      onChange={[Function]}
-                                      query={
-                                        Query {
-                                          "ast": _AST {
-                                            "_clauses": Array [],
-                                            "_indexedClauses": Object {
-                                              "field": Object {},
-                                              "group": Array [],
-                                              "is": Object {},
-                                              "term": Array [],
-                                            },
-                                          },
-                                          "syntax": Object {
-                                            "parse": [Function],
-                                            "print": [Function],
-                                            "printClause": [Function],
-                                          },
-                                          "text": "",
-                                        }
-                                      }
-                                    >
-                                      <EuiPopover
-                                        anchorPosition="downCenter"
-                                        button={
-                                          <EuiFilterButton
-                                            grow={true}
-                                            hasActiveFilters={false}
-                                            iconSide="right"
-                                            iconType="arrowDown"
-                                            onClick={[Function]}
-                                            size="s"
-                                          >
-                                            Integration
-                                          </EuiFilterButton>
-                                        }
-                                        closePopover={[Function]}
-                                        display="inlineBlock"
-                                        hasArrow={true}
-                                        id="field_value_selection_0"
-                                        isOpen={false}
-                                        ownFocus={true}
-                                        panelClassName="euiFilterGroup__popoverPanel"
-                                        panelPaddingSize="none"
-                                      >
-                                        <div
-                                          className="euiPopover euiPopover--anchorDownCenter"
-                                          id="field_value_selection_0"
-                                        >
-                                          <div
-                                            className="euiPopover__anchor"
-                                          >
-                                            <EuiFilterButton
-                                              grow={true}
-                                              hasActiveFilters={false}
-                                              iconSide="right"
-                                              iconType="arrowDown"
-                                              onClick={[Function]}
-                                              size="s"
-                                            >
-                                              <EuiButtonEmpty
-                                                className="euiFilterButton euiFilterButton--hasIcon"
-                                                color="text"
-                                                iconSide="right"
-                                                iconType="arrowDown"
-                                                onClick={[Function]}
-                                                size="s"
-                                                textProps={
-                                                  Object {
-                                                    "className": "",
-                                                  }
-                                                }
-                                                type="button"
-                                              >
-                                                <button
-                                                  className="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton--hasIcon"
-                                                  disabled={false}
-                                                  onClick={[Function]}
-                                                  type="button"
-                                                >
-                                                  <EuiButtonContent
-                                                    className="euiButtonEmpty__content"
-                                                    iconGap="m"
-                                                    iconSide="right"
-                                                    iconSize="m"
-                                                    iconType="arrowDown"
-                                                    textProps={
-                                                      Object {
-                                                        "className": "euiButtonEmpty__text",
-                                                      }
-                                                    }
-                                                  >
-                                                    <span
-                                                      className="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
-                                                    >
-                                                      <EuiIcon
-                                                        className="euiButtonContent__icon"
-                                                        color="inherit"
-                                                        size="m"
-                                                        type="arrowDown"
-                                                      >
-                                                        EuiIconMock
-                                                      </EuiIcon>
-                                                      <span
-                                                        className="euiButtonEmpty__text"
-                                                      >
-                                                        <span
-                                                          className="euiFilterButton__textShift"
-                                                          data-text="Integration"
-                                                          title="Integration"
-                                                        >
-                                                          Integration
-                                                        </span>
-                                                      </span>
-                                                    </span>
-                                                  </EuiButtonContent>
-                                                </button>
-                                              </EuiButtonEmpty>
-                                            </EuiFilterButton>
-                                          </div>
-                                        </div>
-                                      </EuiPopover>
-                                    </FieldValueSelectionFilter>
                                     <FieldValueSelectionFilter
                                       config={
                                         Object {
@@ -3011,7 +2899,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                           "type": "field_value_selection",
                                         }
                                       }
-                                      index={1}
+                                      index={0}
                                       onChange={[Function]}
                                       query={
                                         Query {
@@ -3050,7 +2938,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                         closePopover={[Function]}
                                         display="inlineBlock"
                                         hasArrow={true}
-                                        id="field_value_selection_1"
+                                        id="field_value_selection_0"
                                         isOpen={false}
                                         ownFocus={true}
                                         panelClassName="euiFilterGroup__popoverPanel"
@@ -3058,7 +2946,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                       >
                                         <div
                                           className="euiPopover euiPopover--anchorDownCenter"
-                                          id="field_value_selection_1"
+                                          id="field_value_selection_0"
                                         >
                                           <div
                                             className="euiPopover__anchor"
@@ -3134,147 +3022,6 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                         </div>
                                       </EuiPopover>
                                     </FieldValueSelectionFilter>
-                                    <FieldValueSelectionFilter
-                                      config={
-                                        Object {
-                                          "compressed": true,
-                                          "field": "source",
-                                          "multiSelect": "or",
-                                          "name": "Source",
-                                          "options": Array [
-                                            Object {
-                                              "value": "Standard",
-                                            },
-                                            Object {
-                                              "value": "Custom",
-                                            },
-                                          ],
-                                          "type": "field_value_selection",
-                                        }
-                                      }
-                                      index={2}
-                                      onChange={[Function]}
-                                      query={
-                                        Query {
-                                          "ast": _AST {
-                                            "_clauses": Array [],
-                                            "_indexedClauses": Object {
-                                              "field": Object {},
-                                              "group": Array [],
-                                              "is": Object {},
-                                              "term": Array [],
-                                            },
-                                          },
-                                          "syntax": Object {
-                                            "parse": [Function],
-                                            "print": [Function],
-                                            "printClause": [Function],
-                                          },
-                                          "text": "",
-                                        }
-                                      }
-                                    >
-                                      <EuiPopover
-                                        anchorPosition="downCenter"
-                                        button={
-                                          <EuiFilterButton
-                                            grow={true}
-                                            hasActiveFilters={false}
-                                            iconSide="right"
-                                            iconType="arrowDown"
-                                            onClick={[Function]}
-                                            size="s"
-                                          >
-                                            Source
-                                          </EuiFilterButton>
-                                        }
-                                        closePopover={[Function]}
-                                        display="inlineBlock"
-                                        hasArrow={true}
-                                        id="field_value_selection_2"
-                                        isOpen={false}
-                                        ownFocus={true}
-                                        panelClassName="euiFilterGroup__popoverPanel"
-                                        panelPaddingSize="none"
-                                      >
-                                        <div
-                                          className="euiPopover euiPopover--anchorDownCenter"
-                                          id="field_value_selection_2"
-                                        >
-                                          <div
-                                            className="euiPopover__anchor"
-                                          >
-                                            <EuiFilterButton
-                                              grow={true}
-                                              hasActiveFilters={false}
-                                              iconSide="right"
-                                              iconType="arrowDown"
-                                              onClick={[Function]}
-                                              size="s"
-                                            >
-                                              <EuiButtonEmpty
-                                                className="euiFilterButton euiFilterButton--hasIcon"
-                                                color="text"
-                                                iconSide="right"
-                                                iconType="arrowDown"
-                                                onClick={[Function]}
-                                                size="s"
-                                                textProps={
-                                                  Object {
-                                                    "className": "",
-                                                  }
-                                                }
-                                                type="button"
-                                              >
-                                                <button
-                                                  className="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton--hasIcon"
-                                                  disabled={false}
-                                                  onClick={[Function]}
-                                                  type="button"
-                                                >
-                                                  <EuiButtonContent
-                                                    className="euiButtonEmpty__content"
-                                                    iconGap="m"
-                                                    iconSide="right"
-                                                    iconSize="m"
-                                                    iconType="arrowDown"
-                                                    textProps={
-                                                      Object {
-                                                        "className": "euiButtonEmpty__text",
-                                                      }
-                                                    }
-                                                  >
-                                                    <span
-                                                      className="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
-                                                    >
-                                                      <EuiIcon
-                                                        className="euiButtonContent__icon"
-                                                        color="inherit"
-                                                        size="m"
-                                                        type="arrowDown"
-                                                      >
-                                                        EuiIconMock
-                                                      </EuiIcon>
-                                                      <span
-                                                        className="euiButtonEmpty__text"
-                                                      >
-                                                        <span
-                                                          className="euiFilterButton__textShift"
-                                                          data-text="Source"
-                                                          title="Source"
-                                                        >
-                                                          Source
-                                                        </span>
-                                                      </span>
-                                                    </span>
-                                                  </EuiButtonContent>
-                                                </button>
-                                              </EuiButtonEmpty>
-                                            </EuiFilterButton>
-                                          </div>
-                                        </div>
-                                      </EuiPopover>
-                                    </FieldValueSelectionFilter>
                                   </div>
                                 </EuiFilterGroup>
                               </EuiSearchFilters>
@@ -3319,7 +3066,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                           },
                           Object {
                             "field": "source",
-                            "name": "Source",
+                            "name": "Space",
                             "sortable": true,
                             "truncateText": true,
                             "width": "10%",
@@ -3415,7 +3162,7 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                               "isSortAscending": undefined,
                                               "isSorted": false,
                                               "key": "_data_s_source_3",
-                                              "name": "Source",
+                                              "name": "Space",
                                               "onSort": [Function],
                                             },
                                           ]
@@ -3755,15 +3502,15 @@ exports[`<DetectorDetails /> spec renders the component 1`] = `
                                                   values={
                                                     Object {
                                                       "description": undefined,
-                                                      "innerText": "Source",
+                                                      "innerText": "Space",
                                                     }
                                                   }
                                                 >
                                                   <span
                                                     className="euiTableCellContent__text"
-                                                    title="Source"
+                                                    title="Space"
                                                   >
-                                                    Source
+                                                    Space
                                                   </span>
                                                 </EuiI18n>
                                               </EuiInnerText>

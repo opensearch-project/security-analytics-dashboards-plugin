@@ -63,70 +63,10 @@ Object {
                       >
                         <span
                           class="euiFilterButton__textShift"
-                          data-text="Integration"
-                          title="Integration"
-                        >
-                          Integration
-                        </span>
-                      </span>
-                    </span>
-                  </button>
-                </div>
-              </div>
-              <div
-                class="euiPopover euiPopover--anchorDownCenter"
-                id="field_value_selection_1"
-              >
-                <div
-                  class="euiPopover__anchor"
-                >
-                  <button
-                    class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton--hasIcon"
-                    type="button"
-                  >
-                    <span
-                      class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
-                    >
-                      EuiIconMock
-                      <span
-                        class="euiButtonEmpty__text"
-                      >
-                        <span
-                          class="euiFilterButton__textShift"
                           data-text="Rule severity"
                           title="Rule severity"
                         >
                           Rule severity
-                        </span>
-                      </span>
-                    </span>
-                  </button>
-                </div>
-              </div>
-              <div
-                class="euiPopover euiPopover--anchorDownCenter"
-                id="field_value_selection_2"
-              >
-                <div
-                  class="euiPopover__anchor"
-                >
-                  <button
-                    class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton--hasIcon"
-                    type="button"
-                  >
-                    <span
-                      class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
-                    >
-                      EuiIconMock
-                      <span
-                        class="euiButtonEmpty__text"
-                      >
-                        <span
-                          class="euiFilterButton__textShift"
-                          data-text="Source"
-                          title="Source"
-                        >
-                          Source
                         </span>
                       </span>
                     </span>
@@ -292,9 +232,9 @@ Object {
                       >
                         <span
                           class="euiTableCellContent__text"
-                          title="Source"
+                          title="Space"
                         >
-                          Source
+                          Space
                         </span>
                       </span>
                     </button>
@@ -403,70 +343,10 @@ Object {
                     >
                       <span
                         class="euiFilterButton__textShift"
-                        data-text="Integration"
-                        title="Integration"
-                      >
-                        Integration
-                      </span>
-                    </span>
-                  </span>
-                </button>
-              </div>
-            </div>
-            <div
-              class="euiPopover euiPopover--anchorDownCenter"
-              id="field_value_selection_1"
-            >
-              <div
-                class="euiPopover__anchor"
-              >
-                <button
-                  class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton--hasIcon"
-                  type="button"
-                >
-                  <span
-                    class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
-                  >
-                    EuiIconMock
-                    <span
-                      class="euiButtonEmpty__text"
-                    >
-                      <span
-                        class="euiFilterButton__textShift"
                         data-text="Rule severity"
                         title="Rule severity"
                       >
                         Rule severity
-                      </span>
-                    </span>
-                  </span>
-                </button>
-              </div>
-            </div>
-            <div
-              class="euiPopover euiPopover--anchorDownCenter"
-              id="field_value_selection_2"
-            >
-              <div
-                class="euiPopover__anchor"
-              >
-                <button
-                  class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton--hasIcon"
-                  type="button"
-                >
-                  <span
-                    class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
-                  >
-                    EuiIconMock
-                    <span
-                      class="euiButtonEmpty__text"
-                    >
-                      <span
-                        class="euiFilterButton__textShift"
-                        data-text="Source"
-                        title="Source"
-                      >
-                        Source
                       </span>
                     </span>
                   </span>
@@ -632,9 +512,9 @@ Object {
                     >
                       <span
                         class="euiTableCellContent__text"
-                        title="Source"
+                        title="Space"
                       >
-                        Source
+                        Space
                       </span>
                     </span>
                   </button>

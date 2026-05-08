@@ -2170,6 +2170,38 @@ exports[`<RuleEditorForm /> spec renders the component 1`] = `
                                                           "label": "cidr",
                                                           "value": "cidr",
                                                         },
+                                                        Object {
+                                                          "label": "base64offset",
+                                                          "value": "base64offset",
+                                                        },
+                                                        Object {
+                                                          "label": "wide",
+                                                          "value": "wide",
+                                                        },
+                                                        Object {
+                                                          "label": "windash",
+                                                          "value": "windash",
+                                                        },
+                                                        Object {
+                                                          "label": "re",
+                                                          "value": "re",
+                                                        },
+                                                        Object {
+                                                          "label": "lt",
+                                                          "value": "lt",
+                                                        },
+                                                        Object {
+                                                          "label": "lte",
+                                                          "value": "lte",
+                                                        },
+                                                        Object {
+                                                          "label": "gt",
+                                                          "value": "gt",
+                                                        },
+                                                        Object {
+                                                          "label": "gte",
+                                                          "value": "gte",
+                                                        },
                                                       ]
                                                     }
                                                     selectedOptions={

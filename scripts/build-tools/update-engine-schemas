@@ -1,0 +1,98 @@
+#!/bin/bash
+# This script fetches engine JSON Schema files from the wazuh/wazuh repository.
+# Usage: bash update-engine-schemas [wazuh-branch-ref]
+# Example: bash update-engine-schemas main
+# Example: GIT_REF=main bash update-engine-schemas
+
+set -e
+
+SCRIPT_PATH=$(dirname $0)
+RESOURCE_REPO_URL=https://github.com/wazuh/wazuh.git
+
+CANDIDATE_GIT_REFS=()
+RESOLVED_CANDIDATE_REF=""
+
+update_engine_schemas() {
+  local ref="$RESOLVED_CANDIDATE_REF"
+  echo "Fetching engine schemas with wazuh reference [$ref]..."
+  node $(realpath "$SCRIPT_PATH/../generate-engine-schemas.js") --branch $ref
+}
+
+try_package_json() {
+  local file=$(realpath "$SCRIPT_PATH/../../package.json")
+  if [ ! -f "$file" ]; then
+    return 1
+  fi
+
+  local version
+  version=$(node -p "require('$file').wazuh?.version")
+
+  if [ -n "$version" ] && [ "$version" != "undefined" ]; then
+    echo "$version"
+    return 0
+  fi
+
+  return 1
+}
+
+get_candidate_ref() {
+  echo 'Getting candidate git references...'
+  CANDIDATE_GIT_REFS=("$INPUT_CANDIDATE_REF")
+
+  local version=$(try_package_json || true)
+
+  if [ -n "$version" ]; then
+    CANDIDATE_GIT_REFS+=("$version" "v$version")
+  fi
+
+  echo "Candidate git references: ${CANDIDATE_GIT_REFS[*]}"
+  for ref in "${CANDIDATE_GIT_REFS[@]}"; do
+    if git ls-remote --exit-code --heads "$RESOURCE_REPO_URL" "$ref" >/dev/null 2>&1 || \
+       git ls-remote --exit-code --tags "$RESOURCE_REPO_URL" "$ref" >/dev/null 2>&1; then
+      RESOLVED_CANDIDATE_REF=$ref
+      return 0
+    fi
+  done
+
+  echo 'Error: Could not resolve any candidate reference in wazuh/wazuh'
+  exit 1
+}
+
+get_candidate_reference() {
+  echo 'Resolving branch references...'
+  get_candidate_ref
+
+  [ -z "$RESOLVED_CANDIDATE_REF" ] && {
+    echo "Error: Could not resolve the candidate reference from input [$INPUT_CANDIDATE_REF]"
+    exit 1
+  }
+
+  echo "Resolved candidate: $RESOLVED_CANDIDATE_REF"
+}
+
+check_dependencies() {
+  if ! command -v git >/dev/null 2>&1; then
+    echo "Error: git is not installed or not found in PATH."
+    exit 1
+  fi
+
+  if ! command -v node >/dev/null 2>&1; then
+    echo "Error: Node.js is not installed or not found in PATH."
+    exit 1
+  fi
+}
+
+if [ "$SKIP_DOWNLOAD_ENGINE_SCHEMAS" = "true" ]; then
+  echo 'Skipping the download of engine schemas'
+  exit 0
+fi
+
+INPUT_CANDIDATE_REF="${1:-$GIT_REF}"
+
+while [ -z "$INPUT_CANDIDATE_REF" ]; do
+  read -p "Enter the git reference (branch/tag) of the wazuh/wazuh repository to fetch schemas from (e.g., main, v5.0.0): " INPUT_CANDIDATE_REF
+done
+
+check_dependencies
+get_candidate_reference
+update_engine_schemas

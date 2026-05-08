@@ -3,9 +3,13 @@
 exports[`<UpdateDetectorRules /> spec renders the component 1`] = `
 Object {
   "asFragment": [Function],
-  "baseElement": <body>
+  "baseElement": <body
+    style="padding-bottom: 0px;"
+  >
     <div>
-      <div>
+      <div
+        style="padding-bottom: 60px;"
+      >
         <h3
           class="euiTitle euiTitle--medium"
         >
@@ -281,9 +285,9 @@ Object {
                             >
                               <span
                                 class="euiTableCellContent__text"
-                                title="Source"
+                                title="Space"
                               >
-                                Source
+                                Space
                               </span>
                             </span>
                           </th>
@@ -337,54 +341,76 @@ Object {
             <div
               class="euiSpacer euiSpacer--xl"
             />
-            <div
-              class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
-            >
-              <div
-                class="euiFlexItem euiFlexItem--flexGrowZero"
-              >
-                <button
-                  class="euiButton euiButton--primary euiButton--small"
-                  type="button"
-                >
-                  <span
-                    class="euiButtonContent euiButton__content"
-                  >
-                    <span
-                      class="euiButton__text"
-                    >
-                      Cancel
-                    </span>
-                  </span>
-                </button>
-              </div>
-              <div
-                class="euiFlexItem euiFlexItem--flexGrowZero"
-              >
-                <button
-                  class="euiButton euiButton--primary euiButton--small euiButton--fill"
-                  data-test-subj="save-detector-rules-edits"
-                  type="button"
-                >
-                  <span
-                    class="euiButtonContent euiButton__content"
-                  >
-                    <span
-                      class="euiButton__text"
-                    >
-                      Save changes
-                    </span>
-                  </span>
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       </div>
     </div>
+    <div>
+      <section
+        aria-label="Page level controls"
+        class="euiBottomBar euiBottomBar--fixed euiBottomBar--paddingMedium"
+      >
+        <h2
+          class="euiScreenReaderOnly"
+        >
+          Page level controls
+        </h2>
+        <div
+          class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow"
+        >
+          <div
+            class="euiFlexItem euiFlexItem--flexGrowZero"
+          >
+            <button
+              class="euiButtonEmpty euiButtonEmpty--ghost euiButtonEmpty--small"
+              type="button"
+            >
+              <span
+                class="euiButtonContent euiButtonEmpty__content"
+              >
+                EuiIconMock
+                <span
+                  class="euiButtonEmpty__text"
+                >
+                  Cancel
+                </span>
+              </span>
+            </button>
+          </div>
+          <div
+            class="euiFlexItem euiFlexItem--flexGrowZero"
+          >
+            <button
+              class="euiButton euiButton--primary euiButton--small euiButton--fill"
+              data-test-subj="save-detector-rules-edits"
+              type="button"
+            >
+              <span
+                class="euiButtonContent euiButton__content"
+              >
+                EuiIconMock
+                <span
+                  class="euiButton__text"
+                >
+                  Edit detector rules
+                </span>
+              </span>
+            </button>
+          </div>
+        </div>
+      </section>
+      <p
+        aria-live="assertive"
+        class="euiScreenReaderOnly"
+      >
+        There is a new region landmark with page level controls at the end of the document.
+      </p>
+    </div>
   </body>,
   "container": <div>
-    <div>
+    <div
+      style="padding-bottom: 60px;"
+    >
       <h3
         class="euiTitle euiTitle--medium"
       >
@@ -660,9 +686,9 @@ Object {
                           >
                             <span
                               class="euiTableCellContent__text"
-                              title="Source"
+                              title="Space"
                             >
-                              Source
+                              Space
                             </span>
                           </span>
                         </th>
@@ -716,47 +742,6 @@ Object {
           <div
             class="euiSpacer euiSpacer--xl"
           />
-          <div
-            class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
-          >
-            <div
-              class="euiFlexItem euiFlexItem--flexGrowZero"
-            >
-              <button
-                class="euiButton euiButton--primary euiButton--small"
-                type="button"
-              >
-                <span
-                  class="euiButtonContent euiButton__content"
-                >
-                  <span
-                    class="euiButton__text"
-                  >
-                    Cancel
-                  </span>
-                </span>
-              </button>
-            </div>
-            <div
-              class="euiFlexItem euiFlexItem--flexGrowZero"
-            >
-              <button
-                class="euiButton euiButton--primary euiButton--small euiButton--fill"
-                data-test-subj="save-detector-rules-edits"
-                type="button"
-              >
-                <span
-                  class="euiButtonContent euiButton__content"
-                >
-                  <span
-                    class="euiButton__text"
-                  >
-                    Save changes
-                  </span>
-                </span>
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </div>

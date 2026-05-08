@@ -53,9 +53,8 @@ Object {
                   class="euiText euiText--small"
                 >
                   <h2>
-                    \`Delete $
-                    some type
-                    \`
+                    Delete 
+                    some ids
                   </h2>
                 </div>
               </div>

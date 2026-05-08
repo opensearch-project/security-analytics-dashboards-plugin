@@ -216,6 +216,12 @@ exports[`<Detectors /> spec renders the component 1`] = `
                       "sortable": true,
                     },
                     Object {
+                      "dataType": "string",
+                      "field": "space",
+                      "name": "Space",
+                      "sortable": true,
+                    },
+                    Object {
                       "align": "left",
                       "dataType": "number",
                       "field": "rulesCount",
@@ -425,6 +431,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                       "lastUpdatedTime": 1,
                       "logType": "detector_type",
                       "rulesCount": 2,
+                      "space": "Custom",
                       "status": "Active",
                     },
                   ]
@@ -572,6 +579,9 @@ exports[`<Detectors /> spec renders the component 1`] = `
                             },
                             "rulesCount": Object {
                               "type": "number",
+                            },
+                            "space": Object {
+                              "type": "string",
                             },
                             "status": Object {
                               "type": "string",
@@ -1400,6 +1410,12 @@ exports[`<Detectors /> spec renders the component 1`] = `
                           "sortable": true,
                         },
                         Object {
+                          "dataType": "string",
+                          "field": "space",
+                          "name": "Space",
+                          "sortable": true,
+                        },
+                        Object {
                           "align": "left",
                           "dataType": "number",
                           "field": "rulesCount",
@@ -1609,6 +1625,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                           "lastUpdatedTime": 1,
                           "logType": "detector_type",
                           "rulesCount": 2,
+                          "space": "Custom",
                           "status": "Active",
                         },
                       ]
@@ -1760,14 +1777,21 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                           Object {
                                             "isSortAscending": undefined,
                                             "isSorted": false,
-                                            "key": "_data_s_rulesCount_3",
+                                            "key": "_data_s_space_3",
+                                            "name": "Space",
+                                            "onSort": [Function],
+                                          },
+                                          Object {
+                                            "isSortAscending": undefined,
+                                            "isSorted": false,
+                                            "key": "_data_s_rulesCount_4",
                                             "name": "Active rules",
                                             "onSort": [Function],
                                           },
                                           Object {
                                             "isSortAscending": undefined,
                                             "isSorted": false,
-                                            "key": "_data_s_lastUpdatedTime_4",
+                                            "key": "_data_s_lastUpdatedTime_5",
                                             "name": "Last updated time",
                                             "onSort": [Function],
                                           },
@@ -2118,16 +2142,74 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                   </EuiTableHeaderCell>
                                   <EuiTableHeaderCell
                                     align="left"
-                                    data-test-subj="tableHeaderCell_rulesCount_3"
+                                    data-test-subj="tableHeaderCell_space_3"
                                     isSorted={false}
-                                    key="_data_h_rulesCount_3"
+                                    key="_data_h_space_3"
                                     onSort={[Function]}
                                   >
                                     <th
                                       aria-live="polite"
                                       aria-sort="none"
                                       className="euiTableHeaderCell"
-                                      data-test-subj="tableHeaderCell_rulesCount_3"
+                                      data-test-subj="tableHeaderCell_space_3"
+                                      role="columnheader"
+                                      scope="col"
+                                      style={
+                                        Object {
+                                          "width": undefined,
+                                        }
+                                      }
+                                    >
+                                      <button
+                                        className="euiTableHeaderButton"
+                                        data-test-subj="tableHeaderSortButton"
+                                        onClick={[Function]}
+                                        type="button"
+                                      >
+                                        <CellContents
+                                          className="euiTableCellContent"
+                                          isSorted={false}
+                                          showSortMsg={true}
+                                        >
+                                          <span
+                                            className="euiTableCellContent"
+                                          >
+                                            <EuiInnerText>
+                                              <EuiI18n
+                                                default="{innerText}; {description}"
+                                                token="euiTableHeaderCell.titleTextWithDesc"
+                                                values={
+                                                  Object {
+                                                    "description": undefined,
+                                                    "innerText": "Space",
+                                                  }
+                                                }
+                                              >
+                                                <span
+                                                  className="euiTableCellContent__text"
+                                                  title="Space"
+                                                >
+                                                  Space
+                                                </span>
+                                              </EuiI18n>
+                                            </EuiInnerText>
+                                          </span>
+                                        </CellContents>
+                                      </button>
+                                    </th>
+                                  </EuiTableHeaderCell>
+                                  <EuiTableHeaderCell
+                                    align="left"
+                                    data-test-subj="tableHeaderCell_rulesCount_4"
+                                    isSorted={false}
+                                    key="_data_h_rulesCount_4"
+                                    onSort={[Function]}
+                                  >
+                                    <th
+                                      aria-live="polite"
+                                      aria-sort="none"
+                                      className="euiTableHeaderCell"
+                                      data-test-subj="tableHeaderCell_rulesCount_4"
                                       role="columnheader"
                                       scope="col"
                                       style={
@@ -2176,16 +2258,16 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                   </EuiTableHeaderCell>
                                   <EuiTableHeaderCell
                                     align="left"
-                                    data-test-subj="tableHeaderCell_lastUpdatedTime_4"
+                                    data-test-subj="tableHeaderCell_lastUpdatedTime_5"
                                     isSorted={false}
-                                    key="_data_h_lastUpdatedTime_4"
+                                    key="_data_h_lastUpdatedTime_5"
                                     onSort={[Function]}
                                   >
                                     <th
                                       aria-live="polite"
                                       aria-sort="none"
                                       className="euiTableHeaderCell"
-                                      data-test-subj="tableHeaderCell_lastUpdatedTime_4"
+                                      data-test-subj="tableHeaderCell_lastUpdatedTime_5"
                                       role="columnheader"
                                       scope="col"
                                       style={
@@ -2403,13 +2485,49 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                         <div
                                           className="euiTableCellContent euiTableCellContent--overflowingContent"
                                         >
-                                          -
+                                          detector_type
                                         </div>
                                       </td>
                                     </EuiTableRowCell>
                                     <EuiTableRowCell
                                       align="left"
-                                      key="_data_column_rulesCount_detector_id_1_3"
+                                      key="_data_column_space_detector_id_1_3"
+                                      mobileOptions={
+                                        Object {
+                                          "header": "Space",
+                                          "render": undefined,
+                                        }
+                                      }
+                                      setScopeRow={false}
+                                      textOnly={true}
+                                    >
+                                      <td
+                                        className="euiTableRowCell"
+                                        style={
+                                          Object {
+                                            "width": undefined,
+                                          }
+                                        }
+                                      >
+                                        <div
+                                          className="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
+                                        >
+                                          Space
+                                        </div>
+                                        <div
+                                          className="euiTableCellContent"
+                                        >
+                                          <span
+                                            className="euiTableCellContent__text"
+                                          >
+                                            Custom
+                                          </span>
+                                        </div>
+                                      </td>
+                                    </EuiTableRowCell>
+                                    <EuiTableRowCell
+                                      align="left"
+                                      key="_data_column_rulesCount_detector_id_1_4"
                                       mobileOptions={
                                         Object {
                                           "header": "Active rules",
@@ -2441,7 +2559,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                     </EuiTableRowCell>
                                     <EuiTableRowCell
                                       align="left"
-                                      key="_data_column_lastUpdatedTime_detector_id_1_4"
+                                      key="_data_column_lastUpdatedTime_detector_id_1_5"
                                       mobileOptions={
                                         Object {
                                           "header": "Last updated time",

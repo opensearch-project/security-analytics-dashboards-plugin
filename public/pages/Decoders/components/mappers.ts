@@ -8,8 +8,8 @@ metadata:
   title: Placeholder Decoder
   description: This is a placeholder decoder. Please update the fields accordingly.
   author: User
-  date: '${new Date().toISOString().split('T')[0]}'
-  modified: '${new Date().toISOString().split('T')[0]}'
+  date: '${new Date().toISOString().split('.')[0] + "Z"}'
+  modified: '${new Date().toISOString().split('.')[0] + "Z"}'
   references: []
   documentation: ''
   supports: []`;

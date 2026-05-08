@@ -9,3 +9,4 @@ yarn-error.log
 /.cypress/screenshots/
 /.cypress/videos/
 target
+/common/schemas/*.schema.json

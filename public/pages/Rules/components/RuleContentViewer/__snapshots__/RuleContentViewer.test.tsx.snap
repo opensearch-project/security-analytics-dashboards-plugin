@@ -68,6 +68,30 @@ exports[`<RuleContentViewer /> spec renders the component 1`] = `
             </span>
           </span>
         </label>
+        <label
+          class="euiButtonGroupButton euiButtonGroupButton--text euiButtonGroupButton--small"
+          for="some_html_id"
+        >
+          <span
+            class="euiButtonContent euiButton__content"
+          >
+            <span
+              class="euiButton__text euiButtonGroupButton__textShift"
+              data-text="JSON"
+              title="JSON"
+            >
+              <input
+                class="euiScreenReaderOnly"
+                data-test-subj="json"
+                id="some_html_id"
+                name="some_html_id"
+                type="radio"
+                value=""
+              />
+              JSON
+            </span>
+          </span>
+        </label>
       </div>
     </fieldset>
     <div
@@ -194,10 +218,22 @@ exports[`<RuleContentViewer /> spec renders the component 1`] = `
         >
           Rule level
         </label>
-        <div
-          class="euiText euiText--small"
-        >
-          high
+        <div>
+          <span
+            class="euiBadge euiBadge--iconLeft"
+            style="background-color: rgb(231, 102, 76); color: white;"
+            title="High"
+          >
+            <span
+              class="euiBadge__content"
+            >
+              <span
+                class="euiBadge__text"
+              >
+                High
+              </span>
+            </span>
+          </span>
         </div>
       </div>
     </div>

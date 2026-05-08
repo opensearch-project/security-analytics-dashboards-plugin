@@ -6,7 +6,7 @@
 import { DataStore } from './DataStore';
 import notificationsStartMock from '../../test/mocks/services/notifications/NotificationsStart.mock';
 import services from '../../test/mocks/services';
-import { RulesStore } from './RulesStore';
+import { RulesStore } from './WazuhRulesStore';
 import { expect } from '@jest/globals';
 import * as rulesResponseMock from '../../.cypress/fixtures/sample_rule.json';
 describe('Rules store specs', () => {

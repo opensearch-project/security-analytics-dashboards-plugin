@@ -39,6 +39,8 @@ jobs:
         with:
           path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
       - name: Bootstrap plugin/OpenSearch-Dashboards and unit tests
+        env:
+          GIT_REF: 'main'
         run: |
           chown -R 1000:1000 `pwd`
           cd ./OpenSearch-Dashboards/

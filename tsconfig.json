@@ -17,6 +17,7 @@
   "compilerOptions": {
     "skipLibCheck": true,
     "esModuleInterop": true,
+    "resolveJsonModule": true,
     "outDir": "./target",
     "types": ["cypress", "node", "cypress-real-events", "jest"]
   }

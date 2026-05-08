@@ -97,7 +97,7 @@ export const DecoderDetailsFlyout: React.FC<DecoderDetailsFlyoutProps> = ({
   const decoderJson = useMemo(() => {
     if (!decoder) return '';
     try {
-      const rawYaml = typeof decoder.decoder === 'string' ? decoder.decoder : null;
+      const rawYaml = typeof decoder.yaml === 'string' ? decoder.yaml : null;
       if (rawYaml) {
         const losslessDoc = mapYamlToLosslessDecoder(rawYaml);
         return LosslessStringify(losslessDoc, null, 2) ?? '';
@@ -147,9 +147,9 @@ export const DecoderDetailsFlyout: React.FC<DecoderDetailsFlyoutProps> = ({
 
   const yamlContent = (
     <EuiCodeBlock language="yaml" isCopyable={true}>
-      {typeof decoder?.decoder === 'string'
-        ? decoder?.decoder
-        : JSON.stringify(decoder?.decoder, null, 2) ?? ''}
+      {typeof decoder?.yaml === 'string'
+        ? decoder?.yaml
+        : JSON.stringify(decoder?.yaml, null, 2) ?? ''}
     </EuiCodeBlock>
   );
 

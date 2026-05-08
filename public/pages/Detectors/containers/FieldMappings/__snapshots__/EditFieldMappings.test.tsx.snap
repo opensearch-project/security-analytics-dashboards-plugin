@@ -514,7 +514,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                               Object {
                                 "dataType": "string",
                                 "field": "ruleFieldName",
-                                "name": "Detection rule field",
+                                "name": "Rule field",
                                 "render": [Function],
                                 "width": "25%",
                               },
@@ -580,7 +580,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                                 Object {
                                   "dataType": "string",
                                   "field": "ruleFieldName",
-                                  "name": "Detection rule field",
+                                  "name": "Rule field",
                                   "render": [Function],
                                   "width": "25%",
                                 },
@@ -643,7 +643,7 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                                 "allowNeutralSort": true,
                                 "sort": Object {
                                   "direction": "asc",
-                                  "field": "Detection rule field",
+                                  "field": "Rule field",
                                 },
                               }
                             }
@@ -837,15 +837,15 @@ exports[`<EditFieldMappings /> spec renders the component 1`] = `
                                                       values={
                                                         Object {
                                                           "description": undefined,
-                                                          "innerText": "Detection rule field",
+                                                          "innerText": "Rule field",
                                                         }
                                                       }
                                                     >
                                                       <span
                                                         className="euiTableCellContent__text"
-                                                        title="Detection rule field"
+                                                        title="Rule field"
                                                       >
-                                                        Detection rule field
+                                                        Rule field
                                                       </span>
                                                     </EuiI18n>
                                                   </EuiInnerText>

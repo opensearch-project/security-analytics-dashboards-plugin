@@ -20,7 +20,7 @@ export interface DecoderDocument {
 
 export interface DecoderSource {
   document: DecoderDocument;
-  decoder?: string;
+  yaml?: string;
   space?: string;
 }
 

@@ -93,16 +93,14 @@ jest.mock('react', () => {
 /**
  * Mocks the vega view renderer
  */
-jest.mock('vega/build/vega.js', () => {
-  const vega = jest.requireActual('vega/build/vega.js');
-  return {
-    ...vega,
+jest.mock('vega/build/vega.js', () => ({
     View: jest.fn().mockReturnValue({
       tooltip: jest.fn(),
       runAsync: jest.fn().mockReturnValue(new Promise(jest.fn())),
     }),
-  };
-});
+  }),
+  { virtual: true }
+);
 
 DataStore.init(services, notificationsStartMock);
 

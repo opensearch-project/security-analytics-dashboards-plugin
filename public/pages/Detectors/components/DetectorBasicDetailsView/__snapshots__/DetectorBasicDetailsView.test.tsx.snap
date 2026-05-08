@@ -108,7 +108,7 @@ Object {
                     class="euiFormLabel euiFormRow__label"
                     for="some_html_id"
                   >
-                    Description
+                    Integration
                   </label>
                 </div>
                 <div
@@ -116,10 +116,10 @@ Object {
                 >
                   <div
                     class="euiText euiText--small"
-                    data-test-subj="text-details-group-content-description"
+                    data-test-subj="text-details-group-content-integration"
                     id="some_html_id"
                   >
-                    detectorDescription
+                    Detector Type
                   </div>
                 </div>
               </div>
@@ -138,7 +138,7 @@ Object {
                     class="euiFormLabel euiFormRow__label"
                     for="some_html_id"
                   >
-                    Detector schedule
+                    Space
                   </label>
                 </div>
                 <div
@@ -146,10 +146,10 @@ Object {
                 >
                   <div
                     class="euiText euiText--small"
-                    data-test-subj="text-details-group-content-detector-schedule"
+                    data-test-subj="text-details-group-content-space"
                     id="some_html_id"
                   >
-                    Every 1 minute
+                    -
                   </div>
                 </div>
               </div>
@@ -209,7 +209,7 @@ Object {
                     class="euiFormLabel euiFormRow__label"
                     for="some_html_id"
                   >
-                    Integration
+                    Detector schedule
                   </label>
                 </div>
                 <div
@@ -217,10 +217,10 @@ Object {
                 >
                   <div
                     class="euiText euiText--small"
-                    data-test-subj="text-details-group-content-integration"
+                    data-test-subj="text-details-group-content-detector-schedule"
                     id="some_html_id"
                   >
-                    Detector Type
+                    Every 1 minute
                   </div>
                 </div>
               </div>
@@ -284,7 +284,7 @@ Object {
                 >
                   <div
                     class="euiText euiText--small"
-                    data-test-subj="text-details-group-content-detection-rules"
+                    data-test-subj="text-details-group-content-rules"
                     id="some_html_id"
                   >
                     2
@@ -350,6 +350,35 @@ Object {
                     2023-01-25T10:05
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="euiSpacer euiSpacer--l"
+          />
+          <div
+            class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
+            id="some_html_id-row"
+          >
+            <div
+              class="euiFormRow__labelWrapper"
+            >
+              <label
+                class="euiFormLabel euiFormRow__label"
+                for="some_html_id"
+              >
+                Description
+              </label>
+            </div>
+            <div
+              class="euiFormRow__fieldWrapper"
+            >
+              <div
+                class="euiText euiText--small"
+                data-test-subj="text-details-group-content-description"
+                id="some_html_id"
+              >
+                detectorDescription
               </div>
             </div>
           </div>
@@ -464,7 +493,7 @@ Object {
                   class="euiFormLabel euiFormRow__label"
                   for="some_html_id"
                 >
-                  Description
+                  Integration
                 </label>
               </div>
               <div
@@ -472,10 +501,10 @@ Object {
               >
                 <div
                   class="euiText euiText--small"
-                  data-test-subj="text-details-group-content-description"
+                  data-test-subj="text-details-group-content-integration"
                   id="some_html_id"
                 >
-                  detectorDescription
+                  Detector Type
                 </div>
               </div>
             </div>
@@ -494,7 +523,7 @@ Object {
                   class="euiFormLabel euiFormRow__label"
                   for="some_html_id"
                 >
-                  Detector schedule
+                  Space
                 </label>
               </div>
               <div
@@ -502,10 +531,10 @@ Object {
               >
                 <div
                   class="euiText euiText--small"
-                  data-test-subj="text-details-group-content-detector-schedule"
+                  data-test-subj="text-details-group-content-space"
                   id="some_html_id"
                 >
-                  Every 1 minute
+                  -
                 </div>
               </div>
             </div>
@@ -565,7 +594,7 @@ Object {
                   class="euiFormLabel euiFormRow__label"
                   for="some_html_id"
                 >
-                  Integration
+                  Detector schedule
                 </label>
               </div>
               <div
@@ -573,10 +602,10 @@ Object {
               >
                 <div
                   class="euiText euiText--small"
-                  data-test-subj="text-details-group-content-integration"
+                  data-test-subj="text-details-group-content-detector-schedule"
                   id="some_html_id"
                 >
-                  Detector Type
+                  Every 1 minute
                 </div>
               </div>
             </div>
@@ -640,7 +669,7 @@ Object {
               >
                 <div
                   class="euiText euiText--small"
-                  data-test-subj="text-details-group-content-detection-rules"
+                  data-test-subj="text-details-group-content-rules"
                   id="some_html_id"
                 >
                   2
@@ -706,6 +735,35 @@ Object {
                   2023-01-25T10:05
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="euiSpacer euiSpacer--l"
+        />
+        <div
+          class="euiFormRow euiFormRow--fullWidth euiFormRow--compressed"
+          id="some_html_id-row"
+        >
+          <div
+            class="euiFormRow__labelWrapper"
+          >
+            <label
+              class="euiFormLabel euiFormRow__label"
+              for="some_html_id"
+            >
+              Description
+            </label>
+          </div>
+          <div
+            class="euiFormRow__fieldWrapper"
+          >
+            <div
+              class="euiText euiText--small"
+              data-test-subj="text-details-group-content-description"
+              id="some_html_id"
+            >
+              detectorDescription
             </div>
           </div>
         </div>

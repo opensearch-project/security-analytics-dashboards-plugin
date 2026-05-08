@@ -84,6 +84,7 @@ jobs:
           # Up the environment and run the command
           docker run -t --rm \
             -e OPENSEARCH_DASHBOARDS_VERSION=${combined_version} \
+            -e GIT_REF=main \
             -v `pwd`/wazuh-dashboard-security-analytics:/home/node/kbn/plugins/wazuh-dashboard-security-analytics \
             ${{ inputs.docker_run_extra_args }} \
             quay.io/wazuh/osd-dev:${combined_version} \

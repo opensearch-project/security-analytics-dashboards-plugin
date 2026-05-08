@@ -391,7 +391,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                   },
                   Object {
                     "field": "source",
-                    "name": "Source",
+                    "name": "Space",
                     "sortable": true,
                     "truncateText": true,
                     "width": "10%",
@@ -427,14 +427,6 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                     "schema": true,
                   },
                   "filters": Array [
-                    Object {
-                      "compressed": true,
-                      "field": "category",
-                      "multiSelect": "or",
-                      "name": "Integration",
-                      "options": Array [],
-                      "type": "field_value_selection",
-                    },
                     Object {
                       "compressed": true,
                       "field": "level",
@@ -489,21 +481,6 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                       ],
                       "type": "field_value_selection",
                     },
-                    Object {
-                      "compressed": true,
-                      "field": "source",
-                      "multiSelect": "or",
-                      "name": "Source",
-                      "options": Array [
-                        Object {
-                          "value": "Standard",
-                        },
-                        Object {
-                          "value": "Custom",
-                        },
-                      ],
-                      "type": "field_value_selection",
-                    },
                   ],
                 }
               }
@@ -540,14 +517,6 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                   }
                   filters={
                     Array [
-                      Object {
-                        "compressed": true,
-                        "field": "category",
-                        "multiSelect": "or",
-                        "name": "Integration",
-                        "options": Array [],
-                        "type": "field_value_selection",
-                      },
                       Object {
                         "compressed": true,
                         "field": "level",
@@ -598,21 +567,6 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                             "name": "Informational",
                             "priority": "5",
                             "value": "informational",
-                          },
-                        ],
-                        "type": "field_value_selection",
-                      },
-                      Object {
-                        "compressed": true,
-                        "field": "source",
-                        "multiSelect": "or",
-                        "name": "Source",
-                        "options": Array [
-                          Object {
-                            "value": "Standard",
-                          },
-                          Object {
-                            "value": "Custom",
                           },
                         ],
                         "type": "field_value_selection",
@@ -727,14 +681,6 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                               Array [
                                 Object {
                                   "compressed": true,
-                                  "field": "category",
-                                  "multiSelect": "or",
-                                  "name": "Integration",
-                                  "options": Array [],
-                                  "type": "field_value_selection",
-                                },
-                                Object {
-                                  "compressed": true,
                                   "field": "level",
                                   "multiSelect": "or",
                                   "name": "Rule severity",
@@ -787,21 +733,6 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                   ],
                                   "type": "field_value_selection",
                                 },
-                                Object {
-                                  "compressed": true,
-                                  "field": "source",
-                                  "multiSelect": "or",
-                                  "name": "Source",
-                                  "options": Array [
-                                    Object {
-                                      "value": "Standard",
-                                    },
-                                    Object {
-                                      "value": "Custom",
-                                    },
-                                  ],
-                                  "type": "field_value_selection",
-                                },
                               ]
                             }
                             onChange={[Function]}
@@ -829,140 +760,6 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                               <div
                                 className="euiFilterGroup"
                               >
-                                <FieldValueSelectionFilter
-                                  config={
-                                    Object {
-                                      "compressed": true,
-                                      "field": "category",
-                                      "multiSelect": "or",
-                                      "name": "Integration",
-                                      "options": Array [],
-                                      "type": "field_value_selection",
-                                    }
-                                  }
-                                  index={0}
-                                  onChange={[Function]}
-                                  query={
-                                    Query {
-                                      "ast": _AST {
-                                        "_clauses": Array [],
-                                        "_indexedClauses": Object {
-                                          "field": Object {},
-                                          "group": Array [],
-                                          "is": Object {},
-                                          "term": Array [],
-                                        },
-                                      },
-                                      "syntax": Object {
-                                        "parse": [Function],
-                                        "print": [Function],
-                                        "printClause": [Function],
-                                      },
-                                      "text": "",
-                                    }
-                                  }
-                                >
-                                  <EuiPopover
-                                    anchorPosition="downCenter"
-                                    button={
-                                      <EuiFilterButton
-                                        grow={true}
-                                        hasActiveFilters={false}
-                                        iconSide="right"
-                                        iconType="arrowDown"
-                                        onClick={[Function]}
-                                        size="s"
-                                      >
-                                        Integration
-                                      </EuiFilterButton>
-                                    }
-                                    closePopover={[Function]}
-                                    display="inlineBlock"
-                                    hasArrow={true}
-                                    id="field_value_selection_0"
-                                    isOpen={false}
-                                    ownFocus={true}
-                                    panelClassName="euiFilterGroup__popoverPanel"
-                                    panelPaddingSize="none"
-                                  >
-                                    <div
-                                      className="euiPopover euiPopover--anchorDownCenter"
-                                      id="field_value_selection_0"
-                                    >
-                                      <div
-                                        className="euiPopover__anchor"
-                                      >
-                                        <EuiFilterButton
-                                          grow={true}
-                                          hasActiveFilters={false}
-                                          iconSide="right"
-                                          iconType="arrowDown"
-                                          onClick={[Function]}
-                                          size="s"
-                                        >
-                                          <EuiButtonEmpty
-                                            className="euiFilterButton euiFilterButton--hasIcon"
-                                            color="text"
-                                            iconSide="right"
-                                            iconType="arrowDown"
-                                            onClick={[Function]}
-                                            size="s"
-                                            textProps={
-                                              Object {
-                                                "className": "",
-                                              }
-                                            }
-                                            type="button"
-                                          >
-                                            <button
-                                              className="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton--hasIcon"
-                                              disabled={false}
-                                              onClick={[Function]}
-                                              type="button"
-                                            >
-                                              <EuiButtonContent
-                                                className="euiButtonEmpty__content"
-                                                iconGap="m"
-                                                iconSide="right"
-                                                iconSize="m"
-                                                iconType="arrowDown"
-                                                textProps={
-                                                  Object {
-                                                    "className": "euiButtonEmpty__text",
-                                                  }
-                                                }
-                                              >
-                                                <span
-                                                  className="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
-                                                >
-                                                  <EuiIcon
-                                                    className="euiButtonContent__icon"
-                                                    color="inherit"
-                                                    size="m"
-                                                    type="arrowDown"
-                                                  >
-                                                    EuiIconMock
-                                                  </EuiIcon>
-                                                  <span
-                                                    className="euiButtonEmpty__text"
-                                                  >
-                                                    <span
-                                                      className="euiFilterButton__textShift"
-                                                      data-text="Integration"
-                                                      title="Integration"
-                                                    >
-                                                      Integration
-                                                    </span>
-                                                  </span>
-                                                </span>
-                                              </EuiButtonContent>
-                                            </button>
-                                          </EuiButtonEmpty>
-                                        </EuiFilterButton>
-                                      </div>
-                                    </div>
-                                  </EuiPopover>
-                                </FieldValueSelectionFilter>
                                 <FieldValueSelectionFilter
                                   config={
                                     Object {
@@ -1020,7 +817,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                       "type": "field_value_selection",
                                     }
                                   }
-                                  index={1}
+                                  index={0}
                                   onChange={[Function]}
                                   query={
                                     Query {
@@ -1059,7 +856,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                     closePopover={[Function]}
                                     display="inlineBlock"
                                     hasArrow={true}
-                                    id="field_value_selection_1"
+                                    id="field_value_selection_0"
                                     isOpen={false}
                                     ownFocus={true}
                                     panelClassName="euiFilterGroup__popoverPanel"
@@ -1067,7 +864,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                   >
                                     <div
                                       className="euiPopover euiPopover--anchorDownCenter"
-                                      id="field_value_selection_1"
+                                      id="field_value_selection_0"
                                     >
                                       <div
                                         className="euiPopover__anchor"
@@ -1143,147 +940,6 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                     </div>
                                   </EuiPopover>
                                 </FieldValueSelectionFilter>
-                                <FieldValueSelectionFilter
-                                  config={
-                                    Object {
-                                      "compressed": true,
-                                      "field": "source",
-                                      "multiSelect": "or",
-                                      "name": "Source",
-                                      "options": Array [
-                                        Object {
-                                          "value": "Standard",
-                                        },
-                                        Object {
-                                          "value": "Custom",
-                                        },
-                                      ],
-                                      "type": "field_value_selection",
-                                    }
-                                  }
-                                  index={2}
-                                  onChange={[Function]}
-                                  query={
-                                    Query {
-                                      "ast": _AST {
-                                        "_clauses": Array [],
-                                        "_indexedClauses": Object {
-                                          "field": Object {},
-                                          "group": Array [],
-                                          "is": Object {},
-                                          "term": Array [],
-                                        },
-                                      },
-                                      "syntax": Object {
-                                        "parse": [Function],
-                                        "print": [Function],
-                                        "printClause": [Function],
-                                      },
-                                      "text": "",
-                                    }
-                                  }
-                                >
-                                  <EuiPopover
-                                    anchorPosition="downCenter"
-                                    button={
-                                      <EuiFilterButton
-                                        grow={true}
-                                        hasActiveFilters={false}
-                                        iconSide="right"
-                                        iconType="arrowDown"
-                                        onClick={[Function]}
-                                        size="s"
-                                      >
-                                        Source
-                                      </EuiFilterButton>
-                                    }
-                                    closePopover={[Function]}
-                                    display="inlineBlock"
-                                    hasArrow={true}
-                                    id="field_value_selection_2"
-                                    isOpen={false}
-                                    ownFocus={true}
-                                    panelClassName="euiFilterGroup__popoverPanel"
-                                    panelPaddingSize="none"
-                                  >
-                                    <div
-                                      className="euiPopover euiPopover--anchorDownCenter"
-                                      id="field_value_selection_2"
-                                    >
-                                      <div
-                                        className="euiPopover__anchor"
-                                      >
-                                        <EuiFilterButton
-                                          grow={true}
-                                          hasActiveFilters={false}
-                                          iconSide="right"
-                                          iconType="arrowDown"
-                                          onClick={[Function]}
-                                          size="s"
-                                        >
-                                          <EuiButtonEmpty
-                                            className="euiFilterButton euiFilterButton--hasIcon"
-                                            color="text"
-                                            iconSide="right"
-                                            iconType="arrowDown"
-                                            onClick={[Function]}
-                                            size="s"
-                                            textProps={
-                                              Object {
-                                                "className": "",
-                                              }
-                                            }
-                                            type="button"
-                                          >
-                                            <button
-                                              className="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton--hasIcon"
-                                              disabled={false}
-                                              onClick={[Function]}
-                                              type="button"
-                                            >
-                                              <EuiButtonContent
-                                                className="euiButtonEmpty__content"
-                                                iconGap="m"
-                                                iconSide="right"
-                                                iconSize="m"
-                                                iconType="arrowDown"
-                                                textProps={
-                                                  Object {
-                                                    "className": "euiButtonEmpty__text",
-                                                  }
-                                                }
-                                              >
-                                                <span
-                                                  className="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
-                                                >
-                                                  <EuiIcon
-                                                    className="euiButtonContent__icon"
-                                                    color="inherit"
-                                                    size="m"
-                                                    type="arrowDown"
-                                                  >
-                                                    EuiIconMock
-                                                  </EuiIcon>
-                                                  <span
-                                                    className="euiButtonEmpty__text"
-                                                  >
-                                                    <span
-                                                      className="euiFilterButton__textShift"
-                                                      data-text="Source"
-                                                      title="Source"
-                                                    >
-                                                      Source
-                                                    </span>
-                                                  </span>
-                                                </span>
-                                              </EuiButtonContent>
-                                            </button>
-                                          </EuiButtonEmpty>
-                                        </EuiFilterButton>
-                                      </div>
-                                    </div>
-                                  </EuiPopover>
-                                </FieldValueSelectionFilter>
                               </div>
                             </EuiFilterGroup>
                           </EuiSearchFilters>
@@ -1328,7 +984,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                       },
                       Object {
                         "field": "source",
-                        "name": "Source",
+                        "name": "Space",
                         "sortable": true,
                         "truncateText": true,
                         "width": "10%",
@@ -1424,7 +1080,7 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                           "isSortAscending": undefined,
                                           "isSorted": false,
                                           "key": "_data_s_source_3",
-                                          "name": "Source",
+                                          "name": "Space",
                                           "onSort": [Function],
                                         },
                                       ]
@@ -1764,15 +1420,15 @@ exports[`<DetectorRulesView /> spec renders the component 1`] = `
                                               values={
                                                 Object {
                                                   "description": undefined,
-                                                  "innerText": "Source",
+                                                  "innerText": "Space",
                                                 }
                                               }
                                             >
                                               <span
                                                 className="euiTableCellContent__text"
-                                                title="Source"
+                                                title="Space"
                                               >
-                                                Source
+                                                Space
                                               </span>
                                             </EuiI18n>
                                           </EuiInnerText>
