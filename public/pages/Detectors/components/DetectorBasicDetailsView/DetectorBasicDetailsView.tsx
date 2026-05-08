@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiSmallButton, EuiSpacer, EuiLink, EuiIcon, EuiText } from '@elastic/eui';
+import { EuiSmallButton, EuiSpacer, EuiLink, EuiIcon, EuiText, EuiToolTip } from '@elastic/eui';
 import React from 'react';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { createTextDetailsGroup, parseSchedule } from '../../../../utils/helpers';
 import moment from 'moment';
 import { DEFAULT_EMPTY_DATA, logTypesWithDashboards } from '../../../../utils/constants';
+import { isStandardSource } from '../../../../utils/detectorSource';
 import { Detector } from '../../../../../types';
 import { getLogTypeLabel } from '../../../LogTypes/utils/helpers';
 
@@ -36,6 +37,7 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
 }) => {
   const { name, detector_type, inputs, schedule } = detector;
   const detectorSchedule = parseSchedule(schedule);
+  const isStandardDetector = isStandardSource(detector.source);
   const createdAt = enabled_time ? moment(enabled_time).format('YYYY-MM-DDTHH:mm') : undefined;
   const lastUpdated = last_update_time
     ? moment(last_update_time).format('YYYY-MM-DDTHH:mm')
@@ -53,12 +55,17 @@ export const DetectorBasicDetailsView: React.FC<DetectorBasicDetailsViewProps> =
       actions={
         isEditable
           ? [
-              <EuiSmallButton
-                onClick={onEditClicked}
-                data-test-subj={'edit-detector-basic-details'}
+              <EuiToolTip
+                content={isStandardDetector ? 'Only Custom detectors can be edited.' : undefined}
               >
-                Edit
-              </EuiSmallButton>,
+                <EuiSmallButton
+                  onClick={onEditClicked}
+                  isDisabled={isStandardDetector}
+                  data-test-subj={'edit-detector-basic-details'}
+                >
+                  Edit
+                </EuiSmallButton>
+              </EuiToolTip>,
             ]
           : null
       }

@@ -494,15 +494,20 @@ exports[`<Detectors /> spec renders the component 1`] = `
                       },
                     ],
                     "toolsLeft": Array [
-                      <EuiSmallButton
-                        color="danger"
-                        data-test-subj="deleteButton"
-                        disabled={true}
-                        iconType="trash"
-                        onClick={[Function]}
+                      <EuiToolTip
+                        delay="regular"
+                        position="top"
                       >
-                        Delete detectors
-                      </EuiSmallButton>,
+                        <EuiSmallButton
+                          color="danger"
+                          data-test-subj="deleteButton"
+                          disabled={true}
+                          iconType="trash"
+                          onClick={[Function]}
+                        >
+                          Delete detectors
+                        </EuiSmallButton>
+                      </EuiToolTip>,
                     ],
                     "toolsRight": Array [
                       <EuiSmallButton
@@ -619,15 +624,20 @@ exports[`<Detectors /> spec renders the component 1`] = `
                     onChange={[Function]}
                     toolsLeft={
                       Array [
-                        <EuiSmallButton
-                          color="danger"
-                          data-test-subj="deleteButton"
-                          disabled={true}
-                          iconType="trash"
-                          onClick={[Function]}
+                        <EuiToolTip
+                          delay="regular"
+                          position="top"
                         >
-                          Delete detectors
-                        </EuiSmallButton>,
+                          <EuiSmallButton
+                            color="danger"
+                            data-test-subj="deleteButton"
+                            disabled={true}
+                            iconType="trash"
+                            onClick={[Function]}
+                          >
+                            Delete detectors
+                          </EuiSmallButton>
+                        </EuiToolTip>,
                       ]
                     }
                     toolsRight={
@@ -686,79 +696,99 @@ exports[`<Detectors /> spec renders the component 1`] = `
                           <div
                             className="euiFlexItem euiFlexItem--flexGrowZero"
                           >
-                            <EuiSmallButton
-                              color="danger"
-                              data-test-subj="deleteButton"
-                              disabled={true}
-                              iconType="trash"
+                            <EuiToolTip
+                              delay="regular"
                               key="Delete"
-                              onClick={[Function]}
+                              position="top"
                             >
-                              <EuiButton
-                                color="danger"
-                                data-test-subj="deleteButton"
-                                disabled={true}
-                                iconType="trash"
-                                onClick={[Function]}
-                                size="s"
+                              <span
+                                className="euiToolTipAnchor"
+                                onKeyUp={[Function]}
+                                onMouseOut={[Function]}
+                                onMouseOver={[Function]}
                               >
-                                <EuiButtonDisplay
-                                  baseClassName="euiButton"
+                                <EuiSmallButton
                                   color="danger"
                                   data-test-subj="deleteButton"
                                   disabled={true}
-                                  element="button"
                                   iconType="trash"
-                                  isDisabled={true}
+                                  onBlur={[Function]}
                                   onClick={[Function]}
-                                  size="s"
-                                  type="button"
+                                  onFocus={[Function]}
                                 >
-                                  <button
-                                    className="euiButton euiButton--danger euiButton--small euiButton-isDisabled"
+                                  <EuiButton
+                                    color="danger"
                                     data-test-subj="deleteButton"
                                     disabled={true}
+                                    iconType="trash"
+                                    onBlur={[Function]}
                                     onClick={[Function]}
-                                    style={
-                                      Object {
-                                        "minWidth": undefined,
-                                      }
-                                    }
-                                    type="button"
+                                    onFocus={[Function]}
+                                    size="s"
                                   >
-                                    <EuiButtonContent
-                                      className="euiButton__content"
-                                      iconGap="m"
-                                      iconSide="left"
+                                    <EuiButtonDisplay
+                                      baseClassName="euiButton"
+                                      color="danger"
+                                      data-test-subj="deleteButton"
+                                      disabled={true}
+                                      element="button"
                                       iconType="trash"
-                                      textProps={
-                                        Object {
-                                          "className": "euiButton__text",
-                                        }
-                                      }
+                                      isDisabled={true}
+                                      onBlur={[Function]}
+                                      onClick={[Function]}
+                                      onFocus={[Function]}
+                                      size="s"
+                                      type="button"
                                     >
-                                      <span
-                                        className="euiButtonContent euiButton__content"
+                                      <button
+                                        className="euiButton euiButton--danger euiButton--small euiButton-isDisabled"
+                                        data-test-subj="deleteButton"
+                                        disabled={true}
+                                        onBlur={[Function]}
+                                        onClick={[Function]}
+                                        onFocus={[Function]}
+                                        style={
+                                          Object {
+                                            "minWidth": undefined,
+                                          }
+                                        }
+                                        type="button"
                                       >
-                                        <EuiIcon
-                                          className="euiButtonContent__icon"
-                                          color="inherit"
-                                          size="m"
-                                          type="trash"
+                                        <EuiButtonContent
+                                          className="euiButton__content"
+                                          iconGap="m"
+                                          iconSide="left"
+                                          iconType="trash"
+                                          textProps={
+                                            Object {
+                                              "className": "euiButton__text",
+                                            }
+                                          }
                                         >
-                                          EuiIconMock
-                                        </EuiIcon>
-                                        <span
-                                          className="euiButton__text"
-                                        >
-                                          Delete detectors
-                                        </span>
-                                      </span>
-                                    </EuiButtonContent>
-                                  </button>
-                                </EuiButtonDisplay>
-                              </EuiButton>
-                            </EuiSmallButton>
+                                          <span
+                                            className="euiButtonContent euiButton__content"
+                                          >
+                                            <EuiIcon
+                                              className="euiButtonContent__icon"
+                                              color="inherit"
+                                              size="m"
+                                              type="trash"
+                                            >
+                                              EuiIconMock
+                                            </EuiIcon>
+                                            <span
+                                              className="euiButton__text"
+                                            >
+                                              Delete detectors
+                                            </span>
+                                          </span>
+                                        </EuiButtonContent>
+                                      </button>
+                                    </EuiButtonDisplay>
+                                  </EuiButton>
+                                </EuiSmallButton>
+                              </span>
+                            </EuiToolTip>
                           </div>
                         </EuiFlexItem>
                         <EuiFlexItem

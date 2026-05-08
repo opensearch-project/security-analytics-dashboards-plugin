@@ -16,6 +16,7 @@ import {
   EuiTabs,
   EuiText,
   EuiHealth,
+  EuiToolTip,
 } from '@elastic/eui';
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
@@ -29,10 +30,11 @@ import { RuleItem } from '../../../CreateDetector/components/DefineDetector/comp
 import { DetectorsService, IndexPatternsService } from '../../../../services';
 import { errorNotificationToast, setBreadcrumbs } from '../../../../utils/helpers';
 import { NotificationsStart, SimpleSavedObject } from 'opensearch-dashboards/public';
-import { ISavedObjectsService, ServerResponse } from '../../../../../types';
+import { Detector, ISavedObjectsService, ServerResponse } from '../../../../../types';
 import { PENDING_DETECTOR_ID } from '../../../CreateDetector/utils/constants';
 import { DataStore } from '../../../../store/DataStore';
 import { PageHeader } from '../../../../components/PageHeader/PageHeader';
+import { getDetectorSourceLabel, isStandardSource } from '../../../../utils/detectorSource';
 
 export interface DetectorDetailsProps
   extends RouteComponentProps<
@@ -197,7 +199,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
 
     if (pendingRequests && detector) {
       // Wazuh: get space
-      const space = await this.getDetectorSpace(detector);
+      const space = this.getDetectorSpace(detector);
       this.detectorHit = Object.assign({}, EMPTY_DEFAULT_DETECTOR_HIT, {
         ...detector,
         _source: {
@@ -246,35 +248,8 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   }
 
   // Wazuh: get detector space
-  async getDetectorSpace(detector: DetectorHit) {
-    try {
-      // Wazuh: get the integration "space" to assign the detector
-      const detectorInputContainer: any = detector?._source ?? detector;
-      const detectorInput = detectorInputContainer?.inputs?.[0]?.detector_input;
-      if (!detectorInput) {
-        return;
-      }
-      const { custom_rules, pre_packaged_rules } = detectorInput;
-      // Take the first one rule to extrapolate the space
-      const ruleForMapping = [...custom_rules, ...pre_packaged_rules].find(
-        ({ id }) => typeof id !== 'undefined'
-      )?.id;
-
-      if (ruleForMapping) {
-        const rules = await DataStore.rules.getAllRules({ 'document.id': [ruleForMapping] });
-
-        const spaceRule = rules?.find?.((rule) => rule._id === ruleForMapping);
-
-        const mapper = {
-          standard: 'Standard',
-          custom: 'Custom',
-        };
-        // Fallback: if the rule is not found with rules datastore, infer space from the detector structure itself.
-        return (
-          mapper[spaceRule?.space] ?? (custom_rules.length > 0 ? mapper.custom : mapper.standard)
-        );
-      }
-    } catch {}
+  getDetectorSpace(detector: Detector | undefined): string | undefined {
+    return getDetectorSourceLabel(detector?.source);
   }
 
   getDetector = async () => {
@@ -292,7 +267,7 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
           _source: response.response.detector,
         } as DetectorHit;
 
-        const space = await this.getDetectorSpace(detector);
+        const space = this.getDetectorSpace(detector._source);
 
         this.detectorHit = {
           ...detector,
@@ -397,6 +372,8 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
   createHeaderActions(): React.JSX.Element[] {
     const { loading } = this.state;
     const { isActionsMenuOpen } = this.state;
+    // Wazuh: Standard detectors are read-only — disable destructive actions.
+    const isStandardDetector = isStandardSource(this.detectorHit._source.source);
     return [
       <EuiPopover
         id={'detectorsActionsPopover'}
@@ -467,18 +444,22 @@ export class DetectorDetails extends React.Component<DetectorDetailsProps, Detec
             >
               {`${this.detectorHit._source.enabled ? 'Stop' : 'Start'} detector`}
             </EuiContextMenuItem>,
-            <EuiContextMenuItem
-              disabled={loading}
+            <EuiToolTip
               key={'Delete'}
-              icon={'empty'}
-              onClick={() => {
-                this.closeActionsPopover();
-                this.onDelete();
-              }}
-              data-test-subj={'editButton'}
+              content={isStandardDetector ? 'Only Custom detectors can be deleted.' : undefined}
             >
-              Delete
-            </EuiContextMenuItem>,
+              <EuiContextMenuItem
+                disabled={loading || isStandardDetector}
+                icon={'empty'}
+                onClick={() => {
+                  this.closeActionsPopover();
+                  this.onDelete();
+                }}
+                data-test-subj={'editButton'}
+              >
+                Delete
+              </EuiContextMenuItem>
+            </EuiToolTip>,
           ]}
         />
       </EuiPopover>,

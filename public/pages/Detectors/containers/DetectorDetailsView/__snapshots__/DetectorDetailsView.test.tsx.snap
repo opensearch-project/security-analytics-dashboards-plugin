@@ -404,12 +404,18 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
     <ContentPanel
       actions={
         Array [
-          <EuiSmallButton
-            data-test-subj="edit-detector-basic-details"
-            onClick={[MockFunction]}
+          <EuiToolTip
+            delay="regular"
+            position="top"
           >
-            Edit
-          </EuiSmallButton>,
+            <EuiSmallButton
+              data-test-subj="edit-detector-basic-details"
+              isDisabled={false}
+              onClick={[MockFunction]}
+            >
+              Edit
+            </EuiSmallButton>
+          </EuiToolTip>,
         ]
       }
       title="Detector details"
@@ -483,61 +489,83 @@ exports[`<DetectorDetailsView /> spec renders the component 1`] = `
                         <div
                           className="euiFlexItem"
                         >
-                          <EuiSmallButton
-                            data-test-subj="edit-detector-basic-details"
-                            onClick={[MockFunction]}
+                          <EuiToolTip
+                            delay="regular"
+                            position="top"
                           >
-                            <EuiButton
-                              data-test-subj="edit-detector-basic-details"
-                              onClick={[MockFunction]}
-                              size="s"
+                            <span
+                              className="euiToolTipAnchor"
+                              onKeyUp={[Function]}
+                              onMouseOut={[Function]}
+                              onMouseOver={[Function]}
                             >
-                              <EuiButtonDisplay
-                                baseClassName="euiButton"
+                              <EuiSmallButton
                                 data-test-subj="edit-detector-basic-details"
-                                disabled={false}
-                                element="button"
                                 isDisabled={false}
+                                onBlur={[Function]}
                                 onClick={[MockFunction]}
-                                size="s"
-                                type="button"
+                                onFocus={[Function]}
                               >
-                                <button
-                                  className="euiButton euiButton--primary euiButton--small"
+                                <EuiButton
                                   data-test-subj="edit-detector-basic-details"
-                                  disabled={false}
+                                  isDisabled={false}
+                                  onBlur={[Function]}
                                   onClick={[MockFunction]}
-                                  style={
-                                    Object {
-                                      "minWidth": undefined,
-                                    }
-                                  }
-                                  type="button"
+                                  onFocus={[Function]}
+                                  size="s"
                                 >
-                                  <EuiButtonContent
-                                    className="euiButton__content"
-                                    iconGap="m"
-                                    iconSide="left"
-                                    textProps={
-                                      Object {
-                                        "className": "euiButton__text",
-                                      }
-                                    }
+                                  <EuiButtonDisplay
+                                    baseClassName="euiButton"
+                                    data-test-subj="edit-detector-basic-details"
+                                    disabled={false}
+                                    element="button"
+                                    isDisabled={false}
+                                    onBlur={[Function]}
+                                    onClick={[MockFunction]}
+                                    onFocus={[Function]}
+                                    size="s"
+                                    type="button"
                                   >
-                                    <span
-                                      className="euiButtonContent euiButton__content"
+                                    <button
+                                      className="euiButton euiButton--primary euiButton--small"
+                                      data-test-subj="edit-detector-basic-details"
+                                      disabled={false}
+                                      onBlur={[Function]}
+                                      onClick={[MockFunction]}
+                                      onFocus={[Function]}
+                                      style={
+                                        Object {
+                                          "minWidth": undefined,
+                                        }
+                                      }
+                                      type="button"
                                     >
-                                      <span
-                                        className="euiButton__text"
+                                      <EuiButtonContent
+                                        className="euiButton__content"
+                                        iconGap="m"
+                                        iconSide="left"
+                                        textProps={
+                                          Object {
+                                            "className": "euiButton__text",
+                                          }
+                                        }
                                       >
-                                        Edit
-                                      </span>
-                                    </span>
-                                  </EuiButtonContent>
-                                </button>
-                              </EuiButtonDisplay>
-                            </EuiButton>
-                          </EuiSmallButton>
+                                        <span
+                                          className="euiButtonContent euiButton__content"
+                                        >
+                                          <span
+                                            className="euiButton__text"
+                                          >
+                                            Edit
+                                          </span>
+                                        </span>
+                                      </EuiButtonContent>
+                                    </button>
+                                  </EuiButtonDisplay>
+                                </EuiButton>
+                              </EuiSmallButton>
+                            </span>
+                          </EuiToolTip>
                         </div>
                       </EuiFlexItem>
                     </div>

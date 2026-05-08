@@ -193,8 +193,7 @@ export const LogType: React.FC<LogTypeProps> = ({ notifications, history }) => {
               listItems={[
                 {
                   title: 'Source',
-                  description:
-                    logTypeDetails.source === 'Sigma' ? 'Standard' : logTypeDetails.source,
+                  description: logTypeDetails.source,
                 },
               ]}
             />

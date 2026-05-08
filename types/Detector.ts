@@ -33,6 +33,7 @@ export interface Detector {
   inputs: DetectorInput[];
   triggers: AlertCondition[];
   threat_intel_enabled: boolean;
+  source?: string;
 }
 
 export interface AlertConditionRuleOption {

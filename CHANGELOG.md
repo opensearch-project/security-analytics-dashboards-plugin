@@ -26,6 +26,7 @@ All notable changes to the Wazuh ML Commons project will be documented in this f
 - Updated Detectors management feature [#111](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/111) [#134](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/134) [#159](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/159) [#173](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/173) [#181](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/181) [#190](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/190) [#203](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/203) [#204](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/204) [#224](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/224)
 - Rules table and details now display the real integration title. [#164](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/164)
 - Updated nav menu group label to "Security analytics" to match Wazuh Dashboard capitalization style. [#178](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/178)
+- Made Sigma detectors read-only in the UI and centralized the detector source vocabulary [#243](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/243)
 
 ### Removed
 

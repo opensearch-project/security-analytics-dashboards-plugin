@@ -49,14 +49,37 @@ export default class DetectorsService implements IDetectorService {
   };
 
   getDetectorWithId = async (id: string): Promise<ServerResponse<GetDetectorResponse>> => {
-    const url = `..${API.DETECTORS_BASE}/${id}`;
-    const res = (await this.httpClient.get(url, {
+    const url = `..${API.SEARCH_DETECTORS}`;
+    const searchRes = (await this.httpClient.post(url, {
+      body: JSON.stringify({
+        size: 1,
+        query: { ids: { values: [id] } },
+      }),
       query: {
         dataSourceId: dataSourceInfo.activeDataSource.id,
       },
-    })) as ServerResponse<GetDetectorResponse>;
+    })) as ServerResponse<SearchDetectorsResponse>;
 
-    return res;
+    if (!searchRes.ok) {
+      return searchRes;
+    }
+
+    const hit = searchRes.response?.hits?.hits?.[0];
+    if (!hit) {
+      return {
+        ok: false,
+        error: `Detector ${id} not found`,
+      } as ServerResponse<GetDetectorResponse>;
+    }
+
+    return {
+      ok: true,
+      response: {
+        _id: hit._id,
+        _version: (hit as any)._version ?? 1,
+        detector: hit._source,
+      },
+    } as ServerResponse<GetDetectorResponse>;
   };
 
   updateDetector = async (

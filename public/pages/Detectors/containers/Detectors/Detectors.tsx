@@ -20,6 +20,7 @@ import {
   EuiSpacer,
   EuiText,
   EuiButtonIcon,
+  EuiToolTip,
 } from '@elastic/eui';
 import { BREADCRUMBS, DEFAULT_EMPTY_DATA, ROUTES } from '../../../../utils/constants';
 import DeleteModal from '../../../../components/DeleteModal';
@@ -40,6 +41,7 @@ import { Direction } from '@opensearch-project/oui/src/services/sort/sort_direct
 import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
 import { PageHeader } from '../../../../components/PageHeader/PageHeader';
 import { DataStore } from '../../../../store/DataStore'; // Wazuh
+import { isStandardSource } from '../../../../utils/detectorSource';
 
 export interface DetectorsProps extends RouteComponentProps {
   detectorService: DetectorsService;
@@ -316,22 +318,29 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
     ];
 
     const renderActionsLeft = (loading: boolean, selectedItems: DetectorHit[]) => {
+      const hasStandardSelected = selectedItems.some((item) =>
+        isStandardSource(item._source.source)
+      );
       return [
-        <EuiSmallButton
-          color={'danger'}
-          iconType={'trash'}
+        <EuiToolTip
           key={'Delete'}
-          disabled={selectedItems.length === 0 || loading}
-          onClick={() => {
-            this.closeActionsPopover();
-            this.openDeleteModal();
-          }}
-          data-test-subj={'deleteButton'}
+          content={hasStandardSelected ? 'Only Custom detectors can be deleted.' : undefined}
         >
-          {selectedItems.length > 0
-            ? `Delete ${selectedItems.length} detectors`
-            : 'Delete detectors'}
-        </EuiSmallButton>,
+          <EuiSmallButton
+            color={'danger'}
+            iconType={'trash'}
+            disabled={selectedItems.length === 0 || loading || hasStandardSelected}
+            onClick={() => {
+              this.closeActionsPopover();
+              this.openDeleteModal();
+            }}
+            data-test-subj={'deleteButton'}
+          >
+            {selectedItems.length > 0
+              ? `Delete ${selectedItems.length} detectors`
+              : 'Delete detectors'}
+          </EuiSmallButton>
+        </EuiToolTip>,
       ];
     };
 

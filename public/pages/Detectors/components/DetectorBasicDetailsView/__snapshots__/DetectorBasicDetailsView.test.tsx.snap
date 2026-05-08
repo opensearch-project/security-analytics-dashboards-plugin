@@ -33,21 +33,25 @@ Object {
               <div
                 class="euiFlexItem"
               >
-                <button
-                  class="euiButton euiButton--primary euiButton--small"
-                  data-test-subj="edit-detector-basic-details"
-                  type="button"
+                <span
+                  class="euiToolTipAnchor"
                 >
-                  <span
-                    class="euiButtonContent euiButton__content"
+                  <button
+                    class="euiButton euiButton--primary euiButton--small"
+                    data-test-subj="edit-detector-basic-details"
+                    type="button"
                   >
                     <span
-                      class="euiButton__text"
+                      class="euiButtonContent euiButton__content"
                     >
-                      Edit
+                      <span
+                        class="euiButton__text"
+                      >
+                        Edit
+                      </span>
                     </span>
-                  </span>
-                </button>
+                  </button>
+                </span>
               </div>
             </div>
           </div>
@@ -418,21 +422,25 @@ Object {
             <div
               class="euiFlexItem"
             >
-              <button
-                class="euiButton euiButton--primary euiButton--small"
-                data-test-subj="edit-detector-basic-details"
-                type="button"
+              <span
+                class="euiToolTipAnchor"
               >
-                <span
-                  class="euiButtonContent euiButton__content"
+                <button
+                  class="euiButton euiButton--primary euiButton--small"
+                  data-test-subj="edit-detector-basic-details"
+                  type="button"
                 >
                   <span
-                    class="euiButton__text"
+                    class="euiButtonContent euiButton__content"
                   >
-                    Edit
+                    <span
+                      class="euiButton__text"
+                    >
+                      Edit
+                    </span>
                   </span>
-                </span>
-              </button>
+                </button>
+              </span>
             </div>
           </div>
         </div>
