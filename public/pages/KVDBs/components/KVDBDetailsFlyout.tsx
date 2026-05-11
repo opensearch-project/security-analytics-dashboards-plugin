@@ -23,7 +23,7 @@ import {
 import { get } from 'lodash';
 import { KVDBItem } from '../../../../types';
 import { AssetViewer } from './AssetViewer';
-import { Metadata } from '../../../components/Utility/Metadata';
+import { Metadata, MetadataFieldType } from '../../../components/Utility/Metadata';
 import { BadgeGroup } from '../../../components/Utility/BadgeGroup';
 import { EnabledHealth } from '../../../components/Utility/EnabledHealth';
 import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
@@ -48,15 +48,24 @@ const detailsMapLabels: { [key: string]: string } = {
   space: 'Space',
 };
 
+const VISUAL_VIEW = {
+  VISUAL: 'visual',
+  YAML: 'yaml',
+  JSON: 'json',
+};
+
+const viewOptions = [
+  { id: VISUAL_VIEW.VISUAL, label: 'Visual' },
+  { id: VISUAL_VIEW.YAML, label: 'YAML' },
+  { id: VISUAL_VIEW.JSON, label: 'JSON' },
+];
+
 export const KVDBDetailsFlyout: React.FC<KVDBDetailsFlyoutProps> = ({ kvdb, onClose }) => {
-  const [selectedEditorType, setSelectedEditorType] = useState('visual');
+  const [selectedView, setSelectedView] = useState(VISUAL_VIEW.VISUAL);
 
-  const onEditorTypeChange = (optionId: string) => {
-    setSelectedEditorType(optionId);
-  };
   const document = kvdb.document ?? { id: '' };
-
   const metadata = document.metadata;
+
   const kvdbData = {
     'document.id': document.id || kvdb.id,
     'integration.title': kvdb.integration?.title,
@@ -66,7 +75,6 @@ export const KVDBDetailsFlyout: React.FC<KVDBDetailsFlyoutProps> = ({ kvdb, onCl
     'document.metadata.description': metadata?.description,
     'document.metadata.references': metadata?.references,
     'document.metadata.documentation': metadata?.documentation,
-    'document.metadata.supports': metadata?.supports,
     'document.metadata.supports': (
       <BadgeGroup emptyValue={DEFAULT_EMPTY_DATA} values={metadata?.supports} />
     ),
@@ -77,7 +85,7 @@ export const KVDBDetailsFlyout: React.FC<KVDBDetailsFlyoutProps> = ({ kvdb, onCl
   const visualTab = (
     <>
       <EuiFlexGrid columns={2}>
-        {[
+        {([
           'space',
           'integration.title',
           'document.metadata.title',
@@ -88,15 +96,15 @@ export const KVDBDetailsFlyout: React.FC<KVDBDetailsFlyoutProps> = ({ kvdb, onCl
           ['document.metadata.modified', 'date'],
           ['document.metadata.documentation', 'url'],
           ['document.metadata.references', 'url'],
-          'document.metadata.supports',
-        ].map((item) => {
-          const [field, type] = typeof item === 'string' ? [item, 'text'] : item;
+          ['document.metadata.supports', 'raw'],
+        ] as Array<string | [string, MetadataFieldType]>).map((item) => {
+          const [field, type] = typeof item === 'string' ? ([item, 'text'] as const) : item;
           return (
             <EuiFlexItem key={field}>
               <Metadata
                 label={<EuiFormLabel>{detailsMapLabels[field]}</EuiFormLabel>}
                 value={get(kvdbData, field)}
-                type={type as 'text' | 'date' | 'boolean_yesno' | 'url'}
+                type={type}
               />
             </EuiFlexItem>
           );
@@ -111,6 +119,12 @@ export const KVDBDetailsFlyout: React.FC<KVDBDetailsFlyoutProps> = ({ kvdb, onCl
         </>
       )}
     </>
+  );
+
+  const yamlTab = (
+    <EuiCodeBlock language="yaml" isCopyable={true} paddingSize="m">
+      {kvdb.yaml ?? ''}
+    </EuiCodeBlock>
   );
 
   const jsonTab = (
@@ -147,18 +161,9 @@ export const KVDBDetailsFlyout: React.FC<KVDBDetailsFlyoutProps> = ({ kvdb, onCl
               <EuiButtonGroup
                 data-test-subj="change-editor-type"
                 legend="This is editor type selector"
-                options={[
-                  {
-                    id: 'visual',
-                    label: 'Visual',
-                  },
-                  {
-                    id: 'json',
-                    label: 'JSON',
-                  },
-                ]}
-                idSelected={selectedEditorType}
-                onChange={(id) => onEditorTypeChange(id)}
+                options={viewOptions}
+                idSelected={selectedView}
+                onChange={(id) => setSelectedView(id)}
               />
             </EuiFlexItem>
             <EuiFlexItem>
@@ -166,7 +171,9 @@ export const KVDBDetailsFlyout: React.FC<KVDBDetailsFlyoutProps> = ({ kvdb, onCl
             </EuiFlexItem>
           </EuiFlexGroup>
           <EuiSpacer size="xl" />
-          {selectedEditorType === 'visual' ? visualTab : jsonTab}
+          {selectedView === VISUAL_VIEW.VISUAL && visualTab}
+          {selectedView === VISUAL_VIEW.YAML && yamlTab}
+          {selectedView === VISUAL_VIEW.JSON && jsonTab}
         </EuiModalBody>
       </EuiFlyoutBody>
     </EuiFlyout>

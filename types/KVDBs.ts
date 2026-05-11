@@ -23,6 +23,7 @@ export interface KVDBResource {
 export interface KVDBSource {
   document: KVDBDocument;
   space?: string | { name?: string };
+  yaml?: string;
 }
 
 export interface KVDBIntegrationSource {
@@ -53,12 +54,12 @@ export interface KVDBSearchRequest {
 }
 
 export interface CreateKVDBPayload {
-  resource: KVDBResource;
+  resourceYaml: string;
   integrationId: string;
 }
 
 export interface UpdateKVDBPayload {
-  resource: KVDBResource;
+  resourceYaml: string;
 }
 
 export interface KVDBSearchResponse {

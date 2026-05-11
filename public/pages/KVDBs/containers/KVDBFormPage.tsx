@@ -7,6 +7,7 @@ import {
   EuiBottomBar,
   EuiButton,
   EuiButtonEmpty,
+  EuiButtonGroup,
   EuiCompressedFieldText,
   EuiCompressedFormRow,
   EuiCompressedSwitch,
@@ -38,11 +39,13 @@ import {
   successNotificationToast,
 } from '../../../utils/helpers';
 import { ContentEntry, KVDBContentEditor } from '../components/KVDBContentEditor';
+import { YamlForm, YAML_TYPE } from '../../../components/YamlForm';
+import YAML from 'yaml';
 import {
   kvdbFormDefaultValue,
   KVDBFormModel,
-  mapFormToKVDBResource,
-  mapKVDBToForm,
+  mapFormToYaml,
+  mapYamlToForm,
 } from '../utils/mappers';
 
 const KVDB_ACTION = {
@@ -57,6 +60,18 @@ const actionLabels: Record<KVDBAction, string> = {
   edit: 'Edit',
 };
 
+const EDITOR_TYPE = {
+  VISUAL: 'visual',
+  YAML: 'yaml',
+} as const;
+
+type EditorType = typeof EDITOR_TYPE[keyof typeof EDITOR_TYPE];
+
+const editorTypes: Array<{ id: EditorType; label: string }> = [
+  { id: EDITOR_TYPE.VISUAL, label: 'Visual Editor' },
+  { id: EDITOR_TYPE.YAML, label: 'YAML Editor' },
+];
+
 type KVDBFormPageProps = {
   notifications: NotificationsStart;
   history: RouteComponentProps['history'];
@@ -68,6 +83,9 @@ export const KVDBFormPage: React.FC<KVDBFormPageProps> = (props) => {
   const { notifications, history, action } = props;
   const kvdbId = props.match.params.id;
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedEditorType, setSelectedEditorType] = useState<EditorType>('visual');
+  const [rawKvdb, setRawKvdb] = useState<string | undefined>(undefined);
+  const [yamlError, setYamlError] = useState<string | null>(null);
   const [integrationType, setIntegrationType] = useState<string>('');
   const [initialValue, setInitialValue] = useState<KVDBFormModel>(kvdbFormDefaultValue);
 
@@ -84,9 +102,8 @@ export const KVDBFormPage: React.FC<KVDBFormPageProps> = (props) => {
       setIsLoading(true);
       try {
         const item = await DataStore.kvdbs.getKVDB(kvdbId!);
-        if (item?.document) {
-          setInitialValue(mapKVDBToForm(item.document));
-        }
+        setRawKvdb(item.yaml);
+        setInitialValue(mapYamlToForm(item.yaml));
         setBreadcrumbs([
           BREADCRUMBS.NORMALIZATION,
           BREADCRUMBS.KVDBS,
@@ -127,9 +144,10 @@ export const KVDBFormPage: React.FC<KVDBFormPageProps> = (props) => {
 
   const createKVDB = useCallback(
     async (values: KVDBFormModel) => {
-      const resource = mapFormToKVDBResource(values);
+      const resourceYaml =
+        selectedEditorType === EDITOR_TYPE.YAML && rawKvdb ? rawKvdb : mapFormToYaml(values);
       const result = await DataStore.kvdbs.createKVDB({
-        resource,
+        resourceYaml,
         integrationId: integrationType,
       });
 
@@ -143,15 +161,16 @@ export const KVDBFormPage: React.FC<KVDBFormPageProps> = (props) => {
         history.push(ROUTES.KVDBS);
       }
     },
-    [integrationType, notifications, history]
+    [integrationType, notifications, history, selectedEditorType, rawKvdb]
   );
 
   const updateKVDB = useCallback(
     async (values: KVDBFormModel) => {
       if (!kvdbId) return;
 
-      const resource = mapFormToKVDBResource(values);
-      const result = await DataStore.kvdbs.updateKVDB(kvdbId, { resource });
+      const resourceYaml =
+        selectedEditorType === EDITOR_TYPE.YAML && rawKvdb ? rawKvdb : mapFormToYaml(values);
+      const result = await DataStore.kvdbs.updateKVDB(kvdbId, { resourceYaml });
 
       if (result) {
         successNotificationToast(
@@ -163,7 +182,7 @@ export const KVDBFormPage: React.FC<KVDBFormPageProps> = (props) => {
         history.push(ROUTES.KVDBS);
       }
     },
-    [kvdbId, notifications, history]
+    [kvdbId, notifications, history, selectedEditorType, rawKvdb]
   );
 
   const handleSubmit = useCallback(
@@ -177,52 +196,64 @@ export const KVDBFormPage: React.FC<KVDBFormPageProps> = (props) => {
     [action, createKVDB, updateKVDB]
   );
 
-  const validateForm = useCallback((values: KVDBFormModel) => {
-    const errors: FormikErrors<KVDBFormModel> = {};
-
-    if (!values.title.trim()) {
-      errors.title = 'Title is required';
-    } else if (/\s/.test(values.title)) {
-      errors.title = 'Title must not contain spaces';
+  const validateYamlFormat = (yaml: string): string | null => {
+    try {
+      YAML.parse(yaml);
+      return null;
+    } catch (e) {
+      return e instanceof Error ? e.message.split('\n')[0] : 'Invalid YAML syntax';
     }
+  };
 
-    if (!values.author.trim()) {
-      errors.author = 'Author is required';
-    }
+  const validateForm = useCallback(
+    (values: KVDBFormModel) => {
+      const errors: FormikErrors<KVDBFormModel> = {};
 
-    const keyCounts: Record<string, number> = {};
-    values.contentEntries.forEach(({ key }) => {
-      const k = key.trim();
-      if (k) keyCounts[k] = (keyCounts[k] ?? 0) + 1;
-    });
-
-    const contentErrors = values.contentEntries.map(
-      (entry): FormikErrors<ContentEntry> => {
-        const entryErrors: FormikErrors<ContentEntry> = {};
-
-        if (entry.key.trim() && keyCounts[entry.key.trim()] > 1) {
-          entryErrors.key = 'Duplicate key';
-        }
-
-        const trimmed = entry.value.trim();
-        if (trimmed[0] === '{' || trimmed[0] === '[') {
-          try {
-            JSON.parse(trimmed);
-          } catch {
-            entryErrors.value = 'Invalid JSON';
-          }
-        }
-
-        return entryErrors;
+      if (!values.title.trim()) {
+        errors.title = 'Title is required';
+      } else if (/\s/.test(values.title)) {
+        errors.title = 'Title must not contain spaces';
       }
-    );
 
-    if (contentErrors.some((e) => Object.keys(e).length > 0)) {
-      errors.contentEntries = contentErrors as any;
-    }
+      if (!values.author.trim()) {
+        errors.author = 'Author is required';
+      }
 
-    return errors;
-  }, []);
+      const keyCounts: Record<string, number> = {};
+      values.contentEntries.forEach(({ key }) => {
+        const k = key.trim();
+        if (k) keyCounts[k] = (keyCounts[k] ?? 0) + 1;
+      });
+
+      const contentErrors = values.contentEntries.map(
+        (entry): FormikErrors<ContentEntry> => {
+          const entryErrors: FormikErrors<ContentEntry> = {};
+
+          if (entry.key.trim() && keyCounts[entry.key.trim()] > 1) {
+            entryErrors.key = 'Duplicate key';
+          }
+
+          const trimmed = entry.value.trim();
+          if (trimmed[0] === '{' || trimmed[0] === '[') {
+            try {
+              JSON.parse(trimmed);
+            } catch {
+              entryErrors.value = 'Invalid JSON';
+            }
+          }
+
+          return entryErrors;
+        }
+      );
+
+      if (contentErrors.some((e) => Object.keys(e).length > 0)) {
+        errors.contentEntries = contentErrors as any;
+      }
+
+      return errors;
+    },
+    [selectedEditorType]
+  );
 
   const handleSubmitForm = async (
     values: KVDBFormModel,
@@ -236,9 +267,10 @@ export const KVDBFormPage: React.FC<KVDBFormPageProps> = (props) => {
   };
 
   const isSubmitDisabled = (errors: FormikErrors<KVDBFormModel>) => {
-    if (errors.title || errors.author) return true;
+    const fieldErrorsExist = Object.keys(errors).length > 0;
     if (action === KVDB_ACTION.CREATE && !integrationType) return true;
-    return false;
+    if (selectedEditorType === EDITOR_TYPE.YAML) return yamlError !== null || fieldErrorsExist;
+    return fieldErrorsExist;
   };
 
   const getSubmitTooltip = (errors: FormikErrors<KVDBFormModel>) => {
@@ -246,7 +278,9 @@ export const KVDBFormPage: React.FC<KVDBFormPageProps> = (props) => {
     if (action === KVDB_ACTION.CREATE && !integrationType) {
       messages.push('Select an integration to proceed');
     }
-    if (errors.title || errors.author) {
+    if (selectedEditorType === EDITOR_TYPE.YAML && yamlError) {
+      messages.push('Please fix the errors in the YAML editor to proceed');
+    } else if (errors.title || errors.author) {
       messages.push('Please fix the errors in the form to proceed');
     }
     return messages.length > 0 ? messages.join('. ') : undefined;
@@ -285,6 +319,23 @@ export const KVDBFormPage: React.FC<KVDBFormPageProps> = (props) => {
                   </EuiText>
                   <EuiSpacer />
                 </PageHeader>
+                <EuiButtonGroup
+                  legend="Editor type"
+                  options={editorTypes}
+                  idSelected={selectedEditorType}
+                  onChange={(newSelectedType: EditorType) => {
+                    if (newSelectedType === EDITOR_TYPE.YAML) {
+                      const yaml =
+                        formikProps.dirty || !rawKvdb ? mapFormToYaml(formikProps.values) : rawKvdb;
+                      setRawKvdb(yaml);
+                      setYamlError(validateYamlFormat(yaml));
+                    } else {
+                      setYamlError(null);
+                    }
+                    setSelectedEditorType(newSelectedType);
+                  }}
+                />
+                <EuiSpacer size="xl" />
                 {action === KVDB_ACTION.CREATE && (
                   <>
                     <IntegrationComboBox
@@ -299,92 +350,123 @@ export const KVDBFormPage: React.FC<KVDBFormPageProps> = (props) => {
                     <EuiSpacer size="m" />
                   </>
                 )}
-                <EuiCompressedFormRow
-                  label={<FormFieldHeader headerTitle={'Title'} />}
-                  fullWidth={true}
-                  isInvalid={!!formikProps.errors.title && formikProps.touched.title}
-                  error={formikProps.errors.title}
-                >
-                  <EuiCompressedFieldText
-                    placeholder="Enter KVDB title"
-                    value={formikProps.values.title}
-                    onChange={(e) => formikProps.setFieldValue('title', e.target.value)}
-                    onBlur={() => formikProps.setFieldTouched('title')}
-                    isInvalid={!!formikProps.errors.title && formikProps.touched.title}
+                {selectedEditorType === EDITOR_TYPE.VISUAL && (
+                  <>
+                    <EuiCompressedFormRow
+                      label={<FormFieldHeader headerTitle={'Title'} />}
+                      fullWidth={true}
+                      isInvalid={!!formikProps.errors.title && formikProps.touched.title}
+                      error={formikProps.errors.title}
+                    >
+                      <EuiCompressedFieldText
+                        placeholder="Enter KVDB title"
+                        value={formikProps.values.title}
+                        onChange={(e) => formikProps.setFieldValue('title', e.target.value)}
+                        onBlur={() => formikProps.setFieldTouched('title')}
+                        isInvalid={!!formikProps.errors.title && formikProps.touched.title}
+                      />
+                    </EuiCompressedFormRow>
+                    <EuiSpacer size="m" />
+                    <EuiCompressedFormRow
+                      label={<FormFieldHeader headerTitle={'Author'} />}
+                      fullWidth={true}
+                      isInvalid={!!formikProps.errors.author && formikProps.touched.author}
+                      error={formikProps.errors.author}
+                    >
+                      <EuiCompressedFieldText
+                        placeholder="Enter author name"
+                        value={formikProps.values.author}
+                        onChange={(e) => formikProps.setFieldValue('author', e.target.value)}
+                        onBlur={() => formikProps.setFieldTouched('author')}
+                        isInvalid={!!formikProps.errors.author && formikProps.touched.author}
+                      />
+                    </EuiCompressedFormRow>
+                    <EuiSpacer size="m" />
+                    <EuiCompressedFormRow
+                      label={<FormFieldHeader headerTitle={'Enabled'} />}
+                      fullWidth={true}
+                    >
+                      <EuiCompressedSwitch
+                        label={formikProps.values.enabled ? 'Enabled' : 'Disabled'}
+                        checked={formikProps.values.enabled}
+                        onChange={(e) => formikProps.setFieldValue('enabled', e.target.checked)}
+                      />
+                    </EuiCompressedFormRow>
+                    <EuiSpacer size="m" />
+                    <EuiCompressedFormRow
+                      label={<FormFieldHeader headerTitle={'Description'} optionalField={true} />}
+                      fullWidth={true}
+                    >
+                      <EuiCompressedTextArea
+                        placeholder="Enter a description"
+                        value={formikProps.values.description}
+                        onChange={(e) => formikProps.setFieldValue('description', e.target.value)}
+                      />
+                    </EuiCompressedFormRow>
+                    <EuiSpacer size="m" />
+                    <EuiCompressedFormRow
+                      label={<FormFieldHeader headerTitle={'Documentation'} optionalField={true} />}
+                      fullWidth={true}
+                    >
+                      <EuiCompressedFieldText
+                        placeholder="Enter documentation URL"
+                        value={formikProps.values.documentation}
+                        onChange={(e) => formikProps.setFieldValue('documentation', e.target.value)}
+                      />
+                    </EuiCompressedFormRow>
+                    <EuiSpacer size="m" />
+                    <FormFieldArray
+                      label={<FormFieldHeader headerTitle={'References'} optionalField={true} />}
+                      values={formikProps.values.references}
+                      placeholder="https://example.com/reference"
+                      addButtonLabel="Add reference"
+                      onChange={(references) => formikProps.setFieldValue('references', references)}
+                    />
+                    <FormFieldArray
+                      label={<FormFieldHeader headerTitle={'Supports'} optionalField={true} />}
+                      values={formikProps.values.supports}
+                      addButtonLabel="Add support"
+                      onChange={(supports) => formikProps.setFieldValue('supports', supports)}
+                    />
+                    <EuiCompressedFormRow
+                      label={<FormFieldHeader headerTitle={'Content'} optionalField={true} />}
+                      fullWidth={true}
+                    >
+                      <KVDBContentEditor />
+                    </EuiCompressedFormRow>
+                  </>
+                )}
+                {selectedEditorType === EDITOR_TYPE.YAML && (
+                  <YamlForm
+                    type={YAML_TYPE.KVDB}
+                    value={rawKvdb ?? ''}
+                    isInvalid={yamlError !== null || Object.keys(formikProps.errors).length > 0}
+                    errors={
+                      yamlError
+                        ? [yamlError]
+                        : Object.values(formikProps.errors).filter(
+                            (e): e is string => typeof e === 'string'
+                          )
+                    }
+                    change={(yamlStr) => {
+                      const err = validateYamlFormat(yamlStr);
+                      setYamlError(err);
+                      setRawKvdb(yamlStr);
+                      if (!err) {
+                        formikProps.setValues(mapYamlToForm(yamlStr));
+                      }
+                    }}
                   />
-                </EuiCompressedFormRow>
-                <EuiSpacer size="m" />
-                <EuiCompressedFormRow
-                  label={<FormFieldHeader headerTitle={'Author'} />}
-                  fullWidth={true}
-                  isInvalid={!!formikProps.errors.author && formikProps.touched.author}
-                  error={formikProps.errors.author}
-                >
-                  <EuiCompressedFieldText
-                    placeholder="Enter author name"
-                    value={formikProps.values.author}
-                    onChange={(e) => formikProps.setFieldValue('author', e.target.value)}
-                    onBlur={() => formikProps.setFieldTouched('author')}
-                    isInvalid={!!formikProps.errors.author && formikProps.touched.author}
-                  />
-                </EuiCompressedFormRow>
-                <EuiSpacer size="m" />
-                <EuiCompressedFormRow
-                  label={<FormFieldHeader headerTitle={'Enabled'} />}
-                  fullWidth={true}
-                >
-                  <EuiCompressedSwitch
-                    label={formikProps.values.enabled ? 'Enabled' : 'Disabled'}
-                    checked={formikProps.values.enabled}
-                    onChange={(e) => formikProps.setFieldValue('enabled', e.target.checked)}
-                  />
-                </EuiCompressedFormRow>
-                <EuiSpacer size="m" />
-                <EuiCompressedFormRow
-                  label={<FormFieldHeader headerTitle={'Description'} optionalField={true} />}
-                  fullWidth={true}
-                >
-                  <EuiCompressedTextArea
-                    placeholder="Enter a description"
-                    value={formikProps.values.description}
-                    onChange={(e) => formikProps.setFieldValue('description', e.target.value)}
-                  />
-                </EuiCompressedFormRow>
-                <EuiSpacer size="m" />
-                <EuiCompressedFormRow
-                  label={<FormFieldHeader headerTitle={'Documentation'} optionalField={true} />}
-                  fullWidth={true}
-                >
-                  <EuiCompressedFieldText
-                    placeholder="Enter documentation URL"
-                    value={formikProps.values.documentation}
-                    onChange={(e) => formikProps.setFieldValue('documentation', e.target.value)}
-                  />
-                </EuiCompressedFormRow>
-                <EuiSpacer size="m" />
-                <FormFieldArray
-                  label={<FormFieldHeader headerTitle={'References'} optionalField={true} />}
-                  values={formikProps.values.references}
-                  placeholder="https://example.com/reference"
-                  addButtonLabel="Add reference"
-                  onChange={(references) => formikProps.setFieldValue('references', references)}
-                />
-                <FormFieldArray
-                  label={<FormFieldHeader headerTitle={'Supports'} optionalField={true} />}
-                  values={formikProps.values.supports}
-                  addButtonLabel="Add support"
-                  onChange={(supports) => formikProps.setFieldValue('supports', supports)}
-                />
-                <EuiCompressedFormRow
-                  label={<FormFieldHeader headerTitle={'Content'} optionalField={true} />}
-                  fullWidth={true}
-                >
-                  <KVDBContentEditor />
-                </EuiCompressedFormRow>
+                )}
               </EuiPanel>
 
               <EuiBottomBar>
-                <EuiFlexGroup gutterSize="s" justifyContent="flexEnd" alignItems="center" responsive={false}>
+                <EuiFlexGroup
+                  gutterSize="s"
+                  justifyContent="flexEnd"
+                  alignItems="center"
+                  responsive={false}
+                >
                   <EuiFlexItem grow={false}>
                     <EuiButtonEmpty
                       color="ghost"

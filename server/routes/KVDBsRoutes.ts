@@ -60,7 +60,7 @@ export function setupKVDBsRoutes(services: NodeServices, router: IRouter) {
       path: `${API.KVDBS_BASE}`,
       validate: {
         body: schema.object({
-          resource: kvdbCreateResourceSchema,
+          resourceYaml: schema.string(),
           integrationId: schema.string(),
         }),
         query: createQueryValidationSchema(),
@@ -77,7 +77,7 @@ export function setupKVDBsRoutes(services: NodeServices, router: IRouter) {
           kvdbId: schema.string(),
         }),
         body: schema.object({
-          resource: kvdbUpdateResourceSchema,
+          resourceYaml: schema.string(),
         }),
         query: createQueryValidationSchema(),
       },
