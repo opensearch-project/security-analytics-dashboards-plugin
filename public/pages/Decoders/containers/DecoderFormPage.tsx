@@ -3,7 +3,12 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { Form, Formik } from 'formik';
 import YAML from 'yaml';
 import { decoderFormDefaultValue } from '../utils/constants';
-import { YamlForm, YAML_TYPE, mapYamlToLosslessObject } from '../../../components/YamlForm';
+import {
+  YamlForm,
+  YAML_TYPE,
+  mapYamlToLosslessObject,
+  ERROR_SEVERITY,
+} from '../../../components/YamlForm';
 import {
   errorNotificationToast,
   setBreadcrumbs,
@@ -296,6 +301,7 @@ export const DecoderFormPage: React.FC<DecoderFormPageProps> = (props) => {
 
                 {selectedEditorType === 'yaml' && (
                   <YamlForm
+                    errorSeverity={ERROR_SEVERITY.WARNING}
                     type={YAML_TYPE.DECODER}
                     value={props.values.rawDecoder}
                     isInvalid={Object.keys(props.errors).length > 0}
@@ -336,11 +342,6 @@ export const DecoderFormPage: React.FC<DecoderFormPageProps> = (props) => {
                               ? 'Select an integration to enable creating the decoder'
                               : ''}
                           </p>
-                          <p>
-                            {Object.keys(props.errors).length > 0 || hasYamlErrors
-                              ? 'Please fix the errors in the form to proceed'
-                              : ''}
-                          </p>
                         </>
                       }
                       position="top"
@@ -350,10 +351,13 @@ export const DecoderFormPage: React.FC<DecoderFormPageProps> = (props) => {
                         fill
                         iconType="check"
                         size="s"
-                        disabled={
-                          !integrationType || Object.keys(props.errors).length > 0 || hasYamlErrors
-                        }
-                        onClick={() => props.handleSubmit()}
+                        disabled={!integrationType}
+                        onClick={() => {
+                          props.setSubmitting(false);
+                          handleOnClick(
+                            mapYamlToLosslessObject<DecoderDocument>(props.values.rawDecoder)
+                          );
+                        }}
                       >
                         {actionLabels[action]} decoder
                       </EuiButton>

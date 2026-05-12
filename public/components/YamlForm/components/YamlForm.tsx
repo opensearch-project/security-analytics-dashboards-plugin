@@ -11,7 +11,18 @@ interface YamlFormProps {
   errors?: string[];
   parseDebounceMs?: number;
   onErrors?: (errors: string[] | null) => void;
+  errorSeverity?: ERROR_SEVERITY;
 }
+
+export enum ERROR_SEVERITY {
+  WARNING = 'warning',
+  ERROR = 'error',
+}
+
+const ERROR_COLOR_MAP: Record<ERROR_SEVERITY, string> = {
+  [ERROR_SEVERITY.WARNING]: 'warning',
+  [ERROR_SEVERITY.ERROR]: 'danger',
+};
 
 export const YamlForm: React.FC<YamlFormProps> = ({
   type,
@@ -21,6 +32,7 @@ export const YamlForm: React.FC<YamlFormProps> = ({
   errors,
   parseDebounceMs = 500,
   onErrors,
+  errorSeverity = ERROR_SEVERITY.ERROR,
 }) => {
   const [state, setState] = useState<YamlEditorState>({
     errors: null,
@@ -68,7 +80,11 @@ export const YamlForm: React.FC<YamlFormProps> = ({
   const renderErrors = () => {
     if (state.errors && state.errors.length > 0) {
       return (
-        <EuiCallOut size="m" color="danger" title="Please address the highlighted errors.">
+        <EuiCallOut
+          size="m"
+          color={ERROR_COLOR_MAP[errorSeverity]}
+          title="Please address the highlighted errors."
+        >
           <ul>
             {state.errors.map((error, i) => (
               <li key={i}>{error}</li>
@@ -78,7 +94,11 @@ export const YamlForm: React.FC<YamlFormProps> = ({
       );
     } else if (isInvalid && errors && errors.length > 0) {
       return (
-        <EuiCallOut size="m" color="danger" title="Please address the highlighted errors.">
+        <EuiCallOut
+          size="m"
+          color={ERROR_COLOR_MAP[errorSeverity]}
+          title="Please address the highlighted errors."
+        >
           <ul>
             {errors.map((error, i) => (
               <li key={i}>{error}</li>
