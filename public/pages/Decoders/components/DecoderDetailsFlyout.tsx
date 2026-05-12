@@ -21,22 +21,21 @@ import {
   EuiSpacer,
   EuiText,
 } from '@elastic/eui';
-import { DecoderItem } from '../../../../types';
+import { DecoderDocument, DecoderItem } from '../../../../types';
 import { DataStore } from '../../../store/DataStore';
 import { EnabledHealth } from '../../../components/Utility/EnabledHealth';
 import { Metadata, MetadataFieldType } from '../../../components/Utility/Metadata';
 import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 import { BadgeGroup } from '../../../components/Utility/BadgeGroup';
 import { stringify as LosslessStringify } from 'lossless-json';
-import { mapYamlToLosslessDecoder } from '../components/mappers';
-
+import { mapYamlToLosslessObject } from '../../../components/YamlForm';
 interface DecoderDetailsFlyoutProps {
   decoderId: string;
   space: string;
   onClose: () => void;
 }
 
-const decoderViewOptions = [
+const viewOptions = [
   {
     id: 'visual',
     label: 'Visual',
@@ -59,7 +58,7 @@ export const DecoderDetailsFlyout: React.FC<DecoderDetailsFlyoutProps> = ({
   const [decoder, setDecoder] = useState<DecoderItem | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | undefined>(undefined);
-  const [selectedView, setSelectedView] = useState(decoderViewOptions[0].id);
+  const [selectedView, setSelectedView] = useState(viewOptions[0].id);
 
   useEffect(() => {
     let isMounted = true;
@@ -99,7 +98,7 @@ export const DecoderDetailsFlyout: React.FC<DecoderDetailsFlyoutProps> = ({
     try {
       const rawYaml = typeof decoder.yaml === 'string' ? decoder.yaml : null;
       if (rawYaml) {
-        const losslessDoc = mapYamlToLosslessDecoder(rawYaml);
+        const losslessDoc = mapYamlToLosslessObject<DecoderDocument>(rawYaml);
         return LosslessStringify(losslessDoc, null, 2) ?? '';
       }
       return JSON.stringify(decoder?.document, null, 2);
@@ -131,7 +130,7 @@ export const DecoderDetailsFlyout: React.FC<DecoderDetailsFlyoutProps> = ({
           values={decoder?.document?.metadata?.supports}
         />
       ),
-      type: 'raw'
+      type: 'raw',
     },
   ];
 
@@ -214,7 +213,7 @@ export const DecoderDetailsFlyout: React.FC<DecoderDetailsFlyoutProps> = ({
               <EuiButtonGroup
                 data-test-subj="decoder-details-view-selector"
                 legend="Decoder view selector"
-                options={decoderViewOptions}
+                options={viewOptions}
                 idSelected={selectedView}
                 onChange={(id) => setSelectedView(id)}
                 isDisabled={loading || !!error || !decoder}

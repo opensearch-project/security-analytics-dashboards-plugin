@@ -39,8 +39,7 @@ import {
   successNotificationToast,
 } from '../../../utils/helpers';
 import { ContentEntry, KVDBContentEditor } from '../components/KVDBContentEditor';
-import { YamlForm, YAML_TYPE } from '../../../components/YamlForm';
-import YAML from 'yaml';
+import { YamlForm, YAML_TYPE, validateYamlSyntax } from '../../../components/YamlForm';
 import {
   kvdbFormDefaultValue,
   KVDBFormModel,
@@ -196,15 +195,6 @@ export const KVDBFormPage: React.FC<KVDBFormPageProps> = (props) => {
     [action, createKVDB, updateKVDB]
   );
 
-  const validateYamlFormat = (yaml: string): string | null => {
-    try {
-      YAML.parse(yaml);
-      return null;
-    } catch (e) {
-      return e instanceof Error ? e.message.split('\n')[0] : 'Invalid YAML syntax';
-    }
-  };
-
   const validateForm = useCallback(
     (values: KVDBFormModel) => {
       const errors: FormikErrors<KVDBFormModel> = {};
@@ -328,7 +318,7 @@ export const KVDBFormPage: React.FC<KVDBFormPageProps> = (props) => {
                       const yaml =
                         formikProps.dirty || !rawKvdb ? mapFormToYaml(formikProps.values) : rawKvdb;
                       setRawKvdb(yaml);
-                      setYamlError(validateYamlFormat(yaml));
+                      setYamlError(validateYamlSyntax(yaml));
                     } else {
                       setYamlError(null);
                     }
@@ -449,7 +439,7 @@ export const KVDBFormPage: React.FC<KVDBFormPageProps> = (props) => {
                           )
                     }
                     change={(yamlStr) => {
-                      const err = validateYamlFormat(yamlStr);
+                      const err = validateYamlSyntax(yamlStr);
                       setYamlError(err);
                       setRawKvdb(yamlStr);
                       if (!err) {

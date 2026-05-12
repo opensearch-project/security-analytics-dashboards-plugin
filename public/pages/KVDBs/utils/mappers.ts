@@ -7,7 +7,7 @@ import YAML, { Pair, Scalar, YAMLMap } from 'yaml';
 import { LosslessNumber, stringify as LosslessStringify } from 'lossless-json';
 import { KVDBMetadata, KVDBResource } from '../../../../types/KVDBs';
 import { ContentEntry } from '../components/KVDBContentEditor';
-import { mapYamlToLosslessObject, stringToYamlNode } from '../../../components/YamlForm';
+import { mapYamlToLosslessObject, stringToYamlNode, normalizeToStringArray } from '../../../components/YamlForm';
 
 export interface KVDBFormModel {
   title: string;
@@ -31,17 +31,14 @@ export const kvdbFormDefaultValue: KVDBFormModel = {
   contentEntries: [],
 };
 
-const normalizeStringArray = (value: string | string[] | undefined): string[] =>
-  Array.isArray(value) ? value : value ? [value] : [];
-
 /** Extracts shared metadata fields from a KVDBMetadata object into form fields. */
 const metadataToFormFields = (metadata: KVDBMetadata | undefined) => ({
   title: metadata?.title || '',
   author: metadata?.author || '',
   description: metadata?.description || '',
   documentation: metadata?.documentation || '',
-  references: normalizeStringArray(metadata?.references),
-  supports: normalizeStringArray(metadata?.supports),
+  references: normalizeToStringArray(metadata?.references),
+  supports: normalizeToStringArray(metadata?.supports),
 });
 
 /** Converts any content value to a display string for a form entry. */

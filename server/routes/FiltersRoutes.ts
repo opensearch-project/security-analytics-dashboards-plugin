@@ -9,24 +9,7 @@ import { NodeServices } from '../models/interfaces';
 import { API } from '../utils/constants';
 import { createQueryValidationSchema } from '../utils/helpers';
 
-const filterResourceSchema = schema.object({
-  name: schema.string(),
-  enabled: schema.maybe(schema.boolean()),
-  check: schema.maybe(schema.string()),
-  type: schema.maybe(schema.string()),
-  metadata: schema.maybe(
-    schema.object({
-      title: schema.maybe(schema.string()),
-      description: schema.maybe(schema.string()),
-      author: schema.maybe(schema.string()),
-      date: schema.maybe(schema.string()),
-      modified: schema.maybe(schema.string()),
-      references: schema.maybe(schema.arrayOf(schema.string())),
-      documentation: schema.maybe(schema.string()),
-      supports: schema.maybe(schema.arrayOf(schema.string())),
-    })
-  ),
-});
+const filterBodySchema = schema.object({ space: schema.string(), resourceYaml: schema.string() });
 
 export function setupFiltersRoutes(services: NodeServices, router: IRouter) {
   const { filtersService } = services;
@@ -46,10 +29,7 @@ export function setupFiltersRoutes(services: NodeServices, router: IRouter) {
     {
       path: `${API.FILTERS_BASE}`,
       validate: {
-        body: schema.object({
-          space: schema.string(),
-          resource: filterResourceSchema,
-        }),
+        body: filterBodySchema,
         query: createQueryValidationSchema(),
       },
     },
@@ -61,10 +41,7 @@ export function setupFiltersRoutes(services: NodeServices, router: IRouter) {
       path: `${API.FILTERS_BASE}/{filterId}`,
       validate: {
         params: schema.object({ filterId: schema.string() }),
-        body: schema.object({
-          space: schema.string(),
-          resource: filterResourceSchema,
-        }),
+        body: filterBodySchema,
         query: createQueryValidationSchema(),
       },
     },

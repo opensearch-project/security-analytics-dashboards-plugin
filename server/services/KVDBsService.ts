@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import YAML from 'yaml';
 import {
   IOpenSearchDashboardsResponse,
   OpenSearchDashboardsRequest,
@@ -20,14 +19,8 @@ import {
   UpdateKVDBPayload,
 } from '../../types';
 import { CLIENT_KVDB_METHODS, CONTENT_INDICES } from '../utils/constants';
+import { buildYamlBody } from '../utils/helpers';
 import { MDSEnabledClientService } from './MDSEnabledClientService';
-
-const buildKvdbYamlBody = (resourceYaml: string, integrationId?: string): string => {
-  const doc = new YAML.Document();
-  if (integrationId) doc.set('integration', integrationId);
-  doc.set('resource', YAML.parseDocument(resourceYaml).contents);
-  return doc.toString({ lineWidth: 0 });
-};
 
 export class KVDBsService extends MDSEnabledClientService {
   searchKVDBs = async (
@@ -129,7 +122,7 @@ export class KVDBsService extends MDSEnabledClientService {
 
       const client = this.getClient(request, context);
       const createResponse = await client(CLIENT_KVDB_METHODS.CREATE_KVDB, {
-        body: buildKvdbYamlBody(resourceYaml, integrationId),
+        body: buildYamlBody(resourceYaml, integrationId ? { integration: integrationId } : undefined),
         headers: { 'Content-Type': 'application/yaml' },
       });
 
@@ -160,7 +153,7 @@ export class KVDBsService extends MDSEnabledClientService {
 
       const client = this.getClient(request, context);
       const updateResponse = await client(CLIENT_KVDB_METHODS.UPDATE_KVDB, {
-        body: buildKvdbYamlBody(resourceYaml),
+        body: buildYamlBody(resourceYaml),
         kvdbId,
         headers: { 'Content-Type': 'application/yaml' },
       });

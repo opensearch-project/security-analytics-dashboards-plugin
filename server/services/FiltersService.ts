@@ -20,6 +20,7 @@ import {
 } from '../../types';
 import { MDSEnabledClientService } from './MDSEnabledClientService';
 import { CLIENT_FILTER_METHODS, CONTENT_INDICES } from '../utils/constants';
+import { buildYamlBody } from '../utils/helpers';
 
 export class FiltersService extends MDSEnabledClientService {
   searchFilters = async (
@@ -62,9 +63,12 @@ export class FiltersService extends MDSEnabledClientService {
     response: OpenSearchDashboardsResponseFactory
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<CUDFilterResponse> | ResponseError>> => {
     try {
-      const body = request.body as CreateFilterPayload;
+      const { resourceYaml, space } = request.body as CreateFilterPayload;
       const client = this.getClient(request, context);
-      const createResponse = await client(CLIENT_FILTER_METHODS.CREATE_FILTER, { body });
+      const createResponse = await client(CLIENT_FILTER_METHODS.CREATE_FILTER, {
+        body: buildYamlBody(resourceYaml, { space: space }),
+        headers: { 'Content-Type': 'application/yaml' },
+      });
       return response.custom({ statusCode: 200, body: { ok: true, response: createResponse } });
     } catch (error) {
       console.error('Security Analytics - FiltersService - createFilter:', error);
@@ -82,9 +86,13 @@ export class FiltersService extends MDSEnabledClientService {
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<CUDFilterResponse> | ResponseError>> => {
     try {
       const { filterId } = request.params;
-      const body = request.body as UpdateFilterPayload;
+      const { resourceYaml, space } = request.body as UpdateFilterPayload;
       const client = this.getClient(request, context);
-      const updateResponse = await client(CLIENT_FILTER_METHODS.UPDATE_FILTER, { filterId, body });
+      const updateResponse = await client(CLIENT_FILTER_METHODS.UPDATE_FILTER, {
+        filterId,
+        body: buildYamlBody(resourceYaml, { space: space }),
+        headers: { 'Content-Type': 'application/yaml' },
+      });
       return response.custom({ statusCode: 200, body: { ok: true, response: updateResponse } });
     } catch (error) {
       console.error('Security Analytics - FiltersService - updateFilter:', error);

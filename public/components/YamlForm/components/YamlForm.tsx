@@ -5,11 +5,12 @@ import { YamlEditorState, YAML_TYPE } from '../utils/constants';
 
 interface YamlFormProps {
   type: YAML_TYPE;
-  value: string | undefined;
+  value: string;
   change: React.Dispatch<string>;
   isInvalid: boolean;
   errors?: string[];
   parseDebounceMs?: number;
+  onErrors?: (errors: string[] | null) => void;
 }
 
 export const YamlForm: React.FC<YamlFormProps> = ({
@@ -19,6 +20,7 @@ export const YamlForm: React.FC<YamlFormProps> = ({
   isInvalid,
   errors,
   parseDebounceMs = 500,
+  onErrors,
 }) => {
   const [state, setState] = useState<YamlEditorState>({
     errors: null,
@@ -33,40 +35,60 @@ export const YamlForm: React.FC<YamlFormProps> = ({
     isFocusedRef.current = true;
   };
 
-  const tryParseAndNotify = (text: string) => {
-    if (!text || text.trim() === '') {
-      setState((prev) => ({ ...prev, errors: [`${type} cannot be empty`] }));
+  const tryParseAndNotify = (value: string) => {
+    if (!value || value.trim() === '') {
+      const localErrors = [`${type} cannot be empty`];
+      setState((prev) => ({ ...prev, errors: localErrors }));
+      onErrors?.(localErrors);
       return;
     }
     try {
-      change(text);
+      change(value);
       setState((prev) => ({ ...prev, errors: null }));
+      onErrors?.(null);
     } catch (err) {
-      setState((prev) => ({ ...prev, errors: ['Invalid YAML'] }));
+      const localErrors = ['Invalid YAML'];
+      setState((prev) => ({ ...prev, errors: localErrors }));
+      onErrors?.(localErrors);
       console.warn(`Security Analytics - ${type} Editor - Yaml load`, err);
     }
   };
 
-  const onChangeYaml = (text: string) => {
-    setState((prev) => ({ ...prev, value: text }));
-    if (timerRef.current) window.clearTimeout(timerRef.current);
-    timerRef.current = window.setTimeout(() => tryParseAndNotify(text), parseDebounceMs);
+  const onChangeYaml = (value: string) => {
+    setState((prev) => ({ ...prev, value }));
+    // debounce parse
+    if (timerRef.current) {
+      window.clearTimeout(timerRef.current);
+    }
+    timerRef.current = window.setTimeout(() => {
+      tryParseAndNotify(value);
+    }, parseDebounceMs);
   };
 
   const renderErrors = () => {
-    const callout = (errs: string[]) => (
-      <EuiCallOut size="m" color="danger" title="Please address the highlighted errors.">
-        <ul>
-          {errs.map((error, i) => (
-            <li key={i}>{error}</li>
-          ))}
-        </ul>
-      </EuiCallOut>
-    );
-
-    if (state.errors && state.errors.length > 0) return callout(state.errors);
-    if (isInvalid && errors && errors.length > 0) return callout(errors);
-    return null;
+    if (state.errors && state.errors.length > 0) {
+      return (
+        <EuiCallOut size="m" color="danger" title="Please address the highlighted errors.">
+          <ul>
+            {state.errors.map((error, i) => (
+              <li key={i}>{error}</li>
+            ))}
+          </ul>
+        </EuiCallOut>
+      );
+    } else if (isInvalid && errors && errors.length > 0) {
+      return (
+        <EuiCallOut size="m" color="danger" title="Please address the highlighted errors.">
+          <ul>
+            {errors.map((error, i) => (
+              <li key={i}>{error}</li>
+            ))}
+          </ul>
+        </EuiCallOut>
+      );
+    } else {
+      return null;
+    }
   };
 
   return (
@@ -89,7 +111,7 @@ export const YamlForm: React.FC<YamlFormProps> = ({
             value={state.value}
             onChange={onChangeYaml}
             onFocus={onFocus}
-            data-test-subj="yaml_editor"
+            data-test-subj={'yaml_editor'}
           />
         </>
       </EuiCompressedFormRow>

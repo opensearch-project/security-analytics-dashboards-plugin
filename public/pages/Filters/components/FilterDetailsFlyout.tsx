@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   EuiButtonGroup,
   EuiCodeBlock,
@@ -19,21 +19,32 @@ import {
   EuiSpacer,
   EuiText,
 } from '@elastic/eui';
-import { FilterItem } from '../../../../types';
+import { FilterDocument, FilterItem } from '../../../../types';
 import { Metadata } from '../../../components/Utility/Metadata';
 import { EnabledHealth } from '../../../components/Utility/EnabledHealth';
 import { BadgeGroup } from '../../../components/Utility/BadgeGroup';
 import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
-
+import { mapYamlToLosslessObject } from '../../../components/YamlForm';
+import { stringify as LosslessStringify } from 'lossless-json';
 interface FilterDetailsFlyoutProps {
   filter: FilterItem;
   onClose: () => void;
 }
 
-const editorType = {
-  visual: 'visual',
-  json: 'json',
-};
+const viewOptions = [
+  {
+    id: 'visual',
+    label: 'Visual',
+  },
+  {
+    id: 'yaml',
+    label: 'YAML',
+  },
+  {
+    id: 'json',
+    label: 'JSON',
+  },
+];
 
 /** Resolve author display: indexer sends string; legacy may send { name } */
 const getAuthorDisplay = (author: string | { name?: string } | undefined): string => {
@@ -42,8 +53,27 @@ const getAuthorDisplay = (author: string | { name?: string } | undefined): strin
   return author.name ?? '';
 };
 
+const renderCheckValue = (check: string | Array<Record<string, string>> | undefined): React.ReactNode => {
+  if (!check) return undefined;
+  if (typeof check === 'string') return check;
+  if (Array.isArray(check)) {
+    return (
+      <>
+        {check.map((entry, i) =>
+          Object.entries(entry).map(([key, val]) => (
+            <div key={`${key}-${i}`}>
+              - <strong>{key}</strong>: {String(val)}
+            </div>
+          ))
+        )}
+      </>
+    );
+  }
+  return String(check);
+};
+
 export const FilterDetailsFlyout: React.FC<FilterDetailsFlyoutProps> = ({ filter, onClose }) => {
-  const [selectedEditorType, setSelectedEditorType] = useState(editorType.visual);
+  const [selectedView, setSelectedView] = useState(viewOptions[0].id);
 
   const document = filter.document ?? {
     id: '',
@@ -57,10 +87,24 @@ export const FilterDetailsFlyout: React.FC<FilterDetailsFlyoutProps> = ({ filter
   const references = metadata.references ?? [];
   const supports = metadata.supports ?? [];
 
+  const filterJson = useMemo(() => {
+    if (!filter) return '';
+    try {
+      const rawYaml = typeof filter.yaml === 'string' ? filter.yaml : null;
+      if (rawYaml) {
+        const losslessDoc = mapYamlToLosslessObject<FilterDocument>(rawYaml);
+        return LosslessStringify(losslessDoc, null, 2) ?? '';
+      }
+      return JSON.stringify(filter?.document, null, 2);
+    } catch (err) {
+      return JSON.stringify(filter?.document, null, 2) ?? '';
+    }
+  }, [filter]);
+
   const fields: Array<{
     label: string;
     value: any;
-    type?: 'text' | 'date' | 'url';
+    type?: 'text' | 'date' | 'url' | 'raw';
   }> = [
     { label: 'Name', value: document.name },
     { label: 'Space', value: filter.space?.name },
@@ -70,14 +114,14 @@ export const FilterDetailsFlyout: React.FC<FilterDetailsFlyoutProps> = ({ filter
     { label: 'Description', value: metadata.description },
     { label: 'Created', value: metadata.date, type: 'date' },
     { label: 'Modified', value: metadata.modified, type: 'date' },
-    { label: 'Supports', value: <BadgeGroup emptyValue={DEFAULT_EMPTY_DATA} values={supports} /> },
-    { label: 'Check', value: document.check },
+    { label: 'Supports', value: <BadgeGroup emptyValue={DEFAULT_EMPTY_DATA} values={supports} />, type: 'raw' },
+    { label: 'Check', value: renderCheckValue(document.check as any), type: 'raw' },
     { label: 'Documentation', value: metadata.documentation, type: 'url' },
     { label: 'SHA256', value: filter.hash?.sha256 },
     { label: 'References', value: references, type: 'url' },
   ];
 
-  const visualTab = (
+  const visualContent = (
     <EuiFlexGrid columns={2}>
       {fields.map(({ label, value, type = 'text' }) => (
         <EuiFlexItem key={label}>
@@ -87,11 +131,30 @@ export const FilterDetailsFlyout: React.FC<FilterDetailsFlyoutProps> = ({ filter
     </EuiFlexGrid>
   );
 
-  const jsonTab = (
-    <EuiCodeBlock language={editorType.json} isCopyable={true} paddingSize="m">
-      {JSON.stringify(document, null, 2)}
+  const jsonContent = (
+    <EuiCodeBlock language="json" isCopyable={true} paddingSize="m">
+      {filterJson}
     </EuiCodeBlock>
   );
+
+  const yamlContent = (
+    <EuiCodeBlock language="yaml" isCopyable={true}>
+      {filter.yaml}
+    </EuiCodeBlock>
+  );
+
+  const renderContent = () => {
+    if (!document) {
+      return null;
+    }
+    if (selectedView === 'yaml') {
+      return yamlContent;
+    }
+    if (selectedView === 'json') {
+      return jsonContent;
+    }
+    return visualContent;
+  };
 
   return (
     <EuiFlyout onClose={onClose} hideCloseButton ownFocus size="m">
@@ -121,12 +184,9 @@ export const FilterDetailsFlyout: React.FC<FilterDetailsFlyoutProps> = ({ filter
               <EuiButtonGroup
                 data-test-subj="change-editor-type"
                 legend="This is editor type selector"
-                options={[
-                  { id: editorType.visual, label: 'Visual' },
-                  { id: editorType.json, label: 'JSON' },
-                ]}
-                idSelected={selectedEditorType}
-                onChange={(id) => setSelectedEditorType(id)}
+                options={viewOptions}
+                idSelected={selectedView}
+                onChange={(id) => setSelectedView(id)}
               />
             </EuiFlexItem>
             <EuiFlexItem>
@@ -134,7 +194,7 @@ export const FilterDetailsFlyout: React.FC<FilterDetailsFlyoutProps> = ({ filter
             </EuiFlexItem>
           </EuiFlexGroup>
           <EuiSpacer size="xl" />
-          {selectedEditorType === editorType.visual ? visualTab : jsonTab}
+          {renderContent()}
         </EuiModalBody>
       </EuiFlyoutBody>
     </EuiFlyout>

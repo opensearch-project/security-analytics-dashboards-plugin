@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { Form, Formik } from 'formik';
 import YAML from 'yaml';
-import { decoderFormDefaultValue, mapYamlToLosslessDecoder } from '../components/mappers';
-import { YamlForm } from '../components/YamlForm';
+import { decoderFormDefaultValue } from '../utils/constants';
+import { YamlForm, YAML_TYPE, mapYamlToLosslessObject } from '../../../components/YamlForm';
 import {
   errorNotificationToast,
   setBreadcrumbs,
@@ -79,7 +79,7 @@ export const DecoderFormPage: React.FC<DecoderFormPageProps> = (props) => {
         try {
           const response = await DataStore.decoders.getDecoder(idDecoder, spaceDecoder);
           setRawDecoder(response?.yaml ?? decoderFormDefaultValue);
-          setDecoder(mapYamlToLosslessDecoder(response?.yaml ?? ''));
+          setDecoder(mapYamlToLosslessObject<DecoderDocument>(response?.yaml ?? ''));
           setIntegrationType(response?.integrations?.[0] || '');
           setBreadcrumbs([
             BREADCRUMBS.NORMALIZATION,
@@ -211,20 +211,23 @@ export const DecoderFormPage: React.FC<DecoderFormPageProps> = (props) => {
     [action, createDecoder, updateDecoder]
   );
 
-  const validateForm = useCallback((values: { rawDecoder: string }) => {
-    // FIXME: This is making a transformation on each detected change in the yaml form, this could create a lot of overhead
-    let decoder: object;
-    try {
-      decoder = YAML.parse(values.rawDecoder);
-    } catch (e) {
-      const msg = e instanceof Error ? e.message.split('\n')[0] : 'Invalid YAML syntax';
-      return { rawDecoder: msg };
-    }
-    const skippedFields = action === 'create' ? ['id'] : [];
-    return validateWithJsonSchema(decoderSchema, decoder, {
-      skipRequired: skippedFields,
-    });
-  }, [action]);
+  const validateForm = useCallback(
+    (values: { rawDecoder: string }) => {
+      // FIXME: This is making a transformation on each detected change in the yaml form, this could create a lot of overhead
+      let decoder: object;
+      try {
+        decoder = YAML.parse(values.rawDecoder);
+      } catch (e) {
+        const msg = e instanceof Error ? e.message.split('\n')[0] : 'Invalid YAML syntax';
+        return { rawDecoder: msg };
+      }
+      const skippedFields = action === 'create' ? ['id'] : [];
+      return validateWithJsonSchema(decoderSchema, decoder, {
+        skipRequired: skippedFields,
+      });
+    },
+    [action]
+  );
 
   return (
     <>
@@ -245,7 +248,7 @@ export const DecoderFormPage: React.FC<DecoderFormPageProps> = (props) => {
           validate={validateForm}
           onSubmit={(values, { setSubmitting }) => {
             setSubmitting(false);
-            handleOnClick(mapYamlToLosslessDecoder(values.rawDecoder));
+            handleOnClick(mapYamlToLosslessObject<DecoderDocument>(values.rawDecoder));
           }}
         >
           {(props) => (
@@ -293,7 +296,8 @@ export const DecoderFormPage: React.FC<DecoderFormPageProps> = (props) => {
 
                 {selectedEditorType === 'yaml' && (
                   <YamlForm
-                    rawDecoder={props.values.rawDecoder}
+                    type={YAML_TYPE.DECODER}
+                    value={props.values.rawDecoder}
                     isInvalid={Object.keys(props.errors).length > 0}
                     errors={Object.keys(props.errors).map(
                       (key) => (props.errors as Record<string, string>)[key]
@@ -347,9 +351,7 @@ export const DecoderFormPage: React.FC<DecoderFormPageProps> = (props) => {
                         iconType="check"
                         size="s"
                         disabled={
-                          !integrationType ||
-                          Object.keys(props.errors).length > 0 ||
-                          hasYamlErrors
+                          !integrationType || Object.keys(props.errors).length > 0 || hasYamlErrors
                         }
                         onClick={() => props.handleSubmit()}
                       >

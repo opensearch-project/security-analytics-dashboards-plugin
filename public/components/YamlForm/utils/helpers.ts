@@ -15,11 +15,17 @@ export const stringToYamlNode = (rawValue: string): Scalar | YAMLMap | YAMLSeq =
       if (!parsed.errors.length && parsed.contents) {
         const node = parsed.contents as YAMLMap | YAMLSeq;
         YAML.visit(node, {
-          Map(_, n) { n.flow = false; },
-          Seq(_, n) { n.flow = false; },
+          Map(_, n) {
+            n.flow = false;
+          },
+          Seq(_, n) {
+            n.flow = false;
+          },
           Pair(_, n) {
-            if (n.key instanceof Scalar &&
-                (n.key.type === 'QUOTE_DOUBLE' || n.key.type === 'QUOTE_SINGLE')) {
+            if (
+              n.key instanceof Scalar &&
+              (n.key.type === 'QUOTE_DOUBLE' || n.key.type === 'QUOTE_SINGLE')
+            ) {
               n.key.type = null;
             }
           },
@@ -63,4 +69,28 @@ export const mapYamlToLosslessObject = <T>(yamlString: string): T => {
   });
 
   return yamlObject.toJS() as T;
+};
+
+/**
+ * Normalizes metadata string arrays from lossless-parsed YAML.
+ * Handles: undefined → [], bare string → [string], and converts any
+ * LosslessNumber or other non-string items to their string representation.
+ */
+export const normalizeToStringArray = (value: unknown[] | string | undefined): string[] => {
+  if (!value) return [];
+  const arr = Array.isArray(value) ? value : [value];
+  return arr.map((item) => {
+    if (typeof item === 'string') return item;
+    if (item instanceof LosslessNumber) return item.toString();
+    return String(item ?? '');
+  });
+};
+
+export const validateYamlSyntax = (yaml: string): string | null => {
+  try {
+    YAML.parse(yaml);
+    return null;
+  } catch (e) {
+    return e instanceof Error ? e.message.split('\n')[0] : 'Invalid YAML syntax';
+  }
 };
