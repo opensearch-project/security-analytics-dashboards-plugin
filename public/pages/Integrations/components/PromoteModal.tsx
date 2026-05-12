@@ -17,13 +17,19 @@ import React, { useState, useMemo } from 'react';
 import { GetPromoteBySpaceResponse, PromoteChangeGroup, PromoteSpaces } from '../../../../types';
 import { getNextSpace } from '../../../../common/helpers';
 import { PromoteChangeDiff } from './PromoteChangeDiff';
-import { PROMOTE_ENTITIES_LABELS, PROMOTE_ENTITIES_ORDER } from '../../../utils/constants';
+import { PROMOTE_ENTITIES_LABELS, PROMOTE_ENTITIES_ORDER, ROUTES } from '../../../utils/constants';
+import { DataStore } from '../../../store/DataStore';
+import { successNotificationToast } from '../../../utils/helpers';
+import { isRootDecoderRequiementError, RootDecoderRequirement } from './RootDecoderRequirement';
+import { NotificationsStart } from 'opensearch-dashboards/public';
+import { RouteComponentProps } from 'react-router-dom';
 
 export interface PromoteBySpaceModalProps {
   promote: GetPromoteBySpaceResponse['response'];
   closeModal: () => void;
-  onConfirm: () => boolean;
   space: PromoteSpaces;
+  notifications: NotificationsStart
+  history: RouteComponentProps['history']
 }
 
 const PromoteEntity: React.FC<{
@@ -55,20 +61,37 @@ const PromoteEntity: React.FC<{
   );
 };
 
+const expectedConfirmActionText = 'promote';
 export const PromoteBySpaceModal: React.FC<PromoteBySpaceModalProps> = ({
   closeModal,
-  onConfirm,
   promote,
   space,
+  notifications,
+  history
 }) => {
   const [confirmActionText, setconfirmActionText] = useState('');
+  const [requireRootDecoderError, setRequireRootDecoderError] = useState(false);
+
+  const onConfirmPromote = async () => {
+    // TODO: generate promote payload based on the selected entities to promote. For now, we are promoting all the entities.
+    const [success, error] = await DataStore.integrations.promoteIntegration({
+      space,
+      changes: promote.promote.changes,
+    });
+    if (success) {
+      successNotificationToast(notifications, 'promoted', `[${space}] space`);
+      history.push(ROUTES.INTEGRATIONS);
+    }else if(isRootDecoderRequiementError(error)){
+      setRequireRootDecoderError(true)
+    }
+    return success;
+  };
 
   const onConfirmClick = async () => {
     // Generate promote payload
-    (await onConfirm()) && closeModal();
+    (await onConfirmPromote()) && closeModal();
+    
   };
-
-  const expectedConfirmActionText = 'promote';
 
   const nextSpace = getNextSpace(space);
 
@@ -88,7 +111,7 @@ export const PromoteBySpaceModal: React.FC<PromoteBySpaceModalProps> = ({
         confirmButtonText={`Promote`}
         buttonColor={'primary'}
         defaultFocusedButton="confirm"
-        confirmButtonDisabled={confirmActionText !== expectedConfirmActionText}
+        confirmButtonDisabled={confirmActionText !== expectedConfirmActionText && !requireRootDecoderError}
       >
         <EuiForm>
           <p>
@@ -110,7 +133,15 @@ export const PromoteBySpaceModal: React.FC<PromoteBySpaceModalProps> = ({
             return null;
           })}
 
-          <EuiSpacer size="m" />
+          {
+            requireRootDecoderError && (
+              <>
+                <RootDecoderRequirement space={space} onSucess={() => setRequireRootDecoderError(false)}/>
+                <EuiSpacer size="m" />
+              </>
+            )
+          }
+
           <p style={{ marginBottom: '0.3rem' }}>
             <EuiText size="s">Type {<b>{expectedConfirmActionText}</b>} to confirm</EuiText>
           </p>

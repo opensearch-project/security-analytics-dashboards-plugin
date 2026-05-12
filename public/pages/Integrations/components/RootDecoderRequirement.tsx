@@ -276,7 +276,7 @@ const Callout: React.FC<CalloutProps> = ({
 };
 
 export const withRootDecoderRequirementGuard: (Component: React.FC) => React.FC = withGuardAsync(
-  async ({ space }) => {
+  async ({ space, onSuccess }) => {
     try {
       const response = await DataStore.policies.searchPolicies(space);
 
@@ -286,6 +286,10 @@ export const withRootDecoderRequirementGuard: (Component: React.FC) => React.FC 
       let rootDecoder;
       if (rootDecoderId) {
         rootDecoder = await DataStore.decoders.getDecoder(rootDecoderId, space);
+      }
+
+      if (onSuccess && rootDecoder){
+        onSuccess()
       }
 
       return {
@@ -299,7 +303,7 @@ export const withRootDecoderRequirementGuard: (Component: React.FC) => React.FC 
   Callout
 );
 
-export const RootDecoderRequirement: React.FC<CalloutProps> = withRootDecoderRequirementGuard(
+export const RootDecoderRequirement: React.FC<{space: UserSpace, onSucess?: () => void}> = withRootDecoderRequirementGuard(
   ({ error }: { error: Error }) => {
     return error ? <EuiText color="danger">Error loading root decoder requirement</EuiText> : null;
   }
@@ -319,3 +323,7 @@ export const withConditionalHOC = (
     };
   };
 };
+
+export function isRootDecoderRequiementError(error){
+  return error.includes('root_decoder') // TODO: change taking into account the real 
+}

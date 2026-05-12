@@ -267,7 +267,7 @@ export class IntegrationStore {
       errorNotificationToast(this.notifications, 'promote', 'integration', promoteRes.error);
     }
 
-    return promoteRes.ok;
+    return [promoteRes.ok, promoteRes.error];
   }
 
   /**

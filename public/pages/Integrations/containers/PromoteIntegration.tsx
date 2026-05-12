@@ -29,10 +29,6 @@ import { PromoteBySpaceModal } from '../components/PromoteModal';
 import { GetPromoteBySpaceResponse, PromoteChangeGroup, PromoteSpaces } from '../../../../types';
 import { SPACE_ACTIONS } from '../../../../common/constants';
 import { compose } from 'redux';
-import {
-  withConditionalHOC,
-  withRootDecoderRequirementGuard,
-} from '../components/RootDecoderRequirement';
 import { actionIsAllowedOnSpace, getNextSpace } from '../../../../common/helpers';
 import { PromoteChangeDiff } from '../components/PromoteChangeDiff';
 
@@ -71,9 +67,6 @@ const PromoteEntity: React.FC<{
 };
 
 const PromoteBySpace: React.FC<{ space: PromoteSpaces }> = compose(
-  withConditionalHOC((props) => {
-    return actionIsAllowedOnSpace(props.space, SPACE_ACTIONS.DEFINE_ROOT_DECODER);
-  }, withRootDecoderRequirementGuard), // This guard is added to make sure that the user has a root decoder defined before promoting, as it is a requirement for the promotion. If the user doesn't have a root decoder defined, it will show a message to the user to define a root decoder before promoting.
   withGuardAsync(
     async ({ space }) => {
       try {
@@ -117,19 +110,6 @@ const PromoteBySpace: React.FC<{ space: PromoteSpaces }> = compose(
         (items) => items.length > 0
       );
 
-      const onConfirmPromote = async () => {
-        // TODO: generate promote payload based on the selected entities to promote. For now, we are promoting all the entities.
-        const success = await DataStore.integrations.promoteIntegration({
-          space,
-          changes: promoteData.promote.changes,
-        });
-        if (success) {
-          successNotificationToast(notifications, 'promoted', `[${space}] space`);
-          history.push(ROUTES.INTEGRATIONS);
-        }
-        return success;
-      };
-
       if (!hasPromotions) {
         return <EuiText>There is nothing to promote.</EuiText>;
       }
@@ -140,7 +120,8 @@ const PromoteBySpace: React.FC<{ space: PromoteSpaces }> = compose(
             <PromoteBySpaceModal
               closeModal={() => setModalIsOpen(false)}
               promote={promoteData}
-              onConfirm={onConfirmPromote}
+              notifications={notifications}
+              history={history}
               space={space}
             ></PromoteBySpaceModal>
           )}
