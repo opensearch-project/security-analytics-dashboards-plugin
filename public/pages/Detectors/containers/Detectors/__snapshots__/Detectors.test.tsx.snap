@@ -307,6 +307,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                             "unit": "MINUTES",
                           },
                         },
+                        "source": "custom",
                         "triggers": Array [
                           Object {
                             "actions": Array [
@@ -1531,6 +1532,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                 "unit": "MINUTES",
                               },
                             },
+                            "source": "custom",
                             "triggers": Array [
                               Object {
                                 "actions": Array [

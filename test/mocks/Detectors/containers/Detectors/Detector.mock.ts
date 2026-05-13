@@ -16,6 +16,7 @@ export default {
   name: 'detector_name',
   enabled: true,
   createdBy: 'someone',
+  source: 'custom',
   schedule: periodScheduleMock,
   inputs: [detectorInputMock],
   triggers: times(2, (index) => {
