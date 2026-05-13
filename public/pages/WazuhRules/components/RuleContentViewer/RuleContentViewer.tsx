@@ -21,7 +21,7 @@ import { EnabledHealth } from '../../../../components/Utility/EnabledHealth';
 import React, { useState } from 'react';
 import { DEFAULT_EMPTY_DATA } from '../../../../utils/constants';
 import { RuleItemInfoBase } from '../../../../../types';
-import { Metadata } from '../../../../components/Utility/Metadata';
+import { Metadata, MetadataFieldType } from '../../../../components/Utility/Metadata';
 import { BadgeGroup } from '../../../../components/Utility/BadgeGroup';
 import { getSeverityBadge } from '../../../../utils/helpers';
 import { RuleContentYamlViewer } from './RuleContentYamlViewer';
@@ -64,7 +64,7 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
   const metadataFields: Array<{
     label: string;
     value: any;
-    type?: 'text' | 'date' | 'url';
+    type?: MetadataFieldType;
   }> = [
     { label: 'Space', value: space },
     { label: 'Integration', value: integration?.document?.metadata?.title },
@@ -74,12 +74,13 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
     { label: 'Description', value: ruleData.metadata?.description },
     { label: 'Date', value: ruleData.metadata?.date, type: 'date' },
     { label: 'Modified', value: ruleData.metadata?.modified, type: 'date' },
-    { label: 'Rule level', value: getSeverityBadge(ruleData.level) },
+    { label: 'Rule level', value: getSeverityBadge(ruleData.level), type: 'raw' },
     { label: 'Rule status', value: ruleData.status },
     { label: 'Documentation', value: ruleData.metadata?.documentation, type: 'url' },
     {
       label: 'Supports',
       value: <BadgeGroup emptyValue={DEFAULT_EMPTY_DATA} values={ruleData.metadata?.supports} />,
+      type: 'raw',
     },
     { label: 'References', value: ruleData.metadata?.references?.map((r: any) => r), type: 'url' },
   ];
