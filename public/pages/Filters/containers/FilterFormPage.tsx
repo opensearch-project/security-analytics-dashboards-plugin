@@ -23,6 +23,7 @@ import {
   EuiSpacer,
   EuiText,
   EuiToolTip,
+  EuiCodeEditor,
 } from '@elastic/eui';
 import { FormFieldArray } from '../../../components/FormFieldArray';
 import { Form, Formik, FormikErrors } from 'formik';
@@ -45,6 +46,7 @@ import {
   mapFilterToForm,
   mapYamlToForm,
   mapFormToYaml,
+  parseCheckYaml,
 } from '../utils/mappers';
 import { FILTER_TYPE_OPTIONS } from '../utils/constants';
 import { YamlForm, YAML_TYPE, validateYamlSyntax } from '../../../components/YamlForm';
@@ -81,6 +83,17 @@ type FilterFormPageProps = {
   action: FilterAction;
   match: { params: { id?: string } };
 };
+
+const checkHelpPreStyle: React.CSSProperties = { margin: '4px 0 0 0' };
+const checkEditorOptions = { tabSize: 2, useSoftTabs: true, showPrintMargin: false };
+
+const checkHelpText = (
+  <div style={{ maxWidth: '600px' }}>
+    Expression evaluated to determine if the filter applies (e.g.{' '}
+    <code>$host.os.platform == 'ubuntu'</code>) or a list of field/value pairs:
+    <pre style={checkHelpPreStyle}>{`- host.os.platform: ubuntu\n- host.os.type: linux`}</pre>
+  </div>
+);
 
 export const FilterFormPage: React.FC<FilterFormPageProps> = ({
   notifications,
@@ -139,7 +152,8 @@ export const FilterFormPage: React.FC<FilterFormPageProps> = ({
       errors.name = 'Must follow the pattern filter/<name>/<version> (e.g. filter/prefilter/0).';
     }
     if (!values.type) errors.type = 'Type is required';
-    if (!values.check.trim()) errors.check = 'Check expression is required';
+    const checkResult = parseCheckYaml(values.check);
+    if (!checkResult.ok) errors.check = checkResult.error;
     if (!values.author.trim()) errors.author = 'Author is required';
     return errors;
   }, []);
@@ -264,7 +278,7 @@ export const FilterFormPage: React.FC<FilterFormPageProps> = ({
                     legend="Editor type selector"
                     options={editorTypes}
                     idSelected={selectedEditorType}
-                    onChange={(id) => onEditorTypeChange(id as EditorType)}
+                    onChange={(id: string) => onEditorTypeChange(id as EditorType)}
                   />
                   <EuiSpacer size="xl" />
 
@@ -350,19 +364,22 @@ export const FilterFormPage: React.FC<FilterFormPageProps> = ({
                       <EuiSpacer size="m" />
 
                       <EuiCompressedFormRow
-                        label={'Check expression'}
+                        label={'Check'}
                         fullWidth
                         isInvalid={!!errors.check && touched.check}
                         error={errors.check}
-                        helpText="Expression evaluated to determine if the filter applies (e.g. $host.os.platform == 'ubuntu')"
+                        helpText={checkHelpText}
                       >
-                        <EuiCompressedTextArea
-                          placeholder="$host.os.platform == 'ubuntu'"
+                        <EuiCodeEditor
+                          mode="yaml"
+                          width="600px"
+                          height="160px"
                           value={values.check}
-                          onChange={(e) => setFieldValue('check', e.target.value)}
+                          onChange={(value: string) => setFieldValue('check', value)}
                           onBlur={() => setFieldTouched('check')}
-                          isInvalid={!!errors.check && touched.check}
-                          rows={3}
+                          setOptions={checkEditorOptions}
+                          data-test-subj="filter-check-yaml-editor"
+                          aria-label="Check YAML editor"
                         />
                       </EuiCompressedFormRow>
                       <EuiSpacer size="m" />

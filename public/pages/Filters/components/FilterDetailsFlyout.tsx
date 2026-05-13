@@ -26,6 +26,7 @@ import { BadgeGroup } from '../../../components/Utility/BadgeGroup';
 import { DEFAULT_EMPTY_DATA } from '../../../utils/constants';
 import { mapYamlToLosslessObject } from '../../../components/YamlForm';
 import { stringify as LosslessStringify } from 'lossless-json';
+import { checkToFormString } from '../utils/mappers';
 interface FilterDetailsFlyoutProps {
   filter: FilterItem;
   onClose: () => void;
@@ -53,25 +54,6 @@ const getAuthorDisplay = (author: string | { name?: string } | undefined): strin
   return author.name ?? '';
 };
 
-const renderCheckValue = (check: string | Array<Record<string, string>> | undefined): React.ReactNode => {
-  if (!check) return undefined;
-  if (typeof check === 'string') return check;
-  if (Array.isArray(check)) {
-    return (
-      <>
-        {check.map((entry, i) =>
-          Object.entries(entry).map(([key, val]) => (
-            <div key={`${key}-${i}`}>
-              - <strong>{key}</strong>: {String(val)}
-            </div>
-          ))
-        )}
-      </>
-    );
-  }
-  return String(check);
-};
-
 export const FilterDetailsFlyout: React.FC<FilterDetailsFlyoutProps> = ({ filter, onClose }) => {
   const [selectedView, setSelectedView] = useState(viewOptions[0].id);
 
@@ -87,19 +69,29 @@ export const FilterDetailsFlyout: React.FC<FilterDetailsFlyoutProps> = ({ filter
   const references = metadata.references ?? [];
   const supports = metadata.supports ?? [];
 
-  const filterJson = useMemo(() => {
-    if (!filter) return '';
-    try {
-      const rawYaml = typeof filter.yaml === 'string' ? filter.yaml : null;
-      if (rawYaml) {
-        const losslessDoc = mapYamlToLosslessObject<FilterDocument>(rawYaml);
-        return LosslessStringify(losslessDoc, null, 2) ?? '';
-      }
-      return JSON.stringify(filter?.document, null, 2);
-    } catch (err) {
-      return JSON.stringify(filter?.document, null, 2) ?? '';
+  const { filterJson, checkDisplayYaml } = useMemo(() => {
+    const fallbackJson = () => JSON.stringify(filter?.document ?? {}, null, 2);
+    const fallbackCheck = () => checkToFormString(document.check);
+
+    if (!filter) {
+      return { filterJson: '', checkDisplayYaml: fallbackCheck() };
     }
-  }, [filter]);
+
+    const rawYaml = typeof filter.yaml === 'string' ? filter.yaml : '';
+    if (!rawYaml.trim()) {
+      return { filterJson: fallbackJson(), checkDisplayYaml: fallbackCheck() };
+    }
+
+    try {
+      const losslessDoc = mapYamlToLosslessObject<FilterDocument>(rawYaml);
+      return {
+        filterJson: LosslessStringify(losslessDoc, null, 2) ?? '',
+        checkDisplayYaml: checkToFormString(losslessDoc?.check ?? document.check),
+      };
+    } catch {
+      return { filterJson: fallbackJson(), checkDisplayYaml: fallbackCheck() };
+    }
+  }, [filter, document.check]);
 
   const fields: Array<{
     label: string;
@@ -115,7 +107,11 @@ export const FilterDetailsFlyout: React.FC<FilterDetailsFlyoutProps> = ({ filter
     { label: 'Created', value: metadata.date, type: 'date' },
     { label: 'Modified', value: metadata.modified, type: 'date' },
     { label: 'Supports', value: <BadgeGroup emptyValue={DEFAULT_EMPTY_DATA} values={supports} />, type: 'raw' },
-    { label: 'Check', value: renderCheckValue(document.check as any), type: 'raw' },
+    { label: 'Check', value: (
+      <EuiCodeBlock language="yaml" fontSize="s" paddingSize="s" isCopyable>
+        {checkDisplayYaml}
+      </EuiCodeBlock>
+    ), type: 'raw' },
     { label: 'Documentation', value: metadata.documentation, type: 'url' },
     { label: 'SHA256', value: filter.hash?.sha256 },
     { label: 'References', value: references, type: 'url' },
@@ -186,7 +182,7 @@ export const FilterDetailsFlyout: React.FC<FilterDetailsFlyoutProps> = ({ filter
                 legend="This is editor type selector"
                 options={viewOptions}
                 idSelected={selectedView}
-                onChange={(id) => setSelectedView(id)}
+                onChange={(id: string) => setSelectedView(id)}
               />
             </EuiFlexItem>
             <EuiFlexItem>

@@ -3,11 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
+export type FilterCheckListItem = Record<string, unknown>;
+export type FilterCheck = string | FilterCheckListItem[];
+
 export interface FilterDocument {
   id: string;
   name: string;
   type: string;
-  check: string;
+  check: FilterCheck;
   enabled: boolean;
   metadata?: {
     title?: string;
@@ -50,7 +53,7 @@ export interface FilterSearchResponse {
 export interface FilterResource {
   name: string;
   enabled: boolean;
-  check: string;
+  check: FilterCheck;
   type: string;
   metadata?: {
     title?: string;
