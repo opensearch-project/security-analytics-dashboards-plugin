@@ -77,9 +77,21 @@ export default class DetectorDataSource extends Component<
     const res = await getDataSources(this.props.indexService, this.props.notifications);
 
     if (res.ok) {
+      const WAZUH_EVENTS_PREFIX = 'wazuh-events-';
+      const filteredDataSources = (res.dataSources as any[])
+        .map((group) => ({
+          ...group,
+          options: (group.options || []).filter(
+            (opt: { label: string; index?: string }) =>
+              opt.label?.startsWith(WAZUH_EVENTS_PREFIX) ||
+              !!opt.index?.startsWith(WAZUH_EVENTS_PREFIX)
+          ),
+        }))
+        .filter((group) => group.options.length > 0);
+
       this.setState({
         loading: false,
-        indexOptions: res.dataSources,
+        indexOptions: filteredDataSources,
       });
     } else {
       this.setState({ loading: false, errorMessage: res.error });

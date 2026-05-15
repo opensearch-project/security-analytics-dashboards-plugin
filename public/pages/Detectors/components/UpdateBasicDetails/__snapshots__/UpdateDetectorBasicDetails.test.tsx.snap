@@ -821,14 +821,7 @@ exports[`<UpdateDetectorBasicDetails /> spec renders the component 1`] = `
                 onChange={[Function]}
                 onCreateOption={[Function]}
                 onFocus={[Function]}
-                options={
-                  Array [
-                    Object {
-                      "label": "Aliases",
-                      "options": Array [],
-                    },
-                  ]
-                }
+                options={Array []}
                 placeholder="Select an input source for the detector."
                 renderOption={[Function]}
                 selectedOptions={
