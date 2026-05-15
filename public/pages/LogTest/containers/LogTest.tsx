@@ -5,6 +5,7 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
+  EuiCallOut,
   EuiFlexGroup,
   EuiFlexItem,
   EuiPanel,
@@ -16,6 +17,7 @@ import {
 import { RouteComponentProps } from 'react-router-dom';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { PageHeader } from '../../../components/PageHeader/PageHeader';
+import { SpaceSelector } from '../../../components/SpaceSelector/SpaceSelector';
 import { errorNotificationToast, setBreadcrumbs } from '../../../utils/helpers';
 import { BREADCRUMBS } from '../../../utils/constants';
 import { DataStore } from '../../../store/DataStore';
@@ -29,6 +31,12 @@ import {
 } from '../components/LogTestForm';
 import { LogTestResult } from '../components/LogTestResult';
 import { MetadataEntry, buildMetadataObject } from '../utils';
+
+const LOG_TEST_SPACE_OPTIONS = [
+  SpaceTypes.TEST.value,
+  SpaceTypes.CUSTOM.value,
+  SpaceTypes.STANDARD.value,
+];
 
 const INITIAL_FORM_DATA: LogTestFormData = {
   queue: undefined,
@@ -117,7 +125,7 @@ export const LogTest: React.FC<LogTestProps> = ({ notifications }) => {
     setFormData((prev) => (prev.integration ? { ...prev, integration: '' } : prev));
   }, [formData.space]);
 
-  const disabledSpaces = useMemo(
+  const disabledSpaces = useMemo<string[]>(
     () => INITIAL_SPACE_OPTIONS.filter((o) => spaceCache[o.id]?.enabled === false).map((o) => o.id),
     [spaceCache]
   );
@@ -198,9 +206,21 @@ export const LogTest: React.FC<LogTestProps> = ({ notifications }) => {
     <EuiFlexGroup direction="column" gutterSize="m">
       <EuiFlexItem grow={false}>
         <PageHeader>
-          <EuiText size="s">
-            <h1>Log Test</h1>
-          </EuiText>
+          <EuiFlexGroup alignItems="center" justifyContent="spaceBetween" gutterSize="m">
+            <EuiFlexItem>
+              <EuiText size="s">
+                <h1>Log Test</h1>
+              </EuiText>
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <SpaceSelector
+                selectedSpace={formData.space}
+                onSpaceChange={(id) => handleFormChange('space', id)}
+                isDisabled={isLoading}
+                allowedSpaces={LOG_TEST_SPACE_OPTIONS}
+              />
+            </EuiFlexItem>
+          </EuiFlexGroup>
         </PageHeader>
       </EuiFlexItem>
 
@@ -208,13 +228,23 @@ export const LogTest: React.FC<LogTestProps> = ({ notifications }) => {
 
       <EuiFlexItem>
         <EuiPanel>
+          {disabledSpaces.includes(formData.space) && (
+            <>
+              <EuiCallOut
+                size="s"
+                color="warning"
+                iconType="alert"
+                title="This space is disabled. Log test execution will fail."
+              />
+              <EuiSpacer size="m" />
+            </>
+          )}
           <LogTestForm
             formData={formData}
             errors={errors}
             onFormChange={handleFormChange}
             onMetadataFieldsChange={handleMetadataFieldsChange}
             integrationOptions={integrationOptions}
-            disabledSpaces={disabledSpaces}
             disabled={isLoading}
           />
 

@@ -14,20 +14,16 @@ import {
   EuiSpacer,
   EuiSelect,
   EuiTitle,
-  EuiCallOut,
 } from '@elastic/eui';
 import { LogTestTraceLevel } from '../../../../types';
 import { MetadataEntry } from '../utils';
 import { MetadataFieldsEditor } from './MetadataFieldsEditor';
-import { SpaceSelector } from '../../../components/SpaceSelector/SpaceSelector';
 
 const TRACE_LEVEL_OPTIONS: Array<{ value: LogTestTraceLevel; text: string }> = [
   { value: 'NONE', text: 'None' },
   { value: 'ASSET_ONLY', text: 'Asset only' },
   { value: 'ALL', text: 'All' },
 ];
-
-const LOG_TEST_SPACE_OPTIONS = ['test', 'custom', 'standard'];
 
 export interface LogTestIntegrationOption {
   id: string;
@@ -57,7 +53,6 @@ export interface LogTestFormProps {
   onFormChange: (field: keyof LogTestFormData, value: any) => void;
   onMetadataFieldsChange: (fields: MetadataEntry[]) => void;
   integrationOptions: LogTestIntegrationOption[];
-  disabledSpaces?: string[];
   disabled?: boolean;
 }
 
@@ -67,7 +62,6 @@ export const LogTestForm: React.FC<LogTestFormProps> = ({
   onFormChange,
   onMetadataFieldsChange,
   integrationOptions,
-  disabledSpaces = [],
   disabled = false,
 }) => {
 
@@ -85,21 +79,6 @@ export const LogTestForm: React.FC<LogTestFormProps> = ({
         <h3>Normalization</h3>
       </EuiTitle>
       <EuiSpacer size="s" />
-      <SpaceSelector
-        selectedSpace={formData.space}
-        onSpaceChange={(id) => onFormChange('space', id)}
-        isDisabled={disabled}
-        allowedSpaces={LOG_TEST_SPACE_OPTIONS}
-      />
-      {disabledSpaces.includes(formData.space) && (
-        <>
-          <EuiSpacer size="s" />
-          <EuiCallOut size="s" color="warning" iconType="alert"
-            title="This space is disabled. Log test execution will fail."
-          />
-        </>
-      )}
-      <EuiSpacer size="m" />
       <EuiFlexGroup gutterSize="m" wrap>
         <EuiFlexItem style={{ minWidth: '300px' }}>
           <EuiFormRow
