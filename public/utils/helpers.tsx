@@ -366,20 +366,27 @@ export async function getIntegrationOptionsBySpace(
 
 export function getLogTypeFilterOptions() {
   const options: any[] = [];
+  // Wazuh: dedup by value — logTypesByCategories may contain the same log type more than once.
+  const seenValues = new Set<string>();
   formatToLogTypeOptions(logTypesByCategories).forEach((categoryData) => {
     const categoryName = categoryData.label;
     const logTypes = categoryData.options;
 
     for (let i = 0; i < logTypes.length; i++) {
+      const entry = logTypes[i];
+      if (seenValues.has(entry.value)) {
+        continue;
+      }
+      seenValues.add(entry.value);
       // Wazuh: add the category name in front of log type label for better context in filter options, e.g. "Security: Audit logs"
       options.push({
-        value: logTypes[i].value,
+        value: entry.value,
         view: (
           <span className="euiFlexItem euiFilterSelectItem__content" style={{ paddingLeft: 20 }}>
             <EuiText size="s" color="subdued" style={{ display: 'block' }}>
               {categoryName}
             </EuiText>
-            {getLogTypeLabel(logTypes[i].label)}
+            {getLogTypeLabel(entry.label)}
           </span>
         ),
       });
