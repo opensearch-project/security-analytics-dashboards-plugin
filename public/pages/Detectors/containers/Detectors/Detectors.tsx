@@ -349,6 +349,15 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
       ];
     };
 
+    // Wazuh: Unique space labels from loaded detectors
+    const spaceOptions = [
+      ...new Set(detectorHits.map((detector) => getDetectorSourceLabel(detector._source.source)))
+    ]
+      .filter((v) => v)
+      .sort()
+      .map((space) => ({ value: space, name: space }));
+    // End Wazuh
+    
     const search = {
       toolsLeft: renderActionsLeft(loadingDetectors, selectedItems),
       toolsRight: renderActionsRight(),
@@ -378,6 +387,16 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
           options: getLogTypeFilterOptions(),
           multiSelect: 'or',
         } as FieldValueSelectionFilterConfigType,
+        // Wazuh: Added new filter for space
+        {
+          type: 'field_value_selection',
+          field: 'space',
+          name: 'Space',
+          compressed: true,
+          options: spaceOptions,
+          multiSelect: 'or',
+        } as FieldValueSelectionFilterConfigType,
+        // End Wazuh
       ],
     };
 

@@ -493,6 +493,19 @@ exports[`<Detectors /> spec renders the component 1`] = `
                         "options": Array [],
                         "type": "field_value_selection",
                       },
+                      Object {
+                        "compressed": true,
+                        "field": "space",
+                        "multiSelect": "or",
+                        "name": "Space",
+                        "options": Array [
+                          Object {
+                            "name": "Custom",
+                            "value": "Custom",
+                          },
+                        ],
+                        "type": "field_value_selection",
+                      },
                     ],
                     "toolsLeft": Array [
                       <EuiToolTip
@@ -618,6 +631,19 @@ exports[`<Detectors /> spec renders the component 1`] = `
                           "multiSelect": "or",
                           "name": "Integration",
                           "options": Array [],
+                          "type": "field_value_selection",
+                        },
+                        Object {
+                          "compressed": true,
+                          "field": "space",
+                          "multiSelect": "or",
+                          "name": "Space",
+                          "options": Array [
+                            Object {
+                              "name": "Custom",
+                              "value": "Custom",
+                            },
+                          ],
                           "type": "field_value_selection",
                         },
                       ]
@@ -909,6 +935,19 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                     "options": Array [],
                                     "type": "field_value_selection",
                                   },
+                                  Object {
+                                    "compressed": true,
+                                    "field": "space",
+                                    "multiSelect": "or",
+                                    "name": "Space",
+                                    "options": Array [
+                                      Object {
+                                        "name": "Custom",
+                                        "value": "Custom",
+                                      },
+                                    ],
+                                    "type": "field_value_selection",
+                                  },
                                 ]
                               }
                               onChange={[Function]}
@@ -1198,6 +1237,145 @@ exports[`<Detectors /> spec renders the component 1`] = `
                                                         title="Integration"
                                                       >
                                                         Integration
+                                                      </span>
+                                                    </span>
+                                                  </span>
+                                                </EuiButtonContent>
+                                              </button>
+                                            </EuiButtonEmpty>
+                                          </EuiFilterButton>
+                                        </div>
+                                      </div>
+                                    </EuiPopover>
+                                  </FieldValueSelectionFilter>
+                                  <FieldValueSelectionFilter
+                                    config={
+                                      Object {
+                                        "compressed": true,
+                                        "field": "space",
+                                        "multiSelect": "or",
+                                        "name": "Space",
+                                        "options": Array [
+                                          Object {
+                                            "name": "Custom",
+                                            "value": "Custom",
+                                          },
+                                        ],
+                                        "type": "field_value_selection",
+                                      }
+                                    }
+                                    index={2}
+                                    onChange={[Function]}
+                                    query={
+                                      Query {
+                                        "ast": _AST {
+                                          "_clauses": Array [],
+                                          "_indexedClauses": Object {
+                                            "field": Object {},
+                                            "group": Array [],
+                                            "is": Object {},
+                                            "term": Array [],
+                                          },
+                                        },
+                                        "syntax": Object {
+                                          "parse": [Function],
+                                          "print": [Function],
+                                          "printClause": [Function],
+                                        },
+                                        "text": "",
+                                      }
+                                    }
+                                  >
+                                    <EuiPopover
+                                      anchorPosition="downCenter"
+                                      button={
+                                        <EuiFilterButton
+                                          grow={true}
+                                          hasActiveFilters={false}
+                                          iconSide="right"
+                                          iconType="arrowDown"
+                                          onClick={[Function]}
+                                          size="s"
+                                        >
+                                          Space
+                                        </EuiFilterButton>
+                                      }
+                                      closePopover={[Function]}
+                                      display="inlineBlock"
+                                      hasArrow={true}
+                                      id="field_value_selection_2"
+                                      isOpen={false}
+                                      ownFocus={true}
+                                      panelClassName="euiFilterGroup__popoverPanel"
+                                      panelPaddingSize="none"
+                                    >
+                                      <div
+                                        className="euiPopover euiPopover--anchorDownCenter"
+                                        id="field_value_selection_2"
+                                      >
+                                        <div
+                                          className="euiPopover__anchor"
+                                        >
+                                          <EuiFilterButton
+                                            grow={true}
+                                            hasActiveFilters={false}
+                                            iconSide="right"
+                                            iconType="arrowDown"
+                                            onClick={[Function]}
+                                            size="s"
+                                          >
+                                            <EuiButtonEmpty
+                                              className="euiFilterButton euiFilterButton--hasIcon"
+                                              color="text"
+                                              iconSide="right"
+                                              iconType="arrowDown"
+                                              onClick={[Function]}
+                                              size="s"
+                                              textProps={
+                                                Object {
+                                                  "className": "",
+                                                }
+                                              }
+                                              type="button"
+                                            >
+                                              <button
+                                                className="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton--hasIcon"
+                                                disabled={false}
+                                                onClick={[Function]}
+                                                type="button"
+                                              >
+                                                <EuiButtonContent
+                                                  className="euiButtonEmpty__content"
+                                                  iconGap="m"
+                                                  iconSide="right"
+                                                  iconSize="m"
+                                                  iconType="arrowDown"
+                                                  textProps={
+                                                    Object {
+                                                      "className": "euiButtonEmpty__text",
+                                                    }
+                                                  }
+                                                >
+                                                  <span
+                                                    className="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                                                  >
+                                                    <EuiIcon
+                                                      className="euiButtonContent__icon"
+                                                      color="inherit"
+                                                      size="m"
+                                                      type="arrowDown"
+                                                    >
+                                                      EuiIconMock
+                                                    </EuiIcon>
+                                                    <span
+                                                      className="euiButtonEmpty__text"
+                                                    >
+                                                      <span
+                                                        className="euiFilterButton__textShift"
+                                                        data-text="Space"
+                                                        title="Space"
+                                                      >
+                                                        Space
                                                       </span>
                                                     </span>
                                                   </span>
