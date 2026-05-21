@@ -22,13 +22,13 @@ on:
         required: true
         type: string
         description: Git reference (branch, tag, or commit SHA) to build from.
-        default: 5.0.0
+        default: main
   workflow_dispatch:
     inputs:
       reference:
         required: true
         type: string
-        default: 5.0.0
+        default: main
         description: Git reference (branch, tag, or commit SHA) to build from.
 
 jobs:
