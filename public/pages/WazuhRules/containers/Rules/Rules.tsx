@@ -40,6 +40,7 @@ import {
   DELETE_SELECTED_ACTION,
   useDeleteItems,
 } from '../../../../hooks/useDeleteItems';
+import { useUrlParamItem } from '../../../../hooks/useUrlParamItem';
 
 const DEFAULT_PAGE_SIZE = 25;
 
@@ -83,6 +84,20 @@ export const Rules: React.FC<RulesProps> = ({ history, notifications }) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [selectedRule, setSelectedRule] = useState<RuleTableItem | null>(null);
   const [selectedItems, setSelectedItems] = useState<RuleTableItem[]>([]);
+
+  const { setParam, clearParam } = useUrlParamItem<RuleTableItem>({
+    paramName: 'ruleId',
+    fetchById: async (id) => {
+      const response = await DataStore.rules.searchRules(
+        { query: { term: { 'document.id': id } }, size: 1 },
+        spaceFilter
+      );
+      const item = response.items[0];
+      return item ? toRuleTableItem(item) : undefined;
+    },
+    onFound: setSelectedRule,
+    onClear: () => setSelectedRule(null),
+  });
 
   useEffect(() => {
     return () => {
@@ -156,6 +171,7 @@ export const Rules: React.FC<RulesProps> = ({ history, notifications }) => {
 
   const hideFlyout = (refreshRules?: boolean) => {
     setSelectedRule(null);
+    clearParam();
     if (refreshRules) {
       loadRules();
     }
@@ -204,7 +220,10 @@ export const Rules: React.FC<RulesProps> = ({ history, notifications }) => {
             description: 'View rule details',
             type: 'icon',
             icon: 'inspect',
-            onClick: (item: RuleTableItem) => setSelectedRule(item),
+            onClick: (item: RuleTableItem) => {
+              setParam(item.ruleId);
+              setSelectedRule(item);
+            },
           },
           {
             name: 'Edit',
@@ -288,7 +307,9 @@ export const Rules: React.FC<RulesProps> = ({ history, notifications }) => {
 
   return (
     <EuiFlexGroup direction="column" gutterSize="m">
-      {selectedRule && <RuleViewerFlyout ruleTableItem={selectedRule} hideFlyout={hideFlyout} />}
+      {selectedRule && (
+        <RuleViewerFlyout ruleTableItem={selectedRule} hideFlyout={hideFlyout} />
+      )}
       {itemForAction?.action === DELETE_ACTION && (
         <EuiConfirmModal
           title="Delete rule"

@@ -19,7 +19,7 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { PageHeader } from '../../../components/PageHeader/PageHeader';
 import { SpaceSelector } from '../../../components/SpaceSelector/SpaceSelector';
 import { errorNotificationToast, setBreadcrumbs } from '../../../utils/helpers';
-import { BREADCRUMBS } from '../../../utils/constants';
+import { BREADCRUMBS, ROUTES } from '../../../utils/constants';
 import { DataStore } from '../../../store/DataStore';
 import { SpaceTypes } from '../../../../common/constants';
 import { LogTestResponse } from '../../../../types';
@@ -31,6 +31,8 @@ import {
 } from '../components/LogTestForm';
 import { LogTestResult } from '../components/LogTestResult';
 import { MetadataEntry, buildMetadataObject } from '../utils';
+import { getApplication } from '../../../services/utils/constants';
+import { DETECTION_RULE_NAV_ID } from '../../../utils/constants';
 
 const LOG_TEST_SPACE_OPTIONS = [
   SpaceTypes.TEST.value,
@@ -67,7 +69,7 @@ interface LogTestProps extends RouteComponentProps {
   notifications?: NotificationsStart;
 }
 
-export const LogTest: React.FC<LogTestProps> = ({ notifications }) => {
+export const LogTest: React.FC<LogTestProps> = ({ notifications, history }) => {
   const [formData, setFormData] = useState<LogTestFormData>(INITIAL_FORM_DATA);
   const [errors, setErrors] = useState<LogTestFormErrors>(INITIAL_ERRORS);
   const [isLoading, setIsLoading] = useState(false);
@@ -273,7 +275,14 @@ export const LogTest: React.FC<LogTestProps> = ({ notifications }) => {
           {testResult && (
             <>
               <EuiHorizontalRule margin="l" />
-              <LogTestResult result={testResult} />
+              <LogTestResult
+                result={testResult}
+                onRuleClick={(ruleId) =>
+                  getApplication().navigateToApp(DETECTION_RULE_NAV_ID, {
+                    path:  `#${ROUTES.RULES}?ruleId=${ruleId}&space=${formData.space}`,
+                  })
+                }
+              />
             </>
           )}
         </EuiPanel>

@@ -16,6 +16,7 @@ import {
   EuiCallOut,
   EuiTabs,
   EuiTab,
+  EuiLink,
 } from '@elastic/eui';
 import {
   LogTestResponse,
@@ -28,6 +29,7 @@ import {
 
 export interface LogTestResultProps {
   result: LogTestResponse;
+  onRuleClick?: (ruleId: string) => void;
 }
 
 const AssetTraceItem: React.FC<{ trace: LogTestAssetTrace; index: number }> = ({
@@ -135,7 +137,8 @@ function getLevelBadgeColor(level: string): string {
 const DetectionMatchItem: React.FC<{
   match: LogTestDetectionRuleMatch;
   index: number;
-}> = ({ match, index }) => {
+  onRuleClick?: (ruleId: string) => void;
+}> = ({ match, index, onRuleClick }) => {
   const { rule, matched_conditions } = match;
 
   return (
@@ -150,7 +153,13 @@ const DetectionMatchItem: React.FC<{
           </EuiFlexItem>
           <EuiFlexItem>
             <EuiText size='s'>
+              {onRuleClick ? (
+                <EuiLink onClick={() => onRuleClick!(rule.id)}>
+                  <strong>{rule.title}</strong>
+                </EuiLink>
+              ) : (
               <strong>{rule.title}</strong>
+            )}
             </EuiText>
           </EuiFlexItem>
         </EuiFlexGroup>
@@ -302,9 +311,10 @@ const NormalizationSection: React.FC<{ data: LogTestNormalizationResult }> = ({
   );
 };
 
-const DetectionSection: React.FC<{ data: LogTestDetectionResult }> = ({
-  data,
-}) => {
+const DetectionSection: React.FC<{ 
+  data: LogTestDetectionResult;
+  onRuleClick?: (ruleId: string) => void;
+}> = ({ data, onRuleClick, }) => {
   if (data.status === 'skipped') {
     return (
       <EuiCallOut title='Detection skipped' color='warning' iconType='alert'>
@@ -348,7 +358,7 @@ const DetectionSection: React.FC<{ data: LogTestDetectionResult }> = ({
         {matches.map((match, index) => (
           <React.Fragment key={`${match.rule.id}-${index}`}>
             {index > 0 && <EuiSpacer size='s' />}
-            <DetectionMatchItem match={match} index={index} />
+            <DetectionMatchItem match={match} index={index} onRuleClick={onRuleClick} />
           </React.Fragment>
         ))}
       </EuiPanel>
@@ -358,7 +368,7 @@ const DetectionSection: React.FC<{ data: LogTestDetectionResult }> = ({
 
 type ResultTab = 'normalization' | 'detection';
 
-export const LogTestResult: React.FC<LogTestResultProps> = ({ result }) => {
+export const LogTestResult: React.FC<LogTestResultProps> = ({ result, onRuleClick }) => {
   const [selectedTab, setSelectedTab] = useState<ResultTab>('normalization');
   const normalization = result?.message?.normalization;
   const detection = result?.message?.detection;
@@ -418,7 +428,7 @@ export const LogTestResult: React.FC<LogTestResultProps> = ({ result }) => {
 
       {selectedTab === 'detection' &&
         (detection ? (
-          <DetectionSection data={detection} />
+          <DetectionSection data={detection} onRuleClick={onRuleClick} />
         ) : (
           <EuiCallOut
             title='No detection data'
