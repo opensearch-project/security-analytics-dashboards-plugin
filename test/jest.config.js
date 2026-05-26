@@ -13,6 +13,7 @@ module.exports = {
     '\\.(css|less|scss)$': '<rootDir>/test/mocks/styleMock.ts',
     '^ui/(.*)': '<rootDir>/../../src/legacy/ui/public/$1/',
     '.*content_management/public.*': '<rootDir>/test/mocks/contentManagementMocks.ts',
+    'vega/build/vega\\.js': '<rootDir>/test/mocks/styleMock.ts',
   },
   coverageReporters: ['lcov', 'text', 'cobertura'],
   testMatch: ['**/*.test.js', '**/*.test.jsx', '**/*.test.ts', '**/*.test.tsx'],
@@ -42,7 +43,7 @@ module.exports = {
     // ignore all node_modules except those which require babel transforms to
     // handle newer syntax like `??=` which is not already transformed by the
     // package and not yet supported in the node version we use.
-    '[/\\\\]node_modules(?![\\/\\\\](vega-lite))[/\\\\].+\\.js$',
+    '[/\\\\]node_modules(?![\\/\\\\](vega-lite|uuid))[/\\\\].+\\.js$',
   ],
   modulePathIgnorePatterns: ['securityAnalyticsDashboards'],
   testEnvironment: 'jsdom',
