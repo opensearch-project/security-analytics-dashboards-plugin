@@ -95,18 +95,9 @@ jobs:
       - name: Run OpenSearch-Dashboards server
         run: |
           cd OpenSearch-Dashboards
-          yarn start --no-base-path --no-watch --server.host="0.0.0.0" &
-        shell: bash
-
-      # Window is slow so wait longer
-      - name: Sleep until OSD server starts - windows
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: Start-Sleep -s 450
-        shell: powershell
-
-      - name: Sleep until OSD server starts - non-windows
-        if: ${{ matrix.os != 'windows-latest' }}
-        run: sleep 450
+          yarn start --no-base-path --no-watch --server.host="0.0.0.0" 2>&1 | tee /tmp/osd.log &
+          timeout 900 bash -c 'while ! grep -q "bundles compiled successfully" /tmp/osd.log 2>/dev/null; do sleep 10; done'
+          sleep 30
         shell: bash
 
       - name: Install Cypress
@@ -132,14 +123,11 @@ jobs:
           restore-keys: |
             cypress-cache-v2-${{ runner.os }}-${{ hashFiles('OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/package.json') }}
 
-      # for now just chrome, use matrix to do all browsers later
       - name: Cypress tests
         uses: cypress-io/github-action@v5
         with:
           working-directory: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
           command: yarn run cypress run --browser electron
-          wait-on: 'http://localhost:5601'
-          wait-on-timeout: 300
         env:
           CYPRESS_CACHE_FOLDER: ${{ matrix.cypress_cache_folder }}
 
