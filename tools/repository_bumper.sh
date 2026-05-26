@@ -465,7 +465,7 @@ update_branch_reference_defaults() {
     return 0
   fi
 
-  local bump_string="$VERSION"
+  local bump_string="$GIT_REF_REPLACEMENT"
   local files=(
     "${REPO_PATH}/.github/workflows/5_builderpackage_security_analytics_plugin.yml"
     "${REPO_PATH}/.github/workflows/5_builderprecompiled_base-dev-environment.yml"
@@ -533,6 +533,20 @@ update_imposter_config() {
   }
 }
 
+get_git_ref_replacement(){
+  local replacement
+  if [ "$TAG" = true ]; then
+    replacement="v${VERSION}"
+    if [ -n "$STAGE" ]; then
+      replacement+="-${STAGE}"
+    fi
+  else
+    replacement="${VERSION}"
+  fi
+
+  GIT_REF_REPLACEMENT="$replacement"
+}
+
 # --- Main Execution ---
 main() {
   # Initialize log file
@@ -561,6 +575,8 @@ main() {
 
   # Compare versions and determine revision
   compare_versions_and_set_revision
+
+  get_git_ref_replacement
 
   # Start file modifications
   log "Starting file modifications..."
