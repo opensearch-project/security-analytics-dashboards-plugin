@@ -121,11 +121,18 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
                 gutterSize="s"
                 data-test-subj={'rule_flyout_rule_mitre'}
               >
-                {MITRE_SECTIONS.map((section) => (
-                  <EuiFlexItem key={section.field}>
-                    <BadgeGroup label={section.title} values={mitreData[section.field]} />
-                  </EuiFlexItem>
-                ))}
+                {MITRE_SECTIONS.map((section) => {
+                  const entries = mitreData[section.field];
+                  if (!entries.length) return null;
+                  return (
+                    <EuiFlexItem key={section.field}>
+                      <BadgeGroup
+                        label={section.title}
+                        values={entries.map((e) => (e.name ? `${e.id} - ${e.name}` : e.id))}
+                      />
+                    </EuiFlexItem>
+                  );
+                })}
               </EuiFlexGroup>
             </>
           )}

@@ -5,17 +5,22 @@
 
 import { dump, load } from 'js-yaml';
 
+export interface MitreEntry {
+  id: string;
+  name: string;
+}
+
 export interface MitreState {
-  tactic: string[];
-  technique: string[];
-  subtechnique: string[];
+  tactic: MitreEntry[];
+  technique: MitreEntry[];
+  subtechnique: MitreEntry[];
 }
 
 export interface MitreSection {
   field: keyof MitreState;
   title: string;
-  columnHeader: string;
-  placeholder: string;
+  idPlaceholder: string;
+  namePlaceholder: string;
   addButtonName: string;
 }
 
@@ -23,35 +28,44 @@ export const MITRE_SECTIONS: MitreSection[] = [
   {
     field: 'tactic',
     title: 'Tactics',
-    columnHeader: 'Tactic ID',
-    placeholder: 'e.g. TA0001',
+    idPlaceholder: 'e.g. TA0001',
+    namePlaceholder: 'e.g. Initial Access',
     addButtonName: 'Add tactic',
   },
   {
     field: 'technique',
     title: 'Techniques',
-    columnHeader: 'Technique ID',
-    placeholder: 'e.g. T1078',
+    idPlaceholder: 'e.g. T1078',
+    namePlaceholder: 'e.g. Valid Accounts',
     addButtonName: 'Add technique',
   },
   {
     field: 'subtechnique',
     title: 'Sub-techniques',
-    columnHeader: 'Sub-technique ID',
-    placeholder: 'e.g. T1078.001',
+    idPlaceholder: 'e.g. T1078.001',
+    namePlaceholder: 'e.g. Default Accounts',
     addButtonName: 'Add sub-technique',
   },
 ];
 
 export const EMPTY_MITRE: MitreState = { tactic: [], technique: [], subtechnique: [] };
 
+function parseMitreField(field: unknown): MitreEntry[] {
+  if (typeof field !== 'object' || field === null || Array.isArray(field)) return [];
+  const obj = field as Record<string, unknown>;
+  const ids = Array.isArray(obj.id) ? obj.id : [];
+  const names = Array.isArray(obj.name) ? obj.name : [];
+  const len = Math.max(ids.length, names.length);
+  return Array.from({ length: len }, (_, i) => ({ id: ids[i] ?? '', name: names[i] ?? '' }));
+}
+
 export function parseMitreYml(yml: string): MitreState {
   try {
-    const parsed = yml ? (load(yml) as any) : {};
+    const parsed = (yml ? load(yml) : null) as Record<string, unknown> | null | undefined;
     return {
-      tactic: Array.isArray(parsed?.tactic) ? parsed.tactic.filter(Boolean) : [],
-      technique: Array.isArray(parsed?.technique) ? parsed.technique.filter(Boolean) : [],
-      subtechnique: Array.isArray(parsed?.subtechnique) ? parsed.subtechnique.filter(Boolean) : [],
+      tactic: parseMitreField(parsed?.tactic),
+      technique: parseMitreField(parsed?.technique),
+      subtechnique: parseMitreField(parsed?.subtechnique),
     };
   } catch {
     return { ...EMPTY_MITRE };
@@ -59,9 +73,15 @@ export function parseMitreYml(yml: string): MitreState {
 }
 
 export function dumpMitreYml(state: MitreState): string {
-  const obj: Record<string, string[]> = {};
-  if (state.tactic.length) obj.tactic = state.tactic;
-  if (state.technique.length) obj.technique = state.technique;
-  if (state.subtechnique.length) obj.subtechnique = state.subtechnique;
+  const obj: Record<string, { id: string[]; name: string[] }> = {};
+  for (const key of ['tactic', 'technique', 'subtechnique'] as const) {
+    const entries = state[key].filter((e) => e.id || e.name);
+    if (entries.length) {
+      obj[key] = {
+        id: entries.map((e) => e.id),
+        name: entries.map((e) => e.name),
+      };
+    }
+  }
   return Object.keys(obj).length ? dump(obj) : '';
 }
