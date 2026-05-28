@@ -214,6 +214,7 @@ export const RuleContentViewer: React.FC<RuleContentViewerProps> = ({
           {JSON.stringify(
             {
               ...ruleData,
+              detection: ruleData.detection ? safeLoadYaml(ruleData.detection) : undefined,
               mitre: ruleData.mitre ? safeLoadYaml(ruleData.mitre) : undefined,
               compliance: ruleData.compliance ? safeLoadYaml(ruleData.compliance) : undefined,
             },
