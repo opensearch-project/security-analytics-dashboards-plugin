@@ -32,11 +32,22 @@ const truncateStyle: React.CSSProperties = {
   wordBreak: 'break-all',
 };
 
-const renderValue = (value: string | undefined | null): React.ReactNode => {
+const fullValueStyle: React.CSSProperties = {
+  display: '-webkit-box',
+  WebkitLineClamp: 'unset',
+  WebkitBoxOrient: 'vertical',
+  overflow: 'visible',
+  textAlign: 'justify',
+};
+
+const renderValue = (
+  value: string | undefined | null,
+  noTruncate: boolean = false
+): React.ReactNode => {
   if (!value) return '-';
 
   return (
-    <span title={value} style={truncateStyle}>
+    <span title={value} style={noTruncate ? fullValueStyle : truncateStyle}>
       {value}
     </span>
   );
@@ -367,7 +378,7 @@ const renderDetailsPanel = (
         <EuiDescriptionList>
           <EuiDescriptionListTitle>Documentation</EuiDescriptionListTitle>
           <EuiDescriptionListDescription>
-            {renderValue(typeof documentation === 'string' ? documentation : undefined)}
+            {renderValue(typeof documentation === 'string' ? documentation : undefined, true)}
           </EuiDescriptionListDescription>
         </EuiDescriptionList>
       </EuiFlexItem>
@@ -375,7 +386,7 @@ const renderDetailsPanel = (
         <EuiDescriptionList>
           <EuiDescriptionListTitle>Description</EuiDescriptionListTitle>
           <EuiDescriptionListDescription>
-            {renderValue(typeof description === 'string' ? description : undefined)}
+            {renderValue(typeof description === 'string' ? description : undefined, true)}
           </EuiDescriptionListDescription>
         </EuiDescriptionList>
       </EuiFlexItem>

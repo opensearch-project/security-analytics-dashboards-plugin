@@ -311,7 +311,7 @@ const EditForm: React.FC<{}> = withPolicyGuard({
           }
         >
           {canEditPolicy ? (
-            <EuiCompressedFieldText
+            <EuiCompressedTextArea
               value={policyDetails.metadata?.documentation || ''}
               onChange={(e) => {
                 const newPolicy = {

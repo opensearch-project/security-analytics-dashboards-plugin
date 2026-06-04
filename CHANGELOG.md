@@ -43,3 +43,4 @@ All notable changes to the Wazuh ML Commons project will be documented in this f
 - Fixed decoders form not handling request errors properly [#194](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/194)
 - Fixed float numbers ending in .0 in the Decoders yaml editor being transformed into integers [#200](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/200)
 - Fixed detector details failing to load right after detector creation [#249](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/249)
+- Fixed integration documentation field being truncated in the details view [#322](https://github.com/wazuh/wazuh-dashboard-security-analytics/pull/322)

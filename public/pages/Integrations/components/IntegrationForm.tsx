@@ -42,21 +42,24 @@ interface ReadOnlyFieldProps {
   value: string | undefined;
   placeholder?: string;
   isTextArea?: boolean;
+  noTruncate?: boolean;
 }
 
 const ReadOnlyField: React.FC<ReadOnlyFieldProps> = ({
   value,
   placeholder = '-',
   isTextArea = false,
+  noTruncate = false,
 }) => (
   <EuiText
     size="s"
     style={{
       padding: '6px 0',
-      lineHeight: isTextArea ? '1.5' : '20px',
-      whiteSpace: isTextArea ? 'pre-wrap' : 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
+      lineHeight: isTextArea || noTruncate ? '1.5' : '20px',
+      whiteSpace: isTextArea || noTruncate ? 'pre-wrap' : 'nowrap',
+      overflow: isTextArea || noTruncate ? 'visible' : 'hidden',
+      textOverflow: isTextArea || noTruncate ? undefined : 'ellipsis',
+      textAlign: isTextArea || noTruncate ? 'justify' : undefined,
     }}
   >
     {value || placeholder}
@@ -294,6 +297,7 @@ export const IntegrationForm = forwardRef<IntegrationFormHandle, IntegrationForm
               'Description'
             )
           }
+          fullWidth={!isEditMode}
         >
           {isEditMode ? (
             <EuiCompressedTextArea
@@ -331,9 +335,10 @@ export const IntegrationForm = forwardRef<IntegrationFormHandle, IntegrationForm
             )
           }
           helpText={isEditMode && 'Must contain 2-100 characters.'}
+          fullWidth={!isEditMode}
         >
           {isEditMode ? (
-            <EuiCompressedFieldText
+            <EuiCompressedTextArea
               value={editingIntegration?.document.metadata?.documentation}
               onChange={(e) => {
                 const newIntegration = {
@@ -350,9 +355,10 @@ export const IntegrationForm = forwardRef<IntegrationFormHandle, IntegrationForm
                 updateErrors(newIntegration);
               }}
               disabled={!!integrationDetails.detectionRulesCount}
+              placeholder="Documentation of the integration"
             />
           ) : (
-            <ReadOnlyField value={integrationDetails?.document.metadata?.documentation} />
+            <ReadOnlyField value={integrationDetails?.document.metadata?.documentation} noTruncate />
           )}
         </EuiCompressedFormRow>
         <EuiSpacer />
