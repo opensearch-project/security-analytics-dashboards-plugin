@@ -53,6 +53,8 @@ interface DefineDetectorProps extends RouteComponentProps, DataSourceProps {
   rulesState: CreateDetectorRulesState;
   notifications: NotificationsStart;
   loadingRules?: boolean;
+  // Wazuh: add selectedSpace and to props to update the space in forms
+  selectedSpace?: string;
   changeDetector: (detector: Detector) => void;
   updateDataValidState: (step: DetectorCreationStep, isValid: boolean) => void;
   onPageChange: (page: { index: number; size: number }) => void;
@@ -274,6 +276,7 @@ export default class DefineDetector extends Component<
           onAllRulesToggle={this.props.onAllRulesToggle}
           onPageChange={this.props.onPageChange}
           onRuleToggle={this.props.onRuleToggle}
+          selectedSpace={this.props.selectedSpace}
           onSpaceChange={this.props.onSpaceChange}
         />
 

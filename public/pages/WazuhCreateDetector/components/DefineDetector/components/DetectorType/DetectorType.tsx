@@ -30,6 +30,8 @@ interface DetectorTypeProps {
   rulesState: CreateDetectorRulesState;
   configureFieldMappingProps: ConfigureFieldMappingProps;
   loadingRules?: boolean;
+  // Wazuh: add selectedSpace and to props to update the space in forms
+  selectedSpace?: string;
   onDetectorTypeChange: (detectorType: string) => void;
   onPageChange: (page: { index: number; size: number }) => void;
   onRuleToggle: (changedItem: RuleItem, isActive: boolean) => void;
@@ -50,7 +52,11 @@ export default class DetectorType extends Component<DetectorTypeProps, DetectorT
 
     this.state = {
       fieldTouched: false,
-      selectedSpace: SpaceTypes.STANDARD.value,
+      // Wazuh: initialize from prop so the space is restored correctly when the
+      // form is re-opened after a failed creation (e.g. via "Review detector
+      // configuration"). Without this, the selector always defaults to standard
+      // regardless of the integration that was originally selected.
+      selectedSpace: props.selectedSpace ?? SpaceTypes.STANDARD.value,
       detectorTypeOptions: [],
     };
   }
