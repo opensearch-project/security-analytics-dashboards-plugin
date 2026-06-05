@@ -350,6 +350,11 @@ export const integrationCategories: {
     value: 'other',
     description: 'Logs not covered in other categories',
   },
+  {
+    label: 'Unclassified',
+    value: 'unclassified',
+    description: 'Logs that have not been classified into a category',
+  },
 ];
 
 export const integrationsByCategories: { [category: string]: Integration[] } = {};
