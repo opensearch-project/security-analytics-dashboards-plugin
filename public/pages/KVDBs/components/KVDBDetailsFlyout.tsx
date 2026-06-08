@@ -20,7 +20,6 @@ import {
   EuiText,
   EuiSmallButtonIcon,
 } from '@elastic/eui';
-import { get } from 'lodash';
 import { KVDBItem } from '../../../../types';
 import { AssetViewer } from './AssetViewer';
 import { Metadata, MetadataFieldType } from '../../../components/Utility/Metadata';
@@ -32,21 +31,6 @@ interface KVDBDetailsFlyoutProps {
   kvdb: KVDBItem;
   onClose: () => void;
 }
-
-const detailsMapLabels: { [key: string]: string } = {
-  'document.id': 'ID',
-  'document.name': 'Name',
-  'integration.title': 'Integration',
-  'document.metadata.title': 'Title',
-  'document.metadata.author': 'Author',
-  'document.metadata.description': 'Description',
-  'document.metadata.references': 'References',
-  'document.metadata.documentation': 'Documentation',
-  'document.metadata.supports': 'Supports',
-  'document.metadata.date': 'Date',
-  'document.metadata.modified': 'Modified',
-  space: 'Space',
-};
 
 const VISUAL_VIEW = {
   VISUAL: 'visual',
@@ -66,49 +50,37 @@ export const KVDBDetailsFlyout: React.FC<KVDBDetailsFlyoutProps> = ({ kvdb, onCl
   const document = kvdb.document ?? { id: '' };
   const metadata = document.metadata;
 
-  const kvdbData = {
-    'document.id': document.id || kvdb.id,
-    'integration.title': kvdb.integration?.title,
-    'document.metadata.title': metadata?.title,
-    'document.metadata.date': metadata?.date,
-    'document.metadata.author': metadata?.author,
-    'document.metadata.description': metadata?.description,
-    'document.metadata.references': metadata?.references,
-    'document.metadata.documentation': metadata?.documentation,
-    'document.metadata.supports': (
-      <BadgeGroup emptyValue={DEFAULT_EMPTY_DATA} values={metadata?.supports} />
-    ),
-    'document.metadata.modified': metadata?.modified,
-    space: kvdb?.space?.name,
-  };
+  const fields: Array<{
+    key: string;
+    label: string;
+    value: any;
+    type?: MetadataFieldType;
+  }> = [
+    { key: 'space', label: 'Space', value: kvdb?.space?.name },
+    { key: 'integration.title', label: 'Integration', value: kvdb.integration?.title },
+    { key: 'document.metadata.title', label: 'Title', value: metadata?.title },
+    { key: 'document.id', label: 'ID', value: document.id || kvdb.id },
+    { key: 'document.metadata.author', label: 'Author', value: metadata?.author },
+    { key: 'document.metadata.description', label: 'Description', value: metadata?.description },
+    { key: 'document.metadata.date', label: 'Date', value: metadata?.date, type: 'date' },
+    { key: 'document.metadata.modified', label: 'Modified', value: metadata?.modified, type: 'date' },
+    { key: 'document.metadata.documentation', label: 'Documentation', value: metadata?.documentation },
+    { key: 'document.metadata.references', label: 'References', value: metadata?.references, type: 'url' },
+    { key: 'document.metadata.supports', label: 'Supports', value: <BadgeGroup emptyValue={DEFAULT_EMPTY_DATA} values={metadata?.supports} />, type: 'raw' },
+  ];
 
   const visualTab = (
     <>
       <EuiFlexGrid columns={2}>
-        {([
-          'space',
-          'integration.title',
-          'document.metadata.title',
-          'document.id',
-          'document.metadata.author',
-          'document.metadata.description',
-          ['document.metadata.date', 'date'],
-          ['document.metadata.modified', 'date'],
-          ['document.metadata.documentation', 'url'],
-          ['document.metadata.references', 'url'],
-          ['document.metadata.supports', 'raw'],
-        ] as Array<string | [string, MetadataFieldType]>).map((item) => {
-          const [field, type] = typeof item === 'string' ? ([item, 'text'] as const) : item;
-          return (
-            <EuiFlexItem key={field}>
-              <Metadata
-                label={<EuiFormLabel>{detailsMapLabels[field]}</EuiFormLabel>}
-                value={get(kvdbData, field)}
-                type={type}
-              />
-            </EuiFlexItem>
-          );
-        })}
+        {fields.map(({ key, label, value, type = 'text' }) => (
+          <EuiFlexItem key={key}>
+            <Metadata
+              label={<EuiFormLabel>{label}</EuiFormLabel>}
+              value={value}
+              type={type}
+            />
+          </EuiFlexItem>
+        ))}
       </EuiFlexGrid>
       {document.content && (
         <>

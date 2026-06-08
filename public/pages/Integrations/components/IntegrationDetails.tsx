@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import { EuiSmallButton, EuiDescriptionList } from '@elastic/eui';
+import { EuiSmallButton, EuiDescriptionList, EuiText } from '@elastic/eui';
 import { ContentPanel } from '../../../components/ContentPanel';
 import React from 'react';
 import { IntegrationItem } from '../../../../types';
@@ -50,7 +50,11 @@ export const IntegrationDetails: React.FC<IntegrationDetailsProps> = ({
   };
 
   return (
-    <ContentPanel title="Details">
+    <ContentPanel title={
+      <EuiText size={'s'} style={{ paddingTop: '5px' }}>
+        <h3>Details</h3>
+      </EuiText>
+    } hideHeaderBorder>
       <EuiDescriptionList
         listItems={[
           {

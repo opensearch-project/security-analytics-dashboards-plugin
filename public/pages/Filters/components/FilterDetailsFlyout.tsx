@@ -112,7 +112,7 @@ export const FilterDetailsFlyout: React.FC<FilterDetailsFlyoutProps> = ({ filter
         {checkDisplayYaml}
       </EuiCodeBlock>
     ), type: 'raw' },
-    { label: 'Documentation', value: metadata.documentation, type: 'url' },
+    { label: 'Documentation', value: metadata.documentation },
     { label: 'SHA256', value: filter.hash?.sha256 },
     { label: 'References', value: references, type: 'url' },
   ];

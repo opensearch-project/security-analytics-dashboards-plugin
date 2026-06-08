@@ -14,6 +14,7 @@ import {
   EuiFlexItem,
   EuiCompressedFormRow,
   EuiCompressedFieldText,
+  EuiCompressedTextArea,
   EuiSpacer,
   EuiAccordion,
   EuiCompressedComboBox,
@@ -335,7 +336,7 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                   }
                   error={props.errors?.metadata?.description}
                 >
-                  <EuiCompressedFieldText
+                  <EuiCompressedTextArea
                     data-test-subj={'rule_description_field'}
                     onChange={(e) => {
                       props.handleChange('metadata.description')(e.target.value);
@@ -692,8 +693,8 @@ export const RuleEditorForm: React.FC<VisualRuleEditorProps> = ({
                           </EuiText>
                         }
                       >
-                        <EuiCompressedFieldText
-                          placeholder="https://documentation.example.com"
+                        <EuiCompressedTextArea
+                          placeholder="Enter documentation"
                           data-test-subj={'rule_documentation_field'}
                           value={props.values.metadata.documentation}
                           onChange={(e) => {

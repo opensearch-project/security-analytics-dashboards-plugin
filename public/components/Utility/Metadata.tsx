@@ -15,7 +15,7 @@ export const MetadataFieldRaw: React.FC<{ value: string | number }> = ({ value }
 };
 
 export const MetadataFieldText: React.FC<{ value: string | number }> = ({ value }) => {
-  return <>{String(value)}</>;
+  return <div style={{ textAlign: 'justify' }}>{String(value)}</div>;
 };
 
 export const MetadataFieldURL: React.FC<{ value: string | number }> = ({ value }) => {

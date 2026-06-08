@@ -120,7 +120,7 @@ export const DecoderDetailsFlyout: React.FC<DecoderDetailsFlyoutProps> = ({
     { label: 'Description', value: decoder?.document?.metadata?.description },
     { label: 'Date', value: decoder?.document?.metadata?.date, type: 'date' },
     { label: 'Modified', value: decoder?.document?.metadata?.modified, type: 'date' },
-    { label: 'Documentation', value: decoder?.document?.metadata?.documentation, type: 'url' },
+    { label: 'Documentation', value: decoder?.document?.metadata?.documentation },
     { label: 'References', value: decoder?.document?.metadata?.references, type: 'url' },
     {
       label: 'Supports',

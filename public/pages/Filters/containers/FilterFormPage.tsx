@@ -424,7 +424,6 @@ export const FilterFormPage: React.FC<FilterFormPageProps> = ({
                           placeholder="Brief description of what this filter does"
                           value={values.description}
                           onChange={(e) => setFieldValue('description', e.target.value)}
-                          rows={2}
                         />
                       </EuiCompressedFormRow>
                       <EuiSpacer size="m" />
@@ -438,8 +437,8 @@ export const FilterFormPage: React.FC<FilterFormPageProps> = ({
                         }
                         fullWidth
                       >
-                        <EuiCompressedFieldText
-                          placeholder="Enter documentation URL"
+                        <EuiCompressedTextArea
+                          placeholder="Enter documentation"
                           value={values.documentation}
                           onChange={(e) => setFieldValue('documentation', e.target.value)}
                         />

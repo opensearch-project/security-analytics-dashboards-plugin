@@ -398,8 +398,8 @@ export const KVDBFormPage: React.FC<KVDBFormPageProps> = (props) => {
                       label={<FormFieldHeader headerTitle={'Documentation'} optionalField={true} />}
                       fullWidth={true}
                     >
-                      <EuiCompressedFieldText
-                        placeholder="Enter documentation URL"
+                      <EuiCompressedTextArea
+                        placeholder="Enter documentation"
                         value={formikProps.values.documentation}
                         onChange={(e) => formikProps.setFieldValue('documentation', e.target.value)}
                       />
