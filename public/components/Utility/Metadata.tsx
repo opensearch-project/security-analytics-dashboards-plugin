@@ -80,6 +80,7 @@ export const Metadata: React.FC<{
       </div>
       <div style={label ? { marginTop: '4px' } : {}}>
         {typeof value === 'undefined' ||
+        value === null ||
         value === '' ||
         (Array.isArray(value) && value.length === 0)
           ? DEFAULT_EMPTY_DATA
