@@ -14,6 +14,16 @@ on:
         default: ""
         required: false
         type: string
+      tag:
+        description: "Change branches references to tag-like references (e.g. v4.12.0-alpha7)"
+        default: false
+        required: false
+        type: boolean
+      set_as_main:
+        description: "Enable main branch mode: bump version values only, keep branch references pointing to main"
+        required: false
+        type: boolean
+        default: false
       issue-link:
         description: "Issue link in format https://github.com/wazuh/<REPO>/issues/<ISSUE-NUMBER>"
         required: true
@@ -22,11 +32,6 @@ on:
         description: "Optional identifier for the run"
         required: false
         type: string
-      set_as_main:
-        description: "Enable main branch mode: bump version values only, keep branch references pointing to main"
-        required: false
-        type: boolean
-        default: false
       revert:
         description: "Set to true to revert the bump changes applied for this issue"
         default: false
@@ -85,17 +90,22 @@ jobs:
         env:
           VERSION: ${{ inputs.version }}
           STAGE: ${{ inputs.stage }}
-          set_as_main: ${{ inputs.set_as_main }}
+          TAG: ${{ inputs.tag }}
+          SET_AS_MAIN: ${{ inputs.set_as_main }}
         run: |
           script_params=""
           version=${{ env.VERSION }}
           stage=${{ env.STAGE }}
+          tag=${{ env.TAG }}
+          set_as_main=${{ env.SET_AS_MAIN }}
 
-          # Both version and stage provided
-          if [[ -n "$version" && -n "$stage" ]]; then
+          # Both version and stage provided (no tag)
+          if [[ -n "$version" && -n "$stage" && "$tag" != "true" ]]; then
             script_params="--version ${version} --stage ${stage}"
-          elif [[ -z "$version" && -n "$stage" ]]; then
-            script_params="--stage ${stage}"
+          elif [[ -z "$version" && -n "$stage" && "$tag" == "true" ]]; then
+            script_params="--stage ${stage} --tag"
+          elif [[ -z "$version" && -z "$stage" && "$tag" == "true" ]]; then
+            script_params="--tag"
           fi
 
           if [[ "$set_as_main" == "true" ]]; then
