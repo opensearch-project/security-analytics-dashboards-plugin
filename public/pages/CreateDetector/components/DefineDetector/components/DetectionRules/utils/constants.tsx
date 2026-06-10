@@ -49,7 +49,7 @@ export const getRulesColumns = (
     },
     {
       field: 'logType',
-      name: 'Log type',
+      name: 'Integration',
       width: '10%',
       sortable: true,
       render: (logType: string) => getLogTypeLabel(logType),

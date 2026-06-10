@@ -267,9 +267,9 @@ Object {
                             >
                               <span
                                 class="euiTableCellContent__text"
-                                title="Log type"
+                                title="Integration"
                               >
-                                Log type
+                                Integration
                               </span>
                             </span>
                           </th>
@@ -668,9 +668,9 @@ Object {
                           >
                             <span
                               class="euiTableCellContent__text"
-                              title="Log type"
+                              title="Integration"
                             >
-                              Log type
+                              Integration
                             </span>
                           </span>
                         </th>
