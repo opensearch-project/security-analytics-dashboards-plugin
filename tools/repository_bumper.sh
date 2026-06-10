@@ -384,9 +384,15 @@ compare_versions_and_set_revision() {
         # Ensure CURRENT_REVISION is treated as a number (remove leading zeros for arithmetic if necessary, handle base 10)
         local current_revision_int=$((10#$current_revision_val))
         local new_revision_int=$((current_revision_int + 1))
-        # Format back to two digits with leading zero
-        REVISION=$(printf "%02d" "$new_revision_int")
-        log "Current revision: $current_revision_val. New revision set to: $REVISION"
+        if [ -n "$STAGE" ] && [ "$STAGE" != "$CURRENT_STAGE" ]; then
+          # Format back to two digits with leading zero
+          log "Incrementing revision."
+          REVISION=$(printf "%02d" "$new_revision_int")
+          log "Current revision: $current_revision_val. New revision set to: $REVISION"
+        else
+          REVISION=$(printf "%02d" "$current_revision_int")
+          log "Current revision: $current_revision_val."
+        fi
       fi
     fi
   fi
@@ -407,7 +413,7 @@ update_root_version_json() {
     fi
 
     # Update stage in VERSION.json
-    if [[ "$CURRENT_STAGE" != "$STAGE" ]]; then
+    if [ -n "$STAGE" ] && [[ "$CURRENT_STAGE" != "$STAGE" ]]; then
       sed_inplace "s/^[[:space:]]*\"stage\"[[:space:]]*:[[:space:]]*\"[^\"]*\"/  \"stage\": \"$STAGE\"/" "$VERSION_FILE"
       modified=true
     fi
