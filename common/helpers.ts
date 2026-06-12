@@ -3,17 +3,38 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import _ from 'lodash';
-import { DEFAULT_METRICS_COUNTER } from '../server/utils/constants';
-import { MetricsCounter, PartialMetricsCounter, PromoteSpaces, Space } from '../types';
-import { SecurityAnalyticsPluginConfigType } from '../config';
-import { Get, Set } from '../../../src/plugins/opensearch_dashboards_utils/common';
+import _ from "lodash";
+import { DEFAULT_METRICS_COUNTER } from "../server/utils/constants";
+import {
+  MetricsCounter,
+  PartialMetricsCounter,
+  PromoteSpaces,
+  Space,
+} from "../types";
+import { SecurityAnalyticsPluginConfigType } from "../config";
+import {
+  Get,
+  Set,
+} from "../../../src/plugins/opensearch_dashboards_utils/common";
 // Wazuh
-import { AllowedActionsBySpace, SpaceTypes, UserSpacesOrder } from './constants';
+import {
+  AllowedActionsBySpace,
+  SpaceTypes,
+  UserSpacesOrder,
+} from "./constants";
+
+export const UI_DISABLED_SETTINGS_IDS = {
+  INDEX_DISCARDED_EVENTS: "index-discarded-events",
+  INDEX_UNCLASSIFIED_EVENTS: "index-unclassified-events",
+  INDEX_RAW_EVENTS: "index-raw-events",
+} as const;
+
+export type UIDisabledSettingId =
+  (typeof UI_DISABLED_SETTINGS_IDS)[keyof typeof UI_DISABLED_SETTINGS_IDS];
 
 export function aggregateMetrics(
   metrics: PartialMetricsCounter,
-  currentMetricsCounter: PartialMetricsCounter
+  currentMetricsCounter: PartialMetricsCounter,
 ): MetricsCounter {
   const partialMetrics: PartialMetricsCounter = {
     ...currentMetricsCounter,
@@ -24,7 +45,8 @@ export function aggregateMetrics(
 
     if (workFlowMetrics) {
       const counterToUpdate: any =
-        partialMetrics[workflow] || _.cloneDeep(DEFAULT_METRICS_COUNTER[workflow]);
+        partialMetrics[workflow] ||
+        _.cloneDeep(DEFAULT_METRICS_COUNTER[workflow]);
       Object.entries(workFlowMetrics).forEach(([metric, count]) => {
         if (!counterToUpdate[metric]) {
           counterToUpdate[metric] = 0;
@@ -40,24 +62,35 @@ export function aggregateMetrics(
 }
 
 let securityAnalyticsPluginConfig: SecurityAnalyticsPluginConfigType;
-export const setSecurityAnalyticsPluginConfig = (config: SecurityAnalyticsPluginConfigType) => {
+export const setSecurityAnalyticsPluginConfig = (
+  config: SecurityAnalyticsPluginConfigType,
+) => {
   securityAnalyticsPluginConfig = config;
 };
 
-export const getSecurityAnalyticsPluginConfig = (): SecurityAnalyticsPluginConfigType | undefined =>
-  securityAnalyticsPluginConfig;
+export const getSecurityAnalyticsPluginConfig = ():
+  | SecurityAnalyticsPluginConfigType
+  | undefined => securityAnalyticsPluginConfig;
+
+export const isUiSettingDisabled = (
+  settingId: UIDisabledSettingId,
+): boolean => {
+  const disabledSettings =
+    getSecurityAnalyticsPluginConfig()?.disabledSettings || [];
+  return disabledSettings.includes(settingId);
+};
 
 export function extractFieldsFromMappings(
   properties: any,
   fields: string[],
-  parentField: string = ''
+  parentField: string = "",
 ) {
   Object.keys(properties).forEach((field) => {
-    if (properties[field].hasOwnProperty('properties')) {
+    if (properties[field].hasOwnProperty("properties")) {
       extractFieldsFromMappings(
-        properties[field]['properties'],
+        properties[field]["properties"],
         fields,
-        parentField ? `${parentField}.${field}` : field
+        parentField ? `${parentField}.${field}` : field,
       );
     } else {
       fields.push(parentField ? `${parentField}.${field}` : field);
@@ -83,14 +116,16 @@ export function createNullableGetterSetter<T>(): [Get<T | undefined>, Set<T>] {
 export function actionIsAllowedOnSpace(
   space: Space,
   action: string,
-  allowedActionsBySpace = AllowedActionsBySpace
+  allowedActionsBySpace = AllowedActionsBySpace,
 ): Boolean {
-  return allowedActionsBySpace?.[SpaceTypes[space.toUpperCase()]?.value]?.includes(action);
+  return allowedActionsBySpace?.[
+    SpaceTypes[space.toUpperCase()]?.value
+  ]?.includes(action);
 }
 
 export function getSpacesAllowAction(
   action: string,
-  allowedActionsBySpace = AllowedActionsBySpace
+  allowedActionsBySpace = AllowedActionsBySpace,
 ): Space[] {
   return Object.entries(allowedActionsBySpace)
     .filter(([_, allowedActions]) => allowedActions.includes(action))

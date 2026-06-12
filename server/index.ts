@@ -3,18 +3,23 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PluginConfigDescriptor, PluginInitializerContext } from 'opensearch-dashboards/server';
-import { SecurityAnalyticsPlugin } from './plugin';
-import { Observable } from 'rxjs';
-import { SecurityAnalyticsPluginConfigType, configSchema } from '../config';
+import {
+  PluginConfigDescriptor,
+  PluginInitializerContext,
+} from "opensearch-dashboards/server";
+import { SecurityAnalyticsPlugin } from "./plugin";
+import { Observable } from "rxjs";
+import { SecurityAnalyticsPluginConfigType, configSchema } from "../config";
 
-export const config: PluginConfigDescriptor<SecurityAnalyticsPluginConfigType> = {
-  exposeToBrowser: {
-    enabled: true,
-    uxTelemetryInterval: true,
-  },
-  schema: configSchema,
-};
+export const config: PluginConfigDescriptor<SecurityAnalyticsPluginConfigType> =
+  {
+    exposeToBrowser: {
+      enabled: true,
+      uxTelemetryInterval: true,
+      disabledSettings: true,
+    },
+    schema: configSchema,
+  };
 export interface SecurityAnalyticsPluginSetup {
   config$: Observable<SecurityAnalyticsPluginConfigType>;
 }
