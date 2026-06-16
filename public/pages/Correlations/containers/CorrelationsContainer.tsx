@@ -5,6 +5,7 @@
 import {
   CorrelationFinding,
   CorrelationGraphData,
+  CorrelationRule,
   DataSourceProps,
   DateTimeFilter,
   FindingItemType,
@@ -39,11 +40,14 @@ import {
   EuiBadge,
   EuiFilterGroup,
   EuiHorizontalRule,
+  EuiButtonGroup,
+  EuiFieldSearch,
 } from '@elastic/eui';
 import { FilterItem, FilterGroup } from '../components/FilterGroup';
 import {
   BREADCRUMBS,
   DEFAULT_DATE_RANGE,
+  DEFAULT_EMPTY_DATA,
   MAX_RECENTLY_USED_TIME_RANGES,
   ROUTES,
 } from '../../../utils/constants';
@@ -58,6 +62,9 @@ import { getLogTypeLabel } from '../../LogTypes/utils/helpers';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { errorNotificationToast, setBreadcrumbs } from '../../../utils/helpers';
 import { PageHeader } from '../../../components/PageHeader/PageHeader';
+import { debounce } from 'lodash';
+import { CorrelationsTableView } from './CorrelationsTableView';
+import { mapConnectedCorrelations } from '../utils/helpers';
 
 interface CorrelationsProps
   extends RouteComponentProps<
@@ -77,6 +84,18 @@ interface SpecificFindingCorrelations {
   correlatedFindings: CorrelationFinding[];
 }
 
+export interface CorrelationsTableData {
+  id: string;
+  startTime: number;
+  correlationRule: string;
+  alertSeverity: string[];
+  logTypes: string[];
+  findingsSeverity: string[];
+  correlatedFindings: CorrelationFinding[];
+  resources: string[];
+  correlationRuleObj: CorrelationRule | null;
+}
+
 interface CorrelationsState {
   recentlyUsedRanges: any[];
   graphData: CorrelationGraphData;
@@ -84,6 +103,11 @@ interface CorrelationsState {
   logTypeFilterOptions: FilterItem[];
   severityFilterOptions: FilterItem[];
   loadingGraphData: boolean;
+  loadingTableData: boolean;
+  isGraphView: boolean;
+  correlationsTableData: CorrelationsTableData[];
+  connectedFindings: CorrelationFinding[][];
+  searchTerm: string;
 }
 
 export class Correlations extends React.Component<CorrelationsProps, CorrelationsState> {
@@ -98,6 +122,11 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       severityFilterOptions: [...defaultSeverityFilterItemOptions],
       specificFindingInfo: undefined,
       loadingGraphData: false,
+      loadingTableData: false,
+      isGraphView: false,
+      correlationsTableData: [],
+      connectedFindings: [],
+      searchTerm: '',
     };
   }
 
@@ -123,6 +152,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
     setBreadcrumbs([BREADCRUMBS.CORRELATIONS]);
     this.updateState(true /* onMount */);
     this.props.onMount();
+    this.fetchCorrelationsTableData();
   }
 
   componentDidUpdate(
@@ -138,6 +168,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       prevProps.dateTimeFilter !== this.props.dateTimeFilter
     ) {
       this.updateState();
+      this.fetchCorrelationsTableData();
     }
   }
 
@@ -390,16 +421,35 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       });
   };
 
-  private onRefresh = () => {
+  private onRefresh = async () => {
     this.updateState();
+    this.fetchCorrelationsTableData();
   };
 
   onLogTypeFilterChange = (items: FilterItem[]) => {
-    this.setState({ logTypeFilterOptions: items });
+    this.setState(
+      {
+        logTypeFilterOptions: items,
+      },
+      () => {
+        if (this.state.specificFindingInfo) {
+          this.updateGraphDataState(this.state.specificFindingInfo);
+        }
+      }
+    );
   };
 
   onSeverityFilterChange = (items: FilterItem[]) => {
-    this.setState({ severityFilterOptions: items });
+    this.setState(
+      {
+        severityFilterOptions: items,
+      },
+      () => {
+        if (this.state.specificFindingInfo) {
+          this.updateGraphDataState(this.state.specificFindingInfo);
+        }
+      }
+    );
   };
 
   closeFlyout = () => {
@@ -440,13 +490,30 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
 
   renderCorrelationsGraph(loadingData: boolean) {
     return this.state.graphData.graph.nodes.length > 0 || loadingData ? (
-      <CorrelationGraph
-        loadingData={loadingData}
-        graph={this.state.graphData.graph}
-        options={{ ...graphRenderOptions }}
-        events={this.state.graphData.events}
-        getNetwork={this.setNetwork}
-      />
+      <>
+        <EuiFlexGroup wrap={true} gutterSize="m" justifyContent="flexStart" alignItems="center">
+          <EuiFlexItem grow={false}>
+            <EuiText size="s">
+              <strong>Severity:</strong>
+            </EuiText>
+          </EuiFlexItem>
+          {ruleSeverity.map((sev, idx) => (
+            <EuiFlexItem grow={false} key={idx}>
+              <EuiText size="s">
+                <EuiIcon type="dot" color={sev.color.background} /> {sev.value}
+              </EuiText>
+            </EuiFlexItem>
+          ))}
+        </EuiFlexGroup>
+        <EuiSpacer />
+        <CorrelationGraph
+          loadingData={loadingData}
+          graph={this.state.graphData.graph}
+          options={{ ...graphRenderOptions }}
+          events={this.state.graphData.events}
+          getNetwork={this.setNetwork}
+        />
+      </>
     ) : (
       <EuiEmptyPrompt
         title={
@@ -467,6 +534,128 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
       />
     );
   }
+
+  private fetchCorrelationsTableData = async () => {
+    try {
+      const start = datemath.parse(this.startTime);
+      const end = datemath.parse(this.endTime);
+      const startTime = start?.valueOf() || Date.now();
+      const endTime = end?.valueOf() || Date.now();
+
+      this.setState({ loadingTableData: true });
+      let allCorrelations = await DataStore.correlations.getAllCorrelationsInWindow(
+        startTime.toString(),
+        endTime.toString()
+      );
+
+      const connectedFindings = mapConnectedCorrelations(allCorrelations);
+
+      this.setState({ connectedFindings });
+
+      const tableData: CorrelationsTableData[] = [];
+
+      const allCorrelationRules = await DataStore.correlations.getCorrelationRules();
+      const allCorrelatedAlerts = await DataStore.correlations.getAllCorrelationAlerts();
+
+      const correlationRuleMapsAlerts: { [id: string]: string[] } = {};
+
+      allCorrelationRules.forEach((correlationRule) => {
+        const correlationRuleId = correlationRule.id;
+        correlationRuleMapsAlerts[correlationRuleId] = [];
+
+        allCorrelatedAlerts.correlationAlerts.forEach((correlatedAlert) => {
+          if (correlatedAlert.correlation_rule_id === correlationRuleId) {
+            correlationRuleMapsAlerts[correlationRuleId].push(correlatedAlert.severity);
+          }
+        });
+      });
+
+      for (const findingGroup of connectedFindings) {
+        let correlationRule = '';
+        const logTypes = new Set<string>();
+        const findingsSeverity: string[] = [];
+        let alertsSeverity: string[] = [];
+        const resources: string[] = [];
+        let correlationRuleObj: CorrelationRule | null = null;
+
+        for (const finding of findingGroup) {
+          findingsSeverity.push(finding.detectionRule.severity);
+          logTypes.add(finding.logType);
+        }
+
+        // Call the APIs only if correlationRule has not been found yet to avoid repeated API calls.
+        if (correlationRule === '') {
+          if (findingGroup[0] && findingGroup[0].detector && findingGroup[0].detector._source) {
+            const correlatedFindingsResponse = await DataStore.correlations.getCorrelatedFindings(
+              findingGroup[0].id,
+              findingGroup[0]?.detector._source?.detector_type
+            );
+            if (correlatedFindingsResponse?.correlatedFindings[0]?.rules) {
+              const correlationRuleId = correlatedFindingsResponse.correlatedFindings[0].rules[0];
+              correlationRuleObj =
+                (await DataStore.correlations.getCorrelationRule(correlationRuleId)) || null;
+              alertsSeverity = correlationRuleMapsAlerts[correlationRuleId];
+              if (correlationRuleObj) {
+                correlationRule = correlationRuleObj.name;
+                correlationRuleObj.queries.map((query) => {
+                  query.conditions.map((condition) => {
+                    resources.push(condition.name + ': ' + condition.value);
+                  });
+                });
+              }
+            }
+          }
+        }
+
+        tableData.push({
+          id: `${startTime}_${findingGroup[0]?.id}`,
+          startTime: startTime,
+          correlationRule: correlationRule,
+          logTypes: Array.from(logTypes),
+          alertSeverity: alertsSeverity,
+          findingsSeverity: findingsSeverity,
+          correlatedFindings: findingGroup,
+          resources: resources,
+          correlationRuleObj: correlationRuleObj,
+        });
+      }
+
+      this.setState({
+        correlationsTableData: tableData,
+        loadingTableData: false,
+      });
+    } catch (error) {
+      this.setState({ loadingTableData: false });
+      errorNotificationToast(
+        this.props.notifications,
+        'fetch and connect correlations',
+        error.message
+      );
+    }
+  };
+
+  private debouncedSearch = debounce((searchTerm: string) => {
+    this.setState({ searchTerm });
+  }, 300);
+
+  private renderSearchBar = () => {
+    return (
+      <EuiFieldSearch
+        placeholder="Search"
+        value={this.state.searchTerm}
+        onChange={(e) => {
+          e.persist();
+          const searchValue = e.target.value;
+          this.setState({ searchTerm: searchValue });
+          this.debouncedSearch(searchValue);
+        }}
+        fullWidth={true}
+        isClearable={true}
+        compressed={true}
+        aria-label="Search correlations"
+      />
+    );
+  };
 
   render() {
     const findingCardsData = this.state.specificFindingInfo;
@@ -529,6 +718,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                 Higher correlation score indicated stronger correlation.
               </EuiText>
               <EuiSpacer />
+
               {findingCardsData.correlatedFindings.map((finding, index) => {
                 return (
                   <>
@@ -539,7 +729,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                       timestamp={finding.timestamp}
                       detectionRule={finding.detectionRule}
                       correlationData={{
-                        score: finding.correlationScore || 'N/A',
+                        score: finding.correlationScore || DEFAULT_EMPTY_DATA,
                         onInspect: this.onFindingInspect,
                       }}
                       finding={finding}
@@ -574,6 +764,7 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
           <EuiFlexItem>
             <EuiPanel>
               <EuiFlexGroup gutterSize="xs" wrap={false} justifyContent="flexEnd">
+                <EuiFlexItem grow={true}>{this.renderSearchBar()}</EuiFlexItem>
                 <EuiFlexItem grow={false}>
                   <EuiFilterGroup>
                     <FilterGroup
@@ -595,30 +786,47 @@ export class Correlations extends React.Component<CorrelationsProps, Correlation
                     Reset filters
                   </EuiSmallButtonEmpty>
                 </EuiFlexItem>
-              </EuiFlexGroup>
-              <EuiSpacer />
-              <EuiFlexGroup
-                wrap={true}
-                gutterSize="m"
-                justifyContent="flexStart"
-                alignItems="center"
-              >
                 <EuiFlexItem grow={false}>
-                  <EuiText size="s">
-                    <strong>Severity:</strong>
-                  </EuiText>
+                  <EuiButtonGroup
+                    legend="View type"
+                    options={[
+                      {
+                        id: 'table',
+                        label: 'Table',
+                        iconType: 'tableOfContents',
+                      },
+                      {
+                        id: 'graph',
+                        label: 'Graph',
+                        iconType: 'visNetwork',
+                      },
+                    ]}
+                    idSelected={this.state.isGraphView ? 'graph' : 'table'}
+                    onChange={(id) => this.setState({ isGraphView: id === 'graph' })}
+                    buttonSize="s"
+                  />
                 </EuiFlexItem>
-                {ruleSeverity.map((sev, idx) => (
-                  <EuiFlexItem grow={false} key={idx}>
-                    <EuiText size="s">
-                      <EuiIcon type="dot" color={sev.color.background} /> {sev.value}
-                    </EuiText>
-                  </EuiFlexItem>
-                ))}
               </EuiFlexGroup>
-
               <EuiSpacer />
-              {this.renderCorrelationsGraph(this.state.loadingGraphData)}
+              {this.state.isGraphView ? (
+                this.renderCorrelationsGraph(this.state.loadingGraphData)
+              ) : (
+                <>
+                  <CorrelationsTableView
+                    correlationsTableData={this.state.correlationsTableData}
+                    connectedFindings={this.state.connectedFindings}
+                    loadingTableData={this.state.loadingTableData}
+                    logTypeFilterOptions={this.state.logTypeFilterOptions}
+                    severityFilterOptions={this.state.severityFilterOptions}
+                    searchTerm={this.state.searchTerm}
+                    addNode={this.addNode}
+                    addEdge={this.addEdge}
+                    onNodeClick={this.onNodeClick}
+                    setNetwork={this.setNetwork}
+                    createNodeTooltip={this.createNodeTooltip}
+                  />
+                </>
+              )}
             </EuiPanel>
           </EuiFlexItem>
         </EuiFlexGroup>
