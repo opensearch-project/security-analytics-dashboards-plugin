@@ -10,6 +10,10 @@ export interface CreateRuleParams {
   category: string;
 }
 
+export interface CreateRuleRequest {
+  rule: Rule;
+}
+
 export interface CreateRuleResponse {
   _id: string;
   _version: number;

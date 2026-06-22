@@ -38,6 +38,7 @@ export default class RulesService extends MDSEnabledClientService {
     response: OpenSearchDashboardsResponseFactory
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<CreateRuleResponse> | ResponseError>> => {
     try {
+      const { rule } = request.body as { rule: Rule };
       const {
         id,
         title,
@@ -50,7 +51,7 @@ export default class RulesService extends MDSEnabledClientService {
         tags,
         level,
         false_positives,
-      } = request.body as Rule;
+      } = rule;
       const today = moment(moment.now()).format('YYYY/MM/DD');
       const jsonPayload: { [field: string]: any } = {
         id: id || DEFAULT_RULE_UUID,

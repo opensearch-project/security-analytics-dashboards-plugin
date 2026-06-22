@@ -5,7 +5,7 @@
 
 import { CoreStart, AppMountParameters } from 'opensearch-dashboards/public';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { HashRouter as Router, Route } from 'react-router-dom';
 import { SecurityAnalyticsContext } from './services';
 import { DarkModeContext } from './components/DarkMode';
@@ -34,11 +34,12 @@ export function renderApp(
   const isDarkMode = coreStart.uiSettings.get('theme:darkMode') || false;
   const services = getBrowserServices();
   const metrics = new MetricsContext(services.metricsService);
+  const root = createRoot(params.element);
 
   DataStore.logTypes
     .getLogTypes()
     .then((logTypes: LogType[]) => {
-      ReactDOM.render(
+      root.render(
         <Router>
           <Route
             render={(props) => {
@@ -99,8 +100,7 @@ export function renderApp(
               );
             }}
           />
-        </Router>,
-        params.element
+        </Router>
       );
 
       services.notificationsService.getServerFeatures().then((response) => {
@@ -117,5 +117,5 @@ export function renderApp(
       console.error(error.message ?? error);
     });
 
-  return () => ReactDOM.unmountComponentAtNode(params.element);
+  return () => root.unmount();
 }

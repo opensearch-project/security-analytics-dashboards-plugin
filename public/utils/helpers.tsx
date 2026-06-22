@@ -254,7 +254,7 @@ export const errorNotificationToast = (
   errorMessage: string = '',
   displayTime: number = 5000 // 5 seconds; default is 10 seconds
 ) => {
-  if (errorMessage.toLowerCase().includes('no living connections')) {
+  if (JSON.stringify(errorMessage)?.toLowerCase().includes('no living connections')) {
     return;
   }
   const message = `Failed to ${actionName} ${objectName}:`;

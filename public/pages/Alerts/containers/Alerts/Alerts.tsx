@@ -188,7 +188,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
           prevState.alerts !== this.state.alerts ||
           prevState.alerts.length !== this.state.alerts.length;
         if (alertsChanged) {
-          this.filterDeletectionRuleAlerts();
+          this.filterDeletectionRuleAlerts(this.state.alerts);
         }
         break;
 
@@ -201,7 +201,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         }
         break;
 
-      case AlertTabId.DetectionRules:
+      case AlertTabId.ThreatIntel:
         const threatIntelAlertsChanged =
           prevState.threatIntelAlerts !== this.state.threatIntelAlerts ||
           prevState.threatIntelAlerts.length !== this.state.threatIntelAlerts.length;
@@ -226,8 +226,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     );
   };
 
-  filterDeletectionRuleAlerts = () => {
-    const { alerts } = this.state;
+  filterDeletectionRuleAlerts = (alerts: AlertItem[] = []) => {
     const filteredAlerts = this.filterAlerts({ alerts, timeField: 'last_notification_time' });
     this.setState({
       alertsFiltered: true,
@@ -600,6 +599,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
               duration,
               (alerts) => {
                 this.setState({ alerts: [...this.state.alerts, ...alerts] });
+                this.filterDeletectionRuleAlerts(alerts);
               }
             );
           }
@@ -610,7 +610,6 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     } catch (e: any) {
       errorNotificationToast(notifications, 'retrieve', 'alerts', e);
     }
-    this.filterDeletectionRuleAlerts();
     this.setState({ loading: false });
   }
 

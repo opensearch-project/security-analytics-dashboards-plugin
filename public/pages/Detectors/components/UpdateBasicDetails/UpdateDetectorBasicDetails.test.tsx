@@ -7,7 +7,7 @@ import React from 'react';
 import props from '../../../../../test/mocks/Detectors/components/UpdateDetectorBasicDetails/UpdateDetectorBasicDetails.mock';
 import { expect } from '@jest/globals';
 import { UpdateDetectorBasicDetails } from './UpdateBasicDetails';
-import { act } from 'react-dom/test-utils';
+import { act } from '@testing-library/react';
 import { mount } from 'enzyme';
 import { coreContextMock, mockContexts } from '../../../../../test/mocks/useContext.mock';
 import { setupCoreStart } from '../../../../../test/utils/helpers';

@@ -156,6 +156,17 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     }
 
     const createDetectorPromise = this.props.services.detectorsService.createDetector(detector);
+    const createDetectorRes = await createDetectorPromise;
+    if (!createDetectorRes.ok) {
+      errorNotificationToast(
+        this.props.notifications,
+        'create',
+        'detector',
+        createDetectorRes.error
+      );
+      this.setState({ creatingDetector: false });
+      return;
+    }
 
     this.setState({ creatingDetector: false }, () => {
       // set detector pending state, this will be used in detector details page
@@ -171,7 +182,7 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     this.props.metrics.detectorMetricsManager.sendMetrics(CreateDetectorSteps.createClicked);
 
     // navigate to detector details
-    this.props.history.push(`${ROUTES.DETECTOR_DETAILS}/${PENDING_DETECTOR_ID}`);
+    this.props.history.push(`${ROUTES.DETECTOR_DETAILS}/${createDetectorRes.response._id}`);
   };
 
   onNextClick = () => {
