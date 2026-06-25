@@ -18,10 +18,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Set up JDK
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@91d3aa4956ec4a53e477c4907347b5e3481be8c9 # v2
         with:
           distribution: temurin # Temurin is a distribution of adoptium
           java-version: 21
@@ -35,7 +35,7 @@ jobs:
         shell: bash
 
       - name: Run Opensearch
-        uses: derek-ho/start-opensearch@v6
+        uses: derek-ho/start-opensearch@e9060d3df24b30cdbfac62d749fec3367dade572 # v6
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           security-enabled: false
@@ -43,7 +43,7 @@ jobs:
 
       - name: Run Dashboard
         id: setup-dashboards
-        uses: derek-ho/setup-opensearch-dashboards@v1
+        uses: derek-ho/setup-opensearch-dashboards@f64b331c58fe5b0a6533e76da1b46cb9d11bcaef # v1
         with:
           plugin_name: security-analytics-dashboards-plugin
           built_plugin_name: security-analytics-dashboards
