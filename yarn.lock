@@ -2036,11 +2036,6 @@ eslint-import-resolver-webpack@0.13.8:
     resolve "^2.0.0-next.5"
     semver "^5.7.2"
 
-eslint-plugin-no-unsanitized@^3.0.2:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-no-unsanitized/-/eslint-plugin-no-unsanitized-3.2.0.tgz#a74239ae51363a5edbe6920eb34fe09aab925a9c"
-  integrity sha512-92opuXbjWmXcod94EyCKhp36V1QHLM/ArAST2ssgKOojALne0eZvSPfrg4oyr0EwTXvy0RJNe/Tkm33VkDUrKQ==
-
 eslint-plugin-prefer-object-spread@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/eslint-plugin-prefer-object-spread/-/eslint-plugin-prefer-object-spread-1.2.1.tgz#27fb91853690cceb3ae6101d9c8aecc6a67a402c"
