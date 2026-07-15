@@ -83,7 +83,6 @@
     "cypress": "^13.6.0",
     "cypress-real-events": "1.7.6",
     "cypress-recurse": "^1.27.0",
-    "eslint-plugin-no-unsanitized": "^3.0.2",
     "eslint-plugin-prefer-object-spread": "^1.2.1",
     "husky": "^8.0.0",
     "jest-cli": "^27.5.1",
