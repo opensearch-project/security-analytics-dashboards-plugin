@@ -30,7 +30,7 @@
   "resolutions": {
     "@types/react": "^18.2.0",
     "**/@types/angular": "1.6.50",
-    "**/@types/jest": "^29.3.1",
+    "**/@types/jest": "^30.0.0",
     "**/@types/react-dom": "^16.9.8",
     "**/cross-spawn": "7.0.6",
     "path-parse": "^1.0.7",
@@ -85,8 +85,7 @@
     "cypress-recurse": "^1.27.0",
     "eslint-plugin-prefer-object-spread": "^1.2.1",
     "husky": "^8.0.0",
-    "jest-cli": "^27.5.1",
-    "jest-environment-jsdom": "^27.5.1",
+    "jest-environment-jsdom": "^30.4.1",
     "lint-staged": "^10.2.0",
     "string.prototype.replaceall": "1.0.7",
     "ts-loader": "^6.2.1"
