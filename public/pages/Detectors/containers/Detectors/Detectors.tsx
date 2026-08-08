@@ -34,6 +34,10 @@ import {
 } from '../../../../utils/helpers';
 import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
 import { DetectorsService } from '../../../../services';
+import {
+  isResourceSharingAvailable,
+  SA_DETECTOR_RESOURCE_TYPE,
+} from '../../../../services/utils/resource_sharing';
 import { DetectorHit } from '../../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { Direction } from '@opensearch-project/oui/src/services/sort/sort_direction';
@@ -267,6 +271,27 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
         dataType: 'date',
         render: (last_update_time: number) => renderTime(last_update_time) || DEFAULT_EMPTY_DATA,
       },
+      ...(isResourceSharingAvailable(SA_DETECTOR_RESOURCE_TYPE)
+        ? [
+            {
+              // Resource-sharing SPI marker column: the centralized Share
+              // button is mounted here by security-dashboards-plugin when
+              // installed and resource sharing is enabled for detectors.
+              field: '_id',
+              name: 'Share',
+              sortable: false,
+              width: '5%',
+              render: (id: string) => (
+                <div
+                  data-resource-share-button
+                  data-resource-id={id}
+                  data-resource-type={SA_DETECTOR_RESOURCE_TYPE}
+                  data-resource-share-display="icon"
+                />
+              ),
+            } as EuiBasicTableColumn<DetectorHit>,
+          ]
+        : []),
     ];
 
     const statuses = [

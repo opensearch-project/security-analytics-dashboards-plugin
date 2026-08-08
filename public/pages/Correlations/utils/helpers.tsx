@@ -34,6 +34,10 @@ import {
   getXAxis,
   getYAxis,
 } from '../../Overview/utils/helpers';
+import {
+  isResourceSharingAvailable,
+  SA_CORRELATION_RULE_RESOURCE_TYPE,
+} from '../../../services/utils/resource_sharing';
 
 export const getCorrelationRulesTableColumns = (
   onRuleNameClick: (rule: CorrelationRule) => void,
@@ -74,6 +78,28 @@ export const getCorrelationRulesTableColumns = (
       },
       width: '10%',
     },
+    ...(isResourceSharingAvailable(SA_CORRELATION_RULE_RESOURCE_TYPE)
+      ? [
+          {
+            // Resource-sharing SPI marker column: the centralized Share button
+            // is mounted here by security-dashboards-plugin when installed and
+            // resource sharing is enabled for correlation rules.
+            field: 'id',
+            name: 'Share',
+            sortable: false,
+            width: '5%',
+            render: (id: string) =>
+              id ? (
+                <div
+                  data-resource-share-button
+                  data-resource-id={id}
+                  data-resource-type={SA_CORRELATION_RULE_RESOURCE_TYPE}
+                  data-resource-share-display="icon"
+                />
+              ) : null,
+          } as EuiBasicTableColumn<CorrelationRuleTableItem>,
+        ]
+      : []),
     {
       name: 'Actions',
       field: '',
