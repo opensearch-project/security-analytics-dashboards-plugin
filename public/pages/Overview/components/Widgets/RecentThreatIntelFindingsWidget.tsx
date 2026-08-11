@@ -17,7 +17,7 @@ import { WidgetContainer } from './WidgetContainer';
 import { getEuiEmptyPrompt, renderTime } from '../../../../utils/helpers';
 import { ThreatIntelFinding } from '../../../../../types';
 import { getApplication, getUseUpdatedUx } from '../../../../services/utils/constants';
-import { IocLabel, ThreatIntelIocType } from '../../../../../common/constants';
+import { renderIoCType } from '../../../../utils/helpers';
 
 const columns: EuiBasicTableColumn<ThreatIntelFinding>[] = [
   {
@@ -32,7 +32,7 @@ const columns: EuiBasicTableColumn<ThreatIntelFinding>[] = [
   {
     name: 'Indicator type',
     field: 'ioc_type',
-    render: (iocType: ThreatIntelIocType) => IocLabel[iocType],
+    render: (iocType: string) => renderIoCType(iocType),
   },
   {
     name: 'Threat intel source',
