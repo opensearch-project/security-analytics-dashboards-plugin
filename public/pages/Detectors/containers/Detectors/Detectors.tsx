@@ -278,14 +278,15 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
               // button is mounted here by security-dashboards-plugin when
               // installed and resource sharing is enabled for detectors.
               field: '_id',
-              name: 'Share',
+              name: 'Access',
               sortable: false,
               width: '5%',
-              render: (id: string) => (
+              render: (id: string, item: DetectorHit) => (
                 <div
                   data-resource-share-button
                   data-resource-id={id}
                   data-resource-type={SA_DETECTOR_RESOURCE_TYPE}
+                  {...(item?.detectorName ? { 'data-resource-name': item.detectorName } : {})}
                   data-resource-share-display="icon"
                 />
               ),

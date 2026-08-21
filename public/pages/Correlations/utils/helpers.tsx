@@ -85,15 +85,16 @@ export const getCorrelationRulesTableColumns = (
             // is mounted here by security-dashboards-plugin when installed and
             // resource sharing is enabled for correlation rules.
             field: 'id',
-            name: 'Share',
+            name: 'Access',
             sortable: false,
             width: '5%',
-            render: (id: string) =>
+            render: (id: string, ruleItem: CorrelationRule) =>
               id ? (
                 <div
                   data-resource-share-button
                   data-resource-id={id}
                   data-resource-type={SA_CORRELATION_RULE_RESOURCE_TYPE}
+                  {...(ruleItem?.name ? { 'data-resource-name': ruleItem.name } : {})}
                   data-resource-share-display="icon"
                 />
               ) : null,
