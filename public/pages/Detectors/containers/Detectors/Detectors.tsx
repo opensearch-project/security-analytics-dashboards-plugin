@@ -35,7 +35,7 @@ import {
 import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
 import { DetectorsService } from '../../../../services';
 import {
-  isResourceSharingAvailable,
+  getResourceSharingAvailableTypes,
   SA_DETECTOR_RESOURCE_TYPE,
 } from '../../../../services/utils/resource_sharing';
 import { DetectorHit } from '../../../../../server/models/interfaces';
@@ -56,6 +56,7 @@ interface DetectorsState {
   selectedItems: DetectorHit[];
   isDeleteModalVisible: boolean;
   isPopoverOpen: boolean;
+  resourceSharingAvailableTypes: string[];
 }
 
 export default class Detectors extends Component<DetectorsProps, DetectorsState> {
@@ -68,11 +69,13 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
       selectedItems: [],
       isDeleteModalVisible: false,
       isPopoverOpen: false,
+      resourceSharingAvailableTypes: [],
     };
   }
 
   async componentDidMount() {
     setBreadcrumbs([BREADCRUMBS.DETECTORS]);
+    this.updateResourceSharingAvailableTypes();
     await this.getDetectors();
   }
 
@@ -82,9 +85,17 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
     snapshot?: any
   ): void {
     if (this.props.dataSource && prevProps.dataSource !== this.props.dataSource) {
+      this.updateResourceSharingAvailableTypes();
       this.getDetectors();
     }
   }
+
+  updateResourceSharingAvailableTypes = async () => {
+    const resourceSharingAvailableTypes = await getResourceSharingAvailableTypes(
+      this.props.dataSource?.id
+    );
+    this.setState({ resourceSharingAvailableTypes });
+  };
 
   getDetectors = async () => {
     this.setState({ loadingDetectors: true });
@@ -271,7 +282,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
         dataType: 'date',
         render: (last_update_time: number) => renderTime(last_update_time) || DEFAULT_EMPTY_DATA,
       },
-      ...(isResourceSharingAvailable(SA_DETECTOR_RESOURCE_TYPE)
+      ...(this.state.resourceSharingAvailableTypes.includes(SA_DETECTOR_RESOURCE_TYPE)
         ? [
             {
               // Resource-sharing SPI marker column: the centralized Share
@@ -281,15 +292,17 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
               name: 'Access',
               sortable: false,
               width: '5%',
-              render: (id: string, item: DetectorHit) => (
-                <div
-                  data-resource-share-button
-                  data-resource-id={id}
-                  data-resource-type={SA_DETECTOR_RESOURCE_TYPE}
-                  {...(item?.detectorName ? { 'data-resource-name': item.detectorName } : {})}
-                  data-resource-share-display="icon"
-                />
-              ),
+              render: (id: string, item: DetectorHit) =>
+                id &&
+                this.state.resourceSharingAvailableTypes.includes(SA_DETECTOR_RESOURCE_TYPE) ? (
+                  <div
+                    data-resource-share-button
+                    data-resource-id={id}
+                    data-resource-type={SA_DETECTOR_RESOURCE_TYPE}
+                    {...(item?.detectorName ? { 'data-resource-name': item.detectorName } : {})}
+                    data-resource-share-display="icon"
+                  />
+                ) : null,
             } as EuiBasicTableColumn<DetectorHit>,
           ]
         : []),

@@ -4,43 +4,70 @@
  */
 
 import {
-  isResourceSharingAvailable,
+  getResourceSharingAvailableTypes,
   SA_DETECTOR_RESOURCE_TYPE,
   SA_CORRELATION_RULE_RESOURCE_TYPE,
 } from '../resource_sharing';
-import { setApplication } from '../constants';
+import { setHttp } from '../constants';
 
-const setResourceSharing = (resourceSharing?: Record<string, unknown>) =>
-  setApplication({ capabilities: resourceSharing ? { resourceSharing } : {} } as any);
+const setHttpResponses = (dashboardsInfo: unknown, resourceTypes?: unknown): jest.Mock => {
+  const get = jest.fn((path: string) => {
+    if (path === '/api/v1/auth/dashboardsinfo') {
+      return Promise.resolve(dashboardsInfo);
+    }
+    if (path === '/api/resource/types') {
+      return Promise.resolve(resourceTypes);
+    }
+    return Promise.reject(new Error(`unexpected path: ${path}`));
+  });
+  setHttp({ get } as any);
+  return get;
+};
 
-describe('isResourceSharingAvailable', () => {
-  it('returns false when the resourceSharing capability is absent', () => {
-    setResourceSharing();
-    expect(isResourceSharingAvailable(SA_DETECTOR_RESOURCE_TYPE)).toBe(false);
+describe('getResourceSharingAvailableTypes', () => {
+  it('returns an empty list when resource sharing is disabled', async () => {
+    setHttpResponses({ resource_sharing_enabled: false });
+    expect(await getResourceSharingAvailableTypes()).toEqual([]);
   });
 
-  it('returns false when resource sharing is disabled', () => {
-    setResourceSharing({ enabled: false, availableTypes: 'detector' });
-    expect(isResourceSharingAvailable(SA_DETECTOR_RESOURCE_TYPE)).toBe(false);
+  it('returns an empty list when the dashboardsinfo call fails', async () => {
+    setHttp({ get: jest.fn(() => Promise.reject(new Error('boom'))) } as any);
+    expect(await getResourceSharingAvailableTypes()).toEqual([]);
   });
 
-  it('returns false when the resource type is not in availableTypes', () => {
-    setResourceSharing({ enabled: true, availableTypes: 'workflow,notification_config' });
-    expect(isResourceSharingAvailable(SA_DETECTOR_RESOURCE_TYPE)).toBe(false);
+  it('returns the registered types when enabled', async () => {
+    setHttpResponses(
+      { resource_sharing_enabled: true },
+      { types: [{ type: SA_DETECTOR_RESOURCE_TYPE }, { type: SA_CORRELATION_RULE_RESOURCE_TYPE }] }
+    );
+    expect(await getResourceSharingAvailableTypes()).toEqual([
+      SA_DETECTOR_RESOURCE_TYPE,
+      SA_CORRELATION_RULE_RESOURCE_TYPE,
+    ]);
   });
 
-  it('returns true when enabled and the detector type is present', () => {
-    setResourceSharing({ enabled: true, availableTypes: 'detector,correlation-rule' });
-    expect(isResourceSharingAvailable(SA_DETECTOR_RESOURCE_TYPE)).toBe(true);
+  it('supports a bare array response and filters malformed entries', async () => {
+    setHttpResponses({ resource_sharing_enabled: true }, [
+      { type: SA_DETECTOR_RESOURCE_TYPE },
+      {},
+      null,
+    ]);
+    expect(await getResourceSharingAvailableTypes()).toEqual([SA_DETECTOR_RESOURCE_TYPE]);
   });
 
-  it('returns true for the correlation-rule type when present', () => {
-    setResourceSharing({ enabled: true, availableTypes: 'detector,correlation-rule' });
-    expect(isResourceSharingAvailable(SA_CORRELATION_RULE_RESOURCE_TYPE)).toBe(true);
+  it('passes the data source id to both routes', async () => {
+    const get = setHttpResponses({ resource_sharing_enabled: true }, { types: [] });
+    await getResourceSharingAvailableTypes('ds-1');
+    expect(get).toHaveBeenCalledWith('/api/v1/auth/dashboardsinfo', {
+      query: { dataSourceId: 'ds-1' },
+    });
+    expect(get).toHaveBeenCalledWith('/api/resource/types', {
+      query: { dataSourceId: 'ds-1' },
+    });
   });
 
-  it('returns false and swallows errors when the application has not been set', () => {
-    setApplication(undefined as any);
-    expect(isResourceSharingAvailable(SA_DETECTOR_RESOURCE_TYPE)).toBe(false);
+  it('returns an empty list and swallows errors when http has not been set', async () => {
+    setHttp(undefined as any);
+    expect(await getResourceSharingAvailableTypes()).toEqual([]);
   });
 });

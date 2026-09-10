@@ -4,21 +4,13 @@
  */
 
 import { getCorrelationRulesTableColumns } from '../helpers';
-import { isResourceSharingAvailable } from '../../../../services/utils/resource_sharing';
-
-jest.mock('../../../../services/utils/resource_sharing', () => ({
-  isResourceSharingAvailable: jest.fn(),
-  SA_CORRELATION_RULE_RESOURCE_TYPE: 'correlation-rule',
-}));
-
-const mockIsAvailable = isResourceSharingAvailable as jest.Mock;
+import { SA_CORRELATION_RULE_RESOURCE_TYPE } from '../../../../services/utils/resource_sharing';
 
 describe('getCorrelationRulesTableColumns resource sharing Access column', () => {
-  afterEach(() => mockIsAvailable.mockReset());
-
   it('appends an Access column with a share-button marker when resource sharing is available', () => {
-    mockIsAvailable.mockReturnValue(true);
-    const columns = getCorrelationRulesTableColumns(jest.fn(), jest.fn());
+    const columns = getCorrelationRulesTableColumns(jest.fn(), jest.fn(), [
+      SA_CORRELATION_RULE_RESOURCE_TYPE,
+    ]);
     const accessColumn = columns.find((column: any) => column.name === 'Access') as any;
     expect(accessColumn).toBeDefined();
 
@@ -30,14 +22,19 @@ describe('getCorrelationRulesTableColumns resource sharing Access column', () =>
   });
 
   it('renders nothing for a row without an id', () => {
-    mockIsAvailable.mockReturnValue(true);
-    const columns = getCorrelationRulesTableColumns(jest.fn(), jest.fn());
+    const columns = getCorrelationRulesTableColumns(jest.fn(), jest.fn(), [
+      SA_CORRELATION_RULE_RESOURCE_TYPE,
+    ]);
     const accessColumn = columns.find((column: any) => column.name === 'Access') as any;
     expect(accessColumn.render(undefined, { name: 'No id rule' })).toBeNull();
   });
 
   it('does not append the Access column when resource sharing is unavailable', () => {
-    mockIsAvailable.mockReturnValue(false);
+    const columns = getCorrelationRulesTableColumns(jest.fn(), jest.fn(), []);
+    expect(columns.find((column: any) => column.name === 'Access')).toBeUndefined();
+  });
+
+  it('does not append the Access column when the parameter is omitted', () => {
     const columns = getCorrelationRulesTableColumns(jest.fn(), jest.fn());
     expect(columns.find((column: any) => column.name === 'Access')).toBeUndefined();
   });

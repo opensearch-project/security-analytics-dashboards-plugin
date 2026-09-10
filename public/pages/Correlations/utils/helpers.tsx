@@ -34,14 +34,12 @@ import {
   getXAxis,
   getYAxis,
 } from '../../Overview/utils/helpers';
-import {
-  isResourceSharingAvailable,
-  SA_CORRELATION_RULE_RESOURCE_TYPE,
-} from '../../../services/utils/resource_sharing';
+import { SA_CORRELATION_RULE_RESOURCE_TYPE } from '../../../services/utils/resource_sharing';
 
 export const getCorrelationRulesTableColumns = (
   onRuleNameClick: (rule: CorrelationRule) => void,
-  _refreshRules: (ruleItem: CorrelationRule) => void
+  _refreshRules: (ruleItem: CorrelationRule) => void,
+  resourceSharingAvailableTypes: string[] = []
 ): EuiBasicTableColumn<CorrelationRuleTableItem>[] => {
   return [
     {
@@ -78,7 +76,7 @@ export const getCorrelationRulesTableColumns = (
       },
       width: '10%',
     },
-    ...(isResourceSharingAvailable(SA_CORRELATION_RULE_RESOURCE_TYPE)
+    ...(resourceSharingAvailableTypes.includes(SA_CORRELATION_RULE_RESOURCE_TYPE)
       ? [
           {
             // Resource-sharing SPI marker column: the centralized Share button
@@ -89,7 +87,7 @@ export const getCorrelationRulesTableColumns = (
             sortable: false,
             width: '5%',
             render: (id: string, ruleItem: CorrelationRule) =>
-              id ? (
+              id && resourceSharingAvailableTypes.includes(SA_CORRELATION_RULE_RESOURCE_TYPE) ? (
                 <div
                   data-resource-share-button
                   data-resource-id={id}
