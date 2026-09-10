@@ -24,8 +24,8 @@ export const getResourceSharingAvailableTypes = async (
     const http = getHttp();
     const query = resourceDataSourceId ? { dataSourceId: resourceDataSourceId } : {};
     // Global gate: resource sharing must be enabled on the selected data source.
-    const info: any = await http.get('/api/v1/auth/dashboardsinfo', { query });
-    if (!info?.resource_sharing_enabled) return [];
+    const info: any = await http.get('/api/v1/auth/resource_sharing_enabled', { query });
+    if (!info?.enabled) return [];
     // Per-type gate: the registered/protected shareable types on that source.
     const typesResp: any = await http.get('/api/resource/types', { query });
     const rawTypes = Array.isArray(typesResp) ? typesResp : (typesResp?.types ?? []);
