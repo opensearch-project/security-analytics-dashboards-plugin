@@ -45,6 +45,7 @@ import {
   setChrome,
   setContentManagement,
   setDataSourceManagementPlugin,
+  setHttp,
   setNotifications,
   setSavedObjectsClient,
 } from './services/utils/constants';
@@ -278,6 +279,7 @@ export class SecurityAnalyticsPlugin
     setApplication(core.application);
     setBreadCrumbsSetter(core.chrome.setBreadcrumbs);
     setChrome(core.chrome);
+    setHttp(core.http);
     setContentManagement(contentManagement);
     setNotifications(core.notifications);
     setSavedObjectsClient(core.savedObjects.client);

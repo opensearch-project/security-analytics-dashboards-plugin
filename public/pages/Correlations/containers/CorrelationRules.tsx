@@ -26,6 +26,7 @@ import { DeleteCorrelationRuleModal } from '../components/DeleteModal';
 import { setBreadcrumbs } from '../../../utils/helpers';
 import { PageHeader } from '../../../components/PageHeader/PageHeader';
 import { getUseUpdatedUx } from '../../../services/utils/constants';
+import { getResourceSharingAvailableTypes } from '../../../services/utils/resource_sharing';
 
 export interface CorrelationRulesProps extends RouteComponentProps, DataSourceProps {}
 
@@ -33,6 +34,19 @@ export const CorrelationRules: React.FC<CorrelationRulesProps> = (props: Correla
   const [allRules, setAllRules] = useState<CorrelationRuleTableItem[]>([]);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [selectedRule, setSelectedRule] = useState<CorrelationRule | undefined>(undefined);
+  const [resourceSharingAvailableTypes, setResourceSharingAvailableTypes] = useState<string[]>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    getResourceSharingAvailableTypes(props.dataSource?.id).then((types) => {
+      if (isMounted) {
+        setResourceSharingAvailableTypes(types);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, [props.dataSource?.id]);
 
   const getCorrelationRules = useCallback(async () => {
     const allRuleItems: CorrelationRule[] = await DataStore.correlations.getCorrelationRules();
@@ -126,10 +140,14 @@ export const CorrelationRules: React.FC<CorrelationRulesProps> = (props: Correla
           <EuiPanel>
             {allRules.length ? (
               <EuiInMemoryTable
-                columns={getCorrelationRulesTableColumns(onRuleNameClick, (rule) => {
-                  setIsDeleteModalVisible(true);
-                  setSelectedRule(rule);
-                })}
+                columns={getCorrelationRulesTableColumns(
+                  onRuleNameClick,
+                  (rule) => {
+                    setIsDeleteModalVisible(true);
+                    setSelectedRule(rule);
+                  },
+                  resourceSharingAvailableTypes
+                )}
                 items={allRules}
                 pagination={true}
                 sorting={true}

@@ -38,6 +38,8 @@ export const [getBreadCrumbsSetter, setBreadCrumbsSetter] = createGetterSetter<
 
 export const [getChrome, setChrome] = createGetterSetter<CoreStart['chrome']>('chrome');
 
+export const [getHttp, setHttp] = createGetterSetter<CoreStart['http']>('http');
+
 export const [getContentManagement, setContentManagement] = createGetterSetter<
   ContentManagementPluginStart
 >('contentManagement');
