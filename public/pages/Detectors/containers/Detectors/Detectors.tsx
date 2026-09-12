@@ -444,6 +444,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
               items={detectorHits}
               itemId={(item: DetectorHit) => `${item._id}`}
               columns={columns}
+              tableLayout="auto"
               pagination={true}
               sorting={sorting}
               isSelectable={true}
