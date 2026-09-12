@@ -149,6 +149,7 @@ export const CorrelationRules: React.FC<CorrelationRulesProps> = (props: Correla
                   resourceSharingAvailableTypes
                 )}
                 items={allRules}
+                tableLayout="auto"
                 pagination={true}
                 sorting={true}
                 search={getCorrelationRulesTableSearchConfig()}
