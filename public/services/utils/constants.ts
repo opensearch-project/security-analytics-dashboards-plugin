@@ -11,6 +11,7 @@ import { ContentManagementPluginStart } from '../../../../../src/plugins/content
 import { BrowserServices } from '../../models/interfaces';
 import { DataSourceManagementPluginSetup } from '../../../../../src/plugins/data_source_management/public';
 import { createNullableGetterSetter } from '../../../common/helpers';
+import { SecurityPluginStart } from '../../../../security-dashboards-plugin/public/types';
 
 export const dataSourceInfo: { activeDataSource: DataSourceOption } = {
   activeDataSource: {
@@ -60,3 +61,11 @@ export const [
   getDataSourceManagementPlugin,
   setDataSourceManagementPlugin,
 ] = createNullableGetterSetter<DataSourceManagementPluginSetup | undefined>();
+
+// Optional: only set when security-dashboards-plugin is installed (see plugin.ts
+// start()). Its presence alone doesn't guarantee its client-side DOM-marker SPI is
+// running -- callers should use securityDashboards.ui.isResourceSharingAvailable,
+// which is itself gated on that, rather than presence alone.
+export const [getSecurityDashboards, setSecurityDashboards] = createNullableGetterSetter<
+  SecurityPluginStart | undefined
+>();

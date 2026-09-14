@@ -35,6 +35,7 @@ import { SecurityAnalyticsPluginConfigType } from '../config';
 import { setSecurityAnalyticsPluginConfig } from '../common/helpers';
 import { DataSourceManagementPluginSetup } from '../../../src/plugins/data_source_management/public';
 import { DataSourcePluginStart } from '../../../src/plugins/data_source/public';
+import { SecurityPluginStart } from '../../../security-dashboards-plugin/public/types';
 import { NavigationPublicPluginStart } from 'src/plugins/navigation/public';
 import { ContentManagementPluginStart } from 'src/plugins/content_management/public';
 import {
@@ -48,6 +49,7 @@ import {
   setHttp,
   setNotifications,
   setSavedObjectsClient,
+  setSecurityDashboards,
 } from './services/utils/constants';
 import { initializeServices, registerThreatAlertsCard } from './utils/helpers';
 import { BehaviorSubject } from 'rxjs';
@@ -61,6 +63,7 @@ export interface SecurityAnalyticsPluginStartDeps {
   navigation: NavigationPublicPluginStart;
   dataSource?: DataSourcePluginStart;
   contentManagement: ContentManagementPluginStart;
+  securityDashboards?: SecurityPluginStart;
 }
 
 export class SecurityAnalyticsPlugin
@@ -272,7 +275,7 @@ export class SecurityAnalyticsPlugin
 
   public start(
     core: CoreStart,
-    { navigation, contentManagement, data }: SecurityAnalyticsPluginStartDeps
+    { navigation, contentManagement, data, securityDashboards }: SecurityAnalyticsPluginStartDeps
   ): SecurityAnalyticsPluginStart {
     setUISettings(core.uiSettings);
     setNavigationUI(navigation.ui);
@@ -283,6 +286,12 @@ export class SecurityAnalyticsPlugin
     setContentManagement(contentManagement);
     setNotifications(core.notifications);
     setSavedObjectsClient(core.savedObjects.client);
+    if (securityDashboards) {
+      // Presence alone doesn't guarantee the DOM-marker SPI is running (that
+      // depends on resource sharing being enabled on the local cluster); each
+      // call to securityDashboards.ui.isResourceSharingAvailable re-checks it.
+      setSecurityDashboards(securityDashboards);
+    }
     initializeServices(core, data.indexPatterns, data.search);
     registerThreatAlertsCard();
 
