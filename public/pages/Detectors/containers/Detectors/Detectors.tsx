@@ -56,7 +56,7 @@ interface DetectorsState {
   selectedItems: DetectorHit[];
   isDeleteModalVisible: boolean;
   isPopoverOpen: boolean;
-  resourceSharingAvailableTypes: string[];
+  resourceSharing: { dataSourceId: string | undefined; types: string[] };
 }
 
 export default class Detectors extends Component<DetectorsProps, DetectorsState> {
@@ -69,7 +69,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
       selectedItems: [],
       isDeleteModalVisible: false,
       isPopoverOpen: false,
-      resourceSharingAvailableTypes: [],
+      resourceSharing: { dataSourceId: undefined, types: [] },
     };
   }
 
@@ -91,10 +91,15 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
   }
 
   updateResourceSharingAvailableTypes = async () => {
-    const resourceSharingAvailableTypes = await getResourceSharingAvailableTypes(
-      this.props.dataSource?.id
-    );
-    this.setState({ resourceSharingAvailableTypes });
+    // Capture which data source this probe is for so a late-resolving call
+    // (e.g. from a data source the user has since switched away from) can't
+    // overwrite state with a result that no longer matches the current
+    // selection.
+    const requestedDataSourceId = this.props.dataSource?.id;
+    const types = await getResourceSharingAvailableTypes(requestedDataSourceId);
+    if (requestedDataSourceId === this.props.dataSource?.id) {
+      this.setState({ resourceSharing: { dataSourceId: requestedDataSourceId, types } });
+    }
   };
 
   getDetectors = async () => {
@@ -244,6 +249,13 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
       </EuiSmallButton>,
     ];
 
+    // Guard against a stale value flashing the column during a data-source
+    // switch: only trust availability resolved for the currently selected
+    // data source (see updateResourceSharingAvailableTypes).
+    const resourceSharingAvailable =
+      this.state.resourceSharing.dataSourceId === this.props.dataSource?.id &&
+      this.state.resourceSharing.types.includes(SA_DETECTOR_RESOURCE_TYPE);
+
     const columns: EuiBasicTableColumn<DetectorHit>[] = [
       {
         field: 'detectorName',
@@ -282,7 +294,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
         dataType: 'date',
         render: (last_update_time: number) => renderTime(last_update_time) || DEFAULT_EMPTY_DATA,
       },
-      ...(this.state.resourceSharingAvailableTypes.includes(SA_DETECTOR_RESOURCE_TYPE)
+      ...(resourceSharingAvailable
         ? [
             {
               // Resource-sharing SPI marker column: the centralized Share
@@ -293,8 +305,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
               sortable: false,
               width: '5%',
               render: (id: string, item: DetectorHit) =>
-                id &&
-                this.state.resourceSharingAvailableTypes.includes(SA_DETECTOR_RESOURCE_TYPE) ? (
+                id && resourceSharingAvailable ? (
                   <div
                     data-resource-share-button
                     data-resource-id={id}
