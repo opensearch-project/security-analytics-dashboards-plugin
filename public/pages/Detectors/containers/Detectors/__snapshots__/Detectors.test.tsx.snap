@@ -550,7 +550,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                     },
                   }
                 }
-                tableLayout="fixed"
+                tableLayout="auto"
               >
                 <div>
                   <EuiSearchBar
@@ -1663,7 +1663,7 @@ exports[`<Detectors /> spec renders the component 1`] = `
                         "sort": undefined,
                       }
                     }
-                    tableLayout="fixed"
+                    tableLayout="auto"
                   >
                     <div
                       className="euiBasicTable"
@@ -1870,10 +1870,10 @@ exports[`<Detectors /> spec renders the component 1`] = `
                         <EuiTable
                           id="some_html_id"
                           responsive={true}
-                          tableLayout="fixed"
+                          tableLayout="auto"
                         >
                           <table
-                            className="euiTable euiTable--responsive"
+                            className="euiTable euiTable--responsive euiTable--auto"
                             id="some_html_id"
                             tabIndex={-1}
                           >

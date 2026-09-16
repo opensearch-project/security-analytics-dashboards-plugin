@@ -14,6 +14,7 @@ import {
   EuiInMemoryTable,
   EuiEmptyPrompt,
 } from '@elastic/eui';
+import { RouteComponentProps } from 'react-router-dom';
 import { BREADCRUMBS, ROUTES } from '../../../utils/constants';
 import { DataStore } from '../../../store/DataStore';
 import {
@@ -21,7 +22,6 @@ import {
   getCorrelationRulesTableSearchConfig,
 } from '../utils/helpers';
 import { CorrelationRule, CorrelationRuleTableItem, DataSourceProps } from '../../../../types';
-import { RouteComponentProps } from 'react-router-dom';
 import { DeleteCorrelationRuleModal } from '../components/DeleteModal';
 import { setBreadcrumbs } from '../../../utils/helpers';
 import { PageHeader } from '../../../components/PageHeader/PageHeader';
@@ -34,13 +34,16 @@ export const CorrelationRules: React.FC<CorrelationRulesProps> = (props: Correla
   const [allRules, setAllRules] = useState<CorrelationRuleTableItem[]>([]);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [selectedRule, setSelectedRule] = useState<CorrelationRule | undefined>(undefined);
-  const [resourceSharingAvailableTypes, setResourceSharingAvailableTypes] = useState<string[]>([]);
+  const [resourceSharing, setResourceSharing] = useState<{
+    dataSourceId: string | undefined;
+    types: string[];
+  }>({ dataSourceId: undefined, types: [] });
 
   useEffect(() => {
     let isMounted = true;
     getResourceSharingAvailableTypes(props.dataSource?.id).then((types) => {
       if (isMounted) {
-        setResourceSharingAvailableTypes(types);
+        setResourceSharing({ dataSourceId: props.dataSource?.id, types });
       }
     });
     return () => {
@@ -146,9 +149,13 @@ export const CorrelationRules: React.FC<CorrelationRulesProps> = (props: Correla
                     setIsDeleteModalVisible(true);
                     setSelectedRule(rule);
                   },
-                  resourceSharingAvailableTypes
+                  // Guard against a stale value flashing the column during a
+                  // data-source switch: only trust availability resolved for
+                  // the currently selected data source.
+                  resourceSharing.dataSourceId === props.dataSource?.id ? resourceSharing.types : []
                 )}
                 items={allRules}
+                tableLayout="auto"
                 pagination={true}
                 sorting={true}
                 search={getCorrelationRulesTableSearchConfig()}

@@ -15,6 +15,7 @@
   ],
   "exclude": ["node_modules", "*/node_modules/"],
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "skipLibCheck": true,
     "esModuleInterop": true,
     "outDir": "./target",

@@ -127,15 +127,19 @@ jobs:
           restore-keys: |
             cypress-cache-v2-${{ runner.os }}-${{ hashFiles('OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/package.json') }}
 
-      # for now just chrome, use matrix to do all browsers later
+      # System Firefox on the runner has drifted to a version far newer than what
+      # Cypress 13.x can drive via CDP ("Failed to spawn CDP with Firefox" / ENOENT
+      # on shield-preference-experiments.json). Electron ships bundled with the
+      # Cypress binary itself and is version-matched to it, so it has no
+      # system-browser-version dependency.
       - name: Cypress tests
         uses: cypress-io/github-action@248bde77443c376edc45906ede03a1aba9da0462 # v5.8.4
         with:
           working-directory: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
-          command: yarn run cypress run --browser firefox
+          command: yarn run cypress run --browser electron
           wait-on: 'http://localhost:5601'
           wait-on-timeout: 300
-          browser: firefox
+          browser: electron
         env:
           CYPRESS_CACHE_FOLDER: ${{ matrix.cypress_cache_folder }}
 
