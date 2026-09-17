@@ -1,3 +1,8 @@
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import { AlertService } from '../../../server/services';
 import legacyClusterClientMock from './iLegacyCustomClusterClient.mock';
 

@@ -1,3 +1,8 @@
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import FieldMappingService from '../../../public/services/FieldMappingService';
 import httpClientMock from './httpClient.mock';
 

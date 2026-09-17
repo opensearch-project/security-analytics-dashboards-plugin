@@ -1,3 +1,8 @@
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import notificationsStartMock from '../../../services/notifications/NotificationsStart.mock';
 import detectorMock from '../../containers/Detectors/Detector.mock';
 import fieldMappingMock from './FieldMapping.mock';

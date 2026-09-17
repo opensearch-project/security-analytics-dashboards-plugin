@@ -1,3 +1,8 @@
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import { DetectorService } from '../../../server/services';
 import detectorHitMock from '../Detectors/containers/Detectors/DetectorHit.mock';
 import legacyClusterClientMock from './iLegacyCustomClusterClient.mock';
