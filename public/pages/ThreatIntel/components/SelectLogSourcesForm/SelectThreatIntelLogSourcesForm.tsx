@@ -90,7 +90,9 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
     const getLogSourceOptions = async () => {
       if (saContext) {
         setLoadingLogSourceOptions(true);
-        const res = await getDataSources(saContext.services.indexService, notifications);
+        const res = await getDataSources(saContext.services.indexService, notifications, {
+          includeDataStreams: true,
+        });
         if (res.ok) {
           setLogSourceOptions(res.dataSources);
         }
@@ -206,7 +208,7 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
       </EuiTitle>
       <EuiSpacer />
       <EuiCompressedFormRow
-        label="Select Indexes/Aliases"
+        label="Select indexes, aliases, or data streams"
         helpText={
           <span>
             <a href="https://opensearch.org/docs/latest/im-plugin/index-alias" target="_blank">
@@ -222,7 +224,7 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
       >
         <EuiCompressedComboBox
           options={logSourceOptions}
-          placeholder={'Select an input source for the detector.'}
+          placeholder={'Select an input source for the log scan.'}
           isLoading={loadingLogSourceOptions}
           selectedOptions={sources.map(({ name }) => ({ label: name }))}
           onChange={onLogSourceSelectionChange}
@@ -256,7 +258,7 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
       {selectedSourcesMap.size === 0 ? (
         <EuiText>
           <p>
-            Select <b>indexes/aliases</b> above to view the fields.
+            Select <b>indexes, aliases, or data streams</b> above to view the fields.
           </p>
         </EuiText>
       ) : (
@@ -267,14 +269,8 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
           );
 
           return (
-            <>
-              <EuiAccordion
-                key={name}
-                id={name}
-                buttonContent={name}
-                initialIsOpen={true}
-                paddingSize="l"
-              >
+            <React.Fragment key={name}>
+              <EuiAccordion id={name} buttonContent={name} initialIsOpen={true} paddingSize="l">
                 <div style={{ marginTop: -20 }}>
                   {iocTypes.map((iocType) => {
                     const iocEnabled = iocConfigMap[iocType]?.enabled;
@@ -377,7 +373,7 @@ export const SelectThreatIntelLogSources: React.FC<SelectThreatIntelLogSourcesPr
                 </div>
               </EuiAccordion>
               <EuiSpacer />
-            </>
+            </React.Fragment>
           );
         })
       )}
