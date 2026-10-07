@@ -160,6 +160,7 @@ export default class EditFieldMappings extends Component<
             createdMappings: existingMappings,
           });
         }
+        this.updateMappingSharedState(existingMappings);
       }
     }
     this.setState({ loading: false });
@@ -191,13 +192,8 @@ export default class EditFieldMappings extends Component<
   };
 
   render() {
-    const {
-      loading,
-      createdMappings,
-      mappedRuleFields,
-      unmappedRuleFields,
-      logFieldOptions,
-    } = this.state;
+    const { loading, createdMappings, mappedRuleFields, unmappedRuleFields, logFieldOptions } =
+      this.state;
     const { initialIsOpen } = this.props;
     const existingMappings: ruleFieldToIndexFieldMap = {
       ...createdMappings,

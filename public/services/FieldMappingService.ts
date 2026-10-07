@@ -54,6 +54,10 @@ export default class FieldMappingService {
         path: mapping.indexFieldName,
       };
     });
+    // An empty properties map replaces the stored field-alias mappings of the index template.
+    if (Object.keys(alias_mappings.properties).length === 0) {
+      return { ok: true, response: { acknowledged: true } };
+    }
     const fieldMappingPayload: CreateMappingBody = {
       index_name,
       rule_topic,
