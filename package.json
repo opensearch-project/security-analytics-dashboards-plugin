@@ -28,6 +28,7 @@
     "postinstall": "node -e \"const { execSync } = require('child_process');const { INIT_CWD, PWD = process.cwd() } = process.env; if (INIT_CWD?.startsWith?.(PWD)) {try {execSync('husky install');} catch (e) {}}\""
   },
   "resolutions": {
+    "baseline-browser-mapping": "2.11.0",
     "@types/react": "^16.9.8",
     "**/@types/angular": "1.6.50",
     "**/@types/jest": "^29.3.1",
