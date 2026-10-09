@@ -315,11 +315,11 @@ export default class CreateDetector extends Component<CreateDetectorProps, Creat
     }
   };
 
-  onAllRulesToggle = (enabled: boolean) => {
-    const newRules: RuleItemInfo[] = this.state.rulesState.allRules.map((rule) => ({
-      ...rule,
-      enabled,
-    }));
+  onAllRulesToggle = (enabled: boolean, ruleItems: RuleItem[]) => {
+    const toggledIds = new Set(ruleItems.map((item) => item.id));
+    const newRules: RuleItemInfo[] = this.state.rulesState.allRules.map((rule) =>
+      toggledIds.has(rule._id) ? { ...rule, enabled } : rule
+    );
 
     this.setState({
       rulesState: {
