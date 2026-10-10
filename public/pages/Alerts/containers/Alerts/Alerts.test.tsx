@@ -382,7 +382,7 @@ describe('<Alerts /> spec', () => {
 
       expect(await waitForAlertsRequest(3)).toMatchObject({
         startIndex: 0,
-        searchString: 'a* b* c* d*',
+        searchString: 'a* b\\:c* d*',
       });
 
       // Only adding characters that are ignored doesn't search again.
@@ -402,7 +402,7 @@ describe('<Alerts /> spec', () => {
       fireEvent.input(searchField, { target: { value: 'Größe_über' } });
       fireEvent.keyUp(searchField, { key: 'Enter', target: { value: 'Größe_über' } });
 
-      expect(await waitForAlertsRequest(2)).toMatchObject({ searchString: 'größe* über*' });
+      expect(await waitForAlertsRequest(2)).toMatchObject({ searchString: 'größe_über*' });
       // The pending debounced search doesn't make another request.
       await new Promise((resolve) => setTimeout(resolve, 500));
       expect(getAlerts).toHaveBeenCalledTimes(2);

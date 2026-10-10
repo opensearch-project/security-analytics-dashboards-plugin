@@ -54,4 +54,73 @@ describe('Alerts routes', () => {
   it('rejects unknown params', () => {
     expect(() => getAlertsQueryValidation().validate({ unknownParam: 'x' })).toThrow();
   });
+
+  it.each([
+    ['sortOrder', ['asc', 'desc']],
+    [
+      'sortString',
+      [
+        'start_time',
+        'last_notification_time',
+        'severity',
+        'state',
+        'monitor_name.keyword',
+        'trigger_name.keyword',
+      ],
+    ],
+    ['severityLevels', ['1', '5', '1,2,3,4,5', '3,1']],
+    [
+      'alertStates',
+      ['ACTIVE', 'ACKNOWLEDGED,COMPLETED', 'ACTIVE,ACKNOWLEDGED,COMPLETED,ERROR,DELETED'],
+    ],
+    [
+      'searchString',
+      [
+        '',
+        'win*',
+        'a* b\\:c* d*',
+        "my_detector* win.log* o'neil*",
+        'größe_über* 日本語* café*',
+        'a'.repeat(256),
+      ],
+    ],
+  ])('accepts valid %s values', (param, values) => {
+    const validation = getAlertsQueryValidation();
+    values.forEach((value) => {
+      expect(validation.validate({ [param]: value })).toEqual({ [param]: value });
+    });
+  });
+
+  it.each([
+    ['sortOrder', ['ASC', 'descending', '']],
+    ['sortString', ['detector_id', 'monitor_name', 'start_time,severity', '_score', '']],
+    ['severityLevels', ['0', '6', '1,', ',1', '1,,2', '1 2', 'high', '']],
+    ['alertStates', ['active', 'ACTIVE,', 'ACTIVE;DELETED', 'UNKNOWN', 'ACTIVE ,ERROR', '']],
+    [
+      'searchString',
+      ['a OR b-c', 'name:(x)', '"quoted"', 'a~2', '/regex/', 'a?', 'a&&b', 'a\tb', 'a'.repeat(257)],
+    ],
+  ])('rejects invalid %s values', (param, values) => {
+    const validation = getAlertsQueryValidation();
+    values.forEach((value) => {
+      expect(() => validation.validate({ [param]: value })).toThrow();
+    });
+  });
+
+  it('accepts sizes and start indexes within the max result window', () => {
+    const validation = getAlertsQueryValidation();
+
+    expect(validation.validate({ size: '0', startIndex: '0' })).toEqual({ size: 0, startIndex: 0 });
+    expect(validation.validate({ size: '10000', startIndex: '9990' })).toEqual({
+      size: 10000,
+      startIndex: 9990,
+    });
+  });
+
+  it.each([[{ size: '10001' }], [{ size: '-1' }], [{ startIndex: '-1' }], [{ size: 'ten' }]])(
+    'rejects the size or start index %p',
+    (query) => {
+      expect(() => getAlertsQueryValidation().validate(query)).toThrow();
+    }
+  );
 });

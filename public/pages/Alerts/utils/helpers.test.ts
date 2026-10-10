@@ -10,6 +10,10 @@ import {
   getAlertsSearchString,
   getAlertsTableColumnField,
 } from './helpers';
+import {
+  ALERTS_SEARCH_STRING_MAX_LENGTH,
+  ALERTS_SEARCH_STRING_PATTERN,
+} from '../../../../common/constants';
 
 describe('Alerts helpers', () => {
   describe('getAlertsSearchString', () => {
@@ -18,16 +22,48 @@ describe('Alerts helpers', () => {
       ['   ', ''],
       ['windows', 'windows*'],
       ['Windows Detector', 'windows* detector*'],
-      ['a-b:c (d)', 'a* b* c* d*'],
+      ['a-b:c (d)', 'a* b\\:c* d*'],
       ['"quoted" AND (x OR y) || z && !w', 'quoted* and* x* or* y* z* w*'],
-      ['field:value* ~2 ^3 [1 TO 5] {a} /re/ \\', 'field* value* 2* 3* 1* to* 5* a* re*'],
-      ['under_score.dot', 'under* score* dot*'],
+      ['field:value* ~2 ^3 [1 TO 5] {a} /re/ \\', 'field\\:value* 2* 3* 1* to* 5* a* re*'],
+      // Kept together like the standard tokenizer does
+      ['my_detector', 'my_detector*'],
+      ['win.log', 'win.log*'],
+      ["O'Neil", "o'neil*"],
+      ['a:b', 'a\\:b*'],
+      ['under_score.dot', 'under_score.dot*'],
+      ['v1.2.3', 'v1.2.3*'],
+      // A joining character needs a term character on both sides
+      ['a..b a::b win. .net', 'a* b* a* b* win* net*'],
+      // Split like the standard tokenizer does
+      ['my-detector', 'my* detector*'],
+      ['path/to/file', 'path* to* file*'],
+      ['a+b=c<d>e!f?g~h^i"j', 'a* b* c* d* e* f* g* h* i* j*'],
       ['Größe über', 'größe* über*'],
+      ['Größe_über', 'größe_über*'],
       ['日本語 検出', '日本語* 検出*'],
       ['café', 'café*'],
+      // Combining marks stay part of the term
+      ['cafe\u0301', 'cafe\u0301*'],
+      ['ÄÖÜ', 'äöü*'],
       ['()[]{}:"*?\\/', ''],
+      ["- / : . ' _", '_*'],
+      ['🔥 ★ → €', ''],
     ])('converts %p to %p', (input, expected) => {
       expect(getAlertsSearchString(input)).toBe(expected);
+    });
+
+    it('only emits characters the get alerts API accepts', () => {
+      const input = 'a-b:c (d) "e" O\'Neil win.log my_detector Größe 日本 \\ / * ? ~ ^ [] {} <>';
+      expect(getAlertsSearchString(input)).toMatch(ALERTS_SEARCH_STRING_PATTERN);
+    });
+
+    it('drops the terms exceeding the max length', () => {
+      const term = 'a'.repeat(99);
+      const searchString = getAlertsSearchString(`${term} ${term} ${term}`);
+
+      expect(searchString).toBe(`${term}* ${term}*`);
+      expect(searchString.length).toBeLessThanOrEqual(ALERTS_SEARCH_STRING_MAX_LENGTH);
+      expect(getAlertsSearchString('a'.repeat(300))).toBe('');
     });
   });
 
