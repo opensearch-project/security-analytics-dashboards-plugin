@@ -7,6 +7,7 @@ import { NotificationsStart } from 'opensearch-dashboards/public';
 import { AlertsService } from '../services';
 import { errorNotificationToast } from '../utils/helpers';
 import { AlertResponse, Duration, ThreatIntelAlert } from '../../types';
+import { MAX_ALERTS_RESULT_WINDOW } from '../utils/constants';
 
 export class AlertsStore {
   constructor(
@@ -24,19 +25,14 @@ export class AlertsStore {
     dataSource?: any
   ) {
     let allAlerts: any[] = [];
-    const maxAlertsReturned = alertCount ?? 10000;
+    const pageSize = alertCount ?? MAX_ALERTS_RESULT_WINDOW;
     let startIndex = 0;
-    let alertsCount = 0;
 
-    do {
-      if (signal.aborted) {
-        break;
-      }
-
+    while (!signal.aborted) {
       const getAlertsRes = await this.service.getAlerts({
         detector_id: detectorId,
         startIndex,
-        size: maxAlertsReturned,
+        size: pageSize,
         startTime: duration?.startTime,
         endTime: duration?.endTime,
         dataSource,
@@ -46,22 +42,26 @@ export class AlertsStore {
         break;
       }
 
-      if (getAlertsRes.ok) {
-        const alerts = this.extendAlerts(getAlertsRes.response.alerts, detectorId, detectorName);
-        onPartialAlertsFetched?.(alerts);
-        allAlerts = allAlerts.concat(alerts);
-        alertsCount = alerts.length;
-      } else {
-        alertsCount = 0;
+      if (!getAlertsRes.ok) {
         errorNotificationToast(this.notifications, 'retrieve', 'alerts', getAlertsRes.error);
+        break;
       }
 
-      startIndex += alertsCount;
-    } while (
-      // If we get 10,000 alerts as part of the previous call then there might be more alerts to fetch,
-      // hence we make another call until the number of alerts is less then 10,000
-      alertsCount === maxAlertsReturned
-    );
+      const alerts = this.extendAlerts(getAlertsRes.response.alerts, detectorId, detectorName);
+      onPartialAlertsFetched?.(alerts);
+      allAlerts = allAlerts.concat(alerts);
+      startIndex += alerts.length;
+
+      // A page that isn't full means there are no more alerts to fetch. The backend also rejects
+      // requests where startIndex + size exceeds the max result window, so stop before crossing it.
+      if (
+        alerts.length === 0 ||
+        alerts.length < pageSize ||
+        startIndex + pageSize > MAX_ALERTS_RESULT_WINDOW
+      ) {
+        break;
+      }
+    }
 
     return allAlerts;
   }

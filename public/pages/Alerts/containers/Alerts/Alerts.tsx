@@ -575,7 +575,8 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
   }
 
   async getAlerts(abort: AbortSignal) {
-    this.setState({ loading: true, alerts: [] });
+    // Keep the rows of the previous load visible until the new ones arrive.
+    this.setState({ loading: true });
     const { detectorService, notifications, dateTimeFilter } = this.props;
     const { detectors } = this.state;
     try {
@@ -589,28 +590,43 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         });
 
         const detectorId = this.props.match.params['detectorId'];
+        let alerts: AlertItem[] = [];
 
         for (let id of detectorIds) {
+          if (abort.aborted) {
+            break;
+          }
+
           if (!detectorId || detectorId === id) {
-            await DataStore.alerts.getAlertsByDetector(
+            const detectorAlerts = await DataStore.alerts.getAlertsByDetector(
               id,
               detectors[id].name,
               abort,
-              duration,
-              (alerts) => {
-                this.setState({ alerts: [...this.state.alerts, ...alerts] });
-                this.filterDeletectionRuleAlerts(alerts);
-              }
+              duration
             );
+            alerts = alerts.concat(detectorAlerts);
           }
         }
+
+        if (abort.aborted) {
+          // A newer request owns the table state now.
+          return;
+        }
+
+        // Update the table once with the alerts of all detectors to avoid re-rendering (and
+        // resetting the pagination of) the table for every partial batch.
+        this.setState({ alerts });
+        this.filterDeletectionRuleAlerts(alerts);
       } else {
         errorNotificationToast(notifications, 'retrieve', 'detectors', detectorsRes.error);
       }
     } catch (e: any) {
       errorNotificationToast(notifications, 'retrieve', 'alerts', e);
     }
-    this.setState({ loading: false });
+
+    if (!abort.aborted) {
+      this.setState({ loading: false });
+    }
   }
 
   async getThreatIntelAlerts(abort: AbortSignal) {

@@ -215,6 +215,9 @@ export const ALERT_STATE = Object.freeze({
   DELETED: 'DELETED',
 });
 
+// The backend rejects alert queries whose startIndex + size exceeds this result window.
+export const MAX_ALERTS_RESULT_WINDOW = 10000;
+
 export const logTypesWithDashboards = new Set(['network', 'cloudtrail', 's3']);
 
 export const pendingDashboardCreations: {
