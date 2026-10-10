@@ -221,37 +221,109 @@ describe('AlertsStore.getAlertsPage', () => {
 
     const result = await store.getAlertsPage({ size: 10 });
 
-    expect(result).toEqual({ ok: false, error: 'failed', allDetectorsQueryUnsupported: false });
+    expect(result).toEqual({ ok: false, error: 'failed' });
     expect(addDanger).not.toHaveBeenCalled();
-    expect(store.isAllDetectorsQuerySupported()).toBe(true);
   });
 
-  it('remembers per data source if the backend requires a detector', async () => {
+  it('does not change the server side support', async () => {
     const getAlerts = jest.fn(() => Promise.resolve({ ok: false, error: OLD_BACKEND_ERROR }));
     const store = createStore(getAlerts);
-    dataSourceInfo.activeDataSource = { id: 'old-cluster' };
 
-    expect(store.isAllDetectorsQuerySupported()).toBe(true);
-    const result = await store.getAlertsPage({ size: 10 });
+    await store.getAlertsPage({ size: 10 });
 
-    expect(result).toEqual({
-      ok: false,
-      error: OLD_BACKEND_ERROR,
-      allDetectorsQueryUnsupported: true,
+    expect(store.getAlertsServerSideSupport()).toBe('unknown');
+  });
+});
+
+describe('AlertsStore.detectAlertsServerSideSupport', () => {
+  const OLD_BACKEND_ERROR =
+    '[action_request_validation_exception] Validation Failed: 1: At least one of detector type or detector id needs to be passed;';
+
+  afterEach(() => {
+    dataSourceInfo.activeDataSource = { id: '' };
+  });
+
+  const ok = () => Promise.resolve({ ok: true, response: { alerts: [], total_alerts: 5 } });
+
+  it('asks for the number of alerts of all detectors without other params', async () => {
+    const getAlerts = jest.fn(ok);
+    const store = createStore(getAlerts);
+    dataSourceInfo.activeDataSource = { id: 'cluster' };
+
+    expect(store.getAlertsServerSideSupport()).toBe('unknown');
+    expect(await store.detectAlertsServerSideSupport()).toEqual({ support: 'supported' });
+
+    expect(getAlerts).toHaveBeenCalledTimes(1);
+    expect(getAlerts).toHaveBeenCalledWith({
+      startIndex: 0,
+      size: 0,
+      dataSource: { id: 'cluster' },
     });
-    expect(store.isAllDetectorsQuerySupported()).toBe(false);
+    expect(store.getAlertsServerSideSupport()).toBe('supported');
+  });
+
+  it('detects the support once per data source', async () => {
+    const getAlerts = jest.fn((params) =>
+      params.dataSource.id === 'old-cluster'
+        ? Promise.resolve({ ok: false, error: OLD_BACKEND_ERROR })
+        : ok()
+    );
+    const store = createStore(getAlerts);
+
+    dataSourceInfo.activeDataSource = { id: 'old-cluster' };
+    // Concurrent detections share the request.
+    const detections = await Promise.all([
+      store.detectAlertsServerSideSupport(),
+      store.detectAlertsServerSideSupport(),
+    ]);
+    expect(detections).toEqual([{ support: 'unsupported' }, { support: 'unsupported' }]);
+    expect(await store.detectAlertsServerSideSupport()).toEqual({ support: 'unsupported' });
+    expect(store.getAlertsServerSideSupport()).toBe('unsupported');
+    expect(getAlerts).toHaveBeenCalledTimes(1);
 
     dataSourceInfo.activeDataSource = { id: 'new-cluster' };
-    expect(store.isAllDetectorsQuerySupported()).toBe(true);
+    expect(store.getAlertsServerSideSupport()).toBe('unknown');
+    expect(await store.detectAlertsServerSideSupport()).toEqual({ support: 'supported' });
+    expect(await store.detectAlertsServerSideSupport()).toEqual({ support: 'supported' });
+    expect(getAlerts).toHaveBeenCalledTimes(2);
+
+    dataSourceInfo.activeDataSource = { id: 'old-cluster' };
+    expect(store.getAlertsServerSideSupport()).toBe('unsupported');
+    expect(getAlerts).toHaveBeenCalledTimes(2);
   });
 
-  it('does not treat the error of a request for a detector as missing support', async () => {
-    const getAlerts = jest.fn(() => Promise.resolve({ ok: false, error: OLD_BACKEND_ERROR }));
+  it('keeps the data source of the request when the data source changes meanwhile', async () => {
+    let resolve: (res: any) => void = () => {};
+    const getAlerts = jest.fn(() => new Promise((res) => (resolve = res)));
     const store = createStore(getAlerts);
 
-    const result = await store.getAlertsPage({ detector_id: 'detector-1', size: 10 });
+    dataSourceInfo.activeDataSource = { id: 'old-cluster' };
+    const detection = store.detectAlertsServerSideSupport();
+    dataSourceInfo.activeDataSource = { id: 'new-cluster' };
+    resolve({ ok: false, error: OLD_BACKEND_ERROR });
 
-    expect(result).toMatchObject({ ok: false, allDetectorsQueryUnsupported: false });
-    expect(store.isAllDetectorsQuerySupported()).toBe(true);
+    expect(await detection).toEqual({ support: 'unsupported' });
+    expect(store.getAlertsServerSideSupport()).toBe('unknown');
+    dataSourceInfo.activeDataSource = { id: 'old-cluster' };
+    expect(store.getAlertsServerSideSupport()).toBe('unsupported');
+  });
+
+  it.each([
+    ['an error response', () => Promise.resolve({ ok: false, error: 'Service unavailable' })],
+    ['a failed request', () => Promise.reject('Service unavailable')],
+  ])('leaves the support unknown after %s and detects it again', async (_, failure) => {
+    const getAlerts = jest.fn().mockImplementationOnce(failure).mockImplementation(ok);
+    const store = createStore(getAlerts);
+    const addDanger = jest.spyOn(notificationsStartMock.toasts, 'addDanger');
+
+    expect(await store.detectAlertsServerSideSupport()).toEqual({
+      support: 'unknown',
+      error: 'Service unavailable',
+    });
+    expect(store.getAlertsServerSideSupport()).toBe('unknown');
+    expect(addDanger).not.toHaveBeenCalled();
+
+    expect(await store.detectAlertsServerSideSupport()).toEqual({ support: 'supported' });
+    expect(getAlerts).toHaveBeenCalledTimes(2);
   });
 });

@@ -11,8 +11,16 @@ import { MAX_ALERTS_RESULT_WINDOW } from '../utils/constants';
 import { dataSourceInfo } from '../services/utils/constants';
 
 export type AlertsPageResult =
-  | { ok: true; alerts: AlertResponse[]; total: number }
-  | { ok: false; error: any; allDetectorsQueryUnsupported: boolean };
+  { ok: true; alerts: AlertResponse[]; total: number } | { ok: false; error: any };
+
+/**
+ * Whether the backend of a data source can page, sort, filter and search the alerts of all
+ * detectors. 'unknown' until the backend was asked.
+ */
+export type AlertsServerSideSupport = 'unknown' | 'supported' | 'unsupported';
+
+export type AlertsServerSideSupportResult =
+  { support: 'supported' | 'unsupported' } | { support: 'unknown'; error: any };
 
 // Older backends require a detector id or type when getting alerts.
 const DETECTOR_PARAM_REQUIRED_ERROR =
@@ -24,8 +32,13 @@ const isDetectorParamRequiredError = (error: any) => {
 };
 
 export class AlertsStore {
-  // Data sources whose backend can't get the alerts of all detectors in one request.
-  private readonly allDetectorsQueryUnsupported = new Set<string>();
+  // Known server side support per data source id
+  private readonly serverSideSupport = new Map<string, 'supported' | 'unsupported'>();
+  // Pending support detection per data source id
+  private readonly serverSideSupportDetections = new Map<
+    string,
+    Promise<AlertsServerSideSupportResult>
+  >();
 
   constructor(
     private readonly service: AlertsService,
@@ -33,19 +46,72 @@ export class AlertsStore {
   ) {}
 
   /**
-   * Whether the alerts of all detectors can be paged, sorted and filtered by the backend for the
-   * active data source. Becomes false for the rest of the session once the backend rejected such a
-   * request.
+   * Whether the alerts of all detectors can be paged, sorted, filtered and searched by the backend
+   * of the active data source, as far as known without making a request.
    */
-  public isAllDetectorsQuerySupported() {
-    return !this.allDetectorsQueryUnsupported.has(dataSourceInfo.activeDataSource.id);
+  public getAlertsServerSideSupport(): AlertsServerSideSupport {
+    return this.serverSideSupport.get(dataSourceInfo.activeDataSource.id) ?? 'unknown';
   }
 
   /**
-   * Gets a single page of alerts with exactly one request. Errors are returned, not shown.
+   * Detects once per data source whether its backend supports paging, sorting, filtering and
+   * searching the alerts of all detectors. While the support is unknown a single request for the
+   * number of alerts of all detectors is made, without any of the params older backends reject.
+   * Older backends reject it because it has no detector. Other errors leave the support unknown,
+   * so it's detected again next time. Errors are returned, not shown.
+   */
+  public detectAlertsServerSideSupport(): Promise<AlertsServerSideSupportResult> {
+    const dataSourceId = dataSourceInfo.activeDataSource.id;
+    const support = this.serverSideSupport.get(dataSourceId);
+    if (support) {
+      return Promise.resolve({ support });
+    }
+
+    let detection = this.serverSideSupportDetections.get(dataSourceId);
+    if (!detection) {
+      detection = this.probeAlertsServerSideSupport(dataSourceId);
+      this.serverSideSupportDetections.set(dataSourceId, detection);
+    }
+
+    return detection;
+  }
+
+  private async probeAlertsServerSideSupport(
+    dataSourceId: string
+  ): Promise<AlertsServerSideSupportResult> {
+    let result: AlertsServerSideSupportResult;
+    try {
+      // Size 0 only gets the number of alerts.
+      const res = await this.service.getAlerts({
+        startIndex: 0,
+        size: 0,
+        dataSource: { id: dataSourceId },
+      });
+      if (res.ok) {
+        result = { support: 'supported' };
+      } else if (isDetectorParamRequiredError(res.error)) {
+        result = { support: 'unsupported' };
+      } else {
+        result = { support: 'unknown', error: res.error };
+      }
+    } catch (error: any) {
+      result = { support: 'unknown', error };
+    }
+
+    if (result.support !== 'unknown') {
+      this.serverSideSupport.set(dataSourceId, result.support);
+    }
+    this.serverSideSupportDetections.delete(dataSourceId);
+
+    return result;
+  }
+
+  /**
+   * Gets a single page of alerts with exactly one request. Errors are returned, not shown. Only use
+   * it with params other than a detector after detectAlertsServerSideSupport found the backend to
+   * support them.
    */
   public async getAlertsPage(params: GetAlertsParams): Promise<AlertsPageResult> {
-    const dataSourceId = dataSourceInfo.activeDataSource.id;
     const res = await this.service.getAlerts(params);
 
     if (res.ok) {
@@ -53,13 +119,7 @@ export class AlertsStore {
       return { ok: true, alerts, total: res.response.total_alerts ?? alerts.length };
     }
 
-    const allDetectorsQueryUnsupported =
-      !params.detector_id && !params.detectorType && isDetectorParamRequiredError(res.error);
-    if (allDetectorsQueryUnsupported) {
-      this.allDetectorsQueryUnsupported.add(dataSourceId);
-    }
-
-    return { ok: false, error: res.error, allDetectorsQueryUnsupported };
+    return { ok: false, error: res.error };
   }
 
   public async getAlertsByDetector(

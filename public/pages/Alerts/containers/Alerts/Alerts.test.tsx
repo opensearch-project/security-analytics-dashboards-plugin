@@ -5,9 +5,9 @@
 
 import React from 'react';
 import moment from 'moment';
-import Alerts from './Alerts';
+import Alerts, { Alerts as AlertsComponent } from './Alerts';
 import alertsMock from '../../../../../test/mocks/Alerts/Alerts.mock';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { MemoryRouter, Route, RouteComponentProps } from 'react-router-dom';
 import { setupCoreStart } from '../../../../../test/utils/helpers';
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import detectorResponseMock from '../../../../../test/mocks/Detectors/containers/Detectors/DetectorResponse.mock';
@@ -15,6 +15,7 @@ import notificationsStartMock from '../../../../../test/mocks/services/notificat
 import { DataStore } from '../../../../store/DataStore';
 import { AlertsStore } from '../../../../store/AlertsStore';
 import { ROUTES } from '../../../../utils/constants';
+import { dataSourceInfo } from '../../../../services/utils/constants';
 
 beforeAll(() => {
   setupCoreStart();
@@ -75,28 +76,51 @@ describe('<Alerts /> spec', () => {
   let getAlerts: jest.Mock;
   let getDetectors: jest.Mock;
   let acknowledgeAlerts: jest.Mock;
+  let getThreatIntelAlerts: jest.Mock;
 
   const renderAlerts = ({
     path = ROUTES.ALERTS,
     dateTimeFilter = defaultDateTimeFilter,
-  }: { path?: string; dateTimeFilter?: { startTime: string; endTime: string } } = {}) => {
-    const renderElement = (filter: { startTime: string; endTime: string }) => (
+    dataSource,
+  }: {
+    path?: string;
+    dateTimeFilter?: { startTime: string; endTime: string };
+    dataSource?: { id: string };
+  } = {}) => {
+    let history: RouteComponentProps['history'] | undefined;
+    let props = { dateTimeFilter, dataSource };
+    const renderElement = () => (
       <MemoryRouter initialEntries={[path]}>
-        <Route path={`${ROUTES.ALERTS}/:detectorId?`}>
-          <Alerts
-            {...alertsMock}
-            dateTimeFilter={filter}
-            detectorService={{ getDetectors } as any}
-            alertService={{ getAlerts, acknowledgeAlerts } as any}
-          />
-        </Route>
+        <Route
+          path={`${ROUTES.ALERTS}/:detectorId?`}
+          render={(routeProps) => {
+            history = routeProps.history;
+            return (
+              <Alerts
+                {...alertsMock}
+                {...props}
+                detectorService={{ getDetectors } as any}
+                alertService={{ getAlerts, acknowledgeAlerts } as any}
+              />
+            );
+          }}
+        />
       </MemoryRouter>
     );
-    const result = render(renderElement(dateTimeFilter));
+    const result = render(renderElement());
+    const update = (changes: Partial<typeof props>) => {
+      props = { ...props, ...changes };
+      result.rerender(renderElement());
+    };
     return {
       ...result,
       setDateTimeFilter: (filter: { startTime: string; endTime: string }) =>
-        result.rerender(renderElement(filter)),
+        update({ dateTimeFilter: filter }),
+      setDataSource: (source: { id: string }) => {
+        dataSourceInfo.activeDataSource = source;
+        update({ dataSource: source });
+      },
+      navigate: (newPath: string) => act(() => history?.push(newPath)),
     };
   };
 
@@ -139,16 +163,25 @@ describe('<Alerts /> spec', () => {
     return result;
   };
 
-  beforeEach(() => {
+  // A store that doesn't know yet whether the backend supports getting pages of all alerts
+  const createAlertsStore = () =>
+    new AlertsStore({ getAlerts, getThreatIntelAlerts } as any, notificationsStartMock);
+
+  beforeEach(async () => {
     getDetectors = jest.fn().mockResolvedValue(detectorsResponse);
     getAlerts = jest.fn().mockResolvedValue(okAlerts([]));
+    getThreatIntelAlerts = jest.fn().mockResolvedValue(okAlerts([]));
     acknowledgeAlerts = jest.fn().mockResolvedValue({ ok: true, response: {} });
-    DataStore.alerts = new AlertsStore({ getAlerts } as any, notificationsStartMock);
+    DataStore.alerts = createAlertsStore();
+    // The backend supports getting pages of all alerts unless a test says otherwise.
+    await DataStore.alerts.detectAlertsServerSideSupport();
+    getAlerts.mockClear();
   });
 
   afterEach(() => {
     jest.restoreAllMocks();
     DataStore.alerts = originalAlertsStore;
+    dataSourceInfo.activeDataSource = { id: '' };
   });
 
   it('renders the component', () => {
@@ -311,9 +344,10 @@ describe('<Alerts /> spec', () => {
         severityLevels: '1,3',
       });
 
+      // Only the last of quickly made changes is requested.
       selectFilterOption('alertsSeverityFilter', '3');
       selectFilterOption('alertsSeverityFilter', '1');
-      const params = await waitForAlertsRequest(6);
+      const params = await waitForAlertsRequest(5);
       expect(params.severityLevels).toBeUndefined();
       expect(params.severityLevel).toBeUndefined();
     });
@@ -536,7 +570,7 @@ describe('<Alerts /> spec', () => {
       expect(getActivePage()).toHaveTextContent('2');
     });
 
-    it('goes back a page if no alerts are left on the page after acknowledging', async () => {
+    it('gets the last page if no alerts are left on the page after acknowledging', async () => {
       await renderWithAlerts();
       fireEvent.click(screen.getByTestId('pagination-button-9'));
       await waitForAlertsRequest(2);
@@ -599,6 +633,7 @@ describe('<Alerts /> spec', () => {
       });
 
     beforeEach(() => {
+      DataStore.alerts = createAlertsStore();
       // moment is globally mocked in the test setup and always returns the same instance, so stub
       // the time range check that is applied on the client.
       jest.spyOn(moment(), 'isBetween').mockReturnValue(true);
@@ -685,6 +720,347 @@ describe('<Alerts /> spec', () => {
       await waitFor(() => expect(notificationsStartMock.toasts.addDanger).toHaveBeenCalled());
       expect(getAlerts).toHaveBeenCalledTimes(1);
       expect(screen.getByTestId('alertsSearchField')).toBeInTheDocument();
+    });
+  });
+  describe('detection rule alerts after the first page load', () => {
+    it('gets the first page for another detector in the route', async () => {
+      const { navigate } = await renderWithAlerts({ path: `${ROUTES.ALERTS}/detector_1` });
+      fireEvent.click(screen.getByTestId('pagination-button-2'));
+      expect(await waitForAlertsRequest(2)).toMatchObject({
+        startIndex: 20,
+        detector_id: 'detector_1',
+      });
+      await screen.findByText('trigger detector_1-20');
+
+      navigate(`${ROUTES.ALERTS}/detector_2`);
+
+      expect(await waitForAlertsRequest(3)).toMatchObject({
+        startIndex: 0,
+        detector_id: 'detector_2',
+      });
+      await screen.findByText('trigger detector_1-0');
+      expect(getActivePage()).toHaveTextContent('1');
+    });
+
+    it('loads the last page if the total shrank below the current page on refresh', async () => {
+      await renderWithAlerts();
+      fireEvent.click(screen.getByTestId('pagination-button-9'));
+      await waitForAlertsRequest(2);
+      await screen.findByText('trigger detector_1-90');
+
+      // Only 45 alerts are left.
+      getAlerts.mockImplementation((params) =>
+        Promise.resolve(
+          okAlerts(
+            createAlerts(
+              'detector_1',
+              Math.max(0, Math.min(params.size, 45 - params.startIndex)),
+              params.startIndex
+            ),
+            45
+          )
+        )
+      );
+      fireEvent.click(screen.getByTestId('superDatePickerApplyTimeButton'));
+
+      await screen.findByText('trigger detector_1-40');
+      expect(getAlerts.mock.calls[2][0]).toMatchObject({ startIndex: 90 });
+      expect(getAlerts.mock.calls[3][0]).toMatchObject({ startIndex: 40, size: 10 });
+      expect(getActivePage()).toHaveTextContent('5');
+      expect(screen.getByText('Alerts (45)')).toBeInTheDocument();
+      expect(getAlerts).toHaveBeenCalledTimes(4);
+    });
+
+    it('makes at most one more request if the last page is empty too', async () => {
+      await renderWithAlerts();
+      fireEvent.click(screen.getByTestId('pagination-button-9'));
+      await waitForAlertsRequest(2);
+      await screen.findByText('trigger detector_1-90');
+
+      // Every page is empty and the total keeps shrinking.
+      let total = 60;
+      getAlerts.mockImplementation(() => {
+        total -= 20;
+        return Promise.resolve(okAlerts([], total));
+      });
+      fireEvent.click(screen.getByTestId('superDatePickerApplyTimeButton'));
+
+      await waitForAlertsRequest(4);
+      await waitFor(() => expect(screen.getByText('Alerts (20)')).toBeInTheDocument());
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(getAlerts.mock.calls[2][0]).toMatchObject({ startIndex: 90 });
+      // The last page for the total of the first response
+      expect(getAlerts.mock.calls[3][0]).toMatchObject({ startIndex: 30 });
+      expect(getAlerts).toHaveBeenCalledTimes(4);
+      // The table shows the last page for the total of the last response.
+      expect(getActivePage()).toHaveTextContent('2');
+    });
+
+    it('goes to the first page without another request if there are no alerts left', async () => {
+      await renderWithAlerts();
+      fireEvent.click(screen.getByTestId('pagination-button-9'));
+      await waitForAlertsRequest(2);
+      await screen.findByText('trigger detector_1-90');
+
+      getAlerts.mockResolvedValue(okAlerts([], 0));
+      fireEvent.click(screen.getByTestId('superDatePickerApplyTimeButton'));
+
+      await waitForAlertsRequest(3);
+      await waitFor(() => expect(screen.getByText('Alerts (0)')).toBeInTheDocument());
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(getAlerts).toHaveBeenCalledTimes(3);
+
+      // The next load gets the first page.
+      fireEvent.click(screen.getByTestId('superDatePickerApplyTimeButton'));
+      expect(await waitForAlertsRequest(4)).toMatchObject({ startIndex: 0 });
+    });
+
+    it('does not acknowledge alerts without a detector', async () => {
+      getAlerts.mockResolvedValue(
+        okAlerts([
+          createAlert('a1', 'detector_1'),
+          { ...createAlert('a2', ''), detector_id: undefined },
+        ])
+      );
+      renderAlerts();
+      await screen.findByText('trigger a2');
+
+      fireEvent.click(within(getTable()).getAllByLabelText('Acknowledge')[1]);
+      await waitForAlertsRequest(2);
+      expect(acknowledgeAlerts).not.toHaveBeenCalled();
+
+      await waitFor(() => expect(screen.getByTestId('checkboxSelectRow-a1')).toBeEnabled());
+      fireEvent.click(screen.getByTestId('checkboxSelectRow-a1'));
+      fireEvent.click(screen.getByTestId('checkboxSelectRow-a2'));
+      fireEvent.click(screen.getByTestId('acknowledge-button'));
+
+      await waitForAlertsRequest(3);
+      expect(acknowledgeAlerts).toHaveBeenCalledTimes(1);
+      expect(acknowledgeAlerts).toHaveBeenCalledWith(['a1'], 'detector_1');
+    });
+
+    it('clears the selection on refresh', async () => {
+      await renderWithAlerts();
+      fireEvent.click(screen.getByTestId('checkboxSelectRow-detector_1-0'));
+      expect(screen.getByTestId('acknowledge-button')).toBeEnabled();
+
+      getAlerts.mockReturnValue(deferred<any>().promise);
+      fireEvent.click(screen.getByTestId('superDatePickerApplyTimeButton'));
+
+      await waitForAlertsRequest(2);
+      expect(screen.getByTestId('acknowledge-button')).toBeDisabled();
+      expect(screen.getByTestId('checkboxSelectRow-detector_1-0')).not.toBeChecked();
+    });
+
+    it('clears the selection when switching tabs', async () => {
+      await renderWithAlerts();
+      fireEvent.click(screen.getByTestId('checkboxSelectRow-detector_1-0'));
+      expect(screen.getByTestId('acknowledge-button')).toBeEnabled();
+
+      fireEvent.click(screen.getByText('Threat intel'));
+      await waitFor(() => expect(getThreatIntelAlerts).toHaveBeenCalled());
+      fireEvent.click(screen.getByText('Detection rules'));
+
+      await screen.findByText('trigger detector_1-0');
+      expect(screen.getByTestId('acknowledge-button')).toBeDisabled();
+    });
+
+    it('only shows the detectors of the latest load', async () => {
+      const firstLoad = deferred<any>();
+      const secondLoad = deferred<any>();
+      getDetectors.mockReturnValueOnce(firstLoad.promise).mockReturnValueOnce(secondLoad.promise);
+      getAlerts.mockResolvedValue(okAlerts([createAlert('a1', 'detector_1')]));
+      renderAlerts();
+      await screen.findByText('trigger a1');
+
+      fireEvent.click(screen.getByTestId('superDatePickerApplyTimeButton'));
+      await waitFor(() => expect(getDetectors).toHaveBeenCalledTimes(2));
+
+      act(() =>
+        secondLoad.resolve({
+          ok: true,
+          response: { hits: { hits: [createDetectorHit('detector_1', 'New name')] } },
+        })
+      );
+      await screen.findByText('New name');
+      await act(async () =>
+        firstLoad.resolve({
+          ok: true,
+          response: { hits: { hits: [createDetectorHit('detector_1', 'Old name')] } },
+        })
+      );
+
+      expect(screen.getByText('New name')).toBeInTheDocument();
+      expect(screen.queryByText('Old name')).not.toBeInTheDocument();
+    });
+
+    it('ignores the detectors response after leaving the page', async () => {
+      const detectors = deferred<any>();
+      getDetectors.mockReturnValue(detectors.promise);
+      const { unmount } = renderAlerts();
+      await waitForAlertsRequest(1);
+      await waitFor(() => expect(getDetectors).toHaveBeenCalledTimes(1));
+
+      unmount();
+      const setState = jest.spyOn(AlertsComponent.prototype, 'setState');
+      await act(async () => detectors.resolve({ ok: false, error: 'Failed' }));
+
+      expect(setState).not.toHaveBeenCalled();
+      expect(notificationsStartMock.toasts.addDanger).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('server side support detection', () => {
+    const NEW_PARAMS = ['sortString', 'severityLevels', 'alertStates', 'searchString'];
+
+    const isProbe = (params: any) => isAllDetectorsRequest(params) && params.size === 0;
+
+    const probeCount = () => getAlerts.mock.calls.filter(([params]) => isProbe(params)).length;
+
+    beforeEach(() => {
+      DataStore.alerts = createAlertsStore();
+      jest.spyOn(moment(), 'isBetween').mockReturnValue(true);
+    });
+
+    it('falls back without sending new params on the route of a detector of an older backend', async () => {
+      const probe = deferred<any>();
+      getAlerts.mockImplementation((params) =>
+        isAllDetectorsRequest(params)
+          ? probe.promise
+          : Promise.resolve(okAlerts(createAlerts(params.detector_id, 2)))
+      );
+      renderAlerts({ path: `${ROUTES.ALERTS}/detector_1` });
+
+      expect(await waitForAlertsRequest(1)).toEqual({
+        startIndex: 0,
+        size: 0,
+        dataSource: { id: '' },
+      });
+      // Filter while it's unknown if the backend supports filters.
+      selectFilterOption('alertsSeverityFilter', '3');
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      expect(getAlerts).toHaveBeenCalledTimes(1);
+
+      act(() => probe.resolve({ ok: false, error: OLD_BACKEND_ERROR }));
+
+      await screen.findByText('trigger detector_1-1');
+      expect(screen.queryByTestId('alertsSearchField')).not.toBeInTheDocument();
+      expect(notificationsStartMock.toasts.addDanger).not.toHaveBeenCalled();
+
+      fireEvent.click(screen.getByTestId('superDatePickerApplyTimeButton'));
+      await waitForAlertsRequest(3);
+      expect(getAlerts.mock.calls.slice(1).map(([params]) => params.detector_id)).toEqual([
+        'detector_1',
+        'detector_1',
+      ]);
+      getAlerts.mock.calls.forEach(([params]) =>
+        NEW_PARAMS.forEach((param) => expect(params[param]).toBeUndefined())
+      );
+      expect(probeCount()).toBe(1);
+    });
+
+    it('detects the support once per data source', async () => {
+      getAlerts.mockImplementation((params) =>
+        Promise.resolve(
+          okAlerts(createAlerts('detector_1', params.size, params.startIndex ?? 0), 100)
+        )
+      );
+      const { unmount } = renderAlerts();
+      await screen.findByText('trigger detector_1-0');
+      fireEvent.click(screen.getByTestId('pagination-button-1'));
+      await screen.findByText('trigger detector_1-10');
+      unmount();
+
+      renderAlerts({ path: `${ROUTES.ALERTS}/detector_1` });
+      await waitFor(() => expect(getAlerts).toHaveBeenCalledTimes(4));
+      await screen.findByText('trigger detector_1-0');
+
+      expect(probeCount()).toBe(1);
+      expect(getAlerts.mock.calls[0][0]).toEqual({
+        startIndex: 0,
+        size: 0,
+        dataSource: { id: '' },
+      });
+      expect(getAlerts.mock.calls[1][0]).toMatchObject({ startIndex: 0, size: 10 });
+    });
+
+    it('shows other errors and detects the support again on the next load', async () => {
+      getAlerts.mockResolvedValueOnce({ ok: false, error: 'Service unavailable' });
+      renderAlerts();
+
+      await waitFor(() =>
+        expect(notificationsStartMock.toasts.addDanger).toHaveBeenCalledWith(
+          expect.objectContaining({ text: 'Service unavailable' })
+        )
+      );
+      expect(getAlerts).toHaveBeenCalledTimes(1);
+      // The mode doesn't change.
+      expect(screen.getByTestId('alertsSearchField')).toBeInTheDocument();
+
+      getAlerts.mockImplementation((params) =>
+        Promise.resolve(okAlerts(createAlerts('detector_1', params.size, params.startIndex), 100))
+      );
+      fireEvent.click(screen.getByTestId('superDatePickerApplyTimeButton'));
+
+      await screen.findByText('trigger detector_1-0');
+      expect(probeCount()).toBe(2);
+      expect(getAlerts.mock.calls[2][0]).toMatchObject({ startIndex: 0, size: 10 });
+      expect(getAlerts).toHaveBeenCalledTimes(3);
+    });
+
+    it('resets the page and detects the support per data source when it changes', async () => {
+      const oldBackendId = 'old-cluster';
+      getAlerts.mockImplementation((params) => {
+        const dataSourceId = params.dataSource?.id ?? dataSourceInfo.activeDataSource.id;
+        if (dataSourceId === oldBackendId) {
+          return Promise.resolve(
+            isAllDetectorsRequest(params)
+              ? { ok: false, error: OLD_BACKEND_ERROR }
+              : okAlerts(createAlerts(`${params.detector_id}-old`, 1))
+          );
+        }
+        if (dataSourceId === 'flaky-cluster') {
+          return Promise.resolve({ ok: false, error: 'Service unavailable' });
+        }
+        return Promise.resolve(
+          okAlerts(createAlerts('detector_1', params.size, params.startIndex), 100)
+        );
+      });
+      dataSourceInfo.activeDataSource = { id: 'new-cluster' };
+      const { setDataSource } = renderAlerts({ dataSource: { id: 'new-cluster' } });
+      await screen.findByText('trigger detector_1-0');
+      fireEvent.click(screen.getByTestId('pagination-button-2'));
+      await screen.findByText('trigger detector_1-20');
+
+      setDataSource({ id: oldBackendId });
+      await screen.findByText('trigger detector_2-old-0');
+      expect(screen.queryByTestId('alertsSearchField')).not.toBeInTheDocument();
+      expect(probeCount()).toBe(2);
+
+      // Other errors keep the current mode.
+      setDataSource({ id: 'flaky-cluster' });
+      await waitFor(() =>
+        expect(notificationsStartMock.toasts.addDanger).toHaveBeenCalledWith(
+          expect.objectContaining({ text: 'Service unavailable' })
+        )
+      );
+      expect(screen.queryByTestId('alertsSearchField')).not.toBeInTheDocument();
+      expect(probeCount()).toBe(3);
+
+      const callsBefore = getAlerts.mock.calls.length;
+      setDataSource({ id: 'new-cluster' });
+      await screen.findByText('trigger detector_1-0');
+      expect(screen.getByTestId('alertsSearchField')).toBeInTheDocument();
+      expect(getActivePage()).toHaveTextContent('1');
+      expect(getAlerts.mock.calls.slice(callsBefore).map(([params]) => params)).toEqual([
+        expect.objectContaining({ startIndex: 0, size: 10 }),
+      ]);
+      expect(probeCount()).toBe(3);
+      getAlerts.mock.calls
+        .filter(([params]) => (params.dataSource?.id ?? '') === oldBackendId || params.detector_id)
+        .forEach(([params]) =>
+          NEW_PARAMS.forEach((param) => expect(params[param]).toBeUndefined())
+        );
     });
   });
 });
