@@ -104,7 +104,7 @@ export class AlertsStore {
     onPartialAlertsFetched?: (alerts: ThreatIntelAlert[]) => void
   ) {
     let allAlerts: any[] = [];
-    const maxAlertsReturned = 10000;
+    const maxAlertsReturned = MAX_ALERTS_RESULT_WINDOW;
     let startIndex = 0;
     let alertsCount = 0;
 
@@ -137,8 +137,10 @@ export class AlertsStore {
       startIndex += alertsCount;
     } while (
       // If we get 10,000 alerts as part of the previous call then there might be more alerts to fetch,
-      // hence we make another call until the number of alerts is less then 10,000
-      alertsCount === maxAlertsReturned
+      // hence we make another call until the number of alerts is less then 10,000. The backend
+      // rejects requests where startIndex + size exceeds the max result window, so stop before it.
+      alertsCount === maxAlertsReturned &&
+      startIndex + maxAlertsReturned <= MAX_ALERTS_RESULT_WINDOW
     );
 
     return allAlerts;

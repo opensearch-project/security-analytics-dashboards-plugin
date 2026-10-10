@@ -144,3 +144,48 @@ describe('AlertsStore.getAlertsByDetector', () => {
     expect(alerts).toEqual([]);
   });
 });
+
+describe('AlertsStore.getThreatIntelAlerts', () => {
+  const createStoreWithThreatIntelAlerts = (getThreatIntelAlerts: jest.Mock) =>
+    new AlertsStore({ getThreatIntelAlerts } as any, notificationsStartMock);
+
+  it('stops at the max result window when the backend returns a full page', async () => {
+    // Full pages for the first requests, then no more alerts
+    const getThreatIntelAlerts = jest.fn(({ startIndex, size }) =>
+      Promise.resolve({
+        ok: true,
+        response: { alerts: startIndex < 2 * size ? createAlerts(size, startIndex) : [] },
+      })
+    );
+    const store = createStoreWithThreatIntelAlerts(getThreatIntelAlerts);
+
+    const alerts = await store.getThreatIntelAlerts(new AbortController().signal, {
+      startTime: 1,
+      endTime: 2,
+    });
+
+    expect(getThreatIntelAlerts).toHaveBeenCalledTimes(1);
+    expect(getThreatIntelAlerts).toHaveBeenCalledWith({
+      startIndex: 0,
+      size: MAX_ALERTS_RESULT_WINDOW,
+      startTime: 1,
+      endTime: 2,
+    });
+    expect(alerts).toHaveLength(MAX_ALERTS_RESULT_WINDOW);
+  });
+
+  it('makes a single request when the page is not full', async () => {
+    const getThreatIntelAlerts = jest.fn(() =>
+      Promise.resolve({ ok: true, response: { alerts: createAlerts(5) } })
+    );
+    const store = createStoreWithThreatIntelAlerts(getThreatIntelAlerts);
+
+    const alerts = await store.getThreatIntelAlerts(new AbortController().signal, {
+      startTime: 1,
+      endTime: 2,
+    });
+
+    expect(getThreatIntelAlerts).toHaveBeenCalledTimes(1);
+    expect(alerts).toHaveLength(5);
+  });
+});
