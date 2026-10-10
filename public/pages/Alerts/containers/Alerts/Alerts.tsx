@@ -221,9 +221,17 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       this.state.selectedTabId === AlertTabId.DetectionRules && this.state.alertsServerSide;
 
     if (this.props.dataSource !== prevProps.dataSource) {
-      // Start on the first page with the alerts of another data source.
+      // Start on the first page with the alerts of another data source, and don't keep showing the
+      // alerts of the previous one if loading the new ones fails.
       this.setState(
-        { alertsTableQuery: { ...this.state.alertsTableQuery, pageIndex: 0 } },
+        {
+          alertsTableQuery: { ...this.state.alertsTableQuery, pageIndex: 0 },
+          alerts: [],
+          filteredAlerts: [],
+          alertsTotal: undefined,
+          detectors: {},
+          selectedDetectionRuleAlertItems: [],
+        },
         this.onRefresh
       );
     } else if (prevState.selectedTabId !== this.state.selectedTabId) {

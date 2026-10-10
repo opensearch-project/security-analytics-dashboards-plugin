@@ -1044,6 +1044,8 @@ describe('<Alerts /> spec', () => {
           expect.objectContaining({ text: 'Service unavailable' })
         )
       );
+      // The alerts of the previous data source are not shown for the new one.
+      expect(screen.queryByText('trigger detector_2-old-0')).not.toBeInTheDocument();
       expect(screen.queryByTestId('alertsSearchField')).not.toBeInTheDocument();
       expect(probeCount()).toBe(3);
 
