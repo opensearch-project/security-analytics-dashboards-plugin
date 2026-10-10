@@ -4,7 +4,11 @@
  */
 
 import {
+  CriteriaWithPagination,
+  EuiBasicTable,
   EuiBasicTableColumn,
+  EuiCompressedFieldSearch,
+  EuiFilterGroup,
   EuiSmallButton,
   EuiSmallButtonIcon,
   EuiFlexGroup,
@@ -23,6 +27,7 @@ import {
 import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
 import dateMath from '@elastic/datemath';
 import React, { Component } from 'react';
+import { debounce } from 'lodash';
 import { ContentPanel } from '../../../../components/ContentPanel';
 import { getChartTimeUnit, TimeUnit } from '../../../Overview/utils/helpers';
 import moment from 'moment';
@@ -32,6 +37,7 @@ import {
   BREADCRUMBS,
   DEFAULT_DATE_RANGE,
   DEFAULT_EMPTY_DATA,
+  MAX_ALERTS_RESULT_WINDOW,
   MAX_RECENTLY_USED_TIME_RANGES,
 } from '../../../../utils/constants';
 import AlertsService from '../../../../services/AlertsService';
@@ -45,7 +51,17 @@ import {
   OpenSearchService,
 } from '../../../../services';
 import { parseAlertSeverityToOption } from '../../../CreateDetector/components/ConfigureAlerts/utils/helpers';
-import { DISABLE_ACKNOWLEDGED_ALERT_HELP_TEXT } from '../../utils/constants';
+import { AlertSeverity, DISABLE_ACKNOWLEDGED_ALERT_HELP_TEXT } from '../../utils/constants';
+import {
+  ALERTS_PAGE_SIZE_OPTIONS,
+  ALERTS_TABLE_SORT_FIELDS,
+  AlertsTableQuery,
+  DEFAULT_ALERTS_TABLE_QUERY,
+  getAlertsPageParams,
+  getAlertsSearchString,
+  getAlertsTableColumnField,
+} from '../../utils/helpers';
+import { AlertsMultiSelectFilter } from '../../components/AlertsMultiSelectFilter/AlertsMultiSelectFilter';
 import {
   capitalizeFirstLetter,
   createSelectComponent,
@@ -63,10 +79,13 @@ import {
   DataSourceProps,
   DateTimeFilter,
   Detector,
+  SearchDetectorsResponse,
+  ServerResponse,
   ThreatIntelAlert,
 } from '../../../../../types';
 import { DurationRange } from '@elastic/eui/src/components/date_picker/types';
 import { DataStore } from '../../../../store/DataStore';
+import { AlertsPageResult } from '../../../../store/AlertsStore';
 import { ThreatIntelAlertsTable } from '../../components/ThreatIntelAlertsTable/ThreatIntelAlertsTable';
 import { PageHeader } from '../../../../components/PageHeader/PageHeader';
 // import { createBarChartWrapper } from '../../../../utils/chartUtils';
@@ -112,6 +131,13 @@ export interface AlertsState {
   widgetEmptyCorrelationMessage?: React.ReactNode;
   widgetEmptyThreatIntelMessage?: React.ReactNode;
   selectedTabId: AlertTabId;
+  // Whether the detection rule alerts are paged, sorted and filtered by the backend. Older
+  // backends can't get the alerts of all detectors at once, then all alerts are loaded instead.
+  alertsServerSide: boolean;
+  alertsTableQuery: AlertsTableQuery;
+  alertsSearchInput: string;
+  // Total number of alerts matching the query (capped at the max result window by the backend)
+  alertsTotal?: number;
 }
 
 export const alertsGroupByOptions = [
@@ -121,8 +147,23 @@ export const alertsGroupByOptions = [
 
 const ALERTS_VIEW_CHART = 'alerts-view';
 
+const ALERTS_SEARCH_DEBOUNCE_MS = 300;
+
+const alertSeverityFilterOptions = Object.values(AlertSeverity).map((severity) => ({
+  value: severity,
+  label: parseAlertSeverityToOption(severity)?.label || severity,
+}));
+
+const alertStatusFilterOptions = Object.values(ALERT_STATE).map((state) => ({
+  value: state,
+  label: capitalizeFirstLetter(state),
+}));
+
 export class Alerts extends Component<AlertsProps, AlertsState> {
   private abortControllers: AbortController[] = [];
+  // Id of the latest alerts page request; responses of older requests are ignored.
+  private alertsRequestId = 0;
+  private alertsTableRef = React.createRef<EuiBasicTable<AlertItem>>();
 
   constructor(props: AlertsProps) {
     super(props);
@@ -155,25 +196,37 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       selectedTabId: (searchParams.get('detectionType') as AlertTabId) ?? AlertTabId.DetectionRules,
       threatIntelAlerts: [],
       filteredThreatIntelAlerts: [],
+      alertsServerSide: DataStore.alerts.isAllDetectorsQuerySupported(),
+      alertsTableQuery: DEFAULT_ALERTS_TABLE_QUERY,
+      alertsSearchInput: '',
     };
   }
 
   componentDidUpdate(prevProps: Readonly<AlertsProps>, prevState: Readonly<AlertsState>) {
-    const {
-      dateTimeFilter = {
-        startTime: DEFAULT_DATE_RANGE.start,
-        endTime: DEFAULT_DATE_RANGE.end,
-      },
-    } = this.props;
+    const defaultDateTimeFilter = {
+      startTime: DEFAULT_DATE_RANGE.start,
+      endTime: DEFAULT_DATE_RANGE.end,
+    };
+    const { dateTimeFilter = defaultDateTimeFilter } = this.props;
+    const { dateTimeFilter: prevDateTimeFilter = defaultDateTimeFilter } = prevProps;
     const timeFilterChanged =
-      prevProps.dateTimeFilter?.startTime !== dateTimeFilter.startTime ||
-      prevProps.dateTimeFilter?.endTime !== dateTimeFilter.endTime;
+      prevDateTimeFilter.startTime !== dateTimeFilter.startTime ||
+      prevDateTimeFilter.endTime !== dateTimeFilter.endTime;
+    const detectorIdChanged =
+      prevProps.match.params?.detectorId !== this.props.match.params?.detectorId;
+    const pagedDetectionRuleAlerts =
+      this.state.selectedTabId === AlertTabId.DetectionRules && this.state.alertsServerSide;
 
-    if (
-      prevState.selectedTabId !== this.state.selectedTabId ||
-      this.props.dataSource !== prevProps.dataSource
-    ) {
+    if (this.props.dataSource !== prevProps.dataSource) {
+      // Start on the first page with the alerts of another data source.
+      this.setState(
+        { alertsTableQuery: { ...this.state.alertsTableQuery, pageIndex: 0 } },
+        this.onRefresh
+      );
+    } else if (prevState.selectedTabId !== this.state.selectedTabId) {
       this.onRefresh();
+    } else if (pagedDetectionRuleAlerts && (timeFilterChanged || detectorIdChanged)) {
+      this.updateAlertsTableQuery({ pageIndex: 0 });
     } else if (timeFilterChanged) {
       this.filterAlertsOnStateChange(prevState);
     } else if (this.state.groupBy !== prevState.groupBy) {
@@ -308,13 +361,11 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
   }
 
   private getAlertsAsPerTab() {
-    this.abortPendingGetAlerts();
-    const abortController = new AbortController();
-    this.abortControllers.push(abortController);
+    const abortSignal = this.createAbortSignal();
 
     switch (this.state.selectedTabId) {
       case AlertTabId.DetectionRules:
-        this.getAlerts(abortController.signal);
+        this.getDetectionRuleAlerts(abortSignal);
         break;
 
       case AlertTabId.Correlations:
@@ -322,9 +373,208 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         break;
 
       case AlertTabId.ThreatIntel:
-        this.getThreatIntelAlerts(abortController.signal);
+        this.getThreatIntelAlerts(abortSignal);
         break;
     }
+  }
+
+  private createAbortSignal() {
+    this.abortPendingGetAlerts();
+    const abortController = new AbortController();
+    this.abortControllers.push(abortController);
+    return abortController.signal;
+  }
+
+  private getDetectionRuleAlerts(abortSignal: AbortSignal) {
+    // The data source might have changed, so check again which way the alerts can be loaded.
+    const alertsServerSide = DataStore.alerts.isAllDetectorsQuerySupported();
+    if (alertsServerSide !== this.state.alertsServerSide) {
+      this.setState({ alertsServerSide });
+    }
+
+    if (!alertsServerSide) {
+      this.getAlerts(abortSignal);
+      return;
+    }
+
+    // The detectors are only needed for their names and the flyout, so load them in parallel.
+    const detectorsRequest = this.loadDetectors();
+    this.getAlertsPage(this.state.alertsTableQuery, { detectorsRequest });
+  }
+
+  private loadDetectors = async (): Promise<ServerResponse<SearchDetectorsResponse>> => {
+    const { detectorService, notifications } = this.props;
+    let detectorsRes: ServerResponse<SearchDetectorsResponse>;
+    try {
+      detectorsRes = await detectorService.getDetectors();
+    } catch (e: any) {
+      detectorsRes = { ok: false, error: e };
+    }
+
+    if (detectorsRes.ok) {
+      const detectors: AlertsState['detectors'] = {};
+      detectorsRes.response.hits.hits.forEach((hit) => {
+        detectors[hit._id] = { ...hit._source, id: hit._id };
+      });
+      this.setState({ detectors });
+    } else {
+      errorNotificationToast(notifications, 'retrieve', 'detectors', detectorsRes.error);
+    }
+
+    return detectorsRes;
+  };
+
+  /**
+   * Gets one page of detection rule alerts from the backend and shows it in the table. The rows
+   * of the previous page stay visible until the response arrives.
+   */
+  private getAlertsPage = async (
+    query: AlertsTableQuery,
+    {
+      detectorsRequest,
+      stepBackIfEmpty = false,
+    }: {
+      // Pending detectors request to reuse if the alerts need to be loaded the old way
+      detectorsRequest?: Promise<ServerResponse<SearchDetectorsResponse>>;
+      // Load the previous page if this one has no alerts, e.g. after acknowledging its alerts
+      stepBackIfEmpty?: boolean;
+    } = {}
+  ) => {
+    const requestId = ++this.alertsRequestId;
+    const {
+      dateTimeFilter = {
+        startTime: DEFAULT_DATE_RANGE.start,
+        endTime: DEFAULT_DATE_RANGE.end,
+      },
+      notifications,
+    } = this.props;
+    const detectorId = this.props.match.params?.detectorId;
+    this.setState({ loading: true });
+
+    let result: AlertsPageResult;
+    try {
+      result = await DataStore.alerts.getAlertsPage(
+        getAlertsPageParams(query, getDuration(dateTimeFilter), detectorId)
+      );
+    } catch (e: any) {
+      result = { ok: false, error: e, allDetectorsQueryUnsupported: false };
+    }
+
+    if (requestId !== this.alertsRequestId) {
+      // A newer request was made in the meantime.
+      return;
+    }
+
+    if (result.ok) {
+      if (stepBackIfEmpty && !result.alerts.length && query.pageIndex > 0) {
+        this.updateAlertsTableQuery({ pageIndex: query.pageIndex - 1 });
+        return;
+      }
+
+      this.setState({
+        alerts: result.alerts,
+        alertsTotal: result.total,
+        loading: false,
+        widgetEmptyMessage: result.alerts.length ? undefined : (
+          <EuiEmptyPrompt
+            body={
+              <EuiText size="s">
+                <span style={{ display: 'block' }}>No alerts.</span>Adjust the time range or filters
+                to see more results.
+              </EuiText>
+            }
+          />
+        ),
+      });
+    } else if (result.allDetectorsQueryUnsupported) {
+      // Older backend, fall back to loading all alerts of every detector.
+      this.setState({ alertsServerSide: false });
+      this.getAlerts(this.createAbortSignal(), detectorsRequest);
+    } else {
+      errorNotificationToast(notifications, 'retrieve', 'alerts', result.error);
+      this.setState({ loading: false });
+    }
+  };
+
+  private updateAlertsTableQuery(
+    changes: Partial<AlertsTableQuery>,
+    options?: { stepBackIfEmpty?: boolean }
+  ) {
+    const query = { ...this.state.alertsTableQuery, ...changes };
+    this.setState({ alertsTableQuery: query });
+    this.clearDetectionRuleAlertsSelection();
+    this.getAlertsPage(query, options);
+  }
+
+  private clearDetectionRuleAlertsSelection() {
+    this.alertsTableRef.current?.setSelection([]);
+    this.setState({ selectedDetectionRuleAlertItems: [] });
+  }
+
+  onAlertsTableChange = ({ page, sort }: CriteriaWithPagination<AlertItem>) => {
+    const query = this.state.alertsTableQuery;
+    const changes: Partial<AlertsTableQuery> = {};
+    const sortField = sort ? ALERTS_TABLE_SORT_FIELDS[sort.field as string] : undefined;
+    const sortDirection = sort?.direction ?? query.sortDirection;
+
+    if (sortField && (sortField !== query.sortField || sortDirection !== query.sortDirection)) {
+      changes.sortField = sortField;
+      changes.sortDirection = sortDirection;
+      changes.pageIndex = 0;
+    }
+
+    if (page.size !== query.pageSize) {
+      changes.pageSize = page.size;
+      changes.pageIndex = 0;
+    }
+
+    if (changes.pageIndex === undefined && page.index !== query.pageIndex) {
+      changes.pageIndex = page.index;
+    }
+
+    if (Object.keys(changes).length) {
+      this.updateAlertsTableQuery(changes);
+    }
+  };
+
+  onAlertsSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ alertsSearchInput: event.target.value });
+    this.debouncedApplyAlertsSearch(event.target.value);
+  };
+
+  onAlertsSearch = (search: string) => {
+    this.debouncedApplyAlertsSearch.cancel();
+    this.applyAlertsSearch(search);
+  };
+
+  private applyAlertsSearch = (search: string) => {
+    if (
+      getAlertsSearchString(search) === getAlertsSearchString(this.state.alertsTableQuery.search)
+    ) {
+      // Nothing to search for changed (e.g. only special characters were added).
+      return;
+    }
+
+    this.updateAlertsTableQuery({ search, pageIndex: 0 });
+  };
+
+  private debouncedApplyAlertsSearch = debounce(this.applyAlertsSearch, ALERTS_SEARCH_DEBOUNCE_MS);
+
+  onAlertSeveritiesChange = (severities: string[]) => {
+    this.updateAlertsTableQuery({ severities, pageIndex: 0 });
+  };
+
+  onAlertStatusesChange = (statuses: string[]) => {
+    this.updateAlertsTableQuery({ statuses, pageIndex: 0 });
+  };
+
+  private getDetectorName(alert: AlertItem & { detectorName?: string }) {
+    return (
+      this.state.detectors[alert.detector_id]?.name ||
+      alert.detectorName ||
+      alert.detector_id ||
+      DEFAULT_EMPTY_DATA
+    );
   }
 
   getColumns(): EuiBasicTableColumn<AlertItem>[] {
@@ -341,16 +591,20 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         name: 'Alert trigger name',
         sortable: false,
         dataType: 'string',
-        render: (triggerName: string, alertItem: AlertItem) => (
-          <EuiLink onClick={() => this.setFlyout(alertItem)}>{triggerName}</EuiLink>
-        ),
+        render: (triggerName: string, alertItem: AlertItem) =>
+          // The details need the detector, which might be deleted or not loaded yet.
+          this.state.detectors[alertItem.detector_id] ? (
+            <EuiLink onClick={() => this.setFlyout(alertItem)}>{triggerName}</EuiLink>
+          ) : (
+            triggerName || DEFAULT_EMPTY_DATA
+          ),
       },
       {
         field: 'detectorName',
         name: 'Detector',
         sortable: true,
         dataType: 'string',
-        render: (detectorName: string) => detectorName || DEFAULT_EMPTY_DATA,
+        render: (_detectorName: string, alertItem: AlertItem) => this.getDetectorName(alertItem),
       },
       {
         field: 'state',
@@ -396,6 +650,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
                 <EuiSmallButtonIcon
                   aria-label={'View details'}
                   iconType={'expand'}
+                  disabled={!this.state.detectors[alertItem.detector_id]}
                   onClick={() => this.setFlyout(alertItem)}
                 />
               </EuiToolTip>
@@ -540,6 +795,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
 
   componentWillUnmount(): void {
     this.abortPendingGetAlerts();
+    this.debouncedApplyAlertsSearch.cancel();
   }
 
   async getCorrelationAlerts() {
@@ -574,33 +830,33 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     this.setState({ loading: false });
   }
 
-  async getAlerts(abort: AbortSignal) {
+  /**
+   * Loads all alerts of every detector and filters them on the client. Used with backends that
+   * can't page the alerts of all detectors.
+   */
+  async getAlerts(
+    abort: AbortSignal,
+    detectorsRequest: Promise<ServerResponse<SearchDetectorsResponse>> = this.loadDetectors()
+  ) {
     // Keep the rows of the previous load visible until the new ones arrive.
     this.setState({ loading: true });
-    const { detectorService, notifications, dateTimeFilter } = this.props;
-    const { detectors } = this.state;
+    const { dateTimeFilter } = this.props;
     try {
-      const detectorsRes = await detectorService.getDetectors();
+      const detectorsRes = await detectorsRequest;
       const duration = getDuration(dateTimeFilter);
       if (detectorsRes.ok) {
-        this.setState({ detectors: detectors });
-        const detectorIds = detectorsRes.response.hits.hits.map((hit) => {
-          detectors[hit._id] = { ...hit._source, id: hit._id };
-          return hit._id;
-        });
-
         const detectorId = this.props.match.params['detectorId'];
         let alerts: AlertItem[] = [];
 
-        for (let id of detectorIds) {
+        for (const hit of detectorsRes.response.hits.hits) {
           if (abort.aborted) {
             break;
           }
 
-          if (!detectorId || detectorId === id) {
+          if (!detectorId || detectorId === hit._id) {
             const detectorAlerts = await DataStore.alerts.getAlertsByDetector(
-              id,
-              detectors[id].name,
+              hit._id,
+              hit._source.name,
               abort,
               duration
             );
@@ -617,11 +873,9 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
         // resetting the pagination of) the table for every partial batch.
         this.setState({ alerts });
         this.filterDeletectionRuleAlerts(alerts);
-      } else {
-        errorNotificationToast(notifications, 'retrieve', 'detectors', detectorsRes.error);
       }
     } catch (e: any) {
-      errorNotificationToast(notifications, 'retrieve', 'alerts', e);
+      errorNotificationToast(this.props.notifications, 'retrieve', 'alerts', e);
     }
 
     if (!abort.aborted) {
@@ -733,6 +987,8 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
   private abortPendingGetAlerts() {
     this.abortControllers.forEach((controller) => controller.abort());
     this.abortControllers = [];
+    // Ignore the response of a pending alerts page request too.
+    this.alertsRequestId++;
   }
 
   onRefresh = async () => {
@@ -786,8 +1042,14 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     }
     if (successCount)
       successNotificationToast(notifications, 'acknowledged', `${successCount} alerts`);
-    this.setState({ selectedDetectionRuleAlertItems: [] });
-    this.onRefresh();
+
+    if (this.state.alertsServerSide) {
+      // Reload the current page; go back a page if no alerts are left on it.
+      this.updateAlertsTableQuery({}, { stepBackIfEmpty: true });
+    } else {
+      this.clearDetectionRuleAlertsSelection();
+      this.onRefresh();
+    }
   };
 
   onAcknowledgeCorrelationAlert = async (selectedItems: CorrelationAlertTableItem[] = []) => {
@@ -882,6 +1144,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       threatIntelAlerts,
       filteredThreatIntelAlerts,
       selectedTabId,
+      alertsServerSide,
     } = this.state;
 
     let alerts = [];
@@ -1016,20 +1279,24 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
             <EuiSpacer size="m" />
             {/*{this.getAlertsGraph(alerts, loading)}*/}
             {/*<EuiSpacer size="m" />*/}
-            <ContentPanel title={'Alerts'} actions={[this.getContelPanelActions()]}>
-              <EuiInMemoryTable
-                columns={this.getColumns()}
-                items={alertsFiltered ? filteredDetectionRuleAlerts : detectionRuleAlerts}
-                itemId={(item) => `${item.id}`}
-                isSelectable={true}
-                pagination
-                search={search}
-                sorting={sorting}
-                selection={selection}
-                loading={loading}
-                message={widgetEmptyMessage}
-              />
-            </ContentPanel>
+            {alertsServerSide ? (
+              this.renderAlertsPage(selection)
+            ) : (
+              <ContentPanel title={'Alerts'} actions={[this.getContelPanelActions()]}>
+                <EuiInMemoryTable
+                  columns={this.getColumns()}
+                  items={alertsFiltered ? filteredDetectionRuleAlerts : detectionRuleAlerts}
+                  itemId={(item) => `${item.id}`}
+                  isSelectable={true}
+                  pagination
+                  search={search}
+                  sorting={sorting}
+                  selection={selection}
+                  loading={loading}
+                  message={widgetEmptyMessage}
+                />
+              </ContentPanel>
+            )}
           </>
         ),
       },
@@ -1096,7 +1363,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
 
     return (
       <>
-        {flyoutData && (
+        {flyoutData && detectors[flyoutData.alertItem.detector_id] && (
           <AlertFlyout
             {...this.props}
             alertItem={flyoutData.alertItem}
@@ -1144,6 +1411,99 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
           </EuiFlexItem>
         </EuiFlexGroup>
       </>
+    );
+  }
+
+  /**
+   * Detection rule alerts paged, sorted and filtered by the backend.
+   */
+  private renderAlertsPage(selection: EuiTableSelectionType<AlertItem>) {
+    const {
+      alerts,
+      alertsTableQuery,
+      alertsSearchInput,
+      alertsTotal,
+      loading,
+      widgetEmptyMessage,
+    } = this.state;
+    const totalCapped = alertsTotal !== undefined && alertsTotal >= MAX_ALERTS_RESULT_WINDOW;
+    const totalLabel = totalCapped
+      ? `${MAX_ALERTS_RESULT_WINDOW.toLocaleString('en-US')}+`
+      : alertsTotal?.toLocaleString('en-US');
+    const sortField = getAlertsTableColumnField(alertsTableQuery.sortField);
+
+    return (
+      <ContentPanel
+        title={totalLabel === undefined ? 'Alerts' : `Alerts (${totalLabel})`}
+        subTitleText={
+          totalCapped
+            ? 'Showing the first 10,000 matching alerts. Narrow the time range or filters to see more.'
+            : undefined
+        }
+        actions={[this.getContelPanelActions()]}
+      >
+        <EuiFlexGroup gutterSize="s" alignItems="center">
+          <EuiFlexItem>
+            <EuiCompressedFieldSearch
+              fullWidth
+              isClearable
+              placeholder="Search by detector or trigger name"
+              aria-label="Search alerts by detector or trigger name"
+              value={alertsSearchInput}
+              onChange={this.onAlertsSearchChange}
+              onSearch={this.onAlertsSearch}
+              data-test-subj="alertsSearchField"
+            />
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>
+            <EuiFilterGroup>
+              <AlertsMultiSelectFilter
+                name="Alert severity"
+                options={alertSeverityFilterOptions}
+                selected={alertsTableQuery.severities}
+                onChange={this.onAlertSeveritiesChange}
+                data-test-subj="alertsSeverityFilter"
+              />
+              <AlertsMultiSelectFilter
+                name="Status"
+                options={alertStatusFilterOptions}
+                selected={alertsTableQuery.statuses}
+                onChange={this.onAlertStatusesChange}
+                data-test-subj="alertsStatusFilter"
+              />
+            </EuiFilterGroup>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+        <EuiSpacer size="s" />
+        <EuiBasicTable<AlertItem>
+          ref={this.alertsTableRef}
+          columns={this.getColumns()}
+          items={alerts}
+          itemId="id"
+          isSelectable={true}
+          selection={selection}
+          pagination={{
+            pageIndex: alertsTableQuery.pageIndex,
+            pageSize: alertsTableQuery.pageSize,
+            totalItemCount: Math.min(alertsTotal ?? 0, MAX_ALERTS_RESULT_WINDOW),
+            pageSizeOptions: ALERTS_PAGE_SIZE_OPTIONS,
+          }}
+          sorting={
+            sortField
+              ? {
+                  sort: {
+                    field: sortField as keyof AlertItem,
+                    direction: alertsTableQuery.sortDirection,
+                  },
+                }
+              : {}
+          }
+          onChange={this.onAlertsTableChange}
+          loading={loading}
+          noItemsMessage={loading ? 'Loading alerts...' : widgetEmptyMessage}
+          data-test-subj="detectionRuleAlertsTable"
+        />
+      </ContentPanel>
     );
   }
 

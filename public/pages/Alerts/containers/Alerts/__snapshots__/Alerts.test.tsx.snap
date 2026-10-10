@@ -232,369 +232,381 @@ exports[`<Alerts /> spec renders the component 1`] = `
             <div
               style="padding: 0px 10px;"
             >
-              <div>
+              <div
+                class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow euiFlexGroup--responsive"
+              >
                 <div
-                  class="euiFlexGroup euiFlexGroup--gutterMedium euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow euiFlexGroup--responsive euiFlexGroup--wrap"
+                  class="euiFlexItem"
                 >
                   <div
-                    class="euiFlexItem euiSearchBar__searchHolder"
+                    class="euiFormControlLayout euiFormControlLayout--fullWidth euiFormControlLayout--compressed"
                   >
                     <div
-                      class="euiFormControlLayout euiFormControlLayout--fullWidth euiFormControlLayout--compressed"
+                      class="euiFormControlLayout__childrenWrapper"
                     >
+                      <input
+                        aria-label="Search alerts by detector or trigger name"
+                        class="euiFieldSearch euiFieldSearch--fullWidth euiFieldSearch--compressed"
+                        data-test-subj="alertsSearchField"
+                        placeholder="Search by detector or trigger name"
+                        type="search"
+                        value=""
+                      />
                       <div
-                        class="euiFormControlLayout__childrenWrapper"
+                        class="euiFormControlLayoutIcons"
                       >
-                        <input
-                          aria-label="This is a search bar. After typing your query, hit enter to filter the results lower in the page."
-                          class="euiFieldSearch euiFieldSearch--fullWidth euiFieldSearch--compressed"
-                          placeholder="Search alerts"
-                          type="search"
-                          value=""
-                        />
-                        <div
-                          class="euiFormControlLayoutIcons"
+                        <span
+                          class="euiFormControlLayoutCustomIcon"
                         >
-                          <span
-                            class="euiFormControlLayoutCustomIcon"
-                          >
-                            EuiIconMock
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="euiFlexItem euiFlexItem--flexGrowZero euiSearchBar__filtersHolder"
-                  >
-                    <div
-                      class="euiFilterGroup"
-                    >
-                      <div
-                        class="euiPopover euiPopover--anchorDownCenter"
-                        id="field_value_selection_0"
-                      >
-                        <div
-                          class="euiPopover__anchor"
-                        >
-                          <button
-                            class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton--hasIcon"
-                            type="button"
-                          >
-                            <span
-                              class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
-                            >
-                              EuiIconMock
-                              <span
-                                class="euiButtonEmpty__text"
-                              >
-                                <span
-                                  class="euiFilterButton__textShift"
-                                  data-text="Alert severity"
-                                  title="Alert severity"
-                                >
-                                  Alert severity
-                                </span>
-                              </span>
-                            </span>
-                          </button>
-                        </div>
-                      </div>
-                      <div
-                        class="euiPopover euiPopover--anchorDownCenter"
-                        id="field_value_selection_1"
-                      >
-                        <div
-                          class="euiPopover__anchor"
-                        >
-                          <button
-                            class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton--hasIcon"
-                            type="button"
-                          >
-                            <span
-                              class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
-                            >
-                              EuiIconMock
-                              <span
-                                class="euiButtonEmpty__text"
-                              >
-                                <span
-                                  class="euiFilterButton__textShift"
-                                  data-text="Status"
-                                  title="Status"
-                                >
-                                  Status
-                                </span>
-                              </span>
-                            </span>
-                          </button>
-                        </div>
+                          EuiIconMock
+                        </span>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div
-                  class="euiSpacer euiSpacer--l"
-                />
-                <div
-                  class="euiBasicTable euiBasicTable-loading"
+                  class="euiFlexItem euiFlexItem--flexGrowZero"
                 >
-                  <div>
+                  <div
+                    class="euiFilterGroup"
+                  >
                     <div
-                      class="euiTableHeaderMobile"
+                      class="euiPopover euiPopover--anchorDownCenter"
                     >
                       <div
-                        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsBaseline euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow"
+                        class="euiPopover__anchor"
+                      >
+                        <button
+                          class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton-hasNotification euiFilterButton--hasIcon"
+                          data-test-subj="alertsSeverityFilter"
+                          type="button"
+                        >
+                          <span
+                            class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                          >
+                            EuiIconMock
+                            <span
+                              class="euiButtonEmpty__text euiFilterButton__text-hasNotification"
+                            >
+                              <span
+                                class="euiFilterButton__textShift"
+                                data-text="Alert severity"
+                                title="Alert severity"
+                              >
+                                Alert severity
+                              </span>
+                              <span
+                                aria-label="5 available filters"
+                                class="euiNotificationBadge euiNotificationBadge--medium euiNotificationBadge--subdued euiFilterButton__notification"
+                              >
+                                5
+                              </span>
+                            </span>
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                    <div
+                      class="euiPopover euiPopover--anchorDownCenter"
+                    >
+                      <div
+                        class="euiPopover__anchor"
+                      >
+                        <button
+                          class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--small euiFilterButton euiFilterButton-hasNotification euiFilterButton--hasIcon"
+                          data-test-subj="alertsStatusFilter"
+                          type="button"
+                        >
+                          <span
+                            class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                          >
+                            EuiIconMock
+                            <span
+                              class="euiButtonEmpty__text euiFilterButton__text-hasNotification"
+                            >
+                              <span
+                                class="euiFilterButton__textShift"
+                                data-text="Status"
+                                title="Status"
+                              >
+                                Status
+                              </span>
+                              <span
+                                aria-label="5 available filters"
+                                class="euiNotificationBadge euiNotificationBadge--medium euiNotificationBadge--subdued euiFilterButton__notification"
+                              >
+                                5
+                              </span>
+                            </span>
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="euiSpacer euiSpacer--s"
+              />
+              <div
+                class="euiBasicTable euiBasicTable-loading"
+                data-test-subj="detectionRuleAlertsTable"
+              >
+                <div>
+                  <div
+                    class="euiTableHeaderMobile"
+                  >
+                    <div
+                      class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsBaseline euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow"
+                    >
+                      <div
+                        class="euiFlexItem euiFlexItem--flexGrowZero"
                       >
                         <div
-                          class="euiFlexItem euiFlexItem--flexGrowZero"
+                          class="euiCheckbox"
                         >
+                          <input
+                            aria-label="Select all rows"
+                            class="euiCheckbox__input"
+                            disabled=""
+                            id="_selection_column-checkbox_some_html_id"
+                            type="checkbox"
+                          />
                           <div
-                            class="euiCheckbox"
+                            class="euiCheckbox__square"
+                          />
+                          <label
+                            class="euiCheckbox__label"
+                            for="_selection_column-checkbox_some_html_id"
                           >
-                            <input
-                              aria-label="Select all rows"
-                              class="euiCheckbox__input"
-                              disabled=""
-                              id="_selection_column-checkbox_some_html_id"
-                              type="checkbox"
-                            />
-                            <div
-                              class="euiCheckbox__square"
-                            />
-                            <label
-                              class="euiCheckbox__label"
-                              for="_selection_column-checkbox_some_html_id"
-                            >
-                              Select all rows
-                            </label>
-                          </div>
+                            Select all rows
+                          </label>
                         </div>
+                      </div>
+                      <div
+                        class="euiFlexItem euiFlexItem--flexGrowZero"
+                      >
                         <div
-                          class="euiFlexItem euiFlexItem--flexGrowZero"
+                          class="euiTableSortMobile"
                         >
                           <div
-                            class="euiTableSortMobile"
+                            class="euiPopover euiPopover--anchorDownRight"
                           >
                             <div
-                              class="euiPopover euiPopover--anchorDownRight"
+                              class="euiPopover__anchor"
                             >
-                              <div
-                                class="euiPopover__anchor"
+                              <button
+                                class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--flushRight"
+                                type="button"
                               >
-                                <button
-                                  class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--flushRight"
-                                  type="button"
+                                <span
+                                  class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
                                 >
+                                  EuiIconMock
                                   <span
-                                    class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                                    class="euiButtonEmpty__text"
                                   >
-                                    EuiIconMock
-                                    <span
-                                      class="euiButtonEmpty__text"
-                                    >
-                                      Sorting
-                                    </span>
+                                    Sorting
                                   </span>
-                                </button>
-                              </div>
+                                </span>
+                              </button>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <table
-                      class="euiTable euiTable--responsive"
-                      id="some_html_id"
-                      tabindex="-1"
-                    >
-                      <caption
-                        class="euiScreenReaderOnly euiTableCaption"
-                      />
-                      <thead>
-                        <tr>
-                          <th
-                            class="euiTableHeaderCellCheckbox"
-                            scope="col"
-                          >
-                            <div
-                              class="euiTableCellContent"
-                            >
-                              <div
-                                class="euiCheckbox euiCheckbox--inList euiCheckbox--noLabel"
-                              >
-                                <input
-                                  aria-label="Select all rows"
-                                  class="euiCheckbox__input"
-                                  data-test-subj="checkboxSelectAll"
-                                  disabled=""
-                                  id="_selection_column-checkbox_some_html_id"
-                                  type="checkbox"
-                                />
-                                <div
-                                  class="euiCheckbox__square"
-                                />
-                              </div>
-                            </div>
-                          </th>
-                          <th
-                            aria-live="polite"
-                            aria-sort="descending"
-                            class="euiTableHeaderCell"
-                            data-test-subj="tableHeaderCell_start_time_0"
-                            role="columnheader"
-                            scope="col"
-                          >
-                            <button
-                              class="euiTableHeaderButton euiTableHeaderButton-isSorted"
-                              data-test-subj="tableHeaderSortButton"
-                              type="button"
-                            >
-                              <span
-                                class="euiTableCellContent"
-                              >
-                                <span
-                                  class="euiTableCellContent__text"
-                                  title="Start time"
-                                >
-                                  Start time
-                                </span>
-                                EuiIconMock
-                              </span>
-                            </button>
-                          </th>
-                          <th
-                            class="euiTableHeaderCell"
-                            data-test-subj="tableHeaderCell_trigger_name_1"
-                            role="columnheader"
-                            scope="col"
-                          >
-                            <span
-                              class="euiTableCellContent"
-                            >
-                              <span
-                                class="euiTableCellContent__text"
-                                title="Alert trigger name"
-                              >
-                                Alert trigger name
-                              </span>
-                            </span>
-                          </th>
-                          <th
-                            aria-live="polite"
-                            aria-sort="none"
-                            class="euiTableHeaderCell"
-                            data-test-subj="tableHeaderCell_detectorName_2"
-                            role="columnheader"
-                            scope="col"
-                          >
-                            <button
-                              class="euiTableHeaderButton"
-                              data-test-subj="tableHeaderSortButton"
-                              type="button"
-                            >
-                              <span
-                                class="euiTableCellContent"
-                              >
-                                <span
-                                  class="euiTableCellContent__text"
-                                  title="Detector"
-                                >
-                                  Detector
-                                </span>
-                              </span>
-                            </button>
-                          </th>
-                          <th
-                            aria-live="polite"
-                            aria-sort="none"
-                            class="euiTableHeaderCell"
-                            data-test-subj="tableHeaderCell_state_3"
-                            role="columnheader"
-                            scope="col"
-                          >
-                            <button
-                              class="euiTableHeaderButton"
-                              data-test-subj="tableHeaderSortButton"
-                              type="button"
-                            >
-                              <span
-                                class="euiTableCellContent"
-                              >
-                                <span
-                                  class="euiTableCellContent__text"
-                                  title="Status"
-                                >
-                                  Status
-                                </span>
-                              </span>
-                            </button>
-                          </th>
-                          <th
-                            aria-live="polite"
-                            aria-sort="none"
-                            class="euiTableHeaderCell"
-                            data-test-subj="tableHeaderCell_severity_4"
-                            role="columnheader"
-                            scope="col"
-                          >
-                            <button
-                              class="euiTableHeaderButton"
-                              data-test-subj="tableHeaderSortButton"
-                              type="button"
-                            >
-                              <span
-                                class="euiTableCellContent"
-                              >
-                                <span
-                                  class="euiTableCellContent__text"
-                                  title="Alert severity"
-                                >
-                                  Alert severity
-                                </span>
-                              </span>
-                            </button>
-                          </th>
-                          <th
-                            class="euiTableHeaderCell"
-                            role="columnheader"
-                            scope="col"
-                          >
-                            <span
-                              class="euiTableCellContent euiTableCellContent--alignRight"
-                            >
-                              <span
-                                class="euiTableCellContent__text"
-                                title="Actions"
-                              >
-                                Actions
-                              </span>
-                            </span>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr
-                          class="euiTableRow"
-                        >
-                          <td
-                            class="euiTableRowCell euiTableRowCell--isMobileFullWidth"
-                            colspan="7"
-                          >
-                            <div
-                              class="euiTableCellContent euiTableCellContent--alignCenter"
-                            >
-                              <span
-                                class="euiTableCellContent__text"
-                              >
-                                No items found
-                              </span>
-                            </div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
                   </div>
+                  <table
+                    class="euiTable euiTable--responsive"
+                    id="some_html_id"
+                    tabindex="-1"
+                  >
+                    <caption
+                      class="euiScreenReaderOnly euiTableCaption"
+                    />
+                    <thead>
+                      <tr>
+                        <th
+                          class="euiTableHeaderCellCheckbox"
+                          scope="col"
+                        >
+                          <div
+                            class="euiTableCellContent"
+                          >
+                            <div
+                              class="euiCheckbox euiCheckbox--inList euiCheckbox--noLabel"
+                            >
+                              <input
+                                aria-label="Select all rows"
+                                class="euiCheckbox__input"
+                                data-test-subj="checkboxSelectAll"
+                                disabled=""
+                                id="_selection_column-checkbox_some_html_id"
+                                type="checkbox"
+                              />
+                              <div
+                                class="euiCheckbox__square"
+                              />
+                            </div>
+                          </div>
+                        </th>
+                        <th
+                          aria-live="polite"
+                          aria-sort="descending"
+                          class="euiTableHeaderCell"
+                          data-test-subj="tableHeaderCell_start_time_0"
+                          role="columnheader"
+                          scope="col"
+                        >
+                          <button
+                            class="euiTableHeaderButton euiTableHeaderButton-isSorted"
+                            data-test-subj="tableHeaderSortButton"
+                            type="button"
+                          >
+                            <span
+                              class="euiTableCellContent"
+                            >
+                              <span
+                                class="euiTableCellContent__text"
+                                title="Start time"
+                              >
+                                Start time
+                              </span>
+                              EuiIconMock
+                            </span>
+                          </button>
+                        </th>
+                        <th
+                          class="euiTableHeaderCell"
+                          data-test-subj="tableHeaderCell_trigger_name_1"
+                          role="columnheader"
+                          scope="col"
+                        >
+                          <span
+                            class="euiTableCellContent"
+                          >
+                            <span
+                              class="euiTableCellContent__text"
+                              title="Alert trigger name"
+                            >
+                              Alert trigger name
+                            </span>
+                          </span>
+                        </th>
+                        <th
+                          aria-live="polite"
+                          aria-sort="none"
+                          class="euiTableHeaderCell"
+                          data-test-subj="tableHeaderCell_detectorName_2"
+                          role="columnheader"
+                          scope="col"
+                        >
+                          <button
+                            class="euiTableHeaderButton"
+                            data-test-subj="tableHeaderSortButton"
+                            type="button"
+                          >
+                            <span
+                              class="euiTableCellContent"
+                            >
+                              <span
+                                class="euiTableCellContent__text"
+                                title="Detector"
+                              >
+                                Detector
+                              </span>
+                            </span>
+                          </button>
+                        </th>
+                        <th
+                          aria-live="polite"
+                          aria-sort="none"
+                          class="euiTableHeaderCell"
+                          data-test-subj="tableHeaderCell_state_3"
+                          role="columnheader"
+                          scope="col"
+                        >
+                          <button
+                            class="euiTableHeaderButton"
+                            data-test-subj="tableHeaderSortButton"
+                            type="button"
+                          >
+                            <span
+                              class="euiTableCellContent"
+                            >
+                              <span
+                                class="euiTableCellContent__text"
+                                title="Status"
+                              >
+                                Status
+                              </span>
+                            </span>
+                          </button>
+                        </th>
+                        <th
+                          aria-live="polite"
+                          aria-sort="none"
+                          class="euiTableHeaderCell"
+                          data-test-subj="tableHeaderCell_severity_4"
+                          role="columnheader"
+                          scope="col"
+                        >
+                          <button
+                            class="euiTableHeaderButton"
+                            data-test-subj="tableHeaderSortButton"
+                            type="button"
+                          >
+                            <span
+                              class="euiTableCellContent"
+                            >
+                              <span
+                                class="euiTableCellContent__text"
+                                title="Alert severity"
+                              >
+                                Alert severity
+                              </span>
+                            </span>
+                          </button>
+                        </th>
+                        <th
+                          class="euiTableHeaderCell"
+                          role="columnheader"
+                          scope="col"
+                        >
+                          <span
+                            class="euiTableCellContent euiTableCellContent--alignRight"
+                          >
+                            <span
+                              class="euiTableCellContent__text"
+                              title="Actions"
+                            >
+                              Actions
+                            </span>
+                          </span>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        class="euiTableRow"
+                      >
+                        <td
+                          class="euiTableRowCell euiTableRowCell--isMobileFullWidth"
+                          colspan="7"
+                        >
+                          <div
+                            class="euiTableCellContent euiTableCellContent--alignCenter"
+                          >
+                            <span
+                              class="euiTableCellContent__text"
+                            >
+                              Loading alerts...
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
