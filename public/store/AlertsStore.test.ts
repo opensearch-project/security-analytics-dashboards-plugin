@@ -6,6 +6,7 @@
 import { AlertsStore } from './AlertsStore';
 import notificationsStartMock from '../../test/mocks/services/notifications/NotificationsStart.mock';
 import { MAX_ALERTS_RESULT_WINDOW } from '../utils/constants';
+import { dataSourceInfo } from '../services/utils/constants';
 
 const createAlerts = (count: number, offset = 0) =>
   Array.from({ length: count }, (_, i) => ({ id: `alert-${offset + i}` }));
@@ -187,5 +188,70 @@ describe('AlertsStore.getThreatIntelAlerts', () => {
 
     expect(getThreatIntelAlerts).toHaveBeenCalledTimes(1);
     expect(alerts).toHaveLength(5);
+  });
+});
+
+describe('AlertsStore.getAlertsPage', () => {
+  const OLD_BACKEND_ERROR =
+    '[action_request_validation_exception] Validation Failed: 1: At least one of detector type or detector id needs to be passed;';
+
+  afterEach(() => {
+    dataSourceInfo.activeDataSource = { id: '' };
+  });
+
+  it('gets a single page of alerts and the total', async () => {
+    const alerts = createAlerts(10);
+    const getAlerts = jest.fn(() =>
+      Promise.resolve({ ok: true, response: { alerts, total_alerts: 10000 } })
+    );
+    const store = createStore(getAlerts);
+    const params = { startIndex: 9990, size: 10, sortString: 'severity' as const };
+
+    const result = await store.getAlertsPage(params);
+
+    expect(getAlerts).toHaveBeenCalledTimes(1);
+    expect(getAlerts).toHaveBeenCalledWith(params);
+    expect(result).toEqual({ ok: true, alerts, total: 10000 });
+  });
+
+  it('returns errors without showing them', async () => {
+    const getAlerts = jest.fn(() => Promise.resolve({ ok: false, error: 'failed' }));
+    const store = createStore(getAlerts);
+    const addDanger = jest.spyOn(notificationsStartMock.toasts, 'addDanger');
+
+    const result = await store.getAlertsPage({ size: 10 });
+
+    expect(result).toEqual({ ok: false, error: 'failed', allDetectorsQueryUnsupported: false });
+    expect(addDanger).not.toHaveBeenCalled();
+    expect(store.isAllDetectorsQuerySupported()).toBe(true);
+  });
+
+  it('remembers per data source if the backend requires a detector', async () => {
+    const getAlerts = jest.fn(() => Promise.resolve({ ok: false, error: OLD_BACKEND_ERROR }));
+    const store = createStore(getAlerts);
+    dataSourceInfo.activeDataSource = { id: 'old-cluster' };
+
+    expect(store.isAllDetectorsQuerySupported()).toBe(true);
+    const result = await store.getAlertsPage({ size: 10 });
+
+    expect(result).toEqual({
+      ok: false,
+      error: OLD_BACKEND_ERROR,
+      allDetectorsQueryUnsupported: true,
+    });
+    expect(store.isAllDetectorsQuerySupported()).toBe(false);
+
+    dataSourceInfo.activeDataSource = { id: 'new-cluster' };
+    expect(store.isAllDetectorsQuerySupported()).toBe(true);
+  });
+
+  it('does not treat the error of a request for a detector as missing support', async () => {
+    const getAlerts = jest.fn(() => Promise.resolve({ ok: false, error: OLD_BACKEND_ERROR }));
+    const store = createStore(getAlerts);
+
+    const result = await store.getAlertsPage({ detector_id: 'detector-1', size: 10 });
+
+    expect(result).toMatchObject({ ok: false, allDetectorsQueryUnsupported: false });
+    expect(store.isAllDetectorsQuerySupported()).toBe(true);
   });
 });

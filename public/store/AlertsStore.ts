@@ -6,14 +6,61 @@
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { AlertsService } from '../services';
 import { errorNotificationToast } from '../utils/helpers';
-import { AlertResponse, Duration, ThreatIntelAlert } from '../../types';
+import { AlertResponse, Duration, GetAlertsParams, ThreatIntelAlert } from '../../types';
 import { MAX_ALERTS_RESULT_WINDOW } from '../utils/constants';
+import { dataSourceInfo } from '../services/utils/constants';
+
+export type AlertsPageResult =
+  | { ok: true; alerts: AlertResponse[]; total: number }
+  | { ok: false; error: any; allDetectorsQueryUnsupported: boolean };
+
+// Older backends require a detector id or type when getting alerts.
+const DETECTOR_PARAM_REQUIRED_ERROR =
+  'at least one of detector type or detector id needs to be passed';
+
+const isDetectorParamRequiredError = (error: any) => {
+  const message = typeof error === 'string' ? error : JSON.stringify(error ?? '');
+  return message.toLowerCase().includes(DETECTOR_PARAM_REQUIRED_ERROR);
+};
 
 export class AlertsStore {
+  // Data sources whose backend can't get the alerts of all detectors in one request.
+  private readonly allDetectorsQueryUnsupported = new Set<string>();
+
   constructor(
     private readonly service: AlertsService,
     private readonly notifications: NotificationsStart
   ) {}
+
+  /**
+   * Whether the alerts of all detectors can be paged, sorted and filtered by the backend for the
+   * active data source. Becomes false for the rest of the session once the backend rejected such a
+   * request.
+   */
+  public isAllDetectorsQuerySupported() {
+    return !this.allDetectorsQueryUnsupported.has(dataSourceInfo.activeDataSource.id);
+  }
+
+  /**
+   * Gets a single page of alerts with exactly one request. Errors are returned, not shown.
+   */
+  public async getAlertsPage(params: GetAlertsParams): Promise<AlertsPageResult> {
+    const dataSourceId = dataSourceInfo.activeDataSource.id;
+    const res = await this.service.getAlerts(params);
+
+    if (res.ok) {
+      const alerts = res.response.alerts ?? [];
+      return { ok: true, alerts, total: res.response.total_alerts ?? alerts.length };
+    }
+
+    const allDetectorsQueryUnsupported =
+      !params.detector_id && !params.detectorType && isDetectorParamRequiredError(res.error);
+    if (allDetectorsQueryUnsupported) {
+      this.allDetectorsQueryUnsupported.add(dataSourceId);
+    }
+
+    return { ok: false, error: res.error, allDetectorsQueryUnsupported };
+  }
 
   public async getAlertsByDetector(
     detectorId: string,

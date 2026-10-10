@@ -27,31 +27,34 @@ export default class AlertsService {
       detector_id,
       size,
       sortOrder,
+      sortString,
       startIndex,
       startTime,
       endTime,
+      severityLevels,
+      alertStates,
+      searchString,
       dataSource,
     } = getAlertsParams;
-    const baseQuery = {
+    const query: { [key: string]: string | number | undefined } = {
       sortOrder: sortOrder || 'desc',
-      size: size || 10000,
+      sortString,
+      // size 0 is valid and returns only the total number of alerts
+      size: size ?? 10000,
       startIndex: startIndex || 0,
       dataSourceId: dataSource?.id || dataSourceInfo.activeDataSource.id,
       startTime,
       endTime,
+      severityLevels,
+      alertStates,
+      searchString,
     };
-    let query;
 
+    // Without a detector id or type the backend returns the alerts of all detectors.
     if (detector_id) {
-      query = {
-        ...baseQuery,
-        detector_id,
-      };
+      query.detector_id = detector_id;
     } else if (detectorType) {
-      query = {
-        ...baseQuery,
-        detectorType,
-      };
+      query.detectorType = detectorType;
     }
 
     return await this.httpClient.get(`..${API.GET_ALERTS}`, { query });
