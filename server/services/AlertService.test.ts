@@ -66,6 +66,54 @@ describe('AlertService.getAlerts', () => {
     );
   });
 
+  it('passes sorting, filters and search to the backend', async () => {
+    const { getAlerts, callAsCurrentUser } = createService();
+
+    await getAlerts({
+      detector_id: 'detector-1',
+      sortOrder: 'asc',
+      sortString: 'monitor_name.keyword',
+      size: 20,
+      startIndex: 40,
+      severityLevels: '1,2',
+      alertStates: 'ACTIVE,ACKNOWLEDGED',
+      searchString: 'win* det*',
+    });
+
+    expect(callAsCurrentUser).toHaveBeenCalledWith(CLIENT_ALERTS_METHODS.GET_ALERTS, {
+      detector_id: 'detector-1',
+      sortOrder: 'asc',
+      sortString: 'monitor_name.keyword',
+      size: 20,
+      startIndex: 40,
+      severityLevels: '1,2',
+      alertStates: 'ACTIVE,ACKNOWLEDGED',
+      searchString: 'win* det*',
+    });
+  });
+
+  it('gets the alerts of all detectors without detector_id and detectorType', async () => {
+    const { getAlerts, callAsCurrentUser } = createService();
+
+    const res = await getAlerts({ size: 10, startIndex: 0, sortString: 'start_time' });
+
+    expect(res.body.ok).toBe(true);
+    const params = callAsCurrentUser.mock.calls[0][1];
+    expect(params).toMatchObject({ size: 10, startIndex: 0, sortString: 'start_time' });
+    expect(params).not.toHaveProperty('detector_id');
+    expect(params).not.toHaveProperty('detectorType');
+  });
+
+  it('sends only detector_id when both detector_id and detectorType are given', async () => {
+    const { getAlerts, callAsCurrentUser } = createService();
+
+    await getAlerts({ detector_id: 'detector-1', detectorType: 'windows' });
+
+    const params = callAsCurrentUser.mock.calls[0][1];
+    expect(params.detector_id).toBe('detector-1');
+    expect(params).not.toHaveProperty('detectorType');
+  });
+
   it('uses the data source client when MDS is enabled', async () => {
     const { getAlerts, callAsCurrentUser, callAPI, context } = createService(true);
 

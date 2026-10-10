@@ -61,23 +61,38 @@ export interface TriggerContext {
  * API interfaces
  */
 
-export type GetAlertsParams = {
+/**
+ * Fields the get alerts API can sort by.
+ */
+export type AlertsSortField =
+  | 'start_time'
+  | 'last_notification_time'
+  | 'severity'
+  | 'state'
+  | 'monitor_name.keyword'
+  | 'trigger_name.keyword';
+
+/**
+ * Without detector_id and detectorType the API returns the alerts of all detectors the user can
+ * access (older backends reject such requests).
+ */
+export interface GetAlertsParams {
+  detector_id?: string;
+  detectorType?: string;
   sortOrder?: string;
+  sortString?: AlertsSortField;
   size?: number;
   startIndex?: number;
   startTime?: number;
   endTime?: number;
+  // Comma separated severity levels, e.g. "1,2"
+  severityLevels?: string;
+  // Comma separated alert states, e.g. "ACTIVE,ACKNOWLEDGED"
+  alertStates?: string;
+  // query_string query over the detector (monitor) and trigger names
+  searchString?: string;
   dataSource?: any;
-} & (
-  | {
-      detector_id: string;
-      detectorType?: string;
-    }
-  | {
-      detectorType: string;
-      detector_id?: string;
-    }
-);
+}
 
 export interface GetAlertsResponse {
   alerts: AlertResponse[];

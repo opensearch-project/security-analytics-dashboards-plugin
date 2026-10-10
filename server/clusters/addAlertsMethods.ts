@@ -13,7 +13,13 @@ export function addAlertsMethods(securityAnalytics: any, createAction: any): voi
         detector_id: {
           type: 'string',
         },
+        detectorType: {
+          type: 'string',
+        },
         sortOrder: {
+          type: 'string',
+        },
+        sortString: {
           type: 'string',
         },
         size: {
@@ -21,6 +27,21 @@ export function addAlertsMethods(securityAnalytics: any, createAction: any): voi
         },
         startIndex: {
           type: 'number',
+        },
+        startTime: {
+          type: 'number',
+        },
+        endTime: {
+          type: 'number',
+        },
+        searchString: {
+          type: 'string',
+        },
+        severityLevels: {
+          type: 'string',
+        },
+        alertStates: {
+          type: 'string',
         },
       },
     },
