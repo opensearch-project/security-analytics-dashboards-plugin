@@ -108,6 +108,71 @@ describe('AlertsStore.getAlertsByDetector', () => {
     expect(alerts).toEqual([]);
   });
 
+  it('tells that loading stopped at the max result window', async () => {
+    const getAlerts = jest.fn(({ startIndex, size }) =>
+      Promise.resolve({ ok: true, response: { alerts: createAlerts(size, startIndex) } })
+    );
+    const store = createStore(getAlerts);
+
+    const result = await store.getAlertsByDetectorResult(
+      'detector-1',
+      'Detector 1',
+      new AbortController().signal,
+      undefined,
+      undefined,
+      2500
+    );
+
+    expect(result.resultWindowReached).toBe(true);
+    expect(result.alerts).toHaveLength(MAX_ALERTS_RESULT_WINDOW);
+  });
+
+  it('tells that loading stopped at the max result window with the default page size', async () => {
+    const getAlerts = jest.fn(({ size }) =>
+      Promise.resolve({ ok: true, response: { alerts: createAlerts(size) } })
+    );
+    const store = createStore(getAlerts);
+
+    const result = await store.getAlertsByDetectorResult(
+      'detector-1',
+      'Detector 1',
+      new AbortController().signal
+    );
+
+    expect(getAlerts).toHaveBeenCalledTimes(1);
+    expect(result.resultWindowReached).toBe(true);
+    expect(result.alerts).toHaveLength(MAX_ALERTS_RESULT_WINDOW);
+  });
+
+  it.each([
+    ['a page is not full', () => createAlerts(MAX_ALERTS_RESULT_WINDOW - 1)],
+    ['a page is empty', () => []],
+  ])('tells that the max result window was not reached when %s', async (_, alerts) => {
+    const getAlerts = jest.fn(() => Promise.resolve({ ok: true, response: { alerts: alerts() } }));
+    const store = createStore(getAlerts);
+
+    const result = await store.getAlertsByDetectorResult(
+      'detector-1',
+      'Detector 1',
+      new AbortController().signal
+    );
+
+    expect(result.resultWindowReached).toBe(false);
+  });
+
+  it('tells that the max result window was not reached when a request fails', async () => {
+    const getAlerts = jest.fn(() => Promise.resolve({ ok: false, error: 'failed' }));
+    const store = createStore(getAlerts);
+
+    const result = await store.getAlertsByDetectorResult(
+      'detector-1',
+      'Detector 1',
+      new AbortController().signal
+    );
+
+    expect(result).toEqual({ alerts: [], resultWindowReached: false });
+  });
+
   it('stops and shows an error toast when a request fails', async () => {
     const getAlerts = jest.fn(() => Promise.resolve({ ok: false, error: 'failed' }));
     const store = createStore(getAlerts);
@@ -225,14 +290,64 @@ describe('AlertsStore.getAlertsPage', () => {
     expect(addDanger).not.toHaveBeenCalled();
   });
 
-  it('does not change the server side support', async () => {
-    const getAlerts = jest.fn(() => Promise.resolve({ ok: false, error: OLD_BACKEND_ERROR }));
+  it('does not change the server side support for other errors', async () => {
+    const getAlerts = jest.fn(() => Promise.resolve({ ok: false, error: 'Service unavailable' }));
     const store = createStore(getAlerts);
 
-    await store.getAlertsPage({ size: 10 });
+    const result = await store.getAlertsPage({ size: 10 });
 
+    expect(result).toEqual({ ok: false, error: 'Service unavailable' });
     expect(store.getAlertsServerSideSupport()).toBe('unknown');
   });
+
+  // Errors of nodes that weren't upgraded yet during a rolling upgrade
+  it.each([
+    ['requiring a detector', OLD_BACKEND_ERROR],
+    [
+      'rejecting a param',
+      '[illegal_argument_exception] request [/_plugins/_security_analytics/alerts] contains unrecognized parameter: [severityLevels]',
+    ],
+    [
+      'rejecting params',
+      'request [/_plugins/_security_analytics/alerts] contains unrecognized parameters: [alertStates], [searchString]',
+    ],
+    ['rejecting a param in other case', 'Request contains Unrecognized Parameter: [sortString]'],
+    [
+      'rejecting a param in an error object',
+      {
+        type: 'illegal_argument_exception',
+        reason:
+          'request [/_plugins/_security_analytics/alerts] contains unrecognized parameter: [severityLevels]',
+      },
+    ],
+  ])(
+    'knows the data source as unsupported after an error of an older backend %s',
+    async (_, error) => {
+      let resolve: (res: any) => void = () => {};
+      const getAlerts = jest
+        .fn()
+        .mockResolvedValueOnce({ ok: true, response: { alerts: [], total_alerts: 5 } })
+        .mockImplementation(() => new Promise((res) => (resolve = res)));
+      const store = createStore(getAlerts);
+      const addDanger = jest.spyOn(notificationsStartMock.toasts, 'addDanger');
+      dataSourceInfo.activeDataSource = { id: 'upgrading-cluster' };
+      await store.detectAlertsServerSideSupport();
+      expect(store.getAlertsServerSideSupport()).toBe('supported');
+
+      const page = store.getAlertsPage({ size: 10, severityLevels: '1' });
+      // The data source of the request is unsupported, not the one active by the response.
+      dataSourceInfo.activeDataSource = { id: 'other-cluster' };
+      resolve({ ok: false, error });
+
+      expect(await page).toEqual({ ok: false, error, unsupported: true });
+      expect(store.getAlertsServerSideSupport()).toBe('unknown');
+      dataSourceInfo.activeDataSource = { id: 'upgrading-cluster' };
+      expect(store.getAlertsServerSideSupport()).toBe('unsupported');
+      expect(await store.detectAlertsServerSideSupport()).toEqual({ support: 'unsupported' });
+      expect(getAlerts).toHaveBeenCalledTimes(2);
+      expect(addDanger).not.toHaveBeenCalled();
+    }
+  );
 });
 
 describe('AlertsStore.detectAlertsServerSideSupport', () => {

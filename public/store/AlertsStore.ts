@@ -11,7 +11,16 @@ import { MAX_ALERTS_RESULT_WINDOW } from '../utils/constants';
 import { dataSourceInfo } from '../services/utils/constants';
 
 export type AlertsPageResult =
-  { ok: true; alerts: AlertResponse[]; total: number } | { ok: false; error: any };
+  | { ok: true; alerts: AlertResponse[]; total: number }
+  // unsupported: the backend rejected the request as an older backend would, e.g. a node that
+  // wasn't upgraded yet during a rolling upgrade. The data source is then known as unsupported.
+  | { ok: false; error: any; unsupported?: boolean };
+
+export interface AlertsByDetectorResult {
+  alerts: any[];
+  // Whether loading stopped at the max result window, so there might be more alerts
+  resultWindowReached: boolean;
+}
 
 /**
  * Whether the backend of a data source can page, sort, filter and search the alerts of all
@@ -22,13 +31,23 @@ export type AlertsServerSideSupport = 'unknown' | 'supported' | 'unsupported';
 export type AlertsServerSideSupportResult =
   { support: 'supported' | 'unsupported' } | { support: 'unknown'; error: any };
 
-// Older backends require a detector id or type when getting alerts.
-const DETECTOR_PARAM_REQUIRED_ERROR =
-  'at least one of detector type or detector id needs to be passed';
+const SERVER_SIDE_UNSUPPORTED_ERRORS = [
+  // Older backends require a detector id or type when getting alerts.
+  'at least one of detector type or detector id needs to be passed',
+  // OpenSearch rejects params a REST handler doesn't know, e.g. severityLevels on older backends:
+  // "request [...] contains unrecognized parameter: [...]" or "contains unrecognized parameters".
+  'unrecognized parameter',
+];
 
-const isDetectorParamRequiredError = (error: any) => {
-  const message = typeof error === 'string' ? error : JSON.stringify(error ?? '');
-  return message.toLowerCase().includes(DETECTOR_PARAM_REQUIRED_ERROR);
+/**
+ * Whether the error is how an older backend rejects getting, paging, sorting, filtering or
+ * searching the alerts of all detectors.
+ */
+export const isAlertsServerSideUnsupportedError = (error: any) => {
+  const message = (typeof error === 'string' ? error : JSON.stringify(error ?? '')).toLowerCase();
+  return SERVER_SIDE_UNSUPPORTED_ERRORS.some((unsupportedError) =>
+    message.includes(unsupportedError)
+  );
 };
 
 export class AlertsStore {
@@ -89,7 +108,7 @@ export class AlertsStore {
       });
       if (res.ok) {
         result = { support: 'supported' };
-      } else if (isDetectorParamRequiredError(res.error)) {
+      } else if (isAlertsServerSideUnsupportedError(res.error)) {
         result = { support: 'unsupported' };
       } else {
         result = { support: 'unknown', error: res.error };
@@ -109,14 +128,21 @@ export class AlertsStore {
   /**
    * Gets a single page of alerts with exactly one request. Errors are returned, not shown. Only use
    * it with params other than a detector after detectAlertsServerSideSupport found the backend to
-   * support them.
+   * support them. If the backend rejects the request as an older backend would, e.g. because it
+   * hit a node that wasn't upgraded yet, the data source is known as unsupported from then on.
    */
   public async getAlertsPage(params: GetAlertsParams): Promise<AlertsPageResult> {
+    const dataSourceId = params.dataSource?.id || dataSourceInfo.activeDataSource.id;
     const res = await this.service.getAlerts(params);
 
     if (res.ok) {
       const alerts = res.response.alerts ?? [];
       return { ok: true, alerts, total: res.response.total_alerts ?? alerts.length };
+    }
+
+    if (isAlertsServerSideUnsupportedError(res.error)) {
+      this.serverSideSupport.set(dataSourceId, 'unsupported');
+      return { ok: false, error: res.error, unsupported: true };
     }
 
     return { ok: false, error: res.error };
@@ -131,9 +157,34 @@ export class AlertsStore {
     alertCount?: number,
     dataSource?: any
   ) {
+    const { alerts } = await this.getAlertsByDetectorResult(
+      detectorId,
+      detectorName,
+      signal,
+      duration,
+      onPartialAlertsFetched,
+      alertCount,
+      dataSource
+    );
+    return alerts;
+  }
+
+  /**
+   * Like getAlertsByDetector, but also tells whether loading stopped at the max result window.
+   */
+  public async getAlertsByDetectorResult(
+    detectorId: string,
+    detectorName: string,
+    signal: AbortSignal,
+    duration?: Duration,
+    onPartialAlertsFetched?: (alerts: AlertResponse[]) => void,
+    alertCount?: number,
+    dataSource?: any
+  ): Promise<AlertsByDetectorResult> {
     let allAlerts: any[] = [];
     const pageSize = alertCount ?? MAX_ALERTS_RESULT_WINDOW;
     let startIndex = 0;
+    let resultWindowReached = false;
 
     while (!signal.aborted) {
       const getAlertsRes = await this.service.getAlerts({
@@ -161,16 +212,16 @@ export class AlertsStore {
 
       // A page that isn't full means there are no more alerts to fetch. The backend also rejects
       // requests where startIndex + size exceeds the max result window, so stop before crossing it.
-      if (
-        alerts.length === 0 ||
-        alerts.length < pageSize ||
-        startIndex + pageSize > MAX_ALERTS_RESULT_WINDOW
-      ) {
+      if (alerts.length === 0 || alerts.length < pageSize) {
+        break;
+      }
+      if (startIndex + pageSize > MAX_ALERTS_RESULT_WINDOW) {
+        resultWindowReached = true;
         break;
       }
     }
 
-    return allAlerts;
+    return { alerts: allAlerts, resultWindowReached };
   }
 
   // Just grab 25 alerts for the analytics all threat alerts card once

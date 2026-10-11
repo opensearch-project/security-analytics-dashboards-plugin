@@ -133,8 +133,11 @@ export interface AlertsState {
   selectedTabId: AlertTabId;
   // Whether the detection rule alerts are paged, sorted and filtered by the backend. Older
   // backends can't get the alerts of all detectors at once, then all alerts are loaded instead.
-  // Kept unchanged while it's unknown whether the backend of the data source supports paging.
+  // While it's unknown whether the backend of the data source supports paging, e.g. because
+  // detecting it failed, all alerts are loaded and the support is detected again on the next load.
   alertsServerSide: boolean;
+  // Whether loading all alerts stopped at the max result window for any detector
+  alertsResultWindowReached: boolean;
   alertsTableQuery: AlertsTableQuery;
   alertsSearchInput: string;
   // Total number of alerts matching the query (capped at the max result window by the backend)
@@ -200,6 +203,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       threatIntelAlerts: [],
       filteredThreatIntelAlerts: [],
       alertsServerSide: DataStore.alerts.getAlertsServerSideSupport() !== 'unsupported',
+      alertsResultWindowReached: false,
       alertsTableQuery: DEFAULT_ALERTS_TABLE_QUERY,
       alertsSearchInput: '',
     };
@@ -229,6 +233,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
           alerts: [],
           filteredAlerts: [],
           alertsTotal: undefined,
+          alertsResultWindowReached: false,
           detectors: {},
           selectedDetectionRuleAlertItems: [],
         },
@@ -475,17 +480,12 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       return;
     }
 
-    if (detection.support === 'unsupported') {
-      // Older backend, fall back to loading all alerts of every detector.
-      this.setState({ alertsServerSide: false });
-      this.getAlerts(this.createAbortSignal(), detectorsRequest);
-      return;
-    }
-
-    if (detection.support === 'unknown') {
-      // Keep the current way of loading the alerts and detect the support again on the next load.
-      errorNotificationToast(notifications, 'retrieve', 'alerts', detection.error);
-      this.setState({ loading: false });
+    if (detection.support !== 'supported') {
+      // Older backend, fall back to loading all alerts of every detector. If detecting the support
+      // failed, e.g. because the backend was unavailable for a moment, load all alerts this time
+      // and detect the support again on the next load. The detection error isn't shown, failing
+      // to load all alerts shows its own error.
+      this.loadAllDetectionRuleAlerts(detectorsRequest);
       return;
     }
 
@@ -504,6 +504,13 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     }
 
     if (!result.ok) {
+      if (result.unsupported) {
+        // The request hit an older backend, e.g. a node that wasn't upgraded yet during a rolling
+        // upgrade. Fall back to loading all alerts like for older backends.
+        this.loadAllDetectionRuleAlerts();
+        return;
+      }
+
       errorNotificationToast(notifications, 'retrieve', 'alerts', result.error);
       this.setState({ loading: false });
       return;
@@ -547,6 +554,13 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       ),
     });
   };
+
+  private loadAllDetectionRuleAlerts(
+    detectorsRequest?: Promise<ServerResponse<SearchDetectorsResponse>>
+  ) {
+    this.setState({ alertsServerSide: false });
+    this.getAlerts(this.createAbortSignal(), detectorsRequest);
+  }
 
   private updateAlertsTableQuery(changes: Partial<AlertsTableQuery>) {
     const query = { ...this.state.alertsTableQuery, ...changes };
@@ -898,6 +912,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       if (detectorsRes.ok) {
         const detectorId = this.props.match.params['detectorId'];
         let alerts: AlertItem[] = [];
+        let resultWindowReached = false;
 
         for (const hit of detectorsRes.response.hits.hits) {
           if (abort.aborted) {
@@ -905,13 +920,14 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
           }
 
           if (!detectorId || detectorId === hit._id) {
-            const detectorAlerts = await DataStore.alerts.getAlertsByDetector(
+            const detectorAlerts = await DataStore.alerts.getAlertsByDetectorResult(
               hit._id,
               hit._source.name,
               abort,
               duration
             );
-            alerts = alerts.concat(detectorAlerts);
+            alerts = alerts.concat(detectorAlerts.alerts);
+            resultWindowReached = resultWindowReached || detectorAlerts.resultWindowReached;
           }
         }
 
@@ -922,7 +938,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
 
         // Update the table once with the alerts of all detectors to avoid re-rendering (and
         // resetting the pagination of) the table for every partial batch.
-        this.setState({ alerts });
+        this.setState({ alerts, alertsResultWindowReached: resultWindowReached });
         this.filterDeletectionRuleAlerts(alerts);
       }
     } catch (e: any) {
@@ -1418,7 +1434,14 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
    * page the alerts of all detectors.
    */
   private renderAllAlerts(selection: EuiTableSelectionType<AlertItem>, sorting: any) {
-    const { alerts, alertsFiltered, filteredAlerts, loading, widgetEmptyMessage } = this.state;
+    const {
+      alerts,
+      alertsFiltered,
+      alertsResultWindowReached,
+      filteredAlerts,
+      loading,
+      widgetEmptyMessage,
+    } = this.state;
     const severities = new Set<string>();
     const statuses = new Set<string>();
     filteredAlerts.forEach((alert) => {
@@ -1461,7 +1484,15 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     };
 
     return (
-      <ContentPanel title={'Alerts'} actions={[this.getContelPanelActions()]}>
+      <ContentPanel
+        title={'Alerts'}
+        subTitleText={
+          alertsResultWindowReached
+            ? 'Showing the first 10,000 alerts per detector. Narrow the time range to see more.'
+            : undefined
+        }
+        actions={[this.getContelPanelActions()]}
+      >
         <EuiInMemoryTable
           columns={this.getColumns()}
           items={alertsFiltered ? filteredAlerts : alerts}

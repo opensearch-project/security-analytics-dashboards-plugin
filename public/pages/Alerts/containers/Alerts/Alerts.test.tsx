@@ -709,18 +709,107 @@ describe('<Alerts /> spec', () => {
       expect(screen.getByText('trigger detector_1-0')).toBeInTheDocument();
     });
 
-    it('does not fall back for other errors', async () => {
-      getAlerts.mockResolvedValue({
-        ok: false,
-        error: '[action_request_validation_exception] Validation Failed: 1: invalid sort',
+    it('does not fall back for other errors of a page request', async () => {
+      getAlerts.mockImplementation((params) =>
+        Promise.resolve(
+          params.size === 0
+            ? okAlerts([], 100)
+            : {
+                ok: false,
+                error: '[action_request_validation_exception] Validation Failed: 1: invalid sort',
+              }
+        )
+      );
+
+      renderAlerts();
+
+      await waitFor(() =>
+        expect(notificationsStartMock.toasts.addDanger).toHaveBeenCalledWith(
+          expect.objectContaining({ text: expect.stringContaining('invalid sort') })
+        )
+      );
+      expect(getAlerts).toHaveBeenCalledTimes(2);
+      expect(screen.getByTestId('alertsSearchField')).toBeInTheDocument();
+    });
+
+    it('notes that the alerts are capped at 10,000 per detector', async () => {
+      mockOldBackend({
+        detector_1: createAlerts('detector_1', 2),
+        detector_2: createAlerts('detector_2', 10000),
       });
 
       renderAlerts();
 
-      await waitFor(() => expect(notificationsStartMock.toasts.addDanger).toHaveBeenCalled());
-      expect(getAlerts).toHaveBeenCalledTimes(1);
-      expect(screen.getByTestId('alertsSearchField')).toBeInTheDocument();
+      expect(
+        await screen.findByText(
+          'Showing the first 10,000 alerts per detector. Narrow the time range to see more.'
+        )
+      ).toBeInTheDocument();
     });
+
+    it('does not note the cap for less than 10,000 alerts per detector', async () => {
+      mockOldBackend({
+        detector_1: createAlerts('detector_1', 9999),
+        detector_2: createAlerts('detector_2', 2),
+      });
+
+      renderAlerts();
+
+      await waitFor(() => expect(getAlerts).toHaveBeenCalledTimes(3));
+      await waitFor(() => expect(screen.getAllByText('Detector one').length).toBeGreaterThan(0));
+      expect(screen.queryByText(/Showing the first 10,000/)).not.toBeInTheDocument();
+    });
+  });
+
+  describe('detection rule alerts during a rolling upgrade', () => {
+    beforeEach(() => {
+      jest.spyOn(moment(), 'isBetween').mockReturnValue(true);
+    });
+
+    it.each([
+      ['requires a detector', OLD_BACKEND_ERROR],
+      [
+        'rejects a param',
+        '[illegal_argument_exception] request [/_plugins/_security_analytics/alerts] contains unrecognized parameter: [severityLevels]',
+      ],
+      [
+        'rejects params',
+        'request [/_plugins/_security_analytics/alerts] contains Unrecognized Parameters: [alertStates], [sortString]',
+      ],
+    ])(
+      'falls back to loading all alerts without an error when a page request hits a node that %s',
+      async (_, error) => {
+        await renderWithAlerts();
+        expect(screen.getByTestId('alertsSearchField')).toBeInTheDocument();
+
+        getAlerts.mockImplementation((params) =>
+          Promise.resolve(
+            params.detector_id
+              ? okAlerts(createAlerts(params.detector_id, 2))
+              : { ok: false, error }
+          )
+        );
+        selectFilterOption('alertsSeverityFilter', '1');
+
+        await screen.findByText('trigger detector_2-1');
+        expect(screen.queryByTestId('alertsSearchField')).not.toBeInTheDocument();
+        expect(notificationsStartMock.toasts.addDanger).not.toHaveBeenCalled();
+        expect(getAlerts.mock.calls.slice(1).map(([params]) => params.detector_id)).toEqual([
+          undefined,
+          'detector_1',
+          'detector_2',
+        ]);
+        expect(DataStore.alerts.getAlertsServerSideSupport()).toBe('unsupported');
+
+        // Later loads don't get pages of the alerts of all detectors again.
+        fireEvent.click(screen.getByTestId('superDatePickerApplyTimeButton'));
+        await waitForAlertsRequest(6);
+        expect(getAlerts.mock.calls.slice(4).map(([params]) => params.detector_id)).toEqual([
+          'detector_1',
+          'detector_2',
+        ]);
+      }
+    );
   });
   describe('detection rule alerts after the first page load', () => {
     it('gets the first page for another detector in the route', async () => {
@@ -984,8 +1073,42 @@ describe('<Alerts /> spec', () => {
       expect(getAlerts.mock.calls[1][0]).toMatchObject({ startIndex: 0, size: 10 });
     });
 
-    it('shows other errors and detects the support again on the next load', async () => {
-      getAlerts.mockResolvedValueOnce({ ok: false, error: 'Service unavailable' });
+    it('loads all alerts after other errors and detects the support again on the next load', async () => {
+      getAlerts.mockImplementation((params) =>
+        Promise.resolve(
+          params.detector_id
+            ? okAlerts(createAlerts(params.detector_id, 2))
+            : { ok: false, error: 'Service unavailable' }
+        )
+      );
+      renderAlerts();
+
+      await screen.findByText('trigger detector_2-1');
+      expect(screen.getByText('trigger detector_1-1')).toBeInTheDocument();
+      expect(getAlerts.mock.calls.map(([params]) => params.detector_id)).toEqual([
+        undefined,
+        'detector_1',
+        'detector_2',
+      ]);
+      // The alerts loaded, so the detection error isn't shown.
+      expect(notificationsStartMock.toasts.addDanger).not.toHaveBeenCalled();
+      expect(screen.queryByTestId('alertsSearchField')).not.toBeInTheDocument();
+      expect(DataStore.alerts.getAlertsServerSideSupport()).toBe('unknown');
+
+      getAlerts.mockImplementation((params) =>
+        Promise.resolve(okAlerts(createAlerts('detector_1', params.size, params.startIndex), 100))
+      );
+      fireEvent.click(screen.getByTestId('superDatePickerApplyTimeButton'));
+
+      await screen.findByTestId('alertsSearchField');
+      await screen.findByText('Alerts (100)');
+      expect(probeCount()).toBe(2);
+      expect(getAlerts.mock.calls[4][0]).toMatchObject({ startIndex: 0, size: 10 });
+      expect(getAlerts).toHaveBeenCalledTimes(5);
+    });
+
+    it('shows the error if loading all alerts after other errors fails too', async () => {
+      getAlerts.mockResolvedValue({ ok: false, error: 'Service unavailable' });
       renderAlerts();
 
       await waitFor(() =>
@@ -993,19 +1116,17 @@ describe('<Alerts /> spec', () => {
           expect.objectContaining({ text: 'Service unavailable' })
         )
       );
-      expect(getAlerts).toHaveBeenCalledTimes(1);
-      // The mode doesn't change.
-      expect(screen.getByTestId('alertsSearchField')).toBeInTheDocument();
+      await waitForAlertsRequest(3);
+      expect(getAlerts.mock.calls.map(([params]) => params.detector_id)).toEqual([
+        undefined,
+        'detector_1',
+        'detector_2',
+      ]);
+      expect(screen.queryByTestId('alertsSearchField')).not.toBeInTheDocument();
 
-      getAlerts.mockImplementation((params) =>
-        Promise.resolve(okAlerts(createAlerts('detector_1', params.size, params.startIndex), 100))
-      );
       fireEvent.click(screen.getByTestId('superDatePickerApplyTimeButton'));
-
-      await screen.findByText('trigger detector_1-0');
+      await waitForAlertsRequest(6);
       expect(probeCount()).toBe(2);
-      expect(getAlerts.mock.calls[2][0]).toMatchObject({ startIndex: 0, size: 10 });
-      expect(getAlerts).toHaveBeenCalledTimes(3);
     });
 
     it('resets the page and detects the support per data source when it changes', async () => {
