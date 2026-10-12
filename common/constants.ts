@@ -11,6 +11,17 @@ export enum ThreatIntelIocSourceType {
   URL_DOWNLOAD = 'URL_DOWNLOAD',
 }
 
+/**
+ * Fields the get alerts API can sort the alerts by: start time, detector name, status and severity.
+ * The backend only supports these fields for the alerts of all detectors.
+ */
+export const ALERTS_SORT_FIELDS = [
+  'start_time',
+  'monitor_name.keyword',
+  'state',
+  'severity',
+] as const;
+
 // The backend rejects alert queries whose startIndex + size exceeds this result window.
 export const MAX_ALERTS_RESULT_WINDOW = 10000;
 

@@ -4,15 +4,17 @@
  */
 
 import { IRouter } from 'opensearch-dashboards/server';
-import { schema } from '@osd/config-schema';
+import { schema, Type } from '@osd/config-schema';
 import { NodeServices } from '../models/interfaces';
 import { API } from '../utils/constants';
 import { createQueryValidationSchema } from '../utils/helpers';
 import {
   ALERTS_SEARCH_STRING_MAX_LENGTH,
   ALERTS_SEARCH_STRING_PATTERN,
+  ALERTS_SORT_FIELDS,
   MAX_ALERTS_RESULT_WINDOW,
 } from '../../common/constants';
+import { AlertsSortField } from '../../types';
 
 const SEVERITY_LEVELS_PATTERN = /^[1-5](,[1-5])*$/;
 const ALERT_STATES = 'ACTIVE|ACKNOWLEDGED|COMPLETED|ERROR|DELETED';
@@ -40,14 +42,9 @@ export function setupAlertsRoutes(services: NodeServices, router: IRouter) {
           detector_id: schema.maybe(schema.string()),
           sortOrder: schema.maybe(schema.oneOf([schema.literal('asc'), schema.literal('desc')])),
           sortString: schema.maybe(
-            schema.oneOf([
-              schema.literal('start_time'),
-              schema.literal('last_notification_time'),
-              schema.literal('severity'),
-              schema.literal('state'),
-              schema.literal('monitor_name.keyword'),
-              schema.literal('trigger_name.keyword'),
-            ])
+            schema.oneOf(
+              ALERTS_SORT_FIELDS.map((field) => schema.literal(field)) as [Type<AlertsSortField>]
+            )
           ),
           // The backend rejects requests where startIndex + size exceeds the max result window.
           size: schema.maybe(schema.number({ min: 0, max: MAX_ALERTS_RESULT_WINDOW })),

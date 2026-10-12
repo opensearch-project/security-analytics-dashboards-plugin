@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ALERTS_SORT_FIELDS } from '../common/constants';
+
 export interface AlertCondition {
   // Trigger fields
   name: string;
@@ -64,13 +66,7 @@ export interface TriggerContext {
 /**
  * Fields the get alerts API can sort by.
  */
-export type AlertsSortField =
-  | 'start_time'
-  | 'last_notification_time'
-  | 'severity'
-  | 'state'
-  | 'monitor_name.keyword'
-  | 'trigger_name.keyword';
+export type AlertsSortField = typeof ALERTS_SORT_FIELDS[number];
 
 /**
  * Without detector_id and detectorType the API returns the alerts of all detectors the user can

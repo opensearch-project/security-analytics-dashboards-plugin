@@ -5,6 +5,7 @@
 
 import { setupAlertsRoutes } from './AlertRoutes';
 import { API } from '../utils/constants';
+import { ALERTS_SORT_FIELDS } from '../../common/constants';
 
 describe('Alerts routes', () => {
   const getAlertsQueryValidation = () => {
@@ -57,17 +58,7 @@ describe('Alerts routes', () => {
 
   it.each([
     ['sortOrder', ['asc', 'desc']],
-    [
-      'sortString',
-      [
-        'start_time',
-        'last_notification_time',
-        'severity',
-        'state',
-        'monitor_name.keyword',
-        'trigger_name.keyword',
-      ],
-    ],
+    ['sortString', ['start_time', 'monitor_name.keyword', 'state', 'severity']],
     ['severityLevels', ['1', '5', '1,2,3,4,5', '3,1']],
     [
       'alertStates',
@@ -93,7 +84,19 @@ describe('Alerts routes', () => {
 
   it.each([
     ['sortOrder', ['ASC', 'descending', '']],
-    ['sortString', ['detector_id', 'monitor_name', 'start_time,severity', '_score', '']],
+    [
+      'sortString',
+      [
+        'last_notification_time',
+        'trigger_name.keyword',
+        'end_time',
+        'detector_id',
+        'monitor_name',
+        'start_time,severity',
+        '_score',
+        '',
+      ],
+    ],
     ['severityLevels', ['0', '6', '1,', ',1', '1,,2', '1 2', 'high', '']],
     ['alertStates', ['active', 'ACTIVE,', 'ACTIVE;DELETED', 'UNKNOWN', 'ACTIVE ,ERROR', '']],
     [
@@ -105,6 +108,10 @@ describe('Alerts routes', () => {
     values.forEach((value) => {
       expect(() => validation.validate({ [param]: value })).toThrow();
     });
+  });
+
+  it('accepts exactly the alert sort fields of the backend', () => {
+    expect(ALERTS_SORT_FIELDS).toEqual(['start_time', 'monitor_name.keyword', 'state', 'severity']);
   });
 
   it('accepts sizes and start indexes within the max result window', () => {

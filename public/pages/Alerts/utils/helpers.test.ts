@@ -10,6 +10,7 @@ import {
   getAlertsSearchString,
   getAlertsTableColumnField,
 } from './helpers';
+import { ALERTS_SORT_FIELDS } from '../../../../common/constants';
 import {
   ALERTS_SEARCH_STRING_MAX_LENGTH,
   ALERTS_SEARCH_STRING_PATTERN,
@@ -142,7 +143,10 @@ describe('Alerts helpers', () => {
       Object.entries(ALERTS_TABLE_SORT_FIELDS).forEach(([columnField, sortField]) =>
         expect(getAlertsTableColumnField(sortField)).toBe(columnField)
       );
-      expect(getAlertsTableColumnField('trigger_name.keyword')).toBeUndefined();
+      // every field the API can sort by has exactly one sortable column
+      expect(Object.values(ALERTS_TABLE_SORT_FIELDS).sort()).toEqual(
+        [...ALERTS_SORT_FIELDS].sort()
+      );
     });
   });
 });
