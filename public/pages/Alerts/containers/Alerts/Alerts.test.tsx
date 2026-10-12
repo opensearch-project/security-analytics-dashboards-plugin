@@ -740,6 +740,25 @@ describe('<Alerts /> spec', () => {
       expect(screen.getByTestId('alertsSearchField')).toBeInTheDocument();
     });
 
+    it('does not fall back when a page request is rejected for another param', async () => {
+      const error =
+        '[illegal_argument_exception] request [/_plugins/_security_analytics/alerts] contains unrecognized parameters: [severityLevels], [foo]';
+      getAlerts.mockImplementation((params) =>
+        Promise.resolve(params.size === 0 ? okAlerts([], 100) : { ok: false, error })
+      );
+
+      renderAlerts();
+
+      await waitFor(() =>
+        expect(notificationsStartMock.toasts.addDanger).toHaveBeenCalledWith(
+          expect.objectContaining({ text: expect.stringContaining('[foo]') })
+        )
+      );
+      expect(getAlerts).toHaveBeenCalledTimes(2);
+      expect(screen.getByTestId('alertsSearchField')).toBeInTheDocument();
+      expect(DataStore.alerts.getAlertsServerSideSupport()).toBe('supported');
+    });
+
     it('notes that the alerts are capped at 10,000 per detector', async () => {
       mockOldBackend({
         detector_1: createAlerts('detector_1', 2),

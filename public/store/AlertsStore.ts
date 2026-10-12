@@ -41,22 +41,45 @@ export const ALERTS_SERVER_SIDE_UNSUPPORTED_TTL_MS = 5 * 60 * 1000;
 type KnownAlertsServerSideSupport =
   { support: 'supported' } | { support: 'unsupported'; expiresAt: number };
 
-const SERVER_SIDE_UNSUPPORTED_ERRORS = [
-  // Older backends require a detector id or type when getting alerts.
-  'at least one of detector type or detector id needs to be passed',
-  // OpenSearch rejects params a REST handler doesn't know, e.g. severityLevels on older backends:
-  // "request [...] contains unrecognized parameter: [...]" or "contains unrecognized parameters".
-  'unrecognized parameter',
-];
+// Older backends require a detector id or type when getting alerts.
+const DETECTOR_REQUIRED_ERROR = 'at least one of detector type or detector id needs to be passed';
+
+// The params older backends don't know, in lower case.
+const ALERTS_SERVER_SIDE_PARAMS = ['severitylevels', 'alertstates', 'sortstring', 'searchstring'];
+
+// OpenSearch rejects params a REST handler doesn't know, e.g. "request [...] contains unrecognized
+// parameter: [severityLevels]" or "contains unrecognized parameters: [alertStates], [foo] -> did
+// you mean [bar]?". Matches the rejection in the lower case message.
+const UNRECOGNIZED_PARAMS_REGEX =
+  /unrecognized parameters?:(?:,?\s*\[[^\]]*\](?:\s*->\s*did you mean (?:any of )?\[[^\]]*\]\?)?)+/g;
+
+// The params an "unrecognized parameter" error rejects, in lower case.
+const getUnrecognizedParams = (message: string): string[] =>
+  (message.match(UNRECOGNIZED_PARAMS_REGEX) ?? [])
+    .flatMap(
+      (rejection) =>
+        rejection
+          .replace(/^unrecognized parameters?:/, '')
+          .replace(/->\s*did you mean[^?]*\?/g, '')
+          .match(/\[[^\]]*\]/g) ?? []
+    )
+    .map((param) => param.slice(1, -1).trim());
 
 /**
  * Whether the error is how an older backend rejects getting, paging, sorting, filtering or
- * searching the alerts of all detectors.
+ * searching the alerts of all detectors. Rejecting any other param isn't, e.g. a newer backend
+ * rejecting a param for another reason, so that error is shown.
  */
 export const isAlertsServerSideUnsupportedError = (error: any) => {
   const message = (typeof error === 'string' ? error : JSON.stringify(error ?? '')).toLowerCase();
-  return SERVER_SIDE_UNSUPPORTED_ERRORS.some((unsupportedError) =>
-    message.includes(unsupportedError)
+  if (message.includes(DETECTOR_REQUIRED_ERROR)) {
+    return true;
+  }
+
+  const unrecognizedParams = getUnrecognizedParams(message);
+  return (
+    unrecognizedParams.length > 0 &&
+    unrecognizedParams.every((param) => ALERTS_SERVER_SIDE_PARAMS.includes(param))
   );
 };
 

@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ALERTS_SERVER_SIDE_UNSUPPORTED_TTL_MS, AlertsStore } from './AlertsStore';
+import {
+  ALERTS_SERVER_SIDE_UNSUPPORTED_TTL_MS,
+  AlertsStore,
+  isAlertsServerSideUnsupportedError,
+} from './AlertsStore';
 import notificationsStartMock from '../../test/mocks/services/notifications/NotificationsStart.mock';
 import { MAX_ALERTS_RESULT_WINDOW } from '../utils/constants';
 import { dataSourceInfo } from '../services/utils/constants';
@@ -358,6 +362,28 @@ describe('AlertsStore.getAlertsPage', () => {
     }
   );
 
+  it.each([
+    'request [/_plugins/_security_analytics/alerts] contains unrecognized parameter: [foo]',
+    'request [/_plugins/_security_analytics/alerts] contains unrecognized parameters: [severityLevels], [foo]',
+  ])(
+    'returns a newer backend rejecting another param as an error without changing the support: %s',
+    async (error) => {
+      const getAlerts = jest
+        .fn()
+        .mockResolvedValueOnce({ ok: true, response: { alerts: [], total_alerts: 5 } })
+        .mockResolvedValueOnce({ ok: false, error });
+      const store = createStore(getAlerts);
+      dataSourceInfo.activeDataSource = { id: 'cluster' };
+      await store.detectAlertsServerSideSupport();
+
+      expect(await store.getAlertsPage({ size: 10, severityLevels: '1' })).toEqual({
+        ok: false,
+        error,
+      });
+      expect(store.getAlertsServerSideSupport()).toBe('supported');
+    }
+  );
+
   it('does not clear the support of other data sources after an error of an older backend', async () => {
     const getAlerts = jest
       .fn()
@@ -532,5 +558,73 @@ describe('AlertsStore.detectAlertsServerSideSupport', () => {
 
     expect(await store.detectAlertsServerSideSupport()).toEqual({ support: 'supported' });
     expect(getAlerts).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('isAlertsServerSideUnsupportedError', () => {
+  const REQUEST = 'request [/_plugins/_security_analytics/alerts] contains';
+
+  it.each([
+    [
+      'requiring a detector',
+      '[action_request_validation_exception] Validation Failed: 1: At least one of detector type or detector id needs to be passed;',
+    ],
+    ['rejecting severityLevels', `${REQUEST} unrecognized parameter: [severityLevels]`],
+    ['rejecting alertStates', `${REQUEST} unrecognized parameter: [alertStates]`],
+    ['rejecting sortString', `${REQUEST} unrecognized parameter: [sortString]`],
+    ['rejecting searchString', `${REQUEST} unrecognized parameter: [searchString]`],
+    [
+      'rejecting all of the params',
+      `${REQUEST} unrecognized parameters: [severityLevels], [alertStates], [sortString], [searchString]`,
+    ],
+    [
+      'rejecting a param with a suggestion',
+      `${REQUEST} unrecognized parameter: [severityLevels] -> did you mean [severityLevel]?`,
+    ],
+    [
+      'rejecting params with suggestions',
+      `${REQUEST} unrecognized parameters: [severityLevels] -> did you mean [severityLevel]?, [alertStates] -> did you mean any of [alertState, alertStatus]?, [searchString]`,
+    ],
+    [
+      'rejecting a param in other case',
+      'Request contains Unrecognized Parameter: [SEVERITYLEVELS]',
+    ],
+    [
+      'rejecting a param in an error object',
+      {
+        type: 'illegal_argument_exception',
+        reason: `${REQUEST} unrecognized parameter: [severityLevels]`,
+      },
+    ],
+  ])('is true for an older backend %s', (_, error) => {
+    expect(isAlertsServerSideUnsupportedError(error)).toBe(true);
+  });
+
+  it.each([
+    ['rejecting another param', `${REQUEST} unrecognized parameter: [foo]`],
+    [
+      'rejecting another param with a suggestion of ours',
+      `${REQUEST} unrecognized parameter: [severity] -> did you mean [severityLevels]?`,
+    ],
+    [
+      'rejecting another param and ours',
+      `${REQUEST} unrecognized parameters: [severityLevels], [foo]`,
+    ],
+    [
+      'rejecting ours and another param with suggestions',
+      `${REQUEST} unrecognized parameters: [alertStates] -> did you mean [alertState]?, [foo] -> did you mean [for]?`,
+    ],
+    [
+      'rejecting another param in an error object',
+      { type: 'illegal_argument_exception', reason: `${REQUEST} unrecognized parameter: [foo]` },
+    ],
+    ['rejecting no param in particular', 'unrecognized parameter'],
+    [
+      'failing otherwise',
+      '[action_request_validation_exception] Validation Failed: 1: invalid sort',
+    ],
+    ['without an error', undefined],
+  ])('is false for %s', (_, error) => {
+    expect(isAlertsServerSideUnsupportedError(error)).toBe(false);
   });
 });
