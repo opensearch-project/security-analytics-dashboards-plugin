@@ -57,7 +57,7 @@ describe('Alerts routes', () => {
   });
 
   it.each([
-    ['sortOrder', ['asc', 'desc']],
+    ['sortOrder', ['asc', 'desc', 'ASC', 'Desc']],
     ['sortString', ['start_time', 'monitor_name.keyword', 'state', 'severity']],
     ['severityLevels', ['1', '5', '1,2,3,4,5', '3,1']],
     [
@@ -83,7 +83,7 @@ describe('Alerts routes', () => {
   });
 
   it.each([
-    ['sortOrder', ['ASC', 'descending', '']],
+    ['sortOrder', ['descending', 'up', '']],
     [
       'sortString',
       [

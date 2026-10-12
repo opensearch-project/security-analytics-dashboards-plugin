@@ -40,7 +40,13 @@ export function setupAlertsRoutes(services: NodeServices, router: IRouter) {
         query: createQueryValidationSchema({
           detectorType: schema.maybe(schema.string()),
           detector_id: schema.maybe(schema.string()),
-          sortOrder: schema.maybe(schema.oneOf([schema.literal('asc'), schema.literal('desc')])),
+          // Case-insensitive like the backend (and the unvalidated sortOrder accepted before).
+          sortOrder: schema.maybe(
+            schema.string({
+              validate: (value) =>
+                /^(asc|desc)$/i.test(value) ? undefined : 'must be one of [asc, desc]',
+            })
+          ),
           sortString: schema.maybe(
             schema.oneOf(
               ALERTS_SORT_FIELDS.map((field) => schema.literal(field)) as [Type<AlertsSortField>]
